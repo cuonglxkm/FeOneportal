@@ -190,6 +190,7 @@ export class ObjectObjectStorageModel {
   isDeleteMarker: boolean;
   checked: boolean = false;
   indeterminate: boolean = false;
+  keyName: string
 }
 
 

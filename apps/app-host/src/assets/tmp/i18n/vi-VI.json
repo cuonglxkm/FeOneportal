@@ -39,6 +39,9 @@
   "form.account.contractCode": "Mã hợp đồng",
   "form.account.city": "Tỉnh/Thành Phố",
   "form.account.address": "Địa chỉ chi tiết",
+  "app.account.validation": "Vui lòng nhập đầy đủ thông tin",
+  "app.account.form.success": "Cập nhật tài khoản thành công!",
+  "app.account.form.fail": "Cập nhật tài khoản không thành công!",
 
   "app.minute": "phút",
   "app.hour": "giờ",
@@ -643,6 +646,30 @@
   "app.edit-policy.des": "Thêm quyền bằng cách chọn dịch vụ,hành động,tài nguyên và điều kiện hoặc xây dựng câu lệnh bằng trình soạn thảo JSON",
   "app.edit-policy.des2": "Chỉ định những hành động nào có thể được thực hiện trên các tài nguyên cụ thể trong một dịch vụ.",
 
+  "app.breadcrumb.account": "Tài khoản",
+  "app.breadcrumb.security": "Bảo mật",
+  "app.security.title": "Tính năng xác thực hai yếu tố",
+  "app.security.alert.title": "Để tăng cường bảo mật, chúng tôi khuyến nghị cấu hình Xác thực 2 yếu tố để giúp bảo vệ tài khoản của Quý khách.",
+  "app.security.alert.des": "Tính năng xác thực hai yếu tố (2FA) là một biện pháp bảo mật mạnh mẽ được sử dụng để bảo vệ tài khoản trực tuyến. Thay vì chỉ sử dụng một phương tiện xác thực như mật khẩu, 2FA yêu cầu người dùng cung cấp thêm một yếu tố xác thực khác (OTP qua email) để chứng minh họ là chủ sở hữu của tài khoản. Điều này làm tăng cường đáng kể độ an toàn và bảo mật cho tài khoản, bởi vì người khác cần phải có cả hai yếu tố này để có thể truy cập trái phép.",
+  "app.security.input.title": "Mã OTP xác nhận sẽ được gửi về Email.",
+  "app.security.switch.title": "Bật tính năng xác thực hai yếu tố",
+  "app.security.note": "Hoặc đọc thêm về chính sách quyền riêng tư của chúng tôi",
+  "app.security.note1": "tại đây",
+  "app.security.noti.sucess": "SĐăng nhập với xác thực hai yếu tố đã được bật",
+  "app.security.noti.fail": "Mã xác thực không chính xác",
+  "app.security.noti.fail2": "Thao tác thất bại",
+
+  "app.breadcrumb.action-history": "Lịch sử thao tác",
+  "app.action-history.search": "Tìm kiếm  theo thao tác, dịch vụ, loại dịch vụ",
+  "app.action-history.operation-account": "Tài khoản thao tác",
+  "app.action-history.operation": "Thao tác",
+  "app.action-history.serviceType": "Loại dịch vụ",
+  "app.action-history.serviceName": "Tên dịch vụ",
+  "app.action-history.region": "Khu vực",
+  "app.action-history.information": "Thông tin",
+  "app.action-history.date": "Ngày thao tác",
+  
+
   "app.kafka.intro-text": "VNPT Message Streaming for Kafka là nền tảng phân phối dữ liệu cho các hệ thống qua đám mây. Kafka cung cấp khả năng xử lý nhanh, ổn định, chịu lỗi cao cho các hệ thống dạng Pub/Sub.",
   "app.kafka.init": "Khởi tạo Kafka Cluster",
   "app.kafka.list": "Danh sách Kafka",
@@ -668,10 +695,10 @@
   "app.service.cost": "Chi phí",
   "app.service.include": "Đã bao gồm",
   "app.service.exclude": "Chưa bao gồm",
-
-  "app.kafka.name": "Tên Kafka",
+  
+  "app.kafka.name": "Tên Kafka Cluster",
   "app.kafka.version": "Phiên bản Kafka",
-  "app.kafka.name-placeholder": "Nhập tên Kafka",
+  "app.kafka.name-placeholder": "Nhập tên Kafka Cluster",
   "app.kafka.version-placeholder": "Chọn phiên bản Kafka",
   "app.kafka.broker": "Số Broker",
   "app.kafka.cost-cpu": "Chi phí vCPU",
@@ -806,7 +833,7 @@
   "app.text.version": "Phiên bản",
   "app.text.status": "Trạng thái",
   "app.text.package": "Gói dịch vụ",
-  "app.text.creation-time": "Thời gian tạo",
+  "app.text.creation-time": "Ngày khởi tạo",
   "app.text.created-date": "Ngày tạo",
   "app.text.operation": "Thao tác",
   "app.text.edit": "Chỉnh sửa",
@@ -931,6 +958,9 @@
   "app.trigger": "Kích hoạt",
   "app.detail": "Chi tiết",
   "app.network.range": "Dải mạng",
+  "validation.kafka.logSegmentBytes-length": "Giá trị log.segment.bytes là số nguyên dương nằm trong khoảng 1 đến 10.737.418.240 (10GB)",
+
+
 
   "volume.title": "Danh sách Volume",
   "volume.title.detail": "Chi tiết Volume",
@@ -951,9 +981,16 @@
   "volume.table.title.create.date": "Ngày khởi tạo",
   "volume.table.title.expire.date": "Ngày hết hạn",
 
+  "volume.switch.snapshot": "Tạo từ snapshot",
+
   "volume.button.create": "Tạo mới Volume",
-  "volume.button.renew": "Gia hạn",
-  "volume.button.extend": "Điều chỉnh",
+  "volume.action.attach.vm": "Gắn máy ảo",
+  "volume.action.delete": "Xóa Volume",
+  "volume.action.detach": "Gỡ Volume",
+
+  "volume.action.snapshot.select": "Chọn Snapshot",
+  "volume.action.type.volume.select": "Chọn Snapshot",
+
 
   "volume.menu.create.schedule.backup": "Tạo lịch Backup",
   "volume.menu.create.schedule.snapshot": "Tạo lịch Snapshot",
@@ -965,10 +1002,39 @@
   "volume.tooltip.title.filter.status": "Tìm kiếm theo trạng thái",
   "volume.tooltip.title.filter.img": "Tìm kiếm",
   "volume.tooltip.content.create.backup": "Tạo Backup",
+  "volume.tooltip.input.name": "Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt (trừ _).",
+  "volume.tooltip.input.description": "Nhập mô tả",
+  "volume.tooltip.switch.snapshot": "Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot",
+  "volume.tooltip.select.type.volume": "Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau",
 
   "volume.intro.title": "Volume",
   "volume.intro.title2": "Lưu trữ ổ đĩa máy chủ",
-  "volume.intro.subtitle": "Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều\n                loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng."
+  "volume.intro.subtitle": "Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.",
 
+  "volume.modal.attach.title": "Chọn máy ảo",
+  "volume.modal.subtitle.delete": "Để thực hiện xóa Volume",
+  "volume.modal.confirm.delete": ", vui lòng nhập tên Volume để xác nhận",
+  "volume.modal.title.update": "Chỉnh sửa thông tin Volume",
 
+  "volume.notification.input.select.vm": "Vui lòng chọn máy ảo",
+  "volume.notification.fail.attach.multiple": "Volume này chỉ có thể gắn với một máy ảo.",
+  "volume.notification.attach.success": "Yêu cầu gắn Volume thành công",
+  "volume.notification.attach.fail": "Yêu cầu gắn Volume thất bại",
+  "volume.notification.input.name.delete": "Nhập tên Volume",
+  "volume.notification.input.name": "Vui lòng nhập đúng tên Volume",
+  "volume.notification.delete.fail": "Xóa Volume thất bại",
+  "volume.notification.delete.success": "Xóa Volume thành công",
+  "volume.notification.detach.fail": "Yêu cầu gỡ volume thất bại",
+  "volume.notification.detach.success": "Yêu cầu gỡ volume thành công",
+  "volume.notification.input.name.required": "Vui lòng nhập tên Volume",
+  "volume.notification.input.name.pattern": "Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _)",
+  "volume.notification.input.name.maxLength": "Tối đa 50 ký tự",
+  "volume.notification.input.name.duplicateName": "Tên Volume đã tồn tại, vui lòng nhập tên khác",
+  "volume.notification.input.description.maxLength": "Cho phép nhập tối đa 255 kí tự",
+  "volume.notification.update.success": "Cập nhật thông tin Volume thành công",
+  "volume.notification.update.fail": "Cập nhật thông tin Volume thất bại",
+  "volume.notification.input.select.snapshot": "Vui lòng chọn máy ảo",
+
+  "volume.alert.message.delete": "Nếu Volume có các bản Snapshot thì các bản Snapshot đó cũng sẽ bị xóa theo Volume.",
+  "volume.alert.message.confirm.detach": "Quý khách có chắc chắn muốn gỡ Volume khỏi máy ảo không?"
 }

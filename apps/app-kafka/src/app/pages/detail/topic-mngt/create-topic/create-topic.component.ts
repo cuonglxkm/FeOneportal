@@ -25,7 +25,7 @@ export class CreateTopicComponent implements OnInit {
     { name: 'max_mess', value: '1048588', type: 'number', fullname: "max.message.bytes" },
     { name: 'policy', value: 'delete', fullname: "cleanup.policy" },
     { name: 'minSync', value: 2, type: 'number', fullname: "min.insync.replicas" },
-    { name: 'unClean', value: 'false', fullname: "unclean.leader.election.enable" },
+    { name: 'unclean_leader', value: 'false', fullname: "unclean.leader.election.enable" },
     { name: 'comp_type', value: 'producer', fullname: "compression.type" },
     { name: 'mess_down_enable', value: 'true', fullname: "message.downconversion.enable" },
     { name: 'segm_jitt', value: '0', type: 'number', fullname: "segment.jitter.ms" },
@@ -78,7 +78,7 @@ export class CreateTopicComponent implements OnInit {
       policy: ["delete"],
       deleteRet: [null],
       minSync: [null],
-      unClean: ["false"],
+      unclean_leader: ["false"],
       re_hours: [null],
       typeTime: [null],
       comp_type: ["producer"],
@@ -97,7 +97,6 @@ export class CreateTopicComponent implements OnInit {
       preallocate: [null],
       min_clean: [null],
       index_inter: [null],
-      unclean_leader: [null],
       segment_ms: [null],
       mess_time_diff: [null],
       segm_index: [null],
@@ -105,6 +104,7 @@ export class CreateTopicComponent implements OnInit {
       reten_bytes: [null],
       lead_rep: [null]
     });
+    this.disableControl();
     if (this.mode == this.updateNumber) {
       this.openSet = true;
       this.validateForm.get('name_tp').disable();
@@ -128,6 +128,24 @@ export class CreateTopicComponent implements OnInit {
   changeLangData() {
     this.notiSuccessText = 'Success';
     this.notiFailedText = 'Failed';
+  }
+
+  disableControl() {
+    const controls = this.validateForm.controls;
+    controls.mess_down_enable.disable();
+    controls.comp_type.disable();
+    controls.segm_jitt.disable();
+    controls.foll_repl.disable();
+    controls.mess_format.disable();
+    controls.preallocate.disable();
+    controls.index_inter.disable();
+    controls.lead_rep.disable();
+    controls.unclean_leader.disable();
+    controls.flush_ms.disable();
+    controls.flush_mess.disable();
+    controls.file_delete.disable();
+    controls.min_clean.disable();
+    controls.segm_index.disable();
   }
 
   addValidateCustomConfig(configs: string) {

@@ -95,12 +95,12 @@ import { BucketListComponent } from './bucket/bucket-list.component';
 import { BucketCreateComponent } from './bucket/bucket-create/bucket-create.component';
 import { BucketConfigureComponent } from './bucket/bucket-configure/bucket-configure.component';
 import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
-import { DetailFileSystemComponent } from './file-storage/file-system/detail/detail-file-system.component';
+import { DetailFileSystemComponent } from './file-storage/detail/detail-file-system.component';
 import { ResizeFileSystemComponent } from './file-storage/file-system/action/resize/resize-file-system.component';
 import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
 import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
 import { ListWanComponent } from './wan/list/list-wan.component';
-import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
+import { ListFileSystemComponent } from './file-storage/list/list-file-system.component';
 import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
 import { FileSystemSnapshotComponent } from './file-system-snapshot/file-system-snapshot.component';
 import {
@@ -140,9 +140,11 @@ import { CreateL7PolicyComponent } from './load-balancer/listener/L7-policy/crea
 import { DetailL7PolicyComponent } from './load-balancer/listener/L7-policy/detail/detail-l7-policy.component';
 import { PoolDetailComponent } from './load-balancer/pool-detail/pool-detail.component';
 import { EditL7PolicyComponent } from './load-balancer/listener/L7-policy/edit/edit-l7-policy.component';
-import { CreateFileStorageNormalComponent } from './file-storage/action/create-normal/create-file-storage-normal.component';
-import { ExtendFileStorageNormalComponent } from './file-storage/action/extend-normal/extend-file-storage-normal.component';
-import { ResizeFileStorageNormalComponent } from './file-storage/action/resize-normal/resize-file-storage-normal.component';
+import { CreateFileSystemNormalComponent } from './file-storage/no-vpc/create/create-file-system-normal.component';
+import { ExtendFileSystemNormalComponent } from './file-storage/no-vpc/extend/extend-file-system-normal.component';
+import { ResizeFileSystemNormalComponent } from './file-storage/no-vpc/resize/resize-file-system-normal.component';
+import { CreateIpFloatingNormalComponent } from './ip-floating/create-ip-floating-normal.component';
+import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/extend-ip-floating.component';
 
 
 const routes: Routes = [
@@ -453,6 +455,14 @@ const routes: Routes = [
     component: ListIpFloatingComponent
   },
   {
+    path: 'networks/ip-floating-normal/create',
+    component: CreateIpFloatingNormalComponent
+  },
+  {
+    path: 'networks/ip-floating-normal/:id/extend',
+    component: ExtendIpFloatingComponent
+  },
+  {
     path: 'networks/ip-wan/list',
     component: ListWanComponent
   },
@@ -621,16 +631,16 @@ const routes: Routes = [
     component: EditL7PolicyComponent
   },
   {
-    path: 'file-storage/create/normal',
-    component: CreateFileStorageNormalComponent
+    path: 'file-storage/file-system/create/normal',
+    component: CreateFileSystemNormalComponent
   },
   {
-    path: 'file-storage/:idFileSystem/extend',
-    component: ExtendFileStorageNormalComponent
+    path: 'file-storage/file-system/:idFileSystem/extend',
+    component: ExtendFileSystemNormalComponent
   },
   {
-    path: 'file-storage/:idFileSystem/resize',
-    component: ResizeFileStorageNormalComponent
+    path: 'file-storage/file-system/:idFileSystem/resize',
+    component: ResizeFileSystemNormalComponent
   }
 ];
 

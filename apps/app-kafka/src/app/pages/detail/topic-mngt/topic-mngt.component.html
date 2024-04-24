@@ -152,7 +152,7 @@
     <ng-container *nzModalContent >
         <form nz-form [formGroup]="produceForm" [nzLayout]="'vertical'" (ngSubmit)="submitModalForm()">
             <nz-form-item>
-                <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired vFor="Topic">Topic</nz-form-label>
+                <nz-form-label [nzSm]="8" [nzXs]="24" nzNoColon vFor="Topic">Topic (<span class="text-red">*</span>)</nz-form-label>
                 <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Hãy chọn Topic">
                     <nz-select nzSize="large" nzShowSearch [(ngModel)]="singleValue" formControlName="topicName" [nzPlaceHolder]="'kafka.topic.test-producer-topic' | i18n">
                         <nz-option *ngFor="let item of listTopicTestProducer" [nzLabel]="item.topicName" [nzValue]="item.topicName"></nz-option>
@@ -160,21 +160,21 @@
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>
-                <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired>{{ 'kafka.topic.test-producer-message' | i18n }}</nz-form-label>
+                <nz-form-label [nzSm]="10" [nzXs]="24" nzNoColon>{{ 'kafka.topic.test-producer-message' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
                 <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="'kafka.topic.test-producer-message-valid' | i18n">
                     <input nzSize="large" type="number" [placeholder]="'kafka.topic.test-producer-message-pld' | i18n" nz-input formControlName="numberMessage" id="amount" />
                 </nz-form-control>
             </nz-form-item>
 
             <nz-form-item>
-                <nz-form-label [nzSm]="8" [nzXs]="24">Key</nz-form-label>
+                <nz-form-label [nzSm]="8" [nzXs]="24" nzNoColon>Key</nz-form-label>
                 <nz-form-control [nzSm]="24" [nzXs]="24">
                     <input nzSize="large" type="text" nz-input formControlName="key" [placeholder]="'kafka.topic.test-producer-key-pld' | i18n" />
                 </nz-form-control>
             </nz-form-item>
 
             <nz-form-item>
-                <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired>Value</nz-form-label>
+                <nz-form-label [nzSm]="8" [nzXs]="24" nzNoColon>Value (<span class="text-red">*</span>)</nz-form-label>
                 <nz-form-control [nzSm]="24" [nzXs]="24"
                     [nzErrorTip]="'kafka.topic.test-producer-value-valid' | i18n">
                     <textarea nzSize="large" rows="6" nz-input formControlName="value" [placeholder]="'kafka.topic.test-producer-value-pld' | i18n"

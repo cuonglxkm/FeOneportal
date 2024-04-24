@@ -235,7 +235,7 @@ export class VlanCreateSubnetComponent implements OnInit {
     }, error => {
       this.isLoading = false;
       this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-      this.notification.error('Thất bại', 'Tạo mới subnet thất bại. ', error.error.detail);
+      this.notification.error('Thất bại', 'Tạo mới subnet thất bại. ' + error.error.detail);
     });
   }
 

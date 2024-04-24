@@ -56,7 +56,6 @@ export class ActionHistoryComponent implements OnInit {
         next: (data) => {
           this.listOfActionHistory = data.records;
           this.total = data.totalCount;
-          console.log(this.listOfActionHistory);
           this.isLoading = false;
         }, 
         error: (e) => {

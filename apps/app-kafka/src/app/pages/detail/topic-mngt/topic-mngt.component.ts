@@ -230,7 +230,7 @@ export class TopicMngtComponent implements OnInit {
         this.loadingSrv.open({ type: "spin", text: "Đang đồng bộ message..." });
 
         setTimeout(() => {
-          this.handleSyncTopic(this.serviceOrderCode);
+          this.handleSyncTopic();
         }, 6000);
       }))
       .subscribe(
@@ -268,9 +268,9 @@ export class TopicMngtComponent implements OnInit {
       );
   }
 
-  handleSyncTopic(serviceOrderCode: string) {
+  handleSyncTopic() {
 
-    this.topicService.syncTopic(serviceOrderCode)
+    this.topicService.sync(this.serviceOrderCode)
       .pipe(finalize(() => {
         this.loadingSrv.close();
       }))

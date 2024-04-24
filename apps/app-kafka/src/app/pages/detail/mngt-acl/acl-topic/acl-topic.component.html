@@ -98,7 +98,7 @@
             <form nz-form [formGroup]="aclTopicForm" [nzLabelAlign]="'left'" (ngSubmit)="submitForm()">
                 <!-- Tài khoản -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="4" nzRequired nzFor="principal" class="lbl-form">{{ 'kafka.user' | i18n }}</nz-form-label>
+                    <nz-form-label [nzSpan]="4" nzNoColon nzFor="principal" class="lbl-form">{{ 'kafka.user' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
                     <nz-form-control [nzSpan]="8" [nzErrorTip]="'kafka.acl.user-tooltip' | i18n">
                         <nz-select nzMode="multiple" [nzPlaceHolder]="'kafka.acl.user-pld' | i18n" 
                             [nzMaxTagPlaceholder]="tagPlaceHolder" nzSize="large" [nzShowArrow]="true"
@@ -113,7 +113,7 @@
                 </nz-form-item>
                 <!-- Topic -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="4" nzRequired nzFor="topic" class="lbl-form">Topic</nz-form-label>
+                    <nz-form-label [nzSpan]="4" nzNoColon nzFor="topic" class="lbl-form">Topic (<span class="text-red">*</span>)</nz-form-label>
                     <div nz-col [nzSpan]="8">
                         <nz-radio-group [(ngModel)]="tabTopicValue" (ngModelChange)="onChangeRadioTopic()" nzSize="large"
                             [ngModelOptions]="{standalone: true}" class="topic-radio" nzButtonStyle="solid">
@@ -150,7 +150,7 @@
                 </nz-form-item>
                 <!-- Nhóm quyền -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="4" nzRequired nzFor="permissionGroup" class="lbl-form">{{'kafka.acl.permission-group' | i18n}}</nz-form-label>
+                    <nz-form-label [nzSpan]="4" nzNoColon nzFor="permissionGroup" class="lbl-form">{{'kafka.acl.permission-group' | i18n}} (<span class="text-red">*</span>)</nz-form-label>
                     <nz-form-control [nzSpan]="8" [nzErrorTip]="'kafka.acl.permission-group-err' | i18n">
                         <nz-select [nzPlaceHolder]="'kafka.acl.permission-group' | i18n" formControlName="permissionGroup" nzSize="large">
                             <nz-option *ngFor="let item of listOfPermissionGroup" [nzLabel]="item.value"
@@ -161,8 +161,7 @@
                 </nz-form-item>
                 <!-- Permission -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="4" nzRequired nzFor="permission"
-                        class="lbl-form">Permission</nz-form-label>
+                    <nz-form-label [nzSpan]="4" nzNoColon nzFor="permission" class="lbl-form">Permission (<span class="text-red">*</span>)</nz-form-label>
                     <nz-form-control [nzSpan]="8" [nzErrorTip]="'kafka.acl.permission-err' | i18n">
                         <nz-select nzPlaceHolder="Permission" formControlName="permission" nzSize="large">
                             <nz-option *ngFor="let item of listOfPermission" [nzLabel]="item" [nzValue]="item">
@@ -172,11 +171,13 @@
                 </nz-form-item>
                 <!-- Máy chủ -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="4" nzRequired nzFor="host" class="lbl-form">{{ 'kafka.acl.host' | i18n }}
-                        <span class="exclamation-icon" nz-icon nzType="exclamation-circle" nzTheme="fill"
-                            [nzTooltipTitle]="'kafka.acl.host-note' | i18n"
-                            nzTooltipPlacement="bottom" nz-tooltip>
-                        </span>
+                    <nz-form-label [nzSpan]="4" nzNoColon nzFor="host" class="lbl-form">{{ 'kafka.acl.host' | i18n }} (<span class="text-red">*</span>)
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'kafka.acl.host-note' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control [nzSpan]="8" [nzErrorTip]="errorTpl">
                         <input nz-input type="text" formControlName="host" nzSize="large"

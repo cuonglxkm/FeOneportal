@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
-import { FileSystemService } from '../../../../shared/services/file-system.service';
-import { FileSystemDetail } from '../../../../shared/models/file-system.model';
+import { RegionModel } from '../../../shared/models/region.model';
+import { ProjectModel } from '../../../shared/models/project.model';
+import { FileSystemService } from '../../../shared/services/file-system.service';
+import { FileSystemDetail } from '../../../shared/models/file-system.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   selector: 'one-portal-detail-file-system',
@@ -21,10 +22,13 @@ export class DetailFileSystemComponent implements OnInit{
 
   fileSystem: FileSystemDetail = new FileSystemDetail();
 
+  typeVpc: number
+
 
   constructor(private fileSystemService: FileSystemService,
               private router: Router,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private clipboardService: ClipboardService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -32,6 +36,7 @@ export class DetailFileSystemComponent implements OnInit{
   }
 
   projectChanged(project: ProjectModel) {
+    this.typeVpc = project?.type
     this.project = project?.id
   }
 
@@ -51,6 +56,19 @@ export class DetailFileSystemComponent implements OnInit{
     })
   }
 
+  copyText(data) {
+    this.clipboardService.copyFromContent(data);
+  }
+
+  navigateToResize(typeVpc) {
+    if(typeVpc == 1) {
+      this.router.navigate(['/app-smart-cloud/file-storage/file-system/resize/' + this.fileSystemId])
+    }
+    if(typeVpc == 0) {
+      this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + this.fileSystemId + '/resize' ])
+
+    }
+  }
   ngOnInit() {
     this.fileSystemId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.getFileSystemById(this.fileSystemId)

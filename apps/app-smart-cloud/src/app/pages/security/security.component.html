@@ -1,13 +1,13 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Tính năng xác thực hai yếu tố'"
+  [title]="'app.security.title' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Tài khoản</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Bảo mật</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{"app.breadcrumb.home" | i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{"app.breadcrumb.home" | i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{"app.breadcrumb.home" | i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -28,13 +28,12 @@
     <div class="pl-5 pr-5">
       <nz-alert
         nzBanner
-        nzMessage="Để tăng cường bảo mật, chúng tôi khuyến nghị cấu hình Xác thực 2 yếu tố để giúp bảo vệ tài khoản của Quý khách."
-        nzDescription="Tính năng xác thực hai yếu tố (2FA) là một biện pháp bảo mật mạnh mẽ được sử dụng để bảo vệ tài khoản trực tuyến. Thay vì chỉ sử dụng một phương tiện xác thực như mật khẩu, 2FA yêu cầu người dùng cung cấp thêm một yếu tố xác thực khác (OTP qua email) để chứng minh họ là chủ sở hữu của tài khoản. 
-       Điều này làm tăng cường đáng kể độ an toàn và bảo mật cho tài khoản, bởi vì người khác cần phải có cả hai yếu tố này để có thể truy cập trái phép."
+        [nzMessage]="'app.security.alert.title' | i18n"
+        [nzDescription]="'app.security.alert.des' | i18n"
         nzCloseable
       ></nz-alert>
       <div class="d-flex gap-3 mt-8 align-items-center">
-        <span class="otp-text">Mã OTP xác nhận sẽ được gửi về Email: </span>
+        <span class="otp-text">{{'app.security.input.title' | i18n}}: </span>
         <input
           nz-input
           type="text"
@@ -47,9 +46,9 @@
       </div>
       <div class="d-flex mt-7 align-items-center gap-3 mb-4">
         <nz-switch [ngModel]="toggleSwitch" (ngModelChange)="handleChangeSwitch($event)"></nz-switch>
-        <span class="fa-text">Bật tính năng xác thực hai yếu tố</span>
+        <span class="fa-text">{{'app.security.switch.title' | i18n}}</span>
       </div>
-      <span class="support">Hoặc đọc thêm về chính sách quyền riêng tư của chúng tôi <a href="#">tại đây</a></span>
+      <span class="support">{{'app.security.note' | i18n}} <a href="#">{{'app.security.note1' | i18n}}</a></span>
     </div>
         <!-- <div class="d-flex justify-content-end gap-3 mt-5">
           <button

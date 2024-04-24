@@ -48,6 +48,7 @@ import { NzImageModule } from 'ng-zorro-antd/image';
 import { CustomCurrencyPipe } from '../pipes/custom-currency.pipe';
 import { EditKafkaComponent } from './edit-kafka/edit-kafka.component';
 import { UpgradeKafkaComponent } from './upgrade-kafka/upgrade-kafka.component';
+import { ExtendKafkaComponent } from './extend-kafka/extend-kafka.component';
 @NgModule({
   declarations: [
     DetailComponent,
@@ -73,6 +74,7 @@ import { UpgradeKafkaComponent } from './upgrade-kafka/upgrade-kafka.component';
     CustomCurrencyPipe,
     EditKafkaComponent,
     UpgradeKafkaComponent,
+    ExtendKafkaComponent,
   ],
   imports: [
     PagesRoutingModule,

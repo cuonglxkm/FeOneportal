@@ -1,0 +1,17 @@
+.input-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.input-custom {
+  padding-right: 24px; /* Width of the image */
+}
+
+.input-custom + img {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  cursor: pointer;
+}

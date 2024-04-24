@@ -33,6 +33,7 @@ export class CreateFileSystemComponent implements OnInit {
     checked: FormControl<boolean>
     description: FormControl<string>
     snapshot: FormControl<number>
+    isSnapshot: FormControl<boolean>
   }> = this.fb.group({
     name: ['', [Validators.required,
       Validators.pattern(/^[a-zA-Z0-9-_ ]+$/),
@@ -42,7 +43,8 @@ export class CreateFileSystemComponent implements OnInit {
     storage: [1, [Validators.required]],
     checked: [false],
     description: [''],
-    snapshot: [null as number, []]
+    snapshot: [null as number, []],
+    isSnapshot:[false]
   });
 
   optionProtocols = [
@@ -62,6 +64,8 @@ export class CreateFileSystemComponent implements OnInit {
   nameList: string[] = [];
 
   storageBuyVpc: number;
+
+  isInitSnapshot = false;
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
@@ -96,7 +100,8 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   snapshotSelectedChange(value) {
-    if (value) {
+    this.isInitSnapshot = value
+    if (this.isInitSnapshot) {
       this.validateForm.controls.snapshot.setValidators(Validators.required);
     } else {
       this.validateForm.controls.snapshot.clearValidators();

@@ -18,6 +18,7 @@ import { FormCreateIp } from '../../../shared/models/ip-floating.model';
 export class CreateIpFloatingComponent implements OnInit{
   @Input() region: number
   @Input() project: number
+  @Input() projectType: number
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 
@@ -41,8 +42,12 @@ export class CreateIpFloatingComponent implements OnInit{
   }
 
   showModalCreateIpFloating() {
-    this.isVisible = true
-    this.getListNetwork()
+    if (this.projectType == 1) {
+      this.isVisible = true
+      this.getListNetwork()
+    } else {
+      this.router.navigate(['/app-smart-cloud/networks/ip-floating-normal/create']);
+    }
   }
 
   handleCancel() {
