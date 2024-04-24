@@ -46,3 +46,10 @@ export class SecurityGroupData {
   listOfInbound: SecurityGroupRule[];
   listOfOutbound: SecurityGroupRule[];
 }
+
+export class FormDeleteRule {
+  id: string
+  userId: number
+  regionId: number
+  projectId: number
+}

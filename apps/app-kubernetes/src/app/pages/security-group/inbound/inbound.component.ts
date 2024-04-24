@@ -20,8 +20,6 @@ export class InboundComponent implements OnInit {
   total: number;
 
   isLoadingInbound: boolean;
-  isShowModalCreateInbound: boolean;
-  isShowModalDeleteRule: boolean;
 
   collection: Pagination<SecurityGroupRule>;
   regionId: number;
@@ -37,8 +35,6 @@ export class InboundComponent implements OnInit {
   ngOnInit(): void {
     this.listOfInbound = [];
     this.isLoadingInbound = false;
-    this.isShowModalCreateInbound = false;
-    this.isShowModalDeleteRule = false;
     this.total = 0;
     this.pageIndex = 1;
     this.pageSize = 5;
@@ -89,19 +85,7 @@ export class InboundComponent implements OnInit {
       }});
   }
 
-  showModalCreateSG() {
-    this.isShowModalCreateInbound = true;
-  }
-
-  handleCancelModalCreateSG() {
-    this.isShowModalCreateInbound = false;
-  }
-
-  showModalConfirmDeleteRule() {
-    this.isShowModalDeleteRule = true;
-  }
-
-  handleCancelModalDeleteRule() {
-    this.isShowModalDeleteRule = false;
+  handleOkDeleteInbound() {
+    this.getRuleInbound();
   }
 }

@@ -53,14 +53,17 @@
   </ng-template>
 
   <!-- security group tab -->
-  <nz-tab [nzTitle]="sgTitleTpl">
+  <!-- disable this tab if cluster is creating -->
+  <nz-tab [nzTitle]="sgTitleTpl" [nzDisabled]="detailCluster?.serviceStatus == 1">  
     <ng-template nz-tab>
       <security-group [regionId]="regionId" [projectId]="projectId"
         [detailCluster]="detailCluster"></security-group>
     </ng-template>
   </nz-tab>
   <ng-template #sgTitleTpl>
-    <label>Security Group</label>
+    <label [ngClass]="{'no-access': detailCluster?.serviceStatus == 1}">
+      Security Group
+    </label>
   </ng-template>
 
   <!-- log tab -->

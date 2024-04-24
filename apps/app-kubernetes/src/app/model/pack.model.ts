@@ -23,6 +23,7 @@ export class PackModel {
   constructor(obj: any) {
     if (obj) {
       this.packId = obj.pack_id;
+      this.offerId = obj.offer_id;
       this.packName = obj.pack_name;
       this.workerNode = obj.worker_node;
       this.cpu = obj.cpu;

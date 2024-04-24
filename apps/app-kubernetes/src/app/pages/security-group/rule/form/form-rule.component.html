@@ -1,0 +1,214 @@
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzLayout="vertical">
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="24">
+      <nz-form-item>
+        <nz-form-label nzFor="ruleType">
+          <div class="name-rule">
+            <span>Chọn Rule</span>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+          </div>
+        </nz-form-label>
+        <nz-form-control nzErrorTip="Rule không để trống">
+          <nz-select id="rule" nzSize="large" formControlName="rule" nzPlaceHolder="Custom UDP Rule"
+            (ngModelChange)="ruleChange($event)">
+            <nz-option *ngFor="let data of rulesList" nzValue="{{ data.value }}" nzLabel="{{ data.label }}"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *ngIf="ruleValue === 'other-IPv4'">
+        <nz-form-label nzFor="protocol">
+          <div class="name-rule">
+            <span>Nhập Protocol</span>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
+          <input nz-input formControlName="protocol" id="protocol" class="input-custom" />
+          <ng-template #protocolErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+            <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng 1 - 255</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *ngIf="ruleValue === 'icmp-IPv4'">
+        <nz-form-label nzFor="portRangeMin">
+          <div class="name-rule">
+            <span>Code</span>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="codeErrorTpl">
+          <input nz-input formControlName="portRangeMin" id="code" class="input-custom" />
+          <ng-template #codeErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+            <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng -1 - 255</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *ngIf="ruleValue === 'icmp-IPv4'">
+        <nz-form-label nzFor="portRangeMax">
+          <div class="name-rule">
+            <span>Type</span>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="typeErrorTpl">
+          <input nz-input formControlName="portRangeMax" id="type" class="input-custom" />
+          <ng-template #typeErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+            <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng -1 - 255</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <div *ngIf="!['icmp-IPv4', 'other-IPv4', '-IPv4-', 'tcp-IPv4-80', 'tcp-IPv4-443', 'tcp-IPv4-22',
+      'tcp-IPv4-3389', 'icmp-IPv4-', 'tcp-IPv4-3306'].includes(ruleValue)">
+        <nz-form-item>
+          <nz-form-label nzFor="portType">
+            <div class="name-rule">
+              <span>Chọn Open Port</span>
+              (<span style="color: rgba(252, 16, 16, 1);">*</span>)
+            </div>
+          </nz-form-label>
+          <nz-form-control nzErrorTip="Chọn Open Port">
+            <nz-select id="port_type" nzSize="large" formControlName="portType" nzPlaceHolder="Chọn Open Port"
+              (ngModelChange)="portTypeChange($event)">
+              <nz-option nzValue="Port" nzLabel="Port"></nz-option>
+              <nz-option nzValue="PortRange" nzLabel="Port Range"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="portType === 'Port'">
+          <nz-form-label nzFor="portRangeMin">
+            <div class="name-rule">
+              <span>Nhập Port</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            </div>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="portErrorTpl">
+            <input nz-input formControlName="portRangeMin" id="port" class="input-custom"
+              (change)="portChange($event.target['value'])" />
+            <ng-template #portErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+              <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+              <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn hoặc bằng 1</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="portType === 'PortRange'">
+          <nz-form-label nzFor="portRangeMin">
+            <div class="name-rule">
+              <span>From Port</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            </div>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="portRangeMinErrorTpl">
+            <input nz-input class="input-custom" formControlName="portRangeMin" id="portRangeMin"
+              (ngModelChange)="updatePortRangeValidator()" />
+            <ng-template #portRangeMinErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+              <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+              <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn hoặc bằng 1</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="portType === 'PortRange'">
+          <nz-form-label nzFor="portRangeMax">
+            <div class="name-rule">
+              <span>To Port</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            </div>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="portRangeMaxErrorTpl">
+            <input nz-input class="input-custom" formControlName="portRangeMax" id="portRangeMax" />
+            <ng-template #portRangeMaxErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+              <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+              <ng-container *ngIf="control.hasError('invalidPortRange')">Vui lòng nhập số lớn hơn hoặc bằng From
+                Port</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </nz-col>
+    <nz-col nzSpan="24">
+      <nz-form-item>
+        <nz-form-label nzFor="remoteType">
+          <div class="name-rule">
+            <span>Chọn Remote</span>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+          </div>
+        </nz-form-label>
+        <nz-form-control nzErrorTip="Không được để trống!">
+          <nz-select id="remoteType" nzSize="large" formControlName="remoteType" nzPlaceHolder="Custom UDP Rule"
+            (ngModelChange)="remoteTypeChange($event)">
+            <nz-option *ngFor="let data of remotesList" nzValue="{{ data.value }}"
+              nzLabel="{{ data.label }}"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <div *ngIf="remoteType === 'CIDR'">
+        <nz-form-item>
+          <nz-form-label nzFor="remoteIpPrefix">
+            <div class="name-rule">
+              <span>Nhập Remote IP</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            </div>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="remoteIpErrorTpl">
+            <input nz-input class="input-custom" formControlName="remoteIpPrefix" id="remoteIpPrefix" />
+            <ng-template #remoteIpErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập đúng định dạng IP x.x.x.x/x</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div *ngIf="remoteType === 'SecurityGroup'">
+        <nz-form-item>
+          <nz-form-label nzFor="securityGroupId">
+            <div class="name-rule">
+              <span>Chọn Security Group</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            </div>
+          </nz-form-label>
+          <nz-form-control nzErrorTip="Không được để trống!">
+            <nz-select id="securityGroupId" formControlName="securityGroupId" nzPlaceHolder="Chọn Security Group">
+              <nz-option *ngFor="let data of listSecurityGroup" nzValue="{{ data.id }}"
+                nzLabel="{{ data.name }}"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="etherType">
+            <div class="name-rule">
+              <span>Chọn Enter Type</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            </div>
+          </nz-form-label>
+          <nz-form-control nzErrorTip="Chọn Enther Type">
+            <nz-select id="etherType" formControlName="etherType" nzPlaceHolder="Chọn Enther Type">
+              <nz-option nzValue="ipv4" nzLabel="IPV4"></nz-option>
+              <nz-option nzValue="ipv6" nzLabel="IPV6"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+    </nz-col>
+  </nz-row>
+
+  <nz-form-item nzAlign="bottom" nzJustify="center">
+    <nz-space nzSize="middle">
+      <button type="button" *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="border-button">
+        <span nz-icon nzType="close" nzTheme="outline"></span>Hủy</button>
+      <nz-form-control *nzSpaceItem>
+        <button type="button" nz-button nzType="primary" [nzLoading]="isLoading" class="border-button"
+          [disabled]="!validateForm.valid">
+          <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận</button>
+      </nz-form-control>
+    </nz-space>
+  </nz-form-item>
+</form>

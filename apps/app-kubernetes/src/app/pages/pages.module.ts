@@ -51,6 +51,11 @@ import { InstancesComponent } from './instance/instances.component';
 import { SecurityGroupComponent } from './security-group/security-group.component';
 import { InboundComponent } from './security-group/inbound/inbound.component';
 import { OutboundComponent } from './security-group/outbound/outbound.component';
+import { CreateInboundComponent } from './security-group/rule/inbound/create/create-inbound.component';
+import { DeleteInboundComponent } from './security-group/rule/inbound/delete/delete-inbound.component';
+import { CreateOutboundComponent } from './security-group/rule/outbound/create/create-outbound.component';
+import { DeleteOutboundComponent } from './security-group/rule/outbound/delete/delete-outbound.component';
+import { FormRuleComponent } from './security-group/rule/form/form-rule.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -76,9 +81,14 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CheckStatusPipe,
     InstancesComponent,
     SecurityGroupComponent,
-
     InboundComponent,
     OutboundComponent,
+    CreateInboundComponent,
+    DeleteInboundComponent,
+    CreateOutboundComponent,
+    DeleteOutboundComponent,
+    FormRuleComponent,
+
   ],
   imports: [
     CommonModule,

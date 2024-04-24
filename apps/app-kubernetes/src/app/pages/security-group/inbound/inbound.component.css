@@ -5,3 +5,8 @@
 .borderless {
   border: none;
 }
+
+.add-btn {
+  position: relative;
+  float: right;
+}

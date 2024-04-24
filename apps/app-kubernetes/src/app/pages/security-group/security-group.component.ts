@@ -72,6 +72,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
     .subscribe(data => {
       this.listOfSG = data;
 
+      this.detailCluster.securityGroupName = 'shoot--w8p8o--k8s-u5wx6dmwbka'; // fix test
       data.forEach(item => {
         if(item.name.includes(this.detailCluster.securityGroupName)) {
           this.selectedSG = item;

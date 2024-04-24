@@ -74,7 +74,6 @@ export class CreateClusterReqDto {
   ProviderType: string;
   RegionId: string;
   Tenant: string;
-  PackId: number;
 
   Networking: NetworkReqDto;
   WorkerGroup: WorkerGroupReqDto[];
@@ -94,7 +93,6 @@ export class CreateClusterReqDto {
       this.ProviderType = obj.providerType;
       this.RegionId = obj.regionId;
       this.Tenant = obj.tenant;
-      this.PackId = obj.packId;
 
       this.Networking = new NetworkReqDto(obj.networking);
 

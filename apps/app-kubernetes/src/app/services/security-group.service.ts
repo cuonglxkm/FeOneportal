@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
-import { CreateSGReqDto, SecurityGroup, SecurityGroupSearchCondition } from "../model/security-group.model";
+import { CreateSGReqDto, FormDeleteRule, SecurityGroup, SecurityGroupSearchCondition } from "../model/security-group.model";
 import { BaseService } from "../shared/services/base.service";
-import { RuleSearchCondition } from "../shared/models/security-group-rule";
+import { RuleSearchCondition, SecurityGroupRuleCreateForm } from "../shared/models/security-group-rule";
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +49,14 @@ export class SecurityGroupService extends BaseService {
 
   createSecurityGroup(form: CreateSGReqDto) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form));
+  }
+
+  deleteRule(formDeleteRule: FormDeleteRule) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', { body: formDeleteRule });
+  }
+
+  createRule(form: SecurityGroupRuleCreateForm) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form));
   }
 
 }

@@ -1,8 +1,16 @@
-<div style="position: relative; float: right;">
-  <button nz-button nzType="primary" (click)="showModalCreateSG()" class="mb-5">
-    <span nz-icon nzType="plus" nzTheme="outline"></span>
-    Thêm mới
-  </button>
+<div class="add-btn mb-5">
+  <one-portal-create-inbound
+    nz-tooltip
+    nzTooltipTitle="Thêm mới Inbound"
+    nzTooltipPlacement="bottom"
+    [disabled]="!securityGroupId"
+    [condition]="{
+              userId: condition.userId,
+              regionId: condition.regionId,
+              projectId: condition.projectId,
+              securityGroupId: securityGroupId
+            }"
+    (onOk)="getRuleOutbound()" />
 </div>
 <nz-table #ruleTable [nzData]="listOfOutbound" nzShowSizeChanger
   [nzFrontPagination]="false" [nzTotal]="total"
@@ -27,10 +35,14 @@
         <td>{{item.portRange}}</td>
         <td>{{item.remoteIpPrefix}}</td>
         <td>
-          <button nz-button nzType="text" nzTooltipTitle="Xóa rule" nzTooltipPlacement="top" nz-tooltip
-            (click)="showModalConfirmDeleteRule(item)" class="borderless">
-            <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer; margin-top: 0; width: fit-content;" />
-          </button>
+          <div>
+            <one-portal-delete-outbound 
+              [idOutbound]="item.id"
+              [nameRule]="item.remoteIp"
+              [region]="regionId"
+              [project]="projectId"
+              (onOk)="handleOkDeleteOutbound()" />
+          </div>
         </td>
       </tr>
     </ng-container>
