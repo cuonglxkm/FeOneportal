@@ -265,7 +265,9 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
-          <span class="text-label" style="width: 35%">{{ 'app.service.expiration-date' | i18n }}:</span>
+          <span class="text-label" style="width: 35%"
+            >{{ 'app.service.expiration-date' | i18n }}:</span
+          >
           <span class="text-value-detail"
             >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
           </span>
@@ -283,4 +285,5 @@
   *ngIf="checkPermission"
   [instancesId]="id"
   [isDetail]="true"
+  (valueChanged)="getData()"
 ></one-portal-network-detail>

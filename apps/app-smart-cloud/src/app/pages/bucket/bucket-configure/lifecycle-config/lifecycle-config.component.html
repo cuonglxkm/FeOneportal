@@ -1,15 +1,9 @@
-<span class="titlecard-custom">Thiết lập Lifecycle</span>
+<span class="titlecard-custom">{{ 'app.set' | i18n }} Lifecycle</span>
 <div style="margin-top: 20px; margin-bottom: 10px" class="text-label">
-  <span>
-    Bucket Lifecycle cho phép bạn khả năng quản lý tuổi thọ và sự tự động hóa
-    của các đối tượng (objects) trong các bucket.</span
+  <span> {{ 'app.lifeCycle.config.intro' | i18n }}</span
   ><br /><br />
   <span>
-    Với Bucket Lifecycle, bạn có thể định nghĩa các quy tắc tự động cho các đối
-    tượng trong bucket của mình, bao gồm cả việc xóa các đối tượng đã hết hạn
-    hoặc không còn cần thiết để giảm chi phí lưu trữ. Việc sử dụng Bucket
-    Lifecycle cũng giúp giảm tải công việc quản trị và tăng tính khả dụng của
-    các đối tượng trong bucket.
+    {{ 'app.lifeCycle.config.intro.next' | i18n }}
   </span>
 </div>
 <div class="text-right p-0 m-b-0">
@@ -21,7 +15,7 @@
     <input
       name="name"
       nz-input
-      placeholder="Tìm kiếm tên"
+      [placeholder]="'app.placeholder.search' | i18n"
       [(ngModel)]="inputSearch"
     />
   </nz-input-group>
@@ -30,7 +24,7 @@
       src="assets/imgs/search.svg"
       alt=""
       style="cursor: pointer"
-      nz-tooltip="Tìm kiếm"
+      [nz-tooltip]="'app.button.search' | i18n"
       (click)="searchLifeCycle()"
     />
   </ng-template>
@@ -40,7 +34,7 @@
       src="assets/imgs/add-circle.svg"
       alt=""
     />
-    <span>Tạo mới Bucket Policy</span>
+    <span>{{ 'app.lifeCycle.create' | i18n }}</span>
   </button>
 </div>
 <nz-table
@@ -56,13 +50,13 @@
 >
   <thead>
     <tr>
-      <th>Trạng thái</th>
-      <th>Tiền tố</th>
-      <th>Bộ lọc (Key:Value)</th>
+      <th>{{ 'app.text.status' | i18n }}</th>
+      <th>{{ 'app.prefix' | i18n }}</th>
+      <th>{{ 'app.filter' | i18n }} (Key:Value)</th>
       <th>Thời hạn xóa file (Version hiện tại)</th>
       <th>Thời hạn xóa file (Không phải version hiện tại)</th>
       <th>Thời gian xóa Multipart upload không hoàn thành</th>
-      <th>Thao tác</th>
+      <th>{{ 'app.text.operation' | i18n }}</th>
     </tr>
   </thead>
   <tbody>

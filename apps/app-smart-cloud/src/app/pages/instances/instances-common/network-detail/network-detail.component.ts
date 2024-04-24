@@ -119,6 +119,7 @@ export class NetworkDetailComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.notification.success('', 'Chỉnh sửa port thành công');
+          this.valueChanged.emit(data);
           this.getNetworkAndSecurityGroup();
         },
         error: (e) => {
@@ -129,10 +130,6 @@ export class NetworkDetailComponent implements OnInit {
 
   handleCancelEditPort() {
     this.isVisibleEditPort = false;
-  }
-
-  projectChange(project: any) {
-    this.valueChanged.emit(project);
   }
 
   navigateToCreate() {
