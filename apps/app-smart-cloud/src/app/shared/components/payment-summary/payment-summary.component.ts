@@ -139,6 +139,11 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
             serviceItem.type = 'Nâng cấp';
             break;
+          case 'kafka_extend': 
+            this.serviceType = 'kafka';
+            serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Gia hạn';
+            break;
           case 'vpnsitetosite_create':
             serviceItem.name = `Vpn Site To Site`;
             serviceItem.type = 'Tạo mới';

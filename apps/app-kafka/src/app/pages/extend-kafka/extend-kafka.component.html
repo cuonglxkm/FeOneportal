@@ -1,0 +1,143 @@
+<ng-container *ngIf="itemDetail">
+    <page-header [breadcrumb]="breadcrumb" [title]="'Gia hạn dịch vụ Kafka: ' + itemDetail.serviceName" [action]="action">
+        <ng-template #breadcrumb>
+            <nz-breadcrumb>
+                <nz-breadcrumb-item>
+                    <a [routerLink]="['/']">Trang chủ</a>
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    <a [routerLink]="['/app-kafka']">Kafka</a>
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    Gia hạn dịch vụ Kafka
+                </nz-breadcrumb-item>
+            </nz-breadcrumb>
+        </ng-template>
+
+        <!-- action -->
+        <ng-template #action>
+            <div class="alain-custom-action text-right">
+                <region-select-dropdown [isDetail]="true"></region-select-dropdown>
+                <project-select-dropdown [regionId]="regionId" [isDetail]="true"></project-select-dropdown>
+            </div>
+        </ng-template>
+    </page-header>
+
+    <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="16" class="form-new">
+            <nz-card class="border-card" id="general">
+                <h3><b>Thông tin dịch vụ</b></h3>
+                <div nz-row>
+                    <div nz-col [nzSpan]="5">Tên Kafka Cluster:</div>
+                    <div><b>{{this.itemDetail.serviceName}}</b></div>
+                </div>
+                <div nz-row>
+                    <div nz-col [nzSpan]="5">Ngày khởi tạo:</div>
+                    <div>{{ itemDetail.createdDate | date: 'dd/MM/yyyy' }}</div>
+                </div>
+                <div nz-row>
+                    <div nz-col [nzSpan]="5">Ngày hết hạn:</div>
+                    <div style="color: #ea3829">{{ itemDetail.expiryDate | date: 'dd/MM/yyyy' }}</div>
+                </div>
+                <div nz-row>
+                    <div nz-col [nzSpan]="5">Cấu hình gói dịch vụ:</div>
+                    <div><b>{{this.itemDetail.offerName}}</b></div>
+                </div>
+                <div nz-row>
+                    <div nz-col [nzSpan]="4">
+                        Số Broker: 3
+                    </div>
+                    <div nz-col [nzSpan]="6"></div>
+                    <div>
+                        CPU: {{itemDetail.cpu}} VCPU
+                    </div>
+                </div>
+                <div nz-row>
+                    <div nz-col [nzSpan]="4">
+                        RAM: {{itemDetail.ram}} GB
+                    </div>
+                    <div nz-col [nzSpan]="6"></div>
+                    <div>
+                        Storage: {{itemDetail.storage}} GB
+                    </div>
+                </div>
+            </nz-card>
+
+            <nz-card class="border-card" id="general">
+                <h3><b>Thông tin gia hạn</b></h3>
+                <div nz-row>
+                    Ngày bắt đầu gia hạn: {{ startExpiryDate | date: 'dd/MM/yyyy' }}
+                </div>
+                <div nz-row>
+                    <div class="w-100">
+                        <label>Số tháng gia hạn thêm (<span class="text-red">*</span>)
+                            <img
+                                style="margin-left: 5px; margin-bottom: 2px;"
+                                [nzTooltipTitle]="'Mỗi tháng tương đương 30 ngày.'" nzTooltipPlacement="rightTop" nz-tooltip
+                                src="assets/imgs/pajamas_question.svg"
+                                alt=""
+                            />
+                        </label>
+                    </div>
+                    <div class="w-100">
+                        <nz-input-group nzSize="large" class="w-100">
+                            <input [nzStatus]="statusInput" nz-input type="number" [(ngModel)]="duration" (ngModelChange)="onChangeDuration()" autofocus placeholder="1"/>
+                        </nz-input-group>
+                        <ng-container *ngIf="statusInput === 'error'">
+                            <p class="input-error">{{msgError}}</p>
+                        </ng-container>
+                    </div>
+                </div>
+                <div nz-row style="color: #ea3829">
+                    Ngày hết hạn dự kiến:&nbsp; <p style="color: #ea3829"> {{ expectExpiryDate | date: 'dd/MM/yyyy' }}</p>
+                </div>
+
+            </nz-card>
+
+        </div>
+
+        <!-- payment -->
+        <div nz-col [nzSpan]="8">
+            <nz-card class="price-card">
+                <h3><b>Thành tiền</b></h3>
+                <div nz-row [nzGutter]="8">
+                    <div nz-col [nzSpan]="12">
+                        <div class="label-price">Chi phí gia hạn</div>
+                    </div>
+                    <div nz-col [nzSpan]="12">
+                        <div class="value-price">{{ extendAmount | number: '1.0-0'}} VNĐ</div>
+                    </div>
+                </div>
+                <nz-divider class="divider-style"></nz-divider>
+                
+                <div nz-row [nzGutter]="8" class="mt-5 price-panel">
+                    <div nz-col [nzSpan]="12">
+                        <div class="label-price">Tổng cần thanh toán</div>
+                        <div class="label-quantity"><i>(Đã bao gồm 10% VAT)</i></div>
+                    </div>
+                    <div nz-col [nzSpan]="12">
+                        <div class="value-price total-price"> {{extendAmount === 0 ? 0 : extendAmount * 1.1 | number: '1.0-0'}} VNĐ</div>
+                    </div>
+                </div>
+
+                <div nz-row class="mt-5" [nzGutter]="16" nzJustify="center">
+                    <div nz-col [nzSpan]="12">
+                        <button nz-button nzType="default" nzBlock (click)="backToList()">
+                            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />
+                            <b>Hủy</b>
+                        </button>
+                    </div>
+
+                    <div nz-col [nzSpan]="12">
+                        <button nz-button nzType="primary" nzBlock [disabled]="extendAmount === 0"
+                            (click)="onSubmitPayment()">
+                            <img style="padding-right: 10px; margin-top: -4px; height: 20px;"
+                                src="assets/imgs/upgrade-white.svg" alt="" />
+                            <b>Gia hạn</b>
+                        </button>
+                    </div>
+                </div>
+            </nz-card>
+        </div>
+    </div>
+</ng-container>

@@ -11,7 +11,7 @@ import {finalize} from "rxjs/operators";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {getCurrentRegionAndProject} from "@shared";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { I18NService } from '../../../../../app-host/src/app/core';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-ip-public',

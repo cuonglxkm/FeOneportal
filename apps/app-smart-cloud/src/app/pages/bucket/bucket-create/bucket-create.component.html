@@ -1,11 +1,15 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Tạo mới Bucket'">
+<page-header [breadcrumb]="breadcrumb" [title]="'app.bucket.create' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+        ><a [routerLink]="['/']">{{
+          'app.breadcrumb.home' | i18n
+        }}</a></nz-breadcrumb-item
       >
       <nz-breadcrumb-item> Bucket </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Tạo mới Bucket </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.bucket.create' | i18n }}
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 </page-header>
@@ -14,18 +18,17 @@
     <nz-col nzSpan="16">
       <nz-card style="border-radius: 8px" [nzBordered]="false">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thông tin Bucket</span>
+          <span class="text-card-header">{{ 'app.bucket.info' | i18n }}</span>
         </div>
         <div style="margin-bottom: 20px" class="text-label">
-          Tên Bucket chỉ được phép dùng các ký tự chữ thường a-z các ký tự số 0
-          -9 dấu gạch ngang (-) và dấu chấm (.), tối thiểu 3 ký tự và tối đa 63
-          ký tự
+          {{ 'validation.bucket.name' | i18n }}
         </div>
         <nz-row nzGutter="16">
           <nz-col nzSpan="24">
             <nz-form-item>
               <nz-form-label nzFor="name"
-                >Tên Bucket (<span class="text-red">*</span>)</nz-form-label
+                >{{ 'app.bucket.name' | i18n }} (<span class="text-red">*</span
+                >)</nz-form-label
               >
 
               <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -37,25 +40,27 @@
                       formControlName="name"
                       [(ngModel)]="bucketName"
                       id="name"
-                      placeholder="Nhập tên Bucket"
+                      [placeholder]="'app.input.name' | i18n"
                       maxlength="50"
                       minlength="1"
                     />
                   </nz-col>
                 </nz-row>
                 <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng nhập thông tin</ng-container
-                  >
-                  <ng-container *ngIf="control.hasError('pattern')"
-                    >Tên Bucket không hợp lệ</ng-container
-                  >
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'validation.info.required' | i18n }}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">{{
+                    'validation.bucket.name.invalid' | i18n
+                  }}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
         </nz-row>
-        <span class="titlecard-custom">Thiết lập Access Control List</span>
+        <span class="titlecard-custom">{{
+          'app.set.access.control.list' | i18n
+        }}</span>
         <nz-radio-group
           style="width: 100%; display: inline-flex"
           name="selectedHDDorSSD"
@@ -96,7 +101,7 @@
                   </ng-template>
                   <ng-template #nzDescriptionselected>
                     <ellipsis class="text-custom">
-                      Chỉ những người dùng có quyền mới được truy cập
+                      {{ 'app.alert.bucket.private' | i18n }}
                     </ellipsis>
                   </ng-template>
                 </nz-card-meta>
@@ -130,11 +135,8 @@
                     <b>Public</b>
                   </ng-template>
                   <ng-template #nzDescriptionselected2>
-                    <ellipsis class="text-custom"
-                      >Tất cả mọi người đều có thể truy cập thông tin của
-                      Bucket, không ảnh hưởng đến quyền của object. Bucket
-                      public nhưng nếu object private thì cũng không truy cập
-                      được từ bên ngoài
+                    <ellipsis class="text-custom">
+                      {{ 'app.alert.bucket.public' | i18n }}
                     </ellipsis>
                   </ng-template>
                 </nz-card-meta>
@@ -147,11 +149,11 @@
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thông số cấu hình</span>
+          <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
         </div>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col>
-            <span class="text-label"> Tên Bucket </span>
+            <span class="text-label"> {{ 'app.bucket.name' | i18n }} </span>
           </nz-col>
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
@@ -161,7 +163,7 @@
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col>
-            <span class="text-label"> Thiết lập ACL </span>
+            <span class="text-label"> {{ 'app.set.acl' | i18n }} </span>
           </nz-col>
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
@@ -182,7 +184,7 @@
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               <span [style.color]="form.invalid ? 'gray' : 'white'"
-                >Khởi tạo</span
+                >{{ 'app.button.create' | i18n }}</span
               >
             </button>
           </nz-col>

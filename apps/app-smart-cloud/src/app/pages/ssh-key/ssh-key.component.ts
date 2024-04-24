@@ -136,6 +136,9 @@ export class SshKeyComponent implements OnInit {
     this.isVisibleDetail = false;
     form?.resetForm();
     this.nameDeleteInput = '';
+    this.form.get('keypair_name_2').enable();
+    this.form.get('public_key').enable();
+    this.form.get('keypair_name_1').enable();
   }
 
   indexTab: number = 0;
@@ -163,7 +166,7 @@ export class SshKeyComponent implements OnInit {
     this.sshKeyService.createSshKey(ax)
       .pipe(finalize(() => {
         this.loading = false;
-        this.isVisibleCreate = false;
+        this.handleCancel(form);
       }))
       .subscribe({
       next: post => {
@@ -179,8 +182,6 @@ export class SshKeyComponent implements OnInit {
           this.notification.warning('Cảnh báo', `Public Key không đúng định dạng. Vui lòng nhập Public Key khác.`);
         }
         else {
-          this.isVisibleCreate = false;
-          form?.resetForm();
           this.notification.error('Thất bại', 'Tạo mới thất bại keypair');
         }
       },

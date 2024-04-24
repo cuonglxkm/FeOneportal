@@ -1,10 +1,10 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Quản lý IP kết nối WAN'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.wan.note1' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
+<!--      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>-->
       <nz-breadcrumb-item>Networks</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dải IP kết nối WAN</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.wan.note2' | i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -18,7 +18,7 @@
 </page-header>
 <nz-content>
   <nz-card style="border-radius: 8px;">
-    <span class="text-card-header">Danh sách địa chỉ IP kết nối WAN</span>
+    <span class="text-card-header">{{'app.wan.note3' | i18n}}</span>
     <nz-row nzJustify="space-between" style="margin-top: 20px;">
       <nz-col nzSpan="16">
         <nz-input-group [nzPrefix]="prefixIconSearch"
@@ -26,12 +26,12 @@
                         style="width: 300px;">
           <input name="name"
                  nz-input
-                 placeholder="Tìm kiếm theo địa chỉ IP"
+                 placeholder="{{'app.wan.note4' | i18n}}"
                  [(ngModel)]="value"
                  (input)="onInputChange($event.target['value'])"/>
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{'app.button.search' | i18n}}"/>
         </ng-template>
       </nz-col>
       <nz-col nzSpan="8" style="flex:none;">
@@ -51,11 +51,11 @@
               [nzLoading]="isLoading">
       <thead>
       <tr>
-        <th>Tên WAN</th>
-        <th>Địa chỉ IP WAN</th>
+        <th>{{'app.wan.note6' | i18n}}</th>
+        <th>{{'app.wan.note5' | i18n}}</th>
         <th>Network</th>
-        <th>Máy ảo</th>
-        <th>Thao tác</th>
+        <th>{{'app.instances' | i18n}}</th>
+        <th>{{'app.text.operation' | i18n}}</th>
       </tr>
       </thead>
       <tbody>

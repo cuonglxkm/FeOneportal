@@ -5,7 +5,7 @@ import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
 import { ObjectObjectStorageModel } from '../../../shared/models/object-storage.model';
 import { ActivatedRoute } from '@angular/router';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BucketService } from '../../../shared/services/bucket.service';
 import { NzUploadFile } from 'ng-zorro-antd/upload/interface';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -19,7 +19,9 @@ import {
   HttpHeaders,
   HttpResponse,
   HttpEventType,
+  HttpContext,
 } from '@angular/common/http';
+import { _HttpClient } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -37,7 +39,7 @@ export class BucketDetailComponent implements OnInit {
   defaultMetadata = { order: 1, key: '', value: '' };
   listOfMetadata: any = [];
   bucket: any;
-  size = 10;
+  size = 5;
   index: number = 1;
   total: number = 0;
   loading = false;
@@ -97,7 +99,8 @@ export class BucketDetailComponent implements OnInit {
   countObjectSelected = 0;
   nameFolder = '';
   folderNameLike = '';
-
+  pageSize:number
+  pageIndex:number
   treeFolder = [];
   linkShare = '';
   today = new Date();
@@ -105,7 +108,8 @@ export class BucketDetailComponent implements OnInit {
   dateShare: any;
   versionId: string;
   private: any;
-
+  percent = 0;
+  keyName: string
   range(start: number, end: number): number[] {
     const result: number[] = [];
     for (let i = start; i < end; i++) {
@@ -130,7 +134,8 @@ export class BucketDetailComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService,
     private clipboard: Clipboard,
-    private http: HttpClient
+    private http: HttpClient,
+    private https: _HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -140,12 +145,12 @@ export class BucketDetailComponent implements OnInit {
 
   onPageSizeChange(event: any) {
     this.size = event;
-    // this.getData(false);
+    this.loadData();
   }
 
   onPageIndexChange(event: any) {
     this.index = event;
-    // this.getData(false);
+    this.loadData();
   }
 
   openFilter() {
@@ -336,19 +341,29 @@ export class BucketDetailComponent implements OnInit {
       );
   }
 
-  handleChange({ file, fileList }: NzUploadChangeParam) {
-    this.lstFileUpdate = [
-      ...this.lstFileUpdate,
-      ...fileList.filter(
-        (item) =>
-          !this.lstFileUpdate.find(
-            (existingItem) => existingItem.uid === item.uid
-          )
-      ),
-    ];
+ 
 
-    this.emptyFileUpload = false;
+  handleChange({ file, fileList }: NzUploadChangeParam) {
+ 
+      let newFiles = fileList.filter(
+        (item) => !this.lstFileUpdate.some(existingItem => existingItem.name === item.name)
+      );
+
+      if(newFiles.length === 0){
+        return;
+      }
+
+      console.log(newFiles);
+      
+  
+      // Add new files to lstFileUpdate
+      this.lstFileUpdate = [...this.lstFileUpdate, ...newFiles];
+      console.log(this.lstFileUpdate);
+  
+      this.emptyFileUpload = false;
+    
   }
+
 
   removeFile(item: NzUploadFile) {
     let index = this.lstFileUpdate.findIndex((file) => file.uid === item.uid);
@@ -405,7 +420,13 @@ export class BucketDetailComponent implements OnInit {
         })
       )
       .subscribe((data) => {
+        console.log(data);
+        this.pageSize = data.paginationObjectList.pageSize
+        this.pageIndex = data.paginationObjectList.draw
         this.listOfData = data.paginationObjectList.items;
+        this.listOfData.map((item) => {
+          item.keyName = item.key.split('/').pop();
+        });
         this.total = data.paginationObjectList.totalItems;
       });
   }
@@ -719,52 +740,79 @@ export class BucketDetailComponent implements OnInit {
 
   toFolder2(s: string) {
     this.currentKey = s;
+    
     this.loadData();
   }
 
-  uploadSingleFile(item) {
-    let data = {
-      customerId: 3,
-      bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
-      key: item.name,
-      expiryTime: addDays(this.date, 1),
-      awsAccessKey: '1ISW11XYDRQR5D81IO3F',
-      awsSecretKey: 'ksFcZG7CB1PDdH5XPpsz5qCTimeXsC6OrpB7A6AA',
-      urlOrigin: 'https://s3.onsmartcloud.com/',
-    };
-    console.log(item.originFileObj);
-    this.service.getSignedUrl(data).subscribe(
-      (responseData) => {
-        const presignedUrl = responseData.trim();
-        const req = new HttpRequest('PUT', presignedUrl, item, {
-          reportProgress: true,
-          responseType: 'text',
-          headers: new HttpHeaders().set('Content-Type', item.type),
-        });
-      },
-      (error) => {
-        const presignedUrl = error.error.text;
-        const headers = {
-          'Content-Type': item.type,
-        };
-        this.http.put(presignedUrl, item.originFileObj, { headers })
-          .subscribe(
-            (response) => {
-              console.log(item.name + 'video uploaded successfully');
-            },
-            (error) => {
-              console.error('There was an error!', error);
-            });
-      }
-    );
-  }
-
   uploadAllFile() {
-    console.log(this.lstFileUpdate);
-
-    this.lstFileUpdate.forEach((item) => {
-      this.uploadSingleFile(item);
+    
+    const filesToUpload = this.lstFileUpdate.filter(item => !item.uploaded);
+  
+    const uploadNextFile = (index) => {
+      if (index < filesToUpload.length) {
+        const item = filesToUpload[index];
+        item.percent = 0;
+        this.uploadSingleFile(item).then(() => {
+          item.uploaded = true;
+          uploadNextFile(index + 1);
+        });
+      }
+    };
+  
+    
+    uploadNextFile(0);
+  }
+  
+  uploadSingleFile(item) {
+    if (item.uploaded) {
+      return Promise.resolve();
+    }
+    return new Promise<void>((resolve, reject) => {
+      let data = {
+        bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+        key: this.currentKey + item.name,
+        expiryTime: addDays(this.date, 1),
+        urlOrigin: 'http://localhost:4200',
+      };
+      this.service.getSignedUrl(data).subscribe(
+        (responseData) => {
+          const presignedUrl = responseData.url;
+          const xhr = new XMLHttpRequest();
+          xhr.open('PUT', presignedUrl, true);
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+              item.percentage = Math.round((event.loaded / event.total) * 100);
+            }
+          };
+          xhr.onload = () => {
+            this.notification.success('Thành công', 'Upload thành công');
+            this.loadData();
+            resolve(); 
+          };
+          xhr.onerror = () => {
+            this.notification.error('Thất bại', 'Upload thất bại');
+            reject(); 
+          };
+          xhr.send(item.originFileObj);
+        },
+        (error) => {
+          this.notification.error('Thất bại', 'Upload thất bại');
+          reject(); 
+        }
+      );
     });
   }
-  uploadFile() {}
+  
+  
+
+  handleCancelUploadFile() {
+    this.lstFileUpdate = []
+    this.isVisibleUploadFile = false
+    this.emptyFileUpload = true;
+  }
+
+  uploadFile(){
+
+  }
+  
 }

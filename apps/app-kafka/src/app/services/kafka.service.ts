@@ -15,6 +15,7 @@ import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { KafkaVersion } from '../core/models/kafka-version.model';
 import { KafkaStatus } from '../core/models/status.model';
+import { OfferItem, UnitPrice } from '../core/models/offer.model';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +33,7 @@ export class KafkaService extends BaseService {
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
@@ -210,4 +211,13 @@ export class KafkaService extends BaseService {
     return this.http.delete<BaseResponse<null>>(this.kafkaUrl + `/kafka/delete/${serviceOrderCode}`);
   }
 
+  getListOffers(regionId: number, unitOfMeasureProduct: string): Observable<OfferItem[]> {
+    return this.http.get<OfferItem[]>(
+      `${this.baseUrl}/catalogs/offers?regionId=${regionId}&unitOfMeasureProduct=${unitOfMeasureProduct}`
+    );
+  }
+
+  getUnitPrice(): Observable<BaseResponse<UnitPrice[]>> {
+    return this.http.get<BaseResponse<UnitPrice[]>>(this.kafkaUrl + '/kafka/get-unit-price');
+  }
 }

@@ -41,8 +41,8 @@ export class CreatePoolInLbComponent implements OnInit {
   validateForm: FormGroup;
 
   algorithms = [
-    { value: 'Roud_Robin', label: 'Roud_Robin' },
-    { value: 'Least_Connection', label: 'Least_Connection' },
+    { value: 'Round_Robin', label: 'Round_Robin' },
+    { value: 'Least_Connections', label: 'Least_Connections' },
     { value: 'Source_IP', label: 'Source_IP' },
   ];
 
@@ -107,7 +107,7 @@ export class CreatePoolInLbComponent implements OnInit {
     if (this.listenerId) {
       this.createPool.listener_id = this.listenerId.toString();
     } else {
-      this.createPool.listener_id = '';
+      this.createPool.listener_id = null;
     }
     this.loadBalancerService.createPool(this.createPool).subscribe({
       next: (data) => {
