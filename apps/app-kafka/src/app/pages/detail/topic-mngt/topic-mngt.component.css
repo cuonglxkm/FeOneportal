@@ -132,6 +132,25 @@ nz-table#topic th {
   box-shadow: 0 0 0 2px #ff4d4f33;
 }
 
+#btn-refresh {
+  width: 40px;
+  border-color: #d9d9d9;
+  position: relative;
+  margin-left: 10px;
+}
 
-@media only screen and (min-width: 1440px) {
+#img-refresh {
+  position: absolute;
+  top: 6px;
+  right: 7px
+}
+
+.async {
+  font-size: 14px;
+  font-style: italic;
+}
+
+.time-async {
+  display: inline-block;
+  width: 160px;
 }

@@ -23,13 +23,17 @@
         
         <div *ngIf="control == listNum">
             <div class="filter" style="display: flex; align-items: center; margin-bottom: 20px;">
-                <div >
+                <div>
                     <nz-input-group nz-col [nzPrefix]="prefixTemplateUser" class="search">
                         <input type="text" maxlength="255" nz-input [placeholder]="'app.service.search-text' | i18n" [(ngModel)]="search" (keyup.enter)="handleSearch()">
                     </nz-input-group>
                     <ng-template #prefixTemplateUser>
-                         <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text' | i18n" />
-                        </ng-template>
+                        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text' | i18n" />
+                    </ng-template>
+
+                    <button id="btn-refresh" nz-button nzType="default" (click)="handleSyncTopic()">
+                        <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
+                    </button>
                 </div>
                 <div class="nav-btn">
                     <button style="  display: flex;justify-content: center;align-items: center;" nz-button nzType="primary" (click)="openCreateForm()">
@@ -39,6 +43,10 @@
                     <button  nz-button nzType="primary" (click)="testProduce()">Test Producer</button>
                 </div>
             </div>
+            <div class="async">{{'kafka.cg.sync-time' | i18n}}:
+                <span class="time-async">{{syncInfo.topic}}</span>
+            </div>
+            
             <nz-table id="topic" [nzScroll]="{x:'1100px'}" [nzData]="listTopic" [nzLoading]="loading" #basicTable nzShowPagination nzShowSizeChanger class="tbl-acl" [nzTotal]="total" 
             [nzFrontPagination]="false" [nzPageIndex]="index" [nzPageSize]="size" (nzPageIndexChange)="changePage($event)" (nzPageSizeChange)="changePageSize($event)">
                 <thead >

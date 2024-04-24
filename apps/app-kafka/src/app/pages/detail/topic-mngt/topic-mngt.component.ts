@@ -4,12 +4,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
 import { camelizeKeys } from 'humps';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from "ng-zorro-antd/notification";
 import { filter, finalize, map } from 'rxjs/operators';
 import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaTopic } from '../../../core/models/kafka-topic.model';
 import { TopicService } from '../../../services/kafka-topic.service';
+import { KafkaService } from 'src/app/services/kafka.service';
+import { SyncInfoModel } from 'src/app/core/models/sync-info.model';
 @Component({
   selector: 'one-portal-topic-mngt',
   templateUrl: './topic-mngt.component.html',
@@ -55,17 +56,20 @@ export class TopicMngtComponent implements OnInit {
   notiSuccessText = 'Thành công';
   notiFailedText = 'Thất bại';
 
+  syncInfo: SyncInfoModel = new SyncInfoModel();
+
   constructor(
     private fb: FormBuilder,
     private topicService: TopicService,
-    private modal: NzModalService,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
+    private kafkaService: KafkaService,
   ) { }
 
   ngOnInit(): void {
     this.getList();
     this.control = this.listNum;
+    this.getSyncTime(this.serviceOrderCode);
 
     this.produceForm = this.fb.group({
       topicName: [null, [Validators.required]],
@@ -269,21 +273,31 @@ export class TopicMngtComponent implements OnInit {
   }
 
   handleSyncTopic() {
-
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
     this.topicService.sync(this.serviceOrderCode)
       .pipe(finalize(() => {
         this.loadingSrv.close();
       }))
       .subscribe(
-        (data: any) => {
+        (data) => {
           if (data && data.code == 200) {
             this.notification.success(this.notiSuccessText, data.msg);
+            this.getList();
+            this.getSyncTime(this.serviceOrderCode);
           } else {
             this.notification.error(this.notiFailedText, data.msg);
           }
-          this.getList();
         }
       );
+  }
+
+  getSyncTime(serviceOrderCode: string) {
+    this.kafkaService.getSyncTime(serviceOrderCode)
+      .subscribe((res) => {
+        if (res.code && res.code == 200) {
+          this.syncInfo = camelizeKeys(res.data) as SyncInfoModel;
+        }
+      });
   }
 
   checkName() {
