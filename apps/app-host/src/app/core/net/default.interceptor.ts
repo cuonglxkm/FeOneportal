@@ -259,10 +259,8 @@ export class DefaultInterceptor implements HttpInterceptor {
     return next.handle(newReq).pipe(
       catchError(err => {
         if (err instanceof HttpResponseBase && err.status === 401) {
-          console.log("---Bắt lỗi 401---")
            return this.handle401Error(newReq, next);
         } else {
-          console.log("---Bắt lỗi nhưng không phải 401---")
         }
         return throwError(err);
       }),
