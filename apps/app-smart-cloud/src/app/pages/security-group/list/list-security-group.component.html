@@ -133,10 +133,14 @@
                     <one-portal-attach-vm *ngIf="!(data?.securityGroups?.includes(selectedSG?.id))"
                                           [idVm]="data.id"
                                           [securityGroupId]="selectedSG?.id"
+                                          [region]="region"
+                                          [project]="project"
                                           (onOk)="handleAttachSG()" />
                     <one-portal-detach-vm *ngIf="data?.securityGroups?.includes(selectedSG?.id)"
                                           [idVm]="data?.id"
                                           [securityGroupId]="selectedSG?.id"
+                                          [region]="region"
+                                          [project]="project"
                                           (onOk)="handleDetachSG()" />
                   </td>
                 </tr>
