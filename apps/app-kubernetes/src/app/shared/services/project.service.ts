@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import { ProjectModel, SizeInCLoudProject } from '../models/project.model';
+import { ProjectModel, SizeInCloudProject } from '../models/project.model';
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Injectable({
@@ -28,7 +28,7 @@ export class ProjectService extends BaseService {
   }
 
   getByProjectId(id: number) {
-    return this.http.get<SizeInCLoudProject>
+    return this.http.get<SizeInCloudProject>
     (this.baseUrl + this.ENDPOINT.provisions  + `/projects/${id}`, {
       headers: this.getHeaders()
     });

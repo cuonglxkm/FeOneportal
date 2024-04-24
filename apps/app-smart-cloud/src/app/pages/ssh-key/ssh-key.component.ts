@@ -1,13 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {SshKeyService} from 'src/app/pages/ssh-key/ssh-key.service';
-import {AppValidator, BaseResponse} from "../../../../../../libs/common-utils/src";
+import {AppValidator, BaseResponse, RegionModel} from "../../../../../../libs/common-utils/src";
 import {SshKey} from './dto/ssh-key';
 import {ModalHelper} from '@delon/theme';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {RegionModel} from "../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {ProjectModel} from "../../shared/models/project.model";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {finalize} from "rxjs/operators";
 import {NzNotificationService} from "ng-zorro-antd/notification";

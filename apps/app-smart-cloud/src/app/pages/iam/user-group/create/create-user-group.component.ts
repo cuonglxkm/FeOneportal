@@ -1,6 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
 import {UserGroupService} from "../../../../shared/services/user-group.service";
@@ -9,6 +7,7 @@ import {PolicyModel} from "../../../policy/policy.model";
 import {User} from "../../../../shared/models/user.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {Router} from '@angular/router';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-user-group',

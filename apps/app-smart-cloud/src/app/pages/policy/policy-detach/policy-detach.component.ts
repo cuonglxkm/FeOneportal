@@ -1,6 +1,4 @@
 import {Component, OnInit, Inject} from '@angular/core';
-import {ProjectModel} from "../../../shared/models/project.model";
-import {RegionModel} from "../../../shared/models/region.model";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -11,6 +9,7 @@ import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {AttachOrDetachRequest} from "../policy.model";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 @Component({
   selector: 'one-portal-policy-detach',
   templateUrl: './policy-detach.component.html',

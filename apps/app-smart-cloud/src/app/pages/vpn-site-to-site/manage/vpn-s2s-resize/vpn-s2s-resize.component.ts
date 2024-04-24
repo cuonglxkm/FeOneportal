@@ -5,11 +5,10 @@ import { environment } from '@env/environment';
 import { addDays } from 'date-fns';
 import { DataPayment, ItemPayment } from 'src/app/pages/instances/instances.model';
 import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-vpn-s2s-resize',

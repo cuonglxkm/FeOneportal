@@ -1,6 +1,4 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -13,11 +11,11 @@ import {
 import {OrderItem} from "../../../shared/models/price";
 import {DataPayment, ItemPayment} from "../../instances/instances.model";
 import {InstancesService} from "../../instances/instances.service";
-import {ProjectService} from "../../../shared/services/project.service";
 import {getCurrentRegionAndProject} from "@shared";
 import { FormUpdateSnapshotPackageModel, PackageSnapshotModel, SnapshotPackageRequestModel } from 'src/app/shared/models/package-snapshot.model';
 import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
 import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-resize-snapshot-package',

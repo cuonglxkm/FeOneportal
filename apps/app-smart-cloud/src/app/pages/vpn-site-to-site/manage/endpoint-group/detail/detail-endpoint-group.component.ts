@@ -6,11 +6,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { FormDetailEndpointGroup } from 'src/app/shared/models/endpoint-group';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-detail-endpoint-group',

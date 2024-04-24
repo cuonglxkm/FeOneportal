@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {InstancesService} from "../../instances/instances.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -8,6 +7,7 @@ import {getCurrentRegionAndProject} from "@shared";
 import {VpcService} from "../../../shared/services/vpc.service";
 import {TotalVpcResource, VpcModel} from "../../../shared/models/vpc.model";
 import {finalize} from "rxjs";
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-vpc-detail',

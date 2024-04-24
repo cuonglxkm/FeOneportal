@@ -12,9 +12,9 @@ import {
 } from '../../../../../../../libs/common-utils/src';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../../../../app-smart-cloud/src/environments/environment';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'one-portal-reset-password',

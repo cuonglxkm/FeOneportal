@@ -12,8 +12,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import {
   IKEPolicyModel
 } from 'src/app/shared/models/vpns2s.model';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 
 @Component({

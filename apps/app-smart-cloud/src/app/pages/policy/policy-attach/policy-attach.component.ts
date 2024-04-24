@@ -1,6 +1,4 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {ProjectModel} from "../../../shared/models/project.model";
-import {RegionModel} from "../../../shared/models/region.model";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -14,6 +12,7 @@ import {UserService} from "../../../shared/services/user.service";
 import {FormSearchUserGroup} from "../../../shared/models/user-group.model";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 
 
 

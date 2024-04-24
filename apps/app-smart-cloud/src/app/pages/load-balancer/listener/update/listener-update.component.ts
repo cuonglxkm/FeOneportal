@@ -5,12 +5,11 @@ import { ListenerService } from '../../../../shared/services/listener.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ipAddressValidator } from '../create/listener-create.component';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { da } from 'date-fns/locale';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { L7Policy } from '../../../../shared/models/load-balancer.model';
 import { finalize } from 'rxjs/operators';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-listener-update',
