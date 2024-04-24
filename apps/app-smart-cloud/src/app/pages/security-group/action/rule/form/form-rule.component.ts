@@ -111,8 +111,8 @@ export class FormRuleComponent implements OnInit {
               private cdr: ChangeDetectorRef,
               private router: Router) {
     this.validateForm.controls.remoteIpPrefix.setValidators([Validators.required, AppValidator.ipWithCIDRValidator])
-    this.validateForm.controls.portRangeMin.setValidators([Validators.required, integerInRangeValidator(1, 65535)])
-    this.validateForm.controls.portRangeMax.setValidators([Validators.required, integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin')])
+    this.validateForm.controls.portRangeMin.setValidators([Validators.required, integerInRangeValidator(1, 65535), AppValidator.validateNumber])
+    this.validateForm.controls.portRangeMax.setValidators([Validators.required, integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin'), AppValidator.validateNumber])
   }
 
   focusOkButton(event: KeyboardEvent): void {

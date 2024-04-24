@@ -48,6 +48,7 @@ export class DeleteSecurityGroupComponent implements AfterViewInit{
   showModal(): void {
     this.isVisible = true;
     console.log(this.idSG)
+    console.log(this.nameSG)
     setTimeout(() => {this.sgInputName?.nativeElement.focus()}, 1000)
   }
 

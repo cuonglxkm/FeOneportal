@@ -895,9 +895,16 @@
   "volume.table.title.create.date": "Ngày khởi tạo",
   "volume.table.title.expire.date": "Ngày hết hạn",
 
+  "volume.switch.snapshot": "Tạo từ snapshot",
+
   "volume.button.create": "Tạo mới Volume",
-  "volume.button.renew": "Gia hạn",
-  "volume.button.extend": "Điều chỉnh",
+  "volume.action.attach.vm": "Gắn máy ảo",
+  "volume.action.delete": "Xóa Volume",
+  "volume.action.detach": "Gỡ Volume",
+
+  "volume.action.snapshot.select": "Chọn Snapshot",
+  "volume.action.type.volume.select": "Chọn Snapshot",
+
 
   "volume.menu.create.schedule.backup": "Tạo lịch Backup",
   "volume.menu.create.schedule.snapshot": "Tạo lịch Snapshot",
@@ -909,10 +916,39 @@
   "volume.tooltip.title.filter.status": "Tìm kiếm theo trạng thái",
   "volume.tooltip.title.filter.img": "Tìm kiếm",
   "volume.tooltip.content.create.backup": "Tạo Backup",
+  "volume.tooltip.input.name": "Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt (trừ _).",
+  "volume.tooltip.input.description": "Nhập mô tả",
+  "volume.tooltip.switch.snapshot": "Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot",
+  "volume.tooltip.select.type.volume": "Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau",
 
   "volume.intro.title": "Volume",
   "volume.intro.title2": "Lưu trữ ổ đĩa máy chủ",
-  "volume.intro.subtitle": "Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều\n                loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng."
+  "volume.intro.subtitle": "Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.",
 
+  "volume.modal.attach.title": "Chọn máy ảo",
+  "volume.modal.subtitle.delete": "Để thực hiện xóa Volume",
+  "volume.modal.confirm.delete": ", vui lòng nhập tên Volume để xác nhận",
+  "volume.modal.title.update": "Chỉnh sửa thông tin Volume",
 
+  "volume.notification.input.select.vm": "Vui lòng chọn máy ảo",
+  "volume.notification.fail.attach.multiple": "Volume này chỉ có thể gắn với một máy ảo.",
+  "volume.notification.attach.success": "Yêu cầu gắn Volume thành công",
+  "volume.notification.attach.fail": "Yêu cầu gắn Volume thất bại",
+  "volume.notification.input.name.delete": "Nhập tên Volume",
+  "volume.notification.input.name": "Vui lòng nhập đúng tên Volume",
+  "volume.notification.delete.fail": "Xóa Volume thất bại",
+  "volume.notification.delete.success": "Xóa Volume thành công",
+  "volume.notification.detach.fail": "Yêu cầu gỡ volume thất bại",
+  "volume.notification.detach.success": "Yêu cầu gỡ volume thành công",
+  "volume.notification.input.name.required": "Vui lòng nhập tên Volume",
+  "volume.notification.input.name.pattern": "Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _)",
+  "volume.notification.input.name.maxLength": "Tối đa 50 ký tự",
+  "volume.notification.input.name.duplicateName": "Tên Volume đã tồn tại, vui lòng nhập tên khác",
+  "volume.notification.input.description.maxLength": "Cho phép nhập tối đa 255 kí tự",
+  "volume.notification.update.success": "Cập nhật thông tin Volume thành công",
+  "volume.notification.update.fail": "Cập nhật thông tin Volume thất bại",
+  "volume.notification.input.select.snapshot": "Vui lòng chọn máy ảo",
+
+  "volume.alert.message.delete": "Nếu Volume có các bản Snapshot thì các bản Snapshot đó cũng sẽ bị xóa theo Volume.",
+  "volume.alert.message.confirm.detach": "Quý khách có chắc chắn muốn gỡ Volume khỏi máy ảo không?"
 }

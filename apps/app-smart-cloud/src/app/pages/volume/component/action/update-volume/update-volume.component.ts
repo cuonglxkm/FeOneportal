@@ -15,6 +15,8 @@ import { VolumeService } from '../../../../../shared/services/volume.service';
 import { VolumeDTO } from '../../../../../shared/dto/volume.dto';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { EditTextVolumeModel } from '../../../../../shared/models/volume.model';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-update-volume',
@@ -48,7 +50,8 @@ export class UpdateVolumeComponent implements AfterViewInit{
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private volumeService: VolumeService,
-              private fb: NonNullableFormBuilder) {
+              private fb: NonNullableFormBuilder,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   // ngAfterViewChecked(): void {
@@ -120,13 +123,13 @@ export class UpdateVolumeComponent implements AfterViewInit{
       if (data) {
         this.isLoadingUpdate = false;
         this.isVisible = false;
-        this.notification.success('Thành công', 'Cập nhật thông tin Volume thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.update.success'));
         this.onOk.emit();
       }
     }, error => {
       this.isLoadingUpdate = false;
       this.isVisible = false;
-      this.notification.error('Thất bại', 'Cập nhật thông tin Volume thất bại');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.update.fail'), error.error.detail);
     });
     this.isVisible = false;
   }
