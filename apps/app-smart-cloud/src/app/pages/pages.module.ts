@@ -223,6 +223,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CreateFileSystemNormalComponent } from './file-storage/no-vpc/create/create-file-system-normal.component';
 import { ExtendFileSystemNormalComponent } from './file-storage/no-vpc/extend/extend-file-system-normal.component';
 import { ResizeFileSystemNormalComponent } from './file-storage/no-vpc/resize/resize-file-system-normal.component';
+import { CreateIpFloatingNormalComponent } from './ip-floating/create-ip-floating-normal.component';
+import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/extend-ip-floating.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -430,6 +432,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateFileSystemNormalComponent,
     ExtendFileSystemNormalComponent,
     ResizeFileSystemNormalComponent,
+    CreateIpFloatingNormalComponent,
+    ExtendIpFloatingComponent,
   ],
   imports: [
     CommonModule,
