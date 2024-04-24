@@ -56,8 +56,8 @@
             <nz-form-item class="mt-4">
               <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>{{ 'app.kafka.version' | i18n}} (<span class="text-red">*</span>)</nz-form-label>
               <nz-form-control [nzErrorTip]="'validation.service.version-required' | i18n">
-                <nz-select formControlName="version" *ngFor="let data of listOfKafkaVersion" [nzPlaceHolder]="'app.kafka.version-placeholder' | i18n" nzSize="large">
-                  <nz-option [nzValue]="data.helmVersion" [nzLabel]="data.apacheKafkaVersion"></nz-option>
+                <nz-select formControlName="version" [nzPlaceHolder]="'app.kafka.version-placeholder' | i18n" nzSize="large">
+                  <nz-option *ngFor="let data of listOfKafkaVersion" [nzValue]="data.helmVersion" [nzLabel]="data.apacheKafkaVersion"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>

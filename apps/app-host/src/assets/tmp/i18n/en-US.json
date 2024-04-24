@@ -652,7 +652,7 @@
   "app.service.exclude": "Excluding",
   
   "app.kafka.name": "Kafka Cluster name",
-  "app.kafka.version": "Kafka version",
+  "app.kafka.version": "Apache Kafka version",
   "app.kafka.name-placeholder": "Please enter the service name",
   "app.kafka.version-placeholder": "Select Kafka version",
   "app.kafka.broker": "Number of Brokers",
@@ -757,6 +757,10 @@
   "kafka.cg.consumer": "Consumer count",
   "kafka.cg.topic": "Topic count",
   "kafka.cg.topic-search": "Search by topic",
+
+  "kafka.edit.confirm-title": "Update Apache Kafka version",
+  "kafka.edit.confirm-content": "You are performing a version update for Apache Kafka. Please click Confirm to proceed with the version update",
+  "kafka.edit.confirm-note": "To avoid issues during processing, upgrades must be performed sequentially and downgrading versions is not permitted.",
 
   "tooltip.kakfa.topic.max-message-bytes": "The maximum size of one message",
   "tooltip.kakfa.topic.cleanup-policy": "Cleanup Policy",

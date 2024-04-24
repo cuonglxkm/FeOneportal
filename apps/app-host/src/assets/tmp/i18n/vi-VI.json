@@ -530,7 +530,7 @@
   "app.service.exclude": "Chưa bao gồm",
   
   "app.kafka.name": "Tên Kafka Cluster",
-  "app.kafka.version": "Phiên bản Kafka",
+  "app.kafka.version": "Phiên bản Apache Kafka",
   "app.kafka.name-placeholder": "Nhập tên Kafka Cluster",
   "app.kafka.version-placeholder": "Chọn phiên bản Kafka",
   "app.kafka.broker": "Số Broker",
@@ -635,6 +635,10 @@
   "kafka.cg.consumer": "Số lượng thành viên",
   "kafka.cg.topic": "Số lượng topic",
   "kafka.cg.topic-search": "Tìm kiếm theo tên topic",
+
+  "kafka.edit.confirm-title": "Cập nhật phiên bản Apache Kafka",
+  "kafka.edit.confirm-content": "Bạn đang thực hiện chỉnh sửa phiên bản Apache Kafka. Vui lòng click Xác nhận để thực hiện chỉnh sửa phiên bản",
+  "kafka.edit.confirm-note": "Để tránh phát sinh vấn đề trong quá trình xử lý, chỉ có thể nâng cấp phiên bản lần lượt theo thứ tự và không được phép hạ phiên bản.",
 
   "tooltip.kakfa.topic.max-message-bytes": "Kích thước tối đa của 1 message",
   "tooltip.kakfa.topic.cleanup-policy": "Chính sách dọn dẹp",
