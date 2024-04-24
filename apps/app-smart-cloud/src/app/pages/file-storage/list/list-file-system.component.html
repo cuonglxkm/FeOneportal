@@ -74,7 +74,7 @@
           <tbody>
           <tr *ngFor="let data of fixTable.data; index as i">
             <td>{{ i + 1 }}</td>
-            <td><a [href]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
+            <td><a [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
             <td>{{ data.statusDisplay }}</td>
             <td>{{ data.status }}</td>
             <td>{{ data.type }}</td>
