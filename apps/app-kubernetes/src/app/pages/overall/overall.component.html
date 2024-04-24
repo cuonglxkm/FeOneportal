@@ -31,7 +31,6 @@
   <nz-tab [nzTitle]="detailTitleTpl">
     <ng-template nz-tab>
       <one-portal-detail-cluster
-        [detailCluster]="detailCluster"
         [vpcNetwork]="vpcNetwork"
         [yamlString]="yamlString"
         [sshKeyString]="sshKeyString"
@@ -54,7 +53,7 @@
 
   <!-- security group tab -->
   <!-- disable this tab if cluster is creating -->
-  <nz-tab [nzTitle]="sgTitleTpl" [nzDisabled]="detailCluster?.serviceStatus == 1">  
+  <nz-tab [nzTitle]="sgTitleTpl" [nzDisabled]="detailCluster?.serviceStatus == 1">
     <ng-template nz-tab>
       <security-group [regionId]="regionId" [projectId]="projectId"
         [detailCluster]="detailCluster"></security-group>

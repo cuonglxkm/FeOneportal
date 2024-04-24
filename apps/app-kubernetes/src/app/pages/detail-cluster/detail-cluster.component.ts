@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
-import { finalize } from 'rxjs';
+import { Subscription, finalize } from 'rxjs';
 import { KubernetesCluster, UpgradeVersionClusterDto, UpgradeWorkerGroupDto, WorkerGroupModel } from '../../model/cluster.model';
 import { K8sVersionModel } from '../../model/k8s-version.model';
 import { ClusterService } from '../../services/cluster.service';
@@ -12,20 +12,21 @@ import { WorkerTypeModel } from '../../model/worker-type.model';
 import { VolumeTypeModel } from '../../model/volume-type.model';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NetWorkModel } from '../../model/vlan.model';
+import { ShareService } from '../../services/share.service';
 
 @Component({
   selector: 'one-portal-detail-cluster',
   templateUrl: './detail-cluster.component.html',
   styleUrls: ['./detail-cluster.component.css'],
 })
-export class DetailClusterComponent implements OnInit, OnChanges {
+export class DetailClusterComponent implements OnInit {
 
-  @Input('detailCluster') detailCluster: KubernetesCluster;
   @Input('vpcNetwork') vpcNetwork: string;
   @Input('yamlString') yamlString: string;
   @Input('sshKeyString') sshKeyString: string;
 
   serviceOrderCode: string;
+  detailCluster: KubernetesCluster;
 
   // for uprgade
   showModalUpgradeVersion: boolean;
@@ -63,7 +64,7 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     private notificationService: NzNotificationService,
     private clipboardService: ClipboardService,
     private fb: FormBuilder,
-    private modalService: NzModalService
+    private activatedRoute: ActivatedRoute
   ) {
     this.listOfK8sVersion = [];
     this.showModalKubeConfig = false;
@@ -74,7 +75,14 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     this.listFormWorkerGroupUpgrade = this.fb.array([]);
   }
 
+  subcription: Subscription;
+
   ngOnInit(): void {
+    this.activatedRoute.params.subscribe(params => {
+      this.serviceOrderCode = params['id'];
+      this.getDetailCluster(this.serviceOrderCode);
+    });
+
     this.upgradeForm = this.fb.group({
       serviceOrderCode: [null],
       clusterName: [null,
@@ -85,15 +93,21 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['detailCluster']?.currentValue && this.upgradeForm) {
-      this.detailCluster = changes['detailCluster'].currentValue;
-      this.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
-      this.regionId = this.detailCluster.regionId;
-      this.listOfCurrentWorkerGroup = this.detailCluster.workerGroup;
-      this.upgradeForm.get('serviceOrderCode').setValue(this.detailCluster.serviceOrderCode);
-      this.initFormWorkerGroup(this.detailCluster.workerGroup);
-    }
+  getDetailCluster(serviceOrderCode: string) {
+    this.clusterService.getDetailCluster(serviceOrderCode)
+      .subscribe((r: any) => {
+        if (r && r.code == 200) {
+          this.detailCluster = new KubernetesCluster(r.data);
+
+          this.regionId = this.detailCluster.regionId;
+          this.listOfCurrentWorkerGroup = this.detailCluster.workerGroup;
+          this.upgradeForm.get('serviceOrderCode').setValue(this.serviceOrderCode);
+          this.initFormWorkerGroup(this.detailCluster.workerGroup);
+
+        } else {
+          this.notificationService.error("Thất bại", r.message);
+        }
+      });
   }
 
   onEditCluster() {

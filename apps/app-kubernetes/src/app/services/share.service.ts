@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ProgressData } from '../model/cluster.model';
+import { KubernetesCluster, ProgressData } from '../model/cluster.model';
 import { SecurityGroupData } from '../model/security-group.model';
 
 @Injectable({

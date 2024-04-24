@@ -15,7 +15,7 @@
 <nz-table #ruleTable [nzData]="listOfOutbound" nzShowSizeChanger
   [nzFrontPagination]="false" [nzTotal]="total"
   [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
-  (nzQueryParams)="onQueryParamsChange($event)">
+  (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoadingOutbound">
   <thead>
     <tr>
       <th>STT</th>
@@ -36,7 +36,7 @@
         <td>{{item.remoteIpPrefix}}</td>
         <td>
           <div>
-            <one-portal-delete-outbound 
+            <one-portal-delete-outbound
               [idOutbound]="item.id"
               [nameRule]="item.remoteIp"
               [region]="regionId"

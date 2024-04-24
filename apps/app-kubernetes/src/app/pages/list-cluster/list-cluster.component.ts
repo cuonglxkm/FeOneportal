@@ -33,6 +33,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
   isShowModalDeleteCluster: boolean;
   isWrongName: boolean;
   isSubmitDelete: boolean;
+  isLoadingCluster: boolean;
 
   // input confirm delete modal
   deleteClusterName: string;
@@ -79,6 +80,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     this.listOfProgress = [];
     this.isShowModalDeleteCluster = false;
     this.isSubmitDelete = false;
+    this.isLoadingCluster = false;
     this.isWrongName = true;
     this.keySearch = '';
     this.serviceStatus = '';
@@ -95,6 +97,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
   }
 
   searchCluster() {
+    this.isLoadingCluster = true;
     const k = this.keySearch.trim();
     this.clusterService.searchCluster(
       k,
@@ -103,7 +106,8 @@ export class ListClusterComponent implements OnInit, OnDestroy {
       this.projectInfraId,
       this.pageIndex,
       this.pageSize
-    ).subscribe((r: any) => {
+    ).pipe(finalize(() => this.isLoadingCluster = false))
+    .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.listOfClusters = [];
         let progress: Array<Observable<any>> = [];

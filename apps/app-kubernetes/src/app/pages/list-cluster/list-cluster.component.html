@@ -67,8 +67,10 @@
       </div>
 
       <!-- table -->
-      <nz-table #clusterTable [nzData]="listOfClusters" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
-        [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+      <nz-table #clusterTable [nzData]="listOfClusters" nzShowSizeChanger
+        [nzFrontPagination]="false" [nzTotal]="total"
+        [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)"
+        [nzLoading]="isLoadingCluster">
         <thead>
           <tr>
             <th class="header-table">STT</th>

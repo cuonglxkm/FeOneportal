@@ -1,18 +1,20 @@
 <div class="mb-5 add-btn">
-  <one-portal-create-inbound 
-    nz-tooltip nzTooltipTitle="Thêm mới Inbound" 
+  <one-portal-create-inbound
+    nz-tooltip nzTooltipTitle="Thêm mới Inbound"
     nzTooltipPlacement="top"
-    [disabled]="!securityGroupId" 
+    [disabled]="!securityGroupId"
     [condition]="{
       userId: condition.userId,
       regionId: condition.regionId,
       projectId: condition.projectId,
       securityGroupId: securityGroupId
-    }" 
+    }"
     (onOk)="getRuleInbound()" />
 </div>
-<nz-table #ruleTable [nzData]="listOfInbound" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
-  [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+<nz-table #ruleTable [nzData]="listOfInbound" nzShowSizeChanger
+  [nzFrontPagination]="false" [nzTotal]="total"
+  [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
+  (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoadingInbound">
   <thead>
     <tr>
       <th>STT</th>
@@ -33,7 +35,7 @@
         <td>{{item.remoteIpPrefix}}</td>
         <td>
           <div class="ml-5">
-            <one-portal-delete-inbound 
+            <one-portal-delete-inbound
               nz-tooltip
               nzTooltipTitle="Xóa Inbound"
               nzTooltipPlacement="top"
