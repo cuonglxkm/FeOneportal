@@ -32,8 +32,8 @@ export class ServiceActiveWebsocketService {
           if (message.body) {
             // console.log('msg body: ' + message.body);
             const mess = JSON.parse(message.body);
-            if (mess.status == AppConstants.NOTI_SUCCESS) {
-              _this.listKafkaComponent.getListService(1, 1000, '', -1);
+            if (mess.status == AppConstants.NOTI_SUCCESS || mess.status == AppConstants.NOTI_FAILED) {
+              _this.listKafkaComponent.getListService(1, 10, '', -1);
             }
           }
         }

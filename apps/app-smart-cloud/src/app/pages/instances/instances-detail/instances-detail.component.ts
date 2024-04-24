@@ -54,6 +54,10 @@ export class InstancesDetailComponent implements OnInit {
 
   checkPermission: boolean = false;
   ngOnInit(): void {
+    this.getData();
+  }
+
+  getData() {
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));

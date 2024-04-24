@@ -4,6 +4,9 @@
     "useDefineForClassFields": false,
     "baseUrl": "./",
     "paths": {
+      "@shared": [
+        "src/app/shared/index"
+      ],
       "@env/*": [
         "src/environments/*"
       ],

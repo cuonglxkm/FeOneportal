@@ -40,8 +40,8 @@ export class EditPoolInLbComponent implements AfterViewInit {
   pool: PoolDetail = new PoolDetail();
 
   algorithms = [
-    { value: 'Roud_Robin', label: 'Roud_Robin' },
-    { value: 'Least_Connection', label: 'Least_Connection' },
+    { value: 'Round_Robin', label: 'Round_Robin' },
+    { value: 'Least_Connections', label: 'Least_Connections' },
     { value: 'Source_IP', label: 'Source_IP' }
   ];
 
