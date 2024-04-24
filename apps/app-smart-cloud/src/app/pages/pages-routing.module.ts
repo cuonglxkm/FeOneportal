@@ -143,6 +143,8 @@ import { EditL7PolicyComponent } from './load-balancer/listener/L7-policy/edit/e
 import { CreateFileSystemNormalComponent } from './file-storage/no-vpc/create/create-file-system-normal.component';
 import { ExtendFileSystemNormalComponent } from './file-storage/no-vpc/extend/extend-file-system-normal.component';
 import { ResizeFileSystemNormalComponent } from './file-storage/no-vpc/resize/resize-file-system-normal.component';
+import { CreateIpFloatingNormalComponent } from './ip-floating/create-ip-floating-normal.component';
+import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/extend-ip-floating.component';
 
 
 const routes: Routes = [
@@ -451,6 +453,14 @@ const routes: Routes = [
   {
     path: 'networks/ip-floating/list',
     component: ListIpFloatingComponent
+  },
+  {
+    path: 'networks/ip-floating-normal/create',
+    component: CreateIpFloatingNormalComponent
+  },
+  {
+    path: 'networks/ip-floating-normal/:id/extend',
+    component: ExtendIpFloatingComponent
   },
   {
     path: 'networks/ip-wan/list',

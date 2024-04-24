@@ -18,7 +18,7 @@ export class ListIpFloatingComponent implements OnInit {
   project = JSON.parse(localStorage.getItem('projectId'));
 
   customerId: number
-
+  projectType: any;
   pageSize: number = 10
   pageIndex: number = 1
 
@@ -46,7 +46,8 @@ export class ListIpFloatingComponent implements OnInit {
 
   projectChange(project: ProjectModel) {
     this.project = project.id;
-    // this.projectType = project.type;
+    this.projectType = project.type;
+    console.log(this.projectType);
     this.getData(true);
   }
 
