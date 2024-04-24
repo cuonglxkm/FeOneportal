@@ -262,8 +262,8 @@
     <div *ngIf="!emptyFileUpload">
       <p class="text-label">Lựa chọn phân quyền đọc</p>
       <nz-radio-group [(ngModel)]="radioValue">
-        <label nz-radio nzValue="Public" class="text-label">Public</label>
-        <label nz-radio nzValue="Private" class="text-label">Private</label>
+        <label nz-radio nzValue="public-read" class="text-label">Public</label>
+        <label nz-radio nzValue="private" class="text-label">Private</label>
       </nz-radio-group>
       <nz-table  [nzData]="lstFileUpdate" style="margin-top: 10px;" [nzHideOnSinglePage]="true">
         <thead>
@@ -280,7 +280,8 @@
           <td>{{item.type}}</td>
           <td>
             <div>{{(item.size / 1024).toFixed(2)}} KB</div>
-            <div><nz-progress *ngIf="item.percentage > 0" nzType="line" [nzPercent]="item.percentage" [nzStatus]="normal"></nz-progress></div>
+            <div><nz-progress *ngIf="item.percentage > 0" nzType="line" [nzPercent]="item.percentage" 
+            [nzStatus]="uploadFailed === true ? 'exception' : item.percentage === 100 ? 'success' : 'active'"></nz-progress></div>
           </td>
           <td>
               <span style="color: #0066B3; margin-right: 10px;"
@@ -297,10 +298,10 @@
       <h3 style="font-weight: bold">METADATA</h3>
       <nz-row *ngFor="let item of listOfMetadata" style="margin-top:10px">
         <input style="width: 40%; margin-right: 5%;" nzSize="large" nz-input placeholder="Nhập Key"
-               [(ngModel)]="item.key">
+               [(ngModel)]="item.metaKey">
         <input style="width: 40%; margin-right: 5%" nzSize="large" nz-input placeholder="Nhập Value"
-               [(ngModel)]="item.value">
-        <button style="border: none;" nz-button (click)="removeMetadata(item.order)" nzSize="large">
+               [(ngModel)]="item.metaValue">
+        <button style="border: none;" nz-button (click)="removeMetadata(item.metaKey)" nzSize="large">
           <img style="margin-top: -4px" src="assets/imgs/trash.svg"/>
         </button>
       </nz-row>
