@@ -1,20 +1,20 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Tạo mới Volume'" xmlns="http://www.w3.org/1999/html">
+             [title]="'volume.button.create' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.breadcrumb.home' | i18n}}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{'app.breadcrumb.infrastructure.service' | i18n}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Block storage
+        {{'app.breadcrumb.block.storage' | i18n}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">Quản lý Volume</a>
+        <a routerLink="/app-smart-cloud/volumes">{{'volume.title.breadcrumb.list' | i18n}}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volume/create">Tạo mới Volume</a>
+        <a routerLink="/app-smart-cloud/volume/create">{{'volume.button.create' | i18n}}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -33,13 +33,13 @@
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông tin Volume</span>
+          <span class="text-card-header">{{'volume.detail.title' | i18n}}</span>
           <nz-form-item>
             <nz-form-label nzFor="name">
               <div style="margin-top: 15px;">
-                <span>Tên Volume</span>
+                <span>{{'volume.table.title.name.volume' | i18n}}</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <img nz-popover [nzPopoverContent]="'Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt.'"
+                <img nz-popover [nzPopoverContent]="'volume.tooltip.input.name' | i18n"
                      nzPopoverPlacement="bottom"
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
@@ -48,16 +48,12 @@
               <input nz-input appAutofocus
                      class="input-custom"
                      formControlName="name"
-                     [placeholder]="'Nhập tên Volume'" [maxLength]="50" />
+                     [placeholder]="'volume.notification.input.name.delete' | i18n" [maxLength]="50" />
               <ng-template #nameErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt
-                  (trừ _)
-                </ng-container>
-                <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
-                <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Volume
-                  khác
-                </ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{'volume.notification.input.name.required' | i18n}}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{'volume.notification.input.name.pattern' | i18n}}</ng-container>
+                <ng-container *ngIf="control.hasError('maxLength')">{{'volume.notification.input.name.maxLength' | i18n}}</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">{{'volume.notification.input.name.duplicateName' | i18n}}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -65,9 +61,9 @@
             <div style="display: flex;">
               <nz-switch formControlName="isSnapshot" (ngModelChange)="onSwitchSnapshot()" nzCheckedChildren="ON"
                          nzUnCheckedChildren="OFF"></nz-switch>
-              <span style="margin-left: 10px; margin-top: 1px;" class="text-label">Tạo từ Snapshot</span>
+              <span style="margin-left: 10px; margin-top: 1px;" class="text-label">{{'volume.switch.snapshot'|i18n}}</span>
               <img style="margin-left: 10px"
-                   nz-popover [nzPopoverContent]="'Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot'"
+                   nz-popover [nzPopoverContent]="'volume.tooltip.switch.snapshot' | i18n"
                    nzPopoverPlacement="bottom"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </div>
@@ -76,7 +72,7 @@
             <nz-form-item *ngIf="isInitSnapshot">
               <nz-form-label nzFor="snapshot">
                 <div class="label">
-                  <span>Chọn Snapshot</span>
+                  <span>{{'volume.action.snapshot.select'|i18n}}</span>
                   (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 </div>
               </nz-form-label>
@@ -84,7 +80,7 @@
                 <nz-select nzSize="large"
                            formControlName="snapshot"
                            id="snapshot"
-                           [nzPlaceHolder]="'-Chọn Snapshot-'"
+                           [nzPlaceHolder]="'volume.action.snapshot.select' | i18n"
                            [nzShowSearch]="false"
                            [(ngModel)]="snapshotSelected"
                            (ngModelChange)="snapshotSelectedChange($event)"
@@ -93,7 +89,7 @@
                              [nzValue]="item.value"></nz-option>
                 </nz-select>
                 <ng-template #snapshotErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng chọn</ng-container>
+                  <ng-container *ngIf="control.hasError('required')">{{'volume.notification.input.select.snapshot'|i18n}}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -101,10 +97,10 @@
           <nz-form-item>
             <nz-form-label nzFor="volumeType">
               <div class="label">
-                <span>Chọn loại volume</span>
+                <span>{{'volume.action.type.volume.select'|i18n}}</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img nz-popover
-                     [nzPopoverContent]="'Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau'"
+                     [nzPopoverContent]="'volume.tooltip.select.type.volume'| i18n"
                      nzPopoverPlacement="bottom"
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
@@ -134,8 +130,7 @@
                             <span class="text-label">
                               Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao
                               lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng công việc
-                              chuyên sâu thông<br>
-                              lượng
+                              chuyên sâu thông lượng
                             </span>
                           </ng-template>
                         </nz-card-meta></nz-col>

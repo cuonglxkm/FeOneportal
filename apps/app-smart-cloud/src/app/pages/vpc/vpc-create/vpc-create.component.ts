@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NguCarouselConfig } from '@ngu/carousel';
 import { ImageTypesModel, OfferItem } from '../../instances/instances.model';
@@ -8,7 +7,7 @@ import { InstancesService } from '../../instances/instances.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-import { slider } from '../../../../../../../libs/common-utils/src';
+import { RegionModel, slider } from '../../../../../../../libs/common-utils/src';
 import { IpPublicService } from '../../../shared/services/ip-public.service';
 import { OfferDetail } from '../../../shared/models/catalog.model';
 import { da } from 'date-fns/locale';

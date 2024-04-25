@@ -7,19 +7,19 @@
 <!--        nzPopoverPlacement="bottom" ></span>-->
 <!--</button>-->
 <img src="assets/imgs/add.svg"  (click)="showModal()"  nz-popover
-     [nzPopoverContent]="'Gắn Volume'"
+     [nzPopoverContent]="'volume.action.attach.vm' | i18n"
      nzPopoverPlacement="bottom" style="cursor: pointer;"/>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Gắn máy ảo"
+<nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Gắn máy ảo</span>
+    <span class="text-modal-title">{{ 'volume.action.action.attach.vn' | i18n }}</span>
   </div>
   <div *nzModalContent>
-    <nz-form-label>Chọn máy ảo</nz-form-label>
+    <nz-form-label>{{ 'volume.modal.attach.title' | i18n}}</nz-form-label>
     <nz-select nzSize="default"
                nzAllowClear
                [nzLoading]="isLoading"
-               [nzPlaceHolder]="'-Chọn máy ảo-'"
+               [nzPlaceHolder]="'volume.modal.attach.title' | i18n"
                [(ngModel)]="instanceSelected"
                (ngModelChange)="onChange($event)"
                [required]="true"
@@ -27,17 +27,17 @@
                style="width: 300px;">
       <nz-option *ngFor="let item of listVm" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
     </nz-select>
-    <div *ngIf="isSelected" style="color: red;">Vui lòng chọn máy ảo</div>
+    <div *ngIf="isSelected" style="color: red;">{{ 'volume.notification.input.select.vm' | i18n}}</div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary"
             (click)="handleOk()"
             [nzLoading]="isLoading"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

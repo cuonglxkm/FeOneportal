@@ -17,13 +17,13 @@ import {
   OfferItem,
 } from '../instances.model';
 import { InstancesService } from '../instances.service';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-instances-edit-info',

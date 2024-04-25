@@ -4,11 +4,11 @@ import { SnapshotVolumeDto } from '../../../shared/dto/snapshot-volume.dto';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+
 @Component({
   selector: 'app-snapshot-volume-list',
   templateUrl: './snapshotvl-list.component.html',

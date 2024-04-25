@@ -1,13 +1,13 @@
 <page-header
   [breadcrumb]="breadcrumb"
-  [title]="'Lịch sử thao tác'"
+  [title]="'app.breadcrumb.action-history' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Home</a>
+        <a [routerLink]="['/']">{{"app.breadcrumb.home" | i18n}}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>Action History</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{"app.breadcrumb.action-history" | i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 </page-header>
@@ -31,7 +31,7 @@
         <input
           name="name"
           nz-input
-          placeholder="Tìm kiếm  theo thao tác, dịch vụ, loại dịch vụ"
+          [placeholder]="'app.action-history.search' | i18n"
           [(ngModel)]="searchParam"
           (keyup.enter)="getData()"
         />
@@ -41,7 +41,7 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          nz-tooltip="Tìm kiếm"
+          [nz-tooltip]="'app.button.search' | i18n"
           (click)="doSearch()"
         />
       </ng-template>
@@ -63,13 +63,13 @@
   >
     <thead>
       <tr>
-        <th>Tài khoản thao tác</th>
-        <th>Thao tác</th>
-        <th>Loại dịch vụ</th>
-        <th>Tên dịch vụ</th>
-        <th>Khu vực</th>
-        <th>Thông tin</th>
-        <th>Ngày tạo tác</th>
+        <th>{{"app.action-history.operation-account" | i18n}}</th>
+        <th>{{"app.action-history.operation" | i18n}}</th>
+        <th>{{"app.action-history.serviceType" | i18n}}</th>
+        <th>{{"app.action-history.serviceName" | i18n}}</th>
+        <th>{{"app.action-history.region" | i18n}}</th>
+        <th>{{"app.action-history.information" | i18n}}</th>
+        <th>{{"app.action-history.date" | i18n}}</th>
       </tr>
     </thead>
     <tbody>

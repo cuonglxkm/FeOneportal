@@ -5,8 +5,7 @@
       <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
       <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System
-      </nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Danh sách File System</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/create'">Khởi tạo File System
       </nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -26,7 +25,7 @@
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông tin File System Snapshot</span>
+          <span class="text-card-header">Thông tin File System</span>
           <nz-row nzGutter="24" style="margin-top: 20px;">
             <nz-col nzSpan="12">
               <nz-form-item>
@@ -85,9 +84,16 @@
                 </ng-template>
               </nz-form-item>
               <nz-form-item>
-                <label nz-checkbox formControlName="checked" (ngModelChange)="snapshotSelectedChange($event)">Khởi tạo từ Snapshot</label>
+                <div style="display: flex;">
+                  <nz-switch formControlName="isSnapshot" (ngModelChange)="snapshotSelectedChange($event)"></nz-switch>
+                  <span style="margin-left: 10px; margin-top: 1px;" class="text-label">Khởi tạo từ Snapshot</span>
+                  <!--                  <img style="margin-left: 10px"-->
+                  <!--                       nz-popover [nzPopoverContent]="'volume.tooltip.switch.snapshot' | i18n"-->
+                  <!--                       nzPopoverPlacement="bottom"-->
+                  <!--                       src="assets/imgs/pajamas_question.svg" alt="" />-->
+                </div>
               </nz-form-item>
-              <nz-form-item *ngIf="validateForm.controls.checked.value == true">
+              <nz-form-item *ngIf="isInitSnapshot === true">
                 <nz-form-label>
                   <div>
                     <span>Snapshot (</span>

@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {RegionModel} from "../../models/region.model";
-import {RegionService} from "../../services/region.service";
+import { RegionModel, RegionService } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'region-select-dropdown',

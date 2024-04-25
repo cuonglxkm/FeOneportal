@@ -2,13 +2,11 @@ import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { OrderService } from '../../../shared/services/order.service';
 import { OrderDTOSonch } from '../../../shared/models/order.model';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NotificationService } from '../../../../../../../libs/common-utils/src';
+import { NotificationService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import {getCurrentRegionAndProject} from "@shared";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
@@ -64,11 +62,11 @@ export class OrderDetailComponent {
           next: (data) => {
             this.data = data;
             data?.orderItems?.forEach((item) => {
-              this.serviceName = item.serviceName.split('-')[0]
+              this.serviceName = item.serviceName.split('-')[0].trim()
               if(this.serviceName.includes('Máy ảo')){
                 this.serviceName = 'VM'
               }
-            })
+            });          
           },
           error: (e) => {
             this.notification.error('Thất bại', 'Lấy dữ liệu thất bại');
@@ -96,7 +94,12 @@ export class OrderDetailComponent {
         .subscribe({
           next: (data) => {
             this.data = data;
-            console.log(data);
+            data?.orderItems?.forEach((item) => {
+              this.serviceName = item.serviceName.split('-')[0].trim()
+              if(this.serviceName.includes('Máy ảo')){
+                this.serviceName = 'VM'
+              }
+            })
             
           },
           error: (e) => {

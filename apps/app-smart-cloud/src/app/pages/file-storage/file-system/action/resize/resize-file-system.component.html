@@ -1,5 +1,5 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Quản lý File System'">
+             [title]="'Điều chỉnh File System'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
@@ -38,7 +38,7 @@
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control>
-                  <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem.name"  [disabled]="true" />
+                  <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.name"  [disabled]="true" />
                 </nz-form-control>
               </nz-form-item>
               <nz-form-item>
@@ -53,7 +53,7 @@
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control>
-                  <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem.shareProto"  [disabled]="true" />
+                  <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.shareProto"  [disabled]="true" />
                 </nz-form-control>
               </nz-form-item>
             </nz-col>
@@ -67,7 +67,7 @@
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control>
-                  <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem.type" [disabled]="true" />
+                  <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.type" [disabled]="true" />
                 </nz-form-control>
               </nz-form-item>
               <nz-form-item>
@@ -156,5 +156,4 @@
       </nz-col>
     </nz-row>
   </form>
-
 </nz-content>

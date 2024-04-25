@@ -1,10 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { FormSearchListBalancer, LoadBalancerModel } from '../../../shared/models/load-balancer.model';
 import { LoadBalancerService } from '../../../shared/services/load-balancer.service';
 

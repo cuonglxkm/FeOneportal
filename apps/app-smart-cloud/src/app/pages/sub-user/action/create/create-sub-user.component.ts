@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { FormCreateSubUser } from '../../../../shared/models/sub-user.model';
 import { ObjectStorageService } from '../../../../shared/services/object-storage.service';
@@ -9,6 +7,7 @@ import { SubUserService } from '../../../../shared/services/sub-user.service';
 import { UserInfoObjectStorage } from '../../../../shared/models/object-storage.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-sub-user',

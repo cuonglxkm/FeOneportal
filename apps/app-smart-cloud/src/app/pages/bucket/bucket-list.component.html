@@ -205,11 +205,12 @@
   (nzOnCancel)="handleCancelDeleteBucket()"
 >
   <ng-container *nzModalContent>
-    <span class="text-label">
-      {{ 'app.alert.delete.bucket' | i18n }} <b>{{ bucketDeleteName }}</b
-      ><span *ngIf="!isViLanguage"> Bucket</span
-      >{{ 'app.alert.delete.bucket.next' | i18n }}
-    </span>
+    <span
+      class="text-label"
+      [innerHTML]="
+        'app.alert.delete.bucket' | i18n : { name: bucketDeleteName }
+      "
+    ></span>
     <input
       style="margin-top: 5px"
       class="input-custom"

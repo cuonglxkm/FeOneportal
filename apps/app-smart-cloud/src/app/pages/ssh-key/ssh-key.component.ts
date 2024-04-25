@@ -1,13 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {SshKeyService} from 'src/app/pages/ssh-key/ssh-key.service';
-import {AppValidator, BaseResponse} from "../../../../../../libs/common-utils/src";
+import {AppValidator, BaseResponse, RegionModel} from "../../../../../../libs/common-utils/src";
 import {SshKey} from './dto/ssh-key';
 import {ModalHelper} from '@delon/theme';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {RegionModel} from "../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {ProjectModel} from "../../shared/models/project.model";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {finalize} from "rxjs/operators";
 import {NzNotificationService} from "ng-zorro-antd/notification";
@@ -22,7 +20,6 @@ export class SshKeyComponent implements OnInit {
   //input
   searchKey: string = "";
   regionId: any;
-  projectId: any;
   size = 10;
   index: any = 0;
   total: any = 0;
@@ -68,12 +65,11 @@ export class SshKeyComponent implements OnInit {
     this.form.get('public_key').disable();
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
-    this.projectId = regionAndProject.projectId;
   }
 
   loadSshKeys(isCheckBegin: boolean): void {
     this.loading = true;
-    this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, this.index, this.size, this.searchKey)
+    this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, '', this.regionId, this.index, this.size, this.searchKey)
       .pipe(finalize(() => this.loading = false))
       .subscribe(response => {
         this.listOfData = (this.checkNullObject(response) ? [] : response.records);
@@ -121,7 +117,10 @@ export class SshKeyComponent implements OnInit {
     this.loading = true;
     // call api
     this.sshKeyService.deleteSshKey(this.data.id)
-      .pipe(finalize(() => this.loading = false))
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.handleCancel(null);
+      }))
       .subscribe(() => {
       this.loadSshKeys(true);
       this.notification.success('Thành công', 'Xóa thành công keypair')
@@ -130,15 +129,12 @@ export class SshKeyComponent implements OnInit {
   }
 
   handleCancel(form: any): void {
-    console.log('Button cancel clicked')
     this.isVisibleDelete = false;
     this.isVisibleCreate = false;
     this.isVisibleDetail = false;
     form?.resetForm();
     this.nameDeleteInput = '';
-    this.form.get('keypair_name_2').enable();
-    this.form.get('public_key').enable();
-    this.form.get('keypair_name_1').enable();
+    this.onTabchange(0 , form);
   }
 
   indexTab: number = 0;
@@ -157,7 +153,7 @@ export class SshKeyComponent implements OnInit {
 
     const ax = {
       name: namePrivate,
-      vpcId: this.projectId,
+      vpcId: 0,
       customerId: this.tokenService.get()?.userId,
       regionId: this.regionId,
       publicKey: publickey,
@@ -172,7 +168,6 @@ export class SshKeyComponent implements OnInit {
       next: post => {
         this.loadSshKeys(true);
         this.notification.success('Thành công', 'Tạo mới thành công keypair');
-        form?.resetForm();
       },
       error: e => {
         if(e && e.error && e.error.detail && e.error.detail === `Key pair '${namePrivate}' already exists.`) {
@@ -218,11 +213,6 @@ export class SshKeyComponent implements OnInit {
     this.regionId = this.checkNullObject(region) ? "" : region.regionId;
   }
 
-  projectChange(project: ProjectModel) {
-    this.projectId =  this.checkNullObject(project) ? "" : project.id;
-    this.loadSshKeys(true);
-  }
-
   checkNullObject(object: any): Boolean {
     if (object == null || object == undefined) {
       return true;
@@ -238,4 +228,12 @@ export class SshKeyComponent implements OnInit {
   }
 
   fontSize = 16;
+
+  enterCreate(form: any) {
+    if (this.indexTab === 0 && this.form.controls['keypair_name_1'].value != '' && !this.form.invalid) {
+      this.handleCreate(form);
+    } else if (this.indexTab === 1 && this.form.controls['keypair_name_2'].value != ''&& this.form.controls['public_key'].value != '' && !this.form.invalid){
+      this.handleCreate(form);
+    }
+  }
 }

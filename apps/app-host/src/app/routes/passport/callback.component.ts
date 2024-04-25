@@ -18,7 +18,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from '@env/environment';
 import { UserModel } from '../../../../../../libs/common-utils/src/lib/shared-model';
 import { of, switchMap, zip } from 'rxjs';
-import { NotificationService } from '../../../../../../libs/common-utils/src/lib/notification-service';
+import { NotificationService } from '../../../../../../libs/common-utils/src';
 
 export interface TokenResponse {
   [key: string]: NzSafeAny;

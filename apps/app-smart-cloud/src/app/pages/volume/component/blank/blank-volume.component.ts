@@ -3,8 +3,7 @@ import Pagination from "../../../../shared/models/pagination";
 import {BackupVm} from "../../../../shared/models/backup-vm";
 import {BackupVmService} from "../../../../shared/services/backup-vm.service";
 import {Router} from "@angular/router";
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-blank-volume',

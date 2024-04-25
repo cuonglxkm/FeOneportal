@@ -34,7 +34,7 @@
           <button class="button-fee" (click)="navigateToRenew(volumeInfo.id)"
                   nz-button
                   nzType="primary">
-            <span nz-icon nzType="schedule" nzTheme="outline"></span>{{ 'volume.button.renew' | i18n }}
+            <span nz-icon nzType="schedule" nzTheme="outline"></span>{{ 'app.button.resize' | i18n }}
           </button>
         </div>
       </div>
@@ -42,7 +42,7 @@
         <button class="button-cancel"
                 (click)="navigateEditVolume(volumeInfo.id)"
                 nz-button nzType="default">
-          <i nz-icon [nzType]="'edit'"></i>{{ 'volume.button.extend' | i18n }}
+          <i nz-icon [nzType]="'edit'"></i>{{ 'app.button.extend' | i18n }}
         </button>
       </div>
     </div>
@@ -51,7 +51,7 @@
         <button class="button-cancel"
                 (click)="navigateToResizeVPC(volumeInfo.id)"
                 nz-button nzType="default">
-          <i nz-icon [nzType]="'edit'"></i>{{ 'volume.button.extend' | i18n }}
+          <i nz-icon [nzType]="'edit'"></i>{{ 'app.button.extend' | i18n }}
         </button>
       </div>
     </div>

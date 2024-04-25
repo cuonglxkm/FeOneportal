@@ -1,0 +1,295 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Khởi tạo File System'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/create'">Khởi tạo File System
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="16">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Thông tin File System</span>
+          <nz-row nzGutter="24" style="margin-top: 20px;">
+            <nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label>
+                  <div>
+                    <span>Tên File System</span> (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <img nz-popover
+                         [nzPopoverContent]="'Tên của File System cần tạo, các ký tự chữ thường a-z, ' +
+                       'chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, ' +
+                        'tối thiểu 1 ký tự và tối đa 255 ký tự. Tên các File System không trùng nhau'"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </div>
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="nameNetworkErrorTpl">
+                  <input appAutofocus nz-input
+                         class="input-custom"
+                         [placeholder]="'Nhập tên file system'"
+                         formControlName="name" style="width: 100% " />
+                </nz-form-control>
+                <ng-template #nameNetworkErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên File System</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu tiếng việt và ký tự đặc biệt
+                    (trừ _, -, và có thể có khoảng trắng)
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('duplicateName')">Tên File System không được trùng
+                  </ng-container>
+                </ng-template>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>
+                  <div>
+                    <span>Giao thức (</span>
+                    <span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <img nz-popover
+                         [nzPopoverContent]="'Giao thức NFS (Network File System) là một giao thức mạng được sử dụng ' +
+                           'để chia sẻ tập tin và thư mục qua mạng giữa các hệ thống máy tính khác nhau. ' +
+                            'Nó cho phép một máy tính (được gọi là máy chủ NFS) chia sẻ tài nguyên file hệ thống của ' +
+                             'nó với các máy tính khác (được gọi là máy khách NFS) trong mạng'"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </div>
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
+                  <nz-select formControlName="protocol"
+                             nzSize="large"
+                             [nzPlaceHolder]="'-Chọn giao thức-'"
+                             [nzShowSearch]="false">
+                    <nz-option *ngFor="let i of optionProtocols"
+                               [nzValue]="i.value"
+                               [nzLabel]="i.label"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+                <ng-template #protocolErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập chọn giao thức</ng-container>
+                </ng-template>
+              </nz-form-item>
+              <nz-form-item>
+                <div style="display: flex;">
+                  <nz-switch formControlName="isSnapshot" (ngModelChange)="snapshotSelectedChange($event)"></nz-switch>
+                  <span style="margin-left: 10px; margin-top: 1px;" class="text-label">Khởi tạo từ Snapshot</span>
+                  <!--                  <img style="margin-left: 10px"-->
+                  <!--                       nz-popover [nzPopoverContent]="'volume.tooltip.switch.snapshot' | i18n"-->
+                  <!--                       nzPopoverPlacement="bottom"-->
+                  <!--                       src="assets/imgs/pajamas_question.svg" alt="" />-->
+                </div>
+              </nz-form-item>
+              <nz-form-item *ngIf="isInitSnapshot === true">
+                <nz-form-label>
+                  <div>
+                    <span>Snapshot (</span>
+                    <span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <img nz-popover
+                         [nzPopoverContent]="'Snapshot của File System'"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </div>
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
+                  <nz-select formControlName="snapshot"
+                             nzSize="large"
+                             [nzPlaceHolder]="'-Chọn Snapshot-'"
+                             [nzShowSearch]="false">
+                    <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
+                               [nzValue]="item.value"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label nzFor="storage">
+                  <div>
+                    <span>Dung lượng (GB) </span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <img nz-popover
+                         [nzPopoverContent]="'Tối thiểu là 1'"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </div>
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
+                  <nz-input-number style="width: 100%;"
+                                   formControlName="storage"
+                                   class="input-custom"
+                                   [nzMin]="1" [nzStep]="1" (ngModelChange)="storageSelectedChange($event)"></nz-input-number>
+                  <ng-template #storageErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng</ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>
+                  <div>
+                    <span>Loại File System (</span>
+                    <span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <img nz-popover
+                         [nzPopoverContent]="'mặc định là generic_share_type'"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </div>
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="typeErrorTpl">
+                  <nz-select formControlName="type"
+                             nzSize="large"
+                             [nzPlaceHolder]="'-Chọn loại File System-'"
+                             [nzShowSearch]="false">
+                    <nz-option nzLabel="generic_share_type" nzValue="1"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+                <ng-template #typeErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập chọn loại File System</ng-container>
+                </ng-template>
+              </nz-form-item>
+            </nz-col>
+          </nz-row>
+          <nz-form-item>
+            <nz-form-label>
+              <div>
+                <span>Mô tả</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+              <nz-textarea-count [nzMaxCharacterCount]="255">
+                <textarea nz-input formControlName="description" id="description" [maxLength]="255"
+                        [nzAutosize]="{ minRows: 4, maxRows: 6 }"></textarea>
+
+                <ng-template #descriptionErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+                </ng-template>
+              </nz-textarea-count>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzFor="time">
+              <div class="label">
+                <span>Thời gian sử dụng </span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span> - Tháng</span>
+                <img nz-popover [nzPopoverContent]="'Thời gian khách hàng mua volume để sử dụng, tính theo tháng.'"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </div>
+            </nz-form-label>
+            <nz-row style="height: 50px;">
+              <nz-col nzSpan="12">
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+                  <nz-input-number
+                    style="width:100%; border-radius: 8px; margin-left: 0;"
+                    formControlName="time"
+                    (ngModelChange)="timeSelectedChange($event)"
+                    class="input-custom"
+                    nzMin="1"
+                    nzMax="100"
+                    nzStep="1" />
+                  <ng-template #dateErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                    </ng-container>
+                    <ng-container
+                      *ngIf="control.hasError('max') || control.hasError('min') || control.hasError('min') || control.hasError('pattern')">
+                      Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-col>
+              <nz-col style="margin-left: 25px;">
+                <nz-form-item>
+                  <nz-form-label nzFor="now">
+                    <div class="label">
+                      <span>Thời gian bắt đầu sử dụng: </span>
+                      <span *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
+                    </div>
+                  </nz-form-label>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+            <nz-form-label style="margin-top: 15px;">
+              <div class="label" style="color: red;">
+                <span>Ngày hết hạn: </span>
+                <span
+                  *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
+              </div>
+            </nz-form-label>
+          </nz-form-item>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Chi phí ước tính</span>
+          <div style="margin-top: 10px" class="text-value">Tên File System</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ validateForm.controls.name.value }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">Loại File System</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span *ngIf="validateForm.controls.type.value == 1">generic_share_type</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">Giao thức</div>
+          <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.protocol.value }}</div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">Dung lượng</div>
+          <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.storage.value }} GB</div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value"> Chi phí 1 tháng </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3" nzAlign="right">0 VND</span>
+              <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          " nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-label">Tổng thanh toán</span><br />
+              <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">0 VND</span>
+              <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+                {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row>
+            <nz-col style="width: 100%">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary"
+                      [disabled]="validateForm.invalid" (click)="navigateToPayment()">
+                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+  </form>
+</nz-content>

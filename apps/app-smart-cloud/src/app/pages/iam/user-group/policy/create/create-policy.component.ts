@@ -1,14 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {RegionModel} from "../../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../../shared/models/project.model";
 import {PolicyService} from "../../../../../shared/services/policy.service";
 import {PolicyModel} from "../../../../policy/policy.model";
 import {FormSearchPolicy, FormUserGroup, UserGroupModel} from "../../../../../shared/models/user-group.model";
 import {UserGroupService} from "../../../../../shared/services/user-group.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
-import { BaseResponse } from '../../../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-policy',

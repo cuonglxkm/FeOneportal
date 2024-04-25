@@ -72,7 +72,7 @@ const FORM_MODULES = [JsonSchemaModule];
 import { StartupService } from '@core';
 import {Observable} from "rxjs";
 import { GlobalConfigModule } from './global-config.module';
-import { NotificationService } from '../../../../libs/common-utils/src/lib/notification-service';
+import { NotificationService } from '../../../../libs/common-utils/src';
 export function StartupServiceFactory(startupService: StartupService): () => Observable<void> {
   return () => startupService.load();
 }

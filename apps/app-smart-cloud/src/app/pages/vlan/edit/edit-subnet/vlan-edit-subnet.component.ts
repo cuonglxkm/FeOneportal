@@ -5,8 +5,6 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { FormSearchSubnet, FormUpdateSubnet, Subnet } from '../../../../shared/models/vlan.model';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import {
   AbstractControl,
   FormControl,
@@ -15,6 +13,7 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -225,15 +224,14 @@ export class VlanEditSubnetComponent implements OnInit {
     this.formUpdateSubnet.hostRoutes = null;
     console.log('edit', this.formUpdateSubnet);
     this.vlanService.updateSubnet(this.idSubnet, this.formUpdateSubnet).subscribe(data => {
-      if (data) {
         this.isLoading = false;
         this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
         this.notification.success('Thành công', 'Chỉnh sửa Subnet thành công');
-      }
+
     }, error => {
       this.isLoading = false;
       this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-      this.notification.error('Thất bại', 'Chỉnh sửa Subnet thất bại');
+      this.notification.error('Thất bại', 'Chỉnh sửa Subnet thất bại. ' + error.error.detail);
     });
   }
 

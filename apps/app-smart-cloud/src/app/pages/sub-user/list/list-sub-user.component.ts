@@ -1,10 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { SubUserService } from '../../../shared/services/sub-user.service';
 import { SubUser, SubUserKeys } from '../../../shared/models/sub-user.model';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
 import { ClipboardService } from 'ngx-clipboard';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';

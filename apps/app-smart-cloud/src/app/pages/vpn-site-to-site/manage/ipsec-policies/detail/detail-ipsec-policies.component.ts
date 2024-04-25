@@ -4,8 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
 import { IpsecPolicyDetail } from 'src/app/shared/models/ipsec-policy';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
 
 

@@ -201,7 +201,8 @@
               },
               {
                 "text": "Load balancer SDN",
-                "link": "/app-smart-cloud/object",
+                "link": "/app-smart-cloud/load-balancer/list",
+                "icon": "anticon-cluster",
                 "action": "loadbalancer:List"
               },
               {
@@ -233,7 +234,7 @@
                   },
                   {
                     "text": "S3 Key",
-                    "link": "/app-smart-cloud/object",
+                    "link": "/app-smart-cloud/object-storage/s3-key",
                     "action": "objectstorages:Search"
                   },
                   {

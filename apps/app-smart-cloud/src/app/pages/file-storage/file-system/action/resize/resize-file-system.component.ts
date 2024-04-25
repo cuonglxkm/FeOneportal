@@ -1,6 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../../shared/models/project.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileSystemService } from '../../../../../shared/services/file-system.service';
@@ -11,7 +9,7 @@ import {
 } from '../../../../../shared/models/file-system.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProjectService } from '../../../../../shared/services/project.service';
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-resize-file-system',

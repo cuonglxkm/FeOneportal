@@ -9,8 +9,6 @@ import {
   VolumeAttachment
 } from "../../../shared/models/backup-vm";
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {InstancesModel} from "../../instances/instances.model";
 import {InstancesService} from "../../instances/instances.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -21,7 +19,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {PackageBackupModel} from "../../../shared/models/package-backup.model";
 import {getCurrentRegionAndProject} from "@shared";
-import {ProjectService} from "../../../shared/services/project.service";
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-backup-vm',

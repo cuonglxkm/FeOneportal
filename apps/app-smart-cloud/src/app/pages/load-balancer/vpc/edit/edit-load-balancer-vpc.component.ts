@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RegionModel } from '../../../../shared/models/region.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { FormSearchListBalancer, FormUpdateLB, LoadBalancerModel } from '../../../../shared/models/load-balancer.model';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { OfferDetail } from '../../../../shared/models/catalog.model';
-import { ProjectService } from '../../../../shared/services/project.service';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-extend-load-balancer-vpc',

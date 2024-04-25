@@ -6,7 +6,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import {
   DetachPoliciesOrGroups,
   ItemDetach,
@@ -19,6 +18,7 @@ import { DatePipe } from '@angular/common';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { ClipboardService } from 'ngx-clipboard';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-user-detail',

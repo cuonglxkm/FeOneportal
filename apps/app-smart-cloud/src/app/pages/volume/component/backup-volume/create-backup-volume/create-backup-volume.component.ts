@@ -1,6 +1,4 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {ProjectModel} from "../../../../../shared/models/project.model";
-import {RegionModel} from "../../../../../shared/models/region.model";
 import {
   CreateBackupVolumeOrderData,
   CreateBackupVolumeSpecification,
@@ -14,8 +12,8 @@ import {BackupVolumeService} from "../../../../../shared/services/backup-volume.
 import {NzNotificationService} from 'ng-zorro-antd/notification';
 import {PackageBackupService} from "../../../../../shared/services/package-backup.service";
 import {PackageBackupModel} from "../../../../../shared/models/package-backup.model";
-import {ProjectService} from "../../../../../shared/services/project.service";
 import {getCurrentRegionAndProject} from "@shared";
+import { ProjectModel, RegionModel, ProjectService } from '../../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-backup-volume',

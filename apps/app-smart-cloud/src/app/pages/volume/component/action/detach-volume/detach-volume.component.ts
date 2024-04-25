@@ -6,6 +6,8 @@ import { VolumeService } from '../../../../../shared/services/volume.service';
 import { AttachedDto } from '../../../../../shared/dto/volume.dto';
 import { debounceTime } from 'rxjs';
 import { AddVolumetoVmModel } from '../../../../../shared/models/volume.model';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-detach-volume',
@@ -33,7 +35,8 @@ export class DetachVolumeComponent {
   constructor(private instancesService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
-              private volumeService: VolumeService) {
+              private volumeService: VolumeService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   onChange(value) {
@@ -89,14 +92,14 @@ export class DetachVolumeComponent {
           if (data == true) {
             this.isLoading = false;
             this.isVisible = false;
-            this.notification.success('Thành công', `Yêu cầu gỡ volume thành công`);
+            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.detach.success'));
             setTimeout(() => {
               this.onOk.emit(data)
             }, 1500);
           } else {
             this.isVisible = false;
             this.isLoading = false;
-            this.notification.error('Thất bại', `Yêu cầu gỡ volume thất bại`);
+            this.notification.error(this.i18n.fanyi('app.status.fail'),  this.i18n.fanyi('volume.notification.detach.fail'));
             setTimeout(() => {
               this.onOk.emit(data)
             }, 1500);
@@ -104,7 +107,7 @@ export class DetachVolumeComponent {
         }, error => {
           this.isLoading = false;
           this.isVisible = false;
-          this.notification.error('Thất bại', `Yêu cầu gỡ volume thất bại`);
+          this.notification.error(this.i18n.fanyi('app.status.fail'),  this.i18n.fanyi('volume.notification.detach.fail'), error.error.detail);
           setTimeout(() => {
             this.onOk.emit(error)
           }, 1500);
@@ -124,18 +127,18 @@ export class DetachVolumeComponent {
         if (data == true) {
           this.isLoading = false;
           this.isVisible = false;
-          this.notification.success('Thành công', `Yêu cầu gỡ volume thành công`);
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.detach.success'));
           this.onOk.emit(data);
         } else {
           this.isVisible = false;
           this.isLoading = false;
-          this.notification.error('Thất bại', `Yêu cầu gỡ volume thất bại`);
+          this.notification.error(this.i18n.fanyi('app.status.fail'),  this.i18n.fanyi('volume.notification.detach.fail'));
           this.onOk.emit(data);
         }
       }, error => {
         this.isLoading = false;
         this.isVisible = false;
-        this.notification.error('Thất bại', `Yêu cầu gỡ volume thất bại`);
+        this.notification.error(this.i18n.fanyi('app.status.fail'),  this.i18n.fanyi('volume.notification.detach.fail'), error.error.detail);
         this.onOk.emit(error);
       });
     }

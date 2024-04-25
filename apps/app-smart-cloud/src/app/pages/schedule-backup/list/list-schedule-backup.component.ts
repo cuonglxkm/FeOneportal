@@ -1,7 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import {
   BackupSchedule,
   CapacityBackupSchedule,
@@ -9,7 +7,7 @@ import {
 } from '../../../shared/models/schedule.model';
 import { ScheduleService } from '../../../shared/services/schedule.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 

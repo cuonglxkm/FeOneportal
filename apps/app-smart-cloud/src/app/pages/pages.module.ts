@@ -145,16 +145,16 @@ import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-s
 import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
 import { CreateFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
 import { FileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
-import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
+import { ListFileSystemComponent } from './file-storage/list/list-file-system.component';
 import { ListWanComponent } from './wan/list/list-wan.component';
 import { DeleteWanComponent } from './wan/action/delete-wan/delete-wan.component';
 import { DetachWanComponent } from './wan/action/detach-wan/detach-wan.component';
 import { CreateWanComponent } from './wan/create/create-wan.component';
 import { AttachWanComponent } from './wan/action/attach-wan/attach-wan.component';
 import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
-import { DetailFileSystemComponent } from './file-storage/file-system/detail/detail-file-system.component';
+import { DetailFileSystemComponent } from './file-storage/detail/detail-file-system.component';
 import { ResizeFileSystemComponent } from './file-storage/file-system/action/resize/resize-file-system.component';
-import { DeleteFileSystemComponent } from './file-storage/file-system/action/delete/delete-file-system.component';
+import { DeleteFileSystemComponent } from './file-storage/delete/delete-file-system.component';
 import { EditFileSystemComponent } from './file-storage/file-system/edit/edit-file-system.component';
 import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
 import { CreateAccessRuleComponent } from './file-storage/access-rule/action/create/create-access-rule.component';
@@ -218,12 +218,13 @@ import { EditPoolInLbComponent } from './load-balancer/detail/pool/edit/edit-poo
 import { DeletePoolInLbComponent } from './load-balancer/detail/pool/delete/delete-pool-in-lb.component';
 import { CreateL7RuleComponent } from './load-balancer/listener/L7-policy/detail/l7-rule/create/create-l7-rule.component';
 import { DeleteL7RuleComponent } from './load-balancer/listener/L7-policy/detail/l7-rule/delete/delete-l7-rule.component';
-import { CreateFileStorageNormalComponent } from './file-storage/action/create-normal/create-file-storage-normal.component';
-import { ExtendFileStorageNormalComponent } from './file-storage/action/extend-normal/extend-file-storage-normal.component';
-import { ResizeFileStorageNormalComponent } from './file-storage/action/resize-normal/resize-file-storage-normal.component';
 import { DeleteL7PolicyComponent } from './load-balancer/listener/L7-policy/delete/delete-l7-policy.component';
-import { CancelFileStorageNormalComponent } from './file-storage/action/cancel/cancel-file-storage-normal.component';
 import { HttpClientModule } from '@angular/common/http';
+import { CreateFileSystemNormalComponent } from './file-storage/no-vpc/create/create-file-system-normal.component';
+import { ExtendFileSystemNormalComponent } from './file-storage/no-vpc/extend/extend-file-system-normal.component';
+import { ResizeFileSystemNormalComponent } from './file-storage/no-vpc/resize/resize-file-system-normal.component';
+import { CreateIpFloatingNormalComponent } from './ip-floating/create-ip-floating-normal.component';
+import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/extend-ip-floating.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -427,11 +428,12 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DeletePoolInLbComponent,
     CreateL7RuleComponent,
     DeleteL7RuleComponent,
-    CreateFileStorageNormalComponent,
-    ExtendFileStorageNormalComponent,
-    ResizeFileStorageNormalComponent,
     DeleteL7PolicyComponent,
-    CancelFileStorageNormalComponent,
+    CreateFileSystemNormalComponent,
+    ExtendFileSystemNormalComponent,
+    ResizeFileSystemNormalComponent,
+    CreateIpFloatingNormalComponent,
+    ExtendIpFloatingComponent,
   ],
   imports: [
     CommonModule,
@@ -465,7 +467,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     EllipsisModule,
     AutofocusDirective,
     // ChartModule,
-    HttpClientModule
+    HttpClientModule,
   ],
 })
 export class PagesModule {}

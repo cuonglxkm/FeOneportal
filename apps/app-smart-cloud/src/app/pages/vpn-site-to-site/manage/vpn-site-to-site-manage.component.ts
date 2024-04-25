@@ -1,8 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { VpnSiteToSiteDTO } from 'src/app/shared/models/vpn-site-to-site';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 import { debounceTime } from 'rxjs';

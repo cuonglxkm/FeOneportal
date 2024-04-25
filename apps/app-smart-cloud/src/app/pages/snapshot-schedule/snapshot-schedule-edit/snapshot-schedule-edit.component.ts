@@ -5,8 +5,6 @@ import {
   Inject,
   OnInit,
 } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -24,6 +22,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-snapshot-schedule-extend',

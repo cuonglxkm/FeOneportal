@@ -1,7 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActionHistoryModel } from 'src/app/shared/models/action-history.model';
-import { RegionModel } from '../../shared/models/region.model';
-import { ProjectModel } from '../../shared/models/project.model';
 import { ActionHistoryService } from 'src/app/shared/services/action-history.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 @Component({
@@ -56,7 +54,6 @@ export class ActionHistoryComponent implements OnInit {
         next: (data) => {
           this.listOfActionHistory = data.records;
           this.total = data.totalCount;
-          console.log(this.listOfActionHistory);
           this.isLoading = false;
         }, 
         error: (e) => {

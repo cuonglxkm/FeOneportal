@@ -3,12 +3,11 @@ import { getCurrentRegionAndProject } from '@shared';
 import { SecurityGroupService } from '../../../shared/services/security-group.service';
 import { SecurityGroup, SecurityGroupSearchCondition } from '../../../shared/models/security-group';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { Instance, InstancesModel } from '../../instances/instances.model';
 import SecurityGroupRule from '../../../shared/models/security-group-rule';
 import { InstancesService } from '../../instances/instances.service';
 import Pagination from '../../../shared/models/pagination';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-list-security-group',

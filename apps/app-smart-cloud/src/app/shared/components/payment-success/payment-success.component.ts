@@ -15,7 +15,7 @@ export class PaymentSuccessComponent implements OnInit {
   orderId: number;
   paymentSuccess: boolean = false;
   causeOfFail: string = '';
-
+  serviceName: string = '';
   constructor(
     private router: Router,
     private paymentService: PaymentService,
@@ -84,6 +84,64 @@ export class PaymentSuccessComponent implements OnInit {
           .getOrderBycode(this.payment.orderNumber)
           .subscribe((result) => {
             this.orderId = result.id;
+            result?.orderItems?.forEach((item) => {
+              this.serviceName = item.serviceName.split('-')[0].trim();
+              if (this.serviceName.includes('Máy ảo')) {
+                this.serviceName = 'VM';
+              }
+            });
+            setTimeout(() => {
+              switch (this.serviceName) {
+                case 'VM':
+                  this.router.navigate([`/app-smart-cloud/instances`]);
+                  break;
+                case 'File Storage':
+                  this.router.navigate([
+                    `/app-smart-cloud/file-storage/file-system/list`,
+                  ]);
+                  break;
+                case 'IP':
+                  this.router.navigate([`/app-smart-cloud/ip-public`]);
+                  break;
+                case 'K8s':
+                  this.router.navigate([`/app-kubernetes`]);
+                  break;
+                case 'Kafka':
+                  this.router.navigate([`/app-kafka`]);
+                  break;
+                case 'VPNSiteToSites':
+                  this.router.navigate([
+                    `/app-smart-cloud/vpn-site-to-site/manage`,
+                  ]);
+                  break;
+                case 'Volume':
+                  this.router.navigate([`/app-smart-cloud/volumes`]);
+                  break;
+                case 'Loadbalancer SDN':
+                  this.router.navigate([`/app-smart-cloud/load-balancer/list`]);
+                  break;
+                case 'Vpc':
+                  this.router.navigate([`/app-smart-cloud/vpc`]);
+                  break;
+                case 'Backup Packet':
+                  this.router.navigate([`/app-smart-cloud/backup/packages`]);
+                  break;
+                case 'Snapshot package':
+                  this.router.navigate([`/app-smart-cloud/snapshot/packages`]);
+                  break;
+                case 'Object Storage':
+                  this.router.navigate([
+                    `/app-smart-cloud/object-storage/bucket`,
+                  ]);
+                  break;
+                default:
+                  this.router.navigate([
+                    `/app-smart-cloud/order/detail/${this.orderId}`,
+                  ]);
+                  break;
+              }
+            }, 5000);
+
             // setTimeout(() => {
             //   this.router.navigate([
             //     `/app-smart-cloud/order/detail/${this.orderId}`,

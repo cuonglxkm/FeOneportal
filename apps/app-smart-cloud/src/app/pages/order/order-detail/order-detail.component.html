@@ -6,14 +6,18 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">{{"app.breadcrumb.home" | i18n}}</a></nz-breadcrumb-item
+        <a [routerLink]="['/']">{{
+          'app.breadcrumb.home' | i18n
+        }}</a></nz-breadcrumb-item
       >
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/order/list']"
-          >{{"app.breadcrumb.order" | i18n}}</a
-        ></nz-breadcrumb-item
+        <a [routerLink]="['/app-smart-cloud/order/list']">{{
+          'app.breadcrumb.order' | i18n
+        }}</a></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item> <a>{{"app.breadcrumb.order-detail" | i18n}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a>{{ 'app.breadcrumb.order-detail' | i18n }}</a></nz-breadcrumb-item
+      >
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -41,7 +45,6 @@
     "
     [nzStatus]="data?.statusCode === 5 ? 'error' : 'process'"
     style="width: 50%; margin: 0 auto"
-
   >
     <nz-step [nzTitle]="'app.order-detail.order' | i18n"></nz-step>
     <nz-step [nzTitle]="'app.order.status.Paid' | i18n"></nz-step>
@@ -54,7 +57,9 @@
     <nz-card style="border-radius: 8px">
       <div class="d-flex align-items-center gap-2">
         <div class="h3-container d-flex gap-2">
-          <h3 class="order-title">{{"app.order-detail.order" | i18n}}: {{ data?.orderCode }}</h3>
+          <h3 class="order-title">
+            {{ 'app.order-detail.order' | i18n }}: {{ data?.orderCode }}
+          </h3>
           <span
             *ngIf="
               data?.statusCode == 4 ||
@@ -83,7 +88,8 @@
           *ngIf="data?.statusCode == 5 && data?.invoiceCode == ''"
         >
           <h3 class="order-failed">
-            <span style="color: #000">|</span> {{"app.order-detail.Cancelled" | i18n}}
+            <span style="color: #000">|</span>
+            {{ 'app.order-detail.Cancelled' | i18n }}
           </h3>
           <h3 class="date-failed">
             vào {{ data?.updatedDate | date : 'HH:mm dd/MM/yyyy' }}
@@ -95,16 +101,18 @@
       <nz-row nzGutter="24" style="margin-top: 30px">
         <nz-col nzSpan="5">
           <nz-form-item>
-            <h3 class="form-title">{{"app.order-detail.customerName" | i18n}}:</h3>
+            <h3 class="form-title">
+              {{ 'app.order-detail.customerName' | i18n }}:
+            </h3>
           </nz-form-item>
           <nz-form-item>
-            <h3 class="form-title">{{"app.order-detail.phone" | i18n}}:</h3>
+            <h3 class="form-title">{{ 'app.order-detail.phone' | i18n }}:</h3>
           </nz-form-item>
           <nz-form-item>
             <h3 class="form-title">Email:</h3>
           </nz-form-item>
           <nz-form-item>
-            <h3 class="form-title">{{"app.order-detail.address" | i18n}}:</h3>
+            <h3 class="form-title">{{ 'app.order-detail.address' | i18n }}:</h3>
           </nz-form-item>
         </nz-col>
         <nz-col nzSpan="7">
@@ -134,13 +142,19 @@
         </nz-col>
         <nz-col nzSpan="6">
           <nz-form-item>
-            <h3 class="form-title">{{"app.order-detail.createDate" | i18n}}:</h3>
+            <h3 class="form-title">
+              {{ 'app.order-detail.createDate' | i18n }}:
+            </h3>
           </nz-form-item>
           <nz-form-item>
-            <h3 class="form-title">{{"app.order-detail.paymentMethod" | i18n}}:</h3>
+            <h3 class="form-title">
+              {{ 'app.order-detail.paymentMethod' | i18n }}:
+            </h3>
           </nz-form-item>
           <nz-form-item>
-            <h3 class="form-title">{{"app.order-detail.paymentCode" | i18n}}:</h3>
+            <h3 class="form-title">
+              {{ 'app.order-detail.paymentCode' | i18n }}:
+            </h3>
           </nz-form-item>
         </nz-col>
         <nz-col nzSpan="6">
@@ -166,29 +180,84 @@
       <nz-table [nzData]="data?.orderItems" nzHideOnSinglePage="true">
         <thead>
           <tr>
-            <th>{{"app.order-detail.serviceName" | i18n}}</th>
-          <th>{{"app.order-detail.price" | i18n}}</th>
-          <th>{{"app.order-detail.remain" | i18n}}</th>
-          <th>{{"app.order-detail.quantity" | i18n}}</th>
-          <th>{{"app.order-detail.totalPrice" | i18n}}</th>
+            <th>{{ 'app.order-detail.serviceName' | i18n }}</th>
+            <th>{{ 'app.order-detail.price' | i18n }}</th>
+            <th>{{ 'app.order-detail.remain' | i18n }}</th>
+            <th>{{ 'app.order-detail.quantity' | i18n }}</th>
+            <th>{{ 'app.order-detail.totalPrice' | i18n }}</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of data?.orderItems">
             <td [ngSwitch]="serviceName">
-            <a *ngSwitchCase="'File Storage'" [routerLink]="['/app-smart-cloud/file-storage/file-system/list']">{{ item?.serviceName }}</a>
-            <a *ngSwitchCase="'IP'" [routerLink]="['/app-smart-cloud/ip-public']">{{ item?.serviceName }}</a>
-            <a *ngSwitchCase="'VM'" [routerLink]="['/app-smart-cloud/instances']">{{ item?.serviceName }}</a>
-            <a *ngSwitchCase="'K8s'" [routerLink]="['/app-kubernetes']">{{ item?.serviceName }}</a>
-            <a *ngSwitchCase="'Kafka'" [routerLink]="['/app-kafka']">{{ item?.serviceName }}</a>
-            <a *ngSwitchCase="'VPNSiteToSites'" [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">{{ item?.serviceName }}</a>
-            <a *ngSwitchCase="'Volume'" [routerLink]="['/app-smart-cloud/volumes']">{{ item?.serviceName }}</a>
-            <div *ngSwitchDefault>{{ item?.serviceName }}</div>
+              <a
+                *ngSwitchCase="'File Storage'"
+                [routerLink]="[
+                  '/app-smart-cloud/file-storage/file-system/list'
+                ]"
+                >{{ item?.serviceName }}</a
+              >
+              <a
+                *ngSwitchCase="'IP'"
+                [routerLink]="['/app-smart-cloud/ip-public']"
+                >{{ item?.serviceName }}</a
+              >
+              <a
+                *ngSwitchCase="'VM'"
+                [routerLink]="['/app-smart-cloud/instances']"
+                >{{ item?.serviceName }}</a
+              >
+              <a *ngSwitchCase="'K8s'" [routerLink]="['/app-kubernetes']">{{
+                item?.serviceName
+              }}</a>
+              <a *ngSwitchCase="'Kafka'" [routerLink]="['/app-kafka']">{{
+                item?.serviceName
+              }}</a>
+              <a
+                *ngSwitchCase="'VPNSiteToSites'"
+                [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+                >{{ item?.serviceName }}</a
+              >
+              <a
+                *ngSwitchCase="'Volume'"
+                [routerLink]="['/app-smart-cloud/volumes']"
+                >{{ item?.serviceName }}</a
+              >
+              <a
+                *ngSwitchCase="'Loadbalancer SDN'"
+                [routerLink]="['/app-smart-cloud/load-balancer/list']"
+                >{{ item?.serviceName }}</a
+              >
+              <a
+                *ngSwitchCase="'Vpc'"
+                [routerLink]="['/app-smart-cloud/vpc']"
+                >{{ item?.serviceName }}</a
+              >
+              <a
+                *ngSwitchCase="'Backup Packet'"
+                [routerLink]="['/app-smart-cloud/backup/packages']"
+                >{{ item?.serviceName }}</a
+              >
+              <a
+                *ngSwitchCase="'Snapshot package'"
+                [routerLink]="['/app-smart-cloud/snapshot/packages']"
+                >{{ item?.serviceName }}</a
+              >
+              <a
+                *ngSwitchCase="'Object Storage'"
+                [routerLink]="['/app-smart-cloud/object-storage/bucket']"
+                >{{ item?.serviceName }}</a
+              >
+              <div *ngSwitchDefault>{{ item?.serviceName }}</div>
             </td>
-            <td class="text-right">{{ item?.unitPrice?.amount | number : '1.0-0' }}</td>
+            <td class="text-right">
+              {{ item?.unitPrice?.amount | number : '1.0-0' }}
+            </td>
             <td class="text-right">{{ item?.duration }}</td>
             <td class="text-right">{{ item?.quantity }}</td>
-            <td class="text-right">{{ item?.totalAmount.amount | number : '1.0-0' }}</td>
+            <td class="text-right">
+              {{ item?.totalAmount.amount | number : '1.0-0' }}
+            </td>
           </tr>
         </tbody>
       </nz-table>
@@ -197,17 +266,19 @@
   <div nz-col nzSpan="8">
     <nz-card style="border-radius: 8px; border-color: #b2deff">
       <div style="margin-bottom: 20px">
-        <span class="text-card-header">{{"app.order-detail.paymentInformation" | i18n}}</span>
+        <span class="text-card-header">{{
+          'app.order-detail.paymentInformation' | i18n
+        }}</span>
       </div>
       <div>
         <nz-table>
           <tr style="margin-bottom: 5px">
-            <td>{{"app.order-detail.totalAmount" | i18n}}</td>
+            <td>{{ 'app.order-detail.totalAmount' | i18n }}</td>
             <td style="text-align: right">
               <span class="price"
                 >{{ data?.amount?.amount | number : '1.0-0' }} VND</span
               >
-              <span>{{"app.order-detail.month" | i18n}}</span>
+              <span>{{ 'app.order-detail.month' | i18n }}</span>
             </td>
           </tr>
           <tr>
@@ -224,7 +295,7 @@
               <span class="price"
                 >{{ data?.vat?.amount | number : '1.0-0' }} VND</span
               >
-              <span>{{"app.order-detail.month" | i18n}}</span>
+              <span>{{ 'app.order-detail.month' | i18n }}</span>
             </td>
           </tr>
           <tr>
@@ -237,10 +308,10 @@
           </tr>
           <tr style="background-color: #cce9ff">
             <td style="padding: 10px; border-radius: 8px 0 0 8px">
-              <span style="display: block; font-size: 16px; font-weight: 600"
-                >{{"app.order-detail.totalPayment" | i18n}}</span
-              >
-              <span>({{"app.order-detail.vat" | i18n}})</span>
+              <span style="display: block; font-size: 16px; font-weight: 600">{{
+                'app.order-detail.totalPayment' | i18n
+              }}</span>
+              <span>({{ 'app.order-detail.vat' | i18n }})</span>
             </td>
             <td
               style="
@@ -261,7 +332,8 @@
             *ngIf="data?.statusCode == 5 && data?.invoiceCode == ''"
             nz-button
           >
-            <span nz-icon nzType="shop" nzTheme="outline"></span> {{"app.order-detail.repurchase" | i18n}}
+            <span nz-icon nzType="shop" nzTheme="outline"></span>
+            {{ 'app.order-detail.repurchase' | i18n }}
           </button>
           <button
             *ngIf="data?.statusCode < 2"
@@ -276,7 +348,7 @@
             "
           >
             <img src="assets/imgs/wallet.svg" />
-            {{"app.order-detail.pay" | i18n}}
+            {{ 'app.order-detail.pay' | i18n }}
           </button>
           <button
             class="mt-3 ml-0"
@@ -285,7 +357,7 @@
             style="width: 100%"
           >
             <span nz-icon nzType="shop" nzTheme="outline"></span>
-            {{"app.order-detail.cancelOrder" | i18n}}
+            {{ 'app.order-detail.cancelOrder' | i18n }}
           </button>
 
           <button
@@ -299,7 +371,7 @@
             "
           >
             <span nz-icon nzType="left" nzTheme="outline"></span>
-            {{"app.order-detail.back" | i18n}}
+            {{ 'app.order-detail.back' | i18n }}
           </button>
         </div>
       </div>

@@ -1,7 +1,7 @@
 <img src="assets/imgs/cancel.svg"
      (click)="showModal()"
       nz-popover
-      [nzPopoverContent]="'Gỡ Volume'"
+      [nzPopoverContent]="'volume.action.detach' | i18n"
       nzPopoverPlacement="bottom"
      style="margin-right: 3px; cursor: pointer"/>
 <!--<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"-->
@@ -11,14 +11,14 @@
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Gỡ Volume</span>
+    <span class="text-modal-title">{{ 'volume.action.detach' | i18n }}</span>
   </div>
   <div *nzModalContent>
     <div *ngIf="isMultiple == true">
-      <nz-form-label>Chọn máy ảo</nz-form-label>
+      <nz-form-label>{{ 'volume.modal.attach.title' | i18n }}</nz-form-label>
       <nz-select nzSize="default"
                  [nzLoading]="isLoading"
-                 [nzPlaceHolder]="'-Chọn máy ảo-'"
+                 [nzPlaceHolder]="'volume.modal.attach.title'|i18n"
                  [(ngModel)]="instanceInVolumeSelected"
                  (ngModelChange)="onChange($event)"
                  nzShowSearch
@@ -26,23 +26,23 @@
         <nz-option *ngFor="let item of listInstanceInVolume" [nzLabel]="item.instanceName"
                    [nzValue]="item.instanceId"></nz-option>
       </nz-select>
-      <div *ngIf="isSelected">Vui lòng chọn máy ảo</div>
+      <div *ngIf="isSelected">{{ 'volume.notification.input.select.vm' | i18n }}</div>
     </div>
     <div *ngIf="isMultiple == false">
       <div>
-        <span style="text-align: center"><b>Quý khách có chắc chắn muốn gỡ Volume khỏi máy ảo không?</b></span>
+        <span style="text-align: center"><b>{{'volume.alert.message.confirm.detach'|i18n}}</b></span>
       </div>
     </div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{'app.button.cancel'|i18n}}
     </button>
     <button nz-button nzType="primary"
             (click)="handleOk()"
             [nzLoading]="isLoading"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm'|i18n}}
     </button>
   </div>
 </nz-modal>

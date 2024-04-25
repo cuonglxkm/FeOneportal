@@ -1,6 +1,4 @@
 import {Component, Inject, ViewChild} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {PolicyModel} from "../policy.model";
 import {PolicyService} from "../../../shared/services/policy.service";
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
@@ -12,6 +10,7 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 @Component({
   selector: 'one-portal-policy-list',
   templateUrl: './policy-list.component.html',

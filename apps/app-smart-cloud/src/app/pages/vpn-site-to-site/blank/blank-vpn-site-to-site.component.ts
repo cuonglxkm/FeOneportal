@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 
 @Component({
