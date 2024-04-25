@@ -33,7 +33,7 @@
         <nz-select nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="handleChange()"
           [nzPlaceHolder]="'app.service.status' | i18n" class="w-100" nzSize="large">
           <nz-option *ngFor="let item of listOfStatusKafka" [nzValue]="item.id"
-            [nzLabel]="item.statusName"></nz-option>
+            [nzLabel]="item.statusI18n | i18n"></nz-option>
         </nz-select>
       </div>
 
