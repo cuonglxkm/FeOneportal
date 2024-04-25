@@ -9,9 +9,8 @@ import { FileSystemDetail } from '../../../../shared/models/file-system.model';
 import { OrderItem } from '../../../../shared/models/price';
 import { Subject } from 'rxjs';
 import { getCurrentRegionAndProject } from '@shared';
-import { RegionModel } from '../../../../../../../app-kubernetes/src/app/shared/models/region.model';
-import { ProjectModel } from '../../../../../../../app-kubernetes/src/app/shared/models/project.model';
-import { ProjectService } from '../../../../../../../app-kubernetes/src/app/shared/services/project.service';
+import { ProjectModel, ProjectService, RegionModel } from '../../../../../../../../libs/common-utils/src';
+
 
 @Component({
   selector: 'one-portal-extend-file-system-normal',
