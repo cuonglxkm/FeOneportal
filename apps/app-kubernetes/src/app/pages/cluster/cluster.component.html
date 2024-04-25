@@ -392,33 +392,69 @@
           </div>
 
           <div nz-col [nzSpan]="12">
-            <nz-form-item>
-              <nz-form-label nzFor="cidr">Pod CIDR (<span class="required-color">*</span>)</nz-form-label>
-              <nz-form-control [nzErrorTip]="cidrErrorTpl">
-                <nz-input-group [nzSuffix]="suffixRange" class="w-100" nzSize="large">
-                  <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR"
-                    (ngModelChange)="onValidateIP($event); checkOverLapseIP();" />
-                </nz-input-group>
-                <ng-template #suffixRange>/16</ng-template>
-              </nz-form-control>
-              <ng-template #cidrErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">
-                  Pod CIDR không để trống
-                </ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">
-                  Pod CIDR không đúng định dạng
-                </ng-container>
-                <ng-container *ngIf="control.hasError('overlap')">
-                  Pod CIDR trùng dải với subnet
-                </ng-container>
-                <ng-container *ngIf="control.hasError('invalid')">
-                  Pod CIDR không hợp lệ
-                </ng-container>
-                <ng-container *ngIf="control.hasError('cidr_used')">
-                  Pod CIDR đã được sử dụng
-                </ng-container>
-              </ng-template>
-            </nz-form-item>
+            <div nz-row [nzGutter]="16">
+              <div nz-col [nzSpan]="12">
+                <nz-form-item>
+                  <nz-form-label nzFor="cidr">Pod CIDR (<span class="required-color">*</span>)</nz-form-label>
+                  <nz-form-control [nzErrorTip]="cidrErrorTpl">
+                    <nz-input-group [nzSuffix]="suffixRange" class="w-100" nzSize="large">
+                      <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR"
+                        (ngModelChange)="onValidateIP($event); checkOverLapseIP();" />
+                    </nz-input-group>
+                    <ng-template #suffixRange>/16</ng-template>
+                  </nz-form-control>
+                  <ng-template #cidrErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      Pod CIDR không để trống
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('pattern')">
+                      Pod CIDR không đúng định dạng
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('overlap')">
+                      Pod CIDR trùng dải với subnet
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('invalid')">
+                      Pod CIDR không hợp lệ
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('cidr_used')">
+                      Pod CIDR đã được sử dụng
+                    </ng-container>
+                  </ng-template>
+                </nz-form-item>
+              </div>
+
+              <div nz-col [nzSpan]="12">
+                <nz-form-item>
+                  <nz-form-label nzFor="cidr">Service CIDR (<span class="required-color">*</span>)</nz-form-label>
+                  <nz-form-control [nzErrorTip]="serviceCidrErrorTpl">
+                    <nz-input-group [nzSuffix]="suffixRange" class="w-100" nzSize="large">
+                      <input type="text" nz-input formControlName="serviceCidr" placeholder="Nhập Service CIDR"
+                        (ngModelChange)="checkOverlapPodCidr()" />
+                    </nz-input-group>
+                  </nz-form-control>
+                  <ng-template #serviceCidrErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      Service CIDR không để trống
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('pattern')">
+                      Service CIDR không đúng định dạng
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('overlapPodCidr')">
+                      Service CIDR trùng dải với Pod CIDR
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('overlapSubnet')">
+                      Service CIDR trùng dải với subnet
+                    </ng-container>
+                    <!-- <ng-container *ngIf="control.hasError('invalid')">
+                      Service CIDR không hợp lệ
+                    </ng-container> -->
+                    <!-- <ng-container *ngIf="control.hasError('cidr_used')">
+                      Service CIDR đã được sử dụng
+                    </ng-container> -->
+                  </ng-template>
+                </nz-form-item>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -694,10 +730,18 @@
             </div>
             <div nz-row [nzGutter]="8">
               <div nz-col [nzSpan]="12">
-                <div class="mt-3 ml-3"><label>CIDR</label></div>
+                <div class="mt-3 ml-3"><label>Pod CIDR</label></div>
               </div>
               <div nz-col [nzSpan]="12">
                 <div class="price-style mt-3 mr-3">{{cidr}}</div>
+              </div>
+            </div>
+            <div nz-row [nzGutter]="8">
+              <div nz-col [nzSpan]="12">
+                <div class="mt-3 ml-3"><label>Service CIDR</label></div>
+              </div>
+              <div nz-col [nzSpan]="12">
+                <div class="price-style mt-3 mr-3">{{serviceCidr}}</div>
               </div>
             </div>
             <div nz-row [nzGutter]="8">

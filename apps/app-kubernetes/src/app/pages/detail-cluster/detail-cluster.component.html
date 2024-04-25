@@ -469,6 +469,10 @@
                 <td class="w-50"><row-data [value]="vpcNetwork" [label]="'Mạng VPC'"></row-data></td>
                 <td class="w-50"><row-data [value]="detailCluster.subnet" [label]="'Subnet'"></row-data></td>
               </tr>
+              
+              <tr>
+                <td class="w-50"><row-data [value]="detailCluster.serviceCidr" [label]="'Service CIDR'"></row-data></td>
+              </tr>
             </tbody>
           </nz-table>
         </div>
@@ -638,7 +642,7 @@
     </ng-template>
   </div>
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancelModalUpgradeWorker()">
+    <button nz-button nzType="default" (click)="handleCancelModalUpgradeWorker()" [disabled]="isUpgradingWorker">
       <span nz-icon nzType="close" nzTheme="outline"></span>
       Hủy bỏ
     </button>

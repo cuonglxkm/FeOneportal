@@ -142,6 +142,7 @@ export class NetworkingModel {
   subnetId: string;
   networkCloudId: string;
   subnetCloudId: string;
+  serviceCidr: string;
 
   constructor(obj) {
     if (obj) {
@@ -152,6 +153,7 @@ export class NetworkingModel {
       this.subnetId = obj.subnetId;
       this.networkCloudId = obj.networkCloudId;
       this.subnetCloudId = obj.subnetCloudId;
+      this.serviceCidr = obj.serviceCidr;
     }
   }
 

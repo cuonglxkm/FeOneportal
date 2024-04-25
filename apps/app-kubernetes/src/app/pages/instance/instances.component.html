@@ -31,11 +31,25 @@
           <th class="align-center header-table">vCpu</th>
           <th class="align-center header-table">Ram</th>
           <th class="align-center header-table">Storage (GB)</th>
+          <th class="align-center header-table">Loại ổ cứng</th>
           <th class="align-center header-table">Thao tác</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of instanceTable.data; let i = index;">
+          <td>{{ i + 1 }}</td>
+          <td>{{ item.instanceName }}</td>
+          <td>{{ item.workerGroupName }}</td>
+          <td>{{ item.status }}</td>
+          <td>{{ item.privateIP }}</td>
+          <td>{{ item.ram }}</td>
+          <td>{{ item.vCPUs }}</td>
+          <td>{{ item.volumeSize }}</td>
+          <td>{{ item.volumeType }}</td>
+          <td>
+            <nz-switch nz-switch nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt" 
+              (ngModelChange)="handleOnOffInstance(item)"></nz-switch>
+          </td>
         </tr>
       </tbody>
     </nz-table>
