@@ -148,6 +148,9 @@
   "app.service.start.date": "Ngày cấp dịch vụ",
   "app.months.for.extend": "Số tháng cần gia hạn thêm",
   "app.expected.expiry.date": "Ngày hết hạn dự kiến",
+  "app.extend.start.date": "Ngày bắt đầu gia hạn",
+  "app.extend.tooltip": "Mỗi tháng tương đương 30 ngày",
+  "app.extend.cost": "Chi phí gia hạn",
   "app.access.rights": "Quyền truy cập",
   "app.set.acl": "Thiết lập ACL",
   "app.set.access.control.list": "Thiết lập Access Control List",
@@ -765,6 +768,8 @@
   "kafka.upgrade.cpu-max": "Giá trị CPU tối đa 16 vCPU",
   "kafka.upgrade.storage-min": "Giá trị Storage tối thiểu 1 GB",
   "kafka.upgrade.storage-max": "Giá trị Storage tối đa 2000 GB",
+
+  "kafka.extend.title": "Gia hạn dịch vụ Kafka",
 
   "tooltip.kakfa.topic.max-message-bytes": "Kích thước tối đa của 1 message",
   "tooltip.kakfa.topic.cleanup-policy": "Chính sách dọn dẹp",

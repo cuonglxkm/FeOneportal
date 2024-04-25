@@ -269,6 +269,9 @@
   "app.service.start.date": "Service Start Date",
   "app.months.for.extend": "Number of Months for extension",
   "app.expected.expiry.date": "Expected Expiry Date",
+  "app.extend.start.date": "Expiry Start Date",
+  "app.extend.tooltip": "Each month equals 30 days",
+  "app.extend.cost": "Extend cost",
   "app.access.rights": "Access Rights",
   "app.set.acl": "Set ACL",
   "app.set.access.control.list": "Set Access Control List",
@@ -886,6 +889,8 @@
   "kafka.upgrade.cpu-max": "The maximum CPU value is 16 vCPU",
   "kafka.upgrade.storage-min": "The minimum Storage value is 1 GB",
   "kafka.upgrade.storage-max": "The maximum Storage value is 2000 GB",
+
+  "kafka.extend.title": "Extend Kafka service",
 
   "tooltip.kakfa.topic.max-message-bytes": "The maximum size of one message",
   "tooltip.kakfa.topic.cleanup-policy": "Cleanup Policy",
