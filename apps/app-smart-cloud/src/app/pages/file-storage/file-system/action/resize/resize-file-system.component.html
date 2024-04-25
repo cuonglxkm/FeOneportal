@@ -42,7 +42,7 @@
               </nz-form-item>
               <nz-form-item>
                 <nz-form-label>
-                  <span>Giao thức (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <span>{{ 'app.protocol' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
                   <img nz-popover
                        [nzPopoverContent]="'Giao thức NFS (Network File System) là một giao thức mạng được sử dụng ' +
                            'để chia sẻ tập tin và thư mục qua mạng giữa các hệ thống máy tính khác nhau. ' +
@@ -107,7 +107,7 @@
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>Mô tả</span>
+                <span>{{ 'app.service.description' | i18n }}</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">

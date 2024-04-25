@@ -1,8 +1,12 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Quản lý File System Snapshot'">
     <ng-template #breadcrumb>
       <nz-breadcrumb>
-        <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
-        <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+        </nz-breadcrumb-item>
+         <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
         <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
         <nz-breadcrumb-item>Quản lý File System Snapshot</nz-breadcrumb-item>
       </nz-breadcrumb>
@@ -27,7 +31,7 @@
                           style="width: 300px;">
             <input name="name"
                    nz-input
-                   placeholder="Tìm kiếm"
+                   [nz-tooltip]="'app.button.search' | i18n"
                    [(ngModel)]="value"
                    (input)="onInputChange($event.target['value'])"/>
           </nz-input-group>
@@ -58,7 +62,7 @@
           <th>STT</th>
           <th>Tên Snapshot</th>
           <th>Dung lượng (GB)</th>
-          <th>Trạng thái tác vụ</th>
+          <th>{{ 'app.task.status' | i18n }}</th>
           <th>Tên File System</th>
           <th>Ngày cấp dịch vụ</th>
           <th nzAlign='center'>Thao tác</th>

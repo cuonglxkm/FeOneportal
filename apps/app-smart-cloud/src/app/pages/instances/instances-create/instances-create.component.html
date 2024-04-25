@@ -178,7 +178,9 @@
                         nzShowSearch
                         [id]="'hdh_' + data.id"
                         [(ngModel)]="listSelectedImage[i]"
-                        (ngModelChange)="onInputHDH($event, i, data.id)"
+                        (ngModelChange)="
+                          onInputHDH($event, i, data.id, data.uniqueKey)
+                        "
                         [nzPlaceHolder]="'app.button.choose.version' | i18n"
                         [ngModelOptions]="{ standalone: true }"
                         style="text-align: center; width: 155px"
@@ -1108,6 +1110,7 @@
                       [ngModelOptions]="{ standalone: true }"
                       (click)="initSSHkey()"
                       (keyup.enter)="initSSHkey()"
+                      [disabled]="disableKeypair"
                     ></label>
                   </ng-template>
                   <ng-template #nzTitleselectedPasswordOrSSHkey2>
@@ -1210,7 +1213,7 @@
                 </nz-form-control>
                 <ng-template #keypairErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">{{
-                    'validation.choose.keypair' | i18n
+                    'validation.choose.required' | i18n : { name: 'keypair' }
                   }}</ng-container>
                 </ng-template>
               </nz-form-item>

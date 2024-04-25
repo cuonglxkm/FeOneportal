@@ -380,11 +380,15 @@ export class InstancesCreateComponent implements OnInit {
 
   nameHdh: string = '';
   isLinuxHDH: boolean = false;
-  onInputHDH(event: any, index: number, imageTypeId: number) {
-    if (imageTypeId == 1) {
-      this.getAllSSHKey();
-    } else {
+  disableKeypair: boolean = false;
+  onInputHDH(event: any, index: number, imageTypeId: number, uniqueKey: string) {
+    if (uniqueKey.toUpperCase() == "WINDOWS") {
+      this.initPassword();
       this.listSSHKey = [];
+      this.disableKeypair = true
+    } else {
+      this.disableKeypair = false
+      this.getAllSSHKey();
     }
     this.hdh = event;
     this.selectedImageTypeId = imageTypeId;

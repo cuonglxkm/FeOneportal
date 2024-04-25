@@ -8,7 +8,7 @@
         Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">Chi tiết Load Balancer</a>
@@ -130,17 +130,17 @@
           <nz-form-item>
             <nz-form-label nzFor="description">
               <div class="label">
-                <span>Mô tả</span>
+                <span>{{ 'app.service.description' | i18n }}</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
               <textarea nz-input class="input-custom"
                         formControlName="description"
-                        [placeholder]="'Nhập nội dung'" [maxLength]="255"
+                        [placeholder]="'app.input.des' | i18n" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"
               (keydown.enter)="focusOkButton($event)"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>

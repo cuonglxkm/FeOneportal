@@ -3,7 +3,9 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Danh sách File System</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/create'">Khởi tạo File System
@@ -57,7 +59,7 @@
               <nz-form-item>
                 <nz-form-label>
                   <div>
-                    <span>Giao thức (</span>
+                    <span>{{ 'app.protocol' | i18n }} (</span>
                     <span style="color: rgba(252, 16, 16, 1); ">*</span>)
                     <img nz-popover
                          [nzPopoverContent]="'Giao thức NFS (Network File System) là một giao thức mạng được sử dụng ' +
@@ -180,7 +182,7 @@
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>Mô tả</span>
+                <span>{{ 'app.service.description' | i18n }}</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
@@ -237,13 +239,13 @@
                 </div>
                 <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
                   <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-                    <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                    <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
                   </button>
                   <button nz-button nzType="primary"
                           [nzLoading]="isLoading"
                           class="button-ok"
                           (click)="handleOk()">
-                    <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                    <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
                   </button>
                 </div>
               </nz-modal>
@@ -275,13 +277,13 @@
           <!--                </div>-->
           <!--                <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">-->
           <!--                  <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">-->
-          <!--                    <span nz-icon nzType="close" nzTheme="outline"></span>Hủy-->
+          <!--                    <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}-->
           <!--                  </button>-->
           <!--                  <button nz-button nzType="primary"-->
           <!--                          [nzLoading]="isLoading"-->
           <!--                          class="button-ok"-->
           <!--                          (click)="handleOk()">-->
-          <!--                    <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận-->
+          <!--                    <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}-->
           <!--                  </button>-->
           <!--                </div>-->
           <!--              </nz-modal>-->
