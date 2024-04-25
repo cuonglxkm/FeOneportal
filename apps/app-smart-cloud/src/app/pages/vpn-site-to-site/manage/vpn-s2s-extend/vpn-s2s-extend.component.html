@@ -19,6 +19,7 @@
 </ng-template>
 <ng-template #action>
   <div class="alain-custom-action text-right">
+    <share-users-combobox [isDisable]="true"></share-users-combobox>
     <region-select-dropdown [isDetail]="true"
       (valueChanged)="regionChanged($event)"
     ></region-select-dropdown>

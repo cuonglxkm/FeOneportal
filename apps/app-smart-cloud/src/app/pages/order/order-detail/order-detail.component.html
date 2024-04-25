@@ -22,6 +22,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
@@ -240,6 +241,11 @@
               <a
                 *ngSwitchCase="'Snapshot package'"
                 [routerLink]="['/app-smart-cloud/snapshot/packages']"
+                >{{ item?.serviceName }}</a
+              >
+              <a
+                *ngSwitchCase="'Object Storage'"
+                [routerLink]="['/app-smart-cloud/object-storage/bucket']"
                 >{{ item?.serviceName }}</a
               >
               <div *ngSwitchDefault>{{ item?.serviceName }}</div>

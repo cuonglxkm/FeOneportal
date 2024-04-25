@@ -62,7 +62,7 @@ class ConfigGPU {
   ram: number = 0;
   storage: number = 0;
   GPU: number = 0;
-  GPUType: string;
+  GPUType: string = '';
 }
 class BlockStorage {
   id: number = 0;
@@ -460,7 +460,6 @@ export class InstancesCreateComponent implements OnInit {
     this.initFlavors();
   }
   initSSD(): void {
-    this.myCarouselFlavor.ngOnDestroy();
     this.activeBlockHDD = false;
     this.activeBlockSSD = true;
     this.offerFlavor = null;
@@ -480,8 +479,40 @@ export class InstancesCreateComponent implements OnInit {
     this.initFlavors();
   }
 
+  isPreConfigPackage = true;
   isCustomconfig = false;
+  isGpuConfig = false;
   onClickConfigPackage() {
+    this.isPreConfigPackage = true;
+    this.isCustomconfig = false;
+    this.isGpuConfig = false;
+    this.resetData();
+    this.disableHDD = false;
+  }
+
+  onClickCustomConfig() {
+    this.isPreConfigPackage = false;
+    this.isCustomconfig = true;
+    this.isGpuConfig = false;
+    this.resetData();
+    this.disableHDD = false;
+  }
+
+  disableHDD: boolean = false;
+  onClickGpuConfig() {
+    this.isPreConfigPackage = false;
+    this.isCustomconfig = false;
+    this.isGpuConfig = true;
+    this.resetData();
+    this.activeBlockHDD = false;
+    this.activeBlockSSD = true;
+    this.disableHDD = true;
+  }
+
+  resetData() {
+    this.offerFlavor = null;
+    this.selectedElementFlavor = null;
+    this.configGPU = new ConfigGPU();
     this.configCustom = new ConfigCustom();
     this.volumeUnitPrice = 0;
     this.volumeIntoMoney = 0;
@@ -489,13 +520,6 @@ export class InstancesCreateComponent implements OnInit {
     this.ramIntoMoney = 0;
     this.cpuUnitPrice = 0;
     this.cpuIntoMoney = 0;
-    this.isCustomconfig = false;
-  }
-
-  onClickCustomConfig() {
-    this.offerFlavor = null;
-    this.selectedElementFlavor = null;
-    this.isCustomconfig = true;
   }
   //#endregion
 
@@ -1074,6 +1098,14 @@ export class InstancesCreateComponent implements OnInit {
       this.instanceCreate.ram = this.configCustom.ram;
       this.instanceCreate.cpu = this.configCustom.vCPU;
       this.instanceCreate.volumeSize = this.configCustom.capacity;
+    } else if (this.isGpuConfig) {
+      this.instanceCreate.offerId = 0;
+      this.instanceCreate.flavorId = 0;
+      this.instanceCreate.ram = this.configGPU.ram;
+      this.instanceCreate.cpu = this.configGPU.CPU;
+      this.instanceCreate.volumeSize = this.configGPU.storage;
+      this.instanceCreate.gpuCount = this.configGPU.GPU;
+      this.instanceCreate.gpuType = this.configGPU.GPUType;
     } else {
       this.instanceCreate.offerId = this.offerFlavor.id;
       this.offerFlavor.characteristicValues.forEach((e) => {
@@ -1217,7 +1249,7 @@ export class InstancesCreateComponent implements OnInit {
       this.notification.error('', 'Vui lòng chọn Snapshot ');
       return;
     }
-    if (this.isCustomconfig == false && this.offerFlavor == null) {
+    if (this.isPreConfigPackage == true && this.offerFlavor == null) {
       this.notification.error('', 'Vui lòng chọn gói cấu hình');
       return;
     }
@@ -1227,7 +1259,18 @@ export class InstancesCreateComponent implements OnInit {
         this.configCustom.ram == 0 ||
         this.configCustom.capacity == 0)
     ) {
-      this.notification.error('', 'Cấu hình tùy chỉnh chưa hợp lệ');
+      this.notification.error('', 'Cấu hình tùy chọn chưa hợp lệ');
+      return;
+    }
+    if (
+      this.isGpuConfig == true &&
+      (this.configGPU.CPU == 0 ||
+        this.configGPU.ram == 0 ||
+        this.configGPU.storage == 0 ||
+        this.configGPU.GPU == 0 ||
+        this.configGPU.GPUType == '')
+    ) {
+      this.notification.error('', 'Cấu hình GPU chưa hợp lệ');
       return;
     }
     // if (

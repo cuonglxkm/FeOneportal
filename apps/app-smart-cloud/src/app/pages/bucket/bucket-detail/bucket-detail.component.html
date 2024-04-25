@@ -277,7 +277,7 @@
         <tbody>
         <tr *ngFor="let item of lstFileUpdate, i as index">
           <td>{{item.name}}</td>
-          <td>{{item.type}}</td>
+          <td style="width: 200px">{{item.type}}</td>
           <td>
             <div>{{(item.size / 1024).toFixed(2)}} KB</div>
             <div><nz-progress *ngIf="item.percentage > 0" nzType="line" [nzPercent]="item.percentage" 

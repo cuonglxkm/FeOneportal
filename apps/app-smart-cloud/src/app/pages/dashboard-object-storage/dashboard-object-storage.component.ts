@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { SubUser } from '../../shared/models/sub-user.model';
 import { Router } from '@angular/router';
@@ -10,6 +10,8 @@ import { BucketModel } from '../../shared/models/bucket.model';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-dashboard-object-storage',
@@ -39,16 +41,17 @@ export class DashboardObjectStorageComponent implements OnInit {
   summary: Summary[];
 
   times = [
-    { value: 5, label: '5 phút' },
-    { value: 15, label: '15 phút' },
-    { value: 60, label: '1 giờ' },
-    { value: 1440, label: '1 ngày' },
-    { value: 10080, label: '1 tuần' },
-    { value: 43200, label: '1 tháng' },
-    { value: 129600, label: '3 tháng' }
+    { value: 5, label: '5 ' + this.i18n.fanyi('app.minute') },
+    { value: 15, label: '15 ' + this.i18n.fanyi('app.minute') },
+    { value: 60, label: '1 ' + this.i18n.fanyi('app.hour') },
+    { value: 1440, label: '1 ' + this.i18n.fanyi('app.day') },
+    { value: 10080, label: '1 ' + this.i18n.fanyi('app.week') },
+    { value: 43200, label: '1 ' + this.i18n.fanyi('app.month') },
+    { value: 129600, label: '3 ' + this.i18n.fanyi('app.months') }
   ];
 
-  constructor(private router: Router,
+  constructor(@Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private router: Router,
               private objectStorageService: ObjectStorageService,
               private cdr: ChangeDetectorRef,
               private loadingSrv: LoadingService,
@@ -78,7 +81,7 @@ export class DashboardObjectStorageComponent implements OnInit {
           );
         },
       });
-  } 
+  }
 
   onBucketChange(value) {
     this.bucketSelected = value;
