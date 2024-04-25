@@ -1,6 +1,4 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {BackupVm, BackupVMFormSearch} from "../../../shared/models/backup-vm";
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import Pagination from "../../../shared/models/pagination";
@@ -9,7 +7,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {getCurrentRegionAndProject} from "@shared";
-import {ProjectService} from "../../../shared/services/project.service";
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-list-backup-vm',

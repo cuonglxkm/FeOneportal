@@ -1,9 +1,7 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { BaseResponse } from '../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { SubUser } from '../../shared/models/sub-user.model';
 import { Router } from '@angular/router';
-import { RegionModel } from '../../shared/models/region.model';
-import { ProjectModel } from '../../shared/models/project.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { ObjectStorageService } from '../../shared/services/object-storage.service';
 import { Summary, UserInfoObjectStorage } from '../../shared/models/object-storage.model';
@@ -83,7 +81,7 @@ export class DashboardObjectStorageComponent implements OnInit {
           );
         },
       });
-  } 
+  }
 
   onBucketChange(value) {
     this.bucketSelected = value;

@@ -2,14 +2,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { FormExtendLoadBalancer, LoadBalancerModel } from '../../../../shared/models/load-balancer.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { OrderItem } from '../../../../shared/models/price';
 import { EditSizeVolumeModel } from '../../../../shared/models/volume.model';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-extend-load-balancer-normal',

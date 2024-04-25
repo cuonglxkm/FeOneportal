@@ -7,10 +7,8 @@ import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {PopupExtendVolumeComponent} from "../popup-volume/popup-extend-volume.component";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {EditSizeVolumeModel} from "../../../../shared/models/volume.model";
-import {RegionModel} from "../../../../shared/models/region.model";
-import { ProjectModel, SizeInCLoudProject } from '../../../../shared/models/project.model';
-import { ProjectService } from 'src/app/shared/services/project.service';
 import {getCurrentRegionAndProject} from "@shared";
+import { SizeInCloudProject, RegionModel, ProjectModel, ProjectService } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'app-detail-volume',
@@ -38,7 +36,7 @@ export class DetailVolumeComponent implements OnInit {
 
   typeVPC: number
 
-  sizeInCloudProject: SizeInCLoudProject = new SizeInCLoudProject()
+  sizeInCloudProject: SizeInCloudProject = new SizeInCloudProject()
 
   regionChanged(region: RegionModel) {
     // this.region = region.regionId

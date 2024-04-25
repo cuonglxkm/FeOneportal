@@ -2,9 +2,7 @@ import {Component} from '@angular/core';
 import {BackupVolume} from "../backup-volume.model";
 import {Router} from "@angular/router";
 import {BackupVolumeService} from "../../../../../shared/services/backup-volume.service";
-import {ProjectModel} from "../../../../../shared/models/project.model";
-import {RegionModel} from "../../../../../shared/models/region.model";
-import {ProjectService} from "../../../../../shared/services/project.service";
+import { ProjectService, ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-detail-backup-volume',

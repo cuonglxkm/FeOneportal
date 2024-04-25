@@ -1,6 +1,4 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -19,6 +17,7 @@ import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { debounceTime } from 'rxjs';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { OrderItem } from '../../../../shared/models/price';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-lb-novpc',

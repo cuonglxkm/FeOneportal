@@ -1,8 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RegionModel } from '../../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../../shared/models/project.model';
 import {
   AbstractControl,
   FormControl,
@@ -15,6 +13,7 @@ import { FormCreateL7Policy, Pool } from '../../../../../shared/models/load-bala
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 
 export function urlValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {

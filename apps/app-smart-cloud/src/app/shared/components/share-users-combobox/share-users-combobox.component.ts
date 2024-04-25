@@ -1,6 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {RegionModel} from "../../models/region.model";
-import {RegionService} from "../../services/region.service";
 import { PolicyService } from '../../services/policy.service';
 
 @Component({

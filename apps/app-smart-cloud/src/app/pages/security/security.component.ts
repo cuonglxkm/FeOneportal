@@ -1,14 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel } from '../../shared/models/project.model';
-import { RegionModel } from '../../shared/models/region.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { SecurityService } from 'src/app/shared/services/security.service';
 import { FormEnable2FA } from 'src/app/shared/models/security.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { RegionModel, ProjectModel } from '../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-security',

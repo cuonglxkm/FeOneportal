@@ -1,6 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../../shared/models/project.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { SnapshotVolumeService } from '../../../../../shared/services/snapshot-volume.service';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
@@ -14,7 +12,7 @@ import {
 import { FileSystemService } from '../../../../../shared/services/file-system.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
-import { ProjectService } from '../../../../../shared/services/project.service';
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-file-system',

@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { FileSystemService } from '../../../shared/services/file-system.service';
 import { FileSystemDetail } from '../../../shared/models/file-system.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClipboardService } from 'ngx-clipboard';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-detail-file-system',

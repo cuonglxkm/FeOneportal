@@ -1,6 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -15,6 +13,7 @@ import {
 } from '@angular/forms';
 import { FormCreateSubnet, FormSearchSubnet } from '../../../../shared/models/vlan.model';
 import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 
 export function ipAddressValidator(): ValidatorFn {

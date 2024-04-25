@@ -19,10 +19,10 @@ import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { G2TimelineData } from '@delon/chart/timeline';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from '@delon/abc/loading';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',

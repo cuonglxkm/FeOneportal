@@ -14,9 +14,9 @@ import {
   UserModel,
 } from '../../../../../../libs/common-utils/src';
 import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
-import { environment } from '../../../../../app-smart-cloud/src/environments/environment';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'one-portal-user-profile',

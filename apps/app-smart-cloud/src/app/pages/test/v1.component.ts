@@ -14,10 +14,9 @@ import {OnboardingService} from '@delon/abc/onboarding';
 import {_HttpClient} from '@delon/theme';
 import {NzSafeAny} from 'ng-zorro-antd/core/types';
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {RegionModel} from "../../shared/models/region.model";
 import {HttpClient} from "@angular/common/http";
-import {ProjectModel} from "../../shared/models/project.model";
 import { JsonEditorOptions } from '@maaxgr/ang-jsoneditor';
+import { RegionModel, ProjectModel } from '../../../../../../libs/common-utils/src';
 @Component({
   selector: 'app-dashboard-v1',
   templateUrl: 'v1.component.html',

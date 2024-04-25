@@ -14,8 +14,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { G2TimelineData } from '@delon/chart/timeline';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 

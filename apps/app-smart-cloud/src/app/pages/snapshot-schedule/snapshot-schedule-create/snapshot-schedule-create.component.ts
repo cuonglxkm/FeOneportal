@@ -1,6 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -19,6 +17,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { FormSearchPackageSnapshot } from 'src/app/shared/models/package-snapshot.model';
 import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
 import { DatePipe } from '@angular/common';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-schedule-snapshot',

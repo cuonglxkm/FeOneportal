@@ -11,7 +11,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { UserCreate } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
