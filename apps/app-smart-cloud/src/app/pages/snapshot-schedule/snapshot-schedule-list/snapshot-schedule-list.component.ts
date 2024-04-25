@@ -1,6 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -8,6 +6,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ScheduleSnapshotVL } from 'src/app/shared/models/snapshotvl.model';
 import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-list-schedule-snapshot',

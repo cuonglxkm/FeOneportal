@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { AccessRuleService } from '../../../../shared/services/access-rule.service';
-import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { AccessRule } from '../../../../shared/models/access-rule.model';
 
 @Component({

@@ -23,64 +23,6 @@
     <ng-container *ngSwitchCase="false">
       <nz-card style="border-radius: 8px;">
         <nz-row nzJustify="space-between">
-          <nz-col nzSpan="16">
-            <div>
-              <span class="text-card-header">Thông tin File Storage</span>
-            </div>
-          </nz-col>
-          <nz-col nzSpan="8" style="flex: none;" *ngIf="typeVpc == 0">
-            <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large" (click)="navigateToExtendFileSystem(7)">
-              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/redo.svg" alt="" />
-              <span class="button-text-primary">Gia hạn</span>
-            </button>
-            <button nz-button nz-dropdown [nzDropdownMenu]="opMenu">
-              <span style="margin-right: 4px">Thêm</span
-              ><img src="assets/imgs/arrow-down.svg" alt="" />
-            </button>
-            <nz-dropdown-menu #opMenu="nzDropdownMenu">
-              <ul nz-menu>
-                <li nz-menu-item>Điều chỉnh</li>
-                <one-portal-cancel-file-storage-normal [region]="region" [project]="project" />
-              </ul>
-            </nz-dropdown-menu>
-          </nz-col>
-        </nz-row>
-
-        <form nz-form nzLayout="vertical">
-          <nz-form-item style="margin-top: 20px;margin-bottom: 0;">
-            <nz-form-label>
-              <span *ngIf="projectInfo?.cloudProject?.type.includes('VPC')">Loại dự án: <b>Dự án VPC</b></span>
-              <span *ngIf="!projectInfo?.cloudProject?.type.includes('VPC')">Loại dự án: <b>Dự án thường</b></span>
-            </nz-form-label>
-          </nz-form-item>
-          <nz-form-item style="margin-bottom: 0;">
-            <nz-form-label>
-              <span>Dung lượng File System đã dùng: <b>{{ projectInfo?.cloudProjectResourceUsed?.quotaShareInGb }} GB /
-                {{ projectInfo?.cloudProject?.quotaShareInGb }} GB</b></span>
-            </nz-form-label>
-          </nz-form-item>
-          <nz-form-item style="margin-bottom: 0;">
-            <nz-form-label>
-              <span>Dung lượng File System Snapshot đã dùng: <b>{{ projectInfo?.cloudProjectResourceUsed?.quotaShareSnapshotInGb }}
-                GB /
-                {{ projectInfo?.cloudProject?.quotaShareSnapshotInGb }} GB</b></span>
-            </nz-form-label>
-          </nz-form-item>
-          <nz-form-item style="margin-bottom: 0;">
-            <nz-form-label>
-              <span>Ngày khởi tạo: </span>
-            </nz-form-label>
-          </nz-form-item>
-          <nz-form-item style="margin-bottom: 0;">
-            <nz-form-label>
-              <span>Ngày hết hạn theo dự án VPC: </span>
-            </nz-form-label>
-          </nz-form-item>
-        </form>
-
-      </nz-card>
-      <nz-card style="border-radius: 8px;">
-        <nz-row nzJustify="space-between">
           <nz-col [nzSpan]="8">
             <span class="text-card-header">Danh sách File System</span>
           </nz-col>
@@ -132,7 +74,7 @@
           <tbody>
           <tr *ngFor="let data of fixTable.data; index as i">
             <td>{{ i + 1 }}</td>
-            <td><a [href]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
+            <td><a [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
             <td>{{ data.statusDisplay }}</td>
             <td>{{ data.status }}</td>
             <td>{{ data.type }}</td>

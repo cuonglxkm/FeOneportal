@@ -1,10 +1,8 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {PaymentModel, PaymentSearch} from "../../../../shared/models/payment.model";
-import {BaseResponse} from "../../../../../../../../libs/common-utils/src";
+import {BaseResponse, ProjectModel, RegionModel} from "../../../../../../../../libs/common-utils/src";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {PaymentService} from "../../../../shared/services/payment.service";
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
 import { Router } from '@angular/router';
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';

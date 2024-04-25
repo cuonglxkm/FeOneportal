@@ -1,10 +1,9 @@
 import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
 import {Router} from "@angular/router";
 import {UserGroupService} from "../../../../shared/services/user-group.service";
 import {FormSearchUserGroup, UserGroupModel} from "../../../../shared/models/user-group.model";
 import Pagination from "../../../../shared/models/pagination";
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 export interface UserGroup {
   id: number;

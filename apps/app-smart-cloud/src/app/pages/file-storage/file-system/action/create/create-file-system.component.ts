@@ -1,6 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../../shared/models/project.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { SnapshotVolumeService } from '../../../../../shared/services/snapshot-volume.service';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
@@ -14,7 +12,7 @@ import {
 import { FileSystemService } from '../../../../../shared/services/file-system.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
-import { ProjectService } from '../../../../../shared/services/project.service';
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-file-system',
@@ -33,6 +31,7 @@ export class CreateFileSystemComponent implements OnInit {
     checked: FormControl<boolean>
     description: FormControl<string>
     snapshot: FormControl<number>
+    isSnapshot: FormControl<boolean>
   }> = this.fb.group({
     name: ['', [Validators.required,
       Validators.pattern(/^[a-zA-Z0-9-_ ]+$/),
@@ -42,7 +41,8 @@ export class CreateFileSystemComponent implements OnInit {
     storage: [1, [Validators.required]],
     checked: [false],
     description: [''],
-    snapshot: [null as number, []]
+    snapshot: [null as number, []],
+    isSnapshot:[false]
   });
 
   optionProtocols = [
@@ -62,6 +62,8 @@ export class CreateFileSystemComponent implements OnInit {
   nameList: string[] = [];
 
   storageBuyVpc: number;
+
+  isInitSnapshot = false;
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
@@ -96,7 +98,8 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   snapshotSelectedChange(value) {
-    if (value) {
+    this.isInitSnapshot = value
+    if (this.isInitSnapshot) {
       this.validateForm.controls.snapshot.setValidators(Validators.required);
     } else {
       this.validateForm.controls.snapshot.clearValidators();

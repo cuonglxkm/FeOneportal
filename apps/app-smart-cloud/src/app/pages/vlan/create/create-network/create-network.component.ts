@@ -4,8 +4,6 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { getCurrentRegionAndProject } from '@shared';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import {
   AbstractControl,
   FormControl,
@@ -15,7 +13,7 @@ import {
   Validators
 } from '@angular/forms';
 import { FormCreateNetwork, FormSearchNetwork } from '../../../../shared/models/vlan.model';
-import { AppValidator } from '../../../../../../../../libs/common-utils/src';
+import { AppValidator, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {

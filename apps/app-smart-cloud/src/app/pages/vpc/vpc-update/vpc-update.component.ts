@@ -8,8 +8,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {IpPublicService} from "../../../shared/services/ip-public.service";
 import {getCurrentRegionAndProject} from "@shared";
 import {finalize} from "rxjs/operators";
-import {RegionModel} from "../../../shared/models/region.model";
-import {slider} from "../../../../../../../libs/common-utils/src";
+import {RegionModel, slider} from "../../../../../../../libs/common-utils/src";
 import {VpcModel} from "../../../shared/models/vpc.model";
 import {VpcService} from "../../../shared/services/vpc.service";
 

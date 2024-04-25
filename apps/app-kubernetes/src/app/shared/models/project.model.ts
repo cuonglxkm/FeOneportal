@@ -75,7 +75,7 @@ export class CloudProjectResourceUsed {
   quotaShareSnapshotInGb: number
 }
 
-export class SizeInCLoudProject {
+export class SizeInCloudProject {
   cloudProject: CloudProject
   cloudProjectResourceUsed: CloudProjectResourceUsed
 }

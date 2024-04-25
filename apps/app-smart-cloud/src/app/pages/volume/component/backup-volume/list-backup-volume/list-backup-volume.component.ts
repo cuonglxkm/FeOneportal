@@ -2,8 +2,6 @@ import {
   Component,
   Inject,
 } from '@angular/core';
-import {ProjectModel} from "../../../../../shared/models/project.model";
-import {RegionModel} from "../../../../../shared/models/region.model";
 import {BackupVolume} from "../backup-volume.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -14,6 +12,7 @@ import {VolumeService} from "../../../../../shared/services/volume.service";
 import {VolumeDTO} from "../../../../../shared/dto/volume.dto";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {getCurrentRegionAndProject} from "@shared";
+import { ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-list-backup-volume',

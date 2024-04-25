@@ -1,11 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FormSearch, WanIP } from '../../../shared/models/wan.model';
 import { WanService } from '../../../shared/services/wan.service';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
 
 @Component({

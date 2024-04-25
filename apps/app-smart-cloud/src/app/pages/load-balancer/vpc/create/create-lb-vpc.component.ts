@@ -13,11 +13,9 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectService } from '../../../../shared/services/project.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-lb-vpc',

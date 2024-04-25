@@ -29,7 +29,6 @@ import {
 import { Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
@@ -47,6 +46,7 @@ import {
   Port,
 } from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 interface InstancesForm {
   name: FormControl<string>;

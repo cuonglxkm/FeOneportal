@@ -4,11 +4,9 @@ import {PackageBackupService} from "../../../shared/services/package-backup.serv
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NonNullableFormBuilder} from "@angular/forms";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {PackageBackupModel} from "../../../shared/models/package-backup.model";
 import {getCurrentRegionAndProject} from "@shared";
-import {ProjectService} from "../../../shared/services/project.service";
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-detail-package-snapshot',

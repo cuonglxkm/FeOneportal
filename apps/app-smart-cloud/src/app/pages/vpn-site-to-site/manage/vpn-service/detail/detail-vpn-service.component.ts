@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VPNServiceDetail } from 'src/app/shared/models/vpn-service';
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';

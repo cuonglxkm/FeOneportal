@@ -100,8 +100,8 @@
       nzShowIcon
     ></nz-alert>
     <span class="text-label">
-      {{ 'app.alert.delete.instance' | i18n }} {{ instancesModel.name
-      }}<span *ngIf="!isViLanguage"> instance</span
+      {{ 'app.alert.delete.instance' | i18n }} <b>{{ instancesModel.name }}</b
+      ><span *ngIf="!isViLanguage"> instance</span
       >{{ 'app.alert.delete.instance.next' | i18n }}
     </span>
     <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
@@ -264,9 +264,7 @@
 
       <nz-form-item style="margin-bottom: 0px">
         <nz-form-control [nzErrorTip]="passRepeatErrorTpl">
-          <nz-form-label
-            >{{ 'app.password.confirm' | i18n }}</nz-form-label
-          >
+          <nz-form-label>{{ 'app.password.confirm' | i18n }}</nz-form-label>
           <nz-input-group [nzSuffix]="suffixTemplateRepeat">
             <input
               class="input-custom"
@@ -292,15 +290,15 @@
             />
           </ng-template>
           <div *ngIf="!check">
-            <span style="color: rgba(252, 16, 16, 1)"
-              >{{ 'validation.password.confirm' | i18n }}</span
-            >
+            <span style="color: rgba(252, 16, 16, 1)">{{
+              'validation.password.confirm' | i18n
+            }}</span>
           </div>
         </nz-form-control>
         <ng-template #passRepeatErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')"
-            >{{ 'validation.password.confirm.required' | i18n }}</ng-container
-          >
+          <ng-container *ngIf="control.hasError('required')">{{
+            'validation.password.confirm.required' | i18n
+          }}</ng-container>
         </ng-template></nz-form-item
       >
     </form>

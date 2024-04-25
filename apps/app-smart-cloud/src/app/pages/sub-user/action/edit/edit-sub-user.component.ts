@@ -6,7 +6,7 @@ import { FormUpdateSubUser } from '../../../../shared/models/sub-user.model';
 import { SubUserService } from '../../../../shared/services/sub-user.service';
 
 @Component({
-  selector: 'one-portal-extend-sub-user',
+  selector: 'one-portal-edit-sub-user',
   templateUrl: './edit-sub-user.component.html',
   styleUrls: ['./edit-sub-user.component.less'],
 })

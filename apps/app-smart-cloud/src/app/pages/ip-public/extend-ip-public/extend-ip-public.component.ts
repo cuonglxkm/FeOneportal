@@ -6,11 +6,10 @@ import { PopupExtendVolumeComponent } from '../../volume/component/popup-volume/
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { IpPublicService } from '../../../shared/services/ip-public.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { finalize } from 'rxjs/operators';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-extend-ip-public',

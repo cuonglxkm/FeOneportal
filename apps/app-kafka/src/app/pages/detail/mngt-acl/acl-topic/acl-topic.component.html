@@ -51,7 +51,7 @@
                             <td nzAlign="center">{{ data.createdDate | date : 'dd/MM/yyyy HH:mm' }}</td>
                             <td nzAlign="center">
                                 <img src="assets/imgs/edit-kafka.svg" alt="" style="cursor: pointer;" (click)="updateACLTopic(data)"
-                                [nz-tooltip]="'app.button.edit' | i18n" class="img-edit"/>
+                                [nz-tooltip]="'app.button.update' | i18n" class="img-edit"/>
 
                                 <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" (click)="showDeleteConfirm(data)" 
                                 [nz-tooltip]="'app.text.delete' | i18n" />
@@ -217,7 +217,7 @@
                                         style="padding-right: 10px; margin-top: -4px"
                                         src="assets/imgs/confirm.svg"
                                         alt=""
-                                    />{{'app.button.edit' | i18n}}
+                                    />{{'app.button.update' | i18n}}
                                 </button>
                             </ng-container>
                         </div>

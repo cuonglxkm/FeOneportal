@@ -10,8 +10,6 @@ import {
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import {
@@ -28,6 +26,7 @@ import {
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-router-list',

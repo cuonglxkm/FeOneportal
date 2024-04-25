@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { ProjectModel } from 'src/app/shared/models/project.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { UserCreate, User } from 'src/app/shared/models/user.model';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-add-policies',

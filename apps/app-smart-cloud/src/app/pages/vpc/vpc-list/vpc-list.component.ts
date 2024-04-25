@@ -1,5 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
 import { VpcModel } from '../../../shared/models/vpc.model';
 import { finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -8,6 +7,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VpcService } from '../../../shared/services/vpc.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-vpc-list',

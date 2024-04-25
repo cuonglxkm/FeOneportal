@@ -25,9 +25,7 @@ import {
 } from 'src/app/shared/models/router.model';
 
 import { RouterService } from 'src/app/shared/services/router.service';
-import { ipAddressValidatorRouter } from '../../../../../../../libs/common-utils/src';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { ProjectModel } from 'src/app/shared/models/project.model';
+import { ProjectModel, RegionModel, ipAddressValidatorRouter } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 

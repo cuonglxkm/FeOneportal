@@ -5,9 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ListenerService } from '../../../../shared/services/listener.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { finalize } from 'rxjs/operators';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-listener-detail',

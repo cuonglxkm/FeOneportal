@@ -18,11 +18,9 @@ import {
   VlanSubnet,
 } from '../instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
-import { NotificationService } from '../../../../../../../libs/common-utils/src';
+import { NotificationService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
 import {
@@ -81,7 +79,7 @@ export class InstancesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log("current language", this.i18n.currentLang)
+    console.log('current language', this.i18n.currentLang);
     this.searchParam.status = '';
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -329,6 +327,7 @@ export class InstancesComponent implements OnInit {
       next: (data: any) => {
         if (data == 'Thao tác thành công') {
           this.notification.success('', 'Gắn VLAN thành công');
+          this.reloadTable();
         } else {
           this.notification.error('', 'Gắn VLAN không thành công');
         }
@@ -369,6 +368,7 @@ export class InstancesComponent implements OnInit {
       next: (data: any) => {
         if (data == 'Thao tác thành công') {
           this.notification.success('', 'Gỡ khỏi VLAN thành công');
+          this.reloadTable();
         } else {
           this.notification.error('', 'Gỡ khỏi VLAN không thành công');
         }
