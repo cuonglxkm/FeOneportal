@@ -1,15 +1,15 @@
 <ng-container *ngIf="itemDetail">
-    <page-header [breadcrumb]="breadcrumb" [title]="'Nâng cấp dịch vụ Kafka'" [action]="action">
+    <page-header [breadcrumb]="breadcrumb" [title]="'kafka.upgrade.title' | i18n" [action]="action">
         <ng-template #breadcrumb>
             <nz-breadcrumb>
                 <nz-breadcrumb-item>
-                    <a [routerLink]="['/']">Trang chủ</a>
+                    <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
                 </nz-breadcrumb-item>
                 <nz-breadcrumb-item>
                     <a [routerLink]="['/app-kafka']">Kafka</a>
                 </nz-breadcrumb-item>
                 <nz-breadcrumb-item>
-                    Nâng cấp dịch vụ Kafka
+                    {{ 'kafka.upgrade.title' | i18n }}
                 </nz-breadcrumb-item>
             </nz-breadcrumb>
         </ng-template>
@@ -26,26 +26,26 @@
     <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="16" class="form-new">
             <nz-card class="border-card" id="general">
-                <h3><b>Thông tin dịch vụ</b></h3>
+                <h3><b>{{'app.payment-detail.serviceInformation' | i18n}}</b></h3>
                 <div nz-row>
-                    <div nz-col [nzSpan]="5">Tên Kafka Cluster:</div>
+                    <div nz-col [nzSpan]="5">{{'app.kafka.name' | i18n}}:</div>
                     <div><b>{{this.itemDetail.serviceName}}</b></div>
                 </div>
                 <div nz-row>
-                    <div nz-col [nzSpan]="5">Ngày khởi tạo:</div>
+                    <div nz-col [nzSpan]="5">{{'app.service.creation-date' | i18n}}:</div>
                     <div>{{ itemDetail.createdDate | date: 'dd/MM/yyyy' }}</div>
                 </div>
                 <div nz-row>
-                    <div nz-col [nzSpan]="5">Ngày hết hạn:</div>
+                    <div nz-col [nzSpan]="5">{{'app.service.expiration-date' | i18n}}:</div>
                     <div style="color: #ea3829">{{ itemDetail.expiryDate | date: 'dd/MM/yyyy' }}</div>
                 </div>
                 <div nz-row>
-                    <div nz-col [nzSpan]="5">Cấu hình gói dịch vụ:</div>
+                    <div nz-col [nzSpan]="5">{{'app.service.package' | i18n}}:</div>
                     <div><b>{{this.itemDetail.offerName}}</b></div>
                 </div>
                 <div nz-row>
                     <div nz-col [nzSpan]="4">
-                        Số Broker: 3
+                        {{'app.kafka.broker' | i18n}}: 3
                     </div>
                     <div nz-col [nzSpan]="6"></div>
                     <div>
@@ -65,12 +65,12 @@
 
             <form nz-form [formGroup]="myform" nzLayout="horizontal" nzLabelAlign="left">
                 <nz-card class="border-card">
-                    <h3><b>Cấu hình nâng cấp</b></h3>
+                    <h3><b>{{'kafka.upgrade.config' | i18n}}</b></h3>
                     <nz-alert nzType="warning" nzShowIcon
-                        nzDescription="Khách hàng chỉ có thể nâng cấp cấu hình lên cao hơn mức hiện tại đang sử dụng."
+                        [nzDescription]="'kafka.upgrade.note' | i18n"
                     ></nz-alert>
                     <nz-tabset nzCentered style="margin-top: 15px;">
-                        <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="clicktab()">
+                        <nz-tab [nzTitle]="'app.Preconfigured.Package' | i18n" (nzClick)="clicktab()">
                             <ng-template nz-tab>
                                 <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfferKafka"
                                     class="carousel-div">
@@ -83,7 +83,7 @@
                                                     <div class="item-price">
                                                         <div class="price">
                                                             <span>{{ item.price.fixedPrice.amount | number: '1.0-0' }}</span><br>
-                                                            <span class="unit-price">VNĐ/tháng</span>
+                                                            <span class="unit-price">{{'app.order-detail.month' | i18n}}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -105,32 +105,41 @@
                             </ng-template>
                         </nz-tab>
 
-                        <nz-tab nzTitle="Cấu hình tùy chọn" (nzClick)="clicktab()">
+                        <nz-tab [nzTitle]="'app.custom.configuration' | i18n" (nzClick)="clicktab()">
                             <div nz-row class="customize-config">
                                 <div nz-col [nzSpan]="5">
                                     <nz-form-item>
-                                        <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Số Broker (<span class="text-red">*</span>)</nz-form-label>
+                                        <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>{{'app.kafka.broker' | i18n}} (<span class="text-red">*</span>)</nz-form-label>
                                         <nz-form-control [nzSm]="24" [nzXs]="24"
-                                            nzErrorTip="Vui lòng nhập số lượng Broker">
+                                            [nzErrorTip]="'validation.kafka.broker-required' | i18n">
                                             <input nz-input type="number" formControlName="broker" id="broker" autofocus
                                                 nzSize="large" />
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
 
-                                <div nz-col [nzSpan]="5">
+                                <div nz-col [nzSpan]="5" class="config-suffix">
                                     <nz-form-item>
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU (<span class="text-red">*</span>)</nz-form-label>
                                         <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="cpuErrTpl">
-                                            <input nz-input type="number" formControlName="vCpu" id="vCpu" autofocus (ngModelChange)="onChangeCpu($event)"
-                                                nzSize="large" />
+                                            <nz-input-number-group nzSuffix="vCpu" nzSize="large">
+                                                <nz-input-number formControlName="vCpu" id="vCpu" autofocus
+                                                    (ngModelChange)="onChangeCpu($event)">
+                                                </nz-input-number>
+                                            </nz-input-number-group>
                                         </nz-form-control>
                                         <ng-template #cpuErrTpl let-control>
                                             <ng-container *ngIf="control.hasError('required')">
-                                                Giá trị không được để trống
+                                                {{'kafka.upgrade.value.required' | i18n}}
                                             </ng-container>
                                             <ng-container *ngIf="control.hasError('invalid')">
-                                                Giá trị phải cao hơn mức hiện tại sử dụng
+                                                {{'kafka.upgrade.value.invalid' | i18n}}
+                                            </ng-container>
+                                            <ng-container *ngIf="control.hasError('min')">
+                                                {{'kafka.upgrade.cpu-min' | i18n}}
+                                            </ng-container>
+                                            <ng-container *ngIf="control.hasError('max')">
+                                                {{'kafka.upgrade.cpu-max' | i18n}}
                                             </ng-container>
                                         </ng-template>
                                     </nz-form-item>
@@ -140,17 +149,24 @@
                                     <nz-form-item>
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>RAM (<span class="text-red">*</span>)</nz-form-label>
                                         <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="ramErrTpl">
-                                            <nz-input-group nzSuffix="(GB)" nzSize="large">
-                                                <input nz-input type="number" formControlName="ram" id="ram" (ngModelChange)="onChangeRam($event)"
-                                                    autofocus />
-                                            </nz-input-group>
+                                            <nz-input-number-group nzSuffix="GB" nzSize="large">
+                                                <nz-input-number formControlName="ram" id="ram" autofocus
+                                                  (ngModelChange)="onChangeRam($event)">
+                                                </nz-input-number>
+                                              </nz-input-number-group>
                                         </nz-form-control>
                                         <ng-template #ramErrTpl let-control>
                                             <ng-container *ngIf="control.hasError('required')">
-                                                Giá trị không được để trống
+                                                {{'kafka.upgrade.value.required' | i18n}}
                                             </ng-container>
                                             <ng-container *ngIf="control.hasError('invalid')">
-                                                Giá trị phải cao hơn mức hiện tại sử dụng
+                                                {{'kafka.upgrade.value.invalid' | i18n}}
+                                            </ng-container>
+                                            <ng-container *ngIf="control.hasError('min')">
+                                                {{'kafka.upgrade.ram-min' | i18n}}
+                                            </ng-container>
+                                            <ng-container *ngIf="control.hasError('max')">
+                                                {{'kafka.upgrade.ram-max' | i18n}}
                                             </ng-container>
                                         </ng-template>
                                     </nz-form-item>
@@ -160,19 +176,23 @@
                                     <nz-form-item>
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Storage (<span class="text-red">*</span>)</nz-form-label>
                                         <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="storageErrorTpl">
-                                            <nz-input-group nzSuffix="(GB)" nzSize="large">
-                                                <input nz-input type="number" formControlName="storage" id="storage" (ngModelChange)="onChangeStorage($event)"
-                                                    autofocus />
-                                            </nz-input-group>
+                                            <nz-input-number-group nzSuffix="GB" nzSize="large">
+                                                <nz-input-number formControlName="storage" id="storage" autofocus 
+                                                  (ngModelChange)="onChangeStorage($event)">
+                                                </nz-input-number>
+                                            </nz-input-number-group>
                                             <ng-template #storageErrorTpl let-control>
                                                 <ng-container *ngIf="control.hasError('required')">
-                                                    Giá trị không được để trống
+                                                    {{'kafka.upgrade.value.required' | i18n}}
                                                 </ng-container>
                                                 <ng-container *ngIf="control.hasError('invalid')">
-                                                    Giá trị phải cao hơn mức hiện tại sử dụng
+                                                    {{'kafka.upgrade.value.invalid' | i18n}}
                                                 </ng-container>
                                                 <ng-container *ngIf="control.hasError('min')">
-                                                    Vui lòng nhập giá trị Storage lớn hơn hoặc bằng {{storage}}
+                                                    {{'kafka.upgrade.storage-min' | i18n}}
+                                                </ng-container>
+                                                <ng-container *ngIf="control.hasError('max')">
+                                                    {{'kafka.upgrade.storage-max' | i18n}}
                                                 </ng-container>
                                             </ng-template>
                                         </nz-form-control>
@@ -190,33 +210,33 @@
         <!-- payment -->
         <div nz-col [nzSpan]="8">
             <nz-card class="price-card">
-                <h3><b>Thành tiền</b></h3>
+                <h3><b>{{'app.service.price-title' | i18n}}</b></h3>
                 <div nz-row [nzGutter]="8">
                     <div nz-col [nzSpan]="12">
-                        <div class="label-price">Chi phí nâng cấp</div>
+                        <div class="label-price">{{'app.service.upgrade-cost' | i18n}}</div>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <div class="value-price">{{ upgradeAmount | number: '1.0-0'}} VNĐ</div>
+                        <div class="value-price">{{ upgradeAmount | number: '1.0-0'}} VND</div>
                     </div>
                 </div>
                 <nz-divider class="divider-style"></nz-divider>
                 <div nz-row [nzGutter]="8">
                     <div nz-col [nzSpan]="12">
-                        <div class="label-price" style="margin-bottom: 10px;">Trừ đi mức còn lại của chu kỳ trước</div>
+                        <div class="label-price" style="margin-bottom: 10px;">{{'app.service.upgrade-remain-amount' | i18n}}</div>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <div class="value-price" >{{ remainAmount | number: '1.0-0'}} VNĐ</div>
+                        <div class="value-price" >- {{ remainAmount | number: '1.0-0'}} VND</div>
                     </div>
                 </div>
                 <nz-divider class="divider-style"></nz-divider>
 
                 <div nz-row [nzGutter]="8" class="mt-5 price-panel">
                     <div nz-col [nzSpan]="12">
-                        <div class="label-price">Tổng cần thanh toán</div>
-                        <div class="label-quantity"><i>(Đã bao gồm 10% VAT)</i></div>
+                        <div class="label-price">{{'app.payment-detail.totalPayment' | i18n}}</div>
+                        <div class="label-quantity"><i>({{ 'app.service.include' | i18n }} 10% VAT)</i></div>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <div class="value-price total-price"> {{upgradeAmount === 0 ? 0 : (upgradeAmount - remainAmount) * 1.1 | number: '1.0-0'}} VNĐ</div>
+                        <div class="value-price total-price"> {{upgradeAmount === 0 ? 0 : (upgradeAmount - remainAmount) * 1.1 | number: '1.0-0'}} VND</div>
                     </div>
                 </div>
 
@@ -224,7 +244,7 @@
                     <div nz-col [nzSpan]="12">
                         <button nz-button nzType="default" nzBlock (click)="backToList()">
                             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />
-                            <b>Hủy</b>
+                            <b>{{ 'app.button.cancel' | i18n }}</b>
                         </button>
                     </div>
 
@@ -233,7 +253,7 @@
                             (click)="onSubmitPayment()">
                             <img style="padding-right: 10px; margin-top: -4px; height: 20px;"
                                 src="assets/imgs/upgrade-white.svg" alt="" />
-                            <b>Nâng cấp</b>
+                            <b>{{ 'app.text.upgrade' | i18n }}</b>
                         </button>
                     </div>
                 </div>

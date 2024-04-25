@@ -24,6 +24,7 @@ export class EditKafkaComponent implements OnInit {
   serviceOrderCode: string;
   itemDetail: KafkaDetail;
   kafkaUpdateDto: KafkaUpdateReq;
+  isVisibleConfirm = false;
 
   constructor(
     private fb: FormBuilder,
@@ -93,6 +94,18 @@ export class EditKafkaComponent implements OnInit {
 
   backToList() {
     this.router.navigate(['/app-kafka']);
+  }
+
+  handleConfirmPopup() {
+    if (this.myform.controls.version.value != this.itemDetail.version) {
+      this.isVisibleConfirm = true;
+    } else {
+      this.updateKafka();
+    }
+  }
+
+  handleCancelPopup() {
+    this.isVisibleConfirm = false;
   }
 
   updateKafka() {

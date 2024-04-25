@@ -76,11 +76,12 @@
                             <td class="config-label">
                                 <div>
                                     {{item.configName}}
-                                    <span class="ml-2"
-                                        [nzTooltipTitle]="item.description"
-                                        nzTooltipPlacement="rightTop" nz-tooltip>
-                                        <span nz-icon nzType="exclamation-circle" nzTheme="fill"></span>
-                                    </span>
+                                    <img
+                                        style="margin-left: 10px"
+                                        [nzTooltipTitle]="item.description" nzTooltipPlacement="rightTop" nz-tooltip
+                                        src="assets/imgs/pajamas_question.svg"
+                                        alt=""
+                                    />
                                 </div>
                             </td>
                             <td><b>{{item.configValue}}</b></td>

@@ -48,12 +48,15 @@ export class FileSystemDetail {
   vpcId: number
   mountTargetAddress: string
   status: string
-  createdDate: Date
+  createdDate: string
   size: number
   description: string
   instanceId: string
   customerId: number
   customerEmail: string
+  shareSnapshotId: any
+  expireDate: string
+  isSnapshot: boolean
 }
 
 export class OrderCreateFileSystem {

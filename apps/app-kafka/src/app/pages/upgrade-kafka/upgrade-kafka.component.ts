@@ -14,7 +14,7 @@ import { OfferKafka } from 'src/app/core/models/offer.model';
 import { Order, OrderItem } from 'src/app/core/models/order.model';
 import { ServicePack } from 'src/app/core/models/service-pack.model';
 import { KafkaService } from 'src/app/services/kafka.service';
-import { getCurrentRegionAndProject } from '@shared';
+import { getCurrentRegionAndProject } from '@shared'; 
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -127,9 +127,9 @@ export class UpgradeKafkaComponent implements OnInit {
 
   initForm() {
     this.myform = this.fb.group({
-      vCpu: [null, [Validators.required, Validators.pattern("^[0-9]*$")]],
-      ram: [null, [Validators.required, Validators.pattern("^[0-9]*$")]],
-      storage: [null, [Validators.required, Validators.min(1), Validators.max(1024), Validators.pattern("^[0-9]*$")]],
+      vCpu: [null, [Validators.required, Validators.pattern("^[0-9]*$"), Validators.min(1), Validators.max(16)]],
+      ram: [null, [Validators.required, Validators.pattern("^[0-9]*$"), Validators.min(1), Validators.max(64)]],
+      storage: [null, [Validators.required, Validators.min(1), Validators.max(2000), Validators.pattern("^[0-9]*$")]],
       broker: [3, [Validators.required]]
     });
   }

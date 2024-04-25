@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { camelizeKeys } from 'humps';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableSortFn, NzTableSortOrder } from 'ng-zorro-antd/table';
 import { KafkaConsumerGroup, KafkaConsumerGroupDetail, KafkaConsumerGroupTopic } from '../../../core/models/kafka-consumer-group.model';
 import { SyncInfoModel } from '../../../core/models/sync-info.model';
@@ -10,6 +9,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from "@delon/abc/loading";
 import { finalize } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
+import { TopicService } from 'src/app/services/kafka-topic.service';
 
 interface DataItem {
   partitionName: number,
@@ -130,10 +130,10 @@ export class ConsumerGroupComponent implements OnInit {
 
   constructor(
     private consumerGroupKafkaService: ConsumerGroupKafkaService,
-    private modal: NzModalService,
     private kafkaService: KafkaService,
     private notification: NzNotificationService,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    private topicService: TopicService
   ) { }
 
   ngOnInit(): void {
@@ -256,15 +256,15 @@ export class ConsumerGroupComponent implements OnInit {
 
   getSyncTime(serviceOrderCode: string) {
     this.kafkaService.getSyncTime(serviceOrderCode)
-      .subscribe((res: any) => {
+      .subscribe((res) => {
         if (res.code && res.code == 200) {
-          this.syncInfo = res.data;
+          this.syncInfo = camelizeKeys(res.data) as SyncInfoModel;
         }
       });
   }
 
   handleSync() {
-    this.isAllowSync = false;
+    this.isAllowSync = true;
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
     this.consumerGroupKafkaService.sync(this.serviceOrderCode)
       .pipe(
@@ -274,6 +274,23 @@ export class ConsumerGroupComponent implements OnInit {
         if (res && res.code == 200) {
           this.notification.success(this.notiSuccessText, res.msg);
             this.getListConsumerGroup(this.pageIndex, this.pageSize, '', this.serviceOrderCode);
+            this.getSyncTime(this.serviceOrderCode);
+        } else {
+          this.notification.error(this.notiFailedText, res.msg);
+        }
+      })
+  }
+
+  handleSyncTopicPartition() {
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+    this.topicService.syncTopicPartition(this.serviceOrderCode)
+      .pipe(
+        finalize(() => this.loadingSrv.close())
+      )
+      .subscribe((res) => {
+        if (res && res.code == 200) {
+          this.notification.success(this.notiSuccessText, res.msg);
+            this.getListTopicInGroup(this.currentGroupId, this.serviceOrderCode, this.searchTopicText.trim());
             this.getSyncTime(this.serviceOrderCode);
         } else {
           this.notification.error(this.notiFailedText, res.msg);

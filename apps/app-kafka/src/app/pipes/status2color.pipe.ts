@@ -8,7 +8,7 @@ export class Status2ColorPipe implements PipeTransform {
   transform(status: number): StatusModel {
     switch(status) {
       case 0:
-        return new StatusModel("#FFBB63", "Chưa gia hạn");
+        return new StatusModel("#FFBB63", "Hết hạn");
       case 1:
         return new StatusModel("#0066b0", "Đang khởi tạo");
       case 2:

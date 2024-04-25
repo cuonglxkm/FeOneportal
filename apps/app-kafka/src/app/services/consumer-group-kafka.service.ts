@@ -67,7 +67,7 @@ export class ConsumerGroupKafkaService extends BaseService {
     }
 
     sync(serviceOrderCode: string): Observable<BaseResponse<null>> {
-        return this.http.post<BaseResponse<null>>(`${this.consumerGroupUrl}/sync/serviceOrderCode=${serviceOrderCode}`, {});
+        return this.http.post<BaseResponse<null>>(`${this.consumerGroupUrl}/sync/${serviceOrderCode}`, {});
     }
 
 }

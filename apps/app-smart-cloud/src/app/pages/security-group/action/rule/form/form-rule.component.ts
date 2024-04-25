@@ -24,6 +24,7 @@ export function integerInRangeValidator(min: number, max: number): ValidatorFn {
     if (value === null || value === undefined || isNaN(value)) {
       return { 'invalid': true };
     }
+
     console.log('value', value)
     const intValue = parseInt(value, 10);
     if (intValue < min || intValue > max || intValue <= 0) {
@@ -111,8 +112,8 @@ export class FormRuleComponent implements OnInit {
               private cdr: ChangeDetectorRef,
               private router: Router) {
     this.validateForm.controls.remoteIpPrefix.setValidators([Validators.required, AppValidator.ipWithCIDRValidator])
-    this.validateForm.controls.portRangeMin.setValidators([Validators.required, integerInRangeValidator(1, 65535), AppValidator.validateNumber])
-    this.validateForm.controls.portRangeMax.setValidators([Validators.required, integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin'), AppValidator.validateNumber])
+    this.validateForm.controls.portRangeMin.setValidators([Validators.required, Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/), integerInRangeValidator(1, 65535)])
+    this.validateForm.controls.portRangeMax.setValidators([Validators.required, Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/), integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin')])
   }
 
   focusOkButton(event: KeyboardEvent): void {
@@ -231,9 +232,20 @@ export class FormRuleComponent implements OnInit {
 
   }
 
+  isValidNumber(value: number): boolean {
+    // Kiểm tra giá trị có nằm trong khoảng từ 1 đến 65535 không
+    return value >= 1 && value <= 65535;
+  }
+
   portChange(value) {
+    console.log('port value', value)
     if (this.portType === 'Port') {
-      this.validateForm.controls.portRangeMax.setValue(value);
+      if(this.isValidNumber(value)) {
+        this.validateForm.controls.portRangeMax.setValue(value);
+      } else {
+        this.validateForm.controls.portRangeMax.setValidators(Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/))
+      }
+
     }
   }
 
