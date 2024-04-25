@@ -73,9 +73,11 @@ export class ShareUsersComboboxComponent implements OnInit {
 
   shareUserChanged(user) {
     localStorage.setItem('UserRootId', JSON.stringify(user.id));
-    localStorage.removeItem('PermissionOPA');
     localStorage.removeItem('projectId');
-    window.location.reload();
-    this.valueChanged.emit(user);
+    this.policyService.getUserPermissions().pipe().subscribe( (permission) => {
+      localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+      window.location.reload();
+      this.valueChanged.emit(user);
+    });
   }
 }

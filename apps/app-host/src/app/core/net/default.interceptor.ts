@@ -91,6 +91,7 @@ export class DefaultInterceptor implements HttpInterceptor {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Basic ' + btoa(environment['sso'].clientId + ':')
     });
+    localStorage.removeItem('PermissionOPA');
     const result = this.httpClient.post<TokenResponse>(this.url + '/connect/token', params.toString(),
       {
         headers,

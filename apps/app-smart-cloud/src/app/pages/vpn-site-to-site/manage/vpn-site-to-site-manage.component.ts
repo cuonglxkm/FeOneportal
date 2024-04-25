@@ -111,8 +111,4 @@ export class VpnSiteToSiteManage {
       });
     }
   }
-
-  shareUserChanged(e){
-    
-  }
 }
