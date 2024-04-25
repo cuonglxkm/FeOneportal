@@ -20,6 +20,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
@@ -93,7 +94,28 @@
           </nz-form-item>
           <nz-row nzGutter="24" nzJustify="space-between">
             <nz-col nzSpan="12">
-              <nz-form-item>
+              <nz-form-item *ngIf="enableInternetFacing">
+                <nz-form-label>
+                  <span>Subnet</span>
+                  <img nz-popover
+                       [nzPopoverContent]="'Là dải IP mạng để phân bổ địa chỉ IP khi sử dụng cân bằng tải'"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips>
+                  <nz-select nzSize="large"
+                             [ngModel]="selectedSubnet"
+                             (ngModelChange)="updateValue($event)"
+                             formControlName="subnet"
+                             [nzPlaceHolder]="'Chọn dải Subnet'"
+                             nzAllowClear>
+                    <nz-option *ngFor="let index of mapSubnetArray"
+                               [nzValue]="index.value"
+                               [nzLabel]="index.label"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item *ngIf="enableInternal">
                 <nz-form-label>
                   <span>Subnet</span>
                   <img nz-popover
@@ -205,6 +227,7 @@
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
               <textarea nz-input formControlName="description" [placeholder]="'app.input.des' | i18n" [maxLength]="255"
+              <textarea nz-input class="input-custom" formControlName="description" [placeholder]="'Nhập nội dung'" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>

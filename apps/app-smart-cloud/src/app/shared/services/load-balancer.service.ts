@@ -435,4 +435,8 @@ export class LoadBalancerService extends BaseService {
         return throwError(error);
       }));
   }
+
+  getListSubnetInternetFacing(projectId: number, region: number) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/subnet?projectId=${projectId}&region=${region}`, null)
+  }
 }

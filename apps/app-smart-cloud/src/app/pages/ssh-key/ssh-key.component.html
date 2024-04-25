@@ -8,6 +8,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
     </div>
   </ng-template>
@@ -68,7 +69,7 @@
             <div class="text-label" style="margin-bottom: 3px; margin-top: 10px"> Đế thực hiện xóa
               Keypair {{ nameDelete }}, vui lòng nhập tên Keypair để xác nhận.
             </div>
-            <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{nameDelete}}"
+            <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{nameDelete}}" (keydown.enter)="enterDelete(data.id)"
                    [(ngModel)]="nameDeleteInput" [ngModelOptions]="{ standalone: true }" type="text" />
           </ng-container>
           <div *nzModalFooter>

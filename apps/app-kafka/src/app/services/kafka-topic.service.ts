@@ -143,11 +143,11 @@ export class TopicService extends BaseService {
   }
 
   sync(serviceOrderCode: string): Observable<BaseResponse<null>> {
-    return this.http.post<BaseResponse<null>>(`${this.topicUrl}/sync/serviceOrderCode=${serviceOrderCode}`, {});
+    return this.http.post<BaseResponse<null>>(`${this.topicUrl}/sync/${serviceOrderCode}`, {});
   }
 
   syncTopicPartition(serviceOrderCode: string): Observable<BaseResponse<null>> {
-    return this.http.post<BaseResponse<null>>(`${this.topicUrl}/sync-topic-partition/serviceOrderCode=${serviceOrderCode}`, {});
+    return this.http.post<BaseResponse<null>>(`${this.topicUrl}/sync-topic-partition/${serviceOrderCode}`, {});
   }
 
 }

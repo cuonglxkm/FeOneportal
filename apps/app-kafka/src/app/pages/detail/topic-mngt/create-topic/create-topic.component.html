@@ -49,7 +49,7 @@
     </div>
     <div nz-row>
         <nz-form-item nz-col nzSpan="12">
-            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="23" nzFor="rep_fac" nzNoColon>{{ 'kafka.topic.replica' | i18n }} (<span class="text-red">*</span>)
+            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="23" nzFor="replicaFactor" nzNoColon>{{ 'kafka.topic.replica' | i18n }} (<span class="text-red">*</span>)
                 <img
                     style="margin-left: 10px"
                     [nzTooltipTitle]="'kafka.topic.replica-tooltip' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
@@ -58,17 +58,20 @@
                 />
             </nz-form-label>
             <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="replicaErrTpl">
-                <input nz-input nzSize="large" type="text" name="rep_fac" id="rep_fac" formControlName="rep_fac"
-                    (keydown)="onKeyDown($event)" (ngModelChange)="checkRep()" placeholder="3">
-                <ng-template #replicaErrTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">
-                        {{ 'validation.kafka.topic.replica-required' | i18n }}
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('pattern') || control.hasError('min') || control.hasError('max')">
-                        {{ 'validation.kafka.topic.replica-length' | i18n }}
-                    </ng-container>
-                </ng-template>
+                <input nz-input nzSize="large" type="text" name="replicaFactor" id="replicaFactor" formControlName="replicaFactor"
+                    (keydown)="onKeyDown($event)" (ngModelChange)="changeReplica()" placeholder="3">
             </nz-form-control>
+            <ng-template #replicaErrTpl let-control>
+                <ng-container *ngIf="control.hasError('invalidvalue')">
+                    {{ 'validation.kafka.topic.replica-invalid' | i18n }}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('required')">
+                    {{ 'validation.kafka.topic.replica-required' | i18n }}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern') || control.hasError('min') || control.hasError('max')">
+                    {{ 'validation.kafka.topic.replica-length' | i18n }}
+                </ng-container>
+            </ng-template>
         </nz-form-item>
     </div>
     <ng-container *ngIf="mode==createNumber">
@@ -83,7 +86,7 @@
             <div nz-col nzSpan="12">
 
                 <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="minSync">min.insync.replicas
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="minInsync">min.insync.replicas
                         <img
                             style="margin-left: 10px"
                             [nzTooltipTitle]="'tooltip.kakfa.topic.min-insync-replicas' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
@@ -92,10 +95,18 @@
                         />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Min.insync.replica là số nguyên nằm trong khoảng 1 đến 3">
-                        <input nz-input nzSize="large" name="minSync" type="text" id="minSync" formControlName="minSync"
-                            (keydown)="onKeyDown($event)" placeholder="2">
+                        [nzErrorTip]="minInsyncErrTpl">
+                        <input nz-input nzSize="large" name="minInsync" type="text" id="minInsync" formControlName="minInsync"
+                            (keydown)="onKeyDown($event)" placeholder="2" (ngModelChange)="changeMinInsync()">
                     </nz-form-control>
+                    <ng-template #minInsyncErrTpl let-control>
+                        <ng-container *ngIf="control.hasError('invalidvalue')">
+                            {{ 'validation.kafka.topic.minInsync-invalid' | i18n }}
+                        </ng-container>
+                        <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                            {{ 'validation.kafka.topic.minInsync-length' | i18n }}
+                        </ng-container>
+                    </ng-template>
                 </nz-form-item>
 
                 <nz-form-item>
@@ -173,11 +184,18 @@
                             alt=""
                         />
                     </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Segment.bytes là số nguyên dương nằm trong khoảng 14 đến 2.147.483.647 bytes">
+                    <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="segmentByteErrTpl">
                         <input nz-input nzSize="large" name="segment" type="text" id="segment" formControlName="segment"
-                            (keydown)="onKeyDown($event)" placeholder="14">
+                            (keydown)="onKeyDown($event)" placeholder="14" (ngModelChange)="changeSegment()">
                     </nz-form-control>
+                    <ng-template #segmentByteErrTpl let-control>
+                        <ng-container *ngIf="control.hasError('invalidvalue')">
+                            {{ 'validation.kafka.topic.segmentByte-invalid' | i18n }}
+                        </ng-container>
+                        <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                            {{ 'validation.kafka.topic.segmentByte-length' | i18n }}
+                        </ng-container>
+                    </ng-template>
                 </nz-form-item>
 
                 <nz-form-item>
@@ -344,7 +362,7 @@
                 </nz-form-item>
 
                 <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="max_mess">max.message.bytes
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="maxMessage">max.message.bytes
                         <img
                             style="margin-left: 10px"
                             [nzTooltipTitle]="'tooltip.kakfa.topic.max-message-bytes' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
@@ -352,11 +370,18 @@
                             alt=""
                         />
                     </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Kích thước tin nhắn tối đa trong khoảng 1 - 100.000.000 byte">
-                        <input nz-input nzSize="large" name="max_mess" formControlName="max_mess" type="text"
-                            id="max_mess" (keydown)="onKeyDown($event)" placeholder="1048588">
+                    <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="maxMessageErrTpl">
+                        <input nz-input nzSize="large" name="maxMessage" formControlName="maxMessage" type="text" (ngModelChange)="changeMaxMessage()"
+                            id="maxMessage" (keydown)="onKeyDown($event)" placeholder="1048588">
                     </nz-form-control>
+                    <ng-template #maxMessageErrTpl let-control>
+                        <ng-container *ngIf="control.hasError('invalidvalue')">
+                            {{ 'validation.kafka.topic.maxMessage-invalid' | i18n }}
+                        </ng-container>
+                        <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                            {{ 'validation.kafka.topic.maxMessage-length' | i18n }}
+                        </ng-container>
+                    </ng-template>
                 </nz-form-item>
 
                 <nz-form-item>
@@ -510,7 +535,7 @@
                 </nz-form-item>
 
                 <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segm_index">segment.index.bytes
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segmentIndex">segment.index.bytes
                         <img
                             style="margin-left: 10px"
                             [nzTooltipTitle]="'tooltip.kakfa.topic.segment-index' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
