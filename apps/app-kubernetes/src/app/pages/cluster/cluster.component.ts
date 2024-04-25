@@ -323,9 +323,14 @@ export class ClusterComponent implements OnInit {
     });
   }
 
+  totalRam: number;
+  totalCpu: number;
+  totalStorage: number;
   onCalculatePrice() {
     this.totalPrice = 0;
     this.workerPrice = 0;
+    this.totalCpu = 0; this.totalRam = 0; this.totalStorage = 0;
+
     const wg = this.myform.get('workerGroup').value;
     for (let i = 0; i < wg.length; i++) {
       const cpu = wg[i].cpu ? wg[i].cpu : 0;
@@ -340,9 +345,13 @@ export class ClusterComponent implements OnInit {
         nodeNumber = wg[i].nodeNumber ? wg[i].nodeNumber : 0;
       }
 
-      this.workerPrice += nodeNumber * (this.priceOfCpu * cpu + this.priceOfRam * ram + this.priceOfSsd * storage);
-      this.totalPrice = this.workerPrice + this.volumePrice;
+      this.totalCpu += nodeNumber * cpu;
+      this.totalRam += nodeNumber * ram;
+      this.totalStorage += nodeNumber * storage;
     }
+
+    this.workerPrice = this.priceOfCpu * this.totalCpu + this.priceOfRam * this.totalRam + this.priceOfSsd * this.totalStorage;
+    this.totalPrice = this.workerPrice + this.volumePrice;
   }
 
   // catch event region change and reload data
@@ -750,6 +759,9 @@ export class ClusterComponent implements OnInit {
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
     cluster.offerId = this.offerId;
     cluster.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
+    cluster.totalRam = this.totalRam;
+    cluster.totalCpu = this.totalCpu;
+    cluster.totalStorage = this.totalStorage;
 
     // this.onSubmitOrder(cluster);
 

@@ -36,7 +36,7 @@
                       <ng-template #editClusterNameTpl>
                         <nz-form-item>
                           <nz-form-control [nzErrorTip]="errorClusterNameTpl">
-                            <input type="text" nz-input formControlName="clusterName" placeholder="Nhập tên cluster" />
+                            <input type="text" nz-input formControlName="clusterName" placeholder="Nhập tên cluster" nzSize="large" />
                           </nz-form-control>
                           <ng-template #errorClusterNameTpl>
                             <ng-container *ngIf="control.hasError('required')">
@@ -197,7 +197,7 @@
                             <nz-form-item>
                               <nz-form-control [nzErrorTip]="errorWorkerNameTpl">
                                 <input nz-input type="text" formControlName="workerGroupName"
-                                  placeholder="Nhập tên nhóm worker" />
+                                  placeholder="Nhập tên nhóm worker" nzSize="large" />
                               </nz-form-control>
                               <ng-template #errorWorkerNameTpl let-control>
                                 <ng-container *ngIf="control.hasError('required')">
@@ -230,7 +230,7 @@
                             <nz-form-item>
                               <nz-form-control [nzErrorTip]="errorNodeNumberTpl">
                                 <input nz-input type="text" formControlName="nodeNumber" (keypress)="isNumber($event)"
-                                  (ngModeChange)="onChangeNodeNumber($event, i)" />
+                                  (ngModeChange)="onChangeNodeNumber($event, i)" nzSize="large" />
                               </nz-form-control>
                               <ng-template #errorNodeNumberTpl>
                                 <ng-container *ngIf="control.hasError('required')">
@@ -260,7 +260,7 @@
                             <nz-form-item>
                               <nz-form-control [nzErrorTip]="errorConfigError">
                                 <nz-select formControlName="configType" nzShowSearch nzPlaceHolder="Chọn cấu hình"
-                                  (ngModelChange)="onChangeConfigType($event, i)" class="w-100">
+                                  (ngModelChange)="onChangeConfigType($event, i)" class="w-100" nzSize="large">
                                   <nz-option *ngFor="let item of listOfWorkerType"
                                     nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)"
                                     [nzValue]="item.machineName">
@@ -283,7 +283,7 @@
                           <ng-template #editWorkerVolumeSizeTpl>
                             <nz-form-item>
                               <nz-form-control [nzErrorTip]="volumeErrorTpl">
-                                <input nz-input type="text" formControlName="volumeStorage"
+                                <input nz-input type="text" formControlName="volumeStorage" nzSize="large"
                                   (keypress)="isNumber($event)" (ngModelChange)="onChangeVolumeWorker($event, i)" />
                               </nz-form-control>
                               <ng-template #volumeErrorTpl let-control>
@@ -319,8 +319,9 @@
                             </ng-template>
                           </ng-container>
                           <ng-template #editScalingTpl>
+                            <!-- not enable on this phase -->
                             <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAutoScale($event)"
-                              nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt"></nz-switch>
+                              nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt" [nzDisabled]="true"></nz-switch>
                           </ng-template>
                         </div>
                       </div>
@@ -380,7 +381,7 @@
                               <nz-form-item>
                                 <nz-form-control [nzErrorTip]="errorMinimumNodeTpl">
                                   <input nz-input type="text" formControlName="minimumNode"
-                                    placeholder="Nhập số node tối thiểu" />
+                                    placeholder="Nhập số node tối thiểu" nzSize="large" />
                                 </nz-form-control>
                                 <ng-template #errorMinimumNodeTpl>
                                   <ng-container *ngIf="control.hasError('required')">
@@ -410,7 +411,7 @@
                               <nz-form-item>
                                 <nz-form-control [nzErrorTip]="errorMaximumNodeTpl">
                                   <input nz-input type="text" formControlName="maximumNode"
-                                    placeholder="Nhập số node tối đa" />
+                                    placeholder="Nhập số node tối đa" nzSize="large" />
                                 </nz-form-control>
                                 <ng-template #errorMaximumNodeTpl>
                                   <ng-container *ngIf="control.hasError('required')">
@@ -597,7 +598,7 @@
       <p class="description-info">Lưu ý: Chỉ có thể nâng cấp phiên bản, không thực hiện việc hạ phiên bản.</p>
       <p>Để tránh phát sinh vấn đề trong quá trình xử lý, chỉ nâng cấp phiên bản lần lượt theo thứ tự.</p>
       <div>
-        <nz-select nzPlaceHolder="Chọn phiên bản nâng cấp" [(ngModel)]="upgradeVersionCluster" class="w-100">
+        <nz-select nzPlaceHolder="Chọn phiên bản nâng cấp" [(ngModel)]="upgradeVersionCluster" class="w-100" nzSize="large">
           <nz-option *ngFor="let item of listOfK8sVersion" [nzLabel]="item.k8sVersion" [nzValue]="item.k8sVersion"
             [nzDisabled]="item.k8sVersion | checkUpgradeVersion : detailCluster.upgradeVersion"></nz-option>
         </nz-select>

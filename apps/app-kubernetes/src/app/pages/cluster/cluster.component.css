@@ -102,6 +102,10 @@ small {
   color: #ea3829;
 }
 
+.required-color {
+  color: rgba(252, 16, 16, 1);
+}
+
 ::ng-deep .ant-card-head {
   min-height: 48px;
   margin-bottom: -1px;
