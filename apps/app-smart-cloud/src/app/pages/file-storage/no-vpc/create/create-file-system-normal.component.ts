@@ -6,15 +6,14 @@ import { SnapshotVolumeService } from '../../../../shared/services/snapshot-volu
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
 import { Router } from '@angular/router';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { debounceTime, Subject } from 'rxjs';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
 import { CreateVolumeRequestModel } from '../../../../shared/models/volume.model';
-import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { RegionModel } from '../../../../../../../app-kubernetes/src/app/shared/models/region.model';
+import { ProjectModel } from '../../../../../../../app-kubernetes/src/app/shared/models/project.model';
 
 @Component({
   selector: 'one-portal-create-file-system-normal',

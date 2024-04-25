@@ -4,14 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProjectService } from '../../../../shared/services/project.service';
 import { InstancesService } from '../../../instances/instances.service';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
-import { FileSystemDetail, ResizeFileSystem } from '../../../../shared/models/file-system.model';
+import { FileSystemDetail } from '../../../../shared/models/file-system.model';
 import { OrderItem } from '../../../../shared/models/price';
 import { Subject } from 'rxjs';
 import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel } from '../../../../../../../app-kubernetes/src/app/shared/models/region.model';
+import { ProjectModel } from '../../../../../../../app-kubernetes/src/app/shared/models/project.model';
+import { ProjectService } from '../../../../../../../app-kubernetes/src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-extend-file-system-normal',
@@ -28,9 +28,9 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   isLoading: boolean = false;
   fileSystem: FileSystemDetail = new FileSystemDetail();
 
-  isInitSnapshot: boolean = false
+  isInitSnapshot: boolean = false;
 
-  snapshot: any
+  snapshot: any;
 
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
@@ -53,7 +53,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private projectService: ProjectService,
-              private instanceService: InstancesService,) {
+              private instanceService: InstancesService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -76,14 +76,14 @@ export class ExtendFileSystemNormalComponent implements OnInit {
       this.isLoading = false;
       this.storage = this.fileSystem.size;
       // this.validateForm.controls.storage.setValue(this.fileSystem.size);
-      if(this.fileSystem?.shareSnapshotId == null) {
-        this.isInitSnapshot = false
+      if (this.fileSystem?.shareSnapshotId == null) {
+        this.isInitSnapshot = false;
       } else {
-        this.isInitSnapshot = true
+        this.isInitSnapshot = true;
       }
-      this.validateForm.controls.snapshot.setValue(this.isInitSnapshot)
-      const oldDate = null
-        // new Date(this.fileSystem?.expirationDate);
+      this.validateForm.controls.snapshot.setValue(this.isInitSnapshot);
+      const oldDate = null;
+      // new Date(this.fileSystem?.expirationDate);
       this.estimateExpireDate = oldDate;
       const exp = this.estimateExpireDate.setDate(oldDate.getDate() + 30);
       this.estimateExpireDate = new Date(exp);
