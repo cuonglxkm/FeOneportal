@@ -99,11 +99,12 @@
       [nzDescription]="customTemplateMessageDelete"
       nzShowIcon
     ></nz-alert>
-    <span class="text-label">
-      {{ 'app.alert.delete.instance' | i18n }} <b>{{ instancesModel.name }}</b
-      ><span *ngIf="!isViLanguage"> instance</span
-      >{{ 'app.alert.delete.instance.next' | i18n }}
-    </span>
+    <span
+      class="text-label"
+      [innerHTML]="
+        'app.alert.delete.instance' | i18n : { name: instancesModel.name }
+      "
+    ></span>
     <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
       ><nz-form-control>
         <input
@@ -142,8 +143,7 @@
 <ng-template #customTemplateMessageDelete>
   <div>
     {{ 'app.alert.delete.instance.warn' | i18n }}
-    <b>{{ 'app.alert.delete.instance.warn.next' | i18n }}</b
-    >.
+    <b>{{ 'app.alert.delete.instance.warn.next' | i18n }}</b>
   </div>
 </ng-template>
 
