@@ -65,6 +65,7 @@ export class SshKeyComponent implements OnInit {
     this.form.get('public_key').disable();
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
+    this.loadSshKeys(true);
   }
 
   loadSshKeys(isCheckBegin: boolean): void {
@@ -211,6 +212,7 @@ export class SshKeyComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.regionId = this.checkNullObject(region) ? "" : region.regionId;
+    this.loadSshKeys(true);
   }
 
   checkNullObject(object: any): Boolean {
@@ -234,6 +236,12 @@ export class SshKeyComponent implements OnInit {
       this.handleCreate(form);
     } else if (this.indexTab === 1 && this.form.controls['keypair_name_2'].value != ''&& this.form.controls['public_key'].value != '' && !this.form.invalid){
       this.handleCreate(form);
+    }
+  }
+
+  enterDelete(id: any) {
+    if (this.nameDeleteInput == this.nameDelete) {
+      this.handleDelete(id);
     }
   }
 }
