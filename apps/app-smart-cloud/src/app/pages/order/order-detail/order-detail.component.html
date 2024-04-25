@@ -242,6 +242,11 @@
                 [routerLink]="['/app-smart-cloud/snapshot/packages']"
                 >{{ item?.serviceName }}</a
               >
+              <a
+                *ngSwitchCase="'Object Storage'"
+                [routerLink]="['/app-smart-cloud/object-storage/bucket']"
+                >{{ item?.serviceName }}</a
+              >
               <div *ngSwitchDefault>{{ item?.serviceName }}</div>
             </td>
             <td class="text-right">
