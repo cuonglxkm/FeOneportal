@@ -3,8 +3,7 @@ import {Observable, of} from "rxjs";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import { environment } from '../../../../../app-smart-cloud/src/environments/environment';
-
+import { environment } from '@env/environment';
 
 @Injectable({
   providedIn: 'root'
