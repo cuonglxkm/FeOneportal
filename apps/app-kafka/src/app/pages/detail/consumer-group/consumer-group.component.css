@@ -78,7 +78,7 @@
 }
 
 #block-search {
-    margin: 20px 0;
+    margin-top: 20px;
 }
 
 .search-topic {
@@ -96,17 +96,19 @@ nz-table#expand-tbl {
 
 nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon {
     color: #ffff;
-    background-color: #308ef3;
+    background-color: #0066B0;
+    border-radius: 4px;
+    
 }
 
 nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon.ant-table-row-expand-icon:hover {
     color: #ffff;
-    background-color: #024fab !important;
+    background-color: #0066B0  !important;
 }
 
 nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
     color: #ffff;
-    background-color: #024fab !important;
+    background-color: #0066B0  !important;
 }
 
 .text-center {
@@ -116,11 +118,6 @@ nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
 .async {
     font-size: 14px;
     font-style: italic;
-}
-
-.time-async {
-    display: inline-block;
-    width: 160px;
 }
 
 [nz-icon] {
@@ -155,7 +152,8 @@ nz-tag {
 
 #btn-refresh {
     width: 40px;
-    border-color: #d9d9d9;
+    border-color: #ffffff;
+    box-shadow: none;
     margin-right: 16px;
     position: relative;
 }
