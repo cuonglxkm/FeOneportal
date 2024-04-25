@@ -415,7 +415,7 @@ export class VpcCreateComponent implements OnInit{
   }
 
   private initVpnSiteToSiteData() {
-    this.instancesService.getDetailProductByUniqueName('loadbalancer-sdn')
+    this.instancesService.getDetailProductByUniqueName('vpns2s')
       .subscribe(
         data => {
           this.instancesService
@@ -428,7 +428,7 @@ export class VpcCreateComponent implements OnInit{
   }
 
   private initLoadBalancerData() {
-    this.instancesService.getDetailProductByUniqueName('vpns2s')
+    this.instancesService.getDetailProductByUniqueName('loadbalancer-sdn')
       .subscribe(
         data => {
           this.instancesService

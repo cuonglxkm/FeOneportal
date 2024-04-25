@@ -1,17 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
-import {
-  CreateFileSystemRequestModel,
-  FormSearchFileSystem,
-  OrderCreateFileSystem
-} from '../../../../shared/models/file-system.model';
+import { FormSearchFileSystem, OrderCreateFileSystem } from '../../../../shared/models/file-system.model';
 import { SnapshotVolumeService } from '../../../../shared/services/snapshot-volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
-import { ProjectService } from '../../../../shared/services/project.service';
 import { RegionModel } from '../../../../shared/models/region.model';
 import { ProjectModel } from '../../../../shared/models/project.model';
 import { getCurrentRegionAndProject } from '@shared';
@@ -24,9 +18,9 @@ import { CreateVolumeRequestModel } from '../../../../shared/models/volume.model
 @Component({
   selector: 'one-portal-create-file-system-normal',
   templateUrl: './create-file-system-normal.component.html',
-  styleUrls: ['./create-file-system-normal.component.less'],
+  styleUrls: ['./create-file-system-normal.component.less']
 })
-export class CreateFileSystemNormalComponent implements OnInit{
+export class CreateFileSystemNormalComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -50,7 +44,7 @@ export class CreateFileSystemNormalComponent implements OnInit{
     checked: [false],
     description: [''],
     snapshot: [null as number, []],
-    isSnapshot:[false],
+    isSnapshot: [false],
     time: [1]
   });
 
@@ -69,9 +63,9 @@ export class CreateFileSystemNormalComponent implements OnInit{
   formCreate: OrderCreateFileSystem = new OrderCreateFileSystem();
 
   nameList: string[] = [];
-  isInitSnapshot: boolean = false
+  isInitSnapshot: boolean = false;
 
-  timeSelected: any
+  timeSelected: any;
 
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
@@ -111,8 +105,8 @@ export class CreateFileSystemNormalComponent implements OnInit{
   }
 
   snapshotSelectedChange(value) {
-    console.log('switch', value)
-    this.isInitSnapshot = value
+    console.log('switch', value);
+    this.isInitSnapshot = value;
     if (this.isInitSnapshot) {
       this.validateForm.controls.snapshot.setValidators(Validators.required);
     } else {
@@ -122,30 +116,30 @@ export class CreateFileSystemNormalComponent implements OnInit{
   }
 
 
-
   onChangeTime() {
     this.dataSubjectTime.pipe(debounceTime(500))
       .subscribe((res) => {
         console.log('total amount');
-        this.getTotalAmount()
-      })
+        this.getTotalAmount();
+      });
   }
 
   onChangeStorage() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
         console.log('total amount');
-        this.getTotalAmount()
-      })
+        this.getTotalAmount();
+      });
   }
 
   timeSelectedChange(value) {
-    this.dataSubjectTime.next(value)
+    this.dataSubjectTime.next(value);
   }
 
   storageSelectedChange(value) {
-    this.dataSubjectStorage.next(value)
+    this.dataSubjectStorage.next(value);
   }
+
   getListSnapshot() {
     this.snapshotvlService.getSnapshotVolumes(9999, 1, this.region, this.project, '', '', '').subscribe(data => {
       data.records.forEach(snapshot => {
@@ -227,7 +221,7 @@ export class CreateFileSystemNormalComponent implements OnInit{
   }
 
   getTotalAmount() {
-    this.fileSystemInit()
+    this.fileSystemInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.formCreate);
@@ -258,14 +252,14 @@ export class CreateFileSystemNormalComponent implements OnInit{
         specification: JSON.stringify(this.formCreate),
         specificationType: 'filestorage_create',
         price: this.orderItem?.totalAmount.amount,
-        serviceDuration: this.validateForm.controls.time.value,
-      },
+        serviceDuration: this.validateForm.controls.time.value
+      }
     ];
     var returnPath: string = '/app-smart-cloud/file-storage/file-system/create/normal';
     console.log('request', request);
     console.log('service name', this.formCreate.serviceName);
     this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: request, path: returnPath },
+      state: { data: request, path: returnPath }
     });
   }
 

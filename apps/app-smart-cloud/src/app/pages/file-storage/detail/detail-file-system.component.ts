@@ -46,6 +46,7 @@ export class DetailFileSystemComponent implements OnInit{
 
   getFileSystemById(id) {
     this.isLoading = true
+
     this.fileSystemService.getFileSystemById(id, this.region).subscribe(data => {
       this.fileSystem = data
       this.isLoading = false
@@ -60,6 +61,7 @@ export class DetailFileSystemComponent implements OnInit{
     this.clipboardService.copyFromContent(data);
   }
 
+  //vpc = 1, no vpc = 0
   navigateToResize(typeVpc) {
     if(typeVpc == 1) {
       this.router.navigate(['/app-smart-cloud/file-storage/file-system/resize/' + this.fileSystemId])
@@ -69,8 +71,12 @@ export class DetailFileSystemComponent implements OnInit{
 
     }
   }
+
+  navigateToExtend() {
+    this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + this.fileSystemId + '/extend'])
+  }
   ngOnInit() {
     this.fileSystemId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-    this.getFileSystemById(this.fileSystemId)
+    setTimeout(() => {this.getFileSystemById(this.fileSystemId)}, 2500)
   }
 }

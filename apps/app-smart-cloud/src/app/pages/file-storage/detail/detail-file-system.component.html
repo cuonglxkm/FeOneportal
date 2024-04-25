@@ -1,11 +1,11 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Quản lý File System'">
+             [title]="'Chi tiết File System'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Danh sách File System
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Quản lý File System
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
         [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/{{ fileSystemId }}'">{{ fileSystemName }}
@@ -25,7 +25,7 @@
       <div nz-col nzSpan="4">
         <button class="button-fee"
                 nz-button
-                nzType="primary">
+                nzType="primary" (click)="navigateToExtend()">
           <img src="assets/imgs/redo.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
           <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
         </button>
