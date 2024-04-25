@@ -24,13 +24,10 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
-      <region-select-dropdown
-        (valueChanged)="regionChanged($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        (valueChanged)="projectChanged($event)"
-        [regionId]="region"
-      ></project-select-dropdown>
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
