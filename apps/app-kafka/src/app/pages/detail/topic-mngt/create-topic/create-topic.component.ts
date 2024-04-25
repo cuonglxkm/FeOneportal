@@ -22,7 +22,7 @@ export class CreateTopicComponent implements OnInit {
   listMessVersion: string[] = ["0.8.0", "0.8.1", "0.8.2", "0.9.0", "0.10.0-IV0", "0.10.0-IV1", "0.10.1-IV0", "0.10.1-IV1", "0.10.1-IV2", "0.10.2-IV0", "0.11.0-IV0", "0.11.0-IV1", "0.11.0-IV2", "1.0-IV0", "1.1-IV0", "2.0-IV0", "2.0-IV1", "2.1-IV0", "2.1-IV1", "2.1-IV2", "2.2-IV0", "2.2-IV1", "2.3-IV0", "2.3-IV1", "2.4-IV0", "2.4-IV1", "2.5-IV0", "2.6-IV0", "2.7-IV0", "2.7-IV1", "2.7-IV2", "2.8-IV0", "2.8-IV1", "3.0-IV0", "3.0-IV1", "3.1-IV0", "3.2-IV0", "3.3-IV0", "3.3-IV1", "3.3-IV2", "3.3-IV3", "3.4-IV0", "3.5-IV0", "3.5-IV1", "3.5-IV2"]
 
   listConfigLabel = [
-    { name: 'max_mess', value: '1048588', type: 'number', fullname: "max.message.bytes" },
+    { name: 'maxMessage', value: '1048588', type: 'number', fullname: "max.message.bytes" },
     { name: 'policy', value: 'delete', fullname: "cleanup.policy" },
     { name: 'minSync', value: 2, type: 'number', fullname: "min.insync.replicas" },
     { name: 'unclean_leader', value: 'false', fullname: "unclean.leader.election.enable" },
@@ -73,11 +73,11 @@ export class CreateTopicComponent implements OnInit {
     this.validateForm = this.fb.group({
       name_tp: [null, [Validators.required, Validators.minLength(5), Validators.maxLength(255), Validators.pattern(/^[-a-zA-Z0-9]+$/)]],
       partition: [3, [Validators.required, Validators.max(100), Validators.min(1), Validators.pattern(/^\d+$/)]],
-      rep_fac: [3, [Validators.required, Validators.min(1), Validators.max(3), Validators.pattern(/^\d+$/)]],
-      max_mess: [null],
+      replicaFactor: [3, [Validators.required, Validators.min(1), Validators.max(3), Validators.pattern(/^\d+$/)]],
+      maxMessage: [null],
       policy: ["delete"],
       deleteRet: [null],
-      minSync: [null],
+      minInsync: [null],
       unclean_leader: ["false"],
       re_hours: [null],
       typeTime: [null],
@@ -109,10 +109,10 @@ export class CreateTopicComponent implements OnInit {
       this.openSet = true;
       this.validateForm.get('name_tp').disable();
       this.validateForm.get('partition').disable();
-      this.validateForm.get('rep_fac').disable();
+      this.validateForm.get('replicaFactor').disable();
       this.validateForm.get('name_tp').setValue(this.data.topicName);
       this.validateForm.get('partition').setValue(this.data.partitions);
-      this.validateForm.get('rep_fac').setValue(this.data.replicas);
+      this.validateForm.get('replicaFactor').setValue(this.data.replicas);
       if (this.data.isConfig == 0)
         this.addValidateConfig();
       else {
@@ -164,7 +164,7 @@ export class CreateTopicComponent implements OnInit {
         case 'min_clean':
           validators.push(Validators.min(0), Validators.max(1), Validators.pattern(/^\d*(\.\d+)?$/), this.dotValidator);
           break;
-        case 'minSync':
+        case 'minInsync':
           validators.push(Validators.min(1), Validators.max(3), Validators.pattern(/^\d+$/));
           break;
         case 'reten_bytes':
@@ -179,7 +179,7 @@ export class CreateTopicComponent implements OnInit {
         case 'min_compac':
           validators.push(Validators.min(0), Validators.max(1800000), Validators.pattern(/^\d+$/))
           break;
-        case 'max_mess':
+        case 'maxMessage':
           validators.push(Validators.min(1), Validators.max(100000000), Validators.pattern(/^\d+$/))
           break;
         case 'segm_index':
@@ -239,7 +239,7 @@ export class CreateTopicComponent implements OnInit {
         case 'min_clean':
           validators.push(Validators.min(0), Validators.max(1), Validators.pattern(/^\d*(\.\d+)?$/), this.dotValidator)
           break;
-        case 'minSync':
+        case 'minInsync':
           validators.push(Validators.min(1), Validators.max(3), Validators.pattern(/^\d+$/))
           break;
         case 'reten_bytes':
@@ -254,7 +254,7 @@ export class CreateTopicComponent implements OnInit {
         case 'min_compac':
           validators.push(Validators.min(0), Validators.max(1800000), Validators.pattern(/^\d+$/))
           break;
-        case 'max_mess':
+        case 'maxMessage':
           validators.push(Validators.min(1), Validators.max(100000000), Validators.pattern(/^\d+$/))
           break;
         case 'segm_index':
@@ -341,18 +341,56 @@ export class CreateTopicComponent implements OnInit {
     }
   }
 
-  checkRep() {
-    const repControl = this.validateForm.get('rep_fac');
-    if (repControl.hasError('required')) {
-      this.errMessRep = "Replication factor không được để trống";
-    } else if (repControl.hasError("min") || repControl.hasError("max") || repControl.hasError('pattern')) {
-      this.errMessRep = "Replication factor nằm trong khoảng 1 đến 3";
+  changeReplica() {
+    const replica = this.validateForm.controls['replicaFactor'];
+    const minInsync = this.validateForm.controls['minInsync'];
+    if (replica.value != null && minInsync.value != null) {
+      if (minInsync.value > replica.value) {
+        replica.setErrors({'invalidvalue': true})
+      } else {
+        minInsync.setErrors(null);
+      }
+    }
+  }
+
+  changeMinInsync() {
+    const replica = this.validateForm.controls['replicaFactor'];
+    const minInsync = this.validateForm.controls['minInsync'];
+    if (replica.value != null && minInsync.value != null) {
+      if (minInsync.value > replica.value) {
+        minInsync.setErrors({'invalidvalue': true})
+      } else {
+        replica.setErrors(null);
+      }
+    }
+  }
+
+  changeMaxMessage() {
+    const maxMessage = this.validateForm.controls['maxMessage'];
+    const segment = this.validateForm.controls['segment'];
+    if (maxMessage.value != null && segment != null) {
+      if (Number.parseInt(maxMessage.value) >= Number.parseInt(segment.value)) {
+        maxMessage.setErrors({'invalidvalue': true});
+      } else {
+        maxMessage.setErrors(null);
+      }
+    }
+  }
+
+  changeSegment() {
+    const maxMessage = this.validateForm.controls['maxMessage'];
+    const segment = this.validateForm.controls['segment'];
+    if (maxMessage.value != null && segment != null) {
+      if (Number.parseInt(maxMessage.value) >= Number.parseInt(segment.value)) {
+        segment.setErrors({'invalidvalue': true});
+      } else {
+        maxMessage.setErrors(null);
+      }
     }
   }
 
   createTopic() {
 
-    this.checkRep();
     this.changePartition();
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();
@@ -363,7 +401,7 @@ export class CreateTopicComponent implements OnInit {
       const json = {};
       const topicName = this.validateForm.get("name_tp").value;
       const partitionNum = Number(this.validateForm.get("partition").value);
-      const replicationFactorNum = Number(this.validateForm.get("rep_fac").value);
+      const replicationFactorNum = Number(this.validateForm.get("replicaFactor").value);
       if (!this.openSet) {
         this.topicKafkaService.createTopic(topicName, partitionNum, replicationFactorNum, this.serviceOrderCode, 0, JSON.stringify(json))
           .subscribe(
@@ -420,7 +458,6 @@ export class CreateTopicComponent implements OnInit {
 
   updateTopic() {
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
-    this.checkRep()
     this.changePartition()
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();

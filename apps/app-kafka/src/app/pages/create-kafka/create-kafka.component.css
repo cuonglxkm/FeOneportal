@@ -292,6 +292,12 @@ textarea,
   justify-content: space-between;
 }
 
-.config-suffix ::ng-deep .ant-input-suffix {
+.config-suffix ::ng-deep .ant-input-number-suffix {
   color: #989BB3;;
+}
+
+nz-input-number-group {
+  padding: 0 4px;
+  border-radius: 8px;
+  width: 100%;
 }

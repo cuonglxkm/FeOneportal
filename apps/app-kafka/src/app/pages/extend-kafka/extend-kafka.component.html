@@ -37,7 +37,7 @@
                 </div>
                 <div nz-row>
                     <div nz-col [nzSpan]="5">Ngày hết hạn:</div>
-                    <div style="color: #ea3829">{{ itemDetail.expiryDate | date: 'dd/MM/yyyy' }}</div>
+                    <div style="color: #ea3829"><b>{{ itemDetail.expiryDate | date: 'dd/MM/yyyy' }}</b></div>
                 </div>
                 <div nz-row>
                     <div nz-col [nzSpan]="5">Cấu hình gói dịch vụ:</div>
@@ -89,7 +89,7 @@
                     </div>
                 </div>
                 <div nz-row style="color: #ea3829">
-                    Ngày hết hạn dự kiến:&nbsp; <p style="color: #ea3829"> {{ expectExpiryDate | date: 'dd/MM/yyyy' }}</p>
+                    Ngày hết hạn dự kiến:&nbsp; <p style="color: #ea3829"> <b>{{ expectExpiryDate | date: 'dd/MM/yyyy' }}</b> </p>
                 </div>
 
             </nz-card>
