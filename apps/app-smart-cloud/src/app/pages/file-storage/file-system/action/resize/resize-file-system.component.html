@@ -25,7 +25,7 @@
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
           <span class="text-card-header">Thông tin File System</span>
-          <nz-row nzGutter="24" nzJustify="space-between">
+          <nz-row nzGutter="24" nzJustify="space-between" style="margin-top: 25px;">
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
@@ -112,11 +112,13 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input [value]="fileSystem.description" [maxLength]="700"
+              <nz-textarea-count [nzMaxCharacterCount]="255">
+              <textarea nz-input class=input-custom [value]="fileSystem.description" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"  [disabled]="true"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 700 kí tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
               </ng-template>
+              </nz-textarea-count>
             </nz-form-control>
           </nz-form-item>
         </nz-card>
@@ -148,7 +150,7 @@
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="!validateForm.valid" (click)="doResizeFileSystem()">
                 <i nz-icon [nzType]="'edit'"  style="margin-right: 5px; padding-bottom: 5px;"></i>
-                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Điều chỉnh</span>
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.resize' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>
