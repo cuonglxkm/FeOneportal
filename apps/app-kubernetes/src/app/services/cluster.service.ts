@@ -105,8 +105,20 @@ export class ClusterService extends BaseService {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/${serviceOrderCode}/workers-name`, { headers: this.getHeaders() });
   }
 
-  getListInstancesOfCluster(projectId: number, clusterName: string) {
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/list-instances?projectId=${projectId}&clusterName=${clusterName}`, {headers: this.getHeaders()});
+  // for instances
+  getListInstancesOfCluster(namespace: string, serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/list-instances?namespace=${namespace}&serviceOrderCode=${serviceOrderCode}`,
+    {headers: this.getHeaders()});
+  }
+
+  syncInstances(serviceOrderCode: string, namespace: string, projectId: number) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/sync-instances?projectId=${projectId}&serviceOrderCode=${serviceOrderCode}&namespace=${namespace}`,
+    {headers: this.getHeaders()});
+  }
+
+  actionInstance(instanceId: string, projectId: number, action: string) {
+    return this.http.put(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/action-instance?projectId=${projectId}&instanceId=${instanceId}&action=${action}`,
+    {headers: this.getHeaders()});
   }
 
   upgradeVersionCluster(data: UpgradeVersionClusterDto) {

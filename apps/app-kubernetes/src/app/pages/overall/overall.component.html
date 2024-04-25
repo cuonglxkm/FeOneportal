@@ -44,7 +44,10 @@
   <!-- instance tab -->
   <nz-tab [nzTitle]="instanceTitleTpl">
     <ng-template nz-tab>
-      <cluster-instances></cluster-instances>
+      <cluster-instances
+        [namespace]="detailCluster.namespace"
+        [serviceOrderCode]="detailCluster.serviceOrderCode">
+      </cluster-instances>
     </ng-template>
   </nz-tab>
   <ng-template #instanceTitleTpl>

@@ -93,6 +93,10 @@ input, .border-button, .border-card {
   text-align: center;
 }
 
+.right-align {
+  text-align: right;
+}
+
 img {
   border-radius: 4px;
 }

@@ -10,30 +10,15 @@ import { InstanceModel } from '../../model/instance.model';
 })
 export class InstancesComponent implements OnInit {
 
-  @Input('clusterName') clusterName: string;
-  @Input('projectId') projectId: number;
+  @Input('namespace') namespace: string;
+  @Input('serviceOrderCode') serviceOrderCode: string;
 
   keySearch: string;
-  serviceOrderCode: string;
   pageSize: number;
   pageIndex: number;
   total: number;
 
-  listOfInstances: InstanceModel[] = [
-    {
-      id: 1,
-      instanceName: "abc",
-      vCPUs: 2,
-      ram: 4,
-      volumeSize: 10,
-      volumeType: "SSD",
-      status: "ACTIVE",
-      workerGroupName: "ngahn",
-      serviceOrderCode: "k8s-123",
-      namespace: "abc",
-      privateIP: "1.1.1.1",
-    }
-  ];
+  listOfInstances: InstanceModel[];
   isLoadingInstance: boolean;
 
   changeKeySearch = new Subject<string>();
@@ -62,7 +47,7 @@ export class InstancesComponent implements OnInit {
 
   searchInstances() {
     this.isLoadingInstance = true;
-    this.clusterService.getListInstancesOfCluster(this.projectId, this.clusterName)
+    this.clusterService.getListInstancesOfCluster(this.namespace, this.serviceOrderCode)
     .pipe(finalize(() => this.isLoadingInstance = false))
     .subscribe((r: any) => {
       this.listOfInstances = r.data;
@@ -72,7 +57,7 @@ export class InstancesComponent implements OnInit {
   syncInstances() {}
 
   handleOnOffInstance(item: InstanceModel) {
-    console.log
+    console.log(item);
   }
 
   onQueryParamsChange(event: any) {

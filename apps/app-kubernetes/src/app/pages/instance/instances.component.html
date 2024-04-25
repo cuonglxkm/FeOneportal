@@ -12,7 +12,7 @@
         </ng-template>
       </div>
 
-      <button nz-button nzType="text" nzTooltipTitle="Đông bộ" nzTooltipPlacement="top" nz-tooltip
+      <button nz-button nzType="text" nzTooltipTitle="Đồng bộ" nzTooltipPlacement="top" nz-tooltip
         (click)="syncInstances()" class="borderless">
         <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
       </button>
@@ -23,32 +23,32 @@
       [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
       <thead>
         <tr>
-          <th class="align-center header-table">STT</th>
-          <th class="align-center header-table">Tên node</th>
-          <th class="align-center header-table">Tên nhóm worker</th>
-          <th class="align-center header-table">Trạng thái</th>
-          <th class="align-center header-table">IP Private</th>
-          <th class="align-center header-table">vCpu</th>
-          <th class="align-center header-table">Ram</th>
-          <th class="align-center header-table">Storage (GB)</th>
-          <th class="align-center header-table">Loại ổ cứng</th>
-          <th class="align-center header-table">Thao tác</th>
+          <th class="header-table">STT</th>
+          <th class="header-table">Tên node</th>
+          <th class="header-table">Tên nhóm worker</th>
+          <th class="header-table">Trạng thái</th>
+          <th class="header-table">IP Private</th>
+          <th class="header-table">vCpu</th>
+          <th class="header-table">Ram</th>
+          <th class="header-table">Storage (GB)</th>
+          <th class="header-table">Loại ổ cứng</th>
+          <th class="header-table">Thao tác</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of instanceTable.data; let i = index;">
-          <td>{{ i + 1 }}</td>
+          <td class="right-align">{{ i + 1 }}</td>
           <td>{{ item.instanceName }}</td>
           <td>{{ item.workerGroupName }}</td>
           <td>{{ item.status }}</td>
           <td>{{ item.privateIP }}</td>
-          <td>{{ item.ram }}</td>
-          <td>{{ item.vCPUs }}</td>
-          <td>{{ item.volumeSize }}</td>
+          <td class="right-align">{{ item.vcpus }}</td>
+          <td class="right-align">{{ item.ram }}</td>
+          <td class="right-align">{{ item.volumeSize }}</td>
           <td>{{ item.volumeType }}</td>
           <td>
-            <nz-switch nz-switch nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt" 
-              (ngModelChange)="handleOnOffInstance(item)"></nz-switch>
+            <nz-switch nz-switch nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt"
+              (click)="handleOnOffInstance(item)"></nz-switch>
           </td>
         </tr>
       </tbody>

@@ -60,7 +60,7 @@ export class ClusterComponent implements OnInit {
   public DEFAULT_NETWORK_TYPE = KubernetesConstant.DEFAULT_NETWORK_TYPE;
 
   carouselConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },  
+    grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },
     load: 1,
     speed: 250,
     // interval: {timing: 4000, initialDelay: 4000},
@@ -282,14 +282,6 @@ export class ClusterComponent implements OnInit {
     });
   }
 
-  listSubnetByNetwork: string[];
-  getSubnetAndCidrUsed(projectInfraId: number, networkId: number) {
-    this.clusterService.getSubnetByNamespaceAndNetwork(projectInfraId, networkId)
-    .subscribe((r: any) => {
-      this.listSubnetByNetwork = r.data;
-    });
-  }
-
   getListPriceItem() {
     this.clusterService.getListPriceItem()
     .subscribe((r: any) => {
@@ -387,6 +379,7 @@ export class ClusterComponent implements OnInit {
   }
 
   vlanCloudId: string;
+  mapOfSubnetByNetwork = new Map<string, string[]>();
   formSearchSubnet: FormSearchSubnet = new FormSearchSubnet();
   onSelectedVlan(vlanId: number) {
     this.vlanId = vlanId;
@@ -409,7 +402,7 @@ export class ClusterComponent implements OnInit {
 
       forkJoin({subnetObs, subnetUsedObs}).subscribe(data => {
         this.listOfSubnets = data['subnetObs'].records;
-        this.listSubnetByNetwork = data['subnetUsedObs'].data;
+        this.mapOfSubnetByNetwork = new Map(Object.entries(data['subnetUsedObs'].data));
       });
     }
   }
@@ -420,12 +413,12 @@ export class ClusterComponent implements OnInit {
     const subnet = this.listOfSubnets.find(item => item.id == subnetId);
     if (subnet != null) {
       const selectedVpcNetworkId = this.myform.get('vpcNetwork').value;
-
       this.subnetAddress = subnet.subnetAddressRequired;
-      if (this.listSubnetByNetwork && this.listSubnetByNetwork.length > 0) {
-        if (!this.listSubnetByNetwork.includes(this.subnetAddress)) {
+
+      for (let [k, v] of this.mapOfSubnetByNetwork.entries()) {
+        let subnetUsedArr: string[] = v;
+        if (subnetUsedArr.includes(this.subnetAddress) && selectedVpcNetworkId != k) {
           this.myform.get('subnet').setErrors({usedSubnet: true});
-          return;
         } else {
           delete this.myform.get('subnet').errors?.usedSubnet;
         }
