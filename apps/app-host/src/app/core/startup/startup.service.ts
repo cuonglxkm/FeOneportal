@@ -16,6 +16,7 @@ import { environment } from '@env/environment';
 import { ICONS } from '../../../style-icons';
 import { ICONS_AUTO } from '../../../style-icons-auto';
 import { I18NService } from '../i18n/i18n.service';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 /**
  * Used for application startup
@@ -31,7 +32,8 @@ export class StartupService {
     private aclService: ACLService,
     private titleService: TitleService,
     private httpClient: HttpClient,
-    private router: Router
+    private router: Router,
+    private policyService: PolicyService,
   ) {
     iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
   }
@@ -74,6 +76,7 @@ export class StartupService {
           this.aclService.setFull(true);
 
           this.menuService.add(appData.menu);
+          this.checkPermissionAction(this.menuService['data']);
           // if (checkData) {
           //   let json = {
           //     key: 'Object Storage',
@@ -115,6 +118,17 @@ export class StartupService {
         }
       )
     );
+  }
+
+  async checkPermissionAction(datas: any[]){
+    datas.forEach(async (item) =>{
+      if(item.action){
+        item._hidden = !(await this.policyService.hasPermission(item.action));
+      }
+      if(item.children && item.children.length > 0){
+        await this.checkPermissionAction(item.children);
+      }
+    });
   }
 }
 

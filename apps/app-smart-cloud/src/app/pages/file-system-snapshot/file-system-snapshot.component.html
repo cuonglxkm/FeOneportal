@@ -9,6 +9,7 @@
     </ng-template>
     <ng-template #action>
       <div class="alain-custom-action text-right">
+        <share-users-combobox></share-users-combobox>
         <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
         <project-select-dropdown [regionId]="region"
                                  (valueChanged)="projectChange($event)"

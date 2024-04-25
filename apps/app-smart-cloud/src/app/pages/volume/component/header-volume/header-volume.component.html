@@ -10,6 +10,7 @@
 
   <div class="text-right" style="margin-top: -20px;">
     <div>
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="selectedRegion" (valueChanged)="onProjectChange($event)"></project-select-dropdown>
     </div>
