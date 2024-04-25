@@ -5,8 +5,6 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Observable } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { IpPublicModel } from '../models/ip-public.model';
-import { RegionModel } from '../models/region.model';
-import { ProjectModel } from '../models/project.model';
 
 @Injectable({
   providedIn: 'root'

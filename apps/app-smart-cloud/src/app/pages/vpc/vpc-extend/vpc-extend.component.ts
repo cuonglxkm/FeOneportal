@@ -4,9 +4,9 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {VpcService} from "../../../shared/services/vpc.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {getCurrentRegionAndProject} from "@shared";
-import {RegionModel} from "../../../shared/models/region.model";
 import {finalize} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-vpc-extend',

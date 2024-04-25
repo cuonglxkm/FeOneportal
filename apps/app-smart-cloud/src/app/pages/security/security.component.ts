@@ -1,12 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel } from '../../shared/models/project.model';
-import { RegionModel } from '../../shared/models/region.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { SecurityService } from 'src/app/shared/services/security.service';
 import { FormEnable2FA } from 'src/app/shared/models/security.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { RegionModel, ProjectModel } from '../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-security',
@@ -35,6 +36,7 @@ export class SecurityComponent implements OnInit {
     private notification: NzNotificationService,
     private fb: NonNullableFormBuilder,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   onRegionChange(region: RegionModel) {
@@ -65,16 +67,16 @@ export class SecurityComponent implements OnInit {
     this.service.enable2fa(formeEnable2FA).subscribe(data => {
       if (data.success == true) {
         this.isVisibleUpdate = false
-        this.notification.success("Thành công", "Đăng nhập với xác thực hai yếu tố đã được bật");
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.security.noti.sucess"));
       }
       else
       {
-        this.notification.error("Thất bại", "Mã xác thực không chính xác");
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail"));
       }
     }, error => {
       this.isVisibleUpdate = false;
       this.toggleSwitch = false;
-      this.notification.error("Thất bại", "Thao tác thất bại");
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"));
     })
   }
 
@@ -90,7 +92,7 @@ export class SecurityComponent implements OnInit {
         this.isVisibleUpdate = true;
       }, error => {
         this.toggleSwitch = false;
-        this.notification.error("Thất bại", "Thao tác thất bại")
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
       });
     }
     

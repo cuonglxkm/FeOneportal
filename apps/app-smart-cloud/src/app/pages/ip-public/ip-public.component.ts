@@ -1,8 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {IpPublicService} from "../../shared/services/ip-public.service";
-import {RegionModel} from "../../shared/models/region.model";
-import {ProjectModel} from "../../shared/models/project.model";
-import {BaseResponse} from "../../../../../../libs/common-utils/src";
+import {BaseResponse, ProjectModel, RegionModel} from "../../../../../../libs/common-utils/src";
 import {IpPublicModel} from "../../shared/models/ip-public.model";
 import {Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";

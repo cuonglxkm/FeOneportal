@@ -6,11 +6,9 @@ import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FileSystemModel, FormSearchFileSystem } from 'src/app/shared/models/file-system.model';
 import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 
 
 @Component({

@@ -14,8 +14,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { G2TimelineData } from '@delon/chart/timeline';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-instances-detail',
@@ -32,6 +34,7 @@ export class InstancesDetailComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
@@ -187,31 +190,31 @@ export class InstancesDetailComponent implements OnInit {
   GSTIME = [
     {
       key: 5,
-      name: '5 phút',
+      name: '5 ' + this.i18n.fanyi('app.minute'),
     },
     {
       key: 15,
-      name: '15 phút',
+      name: '15 ' + this.i18n.fanyi('app.minute'),
     },
     {
       key: 60,
-      name: '1 giờ',
+      name: '1 ' + this.i18n.fanyi('app.hour'),
     },
     {
       key: 1440,
-      name: '1 ngày',
+      name: '1 ' + this.i18n.fanyi('app.day'),
     },
     {
       key: 10080,
-      name: '1 tuần',
+      name: '1 ' + this.i18n.fanyi('app.week'),
     },
     {
       key: 302400,
-      name: '1 tháng',
+      name: '1 ' + this.i18n.fanyi('app.month'),
     },
     {
       key: 907200,
-      name: '3 tháng trước',
+      name: '3 ' + this.i18n.fanyi('app.months'),
     },
   ];
 

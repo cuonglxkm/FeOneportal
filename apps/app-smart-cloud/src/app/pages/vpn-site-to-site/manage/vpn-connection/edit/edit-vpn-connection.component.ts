@@ -9,10 +9,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { FormEditVpnConnection, VpnConnectionDetail } from 'src/app/shared/models/vpn-connection';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-edit-vpn-connection',

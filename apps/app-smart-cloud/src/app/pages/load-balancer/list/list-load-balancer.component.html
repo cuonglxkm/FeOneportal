@@ -1,11 +1,15 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Quản lý Load Balancer'" xmlns="http://www.w3.org/1999/html">
+             [title]="'app.load.balancer.manage' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.breadcrumb.home' | i18n
+      }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{
+          'app.breadcrumb.infrastructure.service' | i18n
+        }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
@@ -27,7 +31,7 @@
       <ng-container *ngSwitchCase="false">
         <nz-row nzJustify="space-between">
           <nz-col nzSpan="12">
-            <span class="text-card-header">Danh sách Load Balancer</span>
+            <span class="text-card-header">{{ 'app.load.balancer.list' | i18n }}</span>
           </nz-col>
           <nz-col nzSpan="12" style="flex:none;">
             <nz-input-group style="width: 350px; margin-right: 15px;" [nzPrefix]="prefixIconSearch" nzSize="large">
@@ -35,14 +39,14 @@
                      nz-input
                      [(ngModel)]="value"
                      (input)="onInputChange($event.target['value'])"
-                     placeholder="Tìm kiếm theo tên, IP Address ..."/>
+                     [placeholder]="'app.load.balancer.search' | i18n"/>
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"/>
             </ng-template>
             <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate(typeVPC)">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
-              <span class="button-text-primary">Tạo mới Load Balancer</span>
+              <span class="button-text-primary">{{ 'app.button.load.balancer.create' | i18n }}</span>
             </button>
           </nz-col>
         </nz-row>
@@ -59,27 +63,27 @@
                   [nzLoading]="isLoading">
           <thead>
           <tr>
-            <th nzLeft>Tên Load Balancer</th>
+            <th nzLeft>{{ 'app.load.balancer.name' | i18n }}</th>
             <th nzBreakWord>VIP Address
-              <img nz-popover [nzPopoverContent]="'Virtual IP là IP private  dùng để giao tiếp với các Member'"
+              <img nz-popover [nzPopoverContent]="'app.tootip.vip.address' | i18n"
                    nzPopoverPlacement="bottom" style="margin-bottom: 4px; margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </th>
             <th nzBreakWord>Internet Floating
-              <img nz-popover [nzPopoverContent]="'Internet IP là IP Public được cấp cho Load Balancer để tiếp nhận các request từ ngoài Internet'"
+              <img nz-popover [nzPopoverContent]="'app.tootip.internet.floating' | i18n"
                    nzPopoverPlacement="bottom" style="margin-bottom: 4px; margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </th>
-            <th nzBreakWord>Trạng thái tác vụ
-              <img nz-popover [nzPopoverContent]="'Nếu trạng thái hiển thị là ERROR, thông thường là do Load Balancer health check phát hiện ra có member bị error trong Pool của Load Balancer.'"
+            <th nzBreakWord>{{ 'app.task.status' | i18n }}
+              <img nz-popover [nzPopoverContent]="'app.tootip.task.status.lb' | i18n"
                    nzPopoverPlacement="bottom" style="margin-bottom: 4px; margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </th>
-            <th nzBreakWord>Trạng thái hoạt động</th>
-            <th nzBreakWord>Ngày tạo</th>
-            <th nzBreakWord>Ngày hết hạn</th>
-            <th nzBreakWord>Gói dịch vụ</th>
-            <th nzBreakWord>Thao tác</th>
+            <th nzBreakWord>{{ 'app.activity.status' | i18n }}</th>
+            <th nzBreakWord>{{ 'app.text.created-date' | i18n }}</th>
+            <th nzBreakWord>{{ 'app.service.expiration-date' | i18n }}</th>
+            <th nzBreakWord>{{ 'app.text.package' | i18n }}</th>
+            <th nzBreakWord>{{ 'app.text.operation' | i18n }}</th>
           </tr>
           </thead>
           <tbody>
@@ -108,7 +112,7 @@
               <span *ngIf="data.operatingStatus === 'ONLINE'">
                 <img style="padding-right: 10px; cursor: pointer;" src="assets/imgs/add.svg"
                      nz-popover
-                     [nzPopoverContent]="'Tạo Listener'"
+                     [nzPopoverContent]="'app.listener.create' | i18n"
                      nzPopoverPlacement="bottom"/>
                 <span *ngIf="typeVPC == 1">
                   <img nz-popover src="assets/imgs/edit-2.svg"
@@ -116,13 +120,13 @@
                        nzPopoverPlacement="bottom"
                        (click)="navigateToUpdateVpc(data.id)"
                        style="cursor: pointer; margin-right: 16px"
-                       [nzPopoverContent]="'Chỉnh sửa'" />
+                       [nzPopoverContent]="'app.text.edit' | i18n" />
                 </span>
                 <span *ngIf="typeVPC == 0">
                   <one-portal-update-load-balancer-normal [loadBalancer]="data" [region]="region" [project]="project" (onOk)="handleUpdateNoVpcOk()" />
                 </span>
                 <img *ngIf="typeVPC == 0" style="padding-right: 10px; cursor: pointer;" src="assets/imgs/calendar-tick.svg"
-                     nz-popover nzPopoverContent="Gia hạn Load Balancer" nzPopoverPlacement="bottom"
+                     nz-popover [nzPopoverContent]="'app.load.balancer.extend' | i18n" nzPopoverPlacement="bottom"
                      (click)="navigateToExtend(data.id)"/>
                 <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
                                                  [nameLoadBalancer]="data.name" [region]="region" [project]="project" (onOk)="handleDeleteOk()"/>
@@ -141,18 +145,18 @@
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-title" style="color: #0066b3">Load Balancer<br>Dịch vụ cân bằng tải</span>
+              <span class="text-intro-title" style="color: #0066b3">Load Balancer<br>{{ 'app.load.balancing.service' | i18n }}</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">Đối với dự án VPC, quý khách có thể mua kèm dịch vụ Load Balancer tại dịch vụ bổ sung
-                                              Đối với dự án thường, quý khách có thể khởi tạo Load Balancer tại đây.</span>
+                <span class="text-intro-desc">{{ 'app.load.balancing.intro' | i18n }}<br>
+                  {{ 'app.load.balancing.intro.next' | i18n }}</span>
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate(typeVPC)" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            Tạo mới Load Balancer
+              {{ 'app.button.load.balancer.create' | i18n }}
           </button>
         </result>
       </ng-container>

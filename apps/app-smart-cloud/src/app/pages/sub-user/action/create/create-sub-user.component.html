@@ -1,19 +1,36 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Quản lý Sub-User'">
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'app.sub.user.create' | i18n"
+>
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{
+        'app.breadcrumb.home' | i18n
+      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{
+        'app.breadcrumb.infrastructure.service' | i18n
+      }}</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">Object Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'">Subuser</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/object-storage/sub-user/create'">Tạo mới SubUser</nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'"
+        >Subuser</nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item
+        [routerLink]="'/app-smart-cloud/object-storage/sub-user/create'"
+        >{{ 'app.sub.user.create' | i18n }}</nz-breadcrumb-item
+      >
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
-                               [regionId]="region"></project-select-dropdown>
+      <region-select-dropdown
+        (valueChanged)="regionChanged($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        (valueChanged)="projectChanged($event)"
+        [regionId]="region"
+      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -21,31 +38,40 @@
   <form nz-form [formGroup]="validateForm" nzLayout="vertical">
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
-        <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông tin SubUser</span>
-          <nz-form-item style="margin-top: 24px;">
+        <nz-card style="border-radius: 8px">
+          <span class="text-card-header">{{ 'app.sub.user.info' | i18n }}</span>
+          <nz-form-item style="margin-top: 24px">
             <nz-form-label>
               <div>
                 <div>
-                  <span>Tên SubUser</span>
-                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                  <span>{{ 'app.sub.user.name' | i18n }}</span>
+                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </div>
                 <div>
-                  <span>Tên người dùng nên sử dụng các ký tự chữ cái thường, chữ hoa, chữ số và dấu gạch ngang.</span>
+                  <span>{{ 'app.sub.user.into.permission' | i18n }}</span>
                 </div>
               </div>
             </nz-form-label>
-            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameSubUserErrorTpl">
-                <input nz-input
-                       style="width: 100%;"
-                       class="input-custom"
-                       [(ngModel)]="name"
-                       (input)="updateData($event.target.value)"
-                       [placeholder]="'Nhập tên sub-user'"
-                       formControlName="name"/>
+            <nz-form-control
+              nzDisableAutoTips
+              [nzErrorTip]="nameSubUserErrorTpl"
+            >
+              <input
+                nz-input
+                style="width: 100%"
+                class="input-custom"
+                [(ngModel)]="name"
+                (input)="updateData($event.target.value)"
+                [placeholder]="'app.input.name' | i18n"
+                formControlName="name"
+              />
               <ng-template #nameSubUserErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Ttên Sub-User không được để trống</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Tên người dùng nên sử dụng các ký tự chữ cái thường, chữ hoa, chữ số và dấu gạch ngang.</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{
+                  'validation.sub.user.name.required' | i18n
+                }}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{
+                  'validation.sub.user.name' | i18n
+                }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -53,67 +79,90 @@
             <nz-form-label>
               <div>
                 <div>
-                  <span>Quyền truy cập</span>
-                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                  <span>{{ 'app.access.rights' | i18n }}</span>
+                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </div>
                 <div>
-                  <span>Người dùng lựa chọn quyền truy cập toàn bộ các Bucket của Quý khách cho SubUser muốn tạo<br>
-Lưu ý: Truy cập vào Bucket có thể bị giới hạn bởi cấu hình Bucket policy.</span>
+                  <span
+                    >{{ 'app.sub.user.into.permission' | i18n }}<br />
+                    {{ 'app.sub.user.note.permission' | i18n }}</span
+                  >
                 </div>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="accessErrorTpl">
-              <nz-select formControlName="access" [(ngModel)]="access" >
-                <nz-option nzValue="full" nzLabel="Tất cả quyền truy cập"></nz-option>
-                <nz-option nzValue="none" nzLabel="Không có quyền truy cập"></nz-option>
+              <nz-select formControlName="access" [(ngModel)]="access">
+                <nz-option
+                  nzValue="full"
+                  [nzLabel]="'app.all.access.permission' | i18n"
+                ></nz-option>
+                <nz-option
+                  nzValue="none"
+                  [nzLabel]="'app.no.access.permission' | i18n"
+                ></nz-option>
               </nz-select>
               <ng-template #accessErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Sub-User</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{
+                  'validation.info.required' | i18n
+                }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
         </nz-card>
       </nz-col>
       <nz-col nzSpan="8">
-        <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông số cấu hình</span>
-          <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-            <span class="text-value">
-              Tên Sub-User
-            </span>
+        <nz-card style="border-radius: 8px">
+          <span class="text-card-header">{{
+            'app.config.parameters' | i18n
+          }}</span>
+          <nz-row style="margin-bottom: 10px; margin-top: 10px" nzGutter="16">
+            <span class="text-value"> {{ 'app.sub.user.name' | i18n }} </span>
           </nz-row>
-          <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
+          <nz-row style="margin-bottom: 10px; margin-top: 10px" nzGutter="16">
             <span class="text-label" [innerText]="name"></span>
           </nz-row>
-          <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
+          <nz-row style="margin-bottom: 10px; margin-top: 10px" nzGutter="16">
             <span class="text-value">
-              <b>Quyền truy cập</b>
+              <b>{{ 'app.access.rights' | i18n }}</b>
             </span>
           </nz-row>
-          <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
+          <nz-row style="margin-bottom: 10px; margin-top: 10px" nzGutter="16">
             <span class="text-label" [ngSwitch]="access">
-              <div *ngSwitchCase="'full'">Tất cả quyền truy cập</div>
-              <div *ngSwitchCase="'none'">Không có quyền truy cập</div>
+              <div *ngSwitchCase="'full'">
+                {{ 'app.all.access.permission' | i18n }}
+              </div>
+              <div *ngSwitchCase="'none'">
+                {{ 'app.no.access.permission' | i18n }}
+              </div>
             </span>
           </nz-row>
           <nz-row>
             <nz-col style="width: 100%" class="text-right">
               <button nz-button (click)="cancel()">
-                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />Hủy
+                <img
+                  style="padding-right: 10px; margin-top: -4px"
+                  src="assets/imgs/cancel.svg"
+                  alt=""
+                />{{ 'app.text.delete' | i18n }}
               </button>
-              <button nz-button nzSize="large" nzType="primary"
-                      [disabled]="validateForm.invalid" (click)="submitForm()">
+              <button
+                nz-button
+                nzSize="large"
+                nzType="primary"
+                [disabled]="validateForm.invalid"
+                (click)="submitForm()"
+              >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
-                <span class="button-text-primary"
-                      [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>
+                <span
+                  class="button-text-primary"
+                  [style.color]="validateForm.invalid ? 'gray' : 'white'"
+                  >{{ 'app.button.confirm' | i18n }}</span
+                >
               </button>
             </nz-col>
           </nz-row>
         </nz-card>
-
       </nz-col>
     </nz-row>
   </form>
-
 </nz-content>
-

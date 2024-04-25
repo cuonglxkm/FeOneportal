@@ -9,9 +9,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {IpPublicService} from "../../../shared/services/ip-public.service";
 import {IpPublicModel} from "../../../shared/models/ip-public.model";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {getCurrentRegionAndProject} from "@shared";
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-detail-ip-public',

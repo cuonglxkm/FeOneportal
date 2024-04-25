@@ -1,13 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel, SizeInCLoudProject } from '../../../shared/models/project.model';
 import { Router } from '@angular/router';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, ProjectService, RegionModel, SizeInCloudProject } from '../../../../../../../libs/common-utils/src';
 import { FileSystemModel, FormSearchFileSystem } from '../../../shared/models/file-system.model';
 import { FileSystemService } from '../../../shared/services/file-system.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { ProjectService } from '../../../shared/services/project.service';
 
 @Component({
   selector: 'one-portal-list-file-system',
@@ -33,7 +30,7 @@ export class ListFileSystemComponent implements OnInit {
 
   typeVpc: number;
 
-  projectInfo: SizeInCLoudProject = new SizeInCLoudProject();
+  projectInfo: SizeInCloudProject = new SizeInCloudProject();
 
   constructor(private router: Router,
               private fileSystemService: FileSystemService,
