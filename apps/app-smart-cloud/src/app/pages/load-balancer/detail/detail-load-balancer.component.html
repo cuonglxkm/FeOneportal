@@ -3,18 +3,21 @@
              [title]="'Xem chi tiết Load Balancer'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.breadcrumb.home' | i18n
+      }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{
+          'app.breadcrumb.infrastructure.service' | i18n
+        }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">Thông tin chi tiết Load Balancer</a>
+        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">{{
+          'app.load.balancer.detail' | i18n
+        }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -29,13 +32,13 @@
 </page-header>
 <nz-content>
   <nz-card>
-    <span class="text-card-header">Thông tin Load Balancer</span>
+    <span class="text-card-header">{{ 'app.load.balancer.info' | i18n }}</span>
     <form nz-form nzLayout="vertical">
       <nz-row nzGutter="24" nzJustify="space-between">
         <nz-col nzSpan="12">
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
-              <span>Tên LoadBalancer</span>
+              <span>{{ 'app.load.balancer.name' | i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <input nz-input class="input-custom" [value]="loadBalancer.name" [disabled]="true" />
@@ -51,7 +54,7 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Mô tả</span>
+              <span>{{ 'app.service.description' | i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <textarea nz-input class="input-custom" [value]="loadBalancer.description" [nzAutosize]="{ minRows: 3, maxRows: 5 }" [disabled]="true"></textarea>
@@ -69,7 +72,7 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Ngày cấp dịch vụ</span>
+              <span>{{ 'app.service.start.date' | i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <input nz-input class="input-custom" [value]="loadBalancer.createDate | date: 'dd/MM/yyyy'" [disabled]="true" />
@@ -77,7 +80,7 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Ngày kết thúc</span>
+              <span>{{ 'app.service.expiration-date' | i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <input nz-input class="input-custom" [value]="loadBalancer.expiredDate | date: 'dd/MM/yyyy'" [disabled]="true"/>
@@ -98,12 +101,12 @@
       <nz-tab [nzTitle]="titleListener">
         <nz-row nzJustify="space-between">
           <nz-col>
-            <span class="text-card-header">Danh sách Listener</span>
+            <span class="text-card-header">{{ 'app.listener.list' | i18n }}</span>
           </nz-col>
           <nz-col>
             <button nz-button nzType="primary" nzSize="large" (click)="loadToCreateListener()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
-              <span class="button-text-primary">Tạo mới Listener</span>
+              <span class="button-text-primary">{{ 'app.listener.create.button' | i18n }}</span>
             </button>
           </nz-col>
         </nz-row>
@@ -113,7 +116,7 @@
       <nz-tab [nzTitle]="titlePool" >
         <nz-row nzJustify="space-between">
           <nz-col>
-            <span class="text-card-header">Danh sách Pool</span>
+            <span class="text-card-header">{{ 'app.pool.list' | i18n }}</span>
           </nz-col>
           <nz-col>
             <one-portal-create-pool-in-lb [region]="region" [project]="project" [loadbalancerId]="idLoadBalancer" (onOk)="handleCreatePoolOk()"/>
