@@ -20,6 +20,13 @@ export class KubernetesConstant {
 
   public static CIDR_CHECK = "100.64.0.0/16";
 
+  // instance status
+  public static ACTIVE_INSTANCE = 'active';
+
+  public static STOPPED_INSTANCE = 'stopped';
+
+  public static REBOOT_INSTANCE = 'reboot';
+
   // action type
   public static CREATE_ACTION = "create";
 

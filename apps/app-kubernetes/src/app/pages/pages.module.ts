@@ -56,6 +56,7 @@ import { DeleteInboundComponent } from './security-group/rule/inbound/delete/del
 import { CreateOutboundComponent } from './security-group/rule/outbound/create/create-outbound.component';
 import { DeleteOutboundComponent } from './security-group/rule/outbound/delete/delete-outbound.component';
 import { FormRuleComponent } from './security-group/rule/form/form-rule.component';
+import { StatusCode2LabelPipe } from '../pipes/statusCode2label.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -88,6 +89,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateOutboundComponent,
     DeleteOutboundComponent,
     FormRuleComponent,
+    StatusCode2LabelPipe,
 
   ],
   imports: [

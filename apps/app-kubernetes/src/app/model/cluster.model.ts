@@ -3,6 +3,7 @@ export class KubernetesCluster {
   id: number;
   serviceOrderCode: string;
   orderCode: string;
+  orderId: number;
   clusterName: string;
   regionId: number;
   namespace: string;
@@ -30,6 +31,7 @@ export class KubernetesCluster {
     this.id = obj.id;
     this.serviceOrderCode = obj.service_order_code;
     this.orderCode = obj.order_code;
+    this.orderId = obj.order_id;
     this.clusterName = obj.service_name;
     this.regionId = obj.region_id;
     this.namespace = obj.namespace;

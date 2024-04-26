@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ClusterService } from '../../services/cluster.service';
-import { Subject, debounceTime, distinctUntilChanged, finalize, map } from 'rxjs';
+import { EMPTY, Subject, catchError, debounceTime, distinctUntilChanged, filter, finalize, map, switchMap } from 'rxjs';
 import { InstanceModel } from '../../model/instance.model';
+import { KubernetesConstant } from '../../constants/kubernetes.constant';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'cluster-instances',
@@ -12,6 +14,7 @@ export class InstancesComponent implements OnInit {
 
   @Input('namespace') namespace: string;
   @Input('serviceOrderCode') serviceOrderCode: string;
+  @Input('projectId') projectId: number;
 
   keySearch: string;
   pageSize: number;
@@ -24,7 +27,8 @@ export class InstancesComponent implements OnInit {
   changeKeySearch = new Subject<string>();
 
   constructor(
-    private clusterService: ClusterService
+    private clusterService: ClusterService,
+    private notificationService: NzNotificationService
   ) {
     this.isLoadingInstance = false;
     this.listOfInstances = [];
@@ -47,17 +51,54 @@ export class InstancesComponent implements OnInit {
 
   searchInstances() {
     this.isLoadingInstance = true;
-    this.clusterService.getListInstancesOfCluster(this.namespace, this.serviceOrderCode)
+    this.clusterService.searchInstances(this.namespace, this.serviceOrderCode)
     .pipe(finalize(() => this.isLoadingInstance = false))
     .subscribe((r: any) => {
       this.listOfInstances = r.data;
+
+      this.listOfInstances = this.listOfInstances.map(item => {
+        let action: boolean;
+        item.status == KubernetesConstant.ACTIVE_INSTANCE ? action = true : action = false;
+
+        let isProgressing: boolean;
+        item.status
+
+        return {
+          action: action,
+          isProgressing: false,
+          ...item
+        };
+      })
     });
   }
 
-  syncInstances() {}
+  syncInstances() {
+    this.isLoadingInstance = true;
+    this.clusterService.syncInstances(this.serviceOrderCode, this.namespace, this.projectId)
+    .pipe(finalize(() => this.isLoadingInstance = false))
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.searchInstances();
+        this.notificationService.success("Thành công", 'Đồng bộ instances thành công');
+      } else {
+        this.notificationService.error('Thất bại', r.message);
+      }
+    });
+  }
 
-  handleOnOffInstance(item: InstanceModel) {
-    console.log(item);
+  handleActionInstance(item: InstanceModel, action?: string) {
+    if (action == null || action == undefined) {
+      action = item.action == true ? 'STOP' : 'START';
+    }
+    this.clusterService.actionInstance(item.cloudId, this.projectId, action)
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        
+        this.notificationService.success('Thành công', r.message);
+      } else {
+        this.notificationService.error('Thất bại', r.message);
+      }
+    });
   }
 
   onQueryParamsChange(event: any) {

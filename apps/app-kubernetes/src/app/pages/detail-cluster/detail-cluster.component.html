@@ -114,7 +114,16 @@
                     </div>
                   </div>
                 </td>
-                <td class="w-50"><row-data [value]="detailCluster.orderCode" [label]="'Mã đơn hàng'"></row-data></td>
+                <td class="w-50">
+                  <div nz-row>
+                    <div nz-col [nzSpan]="8">Mã đơn hàng</div>
+                    <div nz-col [nzSpan]="16">
+                      <span style="font-size: 16px; font-weight: 600;">
+                        <a [routerLink]="'/app-smart-cloud/order/detail/' + detailCluster.orderId" target="_blank">{{detailCluster.orderCode}}</a>
+                      </span>
+                    </div>
+                  </div>
+                </td>
               </tr>
 
               <tr>
@@ -469,7 +478,7 @@
                 <td class="w-50"><row-data [value]="vpcNetwork" [label]="'Mạng VPC'"></row-data></td>
                 <td class="w-50"><row-data [value]="detailCluster.subnet" [label]="'Subnet'"></row-data></td>
               </tr>
-              
+
               <tr>
                 <td class="w-50"><row-data [value]="detailCluster.serviceCidr" [label]="'Service CIDR'"></row-data></td>
               </tr>

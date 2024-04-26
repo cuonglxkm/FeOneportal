@@ -2,6 +2,7 @@ export class InstanceModel {
 
   id: number;
   instanceName: string;
+  cloudId: string;
   vCPUs: number;
   ram: number;
   volumeSize: number;
@@ -11,5 +12,7 @@ export class InstanceModel {
   serviceOrderCode: string;
   namespace: string;
   privateIP: string;
+  action: boolean;
+  isProgressing: boolean;
 
 }

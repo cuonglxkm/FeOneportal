@@ -106,7 +106,7 @@ export class ClusterService extends BaseService {
   }
 
   // for instances
-  getListInstancesOfCluster(namespace: string, serviceOrderCode: string) {
+  searchInstances(namespace: string, serviceOrderCode: string) {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/list-instances?namespace=${namespace}&serviceOrderCode=${serviceOrderCode}`,
     {headers: this.getHeaders()});
   }

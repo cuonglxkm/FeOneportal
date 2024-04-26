@@ -8,11 +8,11 @@ export class StatusCode2LabelPipe implements PipeTransform {
 
   transform(status: string): StatusModel {
     switch(status) {
-      case 'ACTIVE':
+      case 'active':
         return new StatusModel("#0066b0", "Đang chạy");
-      case 'STOPPED':
+      case 'stopped':
         return new StatusModel("#EA3829", "Đã dừng");
-      case 'REBOOT':
+      case 'reboot':
         return new StatusModel("#FFBB63", "Khởi động lại");
 
       default:
