@@ -289,7 +289,7 @@ export class FormUpdatePool {
   poolId: string;
   name: string;
   description: string;
-  adminStateUp: true;
+  adminStateUp: boolean;
   lb_algorithm: string;
   session: boolean;
   customerId: number;

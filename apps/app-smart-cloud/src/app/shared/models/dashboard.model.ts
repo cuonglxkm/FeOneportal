@@ -4,6 +4,7 @@ export class SubscriptionsDashboard {
   serviceSuspendCount: number
   serviceExpireCount: number
   serviceNearExpireCount: number
+  details: ChartDataSubscription[]
 }
 
 export class SubscriptionsNearExpire {
@@ -25,4 +26,10 @@ export class PaymentCostUse {
   totalAmount: number
   createdDate: string
   status: string
+}
+
+export class ChartDataSubscription {
+  serviceType: number
+  serviceTypeName: string
+  dataCount: number
 }

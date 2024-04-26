@@ -6,14 +6,16 @@ import { ListenerService } from '../../../../shared/services/listener.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { finalize } from 'rxjs/operators';
-import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
+import { L7Policy, Pool } from '../../../../shared/models/load-balancer.model';
 
 @Component({
   selector: 'one-portal-listener-detail',
   templateUrl: './listener-detail.component.html',
-  styleUrls: ['./listener-detail.component.less'],
+  styleUrls: ['./listener-detail.component.less']
 })
-export class ListenerDetailComponent implements OnInit{
+export class ListenerDetailComponent implements OnInit {
   regionId = JSON.parse(localStorage.getItem('region')).regionId;
   projectId = JSON.parse(localStorage.getItem('projectId'));
   idListener: any;
@@ -44,19 +46,27 @@ export class ListenerDetailComponent implements OnInit{
   });
   protocolListener: any;
   listAlgorithm = [
-    {value:'ROUND_ROBIN',name:'Round robin'},
-    {value:'LEAST_CONNECTIONS',name:'Least connections'},
-    {value:'SOURCE_IP',name:'source ip'},
+    { value: 'ROUND_ROBIN', name: 'Round robin' },
+    { value: 'LEAST_CONNECTIONS', name: 'Least connections' },
+    { value: 'SOURCE_IP', name: 'source ip' }
   ];
   loadingDetail = true;
   loadingL7 = true;
   loadingPool = true;
+  isLoading: boolean = false;
+
+  pageSize: number = 5
+  pageIndex: number = 1
+
+  currentPageData: L7Policy[]
+
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
               private notification: NzNotificationService,
               private activatedRoute: ActivatedRoute,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private loadBalancerService: LoadBalancerService) {
   }
 
   ngOnInit(): void {
@@ -74,7 +84,7 @@ export class ListenerDetailComponent implements OnInit{
   }
 
   private getData() {
-    this.service.getDetail(this.activatedRoute.snapshot.paramMap.get('id'),this.activatedRoute.snapshot.paramMap.get('lbId'))
+    this.service.getDetail(this.activatedRoute.snapshot.paramMap.get('id'), this.activatedRoute.snapshot.paramMap.get('lbId'))
       .pipe(finalize(() => {
         this.loadingDetail = false;
       }))
@@ -90,40 +100,48 @@ export class ListenerDetailComponent implements OnInit{
           this.description = data.description;
           this.protocolListener = data.protocol;
           this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
-          this.getL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
+          this.getListL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
         }
-      )
+      );
   }
 
-  private getL7Policy(id: string) {
-    this.service.getL7Policy(id, this.regionId, this.projectId)
-      .pipe(finalize(()=>{
-        this.loadingL7 = false;
-      }))
-      .subscribe(
-        data => {
-          this.listL7 = data;
-        }
-      )
+  private getListL7Policy(id: string) {
+    this.isLoading = true
+    this.loadBalancerService.getListL7Policy(this.regionId, this.projectId, id).subscribe(
+      data => {
+        this.isLoading = false
+        this.listL7 = data;
+        const startIndex = (this.pageIndex - 1) * this.pageSize;
+        const endIndex = this.pageIndex * this.pageSize;
+
+        this.currentPageData = this.listL7.slice(startIndex, endIndex);
+      }, error => {
+        this.isLoading = false
+        this.listL7 = null
+      })
+  }
+
+  onPageSizeChange(value) {
+    this.pageSize = value
+    this.getListL7Policy(this.idListener)
+  }
+
+  onPageIndexChange(value) {
+    this.pageIndex = value
+    this.getListL7Policy(this.idListener)
+  }
+
+  handleDeleteL7PolicyOk() {
+    setTimeout(() => {this.getListL7Policy(this.idListener)}, 2500)
   }
 
   private getPool(id: string) {
-    this.service.getPool(id, this.regionId)
-      .pipe(finalize(()=>{
+    this.service.getPool(id, this.regionId).pipe(finalize(() => {
         this.loadingPool = false;
-      })).subscribe(
-      data => {
+      })).subscribe(data => {
         this.listPool = data.records;
-      }
-    )
-  }
-  handleEditOk() {
-    this.getPool(this.activatedRoute.snapshot.paramMap.get('id'))
+      });
   }
 
-  handleDeleteOk() {
-    this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
-  }
-  
   description: any;
 }
