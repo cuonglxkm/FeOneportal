@@ -10,3 +10,7 @@
   position: relative;
   float: right;
 }
+
+.right-align {
+  text-align: right;
+}

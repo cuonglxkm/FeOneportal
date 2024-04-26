@@ -1,7 +1,7 @@
 <div class="add-btn mb-5">
   <one-portal-create-inbound
     nz-tooltip
-    nzTooltipTitle="Thêm mới Inbound"
+    nzTooltipTitle="Thêm mới Outbound"
     nzTooltipPlacement="bottom"
     [disabled]="!securityGroupId"
     [condition]="{
@@ -23,26 +23,37 @@
       <th>Protocol</th>
       <th>PortRange</th>
       <th>Remote IP Prefix</th>
+      <th>Remote Security Group</th>
+      <th>Mô tả</th>
       <th>Thao tác</th>
     </tr>
   </thead>
   <tbody>
     <ng-container *ngFor="let item of ruleTable.data; let i = index;">
       <tr>
-        <td>{{ i + 1 }}</td>
-        <td>{{item.remoteIp}}</td>
-        <td>{{item.protocol}}</td>
+        <td class="right-align">{{ i + 1 }}</td>
+        <td>{{item.etherType}}</td>
+        <td>{{item.protocol | protocol2label}}</td>
         <td>{{item.portRange}}</td>
         <td>{{item.remoteIpPrefix}}</td>
+        <td>{{item.remoteGroupId}}</td>
+        <td></td>
         <td>
-          <div>
-            <one-portal-delete-outbound
-              [idOutbound]="item.id"
-              [nameRule]="item.remoteIp"
-              [region]="regionId"
-              [project]="projectId"
-              (onOk)="handleOkDeleteOutbound()" />
-          </div>
+          <ng-container *ngIf="item.portRange?.toLowerCase() == LOCK_RULE && item.protocol?.toLowerCase() == LOCK_RULE; else canDelRuleTpl">
+            <div nz-tooltip="Không thể xóa rule này" style="cursor: no-drop;">
+              <img src="assets/imgs/trash1.svg" alt="" style="margin-top: 0; width: fit-content;" />
+            </div>
+          </ng-container>
+          <ng-template #canDelRuleTpl>
+            <div class="ml-5">
+              <one-portal-delete-outbound
+                [idOutbound]="item.id"
+                [nameRule]="item.remoteIp"
+                [region]="regionId"
+                [project]="projectId"
+                (onOk)="handleOkDeleteOutbound()" />
+            </div>
+          </ng-template>
         </td>
       </tr>
     </ng-container>

@@ -6,6 +6,7 @@ import { SecurityGroupService } from '../../../services/security-group.service';
 import { ShareService } from '../../../services/share.service';
 import Pagination from '../../../shared/models/pagination';
 import { RuleSearchCondition } from '../../../shared/models/security-group-rule';
+import { KubernetesConstant } from '../../../constants/kubernetes.constant';
 
 @Component({
   selector: 'one-portal-inbound',
@@ -25,6 +26,8 @@ export class InboundComponent implements OnInit {
   regionId: number;
   projectId: number;
   securityGroupId: string;
+
+  readonly LOCK_RULE = KubernetesConstant.LOCK_RULE;
 
   constructor(
     private sgService: SecurityGroupService,

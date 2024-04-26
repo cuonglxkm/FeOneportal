@@ -74,6 +74,9 @@ export class ListClusterComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
   ngOnInit(): void {
+    // remove tab index
+    localStorage.removeItem('currentTab');
+
     // display this page if user haven't any cluster
     this.isShowIntroductionPage = false;
 

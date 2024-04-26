@@ -5,6 +5,7 @@ import { SecurityGroupService } from '../../../services/security-group.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RuleSearchCondition } from '../../../shared/models/security-group-rule';
 import { finalize } from 'rxjs';
+import { KubernetesConstant } from '../../../constants/kubernetes.constant';
 
 @Component({
   selector: 'one-portal-outbound',
@@ -23,6 +24,8 @@ export class OutboundComponent implements OnInit {
   securityGroupId: string;
 
   isLoadingOutbound: boolean;
+
+  readonly LOCK_RULE = KubernetesConstant.LOCK_RULE;
 
   constructor(
     private sgService: SecurityGroupService,

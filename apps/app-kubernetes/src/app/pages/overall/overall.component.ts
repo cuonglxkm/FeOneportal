@@ -18,6 +18,8 @@ export class OverallComponent implements OnInit {
   serviceOrderCode: string;
   detailCluster: KubernetesCluster;
 
+  selectedIndexTab: number = 0;
+
   constructor(
     private clusterService: ClusterService,
     private vlanService: VlanService,
@@ -26,6 +28,8 @@ export class OverallComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.selectedIndexTab = +localStorage.getItem('currentTab') || 0;
+
     this.activatedRoute.params.subscribe(params => {
       this.serviceOrderCode = params['id'];
       this.getDetailCluster(this.serviceOrderCode);
@@ -41,6 +45,11 @@ export class OverallComponent implements OnInit {
 
   onProjectChange(project: ProjectModel) {
     this.projectId = project.id;
+  }
+
+  onChangeTab(index: number) {
+    this.selectedIndexTab = index;
+    localStorage.setItem('currentTab', index + '');
   }
 
   getDetailCluster(serviceOrderCode: string) {

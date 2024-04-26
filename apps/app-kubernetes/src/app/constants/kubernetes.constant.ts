@@ -20,6 +20,8 @@ export class KubernetesConstant {
 
   public static CIDR_CHECK = "100.64.0.0/16";
 
+  public static LOCK_RULE = "any";
+
   // instance status
   public static ACTIVE_INSTANCE = 'active';
 
