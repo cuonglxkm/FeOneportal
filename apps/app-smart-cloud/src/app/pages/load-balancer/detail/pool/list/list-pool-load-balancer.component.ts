@@ -76,7 +76,7 @@ export class ListPoolLoadBalancerComponent implements OnInit, OnChanges {
   }
 
   handleDeleteOk() {
-    this.getListPool();
+    setTimeout(() => {this.getListPool();}, 1500)
   }
   ngOnInit() {
     this.getListPool();

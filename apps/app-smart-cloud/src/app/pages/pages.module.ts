@@ -106,7 +106,6 @@ import { ExtendIpPublicComponent } from './ip-public/extend-ip-public/extend-ip-
 import { CreateVolumeVpcComponent } from './volume/component/create-volume-vpc/create-volume-vpc.component';
 import { ResizeVolumeVpcComponent } from './volume/component/resize-volume-vpc/resize-volume-vpc.component';
 import { ListVlanComponent } from './vlan/list/list-vlan.component';
-import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 import { VlanDetailComponent } from './vlan/detail/vlan-detail.component';
 import { RouterListComponent } from './routers/router-list.component';
 import { RouterDetailComponent } from './routers/router-detail/router-detail.component';
@@ -225,6 +224,8 @@ import { ExtendFileSystemNormalComponent } from './file-storage/no-vpc/extend/ex
 import { ResizeFileSystemNormalComponent } from './file-storage/no-vpc/resize/resize-file-system-normal.component';
 import { CreateIpFloatingNormalComponent } from './ip-floating/create-ip-floating-normal.component';
 import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/extend-ip-floating.component';
+import { AttachIpFloatingLbComponent } from './load-balancer/list/attach/attach-ip-floating-lb.component';
+import { DetachIpFloatingLbComponent } from './load-balancer/list/detach/detach-ip-floating-lb.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -317,7 +318,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateVolumeVpcComponent,
     ResizeVolumeVpcComponent,
     ListVlanComponent,
-    BlankVolumeComponent,
     VlanDetailComponent,
     RouterListComponent,
     RouterDetailComponent,
@@ -434,6 +434,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ResizeFileSystemNormalComponent,
     CreateIpFloatingNormalComponent,
     ExtendIpFloatingComponent,
+    AttachIpFloatingLbComponent,
+    DetachIpFloatingLbComponent,
   ],
   imports: [
     CommonModule,

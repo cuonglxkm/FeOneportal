@@ -94,7 +94,7 @@ export class DetailL7PolicyComponent implements OnInit{
   }
 
   handleDeleteL7Rule() {
-    setTimeout(() => {this.getL7RuleList()}, 1500)
+    setTimeout(() => {this.getL7RuleList()}, 2500)
     this.getL7RuleList()
   }
   ngOnInit() {

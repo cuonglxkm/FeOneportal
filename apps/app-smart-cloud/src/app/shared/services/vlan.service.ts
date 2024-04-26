@@ -27,6 +27,14 @@ export class VlanService extends BaseService {
     super();
   }
 
+  private getHeaders() {
+    return new HttpHeaders({
+      'Content-Type': 'text',
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
+    })
+  }
+
   getVlanNetworks(formSearch: FormSearchNetwork) {
     let params = new HttpParams()
     if (formSearch.vlanName != undefined || formSearch.vlanName != null) {
@@ -328,5 +336,11 @@ export class VlanService extends BaseService {
         }
         return throwError(error);
       }))
+  }
+
+  checkAllocationPool(cidr: string) {
+    return this.http.get<string>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/calculateiprange?cidr=${cidr}`,
+      { responseType: 'json' }
+    );
   }
 }
