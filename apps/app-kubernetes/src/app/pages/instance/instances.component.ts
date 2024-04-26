@@ -55,13 +55,14 @@ export class InstancesComponent implements OnInit {
     .pipe(finalize(() => this.isLoadingInstance = false))
     .subscribe((r: any) => {
       this.listOfInstances = r.data;
+      this.total = this.listOfInstances.length;
 
       this.listOfInstances = this.listOfInstances.map(item => {
         let action: boolean;
         item.status == KubernetesConstant.ACTIVE_INSTANCE ? action = true : action = false;
 
-        let isProgressing: boolean;
-        item.status
+        // let isProgressing: boolean;
+        // item.status
 
         return {
           action: action,
