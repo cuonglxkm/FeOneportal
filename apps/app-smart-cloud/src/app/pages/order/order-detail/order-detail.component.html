@@ -247,6 +247,11 @@
                 [routerLink]="['/app-smart-cloud/object-storage/bucket']"
                 >{{ item?.serviceName }}</a
               >
+              <a
+              *ngSwitchCase="'Mongodb'"
+              [routerLink]="['/app-mongodb-replicaset']"
+              >{{ item?.serviceName }}</a
+            >
               <div *ngSwitchDefault>{{ item?.serviceName }}</div>
             </td>
             <td class="text-right">

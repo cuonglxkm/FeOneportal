@@ -31,7 +31,7 @@ export class OrderDetailComponent {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private notificationService: NotificationService,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {}
 
   ngOnInit() {
@@ -69,7 +69,7 @@ export class OrderDetailComponent {
             });          
           },
           error: (e) => {
-            this.notification.error('Thất bại', 'Lấy dữ liệu thất bại');
+            this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
           },
         });
     } else {
@@ -103,7 +103,7 @@ export class OrderDetailComponent {
             
           },
           error: (e) => {
-            this.notification.error('Thất bại', 'Lấy dữ liệu thất bại');
+            this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
           },
         });
     }

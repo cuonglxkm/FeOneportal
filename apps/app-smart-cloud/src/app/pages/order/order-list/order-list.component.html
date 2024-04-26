@@ -27,7 +27,7 @@
       <nz-row nzAlign="middle">
         <nz-space [nzSize]="24">
           <div *nzSpaceItem>
-            <nz-select [(ngModel)]="searchStatus"
+            <nz-select class="input-select-custom" [(ngModel)]="searchStatus"
                        style="width: 160px;"
                        (ngModelChange)="onChange($event)"
                        [nzPlaceHolder]="'app.order.status' | i18n">
@@ -35,11 +35,11 @@
             </nz-select>
           </div>
         </nz-space>
-        <nz-range-picker style="margin-left: 10px;" [(ngModel)]="date"
+        <nz-range-picker class="input-date-picker" style="margin-left: 10px;" [(ngModel)]="date"
                          (ngModelChange)="onChanggeDate($event)"></nz-range-picker>
         <div style="width: 300px; margin-left: 10px;">
-            <nz-input-group nzSearch [nzPrefix]="prefixIconSearch">
-              <input style="width: 380px" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
+            <nz-input-group class="input-custom" style="width: 380px" nzSearch [nzPrefix]="prefixIconSearch">
+              <input  [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
                      type="text" nz-input
                      [placeholder]="'app.order.search' | i18n"/>
             </nz-input-group>

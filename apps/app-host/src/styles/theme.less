@@ -203,34 +203,64 @@ u {
 
 .ant-input-affix-wrapper {
   // Input group
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
+//Input
 .ant-input {
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .input-custom {
   display: flex;
   height: 40px;
-  border-radius: 8px;
+  border-radius: 4px;
   justify-content: space-between;
   align-items: center;
   font-size: 16px;
 }
 
-.input-select-custom{
+// END INPUT
+
+//SELECT
+
+.input-select-custom {
   height: 40px;
 }
 
-.input-select-option-custom{
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  height: 100%;
+}
+
+.ant-select-single .ant-select-selector .ant-select-selection-item {
   display: flex;
   align-items: center;
 }
 
+.ant-select-selector{
+  display: flex;
+  align-items: center;
+}
 
+//END SELECT
 
-// END INPUT
+//DATE PICKPER
+.ant-picker{
+  border-radius: 8px;
+}
+
+.input-date-picker{
+  height: 40px;
+}
+//END DATE PICKPER
+
+//CARD
+
+.ant-card {
+  border-radius: 8px;
+}
+
+//END CARD
 
 // BUTTON
 
@@ -414,7 +444,7 @@ body {
   line-height: 24px;
   letter-spacing: 0.10000000149011612px;
   text-align: center;
-  color: #0074CC;
+  color: #0074cc;
 }
 
 .text-body-card-dashboard {
@@ -424,7 +454,7 @@ body {
   line-height: 24px;
   letter-spacing: 0.10000000149011612px;
   text-align: center;
-  color: #2B2D3B;
+  color: #2b2d3b;
 }
 
 // MENU
@@ -452,3 +482,4 @@ body {
   scrollbar-color: rgba(0, 0, 0, 0.3) #fafafa;
 }
 // END MENU
+

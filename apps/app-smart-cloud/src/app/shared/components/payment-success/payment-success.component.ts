@@ -134,6 +134,11 @@ export class PaymentSuccessComponent implements OnInit {
                     `/app-smart-cloud/object-storage/bucket`,
                   ]);
                   break;
+                case 'Mongodb':
+                    this.router.navigate([
+                      `/app-mongodb-replicaset`,
+                    ]);
+                    break;  
                 default:
                   this.router.navigate([
                     `/app-smart-cloud/order/detail/${this.orderId}`,

@@ -435,7 +435,7 @@ export class BucketDetailComponent implements OnInit {
   }
 
   removeMetadata(key: any) {
-    const index = this.listOfMetadata.findIndex((item) => item.key == key);
+    const index = this.listOfMetadata.findIndex((item) => item.metaKey == key);
     if (index >= 0) {
       this.listOfMetadata.splice(index, 1);
     }
@@ -930,7 +930,7 @@ export class BucketDetailComponent implements OnInit {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
           expiryTime: addDays(this.date, 1),
-          urlOrigin: 'https://oneportal.onsmartcloud.com',
+          urlOrigin: 'http://localhost:4200',
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
@@ -966,6 +966,8 @@ export class BucketDetailComponent implements OnInit {
 
   handleCancelUploadFile() {
     this.lstFileUpdate = [];
+    this.listOfMetadata = []
+    this.radioValue = 'public-read'
     this.isVisibleUploadFile = false;
     this.emptyFileUpload = true;
   }
