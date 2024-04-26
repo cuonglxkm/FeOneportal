@@ -492,6 +492,18 @@
   "app.note.delete.pool": "Để thực hiện xóa Pool <b>{{name}}</b>, vui lòng nhập tên Pool để xác nhận",
   "app.alert.delete.pool": "Bạn đang thực hiện xóa Pool",
 
+  "app.access.rule.manage": "Quản lý Access Rule",
+  "app.access.rule.list": "Danh sách Access Rule",
+  "app.button.access.rule.create": "Tạo mới Access Rule",
+  "app.button.access.rule.add": "Thêm Access Rule",
+
+  "validation.access.to": "Access To không được để trống",
+  "validation.access.to.pattern": "Access To có dạng x.x.x.x",
+
+  "app.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Instance)<br> hoặc CIDR được quyền truy cập tới Filesystem này",
+  "app.alert.delete.access.to": "Bạn đang thực hiện xóa Access Rule",
+  "app.access.to.remove.confirm": "Quý khách có chắc chắn thực hiện xóa Access Rule không?",
+
   "app.payment.title": "Danh sách thanh toán",
   "app.payment.payment": "Thanh toán",
   "app.payment.status": "Trạng thái",

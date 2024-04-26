@@ -117,5 +117,13 @@ export class ListenerDetailComponent implements OnInit{
       }
     )
   }
+  handleEditOk() {
+    this.getPool(this.activatedRoute.snapshot.paramMap.get('id'))
+  }
+
+  handleDeleteOk() {
+    this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
+  }
+  
   description: any;
 }
