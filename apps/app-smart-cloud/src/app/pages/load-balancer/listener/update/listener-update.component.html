@@ -182,12 +182,12 @@
           <nz-tab nzTitle="L7 Policy">
             <nz-row style="display: flex;justify-content: space-between;margin-bottom: 30px;">
               <div class="text-card-header">Danh sách L7 Policy</div>
-              <button nz-button nzType="primary" nzSize="large" [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">
+              <button *ngIf="currentPageData?.length > 0" nz-button nzType="primary" nzSize="large" [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">
                 <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt="" />
                 <span class="button-text-primary">Tạo mới L7 policy</span>
               </button>
             </nz-row>
-            <nz-table #fixedTable
+            <nz-table *ngIf="currentPageData?.length > 0" #fixedTable
                       nzShowPagination
                       [nzData]="currentPageData || []"
                       [nzFrontPagination]="false"
@@ -228,6 +228,14 @@
               </tr>
               </tbody>
             </nz-table>
+            <div *ngIf="currentPageData?.length <= 0" style="display: flex;text-align: center;width: 425px;justify-content: center;align-items: center;margin-left: 401px;">
+              <nz-alert nzType="warning" [nzMessage]="titleWarning" nzShowIcon>
+                <ng-template #titleWarning>
+                  <span class="text-label" style="color: red;">*Quý khách chưa có L7 Policy nào!</span><br>
+                  <span class="text-label">Quý khách có thể khởi tạo <a [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">L7 Policy</a> tại đây!</span>
+                </ng-template>
+              </nz-alert>
+            </div>
           </nz-tab>
         </nz-tabset>
       </nz-card>

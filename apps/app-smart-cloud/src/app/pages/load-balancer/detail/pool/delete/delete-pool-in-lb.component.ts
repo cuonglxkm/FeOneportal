@@ -59,22 +59,16 @@ export class DeletePoolInLbComponent implements AfterViewInit{
     if (this.value == this.namePool) {
       this.isInput = false
       this.loadBalancerService.deletePool(this.poolId, this.region, this.project).subscribe(data => {
-        if (data) {
           this.isLoading = false
           this.isVisible = false
           this.notification.success('Thành công', 'Xóa Pool thành công')
           this.onOk.emit(data)
-        } else {
-          console.log('data', data)
-          this.isLoading = false
-          this.isVisible = false
-          this.notification.error('Thất bại', 'Xóa Pool thất bại')
-        }
+
       }, error => {
         console.log('error', error)
         this.isLoading = false
         this.isVisible = false
-        this.notification.error('Thất bại', 'Xóa Pool thất bại')
+        this.notification.error('Thất bại', 'Xóa Pool thất bại ' + error.error.detail)
       })
     } else {
       this.isInput = true

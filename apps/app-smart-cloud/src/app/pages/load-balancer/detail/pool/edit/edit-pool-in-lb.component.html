@@ -56,16 +56,16 @@
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <span>Thuật toán (<span style="color: red;">*</span>)</span>
+          <span>Giao thức (<span style="color: red;">*</span>)</span>
           <img nz-popover
                [nzPopoverContent]="'.'"
                nzPopoverPlacement="bottom" style="margin-left: 5px;"
                src="assets/imgs/pajamas_question.svg" alt="" />
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
-          <input nz-input class="input-custom" [value]="" [disabled]="true" />
+          <input nz-input class="input-custom" [value]="pool?.protocol" [disabled]="true" />
           <ng-template #protocolErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng chọn thuật toán</ng-container>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng chọn giao thức</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>

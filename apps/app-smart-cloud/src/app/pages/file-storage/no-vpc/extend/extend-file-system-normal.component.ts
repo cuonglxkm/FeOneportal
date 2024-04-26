@@ -45,7 +45,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
     time: FormControl<number>
   }> = this.fb.group({
     snapshot: [false],
-    time: [1, [Validators.required]]
+    time: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]]
   });
 
   estimateExpireDate: Date = null;

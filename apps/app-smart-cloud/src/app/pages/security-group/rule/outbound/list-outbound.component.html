@@ -33,14 +33,14 @@
           <tr>
             <th nzAlign="center" class="text-th" nzLeft>IP Version</th>
             <th nzAlign="center" class="text-th" nzBreakWord>Protocol</th>
-            <th nzAlign="center" class="text-th" nzBreakWord>PortRange</th>
-            <th nzAlign="center" class="text-th" nzBreakWord>RemoteIPPrefix</th>
+            <th nzAlign="center" class="text-th" nzBreakWord>Port Range</th>
+            <th nzAlign="center" class="text-th" nzBreakWord>Remote IP Prefix</th>
             <th nzAlign="center" class="text-th" style="width: 216px;" nzBreakWord>Thao tác</th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let data of tableOutbound.data">
-            <td nzAlign="center" nzLeft>{{ data.remoteIp }}</td>
+            <td nzAlign="center" nzLeft>{{ data.etherType }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.protocol }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.portRange }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.remoteIpPrefix }}</td>

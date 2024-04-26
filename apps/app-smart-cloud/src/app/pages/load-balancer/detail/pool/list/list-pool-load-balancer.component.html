@@ -4,7 +4,7 @@
           [nzData]="currentPageData || []"
           [nzFrontPagination]="false"
           [nzLoading]="isLoading"
-          [nzTotal]="poolList.length"
+          [nzTotal]="poolList?.length"
           [nzPageSize]="pageSize"
           [nzPageIndex]="pageIndex"
           (nzPageSizeChange)="onPageSizeChange($event)"

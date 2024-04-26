@@ -31,18 +31,24 @@
     <div *ngIf="typeVPC == 0" style="display: flex">
       <div style="margin-right: 8px;">
         <div nz-col nzSpan="4">
-          <button class="button-fee" (click)="navigateToRenew(volumeInfo.id)"
-                  nz-button
-                  nzType="primary">
-            <span nz-icon nzType="schedule" nzTheme="outline"></span>{{ 'app.button.resize' | i18n }}
+          <button class="button-cancel"
+                  nzType="primary"
+                  (click)="navigateToRenew(volumeInfo.id)"
+                  nz-button>
+            <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
+            <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
           </button>
+
+
         </div>
       </div>
       <div nz-col nzSpan="4">
-        <button class="button-cancel"
-                (click)="navigateEditVolume(volumeInfo.id)"
-                nz-button nzType="default">
-          <i nz-icon [nzType]="'edit'"></i>{{ 'app.button.extend' | i18n }}
+        <button class="button-fee"
+                nz-button
+                nzType="default" (click)="navigateEditVolume(volumeInfo.id)">
+          <img src="assets/imgs/edit-2.svg" alt=""
+               style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
+          <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
         </button>
       </div>
     </div>
@@ -50,8 +56,9 @@
       <div nz-col nzSpan="4">
         <button class="button-cancel"
                 (click)="navigateToResizeVPC(volumeInfo.id)"
-                nz-button nzType="default">
-          <i nz-icon [nzType]="'edit'"></i>{{ 'app.button.extend' | i18n }}
+                nz-button nzType="primary">
+          <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
+          <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
         </button>
       </div>
     </div>
@@ -65,8 +72,8 @@
         <span class="text-label"><b>{{ volumeInfo?.name }}</b></span>
       </nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleType">
-          <span *ngIf="volumeInfo?.volumeType === 'hdd'" class="text-label"><b>HDD</b></span>
-          <span *ngIf="volumeInfo?.volumeType === 'ssd'" class="text-label"><b>SSD</b></span>
+          <span *ngIf="volumeInfo?.volumeType === 'hdd'" class="text-label"><b>{{'volume.hdd'|i18n}}</b></span>
+          <span *ngIf="volumeInfo?.volumeType === 'ssd'" class="text-label"><b>{{'volume.ssd'|i18n}}</b></span>
       </nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleStorage">
         <span class="text-label"><b>{{ volumeInfo?.sizeInGB }} GB</b></span>
@@ -86,7 +93,7 @@
       </nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleAttachInstance">
         <span *ngIf="listVMs.length > 0" style="color: #0074CC;" class="text-label"><b>{{ listVMs }}</b></span>
-        <span *ngIf="listVMs.length <= 0" style="color: #0074CC;" class="text-label"><b>Không có máy ảo</b></span>
+        <span *ngIf="listVMs.length <= 0" style="color: #0074CC;" class="text-label"><b>{{'volume.notification.no.instance'|i18n}}</b></span>
       </nz-descriptions-item>
 
     </nz-descriptions>
@@ -106,20 +113,14 @@
       <span class="text-label">{{ 'volume.table.title.status.volume' | i18n}}:</span>
     </ng-template>
     <ng-template #titleAttachInstance>
-      <span class="text-label">Gắn vào máy ảo:</span>
+      <span class="text-label">{{'app.attach.to.vm'|i18n}}:</span>
     </ng-template>
-<!--    <ng-template #titleVolumeType>-->
-<!--      <span class="text-label">Kiểu Volume:</span>-->
-<!--    </ng-template>-->
-<!--    <div style="margin-top: 15px;">-->
-<!--      <b class="text-label">Kiểu Volume: {{ volumeInfo.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b>-->
-<!--    </div>-->
     <div style="display: flex; margin-bottom: 15px;">
       <div style="margin-top: 15px;">
-        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled >Mã hóa Volume</label>
+        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled >{{'volume.info.type.encrypt'|i18n}}</label>
       </div>
       <div style="margin-top: 15px; margin-left: 15px;">
-        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled >Gắn nhiều máy ảo</label>
+        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled >{{'volume.info.type.multiAttach'|i18n}}</label>
       </div>
     </div>
     <ng-template #titleDescription>
