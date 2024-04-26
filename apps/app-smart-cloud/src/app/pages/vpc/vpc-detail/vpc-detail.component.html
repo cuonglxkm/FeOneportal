@@ -14,11 +14,11 @@
   </ng-template>
   <ng-template #extra>
     <button *ngIf="data?.type == 'VPC'" nz-button nzType="primary" (click)="extend()" nzSize="large">
-      <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt=""/>
+      <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt="" />
       <span class="button-text-primary">Gia hạn</span>
     </button>
     <button *ngIf="data?.type == 'VPC'" nz-button nzType="primary" (click)="edit()" nzSize="large">
-      <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt=""/>
+      <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt="" />
       <span class="button-text-primary">Chỉnh sửa</span>
     </button>
   </ng-template>
@@ -32,34 +32,30 @@
   </div>
   <div nz-row>
     <div style="font-weight: bold;margin-right: 20px">Loại dự án:</div>
-    <div>{{data?.type == 'VPC' ? 'Dự án VPC' : 'Dự án thường'}}</div>
+    <div>{{ data?.type == 'VPC' ? 'Dự án VPC' : 'Dự án thường' }}</div>
   </div>
   <div nz-row>
     <div nz-col nzSpan="5">Tên dự án:</div>
-    <div nz-col nzSpan="7" style="font-weight: bold;">{{data?.displayName}}</div>
+    <div nz-col nzSpan="7" style="font-weight: bold;">{{ data?.displayName }}</div>
   </div>
-  <div nz-row>
-    <div nz-col nzSpan="5" >Gói Load Balancer:</div>
-    <div nz-col nzSpan="7"  style="font-weight: bold;">NONE</div>
+  <div *ngIf="data?.type == 'VPC'" nz-row>
+    <div nz-col nzSpan="5">Gói Load Balancer:</div>
+    <div nz-col nzSpan="7" style="font-weight: bold;">{{ data?.loadBalancerPackageName }}</div>
+  </div>
+  <div  nz-row>
+    <div nz-col nzSpan="5">Gói VPN site to site:</div>
+    <div nz-col nzSpan="7" style="font-weight: bold;">{{ data?.vpnSiteToSiteOfferName }}</div>
   </div>
   <div nz-row>
     <div nz-col nzSpan="5">Mô tả:</div>
-    <div nz-col nzSpan="7" style="font-weight: bold;">{{data?.description}}</div>
-<!--    <div nz-col nzSpan="5" *ngIf="data?.type == 'VPC'">Ngày cấp dịch vụ:</div>-->
-<!--    <div nz-col nzSpan="7" *ngIf="data?.type == 'VPC'" style="font-weight: bold;">{{data?.createDate}}</div>-->
-  </div>
-  <div nz-row>
-<!--    <div nz-col nzSpan="5" *ngIf="data?.type == 'VPC'">Ngày hết hạn:</div>-->
-<!--    <div nz-col nzSpan="7" *ngIf="data?.type == 'VPC'" style="font-weight: bold;">{{data?.expireDate}}</div>-->
-    <div nz-col nzSpan="5">Gói VPN site to site:</div>
-    <div nz-col nzSpan="7" style="font-weight: bold;">NONE</div>
+    <div nz-col nzSpan="7" style="font-weight: bold;">{{ data?.description }}</div>
   </div>
 </nz-card>
 <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
   <div style="margin-bottom: 20px">
     <span class="text-card-header">Thông tin tài nguyên</span>
   </div>
-  <nz-row style="margin-bottom: 30px;text-align: center">
+  <nz-row *ngIf="data?.type == 'VPC'" style="margin-bottom: 30px;text-align: center">
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentBackup nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">CPU</h3></div>
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentRam nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">RAM (GB)</h3></div>
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentHHD nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">HHD (GB)</h3></div>
@@ -78,10 +74,10 @@
     </thead>
     <tbody>
     <tr *ngFor="let item of listOfData">
-      <td>{{item.name}}</td>
-      <td>{{item.total}}</td>
-      <td>{{item.used}}</td>
-      <td>{{item.remain}}</td>
+      <td>{{ item.name }}</td>
+      <td>{{ item.total }}</td>
+      <td>{{ item.used }}</td>
+      <td>{{ item.remain }}</td>
     </tr>
     </tbody>
   </nz-table>
