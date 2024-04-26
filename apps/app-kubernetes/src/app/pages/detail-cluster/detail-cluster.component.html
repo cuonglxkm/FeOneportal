@@ -1,16 +1,16 @@
 <ng-container *ngIf="detailCluster; else loadingTpl">
   <ng-container *ngIf="!isEditMode; else submitModeTpl">
-    <button nz-button nzType="primary" (click)="onEditCluster()" class="mb-3">
+    <button nz-button nzType="primary" (click)="onEditCluster()" class="mb-3" [disabled]="detailCluster?.serviceStatus == 6">
       <span nz-icon nzType="edit" nzTheme="outline"></span>
       Chỉnh sửa
     </button>
   </ng-container>
   <ng-template #submitModeTpl>
-    <button nz-button nzType="default" nzDanger (click)="onCancelEdit()" class="mb-3" [disabled]="isUpgrading">
+    <button nz-button nzType="default" nzDanger (click)="onCancelEdit()" class="mb-3" [disabled]="isUpgradingWorker">
       <span nz-icon nzType="close" nzTheme="outline"></span>
       Hủy bỏ
     </button>
-    <button nz-button nzType="primary" (click)="onConfirmUpgradeService()" class="mb-3"
+    <button nz-button nzType="primary" (click)="handleShowModalUpgradeWorker()" class="mb-3"
       [disabled]="isUpgrading || upgradeForm.invalid">
       <span nz-icon nzType="check" nzTheme="outline"></span>
       Xác nhận
@@ -36,7 +36,7 @@
                       <ng-template #editClusterNameTpl>
                         <nz-form-item>
                           <nz-form-control [nzErrorTip]="errorClusterNameTpl">
-                            <input type="text" nz-input formControlName="clusterName" placeholder="Nhập tên cluster" />
+                            <input type="text" nz-input formControlName="clusterName" placeholder="Nhập tên cluster" nzSize="large" />
                           </nz-form-control>
                           <ng-template #errorClusterNameTpl>
                             <ng-container *ngIf="control.hasError('required')">
@@ -91,8 +91,7 @@
                         {{detailCluster.apiEndpoint}}
                       </ng-container>
                       <ng-template #truncateEndpointTpl>
-                        <span nz-popover nzPopoverTitle="API Endpoint" [nzPopoverContent]="apiEnpointTpl"
-                          nzPopoverPlacement="bottom">
+                        <span [nzTooltipTitle]="apiEnpointTpl" nzTooltipPlacement="bottom" nz-tooltip>
                           {{detailCluster.apiEndpoint | truncateLabel}}
                         </span>
 
@@ -101,15 +100,17 @@
                         </ng-template>
                       </ng-template>
 
-                      <button nz-button nzType="text" (click)="handleCopyAPIEndpoint()" class="action-icon borderless"
-                        nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip>
-                        <span nz-icon>
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z" stroke="#0066B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z" stroke="#0066B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                          </svg>
-                        </span>
-                      </button>
+                      <ng-container *ngIf="detailCluster.apiEndpoint">
+                        <button nz-button nzType="text" (click)="handleCopyAPIEndpoint()" class="action-icon borderless"
+                          nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip>
+                          <span nz-icon>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z" stroke="#0066B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z" stroke="#0066B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          </span>
+                        </button>
+                      </ng-container>
                     </div>
                   </div>
                 </td>
@@ -196,7 +197,7 @@
                             <nz-form-item>
                               <nz-form-control [nzErrorTip]="errorWorkerNameTpl">
                                 <input nz-input type="text" formControlName="workerGroupName"
-                                  placeholder="Nhập tên nhóm worker" />
+                                  placeholder="Nhập tên nhóm worker" nzSize="large" />
                               </nz-form-control>
                               <ng-template #errorWorkerNameTpl let-control>
                                 <ng-container *ngIf="control.hasError('required')">
@@ -229,7 +230,7 @@
                             <nz-form-item>
                               <nz-form-control [nzErrorTip]="errorNodeNumberTpl">
                                 <input nz-input type="text" formControlName="nodeNumber" (keypress)="isNumber($event)"
-                                  (ngModeChange)="onChangeNodeNumber($event, i)" />
+                                  (ngModeChange)="onChangeNodeNumber($event, i)" nzSize="large" />
                               </nz-form-control>
                               <ng-template #errorNodeNumberTpl>
                                 <ng-container *ngIf="control.hasError('required')">
@@ -259,7 +260,7 @@
                             <nz-form-item>
                               <nz-form-control [nzErrorTip]="errorConfigError">
                                 <nz-select formControlName="configType" nzShowSearch nzPlaceHolder="Chọn cấu hình"
-                                  (ngModelChange)="onChangeConfigType($event, i)" class="w-100">
+                                  (ngModelChange)="onChangeConfigType($event, i)" class="w-100" nzSize="large">
                                   <nz-option *ngFor="let item of listOfWorkerType"
                                     nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)"
                                     [nzValue]="item.machineName">
@@ -282,7 +283,7 @@
                           <ng-template #editWorkerVolumeSizeTpl>
                             <nz-form-item>
                               <nz-form-control [nzErrorTip]="volumeErrorTpl">
-                                <input nz-input type="text" formControlName="volumeStorage"
+                                <input nz-input type="text" formControlName="volumeStorage" nzSize="large"
                                   (keypress)="isNumber($event)" (ngModelChange)="onChangeVolumeWorker($event, i)" />
                               </nz-form-control>
                               <ng-template #volumeErrorTpl let-control>
@@ -318,15 +319,16 @@
                             </ng-template>
                           </ng-container>
                           <ng-template #editScalingTpl>
+                            <!-- not enable on this phase -->
                             <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAutoScale($event)"
-                              nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt"></nz-switch>
+                              nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt" [nzDisabled]="true"></nz-switch>
                           </ng-template>
                         </div>
                       </div>
                     </td>
 
                     <td class="w-50">
-                      <div nz-row>
+                      <!-- <div nz-row>
                         <div nz-col [nzSpan]="8">Auto healing</div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editHealingTpl">
@@ -341,6 +343,25 @@
                           <ng-template #editHealingTpl>
                             <nz-switch formControlName="autoHealing" nzCheckedChildren="Bật"
                               nzUnCheckedChildren="Tắt"></nz-switch>
+                          </ng-template>
+                        </div>
+                      </div> -->
+
+                      <div nz-row>
+                        <div nz-col [nzSpan]="8">Loại ổ cứng</div>
+                        <div nz-col [nzSpan]="16" class="description-info">
+                          <ng-container *ngIf="!isEditMode; else editVolumeTypeTpl">
+                            {{'volumeTypeName' | getValueInForm: listFormWorkerGroupUpgrade : i}}
+                          </ng-container>
+                          <ng-template #editVolumeTypeTpl>
+                            <nz-radio-group formControlName="volumeType" (ngModelChange)="onSelectVolumeType($event, i)"
+                              [nzDisabled]="isUsingPackConfig">
+                              <ng-container *ngFor="let item of listOfVolumeType">
+                                <label nz-radio [nzValue]="item.volumeType" id="volumeType">
+                                  {{item.volumeTypeName}}
+                                </label>
+                              </ng-container>
+                            </nz-radio-group>
                           </ng-template>
                         </div>
                       </div>
@@ -360,7 +381,7 @@
                               <nz-form-item>
                                 <nz-form-control [nzErrorTip]="errorMinimumNodeTpl">
                                   <input nz-input type="text" formControlName="minimumNode"
-                                    placeholder="Nhập số node tối thiểu" />
+                                    placeholder="Nhập số node tối thiểu" nzSize="large" />
                                 </nz-form-control>
                                 <ng-template #errorMinimumNodeTpl>
                                   <ng-container *ngIf="control.hasError('required')">
@@ -390,7 +411,7 @@
                               <nz-form-item>
                                 <nz-form-control [nzErrorTip]="errorMaximumNodeTpl">
                                   <input nz-input type="text" formControlName="maximumNode"
-                                    placeholder="Nhập số node tối đa" />
+                                    placeholder="Nhập số node tối đa" nzSize="large" />
                                 </nz-form-control>
                                 <ng-template #errorMaximumNodeTpl>
                                   <ng-container *ngIf="control.hasError('required')">
@@ -577,14 +598,14 @@
       <p class="description-info">Lưu ý: Chỉ có thể nâng cấp phiên bản, không thực hiện việc hạ phiên bản.</p>
       <p>Để tránh phát sinh vấn đề trong quá trình xử lý, chỉ nâng cấp phiên bản lần lượt theo thứ tự.</p>
       <div>
-        <nz-select nzPlaceHolder="Chọn phiên bản nâng cấp" [(ngModel)]="upgradeVersionCluster" class="w-100">
+        <nz-select nzPlaceHolder="Chọn phiên bản nâng cấp" [(ngModel)]="upgradeVersionCluster" class="w-100" nzSize="large">
           <nz-option *ngFor="let item of listOfK8sVersion" [nzLabel]="item.k8sVersion" [nzValue]="item.k8sVersion"
             [nzDisabled]="item.k8sVersion | checkUpgradeVersion : detailCluster.upgradeVersion"></nz-option>
         </nz-select>
       </div>
     </ng-container>
     <ng-template #noAvailableVersionTpl>
-      Bạn đang sử dụng phiên bản <b>{{detailCluster.currentVersion}}</b> mới nhất
+      <span class="warning-description">Bạn đang sử dụng phiên bản <b>{{detailCluster.currentVersion}}</b> mới nhất</span>
     </ng-template>
   </div>
   <div *nzModalFooter>
@@ -594,8 +615,38 @@
         [disabled]="upgradeVersionCluster == null || upgradeVersionCluster == undefined">Xác nhận</button>
     </ng-container>
     <ng-template #noAvailableVersionFooterTpl>
-      <button nz-button nzType="default" (click)="handleCancelShowModalUpgrade()">Đóng</button>
+      <button nz-button nzType="primary" (click)="handleCancelShowModalUpgrade()">
+        <span nz-icon nzType="check" nzTheme="outline"></span>
+        Xác nhận
+      </button>
     </ng-template>
+  </div>
+</nz-modal>
+
+<!-- modal upgrade cluster -->
+<nz-modal [(nzVisible)]="showModalUpgradeWorker" nzTitle="Nâng cấp nhóm worker"
+  (nzOnCancel)="handleCancelModalUpgradeWorker()">
+  <div *nzModalContent>
+    <nz-alert
+      nzType="warning"
+      [nzDescription]="warningDes"
+      nzShowIcon
+    ></nz-alert>
+    <ng-template #warningDes>
+      <div class="warning-description">Hệ thống sẽ bị gián đoạn trong quá trình nâng cấp.</div>
+      <div class="warning-description mt-1">Bạn có muốn nâng cấp không?</div>
+    </ng-template>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancelModalUpgradeWorker()">
+      <span nz-icon nzType="close" nzTheme="outline"></span>
+      Hủy bỏ
+    </button>
+    <button nz-button nzType="primary" (click)="onSubmitUpgradeWorker()" [nzLoading]="isUpgradingWorker"
+      [disabled]="upgradeForm.invalid">
+      <span nz-icon nzType="check" nzTheme="outline"></span>
+      Xác nhận
+    </button>
   </div>
 </nz-modal>
 
@@ -608,14 +659,19 @@
       <div class="modal-btn">
         <button nz-button nzType="text" class="borderless" (click)="handleCopyKubeConfig()" style="height: fit-content;"
           nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip>
-          <span nz-icon nzType="copy" nzTheme="outline" class="primary-color"></span>
+          <span nz-icon>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z" stroke="#0066B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z" stroke="#0066B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
         </button>
         <button nz-button nzType="text" class="borderless" (click)="handleDownloadKubeConfig()"
           style="height: fit-content;" nzTooltipTitle="Tải file cấu hình" nzTooltipPlacement="top" nz-tooltip>
-          <span nz-icon class="primary-color">
-            <svg viewBox="64 64 896 896" focusable="false">
-              <path
-                d="M505.7 661a8 8 0 0012.6 0l112-141.7c4.1-5.2.4-12.9-6.3-12.9h-74.1V168c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v338.3H400c-6.7 0-10.4 7.7-6.3 12.9l112 141.8zM878 626h-60c-4.4 0-8 3.6-8 8v154H214V634c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v198c0 17.7 14.3 32 32 32h684c17.7 0 32-14.3 32-32V634c0-4.4-3.6-8-8-8z" />
+          <span nz-icon>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.5 10.19H17.61C15.24 10.19 13.31 8.26 13.31 5.89V3C13.31 2.45 12.86 2 12.31 2H8.07C4.99 2 2.5 4 2.5 7.57V16.43C2.5 20 4.99 22 8.07 22H15.93C19.01 22 21.5 20 21.5 16.43V11.19C21.5 10.64 21.05 10.19 20.5 10.19ZM12.28 15.78L10.28 17.78C10.21 17.85 10.12 17.91 10.03 17.94C9.94 17.98 9.85 18 9.75 18C9.65 18 9.56 17.98 9.47 17.94C9.39 17.91 9.31 17.85 9.25 17.79C9.24 17.78 9.23 17.78 9.23 17.77L7.23 15.77C6.94 15.48 6.94 15 7.23 14.71C7.52 14.42 8 14.42 8.29 14.71L9 15.44V11.25C9 10.84 9.34 10.5 9.75 10.5C10.16 10.5 10.5 10.84 10.5 11.25V15.44L11.22 14.72C11.51 14.43 11.99 14.43 12.28 14.72C12.57 15.01 12.57 15.49 12.28 15.78Z" fill="#005999"/>
+              <path d="M17.4299 8.81048C18.3799 8.82048 19.6999 8.82048 20.8299 8.82048C21.3999 8.82048 21.6999 8.15048 21.2999 7.75048C19.8599 6.30048 17.2799 3.69048 15.7999 2.21048C15.3899 1.80048 14.6799 2.08048 14.6799 2.65048V6.14048C14.6799 7.60048 15.9199 8.81048 17.4299 8.81048Z" fill="#005999"/>
             </svg>
           </span>
         </button>

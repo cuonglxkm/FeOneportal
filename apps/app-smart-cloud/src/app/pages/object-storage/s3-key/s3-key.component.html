@@ -35,7 +35,7 @@
     </div>
   </div>
   <!-- Bảng-->
-  <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfS3Key"
+  <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfS3Key"
             [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
             (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
     <thead>

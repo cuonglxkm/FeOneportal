@@ -3,6 +3,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { IpFloatingService } from '../../../shared/services/ip-floating.service';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-delete-ip-floating',
@@ -29,6 +31,7 @@ export class DeleteIpFloatingComponent{
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private ipFloatingService: IpFloatingService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder) {
   }
 
@@ -49,13 +52,13 @@ export class DeleteIpFloatingComponent{
           if(data) {
             this.isVisible = false
             this.isLoading =  false
-            this.notification.success('Thành công', 'Xoá IP Floating thành công')
+            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.ip.floating17'))
             this.onOk.emit(data)
           }
         }, error => {
           this.isVisible = false
           this.isLoading =  false
-          this.notification.success('Thất bại', 'Xoá IP Floating thất bại')
+          this.notification.success(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.ip.floating18'))
         })
       }
     }
