@@ -43,20 +43,6 @@ export class ClusterComponent implements OnInit {
   listOfServicePack: PackModel[];
   listOfPriceItem: PriceModel[];
 
-  listOfUsageTime = [
-    { label: '3 tháng', value: 3 },
-    { label: '6 tháng', value: 6 },
-    { label: '9 tháng', value: 9 },
-    { label: '12 tháng', value: 12 }
-  ];
-
-  listOfPrice = [
-    {pack: 1, offerId: 296, worker: 4000000, volume: 3300000, all: 7300000},
-    {pack: 2, offerId: 297, worker: 5000000, volume: 3300000, all: 8300000},
-    {pack: 3, offerId: 298, worker: 6600000, volume: 3300000, all: 9900000},
-    {pack: 4, offerId: 299, worker: 8200000, volume: 3300000, all: 11500000},
-  ];
-
   // order data
   orderData: KubernetesCluster;
 
@@ -73,7 +59,7 @@ export class ClusterComponent implements OnInit {
   public DEFAULT_NETWORK_TYPE = KubernetesConstant.DEFAULT_NETWORK_TYPE;
 
   carouselConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },
+    grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },  
     load: 1,
     speed: 250,
     // interval: {timing: 4000, initialDelay: 4000},
@@ -117,9 +103,8 @@ export class ClusterComponent implements OnInit {
         [Validators.required, Validators.pattern(KubernetesConstant.CLUTERNAME_PATTERN), Validators.minLength(5), Validators.maxLength(50)]],
       kubernetesVersion: [null, [Validators.required]],
       regionId: [null, [Validators.required]],
-      projectInfraId: [null, [Validators.required]],
+      projectId: [null, [Validators.required]],
       cloudProfileId: [null, [Validators.required]],
-      packId: [null],
       tenant: [null],
 
       // network
@@ -160,7 +145,7 @@ export class ClusterComponent implements OnInit {
       configType: [null, [Validators.required]],
       configTypeId: [null, [Validators.required]],
       autoScalingWorker: [false, Validators.required],
-      autoHealing: [false, Validators.required],
+      autoHealing: [true, Validators.required],
       minimumNode: [null],
       maximumNode: [null],
       cpu: [null],
@@ -180,6 +165,7 @@ export class ClusterComponent implements OnInit {
       e.preventDefault();
     }
     this.listFormWorkerGroup.removeAt(index);
+    this.onCalculatePrice();
   }
 
   getListK8sVersion(regionId: number, cloudProfileName: string) {
@@ -337,26 +323,35 @@ export class ClusterComponent implements OnInit {
     });
   }
 
+  totalRam: number;
+  totalCpu: number;
+  totalStorage: number;
   onCalculatePrice() {
     this.totalPrice = 0;
+    this.workerPrice = 0;
+    this.totalCpu = 0; this.totalRam = 0; this.totalStorage = 0;
+
     const wg = this.myform.get('workerGroup').value;
     for (let i = 0; i < wg.length; i++) {
-      const cpu = wg[i].cpu;
-      const ram = wg[i].ram;
-      const storage = wg[i].volumeStorage;
+      const cpu = wg[i].cpu ? wg[i].cpu : 0;
+      const ram = wg[i].ram ? wg[i].ram : 0;
+      const storage = +wg[i].volumeStorage ? +wg[i].volumeStorage : 0;
       const autoScale = wg[i].autoScalingWorker;
       let nodeNumber: number;
       if (autoScale) {
         // TODO: ...
 
       } else {
-        nodeNumber = wg[i].nodeNumber;
+        nodeNumber = wg[i].nodeNumber ? wg[i].nodeNumber : 0;
       }
 
-      this.workerPrice = nodeNumber * (this.priceOfCpu * cpu + this.priceOfRam * ram);
-      this.volumePrice = nodeNumber * this.priceOfSsd * storage;
-      this.totalPrice += (this.workerPrice + this.volumePrice);
+      this.totalCpu += nodeNumber * cpu;
+      this.totalRam += nodeNumber * ram;
+      this.totalStorage += nodeNumber * storage;
     }
+
+    this.workerPrice = this.priceOfCpu * this.totalCpu + this.priceOfRam * this.totalRam + this.priceOfSsd * this.totalStorage;
+    this.totalPrice = this.workerPrice + this.volumePrice;
   }
 
   // catch event region change and reload data
@@ -380,7 +375,7 @@ export class ClusterComponent implements OnInit {
     this.projectInfraId = project.id;
     this.getVlanNetwork(this.projectInfraId);
 
-    this.myform.get('projectInfraId').setValue(this.projectInfraId);
+    this.myform.get('projectId').setValue(this.projectInfraId);
     this.myform.get('tenant').setValue(project.projectName);
 
     // handle reset select box of previous project
@@ -425,7 +420,7 @@ export class ClusterComponent implements OnInit {
       const selectedVpcNetworkId = this.myform.get('vpcNetwork').value;
 
       this.subnetAddress = subnet.subnetAddressRequired;
-      if (this.listSubnetByNetwork != null) {
+      if (this.listSubnetByNetwork && this.listSubnetByNetwork.length > 0) {
         if (!this.listSubnetByNetwork.includes(this.subnetAddress)) {
           this.myform.get('subnet').setErrors({usedSubnet: true});
           return;
@@ -513,7 +508,6 @@ export class ClusterComponent implements OnInit {
     this.isUsingPackConfig = false;
     this.clearFormWorker();
     this.addWorkerGroup();
-    this.myform.get('packId').setValue(null);
   }
 
   workerPrice: number;
@@ -525,7 +519,6 @@ export class ClusterComponent implements OnInit {
   onChoosePack(item: PackModel) {
     this.chooseItem = item;
     this.isUsingPackConfig = true;
-    this.myform.get('packId').setValue(item.packId);
 
     if (this.chooseItem) {
       // this.myform.get('volumeCloudSize').setValue(this.chooseItem.volumeStorage);
@@ -553,11 +546,11 @@ export class ClusterComponent implements OnInit {
 
     }
 
-    // get price (fake)
-    const itemPack = this.listOfPrice.find(pack =>  pack.pack == item.packId);
-    this.workerPrice = itemPack.worker;
-    this.volumePrice = itemPack.volume;
-    this.totalPrice = itemPack.all;
+    // get price
+    const itemPack = this.listOfServicePack.find(pack => pack.packId == item.packId);
+    this.workerPrice = itemPack.price;
+    // this.volumePrice = itemPack.volume;
+    this.totalPrice = itemPack.price;
     this.offerId = itemPack.offerId;
   }
 
@@ -721,14 +714,13 @@ export class ClusterComponent implements OnInit {
     this.getSubnetByVlanNetwork();
   }
 
-  onCancelCreate() {
-    this.modalService.confirm({
-      nzTitle: `<b>Đang tiến hành thanh toán</b>`,
-      nzContent: `<p>Thanh toán của bạn đang được thực hiện, nếu bạn thoát khỏi trang này, giao dịch sẽ bị hủy bỏ.</p> <p>Bạn có chắc chắn muốn thoát khỏi trang này?</p>`,
-      nzOkText: `Rời trang`,
-      nzCancelText: `Ở lại trang`,
-      nzOnOk: () => this.back2list()
-    });
+  showModalCancelCreate: boolean = false;
+  handleShowModalCancelCreate() {
+    this.showModalCancelCreate = true;
+  }
+
+  handleCancelModalCancelCreate() {
+    this.showModalCancelCreate = false;
   }
 
   back2list() {
@@ -766,7 +758,12 @@ export class ClusterComponent implements OnInit {
     cluster.networking = networking;
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
     cluster.offerId = this.offerId;
-    cluster.cloudProfileId = 'openstack-disable-snat';
+    cluster.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
+    cluster.totalRam = this.totalRam;
+    cluster.totalCpu = this.totalCpu;
+    cluster.totalStorage = this.totalStorage;
+
+    // this.onSubmitOrder(cluster);
 
     const data: CreateClusterReqDto = new CreateClusterReqDto(cluster);
     // console.log({data: data});
