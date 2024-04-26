@@ -93,8 +93,8 @@ export class InstancesComponent implements OnInit {
     this.clusterService.actionInstance(item.cloudId, this.projectId, action)
     .subscribe((r: any) => {
       if (r && r.code == 200) {
-        
         this.notificationService.success('Thành công', r.message);
+        this.searchInstances();
       } else {
         this.notificationService.error('Thất bại', r.message);
       }

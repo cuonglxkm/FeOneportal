@@ -617,13 +617,13 @@ export class ClusterComponent implements OnInit {
     }
   }
 
-  onValidateIP(ip: string) {
+  onValidateIP(ip: string, control: string) {
     let tmp: string[] = ip?.split('.');
     if (ip && (tmp[2] != '0' || tmp[3] != '0')) {
-      this.myform.get('cidr').setErrors({invalid: true});
+      this.myform.get(control).setErrors({invalid: true});
       return;
     } else {
-      delete this.myform.get('cidr').errors?.invalid;
+      delete this.myform.get(control).errors?.invalid;
     }
   }
 

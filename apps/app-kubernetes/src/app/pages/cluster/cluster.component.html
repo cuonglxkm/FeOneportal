@@ -399,7 +399,7 @@
                   <nz-form-control [nzErrorTip]="cidrErrorTpl">
                     <nz-input-group [nzSuffix]="suffixRange" class="w-100" nzSize="large">
                       <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR"
-                        (ngModelChange)="onValidateIP($event); checkOverLapseIP();" />
+                        (ngModelChange)="onValidateIP($event, 'cidr'); checkOverLapseIP();" />
                     </nz-input-group>
                     <ng-template #suffixRange>/16</ng-template>
                   </nz-form-control>
@@ -429,7 +429,7 @@
                   <nz-form-control [nzErrorTip]="serviceCidrErrorTpl">
                     <nz-input-group [nzSuffix]="suffixRange" class="w-100" nzSize="large">
                       <input type="text" nz-input formControlName="serviceCidr" placeholder="Nhập Service CIDR"
-                        (ngModelChange)="checkOverlapPodCidr()" />
+                        (ngModelChange)="onValidateIP($event, 'serviceCidr'); checkOverlapPodCidr()" />
                     </nz-input-group>
                   </nz-form-control>
                   <ng-template #serviceCidrErrorTpl let-control>
@@ -445,9 +445,9 @@
                     <ng-container *ngIf="control.hasError('overlapSubnet')">
                       Service CIDR trùng dải với subnet
                     </ng-container>
-                    <!-- <ng-container *ngIf="control.hasError('invalid')">
+                    <ng-container *ngIf="control.hasError('invalid')">
                       Service CIDR không hợp lệ
-                    </ng-container> -->
+                    </ng-container>
                     <!-- <ng-container *ngIf="control.hasError('cidr_used')">
                       Service CIDR đã được sử dụng
                     </ng-container> -->
