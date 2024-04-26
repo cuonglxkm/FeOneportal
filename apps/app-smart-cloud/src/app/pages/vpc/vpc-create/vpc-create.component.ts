@@ -209,11 +209,28 @@ export class VpcCreateComponent implements OnInit{
     }
   }
   calculate(number: any) {
+    if (this.vpcType === '0') {
+      this.activeVpc = false;
+      this.activeNoneVpc = true;
+    } else {
+      this.activeVpc = true;
+      this.activeNoneVpc = false;
+    }
     this.searchSubject.next('');
   }
 
   selectPackge = '';
   vpcType = '0';
+  styleOk = {
+    inde: true
+      ? '1px solid #0066B3'
+      : '1px solid #DADADA',
+    height: '160px',
+  };
+
+  cardHeight = '95px';
+  activeNoneVpc = true;
+  activeVpc = false;
 
   onInputFlavors(event: any, name: any) {
     this.selectPackge = name;
@@ -225,7 +242,7 @@ export class VpcCreateComponent implements OnInit{
   }
 
   initFlavors(): void {
-    this.instancesService.getDetailProductByUniqueName('vpcOnePortal')
+    this.instancesService.getDetailProductByUniqueName('vpc-oneportal')
       .subscribe(
         data => {
           this.instancesService

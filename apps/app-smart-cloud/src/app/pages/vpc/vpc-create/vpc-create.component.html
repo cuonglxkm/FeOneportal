@@ -30,7 +30,7 @@
             alt=""
           /></nz-form-label>
           <nz-form-control>
-            <input nz-input placeholder="Nhập tên VPC" style="width: 100%"
+            <input nz-input placeholder="Nhập tên dự án" style="width: 100%"
                    formControlName="name">
           </nz-form-control>
         </nz-form-item>
@@ -44,24 +44,90 @@
 
         <nz-form-item>
           <nz-form-label>Chọn loại dự án(<span class="text-red">*</span>)
-            <img
-              style="margin-left: 10px"
-              nz-tooltip="Đối với dự án thường, người dùng có thể chủ động khởi tạo các dịch vụ bổ sung.
+            <img style="margin-left: 10px" nz-tooltip="Đối với dự án thường, người dùng có thể chủ động khởi tạo các dịch vụ bổ sung.
         Đối với dự án VPC, khi mua VPC, người dùng có thể mua quota của các dịch vụ bổ sung đi kèm"
-              src="assets/imgs/pajamas_question.svg"
-              alt=""
-            /></nz-form-label>
-          <nz-form-control>
-            <nz-radio-group [(ngModel)]="vpcType" [ngModelOptions]="{standalone: true}"
-                            (ngModelChange)="calculate(null)" nzSize="large">
-              <label nz-radio nzValue="0">
-                <div class="text-card-header">Dự án thường</div>
-              </label>
-              <label nz-radio nzValue="1">
-                <div class="text-card-header">Dự án VPC</div>
-              </label>
-            </nz-radio-group>
-          </nz-form-control>
+                 src="assets/imgs/pajamas_question.svg" alt="" /></nz-form-label>
+          <nz-radio-group [(ngModel)]="vpcType" [ngModelOptions]="{standalone: true}"
+                          (ngModelChange)="calculate(null)" nzSize="large">
+            <nz-row [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }" style="margin-top: 10px">
+              <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+                <nz-card style="border-radius: 4px" [nzAlign]="'middle'" [ngStyle]="{
+                      border: activeNoneVpc
+                    ? '1px solid #0066B3'
+                    : '1px solid #DADADA',
+                    height: cardHeight,
+                  }">
+                  <nz-row nzGutter="16">
+                    <nz-col nzSpan="20">
+                      <nz-card-meta [nzAvatar]="nzAvatarselectedHDDorSSD1" [nzTitle]="nzTitleselectedHDDorSSD1"
+                                    [nzDescription]="nzDescriptionselectedHDDorSSD1">
+                        <ng-template #nzAvatarselectedHDDorSSD1>
+                          <label nz-radio nzValue="0">
+                          </label>
+                        </ng-template>
+                        <ng-template #nzTitleselectedHDDorSSD1>
+                          <b>Dự án thường</b>
+                        </ng-template>
+                        <ng-template #nzDescriptionselectedHDDorSSD1>
+                          <ellipsis class="text-custom">
+                            Khởi tạo một dự án thông thường
+                          </ellipsis>
+                        </ng-template>
+                      </nz-card-meta>
+                    </nz-col
+                    >
+                    <nz-col style="
+                      display: flex;
+                      align-items: center;
+                      margin-top: -24px;
+                    " [ngStyle]="{ height: cardHeight,}"
+                            nzSpan="4"
+                    >
+                    </nz-col>
+                  </nz-row>
+                </nz-card>
+              </nz-col>
+              <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+                <nz-card style="border-radius: 4px" [nzAlign]="'middle'" [ngStyle]="{
+                      border: activeVpc
+                    ? '1px solid #0066B3'
+                    : '1px solid #DADADA',
+                    height: cardHeight,
+                  }">
+                  <nz-row nzGutter="16">
+                    <nz-col nzSpan="20">
+                      <nz-card-meta [nzAvatar]="nzAvatarselectedHDDorSSD2" [nzTitle]="nzTitleselectedHDDorSSD2"
+                                    [nzDescription]="nzDescriptionselectedHDDorSSD2">
+                        <ng-template #nzAvatarselectedHDDorSSD2>
+                          <label nz-radio nzValue="1"></label>
+                        </ng-template>
+                        <ng-template #nzTitleselectedHDDorSSD2>
+                          <b>Dự án VPC</b>
+                        </ng-template>
+                        <ng-template #nzDescriptionselectedHDDorSSD2>
+                          <ellipsis class="text-custom">
+                            Khởi tạo dự án VPC, mua kèm quota dịch vụ
+                          </ellipsis>
+                        </ng-template>
+                      </nz-card-meta>
+                    </nz-col>
+                    <nz-col
+                      style="
+                      display: flex;
+                      align-items: center;
+                      margin-top: -24px;
+                    "
+                      [ngStyle]="{
+                          height: cardHeight,
+                        }"
+                      nzSpan="4"
+                    >
+                    </nz-col>
+                  </nz-row>
+                </nz-card>
+              </nz-col>
+            </nz-row>
+          </nz-radio-group>
         </nz-form-item>
         <div *ngIf="vpcType == '1'">
           <nz-tabset nzCentered nzSize="large" (nzSelectChange)="changeTab($event)">
@@ -629,19 +695,19 @@
                   . Cho phéo các vị trí đia lý khác nhau truy cập vào tài nguyên nội bộ" nzShowIcon></nz-alert>
         </nz-card>
       </div>
-      <div *ngIf="vpcType == '0'">
-        <!---------------CARD-SUPPORT-------------->
-        <nz-card style="border-radius: 8px">
-          <div style="margin-bottom: 20px"><span class="text-card-header">Trợ giúp</span></div>
-          <div class="link-container text-label">
-            <a>Giới thiệu về dự án VPC của VNPT Cloud</a>
-            <a>Giới thiệu về dự án thường</a>
-            <a>Hướng dẫn sử dụng khởi tạo dự án VPC</a>
-            <a>Hướng dẫn sử dụng khởi tạo dự án thường</a>
-            <a>Đọc thêm về các dịch vụ liên quan</a>
-          </div>
-        </nz-card>
-      </div>
+      <!--      <div *ngIf="vpcType == '0'">-->
+      <!--        &lt;!&ndash;-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;CARD-SUPPORT&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
+      <!--        <nz-card style="border-radius: 8px">-->
+      <!--          <div style="margin-bottom: 20px"><span class="text-card-header">Trợ giúp</span></div>-->
+      <!--          <div class="link-container text-label">-->
+      <!--            <a>Giới thiệu về dự án VPC của VNPT Cloud</a>-->
+      <!--            <a>Giới thiệu về dự án thường</a>-->
+      <!--            <a>Hướng dẫn sử dụng khởi tạo dự án VPC</a>-->
+      <!--            <a>Hướng dẫn sử dụng khởi tạo dự án thường</a>-->
+      <!--            <a>Đọc thêm về các dịch vụ liên quan</a>-->
+      <!--          </div>-->
+      <!--        </nz-card>-->
+      <!--      </div>-->
     </nz-col>
 
     <!---------------CARD-THÀNH TIỀN-------------->
@@ -703,7 +769,7 @@
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{totalAmount}}
+              {{ totalAmount }}
               VND
             </span>
             </nz-col>
@@ -719,7 +785,7 @@
               <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment}}  VND</span>
+              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment }}  VND</span>
             </nz-col>
           </nz-row>
         </div>
