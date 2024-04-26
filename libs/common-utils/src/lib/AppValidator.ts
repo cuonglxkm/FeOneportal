@@ -130,7 +130,7 @@ export class AppValidator {
       // tslint:disable-next-line:triple-equals
       const value = control.value.replace(/,/g, '');
       if (value !== '' && regexpCurrency.test(value) === false) {
-        return { validPasswrod: true };
+        return { validPassword: true };
       }
     }
     return null;

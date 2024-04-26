@@ -2,8 +2,8 @@
              [title]="'Gia hạn File System'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/'+idFileSystem ">Chi tiết File
         System
