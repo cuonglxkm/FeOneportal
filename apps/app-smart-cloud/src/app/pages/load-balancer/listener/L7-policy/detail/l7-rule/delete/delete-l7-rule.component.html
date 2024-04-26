@@ -1,30 +1,30 @@
 <img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
      nz-popover
-     [nzPopoverContent]="'Xóa'"
+     [nzPopoverContent]="'app.delete' | i18n"
      nzPopoverPlacement="bottom" (click)="showModal()"/>
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Xác nhận xóa L7 Rule</span>
+    <span class="text-modal-title">{{ 'app.title.delete.l7.rule' | i18n }}</span>
   </div>
   <div *nzModalContent>
     <nz-alert nzBanner
               nzShowIcon
-              [nzMessage]="'Bạn đang thực hiện xóa L7 Rule'">
+              [nzDescription]="'app.alert.delete.l7.rule' | i18n">
     </nz-alert>
     <div style="margin-top: 10px;">
-      <span class="text-label" (keydown.enter)="focusOkButton($event)">Bạn hãy thực hiện nhấn <b>Xác nhận</b> để xoá L7 Rule.</span>
+      <span class="text-label" (keydown.enter)="focusOkButton($event)" [innerHTML]="'app.note.delete.l7.rule' | i18n"></span>
     </div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary"
             (click)="handleOk()"
             [nzLoading]="isLoading"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

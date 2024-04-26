@@ -107,7 +107,7 @@
         </nz-form-control>
         <ng-template #SGErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')"
-            >{{ 'validation.security.group.required' | i18n }}
+            >{{ 'validation.choose.required' | i18n : { name: 'Security Group' } }}
           </ng-container>
         </ng-template>
       </nz-form-item>

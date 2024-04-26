@@ -1,22 +1,32 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Tạo mới L7 Policy'" xmlns="http://www.w3.org/1999/html">
+             [title]="'app.l7.policy.create' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.breadcrumb.home' | i18n
+      }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{
+          'app.breadcrumb.infrastructure.service' | i18n
+        }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">Chi tiết Load Balancer</a>
+        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">{{
+          'app.load.balancer.detail' | i18n
+        }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/detail/{{ idListener }}">Chi tiết Listener</a>
+        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/detail/{{ idListener }}">{{
+          'app.listener.detail' | i18n
+        }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>Tạo mới L7 Policy</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.l7.policy.create' | i18n
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -33,55 +43,52 @@
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card style="border-radius: 8px;">
-        <span class="text-card-header">Thông tin L7 Policy</span>
+        <span class="text-card-header">{{ 'app.l7.policy.info' | i18n }}</span>
         <form nz-form [formGroup]="validateForm" nzLayout="vertical">
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
-              <span>Tên L7 Policy (<span style="color: red">*</span>)</span>
+              <span>{{ 'app.l7.policy.name' | i18n }} (<span style="color: red">*</span>)</span>
               <img nz-popover
-                   [nzPopoverContent]="'Tên L7 Policy không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự'"
+                   [nzPopoverContent]="'validation.l7.policy.name.pattern' | i18n"
                    nzPopoverPlacement="bottom" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameL7ErrorTpl">
-              <input nz-input class="input-custom" formControlName="nameL7" [maxlength]="50" [placeholder]="'Tên L7 policy'" appAutofocus/>
+              <input nz-input class="input-custom" formControlName="nameL7" [maxlength]="50" [placeholder]="'app.input.name' | i18n" appAutofocus/>
               <ng-template #nameL7ErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên L7 Policy</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Không nhập ký tự đặc biệt, dấu Tiếng Việt, khoảng trắng (trừ _)</ng-container>
-                <ng-container *ngIf="control.hasError('duplicateName')">Tên L7 Policy đã tồn tại, vui lòng nhập tên khác</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n : {name: 'L7 Policy'} }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Hành động thực thi (<span style="color: red">*</span>)</span>
+              <span>{{ 'app.execute.action' | i18n }} (<span style="color: red">*</span>)</span>
               <img nz-popover
                    [nzPopoverContent]="popover"
                    nzPopoverPlacement="right" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
               <ng-template #popover>
-                <span class="text-label">Hành động được thực thi khi L7 Policy đáp ứng điều kiện. Các hành động:<br>
-                REJECT: Yêu cầu bị từ chối với một mã phản hồi thích hợp và không được chuyển tiếp đến bất kỳ nhóm phụ trợ nào.<br>
-                REDIRECT_TO_URL: Yêu cầu được gửi một chuyển hướng HTTP đến.<br>
-                URL được xác định trong url tham số.</span>
+                <span class="text-label" [innerHTML]="'app.tooltip.execute.action' | i18n"></span>
               </ng-template>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
-              <nz-select formControlName="action" nzSize="large" (ngModelChange)="onActionChange()" [nzPlaceHolder]="'Chọn hành động thực thi'">
+              <nz-select formControlName="action" nzSize="large" (ngModelChange)="onActionChange()" [nzPlaceHolder]="'app.choose.execute.action' | i18n">
                 <nz-option *ngFor="let option of actionList" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item *ngIf="validateForm.controls.action.value == 'REDIRECT_TO_POOL'">
             <nz-form-label>
-              <span>Chọn Pool (<span style="color: red;">*</span>)</span>
+              <span>{{ 'app.pool.choose' | i18n }} (<span style="color: red;">*</span>)</span>
               <img nz-popover
-                   [nzPopoverContent]="'Các request đáp ứng được policy này sẽ chuyển hướng tới pool này'"
+                   [nzPopoverContent]="'app.tooltip.choose.pool' | i18n"
                    nzPopoverPlacement="right" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
-              <nz-select formControlName="pool" nzSize="large" [nzPlaceHolder]="'Chọn Pool'">
+              <nz-select formControlName="pool" nzSize="large" [nzPlaceHolder]="'app.pool.choose' | i18n">
                               <nz-option *ngFor="let option of listPool" [nzValue]="option.id" [nzLabel]="option.name"></nz-option>
               </nz-select>
             </nz-form-control>
@@ -90,26 +97,28 @@
             <nz-form-label>
               <span>URL (<span style="color: red;">*</span>)</span>
               <img nz-popover
-                   [nzPopoverContent]="'Các request đáp ứng được policy sẽ được chuyển hướng tới URL này'"
+                   [nzPopoverContent]="'app.tooltip.url' | i18n"
                    nzPopoverPlacement="right" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="urlErrorTpl">
-              <input nz-input class="input-custom" formControlName="url" [placeholder]="'Nhập url'" />
+              <input nz-input class="input-custom" formControlName="url" [placeholder]="'app.input.url' | i18n" />
               <ng-template #urlErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập url</ng-container>
-                <ng-container *ngIf="control.hasError('invalidUrl')">Vui lòng nhập đúng định dạng url ftp/http/https:</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('invalidUrl')">{{ 'validation.url.name.pattern' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Độ ưu tiên (<span style="color: red">*</span>)</span>
+              <span>{{ 'app.priority' | i18n }} (<span style="color: red">*</span>)</span>
               <img nz-popover
-                   [nzPopoverContent]="'Vị trí của L7 Policy đối với Listener.\n'+
-                                        'Có thể nhập vị trí đã tồn tại.'"
-                   nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                   [nzPopoverContent]="popoverPriority"
+                   nzPopoverPlacement="right" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
+              <ng-template #popoverPriority>
+                <span class="text-label" [innerHTML]="'app.tooltip.priority' | i18n"></span>
+              </ng-template>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-input-number style="width: 100%; margin-left: 0;" [nzMin]="1" [nzStep]="1" class="input-custom" formControlName="prioritize" />
@@ -117,28 +126,28 @@
           </nz-form-item>
           <nz-form-item>
             <div style="display: flex;">
-              <span class="text-label">Trạng thái (<span style="color: red;">*</span>)</span>
+              <span class="text-label">{{ 'app.text.status' | i18n }} (<span style="color: red;">*</span>)</span>
               <img style="margin-left: 10px"
-                   nz-popover [nzPopoverContent]="'Trạng thái của L7 Policy: Bật/Tắt'"
+                   nz-popover [nzPopoverContent]="'app.tooltip.l7.policy.status' | i18n"
                    nzPopoverPlacement="bottom"
                    src="assets/imgs/pajamas_question.svg" alt="" />
-              <nz-switch style="margin-left: 15px;" formControlName="status" (ngModelChange)="onSwitchStatus()" nzCheckedChildren="BẬT"
-                         nzUnCheckedChildren="TẮT"></nz-switch>
+              <nz-switch style="margin-left: 15px;" formControlName="status" (ngModelChange)="onSwitchStatus()" [nzCheckedChildren]="'app.on' | i18n"
+                         [nzUnCheckedChildren]="'app.off' | i18n"></nz-switch>
             </div>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label nzFor="description">
               <div class="label">
-                <span>Mô tả</span>
+                <span>{{ 'app.service.description' | i18n }}</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
                                                     <textarea nz-input class="input-custom"
                                                               formControlName="description"
-                                                              [placeholder]="'Nhập nội dung'" [maxLength]="255"
+                                                              [placeholder]="'app.input.des' | i18n" [maxLength]="255"
                                                               [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{'volume.notification.input.description.maxLength' | i18n}}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -148,34 +157,34 @@
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px;">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thông số cấu hình</span>
+          <span class="text-card-header">{{'app.config.parameters' | i18n}}</span>
         </div>
-        <div style="margin-top: 10px" class="text-value">Tên L7 Policy</div>
+        <div style="margin-top: 10px" class="text-value">{{'app.l7.policy.name' | i18n}}</div>
         <div style="margin-top: 10px" class="text-label">
           {{ validateForm.controls.nameL7.getRawValue() }}
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Hành động thực thi</div>
+        <div style="margin-top: 10px" class="text-value">{{'app.execute.action' | i18n}}</div>
         <div style="margin-top: 10px" class="text-label">
           {{ validateForm.controls.action.getRawValue() }}
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Độ ưu tiên</div>
+        <div style="margin-top: 10px" class="text-value">{{'app.priority' | i18n}}</div>
         <div style="margin-top: 10px" class="text-label">
           {{ validateForm.controls.prioritize.getRawValue() }}
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Trạng thái</div>
+        <div style="margin-top: 10px" class="text-value">{{'app.text.status' | i18n}}</div>
         <div style="margin-top: 10px" class="text-label">
-          <span *ngIf="status == true">BẬT</span>
-          <span *ngIf="status == false">TẮT</span>
+          <span *ngIf="status == true">{{'app.ON' | i18n}}</span>
+          <span *ngIf="status == false">{{'app.OFF' | i18n}}</span>
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row>
           <nz-col style="width: 100%">
             <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid" (click)="submitForm()" [nzLoading]="isLoading">
               <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;"/>
-              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>
+              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
             </button>
           </nz-col>
         </nz-row>

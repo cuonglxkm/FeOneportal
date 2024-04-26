@@ -10,7 +10,7 @@ import { ProjectService } from "../../services/project.service";
 export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
 
   selectedProject: ProjectModel;
-  @Input() isDetail = false;
+  @Input() isDetail: boolean | false;
   @Input() regionId: number;
   @Output() valueChanged = new EventEmitter();
   @Output() userChanged = new EventEmitter();

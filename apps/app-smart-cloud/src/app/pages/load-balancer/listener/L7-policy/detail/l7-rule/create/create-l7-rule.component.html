@@ -1,19 +1,19 @@
 <button nz-button nzType="primary" nzSize="large" (click)="showModal()">
   <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
-  <span class="button-text-primary">Tạo mới L7 Rule</span>
+  <span class="button-text-primary">{{ 'app.l7.rule.create.button' | i18n }}</span>
 </button>
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Tạo mới L7 Rule</span>
+    <span class="text-modal-title">{{ 'app.l7.rule.create.button' | i18n }}</span>
   </div>
   <div *nzModalContent>
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
       <nz-form-item>
         <nz-form-label>
-          <span>Đảo chiều cơ chế (<span style="color: red;">*</span>)</span>
+          <span>{{ 'app.reverse.mechanism' | i18n }} (<span style="color: red;">*</span>)</span>
           <img nz-popover
-               [nzPopoverContent]="'Đảo ngược kết quả so sánh của L7 Rule'"
+               [nzPopoverContent]="'app.tooltip.reverse.mechanism' | i18n"
                nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
                src="assets/imgs/pajamas_question.svg" alt="" />
           <nz-switch formControlName="invert"></nz-switch>
@@ -21,18 +21,18 @@
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <span>Tiêu chí (<span style="color: red;">*</span>)</span>
+          <span>{{ 'app.criterion' | i18n }} (<span style="color: red;">*</span>)</span>
           <img nz-popover
                [nzPopoverContent]="''"
                nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
                src="assets/imgs/pajamas_question.svg" alt="" />
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="typeErrorTpl">
-           <nz-select formControlName="type" nzSize="large" [nzPlaceHolder]="'Chọn tiêu chí'" (ngModelChange)="onChangeSelected()">
+           <nz-select formControlName="type" nzSize="large" [nzPlaceHolder]="'app.choose.criterion' | i18n" (ngModelChange)="onChangeSelected()">
              <nz-option *ngFor="let option of types" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
            </nz-select>
           <ng-template #typeErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -40,46 +40,46 @@
         <nz-form-label>
           <span>Key (<span style="color: red;">*</span>)</span>
           <img nz-popover
-               [nzPopoverContent]="'Key sử dụng để so sánh. Ví dụ: tên của cookie để đánh giá'"
+               [nzPopoverContent]="'app.tooltip.key' | i18n"
                nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
                src="assets/imgs/pajamas_question.svg" alt="" />
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="keyErrorTpl">
           <input nz-input class="input-custom" formControlName="key" />
           <ng-template #keyErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <span>Điều kiện (<span style="color: red;">*</span>)</span>
+          <span>{{ 'app.condition' | i18n }} (<span style="color: red;">*</span>)</span>
           <img nz-popover
                [nzPopoverContent]="''"
                nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
                src="assets/imgs/pajamas_question.svg" alt="" />
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="compareTypeErrorTpl">
-          <nz-select formControlName="compareType" nzSize="large" [nzPlaceHolder]="'Chọn điều kiện'" >
+          <nz-select formControlName="compareType" nzSize="large" [nzPlaceHolder]="'app.choose.condition' | i18n" >
             <nz-option *ngFor="let option of compareTypes" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
           </nz-select>
           <ng-template #compareTypeErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <span>Giá trị (<span style="color: red;">*</span>)</span>
+          <span>{{ 'app.value' | i18n }} (<span style="color: red;">*</span>)</span>
           <img nz-popover
-               [nzPopoverContent]="'Giá trị dùng để thực hiện so sánh. Ví dụ: loại tệp để so sánh'"
+               [nzPopoverContent]="'app.tooltip.value' | i18n"
                nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
                src="assets/imgs/pajamas_question.svg" alt="" />
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="valueErrorTpl">
           <input #l7RuleInputName nz-input class="input-custom" formControlName="value" (keydown.enter)="focusOkButton($event)" />
           <ng-template #valueErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -87,12 +87,12 @@
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleOk()"
             [nzLoading]="isLoading"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

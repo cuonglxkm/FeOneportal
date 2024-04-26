@@ -1,0 +1,52 @@
+<div class="mb-5 add-btn">
+  <one-portal-create-inbound
+    nz-tooltip nzTooltipTitle="Thêm mới Inbound"
+    nzTooltipPlacement="top"
+    [disabled]="!securityGroupId"
+    [condition]="{
+      userId: condition.userId,
+      regionId: condition.regionId,
+      projectId: condition.projectId,
+      securityGroupId: securityGroupId
+    }"
+    (onOk)="getRuleInbound()" />
+</div>
+<nz-table #ruleTable [nzData]="listOfInbound" nzShowSizeChanger
+  [nzFrontPagination]="false" [nzTotal]="total"
+  [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
+  (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoadingInbound">
+  <thead>
+    <tr>
+      <th>STT</th>
+      <th>IP Version</th>
+      <th>Protocol</th>
+      <th>PortRange</th>
+      <th>Remote IP Prefix</th>
+      <th>Thao tác</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let item of ruleTable.data; let i = index;">
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td>{{item.remoteIp}}</td>
+        <td>{{item.protocol}}</td>
+        <td>{{item.portRange}}</td>
+        <td>{{item.remoteIpPrefix}}</td>
+        <td>
+          <div class="ml-5">
+            <one-portal-delete-inbound
+              nz-tooltip
+              nzTooltipTitle="Xóa Inbound"
+              nzTooltipPlacement="top"
+              [idInbound]="item.id"
+              [nameRule]="item.remoteIp"
+              [region]="regionId"
+              [project]="projectId"
+              (onOk)="handleOkDeleteInbound()" />
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</nz-table>

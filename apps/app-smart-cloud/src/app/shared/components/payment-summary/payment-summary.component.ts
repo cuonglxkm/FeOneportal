@@ -226,7 +226,7 @@ export class PaymentSummaryComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lây danh sách Voucher không thất bại'
+            'Lây danh sách Voucher thất bại'
           );
         },
       });

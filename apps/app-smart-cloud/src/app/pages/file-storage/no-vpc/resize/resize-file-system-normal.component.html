@@ -2,8 +2,10 @@
              [title]="'Điều chỉnh File System'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/'+idFileSystem ">Chi tiết File System</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/'+idFileSystem +'/resize'">Điều chỉnh File System</nz-breadcrumb-item>
@@ -42,7 +44,7 @@
               </nz-form-item>
               <nz-form-item>
                 <nz-form-label>
-                  <span>Giao thức (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <span>{{ 'app.protocol' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
                   <img nz-popover
                        [nzPopoverContent]="'Giao thức NFS (Network File System) là một giao thức mạng được sử dụng ' +
                            'để chia sẻ tập tin và thư mục qua mạng giữa các hệ thống máy tính khác nhau. ' +
@@ -109,14 +111,14 @@
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>Mô tả</span>
+                <span>{{ 'app.service.description' | i18n }}</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
               <textarea nz-input class="input-custom" [value]="fileSystem.description" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"  [disabled]="true"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -219,7 +221,7 @@
       </nz-col>
       <nz-col nzSpan="8">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông số cấu hình</span>
+          <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
           <div style="margin-top: 10px" class="text-value">Tên File System</div>
           <div style="margin-top: 10px" class="text-label">
             {{ fileSystem?.name }}

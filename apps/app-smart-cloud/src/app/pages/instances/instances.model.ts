@@ -242,6 +242,9 @@ export class InstanceCreate {
   volumeType: any;
   gpuType: any;
   gpuCount: any;
+  gpuTypeOfferId: any;
+  privateNetId: any;
+  privatePortId: any;
   typeName: string;
   customerId: number;
   userEmail: any;

@@ -1,0 +1,123 @@
+.flex-style {
+  display: flex;
+}
+
+.marbot-5 {
+  margin-bottom: 5px;
+}
+
+.mbot-24 {
+  margin-bottom: 24px;
+}
+
+.mleft-16 {
+  margin-left: 16px;
+}
+
+.header-table {
+  background-color: #E2EEFC;
+}
+
+p, label {
+  font-size: 16px;
+}
+
+label {
+  cursor: pointer;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+small {
+  font-size: 13px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.w-30 {
+  width: 30%;
+}
+
+.w-20 {
+  width: 20%;
+}
+
+.padleft-24 {
+  padding-left: 24px;
+}
+
+.padright-24 {
+  padding-right: 24px;
+}
+
+.primary-color {
+  color: #0066b3;
+}
+
+.delete-color {
+  color: #ea3829;
+}
+
+input, .border-button, .border-card {
+  border-radius: 8px;
+}
+
+::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 8px;
+}
+
+.ant-picker {
+  box-sizing: border-box;
+  margin: 0;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5715;
+  list-style: none;
+  font-feature-settings: 'tnum';
+  /* padding: 4px 11px 4px; */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+.borderless {
+  border: none;
+}
+
+.align-center {
+  text-align: center;
+}
+
+img {
+  border-radius: 4px;
+}
+
+.description-title {
+  font-weight: 600;
+  font-size: 32px;
+  color: #0066B3;
+  margin-bottom: 0;
+}
+
+.description-content {
+  width: 55%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+  color: #6C757D;
+}
+
+.bg-button {
+  background-color: #0066B3;
+}
+

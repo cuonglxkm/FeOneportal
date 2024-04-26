@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { EMPTY, Observable, Subscription, combineLatest, defaultIfEmpty, finalize } from 'rxjs';
+import { EMPTY, Observable, Subscription, combineLatest, defaultIfEmpty, finalize, interval, merge, of, take, takeUntil } from 'rxjs';
 import { environment } from '@env/environment';
 import { KubernetesCluster } from '../../model/cluster.model';
 import { ClusterStatus } from '../../model/status.model';
@@ -33,6 +33,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
   isShowModalDeleteCluster: boolean;
   isWrongName: boolean;
   isSubmitDelete: boolean;
+  isLoadingCluster: boolean;
 
   // input confirm delete modal
   deleteClusterName: string;
@@ -52,6 +53,16 @@ export class ListClusterComponent implements OnInit, OnDestroy {
 
   baseUrl = environment['baseUrl'];
 
+  @HostListener('window:unload', [ '$event' ])
+  unloadHandler(event) {
+    this.ngOnDestroy();
+  }
+
+  @HostListener('window:beforeunload', [ '$event' ])
+  beforeUnloadHandler(event) {
+    this.ngOnDestroy();
+  }
+
   constructor(
     private clusterService: ClusterService,
     private websocketService: NotificationWsService,
@@ -59,26 +70,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     private ref: ChangeDetectorRef,
     private zone: NgZone,
     private router: Router
-  ) {
-    // const nav = this.router.getCurrentNavigation();
-    // const state = nav?.extras.state;
-    // console.log(state);
-    // if (state) {
-    //   const data = state.data;
-    //   console.log({data: data});
-
-    //   const namespace = data.namespace;
-    //   const clusterName = data.clusterName;
-    //   this.percent = 0;
-
-    //   if (namespace != null && clusterName != null) {
-    //     this.sseStream = this.clusterService.getProgressOfCluster(clusterName, namespace).subscribe(data => {
-    //       this.percent = +data;
-    //       this.ref.detectChanges();
-    //     });
-    //   }
-    // }
-  }
+  ) {}
 
   private subscription: Subscription;
   ngOnInit(): void {
@@ -88,6 +80,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     this.listOfProgress = [];
     this.isShowModalDeleteCluster = false;
     this.isSubmitDelete = false;
+    this.isLoadingCluster = false;
     this.isWrongName = true;
     this.keySearch = '';
     this.serviceStatus = '';
@@ -99,9 +92,12 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     this.openWs();
 
     this.getListStatus();
+
+    window.onbeforeunload = () => this.ngOnDestroy();
   }
 
   searchCluster() {
+    this.isLoadingCluster = true;
     const k = this.keySearch.trim();
     this.clusterService.searchCluster(
       k,
@@ -110,11 +106,12 @@ export class ListClusterComponent implements OnInit, OnDestroy {
       this.projectInfraId,
       this.pageIndex,
       this.pageSize
-    ).subscribe((r: any) => {
+    ).pipe(finalize(() => this.isLoadingCluster = false))
+    .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.listOfClusters = [];
-        let listOfClusterInProgress = [];
         let progress: Array<Observable<any>> = [];
+        let listOfClusterInProgress = [];
 
         r.data?.content.forEach(item => {
           const cluster: KubernetesCluster = new KubernetesCluster(item);
@@ -125,7 +122,6 @@ export class ListClusterComponent implements OnInit, OnDestroy {
         });
         this.total = r.data.total;
         this.listOfClusters.reverse();
-        this.listOfInProgressStatus.reverse();
 
         // check list cluster is empty with all status?
         if ((this.serviceStatus == '' || this.serviceStatus == null || this.serviceStatus == undefined) && (k == '')) {
@@ -133,33 +129,33 @@ export class ListClusterComponent implements OnInit, OnDestroy {
         }
 
         // case user refresh page and have mulitple cluster and is in-progress
-        console.log({ inprogress: listOfClusterInProgress });
-        for (let i = 0; i < listOfClusterInProgress.length; i++) {
-          let cluster: KubernetesCluster = listOfClusterInProgress[i];
+        if (listOfClusterInProgress.length > 0) {
+          for (let i = 0; i < this.listOfClusters.length; i++) {
+            let cluster: KubernetesCluster = this.listOfClusters[i];
 
-          let progressObs: Observable<any>;
-          if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) {
+            let progressObs: Observable<any>;
+            if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) {
 
-            switch (cluster.serviceStatus) {
-              case 1: // initialing
-              case 6: // upgrading
-                progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.CREATE_ACTION);
-                break;
-              case 7: // deleting
-                progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.DELETE_ACTION);
-                break;
-              default:
-                progressObs = new Observable(obs => obs.complete()).pipe(defaultIfEmpty(0));
+              switch (cluster.serviceStatus) {
+                case 1: // initialing
+                case 6: // upgrading
+                  progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.CREATE_ACTION);
+                  break;
+                case 7: // deleting
+                  progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.DELETE_ACTION);
+                  break;
+                default:
+                  progressObs = new Observable(_ => _.complete()).pipe(defaultIfEmpty(0));
+              }
+
+            } else {
+              progressObs = new Observable(_ => _.complete()).pipe(defaultIfEmpty(0));
             }
-
-          } else {
-            progressObs = new Observable(obs => obs.complete()).pipe(defaultIfEmpty(0));
+            progress.push(progressObs);
           }
-          progress.push(progressObs);
         }
 
         this.unsubscribeObs(this.eventSources);
-        // risk: combineLastet can't emits value if each observable emits at least once value
         this.subscription = combineLatest(progress).subscribe(data => {
           // console.log({combine: data});
           this.listOfProgress = data;

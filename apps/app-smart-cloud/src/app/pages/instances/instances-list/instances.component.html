@@ -655,7 +655,7 @@
             [maxlength]="50"
           />
           <div *ngIf="isExistName" style="color: #ff4d4f">
-            {{ 'validation.exist.instance.name' | i18n }}
+            {{ 'validation.exist.name' | i18n: {name: 'instance'} }}
           </div>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{
