@@ -2,8 +2,8 @@
              [title]="'Điều chỉnh File System'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/resize/{{ idFileSystem }}'">Điều chỉnh File System</nz-breadcrumb-item>
@@ -125,7 +125,7 @@
       </nz-col>
       <nz-col nzSpan="8">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông số cấu hình</span>
+          <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
           <div style="margin-top: 10px" class="text-value">Tên File System</div>
           <div style="margin-top: 10px" class="text-label">
             {{ fileSystem?.name }}

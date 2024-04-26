@@ -3,9 +3,9 @@
              [title]="'app.load.balancer.resize' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
@@ -54,7 +54,7 @@
           </nz-form-item>
           <nz-form-item style="margin-bottom: 0;">
             <nz-form-label>
-              <span>Sử dụng (<span style="color: red;">*</span>)</span>
+              <span>{{ 'app.usage' | i18n }} (<span style="color: red;">*</span>)</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-row>
@@ -112,7 +112,7 @@
           </nz-row>
           <nz-form-item *ngIf="loadBalancer?.internetFacing">
             <nz-form-label>
-              <span>Chọn IP Floating (<span style="color: red;">*</span>)</span>
+              <span>{{ 'app.choose.ip.floating' | i18n }} (<span style="color: red;">*</span>)</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <input nz-input class="input-custom" [value]="loadBalancer?.floatingIPAddress" [disabled]="true"/>
@@ -182,14 +182,14 @@
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thông số cấu hình</span>
+          <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
         </div>
-        <div style="margin-top: 10px" class="text-value">Tên Load Balancer</div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.load.balancer.name' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
           {{ validateForm.controls.nameLoadBalancer.getRawValue() }}
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Sử dụng</div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.usage' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
           <span *ngIf="loadBalancer?.internetFacing == true">Internet Facing</span>
           <span *ngIf="loadBalancer?.internetFacing == false">Internal</span>

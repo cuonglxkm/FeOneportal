@@ -3,9 +3,9 @@
              [title]="'Gia hạn Load Balancer'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
@@ -103,12 +103,12 @@
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px;">
         <span class="text-card-header">Chi phí ước tính</span>
-        <div class="text-value" style="margin-top: 20px;">Tên Load Balancer</div>
+        <div class="text-value" style="margin-top: 20px;">{{ 'app.load.balancer.name' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
           {{ loadBalancer.name }}
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">Sử dụng</div>
+        <div class="text-value">{{ 'app.usage' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
           <span *ngIf="loadBalancer?.internetFacing == true">Internet Facing</span>
           <span *ngIf="loadBalancer?.internetFacing == false">Internal</span>

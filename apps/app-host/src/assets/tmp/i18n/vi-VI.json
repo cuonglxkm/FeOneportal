@@ -59,6 +59,7 @@
   "app.to": "Đến",
   "app.monitor": "Giám sát",
   "app.ip.floating": "IP Floating",
+  "app.choose.ip.floating": "Chọn IP Floating",
   "app.capacity": "Dung lượng",
   "app.additional.capacity": "Dung lượng tăng thêm",
   "app.used.capacity": "Dung lượng đã dùng",
@@ -154,6 +155,8 @@
   "app.more.0.less.100": "Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100",
   "app.attach.to.vm": "Gắn vào máy ảo",
   "app.info": "Thông tin",
+  "app.usage": "Sử dụng",
+
 
   "app.ip.type": "Loại IP",
   "app.ip.address": "Địa chỉ IP",
@@ -284,10 +287,14 @@
   "validation.correct.instance.name": "Vui lòng nhập đúng tên máy ảo",
   "validation.instance.name.required": "Vui lòng nhập tên máy ảo",
   "validation.password.new.required": "Vui lòng nhập trường mật khẩu mới",
-  "validation.password.new.pattern": "Mật khẩu phải chứa tối thiểu 12 ký tự, bao gồm các chữ số, chữ hoa, chữ thường và ký hiệu đặc biệt",
+  "validation.password.old.required": "Vui lòng nhập trường mật khẩu cũ",
+  "validation.password.old.incorrect": "Mật khẩu cũ không đúng, vui lòng thử lại",
+  "validation.password.new.pattern": "Mật khẩu phải chứa tối thiểu 12 ký tự, tối đa 20 ký tự, bao gồm đồng thời chữ hoa, chữ thường, số và ký tự đặc biệt",
+  "validation.password.account.pattern": "Mật khẩu có 8-16 ký tự, gồm ít nhất 1 chữ viết thường, 1 chữ viết hoa, 1 ký tự đặc biệt, 1 chữ số",
+  "validation.password.new.match.old": "Mật khẩu mới trùng mật khẩu cũ",
   "validation.password.confirm": "Mật khẩu không khớp nhau, vui lòng nhập lại",
   "validation.password.confirm.required": "Vui lòng nhập trường xác nhận mật khẩu",
-
+  
   "app.choose.snapshot": "chọn Snapshot",
   "app.choose.volume.type": "Chọn loại Volume",
   "app.configuration.package": "Gói cấu hình",
@@ -439,6 +446,7 @@
   "app.vm.name": "Tên VM",
   "app.l7.policy.list": "Danh sách L7 Policy",
   "app.l7.policy.detail": "Chi tiết L7 Policy",
+  "app.l7.policy.edit": "Chỉnh sửa L7 Policy",
   "app.l7.policy.info": "Thông tin L7 Policy",
   "app.l7.policy.name": "Tên L7 Policy",
   "app.l7.policy.create": "Tạo L7 Policy",

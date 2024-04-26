@@ -831,13 +831,13 @@
                   "
                   [nzShowSearch]="true"
                   [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="configGPU.GPUType"
+                  [(ngModel)]="configGPU.gpuOfferId"
                   nzSize="large"
                 >
                   <nz-option
                     *ngFor="let i of listGPUType"
-                    [nzLabel]="i.displayName"
-                    [nzValue]="i.type"
+                    [nzLabel]="i.offerName"
+                    [nzValue]="i.id"
                   />
                 </nz-select>
               </nz-form-control>
@@ -920,6 +920,28 @@
             </nz-form-item>
           </nz-col>
         </nz-row>
+        <nz-row>
+          <nz-form-item style="width: 100%;">
+            <div>
+              <nz-alert
+                nzType="warning"
+                [nzDescription]="nzDescriptionWarning3"
+                nzShowIcon
+              ></nz-alert>
+              <ng-template #nzDescriptionWarning3>
+                <div>
+                  {{ 'app.alert.security.group' | i18n }}
+                  <u
+                    style="cursor: pointer"
+                    [routerLink]="['/app-smart-cloud/security-group/list']"
+                    (keyup.enter)="navigateToSecurity()"
+                    >{{ 'app.alert.access.security' | i18n }}</u
+                  >
+                </div>
+              </ng-template>
+            </div>
+          </nz-form-item>
+        </nz-row>
         <nz-row nzGutter="16">
           <nz-col nzLg="12" nzMd="12" nzSm="24">
             <nz-form-item>
@@ -936,6 +958,7 @@
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 >
+                  <nz-option [nzLabel]="'Không sử dụng'" [nzValue]="''" />
                   <nz-option
                     *ngFor="let i of listVlanNetwork"
                     [nzLabel]="i.name"
@@ -946,7 +969,7 @@
             </nz-form-item>
           </nz-col>
           <nz-col nzLg="12" nzMd="12" nzSm="24">
-            <nz-form-item>
+            <nz-form-item *ngIf="!hidePort">
               <nz-form-label
                 >{{ 'app.choose.port' | i18n }} (<span class="text-red">*</span
                 >)</nz-form-label
@@ -960,8 +983,8 @@
                 >
                   <nz-option
                     *ngFor="let i of listPort"
-                    [nzLabel]="i.macAddress"
-                    [nzValue]="i.macAddress"
+                    [nzLabel]="i.fixedIPs[0]"
+                    [nzValue]="i.id"
                   />
                 </nz-select>
               </nz-form-control>
@@ -1001,41 +1024,9 @@
                   </div>
                 </ng-template></label
               >
-              <br *ngIf="hasOfferIpv6" />
-              <label
-                nz-checkbox
-                [(ngModel)]="isUseLAN"
-                [ngModelOptions]="{ standalone: true }"
-                >{{ 'app.use.lan.network' | i18n
-                }}<img
-                  style="margin-left: 10px"
-                  [nz-tooltip]="'app.tooltip.use.lan.network' | i18n"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
-              /></label>
             </div>
           </nz-col>
           <nz-col nzLg="12" nzMd="12" nzSm="24">
-            <nz-form-item>
-              <div>
-                <nz-alert
-                  nzType="warning"
-                  [nzDescription]="nzDescriptionWarning3"
-                  nzShowIcon
-                ></nz-alert>
-                <ng-template #nzDescriptionWarning3>
-                  <div>
-                    {{ 'app.alert.security.group' | i18n }}
-                    <u
-                      style="cursor: pointer"
-                      [routerLink]="['/app-smart-cloud/security-group/list']"
-                      (keyup.enter)="navigateToSecurity()"
-                      >{{ 'app.alert.access.security' | i18n }}</u
-                    >
-                  </div>
-                </ng-template>
-              </div>
-            </nz-form-item>
           </nz-col>
         </nz-row>
         <nz-row>

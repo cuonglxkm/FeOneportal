@@ -60,7 +60,7 @@
           </nz-form-item>
           <nz-form-item style="margin-bottom: 0;">
             <nz-form-label>
-              <span>Sử dụng (<span style="color: red;">*</span>)</span>
+              <span>{{ 'app.usage' | i18n }} (<span style="color: red;">*</span>)</span>
             </nz-form-label>
             <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
               <nz-radio-group style="width: 100%;" formControlName="radio">
@@ -107,7 +107,7 @@
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips>
                   <nz-select nzSize="large" (ngModelChange)="updateValue($event)" formControlName="subnet"
-                             [nzPlaceHolder]="'Chọn dải Subnet'" nzAllowClear>
+                             [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'" nzAllowClear>
                     <nz-option *ngFor="let index of listSubnets" [nzValue]="index.cloudId"
                                [nzLabel]="index.name + '(' + index.subnetAddressRequired + ')'"></nz-option>
                   </nz-select>
@@ -141,10 +141,10 @@
           </nz-row>
           <nz-form-item *ngIf="enableInternetFacing">
             <nz-form-label>
-              <span>Chọn IP Floating (<span style="color: red;">*</span>)</span>
+              <span>{{ 'app.choose.ip.floating' | i18n }} (<span style="color: red;">*</span>)</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
-              <nz-select [nzPlaceHolder]="'Chọn dải IP'" (ngModelChange)="selectedIp($event)" nzAllowClear
+              <nz-select [nzPlaceHolder]="'app.ip.public.select.ip.dropdown' | i18n" (ngModelChange)="selectedIp($event)" nzAllowClear
                          formControlName="ipFloating" nzSize="large">
                 <nz-option *ngFor="let index of ipFloating" [nzValue]="index.id"
                            [nzLabel]="index.ipAddress"></nz-option>
@@ -275,14 +275,14 @@
       <nz-col nzSpan="8">
         <nz-card style="border-radius: 8px">
           <div style="margin-bottom: 20px">
-            <span class="text-card-header">Thông số cấu hình</span>
+            <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
           </div>
-          <div style="margin-top: 10px" class="text-value">Tên Load Balancer</div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.load.balancer.name' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
             {{ validateForm.controls.name.getRawValue() }}
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">Sử dụng</div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.usage' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
             <span *ngIf="enableInternetFacing">Internet Facing</span>
             <span *ngIf="enableInternal">Internal</span>

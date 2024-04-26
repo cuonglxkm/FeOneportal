@@ -74,7 +74,7 @@
               </ng-template>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
-              <nz-select formControlName="action" nzSize="large" (ngModelChange)="onActionChange()" [nzPlaceHolder]="'Chọn hành động thực thi'">
+              <nz-select formControlName="action" nzSize="large" (ngModelChange)="onActionChange()" [nzPlaceHolder]="'app.choose.execute.action' | i18n">
                 <nz-option *ngFor="let option of actionList" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
               </nz-select>
             </nz-form-control>
@@ -102,7 +102,7 @@
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="urlErrorTpl">
-              <input nz-input class="input-custom" formControlName="url" [placeholder]="'Nhập url'" />
+              <input nz-input class="input-custom" formControlName="url" [placeholder]="'app.input.url' | i18n" />
               <ng-template #urlErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
                 <ng-container *ngIf="control.hasError('invalidUrl')">{{ 'validation.url.name.pattern' | i18n }}</ng-container>
