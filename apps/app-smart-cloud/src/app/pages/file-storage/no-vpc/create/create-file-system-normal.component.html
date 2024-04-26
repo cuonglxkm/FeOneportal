@@ -2,8 +2,10 @@
              [title]="'Khởi tạo File System'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Quản lý File System</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/create'">Khởi tạo File System
@@ -57,7 +59,7 @@
               <nz-form-item>
                 <nz-form-label>
                   <div>
-                    <span>Giao thức (</span>
+                    <span>{{ 'app.protocol' | i18n }} (</span>
                     <span style="color: rgba(252, 16, 16, 1); ">*</span>)
                     <img nz-popover
                          [nzPopoverContent]="'Giao thức NFS (Network File System) là một giao thức mạng được sử dụng ' +
@@ -164,7 +166,7 @@
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>Mô tả</span>
+                <span>{{ 'app.service.description' | i18n }}</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
@@ -173,7 +175,7 @@
                         [nzAutosize]="{ minRows: 4, maxRows: 6 }"></textarea>
 
                 <ng-template #descriptionErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+                  <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>
                 </ng-template>
               </nz-textarea-count>
             </nz-form-control>

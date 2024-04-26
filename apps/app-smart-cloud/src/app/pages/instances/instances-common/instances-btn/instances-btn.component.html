@@ -46,7 +46,7 @@
       nz-menu-item
       (click)="showModalShutdown()"
     >
-      {{ 'app.shutdown' | i18n }}
+      {{ 'app.shutdown.instance' | i18n }}
     </li>
     <li
       *ngIf="
@@ -56,7 +56,7 @@
       nz-menu-item
       (click)="showModalStart()"
     >
-      {{ 'app.start' | i18n }}
+      {{ 'app.start.instance' | i18n }}
     </li>
     <li
       *ngIf="
@@ -64,6 +64,7 @@
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
         !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.imageName.toUpperCase().includes('CIRROS')
       "
       nz-menu-item
@@ -77,6 +78,7 @@
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
         !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         !instancesModel.imageName.toUpperCase().includes('CIRROS')
       "
       nz-menu-item
@@ -220,8 +222,8 @@
           style="margin-top: 16px"
           nz-checkbox
           [(ngModel)]="autoCreate"
-          (ngModelChange)="changeAutoCreate()"
           [ngModelOptions]="{ standalone: true }"
+          (ngModelChange)="changeAutoCreate()"
           >{{ 'app.auto.generated' | i18n }}</label
         >
       </nz-form-item>
@@ -274,7 +276,6 @@
               placeholder=""
               [(ngModel)]="resetPasswordRepeat"
               (input)="onInputChange($event)"
-              [attr.disabled]="autoCreate"
             />
           </nz-input-group>
           <ng-template #suffixTemplateRepeat>

@@ -1,20 +1,17 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Chỉnh sửa Load Balancer'" xmlns="http://www.w3.org/1999/html">
+             [title]="'app.load.balancer.resize' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Load Balancer
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/create">Chỉnh sửa Load Balancer</a>
+        <a routerLink="/app-smart-cloud/load-balancer/create">{{ 'app.load.balancer.resize' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -32,13 +29,13 @@
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card style="border-radius: 8px;">
-        <span class="text-card-header">Thông tin Load Balancer</span>
+        <span class="text-card-header">{{ 'app.load.balancer.info' | i18n }}</span>
         <form nz-form nzLayout="vertical" [formGroup]="validateForm">
           <nz-form-item style="margin-top: 15px;">
             <nz-form-label>
-              <span>Tên Load Balancer (<span style="color: red">*</span>)</span>
+              <span>{{ 'app.load.balancer.name' | i18n }} (<span style="color: red">*</span>)</span>
               <img nz-popover
-                   [nzPopoverContent]="'Tên Load Balancer không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự'"
+                   [nzPopoverContent]="'validation.load.balancer.name.pattern' | i18n"
                    nzPopoverPlacement="bottom" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
@@ -46,18 +43,18 @@
               <input nz-input appAutofocus
                      class="input-custom"
                      formControlName="nameLoadBalancer"
-                     [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" [value]="validateForm.controls.nameLoadBalancer.getRawValue()"/>
+                     [placeholder]="'app.input.name' | i18n " [maxLength]="50" [value]="validateForm.controls.nameLoadBalancer.getRawValue()"/>
               <ng-template #nameErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Load Balancer</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt (trừ _)</ng-container>
-                <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
-                <ng-container *ngIf="control.hasError('duplicateName')">Tên Load Balancer đã tồn tại, vui lòng nhập tên Load Balancer khác</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n: { name: 'Load Balancer' } }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item style="margin-bottom: 0;">
             <nz-form-label>
-              <span>Sử dụng (<span style="color: red;">*</span>)</span>
+              <span>{{ 'app.usage' | i18n }} (<span style="color: red;">*</span>)</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-row>
@@ -115,7 +112,7 @@
           </nz-row>
           <nz-form-item *ngIf="loadBalancer?.internetFacing">
             <nz-form-label>
-              <span>Chọn IP Floating (<span style="color: red;">*</span>)</span>
+              <span>{{ 'app.choose.ip.floating' | i18n }} (<span style="color: red;">*</span>)</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <input nz-input class="input-custom" [value]="loadBalancer?.floatingIPAddress" [disabled]="true"/>
@@ -169,13 +166,13 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-form-item>
             <nz-form-label>
-              <span>Mô tả</span>
+              <span>{{ 'app.service.description' | i18n }}</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input formControlName="description" [placeholder]="'Nhập nội dung'" [maxLength]="255"
+              <textarea nz-input formControlName="description" [placeholder]="'app.input.des' | i18n" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -185,14 +182,14 @@
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thông số cấu hình</span>
+          <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
         </div>
-        <div style="margin-top: 10px" class="text-value">Tên Load Balancer</div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.load.balancer.name' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
           {{ validateForm.controls.nameLoadBalancer.getRawValue() }}
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Sử dụng</div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.usage' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
           <span *ngIf="loadBalancer?.internetFacing == true">Internet Facing</span>
           <span *ngIf="loadBalancer?.internetFacing == false">Internal</span>

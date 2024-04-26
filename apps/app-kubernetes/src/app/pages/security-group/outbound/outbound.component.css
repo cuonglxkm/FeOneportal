@@ -1,0 +1,12 @@
+.align-item {
+  text-align: center;
+}
+
+.borderless {
+  border: none;
+}
+
+.add-btn {
+  position: relative;
+  float: right;
+}

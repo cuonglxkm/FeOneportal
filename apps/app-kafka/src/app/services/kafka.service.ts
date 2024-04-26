@@ -16,6 +16,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { KafkaVersion } from '../core/models/kafka-version.model';
 import { KafkaStatus } from '../core/models/status.model';
 import { OfferItem, UnitPrice } from '../core/models/offer.model';
+import { SyncInfoModel } from '../core/models/sync-info.model';
 
 @Injectable({
   providedIn: 'root',
@@ -97,8 +98,8 @@ export class KafkaService extends BaseService {
     );
   }
 
-  getSyncTime(serviceOrderCode: string) {
-    return this.http.get(
+  getSyncTime(serviceOrderCode: string): Observable<BaseResponse<SyncInfoModel>> {
+    return this.http.get<BaseResponse<SyncInfoModel>>(
       `${this.kafkaUrl}/kafka/get-sync-time?service_order_code=${serviceOrderCode}`
     );
   }

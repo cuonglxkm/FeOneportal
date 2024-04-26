@@ -8,6 +8,7 @@ import { VpcService } from '../../../shared/services/vpc.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { IpPublicService } from '../../../shared/services/ip-public.service';
 
 @Component({
   selector: 'one-portal-vpc-list',
@@ -51,6 +52,7 @@ export class VpcListComponent implements OnInit{
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private vpcService: VpcService,
+              private ipService: IpPublicService,
               private notification: NzNotificationService) {
 
   }
@@ -164,6 +166,43 @@ export class VpcListComponent implements OnInit{
   }
 
   updateVpc() {
+    const requestBody =
+      {
+        typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+        serviceType: 1,
+        customerId: this.tokenService.get()?.userId,
+        actionType: 12,
+        regionId: this.regionId,
+        description: this.form.controls['description'].value,
+        serviceName: this.form.controls['name'].value
+      }
+    const request = {
+      customerId: this.tokenService.get()?.userId,
+      createdByUserId: this.tokenService.get()?.userId,
+      note: "Cập nhật VPC",
+      orderItems: [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(requestBody),
+          specificationType: "vpc_resize",
+          price: 0,
+        }
+      ]
+    }
 
+    this.ipService.createIpPublic(request)
+      .pipe(finalize(() => {
+        this.getData(true);
+        this.isVisibleEditNormal = false
+      }))
+      .subscribe(
+      data => {
+        this.notification.success('Thành công', 'Cập nhật dự án thành công');
+        this.router.navigate(['/app-smart-cloud/vpc']);
+      },
+      error => {
+        this.notification.error('Thất bại', 'Cập nhật dự án thất bại')
+      }
+    )
   }
 }

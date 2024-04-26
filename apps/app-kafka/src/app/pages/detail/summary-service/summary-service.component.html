@@ -1,31 +1,51 @@
 <nz-card id="kafka-config">
     <fieldset class="custom-legend">
         <legend>{{ 'kafka.overview.config' | i18n }}</legend>
-        <div class="table-info">
-            <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
-                <tbody>
-                    <tr>
-                        <td class="config-label">{{ 'app.kafka.name' | i18n }}</td>
-                        <td><b>{{itemDetail.serviceName}}</b></td>
-                    </tr>
-                    <tr>
-                        <td class="config-label">Broker</td>
-                        <td><b>3</b></td>
-                    </tr>
-                    <tr>
-                        <td class="config-label">CPU</td>
-                        <td><b>{{itemDetail.cpu}} vCPU</b></td>
-                    </tr>
-                    <tr>
-                        <td class="config-label">RAM</td>
-                        <td><b>{{itemDetail.ram}} GB</b></td>
-                    </tr>
-                    <tr>
-                        <td class="config-label">SSD</td>
-                        <td><b>{{itemDetail.storage}} GB</b></td>
-                    </tr>
-                </tbody>
-            </nz-table>
+        <div class="table-info" nz-row>
+            <div nz-col [nzSpan]="12">
+                <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
+                    <tbody>
+                        <tr>
+                            <td class="config-label">{{ 'app.kafka.name' | i18n }}</td>
+                            <td><b>{{itemDetail.serviceName}}</b></td>
+                        </tr>
+                        <tr>
+                            <td class="config-label">{{'app.service.creation-date' | i18n}}</td>
+                            <td><b>{{ itemDetail.createdDate | date: 'dd/MM/yyyy' }}</b></td>
+                        </tr>
+                        <tr>
+                            <td class="config-label">{{'app.service.expiration-date' | i18n}}</td>
+                            <td style="color: #ea3829"><b>{{ itemDetail.expiryDate | date: 'dd/MM/yyyy' }}</b></td>
+                        </tr>
+                        <tr>
+                            <td class="config-label">{{'app.service.package' | i18n}}</td>
+                            <td><b>{{this.itemDetail.offerName}}</b></td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
+                    <tbody>
+                        <tr>
+                            <td class="config-label">Broker</td>
+                            <td><b>3</b></td>
+                        </tr>
+                        <tr>
+                            <td class="config-label">CPU</td>
+                            <td><b>{{itemDetail.cpu}} vCPU</b></td>
+                        </tr>
+                        <tr>
+                            <td class="config-label">RAM</td>
+                            <td><b>{{itemDetail.ram}} GB</b></td>
+                        </tr>
+                        <tr>
+                            <td class="config-label">SSD</td>
+                            <td><b>{{itemDetail.storage}} GB</b></td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
         </div>
     </fieldset>
 </nz-card>
@@ -76,11 +96,12 @@
                             <td class="config-label">
                                 <div>
                                     {{item.configName}}
-                                    <span class="ml-2"
-                                        [nzTooltipTitle]="item.description"
-                                        nzTooltipPlacement="rightTop" nz-tooltip>
-                                        <span nz-icon nzType="exclamation-circle" nzTheme="fill"></span>
-                                    </span>
+                                    <img
+                                        style="margin-left: 10px"
+                                        [nzTooltipTitle]="item.description" nzTooltipPlacement="rightTop" nz-tooltip
+                                        src="assets/imgs/pajamas_question.svg"
+                                        alt=""
+                                    />
                                 </div>
                             </td>
                             <td><b>{{item.configValue}}</b></td>

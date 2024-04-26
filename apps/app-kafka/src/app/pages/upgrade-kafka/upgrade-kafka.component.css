@@ -218,10 +218,6 @@ h3 {
     justify-content: space-between;
 }
 
-.config-suffix ::ng-deep .ant-input-suffix {
-    color: #989BB3;;
-}
-
 .value-usage-time {
     color: #4C4F67;
     font-weight: 600;
@@ -240,3 +236,13 @@ h3 {
 .border-card ::ng-deep .ant-alert-warning {
     border-radius: 8px !important;
 }
+
+.config-suffix ::ng-deep .ant-input-number-suffix {
+    color: #989BB3;;
+  }
+  
+  nz-input-number-group {
+    padding: 0 4px;
+    border-radius: 8px;
+    width: 100%;
+  }

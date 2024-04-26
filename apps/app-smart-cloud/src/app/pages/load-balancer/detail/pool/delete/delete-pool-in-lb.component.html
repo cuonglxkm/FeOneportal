@@ -1,38 +1,38 @@
 <img *ngIf="listenerId == null" src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
      nz-popover
-     [nzPopoverContent]="'Xóa'"
+     [nzPopoverContent]="'app.delete' | i18n"
      nzPopoverPlacement="bottom" (click)="showModal()"/>
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Xác nhận xóa Pool {{ namePool }}</span>
+    <span class="text-modal-title" [innerHTML]="'app.title.delete.pool' | i18n : {name: namePool}"></span>
   </div>
   <div *nzModalContent>
     <nz-alert nzBanner
               nzShowIcon
-              [nzMessage]="'Bạn đang thực hiện xóa Pool'">
+              [nzDescription]="'app.alert.delete.pool' | i18n">
     </nz-alert>
     <div style="margin-top: 10px;">
-      <span class="text-label">Đế thực hiện xoá Pool {{ namePool }}, vui lòng nhập tên Pool để xác nhận.</span>
+      <span class="text-label" [innerHTML]="'app.note.delete.pool' | i18n : {name: namePool}"></span>
       <input nz-input #poolInputName
              style="margin-top: 10px;"
              class="input-custom"
              [ngModel]="value"
              (keydown.enter)="focusOkButton($event)"
              (ngModelChange)="onInput($event)"
-             [placeholder]="'Nhập tên Pool'"/>
-      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên Pool</span>
+             [placeholder]="'app.input.name' | i18n"/>
+      <span *ngIf="isInput" style="color: red;">{{ 'validation.correct.pool.name' | i18n }}</span>
     </div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary"
             (click)="handleOk()"
             [nzLoading]="isLoading"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
