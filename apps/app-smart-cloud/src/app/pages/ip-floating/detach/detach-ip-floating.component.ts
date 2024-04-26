@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { FormAction } from '../../../shared/models/ip-floating.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { IpFloatingService } from '../../../shared/services/ip-floating.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-detach-ip-floating',
@@ -21,6 +23,7 @@ export class DetachIpFloatingComponent implements OnInit {
   isLoading: boolean = false
 
   constructor(private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private ipFloatingService: IpFloatingService) {
   }
 
@@ -44,17 +47,17 @@ export class DetachIpFloatingComponent implements OnInit {
       if(data) {
         this.isVisible = false
         this.isLoading = false
-        this.notification.success('Thành công', 'Gỡ Ip Floating thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.ip.floating6'))
         this.onOk.emit(data)
       } else {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error('Thất bại', 'Gỡ Ip Floating thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.ip.floating7'))
       }
     }, error => {
       this.isVisible = false
       this.isLoading = false
-      this.notification.error('Thất bại', 'Gỡ Ip Floating thất bại')
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.ip.floating7'))
     })
   }
 

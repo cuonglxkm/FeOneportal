@@ -47,7 +47,7 @@
         </div>
       </div>
       <!-- Bảng-->
-      <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfData"
+      <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfData"
                 [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
                 (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
         <thead>
