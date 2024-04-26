@@ -163,72 +163,72 @@ const routes: Routes = [
   {
     path: 'volumes',
     component: VolumeComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('volume:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('volume:List')]
   },
   {
     path: 'volume/create',
     component: CreateVolumeComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
   },
   {
     path: 'volume/detail/:id',
     component: DetailVolumeComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('volume:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('volume:Get')]
   },
   {
     path: 'volume/edit/:id',
     component: EditVolumeComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('volume:Update')]
+    canActivate: [() => inject(PolicyService).hasPermission('volume:Update')]
   },
   {
     path: 'keypair',
     component: SshKeyComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('keypair:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('keypair:List')]
   },
   {
     path: 'instances',
     loadChildren: () => import('../pages/instances/instances.module').then(m => m.InstancesModule),
-    canMatch: [() => inject(PolicyService).hasPermission('instance:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('instance:List')]
   },
   {
     path: 'ip-public',
     component: IpPublicComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('ippublic:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('ippublic:List')]
   },
   {
     path: 'ip-public/create',
     component: CreateUpdateIpPublicComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
   },
   {
     path: 'ip-public/detail/:id',
     component: DetailIpPublicComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('ippublic:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('ippublic:Get')]
   },
   {
     path: 'ip-public/extend/:id',
     component: ExtendIpPublicComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
   },
   {
     path: 'instance/:instanceId/allow-address-pair/:portId',
     component: ListAllowAddressPairComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('instance:InstanceListAllowAddressPair')]
+    canActivate: [() => inject(PolicyService).hasPermission('instance:InstanceListAllowAddressPair')]
   },
   {
     path: 'action-history',
     component: ActionHistoryComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('actionlogs:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('actionlogs:List')]
   },
   {
     path: 'snapshotvls',
     component: SnapshotVolumeListComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('volumesnapshot:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshot:List')]
   },
   {
     path: 'snapshotvls/detail/:id',
     component: SnappshotvlDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('volumesnapshot:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshot:Get')]
   },
   {
     path: 'blank-backup-vm',
@@ -237,37 +237,37 @@ const routes: Routes = [
   {
     path: 'backup-vm',
     component: ListBackupVmComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('backup:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('backup:List')]
   },
   {
     path: 'backup-vm/restore-backup-vm/:id',
     component: RestoreBackupVmComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('backup:InstanceBackupRestore')]
+    canActivate: [() => inject(PolicyService).hasPermission('backup:InstanceBackupRestore')]
   },
   {
     path: 'backup-vm/detail-backup-vm/:id',
     component: DetailBackupVmComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('backup:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('backup:Get')]
   },
   {
     path: 'instance/:id/create-backup-vm',
     component: CreateBackupVmComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
   },
   {
     path: 'backup-volume/create',
     component: CreateBackupVolumeComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
   },
   {
     path: 'backup-volume/detail',
     component: DetailBackupVolumeComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('backup:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('backup:Get')]
   },
   {
     path: 'backup-volume',
     component: ListBackupVolumeComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('backup:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('backup:List')]
   },
   {
     path: 'iam/dashboard',
@@ -276,77 +276,77 @@ const routes: Routes = [
   {
     path: 'iam/user-group',
     component: ListUserGroupComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iamgroup:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('iamgroup:List')]
   },
   {
     path: 'iam/user-group/create',
     component: CreateUserGroupComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iamgroup:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('iamgroup:Create')]
   },
   {
     path: 'iam/user-group/:name',
     component: DetailUserGroupComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iamgroup:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('iamgroup:Get')]
   },
   {
     path: 'policy/attach/:name',
     component: PolicyAttachComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iampolicy:IamPolicyAttachOrDetach')]
+    canActivate: [() => inject(PolicyService).hasPermission('iampolicy:IamPolicyAttachOrDetach')]
   },
   {
     path: 'policy/detach/:name',
     component: PolicyDetachComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iampolicy:IamPolicyAttachOrDetach')]
+    canActivate: [() => inject(PolicyService).hasPermission('iampolicy:IamPolicyAttachOrDetach')]
   },
   {
     path: 'policy/detail/:name',
     component: PolicyDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iampolicy:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('iampolicy:Get')]
   },
   {
     path: 'policy/update/:name',
     component: PolicyUpdateComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iampolicy:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('iampolicy:Create')]
   },
   {
     path: 'policy',
     loadChildren: () => import('../pages/policy/policy.module').then(m => m.PolicyModule),
-    canMatch: [() => inject(PolicyService).hasPermission('iampolicy:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('iampolicy:List')]
   },
   {
     path: 'users',
     component: UserComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iamuser:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('iamuser:List')]
   },
   {
     path: 'users/create',
     component: UserCreateComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iamuser:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('iamuser:Create')]
   },
   {
     path: 'users/detail/:userName',
     component: UserDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iamuser:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('iamuser:Get')]
   },
   {
     path: 'users/detail/:userName/add-policies',
     component: AddPoliciesComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iamuser:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('iamuser:Create')]
   },
   {
     path: 'users/detail/:userName/add-to-group',
     component: AddToGroupComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('AddToGroupComponent')]
+    canActivate: [() => inject(PolicyService).hasPermission('AddToGroupComponent')]
   },
   {
     path: 'iam/user-group/:groupName/add-user',
     component: CreateUserComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iamgroup:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('iamgroup:Create')]
   },
   {
     path: 'iam/user-group/:groupName/add-policy',
     component: CreatePolicyComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('iamgroup:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('iamgroup:Create')]
   },
   {
     path: 'schedule/backup/blank',
@@ -355,47 +355,47 @@ const routes: Routes = [
   {
     path: 'schedule/backup/list',
     component: ListScheduleBackupComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('backupschedule:Search')]
+    canActivate: [() => inject(PolicyService).hasPermission('backupschedule:Search')]
   },
   {
     path: 'schedule/backup/create',
     component: CreateScheduleBackupComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
   },
   {
     path: 'schedule/backup/edit/vm/:id',
     component: EditScheduleBackupVmComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('backupschedule:Update')]
+    canActivate: [() => inject(PolicyService).hasPermission('backupschedule:Update')]
   },
   {
     path: 'schedule/backup/edit/volume/:id',
     component: EditScheduleBackupVolumeComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('backupschedule:Update')]
+    canActivate: [() => inject(PolicyService).hasPermission('backupschedule:Update')]
   },
   {
     path: 'schedule/snapshot/list',
     component: SnapshotScheduleListComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:List')]
   },
   {
     path: 'schedule/snapshot/create',
     component: SnapshotScheduleCreateComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:Create')]
   },
   {
     path: 'schedule/snapshot/detail/:id',
     component: SnapshotScheduleDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:Get')]
   },
   {
     path: 'schedule/snapshot/edit/:id',
     component: SnapshotScheduleEditComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:Update')]
+    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:Update')]
   },
   {
     path: 'billing/payments/detail/:id/:orderNumber',
     component: PaymentDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('payment:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('payment:Get')]
   },
   {
     path: 'billing/payments/success',
@@ -408,47 +408,47 @@ const routes: Routes = [
   {
     path: 'billing/payments',
     component: ListPaymentComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('payment:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('payment:List')]
   },
   {
     path: 'order/list',
     component: OrderListComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:List')]
   },
   {
     path: 'order/detail/:id',
     component: OrderDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Get')]
   },
   {
     path: 'volumes/renew/:id',
     component: RenewVolumeComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'backup/packages',
     component: ListPackagesBackupComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('backup:ListBackupPacket')]
+    canActivate: [() => inject(PolicyService).hasPermission('backup:ListBackupPacket')]
   },
   {
     path: 'backup/packages/detail/:id',
     component: DetailPackageBackupComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('backup:BackupPacketGet')]
+    canActivate: [() => inject(PolicyService).hasPermission('backup:BackupPacketGet')]
   },
   {
     path: 'backup/packages/create',
     component: CreatePackageBackupComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'backup/packages/edit/:id',
     component: EditBackupPackageComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('backup:BackupPacketUpdate')]
+    canActivate: [() => inject(PolicyService).hasPermission('backup:BackupPacketUpdate')]
   },
   {
     path: 'backup/packages/extend/:id',
     component: ExtendBackupPackageComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'order/cart',
@@ -457,12 +457,12 @@ const routes: Routes = [
   {
     path: 'volume/vpc/create',
     component: CreateVolumeVpcComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'volume/vpc/resize/:id',
     component: ResizeVolumeVpcComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'vlan/network/list',
@@ -471,22 +471,22 @@ const routes: Routes = [
   {
     path: 'vlan/network/detail/:id',
     component: VlanDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('vlan:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('vlan:List')]
   },
   {
     path: 'vpc',
     loadChildren: () => import('../pages/vpc/vpc.module').then(m => m.VpcModule),
-    canMatch: [() => inject(PolicyService).hasPermission('vpc:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('vpc:List')]
   },
   {
     path: 'network/router',
     component: RouterListComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('router:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('router:List')]
   },
   {
     path: 'network/router/detail/:id',
     component: RouterDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('router:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('router:Get')]
   },
   {
     path: 'vlan/create/network',
@@ -507,112 +507,112 @@ const routes: Routes = [
   {
     path: 'networks/ip-floating/list',
     component: ListIpFloatingComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('ipfloating:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('ipfloating:List')]
   },
   {
     path: 'networks/ip-floating-normal/create',
     component: CreateIpFloatingNormalComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'networks/ip-floating-normal/:id/extend',
     component: ExtendIpFloatingComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'networks/ip-wan/list',
     component: ListWanComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('ipwan:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('ipwan:List')]
   },
   {
     path: 'file-storage/file-system/create',
     component: CreateFileSystemComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'file-storage/file-system/list',
     component: ListFileSystemComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('fileStorages:GetListShareFileStorage')]
+    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetListShareFileStorage')]
   },
   {
     path: 'file-storage/file-system/detail/:id',
     component: DetailFileSystemComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('fileStorages:GetShareFileStorage')]
+    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetShareFileStorage')]
   },
   {
     path: 'file-storage/file-system/resize/:id',
     component: ResizeFileSystemComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'file-storage/file-system/:idFileSystem/access-rule/list',
     component: ListAccessRuleComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('fileStorages:GetListShareRule')]
+    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetListShareRule')]
   },
   {
     path: 'object-storage/sub-user/list',
     component: ListSubUserComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageUser')]
+    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageUser')]
   },
   {
     path: 'object-storage/sub-user/create',
     component: CreateSubUserComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageUser')]
+    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageUser')]
   },
   {
     path: 'object-storage/dashboard',
     component: DashboardObjectStorageComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageMonitor')]
+    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageMonitor')]
   },
   {
     path: 'networks/ip-floating/list',
     component: ListIpFloatingComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('ipfloating:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('ipfloating:List')]
   },
   {
     path: 'file-system-snapshot/list',
     component: FileSystemSnapshotComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('fileStorages:GetListShareSnapshotFileStorage')]
+    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetListShareSnapshotFileStorage')]
   },
   {
     path: 'file-system-snapshot/create',
     component: CreateFileSystemSnapshotComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('fileStorages:CreateShareSnapshotFileStorage')]
+    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:CreateShareSnapshotFileStorage')]
   },
   {
     path: 'file-system-snapshot/detail/:id',
     component: FileSystemSnapshotDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('fileStorages:GetShareSnapshotFileStorage')]
+    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetShareSnapshotFileStorage')]
   },
   {
     path: 'file-system-snapshot-schedule/list',
     component: FileSystemSnapshotScheduleComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('fileStorages:GetListScheduleShareSnapshot')]
+    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetListScheduleShareSnapshot')]
   },
   {
     path: 'file-system-snapshot-schedule/create',
     component: CreateFileSystemSnapshotScheduleComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('fileStorages:CreateScheduleShareSnapshot')]
+    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:CreateScheduleShareSnapshot')]
   },
   {
     path: 'file-system-snapshot-schedule/edit/:id',
     component: EditFileSystemSnapshotScheduleComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('fileStorages:UpdateScheduleShareSnapshot')]
+    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:UpdateScheduleShareSnapshot')]
   },
   {
     path: 'object-storage/bucket',
     component: BucketListComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageUser')]
+    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageUser')]
   },
   {
     path: 'object-storage/bucket/create',
     component: BucketCreateComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('objectstorages:CreateBucket')]
+    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:CreateBucket')]
   },
   {
     path: 'object-storage/bucket/configure/:bucketName',
     component: BucketConfigureComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('objectstorages:GetBucket')]
+    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:GetBucket')]
   },
   {
     path: 'object-storage',
@@ -621,77 +621,77 @@ const routes: Routes = [
   {
     path: 'object-storage/create',
     component: ObjectStorageCreateComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'object-storage/extend/:id',
     component: ObjectStorageExtendComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'object-storage/edit/:id',
     component: ObjectStorageEditComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'object-storage/bucket/:name',
     component: BucketDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('objectstorages:GetBucket')]
+    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:GetBucket')]
   },
   {
     path: 'vpn-site-to-site',
     loadChildren: () => import('../pages/vpn-site-to-site/vpn-site-to-site.module').then(m => m.VpnSiteToSiteModule),
-    canMatch: [() => inject(PolicyService).hasPermission('vpnsitetosites:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('vpnsitetosites:List')]
   },
   {
     path: 'object-storage/s3-key',
     component: S3KeyComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('objectstorages:Search')]
+    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:Search')]
   },
   {
     path: 'snapshot/packages',
     loadChildren: () => import('../pages/snapshot-package/packages-snapshot.module').then(m => m.PackageSnapshotModule),
-    canMatch: [() => inject(PolicyService).hasPermission('SnapshotPackage:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('SnapshotPackage:List')]
   },
   {
     path: 'security-group/list',
     component: ListSecurityGroupComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('securitygroup:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('securitygroup:List')]
   },
   {
     path: 'load-balancer/list',
     component: ListLoadBalancerComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('loadbalancer:List')]
+    canActivate: [() => inject(PolicyService).hasPermission('loadbalancer:List')]
   },
   {
     path: 'load-balancer/create',
     component: CreateLbNovpcComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'load-balancer/create/vpc',
     component: CreateLbVpcComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'load-balancer/detail/:id',
     component: DetailLoadBalancerComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('loadbalancer:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('loadbalancer:Get')]
   },
   {
     path: 'load-balancer/:lbId/listener/create',
     component: ListenerCreateComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('blsdnlistener:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('blsdnlistener:Create')]
   },
   {
     path: 'load-balancer/:lbId/listener/detail/:id',
     component: ListenerDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('blsdnlistener:Get')]
+    canActivate: [() => inject(PolicyService).hasPermission('blsdnlistener:Get')]
   },
   {
     path: 'load-balancer/:lbId/listener/update/:id',
     component: ListenerUpdateComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('blsdnlistener:Update')]
+    canActivate: [() => inject(PolicyService).hasPermission('blsdnlistener:Update')]
   },
   {
     path: 'security',
@@ -700,17 +700,17 @@ const routes: Routes = [
   {
     path: 'load-balancer/update/vpc/:id',
     component: EditLoadBalancerVpcComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('loadbalancer:Update')]
+    canActivate: [() => inject(PolicyService).hasPermission('loadbalancer:Update')]
   },
   {
     path: 'load-balancer/extend/normal/:id',
     component: ExtendLoadBalancerNormalComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'load-balancer/pool-detail/:id',
     component: PoolDetailComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('lbsdn:LoadBalancer')]
+    canActivate: [() => inject(PolicyService).hasPermission('lbsdn:LoadBalancer')]
   },
   {
     path: 'load-balancer/:idLoadBalancer/listener/:idListener/create/l7-policy',
@@ -719,27 +719,27 @@ const routes: Routes = [
   {
     path: 'load-balancer/:idLoadBalancer/listener/:idListener/l7-policy/:idL7',
     component: DetailL7PolicyComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('lbsdn:LoadBalancer')]
+    canActivate: [() => inject(PolicyService).hasPermission('lbsdn:LoadBalancer')]
   },
   {
     path: 'load-balancer/:idLoadBalancer/listener/:idListener/l7-policy/edit/:idL7',
     component: EditL7PolicyComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('lbsdn:LoadBalancer')]
+    canActivate: [() => inject(PolicyService).hasPermission('lbsdn:LoadBalancer')]
   },
   {
     path: 'file-storage/file-system/create/normal',
     component: CreateFileSystemNormalComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'file-storage/file-system/:idFileSystem/extend',
     component: ExtendFileSystemNormalComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   },
   {
     path: 'file-storage/file-system/:idFileSystem/resize',
     component: ResizeFileSystemNormalComponent,
-    canMatch: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
   }
 ];
 
