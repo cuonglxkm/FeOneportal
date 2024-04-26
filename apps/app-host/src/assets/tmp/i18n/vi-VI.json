@@ -751,7 +751,7 @@
 
   "app.breadcrumb.action-history": "Lịch sử thao tác",
   "app.action-history.search": "Tìm kiếm  theo thao tác, dịch vụ, loại dịch vụ",
-  "app.action-history.operation-account": "Tài khoản thao tác",
+  "app.action-history.operation-account": "Người thực hiện",
   "app.action-history.operation": "Thao tác",
   "app.action-history.serviceType": "Loại dịch vụ",
   "app.action-history.serviceName": "Tên dịch vụ",

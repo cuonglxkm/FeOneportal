@@ -63,23 +63,25 @@
   >
     <thead>
       <tr>
-        <th>{{"app.action-history.operation-account" | i18n}}</th>
+        <th>ID</th>
         <th>{{"app.action-history.operation" | i18n}}</th>
         <th>{{"app.action-history.serviceType" | i18n}}</th>
         <th>{{"app.action-history.serviceName" | i18n}}</th>
         <th>{{"app.action-history.region" | i18n}}</th>
         <th>{{"app.action-history.information" | i18n}}</th>
+        <th>{{"app.action-history.operation-account" | i18n}}</th>
         <th>{{"app.action-history.date" | i18n}}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let item of listOfActionHistory">
-        <td>{{ item.actor }}</td>
+        <td>{{ item.eventId.substring(0,7) }}</td>
         <td>{{ item.eventName }}</td>
         <td>{{ item.resourceType }}</td>
         <td>{{ item.resourceName }}</td>
         <td>{{ item.regionText }}</td>
-        <td>{{ item.additionalInfo }}</td>
+        <td>{{ item.summary }}</td>
+        <td>{{ (item.actor == "" ?  "Hệ thống tự động" : item.actor) }}</td>
         <td>{{ item.createdTime | date : 'HH:mm:ss dd/MM/yyyy' }}</td>
       </tr>
     </tbody>
