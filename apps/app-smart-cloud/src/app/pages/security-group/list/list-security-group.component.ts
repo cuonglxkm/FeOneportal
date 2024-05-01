@@ -3,12 +3,11 @@ import { getCurrentRegionAndProject } from '@shared';
 import { SecurityGroupService } from '../../../shared/services/security-group.service';
 import { SecurityGroup, SecurityGroupSearchCondition } from '../../../shared/models/security-group';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { Instance, InstancesModel } from '../../instances/instances.model';
 import SecurityGroupRule from '../../../shared/models/security-group-rule';
 import { InstancesService } from '../../instances/instances.service';
 import Pagination from '../../../shared/models/pagination';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-list-security-group',
@@ -49,11 +48,16 @@ export class ListSecurityGroupComponent implements OnInit {
   projectChanged(project: ProjectModel) {
     this.project = project.id;
     this.getListSG(true);
+    this.getInstances();
+    this.listInbound = []
+    this.listOutbound = []
   }
 
-  onSecurityGroupChange() {
-    this.listInbound = this.selectedSG.rulesInfo.filter(value => value.direction === 'ingress');
-    this.listOutbound = this.selectedSG.rulesInfo.filter(value => value.direction === 'egress');
+  onSecurityGroupChange(value) {
+    this.selectedSG = value
+    this.listInbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'ingress');
+    this.listOutbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'egress');
+    this.getInstances()
   }
 
   getListSG(isBegin) {
@@ -68,8 +72,8 @@ export class ListSecurityGroupComponent implements OnInit {
       this.isLoadingSG = false;
       this.listSG = data;
 
-      data.forEach(item => {
-        if(item.name.includes("default")) {
+      this.listSG.forEach(item => {
+        if(item.name.includes('default')) {
           this.selectedSG = item
         }
       })
@@ -91,22 +95,22 @@ export class ListSecurityGroupComponent implements OnInit {
     this.getListSG(false);
   }
 
+  handleAttachSG() {
+    this.getListSG(false)
+  }
+
+  handleDetachSG() {
+    this.getListSG(false)
+  }
   getInstances() {
     this.isLoadingVm = true;
     this.instanceService.search(this.pageIndex, this.pageSize, this.region,
-      this.project, '', 'KHOITAO', true, this.tokenService.get()?.userId).subscribe(data => {
+      this.project, '', '', true, this.tokenService.get()?.userId).subscribe(data => {
       this.isLoadingVm = false;
       console.log('data', data.records)
-      data.records?.forEach(item => {
-        console.log("bool", item.taskState?.includes("ACTIVE"))
-        if (item.taskState?.includes("ACTIVE")) {
-          if(this.listInstances == undefined || this.listInstances == null) {
-            this.listInstances = [item]
-          } else {
-            this.listInstances?.push(item)
-          }
-        }
-      });
+      this.listInstances = data?.records
+
+      this.listInstances?.filter(item => item?.taskState.includes('ACTIVE'))
 
     }, error => {
       this.isLoadingVm = false;
@@ -128,6 +132,7 @@ export class ListSecurityGroupComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
 
     this.getInstances()
   }

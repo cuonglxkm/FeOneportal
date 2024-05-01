@@ -1,6 +1,4 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -9,12 +7,17 @@ import { VlanService } from '../../../../shared/services/vlan.service';
 import { Subnet } from '../../../../shared/models/vlan.model';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { OfferDetail, Product } from '../../../../shared/models/catalog.model';
-import { FormCreate, FormCreateLoadBalancer, IPBySubnet } from '../../../../shared/models/load-balancer.model';
+import {
+  FormCreateLoadBalancer,
+  FormOrder,
+  FormSearchListBalancer,
+  IPBySubnet
+} from '../../../../shared/models/load-balancer.model';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { debounceTime } from 'rxjs';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { OrderItem } from '../../../../shared/models/price';
-import { CreateVolumeRequestModel } from '../../../../shared/models/volume.model';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-lb-novpc',
@@ -25,8 +28,10 @@ export class CreateLbNovpcComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  nameList: string[];
-  selectedValueRadio = 'true';
+  nameList: string[] = [];
+  enableInternetFacing: boolean = true;
+  enableInternal: boolean = false;
+
   listSubnets: Subnet[];
 
   validateForm: FormGroup<{
@@ -55,15 +60,22 @@ export class CreateLbNovpcComponent implements OnInit {
   nameProduct: string;
   offerList: OfferDetail[] = [];
   offerDetail: OfferDetail = new OfferDetail();
-  formCreateLoadBalancer: FormCreateLoadBalancer = new FormCreateLoadBalancer()
+  formCreateLoadBalancer: FormCreateLoadBalancer = new FormCreateLoadBalancer();
   timeSelected: any;
 
-  flavorId: string
+  flavorId: string;
 
-  selectedSubnet: string
-  selectedSubnetValue: string
+  selectedSubnet: string;
+  selectedSubnetValue: string;
 
   isInput: boolean = true;
+
+  isAvailable: boolean = false;
+
+  @ViewChild('selectedValueSpan') selectedValueSpan: ElementRef;
+  @ViewChild('selectedValueOffer') selectedValueOffer: ElementRef;
+  @ViewChild('selectedValueIpFloating') selectedValueIpFloating?: ElementRef;
+
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -91,18 +103,33 @@ export class CreateLbNovpcComponent implements OnInit {
     }
   }
 
-  selectedIp(value) {
-    const selectedOption = this.ipFloating?.find(option => option.id === value)
-    this.selectedValueIpFloating.nativeElement.innerText = selectedOption.ipAddress
+  getListLoadBalancer() {
+    let formSearchLB = new FormSearchListBalancer();
+    formSearchLB.regionId = this.region;
+    formSearchLB.currentPage = 1;
+    formSearchLB.pageSize = 9999;
+    formSearchLB.vpcId = this.project;
+    formSearchLB.isCheckState = true;
+    this.loadBalancerService.search(formSearchLB).subscribe(data => {
+      data?.records?.forEach(item => {
+        this.nameList?.push(item?.name);
+      });
+    });
   }
 
-  @ViewChild('selectedValueSpan') selectedValueSpan: ElementRef;
-  @ViewChild('selectedValueOffer') selectedValueOffer: ElementRef;
-  @ViewChild('selectedValueIpFloating') selectedValueIpFloating: ElementRef;
+
+  selectedIp(value) {
+    const selectedOption = this.ipFloating?.find(option => option.id === value)
+    if(selectedOption) {
+      this.selectedValueIpFloating.nativeElement.innerText = selectedOption?.ipAddress
+    }
+
+  }
+
+
 
   updateValue(value): void {
-    console.log('value', value)
-    const selectedOption = this.listSubnets.find(option => option.id === value);
+    const selectedOption = this.listSubnets?.find(option => option.cloudId === value);
     if (selectedOption) {
       this.selectedValueSpan.nativeElement.innerText = selectedOption.name + '(' + selectedOption.subnetAddressRequired + ')';
     }
@@ -112,14 +139,27 @@ export class CreateLbNovpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);
   }
 
-  onChangeStatus() {
-    console.log(this.selectedValueRadio);
-    if(this.selectedValueRadio == 'false') {
-      this.validateForm.controls.ipFloating.clearValidators()
-      this.validateForm.controls.ipFloating.updateValueAndValidity()
+  onChangeStatusInternetFacing() {
+    this.enableInternetFacing = true;
+    this.enableInternal = false;
+    if (this.enableInternetFacing) {
+      this.validateForm.controls.ipFloating.setValidators(Validators.required);
     }
-    if(this.selectedValueRadio == 'true') {
-      this.validateForm.controls.ipFloating.setValidators(Validators.required)
+    if (this.enableInternal) {
+      this.validateForm.controls.ipFloating.clearValidators();
+      this.validateForm.controls.ipFloating.updateValueAndValidity();
+    }
+  }
+
+  onChangeStatusInternal() {
+    this.enableInternetFacing = false;
+    this.enableInternal = true;
+    if (this.enableInternetFacing) {
+      this.validateForm.controls.ipFloating.setValidators(Validators.required);
+    }
+    if (this.enableInternal) {
+      this.validateForm.controls.ipFloating.clearValidators();
+      this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
   }
 
@@ -133,12 +173,13 @@ export class CreateLbNovpcComponent implements OnInit {
     });
   }
 
-  ipFloating: IPBySubnet[] = []
+  ipFloating: IPBySubnet[] = [];
+
   searchProduct() {
     this.catalogService.searchProduct('loadbalancer').subscribe(data => {
       this.catalogService.getCatalogOffer(null, this.region, null, data[0]?.uniqueName).subscribe(data => {
         this.offerList = data;
-        this.validateForm.controls.offer.setValue(this.offerList[0]?.id)
+        this.validateForm.controls.offer.setValue(this.offerList[0]?.id);
       });
     });
   }
@@ -166,44 +207,47 @@ export class CreateLbNovpcComponent implements OnInit {
     return (ipDecimal & subnetMask) === (subnetDecimal & subnetMask);
   }
 
-  onInput(value: string) {
+  onInput(value) {
     const getSubnet = this.listSubnets?.find(option => option.cloudId === this.validateForm.get('subnet').value);
-
     const result = this.isIpInSubnet(value, getSubnet.subnetAddressRequired);
-
-    // console.log('result', result);
-    // console.log('value', value)
-
     if (value == undefined || value.trim().length === 0) {
-      console.log('1')
+      console.log('1');
       this.isInput = true;
     } else {
       if (result) {
-        console.log('3')
+        console.log('3');
         this.isInput = true;
       } else {
-        console.log('4')
+        console.log('4');
         this.isInput = false;
       }
+      this.loadBalancerService.checkIpAddress(getSubnet.subnetCloudId, value, this.region, this.project)
+        .subscribe(data => {
+          this.isAvailable = data;
+        }, error => {
+          this.isAvailable = false;
+        });
+
     }
+
+
   }
 
   getIpBySubnet() {
     this.loadBalancerService.getIPBySubnet(this.validateForm.controls.subnet.value, this.project, this.region).subscribe(data => {
-      this.ipFloating = data
-    })
+      this.ipFloating = data;
+    });
   }
 
   onChangeOffer(value) {
-    this.product.id = value
-    const selectedOption = this.offerList.find(option => option.id === value)
+    this.product.id = value;
+    const selectedOption = this.offerList.find(option => option.id === value);
     this.selectedValueOffer.nativeElement.innerText = selectedOption.offerName;
     this.catalogService.getDetailOffer(Number.parseInt(value)).subscribe(data => {
       this.offerDetail = data;
       console.log('value', this.offerDetail);
       this.flavorId = this.offerDetail?.characteristicValues[1].charOptionValues[0];
-
-      this.getTotalAmount()
+      this.getTotalAmount();
     });
   }
 
@@ -214,9 +258,11 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   loadBalancerInit() {
+    console.log('init', this.formCreateLoadBalancer)
+    console.log('valid form', this.validateForm)
     this.formCreateLoadBalancer.duration = this.validateForm.controls.time.value;
-    if(this.validateForm.controls.ipAddress.value == undefined || this.validateForm.controls.ipAddress.value == '') {
-      this.formCreateLoadBalancer.ipAddress = null
+    if (this.validateForm.controls.ipAddress.value == undefined || this.validateForm.controls.ipAddress.value == '') {
+      this.formCreateLoadBalancer.ipAddress = null;
     } else {
       this.formCreateLoadBalancer.ipAddress = this.validateForm.controls.ipAddress.value;
     }
@@ -228,13 +274,13 @@ export class CreateLbNovpcComponent implements OnInit {
 
     this.formCreateLoadBalancer.description = this.validateForm.controls.description.value;
     this.formCreateLoadBalancer.name = this.validateForm.controls.name.value;
-    if (this.selectedValueRadio == 'true') {
+    if (this.enableInternetFacing) {
       this.formCreateLoadBalancer.isFloatingIP = true;
-      this.formCreateLoadBalancer.ipPublicId = this.validateForm.controls.ipFloating.value
+      this.formCreateLoadBalancer.ipPublicId = this.validateForm.controls.ipFloating.value;
     }
-    if (this.selectedValueRadio == 'false') {
+    if (this.enableInternal) {
       this.formCreateLoadBalancer.isFloatingIP = false;
-      this.formCreateLoadBalancer.ipPublicId = null
+      this.formCreateLoadBalancer.ipPublicId = null;
     }
     this.formCreateLoadBalancer.flavorId = this.flavorId;
     // this.formCreateLoadBalancer.flavorId = '9e911d92-5607-4109-ad64-a5565cc76fa6';
@@ -271,9 +317,9 @@ export class CreateLbNovpcComponent implements OnInit {
 
   getTotalAmount() {
 
-    this.loadBalancerInit()
+    this.loadBalancerInit();
 
-    console.log('offer id', this.formCreateLoadBalancer.offerId)
+    console.log('offer id', this.formCreateLoadBalancer.offerId);
 
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -295,7 +341,8 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   navigateToPaymentSummary() {
-    let request: FormCreate = new FormCreate();
+    this.loadBalancerInit()
+    let request: FormOrder = new FormOrder();
     request.customerId = this.formCreateLoadBalancer.customerId;
     request.createdByUserId = this.formCreateLoadBalancer.customerId;
     request.note = 'tạo Load Balancer';
@@ -305,14 +352,14 @@ export class CreateLbNovpcComponent implements OnInit {
         specification: JSON.stringify(this.formCreateLoadBalancer),
         specificationType: 'loadbalancer_create',
         price: this.orderItem?.totalAmount.amount,
-        serviceDuration: this.validateForm.controls.time.value,
-      },
+        serviceDuration: this.validateForm.controls.time.value
+      }
     ];
     var returnPath: string = '/app-smart-cloud/load-balancer/create';
     console.log('request', request);
     console.log('service name', this.formCreateLoadBalancer.serviceName);
     this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: request, path: returnPath },
+      state: { data: request, path: returnPath }
     });
   }
 
@@ -324,7 +371,8 @@ export class CreateLbNovpcComponent implements OnInit {
     this.validateForm.controls.radio.setValue('floatingIp');
     this.getListVlanSubnet();
     this.searchProduct();
-    this.getIpBySubnet()
+    this.getIpBySubnet();
+    this.getListLoadBalancer();
   }
 
 

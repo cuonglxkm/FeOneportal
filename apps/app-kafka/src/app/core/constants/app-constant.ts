@@ -37,7 +37,14 @@ export class AppConstants {
 
   // Web Socket constant
   static NOTI_SUCCESS = 1;
+  static NOTI_FAILED = 0;
 
   public static KAKFA_CREATE_TYPE = 'kafka_create';
+  public static KAFKA_UPGRADE_TYPE = 'kafka_resize';
+  public static KAFKA_EXTEND_TYPE = 'kafka_extend';
+  public static KAFKA_TYPE_ID = 21;
+
+  public static LOCALE_EN = 'en-US';
+  public static LOCALE_VI = 'vi-VI';
   
 }

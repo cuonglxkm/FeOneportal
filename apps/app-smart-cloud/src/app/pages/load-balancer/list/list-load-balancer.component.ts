@@ -1,10 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { FormSearchListBalancer, LoadBalancerModel } from '../../../shared/models/load-balancer.model';
 import { LoadBalancerService } from '../../../shared/services/load-balancer.service';
 
@@ -62,6 +60,7 @@ export class ListLoadBalancerComponent implements OnInit{
   }
 
   navigateToCreate(typeVpc) {
+    console.log(typeVpc)
     if(typeVpc === 1) {
       this.router.navigate(['/app-smart-cloud/load-balancer/create/vpc'])
     }
@@ -76,6 +75,10 @@ export class ListLoadBalancerComponent implements OnInit{
 
   navigateToUpdateVpc(id) {
     this.router.navigate(['/app-smart-cloud/load-balancer/update/vpc/'+id])
+  }
+
+  navigateToExtend(id) {
+    this.router.navigate(['/app-smart-cloud/load-balancer/extend/normal/'+id])
   }
 
   search(isBegin) {
@@ -108,6 +111,9 @@ export class ListLoadBalancerComponent implements OnInit{
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    if(!this.region || !this.project) {
+      this.isLoading = true
+    }
     console.log('project', this.project);
     this.customerId = this.tokenService.get()?.userId;
   }

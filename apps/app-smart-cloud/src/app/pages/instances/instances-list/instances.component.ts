@@ -18,11 +18,9 @@ import {
   VlanSubnet,
 } from '../instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
-import { NotificationService } from '../../../../../../../libs/common-utils/src';
+import { NotificationService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
 import {
@@ -30,6 +28,8 @@ import {
   NetWorkModel,
 } from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 class SearchParam {
   status: string = '';
@@ -52,10 +52,9 @@ export class InstancesComponent implements OnInit {
   total = 1;
   loading = true;
   filterStatus = [
-    { text: 'Tất cả trạng thái', value: '' },
-    { text: 'Đang khởi tạo', value: 'DANGKHOITAO' },
-    { text: 'Đang hoạt động', value: 'KHOITAO' },
-    { text: 'Chậm gia hạn, vi phạm điều khoản', value: 'TAMNGUNG' },
+    { text: this.i18n.fanyi('app.status.all'), value: '' },
+    { text: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
+    { text: this.i18n.fanyi('app.status.suspended'), value: 'TAMNGUNG' },
   ];
 
   listIPAddressOnVLAN: [{ id: ''; text: 'Chọn địa chỉ IP' }];
@@ -70,6 +69,7 @@ export class InstancesComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -79,6 +79,7 @@ export class InstancesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log('current language', this.i18n.currentLang);
     this.searchParam.status = '';
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -264,6 +265,7 @@ export class InstancesComponent implements OnInit {
   getListNetwork(): void {
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
     formSearchNetwork.region = this.region;
+    formSearchNetwork.project = this.projectId;
     formSearchNetwork.pageNumber = 0;
     formSearchNetwork.pageSize = 9999;
     formSearchNetwork.vlanName = '';
@@ -276,6 +278,9 @@ export class InstancesComponent implements OnInit {
   }
 
   changeVlanNetwork(networkCloudId: string) {
+    this.listSubnet = [];
+    this.instanceAction.subnetId = null;
+    this.instanceAction.ipAddress = null;
     this.getVlanSubnets(networkCloudId);
   }
 
@@ -322,6 +327,7 @@ export class InstancesComponent implements OnInit {
       next: (data: any) => {
         if (data == 'Thao tác thành công') {
           this.notification.success('', 'Gắn VLAN thành công');
+          this.reloadTable();
         } else {
           this.notification.error('', 'Gắn VLAN không thành công');
         }
@@ -362,6 +368,7 @@ export class InstancesComponent implements OnInit {
       next: (data: any) => {
         if (data == 'Thao tác thành công') {
           this.notification.success('', 'Gỡ khỏi VLAN thành công');
+          this.reloadTable();
         } else {
           this.notification.error('', 'Gỡ khỏi VLAN không thành công');
         }
@@ -397,7 +404,7 @@ export class InstancesComponent implements OnInit {
             this.reloadTable();
           }, 1500);
         } else {
-          this.notification.error('', 'Yêu cầu tắt máy ảo không thất bại');
+          this.notification.error('', 'Yêu cầu tắt máy ảo thất bại');
         }
       },
       error: (e) => {
@@ -684,6 +691,13 @@ export class InstancesComponent implements OnInit {
     // this.dataService.setSelectedObjectId(id)
     this.router.navigate([
       '/app-smart-cloud/instance/' + id + '/create-backup-vm',
+    ]);
+  }
+
+  createBackupSchedule(id: number) {
+    this.router.navigate([
+      '/app-smart-cloud/schedule/backup/create',
+      { instanceId: id },
     ]);
   }
 }

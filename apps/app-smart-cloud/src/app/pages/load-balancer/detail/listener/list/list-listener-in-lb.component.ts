@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { m_LBSDNListener } from '../../../../../shared/models/load-balancer.model';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'one-portal-list-listener-in-lb',
@@ -17,8 +18,26 @@ export class ListListenerInLbComponent implements OnInit{
   listListeners: m_LBSDNListener[] = []
 
   isLoading: boolean = false
+  listenerStatus: Map<String, string>;
 
+  pageSize: number = 5
+  pageIndex: number = 1
   constructor(private loadBalancerService: LoadBalancerService) {
+    this.listenerStatus = new Map<String, string>();
+    this.listenerStatus.set('KHOITAO', 'Đang hoạt động');
+    this.listenerStatus.set('ERROR', 'Tạm dừng');
+  }
+
+  currentPageData: any
+
+  onPageSizeChange(value) {
+    this.pageSize = value
+    this.getListListenerInLB()
+  }
+
+  onPageIndexChange(value) {
+    this.pageIndex = value
+    this.getListListenerInLB()
   }
 
   getListListenerInLB() {
@@ -26,6 +45,11 @@ export class ListListenerInLbComponent implements OnInit{
     this.loadBalancerService.getListenerInLB(this.idLB).subscribe(data => {
       this.isLoading = false
       this.listListeners = data
+      const startIndex = (this.pageIndex - 1) * this.pageSize;
+      const endIndex = this.pageIndex * this.pageSize;
+
+      this.currentPageData = this.listListeners.slice(startIndex, endIndex);
+
     }, error => {
       this.isLoading = false
       this.listListeners = null

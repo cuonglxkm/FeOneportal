@@ -8,12 +8,11 @@ import { NzNotificationService } from "ng-zorro-antd/notification";
 import { BackupPackageRequestModel } from 'src/app/shared/models/package-backup.model';
 import { FormCreateSnapshotPackage, SnapshotPackageRequestModel } from 'src/app/shared/models/package-snapshot.model';
 import { OrderItem } from "../../../shared/models/price";
-import { ProjectModel } from "../../../shared/models/project.model";
-import { RegionModel } from "../../../shared/models/region.model";
 import { PackageBackupService } from "../../../shared/services/package-backup.service";
 import { DataPayment, ItemPayment } from "../../instances/instances.model";
 import { InstancesService } from "../../instances/instances.service";
 import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-package-snapshot',

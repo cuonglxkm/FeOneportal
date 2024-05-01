@@ -1,21 +1,26 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Điều chỉnh máy ảo'"
+  [title]="'app.instances.edit' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
+        <a [routerLink]="['/app-smart-cloud/instances']">{{
+          'app.instances' | i18n
+        }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Điều chỉnh máy ảo </nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        >{{ 'app.instances.edit' | i18n }}
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
@@ -39,13 +44,13 @@
   *ngIf="instancesModel"
 >
   <div style="margin-bottom: 20px">
-    <span class="text-card-header">Thông tin máy ảo</span>
+    <span class="text-card-header">{{ 'app.instances.info' | i18n }}</span>
   </div>
   <nz-row class="customRow">
     <div nz-col nzSpan="12">
       <nz-row style="height: 50px">
         <span class="text-label customSpan" style="width: 40%"
-          >Tên máy ảo:</span
+          >{{ 'app.instances.name' | i18n }}:</span
         >
         <span class="text-value-detail customSpan">{{
           instancesModel.name || ''
@@ -53,7 +58,7 @@
       </nz-row>
       <nz-row style="height: 50px; background-color: #e2e2e9">
         <span class="text-label customSpan" style="width: 40%"
-          >Gói cấu hình:</span
+          >{{ 'app.configuration.package' | i18n }}:</span
         >
         <span class="text-value-detail customSpan">{{
           instancesModel.flavorName | slice : 3
@@ -86,7 +91,7 @@
       </nz-row>
       <nz-row style="height: 50px">
         <span class="text-label customSpan" style="width: 40%"
-          >Băng thông trong nước:</span
+          >{{ 'app.domestic.bandwidth' | i18n }}:</span
         >
         <span class="text-value-detail customSpan"
           >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
@@ -96,7 +101,7 @@
     <div nz-col nzSpan="12">
       <nz-row style="height: 50px">
         <span class="text-label customSpan1" style="width: 40%"
-          >Hệ điều hành:</span
+          >{{ 'app.instances.OS' | i18n }}:</span
         >
         <span class="text-value-detail customSpan1"
           >{{ instancesModel.imageName }}
@@ -114,7 +119,7 @@
       </nz-row>
       <nz-row style="height: 50px; background-color: #e2e2e9">
         <span class="text-label customSpan1" style="width: 40%"
-          >Truy cập và bảo mật:</span
+          >{{ 'app.alert.access.security' | i18n }}:</span
         >
         <span
           class="text-value-detail customSpan1"
@@ -124,17 +129,17 @@
       </nz-row>
       <nz-row style="height: 50px">
         <span class="text-label customSpan1" style="width: 40%"
-          >IP Public:</span
+          >{{ 'app.ip.public' | i18n }}:</span
         >
         <span class="text-value-detail customSpan1">{{ listIPPublicStr }}</span>
       </nz-row>
       <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan1" style="width: 40%">IP LAN:</span>
+        <span class="text-label customSpan1" style="width: 40%">{{ 'app.ip.lan' | i18n }}:</span>
         <span class="text-value-detail customSpan1">{{ listIPLanStr }}</span>
       </nz-row>
       <nz-row style="height: 50px">
         <span class="text-label customSpan1" style="width: 40%"
-          >Băng thông quốc tế:</span
+          >{{ 'app.international.bandwidth' | i18n }}:</span
         >
         <span class="text-value-detail customSpan1"
           >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
@@ -149,7 +154,7 @@
 ></one-portal-blockstorage-detail>
 <one-portal-network-detail
   [instancesId]="id"
-  [isDetail]="true"
+  [isDetail]="false"
 ></one-portal-network-detail>
 <nz-card
   style="border-radius: 8px"

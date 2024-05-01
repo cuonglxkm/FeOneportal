@@ -4,8 +4,6 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { getCurrentRegionAndProject } from '@shared';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import {
   AbstractControl,
   FormControl,
@@ -15,7 +13,8 @@ import {
   Validators
 } from '@angular/forms';
 import { FormCreateNetwork, FormSearchNetwork } from '../../../../shared/models/vlan.model';
-import { AppValidator } from '../../../../../../../../libs/common-utils/src';
+import { AppValidator, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { debounceTime, Subject } from 'rxjs';
 
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -141,7 +140,7 @@ export class CreateNetworkComponent implements OnInit {
     gateway: FormControl<string>
     allocationPool: FormControl<string>
   }> = this.fb.group({
-    nameNetwork: ['', [Validators.required,
+    nameNetwork: ['vlan_', [Validators.required,
       AppValidator.startsWithValidator('vlan_'),
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
@@ -152,10 +151,13 @@ export class CreateNetworkComponent implements OnInit {
     networkAddress: ['', [Validators.required,
       ipAddressValidator()]],
     disableGatewayIp: [false],
-    dhcp: [false],
+    dhcp: [true],
     gateway: [''],
     allocationPool: [null as string, []]
   });
+
+  pool: string = '';
+  dataSubjectCidr: Subject<any> = new Subject<any>();
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -213,23 +215,11 @@ export class CreateNetworkComponent implements OnInit {
 
       }, error => {
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Thêm mới Network thất bại');
+        this.notification.error('Thất bại', 'Thêm mới Network thất bại. ', error.error.detail);
       });
     } else {
       console.log('value form invalid', this.validateForm.getRawValue());
     }
-  }
-  onChangeInput(value) {
-    if(value == undefined || value == null || value == '') {
-      this.validateForm.controls.allocationPool.clearValidators()
-      this.validateForm.controls.allocationPool.updateValueAndValidity()
-    } else {
-      this.validateForm.controls.allocationPool.setValidators(ipAddressListValidator())
-    }
-  }
-
-  isInPurchasedSubnet(ipAddress: string): boolean {
-    return false;
   }
 
   nameList: string[] = [];
@@ -257,10 +247,29 @@ export class CreateNetworkComponent implements OnInit {
     }
   }
 
+  reset() {
+    this.validateForm.reset()
+  }
+
+  inputCheckPool(value) {
+    this.dataSubjectCidr.next(value);
+  }
+
+  onInputCheckPool() {
+    this.dataSubjectCidr.pipe(debounceTime(500)).subscribe((res) => {
+      this.vlanService.checkAllocationPool(res).subscribe(data => {
+        this.pool = JSON.stringify(data)
+        console.log('pool', this.pool)
+      })
+    })
+
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.getListNetwork();
+    this.onInputCheckPool();
   }
 }

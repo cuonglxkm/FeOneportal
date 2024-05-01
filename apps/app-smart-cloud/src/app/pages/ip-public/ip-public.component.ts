@@ -1,16 +1,15 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {IpPublicService} from "../../shared/services/ip-public.service";
-import {RegionModel} from "../../shared/models/region.model";
-import {ProjectModel} from "../../shared/models/project.model";
-import {BaseResponse} from "../../../../../../libs/common-utils/src";
+import {BaseResponse, ProjectModel, RegionModel} from "../../../../../../libs/common-utils/src";
 import {IpPublicModel} from "../../shared/models/ip-public.model";
 import {Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {InstancesService} from "../instances/instances.service";
-import {NzMessageService} from "ng-zorro-antd/message";
 import {finalize} from "rxjs/operators";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {getCurrentRegionAndProject} from "@shared";
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-ip-public',
@@ -18,8 +17,8 @@ import {getCurrentRegionAndProject} from "@shared";
   styleUrls: ['./ip-public.component.less'],
 })
 export class IpPublicComponent implements OnInit {
-  regionId = JSON.parse(localStorage.getItem('region')).regionId;
-  projectId = JSON.parse(localStorage.getItem('projectId'));
+  regionId: number;
+  projectId: number;
   projectType = 0;
   listOfIp: IpPublicModel[] = [];
   checkEmpty: IpPublicModel[] = [];
@@ -41,11 +40,12 @@ export class IpPublicComponent implements OnInit {
   loadingAtt = true;
   disableAtt = true;
   id: any;
+  instanceName: any;
 
   statusData = [
-    {name: 'Tất cả trạng thái', value: ''},
-    {name: 'Đang hoạt động', value: 'KHOITAO'},
-    {name: 'Chậm gia hạn', value: 'TAMNGUNG'}];
+    {name: this.i18n.fanyi('app.status.all'), value: ''},
+    {name: this.i18n.fanyi('app.status.running'), value: 'KHOITAO'},
+    {name: this.i18n.fanyi('app.status.low-renew'), value: 'TAMNGUNG'}];
   actionData = ['Gắn Ip Pulbic', 'Gỡ Ip Pulbic', 'Xóa'];
   disableDelete = true;
   ipAddressDelete = '';
@@ -53,7 +53,8 @@ export class IpPublicComponent implements OnInit {
   constructor(private service: IpPublicService, private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private instancService: InstancesService,
-              private notification: NzNotificationService,) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,) {
 
   }
 
@@ -131,10 +132,12 @@ export class IpPublicComponent implements OnInit {
     this.isVisibleDelete = false;
     this.instanceSelected = '';
     this.isSelected = false;
+    this.nameDelete = '';
   }
 
   openIpMounted(event: any, item: any) {
       this.id = item.id;
+      this.instanceName = item.attachedVm;
       if (event === 'Gắn Ip Pulbic') {
         this.instancService.search(1, 999, this.regionId, this.projectId, '', '',true, this.tokenService.get()?.userId)
           .pipe(finalize(() => {
@@ -171,10 +174,15 @@ export class IpPublicComponent implements OnInit {
       .subscribe(
       {
         next: post => {
-          this.notification.success('Thành công', 'Gỡ thành công IP Public')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.detach.success') + ' IP Public')
         },
         error: e => {
-          this.notification.error('Thất bại', 'Gỡ thất bại IP Public')
+          if(e && e.error && e.error.detail && e.error.detail === "VM need a IP"){
+            this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.instances') + ' ' + this.instanceName + ' '
+              + this.i18n.fanyi('app.ip.public.attach.warning'));
+          } else {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.detach.fail') +' IP Public')
+          }
         },
       }
     )
@@ -186,14 +194,22 @@ export class IpPublicComponent implements OnInit {
   openIpDelete() {
     this.loading = true;
     this.service.remove(this.id)
-      .pipe(finalize(() => {this.getData(true);}))
+      .pipe(finalize(() => {
+        this.getData(true);
+        this.nameDelete = '';
+      }))
       .subscribe(
       {
         next: post => {
-          this.notification.success('Thành công', 'Xóa thành công IP Public')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.delete.success') + ' IP Public')
         },
         error: e => {
-          this.notification.error('Thất bại', 'Xóa thất bại IP Public')
+          if(e && e.error && e.error.detail && e.error.detail === "VM need a IP"){
+            this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.instances') + ' ' + this.instanceName + ' '
+              + this.i18n.fanyi('app.ip.public.attach.warning'));
+          } else {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.delete.fail') +' IP Public')
+          }
         },
       }
     )
@@ -220,10 +236,10 @@ export class IpPublicComponent implements OnInit {
         .subscribe(
           {
             next: post => {
-              this.notification.success('Thành công', 'Gắn thành công IP Public')
+              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.attach.success') + ' IP Public')
             },
             error: e => {
-              this.notification.error('Thất bại', 'Gắn thất bại IP Public')
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.attach.fail') + ' IP Public')
             },
           }
         )

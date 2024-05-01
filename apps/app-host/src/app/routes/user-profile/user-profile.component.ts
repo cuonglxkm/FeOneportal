@@ -13,9 +13,10 @@ import {
   AppValidator,
   UserModel,
 } from '../../../../../../libs/common-utils/src';
-import { _HttpClient } from '@delon/theme';
-import { environment } from '../../../../../app-smart-cloud/src/environments/environment';
+import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'one-portal-user-profile',
@@ -26,7 +27,8 @@ export class UserProfileComponent implements OnInit {
   constructor(
     public http: HttpClient,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    public notification: NzNotificationService
+    public notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   form = new FormGroup({
@@ -34,12 +36,14 @@ export class UserProfileComponent implements OnInit {
       validators: [
         Validators.required,
         AppValidator.cannotContainSpecialCharactor,
+        noAllWhitespace(),
       ],
     }),
     surname: new FormControl('', {
       validators: [
         Validators.required,
         AppValidator.cannotContainSpecialCharactor,
+        noAllWhitespace(),
       ],
     }),
     email: new FormControl({ value: '', disabled: true }),
@@ -143,7 +147,10 @@ export class UserProfileComponent implements OnInit {
       updatedUser.address == ' ' ||
       updatedUser.province == ' '
     ) {
-      this.notification.error('', 'Vui lòng nhập đầy đủ thông tin');
+      this.notification.error(
+        this.i18n.fanyi('app.status.success'),
+        this.i18n.fanyi('app.account.validation')
+      );
       return;
     }
     this.http
@@ -154,13 +161,16 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: (res) => {
           console.log(res);
-          this.notification.success('', 'Cập nhật tài khoản thành công!');
+          this.notification.success(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.account.form.success')
+          );
         },
         error: (error) => {
           console.log(error);
           this.notification.error(
             error.statusText,
-            'Cập nhật tài khoản không thành công!'
+            this.i18n.fanyi('app.account.form.fail')
           );
         },
       });
@@ -191,4 +201,14 @@ export class UserProfileComponent implements OnInit {
   onNewPassChange(data: any) {}
 
   onRetypePassChange(data: any) {}
+}
+
+export function noAllWhitespace(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value: string = control.value;
+    if (value && value.trim() == '') {
+      return { allWhitespace: true };
+    }
+    return null;
+  };
 }

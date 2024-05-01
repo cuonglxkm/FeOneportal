@@ -14,6 +14,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
@@ -22,45 +23,41 @@
   </ng-template>
 </page-header>
 <nz-content>
-  <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
+  <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
     <nz-card style="border-radius: 8px;">
       <nz-form-item>
         <nz-form-label nzFor="name">
           <div>
-            <span>Tên Network</span>
-            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Nhập tên Network'"
-                  nzPopoverPlacement="bottom"></span>
+            <span>Tên Network (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
+            <img nz-popover [nzPopoverContent]="'Nhập tên Network'"
+                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameNetworkErrorTpl">
-          <input nz-input
+          <input nz-input appAutofocus
                  class="input-custom"
                  formControlName="nameNetwork"
                  [placeholder]="'vlan_'"
                  [maxlength]="50" />
           <ng-template #nameNetworkErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Tên network không được bỏ trống</ng-container>
-            <ng-container *ngIf="control.hasError('startsWith')">Tên network phải bắt đầu bằng tiền tố 'vlan_'</ng-container>
+            <ng-container *ngIf="control.hasError('startsWith')">Tên network phải bắt đầu bằng tiền tố 'vlan_'
+            </ng-container>
             <ng-container *ngIf="control.hasError('maxlength')">Tên network tối đa 50 ký tự</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">Tên network không được chứa ký tự đặc biệt</ng-container>
-            <ng-container *ngIf="control.hasError('duplicateName')">Tên vlan đã tồn tại. Vui lòng nhập tên khác</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">Tên vlan đã tồn tại. Vui lòng nhập tên khác
+            </ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>Tên Subnet</span>
-            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Nhập tên Subnet'"
-                  nzPopoverPlacement="bottom"></span>
+            <span>Tên Subnet (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
+            <img nz-popover [nzPopoverContent]="'Nhập tên Subnet'"
+                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameSubnetErrorTpl">
@@ -79,44 +76,40 @@
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>IP Version</span>
-            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Hiện tại chỉ cùng cấp IPv4'"
-                  nzPopoverPlacement="bottom"></span>
+            <span>IP Version (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
+            <img nz-popover [nzPopoverContent]="'Hiện tại chỉ cùng cấp IPv4'"
+                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-<!--          <nz-select class="input-custom" ngModel="IPv4" nzDisabled>-->
-<!--            <nz-option nzValue="IPv4" nzLabel="IPv4"></nz-option>-->
-<!--          </nz-select>-->
-          <input nz-input class="input-custom" value="IPv4" [disabled]="'true'"/>
+          <!--          <nz-select class="input-custom" ngModel="IPv4" nzDisabled>-->
+          <!--            <nz-option nzValue="IPv4" nzLabel="IPv4"></nz-option>-->
+          <!--          </nz-select>-->
+          <input nz-input class="input-custom" value="IPv4" [disabled]="'true'" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>Địa chỉ</span>
-            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Subnet phải là dải con của network x.x.0.0/16 (CRID của network được chọn)'"
-                  nzPopoverPlacement="bottom"></span>
+            <span>Địa chỉ (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
+            <img nz-popover
+                 [nzPopoverContent]="'Subnet phải là dải con của network x.x.0.0/16 (CRID của network được chọn)'"
+                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="networkAddressErrorTpl">
           <input nz-input
                  class="input-custom"
                  formControlName="networkAddress"
-                 [placeholder]="'x.x.0.0/16'" />
+                 [placeholder]="'x.x.0.0/16'" (ngModelChange)="inputCheckPool($event)" />
           <ng-template #networkAddressErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Địa chỉ không được phép để trống</ng-container>
-            <ng-container *ngIf="control.hasError('invalidIPAddress')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>
-<!--            <ng-container *ngIf="control.hasError('pattern')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>-->
-
+            <ng-container *ngIf="control.hasError('invalidIPAddress')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 -
+              10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng:
+              x.x.0.0/16, x.x.x.0/24
+            </ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -131,13 +124,10 @@
               <label nz-checkbox formControlName="disableGatewayIp">
                 <nz-space [nzSize]="4">
                   <span *nzSpaceItem class="text-value">Disable GatewayIP</span>
-                  <span *nzSpaceItem nz-icon nzType="question-circle"
-                        nzTheme="outline"
-                        nz-popover
-                        class="text-value"
-                        [nzPopoverContent]="'Subnet được add Router interface thì sẽ không Disable Gateway IP và ' +
+                  <img *nzSpaceItem nz-popover [nzPopoverContent]="'Subnet được add Router interface thì sẽ không Disable Gateway IP và ' +
                    'ngươc lại Subnet không có gateway thì không không add Routerinterface'"
-                        nzPopoverPlacement="bottom"></span>
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-space>
               </label>
             </div>
@@ -145,15 +135,12 @@
               <label nz-checkbox formControlName="dhcp">
                 <nz-space [nzSize]="4">
                   <span *nzSpaceItem class="text-value">DHCP</span>
-                  <span *nzSpaceItem nz-icon nzType="question-circle"
-                        nzTheme="outline"
-                        nz-popover
-                        class="text-value"
-                        [nzPopoverContent]="'DHCP là cơ chế cấp phát động địa chỉ IP cho subnet đó. Tức là khi tạo ' +
+                  <img *nzSpaceItem nz-popover [nzPopoverContent]="'DHCP là cơ chế cấp phát động địa chỉ IP cho subnet đó. Tức là khi tạo ' +
                                         'Port mà không chỉ định IP nào thì DHCP sẽ tự gán vào Port vừa tạo 1 IP ' +
                                         'Ưu điểm: Không cần quản lý địa chỉ IP, hệ thống sẽ tự động cấp phát địa chỉ IP ' +
                                         'Nhược điểm: DHCP nó sẽ dùng ngay 03 IP cho DHCP server. điều này dẫn tới việc nếu subnet chỉ có 8 IP chẳng hạn, sẽ chỉ dùng dc có 5 IP'"
-                        nzPopoverPlacement="bottom"></span>
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-space>
               </label>
             </div>
@@ -162,56 +149,60 @@
       </nz-form-item>
       <nz-form-item *ngIf="!validateForm.controls.disableGatewayIp.value">
         <nz-form-label>
-          <nz-space [nzSize]="4" >
+          <nz-space [nzSize]="4">
             <span *nzSpaceItem>Gateway</span>
-            <span *nzSpaceItem nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Nếu không nhập thì hệ thống sẽ tự động lấy địa chỉ IP đầu tiên trong dải mạng để làm gateway, ví dụ: 10.21.0.1\n'+
+            <img *nzSpaceItem nz-popover [nzPopoverContent]="'Nếu không nhập thì hệ thống sẽ tự động lấy địa chỉ IP đầu tiên trong dải mạng để làm gateway, ví dụ: 10.21.0.1\n'+
 '- Nếu để trống thì hệ thống sẽ tự động lấy địa chỉ IP đầu tiên trong dải mạng để làm gateway'"
-                  nzPopoverPlacement="bottom"></span>
+                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </nz-space>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-          <input nz-input class="input-custom" formControlName="gateway" placeholder="Nhập Gateway"/>
+          <input nz-input class="input-custom" formControlName="gateway" placeholder="Nhập Gateway" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-            <nz-space [nzSize]="4">
-              <span *nzSpaceItem>Allocation Pool</span>
-              <span *nzSpaceItem nz-icon nzType="question-circle"
-                    nzTheme="outline"
-                    nz-popover
-                    [nzPopoverContent]="'Điền 1 IP bắt đầu và 1 IP kết thúc của dải mạng cách nhau bởi dấu '+ ', ' +
+          <nz-space [nzSize]="4">
+            <span *nzSpaceItem>Allocation Pool</span>
+            <img *nzSpaceItem nz-popover [nzPopoverContent]="'Điền 1 IP bắt đầu và 1 IP kết thúc của dải mạng cách nhau bởi dấu '+ ', ' +
                      '\nYêu cầu chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24' +
                      '\nIP sau lớn hơn IP trước (ví dụ: 172.16.0.2, 172.16.0.3)'"
-                    nzPopoverPlacement="bottom"></span>
-            </nz-space>
+                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
+          </nz-space>
         </nz-form-label>
-        <nz-form-control nzDisableAutoTips [nzErrorTip]="allocationPoolErrorTpl">
-          <nz-textarea-count [nzMaxCharacterCount]="100">
-            <textarea rows="4" formControlName="allocationPool" (ngModelChange)="onChangeInput($event)" nz-input></textarea>
+        <nz-form-control nzDisableAutoTips>
+          <nz-textarea-count [nzMaxCharacterCount]="255">
+            <textarea rows="4" [value]="pool" nz-input [disabled]="true"></textarea>
           </nz-textarea-count>
-          <ng-template #allocationPoolErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('invalidIpAddressFormat')">Địa chỉ IP không đúng định dạng, IP cách nhau bởi dấu (,).</ng-container>
-            <ng-container *ngIf="control.hasError('invalidIpAddressRange')">Địa chỉ IP không hợp lệ.<br>
-              Yêu cầu chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24.</ng-container>
-            <ng-container *ngIf="control.hasError('invalidIpSequence')">Địa chỉ IP không hợp lệ, IP sau lớn hơn IP trước (ví dụ: 172.16.0.2, 172.16.0.3)</ng-container>
+<!--          <ng-template #allocationPoolErrorTpl let-control>-->
+<!--            <ng-container *ngIf="control.hasError('invalidIpAddressFormat')">Địa chỉ IP không đúng định dạng, IP cách-->
+<!--              nhau bởi dấu (,).-->
+<!--            </ng-container>-->
+<!--            <ng-container *ngIf="control.hasError('invalidIpAddressRange')">Địa chỉ IP không hợp lệ.<br>-->
+<!--              Yêu cầu chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và-->
+<!--              nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24.-->
+<!--            </ng-container>-->
+<!--            <ng-container *ngIf="control.hasError('invalidIpSequence')">Địa chỉ IP không hợp lệ, IP sau lớn hơn IP trước-->
+<!--              (ví dụ: 172.16.0.2, 172.16.0.3)-->
+<!--            </ng-container>-->
 
 
-          </ng-template>
+<!--          </ng-template>-->
         </nz-form-control>
       </nz-form-item>
     </nz-card>
     <nz-form-item nzAlign="bottom" nzJustify="end">
       <nz-space nzSize="large">
-        <button *nzSpaceItem nz-button nzType="default" class="button-cancel">
-          <span nz-icon nzType="close" nzTheme="outline"></span>Hủy</button>
+        <button *nzSpaceItem nz-button nzType="default" class="button-cancel" (click)="reset()">
+          <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+        </button>
         <nz-form-control *nzSpaceItem>
           <button nz-button nzType="primary" [disabled]="!validateForm.valid"
-                  class="button-ok">
-            <span nz-icon nzType="check" nzTheme="outline" ></span>Tạo mới</button>
+                  class="button-ok" (click)="submitForm()" [nzLoading]="isLoading">
+            <span nz-icon nzType="check" nzTheme="outline"></span>Tạo mới
+          </button>
         </nz-form-control>
       </nz-space>
     </nz-form-item>

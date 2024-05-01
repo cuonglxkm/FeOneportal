@@ -1,15 +1,12 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {FormUpdate, PackageBackupModel, ServiceInPackage} from "../../../shared/models/package-backup.model";
-import {BaseResponse} from "../../../../../../../libs/common-utils/src";
+import {BaseResponse, ProjectModel, ProjectService, RegionModel} from "../../../../../../../libs/common-utils/src";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {getCurrentRegionAndProject} from "@shared";
-import {ProjectService} from 'src/app/shared/services/project.service';
 import { FormSearchPackageSnapshot, PackageSnapshotModel } from 'src/app/shared/models/package-snapshot.model';
 import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
 import { debounceTime } from 'rxjs';
@@ -156,7 +153,8 @@ export class ListPackagesSnapshotComponent implements OnInit {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
         this.notification.success('Thành công', 'Xóa gói snapshot thành công')
-  
+        this.valueDelete = ''
+        this.getListPackageSnapshot()
       }, error => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false

@@ -1,53 +1,59 @@
-import {Component, Inject} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {IpPublicModel} from "../../../shared/models/ip-public.model";
-import {VpcModel} from "../../../shared/models/vpc.model";
-import {finalize} from "rxjs/operators";
-import {IpPublicService} from "../../../shared/services/ip-public.service";
-import {Router} from "@angular/router";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {InstancesService} from "../../instances/instances.service";
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {VpcService} from "../../../shared/services/vpc.service";
-import {getCurrentRegionAndProject} from "@shared";
+import { Component, Inject, OnInit } from '@angular/core';
+import { VpcModel } from '../../../shared/models/vpc.model';
+import { finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { VpcService } from '../../../shared/services/vpc.service';
+import { getCurrentRegionAndProject } from '@shared';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { IpPublicService } from '../../../shared/services/ip-public.service';
 
 @Component({
   selector: 'one-portal-vpc-list',
   templateUrl: './vpc-list.component.html',
-  styleUrls: ['./vpc-list.component.less'],
+  styleUrls: ['./vpc-list.component.less']
 })
-export class VpcListComponent {
-  regionId = JSON.parse(localStorage.getItem('region')).regionId;
+export class VpcListComponent implements OnInit{
+  regionId: any;
   isBegin: Boolean = false;
   size = 10;
   index: number = 1;
   total: number = 0;
   loading = false;
   isVisibleDelete = false;
+  isVisibleDeleteVPC = false;
 
   listOfData: VpcModel[] = [];
 
   searchKey = '';
   selectedStatus = '';
   statusData = [
-    {name: 'Tất cả trạng thái', value: ''},
-    {name: 'ENABLE', value: 'ENABLE'},
-    {name: 'DISABLE', value: 'DISABLE'},
-    {name: 'DELETED', value: 'DELETED'}];
+    { name: 'Tất cả trạng thái', value: '' },
+    { name: 'ENABLE', value: 'ENABLE' },
+    { name: 'DISABLE', value: 'DISABLE' },
+    { name: 'DELETED', value: 'DELETED' }];
 
   modalStyle = {
     'padding': '20px',
     'border-radius': '10px',
-    'width': '600px',
+    'width': '600px'
   };
   nameDelete: any = '';
   itemDelete: any;
   disableDelete = true;
+  isVisibleEditNormal= false;
+  form = new FormGroup({
+    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/)] }),
+    description: new FormControl(''),
+  });
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private vpcService: VpcService,
-              private notification: NzNotificationService,) {
+              private ipService: IpPublicService,
+              private notification: NzNotificationService) {
 
   }
 
@@ -76,7 +82,7 @@ export class VpcListComponent {
   }
 
   onPageSizeChange(event: any) {
-    this.size = event
+    this.size = event;
     this.getData(false);
   }
 
@@ -85,17 +91,30 @@ export class VpcListComponent {
     this.getData(false);
   }
 
-  edit(id: number) {
-    this.router.navigate(['/app-smart-cloud/vpc/update/' + id]);
+  edit(item: any) {
+    if (item.type == 'VPC') {
+      this.router.navigate(['/app-smart-cloud/vpc/update/' + item.id]);
+    } else {
+      this.isVisibleEditNormal = true;
+    }
   }
 
   delete(itemDelete: any) {
     this.itemDelete = itemDelete;
-    this.isVisibleDelete = true;
+    if(itemDelete.type == 'VPC') {
+      this.isVisibleDeleteVPC = true;
+    } else {
+      this.isVisibleDelete = true;
+    }
+
   }
 
   handleCancel() {
+    this.nameDelete = '';
     this.isVisibleDelete = false;
+    this.isVisibleDeleteVPC = false;
+    this.isVisibleEditNormal = false;
+    this.disableDelete = true;
   }
 
   openIpDelete() {
@@ -103,17 +122,19 @@ export class VpcListComponent {
       .pipe(finalize(() => {
         this.getData(true);
         this.isVisibleDelete = false;
+        this.isVisibleDeleteVPC = false;
+        this.disableDelete = true;
       }))
       .subscribe(
         {
           next: post => {
-            this.notification.success('Thành công', 'Xóa thành công VPC')
+            this.notification.success('Thành công', 'Xóa thành công VPC');
           },
           error: e => {
-            this.notification.error('Thất bại', 'Xóa thất bại VPC')
-          },
+            this.notification.error('Thất bại', 'Xóa thất bại VPC');
+          }
         }
-      )
+      );
   }
 
   search(inputSearch: any) {
@@ -132,10 +153,56 @@ export class VpcListComponent {
   }
 
   confirmNameDelete(event: any) {
-    if (event == this.itemDelete.cloudProjectName) {
+    this.nameDelete = '';
+    if (event == this.itemDelete.displayName) {
       this.disableDelete = false;
     } else {
       this.disableDelete = true;
     }
+  }
+
+  redirectTo() {
+
+  }
+
+  updateVpc() {
+    const requestBody =
+      {
+        typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+        serviceType: 1,
+        customerId: this.tokenService.get()?.userId,
+        actionType: 12,
+        regionId: this.regionId,
+        description: this.form.controls['description'].value,
+        serviceName: this.form.controls['name'].value
+      }
+    const request = {
+      customerId: this.tokenService.get()?.userId,
+      createdByUserId: this.tokenService.get()?.userId,
+      note: "Cập nhật VPC",
+      orderItems: [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(requestBody),
+          specificationType: "vpc_resize",
+          price: 0,
+        }
+      ]
+    }
+
+    this.ipService.createIpPublic(request)
+      .pipe(finalize(() => {
+        this.getData(true);
+        this.isVisibleEditNormal = false
+      }))
+      .subscribe(
+      data => {
+        this.notification.success('Thành công', 'Cập nhật dự án thành công');
+        this.router.navigate(['/app-smart-cloud/vpc']);
+      },
+      error => {
+        this.notification.error('Thất bại', 'Cập nhật dự án thất bại')
+      }
+    )
   }
 }

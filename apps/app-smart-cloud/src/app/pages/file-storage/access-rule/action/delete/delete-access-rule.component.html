@@ -1,7 +1,7 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
-      nzTheme="outline" nz-popover
-      [nzPopoverContent]="'Xóa'"
-      nzPopoverPlacement="bottom" (click)="showModal()"></span>
+<img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
+     nz-popover
+     [nzPopoverContent]="'app.delete' | i18n"
+     nzPopoverPlacement="bottom" (click)="showModal()"/>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Xác nhận xóa Access Rule ?"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>

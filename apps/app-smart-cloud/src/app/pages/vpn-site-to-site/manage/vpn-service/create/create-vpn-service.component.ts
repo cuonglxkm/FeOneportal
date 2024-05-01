@@ -4,8 +4,7 @@ import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { FormCreateVpnService } from 'src/app/shared/models/vpn-service';
 import { VpnSiteToSiteDTO } from 'src/app/shared/models/vpn-site-to-site';
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
@@ -57,8 +56,7 @@ export class CreateVpnServiceComponent implements OnInit{
     this.vpnSiteToSiteService.getVpnSiteToSite(this.project)
       .subscribe(data => {
         if(data){
-          this.response = data
-          console.log(this.response);     
+          this.response = data  
         }
     }, error => {
       this.response = null;

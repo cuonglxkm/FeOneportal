@@ -24,14 +24,13 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
 import { debounceTime, of, Subject } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
-import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -50,7 +49,7 @@ class ConfigGPU {
 }
 
 @Component({
-  selector: 'one-portal-instances-extend',
+  selector: 'one-portal-instances-edit',
   templateUrl: './instances-edit.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,7 +58,7 @@ class ConfigGPU {
 export class InstancesEditComponent implements OnInit {
   //danh sách các biến của form model
   id: number;
-  instancesModel: InstancesModel;
+  instancesModel: InstancesModel = new InstancesModel();
   instanceNameEdit: string = '';
 
   instanceResize: InstanceResize = new InstanceResize();
@@ -81,6 +80,11 @@ export class InstancesEditComponent implements OnInit {
   configGPU: ConfigGPU = new ConfigGPU();
   isConfigPackage: boolean = true;
   cardHeight: string = '160px';
+
+  listGPUType: any[] = [
+    { type: 'a30', displayName: 'Nvidia A30' },
+    { type: 'a100', displayName: 'Nvidia A100' },
+  ];
 
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
@@ -304,6 +308,9 @@ export class InstancesEditComponent implements OnInit {
           });
         });
         this.listOfferFlavors = this.listOfferFlavors.filter((e) => e != null);
+        this.listOfferFlavors = this.listOfferFlavors.sort(
+          (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
+        );
         console.log('list offer flavor chỉnh sửa', this.listOfferFlavors);
         this.cdr.detectChanges();
       });
@@ -351,6 +358,7 @@ export class InstancesEditComponent implements OnInit {
       error: (e) => {
         this.checkPermission = false;
         this.notification.error(e.error.detail, '');
+        this.returnPage();
       },
     });
   }
@@ -587,6 +595,9 @@ export class InstancesEditComponent implements OnInit {
         }
       });
     }
+    this.instanceResize.gpuType = this.configGPU.GPUType;
+    this.instanceResize.gpuCount =
+      this.instancesModel.gpuCount + this.configGPU.GPU;
     this.instanceResize.addBtqt = 0;
     this.instanceResize.addBttn = 0;
     // this.instanceResize.typeName =

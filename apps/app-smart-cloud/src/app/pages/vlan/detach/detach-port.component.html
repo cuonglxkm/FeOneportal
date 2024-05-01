@@ -1,7 +1,7 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
-      nzTheme="outline" nz-popover
-      [nzPopoverContent]="'Gỡ máy ảo'"
-      nzPopoverPlacement="bottom" (click)="showModalDetachPort()"></span>
+<img src="assets/imgs/cancel.svg" style="height: 20px; cursor: pointer;"
+     nz-popover
+     [nzPopoverContent]="'Gỡ'"
+     nzPopoverPlacement="bottom" disabled="true" (click)="showModalDetachPort()"/>
 <nz-modal [(nzVisible)]="isVisibleDetach" nzTitle="Gỡ Port"
           (nzOnCancel)="handleCancelDetachPort()" nzMask="false">
   <div *nzModalTitle>

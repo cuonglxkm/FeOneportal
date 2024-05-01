@@ -9,6 +9,8 @@ import { ipAddressValidator } from '../../../../../../../libs/common-utils/src';
 import { IpFloatingService } from '../../../shared/services/ip-floating.service';
 import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
 import { FormCreateIp } from '../../../shared/models/ip-floating.model';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-ip-floating',
@@ -18,6 +20,7 @@ import { FormCreateIp } from '../../../shared/models/ip-floating.model';
 export class CreateIpFloatingComponent implements OnInit{
   @Input() region: number
   @Input() project: number
+  @Input() projectType: number
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 
@@ -33,6 +36,7 @@ export class CreateIpFloatingComponent implements OnInit{
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService,
               private route: ActivatedRoute,
               private vlanService: VlanService,
@@ -41,8 +45,12 @@ export class CreateIpFloatingComponent implements OnInit{
   }
 
   showModalCreateIpFloating() {
-    this.isVisible = true
-    this.getListNetwork()
+    if (this.projectType == 1) {
+      this.isVisible = true
+      this.getListNetwork()
+    } else {
+      this.router.navigate(['/app-smart-cloud/networks/ip-floating-normal/create']);
+    }
   }
 
   handleCancel() {
@@ -63,12 +71,12 @@ export class CreateIpFloatingComponent implements OnInit{
       this.ipFloatingService.createIp(formCreate).subscribe(data => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.success('Thành công', 'Cấp phát IP Floating thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.ip.floating19'))
         this.onOk.emit(data)
       }, error => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error('Thất bại', 'Cấp phát IP Floating thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.ip.floating20'))
         this.validateForm.reset()
       })
     }

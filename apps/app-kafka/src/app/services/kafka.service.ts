@@ -7,7 +7,7 @@ import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
 import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
-import { KafkaCreateReq, KafkaUpdateReq } from '../core/models/kafka-create-req.model';
+import { KafkaCreateReq, KafkaUpdateReq, KafkaUpgradeReq } from '../core/models/kafka-create-req.model';
 import { KafkaDetail, KafkaInfor } from '../core/models/kafka-infor.model';
 import { Pagination } from '../core/models/pagination.model';
 import { ServicePack } from '../core/models/service-pack.model';
@@ -15,6 +15,8 @@ import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { KafkaVersion } from '../core/models/kafka-version.model';
 import { KafkaStatus } from '../core/models/status.model';
+import { OfferItem, UnitPrice } from '../core/models/offer.model';
+import { SyncInfoModel } from '../core/models/sync-info.model';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +34,7 @@ export class KafkaService extends BaseService {
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
@@ -96,8 +98,8 @@ export class KafkaService extends BaseService {
     );
   }
 
-  getSyncTime(serviceOrderCode: string) {
-    return this.http.get(
+  getSyncTime(serviceOrderCode: string): Observable<BaseResponse<SyncInfoModel>> {
+    return this.http.get<BaseResponse<SyncInfoModel>>(
       `${this.kafkaUrl}/kafka/get-sync-time?service_order_code=${serviceOrderCode}`
     );
   }
@@ -131,9 +133,11 @@ export class KafkaService extends BaseService {
     page: number,
     size: number,
     keySearch: string,
-    status:number
+    status:number,
+    regionId: string,
+    projectId: string
   ): Observable<BaseResponse<Pagination<KafkaInfor[]>>> {
-    return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch.trim()}&status=${status==null?"":status}`,{headers: this.getHeaders()});
+    return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch.trim()}&status=${status==null?"":status}&regionId=${regionId}&projectId=${projectId}`,{headers: this.getHeaders()});
   }
 
   createKafkaService(req: KafkaCreateReq): Observable<BaseResponse<null>> {
@@ -148,6 +152,7 @@ export class KafkaService extends BaseService {
       'cpu': req.cpu,
       'storage': req.storage,
       'brokers': req.brokers, 
+      'usage_time': req.usageTime,
       'num_partitions': req.numPartitions, 
       'default_replication_factor': req.defaultReplicationFactor,
       'min_insync_replicas': req.minInsyncReplicas,
@@ -184,5 +189,36 @@ export class KafkaService extends BaseService {
     };
 
     return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/update', json, {headers: this.getHeaders()});
+  }
+
+  upgrade(req: KafkaUpgradeReq): Observable<BaseResponse<null>> {
+    const json = {
+      'service_order_code': req.serviceOrderCode,
+      'service_name': req.serviceName,
+      'version': req.version,
+      'description': req.description,
+      'regionId': req.regionId,
+      'ram': req.ram,
+      'cpu': req.cpu,
+      'storage': req.storage,
+      'usage_time': req.usageTime,
+      'service_pack_code': req.servicePackCode
+    };
+
+    return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/upgrade', json, {headers: this.getHeaders()})
+  }
+
+  delete(serviceOrderCode: string): Observable<BaseResponse<null>> {
+    return this.http.delete<BaseResponse<null>>(this.kafkaUrl + `/kafka/delete/${serviceOrderCode}`);
+  }
+
+  getListOffers(regionId: number, unitOfMeasureProduct: string): Observable<OfferItem[]> {
+    return this.http.get<OfferItem[]>(
+      `${this.baseUrl}/catalogs/offers?regionId=${regionId}&unitOfMeasureProduct=${unitOfMeasureProduct}`
+    );
+  }
+
+  getUnitPrice(): Observable<BaseResponse<UnitPrice[]>> {
+    return this.http.get<BaseResponse<UnitPrice[]>>(this.kafkaUrl + '/kafka/get-unit-price');
   }
 }

@@ -1,22 +1,23 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Danh sách đơn hàng'"
+  [title]="'app.order.title' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+        <a [routerLink]="['/']">{{"app.breadcrumb.home" | i18n}}</a></nz-breadcrumb-item
       >
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/order/list']"
-          >Đơn hàng</a
+          >{{"app.breadcrumb.order" | i18n}}</a
         ></nz-breadcrumb-item
       >
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="region" (valueChanged)="projectChanged($event)" (userChanged)="projectChanged($event)"></project-select-dropdown>
     </div>
@@ -30,18 +31,18 @@
             <nz-select [(ngModel)]="searchStatus"
                        style="width: 160px;"
                        (ngModelChange)="onChange($event)"
-                       nzPlaceHolder="Trạng thái">
+                       [nzPlaceHolder]="'app.order.status' | i18n">
               <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
             </nz-select>
           </div>
         </nz-space>
-        <nz-range-picker [nzPlaceHolder]="['Từ ngày', 'Đến ngày']" style="margin-left: 10px;" [(ngModel)]="date"
+        <nz-range-picker style="margin-left: 10px;" [(ngModel)]="date"
                          (ngModelChange)="onChanggeDate($event)"></nz-range-picker>
         <div style="width: 300px; margin-left: 10px;">
             <nz-input-group nzSearch [nzPrefix]="prefixIconSearch">
               <input style="width: 380px" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
                      type="text" nz-input
-                     placeholder="Tìm kiếm mã đơn hàng"/>
+                     [placeholder]="'app.order.search' | i18n"/>
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
@@ -65,11 +66,11 @@
   >
     <thead>
       <tr>
-        <th>STT</th>
-        <th>Mã đơn hàng</th>
-        <th>Dịch vụ</th>
-        <th>Thời gian đặt hàng</th>
-        <th>Trạng thái</th>
+        <th>{{"app.order.ordinalNumber" | i18n}}</th>
+        <th>{{"app.order.ordercode" | i18n}}</th>
+        <th>{{"app.order.service" | i18n}}</th>
+        <th>{{"app.order.createDate" | i18n}}</th>
+        <th>{{"app.order.status" | i18n}}</th>
       </tr>
     </thead>
     <tbody>
@@ -97,19 +98,18 @@
           }"
         >   
         <span class="mr-2" style="cursor: pointer;" (click)="handleOpenError()" *ngIf="data.statusCode === 'Cancelled'" nz-icon nzType="warning" nzTheme="outline"></span>
-        <span [innerHTML]="
-          data.statusCode === 'Cancelled'
-            ? 'Gặp sự cố'
-            : data.statusCode === 'Completed'
-            ? 'Đã cài đặt thành công'
-            : data.statusCode === 'Paid'
-            ? 'Đã thanh toán'
-            : data.statusCode === 'New'
-            ? 'Mới tạo'
-            : data.statusCode === 'InProcessing'
-            ? 'Đang cài đặt'
-            : ''
-        "></span>
+        <span>
+        {{ data.statusCode === 'Cancelled'
+        ? ("app.order.status.Cancelled" | i18n)
+        : data.statusCode === 'Completed'
+        ? ("app.order.status.Completed" | i18n)
+        : data.statusCode === 'Paid'
+        ? ("app.order.status.Paid" | i18n)
+        : data.statusCode === 'New'
+        ? ("app.order.status.New" | i18n)
+        : data.statusCode === 'InProcessing'
+        ? ("app.order.status.InProcessing" | i18n)
+        : '' }}</span>
         </td>
       </tr>
     </tbody>

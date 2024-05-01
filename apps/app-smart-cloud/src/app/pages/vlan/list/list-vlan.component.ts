@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
-import { AppValidator, BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { AppValidator, BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';

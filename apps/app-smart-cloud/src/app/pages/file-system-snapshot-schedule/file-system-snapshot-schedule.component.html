@@ -5,14 +5,17 @@
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item>Quản lý lịch File System Snapshot</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
@@ -92,7 +95,7 @@
           <th>Áp dụng cho File System</th>
           <th>Số bản ghi tối đa</th>
           <th>Chu kỳ</th>
-          <th>Trạng thái</th>
+          <th>{{ 'app.text.status' | i18n }}</th>
           <th>Lần snapshot tiếp theo</th>
           <th nzAlign="center">Thao tác</th>
         </tr>

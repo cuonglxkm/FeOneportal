@@ -8,12 +8,9 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { FileSystemModel, FormSearchFileSystem } from 'src/app/shared/models/file-system.model';
 import { FileSystemSnapshotScheduleDetail, FormEditFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
-import { ProjectService } from 'src/app/shared/services/project.service';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, ProjectService, RegionModel } from '../../../../../../../libs/common-utils/src';
 
 interface SelectedFileSystem {
   id: number;
@@ -170,7 +167,7 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
           this.fileSystemSnapshotScheduleDetail = data;
           console.log(data);
           const shareIds = data.items.map((item) => {
-            return item.itemId
+            return item
           })
 
           this.FileSystemSnapshotForm.controls.name.setValue(data.name);

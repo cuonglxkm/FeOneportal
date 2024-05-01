@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { camelizeKeys } from 'humps';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableSortFn, NzTableSortOrder } from 'ng-zorro-antd/table';
 import { KafkaConsumerGroup, KafkaConsumerGroupDetail, KafkaConsumerGroupTopic } from '../../../core/models/kafka-consumer-group.model';
 import { SyncInfoModel } from '../../../core/models/sync-info.model';
@@ -9,6 +8,8 @@ import { KafkaService } from '../../../services/kafka.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from "@delon/abc/loading";
 import { finalize } from 'rxjs';
+import { AppConstants } from 'src/app/core/constants/app-constant';
+import { TopicService } from 'src/app/services/kafka-topic.service';
 
 interface DataItem {
   partitionName: number,
@@ -116,21 +117,45 @@ export class ConsumerGroupComponent implements OnInit {
     inActive: 'Không có thành viên nào trong group và metadata của group đã bị xoá.'
   };
 
+  heretext = 'tại đây';
+
   syncInfo: SyncInfoModel = new SyncInfoModel();
   isVisibleDelete = false;
   currentConsumerGroup: KafkaConsumerGroup;
 
+  isAllowSync = true;
+
+  notiSuccessText = 'Thành công';
+  notiFailedText = 'Thất bại';
+
   constructor(
     private consumerGroupKafkaService: ConsumerGroupKafkaService,
-    private modal: NzModalService,
     private kafkaService: KafkaService,
     private notification: NzNotificationService,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    private topicService: TopicService
   ) { }
 
   ngOnInit(): void {
     this.getListConsumerGroup(1, this.pageSize, '', this.serviceOrderCode);
     this.getSyncTime(this.serviceOrderCode);
+
+    if (localStorage.getItem('locale') == AppConstants.LOCALE_EN) {
+      this.changeLangData();
+    }
+  }
+
+  changeLangData() {
+    this.contentOfState = {
+      active: 'The members of the group are operating steadily',
+      empty: 'There are no members in the group',
+      rebalancing: 'Members of the group are in a rebalancing state. Refer to additional causes in ',
+      inActive: `The group has no members, and the group's metadata has been deleted.`
+    }
+
+    this.heretext = 'here';
+    this.notiSuccessText = 'Success';
+    this.notiFailedText = 'Failed';
   }
 
   getListConsumerGroup(pageIndex: number, pageSize: number, keySearch: string, serviceOrderCode: string) {
@@ -220,10 +245,10 @@ export class ConsumerGroupComponent implements OnInit {
       .subscribe(
         (data) => {
           if (data && data.code == 200) {
-            this.notification.success('Thành công', data.msg);
+            this.notification.success(this.notiSuccessText, data.msg);
             this.getListConsumerGroup(this.pageIndex, this.pageSize, '', this.serviceOrderCode);
           } else {
-            this.notification.error('Thất bại', data.msg);
+            this.notification.error(this.notiFailedText, data.msg);
           }
         }
       );
@@ -231,10 +256,45 @@ export class ConsumerGroupComponent implements OnInit {
 
   getSyncTime(serviceOrderCode: string) {
     this.kafkaService.getSyncTime(serviceOrderCode)
-      .subscribe((res: any) => {
+      .subscribe((res) => {
         if (res.code && res.code == 200) {
-          this.syncInfo = res.data;
+          this.syncInfo = camelizeKeys(res.data) as SyncInfoModel;
         }
       });
+  }
+
+  handleSync() {
+    this.isAllowSync = true;
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+    this.consumerGroupKafkaService.sync(this.serviceOrderCode)
+      .pipe(
+        finalize(() => this.loadingSrv.close())
+      )
+      .subscribe((res) => {
+        if (res && res.code == 200) {
+          this.notification.success(this.notiSuccessText, res.msg);
+            this.getListConsumerGroup(this.pageIndex, this.pageSize, '', this.serviceOrderCode);
+            this.getSyncTime(this.serviceOrderCode);
+        } else {
+          this.notification.error(this.notiFailedText, res.msg);
+        }
+      })
+  }
+
+  handleSyncTopicPartition() {
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+    this.topicService.syncTopicPartition(this.serviceOrderCode)
+      .pipe(
+        finalize(() => this.loadingSrv.close())
+      )
+      .subscribe((res) => {
+        if (res && res.code == 200) {
+          this.notification.success(this.notiSuccessText, res.msg);
+            this.getListTopicInGroup(this.currentGroupId, this.serviceOrderCode, this.searchTopicText.trim());
+            this.getSyncTime(this.serviceOrderCode);
+        } else {
+          this.notification.error(this.notiFailedText, res.msg);
+        }
+      })
   }
 }

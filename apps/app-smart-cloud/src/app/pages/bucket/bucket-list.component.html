@@ -1,14 +1,20 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Quản lý Bucket'">
+<page-header
+  *ngIf="hasOS"
+  [breadcrumb]="breadcrumb"
+  [title]="'app.bucket.manage' | i18n"
+>
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+        ><a [routerLink]="['/']">{{
+          'app.breadcrumb.home' | i18n
+        }}</a></nz-breadcrumb-item
       >
       <nz-breadcrumb-item> Bucket </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 </page-header>
-<nz-card style="border-radius: 4px" [nzBordered]="false">
+<nz-card *ngIf="hasOS" style="border-radius: 4px" [nzBordered]="false">
   <nz-row style="margin-bottom: 20px" nzGutter="24">
     <div
       nz-col
@@ -19,7 +25,9 @@
       [nzXs]="24"
       [nzXXl]="12"
     >
-      <span class="text-card-header">Thông tin Object Storage</span>
+      <span class="text-card-header">{{
+        'app.object.storage.info' | i18n
+      }}</span>
     </div>
     <div
       class="text-right p-0 m-b-0"
@@ -37,24 +45,34 @@
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        Gia hạn
+        {{ 'app.button.extend' | i18n }}
       </button>
       <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="opMenu">
         <img src="assets/imgs/dots.svg" alt="" />
         <nz-dropdown-menu #opMenu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item (click)="updateObjectStorage()">Điều chỉnh</li>
-            <li nz-menu-item (click)="deleteObjectStorage()">Xóa</li>
+            <li nz-menu-item (click)="updateObjectStorage()">
+              {{ 'app.button.resize' | i18n }}
+            </li>
+            <li nz-menu-item (click)="deleteObjectStorage()">
+              {{ 'app.text.delete' | i18n }}
+            </li>
           </ul>
         </nz-dropdown-menu>
       </button>
     </div>
   </nz-row>
-  <div style="margin-bottom: 10px" class="text-label">Dung lượng đã dùng:</div>
-  <div style="margin-bottom: 10px" class="text-label">Ngày khởi tạo:</div>
-  <div style="margin-bottom: 10px" class="text-label">Ngày hết hạn:</div>
+  <div style="margin-bottom: 10px" class="text-label">
+    {{ 'app.used.capacity' | i18n }}:
+  </div>
+  <div style="margin-bottom: 10px" class="text-label">
+    {{ 'app.service.creation-date' | i18n }}:
+  </div>
+  <div style="margin-bottom: 10px" class="text-label">
+    {{ 'app.service.expiration-date' | i18n }}:
+  </div>
 </nz-card>
-<nz-card style="border-radius: 4px" [nzBordered]="false">
+<nz-card *ngIf="hasOS" style="border-radius: 4px" [nzBordered]="false">
   <div nz-row [nzGutter]="24">
     <div
       nz-col
@@ -65,7 +83,7 @@
       [nzXs]="24"
       [nzXXl]="8"
     >
-      <span class="text-card-header">Danh sách Bucket</span>
+      <span class="text-card-header">{{ 'app.bucket.list' | i18n }}</span>
     </div>
     <div
       class="text-right p-0 m-b-0"
@@ -85,7 +103,7 @@
         <input
           name="name"
           nz-input
-          placeholder="Tìm kiếm theo tên"
+          [placeholder]="'app.placeholder.search' | i18n"
           [(ngModel)]="searchValue"
         />
       </nz-input-group>
@@ -94,7 +112,7 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          nz-tooltip="Tìm kiếm"
+          [nz-tooltip]="'app.button.search' | i18n"
           (click)="search()"
         />
       </ng-template>
@@ -104,7 +122,7 @@
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        Tạo mới Bucket
+        {{ 'app.button.bucket.create' | i18n }}
       </button>
     </div>
   </div>
@@ -120,13 +138,13 @@
   >
     <thead>
       <tr>
-        <th nzLeft>Tên Bucket</th>
+        <th nzLeft>{{ 'app.bucket.name' | i18n }}</th>
         <th>URL</th>
-        <th>Quyền truy cập</th>
+        <th>{{ 'app.access.rights' | i18n }}</th>
         <th>Versioning</th>
-        <th>Ngày khởi tạo</th>
-        <th>Trạng thái</th>
-        <th nzRight>Thao tác</th>
+        <th>{{ 'app.service.creation-date' | i18n }}</th>
+        <th>{{ 'app.text.status' | i18n }}</th>
+        <th nzRight>{{ 'app.text.operation' | i18n }}</th>
       </tr>
     </thead>
     <tbody>
@@ -134,7 +152,7 @@
         <td nzLeft>
           <a
             nz-tooltip
-            nzTooltipTitle="Xem chi tiết"
+            [nzTooltipTitle]="'app.view.detail' | i18n"
             nzTooltipPlacement="bottom"
             [routerLink]="
               '/app-smart-cloud/object-storage/bucket/' + data.bucketName
@@ -164,20 +182,22 @@
             alt=""
             (click)="configure(data.bucketName)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="Cấu hình"
+            [nz-tooltip]="'app.config' | i18n"
           />
           <img
             src="assets/imgs/trash.svg"
             alt=""
             (click)="modalDeleteBucket(data.bucketName)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="Xóa"
+            [nz-tooltip]="'app.text.delete' | i18n"
           />
         </td>
       </tr>
     </tbody>
   </nz-table>
 </nz-card>
+<div *ngIf="hasOS == undefined || hasOS == null"></div>
+<one-portal-object-storage *ngIf="hasOS == false"></one-portal-object-storage>
 
 <nz-modal
   [(nzVisible)]="isVisibleDeleteBucket"
@@ -185,10 +205,12 @@
   (nzOnCancel)="handleCancelDeleteBucket()"
 >
   <ng-container *nzModalContent>
-    <div>
-      Đế thực hiện xoá Bucket <b>{{ bucketDeleteName }}</b
-      >, vui lòng nhập tên Bucket để xác nhận.
-    </div>
+    <span
+      class="text-label"
+      [innerHTML]="
+        'app.alert.delete.bucket' | i18n : { name: bucketDeleteName }
+      "
+    ></span>
     <input
       style="margin-top: 5px"
       class="input-custom"
@@ -203,7 +225,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkDeleteBucket()">
       <img
@@ -211,7 +233,7 @@
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Xác nhận
+      {{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
@@ -229,11 +251,11 @@
     ></nz-alert>
     <ng-template #customTemplateDescriptionGanVLAN>
       <div>
-        Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và
-        <b>KHÔNG THỂ KHÔI PHỤC LẠI</b>.
+        {{ 'app.alert.delete.instance.warn' | i18n }}
+        <b>{{ 'app.alert.delete.instance.warn.next' | i18n }}</b>
       </div>
     </ng-template>
-    <div>Quý khách có chắc chắn muốn xóa Object Storage không?</div>
+    <div>{{ 'app.alert.delete.object.storage' | i18n }}</div>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDeleteOS()">
@@ -241,7 +263,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkDeleteOS()">
       <img
@@ -249,7 +271,7 @@
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Xác nhận
+      {{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

@@ -2,8 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {ProjectModel} from "../../../shared/models/project.model";
-import {RegionModel} from "../../../shared/models/region.model";
 import {JsonEditorOptions} from "ang-jsoneditor";
 import {PolicyService} from "../../../shared/services/policy.service";
 import {
@@ -15,6 +13,7 @@ import {
 } from "../policy.model";
 import {result} from "lodash";
 import {concatMap, flatMap, forkJoin, map, of} from "rxjs";
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 
 class Pannel {
   id: string;

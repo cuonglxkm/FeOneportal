@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -12,9 +12,9 @@ import {
 } from '../../../../../../../libs/common-utils/src';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../../../../app-smart-cloud/src/environments/environment';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'one-portal-reset-password',
@@ -24,24 +24,35 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
         <nz-form-label
           >Mật khẩu cũ (<span class="text-red">*</span>)</nz-form-label
         >
-        <nz-form-control nzErrorTip="Vui lòng nhập mật khẩu cũ">
+        <nz-form-control [nzErrorTip]="oldpassErrorTpl">
           <input
             type="password"
-            (change)="onOldPassChange($event)"
+            (ngModelChange)="onOldPassChange($event)"
             nz-input
             formControlName="old_password"
             placeholder="Mật khẩu cũ"
             nzSize="large"
           />
+          <div *ngIf="incorrectOldPassword">
+            <span style="color: #ff4d4f">{{
+              'validation.password.old.incorrect' | i18n
+            }}</span>
+          </div>
+          <ng-template #oldpassErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >{{ 'validation.password.old.required' | i18n }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('validPassword')">{{
+              'validation.password.account.pattern' | i18n
+            }}</ng-container>
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label
           >Mật khẩu mới (<span class="text-red">*</span>)</nz-form-label
         >
-        <nz-form-control
-          nzErrorTip="Mật khẩu có 8-16 ký tự, gồm ít nhất 1 chữ viết thường, 1 chữ viết hoa, 1 ký tự đặc biệt, 1 chữ số, không trùng mật khẩu cũ"
-        >
+        <nz-form-control [nzErrorTip]="newpassErrorTpl">
           <input
             type="password"
             (ngModelChange)="updateConfirmValidator()"
@@ -52,13 +63,26 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
             placeholder="Mật khẩu mới"
             nzSize="large"
           />
+          <div *ngIf="isSamePassword">
+            <span style="color: #ff4d4f">{{
+              'validation.password.new.match.old' | i18n
+            }}</span>
+          </div>
         </nz-form-control>
+        <ng-template #newpassErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')"
+            >{{ 'validation.password.new.required' | i18n }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('validPassword')">{{
+            'validation.password.account.pattern' | i18n
+          }}</ng-container>
+        </ng-template>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label
           >Xác nhận mật khẩu (<span class="text-red">*</span>)</nz-form-label
         >
-        <nz-form-control nzErrorTip="Mật khẩu không khớp!">
+        <nz-form-control [nzErrorTip]="'validation.password.confirm' | i18n">
           <input
             type="password"
             nz-input
@@ -78,7 +102,12 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
           alt=""
         />Hủy
       </button>
-      <button nz-button nzType="primary" (click)="handleOkResetPassword()">
+      <button
+        nz-button
+        nzType="primary"
+        (click)="handleOkResetPassword()"
+        [disabled]="form.invalid || isSamePassword"
+      >
         <img
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/confirm.svg"
@@ -88,7 +117,6 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
     </div>`,
 })
 export class ModalResetPassComponent implements OnInit {
-
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -101,7 +129,8 @@ export class ModalResetPassComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private http: HttpClient,
     private modalRef: NzModalRef,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -125,7 +154,9 @@ export class ModalResetPassComponent implements OnInit {
   }
 
   form = new FormGroup({
-    old_password: new FormControl('', { validators: [] }),
+    old_password: new FormControl('', {
+      validators: [Validators.required, AppValidator.validPassword],
+    }),
     new_password: new FormControl({ value: '', disabled: true }),
     confirm_password: new FormControl({ value: '', disabled: true }),
   });
@@ -145,8 +176,8 @@ export class ModalResetPassComponent implements OnInit {
     this.modalRef.close();
   }
 
+  incorrectOldPassword: boolean = false;
   handleOkResetPassword() {
-    this.modalRef.close();
     const baseUrl = environment['baseUrl'];
     const updatedUser = {
       id: this.userModel.id,
@@ -164,25 +195,33 @@ export class ModalResetPassComponent implements OnInit {
     this.http
       .put(`${baseUrl}/users`, updatedUser, {
         context: new HttpContext().set(ALLOW_ANONYMOUS, true),
-        headers: this.httpOptions.headers
+        headers: this.httpOptions.headers,
       })
       .subscribe({
         next: (res) => {
+          this.modalRef.close();
           console.log(res);
-          this.notification.success('', 'Đổi mật khẩu thành công!');
+          this.notification.success('', 'Đổi mật khẩu thành công');
         },
-        error: (error) => {
-          console.log(error);
-          this.notification.error(
-            error.statusText,
-            'Đổi mật khẩu không thành công!'
-          );
+        error: (e) => {
+          if (e.error.detail == 'Incorrect password.') {
+            this.incorrectOldPassword = true;
+          }
         },
       });
   }
 
   onOldPassChange(data: any) {
     console.log(data);
+    this.incorrectOldPassword = false;
+    if (
+      this.form.controls['old_password'].value ==
+      this.form.controls['new_password'].value
+    ) {
+      this.isSamePassword = true;
+    } else {
+      this.isSamePassword = false;
+    }
     this.form.controls['old_password'].setValidators([
       Validators.required,
       AppValidator.validPassword,
@@ -202,13 +241,23 @@ export class ModalResetPassComponent implements OnInit {
       this.confirmationValidator,
     ]);
     this.form.controls['confirm_password'].updateValueAndValidity();
+    this.cdr.detectChanges();
   }
 
+  isSamePassword: boolean = false;
   updateConfirmValidator(): void {
     /** wait for refresh value */
     Promise.resolve().then(() =>
       this.form.controls['confirm_password'].updateValueAndValidity()
     );
+    if (
+      this.form.controls['old_password'].value ==
+      this.form.controls['new_password'].value
+    ) {
+      this.isSamePassword = true;
+    } else {
+      this.isSamePassword = false;
+    }
   }
 
   onNewPassChange(data: any) {}

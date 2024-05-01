@@ -1,23 +1,24 @@
-<span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
-      nz-popover
-      [nzPopoverContent]="'Xoá'"
-      nzPopoverPlacement="bottom"
-      (click)="showModalDelete()"
-      nz-icon nzType="delete" nzTheme="outline"></span>
-<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xoá Network"
+<img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
+     nz-popover
+     [nzPopoverContent]="'Xóa'"
+     nzPopoverPlacement="bottom" (click)="showModalDelete()"/>
+<nz-modal [(nzVisible)]="isVisibleDelete"
           (nzOnCancel)="handleCancelDelete()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Xoá Network</span>
+    <span class="text-modal-title">Xoá Network {{ nameNetwork }}</span>
   </div>
   <div *nzModalContent>
-    <form nz-form [formGroup]="validateForm" nzLayout="vertical">
-      <nz-form-item>
-        <span>Đế thực hiện xoá Network + tên Network, vui lòng nhập tên Network để xác nhận.</span>
-        <nz-form-control>
-          <input nz-input class="input-custom" formControlName="nameNetwork" />
-        </nz-form-control>
-      </nz-form-item>
-    </form>
+    <div style="margin-top: 10px;">
+      <span class="text-label">Đế thực hiện xoá Network {{ nameNetwork}}, vui lòng nhập tênNetwork để xác nhận.</span>
+      <input nz-input #vlanNetworkInputName
+             style="margin-top: 10px;"
+             class="input-custom"
+             [ngModel]="value"
+             (keydown.enter)="focusOkButton($event)"
+             (ngModelChange)="onInput($event)"
+             [placeholder]="'Nhập tên Network'"/>
+      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên network</span>
+    </div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancelDelete()" class="button-cancel">

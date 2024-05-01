@@ -10,12 +10,12 @@
     >
       <thead>
         <tr>
-          <th>Loại Volume</th>
-          <th>Tên Volume</th>
-          <th>Dung lượng (GB)</th>
+          <th>{{ 'app.volume.type' | i18n }}</th>
+          <th>{{ 'app.volume.name' | i18n }}</th>
+          <th>{{ 'app.capacity' | i18n }} (GB)</th>
           <th>IOPS</th>
-          <th>Trạng thái Volume</th>
-          <th>Kiểu Volume</th>
+          <th>{{ 'app.volume.status' | i18n }}</th>
+          <th>{{ 'app.disk.type' | i18n }}</th>
         </tr>
       </thead>
       <tbody class="ant-table-tbody">
@@ -27,7 +27,7 @@
           <td *ngIf="!data.bootable" nzLeft>
             <a
               nz-tooltip
-              nzTooltipTitle="Xem chi tiết"
+              [nzTooltipTitle]="'app.view.detail' | i18n"
               nzTooltipPlacement="bottom"
               [routerLink]="'/app-smart-cloud/volume/detail/' + data.id"
               >{{ data.name }}</a
@@ -40,8 +40,8 @@
           <td>
             {{ data.iops }}
           </td>
-          <td *ngIf="data.status == 'KHOITAO'" style="color: #0066B3">
-            Đang hoạt động
+          <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">
+            {{ 'app.status.running' | i18n }}
           </td>
           <td *ngIf="data.status == 'TAMNGUNG'" style="color: #ea3829">
             Tạm ngưng
@@ -49,13 +49,11 @@
           <td *ngIf="data.status == 'SUSPENDED'" style="color: #ea3829">
             Tạm ngưng
           </td>
-          <td *ngIf="data.status == 'SUSPENDED'" style="color: #ea3829">
-            Lỗi
-          </td>
+          <td *ngIf="data.status == 'ERROR'" style="color: #ea3829">Lỗi</td>
           <td>
             <div *ngIf="data.bootable">
               <i nz-icon nzType="hdd"></i>
-              VOLUME ROOT
+              {{ 'app.volume.root' | i18n }}
             </div>
             <div *ngIf="!data.bootable">
               <img
@@ -63,7 +61,7 @@
                 src="assets/imgs/attach_volume.png"
                 alt=""
               />
-              VOLUME GẮN THÊM
+              {{ 'app.volume.attach' | i18n }}
             </div>
           </td>
         </tr>
@@ -78,10 +76,7 @@
     ></nz-alert>
     <ng-template #nzDescriptionWarning06>
       <div>
-        Quý khách hàng lưu ý, trường hợp khi kiểm tra bên trong máy ảo hiển thị
-        loại ổ cứng là Hard Disk Drive (HDD) tuy nhiên trong thực tế máy ảo đã
-        được lưu trữ tại phân vùng SSD để đảm bảo tối đa hiệu năng và tốc độ
-        truy xuất.
+        {{ 'app.alert.volume.of.instance' | i18n }}
       </div>
     </ng-template>
   </div>

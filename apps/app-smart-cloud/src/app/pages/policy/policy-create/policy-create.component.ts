@@ -1,12 +1,10 @@
 import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {PermissionPolicyModel} from "../policy.model";
 import {PolicyService} from "../../../shared/services/policy.service";
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {AppValidator} from "../../../../../../../libs/common-utils/src";
+import {AppValidator, ProjectModel, RegionModel} from "../../../../../../../libs/common-utils/src";
 import {ClipboardService} from "ngx-clipboard";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {finalize} from "rxjs";

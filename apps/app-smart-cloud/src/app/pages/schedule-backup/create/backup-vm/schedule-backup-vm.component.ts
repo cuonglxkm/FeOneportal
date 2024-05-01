@@ -20,6 +20,7 @@ import { DatePipe } from '@angular/common';
 export class ScheduleBackupVmComponent implements OnInit {
   @Input() region: number;
   @Input() project: number;
+  @Input() instanceId: number;
 
   isLoading: boolean = false;
   validateForm: FormGroup<{
@@ -100,9 +101,9 @@ export class ScheduleBackupVmComponent implements OnInit {
   interval: string = '';
 
 
-  isLoadingPackage: boolean = false
+  isLoadingPackage: boolean = false;
 
-  isLoadingAttach: boolean = false
+  isLoadingAttach: boolean = false;
 
   constructor(private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -138,7 +139,6 @@ export class ScheduleBackupVmComponent implements OnInit {
   }
 
   getData(): FormCreateSchedule {
-
     this.formCreateSchedule.customerId = this.tokenService.get()?.userId;
     this.formCreateSchedule.name = this.validateForm.controls.name.value;
     this.formCreateSchedule.description = this.validateForm.controls.description.value;
@@ -188,12 +188,12 @@ export class ScheduleBackupVmComponent implements OnInit {
   }
 
   getBackupPackage() {
-    this.isLoadingPackage = true
+    this.isLoadingPackage = true;
     this.backupVmService.getBackupPackages().subscribe(data => {
-      console.log('backup packages: ', data.records)
-      this.backupPackages = data.records
-      this.isLoadingPackage = false
-    })
+      console.log('backup packages: ', data.records);
+      this.backupPackages = data.records;
+      this.isLoadingPackage = false;
+    });
   }
 
   modeChange(value: string) {
@@ -250,16 +250,17 @@ export class ScheduleBackupVmComponent implements OnInit {
   }
 
   getVolumeInstanceAttachment(id: number) {
-    this.isLoadingAttach = true
+    this.isLoadingAttach = true;
     this.backupVmService.getVolumeInstanceAttachment(id).subscribe(data => {
-      this.isLoadingAttach = false
+      this.isLoadingAttach = false;
       this.volumeAttachments = data;
     });
   }
 
-  isLoadingInstance: boolean = false
+  isLoadingInstance: boolean = false;
+
   getListInstances() {
-    this.isLoadingInstance = true
+    this.isLoadingInstance = true;
     let customerId = this.tokenService.get()?.userId;
     this.formSearchBackup.pageSize = 10000000;
     this.formSearchBackup.currentPage = 1;
@@ -267,7 +268,7 @@ export class ScheduleBackupVmComponent implements OnInit {
     this.instanceService.search(1, 10000000,
       this.region, this.project, '', '',
       true, customerId).subscribe(data => {
-        this.isLoadingInstance = false
+      this.isLoadingInstance = false;
 
       this.listInstance = data?.records.filter(value => (value.taskState == 'ACTIVE'));
       this.backupVmService.search(this.formSearchBackup).subscribe(data2 => {
@@ -290,8 +291,15 @@ export class ScheduleBackupVmComponent implements OnInit {
   }
 
   selectInstanceChange(value) {
-    // this.instanceSelected = value
     this.getVolumeInstanceAttachment(value);
+  }
+
+  instanceName: string
+  getInstanceById() {
+    this.validateForm.get('instanceId').setValue(this.instanceId)
+    this.instanceService.getInstanceById(this.instanceId).subscribe(data => {
+      this.instanceName = data.name
+    })
   }
 
   getListScheduleBackup() {
@@ -315,5 +323,6 @@ export class ScheduleBackupVmComponent implements OnInit {
     this.getListScheduleBackup();
     this.getBackupPackage();
     this.getListInstances();
+    this.getInstanceById();
   }
 }

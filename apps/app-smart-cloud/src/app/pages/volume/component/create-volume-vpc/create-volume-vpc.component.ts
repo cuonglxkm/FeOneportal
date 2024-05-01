@@ -12,6 +12,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
 import { debounceTime, Subject } from 'rxjs';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -23,76 +25,11 @@ export class CreateVolumeVpcComponent implements OnInit {
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoadingAction = false;
-  getAllVmResponse: GetAllVmModel;
-  listAllVMs: VmDto[] = [];
 
   volumeName = '';
-  vmList: NzSelectOptionInterface[] = [];
-  expiryTimeList = [
-    { label: '1', value: '1' },
-    { label: '3', value: '3' },
-    { label: '6', value: '6' },
-    { label: '9', value: '9' },
-    { label: '12', value: '12' },
-    { label: '24', value: '24' }
-  ];
-  snapshotList: NzSelectOptionInterface[] = [];
 
-  createDateVolume: Date = new Date();
-  endDateVolume: Date;
-
-  showWarningVolumeName = false;
-  contentShowWarningVolumeName: string;
-  showWarningVolumeType = false;
-  showWarningVolumeExpTime = false;
-
-
-  createVolumeInfo: CreateVolumeDto = {
-    volumeType: '',
-    volumeSize: 1,
-    description: '',
-    instanceToAttachId: null,
-    isMultiAttach: false,
-    isEncryption: false,
-    vpcId: null,
-    oneSMEAddonId: null,
-    serviceType: 2,
-    serviceInstanceId: 0, //ID Volume
-    customerId: null,
-    createDate: null,
-    expireDate: null,
-    saleDept: null,
-    saleDeptCode: null,
-    contactPersonEmail: null,
-    contactPersonPhone: null,
-    contactPersonName: null,
-    note: null,
-    createDateInContract: null,
-    am: null,
-    amManager: null,
-    isTrial: false,
-    offerId: null,
-    couponCode: null,
-    dhsxkd_SubscriptionId: null,
-    dSubscriptionNumber: null,
-    dSubscriptionType: null,
-    oneSME_SubscriptionId: null,
-    actionType: 1,
-    regionId: null,
-    serviceName: null,
-    typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
-    userEmail: null,
-    actorEmail: null,
-    createFromSnapshotId: null
-  };
-  volumeExpiryTime: number;
-
-  volumeStorage = 1;
-  isEncode = false;
-  isAddVms = false;
   isInitSnapshot = false;
   snapshot: any;
-  mota = '';
 
   selectedValueRadio = 'hdd';
 
@@ -113,7 +50,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     radio: [''],
     instanceId: [null as number],
     description: ['', Validators.maxLength(700)],
-    storage: [1, Validators.required],
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     isEncryption: [false],
     isMultiAttach: [false]
   });
@@ -126,11 +63,10 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   instanceSelected: number;
 
-  timeSelected: any;
 
   date: Date;
 
-  iops: number;
+  iops: number = 300;
 
   nameList: string[] = [];
 
@@ -140,15 +76,17 @@ export class CreateVolumeVpcComponent implements OnInit {
   isVisibleCreate: boolean = false;
   isLoadingCreate: boolean = false;
 
+  selectedValueHDD = true;
+  selectedValueSSD = false
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
-              private snapshotvlService: SnapshotVolumeService,
-              private route: ActivatedRoute,
               private notification: NzNotificationService,
               private router: Router,
               private fb: NonNullableFormBuilder,
               private instanceService: InstancesService,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
@@ -176,6 +114,35 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.dataSubjectStorage.next(value)
   }
 
+
+  onChangeStatusSSD() {
+    this.selectedValueSSD = true
+    this.selectedValueHDD = false
+
+    console.log('Selected option changed ssd:', this.selectedValueSSD);
+    if(this.selectedValueSSD) {
+      this.volumeCreate.volumeType = 'ssd'
+      if(this.validateForm.get('storage').value <= 40) {
+        this.iops = 400
+      } else {
+        this.iops = this.validateForm.get('storage').value * 10
+      }
+    }
+
+  }
+
+
+  onChangeStatusHDD() {
+    this.selectedValueHDD = true
+    this.selectedValueSSD = false
+    console.log('Selected option changed hdd:', this.selectedValueHDD);
+    // this.iops = this.validateForm.get('storage').value * 10
+    if(this.selectedValueHDD) {
+      this.volumeCreate.volumeType = 'hdd'
+      this.iops = 300
+    }
+
+  }
   ngOnInit() {
 
     if(this.validateForm.controls.storage.value <= 40) return (this.iops = 400);
@@ -195,16 +162,6 @@ export class CreateVolumeVpcComponent implements OnInit {
     }
   }
 
-  // regionChanged(region: RegionModel) {
-  //   this.region = region.regionId
-  //   this.validateForm.get('storage').reset()
-  // }
-  //
-  // projectChanged(project: ProjectModel) {
-  //   this.project = project.id
-  //   this.getListInstance()
-  // }
-
   onSwitchSnapshot() {
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
     console.log('snap shot', this.isInitSnapshot);
@@ -215,20 +172,6 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   snapshotSelectedChange(value: number) {
     this.snapshotSelected = value;
-  }
-
-  onChangeStatus() {
-    console.log('Selected option changed:', this.selectedValueRadio);
-    if(this.selectedValueRadio == 'hdd') {
-      this.iops = 300
-    }
-    if(this.selectedValueRadio == 'ssd') {
-      if(this.validateForm.get('storage').value <= 40) {
-        this.iops = 400
-      } else {
-        this.iops = this.validateForm.get('storage').value * 10
-      }
-    }
   }
 
   instanceSelectedChange(value: any) {
@@ -277,17 +220,6 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
-
-    // let currentDate = new Date();
-    // let lastDate = new Date();
-    // if(this.timeSelected == undefined || this.timeSelected == null) {
-    //   lastDate.setDate(currentDate.getDate() + 30);
-    // } else {
-    //   lastDate.setDate(currentDate.getDate() + this.timeSelected * 30);
-    // }
-    // this.volumeCreate.createDate = currentDate?.toISOString().substring(0, 19);
-    // this.volumeCreate.expireDate = lastDate?.toISOString().substring(0, 19);
-
     this.volumeCreate.saleDept = null;
     this.volumeCreate.saleDeptCode = null;
     this.volumeCreate.contactPersonEmail = null;
@@ -320,7 +252,7 @@ export class CreateVolumeVpcComponent implements OnInit {
       let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
       request.customerId = this.volumeCreate.customerId;
       request.createdByUserId = this.volumeCreate.customerId;
-      request.note = 'tạo volume';
+      request.note = this.i18n.fanyi('volume.notification.request.create');
       request.orderItems = [
         {
           orderItemQuantity: 1,
@@ -335,7 +267,7 @@ export class CreateVolumeVpcComponent implements OnInit {
           if (data != null) {
             if (data.code == 200) {
               this.isLoadingAction = false;
-              this.notification.success('Thành công', 'Yêu cầu tạo Volume thành công.');
+              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
               this.router.navigate(['/app-smart-cloud/volumes']);
             }
           } else {

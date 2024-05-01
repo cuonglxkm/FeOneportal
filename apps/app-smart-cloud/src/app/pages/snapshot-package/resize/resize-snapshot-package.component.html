@@ -17,6 +17,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -197,12 +198,12 @@
                   style="color: #ea3829"
                   nzAlign="right"
                 >
-                <b
-                *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</b>
-              <b *ngIf="orderItem == undefined">0 VNĐ</b>
+                <!-- <b
+                *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</b> -->
+              <!-- <b *ngIf="orderItem == undefined">0 VNĐ</b> -->
                 </span>
                 <span
-                  *ngIf="orderItem == undefined"
+                  
                   class="text-value"
                   style="color: #ea3829"
                   nzAlign="right"

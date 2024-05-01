@@ -1,12 +1,11 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
-      nzTheme="outline"
-      nz-popover
-      [nzPopoverContent]="'Gắn máy ảo'"
-      nzPopoverPlacement="bottom" (click)="showModalAttach()"></span>
+<img src="assets/imgs/add.svg" style="height: 20px; cursor: pointer;margin-right: 5px;"
+     nz-popover
+     [nzPopoverContent]="'Gắn'"
+     nzPopoverPlacement="bottom" disabled="true" (click)="showModalAttach()"/>
 <nz-modal [(nzVisible)]="isVisibleAttach" nzTitle="Gán Port"
           (nzOnCancel)="handleCancelAttach()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Gán Port</span>
+    <span class="text-modal-title">Gắn Port</span>
   </div>
   <div *nzModalContent>
     <nz-form-label>Chọn máy ảo</nz-form-label>
@@ -20,6 +19,7 @@
       <nz-option *ngFor="let item of listVm" [nzLabel]="item.name"
                  [nzValue]="item.cloudId"></nz-option>
     </nz-select>
+    <div *ngIf="isSelected" style="color: red;">Vui lòng chọn máy ảo</div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancelAttach()" class="button-cancel">

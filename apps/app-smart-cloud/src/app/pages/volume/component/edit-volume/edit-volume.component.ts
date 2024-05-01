@@ -4,16 +4,16 @@ import { EditSizeMemoryVolumeDTO, VolumeDTO } from '../../../../shared/dto/volum
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DataPayment, InstancesModel, ItemPayment } from '../../../instances/instances.model';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
-import { ProjectService } from '../../../../shared/services/project.service';
 import { now } from 'lodash';
 import { debounceTime, Subject } from 'rxjs';
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'app-extend-volume',
@@ -34,7 +34,7 @@ export class EditVolumeComponent implements OnInit {
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
     description: ['', Validators.maxLength(700)],
-    storage: [1, [Validators.required]],
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     radio: ['']
   });
 
@@ -64,11 +64,12 @@ export class EditVolumeComponent implements OnInit {
               private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
               private instanceService: InstancesService,
-              private projectService: ProjectService) {
+              private projectService: ProjectService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
-    this.volumeStatus.set('ERROR', 'LỖI');
-    this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
+    this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running').toUpperCase());
+    this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error').toUpperCase());
+    this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend').toUpperCase());
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
       if (value <= 40) return (this.iops = 400);

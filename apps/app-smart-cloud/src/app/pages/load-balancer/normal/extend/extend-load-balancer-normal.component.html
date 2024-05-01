@@ -1,1 +1,172 @@
-<p>extend-load-balancer-normal works!</p>
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Gia hạn Load Balancer'" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/create">Gia hạn Load Balancer</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">{{ 'app.load.balancer.info' | i18n }}</span>
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>{{ 'app.load.balancer.name' | i18n }} (<span style="color: red">*</span>)</span>
+              <img nz-popover
+                   [nzPopoverContent]="'validation.load.balancer.name.pattern' | i18n"
+                   nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.name" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>Gói dịch vụ (<span style="color: red">*</span>)</span>
+              <img nz-popover
+                   [nzPopoverContent]="titleTooltip"
+                   nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+              <ng-template #titleTooltip>
+                <div style="display: block;">
+                  <span><b>Max Connection:</b> Tổng số kết nối tối đa trên 1 giây </span><br>
+                  <span><b>Active Connection:</b> Tổng số kết nối hoạt động tối đa trong 1 giây</span><br>
+                  <span><b>Data transfer:</b> Dữ liệu được chuyển giao dưới dạng các bit và byte trên một phương tiện kỹ thuật số hoặc analog,<br>
+                  và quá trình này cho phép truyền thông kỹ thuật số hoặc analog và chuyển động của nó giữa các thiết bị</span><br>
+                </div>
+              </ng-template>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.offerName" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+        </nz-card>
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Thông tin gia hạn</span>
+          <nz-row style="margin-top: 20px;">
+            <nz-col nzSpan="12">
+              <span class="text-label">Ngày cấp dịch vụ: {{ loadBalancer.createDate | date:'dd/MM/yyyy' }}</span>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <span class="text-label">Ngày hết hạn: {{ loadBalancer.expiredDate | date:'dd/MM/yyyy' }} </span>
+            </nz-col>
+          </nz-row>
+          <nz-form-item style="margin-top: 10px;">
+            <nz-form-label nzFor="time">
+              <span class="text-label">Số tháng cần gia hạn thêm</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
+              <nz-input-number style="width:100%; margin-left: 0;" [nzAutoFocus]="true" class="input-custom"
+                               formControlName="time"
+                               nzMin="1" nzMax="100" nzStep="1" />
+              <ng-template #timeErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                <ng-container *ngIf="control.hasError('max') || control.hasError('min') || control.hasError('pattern')">
+                  Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-row>
+            <nz-col>
+              <nz-form-label>
+                <span style="color: #F50000;">Ngày hết hạn dự kiến: {{ estimateExpireDate | date: 'dd/MM/yyyy'}} </span>
+              </nz-form-label>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </form>
+    </nz-col>
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">Chi phí ước tính</span>
+        <div class="text-value" style="margin-top: 20px;">{{ 'app.load.balancer.name' | i18n }}</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ loadBalancer.name }}
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div class="text-value">{{ 'app.usage' | i18n }}</div>
+        <div style="margin-top: 10px" class="text-label">
+          <span *ngIf="loadBalancer?.internetFacing == true">Internet Facing</span>
+          <span *ngIf="loadBalancer?.internetFacing == false">Internal</span>
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div class="text-value">Subnet</div>
+        <div style="margin-top: 10px" class="text-label">{{ loadBalancer?.subnetName }}({{loadBalancer?.subnetAddress}}) </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div class="text-value">IP Address</div>
+        <div style="margin-top: 10px" class="text-label">{{ loadBalancer?.ipAddress }}</div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div class="text-value">Gói dịch vụ</div>
+        <div style="margin-top: 10px" class="text-label">{{ loadBalancer?.offerName }}</div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <nz-row style="margin-bottom: 10px" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-value"> Chi phí 1 tháng </span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
+                    nzAlign="right">
+              0 VND
+            </span>
+            <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
+                  nzAlign="right">
+              {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          " nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-label">Tổng thanh toán</span><br />
+            <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+              0 VND
+            </span>
+            <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+              {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col style="width: 100%">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
+                    [disabled]="validateForm.invalid">
+              <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;"/>
+              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Gia hạn</span>
+            </button>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</nz-content>

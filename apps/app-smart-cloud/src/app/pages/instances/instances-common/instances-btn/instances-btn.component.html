@@ -1,15 +1,15 @@
 <button nz-button nz-dropdown [nzDropdownMenu]="opMenu">
-  <span style="margin-right: 4px">Thêm</span
+  <span style="margin-right: 4px">{{ 'menu.more' | i18n }}</span
   ><img src="assets/imgs/arrow-down.svg" alt="" />
 </button>
 <nz-dropdown-menu #opMenu="nzDropdownMenu">
   <ul *ngIf="instancesModel" nz-menu>
-    <li nz-menu-item (click)="continue()">Gia hạn</li>
+    <li nz-menu-item (click)="continue()">{{ 'app.button.extend' | i18n }}</li>
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -18,13 +18,13 @@
       nz-menu-item
       (click)="openConsole()"
     >
-      Truy cập
+      {{ 'app.access' | i18n }}
     </li>
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
@@ -32,13 +32,13 @@
       nz-menu-item
       (click)="showModalRestart()"
     >
-      Khởi động lại
+      {{ 'app.reboot' | i18n }}
     </li>
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
@@ -46,30 +46,45 @@
       nz-menu-item
       (click)="showModalShutdown()"
     >
-      Tắt
+      {{ 'app.shutdown.instance' | i18n }}
     </li>
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        (instancesModel.taskState.toUpperCase() == 'SHUTOFF' ||
-          instancesModel.taskState.toUpperCase() == 'POWERING-OFF')
+        instancesModel.taskState.toUpperCase() == 'SHUTOFF'
       "
       nz-menu-item
       (click)="showModalStart()"
     >
-      Bật
+      {{ 'app.start.instance' | i18n }}
     </li>
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
-        instancesModel.taskState.toUpperCase() != 'ERROR'
+        !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+        instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
+        instancesModel.imageName.toUpperCase().includes('CIRROS')
+      "
+      nz-menu-item
+      [nzDisabled]="true"
+    >
+      {{ 'menu.account.reset.password' | i18n }}
+    </li>
+    <li
+      *ngIf="
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+        instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
+        !instancesModel.imageName.toUpperCase().includes('CIRROS')
       "
       nz-menu-item
       (click)="modalResetPassword()"
     >
-      Reset Password
+      {{ 'menu.account.reset.password' | i18n }}
     </li>
     <li nz-menu-item style="color: red" (click)="showModalDelete()">Xóa</li>
   </ul>
@@ -86,10 +101,12 @@
       [nzDescription]="customTemplateMessageDelete"
       nzShowIcon
     ></nz-alert>
-    <span class="text-label">
-      Để thực hiện xóa máy ảo {{ instancesModel.name }}, vui lòng nhập tên máy
-      ảo để xác nhận.
-    </span>
+    <span
+      class="text-label"
+      [innerHTML]="
+        'app.alert.delete.instance' | i18n : { name: instancesModel.name }
+      "
+    ></span>
     <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
       ><nz-form-control>
         <input
@@ -100,10 +117,10 @@
           (keyup.enter)="handleOkDelete()"
         />
         <div *ngIf="checkInputConfirm" style="color: #ff4d4f">
-          Vui lòng nhập đúng tên máy ảo
+          {{ 'validation.correct.instance.name' | i18n }}
         </div>
         <div *ngIf="checkInputEmpty" style="color: #ff4d4f">
-          Vui lòng nhập tên máy ảo
+          {{ 'validation.instance.name.required' | i18n }}
         </div>
       </nz-form-control></nz-form-item
     >
@@ -114,31 +131,31 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkDelete()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 <ng-template #customTemplateMessageDelete>
   <div>
-    Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và
-    <b>KHÔNG THỂ KHÔI PHỤC LẠI</b>.
+    {{ 'app.alert.delete.instance.warn' | i18n }}
+    <b>{{ 'app.alert.delete.instance.warn.next' | i18n }}</b>
   </div>
 </ng-template>
 
 <nz-modal
   [(nzVisible)]="isVisibleRestart"
-  nzTitle="Khởi động lại máy ảo"
+  [nzTitle]="'app.reboot.instance' | i18n"
   (nzOnCancel)="handleCancelRestart()"
 >
   <div *nzModalContent>
-    Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?
+    {{ 'app.alert.reboot.instance' | i18n }}
   </div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelRestart()">
@@ -146,45 +163,45 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkRestart()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleShutdown"
-  nzTitle="Tắt máy ảo"
+  [nzTitle]="'app.shutdown.instance' | i18n"
   (nzOnCancel)="handleCancelShutdown()"
 >
-  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện tắt máy ảo?</div>
+  <div *nzModalContent>{{ 'app.alert.shutdown.instance' | i18n }}</div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelShutdown()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkShutdown()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleResetPass"
-  nzTitle="Reset mật khẩu máy ảo"
+  [nzTitle]="'app.instances.reset.password' | i18n"
   (nzOnCancel)="handleCancelResetPassword()"
 >
   <div *nzModalContent>
@@ -196,9 +213,7 @@
       ></nz-alert>
       <ng-template #customTemplateMessageResetPassword>
         <div>
-          Nếu HĐH là Linux, hệ thống sẽ đặt lại mật khẩu cho tài khoản root. Nếu
-          HĐH là Windows, hệ thống sẽ đặt lại mật khẩu cho tài khoản
-          Administrator
+          {{ 'app.alert.reset.instance.password' | i18n }}
         </div>
       </ng-template>
       <nz-form-item>
@@ -208,12 +223,13 @@
           nz-checkbox
           [(ngModel)]="autoCreate"
           [ngModelOptions]="{ standalone: true }"
-          >Tự sinh</label
+          (ngModelChange)="changeAutoCreate()"
+          >{{ 'app.auto.generated' | i18n }}</label
         >
       </nz-form-item>
       <nz-form-item>
         <nz-form-control [nzErrorTip]="newpassErrorTpl">
-          <nz-form-label>Mật khẩu mới</nz-form-label>
+          <nz-form-label>{{ 'app.password.new' | i18n }}</nz-form-label>
           <nz-input-group [nzSuffix]="suffixTemplate">
             <input
               class="input-custom"
@@ -223,31 +239,34 @@
               placeholder=""
               [(ngModel)]="resetPassword"
               (input)="onInputChange($event)"
-              [disabled]="autoCreate"
             />
           </nz-input-group>
           <ng-template #newpassErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập trường mật khẩu mới
+              >{{ 'validation.password.new.required' | i18n }}
             </ng-container>
-            <ng-container *ngIf="control.hasError('pattern')"
-              >Mật khẩu phải chứa tối thiểu 12 ký tự, bao gồm các chữ số, chữ
-              hoa, chữ thường và ký hiệu đặc biệt</ng-container
-            >
+            <ng-container *ngIf="control.hasError('pattern')">{{
+              'validation.password.new.pattern' | i18n
+            }}</ng-container>
           </ng-template>
           <ng-template #suffixTemplate>
-            <i
-              nz-icon
-              [nzType]="'eye'"
+            <img
+              style="margin-top: -4px"
+              [src]="
+                passwordVisible
+                  ? 'assets/imgs/eye-close.svg'
+                  : 'assets/imgs/eye1.svg'
+              "
+              alt=""
               (click)="passwordVisible = !passwordVisible"
-            ></i>
+            />
           </ng-template>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item style="margin-bottom: 0px">
         <nz-form-control [nzErrorTip]="passRepeatErrorTpl">
-          <nz-form-label>Xác nhận mật khẩu</nz-form-label>
+          <nz-form-label>{{ 'app.password.confirm' | i18n }}</nz-form-label>
           <nz-input-group [nzSuffix]="suffixTemplateRepeat">
             <input
               class="input-custom"
@@ -257,26 +276,30 @@
               placeholder=""
               [(ngModel)]="resetPasswordRepeat"
               (input)="onInputChange($event)"
-              [disabled]="autoCreate"
             />
           </nz-input-group>
           <ng-template #suffixTemplateRepeat>
-            <i
-              nz-icon
-              [nzType]="'eye'"
+            <img
+              style="margin-top: -4px"
+              [src]="
+                passwordRepeatVisible
+                  ? 'assets/imgs/eye-close.svg'
+                  : 'assets/imgs/eye1.svg'
+              "
+              alt=""
               (click)="passwordRepeatVisible = !passwordRepeatVisible"
-            ></i>
+            />
           </ng-template>
           <div *ngIf="!check">
-            <span style="color: rgba(252, 16, 16, 1)"
-              >Mật khẩu không khớp nhau, vui lòng nhập lại</span
-            >
+            <span style="color: rgba(252, 16, 16, 1)">{{
+              'validation.password.confirm' | i18n
+            }}</span>
           </div>
         </nz-form-control>
         <ng-template #passRepeatErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')"
-            >Vui lòng nhập trường xác nhận mật khẩu</ng-container
-          >
+          <ng-container *ngIf="control.hasError('required')">{{
+            'validation.password.confirm.required' | i18n
+          }}</ng-container>
         </ng-template></nz-form-item
       >
     </form>
@@ -287,7 +310,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button
       nz-button
@@ -299,31 +322,31 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleStart"
-  nzTitle="Bật máy ảo"
+  [nzTitle]="'app.start.instance' | i18n"
   (nzOnCancel)="handleCancelStart()"
 >
-  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện bật máy ảo?</div>
+  <div *nzModalContent>{{ 'app.alert.start.instance' | i18n }}</div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelStart()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkStart()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

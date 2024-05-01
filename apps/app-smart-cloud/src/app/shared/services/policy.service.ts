@@ -24,7 +24,7 @@ export class PolicyService extends BaseService {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-      'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
     })
   };
 
@@ -225,5 +225,10 @@ export class PolicyService extends BaseService {
       }
     }
     return false;
+  }
+
+  getShareUsers(): Observable<any> {
+    localStorage.removeItem('ShareUsers')
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/share-users', this.httpOptions);
   }
 }

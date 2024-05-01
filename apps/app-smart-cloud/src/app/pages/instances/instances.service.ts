@@ -9,6 +9,7 @@ import { Flavors, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
+import { OfferDetail } from '../../shared/models/catalog.model';
 
 @Injectable({
   providedIn: 'root',
@@ -185,11 +186,10 @@ export class InstancesService extends BaseService {
 
   changePassword(id: number, newPassword: string) {
     let url_ = `/instances/${id}/change_password?newPassword=${newPassword}`;
-    return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      '',
-      this.httpOptions
-    );
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + url_, '', {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+    });
   }
 
   rebuild(data: any) {
@@ -250,10 +250,10 @@ export class InstancesService extends BaseService {
 
   updatePortVM(data: any) {
     let url_ = `/instances/updateport`;
-    return this.http.put<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      data
-    );
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + url_, data, {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+    });
   }
 
   getListOffers(regionId: number, unitOfMeasure: string): Observable<any> {
@@ -282,9 +282,14 @@ export class InstancesService extends BaseService {
       );
   }
 
-  getListOffersByProductId(productId: string): Observable<any> {
-    return this.http.get<any>(
-      `${this.baseUrl + this.ENDPOINT.catalogs}/offers?productId=${productId}`
+  getListOffersByProductId(
+    productId: string,
+    regionId: string
+  ): Observable<OfferDetail[]> {
+    return this.http.get<OfferDetail[]>(
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/offers?productId=${productId}&regionId=${regionId}`
     );
   }
 

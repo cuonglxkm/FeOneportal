@@ -76,22 +76,31 @@
         <one-portal-delete-port [region]="region"
                                 [project]="project"
                                 [id]="index.id"
+                                [attach]="index.instanceName"
                                 (onOk)="handleOkDeletePort()"/>
       </div>
 
     </td>
     <td *ngIf="index.attachedDevice.includes('network:dhcp')">
       <div *ngIf="!(index.instanceName)" >
-                <span style="margin-right: 10px; color: #E6E6E6; cursor: not-allowed;" nz-icon nzType="plus"
-                      nzTheme="outline"></span>
-        <span style="margin-right: 20px; color: #E6E6E6; cursor: not-allowed;"
-              nz-icon nzType="delete" nzTheme="outline"></span>
+        <img src="assets/imgs/add.svg" style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%); margin-right: 5px;"
+             nz-popover
+             [nzPopoverContent]="'Gắn'"
+             nzPopoverPlacement="bottom" disabled="true"/>
+        <img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
+             nz-popover
+             [nzPopoverContent]="'Xóa'"
+             nzPopoverPlacement="bottom" disabled="true"/>
       </div>
       <div *ngIf="(index.instanceName)">
-                <span style="margin-right: 10px; color: #E6E6E6; cursor: not-allowed;" nz-icon nzType="close"
-                      nzTheme="outline"></span>
-        <span style="margin-right: 20px; color: #E6E6E6; cursor: not-allowed;"
-              nz-icon nzType="delete" nzTheme="outline"></span>
+        <img src="assets/imgs/cancel.svg" style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%); margin-right: 5px;"
+             nz-popover
+             [nzPopoverContent]="'Gỡ'"
+             nzPopoverPlacement="bottom" disabled="true"/>
+        <img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
+             nz-popover
+             [nzPopoverContent]="'Xóa'"
+             nzPopoverPlacement="bottom" disabled="true"/>
       </div>
     </td>
   </tr>

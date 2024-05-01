@@ -1,6 +1,6 @@
 <one-portal-header
-  title="Chỉnh sửa Policy"
-  [path]="['Home', 'IAM', 'Policies', 'Edit policy' ]"
+  [title]="'app.breadcrumb.edit-policy' | i18n"
+  [path]="['app.breadcrumb.home' | i18n, 'IAM', 'Policies', 'app.breadcrumb.edit-policy' | i18n ]"
   [regionId]="region"
   (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
 />
@@ -10,9 +10,7 @@
       <div nz-row class="mb-md">
         <div nz-col nzSpan="18">
           <h3>Policy editor</h3>
-          <p style="color: #888;">Thêm quyền bằng cách chọn dịch vụ,hành động,tài nguyên và điều kiện hoặc xây dựng câu
-            lệnh
-            bằng trình soạn thảo JSON</p>
+          <p style="color: #888;">{{'app.edit-policy.des' | i18n}}</p>
         </div>
         <div nz-col nzSpan="6">
           <div class="text-right" style="display: flex;align-items: center;justify-content: flex-end;height: 100%;">
@@ -28,19 +26,19 @@
     <nz-card *ngFor="let panel of panels">
       <nz-collapse nzBordered="false">
         <nz-collapse-panel
-          [nzHeader]="panel.name==null?'Chọn dịch vụ':panel.name"
+          [nzHeader]="panel.name==null?('app.create-policy.chooseService' | i18n):panel.name"
         >
 
 
           <div nz-row class="mb-md">
             <div nz-col nzSpan="18">
               <p style="margin:0; opacity: 0.5">
-                Chỉ định những hành động nào có thể được thực hiện trên các tài nguyên cụ thể trong một dịch vụ.
+                {{'app.edit-policy.des2' | i18n}}
               </p>
             </div>
             <div nz-col nzSpan="6">
               <div class="text-right" style="display: flex;align-items: center;justify-content: flex-end;height: 100%;">
-                <button (click)="deleteService(panel)" nz-button [nzType]="'default'">Xóa
+                <button (click)="deleteService(panel)" nz-button [nzType]="'default'">{{'app.users.deleteUser.deleteUsers' | i18n}}
                 </button>
               </div>
             </div>
@@ -49,7 +47,7 @@
           <br>
 
           <nz-select nzSize="default"
-                     [nzPlaceHolder]="'-Chọn dịch vụ-'"
+                     [nzPlaceHolder]="'-'+('app.create-policy.chooseService' | i18n)+'-'"
                      [(ngModel)]="panel.idService"
                      (ngModelChange)="changeService(panel)"
                      style="width: 100%;"
@@ -74,8 +72,8 @@
                 [(nzChecked)]="checkedAll"
                 (nzCheckedChange)="onAllChecked($event, panel)"
               ></th>
-              <th>Permission Policíe</th>
-              <th>Mô tả</th>
+              <th>Permission Policies</th>
+              <th>{{'app.service.description' | i18n}}</th>
             </tr>
             </thead>
             <tbody>
@@ -100,7 +98,7 @@
 
     <button (click)="addService()"
             nz-button nzType="primary"
-    >Thêm Permission policies
+    > {{'app.create-policy.add' | i18n}}
     </button>
 
     <br>
@@ -110,10 +108,10 @@
       [nzBodyStyle]="{ 'padding': '30px' }"
     >
       <div class="footer-detail">
-        <button class="buttonBack" nz-button nzType="default" (click)="backToListPage()">Quay lại
+        <button class="buttonBack" nz-button nzType="default" (click)="backToListPage()">{{'app.button.back' | i18n}}
         </button>
         <button class="buttonEdit" nz-button nzType="primary"
-                (click)="editPolicy()">Chỉnh sửa
+                (click)="editPolicy()">{{'app.button.update' | i18n}}
         </button>
       </div>
     </nz-card>

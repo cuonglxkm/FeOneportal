@@ -5,13 +5,13 @@ import {
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
 import { User, UserCreate, UserGroup } from 'src/app/shared/models/user.model';
 import { LoadingService } from '@delon/abc/loading';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { RegionModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-add-to-group',

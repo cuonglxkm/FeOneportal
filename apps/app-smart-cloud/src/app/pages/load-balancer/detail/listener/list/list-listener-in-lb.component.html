@@ -1,38 +1,47 @@
 <nz-table #fixedTable
           style="margin-top: 20px;"
-          [nzShowPagination]="false"
-          [nzData]="listListeners || []"
+          nzShowPagination
+          [nzData]="currentPageData || []"
           [nzFrontPagination]="false"
-          [nzLoading]="isLoading">
+          [nzLoading]="isLoading"
+          [nzTotal]="listListeners.length"
+          [nzPageSize]="5"
+          [nzPageIndex]="pageIndex"
+          (nzPageSizeChange)="onPageSizeChange($event)"
+          (nzPageIndexChange)="onPageIndexChange($event)">
 
   <thead>
   <tr>
-    <th>Tên Listener</th>
-    <th>Giao thức</th>
+    <th>{{ 'app.listener.name' | i18n }}</th>
+    <th>{{ 'app.protocol' | i18n }}c</th>
     <th>Port</th>
-    <th>Hoạt động</th>
-    <th>Trạng thái</th>
-    <th>Hoạt động</th>
+    <th>{{ 'app.text.status' | i18n }}</th>
+    <th>{{ 'app.task.status' | i18n }}</th>
+    <th>{{ 'app.activity' | i18n }}</th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let data of fixedTable.data">
-    <td nzAlign="left">{{ data.name }}</td>
+    <td nzAlign="left"><a [routerLink]="'/app-smart-cloud/load-balancer/'+ idLB +'/listener/detail/' + data.id">{{ data.name }}</a></td>
     <td nzAlign="left">{{ data.protocol }}</td>
     <td nzAlign="right">{{ data.port }}</td>
-    <td nzAlign="left">{{ data.status }}</td>
-    <td nzAlign="left">{{ data.status }}</td>
+    <td nzAlign="left">
+      <span *ngIf="data.status === 'KHOITAO'"
+            style="color: #0066B3" class="text-label"><b>{{ listenerStatus.get(data.status) }}</b></span>
+      <span *ngIf="data.status === 'ERROR'"
+            style="color: #FF3333" class="text-label"><b>{{ listenerStatus.get(data.status) }}</b></span>
+    </td>
+    <td nzAlign="left">{{ data.provisioningStatus }}</td>
     <td>
-      <span nz-icon
-            style="color: #0066B3; margin-right: 10px; cursor: pointer;"
-            nzType="edit" nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="'Chỉnh sửa'"
-            nzPopoverPlacement="bottom"></span>
-      <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
-            nzTheme="outline" nz-popover
-            [nzPopoverContent]="'Xóa'"
-            nzPopoverPlacement="bottom"></span>
+      <img nz-popover src="assets/imgs/edit-2.svg"
+           alt=""
+           nzPopoverPlacement="bottom"
+           style="cursor: pointer; margin-right: 16px"
+           [nzPopoverContent]="'app.text.edit' | i18n" [routerLink]="'/app-smart-cloud/load-balancer/'+ idLB +'/listener/update/' + data.id"/>
+      <img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
+           nz-popover
+           [nzPopoverContent]="'app.delete' | i18n"
+           nzPopoverPlacement="bottom"/>
     </td>
   </tr>
   </tbody>

@@ -1,14 +1,14 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Quản lý IP Floating'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="('kafka.detail.manage' |i18n)+ ' IP Floating'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>Networks</nz-breadcrumb-item>
-      <nz-breadcrumb-item>IP Floating</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/networks/ip-floating/list']">IP Floating</a></nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="region"
                                (valueChanged)="projectChange($event)"
@@ -18,7 +18,7 @@
 </page-header>
 <nz-content>
   <nz-card>
-    <span class="text-card-header">Danh sách địa chỉ IP Floating</span>
+    <span class="text-card-header">{{'app.ip.floating1' | i18n}} IP Floating</span>
     <nz-row nzJustify="space-between" style="margin-top: 20px;">
       <nz-col nzSpan="16">
         <nz-input-group [nzPrefix]="prefixIconSearch"
@@ -26,16 +26,16 @@
                         style="width: 300px;">
           <input name="name"
                  nz-input
-                 placeholder="Tìm kiếm"
+                 placeholder="{{'app.button.search' | i18n}}"
                  [(ngModel)]="value"
                  (input)="onInputChange($event.target['value'])"/>
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{'app.button.search' | i18n}}"/>
         </ng-template>
       </nz-col>
       <nz-col nzSpan="8" style="flex:none;">
-        <one-portal-create-ip-floating [region]="region" [project]="project" (onOk)="handleOkCreateIpFloating()" />
+        <one-portal-create-ip-floating [region]="region" [project]="project" [projectType]="projectType" (onOk)="handleOkCreateIpFloating()" />
       </nz-col>
     </nz-row>
     <nz-table #fixedTable
@@ -50,11 +50,11 @@
               [nzLoading]="isLoading">
       <thead>
       <tr>
-        <th>Địa chỉ IP Floating</th>
+        <th>{{'app.ip.floating2' | i18n}}</th>
         <th>Mapped Fixed IP Address</th>
         <th>Network</th>
-        <th>Type</th>
-        <th>Thao tác</th>
+        <th>{{'app.create-user.type' | i18n}}</th>
+        <th>{{'app.action-history.operation' | i18n}}</th>
       </tr>
       </thead>
       <tbody>
@@ -78,6 +78,9 @@
                                            [project]="project"
                                            [idIpFloating]="data.id"
                                            (onOk)="handleOkDetachIpFloating()" />
+            <img *ngIf="projectType == 0" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+                 nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Floating" nzTooltipPlacement="bottom"
+                 [routerLink]="['/app-smart-cloud/networks/ip-floating-normal/' + data.id + '/extend']"/>
             <div *ngIf="data.typeIP.includes('IP WAN')">
               <div *ngIf="data.ipAddress != null || data.ipAddress != ''">
                 <one-portal-delete-ip-floating [region]="region"

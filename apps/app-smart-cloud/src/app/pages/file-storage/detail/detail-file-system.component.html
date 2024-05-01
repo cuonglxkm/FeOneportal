@@ -1,0 +1,144 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Chi tiết File System'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Quản lý File System
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/{{ fileSystemId }}'">{{ fileSystemName }}
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+  <div *ngIf="typeVpc == 0" style="display: flex">
+    <div style="margin-right: 8px;">
+      <div nz-col nzSpan="4">
+        <button class="button-fee"
+                nz-button
+                nzType="primary" (click)="navigateToExtend()">
+          <img src="assets/imgs/redo.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
+          <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
+        </button>
+      </div>
+    </div>
+    <div nz-col nzSpan="4">
+      <button class="button-cancel" (click)="navigateToResize(typeVpc)"
+              nz-button nzType="default">
+        <img src="assets/imgs/edit-2.svg" alt=""
+             style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
+        <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
+      </button>
+    </div>
+  </div>
+  <div *ngIf="typeVpc == 1" style="display: flex">
+    <div nz-col nzSpan="4">
+      <button class="button-cancel" (click)="navigateToResize(typeVpc)"
+              nz-button nzType="default">
+        <img src="assets/imgs/edit-2.svg" alt=""
+             style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
+        <span style="margin-left: 5px;">{{ 'app.button.resize' | i18n }}</span>
+      </button>
+    </div>
+  </div>
+</page-header>
+<nz-content>
+  <nz-card style="border-radius: 8px;">
+    <form nz-form nzLayout="vertical">
+      <span class="text-card-header" style="margin-bottom: 15px;">Thông tin File System</span>
+      <nz-row nzJustify="space-between" nzGutter="24" style="margin-top: 24px;">
+        <nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label>
+              <span>ID</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.shareCloudId }}"
+                     [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>Loại File System</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.type }}"
+                     [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>Trạng thái</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.status }}"
+                     [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>Dung lượng</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.size }}"
+                     [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label>
+              <span>Tên File System</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.name}}"
+                     [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>{{ 'app.protocol' | i18n }}</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.shareProto }}"
+                     [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>Mount target address</span>
+            </nz-form-label>
+            <nz-form-control>
+              <div class="input-container">
+                <input nz-input class="input-custom" style="width: 100%;" value="{{ fileSystem?.mountTargetAddress}}"
+                       [disabled]="true" />
+                <img src="assets/imgs/icon_copy1.svg" alt="Copy" nz-tooltip="Copy"
+                     (click)="copyText(fileSystem?.mountTargetAddress)"
+                     style="margin-right: 10px; filter: grayscale(100%) brightness(170%);" />
+              </div>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+      <nz-form-item>
+        <nz-form-label>
+          <span>{{ 'app.service.description' | i18n }}</span>
+        </nz-form-label>
+        <nz-form-control>
+          <nz-textarea-count [nzMaxCharacterCount]="255">
+            <textarea nz-input rows="4" value="{{ fileSystem?.description }}" [disabled]="true"></textarea>
+          </nz-textarea-count>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-card>
+</nz-content>

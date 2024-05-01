@@ -1,0 +1,61 @@
+h3 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+::ng-deep .form-new .ant-input {
+    border-radius: 8px !important;
+    /* min-height: 40px; */
+}
+
+.label-price {
+    font-size: 16px;
+    margin: 12px 0 0 12px;
+}
+
+.label-quantity {
+    margin: 4px 0 12px 12px;
+    font-size: 14px;
+}
+
+.value-price {
+    color: #0066b3;
+    font-weight: 600;
+    width: 100%;
+    font-size: 16px;
+    text-align: right;
+    float: right;
+    margin: 12px 12px 0 0;
+}
+
+.total-price {
+    color: #ea3829 !important;
+}
+
+.border-card {
+    border-radius: 8px;
+}
+
+.divider-style {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.price-panel {
+    background-color: #cce9ff;
+    border-radius: 5px;
+}
+
+#general {
+    font-size: 16px;
+    line-height: 40px;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.input-error {
+    font-size: 14px;
+    color: #ea3829;
+}

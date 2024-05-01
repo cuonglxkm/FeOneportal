@@ -1,15 +1,15 @@
 <page-header [breadcrumb]="breadcrumb"
-             [title]="'Danh sách User Groups'">
+             [title]="'app.user-group.userGroupList' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">IAM</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        User Groups
+        {{ 'app.breadcrumb.user-group' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -56,7 +56,7 @@
           <input
             name="name"
             nz-input
-            placeholder="Tìm kiếm tên, thời gian tạo ..."
+            [placeholder]="'app.users.search' | i18n"
           />
         </nz-input-group>
         <ng-template #prefixIconSearch>
@@ -97,7 +97,7 @@
             src="assets/imgs/add-circle.svg"
             alt=""
           />
-          <span class="button-text-primary">Tạo mới</span>
+          <span class="button-text-primary">{{"app.users.button.create" | i18n}}</span>
         </button>
       </nz-space>
     </nz-row>
@@ -130,10 +130,9 @@
             nzLabel="Select all"
             [nzWidth]="'50px'"
             (nzCheckedChange)="onAllChecked($event)" nzLeft></th>
-        <th nzLeft>Tên Group</th>
-        <th nzBreakWord>Số lượng users</th>
-        <th nzBreakWord>Group Parent</th>
-        <th nzBreakWord>Thời gian tạo</th>
+        <th nzLeft>{{"app.create-user.nameGroup" | i18n}}</th>
+        <th nzBreakWord>{{"app.iam-dashboard.numberOfUser" | i18n}}</th>
+        <th nzBreakWord>{{"app.create-user.createDate" | i18n}}</th>
       </tr>
       </thead>
       <tbody>
@@ -149,7 +148,7 @@
         </td>
         <td nzBreakWord>{{data.userOfGroup}}</td>
         <td *ngIf="data.parent === null" nzBreakWord></td>
-        <td *ngIf="data.parent !== null" nzBreakWord>{{ data.parent }}</td>
+        <!-- <td *ngIf="data.parent !== null" nzBreakWord>{{ data.parent }}</td> -->
         <td>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
       </tr>
       </tbody>

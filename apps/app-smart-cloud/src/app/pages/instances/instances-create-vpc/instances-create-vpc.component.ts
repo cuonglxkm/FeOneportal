@@ -25,7 +25,6 @@ import { Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
 import { Observable, finalize, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
@@ -41,6 +40,7 @@ import {
 } from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -289,6 +289,7 @@ export class InstancesCreateVpcComponent implements OnInit {
   getListNetwork(): void {
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
     formSearchNetwork.region = this.region;
+    formSearchNetwork.project = this.projectId;
     formSearchNetwork.pageNumber = 0;
     formSearchNetwork.pageSize = 9999;
     formSearchNetwork.vlanName = '';

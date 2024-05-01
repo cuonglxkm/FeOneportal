@@ -1,1 +1,50 @@
-<p>list-pool-load-balancer works!</p>
+<nz-table #fixedTable
+          style="margin-top: 20px;"
+          nzShowPagination
+          [nzData]="currentPageData || []"
+          [nzFrontPagination]="false"
+          [nzLoading]="isLoading"
+          [nzTotal]="poolList?.length"
+          [nzPageSize]="pageSize"
+          [nzPageIndex]="pageIndex"
+          (nzPageSizeChange)="onPageSizeChange($event)"
+          (nzPageIndexChange)="onPageIndexChange($event)">
+
+  <thead>
+  <tr>
+    <th>{{ 'app.pool.name' | i18n }}</th>
+    <th>{{ 'app.protocol' | i18n }}c</th>
+    <th>{{ 'app.algorithm' | i18n }}</th>
+    <th>{{ 'app.text.status' | i18n }}</th>
+    <th>{{ 'app.task.status' | i18n }}</th>
+    <th>{{ 'app.activity' | i18n }}</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of fixedTable.data">
+    <td nzAlign="left">
+      <a nz-tooltip nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom"
+         (click)="detailPool(data.id)">{{ data.name }}</a>
+    </td>
+    <td nzAlign="left">{{ data.protocol }}</td>
+    <td nzAlign="left">{{ data.algorithm }}</td>
+    <td nzAlign="left">{{ data.operatingStatus }}</td>
+    <td nzAlign="left">{{ data.provisioningStatus }}</td>
+    <td>
+      <one-portal-edit-pool-in-lb [region]="region"
+                                  [project]="project"
+                                  [poolId]="data.id"
+                                  [loadBlancerId]="idLB"
+                                  [listenerId]="data.listener_id"
+                                  (onOk)="handleEditOk()" />
+      <one-portal-delete-pool-in-lb [region]="region"
+                                    [project]="project"
+                                    [poolId]="data.id"
+                                    [loadBlancerId]="idLB"
+                                    [listenerId]="data.listener_id"
+                                    [namePool]="data.name"
+                                    (onOk)="handleDeleteOk()" />
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

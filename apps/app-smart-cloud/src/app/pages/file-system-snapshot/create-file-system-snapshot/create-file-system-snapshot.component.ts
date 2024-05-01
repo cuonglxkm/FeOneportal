@@ -6,11 +6,9 @@ import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FileSystemModel, FormSearchFileSystem } from 'src/app/shared/models/file-system.model';
 import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 
 
 @Component({
@@ -30,7 +28,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
   isCheckBegin: boolean = false;
   customerId: number;
   selectedFileSystemName: string;
-
+  
   formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot = new FormCreateFileSystemSnapShot();
 
   form: FormGroup<{
@@ -75,6 +73,8 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
         this.response = null;
       });
   }  
+
+
 
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject()
@@ -130,11 +130,14 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
           },
           (error) => {
             this.isLoading = false
-            this.notification.error(
-              'Thất bại',
-              'Tạo mới file system snapshot thất bại'
-            );
-            console.log(error);
+            if (error.status === 500) {
+              this.notification.error('Thất bại', 'Chỉ có thể tạo khi trạng thái của file system là Khởi tạo');
+            }else{
+              this.notification.error(
+                'Thất bại',
+                'Tạo mới file system snapshot thất bại'
+              );
+            }
           }
         );
     }

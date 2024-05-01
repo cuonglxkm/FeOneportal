@@ -1,37 +1,42 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
-      nzTheme="outline" nz-popover
-      [nzPopoverContent]="'Xóa'"
-      nzPopoverPlacement="bottom" (click)="showModal()"></span>
+<img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
+     nz-popover
+     [nzPopoverContent]="'app.delete' | i18n"
+     nzPopoverPlacement="bottom" (click)="showModal()"/>
+<!--<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"-->
+<!--      nzTheme="outline" nz-popover-->
+<!--      [nzPopoverContent]="'app.delete' | i18n"-->
+<!--      nzPopoverPlacement="bottom" (click)="showModal()"></span>-->
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Xác nhận xóa Load Balancer {{ nameLoadBalancer }}</span>
+    <span class="text-modal-title" [innerHTML]="'app.title.delete.load.balancer' | i18n: {name: nameLoadBalancer}"></span>
   </div>
   <div *nzModalContent>
     <nz-alert nzBanner
               nzShowIcon
-              [nzMessage]="'Bạn đang thực hiện xóa Load Balancer.'">
+              [nzDescription]="'app.alert.delete.load.balancer' | i18n: {name: nameLoadBalancer}">
     </nz-alert>
     <div style="margin-top: 10px;">
-      <span class="text-label">Đế thực hiện xoá Blancer {{ nameLoadBalancer }}, vui lòng nhập tên Balancer để xác nhận.</span>
-      <input nz-input
+      <span class="text-label" [innerHTML]="'app.note.delete.load.balancer' | i18n: {name: nameLoadBalancer}"></span>
+      <input nz-input #loadBalancerInputName
              style="margin-top: 10px;"
              class="input-custom"
              [ngModel]="value"
+             (keydown.enter)="focusOkButton($event)"
              (ngModelChange)="onInput($event)"
              [placeholder]="'Nhập tên LoadBalancer'"/>
-      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên LoadBalancer</span>
+      <span *ngIf="isInput" style="color: red;">{{ 'validation.correct.load.balancer.name' | i18n }}</span>
     </div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary"
             (click)="handleOk()"
             [nzLoading]="isLoading"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

@@ -3,9 +3,7 @@ import { Router } from '@angular/router';
 import { VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
-import { BaseResponse, NotificationService } from '../../../../../../../../libs/common-utils/src';
+import { BaseResponse, NotificationService, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -68,7 +66,7 @@ export class VolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    this.getListVolume(true)
+    this.getListVolume(true);
   }
 
   projectChanged(project: ProjectModel) {
@@ -164,7 +162,7 @@ export class VolumeComponent implements OnInit {
   handleOkDetachVm() {
     setTimeout(() => {
       this.getListVolume(false);
-    }, 1500)
+    }, 1500);
   }
 
   handleOkDelete() {
@@ -189,12 +187,12 @@ export class VolumeComponent implements OnInit {
 
   navigateToCreateScheduleBackup(id) {
     this.router.navigate(['/app-smart-cloud/schedule/backup/create'], {
-      queryParams: {type: 'VOLUME', idVolume: id}
+      queryParams: { type: 'VOLUME', idVolume: id }
     });
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/volume/create'])
+    this.router.navigate(['/app-smart-cloud/volume/create']);
   }
 
   ngOnInit() {
@@ -206,8 +204,8 @@ export class VolumeComponent implements OnInit {
     this.volumeService.model.subscribe(data => {
       console.log(data);
     });
-    if(!this.region && !this.project){
-      this.router.navigate(['/exception/500'])
+    if (!this.region && !this.project) {
+      this.router.navigate(['/exception/500']);
     }
     // this.getListVm()
     // this.getListVolume(true)

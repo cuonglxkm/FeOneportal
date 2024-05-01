@@ -5,12 +5,9 @@ import {
   Input,
   OnInit,
   Output,
-  TemplateRef,
 } from '@angular/core';
 import { InstancesService } from '../../instances.service';
 import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import {
   InstancesModel,
   Network,
@@ -19,6 +16,8 @@ import {
 } from '../../instances.model';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { LoadingService } from '@delon/abc/loading';
 
 @Component({
   selector: 'one-portal-network-detail',
@@ -36,17 +35,16 @@ export class NetworkDetailComponent implements OnInit {
   listSecurityGroup: SecurityGroupModel[] = [];
   selectedSecurityGroup: any[] = [];
   listOfDataNetwork: Network[] = [];
-  updatePortInstance: UpdatePortInstance = new UpdatePortInstance();
   loading: boolean = true;
 
   portId: string; //sau chị Sim gán giá trị này cho em nhé để truyền vào param
 
   constructor(
     private dataService: InstancesService,
-    private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private route: Router,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private loadingSrv: LoadingService
   ) {}
 
   ngOnInit(): void {
@@ -83,36 +81,55 @@ export class NetworkDetailComponent implements OnInit {
     });
   }
 
-  // onChangeSecurityGroup(even?: any) {
-  //   this.updatePortInstance.securityGroup = even;
-  // }
-
-  editPort(tpl: TemplateRef<{}>, id: any): void {
-    this.selectedSecurityGroup = this.listOfDataNetwork.filter(
-      (e) => (e.id = id)
-    )[0].security_groups;
-    this.modalSrv.create({
-      nzTitle: 'Chỉnh sửa Port',
-      nzContent: tpl,
-      nzOkText: 'Chỉnh sửa',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        this.updatePortInstance.portId = id;
-        this.updatePortInstance.regionId = this.instancesModel.regionId;
-        this.updatePortInstance.customerId = this.instancesModel.customerId;
-        this.updatePortInstance.vpcId = this.instancesModel.projectId;
-        this.updatePortInstance.securityGroup = this.selectedSecurityGroup;
-        this.updatePortInstance.portSecurityEnanble = true;
-        console.log('Update Port VM', this.updatePortInstance);
-        this.dataService.updatePortVM(this.updatePortInstance).subscribe();
-        this.notification.success('', 'Chỉnh sửa port thành công!');
-        this.route.navigate(['/app-smart-cloud/instances']);
-      },
+  form: FormGroup;
+  isVisibleEditPort: boolean = false;
+  portSecurity: boolean;
+  listSGselected: string[] = [];
+  networkEdit: Network = new Network();
+  showModalEditPort(data: Network) {
+    this.form = new FormGroup({
+      securityGroups: new FormControl([], {
+        validators: [Validators.required],
+      }),
     });
+    this.networkEdit = data;
+    this.portSecurity = this.networkEdit.port_security_enabled;
+    this.listSGselected = this.networkEdit.security_groups;
+    this.isVisibleEditPort = true;
   }
 
-  projectChange(project: any) {
-    this.valueChanged.emit(project);
+  handleOkEditPort() {
+    this.isVisibleEditPort = false;
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    let updatePortInstance = new UpdatePortInstance();
+    updatePortInstance.portId = this.networkEdit.id;
+    updatePortInstance.regionId = this.instancesModel.regionId;
+    updatePortInstance.customerId = this.instancesModel.customerId;
+    updatePortInstance.vpcId = this.instancesModel.projectId;
+    updatePortInstance.securityGroup = this.listSGselected;
+    updatePortInstance.portSecurityEnanble = this.portSecurity;
+    console.log('Update Port VM', updatePortInstance);
+    this.dataService
+      .updatePortVM(updatePortInstance)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.notification.success('', 'Chỉnh sửa port thành công');
+          this.valueChanged.emit(data);
+          this.getNetworkAndSecurityGroup();
+        },
+        error: (e) => {
+          this.notification.error('', 'Chỉnh sửa port không thành công');
+        },
+      });
+  }
+
+  handleCancelEditPort() {
+    this.isVisibleEditPort = false;
   }
 
   navigateToCreate() {

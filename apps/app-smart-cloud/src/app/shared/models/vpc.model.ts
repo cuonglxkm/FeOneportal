@@ -33,6 +33,8 @@ export class VpcModel {
   serviceStatus: string;
   suspendType: string;
   contractCode: string;
+  loadBalancerPackageName: string;
+  vpnSiteToSiteOfferName: string;
 }
 
 export class TotalVpcResource {
@@ -53,5 +55,7 @@ export class TotalVpcResource {
     loadBalancerSdnCount: number;
     ipv6Count: number;
     quotaShareSnapshotInGb: number;
+    ipFloatingCount: number;
+    quotaShareInGb: number;
   }
 }

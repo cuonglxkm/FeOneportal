@@ -1,7 +1,7 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'Quản lý Object'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/object-storage/bucket']">Bucket</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a>Chi tiết Bucket</a></nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -44,7 +44,7 @@
       <div style="display:flex;">
         <nz-input-group style="margin-right: 8px; width: 60%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
                         nzSize="large">
-          <input (keyup.enter)="loadData()" [(ngModel)]="folderNameLike" nz-input placeholder="Tìm kiếm"/>
+          <input (keyup.enter)="loadData()" [(ngModel)]="folderNameLike" nz-input [nz-tooltip]="'app.button.search' | i18n"/>
         </nz-input-group>
         <ng-template #suffixIconSearch>
           <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm theo tên"
@@ -82,9 +82,9 @@
     </ng-container>
   </div>
   <!-- Bảng-->
-  <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfData"
-            [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
-            (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
+  <nz-table #rowSelectionTable [nzData]="listOfData"
+            [nzTotal]="total" [nzFrontPagination]="false" [nzPageSize]="pageSize" (nzPageSizeChange)="onPageSizeChange($event)"
+            (nzPageIndexChange)="onPageIndexChange($event)" [nzPageIndex]="pageIndex" [nzLoading]="loading">
     <thead>
     <tr>
       <th
@@ -101,11 +101,10 @@
     </tr>
     </thead>
     <tbody>
-    <ng-container *ngFor="let item of listOfData">
-      <tr>
+      <tr *ngFor="let item of rowSelectionTable.data">
         <td [nzChecked]="setOfCheckedId.has(item.key)"
             (nzCheckedChange)="onItemChecked(item.key , $event)"></td>
-        <td *ngIf="item.objectType != 'folder'">{{item.key}}</td>
+        <td *ngIf="item.objectType != 'folder'">{{item.keyName}}</td>
         <td *ngIf="item.objectType == 'folder'" style="color: #0074CC" (click)="toFolder2(item.key + '/')">
           <img style="padding-right: 5px;" src="assets/imgs/folder.svg" alt=""/>
           {{item.key}}
@@ -154,7 +153,6 @@
           </div>
         </td>
       </tr>
-    </ng-container>
     </tbody>
   </nz-table>
 </nz-card>
@@ -247,13 +245,13 @@
   </ng-container>
 </nz-modal>
 <!--Tải file lên-->
-<nz-modal [(nzVisible)]="isVisibleUploadFile" nzTitle="Tải File lên" (nzOnCancel)="isVisibleUploadFile = false"
-          (nzOnOk)="uploadFile()" nzOkText="Tải lên tất cả"
+<nz-modal [(nzVisible)]="isVisibleUploadFile" nzTitle="Tải File lên" (nzOnCancel)="handleCancelUploadFile()"
+          (nzOnOk)="uploadAllFile()" nzOkText="Tải lên tất cả"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <!--      2 case trống file-->
     <div *ngIf="emptyFileUpload">
-      <nz-upload nzType="drag" [nzMultiple]="true" nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+      <nz-upload [nzFileList]="lstFileUpdate" nzType="drag" [nzMultiple]="true"
                  (nzChange)="handleChange($event)">
         <img style="padding-right: 10px;" src="assets/imgs/document.svg" alt=""/>
         <img style="padding-right: 10px;" src="assets/imgs/document1.svg" alt=""/>
@@ -262,12 +260,12 @@
       </nz-upload>
     </div>
     <div *ngIf="!emptyFileUpload">
-      <p>Lựa chọn phân quyền đọc</p>
+      <p class="text-label">Lựa chọn phân quyền đọc</p>
       <nz-radio-group [(ngModel)]="radioValue">
-        <label nz-radio nzValue="Public">Public</label>
-        <label nz-radio nzValue="Private">Private</label>
+        <label nz-radio nzValue="public-read" class="text-label">Public</label>
+        <label nz-radio nzValue="private" class="text-label">Private</label>
       </nz-radio-group>
-      <nz-table [nzData]="lstFileUpdate" style="margin-top: 10px;" [nzHideOnSinglePage]="true">
+      <nz-table  [nzData]="lstFileUpdate" style="margin-top: 10px;" [nzHideOnSinglePage]="true">
         <thead>
         <tr>
           <th>Tên</th>
@@ -277,29 +275,33 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let item of lstFileUpdate">
-          <th>{{item.name}}</th>
-          <th>{{item.type}}</th>
-          <th>{{(item.size / 1024).toFixed(2)}} KB</th>
-          <th>
+        <tr *ngFor="let item of lstFileUpdate, i as index">
+          <td>{{item.name}}</td>
+          <td style="width: 200px">{{item.type}}</td>
+          <td>
+            <div>{{(item.size / 1024).toFixed(2)}} KB</div>
+            <div><nz-progress *ngIf="item.percentage > 0" nzType="line" [nzPercent]="item.percentage" 
+            [nzStatus]="uploadFailed === true ? 'exception' : item.percentage === 100 ? 'success' : 'active'"></nz-progress></div>
+          </td>
+          <td>
               <span style="color: #0066B3; margin-right: 10px;"
                     nz-tooltip
                     nzTooltipTitle="tải lên" nzTooltipPlacement="bottom"
-                    nz-icon nzType="upload" nzTheme="outline"></span>
+                    nz-icon nzType="upload" nzTheme="outline" (click)="uploadSingleFile(item, i)"></span>
             <span style="color: #0066B3"
                   nz-tooltip
                   nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
                   nz-icon nzType="delete" nzTheme="outline" (click)="removeFile(item)"></span>
-          </th>
+          </td>
         </tr>
       </nz-table>
       <h3 style="font-weight: bold">METADATA</h3>
       <nz-row *ngFor="let item of listOfMetadata" style="margin-top:10px">
         <input style="width: 40%; margin-right: 5%;" nzSize="large" nz-input placeholder="Nhập Key"
-               [(ngModel)]="item.key">
+               [(ngModel)]="item.metaKey">
         <input style="width: 40%; margin-right: 5%" nzSize="large" nz-input placeholder="Nhập Value"
-               [(ngModel)]="item.value">
-        <button style="border: none;" nz-button (click)="removeMetadata(item.order)" nzSize="large">
+               [(ngModel)]="item.metaValue">
+        <button style="border: none;" nz-button (click)="removeMetadata(item.metaKey)" nzSize="large">
           <img style="margin-top: -4px" src="assets/imgs/trash.svg"/>
         </button>
       </nz-row>
@@ -308,7 +310,7 @@
           <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
           <span class="button-text-primary">Tạo metadata</span>
         </button>
-        <nz-upload (nzChange)="handleChange($event)" [nzShowUploadList]="false">
+        <nz-upload (nzChange)="handleChange($event)" [nzShowUploadList]="false" [nzFileList]="lstFileUpdate"	>
           <button nz-button nzType="primary" nzSize="large">
             <img style="padding-right: 10px;" src="assets/imgs/folder.png" alt=""/>
             <span class="button-text-primary">Thêm File</span>

@@ -1,25 +1,26 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Thông tin User'"
+  [title]="'app.create-user.userInformation' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
-      >
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users/detail/' + userName]"
-          >Chi tiết User</a
+          >{{ 'app.breadcrumb.user-detail' | i18n }}</a
         >
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
@@ -33,51 +34,65 @@
 
 <nz-card style="border-radius: 4px" [nzBordered]="false" *ngIf="user">
   <div style="margin-bottom: 20px">
-    <span class="text-card-header">Thông tin chính của User</span>
+    <span class="text-card-header">{{ 'app.user-detail.mainInfo' | i18n }}</span>
   </div>
-  <div nz-row>
-    <div nz-col nzSpan="8">
-      <label class="lable-custom">Tên của User</label>
-      <br />
-      <input
-        style="border-radius: 8px; width: 90%"
-        nz-input
-        [(ngModel)]="user.userName"
-        disabled="true"
-        type="text"
-        nzSize="large"
-      />
+  <form nz-form nzLayout="vertical">
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> {{ 'app.create-user.nameUser' | i18n }} </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px; width: 90%"
+              nz-input
+              [(ngModel)]="user.userName"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> Email </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px; width: 90%"
+              nz-input
+              [(ngModel)]="user.email"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> {{ 'app.create-user.createDate' | i18n }} </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px; width: 90%"
+              nz-input
+              [(ngModel)]="createdDate"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
     </div>
-    <div nz-col nzSpan="8">
-      <label class="lable-custom">Email</label>
-      <br />
-      <input
-        style="border-radius: 8px; width: 90%"
-        nz-input
-        [(ngModel)]="user.email"
-        disabled="true"
-        type="text"
-        nzSize="large"
-      />
-    </div>
-    <div nz-col nzSpan="8">
-      <label class="lable-custom">Thời gian khởi tạo</label>
-      <br />
-      <input
-        style="border-radius: 8px; width: 90%"
-        nz-input
-        [(ngModel)]="createdDate"
-        disabled="true"
-        type="text"
-        nzSize="large"
-      />
-    </div>
-  </div>
+  </form>
 </nz-card>
 
 <nz-card style="border-radius: 4px" [nzBordered]="false">
   <div>
-    <span class="text-card-header">Thông tin bổ sung</span>
+    <span class="text-card-header">{{ 'app.user-detail.additionalInformation' | i18n }}</span>
   </div>
   <nz-tabset nzSize="large">
     <nz-tab nzTitle="Policies">
@@ -101,7 +116,7 @@
                 text-align: left;
               "
               [nzFor]=""
-              >Loại Policy</nz-form-label
+              >{{ 'app.user-detail.typePolicy' | i18n }}</nz-form-label
             >
             <nz-form-control>
               <nz-select
@@ -140,7 +155,7 @@
             <input
               name="name"
               nz-input
-              placeholder="Tìm kiếm tên, thời gian tạo ..."
+              [placeholder]=" 'app.users.search' | i18n "
               [(ngModel)]="policyParam"
             />
           </nz-input-group>
@@ -177,11 +192,11 @@
               src="assets/imgs/add-circle.svg"
               alt=""
             />
-            <span>Thêm policies</span>
+            <span>{{ 'app.user-detail.addPolicies' | i18n }}</span>
           </button>
         </div>
       </div>
-      <nz-row class="nameField">Có thể đính kèm tối đa 10 policies</nz-row>
+      <nz-row class="nameField">{{ 'app.user-detail.policyMaxAttached' | i18n }}</nz-row>
       <nz-table
         style="margin-top: 10px"
         #rowSelectionTable
@@ -202,9 +217,9 @@
               (nzCheckedChange)="onAllCheckedPolicy($event)"
               nzLeft
             ></th>
-            <th>Tên Policy</th>
-            <th>Type</th>
-            <th>Attached via</th>
+            <th>{{ 'app.create-user.namePolicy' | i18n }}</th>
+            <th>{{ 'app.create-user.type' | i18n }}</th>
+            <th>{{ 'app.user-detail.attachedVia' | i18n }}</th>
           </tr>
         </thead>
         <tbody>
@@ -280,7 +295,7 @@
             <input
               name="name"
               nz-input
-              placeholder="Tìm kiếm tên, thời gian tạo ..."
+              [placeholder]=" 'app.users.search' | i18n "
               [(ngModel)]="groupParam"
             />
           </nz-input-group>
@@ -386,6 +401,6 @@
       src="assets/imgs/arrow-left-2.svg"
       alt=""
     />
-    <span>Quay lại</span>
+    <span>{{ 'app.button.back' | i18n }}</span>
   </button>
 </div>

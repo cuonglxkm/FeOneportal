@@ -1,14 +1,12 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ProjectModel} from "../../../shared/models/project.model";
-import {RegionModel} from "../../../shared/models/region.model";
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
-import {RegionService} from "../../../shared/services/region.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PolicyInfo} from "../policy.model";
 import {PolicyService} from "../../../shared/services/policy.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
+import { RegionService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-policy-detail',

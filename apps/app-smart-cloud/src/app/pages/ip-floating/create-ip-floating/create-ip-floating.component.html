@@ -1,6 +1,7 @@
 <button nz-button nzType="primary" nzSize="large" (click)="showModalCreateIpFloating()">
   <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
-  <span class="button-text-primary">Cấp phát IP Floating</span>
+  <span *ngIf="projectType === 1" class="button-text-primary">{{'app.ip.floating21' | i18n}}</span>
+  <span *ngIf="projectType === 0" class="button-text-primary">{{'app.ip.floating22' | i18n}}</span>
 </button>
 <nz-modal [(nzVisible)]="isVisible"
           nzCentered

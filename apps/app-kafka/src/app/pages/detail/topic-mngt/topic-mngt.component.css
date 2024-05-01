@@ -55,7 +55,7 @@ nz-table.tbl-acl th {
 
 .breadcrumb {
   justify-content: space-between;
-  margin: 15px;
+  margin-bottom: 15px;
 }
 
 .mg-right {
@@ -110,6 +110,13 @@ nz-table.tbl-acl th {
 .question{
   text-align: center;
   font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.error-del{
+  font-size: 14px;
+  line-height: 1.5715;
+  color: #ff4d4f;
 }
 
 nz-table#topic th {
@@ -120,5 +127,31 @@ nz-table#topic th {
   letter-spacing: 0.1px;
 }
 
-@media only screen and (min-width: 1440px) {
+.err-name{
+  border-color: #ff4d4f !important;
+  box-shadow: 0 0 0 2px #ff4d4f33;
+}
+
+#btn-refresh {
+  width: 40px;
+  border-color: #ffffff;
+  box-shadow: none;
+  position: relative;
+  margin-left: 10px;
+}
+
+#img-refresh {
+  position: absolute;
+  top: 6px;
+  right: 7px
+}
+
+.async {
+  font-size: 14px;
+  font-style: italic;
+}
+
+.time-async {
+  display: inline-block;
+  width: 160px;
 }

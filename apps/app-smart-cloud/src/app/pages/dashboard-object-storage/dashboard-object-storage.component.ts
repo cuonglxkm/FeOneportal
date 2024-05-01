@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { BaseResponse } from '../../../../../../libs/common-utils/src';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { SubUser } from '../../shared/models/sub-user.model';
 import { Router } from '@angular/router';
-import { RegionModel } from '../../shared/models/region.model';
-import { ProjectModel } from '../../shared/models/project.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { ObjectStorageService } from '../../shared/services/object-storage.service';
 import { Summary, UserInfoObjectStorage } from '../../shared/models/object-storage.model';
 import { BucketService } from '../../shared/services/bucket.service';
 import { BucketModel } from '../../shared/models/bucket.model';
+import { LoadingService } from '@delon/abc/loading';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-dashboard-object-storage',
@@ -38,18 +41,46 @@ export class DashboardObjectStorageComponent implements OnInit {
   summary: Summary[];
 
   times = [
-    { value: 5, label: '5 phút' },
-    { value: 15, label: '15 phút' },
-    { value: 60, label: '1 giờ' },
-    { value: 1440, label: '1 ngày' },
-    { value: 10080, label: '1 tuần' },
-    { value: 43200, label: '1 tháng' },
-    { value: 129600, label: '3 tháng' }
+    { value: 5, label: '5 ' + this.i18n.fanyi('app.minute') },
+    { value: 15, label: '15 ' + this.i18n.fanyi('app.minute') },
+    { value: 60, label: '1 ' + this.i18n.fanyi('app.hour') },
+    { value: 1440, label: '1 ' + this.i18n.fanyi('app.day') },
+    { value: 10080, label: '1 ' + this.i18n.fanyi('app.week') },
+    { value: 43200, label: '1 ' + this.i18n.fanyi('app.month') },
+    { value: 129600, label: '3 ' + this.i18n.fanyi('app.months') }
   ];
 
-  constructor(private router: Router,
+  constructor(@Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private router: Router,
               private objectStorageService: ObjectStorageService,
+              private cdr: ChangeDetectorRef,
+              private loadingSrv: LoadingService,
+              private notification: NzNotificationService,
               private bucketService: BucketService) {
+  }
+
+  hasOS: boolean = undefined;
+  hasObjectStorage() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectStorageService
+      .getUserInfo()
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.hasOS = true;
+          } else {
+            this.hasOS = false;
+          }
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy Object Strorage không thành công'
+          );
+        },
+      });
   }
 
   onBucketChange(value) {
@@ -83,6 +114,7 @@ export class DashboardObjectStorageComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.hasObjectStorage();
 
     this.bucketService.getListBucket(1, 9999, '').subscribe(data => {
       this.bucketList = data.records;

@@ -14,18 +14,19 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
-  <one-portal-create-security-group  [region]="region"
-                                     [project]="project"
-                                     nz-tooltip
-                                     nzTooltipTitle="Tạo mới Security Group"
-                                     nzTooltipPlacement="bottom"
-                                     (onOk)="handleOKCreateSG()"/>
+  <one-portal-create-security-group [region]="region"
+                                    [project]="project"
+                                    nz-tooltip
+                                    nzTooltipTitle="Tạo mới Security Group"
+                                    nzTooltipPlacement="bottom"
+                                    (onOk)="handleOKCreateSG()" />
 </page-header>
 <nz-content>
   <ng-container [ngSwitch]="isBegin">
@@ -48,16 +49,29 @@
                          [(ngModel)]="selectedSG"
                          [nzLoading]="isLoadingSG"
                          nzSize="large"
-                         (ngModelChange)="onSecurityGroupChange()" style="width: 250px; border-radius: 8px;">
+                         (ngModelChange)="onSecurityGroupChange($event)" style="width: 250px; border-radius: 8px;">
                 <nz-option *ngFor="let item of listSG" [nzValue]="item" nzLabel="{{ item.name }}"></nz-option>
               </nz-select>
               <div *nzSpaceItem>
-                <one-portal-delete-security-group *ngIf="!!selectedSG"
-                                                  [nameSG]="selectedSG.name"
-                                                  [id]="selectedSG.id"
-                                                  [region]="region"
-                                                  [project]="project"
-                                                  (onOk)="handleOKDeleteSG()" />
+                <div *ngIf="selectedSG != null && selectedSG?.name !== 'default' && !(selectedSG?.name?.startsWith('shoot'))">
+                  <one-portal-delete-security-group
+                    [nameSG]="selectedSG?.name"
+                    [idSG]="selectedSG?.id"
+                    [region]="region"
+                    [project]="project"
+                    (onOk)="handleOKDeleteSG()" />
+                </div>
+                <div *ngIf="selectedSG != null && selectedSG?.name === 'default' || selectedSG?.name.startsWith('shoot')">
+                  <button style="border: none; background-color: transparent; margin-left: -30px; cursor: pointer;"
+                          class="button-delete" [disabled]="selectedSG != null && selectedSG?.name === 'default' || selectedSG?.name.startsWith('shoot')">
+                    <img src="assets/imgs/bin.svg"
+                         alt="" class="icon-image disable-image"
+                         nz-tooltip
+                         [nzTooltipTitle]="'Không thể xóa Security Group mặc định của dịch vụ K8S'"
+                         nzTooltipPlacement="bottom"/>
+                  </button>
+                </div>
+
               </div>
             </nz-space>
           </div>
@@ -70,11 +84,11 @@
         </div>
         <one-portal-list-inbound [securityGroupId]="selectedSG?.id"
                                  [regionId]="region"
-                                 [projectId]="project"/>
+                                 [projectId]="project" />
 
         <one-portal-list-outbound [securityGroupId]="selectedSG?.id"
                                   [regionId]="region"
-                                  [projectId]="project"/>
+                                  [projectId]="project" />
         <nz-row>
           <section class="code-box-meta markdown" style="border: 1px solid #e1edf8; border-radius: 8px">
             <div style="
@@ -117,12 +131,18 @@
                   <td nzAlign="center" nzBreakWord>{{ data.ipPrivate }}</td>
                   <td nzAlign="center" nzBreakWord>{{ data.ipPublic }}</td>
                   <td nzAlign="center" nzBreakWord>
-                    <ng-container *ngIf="data?.securityGroupStr?.includes(selectedSG?.id);else elseBlock">
-                      <one-portal-attach-vm [idVm]="data.id"/>
-                    </ng-container>
-                    <ng-template #elseBlock>
-                      <one-portal-detach-vm [id]="data.id"/>
-                    </ng-template>
+                    <one-portal-attach-vm *ngIf="!(data?.securityGroups?.includes(selectedSG?.id))"
+                                          [idVm]="data.id"
+                                          [securityGroupId]="selectedSG?.id"
+                                          [region]="region"
+                                          [project]="project"
+                                          (onOk)="handleAttachSG()" />
+                    <one-portal-detach-vm *ngIf="data?.securityGroups?.includes(selectedSG?.id)"
+                                          [idVm]="data?.id"
+                                          [securityGroupId]="selectedSG?.id"
+                                          [region]="region"
+                                          [project]="project"
+                                          (onOk)="handleDetachSG()" />
                   </td>
                 </tr>
                 </tbody>

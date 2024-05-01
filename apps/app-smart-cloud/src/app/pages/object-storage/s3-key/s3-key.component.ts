@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {ObjectObjectStorageService} from "../../../shared/services/object-object-storage.service";
 import {Clipboard} from '@angular/cdk/clipboard';
@@ -7,6 +7,8 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {SubUserService} from "../../../shared/services/sub-user.service";
 import {isThisHour} from "date-fns";
 import {pipe} from "rxjs";
+import { LoadingService } from '@delon/abc/loading';
+import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 
 @Component({
   selector: 'one-portal-s3-key',
@@ -32,13 +34,41 @@ export class S3KeyComponent implements OnInit {
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private service: ObjectObjectStorageService,
+              private objectSevice: ObjectStorageService,
+              private cdr: ChangeDetectorRef,
               private clipboard: Clipboard,
               private notification: NzNotificationService,
+              private loadingSrv: LoadingService,
               private subUserService: SubUserService) {
   }
 
   ngOnInit(): void {
-    this.getData('');
+    this.hasObjectStorage();
+  }
+
+  hasOS: boolean = undefined;
+  hasObjectStorage() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectSevice
+      .getUserInfo()
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.hasOS = true;
+            this.getData('');
+          } else {
+            this.hasOS = false;
+          }
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy Object Strorage không thành công'
+          );
+        },
+      });
   }
 
   search(value: string) {

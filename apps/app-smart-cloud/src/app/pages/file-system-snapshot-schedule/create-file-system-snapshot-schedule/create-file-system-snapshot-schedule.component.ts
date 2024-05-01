@@ -16,14 +16,14 @@ import {
   FormSearchFileSystem,
 } from 'src/app/shared/models/file-system.model';
 import { FormCreateFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { CreateScheduleSnapshotDTO } from 'src/app/shared/models/snapshotvl.model';
 import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
-import { ProjectService } from 'src/app/shared/services/project.service';
 import {
-  BaseResponse
+  BaseResponse,
+  ProjectModel,
+  ProjectService,
+  RegionModel
 } from '../../../../../../../libs/common-utils/src';
 
 @Component({

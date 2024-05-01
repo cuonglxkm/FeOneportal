@@ -1,11 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, NonNullableFormBuilder} from "@angular/forms";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {Location} from '@angular/common';
 import {ActivatedRoute, Router} from "@angular/router";
-import {ProjectService} from "../../../shared/services/project.service";
 import {getCurrentRegionAndProject} from "@shared";
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
     selector: 'one-portal-restore-backup-vm',

@@ -1,6 +1,6 @@
 export class KafkaTopic {
     topicName: string;
-    sizeTopic: number;
+    size: TopicSize;
     sumMessage: number;
     partitions: number;
     replicas: number;
@@ -12,7 +12,7 @@ export class KafkaTopic {
     }
     parse(obj: any) {
         this.topicName = obj.topic_name;
-        this.sizeTopic = obj.size_topic;
+        this.size = obj.sizeTopic;
         this.partitions = obj.partitions;
         this.replicas = obj.replicas;
         this.outOfSync = obj.out_of_sync;
@@ -20,4 +20,9 @@ export class KafkaTopic {
         this.isConfig = obj.is_config;
         this.configs = obj.configs
     }
+}
+
+export interface TopicSize {
+    value: number;
+    unit: string;
 }

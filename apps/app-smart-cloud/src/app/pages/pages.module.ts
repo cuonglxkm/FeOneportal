@@ -106,7 +106,6 @@ import { ExtendIpPublicComponent } from './ip-public/extend-ip-public/extend-ip-
 import { CreateVolumeVpcComponent } from './volume/component/create-volume-vpc/create-volume-vpc.component';
 import { ResizeVolumeVpcComponent } from './volume/component/resize-volume-vpc/resize-volume-vpc.component';
 import { ListVlanComponent } from './vlan/list/list-vlan.component';
-import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 import { VlanDetailComponent } from './vlan/detail/vlan-detail.component';
 import { RouterListComponent } from './routers/router-list.component';
 import { RouterDetailComponent } from './routers/router-detail/router-detail.component';
@@ -145,17 +144,17 @@ import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-s
 import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
 import { CreateFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
 import { FileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
-import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
+import { ListFileSystemComponent } from './file-storage/list/list-file-system.component';
 import { ListWanComponent } from './wan/list/list-wan.component';
 import { DeleteWanComponent } from './wan/action/delete-wan/delete-wan.component';
 import { DetachWanComponent } from './wan/action/detach-wan/detach-wan.component';
 import { CreateWanComponent } from './wan/create/create-wan.component';
 import { AttachWanComponent } from './wan/action/attach-wan/attach-wan.component';
 import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
-import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
+import { DetailFileSystemComponent } from './file-storage/detail/detail-file-system.component';
 import { ResizeFileSystemComponent } from './file-storage/file-system/action/resize/resize-file-system.component';
-import { DeleteFileSystemComponent } from './file-storage/file-system/action/delete/delete-file-system.component';
-import { EditFileSystemComponent } from './file-storage/file-system/action/edit/edit-file-system.component';
+import { DeleteFileSystemComponent } from './file-storage/delete/delete-file-system.component';
+import { EditFileSystemComponent } from './file-storage/file-system/edit/edit-file-system.component';
 import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
 import { CreateAccessRuleComponent } from './file-storage/access-rule/action/create/create-access-rule.component';
 import { DeleteAccessRuleComponent } from './file-storage/access-rule/action/delete/delete-access-rule.component';
@@ -200,11 +199,34 @@ import { CreateLbVpcComponent } from './load-balancer/vpc/create/create-lb-vpc.c
 import { DetailLoadBalancerComponent } from './load-balancer/detail/detail-load-balancer.component';
 import { EditLoadBalancerVpcComponent } from './load-balancer/vpc/edit/edit-load-balancer-vpc.component';
 import { ExtendLoadBalancerNormalComponent } from './load-balancer/normal/extend/extend-load-balancer-normal.component';
-import { ResizeLoadBalancerNormalComponent } from './load-balancer/normal/resize/resize-load-balancer-normal.component';
 import { UpdateLoadBalancerNormalComponent } from './load-balancer/normal/update/update-load-balancer-normal.component';
 import { DeleteLoadBalancerComponent } from './load-balancer/delete/delete-load-balancer.component';
 import { ListListenerInLbComponent } from './load-balancer/detail/listener/list/list-listener-in-lb.component';
 import { ListPoolLoadBalancerComponent } from './load-balancer/detail/pool/list/list-pool-load-balancer.component';
+import { ListenerCreateComponent } from './load-balancer/listener/create/listener-create.component';
+import { ListenerDetailComponent } from './load-balancer/listener/detail/listener-detail.component';
+import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
+import { PoolDetailComponent } from './load-balancer/pool-detail/pool-detail.component';
+import { EllipsisModule } from '@delon/abc/ellipsis';
+import { AutofocusDirective } from './volume/autofocus-directive.component';
+import { CreateL7PolicyComponent } from './load-balancer/listener/L7-policy/create/create-l7-policy.component';
+import { DetailL7PolicyComponent } from './load-balancer/listener/L7-policy/detail/detail-l7-policy.component';
+import { EditL7PolicyComponent } from './load-balancer/listener/L7-policy/edit/edit-l7-policy.component';
+import { CreatePoolInLbComponent } from './load-balancer/detail/pool/create/create-pool-in-lb.component';
+import { EditPoolInLbComponent } from './load-balancer/detail/pool/edit/edit-pool-in-lb.component';
+import { DeletePoolInLbComponent } from './load-balancer/detail/pool/delete/delete-pool-in-lb.component';
+import { CreateL7RuleComponent } from './load-balancer/listener/L7-policy/detail/l7-rule/create/create-l7-rule.component';
+import { DeleteL7RuleComponent } from './load-balancer/listener/L7-policy/detail/l7-rule/delete/delete-l7-rule.component';
+import { DeleteL7PolicyComponent } from './load-balancer/listener/L7-policy/delete/delete-l7-policy.component';
+import { HttpClientModule } from '@angular/common/http';
+import { CreateFileSystemNormalComponent } from './file-storage/no-vpc/create/create-file-system-normal.component';
+import { ExtendFileSystemNormalComponent } from './file-storage/no-vpc/extend/extend-file-system-normal.component';
+import { ResizeFileSystemNormalComponent } from './file-storage/no-vpc/resize/resize-file-system-normal.component';
+import { CreateIpFloatingNormalComponent } from './ip-floating/create-ip-floating-normal.component';
+import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/extend-ip-floating.component';
+import { AttachIpFloatingLbComponent } from './load-balancer/list/attach/attach-ip-floating-lb.component';
+import { DetachIpFloatingLbComponent } from './load-balancer/list/detach/detach-ip-floating-lb.component';
+
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -296,7 +318,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateVolumeVpcComponent,
     ResizeVolumeVpcComponent,
     ListVlanComponent,
-    BlankVolumeComponent,
     VlanDetailComponent,
     RouterListComponent,
     RouterDetailComponent,
@@ -390,11 +411,31 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DetailLoadBalancerComponent,
     EditLoadBalancerVpcComponent,
     ExtendLoadBalancerNormalComponent,
-    ResizeLoadBalancerNormalComponent,
     UpdateLoadBalancerNormalComponent,
     DeleteLoadBalancerComponent,
     ListListenerInLbComponent,
     ListPoolLoadBalancerComponent,
+    ListenerCreateComponent,
+    ListenerDetailComponent,
+    ListenerUpdateComponent,
+    ListenerUpdateComponent,
+    PoolDetailComponent,
+    CreateL7PolicyComponent,
+    DetailL7PolicyComponent,
+    EditL7PolicyComponent,
+    CreatePoolInLbComponent,
+    EditPoolInLbComponent,
+    DeletePoolInLbComponent,
+    CreateL7RuleComponent,
+    DeleteL7RuleComponent,
+    DeleteL7PolicyComponent,
+    CreateFileSystemNormalComponent,
+    ExtendFileSystemNormalComponent,
+    ResizeFileSystemNormalComponent,
+    CreateIpFloatingNormalComponent,
+    ExtendIpFloatingComponent,
+    AttachIpFloatingLbComponent,
+    DetachIpFloatingLbComponent,
   ],
   imports: [
     CommonModule,
@@ -425,7 +466,10 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AngJsoneditorModule,
     ClipboardModule,
     SafePipe,
+    EllipsisModule,
+    AutofocusDirective,
     // ChartModule,
+    HttpClientModule,
   ],
 })
 export class PagesModule {}

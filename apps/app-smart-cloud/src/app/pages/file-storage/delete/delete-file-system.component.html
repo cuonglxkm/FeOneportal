@@ -1,0 +1,37 @@
+<li nz-menu-item (click)="showModal()">Xoá</li>
+<nz-modal [(nzVisible)]="isVisible"
+          (nzOnCancel)="handleCancel()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Xác nhận xóa File System {{ fileSystemName }}</span>
+  </div>
+  <div *nzModalContent>
+    <nz-alert nzBanner
+              nzShowIcon
+              [nzMessage]="'Bạn đang thực hiện xóa File System\n' +
+'Để xóa được File System, quý khách lưu ý cần phải xóa hết các Snapshot của các File System đó'">
+    </nz-alert>
+    <div>
+      <span class="text-label">Đế thực hiện xoá File System {{ fileSystemName }}, vui lòng nhập tên File System để xác nhận.</span>
+      <input nz-input #fileSystemInputName
+             style="margin-top: 10px;"
+             class="input-custom"
+             [ngModel]="value"
+             (keydown.enter)="focusOkButton($event)"
+             (ngModelChange)="onInput($event)"
+             [placeholder]="'Nhập tên File System'"/>
+      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên File System</span>
+    </div>
+
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
+</nz-modal>

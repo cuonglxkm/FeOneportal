@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnChanges,
   OnInit,
@@ -15,6 +16,8 @@ import { InstancesModel } from '../../instances.model';
 import { LoadingService } from '@delon/abc/loading';
 import { finalize } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-instances-btn',
@@ -30,6 +33,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   inputConfirm: string = '';
 
   constructor(
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private route: Router,
@@ -37,7 +41,9 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     private loadingSrv: LoadingService
   ) {}
 
+  isViLanguage: boolean;
   ngOnInit(): void {
+    this.isViLanguage = this.i18n.currentLang == 'vi-VI' ? true : false;
     this.dataService.getById(this.instancesId, true).subscribe((data: any) => {
       this.instancesModel = data;
       this.cdr.detectChanges();
@@ -61,7 +67,12 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   showModalDelete() {
     this.isVisibleDelete = true;
     this.inputConfirm = '';
-    this.titleDeleteInstance = 'Xóa máy ảo ' + this.instancesModel.name;
+    if (this.isViLanguage) {
+      this.titleDeleteInstance = 'Xóa máy ảo ' + this.instancesModel.name;
+    } else {
+      this.titleDeleteInstance =
+        'Delete the ' + this.instancesModel.name + ' instance';
+    }
   }
 
   handleOkDelete() {
@@ -121,6 +132,8 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   isVisibleResetPass = false;
   modalResetPassword() {
     this.isVisibleResetPass = true;
+    this.passwordVisible = false;
+    this.passwordRepeatVisible = false;
     this.resetPassword = '';
     this.resetPasswordRepeat = '';
     this.formPass = new FormGroup({
@@ -128,7 +141,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{12,}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
           ),
         ],
       }),
@@ -147,37 +160,58 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
 
   handleOkResetPassword() {
     this.isVisibleResetPass = false;
-    if (this.autoCreate) {
-      this.dataService.changePassword(this.instancesId, null).subscribe({
+    this.dataService
+      .changePassword(this.instancesId, this.resetPassword)
+      .subscribe({
         next: (data: any) => {
-          this.notification.success('', 'Reset mật khẩu máy ảo thành công');
+          this.notification.success('', 'Đổi mật khẩu máy ảo thành công');
         },
         error: (e) => {
-          console.log('reset pass', e);
           this.notification.error(
-            e.error.detail,
-            'Reset mật khẩu máy không thành công'
+            e.statusText,
+            'Đổi mật khẩu máy ảo không thành công'
           );
         },
       });
+  }
+
+  generateRandomPassword(): string {
+    const length = 12; // Độ dài tối thiểu 12 ký tự
+    const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+    const numericChars = "0123456789";
+    const specialChars = "!@#$%^&*()_+-=[]{}|;'\"\\:,.<>?`~/"
+  
+    let password = '';
+  
+    // Chọn ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt
+    password += uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
+    password += lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
+    password += numericChars[Math.floor(Math.random() * numericChars.length)];
+    password += specialChars[Math.floor(Math.random() * specialChars.length)];
+  
+    // Tạo các ký tự còn lại
+    const remainingChars = length - 4; // 4 là số lượng ký tự đã được chọn ở trên
+    const allChars = uppercaseChars + lowercaseChars + numericChars + specialChars;
+    for (let i = 0; i < remainingChars; i++) {
+      password += allChars[Math.floor(Math.random() * allChars.length)];
+    }
+  
+    // Trộn ngẫu nhiên chuỗi mật khẩu
+    password = password.split('').sort(() => Math.random() - 0.5).join('');
+  
+    return password;
+  }
+
+  changeAutoCreate() {
+    if (this.autoCreate) {
+      this.resetPassword = this.generateRandomPassword();
+      this.resetPasswordRepeat = this.resetPassword;
+      this.passwordVisible = true;
+      this.passwordRepeatVisible = true;
     } else {
-      this.dataService
-        .changePassword(this.instancesId, this.resetPassword)
-        .subscribe({
-          next: (data: any) => {
-            if (data == true) {
-              this.notification.success('', 'Reset mật khẩu máy ảo thành công');
-            } else {
-              this.notification.error(
-                '',
-                'Reset mật khẩu máy ảo không thành công'
-              );
-            }
-          },
-          error: (e) => {
-            this.notification.error(e.statusText, e.error.detail);
-          },
-        });
+      this.resetPassword = '';
+      this.resetPasswordRepeat = '';
     }
   }
 

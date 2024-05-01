@@ -1,5 +1,5 @@
 <page-header
-  [title]="'Console máy ảo'"
+  [title]="'app.instances.console' | i18n"
   [breadcrumb]="breadcrumb"
   [action]="action"
 >
@@ -15,14 +15,16 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item
-        ><a routerLink="/app-smart-cloud/instances"
-          >Quản lý máy ảo</a
-        ></nz-breadcrumb-item
-      >
-      <nz-breadcrumb-item>Console máy ảo</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/instances']">{{
+          'app.instances' | i18n
+        }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.instances.console' | i18n
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 </page-header>

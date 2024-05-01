@@ -98,4 +98,20 @@ export class ObjectObjectStorageService extends BaseService {
   restoreObject(data: { bucketName: string; versionId: string; key: string }) {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/RestoreObjectVersion', data, this.httpOptions);
   }
+
+  getSignedUrl(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GeneratePreSignedForUpload', data, this.httpOptions);
+  }
+
+  createMultiPartUpload(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CreateMultipartUpload', data, this.httpOptions);
+  }
+
+  completemultipart(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CompleteMultipartUpload', data, this.httpOptions);
+  }
+
+  abortmultipart(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/AbortMultipartUpload', data, this.httpOptions);
+  }
 }

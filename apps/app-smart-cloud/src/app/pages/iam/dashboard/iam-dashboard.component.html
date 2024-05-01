@@ -23,14 +23,14 @@
 </page-header>
 <nz-content>
   <nz-card [nzLoading]="loading">
-    <h3>Thông tin chung</h3>
+    <h3>{{"app.iam-dashboard.generalInformation" | i18n}}</h3>
     <nz-table #rowSelectionTable
               [nzData]="listOfData"
               [nzShowPagination]="false">
       <thead>
       <tr>
-        <th>Số lượng Groups</th>
-        <th>Số lượng Users</th>
+        <th>{{"app.iam-dashboard.numberOfGroup" | i18n}}</th>
+        <th>{{"app.iam-dashboard.numberOfUser" | i18n}}</th>
       </tr>
       </thead>
       <tbody *ngFor="let data of rowSelectionTable.data">
@@ -41,16 +41,16 @@
       </tbody>
     </nz-table>
   </nz-card>
-  <nz-card nzTitle="Tìm hiểu thêm về IAM">
+  <nz-card [nzTitle]="'app.iam-dashboard.learnAbout' | i18n">
     <div style="line-height: 28px">
       <div>
-        <a>Khái niệm về IAM ?</a>
+        <a>{{"app.iam-dashboard.conceptIAM" | i18n}}</a>
       </div>
       <div>
-        <a>Khái niệm về Policy ?</a>
+        <a>{{"app.iam-dashboard.conceptPolicy" | i18n}}</a>
       </div>
       <div>
-        <a>Cách khởi tạo Group ?</a>
+        <a>{{"app.iam-dashboard.createGroup" | i18n}}</a>
       </div>
     </div>
 

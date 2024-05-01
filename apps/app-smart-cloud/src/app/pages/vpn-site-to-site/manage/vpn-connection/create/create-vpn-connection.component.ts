@@ -2,8 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -101,6 +100,8 @@ export class CreateVpnConnectionComponent implements OnInit{
     this.formSearchIkePolicy.projectId = this.project
     this.formSearchIkePolicy.regionId = this.region
     this.formSearchIkePolicy.searchValue = ""
+    this.formSearchIkePolicy.pageNumber = 1
+    this.formSearchIkePolicy.pageSize = 1000
     this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
       .subscribe(data => {
           

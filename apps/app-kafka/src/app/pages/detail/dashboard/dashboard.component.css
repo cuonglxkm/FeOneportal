@@ -141,7 +141,7 @@ nz-select#cbx-unit ::ng-deep .ant-select-selector {
 
 #btn-refresh {
     width: 40px;
-    border-color: #E2E2E9;
+    border-color: #ffffff;
     margin-right: 16px;
     position: relative;
     top: -6px;
@@ -151,4 +151,10 @@ nz-select#cbx-unit ::ng-deep .ant-select-selector {
     position: absolute;
     top: 6px;
     right: 6px
+}
+
+.chart-container {
+    padding: 5px; 
+    border: 1px solid #DDD;
+    border-radius: 4px;
 }

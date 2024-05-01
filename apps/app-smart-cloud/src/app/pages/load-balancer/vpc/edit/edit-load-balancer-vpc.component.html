@@ -1,1 +1,224 @@
-<p>edit-load-balancer-vpc works!</p>
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'app.load.balancer.resize' | i18n" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/create">{{ 'app.load.balancer.resize' | i18n }}</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">{{ 'app.load.balancer.info' | i18n }}</span>
+        <form nz-form nzLayout="vertical" [formGroup]="validateForm">
+          <nz-form-item style="margin-top: 15px;">
+            <nz-form-label>
+              <span>{{ 'app.load.balancer.name' | i18n }} (<span style="color: red">*</span>)</span>
+              <img nz-popover
+                   [nzPopoverContent]="'validation.load.balancer.name.pattern' | i18n"
+                   nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+              <input nz-input appAutofocus
+                     class="input-custom"
+                     formControlName="nameLoadBalancer"
+                     [placeholder]="'app.input.name' | i18n " [maxLength]="50" [value]="validateForm.controls.nameLoadBalancer.getRawValue()"/>
+              <ng-template #nameErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n: { name: 'Load Balancer' } }}</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
+            <nz-form-label>
+              <span>{{ 'app.usage' | i18n }} (<span style="color: red;">*</span>)</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <nz-row>
+                <nz-col nzSpan="12">
+                  <label nz-radio [ngModel]="loadBalancer?.internetFacing == true" [ngModelOptions]="{standalone: true}" [nzDisabled]="true">Internet Facing
+                    <img nz-popover
+                         [nzPopoverContent]="'Sử dụng địa chỉ IP public. Do đó Load balancer có thể định tuyến các yêu cầu từ khách hàng qua internet'"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </label>
+                </nz-col>
+                <nz-col nzSpan="12">
+                  <label nz-radio [ngModel]="loadBalancer?.internetFacing == false" [ngModelOptions]="{standalone: true}" [nzDisabled]="true">Internal
+                    <img nz-popover
+                         [nzPopoverContent]="'Sử dụng địa chỉ IP private. Do đó Load balancer chỉ có thể định tuyến ' +
+                                               'các yêu cầu từ các máy khách có quyền truy cập vào VPC cho bộ cân bằng tải'"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </label>
+                </nz-col>
+              </nz-row>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-row nzGutter="24" nzJustify="space-between">
+            <nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label>
+                  <span>Subnet</span>
+                  <img nz-popover
+                       [nzPopoverContent]="'Là dải IP mạng để phân bổ địa chỉ IP khi sử dụng cân bằng tải'"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips>
+                  <input nz-input class="input-custom" [value]="loadBalancer?.subnetName + (loadBalancer?.subnetAddress)" [disabled]="true"/>
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label>
+                  <span>IP Address</span>
+                  <img nz-popover
+                       [nzPopoverContent]="'Địa chỉ IP của Khách hàng. Trường hợp Khách hàng không nhập địa chỉ IP, ' +
+                        'hệ thống sẽ tự động cấp địa chỉ IP cho Khách hàng. Trường hợp Khách hàng nhập địa chỉ IP, ' +
+                         'Hệ thống sẽ chọn IP đấy cho load balancer trong trường hợp IP chưa được sử dụng bởi bất kỳ ai'"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips>
+                  <input nz-input class="input-custom" [value]="loadBalancer?.ipAddress" [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+          </nz-row>
+          <nz-form-item *ngIf="loadBalancer?.internetFacing">
+            <nz-form-label>
+              <span>{{ 'app.choose.ip.floating' | i18n }} (<span style="color: red;">*</span>)</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <input nz-input class="input-custom" [value]="loadBalancer?.floatingIPAddress" [disabled]="true"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item style="margin-bottom: 10px;">
+            <nz-form-label>
+              <span>Gói dịch vụ</span>
+              <img nz-popover
+                   [nzPopoverContent]="titleTooltip"
+                   nzPopoverPlacement="right" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+              <ng-template #titleTooltip>
+                <div style="display: block;">
+                  <span><b>Max Connection:</b> Tổng số kết nối tối đa trên 1 giây </span><br>
+                  <span><b>Active Connection:</b> Tổng số kết nối hoạt động tối đa trong 1 giây</span><br>
+                  <span><b>Data transfer:</b> Dữ liệu được chuyển giao dưới dạng các bit và byte trên một phương tiện kỹ thuật số hoặc analog,<br>
+                  và quá trình này cho phép truyền thông kỹ thuật số hoặc analog và chuyển động của nó giữa các thiết bị</span><br>
+                </div>
+              </ng-template>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-row nzGutter="18">
+            <nz-col nzSpan="10">
+              <span class="text-label">Max Conection:</span>
+            </nz-col>
+            <nz-col nzSpan="8">
+              <span class="text-label" *ngIf="offerDetail?.characteristicValues?.length <= 0"></span>
+              <span class="text-label" *ngIf="offerDetail?.characteristicValues?.length > 0">{{ offerDetail?.characteristicValues[0]?.charOptionValues }}/s</span>
+            </nz-col>
+          </nz-row>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row nzGutter="18">
+            <nz-col nzSpan="10">
+              <span class="text-label">Active Conection:</span>
+            </nz-col>
+            <nz-col nzSpan="8">
+              <span class="text-label" *ngIf="offerDetail?.characteristicValues?.length <= 0"></span>
+              <span class="text-label" *ngIf="offerDetail?.characteristicValues?.length > 0">{{ offerDetail?.characteristicValues[0]?.charOptionValues }}/s</span>
+            </nz-col>
+          </nz-row>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row nzGutter="18">
+            <nz-col nzSpan="10">
+              <span class="text-label">Data transfer:</span>
+            </nz-col>
+            <nz-col nzSpan="8">
+              <span class="text-label">Unlimit</span>
+            </nz-col>
+          </nz-row>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-form-item>
+            <nz-form-label>
+              <span>{{ 'app.service.description' | i18n }}</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+              <textarea nz-input formControlName="description" [placeholder]="'app.input.des' | i18n" [maxLength]="255"
+                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+              <ng-template #descriptionErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </nz-card>
+    </nz-col>
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
+        </div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.load.balancer.name' | i18n }}</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ validateForm.controls.nameLoadBalancer.getRawValue() }}
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.usage' | i18n }}</div>
+        <div style="margin-top: 10px" class="text-label">
+          <span *ngIf="loadBalancer?.internetFacing == true">Internet Facing</span>
+          <span *ngIf="loadBalancer?.internetFacing == false">Internal</span>
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div style="margin-top: 10px" class="text-value">Subnet</div>
+        <div style="margin-top: 10px" class="text-label">
+          <span class="text-label">{{ loadBalancer?.subnetName }}({{ loadBalancer?.subnetAddress }})</span>
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div style="margin-top: 10px" class="text-value">IP Address</div>
+        <div style="margin-top: 10px" class="text-label">
+          <span class="text-label">{{ loadBalancer?.ipAddress }}</span>
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div style="margin-top: 10px" class="text-value">Gói dịch vụ</div>
+        <div style="margin-top: 10px" class="text-label">
+          <span class="text-label">{{ loadBalancer?.offerName }}</span>
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <nz-row>
+          <nz-col style="width: 100%">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="!validateForm.valid" (click)="submitForm()">
+              <i nz-icon [nzType]="'edit'"  style="margin-right: 5px; padding-bottom: 5px;"></i>
+              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Chỉnh sửa</span>
+            </button>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</nz-content>

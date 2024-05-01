@@ -136,7 +136,16 @@ export class UpdateInstances {
 }
 
 export class InstancesModel {
-  id: number;
+  type: any;
+  flavorName: string;
+  gpuType: any;
+  gpuCount: number;
+  volumeType: number;
+  createdDate: string;
+  expiredDate: string;
+  totalCount: number;
+  imageName: string;
+  offerId: number;
   cloudId: string;
   name: string;
   flavorId: number;
@@ -144,7 +153,7 @@ export class InstancesModel {
   imageId: number;
   customerId: number;
   ipPublic: string;
-  ipPrivate: string;
+  ipPrivate: any;
   cpu: number;
   ram: number;
   storage: number;
@@ -157,22 +166,17 @@ export class InstancesModel {
   projectId: number;
   bttn: number;
   btqt: number;
-  ramAdditional: number;
-  cpuAdditional: number;
-  bttnAdditional: number;
-  btqtAdditional: number;
+  ramAdditional: any;
+  cpuAdditional: any;
+  bttnAdditional: any;
+  btqtAdditional: any;
   volumeRootId: number;
   status: string;
   taskState: string;
-  securityGroupStr: string;
-  computeHost: string;
-  type: string;
-  flavorName: string;
-  volumeType: number;
-  createdDate: string;
-  expiredDate: string;
-  totalCount: number;
-  imageName: string;
+  rootStatus: string;
+  securityGroups: string;
+  computeHost: any;
+  id: number;
 }
 
 export class InstanceFormSearch {
@@ -236,6 +240,11 @@ export class InstanceCreate {
   ram: number;
   cpu: number;
   volumeType: any;
+  gpuType: any;
+  gpuCount: any;
+  gpuTypeOfferId: any;
+  privateNetId: any;
+  privatePortId: any;
   typeName: string;
   customerId: number;
   userEmail: any;
@@ -332,6 +341,8 @@ export class InstanceResize {
   storage: number;
   ram: number;
   cpu: number;
+  gpuCount: any;
+  gpuType: any;
   typeName: string;
   newOfferId: number;
   serviceType: number;

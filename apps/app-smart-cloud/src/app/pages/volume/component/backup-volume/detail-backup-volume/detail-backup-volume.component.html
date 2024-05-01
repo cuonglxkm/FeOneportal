@@ -1,20 +1,23 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Backup Volume'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Backup Volume</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Chi tiết Backup Volume</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{'app.breadcrumb.home'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.breadcrumb.block.storage'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'volume.title.breadcrumb.backup.volume'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.backup.volume.detail'|i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
 <nz-card style="height: 80%">
-  <h1>Thông tin Backup Volume</h1>
+  <span class="text-card-header">{{'app.backup.volume.info'|i18n}}</span>
   <table style="width: 100%; margin-top: 40px;">
     <td>
       <h3 style=" font-weight: normal;">Tên backupvolume: {{receivedData.name}}</h3>

@@ -1,6 +1,4 @@
 import {Component, Inject, ViewChild} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {PolicyModel} from "../policy.model";
 import {PolicyService} from "../../../shared/services/policy.service";
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
@@ -10,6 +8,9 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {finalize} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 @Component({
   selector: 'one-portal-policy-list',
   templateUrl: './policy-list.component.html',
@@ -35,20 +36,21 @@ export class PolicyListComponent {
   public optionJsonEditor: JsonEditorOptions;
 
   listPolicyType =[
-    {label:"Tất cả loại policy",value :"0"},
+    {label: this.i18n.fanyi("app.policies.allTypePolicy"),value :"0"},
     {label:"Portal managed",value :"1"},
     {label:"Customer managed",value :"2"}
   ];
 
   listAction =[
-    {label:"Attach",value :"0"},
-    {label:"Detach",value :"1"},
+    {label:this.i18n.fanyi("app.policies.attach"),value :"0"},
+    {label:this.i18n.fanyi("app.policies.detach"),value :"1"},
   ];
 
   constructor(private service: PolicyService,private router: Router,
               private clipboardService: ClipboardService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private notification: NzNotificationService,) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = "view";
   }

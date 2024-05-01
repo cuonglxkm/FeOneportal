@@ -2,15 +2,20 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { I18NService } from '@core';
+import { LoadingService } from '@delon/abc/loading';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
 import { finalize } from 'rxjs';
 import { BucketModel } from 'src/app/shared/models/bucket.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
+import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 
 @Component({
   selector: 'one-portal-bucket-list',
@@ -27,16 +32,46 @@ export class BucketListComponent implements OnInit {
   loading: boolean = true;
 
   constructor(
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private bucketService: BucketService,
+    private objectSevice: ObjectStorageService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
     private clipboardService: ClipboardService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private loadingSrv: LoadingService
   ) {}
 
+  isViLanguage: boolean;
   ngOnInit(): void {
-    this.search();
+    this.isViLanguage = this.i18n.currentLang == 'vi-VI' ? true : false;
+    this.hasObjectStorage();
+  }
+
+  hasOS: boolean = undefined;
+  hasObjectStorage() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectSevice
+      .getUserInfo()
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.hasOS = true;
+            this.search();
+          } else {
+            this.hasOS = false;
+          }
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy Object Strorage không thành công'
+          );
+        },
+      });
   }
 
   search() {

@@ -1,12 +1,10 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import {BackupVm, SystemInfoBackup, VolumeBackup} from "../../../shared/models/backup-vm";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {ProjectService} from "../../../shared/services/project.service";
 import {getCurrentRegionAndProject} from "@shared";
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-detail-backup-vm',

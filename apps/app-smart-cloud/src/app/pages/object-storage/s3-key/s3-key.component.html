@@ -1,37 +1,41 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Quản lý S3 Key'">
+<page-header *ngIf="hasOS" [breadcrumb]="breadcrumb" [title]="'app.s3.key.manage' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{
+        'app.breadcrumb.home' | i18n
+      }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/s3-key']">S3 Key</a></nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 </page-header>
 
-<nz-card class="text-label" title="ok">
+<nz-card *ngIf="hasOS" class="text-label">
   <div style="margin-bottom: 20px;" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
     <div class="text-left p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24"
          [nzXXl]="12">
-      <span class="text-card-header">Danh sách S3 Key</span>
+      <span class="text-card-header">{{
+        'app.s3.key.list' | i18n
+      }}</span>
     </div>
     <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24"
          [nzXXl]="12">
       <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
                       nzSize="large">
         <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input
-               placeholder="Tìm kiếm theo tên User"/>
+               [placeholder]="'app.s3.key.search' | i18n"/>
       </nz-input-group>
       <ng-template #suffixIconSearch>
-        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"
+        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"
              (click)="search(searchBox.value)"/>
       </ng-template>
       <button nz-button nzType="primary" (click)="createS3Key()" nzSize="large">
         <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
-        <span class="button-text-primary">Tạo mới S3 Key</span>
+        <span class="button-text-primary">{{'app.s3.key.create' | i18n}}</span>
       </button>
     </div>
   </div>
   <!-- Bảng-->
-  <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfS3Key"
+  <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfS3Key"
             [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
             (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
     <thead>
@@ -40,16 +44,13 @@
       <th>AccessKey</th>
       <th>SecretKey</th>
       <th>User</th>
-      <th>Thao tác</th>
+      <th>{{ 'app.text.operation' | i18n }}</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let item of listOfS3Key">
       <td>{{count}}</td>
       <td>
-        <!--        <nz-row nzJustify="space-between">-->
-        <!--         -->
-        <!--        </nz-row>-->
         {{item.accessKey}}
         <span style="color: #0066B3; margin-left: 10px;" nz-icon nzType="copy" nzTheme="outline"
               (click)="copyText(item.accessKey)"></span>
@@ -64,13 +65,11 @@
         <div>
           <!---Gỡ------>
           <span style="color: #0066B3; margin-right: 10px;"
-                nz-tooltip
-                nzTooltipTitle="Nhân tạo lại" nzTooltipPlacement="bottom"
+                [nz-tooltip]="'app.recreate' | i18n"
                 nz-icon nzType="reload" nzTheme="outline" (click)="openModelDuplicate(item.accessKey)"></span>
           <!----Xóa---->
           <span style="color: #0066B3"
-                nz-tooltip
-                nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                [nz-tooltip]="'app.text.delete' | i18n"
                 nz-icon nzType="delete" nzTheme="outline" (click)="openModelDelete(item.accessKey)"></span>
         </div>
       </td>
@@ -79,15 +78,18 @@
   </nz-table>
 </nz-card>
 
+<div *ngIf="hasOS == undefined || hasOS == null"></div>
+<one-portal-object-storage *ngIf="hasOS == false"></one-portal-object-storage>
+
 <!--Tạo mới-->
-<nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Tạo mới S3 Key" (nzOnCancel)="isVisibleCreate = false"
+<nz-modal [(nzVisible)]="isVisibleCreate" [nzTitle]="'app.s3.key.create' | i18n" (nzOnCancel)="isVisibleCreate = false"
           (nzOnOk)="createSecretKey()" nzOkText="Xác nhận"
           nzCancelText="Hủy">
   <ng-container *nzModalContent>
-    <div class="text-label">Chọn User/SubUser (<span class="text-red">*</span>)</div>
+    <div class="text-label">{{ 'app.s3.key.choose' | i18n }} (<span class="text-red">*</span>)</div>
     <nz-select nzSize="large" [nzLoading]="loadingDropdown" [nzDisabled]="disableDropdown"
                style="width: 90%; margin-left: -1px;border-radius: 10px;"
-               nzPlaceHolder="--Chọn IP kết nôi--"
+               [nzPlaceHolder]="'-- ' + ('app.s3.key.choose' | i18n) + ' --'"
                [ngModel]="userCreate" (nzOpenChange)="changeUser($event)">
       <nz-option *ngFor="let i of listUser" [nzLabel]="i.subUserId"
                  [nzValue]="i.subUserId"/>
@@ -121,7 +123,7 @@
       nzShowIcon
       style="margin-bottom: 10px;"
     ></nz-alert>
-    <b>Quý khách chắc chắn muốn thực hiệntại lại SecretKey?</b>
+    <b>Quý khách chắc chắn muốn thực hiện tại lại SecretKey?</b>
   </ng-container>
 </nz-modal>
 

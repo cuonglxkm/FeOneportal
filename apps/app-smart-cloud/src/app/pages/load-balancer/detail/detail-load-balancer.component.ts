@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { LoadBalancerService } from '../../../shared/services/load-balancer.service';
 import { LoadBalancerModel } from '../../../shared/models/load-balancer.model';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-detail-load-balancer',
@@ -42,6 +41,11 @@ export class DetailLoadBalancerComponent implements OnInit{
     })
   }
 
+  checkCreate: boolean = false;
+  handleCreatePoolOk() {
+    this.checkCreate = !this.checkCreate
+  }
+
   ngOnInit() {
     this.idLoadBalancer = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
 
@@ -49,5 +53,9 @@ export class DetailLoadBalancerComponent implements OnInit{
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     this.getLoadBalancerById()
+  }
+
+  loadToCreateListener() {
+    this.router.navigate(['/app-smart-cloud/load-balancer/' + this.idLoadBalancer + '/listener/create'])
   }
 }

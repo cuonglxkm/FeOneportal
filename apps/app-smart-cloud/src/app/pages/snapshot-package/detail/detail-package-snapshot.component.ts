@@ -4,11 +4,9 @@ import {PackageBackupService} from "../../../shared/services/package-backup.serv
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NonNullableFormBuilder} from "@angular/forms";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {PackageBackupModel} from "../../../shared/models/package-backup.model";
 import {getCurrentRegionAndProject} from "@shared";
-import {ProjectService} from "../../../shared/services/project.service";
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-detail-package-snapshot',
@@ -72,16 +70,17 @@ export class DetailSnapshotComponent implements OnInit{
     });
   }
   ngOnInit() {
-    this.idPackageBackup = Number.parseInt(this.route.snapshot.paramMap.get('id'))
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
-    // this.customerId = this.tokenService.get()?.userId
+    const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+    const { regionId, projectId } = getCurrentRegionAndProject();
+    this.region = regionId;
+    this.project = projectId;
     if (this.project && this.region) {
-      this.loadProjects()
+      this.loadProjects();
     }
-    if(this.idPackageBackup != null) {
-      this.getDetailPackageBackup(this.idPackageBackup)
+    if (id) {
+      this.getDetailPackageBackup(id);
     }
   }
 }
+
+
