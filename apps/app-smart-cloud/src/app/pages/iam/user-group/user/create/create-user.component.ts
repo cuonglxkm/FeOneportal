@@ -6,7 +6,7 @@ import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {FormUserGroup} from "../../../../../shared/models/user-group.model";
 import {UserGroupService} from "../../../../../shared/services/user-group.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {PolicyModel} from "../../../../policy/policy.model";
+import {PolicyModel} from "../../../../../../../../../libs/common-utils/src/lib/models/policy.model";
 
 @Component({
   selector: 'one-portal-create-user',

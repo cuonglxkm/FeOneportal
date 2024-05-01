@@ -9,6 +9,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "strictPropertyInitialization": false,
+    "noImplicitAny": false,
     "baseUrl": "./",
     "paths": {
       "@one-portal/common-utils": ["/src/index.ts"]

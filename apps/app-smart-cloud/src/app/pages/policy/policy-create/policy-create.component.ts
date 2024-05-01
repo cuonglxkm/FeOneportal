@@ -1,6 +1,6 @@
 import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
-import {PermissionPolicyModel} from "../policy.model";
-import {PolicyService} from "../../../shared/services/policy.service";
+import {PermissionPolicyModel} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
+import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";

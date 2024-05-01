@@ -55,6 +55,9 @@ export class SecurityComponent implements OnInit {
 
     this.email = this.tokenService.get().email
     
+    this.service.twoFactorProviders().subscribe((data: any) => {
+      console.log(data);
+    });
   }
 
   // clickSwitch(): void {

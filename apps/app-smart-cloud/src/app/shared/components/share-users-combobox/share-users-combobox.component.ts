@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import { PolicyService } from '../../services/policy.service';
+import { PolicyService } from '../../../../../../../libs/common-utils/src/lib/services/policy.service';
 
 @Component({
   selector: 'share-users-combobox',

@@ -15,22 +15,8 @@ export class SecurityService extends BaseService {
     }
 
     authenticatorKey() {
-        return this.http.get<any>("https://localhost:1000/account/authenticator")
-          .pipe(catchError((error: HttpErrorResponse) => {
-            if (error.status === 401) {
-              console.error('login');
-            } else if (error.status === 404) {
-              // Handle 404 Not Found error
-              console.error('Resource not found');
-            }
-            return throwError(error);
-          }))
-    }
-
-    enable2fa(form: FormEnable2FA) {
-      console.log(form);
-        return this.http.post<Enable2FAResponseModel>("https://localhost:1000/account/enable2fa", Object.assign(form))
-          .pipe(catchError((error: HttpErrorResponse) => {
+      return this.http.get<any>("https://identity.onsmartcloud.com/account/authenticator")
+        .pipe(catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');
           } else if (error.status === 404) {
@@ -38,6 +24,33 @@ export class SecurityService extends BaseService {
             console.error('Resource not found');
           }
           return throwError(error);
-        }))
-      }
+      }))
+    }
+
+    enable2fa(form: FormEnable2FA) {
+      console.log(form);
+      return this.http.post<Enable2FAResponseModel>("https://identity.onsmartcloud.com/account/enable2fa", Object.assign(form))
+        .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+    }
+
+    twoFactorProviders() {
+      return this.http.get<any>("https://identity.onsmartcloud.com/account/twofactor-providers")
+        .pipe(catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+      }))
+    }
 }

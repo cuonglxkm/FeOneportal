@@ -3,14 +3,14 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {JsonEditorOptions} from "ang-jsoneditor";
-import {PolicyService} from "../../../shared/services/policy.service";
+import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {
   PermissionDTO,
   PolicyInfo,
   ServicePermissionDetail,
   ServicePolicyDTO,
   UpdatePolicyRequest
-} from "../policy.model";
+} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
 import {result} from "lodash";
 import {concatMap, flatMap, forkJoin, map, of} from "rxjs";
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';

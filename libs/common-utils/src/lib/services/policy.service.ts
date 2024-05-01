@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
-import {BaseService} from "./base.service";
+import {BaseService} from "../../../../../apps/app-smart-cloud/src/app/shared/services/base.service";
 import {Observable, of} from "rxjs";
-import {BaseResponse} from "../../../../../../libs/common-utils/src";
+import {BaseResponse} from "../..";
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
 import {
   AttachedEntitiesDTO,
@@ -10,8 +10,7 @@ import {
   PermissionPolicyModel,
   PolicyInfo,
   PolicyModel
-} from "../../pages/policy/policy.model";
-import {FormSearchUserGroup} from "../models/user-group.model";
+} from "../models/policy.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 
@@ -193,23 +192,24 @@ export class PolicyService extends BaseService {
 
   getUserPermissions(): Observable<any> {
     localStorage.removeItem('PermissionOPA')
+    debugger;
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/user', this.httpOptions);
   }
 
   hasPermission(action: string): boolean {
-    if (localStorage.getItem('PermissionOPA') != null) {
-      var permission = JSON.parse(localStorage.getItem('PermissionOPA'));
-      return this.isPermission(action, permission);
+    let permisionOPA = localStorage.getItem('PermissionOPA');
+    if (permisionOPA != null) {
+      return this.isPermission(action, permisionOPA);
     } else {
       this.getUserPermissions().pipe().subscribe( (permission) => {
         localStorage.setItem('PermissionOPA', JSON.stringify(permission));
         return this.isPermission(action, permission);
       });
     }
-    
+    return false;
   }
 
-  isPermission(action, permission): boolean {
+  isPermission(action: string, permission): boolean {
     if(permission['IsAdmin']){
       return true;
     }
@@ -227,8 +227,20 @@ export class PolicyService extends BaseService {
     return false;
   }
 
-  getShareUsers(): Observable<any> {
+  getShareUsers(userRootId?: number): Observable<any> {
     localStorage.removeItem('ShareUsers')
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/share-users', this.httpOptions);
+
+    if (userRootId) {
+      var headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.tokenService.get()?.token,
+        'user_root_id': userRootId,
+      });
+
+      return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/share-users', {headers: headers});
+    }
+    else {
+      return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/share-users', this.httpOptions);
+    }
   }
 }
