@@ -21,7 +21,7 @@ import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
   styleUrls: ['./edit-ike-policies.component.less'],
 })
 export class EditIkePoliciesComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   ikePolicy: IKEPolicyModel = new IKEPolicyModel();
   authorizationAlgorithm = [

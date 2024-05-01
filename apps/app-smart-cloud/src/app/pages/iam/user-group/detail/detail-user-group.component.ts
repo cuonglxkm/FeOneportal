@@ -22,7 +22,7 @@ import {debounceTime} from "rxjs";
   styleUrls: ['./detail-user-group.component.less'],
 })
 export class DetailUserGroupComponent {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   value?: string;

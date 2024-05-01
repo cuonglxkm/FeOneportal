@@ -17,7 +17,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-u
   styleUrls: ['./listener-update.component.less'],
 })
 export class ListenerUpdateComponent implements OnInit, OnChanges {
-  regionId = JSON.parse(localStorage.getItem('region')).regionId;
+  regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
   idListener: any;
   idLb: any;

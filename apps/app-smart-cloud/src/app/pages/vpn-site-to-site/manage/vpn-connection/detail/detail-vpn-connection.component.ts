@@ -12,7 +12,7 @@ import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.ser
   styleUrls: ['./detail-vpn-connection.component.less'],
 })
 export class DetailVpnConnectionComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean = false;

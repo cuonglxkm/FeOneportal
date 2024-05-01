@@ -17,7 +17,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../libs/common-util
 })
 export class PolicyDetachComponent implements OnInit {
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
 
   project = JSON.parse(localStorage.getItem('projectId'));
 

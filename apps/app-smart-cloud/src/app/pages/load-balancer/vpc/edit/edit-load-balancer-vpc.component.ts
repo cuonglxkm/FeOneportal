@@ -15,7 +15,7 @@ import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../
   styleUrls: ['./edit-load-balancer-vpc.component.less'],
 })
 export class EditLoadBalancerVpcComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   loadBalancerId: number;

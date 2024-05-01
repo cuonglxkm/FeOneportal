@@ -17,7 +17,7 @@ export class Count {
     styleUrls: ['./iam-dashboard.component.less'],
 })
 export class IamDashboardComponent implements OnInit{
-    region = JSON.parse(localStorage.getItem('region')).regionId;
+    region = JSON.parse(localStorage.getItem('regionId'));
     project = JSON.parse(localStorage.getItem('projectId'));
 
     loading: boolean = false

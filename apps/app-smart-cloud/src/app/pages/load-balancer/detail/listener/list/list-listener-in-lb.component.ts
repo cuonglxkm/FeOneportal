@@ -12,7 +12,7 @@ import { NzTableQueryParams } from 'ng-zorro-antd/table';
 export class ListListenerInLbComponent implements OnInit{
   @Input() idLB: number
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   listListeners: m_LBSDNListener[] = []

@@ -39,7 +39,7 @@ export class PolicyUpdateComponent implements OnInit {
 
   public editorOptions: JsonEditorOptions;
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
 
   project = JSON.parse(localStorage.getItem('projectId'));
 

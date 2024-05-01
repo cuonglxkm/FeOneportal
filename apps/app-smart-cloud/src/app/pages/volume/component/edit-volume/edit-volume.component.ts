@@ -21,7 +21,7 @@ import { I18NService } from '@core';
   styleUrls: ['./edit-volume.component.less']
 })
 export class EditVolumeComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   volumeInfo: VolumeDTO;
   oldSize: number;

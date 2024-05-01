@@ -12,7 +12,7 @@ import { LoadBalancerService } from '../../../shared/services/load-balancer.serv
   styleUrls: ['./list-load-balancer.component.less'],
 })
 export class ListLoadBalancerComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   typeVPC: number;

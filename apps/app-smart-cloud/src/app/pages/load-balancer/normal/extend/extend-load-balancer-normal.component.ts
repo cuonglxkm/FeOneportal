@@ -16,7 +16,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-u
   styleUrls: ['./extend-load-balancer-normal.component.less'],
 })
 export class ExtendLoadBalancerNormalComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   loadBalancerId: number;

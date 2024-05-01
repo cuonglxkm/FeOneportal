@@ -18,26 +18,26 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
   providedIn: 'root'
 })
 export class PolicyService extends BaseService {
-
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-    })
-  };
-
+  
   private urlIAM = this.baseUrl + this.ENDPOINT.iam + '/policies';
 
   constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
 
+  private getHeaders() {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
+    })
+  }
+
   // searchPolicy(): Observable<BaseResponse<PolicyModel[]>> {
   //   return this.http.get<BaseResponse<PolicyModel[]>>("/policy");
   // }
   searchPolicy(policyName: any, size: any, page: any, userId: any, token: any): Observable<BaseResponse<PolicyModel[]>> {
-    return this.http.get<BaseResponse<PolicyModel[]>>(this.urlIAM + "?policyName=" + policyName + "&pageSize=" + page + "&currentPage=" + size, this.httpOptions);
+    return this.http.get<BaseResponse<PolicyModel[]>>(this.urlIAM + "?policyName=" + policyName + "&pageSize=" + page + "&currentPage=" + size, { headers: this.getHeaders() } );
   }
 
   searchPolicyPermisstion(): Observable<BaseResponse<PermissionPolicyModel[]>> {
@@ -46,7 +46,7 @@ export class PolicyService extends BaseService {
 
   getAttachedEntities(policyName: string, entityName: string, type: number, pageSize: number, currentPage: number): Observable<BaseResponse<AttachedEntitiesDTO[]>> {
     let url = this.getConditionSearchAttachedEntities(policyName, entityName, type, pageSize, currentPage);
-    return this.http.get<BaseResponse<AttachedEntitiesDTO[]>>(url, this.httpOptions);
+    return this.http.get<BaseResponse<AttachedEntitiesDTO[]>>(url, { headers: this.getHeaders() } );
   }
 
   getListService(): Observable<any> {
@@ -61,24 +61,24 @@ export class PolicyService extends BaseService {
 
   getListPermissionOfService(serviceName: string): Observable<PermissionDTO[]> {
     let url = this.urlIAM + '/ServiceAction' + '/' + serviceName;
-    return this.http.get<PermissionDTO[]>(url, this.httpOptions);
+    return this.http.get<PermissionDTO[]>(url, { headers: this.getHeaders() } );
   }
 
 
   getPermisssions(policyName: string, actionName: string, pageSize: number, currentPage: number): Observable<BaseResponse<PermissionDTO[]>> {
     let url = this.getConditionSearchPermission(policyName, actionName, pageSize, currentPage);
-    return this.http.get<BaseResponse<PermissionDTO[]>>(url, this.httpOptions);
+    return this.http.get<BaseResponse<PermissionDTO[]>>(url, { headers: this.getHeaders() } );
   }
 
 
   attachOrDetach(request: AttachOrDetachRequest): Observable<boolean> {
     let url = this.urlIAM + "/AttachOrDetach";
-    return this.http.put<boolean>(url, request, this.httpOptions);
+    return this.http.put<boolean>(url, request, { headers: this.getHeaders() } );
   }
 
   getPolicyInfo(policyName: string): Observable<PolicyInfo> {
     let url = this.urlIAM + "/" + policyName;
-    return this.http.get<PolicyInfo>(url, this.httpOptions);
+    return this.http.get<PolicyInfo>(url, { headers: this.getHeaders() } );
   }
 
   private getConditionSearchPermission(policyName: string, actionName: string, pageSize: number, currentPage: number): string {
@@ -162,7 +162,7 @@ export class PolicyService extends BaseService {
 
   detail(policyName: string) {
     return this.http.get<PolicyModel>(this.baseUrl + this.ENDPOINT.iam + `/policies/${policyName}`, {
-      headers: this.httpOptions.headers
+      headers: { headers: this.getHeaders() } .headers
     })
   }
 
@@ -183,23 +183,23 @@ export class PolicyService extends BaseService {
   }
 
   getAllPermissions(): Observable<string[]> {
-    return this.http.get<string[]>(this.baseUrl + this.ENDPOINT.iam + '/permissions', this.httpOptions);
+    return this.http.get<string[]>(this.baseUrl + this.ENDPOINT.iam + '/permissions', { headers: this.getHeaders() } );
   }
 
   createPolicy(request: any): Observable<any> {
-    return this.http.post<HttpResponse<any>>(this.urlIAM, request, this.httpOptions);
+    return this.http.post<HttpResponse<any>>(this.urlIAM, request, { headers: this.getHeaders() } );
   }
 
   getUserPermissions(): Observable<any> {
     localStorage.removeItem('PermissionOPA')
     debugger;
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/user', this.httpOptions);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/user', { headers: this.getHeaders() } );
   }
 
   hasPermission(action: string): boolean {
     let permisionOPA = localStorage.getItem('PermissionOPA');
     if (permisionOPA != null) {
-      return this.isPermission(action, permisionOPA);
+      return this.isPermission(action, JSON.parse(permisionOPA));
     } else {
       this.getUserPermissions().pipe().subscribe( (permission) => {
         localStorage.setItem('PermissionOPA', JSON.stringify(permission));
@@ -229,18 +229,6 @@ export class PolicyService extends BaseService {
 
   getShareUsers(userRootId?: number): Observable<any> {
     localStorage.removeItem('ShareUsers')
-
-    if (userRootId) {
-      var headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-        'user_root_id': userRootId,
-      });
-
-      return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/share-users', {headers: headers});
-    }
-    else {
-      return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/share-users', this.httpOptions);
-    }
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/share-users', { headers: this.getHeaders() } );
   }
 }

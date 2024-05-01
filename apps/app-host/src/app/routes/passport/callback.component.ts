@@ -75,7 +75,6 @@ export class CallbackComponent implements OnInit {
       .set('redirect_uri', environment['sso'].callback);
 
     localStorage.removeItem('UserRootId');
-    localStorage.removeItem('projectId');
     localStorage.removeItem('PermissionOPA');
     localStorage.removeItem('ShareUsers');
     let baseUrl = environment['baseUrl'];

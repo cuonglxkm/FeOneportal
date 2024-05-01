@@ -16,7 +16,7 @@ import { RegionModel, ProjectModel } from '../../../../../../libs/common-utils/s
   styleUrls: ['./create-ip-floating-normal.component.less'],
 })
 export class CreateIpFloatingNormalComponent implements OnInit{
-  regionId = JSON.parse(localStorage.getItem('region')).regionId;
+  regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
   checkIpv6: boolean = null;
   selectedAction: any;

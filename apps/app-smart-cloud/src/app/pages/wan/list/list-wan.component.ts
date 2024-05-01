@@ -12,7 +12,7 @@ import { getCurrentRegionAndProject } from '@shared';
   styleUrls: ['./list-wan.component.less'],
 })
 export class ListWanComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   pageSize: number = 10
