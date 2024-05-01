@@ -58,6 +58,7 @@ import { DeleteOutboundComponent } from './security-group/rule/outbound/delete/d
 import { FormRuleComponent } from './security-group/rule/form/form-rule.component';
 import { StatusCode2LabelPipe } from '../pipes/statusCode2label.pipe';
 import { Protocol2LabelPipe } from '../pipes/ipversion2label.pipe';
+import { ConvertUnitPipe } from '../pipes/convert-mb-unit.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -92,6 +93,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     FormRuleComponent,
     StatusCode2LabelPipe,
     Protocol2LabelPipe,
+    ConvertUnitPipe,
 
   ],
   imports: [

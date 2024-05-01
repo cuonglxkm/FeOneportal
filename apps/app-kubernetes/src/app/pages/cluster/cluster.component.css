@@ -27,8 +27,8 @@
   display: flex;
 }
 
-.padtop-25 {
-  padding-top: 25px;
+.padtop-30 {
+  padding-top: 30px;
 }
 
 .marbot-0 {
@@ -51,6 +51,10 @@ textarea,
 .border-card,
 .border-button {
   border-radius: 8px;
+}
+
+.price-card {
+  border: 1px solid #B2DEFF;
 }
 
 small {

@@ -7,6 +7,7 @@ import { VlanService } from '../../services/vlan.service';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
 import { switchMap } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'one-portal-overall',
@@ -24,7 +25,8 @@ export class OverallComponent implements OnInit {
     private clusterService: ClusterService,
     private vlanService: VlanService,
     private notificationService: NzNotificationService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private titleService: Title
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +63,7 @@ export class OverallComponent implements OnInit {
           this.getVlanbyId(this.detailCluster.vpcNetworkId);
           this.getKubeConfig(this.detailCluster.serviceOrderCode);
 
+          this.titleService.setTitle('Chi tiết cluster ' + this.detailCluster.clusterName);
         } else {
           this.notificationService.error("Thất bại", r.message);
         }

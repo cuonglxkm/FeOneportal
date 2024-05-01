@@ -28,8 +28,8 @@
           <th class="header-table">Tên nhóm worker</th>
           <th class="header-table">Trạng thái</th>
           <th class="header-table">IP Private</th>
-          <th class="header-table">vCpu</th>
-          <th class="header-table">Ram</th>
+          <th class="header-table">vCPU</th>
+          <th class="header-table">RAM (GB)</th>
           <th class="header-table">Storage (GB)</th>
           <th class="header-table">Loại ổ cứng</th>
           <th class="header-table">Thao tác</th>
@@ -47,7 +47,7 @@
           </td>
           <td>{{ item.privateIP }}</td>
           <td class="right-align">{{ item.vcpus }}</td>
-          <td class="right-align">{{ item.ram }}</td>
+          <td class="right-align">{{ item.ram | convertUnit : 'GB'}}</td>
           <td class="right-align">{{ item.volumeSize }}</td>
           <td>{{ item.volumeType }}</td>
           <td>
