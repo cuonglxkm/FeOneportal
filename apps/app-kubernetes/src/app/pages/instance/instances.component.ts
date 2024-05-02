@@ -51,11 +51,17 @@ export class InstancesComponent implements OnInit {
 
   searchInstances() {
     this.isLoadingInstance = true;
-    this.clusterService.searchInstances(this.namespace, this.serviceOrderCode)
+    this.clusterService.searchInstances(
+      this.namespace,
+      this.serviceOrderCode,
+      this.keySearch,
+      this.pageIndex,
+      this.pageSize
+    )
     .pipe(finalize(() => this.isLoadingInstance = false))
     .subscribe((r: any) => {
-      this.listOfInstances = r.data;
-      this.total = this.listOfInstances.length;
+      this.listOfInstances = r.data?.content;
+      this.total = r.data?.total;
 
       this.listOfInstances = this.listOfInstances.map(item => {
         let action: boolean;

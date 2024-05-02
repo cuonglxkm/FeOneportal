@@ -106,9 +106,22 @@ export class ClusterService extends BaseService {
   }
 
   // for instances
-  searchInstances(namespace: string, serviceOrderCode: string) {
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/list-instances?namespace=${namespace}&serviceOrderCode=${serviceOrderCode}`,
-    {headers: this.getHeaders()});
+  searchInstances(
+    namespace: string,
+    serviceOrderCode: string,
+    keySearch: string,
+    pageIndex: number,
+    pageSize: number
+  ) {
+    let params = new HttpParams();
+    params.append("namespace", namespace || "");
+    params.append("serviceOrderCode", serviceOrderCode);
+    params.append("keySearch", keySearch || "");
+    params.append("pageIndex", pageIndex);
+    params.append("pageSize", pageSize);
+
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-instances`,
+    {headers: this.getHeaders(), params: params});
   }
 
   syncInstances(serviceOrderCode: string, namespace: string, projectId: number) {
