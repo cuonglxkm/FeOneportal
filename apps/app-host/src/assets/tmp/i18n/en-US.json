@@ -164,7 +164,8 @@
   "app.account.validation": "Please enter complete information!",
   "app.account.form.success": "Account updated successfully!",
   "app.account.form.fail": "Account update failed",
-
+  "app.failData": "Retrieve data failed",
+  
   "app.minute": "minutes",
   "app.hour": "hour",
   "app.day": "day",
@@ -758,6 +759,10 @@
   "app.create-user.confirm.title": "Confirm User creation",
   "app.create-user.confirm.alert": "You are creating a new User",
   "app.create-user.confirm.des": "To create a new User, please select 'Confirm' to confirm.",
+  "app.create-user.noti.success": "Create User successfully",
+  "app.edit-user.noti.success": "Edit User successfully",
+  "app.create-user.noti.fail": "Create User failed",
+  "app.edit-user.noti.fail": "Edit User failed",
   "app.button.back": "Back",
   "app.button.addUser": "Add User",
   "app.button.createNew": "Create",
@@ -778,10 +783,21 @@
   "app.user-group.deleteOne.des": "You are deleting Groups",
   "app.user-group.deleteOne.des2": "Deleting Groups will cause all users in this group to lose group permissions. This action cannot be undone",
   "app.user-group.deleteOne.confirm": "To delete the Group, please enter the Group name to confirm.",
+  "app.user-group.deleteOne.delete": "Delete User Group",
+  "app.user-group.deleteOne.success": "successfully",
+  "app.user-group.deleteOne.fail": "failed",
+  "app.user.delete.noti.success": "Delete User successfully",
+  "app.user.delete.noti.success1": "User successfully",
+  "app.user.delete.noti.fail": "Delete User failed",
+
   "app.user-group.deleteMany.title": "Delete",
   "app.user-group.deleteMany.des": "You are performing deletion",
   "app.user-group.deleteMany.des2": "Groups. Deleting Groups will cause all users in these groups to lose group permissions. This action cannot be undone.",
   "app.user-group.deleteMany.confirm": "To delete Groups, please enter “delete” to confirm.",
+  "app.user-group.deleteMany.success": "Delete User Group successfully.",
+  "app.user-group.deleteMany.fail": "Delete User Group failed.",
+  "app.user-group.deleteMany.fail2": "Can't delete User Group.",
+  
 
   "app.breadcrumb.create-user-groups": "Create User Group",
   "app.create-user-groups.nameGroup": "Name of Group",
@@ -794,7 +810,9 @@
   "app.create-user-groups.modal.des": "To create a new Group, please select 'Agree' to confirm.",
   "app.create-user-groups.modal.alert": "You are creating a Group",
   "app.button.agree": "Agree",
-
+  "app.user-group.noti.success": "New group created successfully",
+  "app.user-group.noti.fail": "New group created failed",
+  
   "app.group-detail.groupInfo": "Group information",
   "app.group-detail.mainInfo": "Group's main information",
   "app.group-detail.userInGroup": "Users in Group",
@@ -808,6 +826,8 @@
   "app.user-group.edit": "Edit User Group",
   "app.user-group.edit.alert": "Changing the name of a Group will change the Group's identifier on the system. Do you still want to change the information?",
   "app.user-group.edit.validation": "Maximum 128 characters. Use alphanumeric characters and '+=,.@-_'.",
+  "app.user-group.edit.noti.sucess": "Edit Group information successfully",
+  "app.user-group.edit.noti.fail": "Edit Group information failed",
 
   "app.policies.title": "List of Policies",
   "app.policies.policyInfo": "Policy information",
@@ -819,6 +839,12 @@
   "app.users.policies.delete.alert": " policy. This action cannot be undone",
   "app.users.policies.delete.confirm": "To delete Policy, please enter the Policy name to confirm",
   "app.users.policies.delete.input": "Enter the policy name",
+  "app.users.policies.remove.success": "Remove the policy from the Group successfully",
+  "app.users.policies.remove.fail": "Remove the policy from the Group failed",
+  "app.users.users.remove.success": "Remove user from the Group successfully",
+  "app.users.users.remove.fail": "Remove user from the Group failed",
+  "app.users.users.add.success": "Add user from the Group successfully",
+  "app.users.users.add.fail": "Add user from the Group failed",
 
   "app.breadcrumb.create-policy": "Create Policy",
   "app.create-policy.step1": "Step 1",
@@ -838,6 +864,11 @@
   "app.create-policy.confirm.des": "Are you sure you want to create this policy?",
   "app.button.continue": "Continue",
   "app.create-policy.confirm": "Confirm to create policy",
+  "app.create-policy.noti.success": "Policy added successfully",
+  "app.create-policy.noti.success1": "Create Policy successfully",
+  "app.create-policy.noti.fail": "Policy added failed",
+  "app.create-policy.noti.fail1": "Create Policy failed",
+  "app.create-policy.noti.warn": "Do not attach more than 10 policies",
   "app.create-policy.alertNextStep": "Next step warning",
   "app.create-policy.alertNextStep.des": "Please select policy to go to the next step",
 
@@ -851,6 +882,10 @@
   "app.breadcrumb.attach-policy.iamEntities.type": "Entity Type",
   "app.button.attach-policy": "Attach Policy",
   "app.attach-policy.confirm": "You are implementing Attach policy",
+  "app.attach-policy.noti.success": "Attach Policy successfully",
+  "app.attach-policy.noti.fail": "Attach Policy failed",
+  "app.attach-policy.user-group.noti.fail": "Get the list of Attached USER GROUPS failed",
+  "app.attach-policy.user.noti.fail": "Get the list of Attached USER failed",
   "app.attach-policy.confirm.des": "To implement the Attach Policy, please select 'Agree'. to perform",
 
   "app.breadcrumb.detach-policy": "Detach Policy",
@@ -859,6 +894,11 @@
   "app.button.detach-policy": "Detach Policy",
   "app.detach-policy.confirm": "You are implementing Detach policy",
   "app.detach-policy.confirm.des": "To implement the Detach Policy, please select 'Agree'. to perform",
+  "app.detach-policy.noti.success": "Detach Policy successfully",
+  "app.detach-policy.noti.fail": "Detach Policy successfully",
+  "app.detach-policy.attach-entities.noti.fail": "Get the list of Attached Entities failed",
+  "app.policy.permission.noti.fail": "Get the list of Permission failed",
+  "app.policy-detail.noti.fail": "Get policy information failed",
 
   "app.breadcrumb.detail-policy": "Detail Policy",
   "app.detail-policy.policyInfo": "Policy information",
@@ -869,6 +909,10 @@
   "app.breadcrumb.edit-policy": "Edit Policy",
   "app.edit-policy.des": "Add permissions by selecting services, actions, resources and conditions or building sentences command using a JSON editor",
   "app.edit-policy.des2": "Specifies what actions can be performed on specific resources within a service.",
+  "app.policy.delete.noti.success": "Delete Policy successfully",
+  "app.policy.delete.noti.fail": "Delete Policy failed",
+  "app.edit-policy.noti.sucess": "Update Policy successfully",
+  "app.edit-policy.noti.fail": "Update Policy failed",
 
   "app.breadcrumb.account": "Account",
   "app.breadcrumb.security": "Security",
@@ -892,6 +936,7 @@
   "app.action-history.region": "Region",
   "app.action-history.information": "Information",
   "app.action-history.date": "Operation date",
+
 
   "app.kafka.intro-text": "VNPT Message Streaming for Kafka is a data distribution platform for cloud-based systems. Kafka provides fast, stable, and fault-tolerant processing capabilities for Pub/Sub systems.",
   "app.kafka.init": "Initialize Kafka Cluster",

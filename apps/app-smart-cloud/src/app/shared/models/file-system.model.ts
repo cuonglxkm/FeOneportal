@@ -39,24 +39,24 @@ export class FormEditFileSystem {
 }
 
 export class FileSystemDetail {
-  id: number;
-  shareCloudId: string;
-  name: string;
-  type: string;
-  shareProto: string;
-  vpc: string;
-  vpcId: number;
-  mountTargetAddress: string;
-  status: string;
-  createdDate: string;
-  size: number;
-  description: string;
-  instanceId: string;
-  customerId: number;
-  customerEmail: string;
-  shareSnapshotId: any;
-  expireDate: string;
-  isSnapshot: boolean;
+  id: number
+  shareCloudId: string
+  name: string
+  type: string
+  shareProto: string
+  vpc: string
+  vpcId: number
+  mountTargetAddress: string
+  status: string
+  createdDate: string
+  size: number
+  description: string
+  instanceId: string
+  customerId: number
+  customerEmail: string
+  shareSnapshotId: any
+  expireDate: string
+  isSnapshot: boolean
 }
 
 export class OrderCreateFileSystem {

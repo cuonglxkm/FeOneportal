@@ -1,7 +1,9 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, Output} from '@angular/core';
 import {UserGroupService} from "../../../../../shared/services/user-group.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {FormDeleteUserGroups} from "../../../../../shared/models/user-group.model";
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
     selector: 'one-portal-delete-one-user-group',
@@ -20,7 +22,8 @@ export class DeleteOneUserGroupComponent {
     nameList: string[] = []
 
     constructor(private userGroupService: UserGroupService,
-                private notification: NzNotificationService) {
+                private notification: NzNotificationService,
+                @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     }
 
     handleCancel(): void {
@@ -35,15 +38,15 @@ export class DeleteOneUserGroupComponent {
         if (this.nameGroup[0]?.name == this.value) {
             this.nameList.push(this.nameGroup[0].name)
             this.userGroupService.delete(this.nameList).subscribe(data => {
-                this.notification.success('Thành công', 'Xóa User Group ' + this.nameGroup[0]?.name + ' thành công')
+                this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.user-group.deleteOne.delete")+ ' ' + this.nameGroup[0]?.name + ' ' + this.i18n.fanyi("app.user-group.deleteOne.success"))
                 this.isLoading = false
                 this.onOk.emit();
             }, error => {
-                this.notification.error('Thất bại', 'Xóa User Group ' + this.nameGroup[0]?.name + ' thất bại')
+                this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user-group.deleteOne.delete")+ ' ' + this.nameGroup[0]?.name + ' ' + this.i18n.fanyi("app.user-group.deleteOne.fail"))
             })
         } else {
             this.isLoading = false
-            this.notification.error('Thất bại', 'Không thể xóa User Group ' + this.nameGroup)
+            this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user-group.deleteMany.fail2") + this.nameGroup)
         }
     }
 

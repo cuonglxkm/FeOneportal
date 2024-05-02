@@ -1,9 +1,11 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, Output} from '@angular/core';
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {UserGroupService} from "../../../../shared/services/user-group.service";
 import {Router} from "@angular/router";
 import {FormUserGroup, UserGroupModel} from "../../../../shared/models/user-group.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-extend-user-group',
@@ -36,7 +38,8 @@ export class EditUserGroupComponent {
   constructor(private fb: NonNullableFormBuilder,
               private userGroupService: UserGroupService,
               private router: Router,
-              private notification: NzNotificationService
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
   }
 
@@ -62,12 +65,12 @@ export class EditUserGroupComponent {
       this.userGroupService.createOrEdit(this.form).subscribe(data => {
         this.userGroup = data
         this.isLoading = false
-        this.notification.success('Thành công', 'Chỉnh sửa thông tin Group thành công')
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.user-group.edit.noti.sucess"))
         this.router.navigate(['/app-smart-cloud/iam/user-group/', this.userGroup.name])
         this.validateForm.reset()
         this.onOk.emit();
       }, error => {
-        this.notification.error('Thất bại', 'Chỉnh sửa thông tin Group thất bại')
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user-group.edit.noti.fail"))
         this.isLoading = false
         this.validateForm.reset()
       })
