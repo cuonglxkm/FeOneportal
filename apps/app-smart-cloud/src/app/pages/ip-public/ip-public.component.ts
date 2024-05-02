@@ -269,4 +269,10 @@ export class IpPublicComponent implements OnInit {
       this.disableDelete = true;
     }
   }
+
+  openIpDeleteCf() {
+    if (this.disableDelete == false) {
+      this.openIpDelete();
+    }
+  }
 }
