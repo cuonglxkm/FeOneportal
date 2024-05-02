@@ -99,8 +99,7 @@
           <nz-form-control nzDisableAutoTips [nzErrorTip]="portErrorTpl">
             <nz-input-number style="margin-left: 0; width: 100%;"
                              formControlName="portRangeMin"
-                              [nzStep]="null"
-                              [nzMin]="1"
+                             [nzMin]="1"
                              class="input-custom"
                              (change)="portChange($event.target['value'])" nzAutoFocus (keydown.enter)="focusOkButton($event)"/>
 

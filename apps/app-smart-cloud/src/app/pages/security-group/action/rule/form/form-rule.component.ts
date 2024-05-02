@@ -231,9 +231,11 @@ export class FormRuleComponent implements OnInit {
 
   }
 
-  isValidNumber(value: number): boolean {
+  isValidNumber(value): boolean {
+    console.log('value', value)
+    const intValue = parseInt(value, 10);
     // Kiểm tra giá trị có nằm trong khoảng từ 1 đến 65535 không
-    return value >= 1 && value <= 65535;
+    return intValue >= 1 && intValue <= 65535;
   }
 
   portChange(value) {
@@ -242,9 +244,8 @@ export class FormRuleComponent implements OnInit {
       if(this.isValidNumber(value)) {
         this.validateForm.controls.portRangeMax.setValue(value);
       } else {
-        this.validateForm.controls.portRangeMax.setValidators(Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/))
+        this.validateForm.controls.portRangeMax.setValidators([Validators.required, Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/), integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin')])
       }
-
     }
   }
 
