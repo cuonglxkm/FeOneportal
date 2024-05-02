@@ -469,6 +469,7 @@
   "validation.choose.protocol.required": "Vui lòng chọn giao thức",
   "validation.correct.pool.name": "Vui lòng nhập đúng tên Pool",
 
+  "app.placeholder.name.load.balancer": "Nhập tên LoadBalancer",
   "app.tooltip.vip.address": "Virtual IP là IP private dùng để giao tiếp với các Member",
   "app.tooltip.internet.floating": "Internet IP là IP Public được cấp cho Load Balancer để tiếp nhận các request từ ngoài Internet",
   "app.tooltip.task.status.lb": "Nếu trạng thái hiển thị là ERROR, thông thường là do Load Balancer health check phát hiện ra có member bị error trong Pool của Load Balancer",
@@ -495,6 +496,11 @@
   "app.title.delete.pool": "Xóa Pool <b>{{name}}</b>",
   "app.note.delete.pool": "Để thực hiện xóa Pool <b>{{name}}</b>, vui lòng nhập tên Pool để xác nhận",
   "app.alert.delete.pool": "Bạn đang thực hiện xóa Pool",
+
+  "app.notification.delete.load.balancer.success": "Xóa Load Balancer thành công",
+  "app.notification.delete.load.balancer.fail": "Xóa Load Balancer thất bại {{ error }}",
+  "app.notification.create.pool.success": "Tạo Pool thành công",
+  "app.notification.create.pool.fail": "Tạo Pool thất bại",
 
   "app.access.rule.manage": "Quản lý Access Rule",
   "app.access.rule.list": "Danh sách Access Rule",
@@ -1233,8 +1239,7 @@
   "volume.intro.title2": "Lưu trữ ổ đĩa máy chủ",
   "volume.intro.subtitle": "Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.",
   "volume.modal.attach.title": "Chọn máy ảo",
-  "volume.modal.subtitle.delete": "Để thực hiện xóa Volume",
-  "volume.modal.confirm.delete": ", vui lòng nhập tên Volume để xác nhận",
+  "volume.modal.subtitle.delete": "Để thực hiện xóa Volume {{name}}, vui lòng nhập tên Volume để xác nhận",
   "volume.modal.title.update": "Chỉnh sửa thông tin Volume",
   "volume.modal.confirm.title.create": "Xác nhận khởi tạo Volume",
   "volume.modal.confirm.content": "Quý khách chắn chắn muốn thực hiện khởi tạo Volume?",
@@ -1289,5 +1294,49 @@
   "app.backup.volume.name.tooltip": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
   "app.backup.volume.validator.name.required": "Vui lòng nhập tên Backup Volume",
   "app.backup.volume.validator.backup.package.required": "Vui lòng nhập tên Backup",
-  "app.backup.volume.request.create": "Yêu cầu tạo Backup Volume đã được gửi đi."
+  "app.backup.volume.request.create": "Yêu cầu tạo Backup Volume đã được gửi đi.",
+
+  "app.dashboard.subscription.service": "Dịch vụ",
+  "app.dashboard.subscription.service.active": "Đang hoạt động",
+  "app.dashboard.subscription.service.near.expire": "Sắp hết hạn",
+  "app.dashboard.subscription.service.expire": "Hết hạn",
+  "app.dashboard.payment.and.cost": "Chi phí và sử dụng",
+  "app.dashboard.payment.and.cost.payment.code": "Mã thanh toán",
+  "app.dashboard.payment.and.cost.service": "Dịch vụ",
+  "app.dashboard.payment.and.cost.total.payment": "Tổng tiền (VND)",
+  "app.dashboard.payment.and.cost.create.date": "Ngày khởi tạo",
+  "app.dashboard.payment.and.cost.status": "Trạng thái",
+  "app.dashboard.payment.and.cost.paid": "Đã thanh toán",
+  "app.dashboard.payment.and.cost.not.paid": "Chưa thanh toán",
+  "app.dashboard.service.near.expire": "Dịch vụ sắp hết hạn",
+  "app.dashboard.service.near.expire.service.name": "Tên dịch vụ",
+  "app.dashboard.service.near.expire.service.type": "Loại dịch vụ",
+  "app.dashboard.service.near.expire.create.date": "Ngày khởi tạo",
+  "app.dashboard.service.near.expire.expire.date": "Ngày hết hạn",
+  "app.dashboard.service.near.expire.status": "Trạng thái",
+  "app.dashboard.service.near.expire.action": "Thao tác",
+  "app.dashboard.service.near.expire.extend": "Gia hạn",
+
+  "app.backup.package.breadcrumb.backup": "Backup",
+  "app.backup.package.breadcrumb.create.backup.package": "Tạo gói Backup",
+  "app.backup.package.information": "Thông tin của gói Backup",
+  "app.backup.package.name": "Tên gói Backup",
+  "app.backup.package.storage": "Dung lượng gói Backup",
+  "app.backup.package.description": "Mô tả",
+  "app.backup.package.time.used": "Thời gian sử dụng",
+
+
+
+  "app.tooltip.backup.package.name": "Tên gói backup của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.",
+  "app.tooltip.backup.package.storage": "Dung lượng mặc định tối thiểu là 1, chưa giới hạn dung lượng tối đa",
+  "app.placeholder.backup.package.name": "Nhập tên gói",
+  "app.placeholder.backup.package.description": "Nhập mô tả",
+  "app.placeholder.backup.package.time": "",
+
+
+  "app.backup.package.name.required": "Vui lòng nhập tên gói Backup",
+  "app.backup.package.name.pattern": "Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt",
+  "app.backup.package.name.maxLength": "Tối đa 70 ký tự",
+  "app.backup.package.storage.required": "Vui lòng nhập dung lượng của gói Backup",
+  "app.backup.package.description.maxLength": "Cho phép nhập tối đa 255 kí tự"
 }

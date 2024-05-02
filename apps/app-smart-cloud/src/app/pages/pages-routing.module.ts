@@ -13,7 +13,6 @@ import { EditVolumeComponent } from './volume/component/edit-volume/edit-volume.
 import { ActionHistoryComponent } from './action-history/action-history.component';
 import { SnapshotVolumeListComponent } from './snapshot-volume/snapshotvl-list/snapshotvl-list.component';
 import { SnappshotvlDetailComponent } from './snapshot-volume/snapshotvl-detail/snappshotvl-detail.component';
-import { BlankBackupVmComponent } from './backup-vm/blank/blank-backup-vm.component';
 import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component';
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
@@ -183,7 +182,7 @@ const routes: Routes = [
     data: {
       permission: 'instance:List',
     }
-    
+
   },
   {
     path: 'ip-public',
@@ -192,7 +191,7 @@ const routes: Routes = [
     data: {
       permission: 'ippublic:List',
     }
-    
+
   },
   {
     path: 'ip-public/create',
@@ -201,7 +200,7 @@ const routes: Routes = [
     data: {
       permission: 'order:create',
     }
-    
+
   },
   {
     path: 'ip-public/detail/:id',
@@ -210,7 +209,7 @@ const routes: Routes = [
     data: {
       permission: 'ippublic:Get',
     }
-    
+
   },
   {
     path: 'ip-public/extend/:id',
@@ -219,7 +218,7 @@ const routes: Routes = [
     data: {
       permission: 'order:create',
     }
-    
+
   },
   {
     path: 'instance/:instanceId/allow-address-pair/:portId',
@@ -236,7 +235,7 @@ const routes: Routes = [
     data: {
       permission: 'actionlogs:List',
     }
-    
+
   },
   {
     path: 'snapshotvls',
@@ -255,17 +254,13 @@ const routes: Routes = [
     }
   },
   {
-    path: 'blank-backup-vm',
-    component: BlankBackupVmComponent,
-  },
-  {
     path: 'backup-vm',
     component: ListBackupVmComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'backup:List',
     }
-    
+
   },
   {
     path: 'backup-vm/restore-backup-vm/:id',
@@ -282,7 +277,7 @@ const routes: Routes = [
     data: {
       permission: 'backup:Get',
     }
-    
+
   },
   {
     path: 'instance/:id/create-backup-vm',
@@ -291,7 +286,7 @@ const routes: Routes = [
     data: {
       permission: 'order:create',
     }
-    
+
   },
   {
     path: 'backup-volume/create',
@@ -300,7 +295,7 @@ const routes: Routes = [
     data: {
       permission: 'order:create',
     }
-    
+
   },
   {
     path: 'backup-volume/detail',
@@ -309,7 +304,7 @@ const routes: Routes = [
     data: {
       permission: 'backup:Get',
     }
-    
+
   },
   {
     path: 'backup-volume',
@@ -318,7 +313,7 @@ const routes: Routes = [
     data: {
       permission: 'backup:List',
     }
-    
+
   },
   {
     path: 'iam/dashboard',
@@ -331,7 +326,7 @@ const routes: Routes = [
     data: {
       permission: 'iamgroup:List',
     }
-    
+
   },
   {
     path: 'iam/user-group/create',
@@ -340,7 +335,7 @@ const routes: Routes = [
     data: {
       permission: 'iamgroup:Create',
     }
-    
+
   },
   {
     path: 'iam/user-group/:name',
@@ -349,7 +344,7 @@ const routes: Routes = [
     data: {
       permission: 'iamgroup:Get',
     }
-    
+
   },
   {
     path: 'policy/attach/:name',
@@ -374,7 +369,7 @@ const routes: Routes = [
     data: {
       permission: 'iampolicy:Get',
     }
-    
+
   },
   {
     path: 'policy/update/:name',
@@ -392,7 +387,7 @@ const routes: Routes = [
     data: {
       permission: 'iampolicy:List',
     }
-    
+
   },
   {
     path: 'users',
@@ -401,7 +396,7 @@ const routes: Routes = [
     data: {
       permission: 'iamuser:List',
     }
-    
+
   },
   {
     path: 'users/create',
@@ -410,7 +405,7 @@ const routes: Routes = [
     data: {
       permission: 'iamuser:Create',
     }
-    
+
   },
   {
     path: 'users/detail/:userName',
@@ -419,7 +414,7 @@ const routes: Routes = [
     data: {
       permission: 'iamuser:Get',
     }
-    
+
   },
   {
     path: 'users/detail/:userName/add-policies',
@@ -428,7 +423,7 @@ const routes: Routes = [
     data: {
       permission: 'iamuser:Create',
     }
-    
+
   },
   {
     path: 'users/detail/:userName/add-to-group',
@@ -445,7 +440,7 @@ const routes: Routes = [
     data: {
       permission: 'iamgroup:Create',
     }
-    
+
   },
   {
     path: 'iam/user-group/:groupName/add-policy',
@@ -454,7 +449,7 @@ const routes: Routes = [
     data: {
       permission: 'iamgroup:Create',
     }
-    
+
   },
   {
     path: 'schedule/backup/blank',
@@ -475,7 +470,7 @@ const routes: Routes = [
     data: {
       permission: 'order:create',
     }
-    
+
   },
   {
     path: 'schedule/backup/edit/vm/:id',
@@ -532,7 +527,7 @@ const routes: Routes = [
     data: {
       permission: 'payment:Get',
     }
-    
+
   },
   {
     path: 'billing/payments/success',
@@ -549,7 +544,7 @@ const routes: Routes = [
     data: {
       permission: 'payment:List',
     }
-    
+
   },
   {
     path: 'order/list',
@@ -558,7 +553,7 @@ const routes: Routes = [
     data: {
       permission: 'order:List',
     }
-    
+
   },
   {
     path: 'order/detail/:id',
@@ -567,7 +562,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Get',
     }
-    
+
   },
   {
     path: 'volumes/renew/:id',
@@ -576,7 +571,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'backup/packages',
@@ -601,7 +596,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'backup/packages/edit/:id',
@@ -618,7 +613,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'order/cart',
@@ -631,7 +626,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'volume/vpc/resize/:id',
@@ -640,7 +635,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   // {
   //   path: 'volume/blank',
@@ -657,7 +652,7 @@ const routes: Routes = [
     data: {
       permission: 'vlan:List',
     }
-    
+
   },
   {
     path: 'vpc',
@@ -676,7 +671,7 @@ const routes: Routes = [
     data: {
       permission: 'router:List',
     }
-    
+
   },
   {
     path: 'network/router/detail/:id',
@@ -685,7 +680,7 @@ const routes: Routes = [
     data: {
       permission: 'router:Get',
     }
-    
+
   },
   {
     path: 'vlan/create/network',
@@ -710,7 +705,7 @@ const routes: Routes = [
     data: {
       permission: 'ipfloating:List',
     }
-    
+
   },
   {
     path: 'networks/ip-floating-normal/create',
@@ -719,7 +714,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'networks/ip-floating-normal/:id/extend',
@@ -728,7 +723,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'networks/ip-wan/list',
@@ -737,7 +732,7 @@ const routes: Routes = [
     data: {
       permission: 'ipwan:List',
     }
-    
+
   },
   {
     path: 'file-storage/file-system/create',
@@ -746,7 +741,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'file-storage/file-system/list',
@@ -771,7 +766,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'file-storage/file-system/:idFileSystem/access-rule/list',
@@ -812,7 +807,7 @@ const routes: Routes = [
     data: {
       permission: 'ipfloating:List',
     }
-    
+
   },
   {
     path: 'file-system-snapshot/list',
@@ -897,7 +892,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'object-storage/extend/:id',
@@ -906,7 +901,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'object-storage/edit/:id',
@@ -915,7 +910,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'object-storage/bucket/:name',
@@ -978,7 +973,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'load-balancer/create/vpc',
@@ -987,7 +982,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'load-balancer/detail/:id',
@@ -1020,7 +1015,7 @@ const routes: Routes = [
     data: {
       permission: 'blsdnlistener:Update',
     }
-    
+
   },
   {
     path: 'security',
@@ -1041,7 +1036,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'load-balancer/pool-detail/:id',
@@ -1078,7 +1073,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'file-storage/file-system/:idFileSystem/extend',
@@ -1087,7 +1082,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
   {
     path: 'file-storage/file-system/:idFileSystem/resize',
@@ -1096,7 +1091,7 @@ const routes: Routes = [
     data: {
       permission: 'order:Create',
     }
-    
+
   },
 ];
 

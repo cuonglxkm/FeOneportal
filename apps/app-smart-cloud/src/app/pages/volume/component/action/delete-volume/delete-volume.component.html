@@ -13,7 +13,7 @@
               [nzMessage]="'volume.alert.message.delete' | i18n">
     </nz-alert>
     <div style="margin-top: 10px;">
-      <span class="text-label">{{ 'volume.modal.subtitle.delete' |i18n }} {{ volumeName }} {{'volume.modal.confirm.delete' | i18n}}</span>
+      <span class="text-label">{{ 'volume.modal.subtitle.delete' | i18n:{"name": volumeName}  }}</span>
       <input nz-input #volumeInputName
              style="margin-top: 10px;"
              class="input-custom"
