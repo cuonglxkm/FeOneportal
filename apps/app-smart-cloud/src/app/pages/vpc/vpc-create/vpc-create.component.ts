@@ -352,7 +352,7 @@ export class VpcCreateComponent implements OnInit{
         offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
         actionType: 0,
         regionId: this.regionId,
-        serviceName: 'vpc' + this.tokenService.get()?.userId + '-' + this.form.controls['name'].value,
+        serviceName: this.form.controls['name'].value,
         description: this.form.controls['description'].value,
         createDate: new Date()
       }
