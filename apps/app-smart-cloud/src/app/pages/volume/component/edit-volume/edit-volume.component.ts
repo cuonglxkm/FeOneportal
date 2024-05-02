@@ -65,7 +65,7 @@ export class EditVolumeComponent implements OnInit {
               private notification: NzNotificationService,
               private instanceService: InstancesService,
               private projectService: ProjectService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) protected i18n: I18NService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running').toUpperCase());
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error').toUpperCase());
