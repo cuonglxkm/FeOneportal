@@ -1,5 +1,5 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Quản lý Access Rule'">
+             [title]="'app.access.rule.manage' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
@@ -22,7 +22,7 @@
   <nz-card style="border-radius: 8px;">
     <nz-row nzJustify="space-between">
       <nz-col nzSpan="6">
-        <span class="text-card-header">Danh sách Access Rule</span>
+        <span class="text-card-header">{{ 'app.access.rule.list' | i18n }}</span>
       </nz-col>
       <nz-col nzSpan="18" style="flex:none;">
         <div>
