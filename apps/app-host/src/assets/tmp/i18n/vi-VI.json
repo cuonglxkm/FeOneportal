@@ -1216,6 +1216,8 @@
   "volume.menu.create.schedule.backup": "Tạo lịch Backup",
   "volume.menu.create.schedule.snapshot": "Tạo lịch Snapshot",
   "volume.menu.update.volume": "Chỉnh sửa",
+  "volume.attach": "Gắn Volume",
+  "volume.detach": "Gỡ Volume",
 
   "volume.placeholder.filter.status": "Tất cả trạng thái",
   "volume.placeholder.filter.name": "Tìm kiếm tên...",
