@@ -160,19 +160,20 @@
             <td>ACTIVE</td>
             <td>
               <!----Chỉnh sửa----->
-              <span style="color: #0066B3; margin-right: 10px;"
-                    nz-tooltip
-                    nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom"
-                    nz-icon
-                    nzType="edit"
-                    nzTheme="outline"
-              ></span>
+              <one-portal-edit-pool-in-lb [region]="region"
+                                  [project]="project"
+                                  [poolId]="data.id"
+                                  [loadBlancerId]="idLB"
+                                  [listenerId]="idListener"
+                                  (onOk)="handleEditOk()" />
               <!----Xóa---->
-              <span style="color: #0066B3"
-                    nz-tooltip
-                    nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
-                    nz-icon nzType="delete" nzTheme="outline"
-              ></span>
+              <one-portal-delete-pool-in-lb [region]="region"
+                                    [project]="project"
+                                    [poolId]="data.id"
+                                    [loadBlancerId]="idLB"
+                                    [listenerId]="idListener"
+                                    [namePool]="data.name"
+                                    (onOk)="handleDeleteOk()" />
             </td>
           </tr>
           </tbody>

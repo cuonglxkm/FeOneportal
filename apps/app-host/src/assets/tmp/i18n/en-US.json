@@ -615,6 +615,17 @@
   "app.notification.delete.load.balancer.fail": "Delete Load Balancer fail. <p>{{ error }}</p>",
   "app.notification.create.pool.success": "Create Pool success",
   "app.notification.create.pool.fail": "Create Pool fail",
+  "app.access.rule.manage": "Manage Access Rule",
+  "app.access.rule.list": "Access Rule list",
+  "app.button.access.rule.create": "Create new Access Rule",
+  "app.button.access.rule.add": "Add Access Rule",
+
+  "validation.access.to": "Access To cannot be left blank",
+  "validation.access.to.pattern": "Access To should be in the format x.x.x.x",
+
+  "app.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR is granted access to this Filesystem",
+  "app.alert.delete.access.to": "You are currently deleting an Access Rule",
+  "app.access.to.remove.confirm": "Are you sure you want to delete the Access Rule?",
 
   "app.payment.title": "Payment list",
   "app.payment.payment": "Payment",

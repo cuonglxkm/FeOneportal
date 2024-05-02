@@ -174,4 +174,12 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   handleDeleteL7PolicyOk() {
     setTimeout(() => {this.getListL7Policy(this.idListener)}, 2500)
   }
+
+  handleEditOk() {
+    this.getPool(this.activatedRoute.snapshot.paramMap.get('id'))
+  }
+
+  handleDeleteOk() {
+    this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
+  }
 }
