@@ -14,6 +14,8 @@ import {PackageBackupService} from "../../../../../shared/services/package-backu
 import {PackageBackupModel} from "../../../../../shared/models/package-backup.model";
 import {getCurrentRegionAndProject} from "@shared";
 import { ProjectModel, RegionModel, ProjectService } from '../../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-backup-volume',
@@ -77,7 +79,7 @@ export class CreateBackupVolumeComponent implements OnInit {
     let createBackupVolumeOrderData = new CreateBackupVolumeOrderData();
     createBackupVolumeOrderData.customerId = userId;
     createBackupVolumeOrderData.createdByUserId = userId;
-    createBackupVolumeOrderData.note = 'tạo backup volume';
+    createBackupVolumeOrderData.note = this.i18n.fanyi('app.input.backup.volume.note');
     createBackupVolumeOrderData.orderItems = [
       {
         orderItemQuantity: 1,
@@ -92,7 +94,7 @@ export class CreateBackupVolumeComponent implements OnInit {
     this.backupVolumeService.createBackupVolume(createBackupVolumeOrderData).subscribe(
       () => {
         this.isLoading = false
-        this.notification.success('Thành công', 'Yêu cầu tạo backup volume đã được gửi đi')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.volume.request.create'))
         this.router.navigate(['/app-smart-cloud/backup-volume']);
       }
     );
@@ -125,7 +127,8 @@ export class CreateBackupVolumeComponent implements OnInit {
               private notification: NzNotificationService,
               private backupPackageService: PackageBackupService,
               private projectService: ProjectService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   changeSelectdPackage(event: any) {

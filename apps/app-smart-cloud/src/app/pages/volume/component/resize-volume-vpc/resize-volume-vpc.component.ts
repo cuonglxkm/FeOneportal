@@ -11,6 +11,8 @@ import {InstancesService} from "../../../instances/instances.service";
 import { NzInputGroupComponent } from 'ng-zorro-antd/input';
 import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
 import { SizeInCloudProject, ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-resize-volume-vpc',
@@ -66,11 +68,12 @@ export class ResizeVolumeVpcComponent implements OnInit {
               private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
               private instanceService: InstancesService,
-              private projectService: ProjectService) {
+              private projectService: ProjectService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
-    this.volumeStatus.set('ERROR', 'LỖI');
-    this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
+    this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running').toUpperCase());
+    this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error').toUpperCase());
+    this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend').toUpperCase());
 
   }
 
@@ -188,7 +191,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
     this.volumeService.editSizeVolume(request).subscribe(data => {
         if (data.code == 200) {
           this.isLoadingConfirm = false
-          this.notification.success('Thành công', 'Điều chỉnh Volume thành công.')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.resize.success'))
           console.log(data);
           this.router.navigate(['/app-smart-cloud/volumes']);
         } else if (data.code == 310) {
@@ -197,11 +200,11 @@ export class ResizeVolumeVpcComponent implements OnInit {
           window.location.href = data.data;
         } else {
           this.isLoadingConfirm = false
-          this.notification.error('Thất bại', 'Điều chỉnh Volume thất bại.')
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.resize.fail'))
         }
       }, error => {
         this.isLoadingConfirm = false
-        this.notification.error('Thất bại', 'Điều chỉnh Volume thất bại.')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.resize.fail') + error.error.detail)
       }
     );
   }

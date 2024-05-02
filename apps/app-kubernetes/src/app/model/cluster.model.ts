@@ -19,6 +19,7 @@ export class KubernetesCluster {
   vpcNetworkId: number;
   volumeCloudType: string;
   volumeCloudSize: number;
+  securityGroupName: string;
   usageTime: number;
   totalNode: number;
   createdDate: Date;
@@ -41,6 +42,7 @@ export class KubernetesCluster {
     this.networkType = obj.network_type;
     this.cidr = obj.cidr;
     this.subnet = obj.subnet;
+    this.securityGroupName = obj.security_group_name;
     this.vpcNetworkId = obj.vpc_network_id;
     this.volumeCloudSize = obj.volume_cloud_size;
     this.volumeCloudType = obj.volume_cloud_type;
@@ -65,7 +67,8 @@ export class KubernetesCluster {
 export class CreateClusterReqDto {
 
   ClusterName: string;
-  ProjectInfraId: string;
+  ProjectId: string;
+  ProjectType: number;
   KubernetesVersion: string;
   Description: string;
   CloudProfileId: string;
@@ -84,7 +87,8 @@ export class CreateClusterReqDto {
   constructor(obj: any) {
     if (obj) {
       this.ClusterName = obj.clusterName;
-      this.ProjectInfraId = obj.projectInfraId;
+      this.ProjectId = obj.projectId;
+      this.ProjectType = obj.projectType;
       this.KubernetesVersion = obj.kubernetesVersion;
       this.Description = obj.description;
       this.CloudProfileId = obj.cloudProfileId;
@@ -163,6 +167,29 @@ export class UpgradeVersionClusterDto {
 
 }
 
+export class UpgradeWorkerGroupDto {
+
+  ServiceOrderCode: string;
+  ClusterName: string;
+  // VolumeCloudSize: number;
+  // VolumeCloudType: string;
+  WorkerGroup: WorkerGroupReqDto[];
+
+  constructor(obj: any) {
+    if (obj) {
+      this.ServiceOrderCode = obj.serviceOrderCode;
+      this.ClusterName = obj.clusterName;
+
+      this.WorkerGroup = [];
+      let wgs = obj.workerGroup;
+      for (let i = 0; i < wgs.length; i++) {
+        const wg = new WorkerGroupReqDto(wgs[i]);
+        this.WorkerGroup.push(wg);
+      }
+    }
+  }
+}
+
 export class WorkerGroupModel {
 
   id: number;
@@ -174,8 +201,10 @@ export class WorkerGroupModel {
   maximumNode: number;
   volumeType: string;
   volumeTypeName: string;
+  volumeTypeId: number;
   volumeSize: number;
   machineTypeName: string;
+  machineTypeId: number;
   ram: number;
   cpu: number;
 
@@ -190,7 +219,9 @@ export class WorkerGroupModel {
       this.maximumNode = obj.maximum_node;
       this.volumeType = obj.volume_type;
       this.volumeSize = obj.volume_size;
+      this.volumeTypeId = obj.volume_type_id;
       this.machineTypeName = obj.machine_type_name;
+      this.machineTypeId = obj.machine_type_id;
       this.volumeTypeName = obj.volume_type_name;
       this.ram = obj.ram;
       this.cpu = obj.cpu;
@@ -201,6 +232,7 @@ export class WorkerGroupModel {
 
 export class WorkerGroupReqDto {
 
+  Id: number;
   WorkerGroupName: string;
   AutoHealing: boolean;
   AutoScalingWorker: boolean;
@@ -212,10 +244,12 @@ export class WorkerGroupReqDto {
   ConfigType: string;
   ConfigTypeId: number;
   NodeNumber: number;
-
+  Ram: number;
+  Cpu: number;
 
   constructor(obj) {
     if (obj) {
+      this.Id = obj.id;
       this.WorkerGroupName = obj.workerGroupName;
       this.AutoHealing = obj.autoHealing;
       this.AutoScalingWorker = obj.autoScalingWorker;
@@ -227,6 +261,8 @@ export class WorkerGroupReqDto {
       this.ConfigType = obj.configType;
       this.ConfigTypeId = obj.configTypeId;
       this.NodeNumber = obj.nodeNumber;
+      this.Ram = obj.ram;
+      this.Cpu = obj.cpu;
     }
   }
 }
@@ -259,13 +295,4 @@ export class ProgressData {
       this.clusterName = obj.clusterName;
     }
   }
-}
-
-export class UpgradeWorkerGroupDto {
-
-  clusterName: string;
-  volumeCloudSize: number;
-  volumeCloudType: string;
-  workerGroup: WorkerGroupModel[];
-
 }

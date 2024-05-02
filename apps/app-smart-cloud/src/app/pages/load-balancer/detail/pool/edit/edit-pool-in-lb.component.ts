@@ -97,26 +97,28 @@ export class EditPoolInLbComponent implements AfterViewInit {
   }
 
   handleOk() {
+    this.isLoading = true
     if (this.validateForm.valid) {
       let formUpdate = new FormUpdatePool();
       formUpdate.poolId = this.poolId;
       formUpdate.session = this.validateForm.controls.session.value;
+      formUpdate.vpcId = this.project;
+      formUpdate.regionId = this.region;
+      formUpdate.name = this.validateForm.controls.namePool.value;
+      formUpdate.description = this.pool?.description;
+      formUpdate.adminStateUp = this.pool?.adminStateUp;
+      formUpdate.lb_algorithm = this.validateForm.controls.algorithm.value
+      formUpdate.customerId = this.tokenService.get()?.userId;
       this.loadBalancerService.updatePool(this.poolId, formUpdate).subscribe(data => {
-        if (data) {
-          this.isVisible = false;
-          this.isLoading = false;
-          this.notification.success('Thành công', 'Cập nhật Pool thành công');
-        } else {
-          this.isVisible = false;
-          this.isLoading = false;
-          this.notification.error('Thất bại', 'Cập nhật Pool thất bại');
-        }
+        this.isVisible = false;
+        this.isLoading = false;
+        this.notification.success('Thành công', 'Cập nhật Pool thành công');
+
         this.onOk.emit(data);
       }, error => {
         this.isVisible = false;
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Cập nhật Pool thất bại');
-        this.onOk.emit(error);
+        this.notification.error('Thất bại', 'Cập nhật Pool thất bại ' + error.error.detail);
       });
     }
 

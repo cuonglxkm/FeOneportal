@@ -404,7 +404,7 @@ export class InstancesComponent implements OnInit {
             this.reloadTable();
           }, 1500);
         } else {
-          this.notification.error('', 'Yêu cầu tắt máy ảo không thất bại');
+          this.notification.error('', 'Yêu cầu tắt máy ảo thất bại');
         }
       },
       error: (e) => {

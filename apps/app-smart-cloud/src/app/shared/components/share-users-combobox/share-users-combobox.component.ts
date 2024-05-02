@@ -12,7 +12,7 @@ export class ShareUsersComboboxComponent implements OnInit {
   @Output() valueChanged = new EventEmitter();
   @Output() userChanged = new EventEmitter();
   userSelected: any;
-  listUser: any[] = []
+  listUser: any[] = [];
   constructor(private policyService: PolicyService) {
     
   }
@@ -36,22 +36,13 @@ export class ShareUsersComboboxComponent implements OnInit {
           name: user.name
         };
       } else {
-        this.userSelected = {
-          id: user.userId,
-          email: user.email,
-          name: user.name
-        };
-        this.shareUserChanged(this.userSelected);
+        this.userSelected = this.listUser[0];
+        localStorage.setItem('UserRootId', JSON.stringify(user.userId));
       }
     } else {
       this.policyService.getShareUsers().subscribe(data => {
         if(data){
           this.listUser = this.listUser.concat(data.filter(x => x.id != user.userId));
-          this.userSelected = {
-            id: user.userId,
-            email: user.email,
-            name: user.name
-          };
           localStorage.setItem('ShareUsers', JSON.stringify(this.listUser))
           if(localStorage.getItem('UserRootId')){
             this.userSelected = this.listUser.find(x => x.id == Number(localStorage.getItem('UserRootId'))) ? 
@@ -61,6 +52,9 @@ export class ShareUsersComboboxComponent implements OnInit {
               email: user.email,
               name: user.name
             };
+          } else {
+            this.userSelected = this.listUser[0];
+            localStorage.setItem('UserRootId', JSON.stringify(this.userSelected.id));
           }
         }
       }, error => {

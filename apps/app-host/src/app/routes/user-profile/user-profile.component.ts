@@ -36,12 +36,14 @@ export class UserProfileComponent implements OnInit {
       validators: [
         Validators.required,
         AppValidator.cannotContainSpecialCharactor,
+        noAllWhitespace(),
       ],
     }),
     surname: new FormControl('', {
       validators: [
         Validators.required,
         AppValidator.cannotContainSpecialCharactor,
+        noAllWhitespace(),
       ],
     }),
     email: new FormControl({ value: '', disabled: true }),
@@ -145,7 +147,10 @@ export class UserProfileComponent implements OnInit {
       updatedUser.address == ' ' ||
       updatedUser.province == ' '
     ) {
-      this.notification.error(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.account.validation'));
+      this.notification.error(
+        this.i18n.fanyi('app.status.success'),
+        this.i18n.fanyi('app.account.validation')
+      );
       return;
     }
     this.http
@@ -156,7 +161,10 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: (res) => {
           console.log(res);
-          this.notification.success(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.account.form.success'));
+          this.notification.success(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.account.form.success')
+          );
         },
         error: (error) => {
           console.log(error);
@@ -193,4 +201,14 @@ export class UserProfileComponent implements OnInit {
   onNewPassChange(data: any) {}
 
   onRetypePassChange(data: any) {}
+}
+
+export function noAllWhitespace(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value: string = control.value;
+    if (value && value.trim() == '') {
+      return { allWhitespace: true };
+    }
+    return null;
+  };
 }

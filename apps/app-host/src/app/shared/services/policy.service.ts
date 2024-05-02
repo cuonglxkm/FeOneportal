@@ -14,7 +14,7 @@ export class PolicyService  {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      'user_root_id': localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 ? Number(localStorage?.getItem('UserRootId')) : this.tokenService?.get()?.userId,
     })
   };
 
@@ -32,10 +32,12 @@ export class PolicyService  {
     if (localStorage.getItem('PermissionOPA') != null) {
       var permission = JSON.parse(localStorage.getItem('PermissionOPA') || '{}');
       return this.isPermission(action, permission);
-    } else {
+    } else if(localStorage?.getItem('UserRootId')) {
       var permissions = await this.getUserPermissions();
       localStorage.setItem('PermissionOPA', JSON.stringify(permissions));
       return this.isPermission(action, permissions);
+    } else {
+      return true;
     }
   }
 

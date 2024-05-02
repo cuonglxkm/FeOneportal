@@ -2,8 +2,8 @@
              [title]="'Gia hạn File System'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/'+idFileSystem ">Chi tiết File
         System
@@ -130,12 +130,12 @@
           <nz-row nzJustify="space-between" style="margin-top: 15px;">
             <nz-col>
               <nz-form-label>
-<!--                <span>Ngày cấp dịch vụ: {{fileSystem?.creationDate | date: 'dd/MM/yyyy'}} </span>-->
+                <span>Ngày cấp dịch vụ: {{fileSystem?.createdDate | date: 'dd/MM/yyyy'}} </span>
               </nz-form-label>
             </nz-col>
             <nz-col nzSpan="12">
               <nz-form-label>
-<!--                <span>Ngày hết hạn:  {{fileSystem?.expirationDate | date: 'dd/MM/yyyy'}}</span>-->
+                <span>Ngày hết hạn:  {{fileSystem?.expireDate | date: 'dd/MM/yyyy'}}</span>
               </nz-form-label>
             </nz-col>
           </nz-row>
@@ -147,7 +147,7 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-              <nz-input-number style="width:100%; margin-left: 0;" nzAutoFocus class="input-custom" formControlName="time" nzMin="1" nzMax="100" nzStep="1"/>
+              <nz-input-number style="width:100%; margin-left: 0;" nzAutoFocus class="input-custom" (ngModelChange)="changeTime($event)" formControlName="time" nzMin="1" nzMax="100"/>
               <ng-template #dateErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min') || control.hasError('pattern')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
               </ng-template>
@@ -156,14 +156,72 @@
           <nz-row>
             <nz-col>
               <nz-form-label>
-<!--                <span style="color: #F50000;">Ngày hết hạn dự kiến: {{ estimateExpireDate | date: 'dd/MM/yyyy'}} </span>-->
+                <span style="color: #F50000;" *ngIf="orderItem?.orderItemPrices?.length > 0">Ngày hết hạn dự kiến: {{ orderItem?.orderItemPrices[0].expiredDate | date: 'dd/MM/yyyy'}} </span>
               </nz-form-label>
             </nz-col>
           </nz-row>
         </nz-card>
       </nz-col>
       <nz-col nzSpan="8">
-
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Chi phí ước tính</span>
+          <div style="margin-top: 10px" class="text-value">Tên File System</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ fileSystem?.name }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">Loại File System</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ fileSystem?.type }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">Giao thức</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span class="text-label">{{ fileSystem?.shareProto }}</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">Dung lượng</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span class="text-label">{{ fileSystem?.size }} GB</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value"> Chi phí 1 tháng </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3" nzAlign="right">0 VND</span>
+              <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          " nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-label">Tổng thanh toán</span><br />
+              <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">0 VND</span>
+              <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+                {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row>
+            <nz-col style="width: 100%">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="!validateForm.valid" (click)="navigateToPaymentSummary()">
+                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Gia hạn</span>
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
       </nz-col>
     </nz-row>
   </form>

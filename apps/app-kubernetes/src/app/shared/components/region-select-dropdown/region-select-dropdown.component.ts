@@ -9,7 +9,7 @@ import {RegionService} from "../../services/region.service";
 })
 export class RegionSelectDropdownComponent implements OnInit {
 
-  @Input() isDetail = false;
+  @Input() isDetail: boolean | false;
   @Output() valueChanged = new EventEmitter();
   @Output() userChanged = new EventEmitter();
   selectedRegion: RegionModel;

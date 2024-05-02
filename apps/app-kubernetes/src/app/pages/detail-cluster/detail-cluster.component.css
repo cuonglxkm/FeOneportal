@@ -80,6 +80,10 @@ textarea,
   border-radius: 8px;
 }
 
+.warning-description {
+  font-size: 16px;
+}
+
 .borderless {
   border: none;
 }

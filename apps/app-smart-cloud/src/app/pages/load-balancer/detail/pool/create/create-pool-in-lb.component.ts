@@ -142,7 +142,7 @@ export class CreatePoolInLbComponent implements OnInit {
           namePool: new FormControl('', {
             validators: [
               Validators.required,
-              Validators.pattern(/^[a-zA-Z0-9_]*$/),
+              Validators.pattern(/^[a-zA-Z0-9]*$/),
               this.duplicateNameValidator.bind(this),
               Validators.maxLength(50),
             ],

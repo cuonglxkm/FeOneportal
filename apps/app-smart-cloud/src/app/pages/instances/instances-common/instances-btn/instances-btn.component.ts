@@ -141,7 +141,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{12,}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
           ),
         ],
       }),
@@ -160,42 +160,58 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
 
   handleOkResetPassword() {
     this.isVisibleResetPass = false;
-    if (this.autoCreate) {
-      this.dataService.changePassword(this.instancesId, '').subscribe({
+    this.dataService
+      .changePassword(this.instancesId, this.resetPassword)
+      .subscribe({
         next: (data: any) => {
           this.notification.success('', 'Đổi mật khẩu máy ảo thành công');
         },
         error: (e) => {
-          console.log('reset pass', e);
           this.notification.error(
-            e.error.detail,
+            e.statusText,
             'Đổi mật khẩu máy ảo không thành công'
           );
         },
       });
-    } else {
-      this.dataService
-        .changePassword(this.instancesId, this.resetPassword)
-        .subscribe({
-          next: (data: any) => {
-            this.notification.success('', 'Đổi mật khẩu máy ảo thành công');
-          },
-          error: (e) => {
-            this.notification.error(e.statusText, e.error.detail);
-          },
-        });
+  }
+
+  generateRandomPassword(): string {
+    const length = 12; // Độ dài tối thiểu 12 ký tự
+    const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+    const numericChars = "0123456789";
+    const specialChars = "!@#$%^&*()_+-=[]{}|;'\"\\:,.<>?`~/"
+  
+    let password = '';
+  
+    // Chọn ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt
+    password += uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
+    password += lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
+    password += numericChars[Math.floor(Math.random() * numericChars.length)];
+    password += specialChars[Math.floor(Math.random() * specialChars.length)];
+  
+    // Tạo các ký tự còn lại
+    const remainingChars = length - 4; // 4 là số lượng ký tự đã được chọn ở trên
+    const allChars = uppercaseChars + lowercaseChars + numericChars + specialChars;
+    for (let i = 0; i < remainingChars; i++) {
+      password += allChars[Math.floor(Math.random() * allChars.length)];
     }
+  
+    // Trộn ngẫu nhiên chuỗi mật khẩu
+    password = password.split('').sort(() => Math.random() - 0.5).join('');
+  
+    return password;
   }
 
   changeAutoCreate() {
-    this.resetPassword = '';
-    this.resetPasswordRepeat = '';
     if (this.autoCreate) {
-      this.formPass.get('newpass').disable();
-      this.formPass.get('passRepeat').disable();
+      this.resetPassword = this.generateRandomPassword();
+      this.resetPasswordRepeat = this.resetPassword;
+      this.passwordVisible = true;
+      this.passwordRepeatVisible = true;
     } else {
-      this.formPass.get('newpass').enable();
-      this.formPass.get('passRepeat').enable();
+      this.resetPassword = '';
+      this.resetPasswordRepeat = '';
     }
   }
 

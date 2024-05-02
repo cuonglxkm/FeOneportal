@@ -172,6 +172,6 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   }
 
   handleDeleteL7PolicyOk() {
-    setTimeout(() => {this.getListL7Policy(this.idListener)}, 1500)
+    setTimeout(() => {this.getListL7Policy(this.idListener)}, 2500)
   }
 }
