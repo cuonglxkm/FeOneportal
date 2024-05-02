@@ -24,7 +24,7 @@ import {CatalogService} from "../../../shared/services/catalog.service";
   styleUrls: ['./create-update-ip-public.component.less'],
 })
 export class CreateUpdateIpPublicComponent implements OnInit {
-  regionId = JSON.parse(localStorage.getItem('region')).regionId;
+  regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
   checkIpv6: boolean = null;
   selectedAction: any;

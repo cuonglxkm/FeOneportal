@@ -339,7 +339,7 @@ export class VlanService extends BaseService {
   }
 
   checkAllocationPool(cidr: string) {
-    return this.http.get<string>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/calculateiprange?cidr=${cidr}`,
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/calculateiprange?cidr=${cidr}`,
       { responseType: 'json' }
     );
   }

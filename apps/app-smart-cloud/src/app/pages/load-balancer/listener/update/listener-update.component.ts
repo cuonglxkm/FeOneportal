@@ -17,7 +17,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-u
   styleUrls: ['./listener-update.component.less'],
 })
 export class ListenerUpdateComponent implements OnInit, OnChanges {
-  regionId = JSON.parse(localStorage.getItem('region')).regionId;
+  regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
   idListener: any;
   idLb: any;
@@ -173,5 +173,13 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
 
   handleDeleteL7PolicyOk() {
     setTimeout(() => {this.getListL7Policy(this.idListener)}, 2500)
+  }
+
+  handleEditOk() {
+    this.getPool(this.activatedRoute.snapshot.paramMap.get('id'))
+  }
+
+  handleDeleteOk() {
+    this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
   }
 }

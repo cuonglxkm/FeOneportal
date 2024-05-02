@@ -14,7 +14,7 @@ import {getCurrentRegionAndProject} from "@shared";
   styleUrls: ['./list-packages-backup.component.less'],
 })
 export class ListPackagesBackupComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   pageSize: number = 10
@@ -142,27 +142,7 @@ export class ListPackagesBackupComponent implements OnInit {
   serviceInPackage: ServiceInPackage = new ServiceInPackage()
 
   handleDeletedOk() {
-    this.isLoadingDelete = true
-
-    if (this.valueDelete.includes(this.packageName)) {
-      this.packageBackupService.delete(this.idBackupPackage).subscribe(data => {
-        this.isLoadingDelete = false
-        this.isVisibleDelete = false
-        this.notification.success('Thành công', 'Xóa gói backup thành công')
-        this.getListPackageBackups(false)
-      }, error => {
-        this.isLoadingDelete = false
-        this.isVisibleDelete = false
-        console.log('error', error)
-        this.notification.error('Thất bại', 'Xóa gói backup thất bại')
-      })
-    } else {
-      this.notification.error('Error', 'Vui lòng nhập đúng thông tin')
-    }
-  }
-
-  handleDeleteCancel() {
-    this.isVisibleDelete = false
+    this.getListPackageBackups(false);
   }
 
   showUpdate(data: PackageBackupModel) {

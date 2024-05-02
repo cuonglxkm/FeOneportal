@@ -19,7 +19,7 @@ export interface UserGroup {
 })
 export class ListUserGroupComponent implements OnInit, OnChanges {
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   value?: string;

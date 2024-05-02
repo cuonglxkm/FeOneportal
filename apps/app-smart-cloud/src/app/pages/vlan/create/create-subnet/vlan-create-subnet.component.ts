@@ -14,6 +14,7 @@ import {
 import { FormCreateSubnet, FormSearchSubnet } from '../../../../shared/models/vlan.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { debounceTime, Subject } from 'rxjs';
 
 
 export function ipAddressValidator(): ValidatorFn {
@@ -121,7 +122,7 @@ function isGreaterIPAddress(previousIP: string, currentIP: string): boolean {
   styleUrls: ['./vlan-create-subnet.component.less']
 })
 export class VlanCreateSubnetComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   isLoading: boolean = false;
 
@@ -147,6 +148,9 @@ export class VlanCreateSubnetComponent implements OnInit {
   formCreateSubnet: FormCreateSubnet = new FormCreateSubnet();
 
   idNetwork: number;
+
+  pool: string = '';
+  dataSubjectCidr: Subject<any> = new Subject<any>();
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -238,6 +242,28 @@ export class VlanCreateSubnetComponent implements OnInit {
     });
   }
 
+  inputCheckPool(value) {
+    this.dataSubjectCidr.next(value);
+  }
+
+  onInputCheckPool() {
+    this.dataSubjectCidr.pipe(debounceTime(500)).subscribe((res) => {
+      this.vlanService.checkAllocationPool(res).subscribe(data => {
+        const dataJson = JSON.parse(JSON.stringify(data));
+
+        // Access ipRange value
+        const ipRange = dataJson.ipRange;
+
+        // Split the IP range string
+        // const ipAddresses = ipRange.split(',').map(ip => ip.trim());
+
+        this.pool = ipRange
+        console.log('pool data', this.pool)
+      })
+    })
+
+  }
+
   ngOnInit() {
     this.idNetwork = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     let regionAndProject = getCurrentRegionAndProject();
@@ -246,5 +272,7 @@ export class VlanCreateSubnetComponent implements OnInit {
 
     console.log('project', this.project);
     this.getListSubnet();
+
+    this.onInputCheckPool();
   }
 }

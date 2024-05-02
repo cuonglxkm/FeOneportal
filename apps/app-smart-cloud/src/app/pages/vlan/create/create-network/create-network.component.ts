@@ -118,7 +118,7 @@ function isGreaterIPAddress(previousIP: string, currentIP: string): boolean {
 
 
 export class CreateNetworkComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean = false;
@@ -258,8 +258,16 @@ export class CreateNetworkComponent implements OnInit {
   onInputCheckPool() {
     this.dataSubjectCidr.pipe(debounceTime(500)).subscribe((res) => {
       this.vlanService.checkAllocationPool(res).subscribe(data => {
-        this.pool = JSON.stringify(data)
-        console.log('pool', this.pool)
+        const dataJson = JSON.parse(JSON.stringify(data));
+
+        // Access ipRange value
+        const ipRange = dataJson.ipRange;
+
+        // Split the IP range string
+        // const ipAddresses = ipRange.split(',').map(ip => ip.trim());
+
+        this.pool = ipRange
+        console.log('pool data', this.pool)
       })
     })
 

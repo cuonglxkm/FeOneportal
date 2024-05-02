@@ -15,7 +15,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../../libs/commo
   styleUrls: ['./edit-l7-policy.component.less']
 })
 export class EditL7PolicyComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   idListener: string;

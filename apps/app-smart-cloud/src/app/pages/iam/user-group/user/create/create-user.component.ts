@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "../../../../../shared/services/user.service";
 import {User} from "../../../../../shared/models/user.model";
@@ -6,7 +6,9 @@ import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {FormUserGroup} from "../../../../../shared/models/user-group.model";
 import {UserGroupService} from "../../../../../shared/services/user-group.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {PolicyModel} from "../../../../policy/policy.model";
+import {PolicyModel} from "../../../../../../../../../libs/common-utils/src/lib/models/policy.model";
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-create-user',
@@ -38,7 +40,8 @@ export class CreateUserComponent implements OnInit {
               private router: Router,
               private userService: UserService,
               private userGroupService: UserGroupService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   onInputChange(value: string) {
@@ -112,12 +115,11 @@ export class CreateUserComponent implements OnInit {
       this.formCreate.policyNames = data.policies
       this.formCreate.users = Array.from(this.setOfCheckedId)
       this.userGroupService.createOrEdit(this.formCreate).subscribe(data => {
-        this.notification.success('Thành công', 'Thêm user vào group thành công')
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.users.users.add.success"))
         this.router.navigate(['/app-smart-cloud/iam/user-group/' + this.nameGroup])
-        console.log('thành công')
       }, error => {
-        this.notification.error('Thất bại', 'Thêm user vào group thất bại')
-        console.log('thất bại', error.log())
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.users.users.add.fail"))
+
       })
     })
 

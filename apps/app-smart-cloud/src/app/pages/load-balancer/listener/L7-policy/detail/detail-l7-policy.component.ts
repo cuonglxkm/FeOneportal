@@ -14,7 +14,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../../libs/commo
   styleUrls: ['./detail-l7-policy.component.less'],
 })
 export class DetailL7PolicyComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   idListener: string;

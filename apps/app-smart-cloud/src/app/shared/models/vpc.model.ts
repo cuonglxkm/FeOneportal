@@ -25,6 +25,8 @@ export class VpcModel {
   publicNetworkId: string;
   publicNetworkAddress: string;
   quotaIpv6Count: number;
+  vpnSiteToSiteOfferId: string;
+  offerIdLBSDN: string;
   type: string;
   displayName: string;
   createDate: string;

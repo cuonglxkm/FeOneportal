@@ -19,7 +19,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
   styleUrls: ['./dashboard-object-storage.component.less']
 })
 export class DashboardObjectStorageComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   value: string;

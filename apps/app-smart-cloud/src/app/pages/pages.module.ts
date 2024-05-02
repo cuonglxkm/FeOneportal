@@ -36,7 +36,6 @@ import { HeaderComponent } from './header/header.component';
 import { PopupCancelVolumeComponent } from './volume/component/popup-volume/popup-cancel-volume.component';
 import { SnapshotVolumeListComponent } from './snapshot-volume/snapshotvl-list/snapshotvl-list.component';
 import { SnappshotvlDetailComponent } from './snapshot-volume/snapshotvl-detail/snappshotvl-detail.component';
-import { BlankBackupVmComponent } from './backup-vm/blank/blank-backup-vm.component';
 import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component';
 import { LayoutDefaultModule } from '@delon/theme/layout-default';
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
@@ -253,7 +252,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     PopupCancelVolumeComponent,
     SnapshotVolumeListComponent,
     SnappshotvlDetailComponent,
-    BlankBackupVmComponent,
     ListBackupVmComponent,
     RestoreBackupVmComponent,
     DeleteBackupVmComponent,
@@ -447,17 +445,11 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     SEModule,
     SharedModule,
     NzPaginationModule,
-    NzResultModule,
-    SharedModule,
-    PagesRoutingModule,
     NzLayoutModule,
-    SharedModule,
     NzSpaceModule,
     NzPageHeaderModule,
     NzIconModule.forRoot(icons),
-    NzResultModule,
     NgOptimizedImage,
-    NzImageModule,
     NzImageModule,
     LayoutDefaultModule,
     DragDropModule,

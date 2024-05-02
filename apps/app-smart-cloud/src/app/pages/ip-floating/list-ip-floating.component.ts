@@ -12,7 +12,7 @@ import { debounceTime } from 'rxjs';
   styleUrls: ['./list-ip-floating.component.less'],
 })
 export class ListIpFloatingComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   customerId: number

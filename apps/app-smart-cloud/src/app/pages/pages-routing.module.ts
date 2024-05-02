@@ -13,20 +13,13 @@ import { EditVolumeComponent } from './volume/component/edit-volume/edit-volume.
 import { ActionHistoryComponent } from './action-history/action-history.component';
 import { SnapshotVolumeListComponent } from './snapshot-volume/snapshotvl-list/snapshotvl-list.component';
 import { SnappshotvlDetailComponent } from './snapshot-volume/snapshotvl-detail/snappshotvl-detail.component';
-import { BlankBackupVmComponent } from './backup-vm/blank/blank-backup-vm.component';
 import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component';
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
-import {
-  CreateBackupVolumeComponent
-} from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
-import {
-  DetailBackupVolumeComponent
-} from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
-import {
-  ListBackupVolumeComponent
-} from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
+import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
+import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
+import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
 import { PolicyAttachComponent } from './policy/policy-attach/policy-attach.component';
 import { IamDashboardComponent } from './iam/dashboard/iam-dashboard.component';
 import { ListUserGroupComponent } from './iam/user-group/list/list-user-group.component';
@@ -45,21 +38,11 @@ import { PolicyUpdateComponent } from './policy/policy-update/policy-update.comp
 import { BlankScheduleBackupComponent } from './schedule-backup/blank/blank-schedule-backup.component';
 import { ListScheduleBackupComponent } from './schedule-backup/list/list-schedule-backup.component';
 import { CreateScheduleBackupComponent } from './schedule-backup/create/create-schedule-backup.component';
-import {
-  EditScheduleBackupVmComponent
-} from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
-import {
-  SnapshotScheduleListComponent
-} from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
-import {
-  SnapshotScheduleCreateComponent
-} from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
-import {
-  SnapshotScheduleDetailComponent
-} from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
-import {
-  EditScheduleBackupVolumeComponent
-} from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
+import { EditScheduleBackupVmComponent } from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
+import { SnapshotScheduleListComponent } from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
+import { SnapshotScheduleCreateComponent } from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
+import { SnapshotScheduleDetailComponent } from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
+import { EditScheduleBackupVolumeComponent } from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DetailIpPublicComponent } from './ip-public/detail-ip-public/detail-ip-public.component';
 import { PaymentDetailComponent } from './billing/payment/detail/payment-detail.component';
@@ -70,9 +53,7 @@ import { ListPaymentComponent } from './billing/payment/list/list-payment.compon
 import { OrderDetailComponent } from './order/order-detail/order-detail.component';
 import { RenewVolumeComponent } from './volume/component/renew-volume/renew-volume.component';
 import { ExtendIpPublicComponent } from './ip-public/extend-ip-public/extend-ip-public.component';
-import {
-  SnapshotScheduleEditComponent
-} from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
+import { SnapshotScheduleEditComponent } from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
 import { ListPackagesBackupComponent } from './backup-package/list/list-packages-backup.component';
 import { CreatePackageBackupComponent } from './backup-package/create/create-package-backup.component';
 import { DetailPackageBackupComponent } from './backup-package/detail/detail-package-backup.component';
@@ -102,26 +83,16 @@ import { ListWanComponent } from './wan/list/list-wan.component';
 import { ListFileSystemComponent } from './file-storage/list/list-file-system.component';
 import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
 import { FileSystemSnapshotComponent } from './file-system-snapshot/file-system-snapshot.component';
-import {
-  CreateFileSystemSnapshotComponent
-} from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
-import {
-  FileSystemSnapshotDetailComponent
-} from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.component';
-import {
-  FileSystemSnapshotScheduleComponent
-} from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
-import {
-  CreateFileSystemSnapshotScheduleComponent
-} from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
-import {
-  EditFileSystemSnapshotScheduleComponent
-} from './file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component';
+import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
+import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.component';
+import { FileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
+import { CreateFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
+import { EditFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component';
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ObjectStorageComponent } from './object-storage/object-storage.component';
 import { ObjectStorageCreateComponent } from './object-storage/object-storage-create/object-storage-create.component';
 import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
-import { PolicyService } from '../shared/services/policy.service';
+import { PolicyService } from '../../../../../libs/common-utils/src/lib/services/policy.service';
 import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 import { ListSecurityGroupComponent } from './security-group/list/list-security-group.component';
 import { SecurityComponent } from './security/security.component';
@@ -144,361 +115,584 @@ import { ExtendFileSystemNormalComponent } from './file-storage/no-vpc/extend/ex
 import { ResizeFileSystemNormalComponent } from './file-storage/no-vpc/resize/resize-file-system-normal.component';
 import { CreateIpFloatingNormalComponent } from './ip-floating/create-ip-floating-normal.component';
 import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/extend-ip-floating.component';
-
+import { PermissionGuard } from '../shared/guard/PermissionGuard';
+// import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   {
     path: 'dashboard',
-    component: DashboardComponent
+    component: DashboardComponent,
   },
   {
     path: 'user-profile',
-    component: UserProfileComponent
+    component: UserProfileComponent,
   },
   {
     path: 'test',
-    component: V1Component
+    component: V1Component,
   },
   {
     path: 'volumes',
     component: VolumeComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('volume:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volume:List',
+    }
   },
   {
     path: 'volume/create',
     component: CreateVolumeComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create',
+    }
   },
   {
     path: 'volume/detail/:id',
     component: DetailVolumeComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('volume:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volume:Get',
+    }
   },
   {
     path: 'volume/edit/:id',
     component: EditVolumeComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('volume:Update')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volume:Update',
+    }
   },
   {
     path: 'keypair',
     component: SshKeyComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('keypair:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'keypair:List',
+    }
   },
   {
     path: 'instances',
-    loadChildren: () => import('../pages/instances/instances.module').then(m => m.InstancesModule),
-    canActivate: [() => inject(PolicyService).hasPermission('instance:List')]
+    loadChildren: () =>
+      import('../pages/instances/instances.module').then(
+        (m) => m.InstancesModule
+      ),
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'instance:List',
+    }
+
   },
   {
     path: 'ip-public',
     component: IpPublicComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('ippublic:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'ippublic:List',
+    }
+
   },
   {
     path: 'ip-public/create',
     component: CreateUpdateIpPublicComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create',
+    }
+
   },
   {
     path: 'ip-public/detail/:id',
     component: DetailIpPublicComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('ippublic:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'ippublic:Get',
+    }
+
   },
   {
     path: 'ip-public/extend/:id',
     component: ExtendIpPublicComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create',
+    }
+
   },
   {
     path: 'instance/:instanceId/allow-address-pair/:portId',
     component: ListAllowAddressPairComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('instance:InstanceListAllowAddressPair')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'instance:InstanceListAllowAddressPair',
+    }
   },
   {
     path: 'action-history',
     component: ActionHistoryComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('actionlogs:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'actionlogs:List',
+    }
+
   },
   {
     path: 'snapshotvls',
     component: SnapshotVolumeListComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshot:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volumesnapshot:List',
+    }
   },
   {
     path: 'snapshotvls/detail/:id',
     component: SnappshotvlDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshot:Get')]
-  },
-  {
-    path: 'blank-backup-vm',
-    component: BlankBackupVmComponent
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volumesnapshot:Get',
+    }
   },
   {
     path: 'backup-vm',
     component: ListBackupVmComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('backup:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:List',
+    }
+
   },
   {
     path: 'backup-vm/restore-backup-vm/:id',
     component: RestoreBackupVmComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('backup:InstanceBackupRestore')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:InstanceBackupRestore',
+    }
   },
   {
     path: 'backup-vm/detail-backup-vm/:id',
     component: DetailBackupVmComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('backup:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:Get',
+    }
+
   },
   {
     path: 'instance/:id/create-backup-vm',
     component: CreateBackupVmComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create',
+    }
+
   },
   {
     path: 'backup-volume/create',
     component: CreateBackupVolumeComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create',
+    }
+
   },
   {
     path: 'backup-volume/detail',
     component: DetailBackupVolumeComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('backup:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:Get',
+    }
+
   },
   {
     path: 'backup-volume',
     component: ListBackupVolumeComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('backup:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:List',
+    }
+
   },
   {
     path: 'iam/dashboard',
-    component: IamDashboardComponent
+    component: IamDashboardComponent,
   },
   {
     path: 'iam/user-group',
     component: ListUserGroupComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iamgroup:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iamgroup:List',
+    }
+
   },
   {
     path: 'iam/user-group/create',
     component: CreateUserGroupComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iamgroup:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iamgroup:Create',
+    }
+
   },
   {
     path: 'iam/user-group/:name',
     component: DetailUserGroupComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iamgroup:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iamgroup:Get',
+    }
+
   },
   {
     path: 'policy/attach/:name',
     component: PolicyAttachComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iampolicy:IamPolicyAttachOrDetach')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iampolicy:IamPolicyAttachOrDetach',
+    }
   },
   {
     path: 'policy/detach/:name',
     component: PolicyDetachComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iampolicy:IamPolicyAttachOrDetach')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iampolicy:IamPolicyAttachOrDetach',
+    }
   },
   {
     path: 'policy/detail/:name',
     component: PolicyDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iampolicy:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iampolicy:Get',
+    }
+
   },
   {
     path: 'policy/update/:name',
     component: PolicyUpdateComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iampolicy:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iampolicy:Create',
+    }
   },
   {
     path: 'policy',
-    loadChildren: () => import('../pages/policy/policy.module').then(m => m.PolicyModule),
-    canActivate: [() => inject(PolicyService).hasPermission('iampolicy:List')]
+    loadChildren: () =>
+      import('../pages/policy/policy.module').then((m) => m.PolicyModule),
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iampolicy:List',
+    }
+
   },
   {
     path: 'users',
     component: UserComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iamuser:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iamuser:List',
+    }
+
   },
   {
     path: 'users/create',
     component: UserCreateComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iamuser:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iamuser:Create',
+    }
+
   },
   {
     path: 'users/detail/:userName',
     component: UserDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iamuser:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iamuser:Get',
+    }
+
   },
   {
     path: 'users/detail/:userName/add-policies',
     component: AddPoliciesComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iamuser:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iamuser:Create',
+    }
+
   },
   {
     path: 'users/detail/:userName/add-to-group',
     component: AddToGroupComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('AddToGroupComponent')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'AddToGroupComponent',
+    }
   },
   {
     path: 'iam/user-group/:groupName/add-user',
     component: CreateUserComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iamgroup:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iamgroup:Create',
+    }
+
   },
   {
     path: 'iam/user-group/:groupName/add-policy',
     component: CreatePolicyComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('iamgroup:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'iamgroup:Create',
+    }
+
   },
   {
     path: 'schedule/backup/blank',
-    component: BlankScheduleBackupComponent
+    component: BlankScheduleBackupComponent,
   },
   {
     path: 'schedule/backup/list',
     component: ListScheduleBackupComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('backupschedule:Search')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backupschedule:Search',
+    }
   },
   {
     path: 'schedule/backup/create',
     component: CreateScheduleBackupComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create',
+    }
+
   },
   {
     path: 'schedule/backup/edit/vm/:id',
     component: EditScheduleBackupVmComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('backupschedule:Update')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backupschedule:Update',
+    }
   },
   {
     path: 'schedule/backup/edit/volume/:id',
     component: EditScheduleBackupVolumeComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('backupschedule:Update')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backupschedule:Update',
+    }
   },
   {
     path: 'schedule/snapshot/list',
     component: SnapshotScheduleListComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volumesnapshotschedule:List',
+    }
   },
   {
     path: 'schedule/snapshot/create',
     component: SnapshotScheduleCreateComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volumesnapshotschedule:Create',
+    }
   },
   {
     path: 'schedule/snapshot/detail/:id',
     component: SnapshotScheduleDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volumesnapshotschedule:Get',
+    }
   },
   {
     path: 'schedule/snapshot/edit/:id',
     component: SnapshotScheduleEditComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('volumesnapshotschedule:Update')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volumesnapshotschedule:Update',
+    }
   },
   {
     path: 'billing/payments/detail/:id/:orderNumber',
     component: PaymentDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('payment:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'payment:Get',
+    }
+
   },
   {
     path: 'billing/payments/success',
-    component: PaymentSuccessComponent
+    component: PaymentSuccessComponent,
   },
   {
     path: 'paymentFailed',
-    component: PaymentFailedComponent
+    component: PaymentFailedComponent,
   },
   {
     path: 'billing/payments',
     component: ListPaymentComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('payment:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'payment:List',
+    }
+
   },
   {
     path: 'order/list',
     component: OrderListComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:List',
+    }
+
   },
   {
     path: 'order/detail/:id',
     component: OrderDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Get',
+    }
+
   },
   {
     path: 'volumes/renew/:id',
     component: RenewVolumeComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'backup/packages',
     component: ListPackagesBackupComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('backup:ListBackupPacket')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:ListBackupPacket',
+    }
   },
   {
     path: 'backup/packages/detail/:id',
     component: DetailPackageBackupComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('backup:BackupPacketGet')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:BackupPacketGet',
+    }
   },
   {
     path: 'backup/packages/create',
     component: CreatePackageBackupComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'backup/packages/edit/:id',
     component: EditBackupPackageComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('backup:BackupPacketUpdate')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:BackupPacketUpdate',
+    }
   },
   {
     path: 'backup/packages/extend/:id',
     component: ExtendBackupPackageComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'order/cart',
-    component: PaymentSummaryComponent
+    component: PaymentSummaryComponent,
   },
   {
     path: 'volume/vpc/create',
     component: CreateVolumeVpcComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'volume/vpc/resize/:id',
     component: ResizeVolumeVpcComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
+  // {
+  //   path: 'volume/blank',
+  //   component: BlankVolumeComponent
+  // },
   {
     path: 'vlan/network/list',
-    component: ListVlanComponent
+    component: ListVlanComponent,
   },
   {
     path: 'vlan/network/detail/:id',
     component: VlanDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('vlan:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'vlan:List',
+    }
+
   },
   {
     path: 'vpc',
-    loadChildren: () => import('../pages/vpc/vpc.module').then(m => m.VpcModule),
-    canActivate: [() => inject(PolicyService).hasPermission('vpc:List')]
+    loadChildren: () =>
+      import('../pages/vpc/vpc.module').then((m) => m.VpcModule),
+
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'vpc:List',
+    },
   },
   {
     path: 'network/router',
     component: RouterListComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('router:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'router:List',
+    }
+
   },
   {
     path: 'network/router/detail/:id',
     component: RouterDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('router:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'router:Get',
+    }
+
   },
   {
     path: 'vlan/create/network',
-    component: CreateNetworkComponent
+    component: CreateNetworkComponent,
   },
   {
     path: 'vlan/:id/create/subnet',
-    component: VlanCreateSubnetComponent
+    component: VlanCreateSubnetComponent,
   },
   {
     path: 'vlan/:id/network/edit/subnet/:subnetId',
-    component: VlanEditSubnetComponent
+    component: VlanEditSubnetComponent,
   },
   // {
   //   path: 'vlan/:id/network/extend/subnet/:subnetId',
@@ -507,245 +701,402 @@ const routes: Routes = [
   {
     path: 'networks/ip-floating/list',
     component: ListIpFloatingComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('ipfloating:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'ipfloating:List',
+    }
+
   },
   {
     path: 'networks/ip-floating-normal/create',
     component: CreateIpFloatingNormalComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'networks/ip-floating-normal/:id/extend',
     component: ExtendIpFloatingComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'networks/ip-wan/list',
     component: ListWanComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('ipwan:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'ipwan:List',
+    }
+
   },
   {
     path: 'file-storage/file-system/create',
     component: CreateFileSystemComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'file-storage/file-system/list',
     component: ListFileSystemComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetListShareFileStorage')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:GetListShareFileStorage',
+    }
   },
   {
     path: 'file-storage/file-system/detail/:id',
     component: DetailFileSystemComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetShareFileStorage')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:GetShareFileStorage',
+    }
   },
   {
     path: 'file-storage/file-system/resize/:id',
     component: ResizeFileSystemComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'file-storage/file-system/:idFileSystem/access-rule/list',
     component: ListAccessRuleComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetListShareRule')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:GetListShareRule',
+    }
   },
   {
     path: 'object-storage/sub-user/list',
     component: ListSubUserComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageUser')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageUser',
+    }
   },
   {
     path: 'object-storage/sub-user/create',
     component: CreateSubUserComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageUser')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageUser',
+    }
   },
   {
     path: 'object-storage/dashboard',
     component: DashboardObjectStorageComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageMonitor')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageMonitor',
+    }
   },
   {
     path: 'networks/ip-floating/list',
     component: ListIpFloatingComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('ipfloating:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'ipfloating:List',
+    }
+
   },
   {
     path: 'file-system-snapshot/list',
     component: FileSystemSnapshotComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetListShareSnapshotFileStorage')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:GetListShareSnapshotFileStorage',
+    }
   },
   {
     path: 'file-system-snapshot/create',
     component: CreateFileSystemSnapshotComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:CreateShareSnapshotFileStorage')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:CreateShareSnapshotFileStorage',
+    }
   },
   {
     path: 'file-system-snapshot/detail/:id',
     component: FileSystemSnapshotDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetShareSnapshotFileStorage')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:GetShareSnapshotFileStorage',
+    }
   },
   {
     path: 'file-system-snapshot-schedule/list',
     component: FileSystemSnapshotScheduleComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:GetListScheduleShareSnapshot')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:GetListScheduleShareSnapshot',
+    }
   },
   {
     path: 'file-system-snapshot-schedule/create',
     component: CreateFileSystemSnapshotScheduleComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:CreateScheduleShareSnapshot')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:CreateScheduleShareSnapshot',
+    }
   },
   {
     path: 'file-system-snapshot-schedule/edit/:id',
     component: EditFileSystemSnapshotScheduleComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('fileStorages:UpdateScheduleShareSnapshot')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:UpdateScheduleShareSnapshot',
+    }
   },
   {
     path: 'object-storage/bucket',
     component: BucketListComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:ObjectStorageUser')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageUser',
+    }
   },
   {
     path: 'object-storage/bucket/create',
     component: BucketCreateComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:CreateBucket')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:CreateBucket',
+    }
   },
   {
     path: 'object-storage/bucket/configure/:bucketName',
     component: BucketConfigureComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:GetBucket')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:GetBucket',
+    }
   },
   {
     path: 'object-storage',
-    component: ObjectStorageComponent
+    component: ObjectStorageComponent,
   },
   {
     path: 'object-storage/create',
     component: ObjectStorageCreateComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'object-storage/extend/:id',
     component: ObjectStorageExtendComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'object-storage/edit/:id',
     component: ObjectStorageEditComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'object-storage/bucket/:name',
     component: BucketDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:GetBucket')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:GetBucket',
+    }
   },
   {
     path: 'vpn-site-to-site',
-    loadChildren: () => import('../pages/vpn-site-to-site/vpn-site-to-site.module').then(m => m.VpnSiteToSiteModule),
-    canActivate: [() => inject(PolicyService).hasPermission('vpnsitetosites:List')]
+    loadChildren: () =>
+      import('../pages/vpn-site-to-site/vpn-site-to-site.module').then(
+        (m) => m.VpnSiteToSiteModule
+      ),
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'vpnsitetosites:List',
+    }
   },
   {
     path: 'object-storage/s3-key',
     component: S3KeyComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('objectstorages:Search')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:Search',
+    }
   },
   {
     path: 'snapshot/packages',
-    loadChildren: () => import('../pages/snapshot-package/packages-snapshot.module').then(m => m.PackageSnapshotModule),
-    canActivate: [() => inject(PolicyService).hasPermission('SnapshotPackage:List')]
+    loadChildren: () =>
+      import('../pages/snapshot-package/packages-snapshot.module').then(
+        (m) => m.PackageSnapshotModule
+      ),
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'SnapshotPackage:List',
+    }
   },
   {
     path: 'security-group/list',
     component: ListSecurityGroupComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('securitygroup:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'securitygroup:List',
+    }
   },
   {
     path: 'load-balancer/list',
     component: ListLoadBalancerComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('loadbalancer:List')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'loadbalancer:List',
+    }
   },
   {
     path: 'load-balancer/create',
     component: CreateLbNovpcComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'load-balancer/create/vpc',
     component: CreateLbVpcComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'load-balancer/detail/:id',
     component: DetailLoadBalancerComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('loadbalancer:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'loadbalancer:Get',
+    }
   },
   {
     path: 'load-balancer/:lbId/listener/create',
     component: ListenerCreateComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('blsdnlistener:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'blsdnlistener:Create',
+    }
   },
   {
     path: 'load-balancer/:lbId/listener/detail/:id',
     component: ListenerDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('blsdnlistener:Get')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'blsdnlistener:Get',
+    }
   },
   {
     path: 'load-balancer/:lbId/listener/update/:id',
     component: ListenerUpdateComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('blsdnlistener:Update')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'blsdnlistener:Update',
+    }
+
   },
   {
     path: 'security',
-    component: SecurityComponent
+    component: SecurityComponent,
   },
   {
     path: 'load-balancer/update/vpc/:id',
     component: EditLoadBalancerVpcComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('loadbalancer:Update')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'loadbalancer:Update',
+    }
   },
   {
     path: 'load-balancer/extend/normal/:id',
     component: ExtendLoadBalancerNormalComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'load-balancer/pool-detail/:id',
     component: PoolDetailComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('lbsdn:LoadBalancer')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'lbsdn:LoadBalancer',
+    }
   },
   {
     path: 'load-balancer/:idLoadBalancer/listener/:idListener/create/l7-policy',
-    component: CreateL7PolicyComponent
+    component: CreateL7PolicyComponent,
   },
   {
     path: 'load-balancer/:idLoadBalancer/listener/:idListener/l7-policy/:idL7',
     component: DetailL7PolicyComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('lbsdn:LoadBalancer')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'lbsdn:LoadBalancer',
+    }
   },
   {
     path: 'load-balancer/:idLoadBalancer/listener/:idListener/l7-policy/edit/:idL7',
     component: EditL7PolicyComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('lbsdn:LoadBalancer')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'lbsdn:LoadBalancer',
+    }
   },
   {
     path: 'file-storage/file-system/create/normal',
     component: CreateFileSystemNormalComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'file-storage/file-system/:idFileSystem/extend',
     component: ExtendFileSystemNormalComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
   },
   {
     path: 'file-storage/file-system/:idFileSystem/resize',
     component: ResizeFileSystemNormalComponent,
-    canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
-  }
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create',
+    }
+
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class PagesRoutingModule {
-}
+export class PagesRoutingModule {}

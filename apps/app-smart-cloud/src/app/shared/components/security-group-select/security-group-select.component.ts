@@ -26,7 +26,7 @@ export class SecurityGroupSelectComponent {
 
   search(conditionSearch: SecurityGroupSearchCondition) {
     this.conditionSearch.userId = this.tokenService.get()?.userId
-    this.conditionSearch.regionId = JSON.parse(localStorage.getItem('region')).regionId
+    this.conditionSearch.regionId = JSON.parse(localStorage.getItem('regionId'))
     this.conditionSearch.projectId = JSON.parse(localStorage.getItem('projectId'))
     if (conditionSearch.regionId && conditionSearch.userId && conditionSearch.projectId) {
       this.securityGroupService.search(conditionSearch)
