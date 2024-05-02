@@ -911,7 +911,7 @@
 "app.service.upgrade-cost": "Upgrade cost",
   "app.service.upgrade-remain-amount": "Deduct the remaining amount from the previous cycle",
   "app.kafka.name": "Kafka Cluster name",
-  "app.kafka.version": "Apache Kafka version",
+  "app.kafka.version": "Kafka version",
   "app.kafka.name-placeholder": "Please enter the service name",
   "app.kafka.version-placeholder": "Select Kafka version",
   "app.kafka.broker": "Number of Brokers",

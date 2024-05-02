@@ -792,7 +792,7 @@
 "app.service.upgrade-cost": "Chi phí nâng cấp",
   "app.service.upgrade-remain-amount": "Trừ đi mức còn lại của chu kỳ trước",
   "app.kafka.name": "Tên Kafka Cluster",
-  "app.kafka.version": "Phiên bản Apache Kafka",
+  "app.kafka.version": "Phiên bản Kafka",
   "app.kafka.name-placeholder": "Nhập tên Kafka Cluster",
   "app.kafka.version-placeholder": "Chọn phiên bản Kafka",
   "app.kafka.broker": "Số Broker",

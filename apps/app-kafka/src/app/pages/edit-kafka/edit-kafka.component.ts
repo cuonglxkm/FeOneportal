@@ -27,6 +27,7 @@ export class EditKafkaComponent implements OnInit {
   itemDetail: KafkaDetail;
   kafkaUpdateDto: KafkaUpdateReq;
   isVisibleConfirm = false;
+  isChangeForm = false;
 
   constructor(
     private fb: FormBuilder,
@@ -104,6 +105,14 @@ export class EditKafkaComponent implements OnInit {
       this.isVisibleConfirm = true;
     } else {
       this.updateKafka();
+    }
+  }
+
+  changeForm() {
+    if (this.myform.controls.description.value != this.itemDetail.description || this.myform.controls.version.value != this.itemDetail.version) {
+      this.isChangeForm = true;
+    } else {
+      this.isChangeForm = false;
     }
   }
 
