@@ -104,6 +104,27 @@
                              [ngModel]="selectedSubnet"
                              (ngModelChange)="updateValue($event)"
                              formControlName="subnet"
+                             [nzPlaceHolder]="'Chọn dải Subnet'"
+                             nzAllowClear>
+                    <nz-option *ngFor="let index of mapSubnetArray"
+                               [nzValue]="index.value"
+                               [nzLabel]="index.label"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item *ngIf="enableInternal">
+                <nz-form-label>
+                  <span>Subnet</span>
+                  <img nz-popover
+                       [nzPopoverContent]="'Là dải IP mạng để phân bổ địa chỉ IP khi sử dụng cân bằng tải'"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips>
+                  <nz-select nzSize="large"
+                             [ngModel]="selectedSubnet"
+                             (ngModelChange)="updateValue($event)"
+                             formControlName="subnet"
                              [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'"
                              nzAllowClear>
                     <nz-option *ngFor="let index of mapSubnetArray"

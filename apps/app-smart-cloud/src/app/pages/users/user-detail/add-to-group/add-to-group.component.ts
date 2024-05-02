@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,6 +13,8 @@ import { LoadingService } from '@delon/abc/loading';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-add-to-group',
@@ -40,7 +43,8 @@ export class AddToGroupComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -179,13 +183,13 @@ export class AddToGroupComponent implements OnInit {
       .subscribe(
         (data: any) => {
           console.log(data);
-          this.notification.success('', 'Cập nhật User thành công');
+          this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.edit-user.noti.success"));
           this.navigateToDetail();
         },
         (e) => {
           this.notification.error(
-            e.statusText,
-            'Cập nhật User không thành công'
+            this.i18n.fanyi("app.status.fail"),
+            this.i18n.fanyi("app.edit-user.noti.fail")
           );
         }
       );
