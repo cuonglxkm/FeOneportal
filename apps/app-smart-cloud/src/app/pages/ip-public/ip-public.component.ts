@@ -159,7 +159,7 @@ export class IpPublicComponent implements OnInit {
           this.ipAddressDelete = item.ipAddress
         }
         this.isVisibleDelete = true;
-      } else if (event === 'Gia Hạn Ip Pulbic') {
+      } else if (event === 'Gia hạn Ip Pulbic') {
         this.router.navigate(['/app-smart-cloud/ip-public/extend/' + item.id]);
       }
   }
