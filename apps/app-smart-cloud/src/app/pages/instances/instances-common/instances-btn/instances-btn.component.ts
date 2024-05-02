@@ -212,6 +212,8 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     } else {
       this.resetPassword = '';
       this.resetPasswordRepeat = '';
+      this.passwordVisible = false;
+      this.passwordRepeatVisible = false;
     }
   }
 

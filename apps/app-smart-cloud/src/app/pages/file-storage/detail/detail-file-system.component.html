@@ -1,11 +1,11 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Chi tiết File System'">
+             [title]="'app.file.system.detail' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Quản lý File System
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{ 'app.file.system.detail' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
         [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/{{ fileSystemId }}'">{{ fileSystemName }}
@@ -54,7 +54,7 @@
 <nz-content>
   <nz-card style="border-radius: 8px;">
     <form nz-form nzLayout="vertical">
-      <span class="text-card-header" style="margin-bottom: 15px;">Thông tin File System</span>
+      <span class="text-card-header" style="margin-bottom: 15px;">{{ 'app.file.system.info' | i18n }}</span>
       <nz-row nzJustify="space-between" nzGutter="24" style="margin-top: 24px;">
         <nz-col nzSpan="12">
           <nz-form-item>
@@ -68,7 +68,7 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Loại File System</span>
+              <span>{{ 'app.file.system.type' | i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.type }}"
@@ -77,7 +77,7 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Trạng thái</span>
+              <span>{{ 'app.text.status' | i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.status }}"
@@ -86,7 +86,7 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Dung lượng</span>
+              <span>{{ 'app.capacity' | i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.size }}"
@@ -97,7 +97,7 @@
         <nz-col nzSpan="12">
           <nz-form-item>
             <nz-form-label>
-              <span>Tên File System</span>
+              <span>{{ 'app.file.system.name' | i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.name}}"

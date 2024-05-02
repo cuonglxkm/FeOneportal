@@ -24,7 +24,7 @@
              [ngModel]="value"
              (keydown.enter)="focusOkButton($event)"
              (ngModelChange)="onInput($event)"
-             [placeholder]="'Nhập tên LoadBalancer'"/>
+             [placeholder]="'app.input.name' | i18n"/>
       <span *ngIf="isInput" style="color: red;">{{ 'validation.correct.load.balancer.name' | i18n }}</span>
     </div>
   </div>

@@ -1,15 +1,13 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Gia hạn File System'">
+             [title]="'app.file.system.extend' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/'+idFileSystem ">Chi tiết File
-        System
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/'+idFileSystem ">{{ 'app.file.system.detail' | i18n }}
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/'+ idFileSystem +'/extend'">Gia hạn
-        File System
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/'+ idFileSystem +'/extend'">{{ 'app.file.system.extend' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -27,18 +25,21 @@
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông tin File System</span>
+          <span class="text-card-header">{{ 'app.file.system.info' | i18n }}</span>
           <nz-row nzGutter="24" nzJustify="space-between" style="margin-top: 25px;">
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
-                  <span>Tên File System (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <span>{{ 'app.file.system.name' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
                   <img nz-popover
-                       [nzPopoverContent]="'Tên của File System cần tạo, các ký tự chữ thường a-z, ' +
-                       'chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, ' +
-                        'tối thiểu 1 ký tự và tối đa 255 ký tự. Tên các File System không trùng nhau'"
-                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                       src="assets/imgs/pajamas_question.svg" alt="" />
+                         [nzPopoverContent]="contentTemplateFSname"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                    <ng-template #contentTemplateFSname>
+                    <span
+                      [innerHTML]="'app.tooltip.file.system.name.pattern' | i18n"
+                    ></span>
+                  </ng-template>
                 </nz-form-label>
                 <nz-form-control>
                   <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.name"  [disabled]="true" />
@@ -46,14 +47,16 @@
               </nz-form-item>
               <nz-form-item>
                 <nz-form-label>
-                  <span>Giao thức (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <span>{{ 'app.protocol' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
                   <img nz-popover
-                       [nzPopoverContent]="'Giao thức NFS (Network File System) là một giao thức mạng được sử dụng ' +
-                           'để chia sẻ tập tin và thư mục qua mạng giữa các hệ thống máy tính khác nhau. ' +
-                            'Nó cho phép một máy tính (được gọi là máy chủ NFS) chia sẻ tài nguyên file hệ thống của ' +
-                             'nó với các máy tính khác (được gọi là máy khách NFS) trong mạng'"
+                       [nzPopoverContent]="contentTemplateFSProtocol"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
+                       <ng-template #contentTemplateFSProtocol>
+                        <span
+                          [innerHTML]="'app.tooltip.file.system.name.protocol' | i18n"
+                        ></span>
+                      </ng-template>
                 </nz-form-label>
                 <nz-form-control>
                   <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.shareProto"  [disabled]="true" />
@@ -62,7 +65,7 @@
               <nz-form-item>
                 <div style="display: flex;">
                   <nz-switch [nzDisabled]="true" formControlName="snapshot" ></nz-switch>
-                  <span style="margin-left: 10px; margin-top: 1px;" class="text-label">Khởi tạo từ Snapshot</span>
+                  <span style="margin-left: 10px; margin-top: 1px;" class="text-label">{{ 'app.file.system.create.from.snapshot' | i18n }}</span>
                 </div>
               </nz-form-item>
               <nz-form-item *ngIf="validateForm.controls.snapshot.value === true">
@@ -71,7 +74,7 @@
                     <span>Snapshot (</span>
                     <span style="color: rgba(252, 16, 16, 1); ">*</span>)
                     <img nz-popover
-                         [nzPopoverContent]="'Snapshot của File System'"
+                         [nzPopoverContent]="'app.snapshot.file.system' | i18n"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </div>
@@ -84,9 +87,9 @@
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
-                  <span>Loại File System (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <span>{{ 'app.file.system.type' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
                   <img nz-popover
-                       [nzPopoverContent]="'mặc định là generic_share_type'"
+                       [nzPopoverContent]="'app.tooltip.file.system.type' | i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
@@ -97,7 +100,7 @@
               <nz-form-item>
                 <nz-form-label nzFor="storage">
                   <div>
-                    <span>Dung lượng (GB) (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                    <span>{{ 'app.capacity' | i18n }} (GB) (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
                     <img nz-popover
                          [nzPopoverContent]="'Tối thiểu là 1'"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -113,50 +116,50 @@
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>Mô tả</span>
+                <span>{{ 'app.service.description' | i18n }}</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
               <textarea nz-input class="input-custom" [value]="fileSystem.description" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"  [disabled]="true"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
         </nz-card>
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông tin gia hạn</span>
+          <span class="text-card-header">{{ 'app.extension.info' | i18n }}</span>
           <nz-row nzJustify="space-between" style="margin-top: 15px;">
             <nz-col>
               <nz-form-label>
-                <span>Ngày cấp dịch vụ: {{fileSystem?.createdDate | date: 'dd/MM/yyyy'}} </span>
+                <span>{{ 'app.service.start.date' | i18n }}: {{fileSystem?.createdDate | date: 'dd/MM/yyyy'}} </span>
               </nz-form-label>
             </nz-col>
             <nz-col nzSpan="12">
               <nz-form-label>
-                <span>Ngày hết hạn:  {{fileSystem?.expireDate | date: 'dd/MM/yyyy'}}</span>
+                <span>{{ 'app.service.expiration-date' | i18n }}:  {{fileSystem?.expireDate | date: 'dd/MM/yyyy'}}</span>
               </nz-form-label>
             </nz-col>
           </nz-row>
           <nz-form-item style="margin-top: 10px;">
             <nz-form-label nzFor="time">
               <div class="label">
-                <span>Số tháng cần gia hạn thêm</span>
+                <span>{{ 'app.months.for.extend' | i18n }}</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
               <nz-input-number style="width:100%; margin-left: 0;" nzAutoFocus class="input-custom" (ngModelChange)="changeTime($event)" formControlName="time" nzMin="1" nzMax="100"/>
               <ng-template #dateErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min') || control.hasError('pattern')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min') || control.hasError('pattern')">{{ 'app.more.0.less.100' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-row>
             <nz-col>
               <nz-form-label>
-                <span style="color: #F50000;" *ngIf="orderItem?.orderItemPrices?.length > 0">Ngày hết hạn dự kiến: {{ orderItem?.orderItemPrices[0].expiredDate | date: 'dd/MM/yyyy'}} </span>
+                <span style="color: #F50000;" *ngIf="orderItem?.orderItemPrices?.length > 0">{{ 'app.expected.expiry.date' | i18n }}: {{ orderItem?.orderItemPrices[0].expiredDate | date: 'dd/MM/yyyy'}} </span>
               </nz-form-label>
             </nz-col>
           </nz-row>
@@ -164,30 +167,30 @@
       </nz-col>
       <nz-col nzSpan="8">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Chi phí ước tính</span>
-          <div style="margin-top: 10px" class="text-value">Tên File System</div>
+          <span class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.file.system.name' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
             {{ fileSystem?.name }}
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">Loại File System</div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.file.system.type' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
             {{ fileSystem?.type }}
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">Giao thức</div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.protocol' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
             <span class="text-label">{{ fileSystem?.shareProto }}</span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">Dung lượng</div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.capacity' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
             <span class="text-label">{{ fileSystem?.size }} GB</span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-value"> Chi phí 1 tháng </span>
+              <span class="text-value"> {{ 'app.cost.a.month' | i18n }} </span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3" nzAlign="right">0 VND</span>
@@ -203,8 +206,8 @@
             border-radius: 8px;
           " nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-label">Tổng thanh toán</span><br />
-              <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+              <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
+              <span class="text-note-italicized">({{ 'app.include.vat' | i18n : { vat: '10' } }})</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">0 VND</span>
@@ -217,7 +220,7 @@
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="!validateForm.valid" (click)="navigateToPaymentSummary()">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Gia hạn</span>
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.extend' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>
