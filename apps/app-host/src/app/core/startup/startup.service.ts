@@ -16,7 +16,7 @@ import { environment } from '@env/environment';
 import { ICONS } from '../../../style-icons';
 import { ICONS_AUTO } from '../../../style-icons-auto';
 import { I18NService } from '../i18n/i18n.service';
-import { PolicyService } from 'src/app/shared/services/policy.service';
+import { CoreDataService, PolicyService } from '../../../../../../libs/common-utils/src';
 
 /**
  * Used for application startup
@@ -34,6 +34,7 @@ export class StartupService {
     private httpClient: HttpClient,
     private router: Router,
     private policyService: PolicyService,
+    private regionProjectService: CoreDataService
   ) {
     iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
   }
@@ -76,7 +77,9 @@ export class StartupService {
           this.aclService.setFull(true);
 
           this.menuService.add(appData.menu);
-          this.checkPermissionAction(this.menuService['data']);
+          this.regionProjectService.getCoreData();
+          //this.checkPermissionAction(this.menuService['data']);
+          
           // if (checkData) {
           //   let json = {
           //     key: 'Object Storage',

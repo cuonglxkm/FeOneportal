@@ -1,8 +1,8 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {ActivatedRoute, Router} from "@angular/router";
-import {PolicyInfo} from "../policy.model";
-import {PolicyService} from "../../../shared/services/policy.service";
+import {PolicyInfo} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
+import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
@@ -40,7 +40,7 @@ export class PolicyDetailComponent implements OnInit {
 
   }
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
 
   project = JSON.parse(localStorage.getItem('projectId'));
 

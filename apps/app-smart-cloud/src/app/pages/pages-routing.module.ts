@@ -92,7 +92,7 @@ import { DashboardObjectStorageComponent } from './dashboard-object-storage/dash
 import { ObjectStorageComponent } from './object-storage/object-storage.component';
 import { ObjectStorageCreateComponent } from './object-storage/object-storage-create/object-storage-create.component';
 import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
-import { PolicyService } from '../shared/services/policy.service';
+import { PolicyService } from '../../../../../libs/common-utils/src/lib/services/policy.service';
 import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 import { ListSecurityGroupComponent } from './security-group/list/list-security-group.component';
 import { SecurityComponent } from './security/security.component';

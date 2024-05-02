@@ -15,7 +15,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 })
 
 export class VolumeComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean = false;

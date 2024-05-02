@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
-import { PolicyService } from '../services/policy.service';
+import { PolicyService } from '../../../../../../libs/common-utils/src/lib/services/policy.service';
 
 
 @Injectable({

@@ -31,7 +31,7 @@ export class ListAllowAddressPairComponent implements OnInit {
   isVisibleCreate = false;
   userId: number
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
 
   project = JSON.parse(localStorage.getItem('projectId'));
 

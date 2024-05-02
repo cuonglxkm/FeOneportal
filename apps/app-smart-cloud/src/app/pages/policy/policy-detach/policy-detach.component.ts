@@ -4,9 +4,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PopupDetachPolicyComponent} from "../popup-policy/popup-detach-policy.component";
-import {PolicyService} from "../../../shared/services/policy.service";
+import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
-import {AttachOrDetachRequest} from "../policy.model";
+import {AttachOrDetachRequest} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
@@ -17,7 +17,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../libs/common-util
 })
 export class PolicyDetachComponent implements OnInit {
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
 
   project = JSON.parse(localStorage.getItem('projectId'));
 

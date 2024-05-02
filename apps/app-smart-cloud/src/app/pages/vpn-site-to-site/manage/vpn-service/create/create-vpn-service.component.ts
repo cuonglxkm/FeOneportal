@@ -17,7 +17,7 @@ import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.s
   styleUrls: ['./create-vpn-service.component.less'],
 })
 export class CreateVpnServiceComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   routerName: string

@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {PolicyService} from "../../../../../shared/services/policy.service";
-import {PolicyModel} from "../../../../policy/policy.model";
+import {PolicyService} from "../../../../../../../../../libs/common-utils/src/lib/services/policy.service";
+import {PolicyModel} from "../../../../../../../../../libs/common-utils/src/lib/models/policy.model";
 import {FormSearchPolicy, FormUserGroup, UserGroupModel} from "../../../../../shared/models/user-group.model";
 import {UserGroupService} from "../../../../../shared/services/user-group.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
@@ -17,7 +17,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 })
 export class CreatePolicyComponent implements OnInit {
   nameGroup: string
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   countPolicy: number

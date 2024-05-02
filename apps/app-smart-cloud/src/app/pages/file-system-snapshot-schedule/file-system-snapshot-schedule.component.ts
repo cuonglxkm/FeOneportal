@@ -14,7 +14,7 @@ import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-
   styleUrls: ['./file-system-snapshot-schedule.component.less'],
 })
 export class FileSystemSnapshotScheduleComponent {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   customerId: number

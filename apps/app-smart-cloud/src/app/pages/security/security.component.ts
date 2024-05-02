@@ -15,7 +15,7 @@ import { RegionModel, ProjectModel } from '../../../../../../libs/common-utils/s
   styleUrls: ['./security.component.less'],
 })
 export class SecurityComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   toggleSwitch: boolean = false
@@ -55,6 +55,9 @@ export class SecurityComponent implements OnInit {
 
     this.email = this.tokenService.get().email
     
+    this.service.twoFactorProviders().subscribe((data: any) => {
+      console.log(data);
+    });
   }
 
   // clickSwitch(): void {

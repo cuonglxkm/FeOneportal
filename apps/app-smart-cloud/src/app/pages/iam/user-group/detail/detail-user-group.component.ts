@@ -8,7 +8,7 @@ import {
   RemovePolicy,
   UserGroupModel
 } from "../../../../shared/models/user-group.model";
-import {PolicyModel} from "../../../policy/policy.model";
+import {PolicyModel} from "../../../../../../../../libs/common-utils/src/lib/models/policy.model";
 import {User} from "../../../../shared/models/user.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NonNullableFormBuilder} from '@angular/forms';
@@ -24,7 +24,7 @@ import { I18NService } from '@core';
   styleUrls: ['./detail-user-group.component.less'],
 })
 export class DetailUserGroupComponent {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   value?: string;

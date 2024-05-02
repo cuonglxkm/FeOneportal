@@ -14,7 +14,7 @@ import {getCurrentRegionAndProject} from "@shared";
   styleUrls: ['./list-packages-backup.component.less'],
 })
 export class ListPackagesBackupComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   pageSize: number = 10

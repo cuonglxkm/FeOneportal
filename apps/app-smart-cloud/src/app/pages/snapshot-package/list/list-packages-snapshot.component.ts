@@ -18,7 +18,7 @@ import { debounceTime } from 'rxjs';
   styleUrls: ['./list-packages-snapshot.component.less'],
 })
 export class ListPackagesSnapshotComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   pageSize: number = 5
