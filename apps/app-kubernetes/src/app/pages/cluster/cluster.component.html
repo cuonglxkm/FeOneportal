@@ -103,8 +103,8 @@
                     <div class="item-body">
                       {{item.cpu}}vCPU /
                       {{item.ram}}GB RAM /
-                      {{item.rootStorage}}GB {{item.rootStorageName}} /
-                      {{item.volumeStorage}}GB {{item.volumeType}} persistent
+                      {{item.rootStorage}}GB {{item.rootStorageName}}
+                      <!-- {{item.volumeStorage}}GB {{item.volumeType}} persistent -->
                     </div>
                   </div>
                 </div>
@@ -139,7 +139,7 @@
               <div nz-row [nzGutter]="16" class="group-border mb-5">
                 <div nz-col [nzSpan]="12">
                   <nz-form-item>
-                    <nz-form-label nzFor="workerGroupName">Tên nhóm worker  (<span class="required-color">*</span>)</nz-form-label>
+                    <nz-form-label nzFor="workerGroupName">Tên nhóm worker (<span class="required-color">*</span>)</nz-form-label>
                     <nz-form-control [nzErrorTip]="workerGroupNameErrorTpl">
                       <input type="text" nz-input placeholder="Nhập tên nhóm worker" formControlName="workerGroupName"
                         (ngModelChange)="checkDuplicate(i)" id="workerGroupName" nzSize="large"
@@ -162,7 +162,7 @@
                   </nz-form-item>
 
                   <nz-form-item>
-                    <nz-form-label nzFor="configType">Cấu hình  (<span class="required-color">*</span>)</nz-form-label>
+                    <nz-form-label nzFor="configType">Cấu hình (<span class="required-color">*</span>)</nz-form-label>
                     <nz-form-control>
                       <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType"
                         (ngModelChange)="onSelectWorkerType($event, i)" [nzDisabled]="isUsingPackConfig" nzSize="large">
@@ -185,7 +185,7 @@
 
                   <ng-container *ngIf="isAutoScaleAtIndex(i)">
                     <nz-form-item>
-                      <nz-form-label nzFor="nodes">Số node tối thiểu  (<span class="required-color">*</span>)</nz-form-label>
+                      <nz-form-label nzFor="nodes">Số node tối thiểu (<span class="required-color">*</span>)</nz-form-label>
                       <nz-form-control [nzErrorTip]="minimumNodeErrorTpl">
                         <input type="text" nz-input placeholder="Nhập số node tối thiểu" formControlName="minimumNode"
                           (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" nzSize="large" />
@@ -221,7 +221,7 @@
 
                 <div nz-col [nzSpan]="12">
                   <nz-form-item>
-                    <nz-form-label nzFor="nodes">Số node  (<span class="required-color">*</span>)</nz-form-label>
+                    <nz-form-label nzFor="nodes">Số node (<span class="required-color">*</span>)</nz-form-label>
                     <nz-form-control [nzErrorTip]="nodeNumberErrorTpl">
                       <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber" (ngModeChange)="onCalculatePrice()"
                         (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" nzSize="large" [ngClass]="{'default-pack': isUsingPackConfig==true}" />
