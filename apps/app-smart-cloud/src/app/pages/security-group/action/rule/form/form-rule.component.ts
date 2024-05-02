@@ -159,11 +159,11 @@ export class FormRuleComponent implements OnInit {
     }
 
     if (type === 'tcp-IPv4' || type === 'udp-IPv4') {
-      this.validateForm.controls.portRangeMin.setValidators([Validators.required, Validators.min(1), integerInRangeValidator(1, 65535)]);
+      this.validateForm.controls.portRangeMin.setValidators([Validators.required, Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/), integerInRangeValidator(1, 65535)]);
       this.validateForm.controls.portRangeMin.markAsDirty();
       this.validateForm.controls.portRangeMin.reset();
 
-      this.validateForm.controls.portRangeMax.setValidators([Validators.required, integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin')]);
+      this.validateForm.controls.portRangeMax.setValidators([Validators.required, Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/), integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin')])
       this.validateForm.controls.portRangeMax.markAsDirty();
       this.validateForm.controls.portRangeMax.reset();
     }

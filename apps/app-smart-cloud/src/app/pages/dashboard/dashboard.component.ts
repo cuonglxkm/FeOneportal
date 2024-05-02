@@ -9,12 +9,7 @@ import {
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { Router } from '@angular/router';
 import { Pie } from '@antv/g2plot';
-import { Chart } from '@antv/g2';
 
-interface dataChart {
-  name: string;
-  count: number;
-}
 
 @Component({
   selector: 'one-portal-dashboard',
@@ -23,8 +18,6 @@ interface dataChart {
 })
 export class DashboardComponent implements OnInit {
   subscriptionsDashboard = new SubscriptionsDashboard();
-  subscriptionsNearExpire = new SubscriptionsNearExpire();
-  paymentCostUse = new PaymentCostUse();
 
   listSubscriptionsNearExpire: BaseResponse<SubscriptionsNearExpire[]>;
   listPaymentCostUse: BaseResponse<PaymentCostUse[]>;
@@ -51,25 +44,25 @@ export class DashboardComponent implements OnInit {
         item: item.serviceTypeName,
         count: item.dataCount
       }));
-      console.log('daata', transformedArray);
+      console.log('data', transformedArray);
 
-      const data3 = this.dashboardSubscription.map(item => ({
+      const dataChart = this.dashboardSubscription.map(item => ({
         type: item.serviceTypeName,
         value: item.dataCount
-      }))
+      }));
       const piePlot = new Pie(this.pieChart.nativeElement, {
         appendPadding: 10,
-        data: data3,
+        data: dataChart,
         angleField: 'value',
         colorField: 'type',
         radius: 0.8,
         label: {
           type: 'inner',
           offset: '-10%',
-          content: '{percentage}',
+          content: '{percentage}'
         },
         interactions: [{ type: 'element-active' }],
-        theme: 'custom-theme',
+        theme: 'custom-theme'
       });
 
       piePlot.render();
@@ -116,6 +109,88 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + id + '/' + paymentOrder]);
   }
 
+  navigateToExtend(serviceInstanceId: number, serviceType: number) {
+    switch (serviceType) {
+      case 1:
+        //VM
+        break;
+      case 2:
+        //VOLUME
+        this.router.navigate(['/app-smart-cloud/volumes/renew/', serviceInstanceId])
+        break;
+      case 3:
+        //SNAPSHOT
+        break;
+      case 4:
+        //IP PUBLIC
+        break;
+      case 5:
+        //LOAD BALANCER F5
+        break;
+      case 6:
+        // VM SNAPSHOT
+        break;
+      case 7:
+        //SNAPSHOT VOLUME
+        break;
+      case 8:
+        // BACKUP VOLUME
+        break;
+      case 9:
+        //BACKUP VM
+        break;
+      case 10:
+        //KEY PAIR
+        break;
+      case 11:
+        // SECURITY_GROUP
+        break;
+      case 12:
+        //VPC
+        break;
+      case 13:
+        //OBJECT STORAGE
+        break;
+      case 14:
+        this.router.navigate(['/app-smart-cloud/backup/packages/extend/', serviceInstanceId])
+        //BACKUP_PACKET
+        break;
+      case 15:
+        this.router.navigate(['/app-smart-cloud/load-balancer/extend/normal/', serviceInstanceId])
+        //LOAD BALANCER SDN
+        break;
+      case 16:
+        //VLAN
+        break;
+      case 17:
+        //ROUTER
+        break;
+      case 18:
+        this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + serviceInstanceId + '/extend'])
+        //SHAREFILE_STORAGE
+        break;
+      case 19:
+        //K8s
+        break;
+      case 20:
+        //VPN_SITE_TO_SITE
+        break;
+      case 21:
+        //KAFKA
+        break;
+      case 22:
+        //SNAPSHOT_PACKAGE
+        break;
+      case 23:
+        //MONGO_DB
+        break;
+      case 24:
+        //OTHER
+        break;
+      default:
+        break;
+    }
+  }
   ngOnInit() {
     this.getSubscriptionsDashboard();
     this.getSubscriptionsNearExpire();
