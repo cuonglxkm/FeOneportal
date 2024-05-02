@@ -54,7 +54,6 @@ export class FormRuleComponent implements OnInit {
 
   isLoading: boolean = false;
 
-  prefixIp: string[] = [];
   rulesList: NzSelectOptionInterface[] = [
     { label: 'Custom TCP Rule', value: 'tcp-IPv4' },
     { label: 'Custom UDP Rule', value: 'udp-IPv4' },

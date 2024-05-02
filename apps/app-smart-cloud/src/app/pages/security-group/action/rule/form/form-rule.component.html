@@ -130,7 +130,7 @@
                              [nzStep]="1"
                              id="portRangeMin" nzAutoFocus (ngModelChange)="updatePortRangeValidator()" />
             <ng-template #portRangeMinErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required') || control.hasError('invalid') || control.hasError('outOfRange')|| control.hasError('invalidNumber') ">
+              <ng-container *ngIf="control.hasError('required') || control.hasError('invalid') || control.hasError('pattern') || control.hasError('outOfRange')|| control.hasError('invalidNumber') ">
                 Vui lòng nhập số nguyên trong khoảng 1 đến 65535
               </ng-container>
             </ng-template>
@@ -149,7 +149,7 @@
                               [nzStep]="1"
                              formControlName="portRangeMax" />
             <ng-template #portRangeMaxErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required') || control.hasError('invalid') || control.hasError('outOfRange') || control.hasError('portMismatch') || control.hasError('invalidNumber')">
+              <ng-container *ngIf="control.hasError('required') || control.hasError('invalid') || control.hasError('pattern') ||  control.hasError('outOfRange') || control.hasError('portMismatch') || control.hasError('invalidNumber')">
                 Vui lòng nhập số nguyên trong khoảng 1 đến 65535 và phải lớn hơn hoặc bằng From Port
               </ng-container>
             </ng-template>
