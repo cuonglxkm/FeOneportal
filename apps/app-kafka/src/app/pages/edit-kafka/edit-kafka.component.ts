@@ -6,6 +6,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { camelizeKeys } from 'humps';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { KafkaUpdateReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
@@ -34,6 +36,7 @@ export class EditKafkaComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private router: Router,
     private loadingSrv: LoadingService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
 
   }
@@ -59,7 +62,7 @@ export class EditKafkaComponent implements OnInit {
             this.itemDetail = camelizeKeys(res.data) as KafkaDetail;
             this.updateDataForm();
           } else {
-            this.notification.error('Thất bại', res.msg);
+            this.notification.error(this.i18n.fanyi('app.status.fail'), res.msg);
           }
         }
       )
@@ -124,11 +127,11 @@ export class EditKafkaComponent implements OnInit {
     .subscribe(
       (data) => {
         if (data && data.code == 200) {
-          this.notification.success('Thành công', data.msg);
+          this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
           // navigate
           this.backToList();
         } else {
-          this.notification.error('Thất bại', data.msg);
+          this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
         }
       }
     );

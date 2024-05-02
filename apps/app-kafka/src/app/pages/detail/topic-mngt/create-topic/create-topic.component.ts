@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from "ng-zorro-antd/notification";
 import { AppConstants } from 'src/app/core/constants/app-constant';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
 import { KafkaTopic } from 'src/app/core/models/kafka-topic.model';
 import { TopicService } from 'src/app/services/kafka-topic.service';
 
@@ -58,14 +60,12 @@ export class CreateTopicComponent implements OnInit {
   errMessPartition: string;
   errMessRep: string;
 
-  notiSuccessText = 'Thành công';
-  notiFailedText = 'Thất bại';
-
   constructor(
     private topicKafkaService: TopicService,
     private fb: NonNullableFormBuilder,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) { }
   validateForm: FormGroup;
 
@@ -120,14 +120,6 @@ export class CreateTopicComponent implements OnInit {
       }
     }
 
-    if (localStorage.getItem('locale') == AppConstants.LOCALE_EN) {
-      this.changeLangData();
-    }
-  }
-
-  changeLangData() {
-    this.notiSuccessText = 'Success';
-    this.notiFailedText = 'Failed';
   }
 
   disableControl() {
@@ -413,10 +405,10 @@ export class CreateTopicComponent implements OnInit {
             (data: any) => {
               this.loadingSrv.close();
               if (data && data.code == 200) {
-                this.notification.success(this.notiSuccessText, data.msg);
+                this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
                 this.cancelForm();
               } else {
-                this.notification.error(this.notiFailedText, data.msg);
+                this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
               }
             }
           );
@@ -450,10 +442,10 @@ export class CreateTopicComponent implements OnInit {
             (data: any) => {
               if (data && data.code == 200) {
                 this.loadingSrv.close();
-                this.notification.success(this.notiSuccessText, data.msg);
+                this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
                 this.cancelForm();
               } else {
-                this.notification.error(this.notiFailedText, data.msg);
+                this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
               }
             }
           );
@@ -505,10 +497,10 @@ export class CreateTopicComponent implements OnInit {
         .subscribe(
           (data: any) => {
             if (data && data.code == 200) {
-              this.notification.success(this.notiSuccessText, data.msg);
+              this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
               this.cancelForm();
             } else {
-              this.notification.error(this.notiFailedText, data.msg);
+              this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
             }
             this.loadingSrv.close();
           }

@@ -112,7 +112,7 @@ export class ExtendKafkaComponent implements OnInit {
             this.startExpiryDate.setDate(this.expiryDate.getDate() + 1);
             this.setExpectExpiryDate();
           } else {
-            this.notification.error('Thất bại', res.msg);
+            this.notification.error(this.i18n.fanyi('app.status.fail'), res.msg);
           }
         }
       )

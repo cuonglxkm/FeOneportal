@@ -1,17 +1,19 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { LoadingService } from "@delon/abc/loading";
+import { camelizeKeys } from 'humps';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs';
+import { AppConstants } from 'src/app/core/constants/app-constant';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { AclDeleteModel } from 'src/app/core/models/acl-delete.model';
 import { AclReqModel } from 'src/app/core/models/acl-req.model';
 import { AclModel } from 'src/app/core/models/acl.model';
 import { KafkaCredential } from 'src/app/core/models/kafka-credential.model';
-import { AclKafkaService } from 'src/app/services/acl-kafka.service';
-import { camelizeKeys } from 'humps';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { LoadingService } from "@delon/abc/loading";
 import { KafkaTopic } from 'src/app/core/models/kafka-topic.model';
-import { finalize } from 'rxjs';
-import { AppConstants } from 'src/app/core/constants/app-constant';
+import { AclKafkaService } from 'src/app/services/acl-kafka.service';
 
 @Component({
   selector: 'one-portal-acl-topic',
@@ -67,15 +69,13 @@ export class AclTopicComponent implements OnInit {
   isVisibleDelete = false;
   currentAclTopic: AclDeleteModel;
 
-  notiSuccessText = 'Thành công';
-  notiFailedText = 'Thất bại';
-
   constructor(
     private fb: NonNullableFormBuilder,
     private aclKafkaService: AclKafkaService,
     private modal: NzModalService,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
 
   }
@@ -84,15 +84,6 @@ export class AclTopicComponent implements OnInit {
     this.getListAcl(1, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
     this.getListTopic();
     this.initForm();
-
-    if (localStorage.getItem('locale') == AppConstants.LOCALE_EN) {
-      this.changeLangData();
-    }
-  }
-
-  changeLangData() {
-    this.notiSuccessText = 'Success';
-    this.notiFailedText = 'Failed';
   }
 
   initForm() {
@@ -193,11 +184,11 @@ export class AclTopicComponent implements OnInit {
         .subscribe(
           (data) => {
             if (data && data.code == 200) {
-              this.notification.success(this.notiSuccessText, data.msg);
+              this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
               this.showForm = this.idListForm;
               this.getListAcl(1, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
             } else {
-              this.notification.error(this.notiFailedText, data.msg);
+              this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
             }
           }
         );
@@ -261,12 +252,12 @@ export class AclTopicComponent implements OnInit {
       .subscribe(
         (data) => {
           if (data && data.code == 200) {
-            this.notification.success(this.notiSuccessText, data.msg);
+            this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
             this.showForm = this.idListForm;
             this.getListAcl(this.pageIndex, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
           }
           else {
-            this.notification.error(this.notiFailedText, data.msg);
+            this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
           }
         }
       );
