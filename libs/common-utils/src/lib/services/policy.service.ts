@@ -206,7 +206,7 @@ export class PolicyService extends BaseService {
         return this.isPermission(action, permission);
       });
     }
-    return false;
+    return true;
   }
 
   isPermission(action: string, permission): boolean {
