@@ -930,7 +930,7 @@ export class BucketDetailComponent implements OnInit {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
           expiryTime: addDays(this.date, 1),
-          urlOrigin: 'http://localhost:4200',
+          urlOrigin: 'https://oneportal.onsmartcloud.com',
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
