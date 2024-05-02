@@ -12,6 +12,8 @@ import { OrderItem } from '../../../../shared/models/price';
 import { now } from 'lodash';
 import { debounceTime, Subject } from 'rxjs';
 import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'app-extend-volume',
@@ -62,11 +64,12 @@ export class EditVolumeComponent implements OnInit {
               private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
               private instanceService: InstancesService,
-              private projectService: ProjectService) {
+              private projectService: ProjectService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
-    this.volumeStatus.set('ERROR', 'LỖI');
-    this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
+    this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running').toUpperCase());
+    this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error').toUpperCase());
+    this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend').toUpperCase());
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
       if (value <= 40) return (this.iops = 400);

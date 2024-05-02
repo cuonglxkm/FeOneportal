@@ -95,7 +95,7 @@ export class ResizeFileSystemNormalComponent implements OnInit{
     this.resizeFileSystem.actionType = 4;
     this.resizeFileSystem.serviceInstanceId = this.idFileSystem;
     this.resizeFileSystem.regionId = this.region;
-    this.resizeFileSystem.serviceName = null;
+    this.resizeFileSystem.serviceName = this.fileSystem.name;
     this.resizeFileSystem.vpcId = this.project;
     this.resizeFileSystem.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.ShareResizeSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null';
     this.resizeFileSystem.userEmail = this.tokenService.get()?.email;

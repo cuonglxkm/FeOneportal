@@ -82,7 +82,6 @@ import { PaymentSummaryComponent } from '../shared/components/payment-summary/pa
 import { CreateVolumeVpcComponent } from './volume/component/create-volume-vpc/create-volume-vpc.component';
 import { ResizeVolumeVpcComponent } from './volume/component/resize-volume-vpc/resize-volume-vpc.component';
 import { ListVlanComponent } from './vlan/list/list-vlan.component';
-import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 import { VlanDetailComponent } from './vlan/detail/vlan-detail.component';
 import { RouterListComponent } from './routers/router-list.component';
 import { RouterDetailComponent } from './routers/router-detail/router-detail.component';
@@ -464,10 +463,6 @@ const routes: Routes = [
     path: 'volume/vpc/resize/:id',
     component: ResizeVolumeVpcComponent,
     canActivate: [() => inject(PolicyService).hasPermission('order:Create')]
-  },
-  {
-    path: 'volume/blank',
-    component: BlankVolumeComponent
   },
   {
     path: 'vlan/network/list',
