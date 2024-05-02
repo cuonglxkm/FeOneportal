@@ -13,7 +13,6 @@ import { EditVolumeComponent } from './volume/component/edit-volume/edit-volume.
 import { ActionHistoryComponent } from './action-history/action-history.component';
 import { SnapshotVolumeListComponent } from './snapshot-volume/snapshotvl-list/snapshotvl-list.component';
 import { SnappshotvlDetailComponent } from './snapshot-volume/snapshotvl-detail/snappshotvl-detail.component';
-import { BlankBackupVmComponent } from './backup-vm/blank/blank-backup-vm.component';
 import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component';
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
@@ -229,10 +228,6 @@ const routes: Routes = [
     path: 'snapshotvls/detail/:id',
     component: SnappshotvlDetailComponent,
     canActivate: [() => inject(PolicyService).hasPermission('volumesnapshot:Get')]
-  },
-  {
-    path: 'blank-backup-vm',
-    component: BlankBackupVmComponent
   },
   {
     path: 'backup-vm',

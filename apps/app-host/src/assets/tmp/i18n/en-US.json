@@ -1309,7 +1309,7 @@
   "volume.intro.title2": "Server disk storage",
   "volume.intro.subtitle": "The storage service provides block-level storage for servers, designed to be partitioned into multiple types to meet various applications' demands for throughput or capacity.",
   "volume.modal.attach.title": "Select virtual machine",
-  "volume.modal.subtitle.delete": "To delete a Volume <b>{{name}}</b>, Please enter the Volume name to confirm",
+  "volume.modal.subtitle.delete": "To delete a Volume {{name}}, Please enter the Volume name to confirm",
   "volume.modal.title.update": "Edit Volume information",
   "volume.modal.confirm.title.create": "Confirm Volume initialization",
   "volume.modal.confirm.content": "Are you sure you want to initialize the Volume?",
@@ -1364,5 +1364,27 @@
   "app.backup.volume.name.tooltip": "The backup volume name should not include special characters, spaces, or Vietnamese characters (except _).",
   "app.backup.volume.validator.name.required": "Please enter the name of the Backup Volume",
   "app.backup.volume.validator.backup.package.required": "Please enter the name of the Backup",
-  "app.backup.volume.request.create": "Backup Volume creation request has been sent."
+  "app.backup.volume.request.create": "Backup Volume creation request has been sent.",
+
+  "app.dashboard.subscription.service": "Service",
+  "app.dashboard.subscription.service.active": "Service Active",
+  "app.dashboard.subscription.service.near.expire": "Service nearing expiration",
+  "app.dashboard.subscription.service.expire": "Service expired",
+  "app.dashboard.payment.and.cost": "Cost and Usage",
+  "app.dashboard.payment.and.cost.payment.code": "Payment code",
+  "app.dashboard.payment.and.cost.service": "Service",
+  "app.dashboard.payment.and.cost.total.payment": "Total amount (VND)",
+  "app.dashboard.payment.and.cost.create.date": "Creation date",
+  "app.dashboard.payment.and.cost.status": "Status",
+  "app.dashboard.payment.and.cost.paid": "Paid",
+  "app.dashboard.payment.and.cost.not.paid": "Unpaid",
+  "app.dashboard.service.near.expire": "Service nearing expiration",
+  "app.dashboard.service.near.expire.service.name": "Service name",
+  "app.dashboard.service.near.expire.service.type": "Service type",
+  "app.dashboard.service.near.expire.create.date": "Creation date",
+  "app.dashboard.service.near.expire.expire.date": "Expiration date",
+  "app.dashboard.service.near.expire.status": "Status",
+  "app.dashboard.service.near.expire.action": "Action",
+  "app.dashboard.service.near.expire.extend": "Extend"
+
 }

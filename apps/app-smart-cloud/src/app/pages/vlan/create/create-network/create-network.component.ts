@@ -258,10 +258,10 @@ export class CreateNetworkComponent implements OnInit {
   onInputCheckPool() {
     this.dataSubjectCidr.pipe(debounceTime(500)).subscribe((res) => {
       this.vlanService.checkAllocationPool(res).subscribe(data => {
-        const dataJson = JSON.parse(data);
+        const dataJson = JSON.parse(JSON.stringify(data));
 
         // Access ipRange value
-        const ipRange = data.ipRange;
+        const ipRange = dataJson.ipRange;
 
         // Split the IP range string
         // const ipAddresses = ipRange.split(',').map(ip => ip.trim());
