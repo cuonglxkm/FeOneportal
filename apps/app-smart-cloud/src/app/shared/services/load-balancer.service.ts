@@ -439,4 +439,12 @@ export class LoadBalancerService extends BaseService {
   getListSubnetInternetFacing(projectId: number, region: number) {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/subnet?projectId=${projectId}&region=${region}`, null)
   }
+  attachOrDetachIpFloating(ipId: number, idLb: number, regionId: number, vpcId: number, vipPortId: string){
+    let param = new HttpParams()
+    if(vipPortId == undefined || vipPortId == null) param.append('vipPortId', vipPortId)
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/floatinglb?ipId=${ipId}&idLb=${idLb}&regionId=${regionId}&vpcId=${vpcId}`, null, {
+      params: param
+    })
+  }
+
 }
