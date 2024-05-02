@@ -24,7 +24,7 @@ export class CreateTopicComponent implements OnInit {
   listConfigLabel = [
     { name: 'maxMessage', value: '1048588', type: 'number', fullname: "max.message.bytes" },
     { name: 'policy', value: 'delete', fullname: "cleanup.policy" },
-    { name: 'minSync', value: 2, type: 'number', fullname: "min.insync.replicas" },
+    { name: 'minInsync', value: 2, type: 'number', fullname: "min.insync.replicas" },
     { name: 'unclean_leader', value: 'false', fullname: "unclean.leader.election.enable" },
     { name: 'comp_type', value: 'producer', fullname: "compression.type" },
     { name: 'mess_down_enable', value: 'true', fullname: "message.downconversion.enable" },
@@ -344,11 +344,16 @@ export class CreateTopicComponent implements OnInit {
   changeReplica() {
     const replica = this.validateForm.controls['replicaFactor'];
     const minInsync = this.validateForm.controls['minInsync'];
-    if (replica.value != null && minInsync.value != null) {
-      if (minInsync.value > replica.value) {
-        replica.setErrors({'invalidvalue': true})
-      } else {
-        minInsync.setErrors(null);
+    if (replica.value != null && replica.value != '') {
+      if (!this.openSet) {
+        this.listConfigLabel.forEach(e => e.name == 'minInsync' ? e.value = replica.value : e.value); 
+        if (minInsync.value != null) {
+          if (minInsync.value > replica.value) {
+            replica.setErrors({'invalidvalue': true})
+          } else {
+            minInsync.setErrors(null);
+          }
+        }
       }
     }
   }
