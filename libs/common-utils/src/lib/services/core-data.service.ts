@@ -78,17 +78,17 @@ export class CoreDataService {
 
                 if (!regionId) {
                     localStorage.setItem('regionId', JSON.stringify(data[0].regionId));
-                    //this.getProjects(data[0].regionId);
+                    this.getProjects(data[0].regionId);
                 }
                 else {
                     const found = data.some(el => el.regionId === Number(regionId));
 
                     if (!found) {
                         localStorage.setItem('regionId', JSON.stringify(data[0].regionId));
-                        //this.getProjects(data[0].regionId);
+                        this.getProjects(data[0].regionId);
                     }
                     else {
-                        //this.getProjects(Number(regionId));
+                        this.getProjects(Number(regionId));
                     }
                 }
             }, 
