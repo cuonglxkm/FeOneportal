@@ -610,6 +610,17 @@
   "app.note.delete.pool": "To delete the <b>{{name}}</b> Pool, please enter the Pool name to confirm",
   "app.alert.delete.pool": "You are about to delete a Pool",
 
+  "app.access.rule.manage": "Manage Access Rule",
+  "app.access.rule.list": "Access Rule list",
+  "app.button.access.rule.create": "Create new Access Rule",
+  "app.button.access.rule.add": "Add Access Rule",
+
+  "validation.access.to": "Access To cannot be left blank",
+  "validation.access.to.pattern": "Access To should be in the format x.x.x.x",
+
+  "app.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR is granted access to this Filesystem",
+  "app.alert.delete.access.to": "You are currently deleting an Access Rule",
+  "app.access.to.remove.confirm": "Are you sure you want to delete the Access Rule?",
 
   "app.payment.title": "Payment list",
   "app.payment.payment": "Payment",
