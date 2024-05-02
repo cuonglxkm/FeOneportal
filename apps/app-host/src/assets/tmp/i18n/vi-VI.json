@@ -1265,7 +1265,7 @@
   "volume.notification.input.description.maxLength": "Cho phép nhập tối đa 255 kí tự",
   "volume.notification.update.success": "Cập nhật thông tin Volume thành công",
   "volume.notification.update.fail": "Cập nhật thông tin Volume thất bại",
-  "volume.notification.input.select.snapshot": "Vui lòng chọn máy ảo",
+  "volume.notification.input.select.snapshot": "Vui lòng chọn Snapshot",
   "volume.notification.request.create": "Tạo Volume",
   "volume.notification.require.create.success": "Yêu cầu tạo Volume thành công.",
   "volume.notification.resize.success": "Điều chỉnh Volume thành công.",
