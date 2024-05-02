@@ -165,7 +165,7 @@
   "app.account.form.success": "Account updated successfully!",
   "app.account.form.fail": "Account update failed",
   "app.failData": "Retrieve data failed",
-  
+
   "app.minute": "minutes",
   "app.hour": "hour",
   "app.day": "day",
@@ -802,7 +802,7 @@
   "app.user-group.deleteMany.success": "Delete User Group successfully.",
   "app.user-group.deleteMany.fail": "Delete User Group failed.",
   "app.user-group.deleteMany.fail2": "Can't delete User Group.",
-  
+
 
   "app.breadcrumb.create-user-groups": "Create User Group",
   "app.create-user-groups.nameGroup": "Name of Group",
@@ -817,7 +817,7 @@
   "app.button.agree": "Agree",
   "app.user-group.noti.success": "New group created successfully",
   "app.user-group.noti.fail": "New group created failed",
-  
+
   "app.group-detail.groupInfo": "Group information",
   "app.group-detail.mainInfo": "Group's main information",
   "app.group-detail.userInGroup": "Users in Group",
@@ -1288,6 +1288,7 @@
   "app.detail": "Details",
   "app.network.range": "Network range",
 
+  "app.breadcrumb.block.storage": "Block Storage",
   "volume.title": "Volumes List",
   "volume.title.detail": "Volume Detail",
   "volume.detail.title": "Information of Volume",
@@ -1331,6 +1332,7 @@
   "volume.menu.create.schedule.backup": "Create Backup Schedule",
   "volume.menu.create.schedule.snapshot": "Create Snapshot Schedule",
   "volume.menu.update.volume": "Edit",
+  "volume.attach": "Attach Volume",
 
   "volume.placeholder.filter.status": "All status",
   "volume.placeholder.filter.name": "Search by name...",
