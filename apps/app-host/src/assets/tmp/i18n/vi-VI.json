@@ -468,6 +468,7 @@
   "validation.choose.protocol.required": "Vui lòng chọn giao thức",
   "validation.correct.pool.name": "Vui lòng nhập đúng tên Pool",
 
+  "app.placeholder.name.load.balancer": "Nhập tên LoadBalancer",
   "app.tooltip.vip.address": "Virtual IP là IP private dùng để giao tiếp với các Member",
   "app.tooltip.internet.floating": "Internet IP là IP Public được cấp cho Load Balancer để tiếp nhận các request từ ngoài Internet",
   "app.tooltip.task.status.lb": "Nếu trạng thái hiển thị là ERROR, thông thường là do Load Balancer health check phát hiện ra có member bị error trong Pool của Load Balancer",
@@ -494,6 +495,11 @@
   "app.title.delete.pool": "Xóa Pool <b>{{name}}</b>",
   "app.note.delete.pool": "Để thực hiện xóa Pool <b>{{name}}</b>, vui lòng nhập tên Pool để xác nhận",
   "app.alert.delete.pool": "Bạn đang thực hiện xóa Pool",
+
+  "app.notification.delete.load.balancer.success": "Xóa Load Balancer thành công",
+  "app.notification.delete.load.balancer.fail": "Xóa Load Balancer thất bại {{ error }}",
+  "app.notification.create.pool.success": "Tạo Pool thành công",
+  "app.notification.create.pool.fail": "Tạo Pool thất bại",
 
   "app.payment.title": "Danh sách thanh toán",
   "app.payment.payment": "Thanh toán",
@@ -1174,8 +1180,7 @@
   "volume.intro.title2": "Lưu trữ ổ đĩa máy chủ",
   "volume.intro.subtitle": "Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.",
   "volume.modal.attach.title": "Chọn máy ảo",
-  "volume.modal.subtitle.delete": "Để thực hiện xóa Volume",
-  "volume.modal.confirm.delete": ", vui lòng nhập tên Volume để xác nhận",
+  "volume.modal.subtitle.delete": "Để thực hiện xóa Volume <b>{{name}}</b>, vui lòng nhập tên Volume để xác nhận",
   "volume.modal.title.update": "Chỉnh sửa thông tin Volume",
   "volume.modal.confirm.title.create": "Xác nhận khởi tạo Volume",
   "volume.modal.confirm.content": "Quý khách chắn chắn muốn thực hiện khởi tạo Volume?",
@@ -1227,8 +1232,12 @@
   "app.input.backup.volume.description": "Nhập mô tả",
   "app.input.backup.volume.note": "Tạo Backup Volume",
 
+
+
   "app.backup.volume.name.tooltip": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
   "app.backup.volume.validator.name.required": "Vui lòng nhập tên Backup Volume",
   "app.backup.volume.validator.backup.package.required": "Vui lòng nhập tên Backup",
-  "app.backup.volume.request.create": "Yêu cầu tạo Backup Volume đã được gửi đi."
+  "app.backup.volume.request.create": "Yêu cầu tạo Backup Volume đã được gửi đi.",
+
+
 }

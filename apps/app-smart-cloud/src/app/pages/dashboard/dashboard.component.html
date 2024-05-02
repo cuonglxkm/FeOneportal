@@ -122,7 +122,7 @@
         <td>
           <img style="padding-right: 10px; cursor: pointer;" src="assets/imgs/calendar-tick.svg"
                nz-popover [nzPopoverContent]="'Gia hạn'"
-               nzPopoverPlacement="bottom" alt=""/>
+               nzPopoverPlacement="bottom" alt="" (click)="navigateToExtend(data.serviceInstanceId, data.serviceType)"/>
         </td>
       </tr>
       </tbody>
