@@ -3,12 +3,12 @@
              [title]="'Gia hạn Load Balancer'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/load-balancer/create">Gia hạn Load Balancer</a>
@@ -17,6 +17,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
@@ -29,12 +30,12 @@
     <nz-col nzSpan="16">
       <form nz-form [formGroup]="validateForm" nzLayout="vertical">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông tin Load Balancer</span>
+          <span class="text-card-header">{{ 'app.load.balancer.info' | i18n }}</span>
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
-              <span>Tên Load Balancer (<span style="color: red">*</span>)</span>
+              <span>{{ 'app.load.balancer.name' | i18n }} (<span style="color: red">*</span>)</span>
               <img nz-popover
-                   [nzPopoverContent]="'Tên Load Balancer không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự'"
+                   [nzPopoverContent]="'validation.load.balancer.name.pattern' | i18n"
                    nzPopoverPlacement="bottom" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
@@ -102,12 +103,12 @@
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px;">
         <span class="text-card-header">Chi phí ước tính</span>
-        <div class="text-value" style="margin-top: 20px;">Tên Load Balancer</div>
+        <div class="text-value" style="margin-top: 20px;">{{ 'app.load.balancer.name' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
           {{ loadBalancer.name }}
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">Sử dụng</div>
+        <div class="text-value">{{ 'app.usage' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
           <span *ngIf="loadBalancer?.internetFacing == true">Internet Facing</span>
           <span *ngIf="loadBalancer?.internetFacing == false">Internal</span>

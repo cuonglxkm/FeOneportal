@@ -33,7 +33,7 @@
         <nz-select nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="handleChange()"
           [nzPlaceHolder]="'app.service.status' | i18n" class="w-100" nzSize="large">
           <nz-option *ngFor="let item of listOfStatusKafka" [nzValue]="item.id"
-            [nzLabel]="item.statusName"></nz-option>
+            [nzLabel]="item.statusI18n | i18n"></nz-option>
         </nz-select>
       </div>
 
@@ -104,7 +104,7 @@
             <img src="assets/imgs/edit-kafka.svg" alt="" style="cursor: pointer; margin-right: 5px;" [routerLink]="'edit/' + item.serviceOrderCode"
               [nz-tooltip]="'app.text.edit' | i18n" class="img-edit" />
             <img src="assets/imgs/extend.svg" alt="" style="cursor: pointer; margin-right: 5px;" [routerLink]="'extend/' + item.serviceOrderCode"
-              [nz-tooltip]="'Gia hạn' | i18n" class="img-edit" />
+              [nz-tooltip]="'app.extend' | i18n" class="img-edit" />
             <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; margin-right: 5px" [routerLink]="'upgrade/' + item.serviceOrderCode"
               [nz-tooltip]="'app.text.upgrade' | i18n" />
             <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" [nz-tooltip]="'app.text.delete' | i18n" (click)="showDeleteConfirm(item)" />

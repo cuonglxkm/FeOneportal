@@ -1,11 +1,11 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Quản lý File System'">
+             [title]="'Chi tiết File System'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Danh sách File System
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Quản lý File System
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
         [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/{{ fileSystemId }}'">{{ fileSystemName }}
@@ -25,7 +25,7 @@
       <div nz-col nzSpan="4">
         <button class="button-fee"
                 nz-button
-                nzType="primary">
+                nzType="primary" (click)="navigateToExtend()">
           <img src="assets/imgs/redo.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
           <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
         </button>
@@ -106,7 +106,7 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Giao thức</span>
+              <span>{{ 'app.protocol' | i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.shareProto }}"
@@ -131,7 +131,7 @@
       </nz-row>
       <nz-form-item>
         <nz-form-label>
-          <span>Mô tả</span>
+          <span>{{ 'app.service.description' | i18n }}</span>
         </nz-form-label>
         <nz-form-control>
           <nz-textarea-count [nzMaxCharacterCount]="255">

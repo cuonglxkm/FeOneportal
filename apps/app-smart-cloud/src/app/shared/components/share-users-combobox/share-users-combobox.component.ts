@@ -12,7 +12,7 @@ export class ShareUsersComboboxComponent implements OnInit {
   @Output() valueChanged = new EventEmitter();
   @Output() userChanged = new EventEmitter();
   userSelected: any;
-  listUser: any[] = []
+  listUser: any[] = [];
   constructor(private policyService: PolicyService) {
     
   }
@@ -25,11 +25,6 @@ export class ShareUsersComboboxComponent implements OnInit {
       email: user.email,
       name: user.name
     });
-    this.userSelected = {
-      id: user.userId,
-      email: user.email,
-      name: user.name
-    };
     if(localStorage.getItem('ShareUsers')){
       this.listUser = JSON.parse(localStorage.getItem('ShareUsers'));
       if(localStorage.getItem('UserRootId')){
@@ -40,11 +35,23 @@ export class ShareUsersComboboxComponent implements OnInit {
           email: user.email,
           name: user.name
         };
-      } 
+      } else {
+        this.userSelected = {
+          id: user.userId,
+          email: user.email,
+          name: user.name
+        };
+        this.shareUserChanged(this.userSelected);
+      }
     } else {
       this.policyService.getShareUsers().subscribe(data => {
         if(data){
           this.listUser = this.listUser.concat(data.filter(x => x.id != user.userId));
+          this.userSelected = {
+            id: user.userId,
+            email: user.email,
+            name: user.name
+          };
           localStorage.setItem('ShareUsers', JSON.stringify(this.listUser))
           if(localStorage.getItem('UserRootId')){
             this.userSelected = this.listUser.find(x => x.id == Number(localStorage.getItem('UserRootId'))) ? 
@@ -54,6 +61,9 @@ export class ShareUsersComboboxComponent implements OnInit {
               email: user.email,
               name: user.name
             };
+          } else {
+            this.userSelected = this.listUser[0];
+            localStorage.setItem('UserRootId', JSON.stringify(this.userSelected.id));
           }
         }
       }, error => {
@@ -64,12 +74,11 @@ export class ShareUsersComboboxComponent implements OnInit {
 
   shareUserChanged(user) {
     localStorage.setItem('UserRootId', JSON.stringify(user.id));
-    this.policyService.getUserPermissions().subscribe(data => {
-      if(data){
-        debugger
-      }
-    }, error => {
+    localStorage.removeItem('projectId');
+    this.policyService.getUserPermissions().pipe().subscribe( (permission) => {
+      localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+      window.location.reload();
+      this.valueChanged.emit(user);
     });
-    this.valueChanged.emit(user);
   }
 }

@@ -24,7 +24,7 @@
                     <div nz-row [nzGutter]="24">
                         <div nz-col [nzSpan]="12">
                             <nz-form-item class="mt-4">
-                                <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>{{ 'app.kafka.name' | i18n }}</nz-form-label>
+                                <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>{{ 'app.kafka.name' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
                                 <nz-form-control [nzErrorTip]="kafkaErrorTpl">
                                     <nz-input-group class="w-100" nzSize="large">
                                         <input nz-input type="text" [placeholder]="'app.kafka.name-placeholder' | i18n"
@@ -47,11 +47,11 @@
     
                         <div nz-col [nzSpan]="12">
                             <nz-form-item class="mt-4">
-                                <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>{{ 'app.kafka.version' | i18n}}</nz-form-label>
+                                <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>{{ 'app.kafka.version' | i18n}} (<span class="text-red">*</span>)</nz-form-label>
                                 <nz-form-control [nzErrorTip]="'validation.service.version-required' | i18n">
-                                    <nz-select formControlName="version" *ngFor="let data of listOfKafkaVersion"
+                                    <nz-select formControlName="version"
                                         [nzPlaceHolder]="'app.kafka.version-placeholder' | i18n" nzSize="large">
-                                        <nz-option [nzValue]="data.helmVersion"
+                                        <nz-option *ngFor="let data of listOfKafkaVersion" [nzValue]="data.helmVersion"
                                             [nzLabel]="data.apacheKafkaVersion"></nz-option>
                                     </nz-select>
                                 </nz-form-control>
@@ -74,12 +74,12 @@
                             <div class="footer-btn">
                                 <button nz-button (click)="backToList()" style="margin-right: 16px;">
                                     <img
-                                        style="margin-top: -4px"
-                                        src="assets/imgs/arrow-left-3.svg"
+                                        style="padding-right: 10px; margin-top: -4px"
+                                        src="assets/imgs/cancel.svg"
                                         alt=""
-                                    />{{ 'app.text.go-back' | i18n }}
+                                    />{{ 'app.button.cancel' | i18n }}
                                 </button>
-                                <button nz-button nzType="primary" (click)="updateKafka()">
+                                <button nz-button nzType="primary" (click)="handleConfirmPopup()">
                                     <img
                                         style="padding-right: 10px; margin-top: -4px"
                                         src="assets/imgs/confirm.svg"
@@ -91,6 +91,37 @@
                     </nz-form-item>
                 </nz-card>
             </form>
+            <!-- Modal cancle create -->
+        <nz-modal
+            [(nzVisible)]="isVisibleConfirm"
+            [nzTitle]="'kafka.edit.confirm-title' | i18n"
+            (nzOnCancel)="handleCancelPopup()"
+            nzKeyboard="false"
+            nzMaskClosable="false"
+        >
+            <div *nzModalContent>
+                <div style="text-align: center; font-size: 16px;">{{ 'kafka.edit.confirm-content' | i18n }} </div>
+                <nz-alert nzType="warning" nzShowIcon
+                    [nzDescription]="'kafka.edit.confirm-note' | i18n"
+                ></nz-alert>
+            </div>
+            <div *nzModalFooter>
+                <button nz-button (click)="handleCancelPopup()" style="margin-right: 10px;">
+                    <img
+                        style="padding-right: 10px; margin-top: -4px"
+                        src="assets/imgs/cancel.svg"
+                        alt=""
+                    />{{ 'app.button.cancel' | i18n }}
+                </button>
+                <button nz-button nzType="primary" (click)="updateKafka()">
+                    <img
+                        style="padding-right: 10px; margin-top: -4px"
+                        src="assets/imgs/confirm.svg"
+                        alt=""
+                    />{{ 'app.button.confirm' | i18n }}
+                </button>
+            </div>  
+        </nz-modal>
         </div>
     </div>
 </ng-container>

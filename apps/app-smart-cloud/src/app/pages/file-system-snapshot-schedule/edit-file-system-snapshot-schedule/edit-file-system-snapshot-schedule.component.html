@@ -6,11 +6,11 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
-          >Dịch vụ hạ tầng</a
+          >{{ 'app.breadcrumb.infrastructure.service' | i18n }}</a
         >
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
@@ -27,6 +27,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="regionChange($event)"
       ></region-select-dropdown>
@@ -461,7 +462,7 @@
     </div>
     <div nz-col [nzSpan]="6" class="gutter-row">
       <nz-card style="border-radius: 8px">
-        <h2 class="custom-title">Thông số cấu hình</h2>
+        <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Tên lịch Snapshot</h3>
           <span>{{ FileSystemSnapshotForm.value.name }}</span>

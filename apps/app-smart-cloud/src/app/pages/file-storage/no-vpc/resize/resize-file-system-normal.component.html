@@ -2,10 +2,10 @@
              [title]="'Điều chỉnh File System'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Quản lý File System</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/'+idFileSystem ">Chi tiết File System</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/'+idFileSystem +'/resize'">Điều chỉnh File System</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -19,12 +19,12 @@
   </ng-template>
 </page-header>
 <nz-content>
-  <form nz-form [formGroup]="validateForm" (ngSubmit)="doResizeFileSystem()" nzLayout="vertical">
-    <nz-row nzGutter="24" nzJustify="space-between">
+  <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+    <nz-row nzGutter="24" nzJustify="space-between" >
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
           <span class="text-card-header">Thông tin File System</span>
-          <nz-row nzGutter="24" nzJustify="space-between">
+          <nz-row nzGutter="24" nzJustify="space-between" style="margin-top: 25px;">
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
@@ -42,7 +42,7 @@
               </nz-form-item>
               <nz-form-item>
                 <nz-form-label>
-                  <span>Giao thức (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <span>{{ 'app.protocol' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
                   <img nz-popover
                        [nzPopoverContent]="'Giao thức NFS (Network File System) là một giao thức mạng được sử dụng ' +
                            'để chia sẻ tập tin và thư mục qua mạng giữa các hệ thống máy tính khác nhau. ' +
@@ -53,6 +53,27 @@
                 </nz-form-label>
                 <nz-form-control>
                   <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.shareProto"  [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <div style="display: flex;">
+                  <nz-switch [nzDisabled]="true" formControlName="snapshot" ></nz-switch>
+                  <span style="margin-left: 10px; margin-top: 1px;" class="text-label">Khởi tạo từ Snapshot</span>
+                </div>
+              </nz-form-item>
+              <nz-form-item *ngIf="validateForm.controls.snapshot.value === true">
+                <nz-form-label>
+                  <div>
+                    <span>Snapshot (</span>
+                    <span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <img nz-popover
+                         [nzPopoverContent]="'Snapshot của File System'"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </div>
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips>
+                  <input nz-input class="input-custom" />
                 </nz-form-control>
               </nz-form-item>
             </nz-col>
@@ -88,22 +109,117 @@
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>Mô tả</span>
+                <span>{{ 'app.service.description' | i18n }}</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input [value]="fileSystem.description" [maxLength]="255"
+              <textarea nz-input class="input-custom" [value]="fileSystem.description" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"  [disabled]="true"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzFor="time">
+              <div class="label">
+                <span>Thời gian sử dụng </span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span> - Tháng</span>
+                <img nz-popover
+                     [nzPopoverContent]="'Thời gian khách hàng mua File System để sử dụng, tính theo tháng.'"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </div>
+            </nz-form-label>
+            <nz-row style="height: 50px;">
+              <nz-col nzSpan="12">
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+                  <input nz-input class="input-custom"
+                         [value]="getMonthDifference(fileSystem?.expireDate, fileSystem?.createdDate) + ' Tháng'"
+                         [disabled]="true" />
+                  <ng-template #dateErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-col>
+              <nz-col style="margin-left: 25px;">
+                <nz-form-item>
+                  <nz-form-label nzFor="now">
+                    <div class="label">
+                      <span>Ngày cấp dịch vụ: </span>
+                      <span>{{ fileSystem?.createdDate | date: 'dd/MM/yyyy' }}</span>
+                    </div>
+                  </nz-form-label>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+            <nz-form-label>
+              <div class="label">
+                <span>Ngày hết hạn: </span>
+                <span>{{ fileSystem?.expireDate | date: 'dd/MM/yyyy' }}</span>
+              </div>
+            </nz-form-label>
+          </nz-form-item>
+        </nz-card>
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Thông tin điều chỉnh</span>
+          <nz-alert nzBanner
+                    style="margin-top: 20px;"
+                    [nzMessage]="'Khi thực hiện tăng dung lượng File System, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn.'"
+                    nzShowIcon>
+          </nz-alert>
+          <nz-form-item style="margin-top:25px; margin-bottom: 10px;" >
+            <nz-form-label nzFor="storage">
+              <div class="label">
+                <span>Dung lượng tăng thêm</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
+                <img nz-popover [nzPopoverContent]="'Chi phí dung lượng bổ sung tính từ ngày điều chỉnh cho tới ngày hết hạn.'"
+                     nzPopoverPlacement="bottom"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
+              <nz-input-number formControlName="storage"
+                               style="width: 100%; margin-left: 0;"
+                               nzAutoFocus
+                               class="input-custom"
+                               [nzMin]="fileSystem?.size"
+                               (ngModelChange)="changeValueStorage($event)"
+                               [nzStep]="1" />
+              <ng-template #storageErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required') || control.hasError('pattern')">Vui lòng nhập dung lượng của File System. Dung lượng của File System là số nguyên dương</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
+            <nz-form-label>
+              <div>
+                Đơn giá: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
+                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }}/GB/Ngày</span>
+                <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
+                   0 VND/GB/Ngày
+                </span>
+              </div>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
+            <nz-form-label>
+              <span>Ngày điều chỉnh: {{ dateEdit | date: 'dd/MM/yyyy' }}</span>
+            </nz-form-label>
+          </nz-form-item>
+        </nz-card>
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Hướng dẫn công thức</span>
+          <div style="margin-top: 25px;">
+            <img src="assets/imgs/congthuc1.png" alt="" />
+            <img src="assets/imgs/congthuc2.png" alt="" style="margin-top: 15px;" />
+          </div>
         </nz-card>
       </nz-col>
       <nz-col nzSpan="8">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông số cấu hình</span>
+          <span class="text-card-header">Chi phí ước tính</span>
           <div style="margin-top: 10px" class="text-value">Tên File System</div>
           <div style="margin-top: 10px" class="text-label">
             {{ fileSystem?.name }}
@@ -124,9 +240,37 @@
             <span class="text-label">{{ validateForm.controls.storage.value }} GB</span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value"> Chi phí 1 tháng </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3" nzAlign="right">0 VND</span>
+              <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          " nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-label">Tổng thanh toán</span><br />
+              <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">0 VND</span>
+              <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+                {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
+              </span>
+            </nz-col>
+          </nz-row>
           <nz-row>
             <nz-col style="width: 100%">
-              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="!validateForm.valid" (click)="doResizeFileSystem()">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="!validateForm.valid" (click)="navigateToPaymentSummary()">
                 <i nz-icon [nzType]="'edit'"  style="margin-right: 5px; padding-bottom: 5px;"></i>
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Điều chỉnh</span>
               </button>
@@ -135,5 +279,6 @@
         </nz-card>
       </nz-col>
     </nz-row>
+
   </form>
 </nz-content>

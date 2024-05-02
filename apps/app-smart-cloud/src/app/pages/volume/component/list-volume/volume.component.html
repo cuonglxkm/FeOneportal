@@ -17,6 +17,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
@@ -145,17 +146,21 @@
                                           [isMultiple]="data.isMultiAttach"
                                           [instanceInVolume]="data.attachedInstances"
                                           (onOk)="handleOkDetachVm()"/>
-                <span *ngIf="data.serviceStatus != 'ERROR'" style="color: #0066B3; margin-right: 10px;margin-left: 10px; cursor: pointer;" nz-icon nzType="calendar"
-                      nzTheme="outline" nz-popover
-                      [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
-                      nzPopoverPlacement="bottom" (click)="navigateToCreateBackup(data.id, data.creationDate, data.expirationDate, data.name)"></span>
+                <img *ngIf="data.serviceStatus != 'ERROR'"
+                     style="padding-right: 10px; margin-left: 10px; cursor: pointer;"
+                     src="assets/imgs/calendar-tick.svg" alt=""
+                     nz-popover
+                     [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
+                     nzPopoverPlacement="bottom" (click)="navigateToCreateBackup(data.id, data.creationDate, data.expirationDate, data.name)"/>
                 <one-portal-delete-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
                                           [volumeName]="data.name"
                                           (onOk)="handleOkDelete()"/>
-                <span *ngIf="data.serviceStatus != 'ERROR'" style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
-                      [nzDropdownMenu]="opMenu"></span>
+                <img *ngIf="data.serviceStatus != 'ERROR'"
+                     nz-dropdown
+                     [nzDropdownMenu]="opMenu"
+                     src="assets/imgs/more1.svg" alt="" style="cursor: pointer; margin-left: 5px;"/>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li nz-menu-item (click)="navigateToCreateScheduleBackup(data.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}</li>

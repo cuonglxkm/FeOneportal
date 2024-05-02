@@ -774,7 +774,7 @@ export class BucketDetailComponent implements OnInit {
         };
 
         console.log(params);
-        
+
 
         this.service.createMultiPartUpload(params).subscribe(
           (data) => {
@@ -908,7 +908,7 @@ export class BucketDetailComponent implements OnInit {
                 };
                 this.service.abortmultipart(dataError).subscribe(
                   (data) => {
-                    console.log(data);                  
+                    console.log(data);
                   },
                   (error) => {
                     console.log(error);

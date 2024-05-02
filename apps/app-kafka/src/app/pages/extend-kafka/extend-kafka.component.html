@@ -1,15 +1,15 @@
 <ng-container *ngIf="itemDetail">
-    <page-header [breadcrumb]="breadcrumb" [title]="'Gia hạn dịch vụ Kafka: ' + itemDetail.serviceName" [action]="action">
+    <page-header [breadcrumb]="breadcrumb" [title]="('kafka.extend.title' | i18n) + ': ' + itemDetail.serviceName" [action]="action">
         <ng-template #breadcrumb>
             <nz-breadcrumb>
                 <nz-breadcrumb-item>
-                    <a [routerLink]="['/']">Trang chủ</a>
+                    <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
                 </nz-breadcrumb-item>
                 <nz-breadcrumb-item>
                     <a [routerLink]="['/app-kafka']">Kafka</a>
                 </nz-breadcrumb-item>
                 <nz-breadcrumb-item>
-                    Gia hạn dịch vụ Kafka
+                    {{'kafka.extend.title' | i18n}}
                 </nz-breadcrumb-item>
             </nz-breadcrumb>
         </ng-template>
@@ -26,26 +26,26 @@
     <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="16" class="form-new">
             <nz-card class="border-card" id="general">
-                <h3><b>Thông tin dịch vụ</b></h3>
+                <h3><b>{{'app.payment-detail.serviceInformation' | i18n}}</b></h3>
                 <div nz-row>
-                    <div nz-col [nzSpan]="5">Tên Kafka Cluster:</div>
+                    <div nz-col [nzSpan]="5">{{'app.kafka.name' | i18n}}:</div>
                     <div><b>{{this.itemDetail.serviceName}}</b></div>
                 </div>
                 <div nz-row>
-                    <div nz-col [nzSpan]="5">Ngày khởi tạo:</div>
+                    <div nz-col [nzSpan]="5">{{'app.service.creation-date' | i18n}}:</div>
                     <div>{{ itemDetail.createdDate | date: 'dd/MM/yyyy' }}</div>
                 </div>
                 <div nz-row>
-                    <div nz-col [nzSpan]="5">Ngày hết hạn:</div>
-                    <div style="color: #ea3829">{{ itemDetail.expiryDate | date: 'dd/MM/yyyy' }}</div>
+                    <div nz-col [nzSpan]="5">{{'app.service.expiration-date' | i18n}}:</div>
+                    <div style="color: #ea3829"><b>{{ itemDetail.expiryDate | date: 'dd/MM/yyyy' }}</b></div>
                 </div>
                 <div nz-row>
-                    <div nz-col [nzSpan]="5">Cấu hình gói dịch vụ:</div>
+                    <div nz-col [nzSpan]="5">{{'app.service.package' | i18n}}:</div>
                     <div><b>{{this.itemDetail.offerName}}</b></div>
                 </div>
                 <div nz-row>
                     <div nz-col [nzSpan]="4">
-                        Số Broker: 3
+                        {{'app.kafka.broker' | i18n}}: 3
                     </div>
                     <div nz-col [nzSpan]="6"></div>
                     <div>
@@ -64,16 +64,16 @@
             </nz-card>
 
             <nz-card class="border-card" id="general">
-                <h3><b>Thông tin gia hạn</b></h3>
+                <h3><b>{{'app.extension.info' | i18n}}</b></h3>
                 <div nz-row>
-                    Ngày bắt đầu gia hạn: {{ startExpiryDate | date: 'dd/MM/yyyy' }}
+                    {{'app.extend.start.date' | i18n}}: {{ startExpiryDate | date: 'dd/MM/yyyy' }}
                 </div>
                 <div nz-row>
                     <div class="w-100">
-                        <label>Số tháng gia hạn thêm (<span class="text-red">*</span>)
+                        <label>{{'app.months.for.extend' | i18n}} (<span class="text-red">*</span>)
                             <img
                                 style="margin-left: 5px; margin-bottom: 2px;"
-                                [nzTooltipTitle]="'Mỗi tháng tương đương 30 ngày.'" nzTooltipPlacement="rightTop" nz-tooltip
+                                [nzTooltipTitle]="'app.extend.tooltip' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
                                 src="assets/imgs/pajamas_question.svg"
                                 alt=""
                             />
@@ -89,7 +89,7 @@
                     </div>
                 </div>
                 <div nz-row style="color: #ea3829">
-                    Ngày hết hạn dự kiến:&nbsp; <p style="color: #ea3829"> {{ expectExpiryDate | date: 'dd/MM/yyyy' }}</p>
+                    {{'app.expected.expiry.date' | i18n}}:&nbsp; <p style="color: #ea3829"> <b>{{ expectExpiryDate | date: 'dd/MM/yyyy' }}</b> </p>
                 </div>
 
             </nz-card>
@@ -99,10 +99,10 @@
         <!-- payment -->
         <div nz-col [nzSpan]="8">
             <nz-card class="price-card">
-                <h3><b>Thành tiền</b></h3>
+                <h3><b>{{ 'app.service.price-title' | i18n }}</b></h3>
                 <div nz-row [nzGutter]="8">
                     <div nz-col [nzSpan]="12">
-                        <div class="label-price">Chi phí gia hạn</div>
+                        <div class="label-price">{{'app.extend.cost' | i18n}}</div>
                     </div>
                     <div nz-col [nzSpan]="12">
                         <div class="value-price">{{ extendAmount | number: '1.0-0'}} VNĐ</div>
@@ -112,8 +112,8 @@
                 
                 <div nz-row [nzGutter]="8" class="mt-5 price-panel">
                     <div nz-col [nzSpan]="12">
-                        <div class="label-price">Tổng cần thanh toán</div>
-                        <div class="label-quantity"><i>(Đã bao gồm 10% VAT)</i></div>
+                        <div class="label-price">{{'app.payment-detail.totalPayment' | i18n}}</div>
+                        <div class="label-quantity"><i>({{ 'app.service.include' | i18n }} 10% VAT)</i></div>
                     </div>
                     <div nz-col [nzSpan]="12">
                         <div class="value-price total-price"> {{extendAmount === 0 ? 0 : extendAmount * 1.1 | number: '1.0-0'}} VNĐ</div>
@@ -124,16 +124,14 @@
                     <div nz-col [nzSpan]="12">
                         <button nz-button nzType="default" nzBlock (click)="backToList()">
                             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />
-                            <b>Hủy</b>
+                            <b>{{ 'app.button.cancel' | i18n }}</b>
                         </button>
                     </div>
 
                     <div nz-col [nzSpan]="12">
                         <button nz-button nzType="primary" nzBlock [disabled]="extendAmount === 0"
                             (click)="onSubmitPayment()">
-                            <img style="padding-right: 10px; margin-top: -4px; height: 20px;"
-                                src="assets/imgs/upgrade-white.svg" alt="" />
-                            <b>Gia hạn</b>
+                            <b>{{ 'app.extend' | i18n }}</b>
                         </button>
                     </div>
                 </div>

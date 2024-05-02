@@ -62,7 +62,7 @@ class ConfigGPU {
   ram: number = 0;
   storage: number = 0;
   GPU: number = 0;
-  GPUType: string = '';
+  gpuOfferId: number = 0;
 }
 class BlockStorage {
   id: number = 0;
@@ -101,11 +101,6 @@ export class InstancesCreateComponent implements OnInit {
     animation: 'lazy',
   };
 
-  listGPUType: any[] = [
-    { type: 'a30', displayName: 'Nvidia A30' },
-    { type: 'a100', displayName: 'Nvidia A100' },
-  ];
-
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
@@ -115,7 +110,7 @@ export class InstancesCreateComponent implements OnInit {
       validators: [
         Validators.required,
         Validators.pattern(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,}$/
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
         ),
       ],
     }),
@@ -238,6 +233,7 @@ export class InstancesCreateComponent implements OnInit {
     this.getAllIPPublic();
     this.getAllImageType();
     this.getAllSecurityGroup();
+    this.getListNetwork();
 
     this.breakpointObserver
       .observe([
@@ -380,11 +376,20 @@ export class InstancesCreateComponent implements OnInit {
 
   nameHdh: string = '';
   isLinuxHDH: boolean = false;
-  onInputHDH(event: any, index: number, imageTypeId: number) {
-    if (imageTypeId == 1) {
-      this.getAllSSHKey();
-    } else {
+  disableKeypair: boolean = false;
+  onInputHDH(
+    event: any,
+    index: number,
+    imageTypeId: number,
+    uniqueKey: string
+  ) {
+    if (uniqueKey.toUpperCase() == 'WINDOWS') {
+      this.initPassword();
       this.listSSHKey = [];
+      this.disableKeypair = true;
+    } else {
+      this.disableKeypair = false;
+      this.getAllSSHKey();
     }
     this.hdh = event;
     this.selectedImageTypeId = imageTypeId;
@@ -546,7 +551,7 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   listVlanNetwork: NetWorkModel[] = [];
-  vlanNetwork: string;
+  vlanNetwork: string = '';
   getListNetwork(): void {
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
     formSearchNetwork.region = this.region;
@@ -563,21 +568,44 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   listPort: Port[] = [];
-  port: string;
+  port: string = '';
+  hidePort: boolean = true;
   getListPort() {
-    this.dataService
-      .getListAllPortByNetwork(this.vlanNetwork, this.region)
-      .subscribe({
-        next: (data) => {
-          this.listPort = data;
+    if (this.vlanNetwork == '') {
+      this.hidePort = true;
+      this.port = '';
+    } else {
+      this.hidePort = false;
+      this.listPort = [
+        {
+          id: '',
+          name: '',
+          fixedIPs: ['Ngẫu nhiên'],
+          macAddress: null,
+          attachedDevice: null,
+          status: null,
+          adminStateUp: null,
+          instanceName: null,
+          subnetId: null,
+          attachedDeviceId: null,
         },
-        error: (e) => {
-          this.notification.error(
-            e.statusText,
-            'Lấy danh sách Port không thành công'
-          );
-        },
-      });
+      ];
+      this.dataService
+        .getListAllPortByNetwork(this.vlanNetwork, this.region)
+        .subscribe({
+          next: (data) => {
+            data.forEach((e: Port) => {
+              this.listPort.push(e);
+            });
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              'Lấy danh sách Port không thành công'
+            );
+          },
+        });
+    }
   }
 
   getAllSecurityGroup() {
@@ -804,7 +832,18 @@ export class InstancesCreateComponent implements OnInit {
     this.dataSubjectGpu.next(value);
   }
   //#endregion
-
+  //#region Cấu hình GPU
+  listGPUType: OfferItem[] = [];
+  getListGpuType() {
+    this.dataService
+      .getListOffers(this.region, 'vm-flavor-gpu')
+      .subscribe((data) => {
+        this.listGPUType = data.filter(
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+        );
+      });
+  }
+  //#endregion
   //#region selectedPasswordOrSSHkey
   listSSHKey: SHHKeyModel[] = [];
   activeBlockPassword: boolean = true;
@@ -1079,7 +1118,14 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.keypairName = this.selectedSSHKeyName;
     this.instanceCreate.securityGroups = this.selectedSecurityGroup;
     this.instanceCreate.network = null;
-    this.instanceCreate.isUsePrivateNetwork = this.isUseLAN;
+    this.instanceCreate.isUsePrivateNetwork =
+      this.vlanNetwork == '' ? false : true;
+    if (this.vlanNetwork != '') {
+      this.instanceCreate.privateNetId = this.vlanNetwork;
+    }
+    if (this.port != '') {
+      this.instanceCreate.privatePortId = this.port;
+    }
     this.instanceCreate.ipPublic = this.ipPublicValue;
     this.instanceCreate.password = this.password;
     this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
@@ -1105,7 +1151,9 @@ export class InstancesCreateComponent implements OnInit {
       this.instanceCreate.cpu = this.configGPU.CPU;
       this.instanceCreate.volumeSize = this.configGPU.storage;
       this.instanceCreate.gpuCount = this.configGPU.GPU;
-      this.instanceCreate.gpuType = this.configGPU.GPUType;
+      this.instanceCreate.gpuType =
+        this.configGPU.gpuOfferId == 309 ? 'a30' : 'a100';
+      this.instanceCreate.gpuTypeOfferId = this.configGPU.gpuOfferId;
     } else {
       this.instanceCreate.offerId = this.offerFlavor.id;
       this.offerFlavor.characteristicValues.forEach((e) => {
@@ -1126,7 +1174,7 @@ export class InstancesCreateComponent implements OnInit {
       });
     }
     this.instanceCreate.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
-    this.instanceCreate.gpuType = this.configGPU.GPUType;
+    this.instanceCreate.gpuType = this.configGPU.gpuOfferId;
     this.instanceCreate.gpuCount = this.configGPU.GPU;
     this.instanceCreate.projectId = this.projectId;
     this.instanceCreate.oneSMEAddonId = null;
@@ -1268,7 +1316,7 @@ export class InstancesCreateComponent implements OnInit {
         this.configGPU.ram == 0 ||
         this.configGPU.storage == 0 ||
         this.configGPU.GPU == 0 ||
-        this.configGPU.GPUType == '')
+        this.configGPU.gpuOfferId == 0)
     ) {
       this.notification.error('', 'Cấu hình GPU chưa hợp lệ');
       return;

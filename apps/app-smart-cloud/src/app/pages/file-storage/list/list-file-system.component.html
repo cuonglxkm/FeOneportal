@@ -2,8 +2,10 @@
              [title]="'Quản lý File System'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System
       </nz-breadcrumb-item>
@@ -11,6 +13,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
@@ -33,7 +36,7 @@
                               style="width: 300px;">
                 <input name="name"
                        nz-input
-                       placeholder="Tìm kiếm"
+                       [nz-tooltip]="'app.button.search' | i18n"
                        [(ngModel)]="value"
                        (input)="onInputChange($event.target['value'])" />
               </nz-input-group>
@@ -63,10 +66,10 @@
           <tr>
             <th>STT</th>
             <th>Tên</th>
-            <th>Trạng thái</th>
-            <th>Trạng thái tác vụ</th>
+            <th>{{ 'app.text.status' | i18n }}</th>
+            <th>{{ 'app.task.status' | i18n }}</th>
             <th>Loại File System</th>
-            <th>Giao thức</th>
+            <th>{{ 'app.protocol' | i18n }}c</th>
             <th>Dung lượng</th>
             <th>Thao tác</th>
           </tr>

@@ -14,6 +14,7 @@ import {
 } from '@angular/forms';
 import { FormCreateNetwork, FormSearchNetwork } from '../../../../shared/models/vlan.model';
 import { AppValidator, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { debounceTime, Subject } from 'rxjs';
 
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -155,6 +156,9 @@ export class CreateNetworkComponent implements OnInit {
     allocationPool: [null as string, []]
   });
 
+  pool: string = '';
+  dataSubjectCidr: Subject<any> = new Subject<any>();
+
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -217,16 +221,6 @@ export class CreateNetworkComponent implements OnInit {
       console.log('value form invalid', this.validateForm.getRawValue());
     }
   }
-  onChangeInput(value) {
-    if(value == undefined || value == null || value == '') {
-      this.validateForm.controls.allocationPool.clearValidators()
-      this.validateForm.controls.allocationPool.updateValueAndValidity()
-    } else {
-      this.validateForm.controls.allocationPool.setValidators(ipAddressListValidator())
-    }
-  }
-
-
 
   nameList: string[] = [];
 
@@ -257,10 +251,25 @@ export class CreateNetworkComponent implements OnInit {
     this.validateForm.reset()
   }
 
+  inputCheckPool(value) {
+    this.dataSubjectCidr.next(value);
+  }
+
+  onInputCheckPool() {
+    this.dataSubjectCidr.pipe(debounceTime(500)).subscribe((res) => {
+      this.vlanService.checkAllocationPool(res).subscribe(data => {
+        this.pool = JSON.stringify(data)
+        console.log('pool', this.pool)
+      })
+    })
+
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.getListNetwork();
+    this.onInputCheckPool();
   }
 }

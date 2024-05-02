@@ -4,7 +4,7 @@
     src="assets/imgs/add-circle.svg"
     alt=""
   />
-  <span class="button-text-primary">Tạo mới Pool</span>
+  <span class="button-text-primary">{{ 'app.pool.create.button' | i18n }}</span>
 </button>
 <nz-modal
   [(nzVisible)]="isVisible"
@@ -12,18 +12,19 @@
   nzMask="false"
 >
   <div *nzModalTitle>
-    <span class="text-modal-title">Tạo mới Pool</span>
+    <span class="text-modal-title">{{ 'app.pool.create.button' | i18n }}</span>
   </div>
   <div *nzModalContent>
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
       <nz-form-item>
         <nz-form-label>
-          <span>Tên Pool (<span style="color: red">*</span>)</span>
+          <span
+            >{{ 'app.pool.name' | i18n }} (<span style="color: red">*</span
+            >)</span
+          >
           <img
             nz-popover
-            [nzPopoverContent]="
-              'Tên không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự (trừ _)'
-            "
+            [nzPopoverContent]="'validation.pool.name.pattern' | i18n"
             nzPopoverPlacement="bottom"
             style="margin-left: 5px"
             src="assets/imgs/pajamas_question.svg"
@@ -37,23 +38,27 @@
             formControlName="namePool"
             [(ngModel)]="createPool.name"
             class="input-custom"
-            [placeholder]="'Nhập tên Pool'"
+            [placeholder]="'app.input.name' | i18n"
           />
           <ng-template #namePoolErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập tên Pool</ng-container
-            >
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.info.required' | i18n
+            }}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')"
-              >Tên không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt,
-              tối đa 50 ký tự (trừ _)
+              >{{ 'validation.pool.name.pattern' | i18n }}
             </ng-container>
-            <ng-container *ngIf="control.hasError('duplicateName')">Tên Pool đã tồn tại, vui lòng nhập tên khác</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">{{
+              'validation.exist.name' | i18n : { name: 'pool' }
+            }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <span>Thuật toán (<span style="color: red">*</span>)</span>
+          <span
+            >{{ 'app.algorithm' | i18n }} (<span style="color: red">*</span
+            >)</span
+          >
           <img
             nz-popover
             [nzPopoverContent]="''"
@@ -68,7 +73,7 @@
             formControlName="algorithm"
             [(ngModel)]="createPool.algorithm"
             nzSize="large"
-            [nzPlaceHolder]="'Chọn thuật toán'"
+            [nzPlaceHolder]="'app.choose.algorithm' | i18n"
           >
             <nz-option
               *ngFor="let option of algorithms"
@@ -77,15 +82,18 @@
             ></nz-option>
           </nz-select>
           <ng-template #algorithmErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng chọn thuật toán</ng-container
-            >
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.choose.algorithm.required' | i18n
+            }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <span>Giao thức (<span style="color: red">*</span>)</span>
+          <span
+            >{{ 'app.protocol' | i18n }} (<span style="color: red">*</span
+            >)</span
+          >
           <img
             nz-popover
             [nzPopoverContent]="'.'"
@@ -100,7 +108,7 @@
             formControlName="protocol"
             [(ngModel)]="createPool.protocol"
             nzSize="large"
-            [nzPlaceHolder]="'Chọn giao thức'"
+            [nzPlaceHolder]="'app.choose.protocol' | i18n"
           >
             <nz-option
               *ngFor="let option of protocols"
@@ -109,9 +117,9 @@
             ></nz-option>
           </nz-select>
           <ng-template #protocolErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng chọn giao thức</ng-container
-            >
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.choose.protocol.required' | i18n
+            }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -120,10 +128,7 @@
           <span class="text-label">Sticky Session </span>
           <img
             nz-popover
-            [nzPopoverContent]="
-              'Là phương pháp phân luồng của bản tin gửi về member. Các bản tin được đánh dấu chung 1' +
-              ' session sẽ được gửi chung về server. Nó liên quan tới phương pháp đánh dấu session'
-            "
+            [nzPopoverContent]="'app.tooltip.sticky.session' | i18n"
             nzPopoverPlacement="bottom"
             style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px"
             src="assets/imgs/pajamas_question.svg"
@@ -145,7 +150,8 @@
       (click)="handleCancel()"
       class="button-cancel"
     >
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span
+      >{{ 'app.button.cancel' | i18n }}
     </button>
     <button
       nz-button
@@ -155,7 +161,8 @@
       [nzLoading]="isLoading"
       class="button-ok"
     >
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span
+      >{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

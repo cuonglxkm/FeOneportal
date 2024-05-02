@@ -3,25 +3,25 @@
              [title]="'Chỉnh sửa L7 Policy'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">Chi tiết Load Balancer</a>
+        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">{{ 'app.load.balancer.detail' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/{{ idListener }}">Chi tiết
-          Listener</a>
+        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/{{ idListener }}">{{ 'app.listener.detail' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>Chỉnh sửa L7 Policy</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.l7.policy.edit' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
@@ -34,37 +34,34 @@
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card style="border-radius: 8px;">
-        <span class="text-card-header">Thông tin L7 Policy</span>
+        <span class="text-card-header">{{ 'app.l7.policy.info' | i18n }}</span>
         <form nz-form [formGroup]="validateForm" nzLayout="vertical">
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
-              <span>Tên L7 Policy (<span style="color: red">*</span>)</span>
+              <span>{{ 'app.l7.policy.name' | i18n }} (<span style="color: red">*</span>)</span>
               <img nz-popover
-                   [nzPopoverContent]="'Tên L7 Policy không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự'"
+                  [nzPopoverContent]="'validation.l7.policy.name.pattern' | i18n"
                    nzPopoverPlacement="bottom" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameL7ErrorTpl">
               <input nz-input class="input-custom" [maxlength]="50" formControlName="nameL7" [placeholder]="'Tên L7 policy'" appAutofocus/>
               <ng-template #nameL7ErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt</ng-container>
-                <ng-container *ngIf="control.hasError('duplicateName')">Tên L7 Policy đã tồn tại, vui lòng nhập tên khác</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n : {name: 'L7 Policy'} }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Hành động thực thi (<span style="color: red">*</span>)</span>
+              <span>{{ 'app.execute.action' | i18n }} (<span style="color: red">*</span>)</span>
               <img nz-popover
                    [nzPopoverContent]="popover"
                    nzPopoverPlacement="right" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
               <ng-template #popover>
-                <span class="text-label">Hành động được thực thi khi L7 Policy đáp ứng điều kiện. Các hành động:<br>
-                REJECT: Yêu cầu bị từ chối với một mã phản hồi thích hợp và không được chuyển tiếp đến bất kỳ nhóm phụ trợ nào.<br>
-                REDIRECT_TO_URL: Yêu cầu được gửi một chuyển hướng HTTP đến.<br>
-                URL được xác định trong url tham số.</span>
+                <span class="text-label" [innerHTML]="'app.tooltip.execute.action' | i18n"></span>
               </ng-template>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
@@ -96,7 +93,7 @@
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="urlErrorTpl">
-              <input nz-input class="input-custom" formControlName="url" [placeholder]="'Nhập url'" />
+              <input nz-input class="input-custom" formControlName="url" [placeholder]="'app.input.url' | i18n" />
               <ng-template #urlErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập url</ng-container>
                 <ng-container *ngIf="control.hasError('invalidUrl')">Vui lòng nhập đúng định dạng url ftp/http/https:</ng-container>
@@ -130,17 +127,17 @@
           <nz-form-item>
             <nz-form-label nzFor="description">
               <div class="label">
-                <span>Mô tả</span>
+                <span>{{ 'app.service.description' | i18n }}</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
               <textarea nz-input class="input-custom"
                         formControlName="description"
-                        [placeholder]="'Nhập nội dung'" [maxLength]="255"
+                        [placeholder]="'app.input.des' | i18n" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"
               (keydown.enter)="focusOkButton($event)"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>

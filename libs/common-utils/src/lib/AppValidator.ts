@@ -130,7 +130,7 @@ export class AppValidator {
       // tslint:disable-next-line:triple-equals
       const value = control.value.replace(/,/g, '');
       if (value !== '' && regexpCurrency.test(value) === false) {
-        return { validPasswrod: true };
+        return { validPassword: true };
       }
     }
     return null;
@@ -158,7 +158,7 @@ export class AppValidator {
   }
 
   static validKeypairName(control: AbstractControl): ValidationErrors | null { //valid keypair
-    var regex = new RegExp('^[a-zA-Z0-9_ ]*$');
+    var regex = new RegExp('^[a-zA-Z0-9_]*$');
     if (control && control.value != null && control.value != undefined && control.value.length > 0) {
       if (regex.test(control.value) == false) {
         return { validKeypairName: true };

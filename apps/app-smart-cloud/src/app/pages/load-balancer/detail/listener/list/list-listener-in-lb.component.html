@@ -12,17 +12,17 @@
 
   <thead>
   <tr>
-    <th>Tên Listener</th>
-    <th>Giao thức</th>
+    <th>{{ 'app.listener.name' | i18n }}</th>
+    <th>{{ 'app.protocol' | i18n }}c</th>
     <th>Port</th>
-    <th>Trạng thái</th>
-    <th>Trạng thái tác vụ</th>
-    <th>Hoạt động</th>
+    <th>{{ 'app.text.status' | i18n }}</th>
+    <th>{{ 'app.task.status' | i18n }}</th>
+    <th>{{ 'app.activity' | i18n }}</th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let data of fixedTable.data">
-    <td nzAlign="left" [routerLink]="'/app-smart-cloud/load-balancer/'+ idLB +'/listener/detail/' + data.id">{{ data.name }}</td>
+    <td nzAlign="left"><a [routerLink]="'/app-smart-cloud/load-balancer/'+ idLB +'/listener/detail/' + data.id">{{ data.name }}</a></td>
     <td nzAlign="left">{{ data.protocol }}</td>
     <td nzAlign="right">{{ data.port }}</td>
     <td nzAlign="left">
@@ -37,10 +37,10 @@
            alt=""
            nzPopoverPlacement="bottom"
            style="cursor: pointer; margin-right: 16px"
-           [nzPopoverContent]="'Chỉnh sửa'" [routerLink]="'/app-smart-cloud/load-balancer/'+ idLB +'/listener/update/' + data.id"/>
+           [nzPopoverContent]="'app.text.edit' | i18n" [routerLink]="'/app-smart-cloud/load-balancer/'+ idLB +'/listener/update/' + data.id"/>
       <img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
            nz-popover
-           [nzPopoverContent]="'Xóa'"
+           [nzPopoverContent]="'app.delete' | i18n"
            nzPopoverPlacement="bottom"/>
     </td>
   </tr>

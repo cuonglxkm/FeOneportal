@@ -13,5 +13,6 @@ export class StatusModel {
 export interface KafkaStatus {
   id: number;
   statusName: string;
+  statusI18n: string;
   description: string;
 }

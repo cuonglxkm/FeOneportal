@@ -1,27 +1,29 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Chi tiết L7 Policy'" xmlns="http://www.w3.org/1999/html">
+             [title]="'app.l7.policy.detail' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.breadcrumb.home' | i18n
+      }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">Chi tiết Load Balancer</a>
+        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">{{ 'app.load.balancer.detail' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/{{ idListener }}">Chi tiết
-          Listener</a>
+        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/{{ idListener }}">{{ 'app.listener.detail' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>Chi tiết L7 Policy</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.l7.policy.detail' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
@@ -31,13 +33,13 @@
 </page-header>
 <nz-content>
   <nz-card style="border-radius: 8px;">
-    <span class="text-card-header">Thông tin L7 policy</span>
+    <span class="text-card-header">{{ 'app.l7.policy.info' | i18n }}</span>
     <form nz-form nzLayout="vertical">
       <nz-row nzGutter="24">
         <nz-col nzSpan="12">
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
-              <span>Tên L7 Policy</span>
+              <span>{{ 'app.l7.policy.name' | i18n }}</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <input nz-input class="input-custom" [value]="l7Policy?.name" [disabled]="true" />
@@ -45,7 +47,7 @@
           </nz-form-item>
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
-              <span>Hành động thực thi</span>
+              <span>{{ 'app.execute.action' | i18n }}</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <input nz-input class="input-custom" [value]="l7Policy?.action" [disabled]="true" />
@@ -53,7 +55,7 @@
           </nz-form-item>
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
-              <span>Mô tả</span>
+              <span>{{ 'app.service.description' | i18n }}</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <textarea nz-input class="input-custom"
@@ -66,7 +68,7 @@
         <nz-col nzSpan="12">
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
-              <span>Độ ưu tiên</span>
+              <span>{{ 'app.priority' | i18n }}</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <input nz-input class="input-custom" [value]="l7Policy?.position" [disabled]="true" />
@@ -74,7 +76,7 @@
           </nz-form-item>
           <nz-form-item>
             <div style="display: flex;">
-              <span style="margin-right: 15px;">Trạng thái</span>
+              <span style="margin-right: 15px;">{{ 'app.text.status' | i18n }}</span>
               <nz-switch [ngModel]="l7Policy?.adminStateUp" [ngModelOptions]="{standalone: true}" [nzDisabled]="true"></nz-switch>
             </div>
 
@@ -84,9 +86,9 @@
     </form>
   </nz-card>
   <nz-card style="border-radius: 8px;">
-    <span class="text-card-header">Thông tin L7 Rule</span>
+    <span class="text-card-header">{{ 'app.l7.rule.info' | i18n }}</span>
     <img nz-popover
-         [nzPopoverContent]="'L7 Rule là một phép thử logic đơn giản, trả về giá trị true hoặc false.  L7 Rule phải luôn được kết hợp với L7 policy'"
+         [nzPopoverContent]="'app.tooltip.l7.rule' | i18n"
          nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
          src="assets/imgs/pajamas_question.svg" alt="" />
     <nz-row nzJustify="space-between">
@@ -109,14 +111,14 @@
 
       <thead>
       <tr>
-        <th>Tiêu chí</th>
-        <th>Điều kiện</th>
+        <th>{{ 'app.criterion' | i18n }}</th>
+        <th>{{ 'app.condition' | i18n }}</th>
         <th>Key</th>
-        <th>Giá trị</th>
-        <th>Đảo chiều cơ chế</th>
-        <th>Trạng thái hoạt động</th>
-        <th>Trạng thái cung cấp</th>
-        <th>Hoạt động</th>
+        <th>{{ 'app.value' | i18n }}</th>
+        <th>{{ 'app.reverse.mechanism' | i18n }}</th>
+        <th>{{ 'app.activity.status' | i18n }}</th>
+        <th>{{ 'app.provisioning.status' | i18n }}</th>
+        <th>{{ 'app.action' | i18n }}</th>
       </tr>
       </thead>
       <tbody>

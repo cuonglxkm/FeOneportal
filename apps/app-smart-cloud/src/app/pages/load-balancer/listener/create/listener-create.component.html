@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Tạo mới Listener'" [action]="action">
+<page-header [breadcrumb]="breadcrumb" [title]="'app.listener.create' | i18n" [action]="action">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -18,6 +18,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="onRegionChange($event)" isDetail="true"></region-select-dropdown>
       <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)" isDetail="true"></project-select-dropdown>
     </div>
@@ -59,13 +60,13 @@
           <input nz-input
                  class="input-custom"
                  formControlName="listenerName"
-                 [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />
+                 [placeholder]="'app.input.name' | i18n " [maxLength]="50" />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}
             </ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
-            <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.listener.name' | i18n }}
+            <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n : { name: 'Listener' } }}
             </ng-container>
           </ng-template>
         </nz-form-control>
@@ -156,7 +157,7 @@
           <span>{{'app.service.description' | i18n}}</span>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-          <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
+          <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" [placeholder]="'app.input.des' | i18n" style="width: 100%"
                     formControlName="description"></textarea>
         </nz-form-control>
       </nz-form-item>
@@ -164,10 +165,10 @@
       <div class="text-right"
            style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">
         <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"
-                style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">Quay lại</span>
+                style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
         </button>
         <button [disabled]="checkDisable() == true" nzSize="large" (click)="nextStep()" nz-button nzType="primary"
-                style="border: none;margin-left: 30px;">Tiếp tục
+                style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
         </button>
       </div>
     </nz-card>
@@ -175,22 +176,22 @@
     <!--CARD POOL-->
     <div *ngIf="step == 1">
       <nz-card>
-        <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Pool</div>
+        <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.pool.info' | i18n }}</div>
         <nz-form-item>
           <nz-form-label>
-            <span>Tên pool (<span style="color: red;">*</span>) </span>
+            <span>{{ 'app.pool.name' | i18n }} (<span style="color: red;">*</span>) </span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <input nz-input
                    class="input-custom"
                    formControlName="poolName"
-                   [placeholder]="'Nhập tên pool chỉ gồm ký tự chữ cái và số, không bao gồm dấu cách'"
+                   [placeholder]="'validation.pool.name.pattern' | i18n"
                    [maxLength]="50" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>
-            <span>Thuật toán (<span style="color: red;">*</span>) </span>
+            <span>{{ 'app.algorithm' | i18n }} (<span style="color: red;">*</span>) </span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <nz-select [(ngModel)]="selectedAlgorithm" nzSize="large" style="width: 100%"
@@ -205,7 +206,7 @@
             <label nz-checkbox [(ngModel)]="checkedSession" [ngModelOptions]="{standalone: true}"></label>
           </nz-col>
           <nz-col nzSpan="14">
-            <span class="text-label">Phương pháp đánh dấu session</span>
+            <span class="text-label">{{ 'app.pool.session.method' | i18n }}</span>
             <input nz-input style="width: 30%" disabled="true"
                    [ngModel]="sessionFix" [ngModelOptions]="{standalone: true}" />
           </nz-col>
@@ -213,16 +214,16 @@
 
       </nz-card>
       <nz-card>
-        <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Health Monitor</div>
+        <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.health.monitor.info' | i18n }}</div>
         <nz-form-item>
           <nz-form-label>
-            <span>Tên Health Monitor (<span style="color: red;">*</span>) </span>
+            <span>{{ 'app.health.monitor.name' | i18n }} (<span style="color: red;">*</span>) </span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <input nz-input
                    class="input-custom"
                    formControlName="healthName"
-                   [placeholder]="'Nhập tên Health Monitor chỉ gồm ký tự chữ cái và số, không bao gồm dấu cách'"
+                   [placeholder]="'validation.health.monitor.name.pattern' | i18n"
                    [maxLength]="50" />
           </nz-form-control>
         </nz-form-item>
@@ -231,7 +232,7 @@
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label>
-                <span>Phương pháp kiểm tra (<span style="color: red;">*</span>) </span>
+                <span>{{ 'app.health.monitor.method' | i18n }} (<span style="color: red;">*</span>) </span>
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
                 <nz-select [(ngModel)]="selectedCheckMethod" nzSize="large" style="width: 90%"
@@ -339,17 +340,17 @@
 
     <!--CARD POOL NUMBER-->
     <nz-card *ngIf="step == 2">
-      <div class="text-label" style="font-weight: bold;margin-bottom: 10px;">Máy ảo được chọn làm Member</div>
+      <div class="text-label" style="font-weight: bold;margin-bottom: 10px;">{{ 'app.chosen.instance.as.member' | i18n }}</div>
       <nz-table [nzData]="lstInstanceUse" [nzShowPagination]="false">
         <thead>
         <tr>
-          <th>Tên VM</th>
+          <th>{{ 'app.vm.name' | i18n }}</th>
           <th>IP Adress</th>
           <th>Port</th>
           <th>Weight</th>
           <th>Backup</th>
-          <th>Hoạt động</th>
-          <th  width="10%">Thao tác</th>
+          <th>{{ 'app.activity' | i18n }}</th>
+          <th  width="10%">{{ 'app.text.operation' | i18n }}</th>
         </tr>
         </thead>
         <tbody>
@@ -378,13 +379,13 @@
         </tr>
         </tbody>
       </nz-table>
-      <div class="text-label" style="margin-top: 30px;font-weight: bold;margin-bottom: 10px;">Máy ảo để lựa chọn</div>
+      <div class="text-label" style="margin-top: 30px;font-weight: bold;margin-bottom: 10px;">{{ 'app.instance.for.choosing' | i18n }}</div>
       <nz-table [nzData]="lstInstance" [nzShowPagination]="false">
         <thead>
         <tr>
-          <th>Tên VM</th>
+          <th>{{ 'app.vm.name' | i18n }}</th>
           <th>IP Adress</th>
-          <th width="10%">Thao tác</th>
+          <th width="10%">{{ 'app.text.operation' | i18n }}</th>
         </tr>
         </thead>
         <tbody>
@@ -417,7 +418,7 @@
       <nz-row nzGutter="24" class="card-container">
         <nz-col nzSpan="8">
           <nz-card style="height: 200px;">
-            <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Listener</div>
+            <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.listener.info' | i18n }}</div>
             <nz-row>
               <nz-col nzSpan="9" class="text-label">aaa</nz-col>
               <nz-col nzSpan="15" class="text-label">aaa</nz-col>
@@ -430,7 +431,7 @@
         </nz-col>
         <nz-col nzSpan="8">
           <nz-card style="height: 200px;">
-            <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Health Monitor</div>
+            <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.health.monitor.info' | i18n }}</div>
             <nz-row>
               <nz-col nzSpan="9" class="text-label">aaa</nz-col>
               <nz-col nzSpan="15" class="text-label">aaa</nz-col>
@@ -451,7 +452,7 @@
         </nz-col>
         <nz-col nzSpan="8">
           <nz-card style="height: 200px;">
-            <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Pool</div>
+            <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.pool.info' | i18n }}</div>
             <nz-row>
               <nz-col nzSpan="9" class="text-label">aaa</nz-col>
               <nz-col nzSpan="15" class="text-label">aaa</nz-col>
@@ -464,14 +465,14 @@
         </nz-col>
       </nz-row>
       <nz-card>
-        <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Pool Member</div>
+        <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.pool.member.info' | i18n }}</div>
         <div class="text-right"
              style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">
           <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"
-                  style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">Quay lại</span>
+                  style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
           </button>
           <button [disabled]="checkDisable() == true" nzSize="large" (click)="createListener()" nz-button
-                  nzType="primary" style="border: none;margin-left: 30px;">Hoàn tất
+                  nzType="primary" style="border: none;margin-left: 30px;">{{ 'app.complete' | i18n }}
           </button>
         </div>
       </nz-card>

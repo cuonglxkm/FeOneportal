@@ -7,6 +7,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
     </div>
   </ng-template>
@@ -46,7 +47,7 @@
         </div>
       </div>
       <!-- Bảng-->
-      <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfData"
+      <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfData"
                 [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
                 (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
         <thead>

@@ -5,6 +5,7 @@
   </h1>
 
   <div class="text-right">
+    <share-users-combobox></share-users-combobox>
     <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
     <project-select-dropdown (valueChanged)="onProjectChange($event)" [regionId]="selectedRegion"></project-select-dropdown>
   </div>

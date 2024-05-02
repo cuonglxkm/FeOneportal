@@ -13,6 +13,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
@@ -654,7 +655,7 @@
             [maxlength]="50"
           />
           <div *ngIf="isExistName" style="color: #ff4d4f">
-            {{ 'validation.exist.instance.name' | i18n }}
+            {{ 'validation.exist.name' | i18n: {name: 'instance'} }}
           </div>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{

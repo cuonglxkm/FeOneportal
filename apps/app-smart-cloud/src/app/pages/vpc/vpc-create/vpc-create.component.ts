@@ -209,11 +209,28 @@ export class VpcCreateComponent implements OnInit{
     }
   }
   calculate(number: any) {
+    if (this.vpcType === '0') {
+      this.activeVpc = false;
+      this.activeNoneVpc = true;
+    } else {
+      this.activeVpc = true;
+      this.activeNoneVpc = false;
+    }
     this.searchSubject.next('');
   }
 
   selectPackge = '';
   vpcType = '0';
+  styleOk = {
+    inde: true
+      ? '1px solid #0066B3'
+      : '1px solid #DADADA',
+    height: '160px',
+  };
+
+  cardHeight = '95px';
+  activeNoneVpc = true;
+  activeVpc = false;
 
   onInputFlavors(event: any, name: any) {
     this.selectPackge = name;
@@ -225,7 +242,7 @@ export class VpcCreateComponent implements OnInit{
   }
 
   initFlavors(): void {
-    this.instancesService.getDetailProductByUniqueName('vpcOnePortal')
+    this.instancesService.getDetailProductByUniqueName('vpc-oneportal')
       .subscribe(
         data => {
           this.instancesService
@@ -236,18 +253,17 @@ export class VpcCreateComponent implements OnInit{
               );
 
               this.listOfferFlavors.forEach((e: OfferItem) => {
-                e.description = '0 CPU / 0 GB RAM / 0 GB HHD / 0 IP';
+                e.description = '0 vCPU / 0 GB RAM / HHH GB SSS / 0 IP';
                 e.characteristicValues.forEach((ch) => {
                   if (ch.charName.toUpperCase() == 'CPU') {
-                    e.description.replace(ch.charOptionValues[0] + ' CPU', '0 CPU');
-                  }
-                  if (ch.charName == 'RAM') {
+                    e.description = e.description.replace(/0 vCPU/g,ch.charOptionValues[0] + ' vCPU');
+                  } else if (ch.charName.toUpperCase() == 'RAM') {
                     e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + ' GB RAM');
-                  }
-                  if (ch.charName == 'HHD') {
-                    e.description = e.description.replace(/0 GB HHD/g, ch.charOptionValues[0] + ' GB HHD');
-                  }
-                  if (ch.charName == 'IP') {
+                  } else if (ch.charName == 'Storage') {
+                    e.description = e.description.replace(/HHH/g, ch.charOptionValues[0]);
+                  } else if (ch.charName == 'VolumeType') {
+                    e.description = e.description.replace(/SSS/g, ch.charOptionValues[0]);
+                  }  else if (ch.charName.toUpperCase() == 'IP') {
                     e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + ' IP');
                     e.ipNumber = ch.charOptionValues[0];
                   }
@@ -321,7 +337,7 @@ export class VpcCreateComponent implements OnInit{
         offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
         actionType: 0,
         regionId: this.regionId,
-        serviceName: 'vpc' + this.tokenService.get()?.userId + '-' + this.form.controls['name'].value,
+        serviceName: this.form.controls['name'].value,
         description: this.form.controls['description'].value,
         createDate: new Date(),
         expireDate: expiredDate
@@ -414,7 +430,7 @@ export class VpcCreateComponent implements OnInit{
   }
 
   private initVpnSiteToSiteData() {
-    this.instancesService.getDetailProductByUniqueName('loadbalancer-sdn')
+    this.instancesService.getDetailProductByUniqueName('vpns2s')
       .subscribe(
         data => {
           this.instancesService
@@ -427,7 +443,7 @@ export class VpcCreateComponent implements OnInit{
   }
 
   private initLoadBalancerData() {
-    this.instancesService.getDetailProductByUniqueName('vpns2s')
+    this.instancesService.getDetailProductByUniqueName('loadbalancer-sdn')
       .subscribe(
         data => {
           this.instancesService

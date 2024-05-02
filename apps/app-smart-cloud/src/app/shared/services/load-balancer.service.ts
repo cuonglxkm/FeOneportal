@@ -362,7 +362,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   getListL7Rule(regionId: number, vpcId: number, l7PolicyId: string) {
-    return this.http.get<L7Rule[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7rule?regionId=${regionId}&vpcId=${vpcId}&listenerId=${l7PolicyId}`)
+    return this.http.get<L7Rule[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7rule?regionId=${regionId}&vpcId=${vpcId}&policyId=${l7PolicyId}`)
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -434,5 +434,9 @@ export class LoadBalancerService extends BaseService {
         }
         return throwError(error);
       }));
+  }
+
+  getListSubnetInternetFacing(projectId: number, region: number) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/subnet?projectId=${projectId}&region=${region}`, null)
   }
 }

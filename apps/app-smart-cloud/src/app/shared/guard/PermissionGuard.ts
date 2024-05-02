@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { PolicyService } from '../services/policy.service';
 
 
@@ -10,8 +10,9 @@ export class PermissionGuard implements CanActivate {
 
   constructor(private policyService: PolicyService, private router: Router) {}
 
-  canActivate(): boolean {
-    if (this.policyService.hasPermission("order:Create")) {
+  canActivate(route: ActivatedRouteSnapshot): boolean {
+    const permissionNeeded = route.data['permission'];
+    if (this.policyService.hasPermission(permissionNeeded)) {
       return true; 
     } else {
       this.router.navigate(['/exception/403']); 

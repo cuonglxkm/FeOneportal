@@ -4,8 +4,9 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>{{
-        'app.breadcrumb.home' | i18n
-      }}</nz-breadcrumb-item>
+          'app.breadcrumb.home' | i18n
+        }}
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{
           'app.breadcrumb.infrastructure.service' | i18n
@@ -18,6 +19,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
@@ -39,13 +41,14 @@
                      nz-input
                      [(ngModel)]="value"
                      (input)="onInputChange($event.target['value'])"
-                     [placeholder]="'app.load.balancer.search' | i18n"/>
+                     [placeholder]="'app.load.balancer.search' | i18n" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"/>
+              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"
+                   [nz-tooltip]="'app.button.search' | i18n" />
             </ng-template>
             <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate(typeVPC)">
-              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">{{ 'app.button.load.balancer.create' | i18n }}</span>
             </button>
           </nz-col>
@@ -98,38 +101,52 @@
             <td nzBreakWord>{{ data.floatingIPAddress }}</td>
             <td nzBreakWord>{{ data.provisioningStatus }}</td>
             <td nzBreakWord>
-              <span style="color: #0066B3" *ngIf="data.status === 'KHOITAO'">{{ loadBalancerStatus?.get(data.status) }}</span>
-              <span style="color: #FF3333" *ngIf="data.status === 'HUY'">{{ loadBalancerStatus?.get(data.status) }}</span>
+              <span style="color: #0066B3"
+                    *ngIf="data.status === 'KHOITAO'">{{ loadBalancerStatus?.get(data.status) }}</span>
+              <span style="color: #FF3333"
+                    *ngIf="data.status === 'HUY'">{{ loadBalancerStatus?.get(data.status) }}</span>
             </td>
             <td nzBreakWord>{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
-            <td  nzBreakWord>{{ data.expiredDate | date: 'dd/MM/yyyy' }}</td>
+            <td nzBreakWord>{{ data.expiredDate | date: 'dd/MM/yyyy' }}</td>
             <td nzBreakWord></td>
             <td nzBreakWord>
               <span *ngIf="data.operatingStatus === 'ERROR'">
                 <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
-                                                 [nameLoadBalancer]="data.name" [region]="region" [project]="project" (onOk)="handleDeleteOk()"/>
+                                                 [nameLoadBalancer]="data.name" [region]="region" [project]="project"
+                                                 (onOk)="handleDeleteOk()" />
               </span>
               <span *ngIf="data.operatingStatus === 'ONLINE'">
-                <img style="padding-right: 10px; cursor: pointer;" src="assets/imgs/add.svg"
-                     nz-popover
-                     [nzPopoverContent]="'app.listener.create' | i18n"
-                     nzPopoverPlacement="bottom"/>
+                <one-portal-attach-ip-floating-lb [region]="region"
+                                                  [project]="project"
+                                                  [internetFacing]="data.internetFacing"
+                                                  [ipFloatingAddress]="data.floatingIPAddress"/>
+                <one-portal-detach-ip-floating-lb [region]="region"
+                                                  [project]="project"
+                                                  [internetFacing]="data.internetFacing"
+                                                  [ipFloatingAddress]="data.floatingIPAddress"/>
                 <span *ngIf="typeVPC == 1">
                   <img nz-popover src="assets/imgs/edit-2.svg"
                        alt=""
                        nzPopoverPlacement="bottom"
                        (click)="navigateToUpdateVpc(data.id)"
-                       style="cursor: pointer; margin-right: 16px"
+                       style="cursor: pointer; margin-right: 10px"
                        [nzPopoverContent]="'app.text.edit' | i18n" />
                 </span>
                 <span *ngIf="typeVPC == 0">
-                  <one-portal-update-load-balancer-normal [loadBalancer]="data" [region]="region" [project]="project" (onOk)="handleUpdateNoVpcOk()" />
+
                 </span>
-                <img *ngIf="typeVPC == 0" style="padding-right: 10px; cursor: pointer;" src="assets/imgs/calendar-tick.svg"
-                     nz-popover [nzPopoverContent]="'app.load.balancer.extend' | i18n" nzPopoverPlacement="bottom"
-                     (click)="navigateToExtend(data.id)"/>
+                <img *ngIf="typeVPC == 0" style="padding-right: 10px; cursor: pointer;"
+                     src="assets/imgs/calendar-tick.svg"
+                     nz-popover [nzPopoverContent]="'app.load.balancer.extend' | i18n" nzPopoverPlacement="bottom" />
                 <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
-                                                 [nameLoadBalancer]="data.name" [region]="region" [project]="project" (onOk)="handleDeleteOk()"/>
+                                                 [nameLoadBalancer]="data.name" [region]="region" [project]="project"
+                                                 (onOk)="handleDeleteOk()" />
+                <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt="" style="margin-left: 5px;" />
+                <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item>{{ 'app.listener.create' | i18n}}</li>
+                  </ul>
+                </nz-dropdown-menu>
               </span>
             </td>
           </tr>
@@ -145,7 +162,8 @@
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-title" style="color: #0066b3">Load Balancer<br>{{ 'app.load.balancing.service' | i18n }}</span>
+              <span class="text-intro-title"
+                    style="color: #0066b3">Load Balancer<br>{{ 'app.load.balancing.service' | i18n }}</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
@@ -154,9 +172,10 @@
                   {{ 'app.load.balancing.intro.next' | i18n }}</span>
             </nz-col>
           </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate(typeVPC)" nzSize="large">
+          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate(typeVPC)"
+                  nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-              {{ 'app.button.load.balancer.create' | i18n }}
+            {{ 'app.button.load.balancer.create' | i18n }}
           </button>
         </result>
       </ng-container>

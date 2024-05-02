@@ -99,14 +99,20 @@
           <nz-form-control nzDisableAutoTips [nzErrorTip]="portErrorTpl">
             <nz-input-number style="margin-left: 0; width: 100%;"
                              formControlName="portRangeMin"
-                              [nzStep]="1"
-                             id="port"
+                              [nzStep]="null"
+                              [nzMin]="1"
                              class="input-custom"
                              (change)="portChange($event.target['value'])" nzAutoFocus (keydown.enter)="focusOkButton($event)"/>
+
             <ng-template #portErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required') || control.hasError('invalid') || control.hasError('outOfRange') || control.hasError('invalidNumber')">
+              <ng-container *ngIf="control.hasError('required')
+              || control.hasError('invalid')
+              || control.hasError('pattern')
+              || control.hasError('outOfRange')
+              || control.hasError('invalidNumber')">
                 Vui lòng nhập số nguyên trong khoảng 1 đến 65535
               </ng-container>
+
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -236,7 +242,7 @@
       </button>
       <nz-form-control *nzSpaceItem>
         <button nz-button nzType="primary" [nzLoading]="isLoading"
-                class="button-create" [disabled]="validateForm.invalid" (click)="doCreate()">
+                class="button-create" [disabled]="!validateForm.valid" (click)="doCreate()">
           <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
         </button>
       </nz-form-control>
