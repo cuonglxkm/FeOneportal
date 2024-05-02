@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {PolicyService} from "../../../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {PolicyModel} from "../../../../../../../../../libs/common-utils/src/lib/models/policy.model";
@@ -7,6 +7,8 @@ import {UserGroupService} from "../../../../../shared/services/user-group.servic
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-create-policy',
@@ -51,7 +53,8 @@ export class CreatePolicyComponent implements OnInit {
               private router: Router,
               private policyService: PolicyService,
               private userGroupService: UserGroupService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   onCurrentPageDataChange(listOfCurrentPageData: readonly PolicyModel[]): void {
@@ -177,13 +180,13 @@ export class CreatePolicyComponent implements OnInit {
 
     this.formCreate.policyNames = Array.from(this.setOfCheckedId)
     if (this.formCreate.policyNames?.length > 10) {
-      this.notification.warning('', 'Không được gắn quá 10 policies')
+      this.notification.warning('', this.i18n.fanyi("app.create-policy.noti.warn"))
     } else {
       this.userGroupService.createOrEdit(this.formCreate).subscribe(data => {
-        this.notification.success('Thành công', 'Thêm policy thành công')
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.create-policy.noti.success"))
         this.router.navigate(['/app-smart-cloud/iam/user-group/' + this.nameGroup])
       }, error => {
-        this.notification.error('Thất bại', 'Thêm policy thất bại')
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.create-policy.noti.fail"))
       })
     }
   }

@@ -29,11 +29,13 @@ const routes: Routes = [
     path: 'create',
     component: VpnS2sCreateComponent,
     canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
   },
   {
     path: 'extend/:vpcId',
     component: VpnS2sExtendComponent,
-     canActivate: [PermissionGuard],
   },
   {
     path: 'resize/:vpcId',

@@ -83,7 +83,7 @@
               <!---Gia Han------>
               <img *ngIf="projectType != 1 && item.status != 3" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                    nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Pulbic" nzTooltipPlacement="bottom"
-                   (click)="openIpMounted('Gia Hạn Ip Pulbic', item)"/>
+                   (click)="openIpMounted('Gia hạn Ip Pulbic', item)"/>
               <!----Xóa---->
               <img src="assets/imgs/delete.svg" style="height: 20px"
                    nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"
@@ -153,7 +153,7 @@
 <!--    <br>-->
 <!--    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Đồng ý</i>-->
     <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">{{'app.ip.public.remove.cf.name1' | i18n}}{{ipAddressDelete}}{{'app.ip.public.remove.cf.name2' | i18n}}</div>
-    <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{ipAddressDelete}}" [(ngModel)]="nameDelete" (ngModelChange)="confirmNameDelete($event)" type="text" />
+    <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{ipAddressDelete}}" [(ngModel)]="nameDelete" (ngModelChange)="confirmNameDelete($event)" type="text" (keydown.enter)="openIpDeleteCf()"/>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancel()">

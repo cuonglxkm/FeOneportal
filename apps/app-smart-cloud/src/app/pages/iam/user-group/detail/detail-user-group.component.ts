@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzFormatEmitEvent} from "ng-zorro-antd/tree";
 import {UserGroupService} from "../../../../shared/services/user-group.service";
@@ -15,6 +15,8 @@ import {NonNullableFormBuilder} from '@angular/forms';
 import {BaseResponse} from '../../../../../../../../libs/common-utils/src';
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {debounceTime} from "rxjs";
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-detail-user-group',
@@ -95,7 +97,8 @@ export class DetailUserGroupComponent {
               private route: ActivatedRoute,
               private userGroupService: UserGroupService,
               private notification: NzNotificationService,
-              private fb: NonNullableFormBuilder) {
+              private fb: NonNullableFormBuilder,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   onExpandChange(name: string, checked: boolean): void {
@@ -318,12 +321,12 @@ export class DetailUserGroupComponent {
     this.removePolicyModel.groupName = this.groupName
     console.log(this.removePolicyModel)
     this.userGroupService.removePolicy(this.removePolicyModel).subscribe(data => {
-      this.notification.success('Thành công', 'Gỡ policy ra khỏi Group thành công')
+      this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.users.policies.remove.success"))
       this.listOfDataPolicies = []
       this.filteredPolicies = []
       this.getData(this.groupName)
     }, error => {
-      this.notification.error('Thất bại', 'Gỡ policy ra khỏi Group thất bại')
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.users.policies.remove.fail"))
     })
   }
 
@@ -332,10 +335,10 @@ export class DetailUserGroupComponent {
       return;
     }
     this.userGroupService.removeUsers(this.groupName, Array.from(this.setOfCheckedIdUser)).subscribe(data => {
-      this.notification.success('Thành công', 'Gỡ người dùng ra khỏi Group thành công')
+      this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.users.users.remove.success"))
       this.getData(this.groupName)
     }, error => {
-      this.notification.error('Thất bại', 'Gỡ người dùng ra khỏi Group thất bại')
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.users.users.remove.fail"))
     })
   }
 

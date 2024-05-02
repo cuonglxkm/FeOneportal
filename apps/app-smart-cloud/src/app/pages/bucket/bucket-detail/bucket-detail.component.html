@@ -277,18 +277,18 @@
         <tbody>
         <tr *ngFor="let item of lstFileUpdate, i as index">
           <td>{{item.name}}</td>
-          <td style="width: 200px">{{item.type}}</td>
-          <td>
+          <td  style="width: 400px">{{item.type}}</td>
+          <td style="width: 400px">
             <div>{{(item.size / 1024).toFixed(2)}} KB</div>
             <div><nz-progress *ngIf="item.percentage > 0" nzType="line" [nzPercent]="item.percentage" 
             [nzStatus]="uploadFailed === true ? 'exception' : item.percentage === 100 ? 'success' : 'active'"></nz-progress></div>
           </td>
           <td>
-              <span style="color: #0066B3; margin-right: 10px;"
+              <span style="color: #0066B3; margin-right: 10px; cursor: pointer;"
                     nz-tooltip
                     nzTooltipTitle="tải lên" nzTooltipPlacement="bottom"
                     nz-icon nzType="upload" nzTheme="outline" (click)="uploadSingleFile(item, i)"></span>
-            <span style="color: #0066B3"
+            <span style="color: #0066B3; cursor: pointer;"
                   nz-tooltip
                   nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
                   nz-icon nzType="delete" nzTheme="outline" (click)="removeFile(item)"></span>

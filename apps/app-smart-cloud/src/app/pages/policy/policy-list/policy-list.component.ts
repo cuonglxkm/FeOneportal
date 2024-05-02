@@ -88,10 +88,10 @@ export class PolicyListComponent {
       .pipe(finalize(() => {this.nameDelete = ""}))
       .subscribe(
       () =>{
-        this.notification.success('Thành công', '`Xóa thành công Policy')
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.policy.delete.noti.success"))
       },
       error => {
-        this.notification.error('Thất bại', 'Xóa thất bại Policy')
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.policy.delete.noti.fail"))
       }
     );
   }

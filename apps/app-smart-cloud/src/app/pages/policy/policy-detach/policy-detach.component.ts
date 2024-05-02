@@ -117,11 +117,11 @@ export class PolicyDetachComponent implements OnInit {
     request.items = requestData;
     console.log(request);
     this.policiService.attachOrDetach(request).subscribe(data => {
-        this.notification.success('Thành công', 'Gỡ Policy thành công');
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.detach-policy.noti.success"));
         this.searchEntities();
       },
       error => {
-        this.notification.error('Có lỗi xảy ra', 'Gỡ Policy thất bại');
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.detach-policy.noti.fail"));
       }
     )
 
@@ -162,7 +162,7 @@ export class PolicyDetachComponent implements OnInit {
         this.isLoadingEntities = false;
       },
       error => {
-        this.notification.error('Có lỗi xảy ra', 'Lấy danh sách Attached Entities thất bại');
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.detach-policy.attach-entities.noti.fail"));
         this.isLoadingEntities = false;
       }
     )

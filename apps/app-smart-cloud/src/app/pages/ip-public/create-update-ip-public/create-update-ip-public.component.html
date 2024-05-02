@@ -55,7 +55,7 @@
           </div>
         </div>
         <div style="margin-top: 20px;" *ngIf="checkIpv6 !== null">
-          <label nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }"
+          <label class="text-label" nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }"
                  (ngModelChange)="caculator(null)">IPv6</label>
           <img
             style="margin-left: 10px"
