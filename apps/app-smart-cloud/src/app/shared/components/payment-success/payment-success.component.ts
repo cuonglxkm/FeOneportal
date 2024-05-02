@@ -129,16 +129,12 @@ export class PaymentSuccessComponent implements OnInit {
                 case 'Snapshot package':
                   this.router.navigate([`/app-smart-cloud/snapshot/packages`]);
                   break;
-                case 'Object Storage':
-                  this.router.navigate([
-                    `/app-smart-cloud/object-storage/bucket`,
-                  ]);
+                case 'Backup volume':
+                  this.router.navigate([`/app-smart-cloud/backup-volume`]);
                   break;
                 case 'Mongodb':
-                    this.router.navigate([
-                      `/app-mongodb-replicaset`,
-                    ]);
-                    break;  
+                  this.router.navigate([`/app-mongodb-replicaset`]);
+                  break;
                 default:
                   this.router.navigate([
                     `/app-smart-cloud/order/detail/${this.orderId}`,

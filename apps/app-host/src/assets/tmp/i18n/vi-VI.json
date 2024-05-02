@@ -43,6 +43,7 @@
   "app.account.validation": "Vui lòng nhập đầy đủ thông tin",
   "app.account.form.success": "Cập nhật tài khoản thành công!",
   "app.account.form.fail": "Cập nhật tài khoản không thành công!",
+  "app.failData": "Lấy dữ liệu thất bại",
 
   "app.minute": "phút",
   "app.hour": "giờ",
@@ -572,6 +573,7 @@
   "app.order-detail.cancelOrder": "Hủy đơn hàng",
   "app.order-detail.back": "Quay lại",
   "app.order-detail.repurchase": "Mua lại",
+  "app.order.createDate": "Ngày tạo",
   "app.button.createNew": "Tạo mới",
 
   "app.users.listUser": "Danh sách Users",
@@ -613,6 +615,11 @@
   "app.create-user.confirm.title": "Xác nhận tạo User",
   "app.create-user.confirm.alert": "Bạn đang thực hiện tạo mới User ",
   "app.create-user.confirm.des": "Để thực hiện tạo mới User, vui lòng chọn 'Xác nhận' để xác nhận",
+  "app.create-user.noti.success": "Tạo mới User thành công",
+  "app.edit-user.noti.success": "Cập nhật User thành công",
+  "app.create-user.noti.fail": "Tạo mới User không thành công",
+  "app.edit-user.noti.fail": "Cập nhật User không thành công",
+
   "app.button.back": "Quay lại",
   "app.button.addUser": "Thêm User",
   "app.users.deleteUser.titleAll": "Bạn đang thực hiện xóa",
@@ -648,10 +655,21 @@
   "app.user-group.deleteOne.des": "Bạn đang thực hiện xoá Groups",
   "app.user-group.deleteOne.des2": "Việc thực hiện xoá Groups sẽ khiến tất cả người dùng trong nhóm này bị mất quyền (Permission của nhóm). Hành động này không thể được hoàn tác",
   "app.user-group.deleteOne.confirm": "Đế thực hiện xoá Group, vui lòng nhập tên Group để xác nhận.",
+  "app.user-group.deleteOne.delete": "Xóa User Group",
+  
+  "app.user-group.deleteOne.success": "thành công",
+  "app.user-group.deleteOne.fail": "thất bại",
+  "app.user.delete.noti.success": "Xóa User thành công",
+  "app.user.delete.noti.success1": "User thành công",
+  "app.user.delete.noti.fail": "Xóa User không thành công",
+
   "app.user-group.deleteMany.title": "Xóa",
   "app.user-group.deleteMany.des": "Bạn đang thực hiện xoá ",
   "app.user-group.deleteMany.des2": "Groups. Việc thực hiện xoá Groups sẽ khiến tất cả người dùng trong nhóm này bị mất quyền (Permission của nhóm). Hành động này không thể được hoàn tác.",
   "app.user-group.deleteMany.confirm": "Đế thực hiện xoá các Groups, vui lòng nhập “delete” để xác nhận.",
+  "app.user-group.deleteMany.success": "Xóa User Group thành công.",
+  "app.user-group.deleteMany.fail": "Xóa User Group thất bại.",
+  "app.user-group.deleteMany.fail2": "Không thể xóa User Group.",
 
   "app.breadcrumb.create-user-groups": "Tạo User Group",
   "app.create-user-groups.nameGroup": "Tên của Group",
@@ -664,6 +682,8 @@
   "app.create-user-groups.modal.des": "Đế thực hiện tạo mới Group, vui lòng chọn “Đồng ý” để xác nhận.",
   "app.create-user-groups.modal.alert": "Bạn đang thực hiện tạo Group",
   "app.button.agree": "Đồng ý",
+  "app.user-group.noti.success": "New group created successfully",
+  "app.user-group.noti.fail": "New group created failed",
 
   "app.group-detail.groupInfo": "Thông tin Group",
   "app.group-detail.mainInfo": "Thông tin chính của Group",
@@ -678,6 +698,8 @@
   "app.user-group.edit": "Chỉnh sửa User Group",
   "app.user-group.edit.alert": "Việc thay đổi tên của Group sẽ thay đổi định danh của Group trên hệ thống, bạn vẫn muốn thực hiện thay đổi thông tin?",
   "app.user-group.edit.validation": "Tối đa 128 ký tự. Sử dụng các ký tự chữ và số và '+=,.@-_'.",
+  "app.user-group.edit.noti.sucess": "Chỉnh sửa thông tin Group thành công",
+  "app.user-group.edit.noti.fail": "Chỉnh sửa thông tin Group thất bại",
 
   "app.policies.title": "Danh sách Policies",
   "app.policies.policyInfo": "Thông tin Policy",
@@ -689,6 +711,12 @@
   "app.users.policies.delete.alert": " policy. Hành động này không thể được hoàn tác",
   "app.users.policies.delete.confirm": "Để thực hiện Xóa Policy, vui lòng nhập tên Policy để xác nhận",
   "app.users.policies.delete.input": "Nhập tên policy",
+  "app.users.policies.remove.success": "Gỡ policy ra khỏi Group thành công",
+  "app.users.policies.remove.fail": "Gỡ policy ra khỏi Group thất bại",
+  "app.users.users.remove.success": "Gỡ người dùng ra khỏi Group thành công",
+  "app.users.users.remove.fail": "Gỡ người dùng ra khỏi Group thất bại",
+  "app.users.users.add.success": "Thêm user vào group thành công",
+  "app.users.users.add.fail": "Thêm user vào group thất bại",
 
   "app.breadcrumb.create-policy": "Tạo Policy",
   "app.create-policy.step1": "Bước 1",
@@ -706,6 +734,11 @@
   "app.create-policy.name.input": "Nhập tên của policy",
   "app.create-policy.permisstionInfo": "Thông tin của Permissions được xác định trong Policy",
   "app.create-policy.confirm": "Quý khách có chắc chắn muốn tạo policy này?",
+  "app.create-policy.noti.success": "Thêm policy thành công",
+  "app.create-policy.noti.success1": "Tạo mới thành công policy",
+  "app.create-policy.noti.fail": "Thêm policy thất bại",
+  "app.create-policy.noti.fail1": "Tạo mới policy thất bại",
+  "app.create-policy.noti.warn": "Không được gắn quá 10 policies",
   "app.button.continue": "Tiếc tục",
   "app.create-policy.alertNextStep": "Cảnh báo bước tiếp theo",
   "app.create-policy.alertNextStep.des": "Quý khách vui lòng chọn policy để đến bước tiếp theo",
@@ -720,6 +753,10 @@
   "app.breadcrumb.attach-policy.iamEntities.type": "Loại Entity",
   "app.button.attach-policy": "Gắn Policy",
   "app.attach-policy.confirm": "Bạn đang thực hiện gắn policy",
+  "app.attach-policy.noti.success": "Gắn Policy thành công",
+  "app.attach-policy.noti.fail": "Gắn Policy thất bại",
+  "app.attach-policy.user-group.noti.fail": "Lấy danh sách Attached USER GROUPS thất bại",
+  "app.attach-policy.user.noti.fail": "Lấy danh sách Attached USER thất bại",
   "app.attach-policy.confirm.des": "Để thực hiện gắn Policy, vui lòng chọn 'Đồng ý'. để thực hiện",
 
   "app.breadcrumb.detach-policy": "Gỡ Policy",
@@ -728,6 +765,11 @@
   "app.button.detach-policy": "Gỡ Policy",
   "app.detach-policy.confirm": "Bạn đang thực hiện tách policy",
   "app.detach-policy.confirm.des": "Để thực hiện tách Policy, vui lòng chọn 'Đồng ý'. để thực hiện",
+  "app.detach-policy.noti.success": "Gỡ Policy thành công",
+  "app.detach-policy.noti.fail": "Gỡ Policy thất bại",
+  "app.detach-policy.attach-entities.noti.fail": "Lấy danh sách Attached Entities thất bại",
+  "app.policy.permission.noti.fail": "Lấy danh sách Permission thất bại",
+  "app.policy-detail.noti.fail": "Lấy thông tin policy thất bại",
 
   "app.breadcrumb.detail-policy": "Chi tiết Policy",
   "app.detail-policy.policyInfo": "Thông tin Policy",
@@ -738,6 +780,10 @@
   "app.breadcrumb.edit-policy": "Chỉnh sửa Policy",
   "app.edit-policy.des": "Thêm quyền bằng cách chọn dịch vụ,hành động,tài nguyên và điều kiện hoặc xây dựng câu lệnh bằng trình soạn thảo JSON",
   "app.edit-policy.des2": "Chỉ định những hành động nào có thể được thực hiện trên các tài nguyên cụ thể trong một dịch vụ.",
+  "app.policy.delete.noti.success": "Xóa thành công Policy",
+  "app.policy.delete.noti.fail": "Xóa thất bại Policy",
+  "app.edit-policy.noti.sucess": "Chỉnh sửa Policy thành công",
+  "app.edit-policy.noti.fail": "Chỉnh sửa Policy thất bại",
 
   "app.breadcrumb.account": "Tài khoản",
   "app.breadcrumb.security": "Bảo mật",
@@ -754,13 +800,14 @@
 
   "app.breadcrumb.action-history": "Lịch sử thao tác",
   "app.action-history.search": "Tìm kiếm  theo thao tác, dịch vụ, loại dịch vụ",
-  "app.action-history.operation-account": "Người thực hiện",
+  "app.action-history.operation-account": "Tài khoản thao tác",
   "app.action-history.operation": "Thao tác",
   "app.action-history.serviceType": "Loại dịch vụ",
   "app.action-history.serviceName": "Tên dịch vụ",
   "app.action-history.region": "Khu vực",
   "app.action-history.information": "Thông tin",
   "app.action-history.date": "Ngày thao tác",
+
 
 
   "app.kafka.intro-text": "VNPT Message Streaming for Kafka là nền tảng phân phối dữ liệu cho các hệ thống qua đám mây. Kafka cung cấp khả năng xử lý nhanh, ổn định, chịu lỗi cao cho các hệ thống dạng Pub/Sub.",
