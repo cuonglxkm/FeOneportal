@@ -76,6 +76,7 @@ export class CallbackComponent implements OnInit {
     localStorage.removeItem('UserRootId');
     localStorage.removeItem('projectId');
     localStorage.removeItem('PermissionOPA');
+    localStorage.removeItem('ShareUsers');
     let baseUrl = environment['baseUrl'];
     this.httpClient
       .post<TokenResponse>(this.url + '/connect/token', params.toString(), {
