@@ -14,7 +14,7 @@ import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service
   styleUrls: ['./detail-ipsec-policies.component.less'],
 })
 export class DetailIpsecPoliciesComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean = false

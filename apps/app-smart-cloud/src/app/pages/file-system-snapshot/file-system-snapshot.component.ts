@@ -14,7 +14,7 @@ import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-sn
   styleUrls: ['./file-system-snapshot.component.less'],
 })
 export class FileSystemSnapshotComponent {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   customerId: number

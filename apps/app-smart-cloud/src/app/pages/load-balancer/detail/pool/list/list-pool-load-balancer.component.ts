@@ -13,7 +13,7 @@ export class ListPoolLoadBalancerComponent implements OnInit, OnChanges {
   @Input() idLB: number;
   @Input() checkCreate: boolean;
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean = false;

@@ -11,7 +11,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../libs/common-util
   styleUrls: ['./create-schedule-backup.component.less']
 })
 export class CreateScheduleBackupComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   selectedValueRadio = 'VM';

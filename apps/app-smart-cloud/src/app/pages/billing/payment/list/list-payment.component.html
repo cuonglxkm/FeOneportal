@@ -26,21 +26,22 @@
                    (ngModelChange)="onChange($event)"
                    [nzPlaceHolder]="'app.payment.status' | i18n"
                    style="width: 150px"
+                   class="input-select-custom"
                    >
           <nz-option *ngFor="let item of status" [nzValue]="item.value"
                      [nzLabel]="item.label"></nz-option>
         </nz-select>
       </div>
       <div *nzSpaceItem>
-        <nz-range-picker 
+        <nz-range-picker class="input-date-picker"
                          [(ngModel)]="dateRange"
                          (ngModelChange)="onDateRangeChange($event)"
                          [nzDisabledDate]="disabledDate"
                          [nzFormat]="dateFormat"></nz-range-picker>
       </div>
       <div *nzSpaceItem>
-        <nz-input-group nzSearch [nzPrefix]="prefixIconSearch">
-          <input style="width: 380px" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
+        <nz-input-group style="width: 380px; height: 40px;" nzSearch [nzPrefix]="prefixIconSearch">
+          <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
                  type="text" nz-input
                  [placeholder]="'app.payment.searchPlaceHolder' | i18n"/>
         </nz-input-group>

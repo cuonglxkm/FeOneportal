@@ -21,7 +21,7 @@ import { I18NService } from '@core';
   styleUrls: ['./create-volume-vpc.component.less']
 })
 export class CreateVolumeVpcComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoadingAction = false;

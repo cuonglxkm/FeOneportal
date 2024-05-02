@@ -101,6 +101,21 @@
           </nz-select>
         </nz-form-control>
         </nz-form-item>
+        
+        <nz-form-item>
+          <nz-form-label nzFor="name">
+            <div>
+              <span>Áp dụng cho File System</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+              <span nz-icon nzType="question-circle"
+                    nzTheme="outline"
+                    nz-popover
+                    [nzPopoverContent]="'Chọn File System để thực hiện Snapshot.'"
+                    nzPopoverPlacement="bottom"></span>
+            </div>
+          </nz-form-label>
+        </nz-form-item>
+
         <nz-form-item>
           <nz-form-label nzFor="name">
             <div>

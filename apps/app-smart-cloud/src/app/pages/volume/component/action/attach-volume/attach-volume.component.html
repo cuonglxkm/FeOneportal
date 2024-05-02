@@ -7,12 +7,12 @@
 <!--        nzPopoverPlacement="bottom" ></span>-->
 <!--</button>-->
 <img src="assets/imgs/add.svg"  (click)="showModal()"  nz-popover
-     [nzPopoverContent]="'volume.action.attach.vm' | i18n"
+     [nzPopoverContent]="'volume.attach' | i18n"
      nzPopoverPlacement="bottom" style="cursor: pointer;"/>
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">{{ 'volume.action.action.attach.vn' | i18n }}</span>
+    <span class="text-modal-title">{{ 'volume.attach' | i18n }}</span>
   </div>
   <div *nzModalContent>
     <nz-form-label>{{ 'volume.modal.attach.title' | i18n}}</nz-form-label>

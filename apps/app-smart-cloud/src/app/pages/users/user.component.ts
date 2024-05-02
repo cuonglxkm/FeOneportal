@@ -105,15 +105,15 @@ export class UserComponent implements OnInit {
       this.service.deleteUsers(this.setOfCheckedName).subscribe({
         next: (data) => {
           console.log(data);
-          this.notification.success('', 'Xóa User thành công');
+          this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.user.delete.noti.success"));
           this.reloadTable();
         },
         error: (e) => {
-          this.notification.error(e.statusText, 'Xóa User không thành công');
+          this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user.delete.noti.fail"));
         },
       });
     } else {
-      this.notification.error('', 'Xóa User không thành công');
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user.delete.noti.fail"));
     }
   }
 
@@ -124,18 +124,18 @@ export class UserComponent implements OnInit {
         next: (data) => {
           console.log(data);
           this.notification.success(
-            '',
-            'Xóa ' + this.setOfCheckedName.size + ' Users thành công'
+            this.i18n.fanyi("app.status.success"),
+            this.i18n.fanyi("app.user-group.deleteMany.title") + ' ' + this.setOfCheckedName.size + ' ' + this.i18n.fanyi("app.user.delete.noti.success")
           );
           this.setOfCheckedName.clear();
           this.reloadTable();
         },
         error: (e) => {
-          this.notification.error(e.statusText, 'Xóa Users không thành công');
+          this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user.delete.noti.fail"));
         },
       });
     } else {
-      this.notification.error('', 'Xóa Users không thành công');
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user.delete.noti.fail"));
     }
   }
 

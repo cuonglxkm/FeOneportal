@@ -16,7 +16,7 @@ import { L7Policy, Pool } from '../../../../shared/models/load-balancer.model';
   styleUrls: ['./listener-detail.component.less']
 })
 export class ListenerDetailComponent implements OnInit {
-  regionId = JSON.parse(localStorage.getItem('region')).regionId;
+  regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
   idListener: any;
   idLb: any;

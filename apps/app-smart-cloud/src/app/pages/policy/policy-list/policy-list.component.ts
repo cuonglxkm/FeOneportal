@@ -1,6 +1,6 @@
 import {Component, Inject, ViewChild} from '@angular/core';
-import {PolicyModel} from "../policy.model";
-import {PolicyService} from "../../../shared/services/policy.service";
+import {PolicyModel} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
+import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {Router} from "@angular/router";
 import {ClipboardService} from "ngx-clipboard";
@@ -88,10 +88,10 @@ export class PolicyListComponent {
       .pipe(finalize(() => {this.nameDelete = ""}))
       .subscribe(
       () =>{
-        this.notification.success('Thành công', '`Xóa thành công Policy')
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.policy.delete.noti.success"))
       },
       error => {
-        this.notification.error('Thất bại', 'Xóa thất bại Policy')
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.policy.delete.noti.fail"))
       }
     );
   }
