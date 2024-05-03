@@ -880,7 +880,7 @@ export class InstancesCreateComponent implements OnInit {
   getAllSSHKey() {
     this.listSSHKey = [];
     this.dataService
-      .getAllSSHKey(this.projectId, this.region, this.userId, 999999, 0)
+      .getAllSSHKey(this.region, this.userId, 999999, 0)
       .subscribe((data: any) => {
         data.records.forEach((e) => {
           const itemMapper = new SHHKeyModel();

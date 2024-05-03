@@ -1,5 +1,5 @@
 <span
-  [nzPopoverContent]="'Tạm ngưng'"
+  [nzPopoverContent]="'app.suspend' | i18n"
   nz-popover
   nzPopoverPlacement="bottom"
   (click)="showModal()"
@@ -17,12 +17,12 @@
   (nzOnCancel)="handleCancel()"
 >
   <ng-template #modalTitle>
-    <span class="text-modal-title">Xác nhận Tạm ngưng lịch Snapshot</span>
+    <span class="text-modal-title">{{ 'app.title.snapshot.schedule.suspend' | i18n }}</span>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
       <nz-alert nzType="warning"
-                nzDescription="Tạm ngưng lịch snapshot file system là quá trình tạm thời ngừng việc tạo ra các bản sao (snapshot) của hệ thống tệp (file system) trong một khoảng thời gian cụ thể."
+                [nzDescription]="'app.alert.snapshot.schedule.suspend' | i18n"
                 nzShowIcon
                 style="margin-bottom: 24px;">
       </nz-alert>
@@ -30,7 +30,7 @@
         <nz-form-label>
           <div>
             <span
-              >Quý khách muốn thực hiện Tạm ngưng lịch snapshot.</span
+              >{{ 'app.node.snapshot.schedule.suspend' | i18n }}</span
             >
           </div>
         </nz-form-label>
@@ -44,7 +44,7 @@
             (click)="handleCancel()"
             class="button-back"
           >
-            Huỷ
+            {{ 'app.button.cancel' | i18n }}
           </button>
           <nz-form-control *nzSpaceItem>
             <button
@@ -53,7 +53,7 @@
               [nzLoading]="isLoading"
               class="button-new"
             >
-              Xác nhận
+              {{ 'app.button.confirm' | i18n }}
             </button>
           </nz-form-control>
         </nz-space>

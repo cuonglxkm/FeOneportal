@@ -268,7 +268,7 @@
           <button style="width: 100%;margin-top: 15px;" nz-button nzSize="large" nzType="primary" (click)="updateListener()"
                   [disabled]="validateForm.invalid">
             <span nz-icon nzType="edit" nzTheme="outline"></span>
-            <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Chỉnh sửa</span>
+            <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.text.edit' | i18n }}</span>
           </button>
         </nz-col>
       </nz-card>

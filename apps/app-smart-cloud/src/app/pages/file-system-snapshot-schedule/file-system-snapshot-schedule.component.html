@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Quản lý lịch File System Snapshot'"
+  [title]="'app.file.system.snapshot.schedule.manage' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -10,7 +10,7 @@
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Quản lý lịch File System Snapshot</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.file.system.snapshot.schedule.manage' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -32,7 +32,7 @@
     <div
       style="display: flex; justify-content: space-between; align-items: center"
     >
-      <span class="text-card-header">Danh sách lịch File System Snapshot</span>
+      <span class="text-card-header">{{ 'app.file.system.snapshot.schedule.list' | i18n }}</span>
       <nz-row style="gap: 16px">
         <nz-col>
           <nz-input-group
@@ -43,7 +43,7 @@
             <input
               name="name"
               nz-input
-              placeholder="Tìm kiếm theo tên lịch Snapshot..."
+              [placeholder]="'app.placeholder.search' | i18n"
               [(ngModel)]="value"
               (input)="onInputChange($event.target['value'])"
             />
@@ -70,7 +70,7 @@
               alt=""
             />
             <span class="button-text-primary"
-              >Tạo mới lịch File System Snapshot</span
+              >{{ 'app.file.system.snapshot.schedule.create' | i18n }}</span
             >
           </button>
         </nz-col>
@@ -91,13 +91,13 @@
       <thead>
         <tr>
           <th>STT</th>
-          <th>Tên lịch Snapshot</th>
-          <th>Áp dụng cho File System</th>
-          <th>Số bản ghi tối đa</th>
-          <th>Chu kỳ</th>
+          <th>{{ 'app.snapshot.schedule.name' | i18n }}</th>
+          <th>{{ 'app.to.file.system' | i18n }}</th>
+          <th>{{ 'app.maximum.number.of.record' | i18n }}</th>
+          <th>{{ 'app.cycle' | i18n }}</th>
           <th>{{ 'app.text.status' | i18n }}</th>
-          <th>Lần snapshot tiếp theo</th>
-          <th nzAlign="center">Thao tác</th>
+          <th>{{ 'app.next.snapshot' | i18n }}</th>
+          <th nzAlign="center">{{ 'app.text.operation' | i18n }}</th>
         </tr>
       </thead>
       <tbody>
@@ -109,12 +109,12 @@
           <td>
             {{
               data.mode === 1
-                ? 'Hằng ngày'
+                ? ('app.daily' | i18n)
                 : data.mode === 2
-                ? 'Theo thứ'
+                ? ('app.by.day.of.week' | i18n)
                 : data.mode === 3
-                ? 'Theo tuần'
-                : data.mode === 4 && 'Theo tháng'
+                ? ('app.weekly' | i18n)
+                : data.mode === 4 && ('app.monthly' | i18n)
             }}
           </td>
           <td
@@ -129,8 +129,8 @@
           >
             {{
               data.status === 'ACTIVE'
-                ? 'Đang hoạt động'
-                : data.status === 'DISABLED' ? 'Tạm ngưng' : data.status
+                ? ('app.status.running' | i18n)
+                : data.status === 'DISABLED' ? ('app.suspend' | i18n) : data.status
             }}
           </td>
           <td>{{ data.nextRuntime | date : 'dd/MM/yyyy HH:mm:ss' }}</td>

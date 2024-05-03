@@ -120,7 +120,7 @@
           </nz-form-item>
           <nz-form-item style="margin-bottom: 10px;">
             <nz-form-label>
-              <span>Gói dịch vụ</span>
+              <span>{{ 'app.text.package' | i18n }}</span>
               <img nz-popover
                    [nzPopoverContent]="titleTooltip"
                    nzPopoverPlacement="right" style="margin-left: 5px;"
@@ -205,7 +205,7 @@
           <span class="text-label">{{ loadBalancer?.ipAddress }}</span>
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Gói dịch vụ</div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.text.package' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
           <span class="text-label">{{ loadBalancer?.offerName }}</span>
         </div>
@@ -214,7 +214,7 @@
           <nz-col style="width: 100%">
             <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="!validateForm.valid" (click)="submitForm()">
               <i nz-icon [nzType]="'edit'"  style="margin-right: 5px; padding-bottom: 5px;"></i>
-              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Chỉnh sửa</span>
+              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.text.edit' | i18n }}</span>
             </button>
           </nz-col>
         </nz-row>

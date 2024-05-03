@@ -47,7 +47,7 @@
           <input (keyup.enter)="loadData()" [(ngModel)]="folderNameLike" nz-input [nz-tooltip]="'app.button.search' | i18n"/>
         </nz-input-group>
         <ng-template #suffixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm theo tên"
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"
                (click)="loadData()"/>
         </ng-template>
         <button nz-button nzType="default" (click)="openFilter()" nzSize="large">

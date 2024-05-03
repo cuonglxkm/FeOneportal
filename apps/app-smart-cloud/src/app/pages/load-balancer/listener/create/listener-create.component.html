@@ -329,7 +329,7 @@
         <div class="text-right"
              style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">
           <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"
-                  style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">Quay lại</span>
+                  style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
           </button>
           <button [disabled]="checkDisable() == true" nzSize="large" (click)="nextStep()" nz-button nzType="primary"
                   style="border: none;margin-left: 30px;">Tiếp tục
@@ -405,7 +405,7 @@
       <div class="text-right"
            style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">
         <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"
-                style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">Quay lại</span>
+                style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
         </button>
         <button [disabled]="checkDisable() == true" nzSize="large" (click)="nextStep()" nz-button nzType="primary"
                 style="border: none;margin-left: 30px;">Tiếp tục
