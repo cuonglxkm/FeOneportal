@@ -876,6 +876,7 @@
   "app.create-policy.noti.warn": "Do not attach more than 10 policies",
   "app.create-policy.alertNextStep": "Next step warning",
   "app.create-policy.alertNextStep.des": "Please select policy to go to the next step",
+  "app.create-policy.confirm.des": "To create a new Policy, please select 'Agree' to confirm.",
 
   "app.breadcrumb.attach-policy": "Attach Policy",
   "app.breadcrumb.attach-policy.title": "Perform policy attachment",
