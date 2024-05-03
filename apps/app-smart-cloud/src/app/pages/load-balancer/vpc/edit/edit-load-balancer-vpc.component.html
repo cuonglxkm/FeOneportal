@@ -172,7 +172,7 @@
               <textarea nz-input formControlName="description" [placeholder]="'app.input.des' | i18n" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>

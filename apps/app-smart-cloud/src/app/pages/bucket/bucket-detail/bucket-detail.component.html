@@ -92,12 +92,12 @@
         [nzIndeterminate]="indeterminate"
         (nzCheckedChange)="onAllChecked($event)"
       ></th>
-      <th>Tên</th>
+      <th>{{ 'app.name' | i18n }}</th>
       <th>Kích thước</th>
       <th>Loại</th>
       <th>Thời gian chỉnh sửa</th>
       <th>Quyền truy cập</th>
-      <th>Thao tác</th>
+      <th>{{ 'app.text.operation' | i18n }}</th>
     </tr>
     </thead>
     <tbody>
@@ -167,7 +167,7 @@
         <th>Cột</th>
         <th>Điều kiện</th>
         <th>Giá trị</th>
-        <th>Thao tác</th>
+        <th>{{ 'app.text.operation' | i18n }}</th>
       </tr>
       </thead>
       <tbody>
@@ -239,7 +239,7 @@
         </ng-container>
       </div>
       <div>Tên thư mục (<span class="red-star">*</span>)</div>
-      <input nzSize="large" nz-input placeholder="Nhập tên thư mục" style="width: 100%"
+      <input nzSize="large" nz-input [placeholder]="'app.input.name' | i18n" style="width: 100%"
              [(ngModel)]="nameFolder">
     </div>
   </ng-container>
@@ -268,10 +268,10 @@
       <nz-table  [nzData]="lstFileUpdate" style="margin-top: 10px;" [nzHideOnSinglePage]="true">
         <thead>
         <tr>
-          <th>Tên</th>
+          <th>{{ 'app.name' | i18n }}</th>
           <th>Kiểu File</th>
           <th>Kích thước</th>
-          <th>Thao tác</th>
+          <th>{{ 'app.text.operation' | i18n }}</th>
         </tr>
         </thead>
         <tbody>
@@ -295,7 +295,7 @@
           </td>
         </tr>
       </nz-table>
-      <h3 style="font-weight: bold">METADATA</h3>
+      <h3 style="font-weight: bold; margin-top: 10px">METADATA</h3>
       <nz-row *ngFor="let item of listOfMetadata" style="margin-top:10px">
         <input style="width: 40%; margin-right: 5%;" nzSize="large" nz-input placeholder="Nhập Key"
                [(ngModel)]="item.metaKey">
@@ -305,7 +305,7 @@
           <img style="margin-top: -4px" src="assets/imgs/trash.svg"/>
         </button>
       </nz-row>
-      <nz-row style="margin-top: 25px">
+      <nz-row style="margin-top: 15px">
         <button nz-button nzType="primary" (click)="addMoreMetadata()" nzSize="large" style="margin-right: 10px">
           <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
           <span class="button-text-primary">Tạo metadata</span>
@@ -485,7 +485,7 @@
         <th>Thời gian chỉnh sửa</th>
         <th>Kích thước</th>
         <th>Id phiển bản</th>
-        <th>Thao tác</th>
+        <th>{{ 'app.text.operation' | i18n }}</th>
       </tr>
       </thead>
       <tbody>

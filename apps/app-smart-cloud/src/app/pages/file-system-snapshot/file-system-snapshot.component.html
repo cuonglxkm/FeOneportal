@@ -37,7 +37,7 @@
                    (input)="onInputChange($event.target['value'])"/>
           </nz-input-group>
           <ng-template #prefixIconSearch>
-            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"/>
           </ng-template>
         </nz-col>
         <nz-col>
@@ -61,11 +61,11 @@
         <thead>
         <tr>
           <th>STT</th>
-          <th>Tên Snapshot</th>
-          <th>Dung lượng (GB)</th>
+          <th>{{ 'app.snapshot.name' | i18n }}</th>
+          <th>{{ 'app.capacity' | i18n }} (GB)</th>
           <th>{{ 'app.task.status' | i18n }}</th>
-          <th>Tên File System</th>
-          <th>Ngày cấp dịch vụ</th>
+          <th>{{ 'app.file.system.name' | i18n }}</th>
+          <th>{{ 'app.service.start.date' | i18n }}</th>
           <th nzAlign='center'>Thao tác</th>
         </tr>
         </thead>

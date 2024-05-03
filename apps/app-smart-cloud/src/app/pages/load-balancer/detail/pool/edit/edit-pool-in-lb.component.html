@@ -55,7 +55,7 @@
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <span>Giao thức (<span style="color: red;">*</span>)</span>
+          <span>{{ 'app.protocol' | i18n }} (<span style="color: red;">*</span>)</span>
           <img nz-popover
                [nzPopoverContent]="'.'"
                nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -64,7 +64,7 @@
         <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
           <input nz-input class="input-custom" [value]="pool?.protocol" [disabled]="true" />
           <ng-template #protocolErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng chọn giao thức</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{ 'validation.choose.protocol.requiredl' | i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>

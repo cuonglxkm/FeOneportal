@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, Input, OnInit } from '@angular/core';
 import { CreateVolumeRequestModel, GetAllVmModel } from '../../../../shared/models/volume.model';
 import { CreateVolumeDto, VmDto } from '../../../../shared/dto/volume.dto';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
@@ -14,6 +14,8 @@ import { OrderItem } from '../../../../shared/models/price';
 import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { CatalogService } from '../../../../shared/services/catalog.service';
+import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -21,8 +23,13 @@ import { I18NService } from '@core';
   styleUrls: ['./create-volume-vpc.component.less']
 })
 export class CreateVolumeVpcComponent implements OnInit {
+  // @Input() typeMultiAttach: boolean
+  // @Input() typeEncrypt: boolean
+
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
+
+
 
   isLoadingAction = false;
 
@@ -31,7 +38,9 @@ export class CreateVolumeVpcComponent implements OnInit {
   isInitSnapshot = false;
   snapshot: any;
 
-  selectedValueRadio = 'hdd';
+  enableEncrypt: boolean = true;
+  enableMultiAttach: boolean = false;
+
 
   validateForm: FormGroup<{
     name: FormControl<string>
@@ -41,6 +50,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     instanceId: FormControl<number>
     description: FormControl<string>
     storage: FormControl<number>
+    radioAction: FormControl<any>
     isEncryption: FormControl<boolean>
     isMultiAttach: FormControl<boolean>
   }> = this.fb.group({
@@ -51,6 +61,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     instanceId: [null as number],
     description: ['', Validators.maxLength(700)],
     storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
+    radioAction: [''],
     isEncryption: [false],
     isMultiAttach: [false]
   });
@@ -79,24 +90,33 @@ export class CreateVolumeVpcComponent implements OnInit {
   selectedValueHDD = true;
   selectedValueSSD = false
 
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private volumeService: VolumeService,
-              private notification: NzNotificationService,
-              private router: Router,
-              private fb: NonNullableFormBuilder,
-              private instanceService: InstancesService,
-              private cdr: ChangeDetectorRef,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+  typeMultiple: boolean;
+  typeEncrypt: boolean;
+
+  snapshotList: NzSelectOptionInterface[] = [];
+
+  constructor(
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private volumeService: VolumeService,
+    private snapshotvlService: SnapshotVolumeService,
+    private router: Router,
+    private fb: NonNullableFormBuilder,
+    private instanceService: InstancesService,
+    private cdr: ChangeDetectorRef,
+    private catalogService: CatalogService,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+  ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
-      if(this.volumeCreate.volumeType == 'hdd') return (this.iops = 300)
-      if(this.volumeCreate.volumeType == 'ssd') {
-        if(value <= 40) return (this.iops = 400);
-        this.iops = value * 10
+      if (this.volumeCreate.volumeType == 'hdd') return (this.iops = 300);
+      if (this.volumeCreate.volumeType == 'ssd') {
+        if (value <= 40) return (this.iops = 400);
+        this.iops = value * 10;
       }
     });
   }
@@ -110,10 +130,89 @@ export class CreateVolumeVpcComponent implements OnInit {
       })
   }
 
+  regionChanged(region: RegionModel) {
+    this.region = region.regionId
+    this.router.navigate(['/app-smart-cloud/volumes']);
+  }
+
+  projectChanged(project: ProjectModel) {
+    this.project = project.id;
+
+
+    this.getListSnapshot();
+    this.getListInstance();
+
+    this.getCatalogOffer('MultiAttachment')
+    this.getCatalogOffer('Encryption')
+
+    this.getListVolumes();
+  }
+
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/volumes']);
+  }
+
+  private getListSnapshot() {
+    this.isLoadingAction = true;
+    this.snapshotList = [];
+    let userId = this.tokenService.get()?.userId;
+    this.snapshotvlService
+      .getSnapshotVolumes(
+        9999,
+        1,
+        this.region,
+        this.project,
+        '',
+        '',
+        ''
+      )
+      .subscribe((data) => {
+        data.records.forEach((snapshot) => {
+          this.snapshotList.push({ label: snapshot.name, value: snapshot.id });
+        });
+        this.isLoadingAction = false;
+      });
+  }
+
+  getCatalogOffer(type) {
+    this.catalogService
+      .getCatalogOffer(null, this.region, null, type)
+      .subscribe((data) => {
+        console.log('data catalog', data);
+        if (data[0]?.regions[0]?.regionId == this.region) {
+          if (type == 'MultiAttachment') {
+            this.typeMultiple = true;
+          }
+          if (type == 'Encryption') {
+            this.typeEncrypt = true;
+          }
+        } else {
+          this.typeMultiple = false;
+          this.typeEncrypt = false;
+        }
+      });
+  }
+
+  getListVolumes() {
+    this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, null, null)
+      .subscribe((data) => {
+          data.records.forEach((item) => {
+            if (this.nameList.length > 0) {
+              this.nameList.push(item.name);
+            } else {
+              this.nameList = [item.name];
+            }
+          });
+        },
+        (error) => {
+          this.nameList = null;
+        }
+      );
+  }
+
   changeValueStorage(value) {
     this.dataSubjectStorage.next(value)
   }
-
 
   onChangeStatusSSD() {
     this.selectedValueSSD = true
@@ -141,12 +240,42 @@ export class CreateVolumeVpcComponent implements OnInit {
       this.volumeCreate.volumeType = 'hdd'
       this.iops = 300
     }
+  }
 
+  onChangeStatusEncrypt() {
+    this.enableEncrypt = true
+    this.enableMultiAttach = false
+    if(this.enableEncrypt) {
+      this.validateForm.controls.isEncryption.setValue(this.enableEncrypt)
+      this.validateForm.controls.isMultiAttach.setValue(this.enableMultiAttach)
+    }
+  }
+
+  onChangeStatusMultiAttach() {
+    this.enableEncrypt = false
+    this.enableMultiAttach = true
+    if(this.enableMultiAttach) {
+      this.validateForm.controls.isEncryption.setValue(this.enableEncrypt)
+      this.validateForm.controls.isMultiAttach.setValue(this.enableMultiAttach)
+    }
   }
   ngOnInit() {
+    if(this.selectedValueHDD) {
+      this.iops = 300
+    }
+    if(this.selectedValueSSD) {
+      if(this.validateForm.controls.storage.value <= 40) return (this.iops = 400);
+      this.iops = this.validateForm.controls.storage.value * 10
+    }
 
-    if(this.validateForm.controls.storage.value <= 40) return (this.iops = 400);
-    this.iops = this.validateForm.controls.storage.value * 10
+    if (this.selectedValueHDD) {
+      this.volumeCreate.volumeType = 'hdd';
+    }
+    if (this.selectedValueSSD) {
+      this.volumeCreate.volumeType = 'ssd';
+    }
+
+    this.volumeCreate.volumeSize = this.validateForm.controls.storage.value
 
     this.getListInstance();
     this.changeValueInput()
@@ -203,23 +332,38 @@ export class CreateVolumeVpcComponent implements OnInit {
   volumeCreate: VolumeCreate = new VolumeCreate();
 
   volumeInit() {
-    this.volumeCreate.volumeType = this.selectedValueRadio;
+    if (this.selectedValueHDD) {
+      this.volumeCreate.volumeType = 'hdd';
+    }
+    if (this.selectedValueSSD) {
+      this.volumeCreate.volumeType = 'ssd';
+    }
+    console.log('volumeType', this.volumeCreate.volumeType);
     this.volumeCreate.volumeSize = this.validateForm.get('storage').value;
     this.volumeCreate.description = this.validateForm.get('description').value;
+    this.volumeCreate.iops = this.iops;
     if (this.validateForm.controls.isSnapshot.value == true) {
-      this.volumeCreate.createFromSnapshotId = this.validateForm.controls.snapshot.value;
+      this.volumeCreate.createFromSnapshotId =
+        this.validateForm.controls.snapshot.value;
     } else {
       this.volumeCreate.createFromSnapshotId = null;
     }
 
-    this.volumeCreate.instanceToAttachId = this.validateForm.controls.instanceId.value;
-    this.volumeCreate.isMultiAttach = this.validateForm.controls.isMultiAttach.value;
-    this.volumeCreate.isEncryption = this.validateForm.controls.isEncryption.value;
+    this.volumeCreate.instanceToAttachId =
+      this.validateForm.controls.instanceId.value;
+    this.volumeCreate.isMultiAttach =
+      this.validateForm.controls.isMultiAttach.value;
+    this.volumeCreate.isEncryption =
+      this.validateForm.controls.isEncryption.value;
     this.volumeCreate.projectId = this.project.toString();
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
+    let currentDate = new Date();
+    // this.volumeCreate.createDate = currentDate?.toISOString().substring(0, 19);
+    // this.volumeCreate.expireDate = lastDate?.toISOString().substring(0, 19);
+
     this.volumeCreate.saleDept = null;
     this.volumeCreate.saleDeptCode = null;
     this.volumeCreate.contactPersonEmail = null;
@@ -239,7 +383,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.volumeCreate.oneSME_SubscriptionId = null;
     this.volumeCreate.actionType = 0;
     this.volumeCreate.regionId = this.region;
-    this.volumeCreate.serviceName = this.validateForm.controls.name.value;
+    this.volumeCreate.serviceName = this.validateForm.get('name').value;
     this.volumeCreate.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
     this.volumeCreate.userEmail = this.tokenService.get()?.email;
@@ -247,6 +391,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   doCreateVolumeVPC() {
+    this.isLoadingCreate = true
     if (this.validateForm.valid) {
       this.volumeInit();
       let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
@@ -268,7 +413,7 @@ export class CreateVolumeVpcComponent implements OnInit {
             if (data.code == 200) {
               this.isLoadingAction = false;
               this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
-              this.router.navigate(['/app-smart-cloud/volumes']);
+              setTimeout(() => {this.router.navigate(['/app-smart-cloud/volumes']);}, 2500)
             }
           } else {
             this.isLoadingAction = false;
@@ -276,6 +421,7 @@ export class CreateVolumeVpcComponent implements OnInit {
         },
         error => {
           this.isLoadingAction = false;
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('', error.error.detail));
         });
     }
   }

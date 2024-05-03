@@ -53,7 +53,7 @@
                   formControlName="name"
                   [(ngModel)]="instanceCreate.serviceName"
                   id="name"
-                  placeholder="Nhập tên máy ảo"
+                  [placeholder]="'app.input.name' | i18n"
                   [maxlength]="50"
                   (change)="
                     instanceCreate.serviceName =

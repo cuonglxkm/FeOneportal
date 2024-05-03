@@ -164,7 +164,7 @@
               src="assets/imgs/search.svg"
               alt=""
               style="cursor: pointer"
-              nz-tooltip="Tìm kiếm"
+              [nz-tooltip]="'app.button.search' | i18n"
               (click)="searchPolicy()"
             />
           </ng-template>
@@ -304,7 +304,7 @@
               src="assets/imgs/search.svg"
               alt=""
               style="cursor: pointer"
-              nz-tooltip="Tìm kiếm"
+              [nz-tooltip]="'app.button.search' | i18n"
               (click)="searchGroup()"
             />
           </ng-template>
