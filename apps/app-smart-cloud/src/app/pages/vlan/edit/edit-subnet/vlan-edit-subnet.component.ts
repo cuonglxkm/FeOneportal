@@ -14,6 +14,8 @@ import {
   Validators
 } from '@angular/forms';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -153,6 +155,7 @@ export class VlanEditSubnetComponent implements OnInit {
               private notification: NzNotificationService,
               private vlanService: VlanService,
               private route: ActivatedRoute,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder) {
   }
 
@@ -226,12 +229,12 @@ export class VlanEditSubnetComponent implements OnInit {
     this.vlanService.updateSubnet(this.idSubnet, this.formUpdateSubnet).subscribe(data => {
         this.isLoading = false;
         this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-        this.notification.success('Thành công', 'Chỉnh sửa Subnet thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note40'));
 
     }, error => {
       this.isLoading = false;
       this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-      this.notification.error('Thất bại', 'Chỉnh sửa Subnet thất bại. ' + error.error.detail);
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note41') + error.error.detail);
     });
   }
 
