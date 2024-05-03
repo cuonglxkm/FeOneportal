@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
-import {PolicyService} from "../../../../shared/services/policy.service";
-import {PolicyModel} from "../../../policy/policy.model";
+import {PolicyService} from "../../../../../../../../libs/common-utils/src/lib/services/policy.service";
+import {PolicyModel} from "../../../../../../../../libs/common-utils/src/lib/models/policy.model";
 import {FormSearchPolicy, FormSearchUserGroup} from 'src/app/shared/models/user-group.model';
 import {UserGroupService} from "../../../../shared/services/user-group.service";
 import {BaseResponse} from "../../../../../../../../libs/common-utils/src";

@@ -21,7 +21,7 @@ import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../
   styleUrls: ['./edit-backup-package.component.less'],
 })
 export class EditBackupPackageComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   idBackupPackage: number

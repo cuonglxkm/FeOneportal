@@ -4,9 +4,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PopupDetachPolicyComponent} from "../popup-policy/popup-detach-policy.component";
-import {PolicyService} from "../../../shared/services/policy.service";
+import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
-import {AttachOrDetachRequest} from "../policy.model";
+import {AttachOrDetachRequest} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
@@ -17,7 +17,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../libs/common-util
 })
 export class PolicyDetachComponent implements OnInit {
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
 
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -117,11 +117,11 @@ export class PolicyDetachComponent implements OnInit {
     request.items = requestData;
     console.log(request);
     this.policiService.attachOrDetach(request).subscribe(data => {
-        this.notification.success('Thành công', 'Gỡ Policy thành công');
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.detach-policy.noti.success"));
         this.searchEntities();
       },
       error => {
-        this.notification.error('Có lỗi xảy ra', 'Gỡ Policy thất bại');
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.detach-policy.noti.fail"));
       }
     )
 
@@ -162,7 +162,7 @@ export class PolicyDetachComponent implements OnInit {
         this.isLoadingEntities = false;
       },
       error => {
-        this.notification.error('Có lỗi xảy ra', 'Lấy danh sách Attached Entities thất bại');
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.detach-policy.attach-entities.noti.fail"));
         this.isLoadingEntities = false;
       }
     )

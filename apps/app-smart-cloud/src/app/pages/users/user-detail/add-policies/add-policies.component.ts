@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/shared/services/user.service';
 import { UserCreate, User } from 'src/app/shared/models/user.model';
@@ -7,6 +7,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-add-policies',
@@ -30,7 +32,8 @@ export class AddPoliciesComponent implements OnInit {
     private router: Router,
     private notification: NzNotificationService,
     private activatedRoute: ActivatedRoute,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -89,13 +92,13 @@ export class AddPoliciesComponent implements OnInit {
       .subscribe(
         (data: any) => {
           console.log(data);
-          this.notification.success('', 'Cập nhật User thành công');
+          this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.edit-user.noti.success"));
           this.navigateToDetail();
         },
         (e) => {
           this.notification.error(
-            e.statusText,
-            'Cập nhật User không thành công'
+            this.i18n.fanyi("app.status.fail"),
+            this.i18n.fanyi("app.edit-user.noti.fail")
           );
         }
       );

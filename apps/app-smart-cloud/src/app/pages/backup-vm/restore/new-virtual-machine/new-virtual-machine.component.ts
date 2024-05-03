@@ -307,7 +307,7 @@ export class NewVirtualMachineComponent implements OnInit {
 
 
   ngOnInit(): void {
-        this.region = JSON.parse(localStorage.getItem('region')).regionId;
+        this.region = JSON.parse(localStorage.getItem('regionId'));
         this.project = JSON.parse(localStorage.getItem('projectId'));
         this.userId = this.tokenService.get()?.userId
 

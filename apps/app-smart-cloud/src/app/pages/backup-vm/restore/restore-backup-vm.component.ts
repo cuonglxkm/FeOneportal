@@ -12,7 +12,7 @@ import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../
 })
 export class RestoreBackupVmComponent implements OnInit {
 
-    region = JSON.parse(localStorage.getItem('region')).regionId;
+    region = JSON.parse(localStorage.getItem('regionId'));
     project = JSON.parse(localStorage.getItem('projectId'));
 
     selectedValueRadio = 'O';

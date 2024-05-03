@@ -17,7 +17,6 @@ import { EditIkePoliciesComponent } from "./manage/ike-policies/edit/edit-ike-po
 import { DetailIkePoliciesComponent } from "./manage/ike-policies/detail/detail-ike-policies.component";
 import { VpnS2sExtendComponent } from "./manage/vpn-s2s-extend/vpn-s2s-extend.component";
 import { VpnS2sResizeComponent } from "./manage/vpn-s2s-resize/vpn-s2s-resize.component";
-import { PolicyService } from "src/app/shared/services/policy.service";
 import { CreateVpnServiceComponent } from "./manage/vpn-service/create/create-vpn-service.component";
 import { PermissionGuard } from "src/app/shared/guard/PermissionGuard";
 
@@ -30,11 +29,13 @@ const routes: Routes = [
     path: 'create',
     component: VpnS2sCreateComponent,
     canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
   },
   {
     path: 'extend/:vpcId',
     component: VpnS2sExtendComponent,
-     canActivate: [PermissionGuard],
   },
   {
     path: 'resize/:vpcId',

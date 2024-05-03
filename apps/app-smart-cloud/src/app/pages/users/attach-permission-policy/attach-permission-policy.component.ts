@@ -19,7 +19,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { PolicyService } from 'src/app/shared/services/policy.service';
+import { PolicyService } from '../../../../../../../libs/common-utils/src';
 import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ClipboardService } from 'ngx-clipboard';

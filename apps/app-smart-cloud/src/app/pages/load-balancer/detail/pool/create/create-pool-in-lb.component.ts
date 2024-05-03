@@ -20,6 +20,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { CreatePool, LoadBalancerModel } from 'src/app/shared/models/load-balancer.model';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-pool-in-lb',
@@ -58,7 +60,8 @@ export class CreatePoolInLbComponent implements OnInit {
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private loadBalancerService: LoadBalancerService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   loadBalancer: LoadBalancerModel = new LoadBalancerModel()
@@ -114,18 +117,18 @@ export class CreatePoolInLbComponent implements OnInit {
         if (data) {
           this.isVisible = false;
           this.isLoading = false;
-          this.notification.success('Thành công', 'Cập nhật Pool thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.pool.success'));
         } else {
           this.isVisible = false;
           this.isLoading = false;
-          this.notification.error('Thất bại', 'Cập nhật Pool thất bại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.create.pool.fail'));
         }
         this.onOk.emit(data);
       },
       error: (error) => {
         this.isVisible = false;
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Cập nhật Pool thất bại');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.create.pool.fail'));
       },
     });
   }

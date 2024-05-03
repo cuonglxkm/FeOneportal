@@ -35,10 +35,10 @@ export class PopupAddVolumeComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    const regionString = localStorage.getItem('region');
-    const region = JSON.parse(regionString);
+    const regionString = localStorage.getItem('regionId');
+    const regionId = JSON.parse(regionString);
     let userId = this.tokenService.get()?.userId;
-    this.getAllVmResponse = await this.volumeService.getListVM(userId, region.regionId).toPromise();
+    this.getAllVmResponse = await this.volumeService.getListVM(userId, regionId).toPromise();
     this.listAllVMs = this.getAllVmResponse.records;
     this.listAllVMs.forEach((vm) => {
       this.options.push({label: vm.name, value: vm.id});

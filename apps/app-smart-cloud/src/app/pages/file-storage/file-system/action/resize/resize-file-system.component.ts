@@ -17,7 +17,7 @@ import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../
   styleUrls: ['./resize-file-system.component.less']
 })
 export class ResizeFileSystemComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   idFileSystem: number;

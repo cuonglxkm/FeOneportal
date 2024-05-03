@@ -14,7 +14,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-u
   styleUrls: ['./vpn-s2s-create.component.less'],
 })
 export class VpnS2sCreateComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   numberMonth: number = 1;
   totalAmount: number = 0;

@@ -20,7 +20,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../libs/common-util
   styleUrls: ['./create-package-snapshot.component.less'],
 })
 export class CreatePackageSnapshotComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   typeVPC: number

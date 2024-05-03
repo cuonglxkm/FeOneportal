@@ -213,7 +213,7 @@ export class ExtendIpFloatingComponent implements OnInit{
       };
       this.service.getTotalAmount(request)
         .pipe(finalize(() => {
-          this.isLoading = true;
+          this.isLoading = false;
         }))
         .subscribe(
         data => {

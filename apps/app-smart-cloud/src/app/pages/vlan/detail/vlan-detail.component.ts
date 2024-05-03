@@ -10,7 +10,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../libs/common-util
   styleUrls: ['./vlan-detail.component.less'],
 })
 export class VlanDetailComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   idNetwork: number

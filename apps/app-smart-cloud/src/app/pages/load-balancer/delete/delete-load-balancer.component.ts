@@ -1,6 +1,8 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadBalancerService } from '../../../shared/services/load-balancer.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-delete-load-balancer',
@@ -24,7 +26,8 @@ export class DeleteLoadBalancerComponent implements AfterViewInit{
   @ViewChild('loadBalancerInputName') loadBalancerInputName!: ElementRef<HTMLInputElement>;
 
   constructor(private notification: NzNotificationService,
-              private loadBalancerService: LoadBalancerService) {
+              private loadBalancerService: LoadBalancerService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   focusOkButton(event: KeyboardEvent): void {
@@ -56,22 +59,15 @@ export class DeleteLoadBalancerComponent implements AfterViewInit{
     if (this.value == this.nameLoadBalancer) {
       this.isInput = false
       this.loadBalancerService.deleteLoadBalancer(this.idLoadBalancer).subscribe(data => {
-        if (data) {
           this.isLoading = false
           this.isVisible = false
-          this.notification.success('Thành công', 'Xóa Load Balancer thành công')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.delete.load.balancer.success'))
           this.onOk.emit(data)
-        } else {
-          console.log('data', data)
-          this.isLoading = false
-          this.isVisible = false
-          this.notification.error('Thất bại', 'Xóa Load Balancer thất bại')
-        }
       }, error => {
         console.log('error', error)
         this.isLoading = false
         this.isVisible = false
-        this.notification.error('Thất bại', 'Xóa Load Balancer thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.load.balancer.fail', error.error.detail))
       })
     } else {
       this.isInput = true
