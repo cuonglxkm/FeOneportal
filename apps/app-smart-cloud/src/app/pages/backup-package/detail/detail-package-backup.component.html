@@ -1,17 +1,17 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Chi tiết gói Backup'">
+             [title]="'app.backup.package.breadcrumb.detail'|i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Backup
+        {{ 'app.backup.package.breadcrumb.backup' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/backup/packages">Thông tin gói Backup</a>
+        <a routerLink="/app-smart-cloud/backup/packages">{{ 'app.backup.package.breadcrumb.detail'|i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -29,8 +29,8 @@
       <div nz-col nzSpan="4">
         <button nz-button nzTooltipTitle="Gia hạn" nzTooltipPlacement="bottom" nz-tooltip class="btn-extend"
                 nzSize="default" style="cursor: pointer;" (click)="navigateToExtend()">
-          <span nz-icon nzType="clock-circle" nzTheme="outline"></span>
-          Gia hạn
+          <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
+          <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
         </button>
       </div>
     </div>
@@ -38,64 +38,58 @@
       <div nz-col nzSpan="4">
         <button nz-button nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom" nz-tooltip class="btn-edit"
                 nzSize="default" style="cursor: pointer;" (click)="navigateToEdit()">
-          <span nz-icon nzType="edit" nzTheme="outline"></span>
-          Điều chỉnh
+          <img src="assets/imgs/edit-2.svg" alt=""
+               style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
+          <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
         </button>
       </div>
     </div>
   </div>
 </page-header>
 <nz-content>
-  <nz-card [nzTitle]="'Thông tin của gói Backup'">
+  <nz-card>
     <form nz-form nzLayout="vertical">
+      <span class="text-card-header">{{ 'app.backup.package.information'|i18n }}</span>
       <nz-form-item>
-        <nz-form-label>
-          <div>
-            <span>Tên gói Backup</span>
-          </div>
+        <nz-form-label style="margin-top: 25px;">
+          <span>{{'app.backup.package.name'|i18n}}</span>
         </nz-form-label>
         <nz-form-control>
-          <input nz-input [value]="packageBackupModel.packageName" [disabled]="true" />
+          <input nz-input
+                 class="input-custom"
+                 [value]="packageBackupModel?.packageName"
+                 [disabled]="true" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <div>
-            <span>Dung lượng gói Backup</span>
-          </div>
+          <span>{{'app.backup.package.storage'|i18n}}</span>
         </nz-form-label>
         <nz-form-control>
-          <input nz-input [value]="packageBackupModel.sizeInGB" [disabled]="true" />
+          <input nz-input
+                 class="input-custom"
+                 [value]="packageBackupModel?.sizeInGB"
+                 [disabled]="true" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <div class="label">
-            <span>Mô tả</span>
-          </div>
+          <span>Mô tả</span>
         </nz-form-label>
         <nz-form-control>
-          <textarea nz-input *ngIf="packageBackupModel.description != undefined"
-                    [value]="packageBackupModel.description" [disabled]="true">
-          </textarea>
-          <textarea nz-input *ngIf="packageBackupModel.description == undefined" [disabled]="true">
-          </textarea>
+          <nz-textarea-count [nzMaxCharacterCount]="255">
+            <textarea nz-input
+                      class="input-custom"
+                      [value]="packageBackupModel?.description"
+                      [disabled]="true"></textarea>
+          </nz-textarea-count>
+
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>
-          <div>
-            <span>Ngày khởi tạo:</span> {{ packageBackupModel.creationDate | date: 'dd/MM/yyyy' }}
-          </div>
-        </nz-form-label>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>
-          <div style="color:#FC1010;">
-            <span>Ngày hết hạn:</span> {{ packageBackupModel.expirationDate | date: 'dd/MM/yyyy' }}
-          </div>
-        </nz-form-label>
-      </nz-form-item>
+      <div style="display: grid;">
+        <span class="text-label">Ngày khởi tạo: {{ packageBackupModel?.creationDate | date: 'dd/MM/yyyy' }} </span>
+        <span class="text-label" style="color:#FC1010; margin-top: 15px;">Ngày hết hạn: {{ packageBackupModel?.expirationDate | date: 'dd/MM/yyyy' }} </span>
+      </div>
     </form>
   </nz-card>
 </nz-content>

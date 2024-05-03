@@ -15,6 +15,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { CatalogService } from '../../../../shared/services/catalog.service';
+import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -22,11 +23,13 @@ import { CatalogService } from '../../../../shared/services/catalog.service';
   styleUrls: ['./create-volume-vpc.component.less']
 })
 export class CreateVolumeVpcComponent implements OnInit {
+  // @Input() typeMultiAttach: boolean
+  // @Input() typeEncrypt: boolean
+
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  @Input() typeMultiAttach: boolean
-  @Input() typeEncrypt: boolean
+
 
   isLoadingAction = false;
 
@@ -87,28 +90,33 @@ export class CreateVolumeVpcComponent implements OnInit {
   selectedValueHDD = true;
   selectedValueSSD = false
 
+  typeMultiple: boolean;
+  typeEncrypt: boolean;
+
   snapshotList: NzSelectOptionInterface[] = [];
 
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private volumeService: VolumeService,
-              private notification: NzNotificationService,
-              private snapshotService: SnapshotVolumeService,
-              private router: Router,
-              private fb: NonNullableFormBuilder,
-              private instanceService: InstancesService,
-              private cdr: ChangeDetectorRef,
-              private catalogService: CatalogService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+  constructor(
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private volumeService: VolumeService,
+    private snapshotvlService: SnapshotVolumeService,
+    private router: Router,
+    private fb: NonNullableFormBuilder,
+    private instanceService: InstancesService,
+    private cdr: ChangeDetectorRef,
+    private catalogService: CatalogService,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+  ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
-      if(this.volumeCreate.volumeType == 'hdd') return (this.iops = 300)
-      if(this.volumeCreate.volumeType == 'ssd') {
-        if(value <= 40) return (this.iops = 400);
-        this.iops = value * 10
+      if (this.volumeCreate.volumeType == 'hdd') return (this.iops = 300);
+      if (this.volumeCreate.volumeType == 'ssd') {
+        if (value <= 40) return (this.iops = 400);
+        this.iops = value * 10;
       }
     });
   }
@@ -122,17 +130,84 @@ export class CreateVolumeVpcComponent implements OnInit {
       })
   }
 
+  regionChanged(region: RegionModel) {
+    this.region = region.regionId
+    this.router.navigate(['/app-smart-cloud/volumes']);
+  }
+
+  projectChanged(project: ProjectModel) {
+    this.project = project.id;
+
+
+    this.getListSnapshot();
+    this.getListInstance();
+
+    this.getCatalogOffer('MultiAttachment')
+    this.getCatalogOffer('Encryption')
+
+    this.getListVolumes();
+  }
+
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/volumes']);
+  }
+
   private getListSnapshot() {
     this.isLoadingAction = true;
     this.snapshotList = [];
     let userId = this.tokenService.get()?.userId;
-    this.snapshotService.getSnapshotVolumes(9999, 1, this.region, this.project, '', '', '')
+    this.snapshotvlService
+      .getSnapshotVolumes(
+        9999,
+        1,
+        this.region,
+        this.project,
+        '',
+        '',
+        ''
+      )
       .subscribe((data) => {
         data.records.forEach((snapshot) => {
           this.snapshotList.push({ label: snapshot.name, value: snapshot.id });
         });
         this.isLoadingAction = false;
       });
+  }
+
+  getCatalogOffer(type) {
+    this.catalogService
+      .getCatalogOffer(null, this.region, null, type)
+      .subscribe((data) => {
+        console.log('data catalog', data);
+        if (data[0]?.regions[0]?.regionId == this.region) {
+          if (type == 'MultiAttachment') {
+            this.typeMultiple = true;
+          }
+          if (type == 'Encryption') {
+            this.typeEncrypt = true;
+          }
+        } else {
+          this.typeMultiple = false;
+          this.typeEncrypt = false;
+        }
+      });
+  }
+
+  getListVolumes() {
+    this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, null, null)
+      .subscribe((data) => {
+          data.records.forEach((item) => {
+            if (this.nameList.length > 0) {
+              this.nameList.push(item.name);
+            } else {
+              this.nameList = [item.name];
+            }
+          });
+        },
+        (error) => {
+          this.nameList = null;
+        }
+      );
   }
 
   changeValueStorage(value) {

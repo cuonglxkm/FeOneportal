@@ -1370,6 +1370,7 @@
 
   "app.backup.package.breadcrumb.backup": "Backup",
   "app.backup.package.breadcrumb.create.backup.package": "Tạo gói Backup",
+  "app.backup.package.breadcrumb.detail": "Chi tiết gói Backup",
   "app.backup.package.information": "Thông tin của gói Backup",
   "app.backup.package.name": "Tên gói Backup",
   "app.backup.package.storage": "Dung lượng gói Backup",
