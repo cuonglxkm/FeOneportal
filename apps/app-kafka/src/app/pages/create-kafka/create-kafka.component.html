@@ -125,7 +125,7 @@
                   <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="cpuErrTpl">
                     <nz-input-number-group nzSuffix="vCpu" nzSize="large">
-                      <nz-input-number formControlName="vCpu" id="vCpu" autofocus
+                      <nz-input-number formControlName="vCpu" id="vCpu" autofocus [nzMin]="0"
                         (ngModelChange)="onChangeCpu($event)">
                       </nz-input-number>
                     </nz-input-number-group>
@@ -149,7 +149,7 @@
                   <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>RAM (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="ramErrTpl">
                     <nz-input-number-group nzSuffix="GB" nzSize="large">
-                      <nz-input-number formControlName="ram" id="ram" autofocus
+                      <nz-input-number formControlName="ram" id="ram" autofocus [nzMin]="0"
                         (ngModelChange)="onChangeRam($event)">
                       </nz-input-number>
                     </nz-input-number-group>
@@ -173,7 +173,7 @@
                   <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Storage (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="storageErrorTpl">
                     <nz-input-number-group nzSuffix="GB" nzSize="large">
-                      <nz-input-number formControlName="storage" id="storage" autofocus 
+                      <nz-input-number formControlName="storage" id="storage" autofocus [nzMin]="0"
                         (ngModelChange)="onChangeStorage($event)">
                       </nz-input-number>
                     </nz-input-number-group>
@@ -363,13 +363,84 @@
       </nz-card>
 
       <nz-card class="border-card">
+        <h3><b>{{ 'app.service.network-config' | i18n }}</b></h3>
+        
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
             <nz-form-item>
+              <nz-form-label nzFor="vpcNetwork" [nzSm]="24" [nzXs]="24" nzNoColon>Mạng VPC (<span class="text-red">*</span>)</nz-form-label>
+              <nz-form-control nzErrorTip="Mạng VPC không để trống">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn mạng VPC" formControlName="vpcNetwork" id="vpcNetwork" nzSize="large" 
+                  class="w-85" (ngModelChange)="onSelectedVlan($event)">
+                  <nz-option *ngFor="let item of listOfVPCNetworks" 
+                    [nzLabel]="item.name" [nzValue]="item.id">
+                  </nz-option>
+                </nz-select>
+                <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip 
+                  class="borderless" (click)="refreshVPCNetwork()">
+                  <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
+                </button>
+                <div class="small-description">
+                  <p style="font-size: 12px;">Chọn một VPC cho Kafka Cluster của bạn.
+                    <a routerLink="/app-smart-cloud/vlan/network/list" target="_balnk">Nhấp vào đây để quản lý các VPC
+                      của bạn</a>
+                    </p>
+                </div>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzFor="subnet" nzFor="vpcNetwork" [nzSm]="24" [nzXs]="24" nzNoColon>Subnet (<span class="text-red">*</span>)</nz-form-label>
+              <nz-form-control [nzErrorTip]="errorSubnetTpl">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-85" nzSize="large"
+                  (ngModelChange)="onSelectSubnet($event)">
+                  <ng-container *ngFor="let item of listOfSubnets">
+                    <ng-container *ngIf="item.enableDhcp; else disableSubnetTpl">
+                      <nz-option [nzLabel]="item.subnetAddressRequired"
+                        [nzValue]="item.id"></nz-option>
+                    </ng-container>
+                    <ng-template #disableSubnetTpl>
+                      <nz-option nzCustomContent [nzLabel]="item.subnetAddressRequired"
+                        [nzValue]="item.subnetAddressRequired" [nzDisabled]="true">
+                        <div nzTooltipTitle="Chưa mở DHCP" nzTooltipPlacement="bottom" nz-tooltip>
+                          {{item.subnetAddressRequired}}
+                        </div>
+                      </nz-option>
+                    </ng-template>
+                  </ng-container>
+                </nz-select>
+                <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip 
+                  class="borderless" (click)="refreshSubnet()">
+                  <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
+                </button>
+                <!-- <div class="small-description">
+                  <p style="font-size: 12px;">Lựa chọn subnet cho cluster này</p>
+                </div> -->
+              </nz-form-control>
+              <ng-template #errorSubnetTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  Subnet không để trống
+                </ng-container>
+                <ng-container *ngIf="control.hasError('usedSubnet')">
+                  Subnet đã được sử dụng
+                </ng-container>
+              </ng-template>
+            </nz-form-item>
+          </div>
+        </div>
+      </nz-card>
+
+      <nz-card class="border-card">
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="12" class="box-duration">
+            <nz-form-item>
               <nz-form-label [nzXs]="24" [nzSm]="24" nzNoColon>{{ 'app.service.duration' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
               <nz-form-control [nzXs]="24" [nzSm]="24" [nzErrorTip]="'validation.kafka.duration-required' | i18n">
-                  <input nz-input type="number" formControlName="usageTime" id="usageTime" 
-                    [placeholder]="'app.service.duration-placeholder' | i18n" autofocus nzSize="large" (ngModelChange)="onChangeUsageTime()" />
+                <nz-input-number formControlName="usageTime" id="usageTime" autofocus nzSize="large" [nzMin]="0"
+                  [nzPlaceHolder]="'app.service.duration-placeholder' | i18n" (ngModelChange)="onChangeUsageTime()">
+                </nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </div>

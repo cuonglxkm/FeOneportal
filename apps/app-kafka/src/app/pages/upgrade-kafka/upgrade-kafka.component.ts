@@ -15,6 +15,8 @@ import { Order, OrderItem } from 'src/app/core/models/order.model';
 import { ServicePack } from 'src/app/core/models/service-pack.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 import { getCurrentRegionAndProject } from '@shared'; 
+import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,7 +79,8 @@ export class UpgradeKafkaComponent implements OnInit {
     private notification: NzNotificationService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private _activatedRoute: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
   }
 
@@ -119,7 +122,7 @@ export class UpgradeKafkaComponent implements OnInit {
             // phát sự kiện để render lại 
             this.cdr.markForCheck();
           } else {
-            this.notification.error('Thất bại', res.msg);
+            this.notification.error(this.i18n.fanyi('app.status.fail'), res.msg);
           }
         }
       )

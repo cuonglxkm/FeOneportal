@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { camelizeKeys } from 'humps';
 import { NzTableSortFn, NzTableSortOrder } from 'ng-zorro-antd/table';
 import { KafkaConsumerGroup, KafkaConsumerGroupDetail, KafkaConsumerGroupTopic } from '../../../core/models/kafka-consumer-group.model';
@@ -10,6 +10,8 @@ import { LoadingService } from "@delon/abc/loading";
 import { finalize } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
 import { TopicService } from 'src/app/services/kafka-topic.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
 
 interface DataItem {
   partitionName: number,
@@ -125,15 +127,13 @@ export class ConsumerGroupComponent implements OnInit {
 
   isAllowSync = true;
 
-  notiSuccessText = 'Thành công';
-  notiFailedText = 'Thất bại';
-
   constructor(
     private consumerGroupKafkaService: ConsumerGroupKafkaService,
     private kafkaService: KafkaService,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
-    private topicService: TopicService
+    private topicService: TopicService, 
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) { }
 
   ngOnInit(): void {
@@ -154,8 +154,6 @@ export class ConsumerGroupComponent implements OnInit {
     }
 
     this.heretext = 'here';
-    this.notiSuccessText = 'Success';
-    this.notiFailedText = 'Failed';
   }
 
   getListConsumerGroup(pageIndex: number, pageSize: number, keySearch: string, serviceOrderCode: string) {
@@ -245,10 +243,10 @@ export class ConsumerGroupComponent implements OnInit {
       .subscribe(
         (data) => {
           if (data && data.code == 200) {
-            this.notification.success(this.notiSuccessText, data.msg);
+            this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
             this.getListConsumerGroup(this.pageIndex, this.pageSize, '', this.serviceOrderCode);
           } else {
-            this.notification.error(this.notiFailedText, data.msg);
+            this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
           }
         }
       );
@@ -272,11 +270,11 @@ export class ConsumerGroupComponent implements OnInit {
       )
       .subscribe((res) => {
         if (res && res.code == 200) {
-          this.notification.success(this.notiSuccessText, res.msg);
+          this.notification.success(this.i18n.fanyi('app.status.success'), res.msg);
             this.getListConsumerGroup(this.pageIndex, this.pageSize, '', this.serviceOrderCode);
             this.getSyncTime(this.serviceOrderCode);
         } else {
-          this.notification.error(this.notiFailedText, res.msg);
+          this.notification.error(this.i18n.fanyi('app.status.fail'), res.msg);
         }
       })
   }
@@ -289,11 +287,11 @@ export class ConsumerGroupComponent implements OnInit {
       )
       .subscribe((res) => {
         if (res && res.code == 200) {
-          this.notification.success(this.notiSuccessText, res.msg);
+          this.notification.success(this.i18n.fanyi('app.status.success'), res.msg);
             this.getListTopicInGroup(this.currentGroupId, this.serviceOrderCode, this.searchTopicText.trim());
             this.getSyncTime(this.serviceOrderCode);
         } else {
-          this.notification.error(this.notiFailedText, res.msg);
+          this.notification.error(this.i18n.fanyi('app.status.fail'), res.msg);
         }
       })
   }
