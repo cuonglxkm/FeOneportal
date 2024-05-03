@@ -4,12 +4,12 @@
                     nzSize="large"
                     style="width: 300px;">
       <input name="name"
-             nz-input placeholder="Tìm kiếm"
+             nz-input placeholder="{{ 'volume.tooltip.title.filter.img' | i18n }}"
              [(ngModel)]="valuePort"
              (input)="onInputChangePort($event.target['value'])" />
     </nz-input-group>
     <ng-template #prefixIconSearch>
-      <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+      <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
     </ng-template>
   </nz-col>
   <nz-col nzSpan="8" style="flex:none;">
@@ -35,13 +35,13 @@
           [nzLoading]="isLoading">
   <thead>
   <tr>
-    <th>Tên Port</th>
+    <th>{{ 'app.vlan.note67' | i18n }}</th>
     <th>Fixed IPs</th>
-    <th>MAC Address</th>
-    <th>Attached Device</th>
-    <th>Trạng thái</th>
-    <th>Gắn vào máy ảo</th>
-    <th>Thao tác</th>
+    <th>{{ 'app.vlan.note68' | i18n }}</th>
+    <th>{{ 'app.vlan.note69' | i18n }}</th>
+    <th>{{ 'app.payment.status' | i18n }}</th>
+    <th>{{ 'volume.table.title.attach.instance' | i18n }}</th>
+    <th>{{ 'app.action-history.operation' | i18n }}</th>
   </tr>
   </thead>
   <tbody>
@@ -85,21 +85,21 @@
       <div *ngIf="!(index.instanceName)" >
         <img src="assets/imgs/add.svg" style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%); margin-right: 5px;"
              nz-popover
-             [nzPopoverContent]="'Gắn'"
+             nzPopoverContent="{{ 'app.attach' | i18n }}"
              nzPopoverPlacement="bottom" disabled="true"/>
         <img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
              nz-popover
-             [nzPopoverContent]="'Xóa'"
+             nzPopoverContent="{{ 'app.delete' | i18n }}"
              nzPopoverPlacement="bottom" disabled="true"/>
       </div>
       <div *ngIf="(index.instanceName)">
         <img src="assets/imgs/cancel.svg" style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%); margin-right: 5px;"
              nz-popover
-             [nzPopoverContent]="'Gỡ'"
+             nzPopoverContent="{{ 'app.detach' | i18n }}"
              nzPopoverPlacement="bottom" disabled="true"/>
         <img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
              nz-popover
-             [nzPopoverContent]="'Xóa'"
+             nzPopoverContent="{{ 'app.delete' | i18n }}"
              nzPopoverPlacement="bottom" disabled="true"/>
       </div>
     </td>
