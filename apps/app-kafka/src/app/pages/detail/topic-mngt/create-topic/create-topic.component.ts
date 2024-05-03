@@ -54,8 +54,7 @@ export class CreateTopicComponent implements OnInit {
 
   createNumber = 1;
   updateNumber = 2;
-  openSet = false;
-
+  isSettingAdvanced = false;
 
   errMessPartition: string;
   errMessRep: string;
@@ -106,7 +105,7 @@ export class CreateTopicComponent implements OnInit {
     });
     this.disableControl();
     if (this.mode == this.updateNumber) {
-      this.openSet = true;
+      this.isSettingAdvanced = true;
       this.validateForm.get('name_tp').disable();
       this.validateForm.get('partition').disable();
       this.validateForm.get('replicaFactor').disable();
@@ -207,7 +206,7 @@ export class CreateTopicComponent implements OnInit {
   }
 
   changeSwitch() {
-    if (this.openSet)
+    if (this.isSettingAdvanced)
       this.addValidateConfig()
     else
       this.removeValidatefig()
@@ -337,14 +336,15 @@ export class CreateTopicComponent implements OnInit {
     const replica = this.validateForm.controls['replicaFactor'];
     const minInsync = this.validateForm.controls['minInsync'];
     if (replica.value != null && replica.value != '') {
-      if (!this.openSet) {
-        this.listConfigLabel.forEach(e => e.name == 'minInsync' ? e.value = replica.value : e.value); 
-        if (minInsync.value != null) {
-          if (minInsync.value > replica.value) {
-            replica.setErrors({'invalidvalue': true})
-          } else {
-            minInsync.setErrors(null);
-          }
+      if (!this.isSettingAdvanced) {
+        this.listConfigLabel.forEach(e => e.name == 'minInsync' ? e.value = replica.value : e.value);
+        minInsync.setValue(replica.value);
+      }
+      if (minInsync.value != null) {
+        if (minInsync.value > replica.value) {
+          replica.setErrors({'invalidvalue': true})
+        } else {
+          minInsync.setErrors(null);
         }
       }
     }
@@ -399,7 +399,7 @@ export class CreateTopicComponent implements OnInit {
       const topicName = this.validateForm.get("name_tp").value;
       const partitionNum = Number(this.validateForm.get("partition").value);
       const replicationFactorNum = Number(this.validateForm.get("replicaFactor").value);
-      if (!this.openSet) {
+      if (!this.isSettingAdvanced) {
         this.topicKafkaService.createTopic(topicName, partitionNum, replicationFactorNum, this.serviceOrderCode, 0, JSON.stringify(json))
           .subscribe(
             (data: any) => {
