@@ -189,77 +189,84 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of data?.orderItems">
-            <td [ngSwitch]="serviceName">
-              <a
-                *ngSwitchCase="'File Storage'"
-                [routerLink]="[
-                  '/app-smart-cloud/file-storage/file-system/list'
-                ]"
-                >{{ item?.serviceName }}</a
-              >
-              <a
-                *ngSwitchCase="'IP'"
-                [routerLink]="['/app-smart-cloud/ip-public']"
-                >{{ item?.serviceName }}</a
-              >
-              <a
-                *ngSwitchCase="'VM'"
-                [routerLink]="['/app-smart-cloud/instances']"
-                >{{ item?.serviceName }}</a
-              >
-              <a *ngSwitchCase="'K8s'" [routerLink]="['/app-kubernetes']">{{
-                item?.serviceName
-              }}</a>
-              <a *ngSwitchCase="'Kafka'" [routerLink]="['/app-kafka']">{{
-                item?.serviceName
-              }}</a>
-              <a
-                *ngSwitchCase="'VPNSiteToSites'"
-                [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
-                >{{ item?.serviceName }}</a
-              >
-              <a
-                *ngSwitchCase="'Volume'"
-                [routerLink]="['/app-smart-cloud/volumes']"
-                >{{ item?.serviceName }}</a
-              >
-              <a
-                *ngSwitchCase="'Loadbalancer SDN'"
-                [routerLink]="['/app-smart-cloud/load-balancer/list']"
-                >{{ item?.serviceName }}</a
-              >
-              <a
-                *ngSwitchCase="'Vpc'"
-                [routerLink]="['/app-smart-cloud/vpc']"
-                >{{ item?.serviceName }}</a
-              >
-              <a
-                *ngSwitchCase="'Backup Packet'"
-                [routerLink]="['/app-smart-cloud/backup/packages']"
-                >{{ item?.serviceName }}</a
-              >
-              <a
-                *ngSwitchCase="'Snapshot package'"
-                [routerLink]="['/app-smart-cloud/snapshot/packages']"
-                >{{ item?.serviceName }}</a
-              >
-              <a
-                *ngSwitchCase="'Object Storage'"
-                [routerLink]="['/app-smart-cloud/object-storage/bucket']"
-                >{{ item?.serviceName }}</a
-              >
-              <a
-                *ngSwitchCase="'Mongodb'"
-                [routerLink]="['/app-mongodb-replicaset']"
-                >{{ item?.serviceName }}</a
-              >
-              <a
-                *ngSwitchCase="'Backup volume'"
-                [routerLink]="['/app-smart-cloud/backup-volume']"
-                >{{ item?.serviceName }}</a
-              >
-              <div *ngSwitchDefault>{{ item?.serviceName }}</div>
-            </td>
+            <ng-container *ngIf="data?.statusCode == 4">
+              <td [ngSwitch]="serviceName">
+                <a
+                  *ngSwitchCase="'File Storage'"
+                  [routerLink]="[
+                    '/app-smart-cloud/file-storage/file-system/list'
+                  ]"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                  *ngSwitchCase="'IP'"
+                  [routerLink]="['/app-smart-cloud/ip-public']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                  *ngSwitchCase="'VM'"
+                  [routerLink]="['/app-smart-cloud/instances']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a *ngSwitchCase="'K8s'" [routerLink]="['/app-kubernetes']">{{
+                  item?.serviceName
+                }}</a>
+                <a *ngSwitchCase="'Kafka'" [routerLink]="['/app-kafka']">{{
+                  item?.serviceName
+                }}</a>
+                <a
+                  *ngSwitchCase="'VPNSiteToSites'"
+                  [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                  *ngSwitchCase="'Volume'"
+                  [routerLink]="['/app-smart-cloud/volumes']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                  *ngSwitchCase="'Loadbalancer SDN'"
+                  [routerLink]="['/app-smart-cloud/load-balancer/list']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                  *ngSwitchCase="'Vpc'"
+                  [routerLink]="['/app-smart-cloud/vpc']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                  *ngSwitchCase="'Backup Packet'"
+                  [routerLink]="['/app-smart-cloud/backup/packages']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                  *ngSwitchCase="'Snapshot package'"
+                  [routerLink]="['/app-smart-cloud/snapshot/packages']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                  *ngSwitchCase="'Object Storage'"
+                  [routerLink]="['/app-smart-cloud/object-storage/bucket']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                  *ngSwitchCase="'Mongodb'"
+                  [routerLink]="['/app-mongodb-replicaset']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                  *ngSwitchCase="'Backup volume'"
+                  [routerLink]="['/app-smart-cloud/backup-volume']"
+                  >{{ item?.serviceName }}</a
+                >
+                <div *ngSwitchDefault>{{ item?.serviceName }}</div>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="data?.statusCode != 4">
+              <td>
+                <div>{{ item?.serviceName }}</div>
+              </td>
+            </ng-container>
             <td class="text-right">
               {{ item?.unitPrice?.amount | number : '1.0-0' }}
             </td>

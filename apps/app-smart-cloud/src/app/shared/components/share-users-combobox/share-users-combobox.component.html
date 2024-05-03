@@ -1,4 +1,16 @@
-<nz-select [nzDisabled]="isDisable" (ngModelChange)="shareUserChanged($event)" [nzSuffixIcon]="'icon-share-user'" title="Tài nguyên được chia sẻ"
-           [(ngModel)]="userSelected" name="shareUser" [nzPlaceHolder]="'Tài nguyên'" [nzShowSearch]="true">
-  <nz-option *ngFor="let i of listUser; let idx = index" [nzLabel]="i.email" [nzValue]="i"/>
+<nz-select
+  [nzDisabled]="isDisable"
+  (ngModelChange)="shareUserChanged($event)"
+  [nzSuffixIcon]="'icon-share-user'"
+  title="Tài nguyên được chia sẻ"
+  [(ngModel)]="userSelected"
+  name="shareUser"
+  [nzPlaceHolder]="'Tài nguyên'"
+  [nzShowSearch]="true"
+>
+  <nz-option
+    *ngFor="let i of listUser; let idx = index"
+    [nzLabel]="i.email"
+    [nzValue]="i"
+  />
 </nz-select>
