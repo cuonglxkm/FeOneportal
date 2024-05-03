@@ -215,7 +215,8 @@
             <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
               <label *ngIf="typeEncrypt == true"
                      nz-checkbox
-                     formControlName="isEncryption">
+                     [nzDisabled]="!(enableEncrypt === enableMultiAttach) && !enableEncrypt"
+                     formControlName="isEncryption" (click)="onChangeStatusEncrypt()">
                 {{ 'volume.info.type.encrypt' |i18n }}
                 <img nz-popover
                      [nzPopoverContent]="'volume.tooltip.type.encrypt'|i18n"
@@ -226,8 +227,9 @@
               <br>
               <label *ngIf="typeMultiple == true"
                      nz-checkbox
+                     [nzDisabled]="!(enableEncrypt === enableMultiAttach) && !enableMultiAttach"
                      style="margin-top: 10px;"
-                     formControlName="isMultiAttach">
+                     formControlName="isMultiAttach" (click)="onChangeStatusMultiAttach()">
                 {{ 'volume.info.type.multiAttach' |i18n }}
                 <img nz-popover
                      [nzPopoverContent]="'volume.tooltip.type.multiAttach'|i18n"

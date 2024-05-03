@@ -103,6 +103,11 @@ export class CreateVolumeComponent implements OnInit {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
+      this.enableMultiAttach = value
+    });
+
+    this.validateForm.get('isEncryption').valueChanges.subscribe((value) => {
+      this.enableEncrypt = value
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
@@ -163,20 +168,20 @@ export class CreateVolumeComponent implements OnInit {
   isFirstMounting: boolean = false;
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
     this.router.navigate(['/app-smart-cloud/volumes']);
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project.id;
-    this.typeVPC = project.type
+    this.typeVPC = project.type;
 
 
     this.getListSnapshot();
     this.getListInstance();
 
-    this.getCatalogOffer('MultiAttachment')
-    this.getCatalogOffer('Encryption')
+    this.getCatalogOffer('MultiAttachment');
+    this.getCatalogOffer('Encryption');
 
     this.getListVolumes();
   }
@@ -230,17 +235,23 @@ export class CreateVolumeComponent implements OnInit {
 
   onChangeStatusEncrypt() {
 
-      this.validateForm.controls.isEncryption.setValue(true)
-      this.validateForm.controls.isMultiAttach.setValue(false)
-    console.log('encrypt',this.validateForm.controls.isEncryption.value)
-    console.log('multi',this.validateForm.controls.isMultiAttach.value)
+    this.validateForm.controls.isEncryption.setValue(true);
+    this.validateForm.controls.isMultiAttach.setValue(false);
+    if(this.validateForm.controls.isEncryption.value) {
+      this.validateForm.controls.isMultiAttach.disabled
+    }
+    // console.log('encrypt', this.validateForm.controls.isEncryption.value);
+    // console.log('multi', this.validateForm.controls.isMultiAttach.value);
   }
 
   onChangeStatusMultiAttach() {
-    this.validateForm.controls.isEncryption.setValue(false)
-    this.validateForm.controls.isMultiAttach.setValue(true)
-    console.log('encrypt',this.validateForm.controls.isEncryption.value)
-    console.log('multi',this.validateForm.controls.isMultiAttach.value)
+    this.validateForm.controls.isEncryption.setValue(false);
+    this.validateForm.controls.isMultiAttach.setValue(true);
+    if(this.validateForm.controls.isMultiAttach.value) {
+      this.validateForm.controls.isEncryption.disabled
+    }
+    // console.log('encrypt', this.validateForm.controls.isEncryption.value);
+    // console.log('multi', this.validateForm.controls.isMultiAttach.value);
   }
 
   //get danh sách máy ảo
