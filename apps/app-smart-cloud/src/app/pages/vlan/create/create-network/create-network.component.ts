@@ -15,6 +15,8 @@ import {
 import { FormCreateNetwork, FormSearchNetwork } from '../../../../shared/models/vlan.model';
 import { AppValidator, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { debounceTime, Subject } from 'rxjs';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -162,6 +164,7 @@ export class CreateNetworkComponent implements OnInit {
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private vlanService: VlanService,
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder) {
@@ -211,11 +214,11 @@ export class CreateNetworkComponent implements OnInit {
       this.vlanService.createNetwork(this.formCreateNetwork).subscribe(data => {
         this.isLoading = false;
         this.router.navigate(['/app-smart-cloud/vlan/network/list']);
-        this.notification.success('Thành công', 'Thêm mới Network thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note57'));
 
       }, error => {
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Thêm mới Network thất bại. ', error.error.detail);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note58'), error.error.detail);
       });
     } else {
       console.log('value form invalid', this.validateForm.getRawValue());

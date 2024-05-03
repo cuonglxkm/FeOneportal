@@ -1,6 +1,6 @@
 <button nz-button nzType="primary" nzSize="large" (click)="showModal()">
   <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
-  <span class="button-text-primary">Tạo mới Port</span>
+  <span class="button-text-primary">{{ 'app.order.status.New' | i18n }} Port</span>
 </button>
 <nz-modal [(nzVisible)]="isVisible"
           nzCentered
@@ -9,7 +9,7 @@
           [nzFooter]="footer"
           (nzOnCancel)="handleCancel()">
   <ng-template #modalTitle>
-    <span class="text-modal-title">Thêm mới</span>
+    <span class="text-modal-title">{{ 'app.order.status.New' | i18n }}</span>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm" style="padding-bottom: 0;">
@@ -76,13 +76,13 @@
   </ng-template>
   <ng-template #footer>
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary"
             (click)="submitForm()"
             [nzLoading]="isLoading" [disabled]="!validateForm.valid"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>
   </ng-template>
 </nz-modal>

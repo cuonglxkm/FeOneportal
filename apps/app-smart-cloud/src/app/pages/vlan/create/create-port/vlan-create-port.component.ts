@@ -11,6 +11,8 @@ import {
   ipAddressExistsValidator,
   ipAddressValidator
 } from '../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-vlan-create-port',
@@ -50,6 +52,7 @@ export class VlanCreatePortComponent implements OnInit{
               private notification: NzNotificationService,
               private vlanService: VlanService,
               private route: ActivatedRoute,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder,) {
 
   }
@@ -119,7 +122,7 @@ export class VlanCreatePortComponent implements OnInit{
         if(data) {
           this.isLoading = false
           this.isVisible = false
-          this.notification.success('Thành công', 'Tạo Port thành công')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note59'))
           this.onOk.emit(data)
           this.validateForm.reset()
         } else {
@@ -128,7 +131,7 @@ export class VlanCreatePortComponent implements OnInit{
       }, error => {
         this.isLoading = false
         this.isVisible = false
-        this.notification.error('Thất bại', 'Tạo Port thất bại. ', error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note60'), error.error.detail)
         this.validateForm.reset()
       })
     }

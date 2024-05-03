@@ -192,7 +192,7 @@ export class PolicyService extends BaseService {
 
   getUserPermissions(): Observable<any> {
     localStorage.removeItem('PermissionOPA')
-    debugger;
+    //debugger;
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/user', { headers: this.getHeaders() } );
   }
 

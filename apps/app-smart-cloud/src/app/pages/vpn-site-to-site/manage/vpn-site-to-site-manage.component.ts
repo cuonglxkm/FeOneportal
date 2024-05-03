@@ -17,7 +17,7 @@ import { IpsecPoliciesComponent } from './ipsec-policies/ipsec-policies.componen
 export class VpnSiteToSiteManage {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));  
-
+  projectObject: any;
   isBegin: boolean = false;
   isLoading: boolean = false
   response: VpnSiteToSiteDTO
@@ -35,6 +35,7 @@ export class VpnSiteToSiteManage {
   }
 
   projectChanged(project: ProjectModel) {
+    this.projectObject = project;
     this.project = project.id;
     console.log(this.project);
     this.getData(true)
@@ -45,6 +46,9 @@ export class VpnSiteToSiteManage {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    if(this.project && !this.projectObject && localStorage.getItem('projects') ){
+      this.projectObject = JSON.parse(localStorage.getItem('projects')).find(x => Number(x.id) == Number(this.project)) ? JSON.parse(localStorage.getItem('projects')).find(x => Number(x.id) == Number(this.project)) : null;
+    }
     this.getData(true)
   }
 

@@ -44,6 +44,7 @@ export class CreateVolumeComponent implements OnInit {
     time: FormControl<number>;
     description: FormControl<string>;
     storage: FormControl<number>;
+    radioAction: FormControl<any>;
     isEncryption: FormControl<boolean>;
     isMultiAttach: FormControl<boolean>;
   }> = this.fb.group({
@@ -57,6 +58,7 @@ export class CreateVolumeComponent implements OnInit {
     time: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     description: ['', Validators.maxLength(700)],
     storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
+    radioAction: [''],
     isEncryption: [false],
     isMultiAttach: [false]
   });
@@ -83,6 +85,9 @@ export class CreateVolumeComponent implements OnInit {
   typeEncrypt: boolean;
 
   dataSubjectStorage: Subject<any> = new Subject<any>();
+
+  enableEncrypt: boolean = true;
+  enableMultiAttach: boolean = false;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -170,8 +175,8 @@ export class CreateVolumeComponent implements OnInit {
     this.getListSnapshot();
     this.getListInstance();
 
-    // this.getCatalogOffer('MultiAttachment')
-    // this.getCatalogOffer('Encryption')
+    this.getCatalogOffer('MultiAttachment')
+    this.getCatalogOffer('Encryption')
 
     this.getListVolumes();
   }
@@ -220,6 +225,24 @@ export class CreateVolumeComponent implements OnInit {
     if (this.selectedValueHDD) {
       this.volumeCreate.volumeType = 'hdd';
       this.iops = 300;
+    }
+  }
+
+  onChangeStatusEncrypt() {
+    this.enableEncrypt = true
+    this.enableMultiAttach = false
+    if(this.enableEncrypt) {
+      this.validateForm.controls.isEncryption.setValue(this.enableEncrypt)
+      this.validateForm.controls.isMultiAttach.setValue(this.enableMultiAttach)
+    }
+  }
+
+  onChangeStatusMultiAttach() {
+    this.enableEncrypt = false
+    this.enableMultiAttach = true
+    if(this.enableMultiAttach) {
+      this.validateForm.controls.isEncryption.setValue(this.enableEncrypt)
+      this.validateForm.controls.isMultiAttach.setValue(this.enableMultiAttach)
     }
   }
 

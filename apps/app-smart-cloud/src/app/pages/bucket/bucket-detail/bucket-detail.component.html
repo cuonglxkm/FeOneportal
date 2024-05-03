@@ -295,7 +295,7 @@
           </td>
         </tr>
       </nz-table>
-      <h3 style="font-weight: bold">METADATA</h3>
+      <h3 style="font-weight: bold; margin-top: 10px">METADATA</h3>
       <nz-row *ngFor="let item of listOfMetadata" style="margin-top:10px">
         <input style="width: 40%; margin-right: 5%;" nzSize="large" nz-input placeholder="Nhập Key"
                [(ngModel)]="item.metaKey">
@@ -305,7 +305,7 @@
           <img style="margin-top: -4px" src="assets/imgs/trash.svg"/>
         </button>
       </nz-row>
-      <nz-row style="margin-top: 25px">
+      <nz-row style="margin-top: 15px">
         <button nz-button nzType="primary" (click)="addMoreMetadata()" nzSize="large" style="margin-right: 10px">
           <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
           <span class="button-text-primary">Tạo metadata</span>
