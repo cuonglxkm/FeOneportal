@@ -1,9 +1,11 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AppValidator } from '../../../../../../../../libs/common-utils/src';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormSearchNetwork } from '../../../../shared/models/vlan.model';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-vlan-edit',
@@ -37,6 +39,7 @@ export class VlanEditComponent implements AfterViewInit {
 
   constructor(private vlanService: VlanService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder) {
   }
 
@@ -99,14 +102,14 @@ export class VlanEditComponent implements AfterViewInit {
       this.vlanService.updateNetwork(this.id, this.validateForm.controls.nameNetwork.value).subscribe(data => {
           this.isLoadingEditVlan = false;
           this.isVisibleEditVlan = false;
-          this.notification.success('Thành công', 'Chỉnh sửa Network thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note47'));
           this.validateForm.reset();
           this.onOk.emit(data);
 
       }, error => {
         this.isLoadingEditVlan = false;
         this.isVisibleEditVlan = false;
-        this.notification.error('Thất bại', 'Chỉnh sửa Network thất bại');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note48'));
         this.validateForm.reset();
       });
     }
