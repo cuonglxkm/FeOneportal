@@ -924,6 +924,7 @@
   "app.create-policy.noti.warn": "Do not attach more than 10 policies",
   "app.create-policy.alertNextStep": "Next step warning",
   "app.create-policy.alertNextStep.des": "Please select policy to go to the next step",
+  "app.create-policy.confirm.des": "To create a new Policy, please select 'Agree' to confirm.",
 
   "app.breadcrumb.attach-policy": "Attach Policy",
   "app.breadcrumb.attach-policy.title": "Perform policy attachment",
@@ -1242,7 +1243,7 @@
   "app.router.note1": "A router connects devices in a network by forwarding data packets between them using assigned local IP addresses for each device on the network.",
   "app.router.note2": "This ensures that data packets reach their intended destination without getting lost within the network.",
   "app.router.note3": "Maximum 50 characters, no spaces or Vietnamese accents.",
-  "app.router.note4": "To create a Direct Connect service router, you need to select a Direct Connect network range provided by SmartCloud.",
+  "app.router.note4": "List of user-created Networks (To create a Direct connect service router, you need to select the wandc network range that VNPTCloud has provided.)",
   "app.router.note5": "You are performing Router deletion.",
   "app.router.note6": "You must delete the Router Interface and Static Router before deleting the Router.",
   "app.router.note7": "This action cannot be undone.",
