@@ -904,6 +904,7 @@
   "app.service.recommend": "Recommended",
   "app.service.custom-config": "Custom configuration",
   "app.service.custom-config-placeholder": "Please enter the value of",
+  "app.service.network-config": "Network configuration",
   "app.service.price-title": "Total amount",
   "app.service.cost": "Cost of",
   "app.service.include": "Including",

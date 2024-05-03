@@ -785,6 +785,7 @@
   "app.service.recommend": "Khuyến nghị",
   "app.service.custom-config": "Cấu hình tùy chỉnh",
   "app.service.custom-config-placeholder": "Nhập giá trị",
+  "app.service.network-config": "Cấu hình Network",
   "app.service.price-title": "Thành tiền",
   "app.service.cost": "Chi phí",
   "app.service.include": "Đã bao gồm",
