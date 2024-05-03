@@ -441,7 +441,7 @@
               </nz-table>
             </div>
 
-            <ng-container *ngIf="isEditMode">
+            <ng-container *ngIf="isEditMode || (listFormWorkerGroupUpgrade?.controls.length > 0 && i != listFormWorkerGroupUpgrade?.controls.length - 1)">
               <nz-divider nzDashed></nz-divider>
             </ng-container>
           </div>

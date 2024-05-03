@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { finalize } from 'rxjs';
 import SecurityGroupRule, { SecurityGroupData } from '../../../model/security-group.model';
@@ -14,6 +14,8 @@ import { KubernetesConstant } from '../../../constants/kubernetes.constant';
   styleUrls: ['./inbound.component.css'],
 })
 export class InboundComponent implements OnInit {
+
+  @Output() deletedInbound = new EventEmitter<SecurityGroupRule>();
 
   listOfInbound: SecurityGroupRule[];
   pageIndex: number;
@@ -88,7 +90,10 @@ export class InboundComponent implements OnInit {
       }});
   }
 
-  handleOkDeleteInbound() {
+  handleOkDeleteInbound(idInbound: string) {
     this.getRuleInbound();
+
+    const inbound = this.listOfInbound.find(item => item.id == idInbound);
+    this.deletedInbound.emit(inbound);
   }
 }

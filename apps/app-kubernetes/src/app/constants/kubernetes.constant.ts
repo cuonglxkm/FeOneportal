@@ -45,4 +45,19 @@ export class KubernetesConstant {
 
   public static WORKERNAME_PATTERN = '^[a-z0-9-_]*$';
 
+  // sg constant
+  public static INBOUND_RULE = "ingress";
+
+  public static CREATE_INBOUND_RULE = "CREATE_INBOUND";
+
+  public static DELETE_INBOUND_RULE = "DELETE_INBOUND";
+
+  public static OUTBOUND_RULE = "egress";
+
+  public static CREATE_OUTBOUND_RULE = "CREATE_OUTBOUND";
+
+  public static DELETE_OUTBOUND_RULE = "DELETE_OUTBOUND";
+
+  public static DEFAULT_RESOURCE = "rule";
+
 }

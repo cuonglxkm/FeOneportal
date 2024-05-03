@@ -1,7 +1,8 @@
+import { ShareService } from './../../../../services/share.service';
 import { AppValidator } from 'libs/common-utils/src';
 import { SecurityGroupService } from './../../../../services/security-group.service';
 import { SecurityGroupRuleCreateForm } from './../../../../shared/models/security-group-rule';
-import { SecurityGroup, SecurityGroupSearchCondition } from './../../../../model/security-group.model';
+import { SGLoggingReqDto, SecurityGroup, SecurityGroupSearchCondition } from './../../../../model/security-group.model';
 import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import {
@@ -16,6 +17,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { KubernetesConstant } from 'apps/app-kubernetes/src/app/constants/kubernetes.constant';
 
 export function integerInRangeValidator(min: number, max: number): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -107,7 +109,8 @@ export class FormRuleComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private cdr: ChangeDetectorRef,
-              private router: Router) {
+              private router: Router,
+              private shareService: ShareService) {
     this.validateForm.controls.remoteIpPrefix.setValidators([Validators.required, AppValidator.ipWithCIDRValidator])
     this.validateForm.controls.portRangeMin.setValidators([Validators.required, Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/), integerInRangeValidator(1, 65535)])
     this.validateForm.controls.portRangeMax.setValidators([Validators.required, Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/), integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin')])
@@ -258,7 +261,7 @@ export class FormRuleComponent implements OnInit {
 
   doCreate() {
     if(this.validateForm.valid) {
-      console.log('form', this.validateForm.getRawValue())
+      // console.log('form', this.validateForm.getRawValue())
       const formData = Object.assign(this.validateForm.value, {
         direction: this.direction,
         projectId: this.project,
@@ -297,20 +300,30 @@ export class FormRuleComponent implements OnInit {
       this.formCreateSGRule.region = this.region
 
       this.isLoading = true;
-      this.securityGroupService.createRule(this.formCreateSGRule).subscribe(
-        data => {
-          // if(data.includes('')) {
+      this.securityGroupService.createRule(this.formCreateSGRule)
+      .subscribe({
+        next: (data) => {
           this.isLoading = false;
           this.notification.success('Thành công', 'Tạo mới thành công');
           this.onOk.emit(data);
-          // }
 
+          // save log
+          let logDto = new SGLoggingReqDto();
+          this.formCreateSGRule.direction == KubernetesConstant.INBOUND_RULE ?
+            logDto.operation = KubernetesConstant.CREATE_INBOUND_RULE
+            : logDto.operation = KubernetesConstant.CREATE_OUTBOUND_RULE;
+
+          logDto.userId = this.tokenService.get()?.userId;
+          logDto.jsonRule = JSON.stringify(this.formCreateSGRule);
+          logDto.action = 'create';
+
+          this.shareService.emitSGLog(logDto);
         },
-        error => {
+        error: (error) => {
           this.isLoading = false;
           this.notification.error('Thất bại', error.error.detail);
         }
-      );
+      })
     } else {
       console.log('abc', this.validateForm)
       console.log('invalid', this.validateForm.getRawValue())

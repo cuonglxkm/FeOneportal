@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
-import { CreateSGReqDto, FormDeleteRule, SecurityGroup, SecurityGroupSearchCondition } from "../model/security-group.model";
+import { CreateSGReqDto, FormDeleteRule, SGLoggingReqDto, SecurityGroup, SecurityGroupSearchCondition } from "../model/security-group.model";
 import { BaseService } from "../shared/services/base.service";
 import { RuleSearchCondition, SecurityGroupRuleCreateForm } from "../shared/models/security-group-rule";
 
@@ -57,6 +57,10 @@ export class SecurityGroupService extends BaseService {
 
   createRule(form: SecurityGroupRuleCreateForm) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form));
+  }
+
+  createLogSG(data: SGLoggingReqDto) {
+    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/create-sg-log`, data, {headers: this.getHeaders()});
   }
 
 }

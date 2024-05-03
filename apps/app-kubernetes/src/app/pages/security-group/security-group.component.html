@@ -45,14 +45,14 @@
     <div class="mt-5">
       <nz-tabset>
         <nz-tab [nzTitle]="inboundTitleTpl">
-          <one-portal-inbound [listOfInbound]="listOfInbound"></one-portal-inbound>
+          <one-portal-inbound [listOfInbound]="listOfInbound" (deletedInbound)="saveLogSG($event)"></one-portal-inbound>
         </nz-tab>
         <ng-template #inboundTitleTpl>
           <label>Inbound</label>
         </ng-template>
 
         <nz-tab [nzTitle]="outboundTitleTpl">
-          <one-portal-outbound [listOfOutbound]="listOfOutbound"></one-portal-outbound>
+          <one-portal-outbound [listOfOutbound]="listOfOutbound" (deletedOutbound)="saveLogSG($event)"></one-portal-outbound>
         </nz-tab>
         <ng-template #outboundTitleTpl>
           <label>Outbound</label>

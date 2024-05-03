@@ -112,6 +112,10 @@ img {
   color: #6C757D;
 }
 
+#type::first-letter {
+  text-transform: capitalize;
+}
+
 .bg-button {
   background-color: #0066B3;
 }
