@@ -28,7 +28,7 @@
     </div>
   </ng-template>
 </page-header>
-<nz-content *ngIf="typeVPC == 0">
+<nz-content>
   <form nz-form [formGroup]="validateForm" nzLayout="vertical">
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
@@ -274,7 +274,7 @@
               <div class="label">
                 <span>{{ 'app.service.used'|i18n }}</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span> - Tháng</span>
+                <span> - {{'app.Month'|i18n}}</span>
                 <img nz-popover [nzPopoverContent]="'volume.tooltip.time'|i18n"
                      nzPopoverPlacement="bottom" style="margin-left: 5px;"
                      src="assets/imgs/pajamas_question.svg" alt="" />
@@ -383,5 +383,5 @@
   </form>
 </nz-content>
 <nz-content *ngIf="typeVPC == 1">
-  <one-portal-create-volume-vpc [typeEncrypt]="typeEncrypt" [typeMultiAttach]="typeMultiple" />
+  <one-portal-create-volume-vpc />
 </nz-content>

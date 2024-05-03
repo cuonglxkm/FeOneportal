@@ -1438,6 +1438,7 @@
 
   "app.backup.package.breadcrumb.backup": "Backup",
   "app.backup.package.breadcrumb.create.backup.package": "Create Backup Package",
+  "app.backup.package.breadcrumb.detail": "Backup Package Details",
   "app.backup.package.information": "Backup Package Information",
   "app.backup.package.name": "Backup Package name",
   "app.backup.package.storage": "Backup Package capacity",
