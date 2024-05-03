@@ -1,17 +1,17 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Tạo mới Subnet'" xmlns="http://www.w3.org/1999/html">
+             title="{{ 'app.vlan.note66' | i18n }}" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/vlan/network/list">VLAN</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/vlan/network/detail/{{ idNetwork }}">Chi tiết Network</a>
+        <a routerLink="/app-smart-cloud/vlan/network/detail/{{ idNetwork }}">{{ 'app.vlan.note65' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Tạo mới Subnet
+        {{ 'app.vlan.note66' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -31,8 +31,8 @@
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>Tên Subnet (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
-            <img nz-popover [nzPopoverContent]="'Nhập tên Subnet'"
+            <span>{{ 'app.vlan.note5' | i18n }} (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
+            <img nz-popover nzPopoverContent="{{ 'app.vlan.note6' | i18n }}"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
@@ -41,21 +41,21 @@
           <input nz-input
                  class="input-custom"
                  formControlName="name"
-                 [placeholder]="'Nhập tên Subnet'"
+                 placeholder="{{ 'app.vlan.note6' | i18n }}"
                  [maxlength]="50" />
           <ng-template #nameSubnetErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Tên subnet không được để trống</ng-container>
-            <ng-container *ngIf="control.hasError('maxlength')">Tên subnet tối đa 50 ký tự</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Tên subnet không được chứa ký tự đặc biệt</ng-container>
-            <ng-container *ngIf="control.hasError('duplicateName')">Tên subnet đã tồn tại vui lòng nhập tên khác</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{ 'app.vlan.note8' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.vlan.note9' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{ 'app.vlan.note10' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">{{ 'app.vlan.note11' | i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>IP Version (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
-            <img nz-popover [nzPopoverContent]="'Hiện tại chỉ cùng cấp IPv4'"
+            <span>{{ 'app.vlan.note14' | i18n }} (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
+            <img nz-popover nzPopoverContent="{{ 'app.vlan.note81' | i18n }}"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
@@ -67,8 +67,8 @@
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>Địa chỉ (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
-            <img nz-popover [nzPopoverContent]="'Subnet phải là dải con của network x.x.0.0/16 (CRID của network được chọn)'"
+            <span>{{ 'app.payment-detail.address' | i18n }} (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
+            <img nz-popover nzPopoverContent="{{ 'app.vlan.note28' | i18n }}"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
@@ -79,14 +79,14 @@
                  formControlName="subnetAddressRequired"
                  [placeholder]="'x.x.0.0/16'" />
           <ng-template #networkAddressErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Địa chỉ không được phép để trống</ng-container>
-            <ng-container *ngIf="control.hasError('invalidIPAddress')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{ 'app.vlan.note29' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIPAddress')">{{ 'app.vlan.note30' | i18n }}</ng-container>
             <!--          <ng-container *ngIf="control.hasError('pattern')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>-->
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-alert nzType="warning"
-                nzMessage="Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24"
+                nzMessage="{{ 'app.vlan.note30' | i18n }}"
                 nzShowIcon>
       </nz-alert>
       <nz-form-item>
@@ -95,9 +95,8 @@
             <div nz-col nzSpan="12">
               <label nz-checkbox formControlName="disableGatewayIp">
                 <nz-space [nzSize]="4" nzAlign="center">
-                  <span *nzSpaceItem class="text-value">Disable GatewayIP</span>
-                  <img *nzSpaceItem nz-popover [nzPopoverContent]="'Subnet được add Routerinterface thì sẽ không Disable Gateway IP và ' +
-                   'ngươc lại Subnet không có gateway thì không không add Routerinterface'"
+                  <span *nzSpaceItem class="text-value">{{ 'app.vlan.note33' | i18n }}</span>
+                  <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note31' | i18n }}"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-space>
@@ -107,10 +106,7 @@
               <label nz-checkbox formControlName="enableDhcp" >
                 <nz-space [nzSize]="4" nzAlign="center">
                   <span *nzSpaceItem class="text-value">DHCP</span>
-                  <img *nzSpaceItem nz-popover [nzPopoverContent]="'DHCP là cơ chế cấp phát động địa chỉ IP cho subnet đó. Tức là khi tạo ' +
-                                        'Port mà không chỉ định IP nào thì DHCP sẽ tự gán vào Port vừa tạo 1 IP ' +
-                                        'Ưu điểm: Không cần quản lý địa chỉ IP, hệ thống sẽ tự động cấp phát địa chỉ IP ' +
-                                        'Nhược điểm: DHCP nó sẽ dùng ngay 03 IP cho DHCP server. điều này dẫn tới việc nếu subnet chỉ có 8 IP chẳng hạn, sẽ chỉ dùng dc có 5 IP'"
+                  <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note32' | i18n }}"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-space>
@@ -123,36 +119,32 @@
         <nz-form-label>
           <nz-space [nzSize]="4" nzAlign="center">
             <span *nzSpaceItem>Gateway</span>
-            <img *nzSpaceItem nz-popover [nzPopoverContent]="'Nếu không nhập thì hệ thống sẽ tự động lấy địa chỉ IP đầu tiên trong dải mạng để làm gateway, ví dụ: 10.21.0.1\n'+
-'- Nếu để trống thì hệ thống sẽ tự động lấy địa chỉ IP đầu tiên trong dải mạng để làm gateway'"
+            <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note34' | i18n }}"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </nz-space>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-          <input nz-input class="input-custom" formControlName="gateway" placeholder="Nhập Gateway"/>
+          <input nz-input class="input-custom" formControlName="gateway" placeholder="{{ 'app.vlan.note35' | i18n }}"/>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
           <nz-space [nzSize]="4">
             <span *nzSpaceItem>Allocation Pool</span>
-            <img *nzSpaceItem nz-popover [nzPopoverContent]="'Điền 1 IP bắt đầu và 1 IP kết thúc của dải mạng cách nhau bởi dấu '+ ', ' +
-                     '\nYêu cầu chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24' +
-                     '\nIP sau lớn hơn IP trước (ví dụ: 172.16.0.2, 172.16.0.3)'"
+            <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note36' | i18n }}"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </nz-space>
         </nz-form-label>
-        <nz-form-control nzDisableAutoTips [nzErrorTip]="allocationPoolErrorTpl">
-          <nz-textarea-count [nzMaxCharacterCount]="100">
-            <textarea rows="4" formControlName="allocationPool" (ngModelChange)="onChangeInput($event)" nz-input></textarea>
+        <nz-form-control nzDisableAutoTips>
+          <nz-textarea-count [nzMaxCharacterCount]="255">
+            <textarea rows="4" [value]="pool" nz-input [disabled]="true"></textarea>
           </nz-textarea-count>
           <ng-template #allocationPoolErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('invalidIpAddressFormat')">Địa chỉ IP không đúng định dạng, IP cách nhau bởi dấu (,).</ng-container>
-            <ng-container *ngIf="control.hasError('invalidIpAddressRange')">Địa chỉ IP không hợp lệ. Yêu cầu chọn các dải
-              trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24.</ng-container>
-            <ng-container *ngIf="control.hasError('invalidIpSequence')">Địa chỉ IP không hợp lệ, IP sau lớn hơn IP trước (ví dụ: 172.16.0.2, 172.16.0.3)</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIpAddressFormat')">{{ 'app.vlan.note37' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIpAddressRange')">{{ 'app.vlan.note38' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIpSequence')">{{ 'app.vlan.note39' | i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -161,11 +153,11 @@
     <nz-form-item nzAlign="bottom" nzJustify="end">
       <nz-space nzSize="large">
         <button *nzSpaceItem nz-button nzType="default" class="button-cancel">
-          <span nz-icon nzType="close" nzTheme="outline"></span>Hủy</button>
+          <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}</button>
         <nz-form-control *nzSpaceItem>
           <button nz-button nzType="primary" [disabled]="!validateForm.valid"
                   class="button-ok" (click)="handleCreate()" [nzLoading]="isLoading">
-            <span nz-icon nzType="check" nzTheme="outline" ></span>Tạo mới</button>
+            <span nz-icon nzType="check" nzTheme="outline" ></span>{{ 'app.label.create' | i18n }}</button>
         </nz-form-control>
       </nz-space>
     </nz-form-item>

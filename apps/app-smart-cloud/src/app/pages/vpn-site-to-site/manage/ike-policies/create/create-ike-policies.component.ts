@@ -14,7 +14,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../../libs/commo
   styleUrls: ['./create-ike-policies.component.less'],
 })
 export class CreateIkePoliciesComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   ikePolicyModel: IKEPolicyModel = {
     id: null,

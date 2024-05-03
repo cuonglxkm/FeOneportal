@@ -11,7 +11,7 @@ import { AccessRule } from '../../../../shared/models/access-rule.model';
   styleUrls: ['./list-access-rule.component.less'],
 })
 export class ListAccessRuleComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   value: string

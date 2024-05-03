@@ -29,8 +29,8 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    if (localStorage.getItem('region') != null) {
-        this.regionId = JSON.parse(localStorage.getItem('region')).regionId;
+    if (localStorage.getItem('regionId') != null) {
+        this.regionId = JSON.parse(localStorage.getItem('regionId'));
       // this.valueChanged.emit(this.selectedRegion)
     }
     // this.loadProjects();

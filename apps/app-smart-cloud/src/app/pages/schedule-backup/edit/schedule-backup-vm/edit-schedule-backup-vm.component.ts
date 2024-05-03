@@ -14,7 +14,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-u
     styleUrls: ['./edit-schedule-backup-vm.component.less'],
 })
 export class EditScheduleBackupVmComponent implements OnInit {
-    region = JSON.parse(localStorage.getItem('region')).regionId;
+    region = JSON.parse(localStorage.getItem('regionId'));
     project = JSON.parse(localStorage.getItem('projectId'));
     modeType: any = '4'
     mode = [

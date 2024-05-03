@@ -156,7 +156,7 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          nz-tooltip="Tìm kiếm"
+          [nz-tooltip]="'app.button.search' | i18n"
           (click)="getGroup()"
         />
       </ng-template>
@@ -300,7 +300,7 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          nz-tooltip="Tìm kiếm"
+          [nz-tooltip]="'app.button.search' | i18n"
           (click)="getCopyUserPlicies()"
         />
       </ng-template>
@@ -440,7 +440,7 @@
             src="assets/imgs/search.svg"
             alt=""
             style="cursor: pointer"
-            nz-tooltip="Tìm kiếm"
+            [nz-tooltip]="'app.button.search' | i18n"
             (click)="getPermissionPolicies()"
           />
         </ng-template>

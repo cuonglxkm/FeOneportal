@@ -63,12 +63,12 @@
             type="text"
             required
             id="nameSnapshot"
-            placeholder="Nhập tên lịch Snapshot"
+            [placeholder]="'app.input.name' | i18n"
             formControlName="name"
             class="input-custom"
           />
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Tên lịch snapshot không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">Tên lịch snapshot chứa chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
           </ng-template>
         </nz-form-control>
@@ -88,7 +88,7 @@
           <nz-form-control nzErrorTip="File System không đuợc để trống!">
           <nz-select
             nzMode="multiple"
-            nzPlaceHolder="Chọn File System"
+            [nzPlaceHolder]="'app.choose.file.system' | i18n"
             formControlName="listOfFileSystem"
             (ngModelChange)="updateSelectedFileSystems($event)"
             class="input-select-custom"
@@ -101,6 +101,21 @@
           </nz-select>
         </nz-form-control>
         </nz-form-item>
+        
+        <nz-form-item>
+          <nz-form-label nzFor="name">
+            <div>
+              <span>Áp dụng cho File System</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+              <span nz-icon nzType="question-circle"
+                    nzTheme="outline"
+                    nz-popover
+                    [nzPopoverContent]="'Chọn File System để thực hiện Snapshot.'"
+                    nzPopoverPlacement="bottom"></span>
+            </div>
+          </nz-form-label>
+        </nz-form-item>
+
         <nz-form-item>
           <nz-form-label nzFor="name">
             <div>
@@ -398,10 +413,10 @@
           </nz-form-control>
           </nz-form-item>
         </ng-container>
-        <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
+        <nz-form-label [nzSm]="6" [nzXs]="24">{{ 'app.service.description' | i18n }}</nz-form-label>
         <textarea
           formControlName="description"
-          placeholder="Nhập mô tả"
+          [placeholder]="'app.input.des' | i18n"
           rows="4"
           nz-input
         ></textarea>
@@ -415,7 +430,7 @@
           <span>{{FileSystemSnapshotForm.value.name}}</span>
         </div>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Tên File System</h3>     
+          <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>     
             <div style="overflow-wrap: break-word;">{{ selectedFileSystemName }}</div>
         </div>
         <div style="margin-bottom: 20px">
@@ -504,7 +519,7 @@
           [disabled]="FileSystemSnapshotForm.invalid"
         >
           <img src="assets/imgs/wallet.svg" alt="" />
-          <span class="button-text-primary">Khởi tạo</span>
+          <span class="button-text-primary">{{ 'app.button.create' | i18n }}</span>
         </button>
       </nz-card>
     </div>

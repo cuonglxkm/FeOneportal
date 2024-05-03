@@ -1,5 +1,5 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Quản lý File System'">
+             [title]="'app.file.system.manage' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
@@ -27,7 +27,7 @@
       <nz-card style="border-radius: 8px;">
         <nz-row nzJustify="space-between">
           <nz-col [nzSpan]="8">
-            <span class="text-card-header">Danh sách File System</span>
+            <span class="text-card-header">{{ 'app.file.system.list' | i18n }}</span>
           </nz-col>
           <nz-col [nzSpan]="16" style="flex:none;">
             <div>
@@ -41,12 +41,12 @@
                        (input)="onInputChange($event.target['value'])" />
               </nz-input-group>
               <ng-template #prefixIconSearch>
-                <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" />
               </ng-template>
               <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large"
                       (click)="navigateToCreateFileSystem(typeVpc)">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
-                <span class="button-text-primary">Tạo File System</span>
+                <span class="button-text-primary">{{ 'app.file.system.create.button' | i18n }}</span>
               </button>
             </div>
           </nz-col>
@@ -65,13 +65,13 @@
           <thead>
           <tr>
             <th>STT</th>
-            <th>Tên</th>
+            <th>{{ 'app.name' | i18n }}</th>
             <th>{{ 'app.text.status' | i18n }}</th>
             <th>{{ 'app.task.status' | i18n }}</th>
-            <th>Loại File System</th>
+            <th>{{ 'app.file.system.type' | i18n }}</th>
             <th>{{ 'app.protocol' | i18n }}c</th>
-            <th>Dung lượng</th>
-            <th>Thao tác</th>
+            <th>{{ 'app.capacity' | i18n }}</th>
+            <th>{{ 'app.text.operation' | i18n }}</th>
           </tr>
           </thead>
           <tbody>
@@ -94,13 +94,12 @@
                       [nzDropdownMenu]="opMenu"></span>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item>Tạo Snapshot</li>
-                    <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/resize/' + data.id">Điều
-                      chỉnh dung lượng
+                    <li nz-menu-item>{{ 'app.snapshot.create' | i18n }}</li>
+                    <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/resize/' + data.id">{{ 'app.capacity.resize' | i18n }}
                     </li>
                     <li nz-menu-item
                         [routerLink]="'/app-smart-cloud/file-storage/file-system/' + data.cloudId + '/access-rule/list'">
-                      Quản lý Access Rule
+                        {{ 'app.access.rule.manage' | i18n }}
                     </li>
                     <one-portal-delete-file-system [region]="region"
                                                    [project]="project"
@@ -127,19 +126,18 @@
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
               <span class="text-intro-title" style="color: #0066b3">File Storage <br>
-        Lưu trữ dữ liệu theo cấu trúc phân cấp</span>
+                {{ 'app.file.system.intro' | i18n }}</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">File storage, hệ thống lưu trữ dữ liệu theo “cấu trúc phân cấp”.
-                  Dữ liệu sẽ được lưu trong các tập tin và thư mục, và được hiển thị cho cả hệ thống lưu trữ lẫn hệ thống truy xuất dưới cùng một định dạng.</span>
+                <span class="text-intro-desc">{{ 'app.file.system.des' | i18n }}</span>
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'"
                   (click)="navigateToCreateFileSystem(typeVpc)" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            Tạo mới File Storage
+            {{ 'app.file.system.create.button' | i18n }}
           </button>
         </result>
       </nz-card>

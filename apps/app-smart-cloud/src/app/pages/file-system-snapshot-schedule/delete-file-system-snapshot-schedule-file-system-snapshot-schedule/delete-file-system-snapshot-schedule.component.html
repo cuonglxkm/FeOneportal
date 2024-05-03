@@ -40,7 +40,7 @@
             nz-input
             class="input-custom"
             formControlName="name"
-            [placeholder]="'Nhập tên lịch snapshot'"
+            [placeholder]="'app.input.name' | i18n"
           />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"

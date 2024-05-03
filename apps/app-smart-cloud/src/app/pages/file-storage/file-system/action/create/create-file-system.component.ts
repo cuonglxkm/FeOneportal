@@ -20,7 +20,7 @@ import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../
   styleUrls: ['./create-file-system.component.less']
 })
 export class CreateFileSystemComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   validateForm: FormGroup<{

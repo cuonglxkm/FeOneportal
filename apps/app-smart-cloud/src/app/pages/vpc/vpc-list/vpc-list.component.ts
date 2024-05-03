@@ -113,16 +113,18 @@ export class VpcListComponent implements OnInit{
     this.nameDelete = '';
     this.isVisibleDelete = false;
     this.isVisibleDeleteVPC = false;
+    debugger
     this.isVisibleEditNormal = false;
     this.disableDelete = true;
   }
 
   openIpDelete() {
-    this.vpcService.delete(this.itemDelete.cloudIdentityId)
+    this.vpcService.delete(this.itemDelete.id)
       .pipe(finalize(() => {
         this.getData(true);
         this.isVisibleDelete = false;
         this.isVisibleDeleteVPC = false;
+        debugger
         this.disableDelete = true;
       }))
       .subscribe(

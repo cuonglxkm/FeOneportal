@@ -20,7 +20,7 @@ import { I18NService } from '@core';
   styleUrls: ['./resize-volume-vpc.component.less'],
 })
 export class ResizeVolumeVpcComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   volumeInfo: VolumeDTO;
@@ -34,7 +34,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
     description: ['', Validators.maxLength(700)],
-    storage: [1, [Validators.required]],
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     radio: ['']
   });
 
@@ -173,6 +173,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   }
 
   doEditSizeVolume() {
+    this.isLoadingConfirm = true
     this.volumeInit()
     let request = new EditSizeVolumeModel();
     request.customerId = this.volumeEdit.customerId;
@@ -187,13 +188,12 @@ export class ResizeVolumeVpcComponent implements OnInit {
         serviceDuration: 1
       }
     ]
-    this.isLoadingConfirm = true
     this.volumeService.editSizeVolume(request).subscribe(data => {
         if (data.code == 200) {
           this.isLoadingConfirm = false
           this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.resize.success'))
           console.log(data);
-          this.router.navigate(['/app-smart-cloud/volumes']);
+          setTimeout(() => {this.router.navigate(['/app-smart-cloud/volumes']);}, 2500)
         } else if (data.code == 310) {
           this.isLoadingConfirm = false;
           // this.router.navigate([data.data]);
@@ -204,7 +204,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
         }
       }, error => {
         this.isLoadingConfirm = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.resize.fail') + error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('') + error.error.detail)
       }
     );
   }

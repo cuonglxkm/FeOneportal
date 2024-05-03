@@ -1,8 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { m_LBSDNListener } from '../../../../../shared/models/load-balancer.model';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-list-listener-in-lb',
@@ -12,7 +14,7 @@ import { NzTableQueryParams } from 'ng-zorro-antd/table';
 export class ListListenerInLbComponent implements OnInit{
   @Input() idLB: number
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   listListeners: m_LBSDNListener[] = []
@@ -22,10 +24,11 @@ export class ListListenerInLbComponent implements OnInit{
 
   pageSize: number = 5
   pageIndex: number = 1
-  constructor(private loadBalancerService: LoadBalancerService) {
+  constructor(private loadBalancerService: LoadBalancerService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.listenerStatus = new Map<String, string>();
-    this.listenerStatus.set('KHOITAO', 'Đang hoạt động');
-    this.listenerStatus.set('ERROR', 'Tạm dừng');
+    this.listenerStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
+    this.listenerStatus.set('ERROR', this.i18n.fanyi('app.status.suspend'));
   }
 
   currentPageData: any

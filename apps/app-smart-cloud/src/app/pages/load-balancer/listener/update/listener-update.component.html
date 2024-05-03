@@ -130,7 +130,7 @@
             <span>{{ 'app.service.description' | i18n }}</span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
-          <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
+          <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" [placeholder]="'app.input.des' | i18n" style="width: 100%"
                     formControlName="description"></textarea>
           </nz-form-control>
         </nz-form-item>
@@ -159,19 +159,20 @@
                 <td>ACTIVE</td>
                 <td>
                   <!----Chỉnh sửa----->
-                  <span style="color: #0066B3; margin-right: 10px;"
-                        nz-tooltip
-                        nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom"
-                        nz-icon
-                        nzType="edit"
-                        nzTheme="outline"
-                  ></span>
+                  <one-portal-edit-pool-in-lb [region]="region"
+                                      [project]="project"
+                                      [poolId]="data.id"
+                                      [loadBlancerId]="idLB"
+                                      [listenerId]="data.listener_id"
+                                      (onOk)="handleEditOk()" />
                   <!----Xóa---->
-                  <span style="color: #0066B3"
-                        nz-tooltip
-                        nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
-                        nz-icon nzType="delete" nzTheme="outline"
-                  ></span>
+                  <one-portal-delete-pool-in-lb [region]="region"
+                                      [project]="project"
+                                      [poolId]="data.id"
+                                      [loadBlancerId]="idLB"
+                                      [listenerId]="data.listener_id"
+                                      [namePool]="data.name"
+                                      (onOk)="handleDeleteOk()" />
                 </td>
               </tr>
               </tbody>
@@ -246,7 +247,7 @@
         <div class="text-value">Tên Listener</div>
         <div style="margin-top: 10px" class="text-label">{{this.validateForm.controls['listenerName'].value}}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">Giao thức</div>
+        <div class="text-value">{{ 'app.protocol' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">{{protocolListener}}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <div class="text-value">Port</div>

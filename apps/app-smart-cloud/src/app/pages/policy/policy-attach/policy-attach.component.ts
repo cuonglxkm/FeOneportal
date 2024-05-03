@@ -4,9 +4,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {PopupAttachPolicyComponent} from "../popup-policy/popup-attach-policy.component";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {PolicyService} from "../../../shared/services/policy.service";
+import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
-import {AttachOrDetachRequest} from "../policy.model";
+import {AttachOrDetachRequest} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
 import {UserGroupService} from "../../../shared/services/user-group.service";
 import {UserService} from "../../../shared/services/user.service";
 import {FormSearchUserGroup} from "../../../shared/models/user-group.model";
@@ -23,7 +23,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../libs/common-util
 })
 export class PolicyAttachComponent implements OnInit {
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
 
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -133,11 +133,11 @@ export class PolicyAttachComponent implements OnInit {
     request.items = requestData;
     console.log(request);
     this.policiService.attachOrDetach(request).subscribe(data => {
-        this.notification.success('Thành công', 'Gắn Policy thành công');
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.attach-policy.noti.success"));
         this.searchEntities();
       },
       error => {
-        this.notification.error('Có lỗi xảy ra', 'Gắn Policy thất bại');
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.attach-policy.noti.fail"));
       }
     )
   }
@@ -173,7 +173,7 @@ export class PolicyAttachComponent implements OnInit {
           this.isLoadingEntities = false;
         },
         error => {
-          this.notification.error('Có lỗi xảy ra', 'Lấy danh sách Attached USER thất bại');
+          this.notification.error(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.attach-policy.user.noti.fail"));
           this.isLoadingEntities = false;
         }
       )
@@ -189,7 +189,7 @@ export class PolicyAttachComponent implements OnInit {
           this.isLoadingEntities = false;
         },
         error => {
-          this.notification.error('Có lỗi xảy ra', 'Lấy danh sách Attached USER GROUPS thất bại');
+          this.notification.error(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.attach-policy.user-group.noti.fail"));
           this.isLoadingEntities = false;
         }
       )

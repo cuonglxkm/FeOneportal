@@ -5,7 +5,7 @@
         <div class="ant-card-body" style="text-align: center;">
           <div style="gap: 20px;">
             <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceCount }}</span><br>
-            <span class="text-body-card-dashboard" style="margin-top: 50px;">Dịch vụ</span>
+            <span class="text-body-card-dashboard" style="margin-top: 50px;">{{'app.dashboard.subscription.service' | i18n}}</span>
           </div>
         </div>
 
@@ -16,7 +16,7 @@
         <div class="ant-card-body" style="text-align: center;">
           <div style="gap: 20px;">
             <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceActiveCount }}</span><br>
-            <span class="text-body-card-dashboard" style="margin-top: 50px;">Đang hoạt động</span>
+            <span class="text-body-card-dashboard" style="margin-top: 50px;">{{'app.dashboard.subscription.service.active'|i18n}}</span>
           </div>
         </div>
 
@@ -27,7 +27,7 @@
         <div class="ant-card-body" style="text-align: center;">
           <div style="gap: 20px;">
             <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceNearExpireCount }}</span><br>
-            <span class="text-body-card-dashboard" style="margin-top: 50px;">Sắp hết hạn</span>
+            <span class="text-body-card-dashboard" style="margin-top: 50px;">{{'app.dashboard.subscription.service.near.expire'|i18n}}</span>
           </div>
         </div>
 
@@ -38,14 +38,14 @@
         <div class="ant-card-body" style="text-align: center;">
           <div style="gap: 20px;">
             <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceExpireCount }}</span><br>
-            <span class="text-body-card-dashboard" style="margin-top: 50px;">Hết hạn</span>
+            <span class="text-body-card-dashboard" style="margin-top: 50px;">{{ 'app.dashboard.subscription.service.expire'|i18n }}</span>
           </div>
         </div>
       </nz-card>
     </nz-col>
   </nz-row>
   <nz-card style="border-radius: 8px; margin-top: 15px;">
-    <span class="text-card-header">Chi phí và sử dụng</span>
+    <span class="text-card-header">{{ 'app.dashboard.payment.and.cost' | i18n }}</span>
     <nz-row nzGutter="24">
       <nz-col nzSpan="8">
         <div #pieChart></div>
@@ -65,11 +65,11 @@
                     (nzPageIndexChange)="onPageIndexCostChange($event)">
             <thead>
             <tr>
-              <th>Mã thanh toán</th>
-              <th>Dịch vụ</th>
-              <th>Tổng tiền (VND)</th>
-              <th>Ngày khởi tạo</th>
-              <th>Trạng thái</th>
+              <th>{{ 'app.dashboard.payment.and.cost.payment.code'|i18n }}</th>
+              <th>{{ 'app.dashboard.payment.and.cost.service' |i18n }}</th>
+              <th>{{ 'app.dashboard.payment.and.cost.total.payment'|i18n }}</th>
+              <th>{{ 'app.dashboard.payment.and.cost.create.date'|i18n}}</th>
+              <th>{{ 'app.dashboard.payment.and.cost.status'|i18n }}</th>
             </tr>
             </thead>
             <tbody>
@@ -79,8 +79,8 @@
               <td nzAlign="right">{{ data.totalAmount | number}}</td>
               <td>{{ data.createdDate | date: 'dd/MM/yyyy' }}</td>
               <td>
-                <span *ngIf="data.status === 'PAID'" style="color: #008D47;">Đã thanh toán</span>
-                <span *ngIf="data.status !== 'PAID'" style="color: #EB1414;">Chưa thanh toán</span>
+                <span *ngIf="data.status === 'PAID'" style="color: #008D47;">{{ 'app.dashboard.payment.and.cost.paid'|i18n }}</span>
+                <span *ngIf="data.status !== 'PAID'" style="color: #EB1414;">{{ 'app.dashboard.payment.and.cost.not.paid'|i18n }}</span>
               </td>
             </tr>
             </tbody>
@@ -90,7 +90,7 @@
     </nz-row>
   </nz-card>
   <nz-card style="border-radius: 8px; margin-top: 25px;">
-    <span class="text-card-header">Dịch vụ sắp hết hạn</span>
+    <span class="text-card-header">{{ 'app.dashboard.service.near.expire'|i18n }}</span>
     <nz-table #fixTableNearExpire
               nzShowPagination
               style="margin-top: 25px;"
@@ -104,12 +104,12 @@
               (nzPageIndexChange)="onPageIndexNearExpireChange($event)">
       <thead>
       <tr>
-        <th>Tên dịch vụ</th>
-        <th>Loại dịch vụ</th>
-        <th>Ngày khởi tạo</th>
-        <th>Ngày hết hạn</th>
-        <th>Trạng thái</th>
-        <th>Thao tác</th>
+        <th>{{ 'app.dashboard.service.near.expire.service.name'|i18n }}</th>
+        <th>{{ 'app.dashboard.service.near.expire.service.type'|i18n }}</th>
+        <th>{{ 'app.dashboard.service.near.expire.create.date'|i18n }}</th>
+        <th>{{ 'app.dashboard.service.near.expire.expire.date'|i18n }}</th>
+        <th>{{ 'app.dashboard.service.near.expire.status'|i18n }}</th>
+        <th>{{ 'app.dashboard.service.near.expire.action'|i18n }}</th>
       </tr>
       </thead>
       <tbody>
@@ -121,8 +121,8 @@
         <td style="color: #EB1414;">{{ data.status }}</td>
         <td>
           <img style="padding-right: 10px; cursor: pointer;" src="assets/imgs/calendar-tick.svg"
-               nz-popover [nzPopoverContent]="'Gia hạn'"
-               nzPopoverPlacement="bottom" alt=""/>
+               nz-popover [nzPopoverContent]="'app.dashboard.service.near.expire.extend'|i18n"
+               nzPopoverPlacement="bottom" alt="" (click)="navigateToExtend(data.serviceInstanceId, data.serviceType)"/>
         </td>
       </tr>
       </tbody>

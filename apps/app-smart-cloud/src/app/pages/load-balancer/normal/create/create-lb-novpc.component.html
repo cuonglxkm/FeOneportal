@@ -210,10 +210,9 @@
           <nz-form-item style="margin-top: 5px; margin-bottom: 5px;">
             <nz-form-label nzFor="time">
               <div class="label">
-                <span>Thời gian sử dụng </span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span> - Tháng</span>
-                <img nz-popover [nzPopoverContent]="'Thời gian khách hàng mua volume để sử dụng, tính theo tháng.'"
+                <span>{{ 'app.service.duration' | i18n }} (<span class="text-red">*</span
+                  >)</span>
+                <img nz-popover [nzPopoverContent]="'app.tooltip.time' | i18n : { name: 'Load Balancer' }"
                      nzPopoverPlacement="bottom" style="margin-left: 5px;"
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
@@ -229,11 +228,11 @@
                                    nzMax="100"
                                    nzStep="1" />
                   <ng-template #dateErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                    <ng-container *ngIf="control.hasError('required')">{{ 'app.more.0.less.100' | i18n }}
                     </ng-container>
-                    <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                    <ng-container *ngIf="control.hasError('max')">{{ 'app.more.0.less.100' | i18n }}
                     </ng-container>
-                    <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                    <ng-container *ngIf="control.hasError('min')">{{ 'app.more.0.less.100' | i18n }}
                     </ng-container>
                   </ng-template>
                 </nz-form-control>
@@ -242,7 +241,7 @@
                 <nz-form-item>
                   <nz-form-label nzFor="now">
                     <div class="label">
-                      <span>Thời gian bắt đầu sử dụng: </span>
+                      <span>{{ 'app.time.start' | i18n }}: </span>
                       <span
                         *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
                     </div>
@@ -252,7 +251,7 @@
             </nz-row>
             <nz-form-label>
               <div class="label" style="color: red;">
-                <span>Ngày hết hạn: </span>
+                <span>{{ 'app.service.expiration-date' | i18n }}: </span>
                 <span
                   *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
               </div>
@@ -266,7 +265,7 @@
               <textarea nz-input class="input-custom" formControlName="description" [placeholder]="'app.input.des' | i18n" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -308,7 +307,7 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-value"> Chi phí 1 tháng </span>
+              <span class="text-value"> {{ 'app.cost.a.month' | i18n }} </span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
@@ -328,8 +327,8 @@
             border-radius: 8px;
           " nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-label">Tổng thanh toán</span><br />
-              <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+              <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
+              <span class="text-note-italicized">({{ 'app.include.vat' | i18n : { vat: '10' } }})</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">0 VND</span>
@@ -343,7 +342,7 @@
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
                       [disabled]="validateForm.invalid">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>

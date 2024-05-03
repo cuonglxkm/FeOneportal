@@ -26,7 +26,7 @@ import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
   styleUrls: ['./create-vpn-connection.component.less'],
 })
 export class CreateVpnConnectionComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   ipsecPoliciesList: NzSelectOptionInterface[] = [];

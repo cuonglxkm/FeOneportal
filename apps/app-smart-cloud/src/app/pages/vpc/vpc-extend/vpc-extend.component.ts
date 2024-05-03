@@ -132,7 +132,7 @@ export class VpcExtendComponent {
 
   onChangeTime() {
     const dateNow = new Date();
-    dateNow.setMonth(dateNow.getMonth() + Number(this.form.controls['numOfMonth'].value));
+    dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value) * 30);
     this.expiredDate = dateNow;
   }
 }

@@ -14,6 +14,9 @@ import {
 import { FormCreateSubnet, FormSearchSubnet } from '../../../../shared/models/vlan.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { debounceTime, Subject } from 'rxjs';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 
 export function ipAddressValidator(): ValidatorFn {
@@ -121,7 +124,7 @@ function isGreaterIPAddress(previousIP: string, currentIP: string): boolean {
   styleUrls: ['./vlan-create-subnet.component.less']
 })
 export class VlanCreateSubnetComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   isLoading: boolean = false;
 
@@ -148,11 +151,15 @@ export class VlanCreateSubnetComponent implements OnInit {
 
   idNetwork: number;
 
+  pool: string = '';
+  dataSubjectCidr: Subject<any> = new Subject<any>();
+
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private vlanService: VlanService,
               private route: ActivatedRoute,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder) {
   }
 
@@ -229,13 +236,35 @@ export class VlanCreateSubnetComponent implements OnInit {
     this.vlanService.createSubnet(this.formCreateSubnet).subscribe(data => {
       this.isLoading = false;
       this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-      this.notification.success('Thành công', 'Tạo mới subnet thành công');
+      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note61'))
 
     }, error => {
       this.isLoading = false;
       this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-      this.notification.error('Thất bại', 'Tạo mới subnet thất bại. ' + error.error.detail);
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note62') + error.error.detail);
     });
+  }
+
+  inputCheckPool(value) {
+    this.dataSubjectCidr.next(value);
+  }
+
+  onInputCheckPool() {
+    this.dataSubjectCidr.pipe(debounceTime(500)).subscribe((res) => {
+      this.vlanService.checkAllocationPool(res).subscribe(data => {
+        const dataJson = JSON.parse(JSON.stringify(data));
+
+        // Access ipRange value
+        const ipRange = dataJson.ipRange;
+
+        // Split the IP range string
+        // const ipAddresses = ipRange.split(',').map(ip => ip.trim());
+
+        this.pool = ipRange
+        console.log('pool data', this.pool)
+      })
+    })
+
   }
 
   ngOnInit() {
@@ -246,5 +275,7 @@ export class VlanCreateSubnetComponent implements OnInit {
 
     console.log('project', this.project);
     this.getListSubnet();
+
+    this.onInputCheckPool();
   }
 }
