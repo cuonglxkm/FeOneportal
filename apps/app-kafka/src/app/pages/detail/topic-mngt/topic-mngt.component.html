@@ -44,7 +44,9 @@
                 </div>
             </div>
             <div class="async">{{'kafka.cg.sync-time' | i18n}}:
-                <span class="time-async">{{syncInfo.topic}}</span>
+                <ng-container *ngIf="syncInfo">
+                    <span class="time-async">{{syncInfo.topic}}</span>
+                </ng-container>
             </div>
             
             <nz-table id="topic" [nzScroll]="{x:'1100px'}" [nzData]="listTopic" [nzLoading]="loading" #basicTable nzShowPagination nzShowSizeChanger class="tbl-acl" [nzTotal]="total" 
