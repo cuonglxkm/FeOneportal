@@ -45,7 +45,7 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Gói dịch vụ (<span style="color: red">*</span>)</span>
+              <span>{{ 'app.text.package' | i18n }} (<span style="color: red">*</span>)</span>
               <img nz-popover
                    [nzPopoverContent]="titleTooltip"
                    nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -120,7 +120,7 @@
         <div class="text-value">IP Address</div>
         <div style="margin-top: 10px" class="text-label">{{ loadBalancer?.ipAddress }}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">Gói dịch vụ</div>
+        <div class="text-value">{{ 'app.text.package' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">{{ loadBalancer?.offerName }}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row style="margin-bottom: 10px" nzGutter="16">

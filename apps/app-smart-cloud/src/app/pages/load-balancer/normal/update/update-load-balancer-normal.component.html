@@ -3,7 +3,7 @@
      (click)="showModal()"
      style="cursor: pointer; margin-right: 16px"
      [nzPopoverContent]="'app.text.edit' | i18n" />
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Chỉnh sửa"
+<nz-modal [(nzVisible)]="isVisible" nzTitle="{{ 'app.text.edit' | i18n }}"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
     <span class="text-modal-title">{{ 'app.load.balancer.edit.info' | i18n }}</span>

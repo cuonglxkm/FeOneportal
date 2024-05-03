@@ -42,7 +42,7 @@
       <h2 class="custom-title">{{ 'app.file.system.snapshot.info' | i18n }}</h2>
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <nz-form-item>
-          <nz-form-control nzErrorTip="File System không đuợc để trống!">
+          <nz-form-control [nzErrorTip]="'validation.file.system.empty' | i18n">
             <nz-form-label nzFor="name">
               <div>
                 <span>{{ 'app.file.system.name' | i18n }}</span>

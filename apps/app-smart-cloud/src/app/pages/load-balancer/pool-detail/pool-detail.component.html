@@ -294,7 +294,7 @@
               />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')"
-                  >Vui lòng nhập thông tin</ng-container
+                  >{{ 'validation.info.required' | i18n }}</ng-container
                 >
                 <ng-container *ngIf="control.hasError('pattern')"
                   >Tên Health Monitor chỉ gồm ký tự chữ cái và số, không bao gồm
@@ -555,7 +555,7 @@
           />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập thông tin</ng-container
+              >{{ 'validation.info.required' | i18n }}</ng-container
             >
             <ng-container *ngIf="control.hasError('pattern')"
               >Tên Member chỉ gồm ký tự chữ cái và số, không bao gồm dấu
