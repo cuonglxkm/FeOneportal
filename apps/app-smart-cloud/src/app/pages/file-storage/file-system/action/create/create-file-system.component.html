@@ -1,5 +1,5 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Khởi tạo File System'">
+             [title]="'app.file.system.create' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
@@ -7,8 +7,8 @@
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Danh sách File System</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/create'">Khởi tạo File System
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{ 'app.file.system.list' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/create'">{{ 'app.file.system.create' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -27,33 +27,35 @@
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông tin File System</span>
+          <span class="text-card-header">{{ 'app.file.system.info' | i18n }}</span>
           <nz-row nzGutter="24" style="margin-top: 20px;">
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
                   <div>
-                    <span>Tên File System</span> (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span>{{ 'app.file.system.name' | i18n }}</span> (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                     <img nz-popover
-                         [nzPopoverContent]="'Tên của File System cần tạo, các ký tự chữ thường a-z, ' +
-                       'chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, ' +
-                        'tối thiểu 1 ký tự và tối đa 255 ký tự. Tên các File System không trùng nhau'"
+                         [nzPopoverContent]="contentTemplateFSname"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
+                    <ng-template #contentTemplateFSname>
+                    <span
+                      [innerHTML]="'app.tooltip.file.system.name.pattern' | i18n"
+                    ></span>
+                  </ng-template>
                   </div>
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="nameNetworkErrorTpl">
                     <input appAutofocus nz-input
                            class="input-custom"
-                           [placeholder]="'Nhập tên file system'"
+                           [placeholder]="'app.input.name' | i18n"
                            formControlName="name" style="width: 100% "/>
                 </nz-form-control>
                 <ng-template #nameNetworkErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên File System</ng-container>
-                  <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu tiếng việt và ký tự đặc biệt
-                    (trừ _, -, và có thể có khoảng trắng)
+                  <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.file.system.name.pattern' | i18n }}
                   </ng-container>
-                  <ng-container *ngIf="control.hasError('duplicateName')">Tên File System không được trùng
+                  <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n: {name: 'File System'} }}
                   </ng-container>
                 </ng-template>
               </nz-form-item>
@@ -63,18 +65,20 @@
                     <span>{{ 'app.protocol' | i18n }} (</span>
                     <span style="color: rgba(252, 16, 16, 1); ">*</span>)
                     <img nz-popover
-                         [nzPopoverContent]="'Giao thức NFS (Network File System) là một giao thức mạng được sử dụng ' +
-                           'để chia sẻ tập tin và thư mục qua mạng giữa các hệ thống máy tính khác nhau. ' +
-                            'Nó cho phép một máy tính (được gọi là máy chủ NFS) chia sẻ tài nguyên file hệ thống của ' +
-                             'nó với các máy tính khác (được gọi là máy khách NFS) trong mạng'"
+                         [nzPopoverContent]="contentTemplateFSProtocol"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
+                    <ng-template #contentTemplateFSProtocol>
+                    <span
+                      [innerHTML]="'app.tooltip.file.system.name.protocol' | i18n"
+                    ></span>
+                  </ng-template>
                   </div>
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
                   <nz-select formControlName="protocol"
                              nzSize="large"
-                             [nzPlaceHolder]="'-Chọn giao thức-'"
+                             [nzPlaceHolder]="'app.choose.protocol' | i18n"
                              [nzShowSearch]="false">
                     <nz-option *ngFor="let i of optionProtocols"
                                [nzValue]="i.value"
@@ -82,13 +86,13 @@
                   </nz-select>
                 </nz-form-control>
                 <ng-template #protocolErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập chọn giao thức</ng-container>
+                  <ng-container *ngIf="control.hasError('required')">{{ 'validation.choose.protocol.required' | i18n }}</ng-container>
                 </ng-template>
               </nz-form-item>
               <nz-form-item>
                 <div style="display: flex;">
                   <nz-switch formControlName="isSnapshot" (ngModelChange)="snapshotSelectedChange($event)"></nz-switch>
-                  <span style="margin-left: 10px; margin-top: 1px;" class="text-label">Khởi tạo từ Snapshot</span>
+                  <span style="margin-left: 10px; margin-top: 1px;" class="text-label">{{ 'app.file.system.create.from.snapshot' | i18n }}</span>
                   <!--                  <img style="margin-left: 10px"-->
                   <!--                       nz-popover [nzPopoverContent]="'volume.tooltip.switch.snapshot' | i18n"-->
                   <!--                       nzPopoverPlacement="bottom"-->
@@ -101,7 +105,7 @@
                     <span>Snapshot (</span>
                     <span style="color: rgba(252, 16, 16, 1); ">*</span>)
                     <img nz-popover
-                         [nzPopoverContent]="'Snapshot của File System'"
+                         [nzPopoverContent]="'app.snapshot.file.system' | i18n"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </div>
@@ -121,10 +125,10 @@
               <nz-form-item>
                 <nz-form-label nzFor="storage">
                   <div>
-                    <span>Dung lượng (GB) </span>
+                    <span>{{ 'app.capacity' | i18n }} (GB) </span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                     <img nz-popover
-                         [nzPopoverContent]="'Tối thiểu là 1'"
+                         [nzPopoverContent]="'app.tooltip.capacity' | i18n"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </div>
@@ -135,17 +139,17 @@
                                    class="input-custom"
                                    [nzMin]="1" [nzStep]="1"></nz-input-number>
                   <ng-template #storageErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng</ng-container>
+                    <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
                   </ng-template>
                 </nz-form-control>
               </nz-form-item>
               <nz-form-item>
                 <nz-form-label>
                   <div>
-                    <span>Loại File System (</span>
+                    <span>{{ 'app.file.system.type' | i18n }} (</span>
                     <span style="color: rgba(252, 16, 16, 1); ">*</span>)
                     <img nz-popover
-                         [nzPopoverContent]="'mặc định là generic_share_type'"
+                         [nzPopoverContent]="'app.tooltip.file.system.type' | i18n"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </div>
@@ -153,22 +157,22 @@
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="typeErrorTpl">
                   <nz-select formControlName="type"
                              nzSize="large"
-                             [nzPlaceHolder]="'-Chọn loại File System-'"
+                             [nzPlaceHolder]="'app.choose.file.system.type' | i18n"
                              [nzShowSearch]="false">
                     <nz-option nzLabel="generic_share_type" nzValue="1"></nz-option>
                   </nz-select>
                 </nz-form-control>
                 <ng-template #typeErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập chọn loại File System</ng-container>
+                  <ng-container *ngIf="control.hasError('required')">{{ 'validation.file.system.type.required' | i18n }}</ng-container>
                 </ng-template>
               </nz-form-item>
               <nz-form-item>
                 <nz-form-label>
                   <div>
                     <div>
-                      <span>Dung lượng File System của quý khách</span>
+                      <span>{{ 'app.file.system.capacity' | i18n }}</span>
                       <img nz-popover
-                           [nzPopoverContent]="'Dung lượng File System đã mua của dịch vụ VPC'"
+                           [nzPopoverContent]="'app.file.system.capacity.vpc' | i18n"
                            nzPopoverPlacement="bottom" style="margin-left: 5px;"
                            src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
@@ -190,7 +194,7 @@
               <textarea nz-input formControlName="description" id="description" [maxLength]="700"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 700 kí tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'validation.file.system.description.maxlength' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -199,20 +203,20 @@
       <nz-col nzSpan="8">
         <nz-card style="border-radius: 8px;">
           <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
-          <div style="margin-top: 10px" class="text-value">Tên File System</div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.file.system.name' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
             {{ validateForm.controls.name.value }}
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">Loại File System</div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.file.system.type' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
             <span *ngIf="validateForm.controls.type.value == 1">generic_share_type</span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">Giao thức</div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.protocol' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.protocol.value }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">Dung lượng</div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.capacity' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.storage.value }} GB</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row>
@@ -220,21 +224,21 @@
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showModalConfirm()"
                       [disabled]="validateForm.invalid">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>
-              <nz-modal [(nzVisible)]="isVisibleConfirm" nzTitle="Xác nhận tạo mới File System"
+              <nz-modal [(nzVisible)]="isVisibleConfirm" [nzTitle]="'app.file.system.create.confirm' | i18n"
                         (nzOnCancel)="handleCancel()" nzMask="false">
                 <div *nzModalTitle>
-                  <span class="text-modal-title">Xác nhận tạo mới File System</span>
+                  <span class="text-modal-title">{{ 'app.file.system.create.confirm' | i18n }}</span>
                 </div>
                 <div *nzModalContent>
                   <nz-alert nzBanner
                             nzShowIcon
                             style="margin-bottom: 15px;"
-                            nzMessage="Bạn đang thực hiện tạo mới File System {{ formCreate.name }}">
+                            [nzMessage]="'app.file.system.confirm.alert' | i18n: {name: formCreate.name}">
                   </nz-alert>
                   <div>
-                    <span class="text-label">Quý khách có chắc chắn thực hiện tạo File System không?</span>
+                    <span class="text-label">{{ 'app.alert.create.file.system' | i18n }}</span>
                   </div>
 
                 </div>
@@ -258,7 +262,7 @@
           <!--                      [disabled]="validateForm.invalid" (click)="showModalConfirm()">-->
           <!--                <span nz-icon nzType="wallet" nzTheme="outline"></span>-->
           <!--                <span class="button-text-primary"-->
-          <!--                      [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>-->
+          <!--                      [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>-->
           <!--              </button>-->
           <!--              <nz-modal [(nzVisible)]="isVisibleConfirm" nzTitle="Xác nhận tạo mới File System"-->
           <!--                        (nzOnCancel)="handleCancel()" nzMask="false">-->

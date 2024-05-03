@@ -456,7 +456,7 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe(
         () => {
-          this.notification.success('Thành công', '`Xóa thành công');
+          this.notification.success('Thành công', 'Xóa thành công');
         },
         (error) => {
           this.notification.error('Thất bại', 'Xóa thất bại');
@@ -732,27 +732,34 @@ export class BucketDetailComponent implements OnInit {
   uploadAllFile() {
     const filesToUpload = this.lstFileUpdate.filter((item) => !item.uploaded);
 
-    const uploadNextFile = (index) => {
-      if (index < filesToUpload.length) {
-        const item = filesToUpload[index];
-        item.percent = 0;
-        this.uploadSingleFile(item).then(() => {
-          item.uploaded = true;
-          uploadNextFile(index + 1);
-        });
-      }
-    };
+    console.log(filesToUpload);
 
-    uploadNextFile(0);
+
+    if (filesToUpload.length == 0) {
+      this.notification.warning('Cảnh báo', 'Tất cả các file đã được upload');
+    }else{
+      const uploadNextFile = (index) => {
+        if (index < filesToUpload.length) {
+          const item = filesToUpload[index];
+          item.percent = 0;
+          this.uploadSingleFile(item).then(() => {
+
+            uploadNextFile(index + 1);
+          });
+        }
+      };
+  
+      uploadNextFile(0);
+    }
   }
 
-  uploadSingleFile(item) {
+  uploadSingleFile(item) {   
     if (item.uploaded) {
+      this.notification.warning('Cảnh báo', 'File đã được upload');
       return Promise.resolve();
     }
     var chunkCounter = 0;
     const chunkSize = 10000000; // 10MB
-    console.log(item);
 
     if (item.size > 10000000) {
       return new Promise<void>((resolve, reject) => {
@@ -832,6 +839,7 @@ export class BucketDetailComponent implements OnInit {
           };
           xhr.onload = () => {
             if (xhr.status === 200) {
+              item.uploaded = true;
               this.notification.success('Thành công', 'Upload thành công');
               this.loadData();
               resolve();
@@ -945,6 +953,7 @@ export class BucketDetailComponent implements OnInit {
               }
             };
             xhr.onload = () => {
+              item.uploaded = true;
               this.notification.success('Thành công', 'Upload thành công');
               this.loadData();
               resolve();
