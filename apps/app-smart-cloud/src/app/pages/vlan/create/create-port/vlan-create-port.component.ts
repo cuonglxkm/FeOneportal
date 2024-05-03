@@ -119,19 +119,16 @@ export class VlanCreatePortComponent implements OnInit{
       formCreatePort.ipAddress = this.validateForm.controls.ipAddress.value
       this.isLoading = true
       this.vlanService.createPort(formCreatePort).subscribe(data => {
-        if(data) {
           this.isLoading = false
           this.isVisible = false
           this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note59'))
           this.onOk.emit(data)
           this.validateForm.reset()
-        } else {
-          console.log('data',data)
-        }
+
       }, error => {
         this.isLoading = false
         this.isVisible = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note60'), error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note60' )  + this.i18n.fanyi(error.error.detail))
         this.validateForm.reset()
       })
     }

@@ -34,80 +34,32 @@ export function ipAddressValidator(): ValidatorFn {
 
 // Hàm kiểm tra xem địa chỉ IP có hợp lệ không
 function isValidIPAddress(ipAddress: string): boolean {
-  // Kiểm tra xem địa chỉ IP có thuộc các dải cho phép không
   if (
-    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.24.0.0') &&
-    !(ipAddress.startsWith('192.168.'))
+    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress < '172.25.0.0') &&
+    !(ipAddress.startsWith('192.168.')) &&
+    !(ipAddress === '192.168.0.0')
   ) {
     return false;
   }
 
   // Kiểm tra định dạng của địa chỉ IP
-  if (!ipAddress.match(/^((\d{1,3}\.\d{1,3}\.0\.0\/16)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.0\/24))$/)) {
+  const ipAndPrefix = ipAddress.split('/');
+  const ipParts = ipAndPrefix[0].split('.');
+  const prefixLength = parseInt(ipAndPrefix[1], 10);
+
+  // Kiểm tra xem địa chỉ IP có đúng dạng không
+  if (ipParts.length !== 4 || isNaN(prefixLength) || prefixLength < 0 || prefixLength > 32) {
     return false;
   }
-  return true;
-}
 
-export function ipAddressListValidator(): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } | null => {
-    // Chuyển đổi các IP thành một mảng
-    const ipAddresses = control?.value?.split(',').map(ip => ip.trim());
-
-    // Kiểm tra mỗi địa chỉ IP trong mảng
-    for (let i = 0; i < ipAddresses?.length; i++) {
-      const currentIP = ipAddresses[i];
-
-      // Kiểm tra định dạng của IP (x.x.x.x)
-      const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
-      if (!ipPattern.test(currentIP)) {
-        return { 'invalidIpAddressFormat': { value: currentIP } };
-      }
-
-      // Kiểm tra xem IP có nằm trong các dải cho phép không
-      if (!isValidIPAddressAllocation(currentIP)) {
-        return { 'invalidIpAddressRange': { value: currentIP } };
-      }
-
-      // Kiểm tra xem IP có lớn hơn IP trước đó không
-      if (i > 0 && !isGreaterIPAddress(ipAddresses[i - 1], currentIP)) {
-        return { 'invalidIpSequence': { value: currentIP } };
-      }
-    }
-
-    return null;
-  };
-}
-
-function isValidIPAddressAllocation(ip: string): boolean {
-  // Kiểm tra xem IP có nằm trong các dải cho phép không
-  const ipSegments = ip.split('.');
-  const firstSegment = parseInt(ipSegments[0], 10);
-  const secondSegment = parseInt(ipSegments[1], 10);
-  const thirdSegment = parseInt(ipSegments[2], 10);
-
-  if ((firstSegment === 172 && secondSegment >= 16 && secondSegment <= 24) ||
-    (firstSegment === 192 && secondSegment === 168)) {
-    return true;
-  }
-
-  return false;
-}
-
-function isGreaterIPAddress(previousIP: string, currentIP: string): boolean {
-  // So sánh các phần của hai IP để kiểm tra xem IP sau lớn hơn IP trước đó không
-  const previousIPSegments = previousIP.split('.').map(segment => parseInt(segment, 10));
-  const currentIPSegments = currentIP.split('.').map(segment => parseInt(segment, 10));
-
-  for (let i = 0; i < 4; i++) {
-    if (currentIPSegments[i] > previousIPSegments[i]) {
-      return true;
-    } else if (currentIPSegments[i] < previousIPSegments[i]) {
+  // Kiểm tra xem phần prefix có hợp lệ không
+  for (const part of ipParts) {
+    if (parseInt(part, 10) < 0 || parseInt(part, 10) > 255) {
       return false;
     }
   }
 
-  return false;
+  return true;
 }
 
 @Component({
