@@ -66,6 +66,10 @@ input, .border-button, .border-card {
   border-radius: 8px;
 }
 
+::ng-deep .ant-input-affix-wrapper {
+  border-radius: 8px;
+}
+
 .ant-picker {
   box-sizing: border-box;
   margin: 0;

@@ -74,6 +74,10 @@ input, .border-button {
   border-radius: 8px;
 }
 
+::ng-deep .ant-input-affix-wrapper {
+  border-radius: 8px;
+}
+
 .borderless {
   border: none;
 }

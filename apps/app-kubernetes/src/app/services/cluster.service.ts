@@ -114,11 +114,11 @@ export class ClusterService extends BaseService {
     pageSize: number
   ) {
     let params = new HttpParams();
-    params.append("namespace", namespace || "");
-    params.append("serviceOrderCode", serviceOrderCode);
-    params.append("keySearch", keySearch || "");
-    params.append("pageIndex", pageIndex);
-    params.append("pageSize", pageSize);
+    params = params.append("namespace", namespace || "");
+    params = params.append("serviceOrderCode", serviceOrderCode);
+    params = params.append("keySearch", keySearch || "");
+    params = params.append("pageIndex", pageIndex);
+    params = params.append("pageSize", pageSize);
 
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-instances`,
     {headers: this.getHeaders(), params: params});

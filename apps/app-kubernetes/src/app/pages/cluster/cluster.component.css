@@ -126,6 +126,10 @@ small {
   border-radius: 8px;
 }
 
+::ng-deep .ant-input-affix-wrapper {
+  border-radius: 8px;
+}
+
 ::ng-deep .alain-default__content nz-input-group {
   width: 100%;
 }
