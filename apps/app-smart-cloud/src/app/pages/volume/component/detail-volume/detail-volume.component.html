@@ -38,8 +38,6 @@
             <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
             <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
           </button>
-
-
         </div>
       </div>
       <div nz-col nzSpan="4">
@@ -54,11 +52,12 @@
     </div>
     <div *ngIf="typeVPC == 1" style="display: flex">
       <div nz-col nzSpan="4">
-        <button class="button-cancel"
-                (click)="navigateToResizeVPC(volumeInfo.id)"
-                nz-button nzType="primary">
-          <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
-          <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
+        <button class="button-fee"
+                nz-button
+                nzType="default" (click)="navigateToResizeVPC(volumeInfo.id)">
+          <img src="assets/imgs/edit-2.svg" alt=""
+               style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
+          <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
         </button>
       </div>
     </div>
