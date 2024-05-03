@@ -15,18 +15,20 @@
     <span class="text-modal-title">{{ 'volume.attach' | i18n }}</span>
   </div>
   <div *nzModalContent>
-    <nz-form-label>{{ 'volume.modal.attach.title' | i18n}}</nz-form-label>
-    <nz-select nzSize="default"
-               nzAllowClear
-               [nzLoading]="isLoading"
-               [nzPlaceHolder]="'volume.modal.attach.title' | i18n"
-               [(ngModel)]="instanceSelected"
-               (ngModelChange)="onChange($event)"
-               [required]="true"
-               [ngModelOptions]="{ standalone: true }"
-               style="width: 300px;">
-      <nz-option *ngFor="let item of listVm" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
-    </nz-select>
+    <div style="display: grid;">
+      <span class="text-label" style="margin-bottom: 15px;">{{ 'volume.modal.attach.title' | i18n}}</span>
+      <nz-select nzSize="large"
+                 nzAllowClear
+                 [nzLoading]="isLoading"
+                 [nzPlaceHolder]="'volume.modal.attach.title' | i18n"
+                 [(ngModel)]="instanceSelected"
+                 (ngModelChange)="onChange($event)"
+                 [required]="true"
+                 [ngModelOptions]="{ standalone: true }"
+                 style="width: 100%;">
+        <nz-option *ngFor="let item of listVm" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+      </nz-select>
+    </div>
     <div *ngIf="isSelected" style="color: red;">{{ 'volume.notification.input.select.vm' | i18n}}</div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
