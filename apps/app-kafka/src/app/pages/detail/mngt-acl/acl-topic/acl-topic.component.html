@@ -64,7 +64,7 @@
             <!-- Modal Detele -->
             <nz-modal
                 [(nzVisible)]="isVisibleDelete"
-                nzTitle="Xóa quyền ACLs của Topic"
+                nzTitle="Xóa quyền ACLs"
                 (nzOnCancel)="handleCancelDelete()"
                 nzKeyboard="false"
                 nzMaskClosable="false"
@@ -95,6 +95,8 @@
 
         <!-- display create form -->
         <ng-container *ngIf="showForm===idCreateForm || showForm===idUpdateForm">
+            <h2 *ngIf="showForm===idCreateForm"><b>{{ 'kafka.acl.title' | i18n}}</b></h2>
+            <h2 *ngIf="showForm===idUpdateForm"><b>{{ 'kafka.acl.edit' | i18n}}</b></h2>
             <form nz-form [formGroup]="aclTopicForm" [nzLabelAlign]="'left'" (ngSubmit)="submitForm()">
                 <!-- Tài khoản -->
                 <nz-form-item>
