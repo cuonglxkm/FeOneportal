@@ -28,10 +28,6 @@ const routes: Routes = [
   {
     path: 'create',
     component: VpnS2sCreateComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'order:Create'
-    }
   },
   {
     path: 'extend/:vpcId',
@@ -40,7 +36,6 @@ const routes: Routes = [
   {
     path: 'resize/:vpcId',
     component: VpnS2sResizeComponent,
-     canActivate: [PermissionGuard],
   },
   {
     path: 'ipsec-policies/create',

@@ -76,11 +76,13 @@
             [project]="project"
             [vpnServiceId]="data.id"
             [vpnServiceName]="data.name"
+            [vpnServiceStatus]="data.status"
             [vpnRouterName]="data.routerName"
             (onOk)="handleOkEdit()"></one-portal-edit-vpn-service>
             <one-portal-delete-vpn-service [region]="region"
             [project]="project"
             [vpnServiceId]="data.id"
+            [vpnServiceStatus]="data.status"
             [vpnServiceName]="data.name"
             (onOk)="handleOkDelete()"></one-portal-delete-vpn-service>
           </div>
