@@ -1,11 +1,13 @@
 <span
-  style="color: #0066b3; margin-right: 10px; cursor: pointer"
+  style="margin-right: 10px; cursor: pointer"
+  [style.color]="vpnServiceStatus !== 'PENDING_CREATE' && '#0066b3'"
   nz-icon
   nzType="edit"
   nzTheme="outline"
   nz-popover
   [nzPopoverContent]="'Sửa'"
   nzPopoverPlacement="bottom"
+  [class.disabled]="vpnServiceStatus === 'PENDING_CREATE'"
   (click)="showModal()"
 ></span>
 <nz-modal

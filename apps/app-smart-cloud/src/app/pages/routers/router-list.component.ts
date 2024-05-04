@@ -83,7 +83,6 @@ export class RouterListComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-    this.getDataList()
   }
 
   selectedChecked(e: any): void {
