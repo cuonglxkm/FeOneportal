@@ -137,14 +137,18 @@
         <td>
           <img
             src="assets/imgs/edit-2.svg"
+            [ngStyle]="{'filter': data.isUsed ? 'invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%)' : ''}"
             alt=""
+            [class.disabled]="data.isUsed"
             (click)="modalEdit(data)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="{{'app.text.edit' | i18n}}"
           />
           <img
             src="assets/imgs/trash.svg"
+            [ngStyle]="{'filter': data.isUsed ? 'invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%)' : ''}"
             alt=""
+            [class.disabled]="data.isUsed"
             (click)="modalDelete(data.cloudId, data.routerName)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="{{'app.delete' | i18n}}"

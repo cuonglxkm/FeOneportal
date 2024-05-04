@@ -39,7 +39,6 @@ export class EditEndpointGroupComponent{
   }
 
   getEndpointGroupById(id) {
-    this.isLoading = true;
     this.endpointGroupService
       .getEndpointGroupById(id, this.project, this.region)
       .subscribe(
@@ -47,11 +46,9 @@ export class EditEndpointGroupComponent{
           this.endpointGroup = data;
           this.validateForm.controls.nameEndpointGroup.setValue(data.name);
           this.validateForm.controls.description.setValue(data.description);
-          this.isLoading = false;
         },
         (error) => {
           this.endpointGroup = null;
-          this.isLoading = false;
         }
       );
   }
@@ -63,7 +60,6 @@ export class EditEndpointGroupComponent{
 
   handleCancel(){
     this.isVisible = false
-    this.isLoading =  false
   }
 
   handleOk() {
@@ -74,20 +70,17 @@ export class EditEndpointGroupComponent{
     formEdit.vpcId = this.project
     formEdit.name = this.validateForm.controls.nameEndpointGroup.value
     formEdit.description = this.validateForm.controls.description.value
-    console.log(formEdit);
 
     if(this.validateForm.valid){
       this.endpointGroupService.editEndpoinGroup(formEdit).subscribe(data => {
-        if(data) {
+        this.notification.success('Thành công', 'Edit Endpoint Group thành công')
           this.isVisible = false
           this.isLoading =  false
-          this.notification.success('Thành công', 'Edit Endpoint Group thành công')
           this.onOk.emit(data)
-        }
       }, error => {
+        this.notification.error('Thất bại', 'Edit Endpoint Group thất bại')
         this.isVisible = false
         this.isLoading =  false
-        this.notification.error('Thất bại', 'Edit Endpoint Group thất bại')
       })
     }
   }
