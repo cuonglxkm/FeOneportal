@@ -41,6 +41,8 @@ import {
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -78,10 +80,7 @@ export class InstancesCreateVpcComponent implements OnInit {
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9_]*$/),
-      ],
+      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/)],
     }),
   });
 
@@ -94,8 +93,6 @@ export class InstancesCreateVpcComponent implements OnInit {
   userId: number;
   user: any;
   ipPublicValue: number = 0;
-  vlanNetwork: string;
-  port: string;
   isUseLAN: boolean = true;
   passwordVisible = false;
   password?: string;
@@ -126,6 +123,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private snapshotVLService: SnapshotVolumeService,
     private vlanService: VlanService,
@@ -284,39 +282,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       });
   }
 
-  listVlanNetwork: NetWorkModel[] = [];
-
-  getListNetwork(): void {
-    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
-    formSearchNetwork.region = this.region;
-    formSearchNetwork.project = this.projectId;
-    formSearchNetwork.pageNumber = 0;
-    formSearchNetwork.pageSize = 9999;
-    formSearchNetwork.vlanName = '';
-    this.vlanService
-      .getVlanNetworks(formSearchNetwork)
-      .subscribe((data: any) => {
-        this.listVlanNetwork = data.records;
-        this.cdr.detectChanges();
-      });
-  }
-
-  listPort: Port[] = [];
-  getListPort() {
-    this.dataService
-      .getListAllPortByNetwork(this.vlanNetwork, this.region)
-      .subscribe({
-        next: (data) => {
-          this.listPort = data;
-        },
-        error: (e) => {
-          this.notification.error(
-            e.statusText,
-            'Lấy danh sách Port không thành công'
-          );
-        },
-      });
-  }
+  
 
   nameImage: string = '';
   onInputHDH(event: any, index: number, imageTypeId: number) {
@@ -411,6 +377,64 @@ export class InstancesCreateVpcComponent implements OnInit {
     }
   }
 
+  listVlanNetwork: NetWorkModel[] = [];
+  vlanNetwork: string = '';
+  getListNetwork(): void {
+    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+    formSearchNetwork.region = this.region;
+    formSearchNetwork.project = this.projectId;
+    formSearchNetwork.pageNumber = 0;
+    formSearchNetwork.pageSize = 9999;
+    formSearchNetwork.vlanName = '';
+    this.vlanService
+      .getVlanNetworks(formSearchNetwork)
+      .subscribe((data: any) => {
+        this.listVlanNetwork = data.records;
+        this.cdr.detectChanges();
+      });
+  }
+
+  listPort: Port[] = [];
+  port: string = '';
+  hidePort: boolean = true;
+  getListPort() {
+    if (this.vlanNetwork == '') {
+      this.hidePort = true;
+      this.port = '';
+    } else {
+      this.hidePort = false;
+      this.listPort = [
+        {
+          id: '',
+          name: '',
+          fixedIPs: ['Ngẫu nhiên'],
+          macAddress: null,
+          attachedDevice: null,
+          status: null,
+          adminStateUp: null,
+          instanceName: null,
+          subnetId: null,
+          attachedDeviceId: null,
+        },
+      ];
+      this.dataService
+        .getListAllPortByNetwork(this.vlanNetwork, this.region)
+        .subscribe({
+          next: (data) => {
+            data.forEach((e: Port) => {
+              this.listPort.push(e);
+            });
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.notify.get.list.port')
+            );
+          },
+        });
+    }
+  }
+
   getAllSecurityGroup() {
     this.dataService
       .getAllSecurityGroup(
@@ -420,6 +444,11 @@ export class InstancesCreateVpcComponent implements OnInit {
       )
       .subscribe((data: any) => {
         this.listSecurityGroup = data;
+        this.listSecurityGroup.forEach((e) => {
+          if (e.name.toUpperCase() == 'DEFAULT') {
+            this.selectedSecurityGroup.push(e.name);
+          }
+        });
         this.cdr.detectChanges();
       });
   }
@@ -562,7 +591,10 @@ export class InstancesCreateVpcComponent implements OnInit {
   isVisibleCreate: boolean = false;
   showModalCreate() {
     if (!this.isSnapshot && this.hdh == null) {
-      this.notification.error('', 'Vui lòng chọn hệ điều hành');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.choose.os.required')
+      );
       return;
     }
     this.isVisibleCreate = true;
@@ -593,7 +625,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
     this.dataService.create(this.order).subscribe({
       next: (data: any) => {
-        this.notification.success('', 'Tạo máy ảo hành công');
+        this.notification.success('', 'Tạo máy ảo thành công');
         this.router.navigate(['/app-smart-cloud/instances']);
       },
       error: (e) => {

@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Gia hạn Load Balancer'" xmlns="http://www.w3.org/1999/html">
+             [title]="'app.load.balancer.extend' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
@@ -11,7 +11,7 @@
         <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/create">Gia hạn Load Balancer</a>
+        <a routerLink="/app-smart-cloud/load-balancer/create">{{ 'app.load.balancer.extend' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -52,10 +52,7 @@
                    src="assets/imgs/pajamas_question.svg" alt="" />
               <ng-template #titleTooltip>
                 <div style="display: block;">
-                  <span><b>Max Connection:</b> Tổng số kết nối tối đa trên 1 giây </span><br>
-                  <span><b>Active Connection:</b> Tổng số kết nối hoạt động tối đa trong 1 giây</span><br>
-                  <span><b>Data transfer:</b> Dữ liệu được chuyển giao dưới dạng các bit và byte trên một phương tiện kỹ thuật số hoặc analog,<br>
-                  và quá trình này cho phép truyền thông kỹ thuật số hoặc analog và chuyển động của nó giữa các thiết bị</span><br>
+                  <span [innerHTML]="'app.tooltip.service.package' | i18n"></span>
                 </div>
               </ng-template>
             </nz-form-label>
