@@ -70,6 +70,18 @@ export class ListFileSystemComponent implements OnInit {
 
   }
 
+  navigateToResizeFileSystem(typeVpc, id) {
+    //in vpc
+    if(typeVpc == 1) {
+      this.router.navigate(['/app-smart-cloud/file-storage/file-system/resize/' + id]);
+    }
+
+    //no vpc
+    if(typeVpc == 0) {
+      this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + id + '/resize'])
+    }
+  }
+
   onPageSizeChange(value) {
     this.pageSize = value;
     this.getListFileSystem(false);
