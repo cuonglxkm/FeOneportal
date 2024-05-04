@@ -89,9 +89,9 @@
                                              [project]="project"
                                              [fileSystemId]="data.id"
                                              (onOk)="handleOkEdit()" />
-                <span style="color: #0066B3; margin-left: 15px; cursor: pointer;" class="more" nz-icon nzType="more"
-                      nzTheme="outline" nz-dropdown
-                      [nzDropdownMenu]="opMenu"></span>
+                <img nz-dropdown
+                     [nzDropdownMenu]="opMenu"
+                     src="assets/imgs/more1.svg" alt="" style="cursor: pointer; margin-left: 5px;"/>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li nz-menu-item>{{ 'app.snapshot.create' | i18n }}</li>
