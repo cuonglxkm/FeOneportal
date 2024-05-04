@@ -8,7 +8,7 @@ import { camelizeKeys } from 'humps';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EMPTY, catchError, finalize, map } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
-import { KafkaCreateReq } from 'src/app/core/models/kafka-create-req.model';
+import { JsonDataCreate, KafkaCreateOrder, KafkaCreateReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
 import { OfferKafka } from 'src/app/core/models/offer.model';
 import { Order, OrderItem } from 'src/app/core/models/order.model';
@@ -304,23 +304,46 @@ export class CreateKafkaComponent implements OnInit {
 
   onSubmitPayment() {
 
-    const kafka = this.myform.getRawValue();
+    const jsonData = new JsonDataCreate();
+    const kafkaSpec = new KafkaCreateOrder();
+
     const data: Order = new Order();
     const userId = this.tokenService.get()?.userId;
     data.customerId = userId;
     data.createdByUserId = userId;
     data.orderItems = [];
-    kafka.offerId = this.chooseitem != null ? this.chooseitem.id : 0;
-    kafka.regionId = this.regionId;
-    kafka.projectId = this.projectId;
-    kafka.vpcId = this.projectId;
-    kafka.offerName = this.chooseitem != null ? this.chooseitem.offerName : '';
+
+    jsonData.serviceName = this.myform.controls['serviceName'].value;
+    jsonData.version = this.myform.controls['version'].value;
+    jsonData.description = this.myform.controls['description'].value;
+    jsonData.numPartitions = this.myform.controls['numPartitions'].value;
+    jsonData.defaultReplicationFactor = this.myform.controls['defaultReplicationFactor'].value;
+    jsonData.minInsyncReplicas = this.myform.controls['minInsyncReplicas'].value;
+    jsonData.offsetTopicReplicationFactor = this.myform.controls['offsetTopicReplicationFactor'].value;
+    jsonData.logRetentionHours = this.myform.controls['logRetentionHours'].value;
+    jsonData.logSegmentBytes = this.myform.controls['logSegmentBytes'].value;
+    jsonData.subnetId = this.myform.controls['subnetId'].value;
+    jsonData.subnetCloudId = this.myform.controls['subnetCloudId'].value;
+
+    kafkaSpec.vCpu = this.myform.controls['vCpu'].value;
+    kafkaSpec.ram = this.myform.controls['ram'].value;
+    kafkaSpec.storage = this.myform.controls['storage'].value;
+    kafkaSpec.broker = this.myform.controls['broker'].value;
+    kafkaSpec.usageTime = this.myform.controls['usageTime'].value;
+    kafkaSpec.offerId = this.chooseitem != null ? this.chooseitem.id : 0;
+    kafkaSpec.offerName = this.chooseitem != null ? this.chooseitem.offerName : '';
+    kafkaSpec.jsonData = jsonData;
+    kafkaSpec.regionId = this.regionId;
+    kafkaSpec.projectId = this.projectId;
+    kafkaSpec.vpcId = this.projectId;
+    kafkaSpec.createDate = this.createDate;
+    kafkaSpec.expireDate = this.expiryDate;
 
     const orderItem: OrderItem = new OrderItem();
     orderItem.price = (this.unitPrice.cpu * this.cpu + this.unitPrice.ram * this.ram + this.unitPrice.storage * this.storage) * this.usageTime;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = AppConstants.KAKFA_CREATE_TYPE;
-    orderItem.specification = JSON.stringify(kafka);
+    orderItem.specification = JSON.stringify(kafkaSpec);
     orderItem.serviceDuration = this.usageTime;
 
     data.orderItems = [...data.orderItems, orderItem];

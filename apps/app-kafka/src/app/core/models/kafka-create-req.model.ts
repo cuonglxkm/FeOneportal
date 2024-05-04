@@ -63,5 +63,40 @@ export class KafkaExtend {
     newExpireDate: string;
     userEmail: string;
     actorEmail: string;
-  }
-  
+}
+
+export class JsonDataCreate {
+    serviceName: string;
+    version: string;
+    description: string;
+    numPartitions: number;
+    defaultReplicationFactor: number;
+    minInsyncReplicas: number;
+    offsetTopicReplicationFactor: number;
+    logRetentionHours: number;
+    logSegmentBytes: number;
+    subnetId: number;
+    subnetCloudId: string;
+}
+
+export class KafkaCreateOrder {
+    vCpu: number;
+    ram: number;
+    storage: number;
+    broker: number;
+    usageTime: number;
+    offerId: number;
+    offerName: string;
+    jsonData: JsonDataCreate;
+    customerId: number;
+    userEmail: string;
+    actorEmail: string;
+    regionId: number;
+    vpcId: number;
+    projectId: number;
+    serviceType: number;
+    actionType: number;
+    serviceInstanceId: number;
+    createDate: Date;
+    expireDate: Date;
+}
