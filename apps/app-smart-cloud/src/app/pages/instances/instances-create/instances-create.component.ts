@@ -611,7 +611,7 @@ export class InstancesCreateComponent implements OnInit {
           error: (e) => {
             this.notification.error(
               e.statusText,
-              'Lấy danh sách Port không thành công'
+              this.i18n.fanyi('app.notify.get.list.port')
             );
           },
         });
@@ -1300,15 +1300,24 @@ export class InstancesCreateComponent implements OnInit {
 
   save(): void {
     if (!this.isSnapshot && this.hdh == null) {
-      this.notification.error('', 'Vui lòng chọn hệ điều hành');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.choose.os.required')
+      );
       return;
     }
     if (this.isSnapshot && this.selectedSnapshot == null) {
-      this.notification.error('', 'Vui lòng chọn Snapshot ');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.choose.snapshot.required')
+      );
       return;
     }
     if (this.isPreConfigPackage == true && this.offerFlavor == null) {
-      this.notification.error('', 'Vui lòng chọn gói cấu hình');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.choose.config.package.required')
+      );
       return;
     }
     if (
@@ -1317,7 +1326,10 @@ export class InstancesCreateComponent implements OnInit {
         this.configCustom.ram == 0 ||
         this.configCustom.capacity == 0)
     ) {
-      this.notification.error('', 'Cấu hình tùy chọn chưa hợp lệ');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.optional.configuration.invalid')
+      );
       return;
     }
     if (
@@ -1328,7 +1340,10 @@ export class InstancesCreateComponent implements OnInit {
         this.configGPU.GPU == 0 ||
         this.configGPU.gpuOfferId == 0)
     ) {
-      this.notification.error('', 'Cấu hình GPU chưa hợp lệ');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.gpu.configuration.invalid')
+      );
       return;
     }
     // if (
@@ -1429,7 +1444,12 @@ export class InstancesCreateComponent implements OnInit {
             numbers = matches.map((match) => parseInt(match));
             this.notification.error(
               '',
-              `Cấu hình hiện tại chưa phù hợp với hệ điều hành. Vui lòng chọn cấu hình tối thiểu của ${this.nameHdh} là ${numbers[0]} GB dung lượng / ${numbers[1]} GB RAM / ${numbers[2]} vCPU`
+              this.i18n.fanyi('app.notify.check.config.for.os', {
+                nameHdh: this.nameHdh,
+                volume: numbers[0],
+                ram: numbers[1],
+                cpu: numbers[2],
+              })
             );
           }
         },

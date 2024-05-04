@@ -323,6 +323,14 @@
   "validation.password.confirm": "Mật khẩu không khớp nhau, vui lòng nhập lại",
   "validation.password.confirm.required": "Vui lòng nhập trường xác nhận mật khẩu",
 
+  "app.notify.get.list.port": "Lấy danh sách Port không thành công",
+  "app.notify.choose.os.required": "Vui lòng chọn hệ điều hành",
+  "app.notify.choose.snapshot.required": "Vui lòng chọn Snapshot",
+  "app.notify.choose.config.package.required": "Vui lòng chọn gói cấu hình",
+  "app.notify.optional.configuration.invalid": "Cấu hình tùy chọn chưa hợp lệ",
+  "app.notify.gpu.configuration.invalid": "Cấu hình GPU chưa hợp lệ",
+  "app.notify.check.config.for.os": "Cấu hình hiện tại chưa phù hợp với hệ điều hành. Vui lòng chọn cấu hình tối thiểu của {{nameHdh}} là {{volume}} GB dung lượng / {{ram}} GB RAM / {{cpu}} vCPU",
+
   "app.choose.snapshot": "chọn Snapshot",
   "app.choose.volume.type": "Chọn loại Volume",
   "app.configuration.package": "Gói cấu hình",

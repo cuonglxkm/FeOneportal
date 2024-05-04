@@ -441,6 +441,14 @@
   "validation.password.confirm": "The passwords do not match, please try again",
   "validation.password.confirm.required": "Please enter the confirm password field",
 
+  "app.notify.get.list.port": "Failed to retrieve the list of ports",
+  "app.notify.choose.os.required": "Please choose the operating system",
+  "app.notify.choose.snapshot.required": "Please choose the Snapshot",
+  "app.notify.choose.config.package.required": "Please choose the configuration package",
+  "app.notify.optional.configuration.invalid": "The optional configuration is invalid",
+  "app.notify.gpu.configuration.invalid": "The GPU configuration is invalid",
+  "app.notify.check.config.for.os": "The current configuration is not compatible with the operating system. Please choose the minimum {{nameHdh}} configuration of {{volume}} GB Storage / {{ram}} GB RAM / {{cpu}} vCPU",
+
   "app.choose.snapshot": "Choose Snapshot",
   "app.choose.volume.type": "Choose Volume type",
   "app.configuration.package": "Configuration package",

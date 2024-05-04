@@ -41,7 +41,8 @@
       <nz-col nzSpan="24">
         <nz-form-item>
           <nz-form-label nzFor="name"
-            >{{ 'app.instances.name' | i18n }} (<span class="text-red">*</span>)</nz-form-label
+            >{{ 'app.instances.name' | i18n }} (<span class="text-red">*</span
+            >)</nz-form-label
           >
 
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -75,9 +76,9 @@
               </nz-col>
             </nz-row>
             <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')"
-                >{{ 'validation.info.required' | i18n }}</ng-container
-              >
+              <ng-container *ngIf="control.hasError('required')">{{
+                'validation.info.required' | i18n
+              }}</ng-container>
               <ng-container *ngIf="control.hasError('pattern')"
                 >Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ
                 _)</ng-container
@@ -112,7 +113,8 @@
     </div>
     <div style="margin-left: -10px" *ngIf="!isSnapshot">
       <nz-form-label style="margin-left: 10px"
-        >{{ 'app.instances.OS' | i18n }} (<span class="text-red">*</span>)</nz-form-label
+        >{{ 'app.instances.OS' | i18n }} (<span class="text-red">*</span
+        >)</nz-form-label
       >
       <ngu-carousel
         #myCarouselImage
@@ -380,8 +382,7 @@
         </nz-row>
       </nz-col>
     </nz-row>
-    <nz-row style="margin-top: 20px; margin-bottom: 20px"
-      ><div style="margin-right: 20px">IOPS: 200</div>
+    <nz-row style="margin-top: 20px; margin-bottom: 20px">
       <div>
         <label
           nz-checkbox
@@ -393,17 +394,34 @@
     >
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label>Chọn IP Public</nz-form-label>
+        <nz-form-item
+          ><nz-form-label
+            >{{ 'app.choose.ip.public' | i18n }} (<span class="text-red">*</span
+            >)<img
+              style="margin-left: 10px"
+              nz-popover
+              [nzPopoverContent]="contentTemplateIPPublic"
+              src="assets/imgs/pajamas_question.svg"
+              alt=""
+            /><ng-template #contentTemplateIPPublic>
+              <span
+                [innerHTML]="'app.tooltip.instance.ip.public' | i18n"
+              ></span>
+              <a
+                [routerLink]="['/app-smart-cloud/networks/ip-floating/list']"
+                >{{ 'app.ip.floating' | i18n }}</a
+              >
+            </ng-template></nz-form-label
+          >
           <nz-form-control>
             <nz-select
+              [nzPlaceHolder]="'menu.dashboard.v1' | i18n"
               [nzShowSearch]="true"
               [(ngModel)]="ipPublicValue"
-              (ngModelChange)="onChangeIpPublic()"
               [ngModelOptions]="{ standalone: true }"
               nzSize="large"
             >
-              <nz-option nzLabel="Không sử dụng" [nzValue]="0" />
+              <nz-option [nzLabel]="'menu.dashboard.v1' | i18n" [nzValue]="0" />
               <nz-option
                 *ngFor="let i of listIPPublic"
                 [nzLabel]="i.ipAddress || i.networkId"
@@ -411,30 +429,13 @@
               />
             </nz-select>
           </nz-form-control>
-          <nz-form-label style="margin-top: 24px"
-            >Chọn VLAN gắn vào máy ảo (<span class="text-red">*</span
-            >)</nz-form-label
-          >
-          <nz-form-control nzErrorTip="Chọn VLAN *">
-            <nz-select
-              [nzShowSearch]="true"
-              [(ngModel)]="vlanNetwork"
-              (ngModelChange)="getListPort()"
-              [ngModelOptions]="{ standalone: true }"
-              nzSize="large"
-            >
-              <nz-option
-                *ngFor="let i of listVlanNetwork"
-                [nzLabel]="i.name"
-                [nzValue]="i.cloudId"
-              />
-            </nz-select>
-          </nz-form-control>
         </nz-form-item>
       </nz-col>
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Chọn Security Group</nz-form-label>
+          <nz-form-label>{{
+            'app.choose.security.group' | i18n
+          }}</nz-form-label>
           <nz-form-control>
             <nz-select
               nzMode="multiple"
@@ -448,10 +449,15 @@
                 *ngFor="let i of listSecurityGroup"
                 [nzLabel]="i.name"
                 [nzValue]="i.name"
+                [nzDisabled]="i.name.toUpperCase() === 'DEFAULT'"
               />
             </nz-select>
           </nz-form-control>
         </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row>
+      <nz-form-item style="width: 100%">
         <div>
           <nz-alert
             nzType="warning"
@@ -460,19 +466,49 @@
           ></nz-alert>
           <ng-template #nzDescriptionWarning3>
             <div>
-              Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần cấu
-              hình Security Group <br />
-              trong mục <u><a>{{ 'app.alert.access.security' | i18n }}</a></u>
+              {{ 'app.alert.security.group' | i18n }}
+              <u
+                style="cursor: pointer"
+                [routerLink]="['/app-smart-cloud/security-group/list']"
+                (keyup.enter)="navigateToSecurity()"
+                >{{ 'app.alert.access.security' | i18n }}</u
+              >
             </div>
           </ng-template>
         </div>
-      </nz-col>
+      </nz-form-item>
     </nz-row>
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
-        <nz-form-item
-          ><nz-form-label
-            >Chọn Port (<span class="text-red">*</span>)</nz-form-label
+        <nz-form-item>
+          <nz-form-label
+            >{{ 'app.choose.vlan.instance' | i18n }} (<span class="text-red"
+              >*</span
+            >)</nz-form-label
+          >
+          <nz-form-control>
+            <nz-select
+              [nzShowSearch]="true"
+              [(ngModel)]="vlanNetwork"
+              (ngModelChange)="getListPort()"
+              [ngModelOptions]="{ standalone: true }"
+              nzSize="large"
+            >
+              <nz-option [nzLabel]="'Không sử dụng'" [nzValue]="''" />
+              <nz-option
+                *ngFor="let i of listVlanNetwork"
+                [nzLabel]="i.name"
+                [nzValue]="i.cloudId"
+              />
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzLg="12" nzMd="12" nzSm="24">
+        <nz-form-item *ngIf="!hidePort">
+          <nz-form-label
+            >{{ 'app.choose.port' | i18n }} (<span class="text-red">*</span
+            >)</nz-form-label
           >
           <nz-form-control>
             <nz-select
@@ -483,25 +519,12 @@
             >
               <nz-option
                 *ngFor="let i of listPort"
-                [nzLabel]="i.macAddress"
-                [nzValue]="i.macAddress"
+                [nzLabel]="i.fixedIPs[0]"
+                [nzValue]="i.id"
               />
             </nz-select>
           </nz-form-control>
         </nz-form-item>
-      </nz-col>
-      <nz-col
-        style="display: flex; align-items: center"
-        nzLg="12"
-        nzMd="12"
-        nzSm="24"
-      >
-        <label
-          nz-checkbox
-          [(ngModel)]="isUseLAN"
-          [ngModelOptions]="{ standalone: true }"
-          >Sử dụng mạng LAN</label
-        >
       </nz-col>
     </nz-row>
     <nz-row>
