@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from "ng-zorro-antd/notification";
 import { AppConstants } from 'src/app/core/constants/app-constant';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
 import { KafkaTopic } from 'src/app/core/models/kafka-topic.model';
 import { TopicService } from 'src/app/services/kafka-topic.service';
 
@@ -24,7 +26,7 @@ export class CreateTopicComponent implements OnInit {
   listConfigLabel = [
     { name: 'maxMessage', value: '1048588', type: 'number', fullname: "max.message.bytes" },
     { name: 'policy', value: 'delete', fullname: "cleanup.policy" },
-    { name: 'minSync', value: 2, type: 'number', fullname: "min.insync.replicas" },
+    { name: 'minInsync', value: 2, type: 'number', fullname: "min.insync.replicas" },
     { name: 'unclean_leader', value: 'false', fullname: "unclean.leader.election.enable" },
     { name: 'comp_type', value: 'producer', fullname: "compression.type" },
     { name: 'mess_down_enable', value: 'true', fullname: "message.downconversion.enable" },
@@ -52,20 +54,17 @@ export class CreateTopicComponent implements OnInit {
 
   createNumber = 1;
   updateNumber = 2;
-  openSet = false;
-
+  isSettingAdvanced = false;
 
   errMessPartition: string;
   errMessRep: string;
-
-  notiSuccessText = 'Thành công';
-  notiFailedText = 'Thất bại';
 
   constructor(
     private topicKafkaService: TopicService,
     private fb: NonNullableFormBuilder,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) { }
   validateForm: FormGroup;
 
@@ -106,7 +105,7 @@ export class CreateTopicComponent implements OnInit {
     });
     this.disableControl();
     if (this.mode == this.updateNumber) {
-      this.openSet = true;
+      this.isSettingAdvanced = true;
       this.validateForm.get('name_tp').disable();
       this.validateForm.get('partition').disable();
       this.validateForm.get('replicaFactor').disable();
@@ -120,14 +119,6 @@ export class CreateTopicComponent implements OnInit {
       }
     }
 
-    if (localStorage.getItem('locale') == AppConstants.LOCALE_EN) {
-      this.changeLangData();
-    }
-  }
-
-  changeLangData() {
-    this.notiSuccessText = 'Success';
-    this.notiFailedText = 'Failed';
   }
 
   disableControl() {
@@ -215,7 +206,7 @@ export class CreateTopicComponent implements OnInit {
   }
 
   changeSwitch() {
-    if (this.openSet)
+    if (this.isSettingAdvanced)
       this.addValidateConfig()
     else
       this.removeValidatefig()
@@ -344,11 +335,17 @@ export class CreateTopicComponent implements OnInit {
   changeReplica() {
     const replica = this.validateForm.controls['replicaFactor'];
     const minInsync = this.validateForm.controls['minInsync'];
-    if (replica.value != null && minInsync.value != null) {
-      if (minInsync.value > replica.value) {
-        replica.setErrors({'invalidvalue': true})
-      } else {
-        minInsync.setErrors(null);
+    if (replica.value != null && replica.value != '') {
+      if (!this.isSettingAdvanced) {
+        this.listConfigLabel.forEach(e => e.name == 'minInsync' ? e.value = replica.value : e.value);
+        minInsync.setValue(replica.value);
+      }
+      if (minInsync.value != null) {
+        if (minInsync.value > replica.value) {
+          replica.setErrors({'invalidvalue': true})
+        } else {
+          minInsync.setErrors(null);
+        }
       }
     }
   }
@@ -402,16 +399,16 @@ export class CreateTopicComponent implements OnInit {
       const topicName = this.validateForm.get("name_tp").value;
       const partitionNum = Number(this.validateForm.get("partition").value);
       const replicationFactorNum = Number(this.validateForm.get("replicaFactor").value);
-      if (!this.openSet) {
+      if (!this.isSettingAdvanced) {
         this.topicKafkaService.createTopic(topicName, partitionNum, replicationFactorNum, this.serviceOrderCode, 0, JSON.stringify(json))
           .subscribe(
             (data: any) => {
               this.loadingSrv.close();
               if (data && data.code == 200) {
-                this.notification.success(this.notiSuccessText, data.msg);
+                this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
                 this.cancelForm();
               } else {
-                this.notification.error(this.notiFailedText, data.msg);
+                this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
               }
             }
           );
@@ -445,10 +442,10 @@ export class CreateTopicComponent implements OnInit {
             (data: any) => {
               if (data && data.code == 200) {
                 this.loadingSrv.close();
-                this.notification.success(this.notiSuccessText, data.msg);
+                this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
                 this.cancelForm();
               } else {
-                this.notification.error(this.notiFailedText, data.msg);
+                this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
               }
             }
           );
@@ -500,10 +497,10 @@ export class CreateTopicComponent implements OnInit {
         .subscribe(
           (data: any) => {
             if (data && data.code == 200) {
-              this.notification.success(this.notiSuccessText, data.msg);
+              this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
               this.cancelForm();
             } else {
-              this.notification.error(this.notiFailedText, data.msg);
+              this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
             }
             this.loadingSrv.close();
           }

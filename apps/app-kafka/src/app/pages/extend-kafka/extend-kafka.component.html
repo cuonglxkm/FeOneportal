@@ -42,23 +42,20 @@
                 <div nz-row>
                     <div nz-col [nzSpan]="5">{{'app.service.package' | i18n}}:</div>
                     <div><b>{{this.itemDetail.offerName}}</b></div>
-                </div>
+                </div> 
                 <div nz-row>
                     <div nz-col [nzSpan]="4">
-                        {{'app.kafka.broker' | i18n}}: 3
+                        <ul>
+                            <li>{{'app.kafka.broker' | i18n}}: 3</li>
+                            <li>RAM: {{itemDetail.ram}} GB</li>
+                        </ul>
                     </div>
                     <div nz-col [nzSpan]="6"></div>
                     <div>
-                        CPU: {{itemDetail.cpu}} VCPU
-                    </div>
-                </div>
-                <div nz-row>
-                    <div nz-col [nzSpan]="4">
-                        RAM: {{itemDetail.ram}} GB
-                    </div>
-                    <div nz-col [nzSpan]="6"></div>
-                    <div>
-                        Storage: {{itemDetail.storage}} GB
+                        <ul>
+                            <li>CPU: {{itemDetail.cpu}} VCPU</li>
+                            <li>Storage: {{itemDetail.storage}} GB</li>
+                        </ul>
                     </div>
                 </div>
             </nz-card>

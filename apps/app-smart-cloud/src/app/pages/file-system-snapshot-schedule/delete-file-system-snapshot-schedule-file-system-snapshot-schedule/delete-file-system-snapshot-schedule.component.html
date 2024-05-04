@@ -17,7 +17,7 @@
   (nzOnCancel)="handleCancel()"
 >
   <ng-template #modalTitle>
-    <span class="text-modal-title">Xác nhận xóa Snapshot + tên snapshot</span>
+    <span class="text-modal-title">{{ 'app.title.snapshot.schedule.delete' | i18n : { name : scheduleName } }}</span>
   </ng-template>
   <ng-template #modalContent>
     <form
@@ -30,8 +30,7 @@
         <nz-form-label>
           <div>
             <span
-              >Đế thực hiện xoá Lịch Snapshot + ({{scheduleName}}), vui lòng nhập
-              tên Lịch Snapshot để xác nhận.</span
+              >{{ 'app.node.delete.snapshot.schedule' | i18n : { name : scheduleName } }}</span
             >
           </div>
         </nz-form-label>
@@ -61,7 +60,7 @@
             (click)="handleCancel()"
             class="button-back"
           >
-            Huỷ
+            {{ 'app.button.cancel' | i18n }}
           </button>
           <nz-form-control *nzSpaceItem>
             <button
@@ -71,7 +70,7 @@
               class="button-new"
               (click)="handleOk()"
             >
-              Xác nhận
+              {{ 'app.button.confirm' | i18n }}
             </button>
           </nz-form-control>
         </nz-space>

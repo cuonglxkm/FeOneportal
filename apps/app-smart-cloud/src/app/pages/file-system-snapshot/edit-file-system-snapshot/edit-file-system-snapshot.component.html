@@ -17,7 +17,7 @@
   (nzOnCancel)="handleCancel()"
 >
   <ng-template #modalTitle>
-    <h4><b>Chỉnh sửa File System Snapshot</b></h4>
+    <h4><b>{{ 'app.file.system.snapshot.edit' | i18n }}</b></h4>
   </ng-template>
   <ng-template #modalContent>
     <form
@@ -43,7 +43,7 @@
           />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập thông tin</ng-container
+              >{{ 'validation.info.required' | i18n }}</ng-container
             >
           </ng-template>
         </nz-form-control>
@@ -112,7 +112,7 @@
             (click)="handleCancel()"
             class="button-back"
           >
-            Quay lại
+            {{ 'app.button.back' | i18n }}
           </button>
           <nz-form-control *nzSpaceItem>
             <button
@@ -122,7 +122,7 @@
               class="button-new"
               [disabled]="!validateForm.valid"
             >
-              Chỉnh sửa
+              {{ 'app.text.edit' | i18n }}
             </button>
           </nz-form-control>
         </nz-space>

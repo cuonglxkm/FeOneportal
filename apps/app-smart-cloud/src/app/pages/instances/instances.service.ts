@@ -84,13 +84,12 @@ export class InstancesService extends BaseService {
   }
 
   getAllSSHKey(
-    vpcId: any,
     regionId: any,
     userId: any,
     pageSize: any,
     currentPage: any
   ): Observable<any> {
-    let url_ = `/keypair?vpcId=${vpcId}&regionId=${regionId}&userId=${userId}&pageSize=${pageSize}&currentPage=${currentPage}`;
+    let url_ = `/keypair?regionId=${regionId}&userId=${userId}&pageSize=${pageSize}&currentPage=${currentPage}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
