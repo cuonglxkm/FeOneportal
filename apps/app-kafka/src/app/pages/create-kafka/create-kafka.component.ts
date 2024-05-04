@@ -332,7 +332,7 @@ export class CreateKafkaComponent implements OnInit {
     kafkaSpec.usageTime = this.myform.controls['usageTime'].value;
     kafkaSpec.offerId = this.chooseitem != null ? this.chooseitem.id : 0;
     kafkaSpec.offerName = this.chooseitem != null ? this.chooseitem.offerName : '';
-    kafkaSpec.jsonData = jsonData;
+    kafkaSpec.jsonData = JSON.stringify(jsonData);
     kafkaSpec.regionId = this.regionId;
     kafkaSpec.projectId = this.projectId;
     kafkaSpec.vpcId = this.projectId;

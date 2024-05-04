@@ -87,7 +87,7 @@ export class KafkaCreateOrder {
     usageTime: number;
     offerId: number;
     offerName: string;
-    jsonData: JsonDataCreate;
+    jsonData: string;
     customerId: number;
     userEmail: string;
     actorEmail: string;
