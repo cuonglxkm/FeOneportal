@@ -203,31 +203,29 @@
           </nz-form-item>
           <nz-form-item style="margin-bottom: 0;">
             <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
-              <nz-radio-group style="width: 100%;" formControlName="radioAction">
-                <div style="display: grid;">
-                  <label [tabIndex]="0" nz-radio class="custom-tabindex"
-                         [ngModel]="enableEncrypt"
-                         [ngModelOptions]="{ standalone: true }"
-                         (click)="onChangeStatusEncrypt()"
-                         (keyup.enter)="onChangeStatusEncrypt()">
-                    {{ 'volume.info.type.encrypt' |i18n }}
-                    <img nz-popover [nzPopoverContent]="'volume.tooltip.type.encrypt'|i18n"
-                         nzPopoverPlacement="bottom"
-                         src="assets/imgs/pajamas_question.svg" alt="" />
-                  </label>
-                  <label [tabIndex]="0" nz-radio class="custom-tabindex"
-                         [ngModel]="enableMultiAttach"
-                         [ngModelOptions]="{ standalone: true }"
-                         (click)="onChangeStatusMultiAttach()"
-                         (keyup.enter)="onChangeStatusMultiAttach()"
-                         style="margin-top: 7px;">
-                    {{ 'volume.info.type.multiAttach' |i18n }}
-                    <img nz-popover [nzPopoverContent]="'volume.tooltip.type.multiAttach'|i18n"
-                         nzPopoverPlacement="bottom"
-                         src="assets/imgs/pajamas_question.svg" alt="" />
-                  </label>
-                </div>
-              </nz-radio-group>
+              <label *ngIf="typeEncrypt == true"
+                     nz-checkbox
+                     [nzDisabled]="!(enableEncrypt === enableMultiAttach) && !enableEncrypt"
+                     formControlName="isEncryption" (click)="onChangeStatusEncrypt()">
+                {{ 'volume.info.type.encrypt' |i18n }}
+                <img nz-popover
+                     [nzPopoverContent]="'volume.tooltip.type.encrypt'|i18n"
+                     nzPopoverPlacement="bottom"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </label>
+
+              <br>
+              <label *ngIf="typeMultiple == true"
+                     nz-checkbox
+                     [nzDisabled]="!(enableEncrypt === enableMultiAttach) && !enableMultiAttach"
+                     style="margin-top: 10px;"
+                     formControlName="isMultiAttach" (click)="onChangeStatusMultiAttach()">
+                {{ 'volume.info.type.multiAttach' |i18n }}
+                <img nz-popover
+                     [nzPopoverContent]="'volume.tooltip.type.multiAttach'|i18n"
+                     nzPopoverPlacement="bottom"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </label>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item style="margin-top: 10px;">
