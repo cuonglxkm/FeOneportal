@@ -313,7 +313,6 @@ export class CreateKafkaComponent implements OnInit {
     data.createdByUserId = userId;
     data.orderItems = [];
 
-    jsonData.serviceName = this.myform.controls['serviceName'].value;
     jsonData.version = this.myform.controls['version'].value;
     jsonData.description = this.myform.controls['description'].value;
     jsonData.numPartitions = this.myform.controls['numPartitions'].value;
@@ -325,6 +324,7 @@ export class CreateKafkaComponent implements OnInit {
     jsonData.subnetId = this.myform.controls['subnetId'].value;
     jsonData.subnetCloudId = this.myform.controls['subnetCloudId'].value;
 
+    kafkaSpec.serviceName = this.myform.controls['serviceName'].value;
     kafkaSpec.vCpu = this.myform.controls['vCpu'].value;
     kafkaSpec.ram = this.myform.controls['ram'].value;
     kafkaSpec.storage = this.myform.controls['storage'].value;

@@ -66,7 +66,6 @@ export class KafkaExtend {
 }
 
 export class JsonDataCreate {
-    serviceName: string;
     version: string;
     description: string;
     numPartitions: number;
@@ -80,6 +79,7 @@ export class JsonDataCreate {
 }
 
 export class KafkaCreateOrder {
+    serviceName: string;
     vCpu: number;
     ram: number;
     storage: number;
