@@ -6,7 +6,7 @@
 <!--        [nzPopoverContent]="'Gắn Volume'"-->
 <!--        nzPopoverPlacement="bottom" ></span>-->
 <!--</button>-->
-<img src="assets/imgs/add.svg"  (click)="showModal()"  nz-popover
+<img *ngIf="!instanceInVolume.length || multiple" src="assets/imgs/add.svg" (click)="showModal()" nz-popover
      [nzPopoverContent]="'volume.attach' | i18n"
      nzPopoverPlacement="bottom" style="cursor: pointer;"/>
 <nz-modal [(nzVisible)]="isVisible"
@@ -26,7 +26,7 @@
                  [required]="true"
                  [ngModelOptions]="{ standalone: true }"
                  style="width: 100%;">
-        <nz-option *ngFor="let item of listVm" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+        <nz-option *ngFor="let item of listVmUnique" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
       </nz-select>
     </div>
     <div *ngIf="isSelected" style="color: red;">{{ 'volume.notification.input.select.vm' | i18n}}</div>

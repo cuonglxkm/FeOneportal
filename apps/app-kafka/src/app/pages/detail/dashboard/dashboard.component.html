@@ -1,12 +1,13 @@
 <ng-container *ngIf="isHealth !== null">
     <div nz-row class="general">
-        <ng-container *ngIf="isHealth === clusterHealth || isHealth === clusterWarning; else otherHealth">
-            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
-                <div nz-row nzType="flex" nzAlign="middle" class="div-check div-status-cluster p-md">
-                    <span class="text-health">Cluster</span>
-                    <label class="text-check">HEALTH</label>
-                </div>
+        <!-- only health -->
+        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
+            <div nz-row nzType="flex" nzAlign="middle" class="div-check div-status-cluster p-md">
+                <span class="text-health">Cluster</span>
+                <label class="text-check">HEALTH</label>
             </div>
+        </div>
+        <!-- <ng-container *ngIf="isHealth === clusterHealth || isHealth === clusterWarning; else otherHealth">
         </ng-container>
         
         <ng-template #otherHealth>
@@ -20,7 +21,7 @@
                     </div>
                 </div>
             </ng-container>
-        </ng-template>
+        </ng-template> -->
     
         <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">

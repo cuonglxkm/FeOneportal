@@ -64,7 +64,7 @@ export class ResizeFileSystemComponent implements OnInit {
       this.fileSystem = data;
       this.isLoading = false;
       this.storage = this.fileSystem.size;
-      this.validateForm.controls.storage.setValue(this.fileSystem.size);
+      // this.validateForm.controls.storage.setValue(this.fileSystem.size);
     }, error => {
       this.fileSystem = null;
       this.isLoading = false;

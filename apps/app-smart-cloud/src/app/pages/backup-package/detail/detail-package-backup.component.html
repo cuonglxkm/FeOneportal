@@ -10,8 +10,11 @@
       <nz-breadcrumb-item>
         {{ 'app.backup.package.breadcrumb.backup' | i18n }}
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/backup/packages">{{ 'app.backup.package.breadcrumb.detail'|i18n }}</a>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup/packages'">
+        {{ 'app.backup.package.breadcrumb.management' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item >
+        {{ 'app.backup.package.breadcrumb.detail'|i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -74,7 +77,7 @@
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <span>Mô tả</span>
+          <span>{{'app.backup.package.description'|i18n}}</span>
         </nz-form-label>
         <nz-form-control>
           <nz-textarea-count [nzMaxCharacterCount]="255">
@@ -87,8 +90,8 @@
         </nz-form-control>
       </nz-form-item>
       <div style="display: grid;">
-        <span class="text-label">Ngày khởi tạo: {{ packageBackupModel?.creationDate | date: 'dd/MM/yyyy' }} </span>
-        <span class="text-label" style="color:#FC1010; margin-top: 15px;">Ngày hết hạn: {{ packageBackupModel?.expirationDate | date: 'dd/MM/yyyy' }} </span>
+        <span class="text-label">{{'app.backup.package.create.date'|i18n}}: {{ packageBackupModel?.creationDate | date: 'dd/MM/yyyy' }} </span>
+        <span class="text-label" style="color:#FC1010; margin-top: 15px;">{{'app.backup.package.expire.date'|i18n}}: {{ packageBackupModel?.expirationDate | date: 'dd/MM/yyyy' }} </span>
       </div>
     </form>
   </nz-card>

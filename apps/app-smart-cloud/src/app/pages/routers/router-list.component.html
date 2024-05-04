@@ -137,14 +137,18 @@
         <td>
           <img
             src="assets/imgs/edit-2.svg"
+            [ngStyle]="{'filter': data.isUsed ? 'invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%)' : ''}"
             alt=""
+            [class.disabled]="data.isUsed"
             (click)="modalEdit(data)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="{{'app.text.edit' | i18n}}"
           />
           <img
             src="assets/imgs/trash.svg"
+            [ngStyle]="{'filter': data.isUsed ? 'invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%)' : ''}"
             alt=""
+            [class.disabled]="data.isUsed"
             (click)="modalDelete(data.cloudId, data.routerName)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="{{'app.delete' | i18n}}"
@@ -282,7 +286,7 @@
       {{'form.account.name' | i18n}} Router(<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note4' | i18n}}"
+        nz-tooltip="{{'app.router.note3' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -299,7 +303,7 @@
       >{{'app.select.network' | i18n}}
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="message-question"
+        nz-tooltip="{{'app.router.note4' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
     /></span>

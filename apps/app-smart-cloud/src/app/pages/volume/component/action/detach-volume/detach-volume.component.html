@@ -1,4 +1,4 @@
-<img src="assets/imgs/cancel.svg"
+<img *ngIf="instanceInVolume.length" src="assets/imgs/cancel.svg"
      (click)="showModal()"
       nz-popover
       [nzPopoverContent]="'volume.action.detach' | i18n"

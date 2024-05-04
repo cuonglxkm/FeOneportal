@@ -37,7 +37,6 @@ export function ipAddressValidator(): ValidatorFn {
 function isValidIPAddress(ipAddress: string): boolean {
   // Kiểm tra xem địa chỉ IP có thuộc các dải cho phép không
   if (
-    !ipAddress.startsWith('10.') &&
     !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.24.0.0') &&
     !(ipAddress.startsWith('192.168.'))
   ) {
@@ -93,8 +92,7 @@ function isValidIPAddressAllocation(ip: string): boolean {
   const secondSegment = parseInt(ipSegments[1], 10);
   const thirdSegment = parseInt(ipSegments[2], 10);
 
-  if ((firstSegment === 10 && secondSegment >= 21 && secondSegment <= 255) ||
-    (firstSegment === 172 && secondSegment >= 16 && secondSegment <= 24) ||
+  if ((firstSegment === 172 && secondSegment >= 16 && secondSegment <= 24) ||
     (firstSegment === 192 && secondSegment === 168)) {
     return true;
   }

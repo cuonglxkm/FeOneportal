@@ -16,6 +16,7 @@ export class DeleteVpnServiceComponent{
   @Input() project: number
   @Input() vpnServiceId: string
   @Input() vpnServiceName: string
+  @Input() vpnServiceStatus: string
   @Output() onOk = new EventEmitter()
 
   isVisible: boolean = false
