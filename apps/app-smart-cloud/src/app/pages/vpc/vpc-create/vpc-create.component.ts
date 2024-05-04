@@ -13,6 +13,8 @@ import { OfferDetail } from '../../../shared/models/catalog.model';
 import { da } from 'date-fns/locale';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, Subject } from 'rxjs';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-vpc-create',
@@ -109,6 +111,7 @@ export class VpcCreateComponent implements OnInit{
               private cdr: ChangeDetectorRef,
               private router: Router,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private ipService: IpPublicService) {
   }
 
@@ -376,11 +379,11 @@ export class VpcCreateComponent implements OnInit{
     if (this.vpcType == '0') {
       this.ipService.createIpPublic(request).subscribe(
         data => {
-          this.notification.success('Thành công', 'Tạo dự án thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.note50'));
           this.router.navigate(['/app-smart-cloud/vpc']);
         },
         error => {
-          this.notification.error('Thất bại', 'Tạo dự án thất bại')
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'))
         }
       )
     } else {

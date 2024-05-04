@@ -75,6 +75,7 @@ export class VpcUpdateComponent implements OnInit{
   total: any;
   totalAmount = 0;
   totalPayment = 0;
+  selectPackge = '';
   listLoadbalancer: OfferDetail[] = [];
   listSiteToSite: OfferDetail[] = [];
   listIpConnectInternet: any[];
@@ -138,7 +139,8 @@ export class VpcUpdateComponent implements OnInit{
 
   }
 
-  onInputFlavors(event: any) {
+  onInputFlavors(event: any, offerName: any) {
+    this.selectPackge = offerName;
     this.offerFlavor = this.listOfferFlavors.find(
       (flavor) => flavor.id === event
     );

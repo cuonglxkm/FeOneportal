@@ -9,6 +9,8 @@ import { getCurrentRegionAndProject } from '@shared';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { IpPublicService } from '../../../shared/services/ip-public.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-vpc-list',
@@ -30,10 +32,10 @@ export class VpcListComponent implements OnInit{
   searchKey = '';
   selectedStatus = '';
   statusData = [
-    { name: 'Tất cả trạng thái', value: '' },
-    { name: 'ENABLE', value: 'ENABLE' },
-    { name: 'DISABLE', value: 'DISABLE' },
-    { name: 'DELETED', value: 'DELETED' }];
+    { name: this.i18n.fanyi('app.status.all'), value: '' },
+    { name: this.i18n.fanyi('status.enable'), value: 'ENABLE' },
+    { name: this.i18n.fanyi('status.disable'), value: 'DISABLE' },
+    { name: this.i18n.fanyi('status.deleted'), value: 'DELETED' }];
 
   modalStyle = {
     'padding': '20px',
@@ -53,6 +55,7 @@ export class VpcListComponent implements OnInit{
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private vpcService: VpcService,
               private ipService: IpPublicService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService) {
 
   }
