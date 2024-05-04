@@ -32,7 +32,9 @@
                             </div>
                         </div>
                         <div class="async">{{'kafka.cg.sync-time' | i18n}}:
-                            <span class="time-async">{{syncInfo.consumerGroup}}</span>
+                            <ng-container *ngIf="syncInfo">
+                                <span class="time-async">{{syncInfo.consumerGroup}}</span>
+                            </ng-container>
                         </div>
                     </div>
                 </div>
@@ -212,7 +214,9 @@
                     </button>
                 </div>
                 <div class="async" style="margin-bottom: 5px;">{{'kafka.cg.sync-time' | i18n}}:
-                    <span class="time-async">{{syncInfo.topicPartition}}</span>
+                    <ng-container *ngIf="syncInfo">
+                        <span class="time-async">{{syncInfo.topicPartition}}</span>
+                    </ng-container>
                 </div>
 
                 <div id="list-topic">

@@ -66,7 +66,7 @@ export class CoreDataService {
     public getRegions() {
         let regionId = localStorage.getItem('regionId');
 
-        localStorage.removeItem('regions');
+        //localStorage.removeItem('regions');
 
         this.regionService.getAll().subscribe({
             next : (data) => {
@@ -103,7 +103,7 @@ export class CoreDataService {
             return;
         }
 
-        localStorage.removeItem('projects');
+        //localStorage.removeItem('projects');
 
         this.projectService.getByRegion(regionId).subscribe({
             next: (data) => {

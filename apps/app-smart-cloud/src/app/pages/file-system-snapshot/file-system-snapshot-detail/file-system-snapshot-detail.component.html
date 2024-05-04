@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Xem chi tiết File System Snapshot'"
+  [title]="'app.file.system.snapshot.detail' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -15,9 +15,9 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/file-system-snapshot/list']"
-        >Quản lý File System Snapshot</a
+        >{{ 'app.file.system.snapshot.manage' | i18n }}</a
       ></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Xem chi tiết File System Snapshot</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.file.system.snapshot.detail' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -34,11 +34,9 @@
   </ng-template>
 </page-header>
 
-
-
 <nz-content>
   <nz-card style="border-radius: 8px">
-    <h2 class="custom-title">Thông tin File System Snapshot</h2>
+    <h2 class="custom-title">{{ 'app.file.system.snapshot.info' | i18n }}</h2>
    <form nz-form nzLayout="vertical">
     <nz-spin [nzSpinning]="isLoading" nzSize="large">
      <nz-row nzJustify="space-between" nzGutter="24">
@@ -66,7 +64,7 @@
         <nz-col nzSpan="12">
          <nz-form-item>
            <nz-form-label>
-             <span>Tên Filesystem</span>
+             <span>{{ 'app.file.system.name' | i18n }}</span>
            </nz-form-label>
            <nz-form-control>
              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.name }}"  [disabled]="true" />

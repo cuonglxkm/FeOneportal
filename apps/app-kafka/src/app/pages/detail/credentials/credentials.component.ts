@@ -1,10 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { LoadingService } from '@delon/abc/loading';
 import { camelizeKeys } from 'humps';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { filter, finalize, map } from 'rxjs/operators';
 import { KafkaCredential } from '../../../core/models/kafka-credential.model';
 import { KafkaCredentialsService } from '../../../services/kafka-credentials.service';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-credentials',
@@ -46,7 +48,8 @@ export class CredentialsComponent implements OnInit {
   constructor(
     private kafkaCredentialService: KafkaCredentialsService,
     private notification: NzNotificationService,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
     this.tabStatus = this.showListCredentials;
     this.isVisibleOtpModal = false;
@@ -107,11 +110,11 @@ export class CredentialsComponent implements OnInit {
         if (data && data.code == 200) {
           this.reload();
           this.getCredentials();
-          this.notification.success('Thông báo', data.msg, {
+          this.notification.success(this.i18n.fanyi('app.status.success'), data.msg, {
             nzDuration: 2000,
           });
         } else {
-          this.notification.error('Thất bại', data.msg);
+          this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
         }
       });
   }
@@ -218,7 +221,7 @@ export class CredentialsComponent implements OnInit {
 
   verifyOtp(){
     if (this.inputOtpCode.length !== 6) {
-      this.notification.error('Thông báo', 'Mã xác thực bao gồm 6 chữ số, xin vui lòng kiểm tra lại!', {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Mã xác thực bao gồm 6 chữ số, xin vui lòng kiểm tra lại!', {
         nzDuration: 2000,
       });
       return;
@@ -229,7 +232,7 @@ export class CredentialsComponent implements OnInit {
       this.closeOtpModal();
       this.changeTabStatus(this.showForgotPassword);
     } else {
-      this.notification.error('Thông báo', 'Mã xác thực không đúng, xin vui lòng kiểm tra lại!', {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Mã xác thực không đúng, xin vui lòng kiểm tra lại!', {
         nzDuration: 2000,
       });
     }

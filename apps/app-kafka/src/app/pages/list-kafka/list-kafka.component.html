@@ -70,10 +70,11 @@
         <tr>
           <th nzWidth="5%" nzAlign="center">{{ 'app.service.order-number' | i18n }}</th>
           <th nzWidth="13%">{{ 'app.kafka.name' | i18n }}</th>
-          <th nzWidth="10%">{{ 'app.text.version' | i18n }}</th>
+          <th nzWidth="7%">{{ 'app.text.version' | i18n }}</th>
           <th nzWidth="12%">{{ 'app.text.status' | i18n }}</th>
           <th nzWidth="15%">Endpoint</th>
-          <th nzWidth="20%">{{ 'app.text.package' | i18n }}</th>
+          <th nzWidth="8%">{{ 'app.text.package-type' | i18n }}</th>
+          <th nzWidth="15%">{{ 'app.text.package-config' | i18n }}</th>
           <th nzWidth="15%">{{ 'app.text.creation-time' | i18n }}</th>
           <th nzWidth="10%" nzAlign="center">{{ 'app.text.operation' | i18n }}</th>
         </tr>
@@ -96,8 +97,13 @@
             </ng-container>
           </td>
           <td>
-            <ng-container *ngIf="item.servicePackName">{{ item.servicePackName}} / <br></ng-container>
-            {{ item.cpu }} vCPU / {{ item.ram}} GB RAM / {{ item.storage }} GB Storage
+            <ng-container *ngIf="item.servicePackName; else custom">{{ item.servicePackName }}</ng-container>
+            <ng-template #custom> {{'app.service.custom' | i18n}}</ng-template>
+          </td>
+          <td>
+            CPU - {{ item.cpu }} vCPU <br/>
+            RAM - {{ item.ram}} GB <br/> 
+            Storage - {{ item.storage }} GB
           </td>
           <td>{{ item.createdDate | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
           <td nzAlign="center">

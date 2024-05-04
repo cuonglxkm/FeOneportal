@@ -115,7 +115,7 @@
                       nzSize="default"
                       style="cursor: pointer;"
                       [routerLink]="'/app-smart-cloud/policy/update/' +  index.name"
-                      class="button-cancel">Chỉnh sửa
+                      class="button-cancel">{{ 'app.text.edit' | i18n }}
               </button>
             </nz-row>
           </nz-row>
@@ -216,7 +216,7 @@
                       nzSize="default"
                       style="cursor: pointer;"
                       [routerLink]="'/app-smart-cloud/policy/update/' +  data.name"
-                      class="button-cancel">Chỉnh sửa
+                      class="button-cancel">{{ 'app.text.edit' | i18n }}
               </button>
             </nz-row>
           </nz-row>
@@ -230,7 +230,7 @@
                 style="color: #0066B3"
                 (click)="goBack()"
                 nzSize="default">
-          <span class="button-text-default"><span nz-icon nzType="left" nzTheme="outline" style="margin-right: 10px;"></span>Quay lại</span>
+          <span class="button-text-default"><span nz-icon nzType="left" nzTheme="outline" style="margin-right: 10px;"></span>{{ 'app.button.back' | i18n }}</span>
         </button>
       </nz-space>
       <nz-space nzSize="middle" style="margin-left: 5px">

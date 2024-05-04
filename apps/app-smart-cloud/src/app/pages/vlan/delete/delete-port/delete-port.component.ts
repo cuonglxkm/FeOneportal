@@ -2,6 +2,8 @@ import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../../shared/services/vlan.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-delete-port',
@@ -23,6 +25,7 @@ export class DeletePortComponent {
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private vlanService: VlanService) {
   }
 
@@ -45,12 +48,12 @@ export class DeletePortComponent {
         console.log('delete', data)
         this.isVisibleDeletePort = false
         this.isLoadingDeletePort = false
-        this.notification.success('Thành công', 'Yêu cầu xoá Port thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note51'))
         setTimeout(() => {this.onOk.emit(data)}, 1500)
       }, error => {
         this.isVisibleDeletePort = false
         this.isLoadingDeletePort = false
-        this.notification.error('Thất bại', 'Yêu cầu xoá Port thất bại. ', error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note52'), error.error.detail)
       })
     } else {
       this.noti = true

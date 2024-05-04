@@ -15,6 +15,8 @@ import { FormCreateSubnet, FormSearchSubnet } from '../../../../shared/models/vl
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { debounceTime, Subject } from 'rxjs';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 
 export function ipAddressValidator(): ValidatorFn {
@@ -35,7 +37,6 @@ export function ipAddressValidator(): ValidatorFn {
 function isValidIPAddress(ipAddress: string): boolean {
   // Kiểm tra xem địa chỉ IP có thuộc các dải cho phép không
   if (
-    !ipAddress.startsWith('10.') &&
     !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.24.0.0') &&
     !(ipAddress.startsWith('192.168.'))
   ) {
@@ -91,8 +92,7 @@ function isValidIPAddressAllocation(ip: string): boolean {
   const secondSegment = parseInt(ipSegments[1], 10);
   const thirdSegment = parseInt(ipSegments[2], 10);
 
-  if ((firstSegment === 10 && secondSegment >= 21 && secondSegment <= 255) ||
-    (firstSegment === 172 && secondSegment >= 16 && secondSegment <= 24) ||
+  if ((firstSegment === 172 && secondSegment >= 16 && secondSegment <= 24) ||
     (firstSegment === 192 && secondSegment === 168)) {
     return true;
   }
@@ -157,6 +157,7 @@ export class VlanCreateSubnetComponent implements OnInit {
               private notification: NzNotificationService,
               private vlanService: VlanService,
               private route: ActivatedRoute,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder) {
   }
 
@@ -233,12 +234,12 @@ export class VlanCreateSubnetComponent implements OnInit {
     this.vlanService.createSubnet(this.formCreateSubnet).subscribe(data => {
       this.isLoading = false;
       this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-      this.notification.success('Thành công', 'Tạo mới subnet thành công');
+      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note61'))
 
     }, error => {
       this.isLoading = false;
       this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-      this.notification.error('Thất bại', 'Tạo mới subnet thất bại. ' + error.error.detail);
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note62') + error.error.detail);
     });
   }
 
