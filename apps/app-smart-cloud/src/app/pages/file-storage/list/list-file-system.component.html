@@ -79,11 +79,11 @@
             <td>{{ i + 1 }}</td>
             <td><a [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
             <td>{{ data.statusDisplay }}</td>
-            <td>{{ data.status }}</td>
+            <td>{{ data.taskState.toUpperCase() }}</td>
             <td>{{ data.type }}</td>
             <td>{{ data.protocol }}</td>
             <td>{{ data.size }} GB</td>
-            <td>
+            <td *ngIf="!(['CREATING', 'ERROR'].includes(data.taskState.toUpperCase()))">
               <div>
                 <one-portal-edit-file-system [region]="region"
                                              [project]="project"
