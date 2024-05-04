@@ -45,7 +45,6 @@ export class DetailFileSystemComponent implements OnInit{
 
   getFileSystemById(id) {
     this.isLoading = true
-
     this.fileSystemService.getFileSystemById(id, this.region).subscribe(data => {
       this.fileSystem = data
       this.isLoading = false
