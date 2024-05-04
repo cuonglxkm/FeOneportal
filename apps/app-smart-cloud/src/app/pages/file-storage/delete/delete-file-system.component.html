@@ -1,4 +1,4 @@
-<li nz-menu-item (click)="showModal()">Xoá</li>
+<li nz-menu-item (click)="showModal()">{{'app.delete'|i18n}}</li>
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>

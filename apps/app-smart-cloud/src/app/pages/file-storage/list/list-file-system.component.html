@@ -69,7 +69,7 @@
             <th>{{ 'app.text.status' | i18n }}</th>
             <th>{{ 'app.task.status' | i18n }}</th>
             <th>{{ 'app.file.system.type' | i18n }}</th>
-            <th>{{ 'app.protocol' | i18n }}c</th>
+            <th>{{ 'app.protocol' | i18n }}</th>
             <th>{{ 'app.capacity' | i18n }}</th>
             <th>{{ 'app.text.operation' | i18n }}</th>
           </tr>
@@ -87,7 +87,7 @@
               <div>
                 <one-portal-edit-file-system [region]="region"
                                              [project]="project"
-                                             [fileSystemId]="data.id"
+                                             [fileSystem]="data"
                                              (onOk)="handleOkEdit()" />
                 <img nz-dropdown
                      [nzDropdownMenu]="opMenu"
