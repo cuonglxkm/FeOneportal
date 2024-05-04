@@ -22,7 +22,14 @@ export class InstancesComponent implements OnInit {
   total: number;
 
   listOfInstances: InstanceModel[];
+  selectedInstance: InstanceModel;
   isLoadingInstance: boolean;
+  isVisibleModal: boolean;
+  isSubmiting: boolean;
+
+  titleModal: string;
+  contentModal: string;
+  action: string;
 
   changeKeySearch = new Subject<string>();
 
@@ -31,6 +38,8 @@ export class InstancesComponent implements OnInit {
     private notificationService: NzNotificationService
   ) {
     this.isLoadingInstance = false;
+    this.isVisibleModal = false;
+    this.isSubmiting = false;
     this.listOfInstances = [];
     this.keySearch = '';
     this.pageIndex = 1;
@@ -64,14 +73,14 @@ export class InstancesComponent implements OnInit {
       this.total = r.data?.total;
 
       this.listOfInstances = this.listOfInstances.map(item => {
-        let action: boolean;
-        item.status == KubernetesConstant.ACTIVE_INSTANCE ? action = true : action = false;
+        let isActive: boolean;
+        item.status == KubernetesConstant.ACTIVE_INSTANCE ? isActive = true : isActive = false;
 
         // let isProgressing: boolean;
         // item.status
 
         return {
-          action: action,
+          isActive: isActive,
           isProgressing: false,
           ...item
         };
@@ -93,11 +102,41 @@ export class InstancesComponent implements OnInit {
     });
   }
 
-  handleActionInstance(item: InstanceModel, action?: string) {
+  showModalAction(item: InstanceModel, action?: string) {
     if (action == null || action == undefined) {
-      action = item.action == true ? 'STOP' : 'START';
+      if (item.isActive) {
+        // turn off node
+        this.titleModal = `Tạm dừng hoạt động node ${item.instanceName}`;
+        this.contentModal = `Bạn có chắc chắn muốn dừng hoạt động node ${item.instanceName} ?`;
+        this.action = 'STOP';
+      } else {
+        // start node
+        this.titleModal = `Bật node ${item.instanceName}`;
+        this.contentModal = `Bạn có chắc muốn bật node ${item.instanceName} ?`;
+        this.action = 'START';
+      }
+    } else if (action == 'REBOOT-SOFT') {
+      this.titleModal = `Khởi động lại node ${item.instanceName}`;
+      this.contentModal = `Bạn có chắc chắn muốn khởi động lại node ${item.instanceName} ?`;
+      this.action = action;
     }
+
+    this.isVisibleModal = true;
+    this.selectedInstance = item;
+  }
+
+  handleCancelModalAction() {
+    this.isVisibleModal = false;
+    this.selectedInstance = null;
+  }
+
+  handleActionInstance(item: InstanceModel, action?: string) {
+    this.isSubmiting = true;
     this.clusterService.actionInstance(item.cloudId, this.projectId, action)
+    .pipe(finalize(() => {
+      this.isSubmiting = false;
+      this.handleCancelModalAction();
+    }))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.notificationService.success('Thành công', r.message);

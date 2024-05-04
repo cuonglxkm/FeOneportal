@@ -16,6 +16,7 @@ export class KubernetesCluster {
   networkType: string;
   apiEndpoint: string;
   cidr: string;
+  serviceCidr: string;
   subnet: string;
   vpcNetworkId: number;
   volumeCloudType: string;
@@ -43,6 +44,7 @@ export class KubernetesCluster {
     this.upgradeVersion = obj.upgrade_versions_available;
     this.networkType = obj.network_type;
     this.cidr = obj.cidr;
+    this.serviceCidr = obj.service_cidr;
     this.subnet = obj.subnet;
     this.securityGroupName = obj.security_group_name;
     this.vpcNetworkId = obj.vpc_network_id;

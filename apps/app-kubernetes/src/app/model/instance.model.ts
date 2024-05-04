@@ -12,7 +12,7 @@ export class InstanceModel {
   serviceOrderCode: string;
   namespace: string;
   privateIP: string;
-  action: boolean;
+  isActive: boolean;
   isProgressing: boolean;
 
 }

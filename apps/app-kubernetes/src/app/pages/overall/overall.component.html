@@ -11,7 +11,7 @@
         <a [routerLink]="['/app-kubernetes']">Danh sách cluster</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Quản lý Cluster: <ng-container *ngIf="detailCluster"><b>{{detailCluster.clusterName}}</b></ng-container>
+        Quản lý Cluster: <ng-container *ngIf="detailCluster"><b>{{detailCluster?.clusterName}}</b></ng-container>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -24,10 +24,6 @@
     </div>
   </ng-template>
 </page-header>
-
-<head>
-  <title>HTML Elements Reference</title>
-</head>
 
 <nz-tabset [nzSelectedIndex]="selectedIndexTab" (nzSelectedIndexChange)="onChangeTab($event)" nzSize="large">
   <!-- detail tab -->
@@ -48,8 +44,8 @@
   <nz-tab [nzTitle]="instanceTitleTpl">
     <ng-template nz-tab>
       <cluster-instances
-        [namespace]="detailCluster.namespace"
-        [serviceOrderCode]="detailCluster.serviceOrderCode"
+        [namespace]="detailCluster?.namespace"
+        [serviceOrderCode]="detailCluster?.serviceOrderCode"
         [projectId]="projectId">
       </cluster-instances>
     </ng-template>

@@ -22,12 +22,18 @@ export class KubernetesConstant {
 
   public static LOCK_RULE = "any";
 
-  // instance status
+  // instance
   public static ACTIVE_INSTANCE = 'active';
 
   public static STOPPED_INSTANCE = 'stopped';
 
   public static REBOOT_INSTANCE = 'reboot';
+
+  public static START_ACTION = "START";
+
+  public static STOP_ACTION = "STOP";
+
+  public static REBOOT_ACTION = "REBOOT-SOFT";
 
   // action type
   public static CREATE_ACTION = "create";

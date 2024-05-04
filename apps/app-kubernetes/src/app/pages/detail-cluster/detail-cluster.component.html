@@ -276,6 +276,11 @@
                                   </nz-option>
                                 </nz-select>
                               </nz-form-control>
+                              <ng-template #errorConfigError let-control>
+                                <ng-container *ngIf="control.hasError('invalid')">
+                                  Không giảm cấu hình so với hiện tại
+                                </ng-container>
+                              </ng-template>
                             </nz-form-item>
                           </ng-template>
                         </div>
