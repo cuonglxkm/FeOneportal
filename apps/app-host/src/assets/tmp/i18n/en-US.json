@@ -539,6 +539,7 @@
   "validation.bucket.name.invalid": "The Bucket name is invalid",
   "validation.sub.user.name": "Username should use lowercase letters, uppercase letters, numbers, and hyphens",
   "validation.sub.user.name.required": "The Subuser name cannot be empty",
+  "validation.sub.user.name.duplicate": "Subuser name already exists, please enter another name",
 
   "app.alert.resize.object.storage": "When increasing Object Storage capacity, the new cost will be calculated from the adjustment date until the expiration date",
   "app.alert.delete.object.storage": "Are you sure you want to delete the Object Storage?",
