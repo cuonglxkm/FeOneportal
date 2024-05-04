@@ -1466,6 +1466,7 @@
   "volume.notification.require.create.success": "Yêu cầu tạo Volume thành công.",
   "volume.notification.resize.success": "Điều chỉnh Volume thành công.",
   "volume.notification.resize.fail": "Điều chỉnh Volume thất bại.",
+  "volume.notification.access.denied": "Khách hàng không có quyền truy cập vào Volume này!",
 
   "volume.input.storage.vpc.required": "Vui lòng nhập dung lượng của gói Backup",
   "volume.unit-price": "Đơn giá",
