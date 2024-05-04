@@ -91,7 +91,7 @@
                                    class="input-custom"
                                    [ngModel]="storage"
                                    (ngModelChange)="storage = $event"
-                                   [nzMin]="storage" [nzStep]="1"></nz-input-number>
+                                   [nzMin]="1" [nzStep]="1"></nz-input-number>
                   <ng-template #storageErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
                   </ng-template>

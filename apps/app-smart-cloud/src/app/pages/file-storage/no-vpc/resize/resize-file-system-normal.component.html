@@ -188,7 +188,7 @@
                                style="width: 100%; margin-left: 0;"
                                nzAutoFocus
                                class="input-custom"
-                               [nzMin]="fileSystem?.size"
+                               [nzMin]="1"
                                (ngModelChange)="changeValueStorage($event)"
                                [nzStep]="1" />
               <ng-template #storageErrorTpl let-control>
