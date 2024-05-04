@@ -1582,6 +1582,7 @@
   "volume.notification.require.create.success": "Volume creation request successful",
   "volume.notification.resize.success": "Volume adjustment successful.",
   "volume.notification.resize.fail": "Volume adjustment failed",
+  "volume.notification.access.denied": "Customer does not have access to this Volume!",
 
   "volume.input.storage.vpc.required": "Please enter the capacity of the Backup package",
   "volume.unit-price": "Unit price",

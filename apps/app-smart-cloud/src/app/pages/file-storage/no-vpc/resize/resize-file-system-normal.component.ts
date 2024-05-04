@@ -173,10 +173,6 @@ export class ResizeFileSystemNormalComponent implements OnInit{
     this.getFileSystemById(this.idFileSystem);
     this.onChangeStorage();
     this.dateEdit = new Date();
-    // this.projectService.getByProjectId(this.project).subscribe(data => {
-    //   // this.quotaShareInGb = data.cloudProject.quotaShareInGb;
-    //
-    //
-    // });
+    this.getTotalAmount()
   }
 }

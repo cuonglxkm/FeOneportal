@@ -98,7 +98,7 @@ export class ListFileSystemComponent implements OnInit {
     formSearch.vpcId = this.project;
     formSearch.regionId = this.region;
     formSearch.name = this.value;
-    formSearch.isCheckState = false;
+    formSearch.isCheckState = true;
     formSearch.pageSize = this.pageSize;
     formSearch.currentPage = this.pageIndex;
 
