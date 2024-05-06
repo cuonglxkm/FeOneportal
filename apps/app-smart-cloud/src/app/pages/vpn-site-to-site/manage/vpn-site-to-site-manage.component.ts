@@ -60,14 +60,14 @@ export class VpnSiteToSiteManage {
           
         }
       if (isBegin) {
-        this.isBegin = this.response === null ? true : false;
+        this.isBegin = this.response ? false : true;
       }
     }, error => {
       this.isLoading = false;
       this.response = null;
       console.log(this.response);
       if (isBegin) {
-        this.isBegin = this.response === null ? true : false;
+        this.isBegin = this.response ? false : true;
       }
     })
   }
