@@ -58,7 +58,7 @@ class ConfigGPU {
 export class InstancesEditComponent implements OnInit {
   //danh sách các biến của form model
   id: number;
-  instancesModel: InstancesModel = new InstancesModel();
+  instancesModel: InstancesModel
   instanceNameEdit: string = '';
 
   instanceResize: InstanceResize = new InstanceResize();
