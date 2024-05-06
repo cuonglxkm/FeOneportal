@@ -1,3 +1,24 @@
+export class ObjectStorage {
+  customerId: number;
+  createdDate: string;
+  expiredDate: string;
+  customerEmail: string;
+  customerName: string;
+  id: number;
+  regionText: any;
+  regionId: number;
+  userName: string;
+  status: string;
+  quota: number;
+  saleDept: any;
+  contactPersonName: any;
+  dSubScriptionType: any;
+  dSubScriptionNumber: any;
+  saler2: any;
+  note: any;
+  oneSMESubId: any;
+  statusDisplay: string;
+}
 export class ObjectStorageCreate {
   quota: number;
   customerId: number;
@@ -54,7 +75,7 @@ export class ObjectStorageResize {
   regionId: number;
   serviceName: any;
   customerId: number;
-  vpcId: any;
+  projectId: any;
   typeName: string;
   userEmail: any;
   actorEmail: any;

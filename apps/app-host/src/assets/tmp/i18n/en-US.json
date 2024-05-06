@@ -448,6 +448,7 @@
   "app.notify.optional.configuration.invalid": "The optional configuration is invalid",
   "app.notify.gpu.configuration.invalid": "The GPU configuration is invalid",
   "app.notify.check.config.for.os": "The current configuration is not compatible with the operating system. Please choose the minimum {{nameHdh}} configuration of {{volume}} GB Storage / {{ram}} GB RAM / {{cpu}} vCPU",
+  "app.notify.check.config.for.change.os": "Currently, you do not have sufficient resources to perform the operating system conversion. Please update the minimum configuration of {{nameHdh}} to {{volume}} GB storage / {{ram}} GB RAM / {{cpu}} vCPU",
 
   "app.choose.snapshot": "Choose Snapshot",
   "app.choose.volume.type": "Choose Volume type",

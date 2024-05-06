@@ -395,7 +395,7 @@
           <td>
             <span style="color: #0066B3"
                   nz-tooltip
-                  nzTooltipTitle="Thêm" nzTooltipPlacement="bottom"
+                  [nzTooltipTitle]="'menu.more' | i18n" nzTooltipPlacement="bottom"
                   nz-icon nzType="plus" nzTheme="outline"
                   (click)="removeInstance(item.id,1)"></span>
           </td>
