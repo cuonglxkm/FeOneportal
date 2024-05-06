@@ -139,4 +139,8 @@ export class CreateEndpointGroupComponent implements OnInit {
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
   }
+
 }
+
+
+
