@@ -1,6 +1,6 @@
 services:
   app-host:
-    image: registry.onsmartcloud.com/cloudportal/app-host
+    image: repo.onsmartcloud.com/cloudportal/app-host
     build:
       context: ./
       dockerfile: apps/app-host/Dockerfile
@@ -22,7 +22,7 @@ services:
       - SCOPE=openid profile email
 
   app-smartcloud:
-    image: registry.onsmartcloud.com/cloudportal/app-smartcloud
+    image: repo.onsmartcloud.com/cloudportal/app-smartcloud
     build:
       context: ./
       dockerfile: apps/app-smart-cloud/Dockerfile

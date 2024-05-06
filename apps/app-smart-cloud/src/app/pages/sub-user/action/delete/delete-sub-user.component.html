@@ -1,56 +1,42 @@
-<span
-  style="color: #0066b3; margin-left: 15px"
-  class="more"
-  nz-icon
-  nzType="delete"
-  nzTheme="outline"
-  nz-popover
-  [nz-tooltip]="'app.text.delete' | i18n"
-  nzPopoverPlacement="bottom"
-  (click)="showModal()"
-></span>
-<nz-modal
-  [(nzVisible)]="isVisible"
-  [nzTitle]="'app.sub.user.delete' | i18n : { name: idSubUser }"
-  (nzOnCancel)="handleCancel()"
-  nzMask="false"
->
+<img style="color: #0066b3; margin-left: 15px"
+      src="assets/imgs/delete.svg" alt=""
+      nz-popover
+      [nz-tooltip]="'app.text.delete' | i18n"
+      nzPopoverPlacement="bottom"
+      (click)="showModal()" />
+<nz-modal [(nzVisible)]="isVisible"
+          [nzTitle]="'app.sub.user.delete' | i18n : { name: idSubUser }"
+          (nzOnCancel)="handleCancel()"
+          nzMask="false">
   <div *nzModalContent>
     <div>
-      <span
-        class="text-label"
-        [innerHTML]="'app.alert.delete.sub.user' | i18n : { name: idSubUser }"
-      ></span>
+      <span class="text-label"
+            [innerHTML]="'app.alert.delete.sub.user' | i18n : { name: idSubUser }"></span>
     </div>
-    <nz-input-group nzSize="large">
-      <input
-        name="name"
-        nz-input
-        [placeholder]="'app.input.name' | i18n"
-        [(ngModel)]="value"
-        (ngModelChange)="onInput($event)"
-      />
-    </nz-input-group>
+      <input name="name"
+             #subuserInputName
+             nz-input
+             class="input-custom"
+             style="margin-top: 5px;"
+             (keydown.enter)="focusOkButton($event)"
+             [placeholder]="'app.input.name' | i18n"
+             [(ngModel)]="value"
+             (ngModelChange)="onInput($event)" />
+    <span *ngIf="isInput" style="color: red; margin-top: 5px;">Vui lòng nhập đúng tên Sub-User</span>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px">
-    <button
-      nz-button
-      nzType="default"
-      (click)="handleCancel()"
-      class="button-cancel"
-    >
-      <span nz-icon nzType="close" nzTheme="outline"></span
-      >{{ 'app.text.delete' | i18n }}
+    <button nz-button
+            nzType="default"
+            (click)="handleCancel()"
+            class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.text.delete' | i18n }}
     </button>
-    <button
-      nz-button
-      nzType="primary"
-      (click)="handleOk()"
-      [nzLoading]="isLoading"
-      class="button-ok"
-    >
-      <span nz-icon nzType="check" nzTheme="outline"></span
-      >{{ 'app.button.confirm' | i18n }}
+    <button nz-button
+            nzType="primary"
+            (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

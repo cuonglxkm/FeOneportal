@@ -311,7 +311,7 @@
                 <nz-form-item>
                   <nz-form-label nzFor="now">
                     <div class="label">
-                      <span>{{ 'volume.info.created.date' |i18n }}: </span>
+                      <span>{{ 'app.service.creation-date' |i18n }}: </span>
                       <span>{{ date | date: 'dd/MM/yyyy' }}</span>
                     </div>
                   </nz-form-label>
@@ -320,7 +320,7 @@
             </nz-row>
             <nz-form-label style="margin-top: 15px;">
               <div class="label" style="color: red;">
-                <span>{{ 'volume.info.expired.date' |i18n }}: </span>
+                <span>{{ 'app.service.expiration-date' |i18n }}: </span>
                 <span
                   *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
               </div>

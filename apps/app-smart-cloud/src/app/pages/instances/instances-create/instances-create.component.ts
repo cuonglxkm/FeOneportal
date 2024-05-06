@@ -47,6 +47,9 @@ import {
 } from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { es } from 'date-fns/locale';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -142,6 +145,7 @@ export class InstancesCreateComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private snapshotVLService: SnapshotVolumeService,
     private catalogService: CatalogService,
@@ -384,7 +388,9 @@ export class InstancesCreateComponent implements OnInit {
     uniqueKey: string
   ) {
     if (uniqueKey.toUpperCase() == 'WINDOWS') {
-      this.initPassword();
+      if (!this.activeBlockPassword) {
+        this.initPassword();
+      }
       this.listSSHKey = [];
       this.disableKeypair = true;
     } else {
@@ -545,7 +551,11 @@ export class InstancesCreateComponent implements OnInit {
         false
       )
       .subscribe((data: any) => {
-        this.listIPPublic = data.records.filter((e) => e.status == 0);
+        const currentDateTime = new Date().toISOString();
+        this.listIPPublic = data.records.filter(
+          (e) =>
+            e.status == 0 && new Date(e.expiredDate) > new Date(currentDateTime)
+        );
         console.log('list IP public', this.listIPPublic);
       });
   }
@@ -601,7 +611,7 @@ export class InstancesCreateComponent implements OnInit {
           error: (e) => {
             this.notification.error(
               e.statusText,
-              'Lấy danh sách Port không thành công'
+              this.i18n.fanyi('app.notify.get.list.port')
             );
           },
         });
@@ -1290,15 +1300,24 @@ export class InstancesCreateComponent implements OnInit {
 
   save(): void {
     if (!this.isSnapshot && this.hdh == null) {
-      this.notification.error('', 'Vui lòng chọn hệ điều hành');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.choose.os.required')
+      );
       return;
     }
     if (this.isSnapshot && this.selectedSnapshot == null) {
-      this.notification.error('', 'Vui lòng chọn Snapshot ');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.choose.snapshot.required')
+      );
       return;
     }
     if (this.isPreConfigPackage == true && this.offerFlavor == null) {
-      this.notification.error('', 'Vui lòng chọn gói cấu hình');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.choose.config.package.required')
+      );
       return;
     }
     if (
@@ -1307,7 +1326,10 @@ export class InstancesCreateComponent implements OnInit {
         this.configCustom.ram == 0 ||
         this.configCustom.capacity == 0)
     ) {
-      this.notification.error('', 'Cấu hình tùy chọn chưa hợp lệ');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.optional.configuration.invalid')
+      );
       return;
     }
     if (
@@ -1318,7 +1340,10 @@ export class InstancesCreateComponent implements OnInit {
         this.configGPU.GPU == 0 ||
         this.configGPU.gpuOfferId == 0)
     ) {
-      this.notification.error('', 'Cấu hình GPU chưa hợp lệ');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.gpu.configuration.invalid')
+      );
       return;
     }
     // if (
@@ -1334,73 +1359,101 @@ export class InstancesCreateComponent implements OnInit {
     // }
 
     this.instanceInit();
-    let specificationInstance = JSON.stringify(this.instanceCreate);
-    let orderItemInstance = new OrderItem();
-    orderItemInstance.orderItemQuantity = 1;
-    orderItemInstance.specification = specificationInstance;
-    orderItemInstance.specificationType = 'instance_create';
-    orderItemInstance.price = this.totalAmount / this.numberMonth;
-    orderItemInstance.serviceDuration = this.numberMonth;
-    this.orderItem.push(orderItemInstance);
-    console.log('order instance', orderItemInstance);
+    this.dataService
+      .checkflavorforimage(
+        this.hdh,
+        this.instanceCreate.volumeSize,
+        this.instanceCreate.ram,
+        this.instanceCreate.cpu
+      )
+      .subscribe({
+        next: (data) => {
+          let specificationInstance = JSON.stringify(this.instanceCreate);
+          let orderItemInstance = new OrderItem();
+          orderItemInstance.orderItemQuantity = 1;
+          orderItemInstance.specification = specificationInstance;
+          orderItemInstance.specificationType = 'instance_create';
+          orderItemInstance.price = this.totalAmount / this.numberMonth;
+          orderItemInstance.serviceDuration = this.numberMonth;
+          this.orderItem.push(orderItemInstance);
+          console.log('order instance', orderItemInstance);
 
-    this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
-      if (e.type != '' && e.capacity != 0) {
-        this.volumeInit(e);
-        let specificationVolume = JSON.stringify(this.volumeCreate);
-        let orderItemVolume = new OrderItem();
-        orderItemVolume.orderItemQuantity = 1;
-        orderItemVolume.specification = specificationVolume;
-        orderItemVolume.specificationType = 'volume_create';
-        orderItemVolume.price = e.price;
-        orderItemVolume.serviceDuration = this.numberMonth;
-        this.orderItem.push(orderItemVolume);
-      }
-    });
+          this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
+            if (e.type != '' && e.capacity != 0) {
+              this.volumeInit(e);
+              let specificationVolume = JSON.stringify(this.volumeCreate);
+              let orderItemVolume = new OrderItem();
+              orderItemVolume.orderItemQuantity = 1;
+              orderItemVolume.specification = specificationVolume;
+              orderItemVolume.specificationType = 'volume_create';
+              orderItemVolume.price = e.price;
+              orderItemVolume.serviceDuration = this.numberMonth;
+              this.orderItem.push(orderItemVolume);
+            }
+          });
 
-    this.listOfDataIPv4.forEach((e: Network) => {
-      if (e.ip != '' && e.amount > 0) {
-        for (let i = 0; i < e.amount; ++i) {
-          this.ipInit(e, false);
-          let specificationIP = JSON.stringify(this.ipCreate);
-          let orderItemIP = new OrderItem();
-          orderItemIP.orderItemQuantity = 1;
-          orderItemIP.specification = specificationIP;
-          orderItemIP.specificationType = 'ip_create';
-          orderItemIP.price = e.price;
-          orderItemIP.serviceDuration = this.numberMonth;
-          this.orderItem.push(orderItemIP);
-        }
-      }
-    });
+          this.listOfDataIPv4.forEach((e: Network) => {
+            if (e.ip != '' && e.amount > 0) {
+              for (let i = 0; i < e.amount; ++i) {
+                this.ipInit(e, false);
+                let specificationIP = JSON.stringify(this.ipCreate);
+                let orderItemIP = new OrderItem();
+                orderItemIP.orderItemQuantity = 1;
+                orderItemIP.specification = specificationIP;
+                orderItemIP.specificationType = 'ip_create';
+                orderItemIP.price = e.price;
+                orderItemIP.serviceDuration = this.numberMonth;
+                this.orderItem.push(orderItemIP);
+              }
+            }
+          });
 
-    this.listOfDataIPv6.forEach((e: Network) => {
-      if (e.ip != '' && e.amount > 0) {
-        for (let i = 0; i < e.amount; ++i) {
-          this.ipInit(e, true);
-          this.ipCreate.useIPv6 = true;
-          let specificationIP = JSON.stringify(this.ipCreate);
-          let orderItemIP = new OrderItem();
-          orderItemIP.orderItemQuantity = 1;
-          orderItemIP.specification = specificationIP;
-          orderItemIP.specificationType = 'ip_create';
-          orderItemIP.price = e.price;
-          orderItemIP.serviceDuration = this.numberMonth;
-          this.orderItem.push(orderItemIP);
-        }
-      }
-    });
+          this.listOfDataIPv6.forEach((e: Network) => {
+            if (e.ip != '' && e.amount > 0) {
+              for (let i = 0; i < e.amount; ++i) {
+                this.ipInit(e, true);
+                this.ipCreate.useIPv6 = true;
+                let specificationIP = JSON.stringify(this.ipCreate);
+                let orderItemIP = new OrderItem();
+                orderItemIP.orderItemQuantity = 1;
+                orderItemIP.specification = specificationIP;
+                orderItemIP.specificationType = 'ip_create';
+                orderItemIP.price = e.price;
+                orderItemIP.serviceDuration = this.numberMonth;
+                this.orderItem.push(orderItemIP);
+              }
+            }
+          });
 
-    this.order.customerId = this.tokenService.get()?.userId;
-    this.order.createdByUserId = this.tokenService.get()?.userId;
-    this.order.note = 'tạo vm';
-    this.order.orderItems = this.orderItem;
+          this.order.customerId = this.tokenService.get()?.userId;
+          this.order.createdByUserId = this.tokenService.get()?.userId;
+          this.order.note = 'tạo vm';
+          this.order.orderItems = this.orderItem;
 
-    var returnPath: string = window.location.pathname;
-    console.log('instance create', this.instanceCreate);
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: this.order, path: returnPath },
-    });
+          var returnPath: string = window.location.pathname;
+          console.log('instance create', this.instanceCreate);
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: this.order, path: returnPath },
+          });
+        },
+        error: (e) => {
+          let numbers: number[] = [];
+          const regex = /\d+/g;
+          const matches = e.error.match(regex);
+          if (matches) {
+            numbers = matches.map((match) => parseInt(match));
+            this.notification.error(
+              '',
+              this.i18n.fanyi('app.notify.check.config.for.os', {
+                nameHdh: this.nameHdh,
+                volume: numbers[0],
+                ram: numbers[1],
+                cpu: numbers[2],
+              })
+            );
+          }
+        },
+      });
   }
 
   totalAmount: number = 0;

@@ -330,4 +330,11 @@ export class InstancesService extends BaseService {
       this.httpOptions
     );
   }
+
+  checkflavorforimage(imageId : number, storage : number, ram  : number, cpu : number): Observable<any> {
+    let url_ = `/instances/checkflavorforimage?imageId=${imageId}&storage=${storage}&ram=${ram}&cpu=${cpu}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_
+    );
+  }
 }
