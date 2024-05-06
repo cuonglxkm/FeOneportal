@@ -29,6 +29,7 @@ export class AttachVolumeComponent implements AfterViewInit{
   isVisible: boolean = false
 
   listVm: InstancesModel[]
+  listVmUnique: InstancesModel[] = []
 
   instanceSelected: any
 
@@ -68,14 +69,20 @@ export class AttachVolumeComponent implements AfterViewInit{
   handleOk() {
     this.addVolumeToVm()
   }
-  listVm2: any
+
   getListVm() {
     this.isLoading = true
-    this.instancesService.search(1, 9999, this.region, this.project, '', 'KHOITAO',
+    this.instancesService.search(1, 9999, this.region, this.project, '', '',
       true, this.tokenService.get()?.userId).subscribe(data => {
       this.isLoading = false
       this.listVm = data.records
       this.listVm = this.listVm.filter(item => item.taskState === 'ACTIVE')
+      this.listVm.forEach(item => {
+        const exists = this.instanceInVolume.some(itemAttach => itemAttach.instanceId === item.id)
+        if(!exists) {
+          this.listVmUnique?.push(item)
+        }
+      })
     })
   }
 

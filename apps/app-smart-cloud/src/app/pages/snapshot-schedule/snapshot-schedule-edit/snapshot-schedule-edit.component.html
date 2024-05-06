@@ -37,7 +37,7 @@
   <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
     <nz-spin [nzSpinning]="isLoading" nzSize="large">
       <nz-form-item>
-        <nz-form-label nzFor="name" nzRequired>Tên lịch Snapshot</nz-form-label>
+        <nz-form-label nzFor="name" nzRequired>{{ 'app.snapshot.schedule.name' | i18n }}</nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input
             nz-input
@@ -86,7 +86,7 @@
         </nz-col>
         <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
           <nz-form-item>
-            <nz-form-label>Chế độ Snapshot</nz-form-label>
+            <nz-form-label>{{ 'app.snapshot.mode' | i18n }}</nz-form-label>
             <input
               nz-input
               disabled="true"
@@ -102,7 +102,7 @@
         <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
           <nz-form-item
             ><nz-form-label
-              >Chọn thời điểm thực hiện Snapshot (<span class="text-red">*</span
+              >{{ 'app.choose.perform.snapshot.time' | i18n }} (<span class="text-red">*</span
               >)</nz-form-label
             >
             <nz-time-picker
@@ -131,7 +131,7 @@
         <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
           <nz-form-item
             ><nz-form-label
-              >Chọn ngày (<span class="text-red">*</span>)</nz-form-label
+              >{{ 'app.choose.day' | i18n }} (<span class="text-red">*</span>)</nz-form-label
             >
             <nz-select
               nzSize="default"
@@ -152,7 +152,7 @@
         </nz-col>
         <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
           <nz-form-item
-            ><nz-form-label>Số bản Snapshot lưu trữ</nz-form-label>
+            ><nz-form-label>{{ 'app.number.of.snapshot.copy' | i18n }}</nz-form-label>
             <input
               nz-input
               disabled="true"

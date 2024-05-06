@@ -228,24 +228,44 @@ export class InstancesEditInfoComponent implements OnInit {
     this.isVisibleUpdate = true;
   }
   handleOkUpdate() {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-    this.isVisibleUpdate = false;
-    this.rebuildInstances.regionId = this.instancesModel.regionId;
-    this.rebuildInstances.customerId = this.instancesModel.customerId;
-    this.rebuildInstances.imageId = this.hdh;
-    this.rebuildInstances.id = this.instancesModel.id;
     this.dataService
-      .rebuild(this.rebuildInstances)
-      .pipe(finalize(() => this.loadingSrv.close()))
+      .checkflavorforimage(
+        this.hdh,
+        this.instancesModel.storage,
+        this.instancesModel.ram,
+        this.instancesModel.cpu
+      )
       .subscribe({
-        next: (data: any) => {
-          this.notification.success('', 'Thay đổi hệ điều hành thành công');
-          this.returnPage();
+        next: (data) => {
+          this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+          this.isVisibleUpdate = false;
+          this.rebuildInstances.regionId = this.instancesModel.regionId;
+          this.rebuildInstances.customerId = this.instancesModel.customerId;
+          this.rebuildInstances.imageId = this.hdh;
+          this.rebuildInstances.id = this.instancesModel.id;
+          this.dataService
+            .rebuild(this.rebuildInstances)
+            .pipe(finalize(() => this.loadingSrv.close()))
+            .subscribe({
+              next: (data: any) => {
+                this.notification.success(
+                  '',
+                  'Thay đổi hệ điều hành thành công'
+                );
+                this.returnPage();
+              },
+              error: (e) => {
+                this.notification.error(
+                  e.statusText,
+                  'Thay đổi hệ điều hành không thành công'
+                );
+              },
+            });
         },
         error: (e) => {
           this.notification.error(
-            e.statusText,
-            'Thay đổi hệ điều hành không thành công'
+            '',
+            `Quý khách hiện không đủ tài nguyên để thực hiện việc chuyển đổi hệ điều hành. Vui lòng kiểm tra lại`
           );
         },
       });

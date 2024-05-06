@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Thông tin Pool'">
+<page-header [breadcrumb]="breadcrumb" [title]="'app.pool.info' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -8,7 +8,7 @@
         <a>Pool</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a>Chi tiết Pool</a>
+        <a>{{ 'app.pool.detail' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -16,13 +16,13 @@
 
 <nz-card style="border-radius: 4px" [nzBordered]="false">
   <div style="margin-bottom: 20px">
-    <span class="text-card-header">Thông tin chi tiết Pool</span>
+    <span class="text-card-header">{{ 'app.pool.info' | i18n }}</span>
   </div>
   <form nz-form nzLayout="vertical">
     <nz-row nzGutter="24">
       <nz-col nzSpan="12">
         <nz-form-item style="margin-top: 20px">
-          <nz-form-label> Tên pool </nz-form-label>
+          <nz-form-label> {{ 'app.pool.name' | i18n }} </nz-form-label>
           <nz-form-control>
             <input
               style="border-radius: 8px"
@@ -38,7 +38,9 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-form-item style="margin-top: 20px">
-          <nz-form-label> Phương pháp đánh dấu Session </nz-form-label>
+          <nz-form-label>
+            {{ 'app.pool.session.method' | i18n }}
+          </nz-form-label>
           <nz-form-control>
             <input
               style="border-radius: 8px"
@@ -56,7 +58,7 @@
     <nz-row style="margin-top: 20px" nzGutter="24">
       <nz-col nzSpan="12">
         <nz-form-item style="margin-top: 20px">
-          <nz-form-label> Thuật toán </nz-form-label>
+          <nz-form-label> {{ 'app.algorithm' | i18n }} </nz-form-label>
           <nz-form-control>
             <input
               style="border-radius: 8px"
@@ -72,7 +74,7 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-form-item style="margin-top: 20px">
-          <nz-form-label> Giao thức </nz-form-label>
+          <nz-form-label> {{ 'app.protocol' | i18n }} </nz-form-label>
           <nz-form-control>
             <input
               style="border-radius: 8px"
@@ -102,7 +104,9 @@
           [nzXs]="24"
           [nzXXl]="12"
         >
-          <span class="text-card-header">Danh sách Health Monitor</span>
+          <span class="text-card-header">{{
+            'app.health.monitor.list' | i18n
+          }}</span>
         </div>
         <div
           class="text-right p-0 m-b-0"
@@ -125,7 +129,7 @@
               src="assets/imgs/add-circle.svg"
               alt=""
             />
-            <span>Tạo mới Health Monitor</span>
+            <span>{{ 'app.health.monitor.create' | i18n }}</span>
           </button>
         </div>
       </div>
@@ -143,11 +147,11 @@
       >
         <thead>
           <tr>
-            <th>Tên Health Monitor</th>
-            <th>Loại kiểm tra</th>
-            <th>Phương thức</th>
-            <th>Trạng thái hoạt động</th>
-            <th>Trạng thái cung cấp</th>
+            <th>{{ 'app.health.monitor.name' | i18n }}</th>
+            <th>{{ 'app.check.type' | i18n }}</th>
+            <th>{{ 'app.method' | i18n }}</th>
+            <th>{{ 'app.activity.status' | i18n }}</th>
+            <th>{{ 'app.provisioning.status' | i18n }}</th>
             <th>{{ 'app.text.operation' | i18n }}</th>
           </tr>
         </thead>
@@ -165,14 +169,14 @@
                   alt=""
                   (click)="modalHealth(false, item)"
                   style="cursor: pointer; margin-right: 16px"
-                  nz-tooltip="Chỉnh sửa"
+                  [nz-tooltip]="'app.text.edit' | i18n"
                 />
                 <img
                   src="assets/imgs/trash.svg"
                   alt=""
                   (click)="modalDeleteHealth(data)"
                   style="cursor: pointer"
-                  nz-tooltip="Xoá"
+                  [nz-tooltip]="'app.delete' | i18n"
                 />
               </td>
             </tr>
@@ -191,7 +195,7 @@
           [nzXs]="24"
           [nzXXl]="12"
         >
-          <span class="text-card-header">Danh sách Member</span>
+          <span class="text-card-header">{{ 'app.member.list' | i18n }}</span>
         </div>
         <div
           class="text-right p-0 m-b-0"
@@ -209,7 +213,7 @@
               src="assets/imgs/add-circle.svg"
               alt=""
             />
-            <span>Tạo mới Member</span>
+            <span>{{ 'app.member.create' | i18n }}</span>
           </button>
         </div>
       </div>
@@ -226,7 +230,7 @@
       >
         <thead>
           <tr>
-            <th>Tên Member</th>
+            <th>{{ 'app.member.name' | i18n }}</th>
             <th>IP Address</th>
             <th>Port</th>
             <th>Weight</th>
@@ -248,14 +252,14 @@
                   alt=""
                   (click)="modalEditMember(data)"
                   style="cursor: pointer; margin-right: 16px"
-                  nz-tooltip="Chỉnh sửa"
+                  [nz-tooltip]="'app.text.edit' | i18n"
                 />
                 <img
                   src="assets/imgs/trash.svg"
                   alt=""
                   (click)="modalDeleteMember(data)"
                   style="cursor: pointer"
-                  nz-tooltip="Xoá"
+                  [nz-tooltip]="'app.delete' | i18n"
                 />
               </td>
             </tr>
@@ -293,13 +297,12 @@
                 [maxlength]="50"
               />
               <ng-template #nameErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')"
-                  >Vui lòng nhập thông tin</ng-container
-                >
-                <ng-container *ngIf="control.hasError('pattern')"
-                  >Tên Health Monitor chỉ gồm ký tự chữ cái và số, không bao gồm
-                  dấu cách</ng-container
-                >
+                <ng-container *ngIf="control.hasError('required')">{{
+                  'validation.info.required' | i18n
+                }}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{
+                  'validation.health.monitor.name.pattern' | i18n
+                }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -313,7 +316,7 @@
             >
             <nz-form-control [nzErrorTip]="gpuErrorTpl">
               <nz-select
-                [nzPlaceHolder]="'--Chọn phương thức--'"
+                [nzPlaceHolder]="'-- ' + ('app.choose.method' | i18n) + ' --'"
                 [nzShowSearch]="true"
                 formControlName="checkMethod"
                 [(ngModel)]="healthForm.type"
@@ -328,9 +331,9 @@
               </nz-select>
             </nz-form-control>
             <ng-template #gpuErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')"
-                >Vui lòng chọn phương thức</ng-container
-              >
+              <ng-container *ngIf="control.hasError('required')">{{
+                'validation.choose.method' | i18n
+              }}</ng-container>
             </ng-template>
           </nz-form-item>
         </div>
@@ -355,7 +358,7 @@
               ></nz-input-number>
               <ng-template #maxRetriesDownErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')"
-                  >Vui lòng nhập thông tin
+                  >{{ 'validation.info.required' | i18n }}
                 </ng-container>
               </ng-template>
             </nz-form-control>
@@ -381,7 +384,7 @@
               ></nz-input-number>
               <ng-template #delayErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')"
-                  >Vui lòng nhập thông tin
+                  >{{ 'validation.info.required' | i18n }}
                 </ng-container>
               </ng-template>
             </nz-form-control>
@@ -408,7 +411,7 @@
               ></nz-input-number>
               <ng-template #maxRetriesErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')"
-                  >Vui lòng nhập thông tin
+                  >{{ 'validation.info.required' | i18n }}
                 </ng-container>
               </ng-template>
             </nz-form-control>
@@ -432,7 +435,7 @@
               ></nz-input-number>
               <ng-template #timeoutErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')"
-                  >Vui lòng nhập thông tin
+                  >{{ 'validation.info.required' | i18n }}
                 </ng-container>
               </ng-template>
             </nz-form-control>
@@ -447,7 +450,7 @@
             >
             <nz-form-control [nzErrorTip]="gpuErrorTpl">
               <nz-select
-                [nzPlaceHolder]="'--Chọn phương thức--'"
+                [nzPlaceHolder]="'-- ' + ('app.choose.method' | i18n) + ' --'"
                 [nzShowSearch]="true"
                 formControlName="httpMethod"
                 [(ngModel)]="healthForm.httpMethod"
@@ -461,9 +464,9 @@
               </nz-select>
             </nz-form-control>
             <ng-template #gpuErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')"
-                >Vui lòng chọn phương thức</ng-container
-              >
+              <ng-container *ngIf="control.hasError('required')">{{
+                'validation.choose.method' | i18n
+              }}</ng-container>
             </ng-template>
           </nz-form-item>
         </div>
@@ -486,7 +489,7 @@
               />
               <ng-template #expectedCodeErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')"
-                  >Vui lòng nhập thông tin
+                  >{{ 'validation.info.required' | i18n }}
                 </ng-container>
               </ng-template>
             </nz-form-control>
@@ -527,7 +530,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />X{{ 'app.button.confirm' | i18n }}
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
@@ -554,13 +557,12 @@
             [maxlength]="50"
           />
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập thông tin</ng-container
-            >
-            <ng-container *ngIf="control.hasError('pattern')"
-              >Tên Member chỉ gồm ký tự chữ cái và số, không bao gồm dấu
-              cách</ng-container
-            >
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.info.required' | i18n
+            }}</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{
+              'validation.member.name.pattern' | i18n
+            }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -629,7 +631,7 @@
               ></nz-input-number>
               <ng-template #weightErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')"
-                  >Vui lòng nhập thông tin
+                  >{{ 'validation.info.required' | i18n }}
                 </ng-container>
               </ng-template>
             </nz-form-control>
@@ -663,7 +665,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />X{{ 'app.button.confirm' | i18n }}
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
@@ -681,8 +683,10 @@
       nzShowIcon
     ></nz-alert>
     <span class="text-label">
-      Để thực hiện xóa {{ typeDelete }} {{ instancesModel.name }}, vui lòng nhập
-      tên {{ typeDelete }} để xác nhận.
+      {{
+        'app.note.delete.member.or.health'
+          | i18n : { name: dataDelete.name, typeDelete: typeDelete }
+      }}
     </span>
     <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
       ><nz-form-control>
@@ -694,10 +698,16 @@
           (keyup.enter)="handleOkDelete()"
         />
         <div *ngIf="checkInputConfirm" style="color: #ff4d4f">
-          Vui lòng nhập đúng tên {{ typeDelete }}
+          {{
+            'validation.correct.member.or.health.name'
+              | i18n : { typeDelete: typeDelete }
+          }}
         </div>
         <div *ngIf="checkInputEmpty" style="color: #ff4d4f">
-          Vui lòng nhập tên {{ typeDelete }}
+          {{
+            'validation.member.or.health.name.required'
+              | i18n : { typeDelete: typeDelete }
+          }}
         </div>
       </nz-form-control></nz-form-item
     >
@@ -715,10 +725,14 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />X{{ 'app.button.confirm' | i18n }}
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 <ng-template #customTemplateMessageDelete>
-  <div>Bạn đang thực hiện xóa {{ typeDelete }}</div>
+  <div>
+    {{
+      'app.alert.delete.member.or.health' | i18n : { typeDelete: typeDelete }
+    }}
+  </div>
 </ng-template>

@@ -188,7 +188,7 @@
                                style="width: 100%; margin-left: 0;"
                                nzAutoFocus
                                class="input-custom"
-                               [nzMin]="fileSystem?.size"
+                               [nzMin]="1"
                                (ngModelChange)="changeValueStorage($event)"
                                [nzStep]="1" />
               <ng-template #storageErrorTpl let-control>
@@ -241,7 +241,7 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div style="margin-top: 10px" class="text-value">{{ 'app.capacity' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
-            <span class="text-label">{{ validateForm.controls.storage.value }} GB</span>
+            <span class="text-label">{{ resizeFileSystem?.size }} GB</span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">

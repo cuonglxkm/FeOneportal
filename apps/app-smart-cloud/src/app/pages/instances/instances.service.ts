@@ -84,13 +84,12 @@ export class InstancesService extends BaseService {
   }
 
   getAllSSHKey(
-    vpcId: any,
     regionId: any,
     userId: any,
     pageSize: any,
     currentPage: any
   ): Observable<any> {
-    let url_ = `/keypair?vpcId=${vpcId}&regionId=${regionId}&userId=${userId}&pageSize=${pageSize}&currentPage=${currentPage}`;
+    let url_ = `/keypair?regionId=${regionId}&userId=${userId}&pageSize=${pageSize}&currentPage=${currentPage}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
@@ -329,6 +328,13 @@ export class InstancesService extends BaseService {
         this.ENDPOINT.provisions +
         `/vlans/vlansubnets?pageSize=${pageSize}&pageNumber=${pageNumber}&region=${region}&networkCloudId=${networkCloudId}`,
       this.httpOptions
+    );
+  }
+
+  checkflavorforimage(imageId : number, storage : number, ram  : number, cpu : number): Observable<any> {
+    let url_ = `/instances/checkflavorforimage?imageId=${imageId}&storage=${storage}&ram=${ram}&cpu=${cpu}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_
     );
   }
 }

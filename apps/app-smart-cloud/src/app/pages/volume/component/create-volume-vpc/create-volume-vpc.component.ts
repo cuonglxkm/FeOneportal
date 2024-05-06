@@ -38,7 +38,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   isInitSnapshot = false;
   snapshot: any;
 
-  enableEncrypt: boolean = true;
+  enableEncrypt: boolean = false;
   enableMultiAttach: boolean = false;
 
 
@@ -110,6 +110,11 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
+      this.enableMultiAttach = value
+    });
+
+    this.validateForm.get('isEncryption').valueChanges.subscribe((value) => {
+      this.enableEncrypt = value
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {

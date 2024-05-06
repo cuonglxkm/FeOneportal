@@ -57,6 +57,7 @@ export class UserProfileComponent implements OnInit {
       validators: [
         Validators.required,
         AppValidator.cannotContainSpecialCharactorExceptComma,
+        noAllWhitespace(),
       ],
     }),
     old_password: new FormControl('', { validators: [] }),
@@ -132,14 +133,13 @@ export class UserProfileComponent implements OnInit {
     let updatedUser = {
       id: this.userModel.id,
       email: this.form.controls['email'].value!,
-      firstName: this.form.controls['name'].value!,
-      lastName: this.form.controls['surname'].value!,
+      firstName: this.form.controls['name'].value!.trim(),
+      lastName: this.form.controls['surname'].value!.trim(),
       phoneNumber: this.form.controls['phone'].value!,
       province: this.form.controls['province'].value!,
-      address: this.form.controls['address'].value!,
+      address: this.form.controls['address'].value!.trim(),
       birthDay: this.userModel.birthday,
     };
-
     if (
       updatedUser.firstName == ' ' ||
       updatedUser.lastName == ' ' ||
@@ -148,7 +148,7 @@ export class UserProfileComponent implements OnInit {
       updatedUser.province == ' '
     ) {
       this.notification.error(
-        this.i18n.fanyi('app.status.success'),
+        this.i18n.fanyi('app.status.fail'),
         this.i18n.fanyi('app.account.validation')
       );
       return;
@@ -161,8 +161,9 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: (res) => {
           console.log(res);
+          this.loadUserProfile();
           this.notification.success(
-            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.account.form.success')
           );
         },
@@ -247,7 +248,7 @@ export class UserProfileComponent implements OnInit {
     'Ninh Bình',
     'Ninh Thuận',
     'Phú Thọ',
-    'Phú Yên',    
+    'Phú Yên',
     'Quảng Bình',
     'Quảng Nam',
     'Quảng Ngãi',
