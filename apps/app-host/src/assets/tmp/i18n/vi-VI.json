@@ -1064,7 +1064,7 @@
   "tooltip.kakfa.topic.min-cleanable": "Xác định tỷ lệ tối thiểu của dữ liệu dirty (chưa được kết hợp) so với dữ liệu clean (đã được kết hợp) mà Kafka giữ lại trước khi thực hiện quá trình compacting",
   "tooltip.kakfa.topic.index-interval": "Kích thước của một entry trong index file của một segment (theo byte)",
   "tooltip.kakfa.topic.retention-bytes": "Số lượng byte tối đa mà một partition có thể giữ lại trước khi dữ liệu cũ bị xóa, giá trị -1 là không giới hạn dung lượng",
-  "tooltip.kakfa.topic.segment-ms": "Thời gian tối đa mà một segment (phần) của log có thể tồn tại trước khi tạo một segment mới, giá trị -1 là không giới hạn thời gian",
+  "tooltip.kakfa.topic.segment-ms": "Thời gian tối đa mà một segment (phần) của log có thể tồn tại trước khi tạo một segment mới",
   "tooltip.kakfa.topic.message-timestamp-difference": "Giới hạn thời gian tối đa giữa timestamps của tin nhắn producer và timestamps của tin nhắn khi ghi vào hệ thống",
   "tooltip.kakfa.topic.segment-index": "Kích thước tối đa cho một index file của một segment (theo byte)",
 

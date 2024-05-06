@@ -1180,7 +1180,7 @@
   "tooltip.kakfa.topic.min-cleanable": "Determines the minimum ratio of dirty (uncompacted) data to clean (compacted) data that Kafka retains before performing compaction",
   "tooltip.kakfa.topic.index-interval": "The size of an entry in the index file of a segment (in bytes)",
   "tooltip.kakfa.topic.retention-bytes": "The maximum number of bytes a partition can retain before old data is deleted, a value of -1 indicates unlimited capacity",
-  "tooltip.kakfa.topic.segment-ms": "The maximum time a segment of the log can exist before creating a new segment, a value of -1 indicates unlimited time",
+  "tooltip.kakfa.topic.segment-ms": "The maximum time a segment of the log can exist before creating a new segment",
   "tooltip.kakfa.topic.message-timestamp-difference": "The maximum time limit between the timestamps of producer messages and the timestamps of messages when written into the system",
   "tooltip.kakfa.topic.segment-index": "The maximum size for an index file of a segment (in bytes)",
 

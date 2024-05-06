@@ -100,3 +100,10 @@ export class KafkaCreateOrder {
     createDate: Date;
     expireDate: Date;
 }
+
+export class RegionResource {
+    regionId: string;
+    ram: number;
+    cpu: number;
+    storage: number;
+}

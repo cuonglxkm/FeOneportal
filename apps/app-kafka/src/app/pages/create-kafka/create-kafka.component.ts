@@ -3,12 +3,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingService } from '@delon/abc/loading';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { camelizeKeys } from 'humps';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EMPTY, catchError, finalize, map } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
-import { JsonDataCreate, KafkaCreateOrder, KafkaCreateReq } from 'src/app/core/models/kafka-create-req.model';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { JsonDataCreate, KafkaCreateOrder, KafkaCreateReq, RegionResource } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
 import { OfferKafka } from 'src/app/core/models/offer.model';
 import { Order, OrderItem } from 'src/app/core/models/order.model';
@@ -82,6 +84,7 @@ export class CreateKafkaComponent implements OnInit {
     private kafkaService: KafkaService,
     private notification: NzNotificationService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private vlanService: VlanService,
   ) {
     this.listOfVPCNetworks = [];
@@ -352,6 +355,23 @@ export class CreateKafkaComponent implements OnInit {
 
     this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
     // this.createKafkaService();
+  }
+
+  checkRegionResource() {
+    const regionResource = new RegionResource();
+    regionResource.regionId = this.regionId.toString();
+    regionResource.cpu = this.myform.controls['vCpu'].value;
+    regionResource.ram = this.myform.controls['ram'].value;
+    regionResource.storage = this.myform.controls['storage'].value;
+
+    this.kafkaService.checkRegionResource(regionResource)
+    .subscribe((data) => {
+      if (data && data.code == 200) {
+        this.onSubmitPayment();
+      } else {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
+      }
+    })
   }
 
   createKafkaService() {
