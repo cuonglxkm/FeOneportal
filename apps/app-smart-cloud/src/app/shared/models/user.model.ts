@@ -38,3 +38,5 @@ export class ItemDetach {
   itemName: string;
   type: number;
 }
+
+

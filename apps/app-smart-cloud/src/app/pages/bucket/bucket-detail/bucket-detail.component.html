@@ -352,15 +352,15 @@
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert *ngIf="dataAction.objectType != 'folder'" nzType="warning"
-              nzMessage="Bạn đang thực hiện xóa File  {{dataAction.key}}" nzShowIcon></nz-alert>
+              nzMessage="Bạn đang thực hiện xóa File  {{dataAction.keyName}}" nzShowIcon></nz-alert>
     <nz-alert *ngIf="dataAction.objectType == 'folder'" nzType="warning"
-              nzMessage="Bạn đang thực hiện xóa Folder {{dataAction.key}}. Mọi object bên trong folder này sẽ bị xóa và không thể khôi phục lại"
+              nzMessage="Bạn đang thực hiện xóa Folder {{dataAction.keyName}}. Mọi object bên trong folder này sẽ bị xóa và không thể khôi phục lại"
               nzShowIcon></nz-alert>
     <div *ngIf="dataAction.objectType != 'folder'" style="margin-top: 15px;">Quý khách có chắc chắn thực thiện xóa File
-      <b>{{dataAction.key}}</b>?
+      <b>{{dataAction.keyName}}</b>?
     </div>
     <div *ngIf="dataAction.objectType == 'folder'" style="margin-top: 15px;">Quý khách có chắc chắn thực thiện xóa
-      Folder <b>{{dataAction.key}}</b>?
+      Folder <b>{{dataAction.keyName}}</b>?
     </div>
   </ng-container>
 </nz-modal>
