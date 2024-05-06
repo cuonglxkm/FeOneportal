@@ -148,6 +148,7 @@ export class InstancesExtendComponent implements OnInit {
         debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
+        this.numberMonth = res;
         if (res == 0) {
           this.isDisable = true;
           this.totalAmount = 0;

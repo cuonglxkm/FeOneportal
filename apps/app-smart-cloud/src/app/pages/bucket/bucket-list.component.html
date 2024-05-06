@@ -51,7 +51,7 @@
         <img src="assets/imgs/dots.svg" alt="" />
         <nz-dropdown-menu #opMenu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item (click)="updateObjectStorage()">
+            <li nz-menu-item (click)="resizeObjectStorage()">
               {{ 'app.button.resize' | i18n }}
             </li>
             <li nz-menu-item (click)="deleteObjectStorage()">
@@ -63,13 +63,20 @@
     </div>
   </nz-row>
   <div style="margin-bottom: 10px" class="text-label">
-    {{ 'app.used.capacity' | i18n }}:
+    {{ 'app.capacity' | i18n }}:
+    <span class="text-value">{{ objectStorage.quota }} GB</span>
   </div>
   <div style="margin-bottom: 10px" class="text-label">
     {{ 'app.service.creation-date' | i18n }}:
+    <span class="text-value">{{
+      objectStorage.createdDate | date : 'dd/MM/yyyy'
+    }}</span>
   </div>
   <div style="margin-bottom: 10px" class="text-label">
     {{ 'app.service.expiration-date' | i18n }}:
+    <span class="text-value">{{
+      objectStorage.expiredDate | date : 'dd/MM/yyyy'
+    }}</span>
   </div>
 </nz-card>
 <nz-card *ngIf="hasOS" style="border-radius: 4px" [nzBordered]="false">

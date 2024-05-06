@@ -95,7 +95,7 @@ export class BucketService extends BaseService {
     pageSize: number,
     searchValue: string
   ): Observable<any> {
-    let url_ = `/object-storage/BucketPolicy/GetPagging?bucketName=${bucketName}&pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`;
+    let url_ = `/object-storage/BucketPolicy/GetPaging?bucketName=${bucketName}&pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`;
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
@@ -203,12 +203,13 @@ export class BucketService extends BaseService {
     );
   }
 
-  deleteBucketWebsite(data: any): Observable<any> {
+  deleteBucketWebsite(data: any) {
     let url_ = `/object-storage/DeleteBucketWebsite`;
-    return this.http.delete<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      { headers: this.httpOptions.headers, body: data }
-    );
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
+      headers: this.httpOptions.headers,
+      body: data,
+      responseType: 'text',
+    });
   }
 
   getListBucketLifecycle(bucketName: string): Observable<any> {

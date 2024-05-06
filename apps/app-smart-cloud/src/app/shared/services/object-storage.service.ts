@@ -46,15 +46,28 @@ export class ObjectStorageService extends BaseService {
   }
 
   getMonitorObjectStorage(bucketname: string, from: number) {
-    return this.http.get<Summary[]>(this.baseUrl + this.ENDPOINT.provisions + `/object-storage/Monitor?from=${from}&bucketname=${bucketname}`)
-      .pipe(catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
-        console.error('login');
-      } else if (error.status === 404) {
-        // Handle 404 Not Found error
-        console.error('Resource not found');
-      }
-      return throwError(error);
-    }))
+    return this.http
+      .get<Summary[]>(
+        this.baseUrl +
+          this.ENDPOINT.provisions +
+          `/object-storage/Monitor?from=${from}&bucketname=${bucketname}`
+      )
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+        })
+      );
+  }
+
+  getObjectStorage(): Observable<any> {
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + '/object-storage/user'
+    );
   }
 }
