@@ -223,7 +223,7 @@
                   <nz-form-item>
                     <nz-form-label nzFor="nodes">Số node (<span class="required-color">*</span>)</nz-form-label>
                     <nz-form-control [nzErrorTip]="nodeNumberErrorTpl">
-                      <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber" (ngModeChange)="onCalculatePrice()"
+                      <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber" (ngModelChange)="onCalculatePrice()"
                         (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" nzSize="large" [ngClass]="{'default-pack': isUsingPackConfig==true}" />
                     </nz-form-control>
                     <ng-template #nodeNumberErrorTpl let-control>

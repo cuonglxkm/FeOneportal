@@ -481,11 +481,11 @@
 
               <tr>
                 <td class="w-50"><row-data [value]="vpcNetwork" [label]="'Mạng VPC'"></row-data></td>
-                <td class="w-50"><row-data [value]="detailCluster.subnet" [label]="'Subnet'"></row-data></td>
+                <td class="w-50"><row-data [value]="detailCluster.serviceCidr" [label]="'Service CIDR'"></row-data></td>
               </tr>
 
               <tr>
-                <td class="w-50"><row-data [value]="detailCluster.serviceCidr" [label]="'Service CIDR'"></row-data></td>
+                <td class="w-50"><row-data [value]="detailCluster.subnet" [label]="'Subnet'"></row-data></td>
               </tr>
             </tbody>
           </nz-table>

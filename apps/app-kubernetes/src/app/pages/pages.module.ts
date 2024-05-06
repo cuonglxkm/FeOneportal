@@ -59,6 +59,9 @@ import { FormRuleComponent } from './security-group/rule/form/form-rule.componen
 import { StatusCode2LabelPipe } from '../pipes/statusCode2label.pipe';
 import { Protocol2LabelPipe } from '../pipes/ipversion2label.pipe';
 import { ConvertUnitPipe } from '../pipes/convert-mb-unit.pipe';
+import { UpgradeComponent } from './upgrade/upgrade.component';
+import { ExtensionComponent } from './extension/extension.component';
+import { CheckUpgradePackPipe } from '../pipes/check-upgrade-pack.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -94,7 +97,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     StatusCode2LabelPipe,
     Protocol2LabelPipe,
     ConvertUnitPipe,
-
+    UpgradeComponent,
+    ExtensionComponent,
+    CheckUpgradePackPipe,
   ],
   imports: [
     CommonModule,

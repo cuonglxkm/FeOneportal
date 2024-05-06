@@ -787,6 +787,7 @@ export class ClusterComponent implements OnInit {
     cluster.totalRam = this.totalRam;
     cluster.totalCpu = this.totalCpu;
     cluster.totalStorage = this.totalStorage;
+    cluster.serviceName = cluster.clusterName;
 
     // this.onSubmitOrder(cluster);
 

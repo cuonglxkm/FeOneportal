@@ -26,6 +26,7 @@ export class KubernetesCluster {
   totalNode: number;
   createdDate: Date;
   workerGroup: WorkerGroupModel[];
+  offerId: number;
   isProcessing: boolean;
 
   constructor(obj) {
@@ -54,6 +55,7 @@ export class KubernetesCluster {
     this.description = obj.description;
     this.totalNode = obj.total_node;
     this.createdDate = obj.created_date;
+    this.offerId = obj.offer_id;
     this.isProcessing = false;
 
     // get worker groups
