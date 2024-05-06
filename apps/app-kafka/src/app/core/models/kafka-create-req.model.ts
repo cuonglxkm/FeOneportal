@@ -51,7 +51,7 @@ export class KafkaUpgradeReq {
 }
 
 export class KafkaExtend {
-    serviceOrderCode: string;
+    jsonData: string;
     regionId: number;
     serviceName: string;
     customerId: number;
@@ -63,6 +63,10 @@ export class KafkaExtend {
     newExpireDate: string;
     userEmail: string;
     actorEmail: string;
+}
+
+export class JsonDataExtend {
+    serviceOrderCode: string;
 }
 
 export class JsonDataCreate {
@@ -107,3 +111,4 @@ export class RegionResource {
     cpu: number;
     storage: number;
 }
+

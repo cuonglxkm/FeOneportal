@@ -7,7 +7,7 @@ import { camelizeKeys } from 'humps';
 import { NzStatus } from 'ng-zorro-antd/core/types';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { AppConstants } from 'src/app/core/constants/app-constant';
-import { KafkaExtend } from 'src/app/core/models/kafka-create-req.model';
+import { JsonDataExtend, KafkaExtend } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 import { Order, OrderItem } from 'src/app/core/models/order.model';
 import { KafkaService } from 'src/app/services/kafka.service';
@@ -148,9 +148,11 @@ export class ExtendKafkaComponent implements OnInit {
     this.expectExpiryDate = new Date(d.getTime());
   }
 
+  jsonExtend: JsonDataExtend = new JsonDataExtend();
   kafkaExtendObj: KafkaExtend = new KafkaExtend();
   initkafkaExtend() {
-    this.kafkaExtendObj.serviceOrderCode = this.itemDetail.serviceOrderCode;
+    this.jsonExtend.serviceOrderCode = this.itemDetail.serviceOrderCode;
+    this.kafkaExtendObj.jsonData = JSON.stringify(this.jsonExtend);
     this.kafkaExtendObj.serviceName = this.itemDetail.serviceName;
     this.kafkaExtendObj.newExpireDate = this.expectExpiryDate
       .toISOString()
