@@ -45,11 +45,15 @@ export class BucketService extends BaseService {
     });
   }
 
-  createBucket(bucketName: string, type: string): Observable<any> {
+  createBucket(bucketName: string, type: string) {
     let url_ = `/object-storage/Bucket/Create?bucketName=${bucketName}&type=${type}`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      null,
+      {
+        headers: this.httpOptions.headers,
+        responseType: 'text',
+      }
     );
   }
 
@@ -61,22 +65,27 @@ export class BucketService extends BaseService {
     );
   }
 
-  setBucketVersioning(
-    bucketName: string,
-    isVersioning: boolean
-  ): Observable<any> {
+  setBucketVersioning(bucketName: string, isVersioning: boolean) {
     let url_ = `/object-storage/SetBucketVersioning?bucketName=${bucketName}&isVersioning=${isVersioning}`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      null,
+      {
+        headers: this.httpOptions.headers,
+        responseType: 'text',
+      }
     );
   }
 
-  setBucketACL(bucketName: string, type: string): Observable<any> {
+  setBucketACL(bucketName: string, type: string) {
     let url_ = `/object-storage/SetBucketACL?bucketName=${bucketName}&type=${type}`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      null,
+      {
+        headers: this.httpOptions.headers,
+        responseType: 'text',
+      }
     );
   }
 

@@ -57,7 +57,7 @@ export class ObjectStorageExtendComponent implements OnInit {
     this.objectStorageExtend.customerId = this.tokenService.get()?.userId;
     this.objectStorageExtend.userEmail = this.tokenService.get()?.email;
     this.objectStorageExtend.actorEmail = this.tokenService.get()?.email;
-    this.objectStorageExtend.vpcId = 0;
+    this.objectStorageExtend.projectId = 0;
     this.objectStorageExtend.regionId = 0;
     this.objectStorageExtend.serviceType = 13;
     this.objectStorageExtend.actionType = 0;

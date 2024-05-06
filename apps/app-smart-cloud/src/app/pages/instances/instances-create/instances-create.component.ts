@@ -379,7 +379,6 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   nameHdh: string = '';
-  isLinuxHDH: boolean = false;
   disableKeypair: boolean = false;
   onInputHDH(
     event: any,
