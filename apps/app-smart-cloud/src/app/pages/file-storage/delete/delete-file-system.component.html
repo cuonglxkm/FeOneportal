@@ -1,4 +1,4 @@
-<li nz-menu-item (click)="showModal()">Xoá</li>
+<li nz-menu-item (click)="showModal()">{{'app.delete'|i18n}}</li>
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
@@ -15,7 +15,7 @@
       ></span>
     </ng-template>
     <div>
-      <span class="text-label">{{ 'app.note.delete.file.system' | i18n: {name: fileSystemName} }}</span>
+      <span class="text-label" [innerHTML]="'app.note.delete.file.system' | i18n: {name: fileSystemName}"></span>
       <input nz-input #fileSystemInputName
              style="margin-top: 10px;"
              class="input-custom"

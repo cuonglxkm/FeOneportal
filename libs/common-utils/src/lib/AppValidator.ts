@@ -422,7 +422,7 @@ export function ipAddressValidatorRouter(subnetIP: string): ValidatorFn {
     }
 
     const lastNumber = parseInt(ipAddress.split('.')[3], 10);
-    if (lastNumber < 2 || lastNumber > 254) {
+    if (!lastNumber || lastNumber < 0 || lastNumber > 255) {
       return { 'invalidLastNumber': true };
     }
 

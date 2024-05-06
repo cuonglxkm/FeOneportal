@@ -19,7 +19,7 @@
         <nz-form-label>
           <span>{{ 'app.pool.name' | i18n }} (<span style="color: red">*</span>)</span>
           <img nz-popover
-            [nzPopoverContent]="'Tên không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự (trừ _)'"
+            [nzPopoverContent]="'validation.pool.name.pattern.tooltip' | i18n"
             nzPopoverPlacement="bottom"
             style="margin-left: 5px"
             src="assets/imgs/pajamas_question.svg" alt="" />

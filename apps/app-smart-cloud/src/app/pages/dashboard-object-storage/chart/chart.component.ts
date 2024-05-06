@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Summary } from '../../../shared/models/object-storage.model';
 import { Line } from '@antv/g2plot';
 import html2canvas from 'html2canvas';
@@ -17,7 +17,7 @@ export class DataChart {
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.less']
 })
-export class ChartComponent implements AfterViewInit {
+export class ChartComponent implements AfterViewInit, OnInit {
   @Input() summary: Summary[];
   newDate: Date = new Date();
   @ViewChild('chartStorageUse') chartStorageUse!: ElementRef;
@@ -251,6 +251,9 @@ export class ChartComponent implements AfterViewInit {
     html2canvas(this.storageUse.nativeElement).then(canvas => {
 
     });
+  }
+
+  ngOnInit() {
   }
 
   ngAfterViewInit(): void {

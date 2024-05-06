@@ -4,9 +4,8 @@
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{ 'app.file.system.detail' | i18n }}
-      </nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Quản lý File System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.file.system.detail' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item
         [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/{{ fileSystemId }}'">{{ fileSystemName }}
       </nz-breadcrumb-item>
@@ -80,7 +79,7 @@
               <span>{{ 'app.text.status' | i18n }}</span>
             </nz-form-label>
             <nz-form-control>
-              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.status }}"
+              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.status?.toUpperCase() }}"
                      [disabled]="true" />
             </nz-form-control>
           </nz-form-item>

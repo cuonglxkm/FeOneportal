@@ -49,7 +49,6 @@ export class VpnSiteToSiteManage {
     if(this.project && !this.projectObject && localStorage.getItem('projects') ){
       this.projectObject = JSON.parse(localStorage.getItem('projects')).find(x => Number(x.id) == Number(this.project)) ? JSON.parse(localStorage.getItem('projects')).find(x => Number(x.id) == Number(this.project)) : null;
     }
-    this.getData(true)
   }
 
   getData(isBegin) {

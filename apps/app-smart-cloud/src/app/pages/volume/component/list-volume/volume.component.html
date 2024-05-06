@@ -132,14 +132,14 @@
             </td>
             <td nzBreakWord>
               <div>
-                <one-portal-attach-volume *ngIf="(data.attachedInstances.length <= 0) && data.serviceStatus != 'ERROR'"
+                <one-portal-attach-volume *ngIf="data.serviceStatus != 'ERROR'"
                                            [region]="region"
                                            [project]="project"
                                            [volumeId]="data.id"
                                            [multiple]="data.isMultiAttach"
                                            [instanceInVolume]="data.attachedInstances"
                                            (onOk)="handleOkAttachVm()" />
-                <one-portal-detach-volume *ngIf="(data.attachedInstances.length > 0) && data.serviceStatus != 'ERROR'"
+                <one-portal-detach-volume *ngIf="data.serviceStatus != 'ERROR'"
                                           [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"

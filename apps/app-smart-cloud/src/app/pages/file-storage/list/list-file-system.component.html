@@ -69,7 +69,7 @@
             <th>{{ 'app.text.status' | i18n }}</th>
             <th>{{ 'app.task.status' | i18n }}</th>
             <th>{{ 'app.file.system.type' | i18n }}</th>
-            <th>{{ 'app.protocol' | i18n }}c</th>
+            <th>{{ 'app.protocol' | i18n }}</th>
             <th>{{ 'app.capacity' | i18n }}</th>
             <th>{{ 'app.text.operation' | i18n }}</th>
           </tr>
@@ -79,15 +79,15 @@
             <td>{{ i + 1 }}</td>
             <td><a [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
             <td>{{ data.statusDisplay }}</td>
-            <td>{{ data.status }}</td>
+            <td>{{ data.taskState.toUpperCase() }}</td>
             <td>{{ data.type }}</td>
             <td>{{ data.protocol }}</td>
             <td>{{ data.size }} GB</td>
-            <td>
+            <td *ngIf="!(['CREATING', 'ERROR'].includes(data.taskState.toUpperCase()))">
               <div>
                 <one-portal-edit-file-system [region]="region"
                                              [project]="project"
-                                             [fileSystemId]="data.id"
+                                             [fileSystem]="data"
                                              (onOk)="handleOkEdit()" />
                 <img nz-dropdown
                      [nzDropdownMenu]="opMenu"
@@ -95,7 +95,7 @@
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li nz-menu-item>{{ 'app.snapshot.create' | i18n }}</li>
-                    <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/resize/' + data.id">{{ 'app.capacity.resize' | i18n }}
+                    <li nz-menu-item (click)="navigateToResizeFileSystem(typeVpc, data.id)">{{ 'app.capacity.resize' | i18n }}
                     </li>
                     <li nz-menu-item
                         [routerLink]="'/app-smart-cloud/file-storage/file-system/' + data.cloudId + '/access-rule/list'">
