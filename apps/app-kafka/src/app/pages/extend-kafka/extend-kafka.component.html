@@ -76,10 +76,10 @@
                             />
                         </label>
                     </div>
-                    <div class="w-100">
-                        <nz-input-group nzSize="large" class="w-100">
-                            <input [nzStatus]="statusInput" nz-input type="number" [(ngModel)]="duration" (ngModelChange)="onChangeDuration()" autofocus placeholder="1"/>
-                        </nz-input-group>
+                    <div class="w-100 box-duration">
+                        <nz-input-number [nzStatus]="statusInput" autofocus nzSize="large" [nzMin]="0"
+                            [nzPlaceHolder]="'app.service.duration-placeholder' | i18n" [(ngModel)]="duration" (ngModelChange)="onChangeDuration()">
+                        </nz-input-number>
                         <ng-container *ngIf="statusInput === 'error'">
                             <p class="input-error">{{msgError}}</p>
                         </ng-container>

@@ -59,3 +59,13 @@ h3 {
     font-size: 14px;
     color: #ea3829;
 }
+
+.box-duration nz-input-number {
+    width: 100%;
+    border-radius: 8px;
+    margin-left: 0px;
+}
+
+.box-duration ::ng-deep .ant-input-number-handler-wrap {
+    margin-right: 3px;
+}
