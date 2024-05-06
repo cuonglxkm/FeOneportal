@@ -48,8 +48,8 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of listOfS3Key">
-      <td>{{count}}</td>
+    <tr *ngFor="let item of rowSelectionTable.data, index as i">
+      <td>{{i + 1}}</td>
       <td>
         {{item.accessKey}}
         <span style="color: #0066B3; margin-left: 10px;" nz-icon nzType="copy" nzTheme="outline"
@@ -60,15 +60,15 @@
         <span style="color: #0066B3; margin-left: 10px;" nz-icon nzType="copy" nzTheme="outline"
               (click)="copyText(item.secretKey)"></span>
       </td>
-      <td>{{item.userId}}</td>
+      <td>{{item.subUser === null ? 'owner' : item.subUser}}</td>
       <td>
         <div>
           <!---Gỡ------>
-          <span style="color: #0066B3; margin-right: 10px;"
+          <span style="color: #0066B3; margin-right: 10px; cursor: pointer;"
                 [nz-tooltip]="'app.recreate' | i18n"
-                nz-icon nzType="reload" nzTheme="outline" (click)="openModelDuplicate(item.accessKey)"></span>
+                nz-icon nzType="reload" nzTheme="outline" (click)="openModelRecreate(item)"></span>
           <!----Xóa---->
-          <span style="color: #0066B3"
+          <span style="color: #0066B3; cursor: pointer;"
                 [nz-tooltip]="'app.text.delete' | i18n"
                 nz-icon nzType="delete" nzTheme="outline" (click)="openModelDelete(item.accessKey)"></span>
         </div>
@@ -82,40 +82,68 @@
 <one-portal-object-storage *ngIf="hasOS == false"></one-portal-object-storage>
 
 <!--Tạo mới-->
-<nz-modal [(nzVisible)]="isVisibleCreate" [nzTitle]="'app.s3.key.create' | i18n" (nzOnCancel)="isVisibleCreate = false"
-          (nzOnOk)="createSecretKey()" nzOkText="Xác nhận"
-          nzCancelText="Hủy">
+<nz-modal (nzOnCancel)="isVisibleCreate = false" [(nzVisible)]="isVisibleCreate" [nzTitle]="'app.s3.key.create' | i18n"  >
   <ng-container *nzModalContent>
-    <div class="text-label">{{ 'app.s3.key.choose' | i18n }} (<span class="text-red">*</span>)</div>
+    <div class="text-label mb-2">{{ 'app.s3.key.choose' | i18n }} (<span class="text-red">*</span>)</div>
     <nz-select nzSize="large" [nzLoading]="loadingDropdown" [nzDisabled]="disableDropdown"
-               style="width: 90%; margin-left: -1px;border-radius: 10px;"
+               style="width: 100%;border-radius: 8px;"
                [nzPlaceHolder]="'-- ' + ('app.s3.key.choose' | i18n) + ' --'"
-               [ngModel]="userCreate" (nzOpenChange)="changeUser($event)">
+               [(ngModel)]="userCreate.subUserId">
       <nz-option *ngFor="let i of listUser" [nzLabel]="i.subUserId"
                  [nzValue]="i.subUserId"/>
     </nz-select>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelCreate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{'app.button.cancel' | i18n}}
+    </button>
+    <button nz-button nzType="primary" (click)="createSecretKey()" [nzLoading]="isLoadingCreateS3key">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />{{'app.button.confirm' | i18n}}
+    </button>
+  </div>
 </nz-modal>
 
 <!--Xóa-->
 <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xác nhận xóa S3 Key" (nzOnCancel)="isVisibleDelete = false"
-          (nzOnOk)="deleteSecretKey()" nzOkText="Xác nhận"
-          nzCancelText="Hủy">
+          >
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      nzDescription="Bạn đang thực hiện xóa SecretKey."
+      nzDescription="Bạn đang thực hiện xóa S3 Key."
       nzShowIcon
       style="margin-bottom: 10px;"
     ></nz-alert>
-    <b>Quý khách chắc chắn muốn thực hiện xóa SecretKey?</b>
+    <b>Quý khách có chắc chắn thực hiện xóa S3 Key không?</b>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDelete()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{'app.button.cancel' | i18n}}
+    </button>
+    <button nz-button nzType="primary" (click)="deleteSecretKey()" [nzLoading]="isLoadingDelete">
+      <img
+        *ngIf="isLoadingDelete === false"
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />{{'app.button.confirm' | i18n}}
+    </button>
+  </div>
 </nz-modal>
 
 <!--Nhân tạo-->
-<nz-modal [(nzVisible)]="isVisibleUplicate" nzTitle="Xác nhận xóa S3 Key" (nzOnCancel)="isVisibleUplicate = false"
-          (nzOnOk)="duplicateSecretKey()" nzOkText="Xác nhận"
-          nzCancelText="Hủy">
+<nz-modal [(nzVisible)]="isVisibleReCreate" nzTitle="Xác nhận tạo lại SecretKey ?" (nzOnCancel)="isVisibleReCreate = false">
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
@@ -125,5 +153,22 @@
     ></nz-alert>
     <b>Quý khách chắc chắn muốn thực hiện tại lại SecretKey?</b>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelReCreate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{'app.button.cancel' | i18n}}
+    </button>
+    <button nz-button nzType="primary" (click)="generateS3Key()" [nzLoading]="isLoadingCreateS3key">
+      <img
+        *ngIf="isLoadingCreateS3key === false"
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />{{'app.button.confirm' | i18n}}
+    </button>
+  </div>
 </nz-modal>
 

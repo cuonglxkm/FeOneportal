@@ -129,7 +129,7 @@ export class BucketDetailComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService,
     private clipboard: Clipboard,
-    private modalService: NzModalService
+    private modalService: NzModalService,
   ) {}
 
   ngOnInit(): void {
@@ -527,8 +527,6 @@ export class BucketDetailComponent implements OnInit {
     } else if (action == 4) {
       this.isVisibleDetail = true;
     } else if (action == 5) {
-      console.log(this.dataAction);
-      
       this.isVisibleDelete = true;
     } else if (action == 6) {
       this.isVisibleShare = true;
@@ -981,7 +979,7 @@ export class BucketDetailComponent implements OnInit {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
           expiryTime: addDays(this.date, 1),
-          urlOrigin: 'http://localhost:4200',
+          urlOrigin: 'https://oneportal.onsmartcloud.com',
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
