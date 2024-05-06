@@ -280,7 +280,7 @@
           <td  style="width: 400px">{{item.type}}</td>
           <td style="width: 400px">
             <div>{{(item.size / 1024).toFixed(2)}} KB</div>
-            <div><nz-progress *ngIf="item.percentage > 0" nzType="line" [nzPercent]="item.percentage" 
+            <div><nz-progress *ngIf="item.isUpload === true" nzType="line" [nzPercent]="item.percentage" 
             [nzStatus]="uploadFailed === true ? 'exception' : item.percentage === 100 ? 'success' : 'active'"></nz-progress></div>
           </td>
           <td>
@@ -288,9 +288,13 @@
                     nz-tooltip
                     nzTooltipTitle="tải lên" nzTooltipPlacement="bottom"
                     nz-icon nzType="upload" nzTheme="outline" (click)="uploadSingleFile(item, i)"></span>
-            <span style="color: #0066B3; cursor: pointer;"
+            <span *ngIf="!item.isUpload" style="color: #0066B3; cursor: pointer;"
                   nz-tooltip
                   nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                  nz-icon nzType="delete" nzTheme="outline" (click)="removeFile(item)"></span>
+            <span *ngIf="item.isUpload === true" style="color: #0066B3; cursor: pointer;"
+                  nz-tooltip
+                  nzTooltipTitle="Hủy" nzTooltipPlacement="bottom"
                   nz-icon nzType="delete" nzTheme="outline" (click)="removeFile(item)"></span>
           </td>
         </tr>
@@ -348,15 +352,15 @@
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert *ngIf="dataAction.objectType != 'folder'" nzType="warning"
-              nzMessage="Bạn đang thực hiện xóa File + Tên File" nzShowIcon></nz-alert>
+              nzMessage="Bạn đang thực hiện xóa File  {{dataAction.key}}" nzShowIcon></nz-alert>
     <nz-alert *ngIf="dataAction.objectType == 'folder'" nzType="warning"
-              nzMessage="Bạn đang thực hiện xóa Folder + Tên Folder. Mọi object bên trong folder này sẽ bị xóa và không thể khôi phục lại"
+              nzMessage="Bạn đang thực hiện xóa Folder {{dataAction.key}}. Mọi object bên trong folder này sẽ bị xóa và không thể khôi phục lại"
               nzShowIcon></nz-alert>
     <div *ngIf="dataAction.objectType != 'folder'" style="margin-top: 15px;">Quý khách có chắc chắn thực thiện xóa File
-      + "Tên File"?
+      <b>{{dataAction.key}}</b>?
     </div>
     <div *ngIf="dataAction.objectType == 'folder'" style="margin-top: 15px;">Quý khách có chắc chắn thực thiện xóa
-      Folder + "Tên Folder"?
+      Folder <b>{{dataAction.key}}</b>?
     </div>
   </ng-container>
 </nz-modal>
