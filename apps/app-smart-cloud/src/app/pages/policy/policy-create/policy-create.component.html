@@ -32,7 +32,7 @@
     <nz-card>
       <div nz-row class="mb-md">
         <div nz-col nzSpan="18">
-          <h3>Policy editor</h3>
+          <div class="text-card-header">Policy editor</div>
           <p style="color: #888;">{{ 'app.create-policy.editor.des' | i18n }}</p>
           <div style="display: flex;align-items: center">
             <button (click)="visualOption(1)" nz-button nzType="primary" nzSize="large" style="
@@ -76,7 +76,7 @@
                 <!--                              {{JSON.stringify(serviceArray)}}-->
               </div>
               <div *ngIf="serviceItem.serviceName === null">
-                <h3>{{ 'app.create-policy.chooseService' | i18n }}</h3>
+                <div class="text-card-header">{{ 'app.create-policy.chooseService' | i18n }}</div>
                 <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'--'+('app.create-policy.chooseService' | i18n)+'--'"
                            [(ngModel)]="serviceItem.serviceName"
                            (ngModelChange)="selectService($event, serviceItem)" style="width: 100%">
