@@ -52,8 +52,8 @@
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>{{ 'app.vlan.note3' | i18n }} (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
-            <img nz-popover nzPopoverContent="{{ 'app.vlan.note71' | i18n }}"
+            <span>{{ 'app.vlan.note5' | i18n }} (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
+            <img nz-popover nzPopoverContent="{{ 'app.vlan.note6' | i18n }}"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
@@ -62,7 +62,7 @@
           <input nz-input
                  class="input-custom"
                  formControlName="nameSubnet"
-                 placeholder="{{ 'app.vlan.note71' | i18n }}"
+                 placeholder="{{ 'app.vlan.note6' | i18n }}"
                  [maxlength]="50" />
           <ng-template #nameSubnetErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'app.vlan.note8' | i18n }}</ng-container>

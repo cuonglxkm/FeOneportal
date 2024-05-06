@@ -876,7 +876,7 @@
   "app.users.users.add.success": "Thêm user vào group thành công",
   "app.users.users.add.fail": "Thêm user vào group thất bại",
 
-  "app.breadcrumb.create-policy": "Tạo Policy",
+  "app.breadcrumb.create-policy": "Khởi tạo Policy",
   "app.create-policy.step1": "Bước 1",
   "app.create-policy.step1.title": "Thiết lập Permission policies",
   "app.create-policy.step2": "Bước 2",
