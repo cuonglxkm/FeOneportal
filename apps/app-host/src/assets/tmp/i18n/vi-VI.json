@@ -898,7 +898,7 @@
   "app.create-policy.noti.fail": "Thêm policy thất bại",
   "app.create-policy.noti.fail1": "Tạo mới policy thất bại",
   "app.create-policy.noti.warn": "Không được gắn quá 10 policies",
-  "app.button.continue": "Tiếc tục",
+  "app.button.continue": "Tiếp tục",
   "app.create-policy.alertNextStep": "Cảnh báo bước tiếp theo",
   "app.create-policy.alertNextStep.des": "Quý khách vui lòng chọn policy để đến bước tiếp theo",
   "app.create-policy.confirm.des": "Đế thực hiện tạo mới Policy, vui lòng chọn “Đồng ý”để xác nhận.",

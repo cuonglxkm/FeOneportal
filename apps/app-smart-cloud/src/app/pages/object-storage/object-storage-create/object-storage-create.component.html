@@ -40,7 +40,7 @@
               [nzMax]="1000"
               [nzStep]="1"
               [(ngModel)]="objectStorageCreate.quota"
-              (ngModelChange)="changeTotalAmount($event)"
+              (ngModelChange)="changeCapacity($event)"
               [ngModelOptions]="{ standalone: true }"
               nzSize="large"
             ></nz-input-number>
@@ -72,8 +72,8 @@
                 [nzMin]="1"
                 [nzMax]="100"
                 [nzStep]="1"
-                [(ngModel)]="numberMonth"
-                (ngModelChange)="onChangeTime()"
+                [ngModel]="numberMonth"
+                (ngModelChange)="changeTime($event)"
                 [ngModelOptions]="{ standalone: true }"
                 nzSize="large"
               ></nz-input-number>
