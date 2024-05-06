@@ -41,7 +41,7 @@ export class ListenerService extends BaseService{
 
 
   createListener(data: any): Observable<any> {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + this.listenerUrl, data, this.httpOptions);
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/loadbalancer/CreateListenerPoolHealthyMember", data, this.httpOptions);
   }
 
   createPool(data: any): Observable<any> {

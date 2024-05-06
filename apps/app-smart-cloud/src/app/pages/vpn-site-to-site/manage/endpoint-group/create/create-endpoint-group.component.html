@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo mới Endpoint Group'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Khởi tạo Endpoint Group'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -9,7 +9,7 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">VPN site to
           site</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Tạo mới Endpoint Group</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Khởi tạo Endpoint Group</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -124,7 +124,7 @@
       </div>
       <button [nzLoading]="isLoading" (click)="handleCreate()" nz-button nzType="primary"
         style="border: none; width: 100%; display: flex; align-items: center; gap: 5px; justify-content: center;"
-        nzSize="large" [disabled]="form.invalid">
+        nzSize="large" [disabled]="form.invalid" [nzLoading]="isLoading">
         <img src="assets/imgs/wallet.svg" alt="" />
         <span class="button-text-primary">Khởi tạo</span>
       </button>
