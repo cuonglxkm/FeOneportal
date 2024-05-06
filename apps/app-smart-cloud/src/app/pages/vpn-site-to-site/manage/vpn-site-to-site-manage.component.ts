@@ -55,7 +55,6 @@ export class VpnSiteToSiteManage {
     this.isLoading = true
     this.vpnSiteToSiteService.getVpnSiteToSite(this.project)
       .subscribe(data => {
-        debugger
         if(data){
           this.isLoading = false
           this.response = data
