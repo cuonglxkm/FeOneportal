@@ -56,6 +56,7 @@ export class VpnSiteToSiteManage {
     this.isLoading = true
     this.vpnSiteToSiteService.getVpnSiteToSite(this.project)
       .subscribe(data => {
+        debugger
         if(data){
           this.isLoading = false
           this.response = data
@@ -63,14 +64,14 @@ export class VpnSiteToSiteManage {
           
         }
       if (isBegin) {
-        this.isBegin = this.response === null ? true : false;
+        this.isBegin = this.response ? false : true;
       }
     }, error => {
       this.isLoading = false;
       this.response = null;
       console.log(this.response);
       if (isBegin) {
-        this.isBegin = this.response === null ? true : false;
+        this.isBegin = this.response ? false : true;
       }
     })
   }
