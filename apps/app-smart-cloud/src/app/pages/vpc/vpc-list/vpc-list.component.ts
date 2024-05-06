@@ -98,6 +98,8 @@ export class VpcListComponent implements OnInit{
     if (item.type == 'VPC') {
       this.router.navigate(['/app-smart-cloud/vpc/update/' + item.id]);
     } else {
+      this.form.controls['name'].setValue(item.displayName);
+      this.form.controls['description'].setValue(item.description);
       this.isVisibleEditNormal = true;
     }
   }

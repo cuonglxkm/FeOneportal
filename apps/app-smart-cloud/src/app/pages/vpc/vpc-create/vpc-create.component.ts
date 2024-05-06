@@ -54,7 +54,7 @@ export class VpcCreateComponent implements OnInit{
   numberIpPublic: any = 0;
   numberIpv6: any = 0;
   numberLoadBalancer: any = 0;
-  numberBackup: any = 20;
+  numberBackup: any = 0;
   numberFileSystem: any = 0;
   numberFileScnapsshot: any = 0;
   numberSecurityGroup: any = 0;
@@ -84,6 +84,14 @@ export class VpcCreateComponent implements OnInit{
   ];
 
   price = {
+    vcpu: 0,
+    ram: 0,
+    hhd: 0,
+    ssd: 0,
+    vcpuPerUnit: 0,
+    ramPerUnit: 0,
+    hhdPerUnit: 0,
+    ssdPerUnit: 0,
     IpFloating: 0,
     IpPublic: 0,
     IpV6: 0,
@@ -125,6 +133,7 @@ export class VpcCreateComponent implements OnInit{
     this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
       this.calculateReal();
     });
+    this.onChangeTime();
   }
 
   calculateReal() {
@@ -370,7 +379,7 @@ export class VpcCreateComponent implements OnInit{
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: 'vpc_create',
-          price: 0,
+          price: this.total.data.totalAmount.amount / numOfMonth,
           serviceDuration: numOfMonth
         }
       ]
@@ -482,6 +491,18 @@ export class VpcCreateComponent implements OnInit{
         this.price.loadBalancer = item.unitPrice.amount.toLocaleString();
       } else if (item.typeName == 'vpn-site-to-site') {
         this.price.siteToSite = item.unitPrice.amount.toLocaleString();
+      } else if (item.typeName == 'vcpu') {
+        this.price.vcpu = item.totalAmount.amount.toLocaleString();
+        this.price.vcpuPerUnit = item.unitPrice.amount.toLocaleString();
+      } else if (item.typeName == 'ram') {
+        this.price.ram = item.totalAmount.amount.toLocaleString();
+        this.price.ramPerUnit = item.unitPrice.amount.toLocaleString();
+      } else if (item.typeName == 'ssd') {
+        this.price.ssd = item.totalAmount.amount.toLocaleString();
+        this.price.ssdPerUnit = item.unitPrice.amount.toLocaleString();
+      } else if (item.typeName == 'hhd') {
+        this.price.hhd = item.totalAmount.amount.toLocaleString();
+        this.price.hhdPerUnit = item.unitPrice.amount.toLocaleString();
       }
     }
     this.price.fileStorage = fileStorage;
