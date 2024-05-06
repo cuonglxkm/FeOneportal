@@ -14,7 +14,7 @@
     <span class="text-modal-title">{{ 'volume.action.detach' | i18n }}</span>
   </div>
   <div *nzModalContent>
-    <div *ngIf="isMultiple == true">
+    <div *ngIf="isMultiple && instanceInVolume.length > 1">
       <nz-form-label>{{ 'volume.modal.attach.title' | i18n }}</nz-form-label>
       <nz-select nzSize="default"
                  [nzLoading]="isLoading"
@@ -28,9 +28,9 @@
       </nz-select>
       <div *ngIf="isSelected">{{ 'volume.notification.input.select.vm' | i18n }}</div>
     </div>
-    <div *ngIf="isMultiple == false">
+    <div *ngIf="!isMultiple || (isMultiple && instanceInVolume.length == 1)">
       <div>
-        <span style="text-align: center"><b>{{'volume.alert.message.confirm.detach'|i18n}}</b></span>
+        <span class="text-label" style="text-align: center">{{'volume.alert.message.confirm.detach'|i18n}}</span>
       </div>
     </div>
   </div>

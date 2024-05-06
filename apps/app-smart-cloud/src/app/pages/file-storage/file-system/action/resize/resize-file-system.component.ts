@@ -74,7 +74,8 @@ export class ResizeFileSystemComponent implements OnInit {
 
   initFileSystem() {
     this.resizeFileSystem.customerId = this.tokenService.get()?.userId;
-    this.resizeFileSystem.size = this.validateForm.controls.storage.value;
+
+    this.resizeFileSystem.size = this.validateForm.controls.storage.value + this.fileSystem?.size;
     this.resizeFileSystem.newOfferId = 0;
     this.resizeFileSystem.serviceType = 18;
     this.resizeFileSystem.actionType = 4;

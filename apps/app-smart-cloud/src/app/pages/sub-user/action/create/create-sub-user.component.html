@@ -1,25 +1,15 @@
-<page-header
-  [breadcrumb]="breadcrumb"
-  [action]="action"
-  [title]="'app.sub.user.create' | i18n"
->
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'app.sub.user.create' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">{{
-        'app.breadcrumb.home' | i18n
-      }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">{{
-        'app.breadcrumb.infrastructure.service' | i18n
-      }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">Object Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Object Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'">Subuser</nz-breadcrumb-item>
       <nz-breadcrumb-item
-        [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'"
-        >Subuser</nz-breadcrumb-item
-      >
-      <nz-breadcrumb-item
-        [routerLink]="'/app-smart-cloud/object-storage/sub-user/create'"
-        >{{ 'app.sub.user.create' | i18n }}</nz-breadcrumb-item
-      >
+        [routerLink]="'/app-smart-cloud/object-storage/sub-user/create'">{{ 'app.sub.user.create' | i18n }}
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -49,26 +39,18 @@
                 </div>
               </div>
             </nz-form-label>
-            <nz-form-control
-              nzDisableAutoTips
-              [nzErrorTip]="nameSubUserErrorTpl"
-            >
-              <input
-                nz-input
-                style="width: 100%"
-                class="input-custom"
-                [(ngModel)]="name"
-                (input)="updateData($event.target.value)"
-                [placeholder]="'app.input.name' | i18n"
-                formControlName="name"
-              />
+            <nz-form-control nzDisableAutoTips
+                             [nzErrorTip]="nameSubUserErrorTpl">
+              <input nz-input appAutofocus
+                     style="width: 100%"
+                     class="input-custom"
+                     (input)="updateData($event)"
+                     [placeholder]="'app.input.name' | i18n"
+                     formControlName="name" />
               <ng-template #nameSubUserErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">{{
-                  'validation.sub.user.name.required' | i18n
-                }}</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">{{
-                  'validation.sub.user.name' | i18n
-                }}</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{ 'validation.sub.user.name.required' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.sub.user.name' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.sub.user.name.duplicate' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -80,28 +62,20 @@
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </div>
                 <div>
-                  <span
-                    >{{ 'app.sub.user.into.permission' | i18n }}<br />
-                    {{ 'app.sub.user.note.permission' | i18n }}</span
-                  >
+                  <span>{{ 'app.sub.user.into.permission' | i18n }}
+                    <br />{{ 'app.sub.user.note.permission' | i18n }}</span>
                 </div>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="accessErrorTpl">
-              <nz-select formControlName="access" [(ngModel)]="access">
-                <nz-option
-                  nzValue="full"
-                  [nzLabel]="'app.all.access.permission' | i18n"
-                ></nz-option>
-                <nz-option
-                  nzValue="none"
-                  [nzLabel]="'app.no.access.permission' | i18n"
-                ></nz-option>
+              <nz-select formControlName="access" nzSize="large">
+                <nz-option nzValue="full"
+                           [nzLabel]="'app.all.access.permission' | i18n"></nz-option>
+                <nz-option nzValue="none"
+                           [nzLabel]="'app.no.access.permission' | i18n"></nz-option>
               </nz-select>
               <ng-template #accessErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">{{
-                  'validation.info.required' | i18n
-                }}</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -109,22 +83,17 @@
       </nz-col>
       <nz-col nzSpan="8">
         <nz-card style="border-radius: 8px">
-          <span class="text-card-header">{{
-            'app.config.parameters' | i18n
-          }}</span>
-          <nz-row style="margin-bottom: 10px; margin-top: 10px" nzGutter="16">
-            <span class="text-value"> {{ 'app.sub.user.name' | i18n }} </span>
-          </nz-row>
-          <nz-row style="margin-bottom: 10px; margin-top: 10px" nzGutter="16">
-            <span class="text-label" [innerText]="name"></span>
-          </nz-row>
-          <nz-row style="margin-bottom: 10px; margin-top: 10px" nzGutter="16">
-            <span class="text-value">
-              <b>{{ 'app.access.rights' | i18n }}</b>
-            </span>
-          </nz-row>
-          <nz-row style="margin-bottom: 10px; margin-top: 10px" nzGutter="16">
-            <span class="text-label" [ngSwitch]="access">
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
+          </div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.sub.user.name' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span class="text-label" >{{validateForm.controls.name.value}}</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.access.rights' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span class="text-label" [ngSwitch]="validateForm.controls.access.value">
               <div *ngSwitchCase="'full'">
                 {{ 'app.all.access.permission' | i18n }}
               </div>
@@ -132,29 +101,14 @@
                 {{ 'app.no.access.permission' | i18n }}
               </div>
             </span>
-          </nz-row>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row>
-            <nz-col style="width: 100%" class="text-right">
-              <button nz-button (click)="cancel()">
-                <img
-                  style="padding-right: 10px; margin-top: -4px"
-                  src="assets/imgs/cancel.svg"
-                  alt=""
-                />{{ 'app.text.delete' | i18n }}
-              </button>
-              <button
-                nz-button
-                nzSize="large"
-                nzType="primary"
-                [disabled]="validateForm.invalid"
-                (click)="submitForm()"
-              >
-                <span nz-icon nzType="wallet" nzTheme="outline"></span>
-                <span
-                  class="button-text-primary"
-                  [style.color]="validateForm.invalid ? 'gray' : 'white'"
-                  >{{ 'app.button.confirm' | i18n }}</span
-                >
+            <nz-col style="width: 100%">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="submitForm()"
+                      [disabled]="validateForm.invalid">
+                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>

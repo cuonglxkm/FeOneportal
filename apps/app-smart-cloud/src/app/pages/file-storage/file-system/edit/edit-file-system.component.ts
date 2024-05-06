@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Outp
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import {
-  FileSystemDetail,
+  FileSystemDetail, FileSystemModel,
   FormEditFileSystem,
   FormSearchFileSystem
 } from '../../../../shared/models/file-system.model';
@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
 export class EditFileSystemComponent implements AfterViewInit {
   @Input() region: number;
   @Input() project: number;
-  @Input() fileSystemId: number;
+  @Input() fileSystem: FileSystemModel;
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
 
@@ -36,7 +36,7 @@ export class EditFileSystemComponent implements AfterViewInit {
     description: [null as string, [Validators.maxLength(255)]]
   });
 
-  fileSystem: FileSystemDetail = new FileSystemDetail();
+  // fileSystem: FileSystemDetail = new FileSystemDetail();
   nameList: string[] = [];
 
   @ViewChild('fileSystemInputName') fileSystemInputName!: ElementRef<HTMLInputElement>;
@@ -78,19 +78,32 @@ export class EditFileSystemComponent implements AfterViewInit {
     formSearch.pageSize = 9999;
     formSearch.isCheckState = true;
     this.fileSystemService.search(formSearch).subscribe(data => {
-      data?.records?.forEach(item => {
-        this.nameList?.push(item?.name);
-
-        this.nameList = this.nameList?.filter(item => item !== this.validateForm.get('nameFileSystem').value);
+        data.records.forEach((item) => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name);
+          } else {
+            this.nameList = [item.name];
+          }
+        });
+        this.nameList.forEach(item => {
+          const index = this.nameList.indexOf(this.validateForm.controls.nameFileSystem.value);
+          // Nếu giá trị có tồn tại trong mảng, loại bỏ nó
+          if (index !== -1) {
+            this.nameList.splice(index, 1);
+          }
+        });
+      },
+      (error) => {
+        this.nameList = null;
       });
-      console.log(this.nameList);
-    });
   }
 
   showModal() {
     this.isVisible = true;
-    this.getFileSystemById();
+
     this.getListFileSystem();
+    this.validateForm.controls.nameFileSystem.setValue(this.fileSystem?.name);
+    this.validateForm.controls.description.setValue(this.fileSystem?.description);
     setTimeout(() => {
       this.fileSystemInputName?.nativeElement.focus();
     }, 1000);
@@ -102,23 +115,11 @@ export class EditFileSystemComponent implements AfterViewInit {
     this.onCancel.emit();
   }
 
-  getFileSystemById() {
-    this.isLoading = true;
-    this.fileSystemService.getFileSystemById(this.fileSystemId, this.region).subscribe(data => {
-      this.fileSystem = data;
-      this.validateForm.controls.nameFileSystem.setValue(data.name);
-      this.validateForm.controls.description.setValue(data.description);
-      this.isLoading = false;
-    }, error => {
-      this.fileSystem = null;
-      this.isLoading = false;
-    });
-  }
-
   handleOk() {
     this.isLoading = true;
+    console.log(this.validateForm.getRawValue())
     let formEdit = new FormEditFileSystem();
-    formEdit.id = this.fileSystemId;
+    formEdit.id = this.fileSystem?.id;
     formEdit.regionId = this.region;
     formEdit.customerId = this.tokenService.get()?.userId;
     formEdit.name = this.validateForm.controls.nameFileSystem.value;

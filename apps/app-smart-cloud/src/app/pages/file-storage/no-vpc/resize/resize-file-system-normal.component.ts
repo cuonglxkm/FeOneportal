@@ -80,6 +80,7 @@ export class ResizeFileSystemNormalComponent implements OnInit{
       this.storage = this.fileSystem.size;
       // this.validateForm.controls.storage.setValue(this.fileSystem?.size);
       this.validateForm.controls.snapshot.setValue(this.fileSystem?.isSnapshot)
+      this.getTotalAmount()
     }, error => {
       this.fileSystem = null;
       this.isLoading = false;
@@ -89,7 +90,7 @@ export class ResizeFileSystemNormalComponent implements OnInit{
 
   initFileSystem() {
     this.resizeFileSystem.customerId = this.tokenService.get()?.userId;
-    this.resizeFileSystem.size = this.validateForm.controls.storage.value;
+    this.resizeFileSystem.size = this.validateForm.controls.storage.value + this.fileSystem?.size;
     this.resizeFileSystem.newOfferId = 0;
     this.resizeFileSystem.serviceType = 18;
     this.resizeFileSystem.actionType = 4;
@@ -173,6 +174,6 @@ export class ResizeFileSystemNormalComponent implements OnInit{
     this.getFileSystemById(this.idFileSystem);
     this.onChangeStorage();
     this.dateEdit = new Date();
-    this.getTotalAmount()
+    // this.getTotalAmount()
   }
 }

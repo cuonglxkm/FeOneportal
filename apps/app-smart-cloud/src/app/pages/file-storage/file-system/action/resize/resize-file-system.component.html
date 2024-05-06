@@ -148,7 +148,7 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div style="margin-top: 10px" class="text-value">{{ 'app.capacity' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
-            <span class="text-label">{{ resizeFileSystem?.size }} GB</span>
+            <span class="text-label">{{ fileSystem?.size + validateForm.controls.storage.value }} GB</span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row>
