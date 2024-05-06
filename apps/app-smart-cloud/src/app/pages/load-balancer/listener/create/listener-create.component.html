@@ -352,7 +352,7 @@
           </button>
           <button [disabled]="validateForm.controls['poolName'].invalid || validateForm.controls['healthName'].invalid
           || validateForm.controls['path'].invalid || validateForm.controls['sucessCode'].invalid" nzSize="large" (click)="nextStep()" nz-button nzType="primary"
-                  style="border: none;margin-left: 30px;">Tiếp tục
+                  style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
           </button>
         </div>
       </nz-card>
@@ -428,7 +428,7 @@
                 style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
         </button>
         <button  nzSize="large" (click)="nextStep()" nz-button nzType="primary"
-                style="border: none;margin-left: 30px;">Tiếp tục
+                style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
         </button>
       </div>
     </nz-card>

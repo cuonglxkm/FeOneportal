@@ -24,7 +24,7 @@ export class ObjectStorageCreate {
   customerId: number;
   userEmail: any;
   actorEmail: any;
-  vpcId: any;
+  projectId: any;
   regionId: number;
   serviceName: any;
   serviceType: number;
