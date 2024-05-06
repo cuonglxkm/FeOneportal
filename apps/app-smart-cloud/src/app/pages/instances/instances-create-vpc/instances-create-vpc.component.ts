@@ -23,7 +23,7 @@ import {
 } from '../instances.model';
 import { Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
-import { Observable, finalize, of } from 'rxjs';
+import { Observable, Subject, debounceTime, finalize, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
@@ -204,7 +204,32 @@ export class InstancesCreateVpcComponent implements OnInit {
           this.cardHeight
         );
       });
+    this.checkExistName();
     this.cdr.detectChanges();
+  }
+
+  //Kiểm tra trùng tên máy ảo
+  dataSubjectName: Subject<any> = new Subject<any>();
+  changeName(value: number) {
+    this.dataSubjectName.next(value);
+  }
+
+  isExistName: boolean = false;
+  checkExistName() {
+    this.dataSubjectName
+      .pipe(
+        debounceTime(300) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.dataService.checkExistName(res, this.region).subscribe((data) => {
+          if (data == true) {
+            this.isExistName = true;
+          } else {
+            this.isExistName = false;
+          }
+          this.cdr.detectChanges();
+        });
+      });
   }
 
   infoVPC: TotalVpcResource = new TotalVpcResource();
@@ -282,10 +307,24 @@ export class InstancesCreateVpcComponent implements OnInit {
       });
   }
 
-  
-
   nameImage: string = '';
-  onInputHDH(event: any, index: number, imageTypeId: number) {
+  disableKeypair: boolean = false;
+  onInputHDH(
+    event: any,
+    index: number,
+    imageTypeId: number,
+    uniqueKey: string
+  ) {
+    if (uniqueKey.toUpperCase() == 'WINDOWS') {
+      if (!this.activeBlockPassword) {
+        this.initPassword();
+      }
+      this.listSSHKey = [];
+      this.disableKeypair = true;
+    } else {
+      this.disableKeypair = false;
+      this.getAllSSHKey();
+    }
     this.hdh = event;
     this.selectedImageTypeId = imageTypeId;
     for (let i = 0; i < this.listSelectedImage.length; ++i) {

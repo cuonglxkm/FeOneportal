@@ -42,24 +42,25 @@
         <nz-form-item>
           <nz-form-label nzFor="name"
             >{{ 'app.instances.name' | i18n }} (<span class="text-red">*</span
-            >)</nz-form-label
-          >
+            >)<img
+              style="margin-left: 10px"
+              [nz-tooltip]="'app.tooltip.instance.name' | i18n"
+              src="assets/imgs/pajamas_question.svg"
+              alt=""
+          /></nz-form-label>
 
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <nz-row>
               <nz-col nzSpan="12">
                 <input
+                  #nameInput
                   class="input-custom"
                   nz-input
                   formControlName="name"
                   [(ngModel)]="instanceCreate.serviceName"
-                  id="name"
+                  (ngModelChange)="changeName($event)"
                   [placeholder]="'app.input.name' | i18n"
                   [maxlength]="50"
-                  (change)="
-                    instanceCreate.serviceName =
-                      instanceCreate.serviceName.trim()
-                  "
                 />
               </nz-col>
               <nz-col style="display: flex; align-items: center" nzSpan="12">
@@ -70,52 +71,65 @@
                   [ngModelOptions]="{ standalone: true }"
                   (ngModelChange)="initSnapshot()"
                 ></nz-switch>
-                <label nzFor="name" style="text-align: right; padding-left: 1%"
-                  >Tạo từ Snapshot</label
-                >
+                <label
+                  class="text-label"
+                  nzFor="name"
+                  style="text-align: right; padding-left: 1%"
+                  >{{ 'app.instances.from.snapshot' | i18n }}
+                  <img
+                    style="margin-left: 10px"
+                    [nz-tooltip]="'app.tooltip.instances.from.snapshot' | i18n"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                /></label>
               </nz-col>
             </nz-row>
+            <div *ngIf="isExistName" style="color: #ff4d4f">
+              {{ 'validation.exist.instance.name' | i18n }}
+            </div>
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{
                 'validation.info.required' | i18n
               }}</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')"
-                >Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ
-                _)</ng-container
-              >
+              <ng-container *ngIf="control.hasError('pattern')">{{
+                'validation.name.pattern' | i18n
+              }}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
     </nz-row>
     <div *ngIf="isSnapshot">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzFor="name">Chọn Snapshot</nz-form-label>
-          <nz-form-control nzErrorTip="Vui lòng Chọn Snapshot">
-            <nz-select
-              [nzPlaceHolder]="'--Chọn Snapshot--'"
-              [nzShowSearch]="true"
-              [(ngModel)]="selectedSnapshot"
-              [ngModelOptions]="{ standalone: true }"
-              (ngModelChange)="onChangeSnapshot($event)"
-              nzSize="large"
-            >
-              <nz-option
-                *ngFor="let i of listSnapshot"
-                [nzLabel]="i.name"
-                [nzValue]="i.id"
-              />
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
+      <nz-form-item>
+        <nz-form-label nzFor="name"
+          >{{ 'app.choose.snapshot' | i18n }} (<span class="text-red">*</span
+          >)</nz-form-label
+        >
+        <nz-form-control nzErrorTip="Vui lòng Chọn Snapshot">
+          <nz-select
+            [nzPlaceHolder]="'-- ' + ('app.choose.snapshot' | i18n) + ' --'"
+            [nzShowSearch]="true"
+            [(ngModel)]="selectedSnapshot"
+            [ngModelOptions]="{ standalone: true }"
+            nzSize="large"
+          >
+            <nz-option
+              *ngFor="let i of listSnapshot"
+              [nzLabel]="i.name"
+              [nzValue]="i.id"
+            />
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
     </div>
     <div style="margin-left: -10px" *ngIf="!isSnapshot">
-      <nz-form-label style="margin-left: 10px"
-        >{{ 'app.instances.OS' | i18n }} (<span class="text-red">*</span
-        >)</nz-form-label
-      >
+      <nz-form-label style="padding-left: 12px"
+        >{{ 'app.instances.OS' | i18n }} (<span class="text-red">*</span>)<img
+          style="margin-left: 10px"
+          [nz-tooltip]="'app.tooltip.instance.OS' | i18n"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+      /></nz-form-label>
       <ngu-carousel
         #myCarouselImage
         [inputs]="carouselTileConfig"
@@ -154,10 +168,12 @@
                     nzShowSearch
                     [id]="'hdh_' + data.id"
                     [(ngModel)]="listSelectedImage[i]"
-                    (ngModelChange)="onInputHDH($event, i, data.id)"
-                    nzPlaceHolder="Chọn phiên bản"
+                    (ngModelChange)="
+                      onInputHDH($event, i, data.id, data.uniqueKey)
+                    "
+                    [nzPlaceHolder]="'app.button.choose.version' | i18n"
                     [ngModelOptions]="{ standalone: true }"
-                    style="text-align: center; width: 150px"
+                    style="text-align: center; width: 155px"
                   >
                     <nz-option
                       *ngFor="let p of listOfImageByImageType.get(data.id)"
@@ -184,8 +200,13 @@
     <br />
     <nz-row nzGutter="16">
       <nz-form-label
-        >Chọn loại Volume (<span class="text-red">*</span>)</nz-form-label
-      >
+        >{{ 'app.choose.volume.type' | i18n }} (<span class="text-red">*</span
+        >)<img
+          style="margin-left: 10px"
+          [nz-tooltip]="'app.tooltip.volume.type' | i18n"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+      /></nz-form-label>
     </nz-row>
     <nz-radio-group
       style="width: 100%; display: inline-flex"
@@ -194,16 +215,16 @@
       <nz-row
         [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
         style="margin-top: 10px"
-        ><nz-col [nzLg]="12" [nzMd]="24" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+        ><nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
           <nz-card
             style="border-radius: 4px"
             [nzAlign]="'middle'"
             [ngStyle]="{
-                    border: activeBlockHDD
-                  ? '1px solid #0066B3'
-                  : '1px solid #DADADA',
-                  height: cardHeight,
-                }"
+                  border: activeBlockHDD
+                ? '1px solid #0066B3'
+                : '1px solid #DADADA',
+                height: cardHeight,
+              }"
           >
             <nz-row nzGutter="16">
               <nz-col nzSpan="20">
@@ -214,10 +235,13 @@
                 >
                   <ng-template #nzAvatarselectedHDDorSSD1>
                     <label
+                      [tabIndex]="0"
                       nz-radio
                       [ngModel]="activeBlockHDD"
                       [ngModelOptions]="{ standalone: true }"
                       (click)="initHDD()"
+                      (keyup.enter)="initHDD()"
+                      [disabled]="disableHDD"
                     ></label>
                   </ng-template>
                   <ng-template #nzTitleselectedHDDorSSD1>
@@ -225,9 +249,7 @@
                   </ng-template>
                   <ng-template #nzDescriptionselectedHDDorSSD1>
                     <ellipsis class="text-custom">
-                      Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu
-                      dữ liệu, lưu trữ dữ liệu hoặc khối lượng công việc chuyên
-                      sâu thông lượng
+                      {{ 'app.hdd.intro.text' | i18n }}
                     </ellipsis>
                   </ng-template>
                 </nz-card-meta></nz-col
@@ -235,8 +257,8 @@
               <nz-col
                 style="display: flex; align-items: center; margin-top: -24px"
                 [ngStyle]="{
-                      height: cardHeight,
-                    }"
+                    height: cardHeight,
+                  }"
                 nzSpan="4"
               >
                 <img
@@ -251,16 +273,16 @@
             </nz-row>
           </nz-card>
         </nz-col>
-        <nz-col [nzLg]="12" [nzMd]="24" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
           <nz-card
             style="border-radius: 4px"
             [nzAlign]="'middle'"
             [ngStyle]="{
-                  border: activeBlockSSD
-                  ? '1px solid #0066B3'
-                  : '1px solid #DADADA',
-                  height: cardHeight,
-                }"
+                border: activeBlockSSD
+                ? '1px solid #0066B3'
+                : '1px solid #DADADA',
+                height: cardHeight,
+              }"
           >
             <nz-row nzGutter="16">
               <nz-col nzSpan="20"
@@ -271,19 +293,20 @@
                 >
                   <ng-template #nzAvatarselectedHDDorSSD2>
                     <label
+                      [tabIndex]="0"
                       nz-radio
                       [ngModel]="activeBlockSSD"
                       [ngModelOptions]="{ standalone: true }"
                       (click)="initSSD()"
+                      (keyup.enter)="initSSD()"
                     ></label>
                   </ng-template>
                   <ng-template #nzTitleselectedHDDorSSD2>
                     <b>SSD</b>
                   </ng-template>
                   <ng-template #nzDescriptionselectedHDDorSSD2>
-                    <ellipsis class="text-custom"
-                      >Lựa chọn tốt hơn cho khối lượng công việc phân tích dữ
-                      liệu hoặc chơi game
+                    <ellipsis class="text-custom">
+                      {{ 'app.ssd.intro.text' | i18n }}
                     </ellipsis>
                   </ng-template>
                 </nz-card-meta>
@@ -291,8 +314,8 @@
               <nz-col
                 style="display: flex; align-items: center; margin-top: -24px"
                 [ngStyle]="{
-                        height: cardHeight,
-                      }"
+                      height: cardHeight,
+                    }"
                 nzSpan="4"
               >
                 <img
@@ -529,16 +552,21 @@
     </nz-row>
     <nz-row>
       <nz-form-label nzFor="name"
-        >Chọn phương thức truy cập máy ảo (<span class="text-red">*</span
-        >)</nz-form-label
-      >
+        >{{ 'app.access.method.instance' | i18n }} (<span class="text-red"
+          >*</span
+        >)<img
+          style="margin-left: 10px"
+          [nz-tooltip]="'app.tooltip.access.method.instance' | i18n"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+      /></nz-form-label>
     </nz-row>
     <nz-row nzGutter="16">
       <nz-radio-group
         style="width: 100%; display: inline-flex"
         name="selectedPasswordOrSSHkey"
       >
-        <nz-col nzXs="24" nzMd="12">
+        <nz-col nzXs="24" nzMd="12" nzLg="12">
           <nz-card
             style="border-radius: 4px"
             [ngStyle]="{
@@ -554,24 +582,26 @@
             >
               <ng-template #nzAvatarselectedPasswordOrSSHkey1>
                 <label
+                  [tabIndex]="0"
                   nz-radio
                   [ngModel]="activeBlockPassword"
                   [ngModelOptions]="{ standalone: true }"
                   (click)="initPassword()"
+                  (keyup.enter)="initPassword()"
                 ></label>
               </ng-template>
               <ng-template #nzTitleselectedPasswordOrSSHkey1>
-                <b>Mật khẩu</b>
+                <b>{{ 'app.password' | i18n }} </b>
               </ng-template>
               <ng-template #nzDescriptionselectedPasswordOrSSHkey1>
                 <ellipsis class="text-custom">
-                  Thuận tiện cho người dùng</ellipsis
+                  {{ 'app.password.intro.text' | i18n }}</ellipsis
                 >
               </ng-template>
             </nz-card-meta>
           </nz-card>
         </nz-col>
-        <nz-col nzXs="24" nzMd="12">
+        <nz-col nzXs="24" nzMd="12" nzLg="12">
           <nz-card
             style="border-radius: 4px"
             [ngStyle]="{
@@ -587,18 +617,21 @@
             >
               <ng-template #nzAvatarselectedPasswordOrSSHkey2>
                 <label
+                  [tabIndex]="0"
                   nz-radio
                   [ngModel]="activeBlockSSHKey"
                   [ngModelOptions]="{ standalone: true }"
                   (click)="initSSHkey()"
+                  (keyup.enter)="initSSHkey()"
+                  [disabled]="disableKeypair"
                 ></label>
               </ng-template>
               <ng-template #nzTitleselectedPasswordOrSSHkey2>
-                <b>SSH key</b>
+                <b>Keypair</b>
               </ng-template>
               <ng-template #nzDescriptionselectedPasswordOrSSHkey2>
                 <ellipsis class="text-custom">
-                  Tăng tính bảo mật khi đăng nhập</ellipsis
+                  {{ 'app.keypair.intro.text' | i18n }}</ellipsis
                 >
               </ng-template>
             </nz-card-meta>
@@ -606,23 +639,26 @@
         </nz-col>
       </nz-radio-group>
       <div *ngIf="activeBlockPassword" style="width: 100%">
-        <nz-col nzLg="24" nzMd="12" nzSm="24">
+        <nz-col nzSpan="24">
           <nz-form-item>
             <nz-form-label nzFor="name"
-              >Mật khẩu truy cập máy ảo (<span class="text-red">*</span
+              >{{ 'app.label.instance.password' | i18n }} (<span
+                class="text-red"
+                >*</span
               >)</nz-form-label
             >
-            <nz-form-control
-              nzErrorTip="Vui lòng nhập mật khẩu truy cập máy ảo"
-            >
-              <nz-input-group [nzSuffix]="suffixTemplate" style="width: 100%">
+            <nz-form-control [nzErrorTip]="passwordErrorTpl">
+              <nz-input-group
+                [nzSuffix]="suffixTemplate"
+                style="width: 100%"
+              >
                 <input
                   class="input-custom"
                   [type]="passwordVisible ? 'text' : 'password'"
                   nz-input
-                  placeholder="Nhập mật khẩu"
+                  [placeholder]="'app.input.password' | i18n"
+                  formControlName="passOrKeyFormControl"
                   [(ngModel)]="password"
-                  [ngModelOptions]="{ standalone: true }"
                 />
               </nz-input-group>
               <ng-template #suffixTemplate>
@@ -638,10 +674,18 @@
                 />
               </ng-template>
             </nz-form-control>
+            <ng-template #passwordErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">{{
+                'validation.instance.password.required' | i18n
+              }}</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">{{
+                'validation.password.pattern' | i18n
+              }}</ng-container>
+            </ng-template>
           </nz-form-item>
         </nz-col>
 
-        <nz-col nzLg="24" nzMd="12" nzSm="24">
+        <nz-col nzSpan="24">
           <nz-alert
             nzType="warning"
             [nzDescription]="nzDescriptionWarning06"
@@ -649,26 +693,28 @@
           ></nz-alert>
           <ng-template #nzDescriptionWarning06>
             <div>
-              Quy tắc đặt mật khẩu: Độ dài của một mật khẩu được sử dụng trực
-              tuyến cần phải chứa tối thiểu là 12 ký tự, sử dụng hỗn hợp bao gồm
-              các chữ số, chữ hoa, chữ thường và ký hiệu đặc biệt.
+              {{ 'app.alert.password' | i18n }}
             </div>
           </ng-template>
         </nz-col>
       </div>
       <div *ngIf="activeBlockSSHKey" style="width: 100%">
-        <nz-col nzLg="24" nzMd="12" nzSm="24">
+        <nz-col nzSpan="24">
           <nz-form-item>
             <nz-form-label
-              >Chọn SSH key (<span class="text-red">*</span>)</nz-form-label
+              >{{ 'app.choose.keypair' | i18n }} (<span class="text-red"
+                >*</span
+              >)</nz-form-label
             >
-            <nz-form-control nzErrorTip="Chọn  *">
+            <nz-form-control [nzErrorTip]="keypairErrorTpl">
               <nz-select
-                [nzPlaceHolder]="'--Chọn SSH key--'"
+                *ngIf="activeBlockSSHKey"
+                [nzPlaceHolder]="
+                  '-- ' + ('app.choose.keypair' | i18n) + ' --'
+                "
                 [nzShowSearch]="true"
-                [ngModelOptions]="{ standalone: true }"
+                formControlName="passOrKeyFormControl"
                 [(ngModel)]="selectedSSHKeyName"
-                (ngModelChange)="onSSHKeyChange($event)"
                 nzSize="large"
               >
                 <nz-option
@@ -678,10 +724,20 @@
                 />
               </nz-select>
             </nz-form-control>
+            <ng-template #keypairErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">{{
+                'validation.choose.required' | i18n : { name: 'keypair' }
+              }}</ng-container>
+            </ng-template>
           </nz-form-item>
         </nz-col>
-
-        <nz-col nzLg="24" nzMd="12" nzSm="24">
+        <nz-form-label style="margin-bottom: 20px">
+          {{ 'app.instances.keypair.label' | i18n }}&nbsp;
+          <a [routerLink]="['/app-smart-cloud/keypair']">{{
+            'app.label.create' | i18n
+          }}</a>
+        </nz-form-label>
+        <nz-col nzSpan="24">
           <nz-alert
             nzType="warning"
             [nzDescription]="nzDescriptionWarning07"
@@ -689,12 +745,14 @@
           ></nz-alert>
           <ng-template #nzDescriptionWarning07>
             <div>
-              Chúng tôi khuyến cáo sử dụng SSH Key để đảm an toàn bảo mật cho
-              máy chủ của quý khách. Thông tin hướng dẫn sử dụng về SSH key cho
-              máy chủ có thể xem tại đây.
+              {{ 'app.alert.keypair' | i18n }}
+              <a
+                href="https://docs.smartcloud.vn/index.php/knowledge-base/su-dung-keypair/"
+                target="_blank"
+                >{{ 'app.here' | i18n }}
+              </a>
               <br />
-              Mật khẩu đăng nhập vào máy chủ sẽ được tạo tự động và gửi vào
-              email của quý khách khi máy chủ được tạo thành công
+              {{ 'app.alert.keypair.next' | i18n }}
             </div>
           </ng-template>
         </nz-col>

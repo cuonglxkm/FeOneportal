@@ -32,7 +32,17 @@
   </ng-template>
   <nz-row style="margin-top: 20px">
     <div class="non-pointer" style="width: 100%">
-      <one-portal-instances-btn [instancesId]="id"> </one-portal-instances-btn>
+      <one-portal-instances-btn
+        *ngIf="
+          instancesModel &&
+          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+        "
+        [instancesId]="id"
+      >
+      </one-portal-instances-btn>
     </div>
   </nz-row>
 </page-header>
@@ -134,7 +144,9 @@
         <span class="text-value-detail customSpan1">{{ listIPPublicStr }}</span>
       </nz-row>
       <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan1" style="width: 40%">{{ 'app.ip.lan' | i18n }}:</span>
+        <span class="text-label customSpan1" style="width: 40%"
+          >{{ 'app.ip.lan' | i18n }}:</span
+        >
         <span class="text-value-detail customSpan1">{{ listIPLanStr }}</span>
       </nz-row>
       <nz-row style="height: 50px">

@@ -38,6 +38,13 @@
         />{{ 'app.button.instance.create' | i18n }}
       </button>
       <one-portal-instances-btn
+        *ngIf="
+          instancesModel &&
+          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+        "
         [instancesId]="id"
         (valueChanged)="onReloadInstanceDetail()"
         style="margin-left: 8px"
@@ -673,7 +680,9 @@
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
+          <span class="text-card-header">{{
+            'app.estimated.cost' | i18n
+          }}</span>
         </div>
         <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
@@ -724,7 +733,7 @@
             <span class="text-label">{{ 'app.total.payment' | i18n }}</span
             ><br />
             <span class="text-note-italicized"
-              >({{ 'app.include.vat' | i18n:{"vat":"10"} }})</span
+              >({{ 'app.include.vat' | i18n : { vat: '10' } }})</span
             >
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
