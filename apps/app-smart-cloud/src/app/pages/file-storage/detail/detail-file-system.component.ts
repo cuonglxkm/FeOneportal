@@ -4,6 +4,7 @@ import { FileSystemDetail } from '../../../shared/models/file-system.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClipboardService } from 'ngx-clipboard';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-detail-file-system',
@@ -27,7 +28,8 @@ export class DetailFileSystemComponent implements OnInit{
   constructor(private fileSystemService: FileSystemService,
               private router: Router,
               private activatedRoute: ActivatedRoute,
-              private clipboardService: ClipboardService) {
+              private clipboardService: ClipboardService,
+              private notification: NzNotificationService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -50,6 +52,11 @@ export class DetailFileSystemComponent implements OnInit{
       this.isLoading = false
       this.fileSystemName = data.name
     }, error => {
+      console.log('error',error)
+      if(error.status == '404') {
+        this.router.navigate(['/app-smart-cloud/file-storage/file-system/list'])
+        this.notification.error('','File System không tồn tại')
+      }
       this.fileSystem = null
       this.isLoading = false
     })

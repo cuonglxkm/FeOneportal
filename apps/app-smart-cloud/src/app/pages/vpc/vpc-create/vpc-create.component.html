@@ -130,6 +130,21 @@
             </nz-row>
           </nz-radio-group>
         </nz-form-item>
+        <div *ngIf="vpcType != '1'">
+          <div class="text-card-header" style="margin-bottom: 20px">{{'app.info' | i18n}} Network</div>
+          <nz-row>
+            <div style="margin-right: 10px;">{{'app.payment-detail.quantity' | i18n}} Network:</div>
+            <div>{{nwNormal}}</div>
+          </nz-row>
+          <nz-row>
+            <div style="margin-right: 10px;">{{'app.payment-detail.quantity' | i18n}} Routers:</div>
+            <div>{{routerNormal}}</div>
+          </nz-row>
+          <nz-row>
+            <div style="margin-right: 10px;">{{'app.payment-detail.quantity' | i18n}} Security Group:</div>
+            <div>{{sgNormal}}</div>
+          </nz-row>
+        </div>
         <div *ngIf="vpcType == '1'">
           <nz-tabset nzCentered nzSize="large" (nzSelectChange)="changeTab($event)">
             <nz-tab nzTitle="{{ 'config.package' | i18n }}">
@@ -245,7 +260,7 @@
                     </td>
                     <td width="20%">
                       <div class="text-right">{{ price.vcpu }} VND</div>
-                      <div class="text-right" style="opacity: 0.5;">100.000 VND</div>
+                      <div class="text-right" style="opacity: 0.5;">{{ price.vcpuPerUnit }} VND</div>
                     </td>
                   </tr>
                   <tr>
@@ -268,7 +283,7 @@
                     </td>
                     <td width="20%">
                       <div class="text-right">{{ price.ram }} VND</div>
-                      <div class="text-right" style="opacity: 0.5;">100.000 VND</div>
+                      <div class="text-right" style="opacity: 0.5;">{{ price.ramPerUnit }} VND</div>
                     </td>
                   </tr>
                   <tr>
@@ -287,11 +302,11 @@
                                        (keydown)="checkPossiblePress($event)"
                                        (ngModelChange)="calculate(null)"
                                        [ngModelOptions]="{standalone: true}"
-                                       [nzMin]="1" [nzStep]="1" nzSize="large"></nz-input-number>
+                                       [nzMin]="0" [nzStep]="1" nzSize="large"></nz-input-number>
                     </td>
                     <td width="20%">
                       <div class="text-right">{{ price.hhd }} VND</div>
-                      <div class="text-right" style="opacity: 0.5;">100.000 VND</div>
+                      <div class="text-right" style="opacity: 0.5;">{{ price.hhdPerUnit }} VND</div>
                     </td>
                   </tr>
                   <tr>
@@ -310,11 +325,11 @@
                                        (keydown)="checkPossiblePress($event)"
                                        [ngModelOptions]="{standalone: true}"
                                        (ngModelChange)="calculate(null)"
-                                       [nzMin]="1" [nzStep]="1" nzSize="large"></nz-input-number>
+                                       [nzMin]="0" [nzStep]="1" nzSize="large"></nz-input-number>
                     </td>
                     <td width="20%">
                       <div class="text-right">{{ price.ssd }} VND</div>
-                      <div class="text-right" style="opacity: 0.5;">100.000 VND</div>
+                      <div class="text-right" style="opacity: 0.5;">{{ price.ssdPerUnit }} VND</div>
                     </td>
                   </tr>
                   </tbody>
@@ -365,19 +380,28 @@
                                      [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                   </nz-form-control>
                 </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>{{ "project.note40" | i18n }} (<span class="text-red">*</span>)</nz-form-label>
+                <nz-form-item *ngIf="selectIndexTab == 1">
+                  <nz-form-label>{{ "project.note40" | i18n }}</nz-form-label>
                   <nz-form-control>
                     <nz-input-group nzCompact>
                       <nz-select nzSize="large" [nzLoading]="loadingIpConnectInternet"
                                  [nzDisabled]="disableIpConnectInternet"
                                  style="width: 90%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
                                  nzPlaceHolder="--{{'project.note40' | i18n}}--"
-                                 formControlName="ipConnectInternet" (nzOpenChange)="openIpSubnet()">
+                                 [(ngModel)]="ipConnectInternet" [ngModelOptions]="{standalone: true}" (ngModelChange)="openIpSubnet()">
                         <nz-option *ngFor="let i of listIpConnectInternet" [nzLabel]="i.displayName"
                                    [nzValue]="i.networkId +'--'+ i.displayName" />
                       </nz-select>
                     </nz-input-group>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item *ngIf="selectIndexTab == 0">
+                  <nz-form-label>{{ "app.order-detail.quantity" | i18n }} Security Group</nz-form-label>
+                  <nz-form-control>
+                    <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                     (keydown)="checkPossiblePress($event)"
+                                     [(ngModel)]="numberSecurityGroup" (ngModelChange)="calculate(null)"
+                                     [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                   </nz-form-control>
                 </nz-form-item>
               </td>
@@ -391,7 +415,7 @@
                                      [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                   </nz-form-control>
                 </nz-form-item>
-                <nz-form-item>
+                <nz-form-item *ngIf="selectIndexTab == 1">
                   <nz-form-label>{{ "app.order-detail.quantity" | i18n }} Security Group</nz-form-label>
                   <nz-form-control>
                     <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
@@ -403,30 +427,30 @@
               </td>
             </table>
           </div>
-          <div *ngIf="selectIndexTab == 0">
-            <nz-form-item *ngIf="openIPType == true">
-              <nz-form-label>{{ "project.note41" | i18n }} (<span class="text-red">*</span>)
-                <img
-                  style="margin-left: 10px"
-                  nz-tooltip="{{'project.note41' | i18n}}"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
-                /></nz-form-label>
-              <nz-form-control>
-                <nz-input-group nzCompact>
-                  <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
-                             style="width: 95%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
-                             nzPlaceHolder="--{{'project.note41' | i18n}}--"
-                             formControlName="ipType" (nzOpenChange)="calculate(null)">
-                    <nz-option *ngFor="let i of listIpType" [nzLabel]="i.label"
-                               [nzValue]="i.value" />
-                  </nz-select>
-                </nz-input-group>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
+<!--          <div *ngIf="selectIndexTab == 0">-->
+<!--            <nz-form-item *ngIf="openIPType == true">-->
+<!--              <nz-form-label>{{ "project.note41" | i18n }} (<span class="text-red">*</span>)-->
+<!--                <img-->
+<!--                  style="margin-left: 10px"-->
+<!--                  nz-tooltip="{{'project.note41' | i18n}}"-->
+<!--                  src="assets/imgs/pajamas_question.svg"-->
+<!--                  alt=""-->
+<!--                /></nz-form-label>-->
+<!--              <nz-form-control>-->
+<!--                <nz-input-group nzCompact>-->
+<!--                  <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"-->
+<!--                             style="width: 95%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'-->
+<!--                             nzPlaceHolder="&#45;&#45;{{'project.note41' | i18n}}&#45;&#45;"-->
+<!--                             formControlName="ipType" (nzOpenChange)="calculate(null)">-->
+<!--                    <nz-option *ngFor="let i of listIpType" [nzLabel]="i.label"-->
+<!--                               [nzValue]="i.value" />-->
+<!--                  </nz-select>-->
+<!--                </nz-input-group>-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--          </div>-->
           <div *ngIf="selectIndexTab == 1">
-            <nz-row>
+            <nz-row *ngIf="ipConnectInternet != null && ipConnectInternet != ''">
               <nz-form-item style="width: 80%">
                 <nz-form-label>{{ "app.order-detail.quantity" | i18n }} IP Floating</nz-form-label>
                 <nz-form-control>
@@ -577,7 +601,7 @@
                         <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
                                    style="width: 90%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
                                    nzPlaceHolder="--{{'project.note49' | i18n}}--"
-                                   formControlName="loadBalancerId" (nzOpenChange)="calculate(null)">
+                                   [(ngModel)]="loadBalancerId" [ngModelOptions]="{ standalone: true }" (ngModelChange)="calculate(null)">
                           <nz-option *ngFor="let i of listLoadbalancer" [nzLabel]="i.offerName"
                                      [nzValue]="i.id" />
                         </nz-select>
@@ -668,12 +692,12 @@
         </nz-card>
         <!---------------CARD-SITE-TO-SITE-------------->
         <nz-card style="border-radius: 8px">
-          <div style="margin-bottom: 20px"><span class="text-card-header">VPC site to site</span></div>
+          <div style="margin-bottom: 20px"><span class="text-card-header">VPN site to site</span></div>
           <div *ngIf="!activeSiteToSite">
             <button style="height: 32px" nz-button nzType="default" (click)="initVpnSiteToSite()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg"
-                   alt="" />{{ "app.bonus" | i18n }} VPC site to
-              site
+                   alt="" />{{ "app.bonus" | i18n }}
+              VPN site to site
             </button>
           </div>
           <div *ngIf="activeSiteToSite">
@@ -686,7 +710,7 @@
                       <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
                                  style="width: 96%;border-radius: 10px;" [nzAllowClear] = 'true'
                                  nzPlaceHolder="--{{'project.note45' | i18n}}--"
-                                 formControlName="siteToSiteId" (nzOpenChange)="calculate(null)">
+                                 [(ngModel)]="siteToSiteId" [ngModelOptions]="{ standalone: true }" (ngModelChange)="calculate(null)">
                         <nz-option *ngFor="let i of listSiteToSite" [nzLabel]="i.offerName"
                                    [nzValue]="i.id" />
                       </nz-select>
@@ -816,10 +840,10 @@
           <nz-col style="width: 100%">
             <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
                     [ngStyle]="{'margin-top.px': vpcType === '0' ? 15 : 0}"
-                    [disabled]="(vpcType == '1' && (form.invalid || (selectIndexTab == 0 && (selectedElementFlavor == null || form.controls['ipType'].value == ''))))
+                    [disabled]="(vpcType == '1' && (form.invalid || (selectIndexTab == 0 && (selectedElementFlavor == null))))
                      || (vpcType == '0' && this.form.controls['name'].value == '')">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="(vpcType == '1' && (form.invalid || (selectIndexTab == 0 && (selectedElementFlavor == null || form.controls['ipType'].value == ''))))
+              <span [style.color]="(vpcType == '1' && (form.invalid || (selectIndexTab == 0 && (selectedElementFlavor == null))))
                      || (vpcType == '0' && this.form.controls['name'].value == '') ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
             </button>
           </nz-col>

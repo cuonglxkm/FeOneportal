@@ -71,6 +71,9 @@ export class VpcUpdateComponent implements OnInit{
   ram = 1;
   hhd = 0;
   ssd = 0;
+  ipConnectInternet = 'loading data....';
+  loadBalancerId = '';
+  siteToSiteId = '';
 
   total: any;
   totalAmount = 0;
@@ -82,6 +85,14 @@ export class VpcUpdateComponent implements OnInit{
   private searchSubject = new Subject<string>();
   selectIndexTab: any = 0;
   price = {
+    vcpu: 0,
+    ram: 0,
+    hhd: 0,
+    ssd: 0,
+    vcpuPerUnit: 0,
+    ramPerUnit: 0,
+    hhdPerUnit: 0,
+    ssdPerUnit: 0,
     IpFloating: 0,
     IpPublic: 0,
     IpV6: 0,
@@ -94,8 +105,6 @@ export class VpcUpdateComponent implements OnInit{
   form = new FormGroup({
     name: new FormControl({ value: 'loading data....', disabled: false }, {validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),]}),
     description: new FormControl({value: 'loading data....', disabled: false}),
-
-    ipConnectInternet: new FormControl({ value: 'loading data....', disabled: true }, {validators: [Validators.required]}),
     numOfMonth: new FormControl({value: 1, disabled: true}, {validators: [Validators.required]}),
     //tab 1
     ipType: new FormControl({
@@ -107,8 +116,6 @@ export class VpcUpdateComponent implements OnInit{
     // ram: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
     // hhd: new FormControl(0),
     // ssd: new FormControl(0),
-    loadBalancerId: new FormControl('', { validators: [] }),
-    siteToSiteId: new FormControl('', { validators: [] })
   });
   private readonly debounceTimeMs = 500;
   disisable = true;
@@ -224,7 +231,8 @@ export class VpcUpdateComponent implements OnInit{
           newQuotaNetworkCount: this.numberNetwork,
           newQuotaRouterCount: this.numberRouter,
           newQuotaLoadBalancerSdnCount: this.numberLoadBalancer,
-          // newLoadBalancerOfferId: 0, //NON
+          newLoadBalancerOfferId: this.loadBalancerId, //NON
+          newVpnSiteToSiteOfferId: this.siteToSiteId,
           newQuotaShareInGb: this.numberFileSystem,
           newQuotaShareSnapshotInGb: this.numberFileScnapsshot,
           newQuotaIpv6Count: IPV6,
@@ -246,7 +254,8 @@ export class VpcUpdateComponent implements OnInit{
             orderItemQuantity: 1,
             specification: JSON.stringify(requestBody),
             specificationType: "vpc_resize",
-            price: 0,
+            serviceDuration: this.form.controls['numOfMonth'].value,
+            price: this.total.data.totalAmount.amount,
           }
         ]
       }
@@ -277,7 +286,7 @@ export class VpcUpdateComponent implements OnInit{
       .subscribe(
         data => {
           const IpConnectInternet = data.find(item => item.networkId === this.data.publicNetworkId);
-          this.form.controls['ipConnectInternet'].setValue(IpConnectInternet != undefined ? IpConnectInternet.displayName : 'No Ip Connect Internet');
+          this.ipConnectInternet = IpConnectInternet != undefined ? IpConnectInternet.displayName : 'No Ip Connect Internet';
         }
       )
   }
@@ -324,8 +333,20 @@ export class VpcUpdateComponent implements OnInit{
           this.numberIpFloating = data.quotaIpFloatingCount;
           this.numberIpPublic = data.quotaIpPublicCount;
           this.numberIpv6 = data.quotaIpv6Count;
-          this.form.controls['siteToSiteId'].setValue(data.vpnSiteToSiteOfferId);
-          this.form.controls['loadBalancerId'].setValue(data.offerIdLBSDN);
+          this.siteToSiteId = data.vpnSiteToSiteOfferId;
+          this.loadBalancerId = data.offerIdLBSDN;
+          if (data.quotaLoadBalancerSDNCount > 0) {
+            this.activeLoadBalancer = true;
+          }
+          if (data.quotaBackupVolumeInGb > 0) {
+            this.activeBackup = true;
+          }
+          if (data.quotaShareInGb > 0) {
+            this.activeFileStorage = true;
+          }
+          if (data.vpnSiteToSiteOfferId != null) {
+            this.activeSiteToSite = true;
+          }
         }
       )
   }
@@ -368,6 +389,7 @@ export class VpcUpdateComponent implements OnInit{
   }
 
   private calculateReal() {
+    this.refreshValue();
     let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : this.data.quotaIpPublicCount;
     let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : this.data.quotaIpFloatingCount;
     let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : this.data.quotaIpv6Count;
@@ -388,8 +410,8 @@ export class VpcUpdateComponent implements OnInit{
           newQuotaNetworkCount: this.numberNetwork,
           newQuotaRouterCount: this.numberRouter,
           newQuotaLoadBalancerSdnCount: this.numberLoadBalancer,
-          newLoadBalancerOfferId: this.form.controls['loadBalancerId'].value, //NON
-          newVpnSiteToSiteOfferId: this.form.controls['siteToSiteId'].value,
+          newLoadBalancerOfferId: this.loadBalancerId, //NON
+          newVpnSiteToSiteOfferId: this.siteToSiteId,
           newQuotaShareInGb: this.numberFileSystem,
           newQuotaShareSnapshotInGb: this.numberFileScnapsshot,
           newQuotaIpv6Count: IPV6,
@@ -450,6 +472,18 @@ export class VpcUpdateComponent implements OnInit{
         this.price.loadBalancer = item.unitPrice.amount.toLocaleString();
       } else if (item.typeName == 'vpn-site-to-site') {
         this.price.siteToSite = item.unitPrice.amount.toLocaleString();
+      } else if (item.typeName == 'vcpu') {
+        this.price.vcpu = item.totalAmount.amount.toLocaleString();
+        this.price.vcpuPerUnit = item.unitPrice.amount.toLocaleString();
+      } else if (item.typeName == 'ram') {
+        this.price.ram = item.totalAmount.amount.toLocaleString();
+        this.price.ramPerUnit = item.unitPrice.amount.toLocaleString();
+      } else if (item.typeName == 'ssd') {
+        this.price.ssd = item.totalAmount.amount.toLocaleString();
+        this.price.ssdPerUnit = item.unitPrice.amount.toLocaleString();
+      } else if (item.typeName == 'hdd') {
+        this.price.hhd = item.totalAmount.amount.toLocaleString();
+        this.price.hhdPerUnit = item.unitPrice.amount.toLocaleString();
       }
     }
     this.price.fileStorage = fileStorage;
@@ -457,5 +491,23 @@ export class VpcUpdateComponent implements OnInit{
 
   activeEdit() {
     this.disisable = false;
+  }
+
+  private refreshValue() {
+    this.price.vcpu = 0;
+    this.price.vcpuPerUnit = 0;
+    this.price.ram = 0;
+    this.price.ramPerUnit = 0;
+    this.price.hhd = 0;
+    this.price.hhdPerUnit = 0;
+    this.price.ssd = 0;
+    this.price.ssdPerUnit = 0;
+    this.price.backup = 0;
+    this.price.loadBalancer = 0;
+    this.price.fileStorage = 0;
+    this.price.siteToSite = 0;
+    this.price.IpFloating = 0;
+    this.price.IpPublic = 0;
+    this.price.IpV6 = 0;
   }
 }
