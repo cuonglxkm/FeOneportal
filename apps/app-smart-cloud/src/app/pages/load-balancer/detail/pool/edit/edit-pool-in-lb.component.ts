@@ -15,7 +15,7 @@ export class EditPoolInLbComponent implements AfterViewInit {
   @Input() region: number;
   @Input() project: number;
   @Input() poolId: string;
-  @Input() loadBlancerId: number;
+  @Input() loadBalancerId: number;
   @Input() listenerId: string;
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
@@ -81,7 +81,7 @@ export class EditPoolInLbComponent implements AfterViewInit {
   }
 
   getDetailPool() {
-    this.loadBalancerService.getPoolDetail(this.poolId, this.loadBlancerId).subscribe(data => {
+    this.loadBalancerService.getPoolDetail(this.poolId, this.loadBalancerId).subscribe(data => {
       this.pool = data;
 
       this.validateForm.controls.namePool.setValue(data.name);

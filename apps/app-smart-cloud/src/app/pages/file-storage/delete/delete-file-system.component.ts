@@ -3,6 +3,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FileSystemService } from '../../../shared/services/file-system.service';
 import { FormDeleteFileSystem } from '../../../shared/models/file-system.model';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-delete-file-system',
@@ -27,7 +29,8 @@ export class DeleteFileSystemComponent implements AfterViewInit {
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
-              private fileSystemService: FileSystemService) {
+              private fileSystemService: FileSystemService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   ngAfterViewInit(): void {
@@ -70,13 +73,13 @@ export class DeleteFileSystemComponent implements AfterViewInit {
       this.fileSystemService.deleteFileSystem(formDelete).subscribe(data => {
         this.isVisible = false;
         this.isLoading = false;
-        this.notification.success('Thành công', 'Xóa File System thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.access.to.delete.file.success'));
         this.onOk.emit();
       }, error => {
         console.log('error', error);
         this.isVisible = false;
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Xóa File System thất bại');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.access.to.delete.file.fail'));
       });
     } else {
       this.isInput = true;

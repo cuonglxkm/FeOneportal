@@ -114,6 +114,7 @@ export class CreateNetworkComponent implements OnInit {
   });
 
   pool: string = '';
+  gateway: string = ''
   dataSubjectCidr: Subject<any> = new Subject<any>();
   dataSubjectGateway: Subject<any> = new Subject<any>();
 
@@ -219,13 +220,11 @@ export class CreateNetworkComponent implements OnInit {
       this.vlanService.checkAllocationPool(res).subscribe(data => {
         const dataJson = JSON.parse(JSON.stringify(data));
 
-        // Access ipRange value
-        const ipRange = dataJson.ipRange;
+        this.pool = dataJson.ipRange
+        if(!this.validateForm.controls.disableGatewayIp.value) {
+          this.validateForm.controls.allocationPool.setValue(this.gateway)
+        }
 
-        // Split the IP range string
-        // const ipAddresses = ipRange.split(',').map(ip => ip.trim());
-
-        this.pool = ipRange
         this.validateForm.controls.allocationPool.setValue(this.pool)
         console.log('pool data', this.pool)
       })

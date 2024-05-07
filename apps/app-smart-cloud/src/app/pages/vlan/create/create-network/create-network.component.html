@@ -149,10 +149,9 @@
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
           <input nz-input class="input-custom"
-                 formControlName="gateway"
-                 (ngModelChange)="inputGateway($event)"
-                 placeholder="{{ 'app.vlan.note35' | i18n }}" />
-          <span *ngIf="isInvalidGateway" style="color: red;">IP không thuộc Allocation Pool </span>
+                 [value]=""
+                 [disabled]="true" />
+<!--          <span *ngIf="isInvalidGateway" style="color: red;">IP không thuộc Allocation Pool </span>-->
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>

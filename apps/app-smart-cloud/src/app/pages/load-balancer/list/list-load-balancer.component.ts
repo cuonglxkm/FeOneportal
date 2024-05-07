@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { FormSearchListBalancer, LoadBalancerModel } from '../../../shared/models/load-balancer.model';
 import { LoadBalancerService } from '../../../shared/services/load-balancer.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-list-load-balancer',
@@ -27,10 +29,11 @@ export class ListLoadBalancerComponent implements OnInit{
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
-              private loadBalancerService: LoadBalancerService) {
+              private loadBalancerService: LoadBalancerService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.loadBalancerStatus = new Map<String, string>();
-    this.loadBalancerStatus.set('KHOITAO', 'Đang hoạt động');
-    this.loadBalancerStatus.set('HUY', 'Chậm gia hạn');
+    this.loadBalancerStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
+    this.loadBalancerStatus.set('HUY', this.i18n.fanyi('app.status.low-renew'));
   }
 
   regionChanged(region: RegionModel) {
@@ -105,6 +108,10 @@ export class ListLoadBalancerComponent implements OnInit{
 
   handleDeleteOk() {
     this.search(true)
+  }
+
+  navigateToCreateListener(idLb: number) {
+    this.router.navigate(['load-balancer/' + idLb + '/listener/create'])
   }
 
   ngOnInit(): void {
