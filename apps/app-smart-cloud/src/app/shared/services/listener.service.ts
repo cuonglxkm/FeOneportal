@@ -60,8 +60,8 @@ export class ListenerService extends BaseService{
     return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + this.listenerUrl, data, this.httpOptions);
   }
 
-  getPool(id: string, region: any) {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/pool/listpool' + '?listenerId=' + id + '&regionId=' + region + '&pageSize=99999&currentPage=1');
+  getPool(id: string, region: any, vpcId: number) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/listpool?regionId=${region}&vpcId=${vpcId}&listenerId=${id}&pageSize=9999&currentPage=1`);
   }
 
   getL7Policy(id: string, regionId: any, projectId: any) {
