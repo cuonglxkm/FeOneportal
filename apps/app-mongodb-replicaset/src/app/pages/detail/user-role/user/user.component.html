@@ -1,0 +1,239 @@
+<nz-layout>
+  <nz-card style="min-height: 500px;">
+    <nz-content>
+      <!-- <div nz-row nzJustify="end">
+        <button nz-button nzType="primary" (click)="openForm('create', '')">Thêm tài khoản</button>
+    </div> -->
+
+      <div nz-row>
+        <div nz-col [nzSpan]="18">
+          <div class="flex-style marbot-5 mbot-24">
+            <div class="w-25">
+              <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
+                <input type="text" nz-input placeholder="Tìm kiếm tài khoản" [(ngModel)]="keySearch"
+                  (ngModelChange)="onFilterUserName()" />
+              </nz-input-group>
+              <ng-template #prefixButton>
+                <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+              </ng-template>
+            </div>
+
+            <div class="mleft-16">
+              <button nz-button nzType="default" class="btn-sync" (click)="syncUser()">
+                <img class="img" src="assets/imgs/refresh.svg" alt="" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div nz-col [nzSpan]="6">
+          <button nz-button nzType="primary" (click)="openForm('create', '')" class="border-button align-right">
+            <!-- routerLink="create" -->
+            <span nz-icon>
+              <svg viewBox="64 64 896 896" focusable="false">
+                <path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z" />
+                <path d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z" />
+              </svg>
+            </span>
+            Thêm tài khoản
+          </button>
+        </div>
+      </div>
+
+      <nz-table #basicTable [nzData]="listUser?.data" nzShowSizeChanger [nzFrontPagination]="false" 
+      [nzTotal]="pageTotal" [nzLoading]="isLoad" [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzPageSizeChange)="changeSize($event)" 
+      (nzPageIndexChange)="changePage($event)">
+        <thead>
+          <tr>
+            <th nzAlign="center" nzWidth="5%">STT</th>
+            <th nzWidth="35%">Tài khoản</th>
+            <th>Quyền được cấp</th>
+            <th>Giới hạn IP Source</th>
+            <th>Ngày chỉnh sửa</th>
+            <th nzAlign="center">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data; let i = index">
+            <td nzAlign="center">{{ i + 1  + (pageIndex-1) * pageSize }}</td>
+            <td nzBreakWord>{{ data.user }}</td>
+            <td>
+              <div *ngFor="let role of data.roles | userRoles ;let j = index">
+                <ng-container *ngIf="j<3">
+                  <nz-tag [nzColor]="role.db.length == 1 ?'#FFF4E5':'#E6F3FC'" class="tag-role mg-2" 
+                  [style]="'display: inline-flex;align-items: center; color:' +  (role.db.length == 1 ?'#FFBB63':' #0A84FF')" ><strong class="mr-5">{{ role.role }}</strong>
+                    <div>
+                        <div class="mb-1 mt-1" *ngFor="let db of role.db;let c = index">
+                          <div *ngIf="c < 3"> {{db ? "@"+ db: ""}}<br></div>
+                        </div>
+                        <div *ngIf="role.db.length > 3" [nz-tooltip]="otherDB(role.db)">... và {{ role.db.length - 3}} database khác<br></div>
+                      </div>
+                  </nz-tag>
+                </ng-container>
+              </div>
+              <ng-container *ngIf="(data.roles | userRoles).length>3">
+                <nz-tag [nz-tooltip]="otherUser(data.roles | userRoles)" style="color: #0A84FF;" [nzColor]="'#E6F3FC'" class="tag-role">... và {{(data.roles | userRoles).length -3}} quyền
+                  khác</nz-tag>
+              </ng-container>
+            </td>
+            <td>{{data.restrict_ips}}</td>
+            <td>{{ data.updated_date | date : 'dd/MM/yyyy hh:mm:ss' }}</td>
+            <td nzAlign="center">
+              <!-- <button
+                nz-button
+                nzType="text"
+                nz-tooltip
+                nzTooltipTitle="Đổi mật khẩu"
+                nzTooltipPlacement="top"
+                class="borderless"
+                (click)="openForm('changePass', data.user)"
+              >
+                <span nz-icon nzType="form"></span>
+              </button> -->
+              <span class="mg-right" (click)="openChangepass(data)" [nz-tooltip]="'Đổi mật khẩu'" nz-icon>
+                <img class="img" src="assets/imgs/change-password.svg" alt="" />
+              </span>
+
+              <span class="mg-right" (click)="openForm('update', data.user)" [nz-tooltip]="'Chỉnh sửa tài khoản'" nz-icon>
+                <img class="img" src="assets/imgs/edit-2.svg" alt="" />
+              </span>
+
+              <span nz-popover (click)="showModalConfirmDeleteUser(data)" [nz-tooltip]="'Xoá tài khoản'" nz-icon>
+                <img class="img" src="assets/imgs/trash1.svg" alt="" />
+              </span>
+
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-content>
+  </nz-card>
+</nz-layout>
+
+<!-- <button nz-button nzType="dashed" nzDanger>Dashed</button>
+<button nz-button nzType="primary" nzDanger>Primary</button> -->
+
+<!-- <one-portal-user-form [(visibleFrom)]="visibleFrom" [userName]="userName"></one-portal-user-form> -->
+
+<nz-modal [(nzVisible)]="isShowModalDeleteUser" [nzTitle]="modalTitle" [nzContent]="modalContent"
+  [nzFooter]="modalFooter" (nzOnCancel)="handleCloseModalDelete()">
+  <ng-template #modalTitle>Xoá tài khoản</ng-template>
+
+  <ng-template #modalContent>
+    <!-- <p>Điều này là không thể hoàn tác. Chúng tôi sẽ xóa hoàn toàn cụm Cluster của bạn và tất cả các tài nguyên liên quan.</p>
+    <p class="delete-color"><b>Tất cả các node sẽ bị xoá và không thể khôi phục</b></p>
+    <p>Nhập `<b class="delete-color">{{selectedUser.user}}</b>` trong hộp văn bản dưới đây để xác nhận xóa cụm cluster này</p> -->
+
+    <nz-alert nzType="warning" [nzDescription]="deleteTpl" nzShowIcon></nz-alert>
+    <!-- <br> <br> -->
+    <ng-template #deleteTpl>
+      Sau khi xóa, không thể sử dụng tài khoản <b>{{selectedUser.user}}</b> để truy cập hệ thống. Nếu chắc chắn vui lòng
+      nhập <b>{{selectedUser.user}}</b> để xác nhận thực hiện xóa tài khoản.
+    </ng-template>
+
+    <input type="text" nz-input [(ngModel)]="deleteUserName" placeholder="Nhập lại tên tài khoản"
+      class="border-button-less mtop-24" (ngModelChange)="onInputDeleteUser($event)" />
+  </ng-template>
+
+
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="handleCloseModalDelete()" [disabled]="isSubmitDelete">
+      <span nz-icon nzType="close" nzTheme="outline"></span>
+      Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleDeleteUser()" [disabled]="isWrongName"
+      [nzLoading]="isSubmitDelete">
+      <span nz-icon nzType="check" nzTheme="outline"></span>
+      Xác nhận
+    </button>
+  </ng-template>
+</nz-modal>
+
+<nz-modal title="Đổi mật khẩu" [nzVisible]="changepassForm" (nzOnCancel)="closeForm()" nzMaskClosable="false">
+  <div *nzModalContent>
+    
+    <form nz-form [formGroup]="validateForm" nzLayout="vertical" class="login-form">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8" nzFor="userName">Tên tài khoản (<span class="text-red">*</span>)</nz-form-label>
+        <nz-form-control nzErrorTip="Please input your username!">
+            <input nzSize="large" type="text" nz-input formControlName="userName" placeholder="Username" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8" nzFor="oldPass">Mật khẩu cũ (<span class="text-red">*</span>)</nz-form-label>
+        <nz-form-control nzHasFeedback [nzErrorTip]="oldPassError">
+          <nz-input-group nzSize="large" [nzSuffix]="suffixOldPwdTpl">
+            <input (ngModelChange)="checkOtherPass()" [type]="oldPassVisible ? 'text' : 'password'" nz-input formControlName="oldPass" placeholder="Nhập mật khẩu cũ" />
+          </nz-input-group>
+          <ng-template #suffixOldPwdTpl>
+            <span nz-icon nzTheme="outline" (click)="oldPassVisible = !oldPassVisible"
+                [nzType]="oldPassVisible ? 'eye-invisible' : 'eye'"></span>
+          </ng-template>
+        </nz-form-control>
+        <ng-template #oldPassError let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Mật khẩu cũ không được để trống. 
+          </ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">
+            Mật khẩu mới phải có tối thiểu 8 ký tự, tối đa 64 ký tự bao gồm chữ thường, chữ hoa, số, ký tự đặc biệt và không chứa dấu cách.
+          </ng-container>
+        </ng-template>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8" nzFor="oldPass">Mật khẩu mới (<span class="text-red">*</span>)</nz-form-label>
+        <nz-form-control nzHasFeedback [nzErrorTip]="newPassError">
+          <nz-input-group nzSize="large" [nzSuffix]="suffixNewPwdTpl">
+            <input nzSize="large" (ngModelChange)="checkNewPass();checkNewPassDup()" [type]="newPassVisible?'text':'password'" nz-input formControlName="newPass" placeholder="Nhập mật khẩu mới" />
+          </nz-input-group>
+          <ng-template #suffixNewPwdTpl>
+            <span nz-icon nzTheme="outline" (click)="newPassVisible = !newPassVisible"
+                [nzType]="newPassVisible ? 'eye-invisible' : 'eye'"></span>
+          </ng-template>
+        </nz-form-control>
+        <ng-template #newPassError let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Mật khẩu mới không được để trống. 
+          </ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">
+            Mật khẩu mới phải có tối thiểu 8 ký tự, tối đa 64 ký tự bao gồm chữ thường, chữ hoa, số, ký tự đặc biệt và không chứa dấu cách.
+          </ng-container>
+          <ng-container *ngIf="control.hasError('other')">
+            Mật khẩu mới phải khác với mật khẩu cũ.
+          </ng-container>
+        </ng-template>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="12" nzFor="oldPass">Xác nhận mật khẩu (<span class="text-red">*</span>)</nz-form-label>
+        <nz-form-control nzHasFeedback [nzErrorTip]="reNewPassError">
+          <nz-input-group nzSize="large" [nzSuffix]="suffixReNewPwdTpl">
+            <input (ngModelChange)="checkReNewPass()" nzSize="large" [type]="reNewPassVisible?'text':'password'" nz-input formControlName="reNewPass" placeholder="Nhập lại mật khẩu mới" />
+          </nz-input-group>
+          <ng-template #suffixReNewPwdTpl>
+            <span nz-icon nzTheme="outline" (click)="reNewPassVisible = !reNewPassVisible"
+                [nzType]="reNewPassVisible ? 'eye-invisible' : 'eye'"></span>
+          </ng-template>
+        </nz-form-control>
+        <ng-template #reNewPassError let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Mật khẩu nhập lại không được để trống.
+          </ng-container>
+          <ng-container *ngIf="control.hasError('dupilcate')">
+            Mật khẩu mới và xác nhận không khớp nhau. Hãy thử lại!
+          </ng-container>
+        </ng-template>
+      </nz-form-item>
+    </form>
+  </div>
+  <div *nzModalFooter>
+    <nz-form-item style="margin-bottom: 0px !important;" nz-row>
+      <nz-form-control class="create-area">
+        <button nz-button (click)="closeForm()" style="margin-right: 16px">
+          <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+        </button>
+        <button nz-button (click)="submitForm()" nzType="primary" [disabled]="!validateForm.valid">
+          <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+        </button>
+      </nz-form-control>
+    </nz-form-item> 
+  </div>
+</nz-modal>

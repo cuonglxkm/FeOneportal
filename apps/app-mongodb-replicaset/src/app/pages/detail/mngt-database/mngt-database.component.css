@@ -1,0 +1,61 @@
+:host {
+    /* text-align: center; */
+    /* background-color: #ebf0f9fe; */
+  }
+
+nz-sider {
+  background: #fff;
+  /* background: #3ba0e9; */
+  color: #3ba0e9;
+  /* background-color: #ebf0f9fe; */
+  border-right: 2px solid #EAEAEC;
+}
+
+nz-content {
+  background-color: #fff;
+  border-left: 2px solid #EAEAEC;
+}
+
+.ant-layout-header {
+  padding: 0 !important;
+  background-color: white;
+  border-bottom: 3px solid #EAEAEC;
+  border-top: 3px solid #EAEAEC;
+}
+
+nz-layout {
+  /* margin-bottom: 48px; */
+}
+
+nz-layout nz-layout,
+nz-layout:last-child {
+  margin: 0;
+}
+
+[nz-button] {
+  margin-right: 8px;
+}
+
+nz-date-picker,
+nz-range-picker {
+  margin: 0 8px 12px 0;
+}
+
+.sub-item-li:hover {
+  background-color: #E2EEFC;
+}
+
+.err-service {
+  border-color: #EA3829 !important;
+  box-shadow: 0 0 0 2px #ff4d4f33;
+}
+
+.err-msg{
+  font-size: 14px;
+  line-height: 1.5715;
+  color: #EA3829;
+}
+
+::ng-deep .ant-select-selector{
+  border-radius: 8px !important;
+}

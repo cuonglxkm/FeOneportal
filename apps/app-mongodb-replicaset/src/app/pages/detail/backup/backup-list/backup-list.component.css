@@ -1,0 +1,31 @@
+.img {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+}
+
+.mg-right {
+    margin-right: 12px;
+    width: 24px;
+    height: 24px;
+}
+
+::ng-deep h3 {
+    margin-bottom: 0px;
+}
+
+::ng-deep .ant-descriptions-item-label{
+    font-size: 16px;
+}
+
+::ng-deep .ant-descriptions-item-content{
+    font-size: 16px;
+}
+
+nz-table#topic th {
+  background-color: #e2eefc;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+}

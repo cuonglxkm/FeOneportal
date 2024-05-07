@@ -13,6 +13,6 @@ export class RegionService extends BaseService {
 
 
   getAll() {
-    return this.http.get<RegionModel[]>(this.baseUrl + this.ENDPOINT.provisions +  '/regions');
+    return this.http.get<RegionModel[]>(this.apiGwUrl + this.ENDPOINT.provisions +  '/regions');
   }
 }
