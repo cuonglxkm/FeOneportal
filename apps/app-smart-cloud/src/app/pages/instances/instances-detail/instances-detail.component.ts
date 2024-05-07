@@ -15,7 +15,10 @@ import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { G2TimelineData } from '@delon/chart/timeline';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import {
+  ProjectModel,
+  RegionModel,
+} from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
@@ -137,10 +140,21 @@ export class InstancesDetailComponent implements OnInit {
     this.route.navigate(['/app-smart-cloud/instances']);
   }
 
+  project: ProjectModel;
+  onProjectChange(project: ProjectModel) {
+    this.project = project;
+  }
+
   navigateToEdit() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit/' + this.id,
-    ]);
+    if (this.project.type == 0) {
+      this.route.navigate([
+        '/app-smart-cloud/instances/instances-edit/' + this.id,
+      ]);
+    } else {
+      this.route.navigate([
+        '/app-smart-cloud/instances/instances-edit-vpc/' + this.id,
+      ]);
+    }
   }
 
   navigateToChangeImage() {

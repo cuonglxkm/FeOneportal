@@ -366,17 +366,19 @@
             <nz-row>
               <nz-col nzSpan="18">
                 <nz-slider
-                  [nzMin]="1"
+                  [nzMin]="0"
                   [nzMax]="remainingVolume"
                   [(ngModel)]="instanceCreate.volumeSize"
+                  (ngModelChange)="checkValidConfig()"
                   [ngModelOptions]="{ standalone: true }"
                 ></nz-slider>
               </nz-col>
               <div nzSpan="6">
                 <nz-input-number
-                  [nzMin]="1"
+                  [nzMin]="0"
                   [nzMax]="remainingVolume"
                   [(ngModel)]="instanceCreate.volumeSize"
+                  (ngModelChange)="checkValidConfig()"
                   (keydown)="onKeyDown($event)"
                   [ngModelOptions]="{ standalone: true }"
                 ></nz-input-number>
@@ -390,17 +392,19 @@
             <nz-row>
               <nz-col nzSpan="18">
                 <nz-slider
-                  [nzMin]="1"
+                  [nzMin]="0"
                   [nzMax]="remainingRAM"
                   [(ngModel)]="instanceCreate.ram"
+                  (ngModelChange)="checkValidConfig()"
                   [ngModelOptions]="{ standalone: true }"
                 ></nz-slider>
               </nz-col>
               <div nzSpan="6">
                 <nz-input-number
-                  [nzMin]="1"
+                  [nzMin]="0"
                   [nzMax]="remainingRAM"
                   [(ngModel)]="instanceCreate.ram"
+                  (ngModelChange)="checkValidConfig()"
                   (keydown)="onKeyDown($event)"
                   [ngModelOptions]="{ standalone: true }"
                 ></nz-input-number>
@@ -414,17 +418,19 @@
             <nz-row>
               <nz-col nzSpan="18">
                 <nz-slider
-                  [nzMin]="1"
+                  [nzMin]="0"
                   [nzMax]="remainingVCPU"
                   [(ngModel)]="instanceCreate.cpu"
+                  (ngModelChange)="checkValidConfig()"
                   [ngModelOptions]="{ standalone: true }"
                 ></nz-slider>
               </nz-col>
               <div nzSpan="6">
                 <nz-input-number
-                  [nzMin]="1"
+                  [nzMin]="0"
                   [nzMax]="remainingVCPU"
                   [(ngModel)]="instanceCreate.cpu"
+                  (ngModelChange)="checkValidConfig()"
                   (keydown)="onKeyDown($event)"
                   [ngModelOptions]="{ standalone: true }"
                 ></nz-input-number>
@@ -845,11 +851,13 @@
                 nzSize="large"
                 nzType="primary"
                 (click)="showModalCreate()"
-                [disabled]="form.invalid || isExistName"
+                [disabled]="form.invalid || isExistName || !isValid"
               >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
                 <span
-                  [style.color]="form.invalid || isExistName ? 'gray' : 'white'"
+                  [style.color]="
+                    form.invalid || isExistName || !isValid ? 'gray' : 'white'
+                  "
                   >{{ 'app.button.create' | i18n }}</span
                 >
               </button>

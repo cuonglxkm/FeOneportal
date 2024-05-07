@@ -23,7 +23,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
   animations: [slider]
 })
 
-export class VpcCreateComponent implements OnInit{
+export class VpcCreateComponent implements OnInit {
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
@@ -62,16 +62,20 @@ export class VpcCreateComponent implements OnInit{
   ram = 1;
   hhd = 0;
   ssd = 0;
+  nwNormal = 0;
+  routerNormal = 0;
+  sgNormal = 0;
 
 
-  openIPType = false;
   activeBackup = false;
   activeSiteToSite = false;
   activeLoadBalancer = false;
   activeFileStorage = false;
   disableIpConnectInternet = false;
   loadingIpConnectInternet = false;
-
+  ipConnectInternet = '';
+  loadBalancerId = '';
+  siteToSiteId = '';
   total: any;
   totalAmount = 0;
   totalPayment = 0;
@@ -103,17 +107,15 @@ export class VpcCreateComponent implements OnInit{
   form = new FormGroup({
     name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/)] }),
     description: new FormControl(''),
-    ipConnectInternet: new FormControl('', { validators: [Validators.required] }),
-    numOfMonth: new FormControl(1, { validators: [Validators.required] }),
+    ipConnectInternet: new FormControl(''),
+    numOfMonth: new FormControl(1, { validators: [Validators.required] })
     //tab 1
-    ipType: new FormControl('', { validators: [] }),
-
-    loadBalancerId: new FormControl('', { validators: [] }),
-    siteToSiteId: new FormControl('', { validators: [] })
+    // ipType: new FormControl('', { validators: [] }),
   });
 
   private searchSubject = new Subject<string>();
   private readonly debounceTimeMs = 500;
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private instancesService: InstancesService,
               private cdr: ChangeDetectorRef,
@@ -130,6 +132,7 @@ export class VpcCreateComponent implements OnInit{
     this.initVpnSiteToSiteData();
     this.initLoadBalancerData();
     this.loadListIpConnectInternet();
+    this.loadInforProjectNormal();
     this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
       this.calculateReal();
     });
@@ -137,89 +140,88 @@ export class VpcCreateComponent implements OnInit{
   }
 
   calculateReal() {
+    this.refreshValue();
     if (this.vpcType == '1') {
-      let lstIp = this.form.controls['ipConnectInternet'].value.split('--');
+      let lstIp = this.ipConnectInternet?.split('--');
       let ip = '';
       let ipName = '';
       if (lstIp != null && lstIp != undefined) {
         ip = lstIp[0];
       }
       let numOfMonth = this.form.controls['numOfMonth'].value;
-      let ipType = this.form.controls['ipType'].value;
-
-      let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : (ipType == '0' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
-      let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : (ipType == '1' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
-      let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : (ipType == '2' ? this.offerFlavor.ipNumber : 0);
-      if (ip != '') {
-        if ((this.selectIndexTab == 0 && ipType != '' && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
+      let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : 1;
+      let IPFloating = this.selectIndexTab == 1 && this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
+      let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
+      if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
+        if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
           let listString = lstIp[1].split(' ');
           if (listString.length == 3) {
             ipName = listString[2].trim();
           }
-          this.loadingCalculate = true;
-          const requestBody =
-            {
-              quotavCpu: this.vCPU,
-              quotaRamInGb: this.ram,
-              quotaHddInGb: this.hhd,
-              quotaSSDInGb: this.ssd,
-              quotaBackupVolumeInGb: this.numberBackup,
-              quotaSecurityGroupCount: this.numberSecurityGroup,
-              projectType: this.vpcType,
-              // quotaKeypairCount: 0,// NON
-              // quotaVolumeSnapshotCount: 0,//NON
-              quotaIpPublicCount: IPPublicNum,
-              quotaIpFloatingCount: IPFloating,
-              quotaNetworkCount: this.numberNetwork,
-              quotaRouterCount: this.numberRouter,
-              quotaLoadBalancerSDNCount: this.numberLoadBalancer,
-              loadBalancerOfferId: this.form.controls['loadBalancerId'].value,
-              vpnSiteToSiteOfferId: this.form.controls['siteToSiteId'].value,
-              quotaShareInGb: this.numberFileSystem,
-              QuotaShareSnapshotInGb: this.numberFileScnapsshot,
-              publicNetworkId: ip,
-              publicNetworkAddress: ipName,
-              quotaIPv6Count: IPV6,
-              typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
-              serviceType: 12,
-              serviceInstanceId: 0,
-              customerId: this.tokenService.get()?.userId,
-              offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
-              actionType: 0,
-              regionId: this.regionId,
-              serviceName: this.form.controls['name'].value
-            };
-          const request = {
-            orderItems: [
-              {
-                orderItemQuantity: 1,
-                specificationString: JSON.stringify(requestBody),
-                specificationType: 'vpc_create',
-                sortItem: 0,
-                serviceDuration: numOfMonth
-              }
-            ]
-          };
-          this.ipService.getTotalAmount(request)
-            .pipe(finalize(() => {
-              this.loadingCalculate = false;
-            }))
-            .subscribe(
-              data => {
-                this.total = data;
-                this.totalAmount = this.total.data.totalAmount.amount.toLocaleString();
-                this.totalPayment = this.total.data.totalPayment.amount.toLocaleString();
-                this.getPriceEachComponent(data.data);
-              }
-            );
-        } else {
-          this.total = undefined;
         }
+
+        this.loadingCalculate = true;
+        const requestBody =
+          {
+            quotavCpu: this.vCPU,
+            quotaRamInGb: this.ram,
+            quotaHddInGb: this.hhd,
+            quotaSSDInGb: this.ssd,
+            quotaBackupVolumeInGb: this.numberBackup,
+            quotaSecurityGroupCount: this.numberSecurityGroup,
+            projectType: this.vpcType,
+            // quotaKeypairCount: 0,// NON
+            // quotaVolumeSnapshotCount: 0,//NON
+            quotaIpPublicCount: IPPublicNum,
+            quotaIpFloatingCount: IPFloating,
+            quotaNetworkCount: this.numberNetwork,
+            quotaRouterCount: this.numberRouter,
+            quotaLoadBalancerSDNCount: this.numberLoadBalancer,
+            loadBalancerOfferId: this.loadBalancerId,
+            vpnSiteToSiteOfferId: this.siteToSiteId,
+            quotaShareInGb: this.numberFileSystem,
+            QuotaShareSnapshotInGb: this.numberFileScnapsshot,
+            publicNetworkId: ip,
+            publicNetworkAddress: ipName,
+            quotaIPv6Count: IPV6,
+            typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
+            serviceType: 12,
+            serviceInstanceId: 0,
+            customerId: this.tokenService.get()?.userId,
+            offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
+            actionType: 0,
+            regionId: this.regionId,
+            serviceName: this.form.controls['name'].value
+          };
+        const request = {
+          orderItems: [
+            {
+              orderItemQuantity: 1,
+              specificationString: JSON.stringify(requestBody),
+              specificationType: 'vpc_create',
+              sortItem: 0,
+              serviceDuration: numOfMonth
+            }
+          ]
+        };
+        this.ipService.getTotalAmount(request)
+          .pipe(finalize(() => {
+            this.loadingCalculate = false;
+          }))
+          .subscribe(
+            data => {
+              this.total = data;
+              this.totalAmount = this.total.data.totalAmount.amount.toLocaleString();
+              this.totalPayment = this.total.data.totalPayment.amount.toLocaleString();
+              this.getPriceEachComponent(data.data);
+            }
+          );
       } else {
         this.total = undefined;
       }
     }
   }
+
   calculate(number: any) {
     if (this.vpcType === '0') {
       this.activeVpc = false;
@@ -237,7 +239,7 @@ export class VpcCreateComponent implements OnInit{
     inde: true
       ? '1px solid #0066B3'
       : '1px solid #DADADA',
-    height: '160px',
+    height: '160px'
   };
 
   cardHeight = '95px';
@@ -268,14 +270,14 @@ export class VpcCreateComponent implements OnInit{
                 e.description = '0 vCPU / 0 GB RAM / HHH GB SSS / 0 IP';
                 e.characteristicValues.forEach((ch) => {
                   if (ch.charName.toUpperCase() == 'CPU') {
-                    e.description = e.description.replace(/0 vCPU/g,ch.charOptionValues[0] + ' vCPU');
+                    e.description = e.description.replace(/0 vCPU/g, ch.charOptionValues[0] + ' vCPU');
                   } else if (ch.charName.toUpperCase() == 'RAM') {
                     e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + ' GB RAM');
                   } else if (ch.charName == 'Storage') {
                     e.description = e.description.replace(/HHH/g, ch.charOptionValues[0]);
                   } else if (ch.charName == 'VolumeType') {
                     e.description = e.description.replace(/SSS/g, ch.charOptionValues[0]);
-                  }  else if (ch.charName.toUpperCase() == 'IP') {
+                  } else if (ch.charName.toUpperCase() == 'IP') {
                     e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + ' IP');
                     e.ipNumber = ch.charOptionValues[0];
                   }
@@ -303,21 +305,16 @@ export class VpcCreateComponent implements OnInit{
     let numOfMonth = this.form.controls['numOfMonth'].value;
     let requestBody = {};
     if (this.vpcType == '1') {
-      let lstIp = this.form.controls['ipConnectInternet'].value.split('--');
+      let lstIp = this.ipConnectInternet?.split('--');
       let ip = '';
       let ipName = '';
       if (lstIp != null && lstIp != undefined) {
         ip = lstIp[0];
-        let listString = lstIp[1].split(' ');
-        if (listString.length == 3) {
-          ipName = listString[2].trim();
-        }
       }
-      let ipType = this.form.controls['ipType'].value;
-
-      let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : (ipType == '0' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
-      let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : (ipType == '1' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
-      let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : (ipType == '2' ? this.offerFlavor.ipNumber : 0);
+      let numOfMonth = this.form.controls['numOfMonth'].value;
+      let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : 1;
+      let IPFloating = this.selectIndexTab == 1 && this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
+      let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
       const expiredDate = new Date();
       expiredDate.setDate(expiredDate.getDate() + Number(numOfMonth) * 30);
       requestBody = {
@@ -336,8 +333,8 @@ export class VpcCreateComponent implements OnInit{
         quotaNetworkCount: this.numberNetwork,
         quotaRouterCount: this.numberRouter,
         quotaLoadBalancerSDNCount: this.numberLoadBalancer,
-        loadBalancerOfferId: this.form.controls['loadBalancerId'].value,
-        vpnSiteToSiteOfferId: this.form.controls['siteToSiteId'].value,
+        loadBalancerOfferId: this.loadBalancerId,
+        vpnSiteToSiteOfferId: this.siteToSiteId,
         quotaShareInGb: this.numberFileSystem,
         quotaShareSnapshotInGb: this.numberFileScnapsshot,
         publicNetworkId: ip,
@@ -353,7 +350,7 @@ export class VpcCreateComponent implements OnInit{
         description: this.form.controls['description'].value,
         createDate: new Date(),
         expireDate: expiredDate
-      }
+      };
     } else {
       requestBody = {
         projectType: this.vpcType,
@@ -367,7 +364,7 @@ export class VpcCreateComponent implements OnInit{
         serviceName: this.form.controls['name'].value,
         description: this.form.controls['description'].value,
         createDate: new Date()
-      }
+      };
     }
 
     const request = {
@@ -392,9 +389,9 @@ export class VpcCreateComponent implements OnInit{
           this.router.navigate(['/app-smart-cloud/vpc']);
         },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'))
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'));
         }
-      )
+      );
     } else {
       var returnPath: string = window.location.pathname;
       this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
@@ -414,16 +411,12 @@ export class VpcCreateComponent implements OnInit{
   }
 
   openIpSubnet() {
-    let num = this.form.controls['ipConnectInternet'].value;
-    if (num != undefined && num != null && num != '') {
-      this.openIPType = true;
-    }
-
     this.calculate(-1);
   }
 
   changeTab(event: any) {
     this.selectIndexTab = event.index;
+    this.calculateReal();
   }
 
   loadListIpConnectInternet() {
@@ -473,7 +466,7 @@ export class VpcCreateComponent implements OnInit{
 
   private getPriceEachComponent(data: any) {
     console.log(data.orderItemPrices);
-    let fileStorage = 0
+    let fileStorage = 0;
     for (let item of data.orderItemPrices[0]?.details) {
       if (item.typeName == 'ippublic') {
         this.price.IpPublic = item.unitPrice.amount.toLocaleString();
@@ -500,7 +493,7 @@ export class VpcCreateComponent implements OnInit{
       } else if (item.typeName == 'ssd') {
         this.price.ssd = item.totalAmount.amount.toLocaleString();
         this.price.ssdPerUnit = item.unitPrice.amount.toLocaleString();
-      } else if (item.typeName == 'hhd') {
+      } else if (item.typeName == 'hdd') {
         this.price.hhd = item.totalAmount.amount.toLocaleString();
         this.price.hhdPerUnit = item.unitPrice.amount.toLocaleString();
       }
@@ -513,5 +506,39 @@ export class VpcCreateComponent implements OnInit{
     if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
       event.preventDefault();
     }
+  }
+
+  private loadInforProjectNormal() {
+    this.instancesService.getListOffers(this.regionId, 'vpc').subscribe(
+      data => {
+        for (let item of data[0].characteristicValues) {
+          if (item.charName == 'network') {
+            this.nwNormal = item.charOptionValues[2];
+          } else if (item.charName == 'router') {
+            this.routerNormal = item.charOptionValues[2];
+          } else if (item.charName == 'securitygroup') {
+            this.sgNormal = item.charOptionValues[2];
+          }
+        }
+      }
+    );
+  }
+
+  private refreshValue() {
+    this.price.vcpu = 0;
+    this.price.vcpuPerUnit = 0;
+    this.price.ram = 0;
+    this.price.ramPerUnit = 0;
+    this.price.hhd = 0;
+    this.price.hhdPerUnit = 0;
+    this.price.ssd = 0;
+    this.price.ssdPerUnit = 0;
+    this.price.backup = 0;
+    this.price.loadBalancer = 0;
+    this.price.fileStorage = 0;
+    this.price.siteToSite = 0;
+    this.price.IpFloating = 0;
+    this.price.IpPublic = 0;
+    this.price.IpV6 = 0;
   }
 }
