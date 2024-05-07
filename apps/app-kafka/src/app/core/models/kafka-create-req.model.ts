@@ -101,8 +101,8 @@ export class KafkaCreateOrder {
     serviceType: number;
     actionType: number;
     serviceInstanceId: number;
-    createDate: Date;
-    expireDate: Date;
+    createDate: string;
+    expireDate: string;
 }
 
 export class RegionResource {

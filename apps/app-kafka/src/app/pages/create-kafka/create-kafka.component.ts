@@ -339,8 +339,8 @@ export class CreateKafkaComponent implements OnInit {
     kafkaSpec.regionId = this.regionId;
     kafkaSpec.projectId = this.projectId;
     kafkaSpec.vpcId = this.projectId;
-    kafkaSpec.createDate = this.createDate;
-    kafkaSpec.expireDate = this.expiryDate;
+    kafkaSpec.createDate = this.createDate.toISOString().substring(0, 19);
+    kafkaSpec.expireDate = this.expiryDate.toISOString().substring(0, 19);
 
     const orderItem: OrderItem = new OrderItem();
     orderItem.price = (this.unitPrice.cpu * this.cpu + this.unitPrice.ram * this.ram + this.unitPrice.storage * this.storage) * this.usageTime;
@@ -525,9 +525,11 @@ export class CreateKafkaComponent implements OnInit {
   }
 
   setExpiryDate() {
-    const d = new Date();
-    d.setMonth(this.createDate.getMonth() + this.usageTime);
-    this.expiryDate = new Date(d.getTime());
+    // const d = new Date();
+    // d.setMonth(this.createDate.getMonth() + this.usageTime);
+    // this.expiryDate = new Date(d.getTime());
+    
+    this.expiryDate = new Date(this.createDate.getTime() + (this.usageTime * 30 * 24 * 60 * 60 * 1000));
   }
 
 }
