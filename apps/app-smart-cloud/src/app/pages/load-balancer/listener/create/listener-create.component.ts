@@ -14,6 +14,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { InstancesService } from '../../../instances/instances.service';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { da } from 'date-fns/locale';
 
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -84,7 +85,7 @@ export class ListenerCreateComponent implements OnInit{
     member: [50000],
     connection: [500],
     timeout: [50000],
-    allowCIRR: ['0.0.0.0/0', [Validators.required, ipAddressValidator()]],
+    allowCIRR: ['', [Validators.required, ipAddressValidator()]],
     description: [''],
 
     poolName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
@@ -135,6 +136,7 @@ export class ListenerCreateComponent implements OnInit{
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.loadVm();
+    this.loadSSlCert();
   }
 
   nextStep() {
@@ -165,7 +167,7 @@ export class ListenerCreateComponent implements OnInit{
         memberConnectTimeout: this.validateForm.controls['connection'].value,
         memberDataTimeout: this.validateForm.controls['member'].value,
         port: this.validateForm.controls['port'].value,
-        sslCert: null,
+        sslCert: this.protocolListener == 'TERMINATED_HTTPS' ? this.certId : null,
         allowedCIDR: this.validateForm.controls['allowCIRR'].value,
         description: this.validateForm.controls['description'].value,
       },
@@ -225,11 +227,12 @@ export class ListenerCreateComponent implements OnInit{
       data => {
         for (let item of data.records) {
           const rs = this.splitByIpAddress(item);
-          for (let item of  rs) {
-            this.lstInstance.push(item)
+          if (rs != null) {
+            for (let item of  rs) {
+              this.lstInstance.push(item)
+            }
           }
         }
-        console.log(this.lstInstance);
       }
     )
   }
@@ -258,37 +261,52 @@ export class ListenerCreateComponent implements OnInit{
 
   splitByIpAddress(instance: any): [any] {
     // const { name, des } = obj;
-    const desArray = instance.ipPrivate.split(', ');
-    if (desArray.length > 1) {
-      return desArray.map((item) => ({
-        Name: instance.name,
-        status: instance.status,
-        id: instance.id,
-        IpAddress: item,
-        Port: 0,
-        Weight: 0,
-        Backup: false,
-        }));
+    if (instance.ipPrivate == undefined || instance.ipPrivate == null || instance.ipPrivate == '') {
+      return null;
     } else {
-      return [{
-        Name: instance.name,
-        status: instance.status,
-        id: instance.id,
-        IpAddress: instance.ipPrivate,
-        Port: 0,
-        Weight: 0,
-        Backup: false,
-      }]
+      const desArray = instance.ipPrivate.split(', ');
+      if (desArray.length > 1) {
+        return desArray.map((item) => ({
+          Name: instance.name,
+          status: instance.status,
+          id: instance.id,
+          IpAddress: item,
+          Port: 0,
+          Weight: 0,
+          Backup: false,
+        }));
+      } else {
+        return [{
+          Name: instance.name,
+          status: instance.status,
+          id: instance.id,
+          IpAddress: instance.ipPrivate,
+          Port: 0,
+          Weight: 0,
+          Backup: false,
+        }]
+      }
     }
+
   }
 
   protected readonly focus = focus;
-
+  activeDropdownSSL = false;
+  listCert: any;
+  certId: any;
   changeProtocolListener(event: any) {
     if (event == 'TERMINATED_HTTPS') {
       this.validateForm.controls['port'].setValue(443);
     } else {
       this.validateForm.controls['port'].setValue(80);
     }
+  }
+
+  private loadSSlCert() {
+    this.service.loadSSlCert(this.tokenService.get()?.userId,this.regionId,this.projectId).subscribe(
+      data => {
+        this.listCert = data;
+      }
+    )
   }
 }
