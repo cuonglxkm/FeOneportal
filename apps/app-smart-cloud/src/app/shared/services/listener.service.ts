@@ -67,4 +67,8 @@ export class ListenerService extends BaseService{
   getL7Policy(id: string, regionId: any, projectId: any) {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/l7policy' + '?listenerId=' + id + '&regionId=' + regionId + '&vpcId='+projectId);
   }
+
+  deleteListner(listenerId: any, idLB: any) {
+    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + "/loadbalancer/listener/" + listenerId + "?lbId=" + idLB);
+  }
 }
