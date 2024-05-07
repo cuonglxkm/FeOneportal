@@ -174,7 +174,7 @@
                 <img
                   src="assets/imgs/trash.svg"
                   alt=""
-                  (click)="modalDeleteHealth(data)"
+                  (click)="showModalDelete(true, item)"
                   style="cursor: pointer"
                   [nz-tooltip]="'app.delete' | i18n"
                 />
@@ -250,14 +250,14 @@
                 <img
                   src="assets/imgs/edit-2.svg"
                   alt=""
-                  (click)="modalEditMember(data)"
+                  (click)="modalMember(false, item)"
                   style="cursor: pointer; margin-right: 16px"
                   [nz-tooltip]="'app.text.edit' | i18n"
                 />
                 <img
                   src="assets/imgs/trash.svg"
                   alt=""
-                  (click)="modalDeleteMember(data)"
+                  (click)="showModalDelete(false, item)"
                   style="cursor: pointer"
                   [nz-tooltip]="'app.delete' | i18n"
                 />
@@ -320,6 +320,7 @@
                 [nzShowSearch]="true"
                 formControlName="checkMethod"
                 [(ngModel)]="healthForm.type"
+                (ngModelChange)="isNotHttp($event)"
                 [disabled]="!isCreate"
                 nzSize="large"
               >
@@ -442,7 +443,7 @@
           </nz-form-item>
         </div>
       </div>
-      <div style="display: flex">
+      <div *ngIf="isHttpType" style="display: flex">
         <div style="flex: 1; margin-right: 24px">
           <nz-form-item>
             <nz-form-label
@@ -483,7 +484,7 @@
                 class="input-custom"
                 nz-input
                 formControlName="expectedCode"
-                [(ngModel)]="healthForm.expectedCode"
+                [(ngModel)]="healthForm.expectedCodes"
                 [placeholder]="'app.input.code' | i18n"
                 [maxlength]="3"
               />
