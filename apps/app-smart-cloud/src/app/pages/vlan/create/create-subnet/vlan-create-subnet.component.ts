@@ -35,18 +35,34 @@ export function ipAddressValidator(): ValidatorFn {
 
 // Hàm kiểm tra xem địa chỉ IP có hợp lệ không
 function isValidIPAddress(ipAddress: string): boolean {
-  // Kiểm tra xem địa chỉ IP có thuộc các dải cho phép không
   if (
-    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.24.0.0') &&
-    !(ipAddress.startsWith('192.168.'))
+    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.25.0.0') &&
+    !(ipAddress.startsWith('192.168.')) &&
+    !(ipAddress === '192.168.0.0')
   ) {
+    return false;
+  }
+  if (!ipAddress.match(/^((\d{1,3}\.\d{1,3}\.0\.0\/16)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.0\/24))$/)) {
     return false;
   }
 
   // Kiểm tra định dạng của địa chỉ IP
-  if (!ipAddress.match(/^((\d{1,3}\.\d{1,3}\.0\.0\/16)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.0\/24))$/)) {
+  const ipAndPrefix = ipAddress.split('/');
+  const ipParts = ipAndPrefix[0].split('.');
+  const prefixLength = parseInt(ipAndPrefix[1], 10);
+
+  // Kiểm tra xem địa chỉ IP có đúng dạng không
+  if (ipParts.length !== 4 || isNaN(prefixLength) || prefixLength < 0 || prefixLength > 32) {
     return false;
   }
+
+  // Kiểm tra xem phần prefix có hợp lệ không
+  for (const part of ipParts) {
+    if (parseInt(part, 10) < 0 || parseInt(part, 10) > 255) {
+      return false;
+    }
+  }
+
   return true;
 }
 
@@ -151,6 +167,9 @@ export class VlanCreateSubnetComponent implements OnInit {
 
   pool: string = '';
   dataSubjectCidr: Subject<any> = new Subject<any>();
+
+  isInvalidGateway: boolean = false
+  dataSubjectGateway: Subject<any> = new Subject<any>();
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -265,6 +284,26 @@ export class VlanCreateSubnetComponent implements OnInit {
 
   }
 
+  invalidGateway: string
+
+  onCheckGateway() {
+    this.dataSubjectGateway.pipe(debounceTime(600)).subscribe((res) => {
+      this.vlanService.checkIpAvailable(res, this.validateForm.controls.subnetAddressRequired.value, '', this.region).subscribe(data => {
+        this.isInvalidGateway = false
+        const dataJson = JSON.parse(JSON.stringify(data));
+        console.log('gateway data', dataJson)
+      }, error => {
+        console.log('error', error.error)
+        this.isInvalidGateway = true
+        this.invalidGateway = error.error
+      })
+    })
+  }
+
+  inputGateway(value) {
+    this.dataSubjectGateway.next(value);
+  }
+
   ngOnInit() {
     this.idNetwork = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     let regionAndProject = getCurrentRegionAndProject();
@@ -275,5 +314,6 @@ export class VlanCreateSubnetComponent implements OnInit {
     this.getListSubnet();
 
     this.onInputCheckPool();
+    this.onCheckGateway();
   }
 }

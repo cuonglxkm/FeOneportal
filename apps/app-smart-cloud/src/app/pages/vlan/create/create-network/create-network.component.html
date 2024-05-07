@@ -148,7 +148,11 @@
           </nz-space>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-          <input nz-input class="input-custom" formControlName="gateway" placeholder="{{ 'app.vlan.note35' | i18n }}" />
+          <input nz-input class="input-custom"
+                 formControlName="gateway"
+                 (ngModelChange)="inputGateway($event)"
+                 placeholder="{{ 'app.vlan.note35' | i18n }}" />
+          <span *ngIf="isInvalidGateway" style="color: red;">IP không thuộc Allocation Pool </span>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -164,20 +168,6 @@
           <nz-textarea-count [nzMaxCharacterCount]="255">
             <textarea rows="4" [value]="pool" nz-input [disabled]="true"></textarea>
           </nz-textarea-count>
-<!--          <ng-template #allocationPoolErrorTpl let-control>-->
-<!--            <ng-container *ngIf="control.hasError('invalidIpAddressFormat')">Địa chỉ IP không đúng định dạng, IP cách-->
-<!--              nhau bởi dấu (,).-->
-<!--            </ng-container>-->
-<!--            <ng-container *ngIf="control.hasError('invalidIpAddressRange')">Địa chỉ IP không hợp lệ.<br>-->
-<!--              Yêu cầu chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và-->
-<!--              nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24.-->
-<!--            </ng-container>-->
-<!--            <ng-container *ngIf="control.hasError('invalidIpSequence')">Địa chỉ IP không hợp lệ, IP sau lớn hơn IP trước-->
-<!--              (ví dụ: 172.16.0.2, 172.16.0.3)-->
-<!--            </ng-container>-->
-
-
-<!--          </ng-template>-->
         </nz-form-control>
       </nz-form-item>
     </nz-card>
@@ -187,7 +177,7 @@
           <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
         </button>
         <nz-form-control *nzSpaceItem>
-          <button nz-button nzType="primary" [disabled]="!validateForm.valid"
+          <button nz-button nzType="primary" [disabled]="!validateForm.valid || isInvalidGateway"
                   class="button-ok" (click)="submitForm()" [nzLoading]="isLoading">
             <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.label.create' | i18n }}
           </button>
