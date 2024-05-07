@@ -47,7 +47,6 @@ import {
 } from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
-import { es } from 'date-fns/locale';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 
@@ -536,7 +535,6 @@ export class InstancesCreateComponent implements OnInit {
   //#region Chọn IP Public Chọn Security Group
   listIPPublic: IPPublicModel[] = [];
   listSecurityGroup: SecurityGroupModel[] = [];
-  listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
@@ -639,9 +637,6 @@ export class InstancesCreateComponent implements OnInit {
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
   listOfferFlavors: OfferItem[] = [];
   selectedElementFlavor: string = null;
-  isInitialClass = true;
-  isNewClass = false;
-
   initFlavors(): void {
     this.dataService
       .getListOffers(this.region, 'VM-Flavor')
@@ -1109,18 +1104,8 @@ export class InstancesCreateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  createInstancesForm(): FormGroup<InstancesForm> {
-    return new FormGroup({
-      name: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
-    });
-  }
-
   instanceInit() {
     this.instanceCreate.description = null;
-
     this.instanceCreate.imageId = this.hdh;
     this.instanceCreate.iops = 0;
     this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';

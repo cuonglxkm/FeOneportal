@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {TotalVpcResource, VpcModel} from "../../../shared/models/vpc.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {VpcService} from "../../../shared/services/vpc.service";
@@ -9,13 +9,14 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { IpPublicService } from '../../../shared/services/ip-public.service';
 
 @Component({
   selector: 'one-portal-vpc-extend',
   templateUrl: './vpc-extend.component.html',
   styleUrls: ['./vpc-extend.component.less'],
 })
-export class VpcExtendComponent {
+export class VpcExtendComponent implements OnInit{
   regionId: any;
   listOfData = [{}];
   data: VpcModel;
@@ -32,14 +33,17 @@ export class VpcExtendComponent {
   form = new FormGroup({
     numOfMonth: new FormControl(1, {validators: [Validators.required]}),
   });
-  today = new Date();
-  expiredDate = new Date();
+  today: any;
+  expiredDate: any;
+  expiredDateOld: any;
   loading = true;
+  total: any;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private service: VpcService,
               private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private ipService: IpPublicService,
               private activatedRoute: ActivatedRoute,) {
   }
 
@@ -62,6 +66,9 @@ export class VpcExtendComponent {
       .subscribe(
         data => {
           this.data = data;
+          this.expiredDate = data.expireDate;
+          this.today = data.createDate;
+          this.expiredDateOld = data.expireDate;
         }
       )
 
@@ -82,7 +89,7 @@ export class VpcExtendComponent {
     let used = this.dataTotal.cloudProjectResourceUsed;
     this.listOfData.push({name : "CPU (vCPU)",total: total.quotavCpu + " vCPU",used:used.cpu + " vCPU",remain: (total.quotavCpu - used.cpu) + " vCPU"});
     this.listOfData.push({name : "RAM (GB)",total: total.quotaRamInGb + " GB",used:used.ram + " GB",remain:(total.quotaRamInGb - used.ram) + " GB"});
-    this.listOfData.push({name : "HHD (GB)",total: total.quotaHddInGb + " GB",used:used.hdd + " GB",remain:(total.quotaHddInGb - used.hdd) + " GB"});
+    this.listOfData.push({name : "HDD (GB)",total: total.quotaHddInGb + " GB",used:used.hdd + " GB",remain:(total.quotaHddInGb - used.hdd) + " GB"});
     this.listOfData.push({name : "SSD (GB)",total: total.quotaSSDInGb + " GB",used:used.ssd + " GB",remain:(total.quotaSSDInGb - used.ssd) + " GB"});
     this.listOfData.push({name : this.i18n.fanyi('app.capacity') + " Backup Volume/VN(GB)", total:total.quotaBackupVolumeInGb + " GB",used:used.backup + " GB",remain: (total.quotaBackupVolumeInGb - used.backup) + " GB"});
     this.listOfData.push({name : this.i18n.fanyi('app.amount') + " IP Floating",total: total.quotaIpFloatingCount,used:"NON",remain:"10"});
@@ -98,7 +105,7 @@ export class VpcExtendComponent {
     this.percentRam = (used.ram/total.quotaRamInGb)*100;
     this.percentHHD = (used.hdd/total.quotaHddInGb)*100;
     this.percentSSD = (used.ssd/total.quotaSSDInGb)*100;
-    this.percentIPFloating = 23;
+    this.percentIPFloating = (used.ssd/total.quotaSSDInGb)*100;
     this.percentBackup = (used.backup/total.quotaBackupVolumeInGb)*100;
   }
 
@@ -124,7 +131,7 @@ export class VpcExtendComponent {
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: "vpc_extend",
-          price: 0,
+          price: this.total.data.totalAmount.amount/this.form.controls['numOfMonth'].value,
           serviceDuration: this.form.controls['numOfMonth'].value
         }
       ]
@@ -134,8 +141,50 @@ export class VpcExtendComponent {
   }
 
   onChangeTime() {
-    const dateNow = new Date();
+    const dateNow =new Date(this.expiredDateOld);
     dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value) * 30);
     this.expiredDate = dateNow;
+    this.caculate();
+  }
+
+  private caculate() {
+    const requestBody = {
+      regionId: this.regionId,
+      serviceName: null,
+      customerId: this.tokenService.get()?.userId,
+      typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      serviceType: 12,
+      actionType: 3,
+      serviceInstanceId: this.activatedRoute.snapshot.paramMap.get('id'),
+      newExpireDate: this.expiredDate,
+      userEmail: null,
+      actorEmail: null
+    }
+    const request = {
+      customerId: this.tokenService.get()?.userId,
+      createdByUserId: this.tokenService.get()?.userId,
+      note: "Gia hạn Ip Public",
+      orderItems: [
+        {
+          orderItemQuantity: 1,
+          specificationString: JSON.stringify(requestBody),
+          specificationType: "vpc_extend",
+          price: 0,
+          serviceDuration: this.form.controls['numOfMonth'].value
+        }
+      ]
+    }
+
+    this.ipService.getTotalAmount(request)
+      .pipe(finalize(() => {
+        this.loadingCalculate = false;
+      }))
+      .subscribe(
+        data => {
+          this.total = data;
+          this.totalAmount = this.total.data.totalAmount.amount.toLocaleString();
+          this.totalPayment = this.total.data.totalPayment.amount.toLocaleString();
+        }
+      );
   }
 }

@@ -35,6 +35,7 @@ export class S3KeyComponent implements OnInit {
   isLoadingDelete: boolean = false;
   formGenerateS3Key: s3KeyGenerate = new s3KeyGenerate();
   formDeleteS3Key: formDeleteS3Key = new formDeleteS3Key();
+  searchBox: string = ''
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private service: ObjectObjectStorageService,
@@ -75,8 +76,8 @@ export class S3KeyComponent implements OnInit {
       });
   }
 
-  search(value: string) {
-    this.key = value
+  search() {
+    this.getData()
   }
 
   createS3Key() {

@@ -449,6 +449,8 @@
   "app.notify.gpu.configuration.invalid": "The GPU configuration is invalid",
   "app.notify.check.config.for.os": "The current configuration is not compatible with the operating system. Please choose the minimum {{nameHdh}} configuration of {{volume}} GB Storage / {{ram}} GB RAM / {{cpu}} vCPU",
   "app.notify.check.config.for.change.os": "Currently, you do not have sufficient resources to perform the operating system conversion. Please update the minimum configuration of {{nameHdh}} to {{volume}} GB storage / {{ram}} GB RAM / {{cpu}} vCPU",
+  "app.notify.success.instances.order.create": "Successfully created a virtual machine order",
+  "app.notify.fail.instances.order.create": "Failed to create a virtual machine order",
 
   "app.choose.snapshot": "Choose Snapshot",
   "app.choose.volume.type": "Choose Volume type",
@@ -478,6 +480,8 @@
   "app.hard.drive.type": "Hard drive type",
   "app.domestic.bandwidth": "Domestic bandwidth",
   "app.international.bandwidth": "International bandwidth",
+  "app.remain.configuration.in.vpc": "The remaining configuration in the VPC project",
+  "app.keypair.name": "Keypair name",
 
   "app.disk.type": "Disk type",
   "app.volume.type": "Volume type",
