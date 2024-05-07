@@ -639,9 +639,6 @@ export class InstancesCreateComponent implements OnInit {
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
   listOfferFlavors: OfferItem[] = [];
   selectedElementFlavor: string = null;
-  isInitialClass = true;
-  isNewClass = false;
-
   initFlavors(): void {
     this.dataService
       .getListOffers(this.region, 'VM-Flavor')
@@ -1120,7 +1117,6 @@ export class InstancesCreateComponent implements OnInit {
 
   instanceInit() {
     this.instanceCreate.description = null;
-
     this.instanceCreate.imageId = this.hdh;
     this.instanceCreate.iops = 0;
     this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';

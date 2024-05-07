@@ -478,6 +478,8 @@
   "app.hard.drive.type": "Hard drive type",
   "app.domestic.bandwidth": "Domestic bandwidth",
   "app.international.bandwidth": "International bandwidth",
+  "app.remain.configuration.in.vpc": "The remaining configuration in the VPC project",
+  "app.keypair.name": "Keypair name",
 
   "app.disk.type": "Disk type",
   "app.volume.type": "Volume type",

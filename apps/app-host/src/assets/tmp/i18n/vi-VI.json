@@ -360,6 +360,8 @@
   "app.hard.drive.type": "Loại ổ cứng",
   "app.domestic.bandwidth": "Băng thông trong nước",
   "app.international.bandwidth": "Băng thông quốc tế",
+  "app.remain.configuration.in.vpc": "Cấu hình còn lại trong dự án VPC",
+  "app.keypair.name": "Tên Keypair",
 
   "app.disk.type": "Kiểu Volume",
   "app.volume.type": "Loại Volume",
