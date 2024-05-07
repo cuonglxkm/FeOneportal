@@ -72,7 +72,7 @@
                    nzPopoverPlacement="bottom" style="margin-bottom: 4px; margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </th>
-            <th nzBreakWord>Internet Floating
+            <th nzBreakWord>IP Floating
               <img nz-popover [nzPopoverContent]="'app.tooltip.internet.floating' | i18n"
                    nzPopoverPlacement="bottom" style="margin-bottom: 4px; margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
@@ -93,7 +93,7 @@
           <tr *ngFor="let data of fixedTable.data">
             <td nzLeft>
               <span *ngIf="data.provisioningStatus === 'ERROR'">{{ data.name }}</span>
-              <span *ngIf="data.provisioningStatus != 'ERROR'">
+              <span *ngIf="data.provisioningStatus !== 'ERROR'">
                 <a [routerLink]="'/app-smart-cloud/load-balancer/detail/' + data.id">{{ data.name }}</a>
               </span>
             </td>
@@ -110,12 +110,12 @@
             <td nzBreakWord>{{ data.expiredDate | date: 'dd/MM/yyyy' }}</td>
             <td nzBreakWord></td>
             <td nzBreakWord>
-              <span *ngIf="data.operatingStatus === 'ERROR'">
+              <span *ngIf="data.provisioningStatus === 'ERROR'">
                 <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
                                                  [nameLoadBalancer]="data.name" [region]="region" [project]="project"
                                                  (onOk)="handleDeleteOk()" />
               </span>
-              <span *ngIf="data.operatingStatus === 'ONLINE'">
+              <span *ngIf="data.provisioningStatus !== 'ERROR'">
                 <one-portal-attach-ip-floating-lb [region]="region"
                                                   [project]="project"
                                                   [internetFacing]="data.internetFacing"
@@ -141,7 +141,7 @@
                 <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
                                                  [nameLoadBalancer]="data.name" [region]="region" [project]="project"
                                                  (onOk)="handleDeleteOk()" />
-                <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt="" style="margin-left: 5px;" />
+                <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt="" style="margin-left: 5px; cursor:pointer;" />
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li nz-menu-item>{{ 'app.listener.create' | i18n}}</li>

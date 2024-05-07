@@ -58,14 +58,14 @@
                   nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
-            <nz-select class="input-select-custom" nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}">
+            <nz-select class="input-select-custom" nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}" (ngModelChange)="handleChangeType($event)">
               <nz-option *ngFor="let data of type" [nzLabel]="data.label"
                 [nzValue]="data.value"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-control>
+          <nz-form-control [nzErrorTip]="selectedType == 'cidr' && 'Cidr không được để trống'">
             <nz-form-label *ngIf="selectedType == 'subnet'">
               <div>
                 <span nzFor="name">Local Systems Subnets </span>
@@ -78,7 +78,7 @@
             <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
               <div *ngIf="selectedType == 'subnet'">
                 <div *ngFor="let item of listSubnets">
-                  <div [ngModel]="false" [nzValue]="item.cidr" nz-checkbox formControlName="endpoints">{{ item.cidr }}</div>
+                  <div [ngModel]="checked" [nzValue]="item.cidr" nz-checkbox>{{ item.cidr }}</div>
                 </div>
               </div>
             </nz-checkbox-wrapper>
@@ -93,7 +93,7 @@
                     nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
-            <input formControlName="endpoints" class="input-custom" *ngIf="selectedType == 'cidr'" nz-input type="text" placeholder="Cidr(for external systems)" />         
+            <input formControlName="endpointsCidr" class="input-custom" *ngIf="selectedType == 'cidr'" nz-input type="text" placeholder="Cidr(for external systems)" />         
           </nz-form-control>
         </nz-form-item>
       </form>
@@ -109,16 +109,16 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Type</h3>
-          <span formControlName="endpoints" *ngIf="selectedType == 'subnet'">Subnet(for local systems)</span>
-          <span formControlName="endpoints" *ngIf="selectedType == 'cidr'">Cidr(for external systems)</span>
+          <span *ngIf="selectedType == 'subnet'">Subnet(for local systems)</span>
+          <span *ngIf="selectedType == 'cidr'">Cidr(for external systems)</span>
         </div>
 
         <div style="margin-bottom: 20px">
-          <h3 formControlName="endpoints" *ngIf="selectedType == 'subnet'" class="custom-subtitle">Local Systems Subnets</h3>
-          <h3 formControlName="endpoints" *ngIf="selectedType == 'cidr'" class="custom-subtitle">External Systems CIDRs</h3>
-          <span *ngIf="selectedType == 'cidr'">{{form.value.endpoints}}</span>
+          <h3 *ngIf="selectedType == 'subnet'" class="custom-subtitle">Local Systems Subnets</h3>
+          <h3 *ngIf="selectedType == 'cidr'" class="custom-subtitle">External Systems CIDRs</h3>
+          <span *ngIf="selectedType == 'cidr'">{{form.value.endpointsCidr}}</span>
           <div *ngIf="selectedType == 'subnet'">
-              <label formControlName="endpoints" >{{listCidrInfo}}</label>
+              <label >{{listCidrInfo}}</label>
           </div>
         </div>
       </div>

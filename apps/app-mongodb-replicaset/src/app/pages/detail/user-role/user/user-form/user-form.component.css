@@ -1,0 +1,64 @@
+nz-select {
+    width: 100%;
+}
+
+/* button {
+    color: rgba(0, 0, 0, 0.85);
+    border-color: #d9d9d9;
+} */
+
+.info-icon {
+    padding-left: 10px;
+}
+
+.passenger-input {
+    /* width: 90%; */
+    margin-right: 8px;
+}
+
+.add-button {
+    width: 100%;
+    height: 30%;
+}
+
+.dynamic-delete-button {
+    margin-top: 6px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #a82c2c;
+    margin-left: 8px;
+}
+
+.dynamic-delete-button:hover {
+    color: #f00808;
+}
+
+.email-sign {
+    margin: 4px;
+}
+
+.create-area {
+    display: flex;
+    vertical-align: middle;
+}
+
+.selected-role-count {
+    background-color: #FFAC33;
+    border-radius: 8px;
+    padding: 5px 10px;
+    color: white;
+}
+
+.selected-role{
+    background-color: #248FCC;
+    border-radius: 8px;
+    padding: 5px 10px;
+    color: white;
+}
+.lbl-form{
+  display: flex !important;
+  justify-content: space-between;
+  vertical-align: middle;
+  font-size: 16px;
+  margin-bottom: 10px;
+}

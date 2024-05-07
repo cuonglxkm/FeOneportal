@@ -557,6 +557,7 @@
   "validation.sub.user.name": "Username should use lowercase letters, uppercase letters, numbers, and hyphens",
   "validation.sub.user.name.required": "The Subuser name cannot be empty",
   "validation.sub.user.name.duplicate": "Subuser name already exists, please enter another name",
+  "validation.sub.user.name.input": "Please input ",
 
   "app.alert.resize.object.storage": "When increasing Object Storage capacity, the new cost will be calculated from the adjustment date until the expiration date",
   "app.alert.delete.object.storage": "Are you sure you want to delete the Object Storage?",
@@ -1579,6 +1580,7 @@
   "app.trigger": "Activate",
   "app.detail": "Details",
   "app.network.range": "Network range",
+  "app.vlan.create.port": "Create Port",
 
   "app.breadcrumb.block.storage": "Block Storage",
   "volume.title": "Volumes List",

@@ -439,6 +439,7 @@
   "validation.sub.user.name": "Tên người dùng nên sử dụng các ký tự chữ cái thường, chữ hoa, chữ số và dấu gạch ngang",
   "validation.sub.user.name.required": "Tên Subuser không được để trống",
   "validation.sub.user.name.duplicate": "Tên Subuser đã tồn tại, vui lòng nhập tên khác",
+  "validation.sub.user.name.input": "Please enter the correct Sub-User name",
 
   "app.alert.resize.object.storage": "Khi thực hiện tăng dung lượng Object Storage, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn",
   "app.alert.delete.object.storage": "Quý khách có chắc chắn muốn xóa Object Storage không?",
@@ -1465,6 +1466,7 @@
   "app.trigger": "Kích hoạt",
   "app.detail": "Chi tiết",
   "app.network.range": "Dải mạng",
+  "app.vlan.create.port": "Tạo mới Port",
 
   "volume.title": "Danh sách Volume",
   "volume.title.detail": "Chi tiết Volume",

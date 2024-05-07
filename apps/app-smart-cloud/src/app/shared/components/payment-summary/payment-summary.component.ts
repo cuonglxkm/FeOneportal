@@ -164,6 +164,11 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
             serviceItem.type = 'Chỉnh sửa';
             break;
+          case 'mongodb_create':
+            this.serviceType = 'mongodb';
+            serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Tạo mới';
+            break;
           default:
             serviceItem.name = '';
             break;

@@ -1,0 +1,271 @@
+<ng-container *ngIf="mongodb" >
+  <page-header [breadcrumb]="breadcrumb" [action]="action">
+    <ng-template #breadcrumb>
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/']">Trang chủ</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/app-mongodb-replicaset']">VNPT DocumentDB for MongoDB</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          Quản lý MongoDB: <b>{{ serviceCode }}</b>
+        </nz-breadcrumb-item>
+      </nz-breadcrumb>
+    </ng-template>
+
+    <!-- action -->
+    <ng-template #action >
+      <div class="alain-custom-action text-right">
+        <region-select-dropdown
+          [isDetail]=true
+          (valueChanged)="onRegionChange($event)"
+        ></region-select-dropdown>
+        <project-select-dropdown
+          [isDetail]=true
+          [regionId]="regionId"
+          (valueChanged)="onProjectChange($event)"
+        ></project-select-dropdown>
+      </div>
+    </ng-template>
+  </page-header>
+
+
+<!-- content /-->
+  <div nz-row [nzGutter]="16">
+    <div nz-col [nzSpan]="16" class="form-new">
+      <nz-card class="border-card" id="general">
+        <h3><b>Thông tin dịch vụ</b></h3>
+        <div nz-row>
+          <div nz-col [nzSpan]="5">Tên cụm Mongodb:</div>
+          <div><b>{{mongodb.service_name}}</b></div>
+        </div>
+        <div nz-row>
+          <div nz-col [nzSpan]="5">Ngày khởi tạo:</div>
+         <div>{{ mongodb.created_date | date: 'dd/MM/yyyy' }}</div>
+        </div>
+        <div nz-row>
+          <div nz-col [nzSpan]="5">Ngày hết hạn:</div>
+         <div style="color: #ea3829">{{ mongodb.expires_date | date: 'dd/MM/yyyy' }}</div>
+        </div>
+        <div nz-row>
+          <div nz-col [nzSpan]="5">Cấu hình gói dịch vụ:</div>
+          <div><b>{{mongodb.service_pack_code}}</b></div>
+        </div>
+
+        <div nz-row>
+          <div nz-col [nzSpan]="4">
+            <!-- Số Node: 3 -->
+            <ul>
+              <li>Số Node: 3</li>
+              <li>RAM: {{mongodb.ram}} GB</li>
+            </ul>
+          </div>
+          <div nz-col [nzSpan]="6"></div>
+          <div>
+            <!-- CPU: {{mongodb.cpu}}  VCPU -->
+            <ul>
+              <li>Storage: {{mongodb.storage}} GB</li>
+              <li>CPU: {{mongodb.cpu}}  VCPU</li>
+            </ul>
+          </div>
+        </div>
+        <!-- <div nz-row>
+          <div nz-col [nzSpan]="4">
+            RAM: {{mongodb.memory}} GB
+          </div>
+          <div nz-col [nzSpan]="6"></div>
+          <div>
+            Storage: {{mongodb.storage}} GB
+          </div>
+        </div> -->
+      </nz-card>
+
+      <form nz-form [formGroup]="myform" nzLayout="horizontal" nzLabelAlign="left">
+        <nz-card class="border-card">
+          <h3><b>Cấu hình nâng cấp</b></h3>
+          <nz-alert nzType="warning" nzShowIcon
+                    nzDescription="Khách hàng chỉ có thể nâng cấp cấu hình lên cao hơn mức hiện tại đang sử dụng."
+          ></nz-alert>
+          <nz-tabset nzCentered style="margin-top: 15px;">
+            <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="clicktab()">
+              <ng-template nz-tab>
+                <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfServiceAvailablePackage"
+                              class="carousel-div">
+                  <div *nguCarouselDef="let item;" class="item">
+                    <div class="pack-item" [ngClass]="{ 'choose': item===chooseitem, 'pack-item-disable': (item.ram < initRam || item.cpu < initCpu || item.storage < initStorage) }"
+                         (click)="handleChoosePack(item)">
+                      <div class="item-header" [ngClass]="{'item-header-disable': (item.ram < initRam || item.cpu < initCpu || item.storage < initStorage) }">
+                        <div class="item-name"  [ngClass]="{'item-name-disable': (item.ram < initRam || item.cpu < initCpu || item.storage < initStorage) }">
+                          <span>{{item.offerName}}</span>
+                          <div class="item-price">
+                            <div class="price">
+                              <span>{{ item.price.fixedPrice.amount | number: '1.0-0'}}</span
+                                ><br />
+                                <span class="unit-price">{{item.price.fixedPrice.currency}}/tháng</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item-body">
+                        {{ item.cpu }} VCPU / {{ item.ram }}GB RAM <br />
+                        {{ item.storage }}GB SDD / {{ item.node }} Node
+                      </div>
+                    </div>
+                  </div>
+                  <ul class="myPoint" NguCarouselPoint>
+                    <li *ngFor="let j of myCarousel.pointNumbers"
+                        [class.active]="j === myCarousel.activePoint"
+                        (click)="myCarousel.moveTo(j)">
+                    </li>
+                  </ul>
+                </ngu-carousel>
+              </ng-template>
+            </nz-tab>
+
+            <nz-tab nzTitle="Cấu hình tùy chọn" (nzClick)="clicktab()">
+              <div nz-row [nzJustify]="'space-between'">
+                <div nz-col>
+                  <nz-form-item >
+                    <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Node</nz-form-label>
+                    <nz-form-control
+                      [nzSm]="24"
+                      [nzXs]="24"
+                      nzErrorTip="Vui lòng nhập giá trị Storage">
+                      <input
+                        nz-input
+                        type="number"
+                        formControlName="node"
+                        id="node"
+                        autofocus/>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+
+                <div nz-col>
+                  <nz-form-item >
+                    <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>vCPU</nz-form-label>
+                    <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị vCpu">
+                      <input
+                        nz-input
+                        type="number"
+                        formControlName="cpu"
+                        id="cpu"
+                        autofocus />
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+
+                <div nz-col>
+                  <nz-form-item >
+                    <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired >Ram</nz-form-label>
+                    <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị bộ nhớ">
+                      <input
+                        nz-input
+                        type="number"
+                        formControlName="ram"
+                        id="ram"
+                        autofocus/>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+
+              </div>
+              <div >
+                <h3>Dung lượng lưu trữ </h3>
+                <nz-alert
+                  class="my-2"
+                  nzType="warning"
+                  nzDescription="Lưu ý: Với cấu hình hiện tại ( 2 vCPU / 2 GB RAM ), quý khách chỉ được chọn dung lượng lưu trữ tối đa là 300 GB. Dung lượng lưu trữ là số nguyên dương."
+                  nzShowIcon
+                ></nz-alert>
+                <nz-form-item >
+                  <nz-form-label class="mt-2" [nzSm]="6" [nzXs]="24" vFor="storage" vRequired>Dung lượng lưu trữ</nz-form-label>
+                  <nz-form-control style="width: 100%" [nzSm]="14" [nzXs]="24" [nzErrorTip]="'Giá trị dung lượng lưu trữ từ ' + 10 + ' đến ' + 1000 + ' GB'" id="mongo_storage">
+                    <div nz-row class="mt-3">
+                      <div  style="font-weight: 600;" nz-col  >
+                        10 GB
+                      </div>
+                      <input type="range" [min]="10" [max]="1000" step="1" placeholder="Giới hạn bộ nhớ"
+                             formControlName="storage" [value]="myform.get('storage').value" style="display: inline-block !important; width: 70%"/>
+                      <div style="font-weight: 600;" nz-col>
+                        1000 GB
+                      </div>
+                    </div>
+                  </nz-form-control>
+                  <nz-form-control  [nzSm]="4" [nzXs]="24" style="width: 100%">
+                    <nz-input-group [nzSuffix]="'GB'" >
+                      <input nz-input type="number"
+                             nzSize="small"
+                             [min]="10"
+                             [max]="1000"
+                             formControlName="storage" [value]="myform.get('storage').value"
+                             (blur)="onBlurStorage()"
+                      />
+                    </nz-input-group>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+            </nz-tab>
+
+          </nz-tabset>
+        </nz-card>
+
+      </form>
+    </div>
+
+    <!-- payment -->
+    <div nz-col [nzSpan]="8">
+      <nz-card class="price-card">
+        <h3><b>Thành tiền</b></h3>
+        <div nz-row [nzGutter]="8">
+          <div nz-col [nzSpan]="12">
+            <div class="label-price">Chi phí nâng cấp</div>
+          </div>
+          <div nz-col [nzSpan]="12">
+            <div class="value-price">{{ upgradeAmount | number: '1.0-0'}} VNĐ</div>
+          </div>
+        </div>
+        <nz-divider class="divider-style"></nz-divider>
+        <div nz-row [nzGutter]="8">
+          <div nz-col [nzSpan]="12">
+            <div class="label-price" style="margin-bottom: 10px;">Trừ đi mức còn lại của chu kỳ trước</div>
+          </div>
+          <div nz-col [nzSpan]="12">
+            <div class="value-price" >{{ remainAmount | number: '1.0-0'}} VNĐ</div>
+          </div>
+        </div>
+        <nz-divider class="divider-style"></nz-divider>
+
+        <div nz-row [nzGutter]="8" class="mt-5 price-panel">
+          <div nz-col [nzSpan]="12">
+            <div class="label-price">Tổng cần thanh toán</div>
+            <div class="label-quantity"><i>(Đã bao gồm 10% VAT)</i></div>
+          </div>
+          <div nz-col [nzSpan]="12">
+            <div class="value-price total-price"> {{upgradeAmount === 0 ? 0 : (upgradeAmount - remainAmount) * 1.1 | number: '1.0-0'}} VNĐ</div>
+          </div>
+        </div>
+
+        <div nz-row class="mt-5" [nzGutter]="16" nzJustify="center">
+          <div nz-col [nzSpan]="12">
+            <button nz-button nzType="default" nzBlock (click)="backToList()">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />
+              <b>Hủy</b>
+            </button>
+          </div>
+
+          <div nz-col [nzSpan]="12">
+            <button nz-button nzType="primary" nzBlock 
+                    (click)="onUpgradeSubmitPayment()">
+              <img style="padding-right: 10px; margin-top: -4px; height: 20px;"
+                   src="assets/imgs/upgrade-white.svg" alt="" />
+              <b>Nâng cấp</b>
+            </button>
+          </div>
+        </div>
+      </nz-card>
+    </div>
+  </div>
+
+</ng-container>

@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
-import {environment} from "@env/environment";
+// import {environment} from "@env/environment";
 import {HttpErrorResponse} from "@angular/common/http";
 import {throwError} from "rxjs";
+import { environment } from '@env/environment';
 
 
 export abstract class BaseService {
@@ -15,12 +16,13 @@ export abstract class BaseService {
     catalogs: '/catalogs',
     actionlogs: '/actionlogs',
     iam: '/iam',
-    payments: '/payments'
+    payments: '/payments',
   }
   protected baseUrl: string;
-
+  protected apiGwUrl: string;
   protected constructor() {
-    this.baseUrl = environment.baseUrl;
+    this.baseUrl = environment['baseUrl'];
+    this.apiGwUrl = environment['baseUrlApiGw'];
   }
 
   protected errorCode(error: HttpErrorResponse) {

@@ -42,7 +42,7 @@ export class DeletePortComponent {
 
   handleOkDeletePort() {
     this.isLoadingDeletePort = true
-    if(this.attach == undefined || this.attach == null) {
+    if(this.attach == undefined || this.attach == null || this.attach == '') {
       this.noti = false
       this.vlanService.deletePort(this.id, this.region, this.project).subscribe(data => {
         console.log('delete', data)
@@ -57,6 +57,7 @@ export class DeletePortComponent {
       })
     } else {
       this.noti = true
+      this.isLoadingDeletePort = false
     }
 
   }

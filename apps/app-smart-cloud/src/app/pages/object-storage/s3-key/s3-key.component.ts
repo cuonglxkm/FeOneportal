@@ -8,6 +8,7 @@ import { formDeleteS3Key, s3KeyCreate, s3KeyGenerate } from 'src/app/shared/mode
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
 import { SubUserService } from '../../../shared/services/sub-user.service';
+import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-s3-key',
@@ -25,6 +26,7 @@ export class S3KeyComponent implements OnInit {
   key: any;
   isVisibleCreate = false;
   userCreate: s3KeyCreate = new s3KeyCreate();
+  response: BaseResponse<any>
   loadingDropdown: any;
   disableDropdown: any;
   listUser: any;
@@ -33,6 +35,7 @@ export class S3KeyComponent implements OnInit {
   isLoadingDelete: boolean = false;
   formGenerateS3Key: s3KeyGenerate = new s3KeyGenerate();
   formDeleteS3Key: formDeleteS3Key = new formDeleteS3Key();
+  searchBox: string = ''
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private service: ObjectObjectStorageService,
@@ -58,7 +61,7 @@ export class S3KeyComponent implements OnInit {
         next: (data) => {
           if (data) {
             this.hasOS = true;
-            this.getData('');
+            this.getData();
           } else {
             this.hasOS = false;
           }
@@ -73,7 +76,9 @@ export class S3KeyComponent implements OnInit {
       });
   }
 
-  search(value: string) {}
+  search() {
+    this.getData()
+  }
 
   createS3Key() {
     this.isVisibleCreate = true;
@@ -94,15 +99,18 @@ export class S3KeyComponent implements OnInit {
 
   onPageSizeChange(event: any) {
     this.size = event;
+    this.getData();
   }
 
   onPageIndexChange(event: any) {
     this.index = event;
+    this.getData();
   }
 
-  getData(key: any) {
-    this.service.getDataS3Key(key, this.size, this.index).subscribe((data) => {
+  getData() {
+    this.service.getDataS3Key(this.key, this.size, this.index).subscribe((data) => {
       this.total = data.totalCount;
+      this.response = data
       this.listOfS3Key = data.records;
     });
   }
@@ -121,7 +129,7 @@ export class S3KeyComponent implements OnInit {
       .deleteS3key(this.formDeleteS3Key)
       .pipe(
         finalize(() => {
-          this.getData('');
+          this.getData();
         })
       )
       .subscribe({
@@ -129,7 +137,7 @@ export class S3KeyComponent implements OnInit {
           this.isLoadingDelete = false
           this.isVisibleDelete = false
           this.notification.success('Thành công', 'Xóa s3 key thành công');
-          this.getData('')
+          this.getData()
         },
         error: (e) => {
           this.isLoadingDelete = false
@@ -137,7 +145,7 @@ export class S3KeyComponent implements OnInit {
           this.notification.error('Thất bại', 'Xóa s3 key thất bại');
         },
       });
-    this.getData('');
+    this.getData();
     this.isVisibleDelete = false;
   }
 
@@ -151,6 +159,7 @@ export class S3KeyComponent implements OnInit {
     let subuser =
       this.userCreate.subUserId === 'owner' ? '' : this.userCreate.subUserId;
     if (subuser === undefined) {
+      this.isLoadingCreateS3key = false;
       this.notification.warning('Cảnh báo', 'Vui lòng nhập User/SubUser');
     } else {
       this.service.createS3Key(subuser).subscribe({
@@ -159,7 +168,7 @@ export class S3KeyComponent implements OnInit {
           this.isVisibleCreate = false;
           this.notification.success('Thành công', 'Tạo s3 key thành công');
           this.userCreate.subUserId = '';
-          this.getData('');
+          this.getData();
         },
         error: (error) => {
           this.isLoadingCreateS3key = false;
@@ -192,7 +201,7 @@ export class S3KeyComponent implements OnInit {
         this.isLoadingReCreateS3key = false;
         this.isVisibleReCreate = false;
         this.notification.success('Thành công', 'Tạo lại SecretKey thành công');
-        this.getData('');
+        this.getData();
       },
       error: (error) => {
         this.isLoadingReCreateS3key = false;

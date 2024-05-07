@@ -9,7 +9,7 @@
           [nzFooter]="footer"
           (nzOnCancel)="handleCancel()">
   <ng-template #modalTitle>
-    <span class="text-modal-title">{{ 'app.order.status.New' | i18n }}</span>
+    <span class="text-modal-title">{{ 'app.vlan.create.port' | i18n }}</span>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm" style="padding-bottom: 0;">
@@ -61,7 +61,8 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
-          <input nz-input class="input-custom" formControlName="ipAddress" />
+          <input nz-input class="input-custom" formControlName="ipAddress" (ngModelChange)="inputPort($event)"/>
+          <span *ngIf="isInvalidGateway" style="color: #FF4D4F;">IP không thuộc Allocation Pool </span>
           <ng-template #ipAddressErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">IP Address không được để trống</ng-container>
             <ng-container *ngIf="control.hasError('invalidIp')">IP Address không hợp lệ</ng-container>
@@ -80,7 +81,7 @@
     </button>
     <button nz-button nzType="primary"
             (click)="submitForm()"
-            [nzLoading]="isLoading" [disabled]="!validateForm.valid"
+            [nzLoading]="isLoading" [disabled]="(!validateForm.valid) || isInvalidGateway"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>

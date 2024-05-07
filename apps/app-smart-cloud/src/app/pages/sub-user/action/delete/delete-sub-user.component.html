@@ -22,7 +22,7 @@
              [placeholder]="'app.input.name' | i18n"
              [(ngModel)]="value"
              (ngModelChange)="onInput($event)" />
-    <span *ngIf="isInput" style="color: red; margin-top: 5px;">Vui lòng nhập đúng tên Sub-User</span>
+    <span *ngIf="isInput" style="color: red; margin-top: 5px;">{{'validation.sub.user.name.input'|i18n}}</span>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px">
     <button nz-button
