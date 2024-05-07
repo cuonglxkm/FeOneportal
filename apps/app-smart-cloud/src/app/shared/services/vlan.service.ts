@@ -343,4 +343,8 @@ export class VlanService extends BaseService {
       { responseType: 'json' }
     );
   }
+
+  checkIpAvailable(ip: string, cidr: string, networkId: string, regionId: number) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/CheckIpAvailable?ip=${ip}&cidr=${cidr}&networkId=${networkId}&regionId=${regionId}`)
+  }
 }
