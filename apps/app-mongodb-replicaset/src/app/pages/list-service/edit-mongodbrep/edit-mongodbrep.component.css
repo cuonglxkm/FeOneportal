@@ -1,0 +1,112 @@
+nz-card {
+  border-radius: 8px;
+}
+
+.filter-div {
+  display: flex;
+  margin-bottom: 24px;
+}
+
+.search-filter {
+  padding-left: 10px;
+}
+
+.btn-sync {
+  width: 40px;
+  border-color: #E2E2E9;
+  color: #989BB3;
+}
+
+.icon-general {
+  font-size: 20px;
+}
+
+.mleft-16 {
+  margin-left: 16px;
+}
+
+.center-align {
+  text-align: center;
+}
+
+.header-table {
+  background-color: #E2EEFC;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+input,
+.border-button,
+::ng-deep .ant-select-selector {
+  border-radius: 8px !important;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.description-title {
+  font-weight: 600;
+  font-size: 32px;
+  color: #0066B3;
+  margin-top: 60px;
+}
+
+.description-content {
+  width: 55%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+  color: #6C757D;
+}
+
+.mtop-15 {
+  margin-top: 65px;
+}
+
+.btn-create {
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.img-edit {
+  width: 24px;
+  height: 24px;
+}
+
+.err-service {
+  border-color: #EA3829 !important;
+  box-shadow: 0 0 0 2px #ff4d4f33;
+}
+
+.err-msg{
+  font-size: 14px;
+  line-height: 1.5715;
+  color: #EA3829;
+}
+
+::ng-deep .ant-modal-body {
+  padding-bottom: 10px !important;
+}
+
+.intro {
+  text-align: center;
+  padding-top: 80px;
+  padding-bottom: 100px;
+}
+
+.btn-sync {
+  display: flex;
+  justify-content: center; /* Căn giữa ngang */
+  align-items: center; /* Căn giữa dọc */
+  width: 40px;
+  height: 38px;
+  border-color: #E2E2E9;
+  color: #989BB3;
+}
+
+.ant-alert-warning{
+  border-radius: 8px !important;
+}

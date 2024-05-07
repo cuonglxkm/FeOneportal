@@ -1,0 +1,14 @@
+.contex-btbar {
+  min-height: 60px;
+}
+.oneui-affix-item {
+  position: fixed;
+  z-index: 98;
+}
+.fixed-bottom-bar {
+  border-top: solid 1px rgb(0 0 0 / 10%);
+}
+
+.content{
+  margin: 15px 0px;
+}

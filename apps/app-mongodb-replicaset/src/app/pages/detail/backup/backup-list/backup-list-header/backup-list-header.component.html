@@ -1,0 +1,42 @@
+<div nz-row nzGutter="32">
+  <div *ngIf="parentName == 'backup-list'" nz-col nzSm="24" nzLg="6" nzXl="3" nzXXl="2">
+    <button style="border-radius: 8px;vertical-align: middle;" nz-button nzType="primary" (click)="runCommand('create-backup')"> 
+      <span nz-icon nzType="plus" nzTheme="outline"></span> Tạo Backup
+    </button>
+  </div>
+
+  <div nz-col nzSm="24" nzLg="12" nzXl="6" nzXXl="6">
+    <nz-input-group class="w-100" id="search-box" nzSize="large" nzSearch [nzPrefix]="prefixSearch">
+      <input (keyup.enter)="onSearch()" nz-input type="text" placeholder="Nhập tên lịch backup để tìm kiếm" [(ngModel)]="backupTextSearch">
+    </nz-input-group>
+    <ng-template #prefixSearch>
+      <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"/>
+    </ng-template>
+  </div>
+
+  <ng-container *ngIf="parentName == 'backup-list'; else searchByStatus">
+    <div nz-col nzSm="24" nzLg="8" nzXl="8" nzXXl="4">
+      Loại lịch: 
+      <nz-select nzSize="large" style="width: 40%; margin-left: 10px;" [(ngModel)]="backupFilter" (ngModelChange)="onSearch($event)">
+        <nz-option [nzValue]="-1" [nzLabel]="'Tất cả'"></nz-option>
+        <nz-option [nzValue]="0" [nzLabel]="'Tự động'"></nz-option>
+        <nz-option [nzValue]="1" [nzLabel]="'Thủ công'"></nz-option>
+      </nz-select>
+    </div>
+  </ng-container>
+  <ng-template #searchByStatus>
+    <div nz-col nzSm="24" nzLg="8" nzXl="8" nzXXl="4">
+      Chọn trạng thái: 
+      <nz-select nzSize="large" style="width: 40%; margin-left: 10px;" [(ngModel)]="backupFilter" (ngModelChange)="onSearch($event)">
+        <nz-option [nzValue]="-1" [nzLabel]="'Tất cả'"></nz-option>
+        <nz-option [nzValue]="1" [nzLabel]="'Thành công'"></nz-option>
+        <nz-option [nzValue]="2" [nzLabel]="'Thất bại'"></nz-option>
+        <nz-option [nzValue]="3" [nzLabel]="'Bỏ qua'"></nz-option>
+        <nz-option [nzValue]="4" [nzLabel]="'Đã hủy'"></nz-option>
+        <nz-option [nzValue]="5" [nzLabel]="'Đang backup'"></nz-option>
+        <nz-option [nzValue]="6" [nzLabel]="'Đang hủy'"></nz-option>
+        <nz-option [nzValue]="7" [nzLabel]="'Hủy lỗi'"></nz-option>
+      </nz-select>
+    </div>
+  </ng-template>
+</div>

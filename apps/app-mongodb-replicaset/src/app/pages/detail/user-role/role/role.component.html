@@ -1,0 +1,186 @@
+<nz-card>
+  <nz-spin [nzSpinning]="isLoading">
+    <nz-content>
+      <div class="container">
+        <div nz-row>
+          <div nz-col [nzSpan]="18">
+            <div class="flex-style marbot-5">
+              <div class="w-25">
+                <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
+                  <input type="text" nz-input placeholder="Tìm kiếm quyền" [(ngModel)]="roleName"
+                    (ngModelChange)="resetPageFilter(); searchRole()" />
+                </nz-input-group>
+                <ng-template #prefixButton>
+                  <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                </ng-template>
+              </div>
+              <div class="mleft-16">
+                <button nz-button nzType="default" class="btn-sync">
+                  <img class="img" src="assets/imgs/refresh.svg" alt="" (click)="syncData()" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div nz-col class="button-container" [nzSpan]="6">
+            <button nz-button nz-popover nzType="primary" nzShape="round" (click)="openFormCreateRole()">
+              <span nz-icon nzType="plus" nzTheme="outline"></span>
+              Thêm mới
+            </button>
+          </div>
+        </div>
+        <div class="my-1" nz-row>
+          <nz-alert nz-col [nzSm]="14" [nzXs]="24" nzType="warning"
+            nzDescription="Chú ý: Custom role hiển thị màu vàng, collection actions và database actions hiển thị màu xanh."
+            nzShowIcon>
+          </nz-alert>
+        </div>
+
+        <div class="my-5">
+          <nz-table #basicTable [nzOuterBordered]="true" [nzData]="listOfRole" nzShowSizeChanger
+            [nzFrontPagination]="false" [nzTotal]="pageTotal" [nzLoading]="isLoadSearchRole" [nzPageSize]="pageSize"
+            [nzPageIndex]="pageIndex" (nzPageSizeChange)="changeSize($event)" (nzPageIndexChange)="changePage($event)">
+            <thead>
+              <tr>
+                <th [nzAlign]="'center'" nzWidth="5%">STT</th>
+                <th [nzAlign]="'center'">Vai trò</th>
+                <th>Quyền</th>
+                <th [nzAlign]="'center'" nzWidth="20%">Thao tác</th>
+                <!-- <th [nzAlign]="'center'" nzWidth="20%">Resource</th>  -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of listOfRole; let i = index">
+                <td [nzAlign]="'center'">{{ i + 1 + pageSize * (pageIndex - 1) }}</td>
+                <td [nzAlign]="'center'" nzBreakWord>{{ data.role }}</td>
+                <td>
+                  <div *ngFor="let parentRole of data.roles; let i = index">
+                    <div *ngIf="i < 3">
+                      <nz-tag class="tag-role" style="color: #ffbb63 !important" nzColor="#FFF4E5">
+                        {{parentRole?.role}}
+                      </nz-tag>
+                      <br />
+                    </div>
+                  </div>
+                  <nz-tag [nz-tooltip]="" *ngIf="data.roles.length > 3" class="tag-role"
+                    style="color: #ffbb63 !important" nzColor="#FFF4E5">
+                    ... và {{ data.roles.length - 3 }} quyền khác được cấp
+                  </nz-tag>
+                  <div nz-row *ngFor="let grant of data.privileges">
+                    <div nz-col [nzSpan]="8">
+                      <div *ngFor="let ac of grant.actions; let i = index">
+                        <nz-tag class="tag-role" *ngIf="i < 3" nzMargin="1" nzColor="#E6F3FC">
+                          {{ ac }}
+                        </nz-tag>
+                      </div>
+                      <nz-tag class="tag-role" [nz-tooltip]="tooltipRole(grant)" *ngIf="grant?.actions?.length > 3"
+                        nzColor="#E6F3FC">
+                        ... và {{ grant?.actions.length - 3 }} quyền khác được cấp
+                      </nz-tag>
+                    </div>
+                    <div nz-col [nzSpan]="16">
+                      <nz-tag class="tag-role" nzMarginLeft="2" nzColor="#E6F3FC">
+                        <span>
+                          &#64; {{ grant?.resource.db }}
+                          <span *ngIf="grant.resource.collection">
+                            ( {{ grant?.resource.collection }} )</span>
+                          <span *ngIf="
+                              grant.resource.collection.length === 0 ||
+                              !grant?.resource.collection
+                            ">
+                            (allCollection)
+                          </span>
+                          <br /></span>
+                      </nz-tag>
+                    </div>
+                  </div>
+                </td>
+
+                <td [nzAlign]="'center'">
+                  <span class="mg-right" (click)="updateRole(data.role)" [nz-tooltip]="'Chỉnh sửa'" nz-icon>
+                    <img class="img" src="assets/imgs/edit-2.svg" alt="" />
+                  </span>
+
+                  <span (click)="showDeleteConfirm(data.role)" [nz-tooltip]="'Xoá quyền'" nz-icon>
+                    <img class="img" src="assets/imgs/trash1.svg" alt="" />
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </div>
+    </nz-content>
+
+    <ng-template #introducePageTpl>
+      <nz-content>
+        <div class="mt-5 align-center">
+          <div>
+            <img width="468px" height="312px" src="/assets/imgs/mongoreplicaset.png" alt="" />
+          </div>
+
+          <h3 class="mt-5 description-title">Tạo quyền người dùng</h3>
+          <!-- description -->
+          <div class="mt-3 description-content">
+            <span>
+              Thiết lập quyền tùy chỉnh để chỉ định hành động và tùy chỉnh việc
+              gán quyền cho người dùng cơ sở dữ liệu của bạn.
+            </span>
+          </div>
+
+          <!-- create btn -->
+          <div class="mleft-16 mtop-15">
+            <button nz-button nzType="primary" (click)="openFormCreateRole()" class="border-button">
+              Thêm mới quyền
+            </button>
+          </div>
+        </div>
+      </nz-content>
+    </ng-template>
+  </nz-spin>
+</nz-card>
+
+<nz-modal [(nzVisible)]="isDeleteRole" nzTitle="Xoá quyền" [nzFooter]="null">
+  <ng-container *nzModalContent>
+
+    <ng-container *ngIf="isErrorDeleteRole">
+      <nz-alert
+        nzType="error"
+        [nzDescription]="roleHasUse"
+        nzShowIcon>
+      </nz-alert>
+    </ng-container>
+    <span>Quý khách chắc chắn muốn xoá quyền:
+      <span nz-typography nzBreakWord><strong>{{roleHadDelete}}</strong></span> ?
+    </span>
+
+    <div nz-row nzJustify="end" [nzGutter]="[32]">
+      <div class="mx-2">
+        <button nz-button type="button" nzType="default" (click)="handleCancelDeleteRole()">
+          <span nz-icon nzType="close" nzTheme="outline"></span>
+          Hủy bỏ
+        </button>
+      </div>
+
+      <div>
+        <button nz-button nzType="primary" (click)="confirmDeleteRole()">
+          <span nz-icon nzType="check" nzTheme="outline"></span>
+          Xác nhận
+        </button>
+      </div>
+
+    </div>
+  </ng-container>
+</nz-modal>
+
+<ng-template #roleHasUse>
+  <span>
+    Quý khách không thể xóa vì quyền này đang được sử dụng bởi các người dùng sau:
+    <span nz-typography><strong>{{listRoleHasUse}}</strong></span>
+  </span>
+  <br>
+  <span>
+    Để xóa quyền này, quý khách phải xóa các người dùng được liệt kê ở trên hoặc sửa đổi phân quyền của người
+    dùng đó.
+  </span>
+</ng-template>

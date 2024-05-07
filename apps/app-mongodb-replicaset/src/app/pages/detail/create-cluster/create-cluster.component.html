@@ -1,0 +1,533 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb  >
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-mongodb-replicaset']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>MongoDB Replicaset</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+
+  <!-- action -->
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<h2 class="mt-5 mb-3"><b>Tạo mới dịch vụ Mongodb-Replicaset</b></h2>
+
+<div nz-row [nzGutter]="16">
+  <!-- create mongodb replicaset -->
+  <div nz-col [nzSpan]="16" class="form-new">
+    <form
+      nz-form
+      [formGroup]="myform"
+      nzLayout="horizontal"
+      nzLabelAlign="left"
+      (ngSubmit)="submitForm()"
+    >
+      <nz-card class="border-card">
+        <h3>Thông tin chung</h3>
+        <span nzType="secondary" style="color: #6c757d"
+        >Vui lòng hoàn thiện đầy đủ các thông tin vào form bên dưới. Các
+          trường thông tin có dấu (<span style="color: #ff4d4f">*</span>) là các
+          thông tin bắt buộc nhập.
+        </span>
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="12">
+            <nz-form-item class="mt-4">
+              <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired
+              >Tên dịch vụ</nz-form-label
+              >
+              <nz-form-control [nzErrorTip]="mongodbErrorTpl">
+                <nz-input-group class="w-100" nzSize="large">
+                  <input
+                    nz-input
+                    type="text"
+                    placeholder="Nhập tên dịch vụ"
+                    formControlName="serviceName"
+                    id="serviceName"
+                    autofocus
+                  />
+                </nz-input-group>
+              </nz-form-control>
+              <ng-template #mongodbErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  <div>Vui lòng nhập tên dịch vụ</div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    control.hasError('minlength') ||
+                    control.hasError('maxlength')
+                  "
+                >
+                  <div>Tên dịch vụ chỉ từ 5-50 ký tự</div>
+                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">
+                  <div>
+                    Tên dịch vụ chỉ bao gồm các chữ thường, chữ hoa, số và các
+                    ký tự _-
+                  </div>
+                </ng-container>
+              </ng-template>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12">
+            <nz-form-item class="mt-4">
+              <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Phiên bản
+              </nz-form-label>
+              <nz-form-control
+                nzErrorTip="Vui lòng chọn phiên bản MongoDb Replicaset"
+              >
+                <nz-select
+                  style="width: 100%;"
+                  formControlName="version"
+                  nzPlaceHolder="Chọn phiên bản Mongodb-Replicaset"
+                  nzSize="large"
+                >
+                  <nz-option *ngFor="let i of listOfVersion" [nzValue]="i" [nzLabel]="i"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="24">
+            <nz-form-item>
+              <nz-form-label [nzSm]="24" [nzXs]="24">Mô tả</nz-form-label>
+              <nz-form-control nzErrorTip="">
+                <nz-textarea-count [nzMaxCharacterCount]="500">
+                  <textarea
+                  formControlName="description"
+                  nz-input
+                  placeholder="Mô tả dịch vụ"
+                  [nzAutosize]="{ minRows: 5, maxRows: 12 }"
+                  nzSize="large"
+                ></textarea>
+                </nz-textarea-count>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </nz-card>
+
+      <!-- goi dich vu -->
+      <nz-card class="border-card">
+        <h3><b>Các gói dịch vụ</b></h3>
+        <nz-tabset nzCentered>
+          <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="clicktab()">
+            <ng-template nz-tab>
+
+              <ngu-carousel
+                #myCarousel
+                [inputs]="carouselConfig"
+                [dataSource]="listOfServiceAvailablePackage"
+                class="carousel-div">
+                <div *nguCarouselDef="let item" class="item">
+                  <div class="pack-item"
+                       [ngClass]="{ choose: item === chooseitem }"
+                       (click)="handleChoosePack(item)">
+
+                    <div class="item-header">
+                      <div class="item-name">
+                        <span>{{ item.offerName }}</span>
+                        <div class="item-price">
+                          <div class="price">
+                            <span>{{ item.price.fixedPrice.amount | number: '1.0-0'}}</span
+                            ><br />
+                            <span class="unit-price">{{item.price.fixedPrice.currency}}/tháng</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="item-body">
+                      {{ item.cpu }} VCPU <br /> 
+                      {{ item.ram }}GB RAM <br /> 
+                      {{ item.storage }}GB SDD <br /> 
+                      {{ item.node }} Node
+                    </div>
+                  </div>
+                </div>
+                <ul class="myPoint" NguCarouselPoint>
+                  <li
+                    *ngFor="let j of myCarousel.pointNumbers"
+                    [class.active]="j === myCarousel.activePoint"
+                    (click)="myCarousel.moveTo(j)"
+                  ></li>
+                </ul>
+              </ngu-carousel>
+
+            </ng-template>
+          </nz-tab>
+
+          <nz-tab nzTitle="Cấu hình tùy chọn" >
+            <div nz-row [nzJustify]="'space-between'" [nzGutter]="16" >
+                <div nz-col [nzSm]="8" [nzXs]="24">
+                  <nz-form-item >
+                    <nz-form-label nzRequired [nzSm]="24">Node</nz-form-label>
+                    <nz-form-control
+                      nzErrorTip="Vui lòng nhập giá trị Node">
+                      <input
+                        nz-input
+                        type="number"
+                        formControlName="node"
+                        id="node"
+                        autofocus/>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+
+                <div nz-col [nzSm]="8" [nzXs]="24">
+                  <nz-form-item >
+                    <nz-form-label nzRequired [nzSm]="24">vCPU / Node</nz-form-label>
+                    <nz-form-control nzErrorTip="Vui lòng nhập giá trị vCpu" [nzErrorTip]="cpuError">
+                      <input
+                        nz-input
+                        type="number"
+                        (ngModelChange)="onChangeCpuConfig()"
+                        formControlName="cpu"
+                        id="cpu"
+                        autofocus />
+                    </nz-form-control>
+                    <ng-template #cpuError let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        CPU không được để trống. 
+                      </ng-container>
+                      <ng-container *ngIf="control.hasError('min')">
+                        CPU lớn hơn 2 và nhỏ hơn 64. 
+                      </ng-container>
+                      <ng-container *ngIf="control.hasError('max')">
+                        RAM lớn hơn 2 và nhỏ hơn 64. 
+                      </ng-container>
+                    </ng-template>
+                  </nz-form-item>
+                </div>
+
+                <div nz-col [nzSm]="8" [nzXs]="24">
+                  <nz-form-item  >
+                    <nz-form-label  nzRequired [nzSm]="24">Ram / Node(GB)</nz-form-label>
+                    <nz-form-control  nzErrorTip="Vui lòng nhập giá trị bộ nhớ" [nzErrorTip]="ramError">
+                      <input
+                        nz-input
+                        type="number"
+                        (ngModelChange)="onChangeRamConfig()"
+                        formControlName="ram"
+                        id="ram"
+                        autofocus/>
+
+                        <ng-template #ramError let-control>
+                          <ng-container *ngIf="control.hasError('required')">
+                            RAM không được để trống. 
+                          </ng-container>
+                          <ng-container *ngIf="control.hasError('min')">
+                            RAM lớn hơn 4 và nhỏ hơn 128. 
+                          </ng-container>
+                          <ng-container *ngIf="control.hasError('max')">
+                            RAM lớn hơn 4 và nhỏ hơn 128. 
+                          </ng-container>
+                        </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+            </div>
+
+            <ng-container *ngIf="isValidStorage">
+              <div >
+                <h3>Dung lượng lưu trữ </h3>
+                <!-- <nz-alert
+                  class="my-2"
+                  nzType="warning"
+                  nzDescription="Lưu ý: Với cấu hình hiện tại ( 2 vCPU / 2 GB RAM ), quý khách chỉ được chọn dung lượng lưu trữ tối đa là 300 GB. Dung lượng lưu trữ là số nguyên dương."
+                  nzShowIcon
+                ></nz-alert> -->
+  
+                <nz-form-item >
+                  <nz-form-label class="mt-2" [nzSm]="6" [nzXs]="24" vFor="storage" vRequired>Dung lượng lưu trữ</nz-form-label>
+  
+                  <nz-form-control style="width: 100%" [nzSm]="14" [nzXs]="24" id="mongo_storage">
+                    <div nz-row class="mt-3">
+                      <div  style="font-weight: 600;" nz-col  >
+                        {{minStorage}} GB
+                      </div>
+                      <input type="range" [min]="minStorage" [max]="maxStorage" step="1" placeholder="Giới hạn bộ nhớ"
+                           formControlName="storage" [value]="myform.get('storage').value" style="display: inline-block !important; width: 70%"/>
+                      <div style="font-weight: 600;" nz-col>
+                        {{maxStorage}} GB
+                      </div>
+                    </div>
+                  </nz-form-control>
+  
+                  <nz-form-control  [nzSm]="4" [nzXs]="24" style="width: 100%">
+                    <nz-input-group [nzSuffix]="'GB'" >
+                      <input nz-input type="number"
+                             nzSize="small"
+                             [min]="40"
+                             [max]="maxStorage || 80"
+                             formControlName="storage" [value]="myform.get('storage').value"
+                             (blur)="onBlurStorage()"
+                      />
+                    </nz-input-group>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+            </ng-container>
+
+          </nz-tab>
+        </nz-tabset>
+      </nz-card>
+
+      <!--subnet-->
+      <nz-card class="border-card">
+        <h3>Cấu hình Network</h3>
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSm]="12" [nzXs]="24">
+            <nz-form-item>
+              <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired nzFor="vpcNetwork">Mạng VPC</nz-form-label>
+              <nz-form-control  nzErrorTip="Mạng VPC không để trống">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn mạng VPC" formControlName="vpcNetwork" id="vpcNetwork" nzSize="large"
+                           (ngModelChange)="onSelectedVlan($event)">
+                  <nz-option *ngFor="let item of listOfVPCNetworks" [nzLabel]="item.name"
+                             [nzValue]="item.id"></nz-option>
+                </nz-select>
+                <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip
+                        (click)="refreshVPCNetwork()" class="borderless">
+                  <span nz-icon class="icon-color">
+                    <svg viewBox="64 64 896 896" focusable="false">
+                      <path
+                        d="M168 504.2c1-43.7 10-86.1 26.9-126 17.3-41 42.1-77.7 73.7-109.4S337 212.3 378 195c42.4-17.9 87.4-27 133.9-27s91.5 9.1 133.8 27A341.5 341.5 0 01755 268.8c9.9 9.9 19.2 20.4 27.8 31.4l-60.2 47a8 8 0 003 14.1l175.7 43c5 1.2 9.9-2.6 9.9-7.7l.8-180.9c0-6.7-7.7-10.5-12.9-6.3l-56.4 44.1C765.8 155.1 646.2 92 511.8 92 282.7 92 96.3 275.6 92 503.8a8 8 0 008 8.2h60c4.4 0 7.9-3.5 8-7.8zm756 7.8h-60c-4.4 0-7.9 3.5-8 7.8-1 43.7-10 86.1-26.9 126-17.3 41-42.1 77.8-73.7 109.4A342.45 342.45 0 01512.1 856a342.24 342.24 0 01-243.2-100.8c-9.9-9.9-19.2-20.4-27.8-31.4l60.2-47a8 8 0 00-3-14.1l-175.7-43c-5-1.2-9.9 2.6-9.9 7.7l-.7 181c0 6.7 7.7 10.5 12.9 6.3l56.4-44.1C258.2 868.9 377.8 932 512.2 932c229.2 0 415.5-183.7 419.8-411.8a8 8 0 00-8-8.2z" />
+                    </svg>
+                  </span>
+                </button>
+                <div class="small-description">
+                  <small>Chọn một VPC cho kubernetes cluster của bạn.
+                    <a routerLink="/app-smart-cloud/vlan/network/list" target="_balnk">Nhấp vào đây để quản lý các VPC
+                      của bạn</a>
+                  </small>
+                </div>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSm]="12" [nzXs]="24">
+            <nz-form-item>
+              <nz-form-label [nzSm]="24"  nzRequired nzFor="subnet">Subnet</nz-form-label>
+              <nz-form-control  [nzErrorTip]="errorSubnetTpl">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" nzSize="large"
+                           (ngModelChange)="checkOverLapseIP(); onSelectSubnet($event)">
+                  <ng-container *ngFor="let item of listOfSubnets">
+                    <ng-container *ngIf="item.enableDhcp; else disableSubnetTpl">
+                      <nz-option [nzLabel]="item.subnetAddressRequired"
+                                 [nzValue]="item.id"></nz-option>
+                    </ng-container>
+                    <ng-template #disableSubnetTpl>
+                      <nz-option nzCustomContent [nzLabel]="item.subnetAddressRequired"
+                                 [nzValue]="item.subnetAddressRequired" [nzDisabled]="true">
+                        <div nzTooltipTitle="Chưa mở DHCP" nzTooltipPlacement="bottom" nz-tooltip>
+                          {{item.subnetAddressRequired}}
+                        </div>
+                      </nz-option>
+                    </ng-template>
+                  </ng-container>
+                </nz-select>
+                <button  nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip
+                        (click)="refreshSubnet()" class="borderless">
+                  <span nz-icon class="icon-color">
+                    <svg viewBox="64 64 896 896" focusable="false">
+                      <path
+                        d="M168 504.2c1-43.7 10-86.1 26.9-126 17.3-41 42.1-77.7 73.7-109.4S337 212.3 378 195c42.4-17.9 87.4-27 133.9-27s91.5 9.1 133.8 27A341.5 341.5 0 01755 268.8c9.9 9.9 19.2 20.4 27.8 31.4l-60.2 47a8 8 0 003 14.1l175.7 43c5 1.2 9.9-2.6 9.9-7.7l.8-180.9c0-6.7-7.7-10.5-12.9-6.3l-56.4 44.1C765.8 155.1 646.2 92 511.8 92 282.7 92 96.3 275.6 92 503.8a8 8 0 008 8.2h60c4.4 0 7.9-3.5 8-7.8zm756 7.8h-60c-4.4 0-7.9 3.5-8 7.8-1 43.7-10 86.1-26.9 126-17.3 41-42.1 77.8-73.7 109.4A342.45 342.45 0 01512.1 856a342.24 342.24 0 01-243.2-100.8c-9.9-9.9-19.2-20.4-27.8-31.4l60.2-47a8 8 0 00-3-14.1l-175.7-43c-5-1.2-9.9 2.6-9.9 7.7l-.7 181c0 6.7 7.7 10.5 12.9 6.3l56.4-44.1C258.2 868.9 377.8 932 512.2 932c229.2 0 415.5-183.7 419.8-411.8a8 8 0 00-8-8.2z" />
+                    </svg>
+                  </span>
+                </button>
+                <div class="small-description">
+                  <small>Lựa chọn subnet cho cluster này</small>
+                </div>
+              </nz-form-control>
+              <ng-template #errorSubnetTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  Subnet không để trống
+                </ng-container>
+                <ng-container *ngIf="control.hasError('usedSubnet')">
+                  Subnet đã được sử dụng
+                </ng-container>
+              </ng-template>
+            </nz-form-item>
+          </div>
+
+          <!-- <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-switch formControlName="autoScalingWorker"
+                           class="mr-3" [nzDisabled]="isUsingPackConfig"></nz-switch><label>Cho phép External IP</label>
+              </nz-form-control>
+            </nz-form-item>
+          </div> -->
+        </div>
+      </nz-card>
+
+
+      <!-- thoi gian su dung -->
+      <!-- usage time -->
+      <nz-card class="border-card">
+        <h3>Thời gian</h3>
+        <div nz-row [nzGutter]="16" nzAlign="middle">
+          <div nz-col [nzSm]="12" [nzXs]="24">
+            <nz-form-item>
+              <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired nzFor="usageTime">Thời gian sử dụng - Tháng</nz-form-label>
+              <nz-form-control [nzSm]="22" [nzErrorTip]="usageTimeErrorTpl">
+                <input type="text" nz-input placeholder="Chọn thời gian sử dụng" id="usageTime"
+                       formControlName="usageTime" (ngModelChange)="onSelectUsageTime($event)"
+                       (keypress)="onInputUsage($event)" nzSize="large" />
+              </nz-form-control>
+              <ng-template #usageTimeErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  Thời gian sử dụng không để trống
+                </ng-container>
+                <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                  Thời gian sử dụng trong khoảng 1-100 tháng
+                </ng-container>
+              </ng-template>
+              <!-- <nz-form-control>
+                <p >Ngày bắt đầu sử dụng: {{currentDate}}</p>
+                <ng-container *ngIf="expiryDate">
+                  <p class="delete-icon">Ngày hết hạn: {{expiryDate | date: 'dd/MM/yyyy'}}</p>
+                </ng-container>
+              </nz-form-control> -->
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSm]="12" [nzXs]="24">
+            <p >Ngày bắt đầu sử dụng: {{currentDate}}</p>
+            <ng-container *ngIf="expiryDate">
+              <p class="delete-icon">Ngày hết hạn: {{expiryDate | date: 'dd/MM/yyyy'}}</p>
+            </ng-container>
+          </div>
+        </div>
+      </nz-card>
+    </form>
+
+
+  </div>
+
+  <!-- payment -->
+  <div nz-col [nzSpan]="8" class="gutter-row">
+    <nz-card class="price-card">
+      <h3><b>Thành tiền</b></h3>
+
+      <div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="12">
+          <div class="label-price">Chi phí vCPU</div>
+          <div class="label-quantity">{{chooseitem?.cpu || 0}} x {{cpuPrice | number: '1.0-0'}}</div>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <div class="value-price">{{chooseitem?.cpu*cpuPrice | number: '1.0-0'}}</div>
+          <div class="unit-total">VNĐ/tháng</div>
+        </div>
+      </div>
+      <nz-divider class="divider-style"></nz-divider>
+      <div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="12">
+          <div class="label-price">Chi phí RAM</div>
+          <div class="label-quantity">{{chooseitem?.ram || 0}} x {{ramPrice | number: '1.0-0'}}</div>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <div class="value-price">{{chooseitem?.ram*ramPrice | number: '1.0-0'}}</div>
+          <div class="unit-total">VNĐ/tháng</div>
+        </div>
+      </div>
+      <nz-divider class="divider-style"></nz-divider>
+      <div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="12">
+          <div class="label-price">Chi phí Storage</div>
+          <div class="label-quantity">{{chooseitem?.storage || 0}} x {{storagePrice | number: '1.0-0'}}</div>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <div class="value-price">{{chooseitem?.storage*storagePrice | number: '1.0-0'}}</div>
+          <div class="unit-total">VNĐ/tháng</div>
+        </div>
+      </div>
+      <nz-divider class="divider-style"></nz-divider>
+
+      <div nz-row [nzGutter]="8" class="mt-5 price-panel">
+        <div nz-col [nzSpan]="12">
+          <div class="label-price">Thành tiền</div>
+          <div class="label-quantity"><i>(Đã bao gồm 10% VAT)</i></div>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <div class="value-price total-price">{{chooseitem?.cpu*cpuPrice + chooseitem?.ram*ramPrice + chooseitem?.storage*storagePrice | number: '1.0-0'}}</div>
+          <div class="unit-total">VNĐ/tháng</div>
+        </div>
+      </div>
+
+      <div nz-row class="mt-5" [nzGutter]="16" nzJustify="center">
+        <div nz-col [nzSpan]="12">
+          <button
+            nz-button
+            nzType="default"
+            nzBlock
+            class="border-button"
+            (click)="onCancelCreate()"
+          >
+            <span nz-icon nzType="close" nzTheme="outline"></span>
+            <b> Hủy</b>
+          </button>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <button
+            nz-button
+            nzType="primary"
+            nzBlock
+            class="border-button"
+            (click)="onSubmitPayment()"
+            [disabled]="myform.invalid"
+          >
+            
+            <b>Khởi tạo</b>
+          </button>
+        </div>
+      </div>
+
+    </nz-card>
+  </div>
+
+  <!-- Modal cancle create -->
+  <nz-modal
+    [(nzVisible)]="isVisibleCancle"
+    [nzTitle]="'Xác nhận hủy tạo mới MongoDB Replicaset'"
+    (nzOnCancel)="handleCancelPopup()"
+    nzKeyboard="false"
+    nzMaskClosable="false"
+  >
+    <div *nzModalContent>
+      <div style="text-align: center; font-size: 16px;"> Bạn có chắc chắn muốn ngừng tạo mới dịch vụ Kafka<br>
+        <i>Lưu ý: Các thông tin đã nhập sẽ không được lưu lại </i>
+      </div>
+    </div>
+    <div *nzModalFooter>
+      <button nz-button (click)="handleCancelPopup()" style="margin-right: 10px;">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />Hủy bỏ
+      </button>
+      <button nz-button nzType="primary" (click)="handleOkCancle()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/confirm.svg"
+          alt=""
+        />Xác nhận
+      </button>
+    </div>
+  </nz-modal>
+</div>
