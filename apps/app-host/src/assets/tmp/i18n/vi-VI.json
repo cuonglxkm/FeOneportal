@@ -331,6 +331,8 @@
   "app.notify.gpu.configuration.invalid": "Cấu hình GPU chưa hợp lệ",
   "app.notify.check.config.for.os": "Cấu hình hiện tại chưa phù hợp với hệ điều hành. Vui lòng chọn cấu hình tối thiểu của {{nameHdh}} là {{volume}} GB dung lượng / {{ram}} GB RAM / {{cpu}} vCPU",
   "app.notify.check.config.for.change.os": "Quý khách hiện không đủ tài nguyên để thực hiện việc chuyển đổi hệ điều hành. Vui lòng cập nhật cấu hình tối thiểu của {{nameHdh}} là {{volume}} GB dung lượng / {{ram}} GB RAM / {{cpu}} vCPU",
+  "app.notify.success.instances.order.create": "Tạo order máy ảo thành công",
+  "app.notify.fail.instances.order.create": "Tạo order máy ảo không thành công",
 
   "app.choose.snapshot": "chọn Snapshot",
   "app.choose.volume.type": "Chọn loại Volume",

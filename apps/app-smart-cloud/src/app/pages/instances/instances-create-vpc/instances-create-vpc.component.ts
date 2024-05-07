@@ -168,9 +168,6 @@ export class InstancesCreateVpcComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.instanceCreate.volumeSize = 1;
-    this.instanceCreate.ram = 1;
-    this.instanceCreate.cpu = 1;
     this.userId = this.tokenService.get()?.userId;
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -401,7 +398,6 @@ export class InstancesCreateVpcComponent implements OnInit {
   //#region Chọn IP Public Chọn Security Group
   listIPPublic: IPPublicModel[] = [];
   listSecurityGroup: SecurityGroupModel[] = [];
-  listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
@@ -565,13 +561,20 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  createInstancesForm(): FormGroup<InstancesForm> {
-    return new FormGroup({
-      name: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
-    });
+  isValid: boolean = false;
+  checkValidConfig() {
+    if (
+      !this.instanceCreate.volumeSize ||
+      this.instanceCreate.volumeSize == 0 ||
+      !this.instanceCreate.ram ||
+      this.instanceCreate.ram == 0 ||
+      !this.instanceCreate.cpu ||
+      this.instanceCreate.cpu == 0
+    ) {
+      this.isValid = false;
+    } else {
+      this.isValid = true;
+    }
   }
 
   instanceInit() {
@@ -670,13 +673,16 @@ export class InstancesCreateVpcComponent implements OnInit {
 
           this.dataService.create(this.order).subscribe({
             next: (data: any) => {
-              this.notification.success('', 'Tạo máy ảo thành công');
+              this.notification.success(
+                '',
+                this.i18n.fanyi('app.notify.success.instances.order.create')
+              );
               this.router.navigate(['/app-smart-cloud/instances']);
             },
             error: (e) => {
               this.notification.error(
                 e.statusText,
-                'Tạo máy ảo không thành công'
+                this.i18n.fanyi('app.notify.fail.instances.order.create')
               );
             },
           });
