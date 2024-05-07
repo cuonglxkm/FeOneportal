@@ -23,7 +23,7 @@ import {
 } from '../instances.model';
 import { Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
-import { Observable, finalize, of } from 'rxjs';
+import { Observable, Subject, debounceTime, finalize, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
@@ -64,7 +64,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   public carouselTileItems$: Observable<number[]>;
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 2, lg: 5, all: 0 },
+    grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
     point: {
       visible: true,
@@ -182,19 +182,19 @@ export class InstancesCreateVpcComponent implements OnInit {
       .subscribe((result) => {
         if (result.breakpoints[Breakpoints.XSmall]) {
           // Màn hình cỡ nhỏ
-          this.cardHeight = '110px';
+          this.cardHeight = '130px';
         } else if (result.breakpoints[Breakpoints.Small]) {
           // Màn hình cỡ nhỏ - trung bình
-          this.cardHeight = '160px';
+          this.cardHeight = '180px';
         } else if (result.breakpoints[Breakpoints.Medium]) {
           // Màn hình trung bình
-          this.cardHeight = '190px';
+          this.cardHeight = '210px';
         } else if (result.breakpoints[Breakpoints.Large]) {
           // Màn hình lớn
-          this.cardHeight = '145px';
+          this.cardHeight = '165px';
         } else if (result.breakpoints[Breakpoints.XLarge]) {
           // Màn hình rất lớn
-          this.cardHeight = '130px';
+          this.cardHeight = '150px';
         }
 
         // Cập nhật chiều cao của card bằng Renderer2
@@ -204,7 +204,32 @@ export class InstancesCreateVpcComponent implements OnInit {
           this.cardHeight
         );
       });
+    this.checkExistName();
     this.cdr.detectChanges();
+  }
+
+  //Kiểm tra trùng tên máy ảo
+  dataSubjectName: Subject<any> = new Subject<any>();
+  changeName(value: number) {
+    this.dataSubjectName.next(value);
+  }
+
+  isExistName: boolean = false;
+  checkExistName() {
+    this.dataSubjectName
+      .pipe(
+        debounceTime(300) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.dataService.checkExistName(res, this.region).subscribe((data) => {
+          if (data == true) {
+            this.isExistName = true;
+          } else {
+            this.isExistName = false;
+          }
+          this.cdr.detectChanges();
+        });
+      });
   }
 
   infoVPC: TotalVpcResource = new TotalVpcResource();
@@ -282,10 +307,24 @@ export class InstancesCreateVpcComponent implements OnInit {
       });
   }
 
-  
-
   nameImage: string = '';
-  onInputHDH(event: any, index: number, imageTypeId: number) {
+  disableKeypair: boolean = false;
+  onInputHDH(
+    event: any,
+    index: number,
+    imageTypeId: number,
+    uniqueKey: string
+  ) {
+    if (uniqueKey.toUpperCase() == 'WINDOWS') {
+      if (!this.activeBlockPassword) {
+        this.initPassword();
+      }
+      this.listSSHKey = [];
+      this.disableKeypair = true;
+    } else {
+      this.disableKeypair = false;
+      this.getAllSSHKey();
+    }
     this.hdh = event;
     this.selectedImageTypeId = imageTypeId;
     for (let i = 0; i < this.listSelectedImage.length; ++i) {

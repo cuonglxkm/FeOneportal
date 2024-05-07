@@ -212,9 +212,10 @@ export class RouterDetailComponent implements OnInit {
     this.routerInterfaceCreate.networkCustomer = '';
     this.service.createRouterInterface(this.routerInterfaceCreate).subscribe(
       (data) => {
-        this.isLoadingRouterInterface = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note33'));
+        this.isLoadingRouterInterface = false;
         this.isVisibleCreateInterface = false;
+        this.formRouterInterface.reset()
         this.getRouterInterfaces();
       },
       (error) => {
@@ -249,30 +250,37 @@ export class RouterDetailComponent implements OnInit {
     this.isVisibleCreateStatic = false;
   }
 
-  handleOkCreateStatic() {
-    this.isLoadingRouterStatic = true;
-    this.staticRouterCreate.routerId = this.routerId;
-    this.staticRouterCreate.regionId = this.regionId;
-    this.staticRouterCreate.vpcId = this.vpcId;
-    this.staticRouterCreate.destinationCIDR =
-      this.formRouterStatic.controls.destinationCIDR.value;
-    this.staticRouterCreate.nextHop =
-      this.formRouterStatic.controls.nextHop.value;
-    this.staticRouterCreate.customerId = this.tokenService.get()?.userId;
-    this.service.createStaticRouter(this.staticRouterCreate).subscribe({
-      next: (data) => {
-        this.isLoadingRouterStatic = false;
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note38'));
-        this.isVisibleCreateStatic = false;
-        this.getRouterStatic();
-      },
-      error: (error) => {
-        this.isLoadingRouterStatic = false;
-        this.cdr.detectChanges();
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note39'));
-      },
-    });
-  }
+handleOkCreateStatic() {
+  this.isLoadingRouterStatic = true;
+  this.staticRouterCreate.routerId = this.routerId;
+  this.staticRouterCreate.regionId = this.regionId;
+  this.staticRouterCreate.vpcId = this.vpcId;
+  this.staticRouterCreate.destinationCIDR =
+    this.formRouterStatic.controls.destinationCIDR.value;
+  this.staticRouterCreate.nextHop =
+    this.formRouterStatic.controls.nextHop.value;
+  this.staticRouterCreate.customerId = this.tokenService.get()?.userId;
+  this.service.createStaticRouter(this.staticRouterCreate).subscribe({
+    next: (data) => {
+      this.notification.success(
+        this.i18n.fanyi('app.status.success'),
+        this.i18n.fanyi('app.router.note38')
+      );
+      this.isLoadingRouterStatic = false;
+      this.isVisibleCreateStatic = false;
+      this.formRouterStatic.reset();
+      this.getRouterStatic();
+    },
+    error: (error) => {
+      this.isLoadingRouterStatic = false;
+      this.cdr.detectChanges();
+      this.notification.error(
+        this.i18n.fanyi('app.status.fail'),
+        this.i18n.fanyi('app.router.note39')
+      );
+    },
+  });
+}
 
   isVisibleDeleteInterface: boolean = false;
   subnetId: number = 0;
@@ -355,4 +363,6 @@ export class RouterDetailComponent implements OnInit {
   navigateToList() {
     this.router.navigate(['/app-smart-cloud/network/router']);
   }
+
+
 }

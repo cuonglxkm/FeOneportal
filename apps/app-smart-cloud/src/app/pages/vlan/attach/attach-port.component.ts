@@ -77,7 +77,7 @@ export class AttachPortComponent {
         this.isVisibleAttach = false
         this.isLoadingAttach = false
         this.instanceSelected = null
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note64'), error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note64') + error.error.detail)
       })
     }
 

@@ -8,7 +8,7 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/object-storage']"
+        ><a [routerLink]="['/']"
           >Object Storage</a
         ></nz-breadcrumb-item
       >
@@ -36,7 +36,7 @@
           <nz-form-control>
             <nz-input-number
               style="width: 100%; margin-left: 0px"
-              [(ngModel)]="objectStorageCreate.quota"
+              [(ngModel)]="objectStorage.quota"
               [ngModelOptions]="{ standalone: true }"
               [disabled]="true"
               nzSize="large"
@@ -50,7 +50,7 @@
               <textarea
                 rows="4"
                 maxlength="250"
-                [(ngModel)]="objectStorageCreate.note"
+                [(ngModel)]="objectStorage.note"
                 [ngModelOptions]="{ standalone: true }"
                 [disabled]="true"
                 nz-input
@@ -69,13 +69,13 @@
           <nz-col nzSpan="12">
             <div class="text-label">
               {{ 'app.service.start.date' | i18n }}:
-              {{ issuedDate | date : 'dd/MM/yyyy' }}
+              {{ objectStorage.createdDate | date : 'dd/MM/yyyy' }}
             </div>
           </nz-col>
           <nz-col nzSpan="12">
             <div style="margin-left: 20px" class="text-label">
               {{ 'app.service.expiration-date' | i18n }}:
-              {{ expiredDate | date : 'dd/MM/yyyy' }}
+              {{ objectStorage.expiredDate | date : 'dd/MM/yyyy' }}
             </div>
           </nz-col>
         </nz-row>
@@ -88,8 +88,8 @@
                 [nzMin]="1"
                 [nzMax]="100"
                 [nzStep]="1"
-                [(ngModel)]="numberMonth"
-                (ngModelChange)="onChangeTime()"
+                [ngModel]="numberMonth"
+                (ngModelChange)="changeTime($event)"
                 [ngModelOptions]="{ standalone: true }"
                 nzSize="large"
               ></nz-input-number>
@@ -103,7 +103,7 @@
                 "
               >
                 {{ 'app.expected.expiry.date' | i18n }}:
-                {{ expiredDate | date : 'dd/MM/yyyy' }}
+                {{ newExpiredDate | date : 'dd/MM/yyyy' }}
               </div>
             </nz-row>
           </nz-form-control>
@@ -117,7 +117,7 @@
         </div>
         <div style="margin-bottom: 10px">
           <span class="text-value"> {{ 'app.capacity' | i18n }} </span><br />
-          <span class="text-label">{{ objectStorageCreate.quota }} GB</span>
+          <span class="text-label">{{ objectStorage.quota }} GB</span>
         </div>
         <nz-row
           style="

@@ -1,0 +1,223 @@
+<nz-main-drawer>
+  <form nz-form [formGroup]="myForm">
+    <div class="mb-5">
+      <nz-radio-group nzSize="large" [nzDisabled]="isEdit" formControlName="schedule_type" (ngModelChange)="changeBackupType()">
+        <label nz-radio [nzValue]="0">Lập lịch tự động</label>
+        <label nz-radio [nzValue]="1">Lập lịch thủ công</label>
+      </nz-radio-group>
+    </div>
+
+    <nz-form-item>
+      <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="backup_type">Loại Backup</nz-form-label>
+      <nz-form-control [nzSm]="24" [nzMd]="15">
+        <nz-select nzSize="large" formControlName="backup_type" id="backup_type">
+          <nz-option [nzValue]="0" [nzLabel]="'Logical Backup'"></nz-option>
+          <nz-option [nzValue]="1" [nzLabel]="'Physical Backup'"></nz-option>
+          <nz-option [nzValue]="2" [nzLabel]="'Incremental Backup'"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="schedule_name">Tên lịch backup</nz-form-label>
+      <nz-form-control [nzSm]="24" [nzMd]="15"
+        nzErrorTip="Tên lịch backup không được để trống dài nhất 50 ký tự, chỉ bao gồm các ký tự chữ cái, chữ số, dấu gạch nối">
+        <input nzSize="large" nz-input formControlName="schedule_name" id="schedule_name" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- schedule automatic -->
+    <ng-container *ngIf="schedule_type==0">
+
+      <nz-form-item>
+        <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="period_schedule">Chu kỳ backup</nz-form-label>
+        <nz-form-control [nzSm]="24" [nzMd]="15" nzErrorTip="Chu kỳ backup bắt buộc chọn">
+          <nz-select nzSize="large" formControlName="period_schedule" id="period_schedule"
+            (ngModelChange)="resetFormPeriodScheduleParams()">
+            <nz-option [nzValue]="0" [nzLabel]="'Hàng giờ'"></nz-option>
+            <nz-option [nzValue]="1" [nzLabel]="'Hàng ngày'"></nz-option>
+            <nz-option [nzValue]="2" [nzLabel]="'Hàng tuần'"></nz-option>
+            <nz-option [nzValue]="3" [nzLabel]="'Hàng tháng'"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <ng-container *ngIf="period_schedule == 0" [ngTemplateOutlet]="backup_hours">
+      </ng-container>
+      <ng-container *ngIf="period_schedule == 1" [ngTemplateOutlet]="backup_days">
+      </ng-container>
+      <ng-container *ngIf="period_schedule == 2" [ngTemplateOutlet]="backup_weeks">
+      </ng-container>
+      <ng-container *ngIf="period_schedule == 3" [ngTemplateOutlet]="backup_months">
+      </ng-container>
+
+      <ng-template #backup_hours>
+        <nz-form-item>
+          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="minutes_param">Chọn
+            phút</nz-form-label>
+          <nz-form-control [nzSm]="24" [nzMd]="15" nzErrorTip="Bắt buộc chọn phút">
+            <nz-select nzSize="large" formControlName="minutes_param" id="minutes_param">
+              <nz-option *ngFor="let _ of [].constructor(60); let i=index" [nzValue]="i"
+                [nzLabel]="i < 10 ? ('0' + i) : i">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </ng-template>
+      <ng-template #backup_days>
+        <nz-form-item>
+          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="hours_param">Chọn thời gian</nz-form-label>
+          <div nz-col [nzSm]="24" [nzMd]="15">
+            <div nz-row>
+              <div nz-col [nzSm]="12" style="flex: 50%;" [nzLg]="6">
+                <nz-select nzSize="large" style="width: 100%;" formControlName="hours_param" id="hours_param">
+                  <nz-option *ngFor="let _ of [].constructor(24); let i=index" [nzValue]="i"
+                    [nzLabel]="i < 10 ? ('0' + i) : i"></nz-option>
+                </nz-select>
+              </div>
+              <div style="display: flex; align-items: center;" class="mx-2"> : </div>
+              <div nz-col [nzSm]="12" [nzLg]="6" style="flex: 50%;">
+                <nz-select nzSize="large" style="width: 100%;" formControlName="minutes_param">
+                  <nz-option  *ngFor="let _ of [].constructor(60); let i=index" [nzValue]="i"
+                    [nzLabel]="i < 10 ? ('0' + i) : i"></nz-option>
+                </nz-select>
+              </div>
+            </div>
+          </div>
+        </nz-form-item>
+      </ng-template>
+      <ng-template #backup_weeks>
+        <nz-form-item>
+          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired>Chọn ngày trong tuần</nz-form-label>
+          <div nz-col [nzSm]="24" [nzMd]="15">
+            <div nz-row>
+              <div nz-col [nzSm]="12" [nzLg]="8" [nzXl]="6" *ngFor="let _ of [].constructor(7); let i=index">
+                <div style="display: flex; align-items: center; margin-right: 6px;">
+                  <input nzSize="large" class="mr-2" type="checkbox" value="{{ (i+2 == 8) ? 1 : (i+2) }}" id="{{i}}"
+                    (change)="changeCheckboxDays($event)" [checked]="daysArray.includes(i+2)?true:false">
+                  <label for="{{i}}">{{ (i+2) == 8 ? 'Chủ nhật' : ('Thứ ' + (i+2)) }}</label>
+                </div>
+              </div>
+            </div>
+            <div nz-row style="color: #B11226;" *ngIf="weekly_day_in_week_error">Bắt buộc chọn ít nhất một ngày trong tuần
+            </div>
+          </div>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="hours_param">Chọn thời gian</nz-form-label>
+          <div nz-col [nzSm]="24" [nzMd]="15">
+            <div nz-row>
+              <div nz-col [nzSm]="12" [nzLg]="6">
+                <nz-select nzSize="large" formControlName="hours_param" id="hours_param">
+                  <nz-option *ngFor="let _ of [].constructor(24); let i=index" [nzValue]="i"
+                    [nzLabel]="i < 10 ? ('0' + i) : i"></nz-option>
+                </nz-select>
+              </div>
+              <div style="display: flex; align-items: center;" class="mx-2"> : </div>
+              <div nz-col [nzSm]="12" [nzLg]="6">
+                <nz-select nzSize="large" formControlName="minutes_param">
+                  <nz-option *ngFor="let _ of [].constructor(60); let i=index" [nzValue]="i"
+                    [nzLabel]="i < 10 ? ('0' + i) : i"></nz-option>
+                </nz-select>
+              </div>
+            </div>
+          </div>
+        </nz-form-item>
+      </ng-template>
+      <ng-template #backup_months>
+        <nz-form-item>
+          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired
+            nzFor="monthly_type">On</nz-form-label>
+          <div nz-col [nzSm]="24" [nzMd]="15">
+            <div nz-row>
+              <div nz-col [nzSm]="12" [nzLg]="6">
+                <nz-select nzSize="large" formControlName="monthly_type">
+                  <nz-option [nzValue]="0" [nzLabel]="'Day'"></nz-option>
+                  <nz-option [nzValue]="1" [nzCustomContent]="true" [nzLabel]="'1st'">
+                    1<sup>st</sup>
+                  </nz-option>
+                  <nz-option [nzValue]="2" [nzCustomContent]="true" [nzLabel]="'2nd'">
+                    2<sup>nd</sup>
+                  </nz-option>
+                  <nz-option [nzValue]="3" [nzCustomContent]="true" [nzLabel]="'3rd'">
+                    3<sup>rd</sup>
+                  </nz-option>
+                  <nz-option [nzValue]="4" [nzCustomContent]="true" [nzLabel]="'4th'">
+                    4<sup>th</sup>
+                  </nz-option>
+                </nz-select>
+              </div>
+              <div style="display: flex; align-items: center;" class="mx-2"> : </div>
+              <ng-container *ngIf="monthly_type == 0; else selectDayInWeeks">
+                <div nz-col [nzSm]="12" [nzLg]="6">
+                  <nz-select nzSize="large" formControlName="monthly_day_in_month_param">
+                    <nz-option *ngFor="let _ of [].constructor(31); let i=index" [nzValue]="i + 1"
+                      [nzLabel]="(i+1) < 10 ? ('0'+(i+1)) : (i+1)"></nz-option>
+                  </nz-select>
+                </div>
+              </ng-container>
+
+              <ng-template #selectDayInWeeks>
+                <div nz-col [nzSm]="12" [nzLg]="6">
+                  <nz-select nzSize="large" style="width: 100px;" formControlName="monthly_day_in_week_param">
+                    <nz-option *ngFor="let _ of [].constructor(7); let i=index" [nzValue]="(i+2 == 8) ? 1 : (i+2)"
+                      [nzLabel]="(i+2 == 8) ? 'Chủ nhật' : 'Thứ ' + (i+2) "></nz-option>
+                  </nz-select>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="hours_param">Chọn thời gian</nz-form-label>
+          <div nz-col [nzSm]="24" [nzMd]="15">
+            <div nz-row>
+              <div nz-col [nzSm]="12" [nzLg]="6">
+                <nz-select nzSize="large" formControlName="hours_param" id="hours_param">
+                  <nz-option *ngFor="let _ of [].constructor(24); let i=index" [nzValue]="i"
+                    [nzLabel]="i < 10 ? ('0' + i) : i"></nz-option>
+                </nz-select>
+              </div>
+              <div style="display: flex; align-items: center;" class="mx-2"> : </div>
+              <div nz-col [nzSm]="12" [nzLg]="6">
+                <nz-select nzSize="large" formControlName="minutes_param">
+                  <nz-option *ngFor="let _ of [].constructor(60); let i=index" [nzValue]="i"
+                    [nzLabel]="i < 10 ? ('0' + i) : i"></nz-option>
+                </nz-select>
+              </div>
+            </div>
+          </div>
+        </nz-form-item>
+      </ng-template>
+
+    </ng-container>
+
+    <nz-form-item>
+      <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="backup_expiry">Thời hạn backup
+        (giờ)</nz-form-label>
+      <nz-form-control [nzSm]="24" [nzMd]="15" nzErrorTip="Thời hạn backup phải là số nguyên từ 1-12">
+        <input nzSize="large" nz-input type="number" formControlName="backup_expiry" id="backup_expiry" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <ng-container *ngIf="schedule_type==0">
+      <nz-form-item>
+        <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="keep_number">Số bản backup giữ
+          lại
+        </nz-form-label>
+        <nz-form-control [nzSm]="24" [nzMd]="15" nzErrorTip="Số bản backup giữ lại phải là số nguyên từ 1-30">
+          <input nzSize="large" nz-input type="number" formControlName="keep_number" id="keep_number" />
+        </nz-form-control>
+      </nz-form-item>
+    </ng-container>
+  </form>
+  <bottom-bar>
+    <div>
+      <button nz-button (click)="closeAddBackup()" class="mr-2" [nzLoading]="isSubmitting">
+        Huỷ bỏ
+      </button>
+      <button nz-button vType="primary" (click)="submitForm()" [nzLoading]="isSubmitting">
+        {{isEdit?'Cập nhật lịch':'Thêm lịch'}}
+      </button>
+    </div>
+  </bottom-bar>
+</nz-main-drawer>

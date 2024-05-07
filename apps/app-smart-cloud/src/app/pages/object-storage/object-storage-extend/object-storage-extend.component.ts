@@ -5,11 +5,10 @@ import {
   Inject,
   OnInit,
 } from '@angular/core';
-import { Router } from '@angular/router';
-import { addDays } from 'date-fns';
-import { Subject, debounceTime } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, debounceTime, finalize } from 'rxjs';
 import {
-  ObjectStorageCreate,
+  ObjectStorage,
   ObjectStorageExtend,
 } from 'src/app/shared/models/object-storage.model';
 import {
@@ -20,6 +19,8 @@ import {
 } from '../../instances/instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
+import { LoadingService } from '@delon/abc/loading';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -28,74 +29,110 @@ import { ObjectStorageService } from 'src/app/shared/services/object-storage.ser
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ObjectStorageExtendComponent implements OnInit {
+  id: any;
   issuedDate: Date = new Date();
   numberMonth: number = 1;
-  expiredDate: Date = addDays(this.issuedDate, 30);
-  objectStorageCreate: ObjectStorageCreate = new ObjectStorageCreate();
+  newExpiredDate: string;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private service: ObjectStorageService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private activatedRoute: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
+    private loadingSrv: LoadingService,
+    private notification: NzNotificationService
   ) {}
+
   ngOnInit(): void {
+    this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.getObjectStorage();
     this.getTotalAmount();
+    this.onChangeTime();
+    this.cdr.detectChanges();
   }
 
+  objectStorage: ObjectStorage = new ObjectStorage();
+  getObjectStorage() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.service
+      .getObjectStorage()
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          this.objectStorage = data;
+          let expiredDate = new Date(this.objectStorage.expiredDate);
+          expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+          this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy Object Strorage không thành công'
+          );
+        },
+      });
+  }
+
+  dataSubjectTime: Subject<any> = new Subject<any>();
+  changeTime(value: number) {
+    this.dataSubjectTime.next(value);
+  }
   onChangeTime() {
-    let lastDate = new Date();
-    lastDate.setDate(this.issuedDate.getDate() + this.numberMonth * 30);
-    this.expiredDate = lastDate;
-  }
-
-  objectStorageExtend: ObjectStorageExtend = new ObjectStorageExtend();
-  initobjectStorageExtend() {
-    this.objectStorageExtend.newExpireDate = this.expiredDate
-      .toISOString()
-      .substring(0, 19);
-    this.objectStorageExtend.customerId = this.tokenService.get()?.userId;
-    this.objectStorageExtend.userEmail = this.tokenService.get()?.email;
-    this.objectStorageExtend.actorEmail = this.tokenService.get()?.email;
-    this.objectStorageExtend.vpcId = 0;
-    this.objectStorageExtend.regionId = 0;
-    this.objectStorageExtend.serviceType = 13;
-    this.objectStorageExtend.actionType = 0;
-    this.objectStorageExtend.serviceInstanceId = 0;
-  }
-
-  totalAmount: number = 0;
-  totalincludesVAT: number = 0;
-  dataSubject: Subject<any> = new Subject<any>();
-  changeTotalAmount(value: number) {
-    this.dataSubject.next(value);
-  }
-  getTotalAmount() {
-    this.dataSubject
+    this.dataSubjectTime
       .pipe(
         debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
-        this.initobjectStorageExtend();
-        let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
-        itemPayment.specificationString = JSON.stringify(
-          this.objectStorageCreate
-        );
-        itemPayment.specificationType = 'objectstorage_extend';
-        itemPayment.serviceDuration = this.numberMonth;
-        itemPayment.sortItem = 0;
-        let dataPayment: DataPayment = new DataPayment();
-        dataPayment.orderItems = [itemPayment];
-        this.service.getTotalAmount(dataPayment).subscribe((result) => {
-          console.log('thanh tien', result);
-          this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
-          this.totalincludesVAT = Number.parseFloat(
-            result.data.totalPayment.amount
-          );
-          this.cdr.detectChanges();
-        });
+        this.numberMonth = res;
+        if (res == 0) {
+          this.totalAmount = 0;
+          this.totalincludesVAT = 0;
+          this.newExpiredDate = '';
+        } else {
+          let expiredDate = new Date(this.objectStorage.expiredDate);
+          expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+          this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
+          this.getTotalAmount();
+        }
       });
+  }
+
+  objectStorageExtend: ObjectStorageExtend = new ObjectStorageExtend();
+  initobjectStorageExtend() {
+    this.objectStorageExtend.newExpireDate = this.newExpiredDate;
+    this.objectStorageExtend.customerId = this.tokenService.get()?.userId;
+    this.objectStorageExtend.userEmail = this.tokenService.get()?.email;
+    this.objectStorageExtend.actorEmail = this.tokenService.get()?.email;
+    this.objectStorageExtend.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.UserObjectStorageExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+    this.objectStorageExtend.regionId = 0;
+    this.objectStorageExtend.serviceType = 13;
+    this.objectStorageExtend.actionType = 3;
+    this.objectStorageExtend.serviceInstanceId = this.id;
+  }
+
+  totalAmount: number = 0;
+  totalincludesVAT: number = 0;
+  getTotalAmount() {
+    this.initobjectStorageExtend();
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(this.objectStorageExtend);
+    itemPayment.specificationType = 'objectstorage_extend';
+    itemPayment.serviceDuration = this.numberMonth;
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    this.service.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien', result);
+      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalincludesVAT = Number.parseFloat(
+        result.data.totalPayment.amount
+      );
+      this.cdr.detectChanges();
+    });
   }
 
   order: Order = new Order();

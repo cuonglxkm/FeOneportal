@@ -38,6 +38,13 @@
         />{{ 'app.button.instance.create' | i18n }}
       </button>
       <one-portal-instances-btn
+        *ngIf="
+          instancesModel &&
+          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+        "
         [instancesId]="id"
         (valueChanged)="onReloadInstanceDetail()"
         style="margin-left: 8px"
@@ -47,11 +54,11 @@
   </nz-row>
 </page-header>
 
-<div>
-  <nz-row nzGutter="24">
-    <nz-col nzSpan="16">
+<div nz-row [nzGutter]="24">
+  <div nz-col [nzSpan]="16" style="display: flex">
+    <nz-row>
       <nz-card
-        style="border-radius: 8px"
+        style="border-radius: 8px; width: 100%"
         [nzBordered]="false"
         [nzLoading]="loading"
         *ngIf="instancesModel"
@@ -233,11 +240,12 @@
         [isDetail]="true"
       ></one-portal-blockstorage-detail>
       <one-portal-network-detail
+        style="width: 100%"
         *ngIf="checkPermission"
         [instancesId]="id"
         [isDetail]="false"
       ></one-portal-network-detail>
-      <form nz-form [nzLayout]="'vertical'">
+      <form style="width: 100%" nz-form [nzLayout]="'vertical'">
         <nz-card style="border-radius: 8px" [nzBordered]="false">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
@@ -669,89 +677,95 @@
           </div>
         </nz-card>
       </form>
-    </nz-col>
-    <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px">
-        <div style="margin-bottom: 20px">
-          <span class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
-        </div>
-        <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
-        <div style="margin-top: 10px" class="text-label">
-          {{ instancesModel.name }}
-        </div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
-        <div style="margin-top: 10px" class="text-label">
-          {{ instancesModel.imageName }}
-        </div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">{{ 'app.text.package' | i18n }}</div>
-        <div
-          *ngIf="instanceResize.cpu"
-          style="margin-top: 10px"
-          class="text-label"
-        >
-          {{ instanceResize.cpu }} CPUs
-        </div>
-        <div
-          *ngIf="instanceResize.ram"
-          style="margin-top: 10px"
-          class="text-label"
-        >
-          {{ instanceResize.ram }} GB RAM
-        </div>
-        <div
-          *ngIf="instanceResize.storage"
-          style="margin-top: 10px"
-          class="text-label"
-        >
-          {{ instanceResize.storage }} GB Root Disk (<span
-            *ngIf="instancesModel.volumeType == 0"
-            >HDD</span
-          ><span *ngIf="instancesModel.volumeType == 1">SSD</span>)
-        </div>
-        <nz-row
-          style="
-            margin-top: 16px;
-            margin-bottom: 20px;
-            background-color: #cce9ff;
-            padding: 16px 0 16px 0;
-            border-radius: 8px;
-          "
-          nzGutter="16"
-        >
-          <nz-col nzSpan="16">
-            <span class="text-label">{{ 'app.total.payment' | i18n }}</span
-            ><br />
-            <span class="text-note-italicized"
-              >({{ 'app.include.vat' | i18n:{"vat":"10"} }})</span
-            >
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #ea3829" nzAlign="right">
-              {{ totalincludesVAT | number }}
-              VND
-            </span>
-          </nz-col>
-        </nz-row>
-        <nz-row>
-          <nz-col style="width: 100%">
-            <button
-              style="width: 100%"
-              nz-button
-              nzSize="large"
-              nzType="primary"
-              (click)="readyEdit()"
-              [disabled]="totalAmount == 0"
-            >
-              <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="totalAmount == 0 ? 'gray' : 'white'">{{
-                'app.button.resize' | i18n
-              }}</span>
-            </button>
-          </nz-col>
-        </nz-row>
-      </nz-card>
-    </nz-col>
-  </nz-row>
+    </nz-row>
+  </div>
+  <div nz-col [nzSpan]="8" style="display: flex">
+    <div style="width: 100%">
+      <nz-affix [nzOffsetTop]="48">
+        <nz-card style="border-radius: 8px">
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{
+              'app.estimated.cost' | i18n
+            }}</span>
+          </div>
+          <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ instancesModel.name }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ instancesModel.imageName }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{ 'app.text.package' | i18n }}</div>
+          <div
+            *ngIf="instanceResize.cpu"
+            style="margin-top: 10px"
+            class="text-label"
+          >
+            {{ instanceResize.cpu }} CPUs
+          </div>
+          <div
+            *ngIf="instanceResize.ram"
+            style="margin-top: 10px"
+            class="text-label"
+          >
+            {{ instanceResize.ram }} GB RAM
+          </div>
+          <div
+            *ngIf="instanceResize.storage"
+            style="margin-top: 10px"
+            class="text-label"
+          >
+            {{ instanceResize.storage }} GB Root Disk (<span
+              *ngIf="instancesModel.volumeType == 0"
+              >HDD</span
+            ><span *ngIf="instancesModel.volumeType == 1">SSD</span>)
+          </div>
+          <nz-row
+            style="
+              margin-top: 16px;
+              margin-bottom: 20px;
+              background-color: #cce9ff;
+              padding: 16px 0 16px 0;
+              border-radius: 8px;
+            "
+            nzGutter="16"
+          >
+            <nz-col nzSpan="16">
+              <span class="text-label">{{ 'app.total.payment' | i18n }}</span
+              ><br />
+              <span class="text-note-italicized"
+                >({{ 'app.include.vat' | i18n : { vat: '10' } }})</span
+              >
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #ea3829" nzAlign="right">
+                {{ totalincludesVAT | number }}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row>
+            <nz-col style="width: 100%">
+              <button
+                style="width: 100%"
+                nz-button
+                nzSize="large"
+                nzType="primary"
+                (click)="readyEdit()"
+                [disabled]="totalAmount == 0"
+              >
+                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <span [style.color]="totalAmount == 0 ? 'gray' : 'white'">{{
+                  'app.button.resize' | i18n
+                }}</span>
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-affix>
+    </div>
+  </div>
 </div>

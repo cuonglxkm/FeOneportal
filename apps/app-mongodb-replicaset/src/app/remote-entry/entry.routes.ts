@@ -1,22 +1,14 @@
 import { Route } from '@angular/router';
-import { RemoteEntryComponent } from './entry.component';
-import { PagesComponent } from '../pages/pages.component';
-import { MngtDatabaseComponent } from '../mngt-database/mngt-database.component';
-// import { LoggingComponent } from '../logging/logging.component';
-import { OverviewComponent } from '../overview/overview.component';
-import { RoleComponent } from '../user-role/role/role.component';
-import { UserComponent } from '../user-role/user/user.component';
-import { UserRoleComponent } from '../user-role/user-role.component';
-import { CustomRoleComponent } from '../user-role/role/custom-role/custom-role.component';
+import { PagesComponent } from '../pages/detail/pages.component';
+import { ListMongodbrepComponent } from '../pages/list-service/list-mongodbrep.component';
+import { CreateClusterComponent } from '../pages/detail/create-cluster/create-cluster.component';
+import { UpgradeClusterComponent } from '../pages/detail/upgrade-cluster/upgrade-cluster.component';
+import { EditMongodbrepComponent } from '../pages/list-service/edit-mongodbrep/edit-mongodbrep.component';
 
 export const remoteRoutes: Route[] = [
-  { path: '', component: RemoteEntryComponent },
-  { path: 'mongodb', component: PagesComponent},
-  { path: 'mngt-database', component: MngtDatabaseComponent},
-  // { path: 'mongodb/log', component: LoggingComponent  },
-  { path: 'mongodb/info', component: OverviewComponent },
-  { path: 'user-role', component: UserRoleComponent },
-  { path: 'role', component: RoleComponent },
-  { path: 'user', component: UserComponent },
-  { path: 'custome-role', component: CustomRoleComponent },
+  { path: '', component: ListMongodbrepComponent},
+  { path: 'create', component: CreateClusterComponent},
+  { path: 'upgrade/:id', component: UpgradeClusterComponent},
+  { path: ':id', component: PagesComponent},
+  { path: 'edit/:id', component: EditMongodbrepComponent},
 ];

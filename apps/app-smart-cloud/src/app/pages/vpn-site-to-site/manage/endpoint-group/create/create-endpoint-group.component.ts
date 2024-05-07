@@ -32,14 +32,15 @@ export class CreateEndpointGroupComponent implements OnInit {
     { label: 'Subnet(for local system)', value: 'subnet' },
     { label: 'Cidr(for external system)', value: 'cidr' },
   ];
-
+  checked: boolean = false
   selectedType = 'cidr';
   isLoading: boolean = false;
   formCreateEndpointGroup: FormCreateEndpointGroup =
     new FormCreateEndpointGroup();
   form: FormGroup<{
     name: FormControl<string>;
-    endpoints: FormControl<string>;
+    endpointsCidr: FormControl<string>;
+
   }> = this.fb.group({
     name: [
       '',
@@ -48,7 +49,7 @@ export class CreateEndpointGroupComponent implements OnInit {
         Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/),
       ],
     ],
-    endpoints: ['', Validators.required],
+    endpointsCidr: ['', Validators.required],
   });
 
   getData(): any {
@@ -60,7 +61,7 @@ export class CreateEndpointGroupComponent implements OnInit {
     this.formCreateEndpointGroup.type = this.selectedType;
     this.formCreateEndpointGroup.endpoints =
       this.selectedType === 'cidr'
-        ? this.form.controls.endpoints.value.split(' ')
+        ? this.form.controls.endpointsCidr.value.split(' ')
         : this.subnetId;
     return this.formCreateEndpointGroup;
   }
@@ -80,10 +81,34 @@ export class CreateEndpointGroupComponent implements OnInit {
     private endpointGroupService: EndpointGroupService
   ) {}
 
+  handleChangeType(event: any){
+    console.log(event);
+    console.log(this.form.controls.endpointsCidr.value);
+    this.form.controls.endpointsCidr.clearValidators();
+    this.form.controls.endpointsCidr.markAsPristine();
+    this.form.controls.endpointsCidr.reset();
+    if(event === 'cidr'){
+      this.listCidrInfo = []
+      this.subnetId = [];
+      this.form.controls.endpointsCidr.setValidators([
+        Validators.required,
+      ]);
+      this.form.controls.endpointsCidr.markAsPristine();
+    this.form.controls.endpointsCidr.reset();
+    }
+  }
+
   handleCreate() {
     this.isLoading = true;
     if (this.form.valid) {
-      this.formCreateEndpointGroup = this.getData();
+      if(this.selectedType === 'subnet' && this.subnetId.length === 0){
+        this.notification.warning(
+          'Cảnh báo',
+          'Vui lòng chọn subnet'
+        );
+        this.isLoading = false;
+      }else{
+        this.formCreateEndpointGroup = this.getData();
       console.log(this.formCreateEndpointGroup);
       this.endpointGroupService.create(this.formCreateEndpointGroup).subscribe(
         (data) => {
@@ -103,6 +128,7 @@ export class CreateEndpointGroupComponent implements OnInit {
           console.log(error);
         }
       );
+      }
     }
   }
 
@@ -139,4 +165,8 @@ export class CreateEndpointGroupComponent implements OnInit {
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
   }
+
 }
+
+
+

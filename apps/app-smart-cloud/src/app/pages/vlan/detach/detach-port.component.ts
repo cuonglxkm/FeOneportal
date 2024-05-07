@@ -52,7 +52,7 @@ export class DetachPortComponent {
     }, error => {
       this.isVisibleDetach = false
       this.isLoadingDetach = false
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note50'), error.error.detail)
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note50') + error.error.detail)
     })
   }
 }

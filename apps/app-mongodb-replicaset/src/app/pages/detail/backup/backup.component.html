@@ -1,0 +1,20 @@
+<nz-page>
+  <nz-layout>
+    <nz-content>
+      <h2 *ngIf="Mongodb" style="font-weight: bolder;"> Backup dịch vụ: {{Mongodb.service_name}}</h2>
+      
+      <nz-tabset>
+        <nz-tab nzTitle="Lịch backup">
+          <ng-template nz-tab>
+            <app-backup-list [sernzice]="Mongodb"></app-backup-list>
+          </ng-template>
+        </nz-tab>
+        <nz-tab nzTitle="Lịch sử backup">
+          <ng-template nz-tab>
+            <app-backup-history [sernzice]="Mongodb"></app-backup-history>
+          </ng-template>
+        </nz-tab>
+      </nz-tabset>
+    </nz-content>
+  </nz-layout>
+</nz-page>

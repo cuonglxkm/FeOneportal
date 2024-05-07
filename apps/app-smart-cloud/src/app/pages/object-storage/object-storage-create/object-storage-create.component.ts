@@ -38,20 +38,41 @@ export class ObjectStorageCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getTotalAmount();
+    this.onChangeCapacity();
+    this.onChangeTime();
+  }
+
+  dataSubjectTime: Subject<any> = new Subject<any>();
+  changeTime(value: number) {
+    this.dataSubjectTime.next(value);
   }
 
   onChangeTime() {
-    let lastDate = new Date();
-    lastDate.setDate(this.today.getDate() + this.numberMonth * 30);
-    this.expiredDate = lastDate;
+    this.dataSubjectTime
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.numberMonth = res;
+        if (res == 0) {
+          this.totalAmount = 0;
+          this.totalincludesVAT = 0;
+          this.expiredDate = null;
+        } else {
+          let lastDate = new Date();
+          lastDate.setDate(this.today.getDate() + this.numberMonth * 30);
+          this.expiredDate = lastDate;
+          this.totalincludesVAT * this.numberMonth;
+          this.getTotalAmount();
+        }
+      });
   }
 
   initObjectStorage() {
     this.objectStorageCreate.customerId = this.tokenService.get()?.userId;
     this.objectStorageCreate.userEmail = this.tokenService.get()?.email;
     this.objectStorageCreate.actorEmail = this.tokenService.get()?.email;
-    this.objectStorageCreate.vpcId = 0;
+    this.objectStorageCreate.projectId = 0;
     this.objectStorageCreate.regionId = 0;
     this.objectStorageCreate.serviceType = 13;
     this.objectStorageCreate.actionType = 0;
@@ -68,35 +89,37 @@ export class ObjectStorageCreateComponent implements OnInit {
   totalAmount: number = 0;
   totalincludesVAT: number = 0;
   dataSubject: Subject<any> = new Subject<any>();
-  changeTotalAmount(value: number) {
+  changeCapacity(value: number) {
     this.dataSubject.next(value);
   }
-  getTotalAmount() {
+  onChangeCapacity() {
     this.dataSubject
       .pipe(
         debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
-        this.initObjectStorage();
-        let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
-        itemPayment.specificationString = JSON.stringify(
-          this.objectStorageCreate
-        );
-        itemPayment.specificationType = 'objectstorage_create';
-        itemPayment.serviceDuration = this.numberMonth;
-        itemPayment.sortItem = 0;
-        let dataPayment: DataPayment = new DataPayment();
-        dataPayment.orderItems = [itemPayment];
-        this.service.getTotalAmount(dataPayment).subscribe((result) => {
-          console.log('thanh tien', result);
-          this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
-          this.totalincludesVAT = Number.parseFloat(
-            result.data.totalPayment.amount
-          );
-          this.cdr.detectChanges();
-        });
+        this.getTotalAmount();
       });
+  }
+
+  getTotalAmount() {
+    this.initObjectStorage();
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(this.objectStorageCreate);
+    itemPayment.specificationType = 'objectstorage_create';
+    itemPayment.serviceDuration = this.numberMonth;
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    this.service.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien', result);
+      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalincludesVAT = Number.parseFloat(
+        result.data.totalPayment.amount
+      );
+      this.cdr.detectChanges();
+    });
   }
 
   order: Order = new Order();
