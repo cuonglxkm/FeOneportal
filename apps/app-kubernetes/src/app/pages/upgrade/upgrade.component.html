@@ -252,7 +252,7 @@
                       <nz-form-label nzFor="configType">Cấu hình (<span class="required-color">*</span>)</nz-form-label>
                       <nz-form-control [nzErrorTip]="errorConfigError">
                         <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType"
-                          id="configType" (ngModelChange)="onSelectWorkerType($event, i); onChangeConfigType($event, i)"
+                          id="configType" (ngModelChange)="onSelectConfigType($event, i); onChangeConfigType($event, i)"
                           [nzDisabled]="isUsingPackConfig" nzSize="large">
                           <nz-option *ngFor="let item of listOfWorkerType"
                             nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)"
@@ -301,7 +301,7 @@
                     <nz-form-item>
                       <nz-form-label nzFor="volumeType">Loại ổ cứng</nz-form-label>
                       <nz-form-control>
-                        <nz-radio-group formControlName="volumeType" (ngModelChange)="onSelectVolumeType($event, i)"
+                        <nz-radio-group formControlName="volumeType" (ngModelChange)="onSelectVolumeType($event, i); onCalculatePrice();"
                           [nzDisabled]="isUsingPackConfig">
                           <ng-container *ngFor="let item of listOfVolumeType">
                             <label nz-radio [nzValue]="item.volumeType" id="volumeType">
@@ -427,10 +427,10 @@
             <td class="w-30 borderless"><label class="weight-600">Cấu hình nâng cấp</label></td>
             <td class="borderless">
               <ng-container *ngIf="chooseItem; else customUpgradeConfigTpl">
-                {{choosePackDescription}}
+                {{upgradePackDescription}}
               </ng-container>
               <ng-template #customUpgradeConfigTpl>
-                <div [innerHTML]="choosePackDescription"></div>
+                <div [innerHTML]="upgradePackDescription"></div>
               </ng-template>
             </td>
           </tr>
@@ -456,7 +456,7 @@
           </div>
 
           <div nz-col [nzSpan]="12">
-            <div class="price-style price-color mr-3">{{10000000 | number: '1.0-0'}} VNĐ</div>
+            <div class="price-style price-color mr-3">{{(upgradeCost ? upgradeCost : 0) | number: '1.0-0'}} VNĐ</div>
             <div class="price-style unit-color mr-3">VNĐ/tháng</div>
           </div>
         </div>
@@ -484,16 +484,16 @@
         </div>
 
         <div nz-row [nzGutter]="8">
-
+          <ng-container *ngIf="isChangeInfo == true">
             <ng-container *ngIf="chooseItem; else customPackSummaryTpl">
               <div nz-col [nzSpan]="12">
                 <div class="ml-3 mb-3"><label class="weight-600">Gói dịch vụ: <b>{{chooseItem.packName}}</b></label></div>
               </div>
 
               <div nz-col [nzSpan]="12">
-                <div class="price-style mr-3">{{chooseItem.cpu}}vCPU /</div>
-                <div class="price-style mr-3">{{chooseItem.ram}}GB /</div>
-                <div class="price-style mr-3">{{chooseItem.rootStorage}}GB {{chooseItem.rootStorageName}}</div>
+                <div class="mr-3 summary-info">
+                  {{chooseItem.cpu}}vCPU / {{chooseItem.ram}}GB / {{chooseItem.rootStorage}}GB {{chooseItem.rootStorageName}}
+                </div>
               </div>
             </ng-container>
             <ng-template #customPackSummaryTpl>
@@ -503,12 +503,17 @@
 
               <div nz-col [nzSpan]="12">
                 <ng-container *ngFor="let control of listFormWorker.controls">
-                  <!-- <div class="price-style mr-3">{{control.get('cpu').value ? control.get('cpu').value : ''}}vCPU</div>
-                  <div class="price-style mr-3">{{control.get('ram').value ? control.get('ram').value : ''}}GB</div>
-                  <div class="price-style mr-3">{{control.get('volumeSize').value ? control.get('volumeSize').value : ''}}GB</div> -->
+                  <div class="mr-3 mb-3 summary-info">
+                    {{control.get('workerGroupName').value ? control.get('workerGroupName').value : ''}}
+                    / {{control.get('cpu').value ? control.get('cpu').value : ''}}vCPU
+                    / {{control.get('ram').value ? control.get('ram').value : ''}}GB
+                    / {{control.get('volumeStorage').value ? control.get('volumeStorage').value : ''}}GB
+                    {{control.get('volumeTypeName').value ? control.get('volumeTypeName').value : ''}}
+                  </div>
                 </ng-container>
               </div>
             </ng-template>
+          </ng-container>
         </div>
 
         <nz-divider class="divider-style"></nz-divider>
@@ -519,7 +524,7 @@
           </div>
 
           <div nz-col [nzSpan]="12">
-            <div class="price-style price-color mr-3">{{10000000 | number: '1.0-0'}} VNĐ</div>
+            <div class="price-style price-color mr-3">{{(remainCost ? remainCost : 0) | number: '1.0-0'}} VNĐ</div>
             <div class="price-style unit-color mr-3">VNĐ/tháng</div>
           </div>
         </div>
@@ -530,7 +535,7 @@
             <div class="mt-1 ml-3 mb-3 unit-color"><i>(Đã bao gồm 10% VAT)</i></div>
           </div>
           <div nz-col [nzSpan]="12">
-            <div class="price-style total-color mt-3 mr-3">{{20000000 | number: '1.0-0'}} VNĐ</div>
+            <div class="price-style total-color mt-3 mr-3">{{(totalCost && totalCost > 0 ? totalCost : 0) | number: '1.0-0'}} VNĐ</div>
             <div class="price-style unit-color mr-3">VNĐ/tháng</div>
           </div>
         </div>

@@ -29,7 +29,7 @@ export class UpgradeComponent implements OnInit {
   cloudProfileId: string;
 
   chooseItem: PackModel;
-  choosePackDescription: string;
+  upgradePackDescription: string;
   currentPackItem: PackModel;
   currentPackDescription: string;
   currentDate: Date;
@@ -45,6 +45,7 @@ export class UpgradeComponent implements OnInit {
   isSubmitting: boolean;
   isUsingPackConfig: boolean;
   isShowModalCancelUpgrade: boolean;
+  isChangeInfo: boolean;
 
   upgradeForm: FormGroup;
   listFormWorker: FormArray;
@@ -79,6 +80,7 @@ export class UpgradeComponent implements OnInit {
     this.isSubmitting = false;
     this.isUsingPackConfig = true;
     this.isShowModalCancelUpgrade = false;
+    this.isChangeInfo = false;
     this.selectedTabIndex = 0;
     this.listOfK8sVersion = [];
     this.listOfVolumeType = [];
@@ -92,6 +94,8 @@ export class UpgradeComponent implements OnInit {
     });
 
     this.initForm();
+
+    this.getListPriceItem();
   }
 
   initForm() {
@@ -179,6 +183,10 @@ export class UpgradeComponent implements OnInit {
         this.onSelectPackTab();
       }
 
+      // init calculate cost
+      this.currentRegisteredCost = this.getCurrentRegisteredCost();
+      this.costPerDay = this.getCostPerDay();
+      this.remainCost = this.getRemainCost();
     });
   }
 
@@ -269,30 +277,33 @@ export class UpgradeComponent implements OnInit {
   onSelectPackTab() {
     this.chooseItem = null;
     this.isUsingPackConfig = true;
-    this.choosePackDescription = '';
+    this.upgradePackDescription = '';
     this.clearFormWorker();
 
     if (this.detailCluster && this.listOfServicePack) {
       this.currentPackItem = this.listOfServicePack.find(pack => pack.offerId == this.detailCluster.offerId);
     }
 
-    let listOfDescriptionCustomPack = [];
+    let listOfDescriptionPack = [];
     for (let i = 0; i < this.listFormWorker.length; i++) {
       let wg = this.listFormWorker.at(i).value;
       let str = '<div>' + wg.workerGroupName + ' / ' + wg.cpu + 'vCPU / ' + wg.ram + 'GB / '
-      + wg.volumeSize + 'GB ' + wg.volumeTypeName + '</div>';
-      listOfDescriptionCustomPack.push(str);
+          + wg.volumeSize + 'GB ' + wg.volumeTypeName + '</div>';
+      listOfDescriptionPack.push(str);
     }
-    this.choosePackDescription = listOfDescriptionCustomPack.join(' ');
+    this.upgradePackDescription = listOfDescriptionPack.join(' ');
   }
 
   onSelectCustomPackTab() {
     this.chooseItem = null;
     this.isUsingPackConfig = false;
-    this.choosePackDescription = null;
+    this.isChangeInfo = true;
+    this.upgradePackDescription = null;
     this.clearFormWorker();
 
+    let listOfDescriptionPack = [];
     const wgs: WorkerGroupModel[] = this.detailCluster.workerGroup;
+
     for (let i = 0; i < wgs.length; i++) {
       const isAutoScale = wgs[i].autoScaling;
       let nodeNumber: number;
@@ -322,14 +333,49 @@ export class UpgradeComponent implements OnInit {
       });
 
       this.listFormWorker.push(wg);
+
+      let str = '<div>' + wgs[i].workerGroupName + ' / ' + wgs[i].cpu + 'vCPU / ' + wgs[i].ram + 'GB / '
+          + wgs[i].volumeSize + 'GB ' + wgs[i].volumeTypeName + '</div>';
+      listOfDescriptionPack.push(str);
     }
+
+    this.upgradePackDescription = listOfDescriptionPack.join(' ');
   }
 
   onChoosePack(item: PackModel) {
     this.chooseItem = item;
+    this.isChangeInfo = true;
 
-    this.choosePackDescription = item.packName + " / " + item.cpu + "vCPU / "
+    if (this.chooseItem) {
+      // this.myform.get('volumeCloudSize').setValue(this.chooseItem.volumeStorage);
+      // this.myform.get('volumeCloudType').setValue(this.volumeCloudType);
+
+      this.clearFormWorker();
+
+      // add worker group
+      let wgf = this.fb.group({
+        workerGroupName: [KubernetesConstant.DEFAULT_WORKER_NAME],
+        nodeNumber: [this.chooseItem.workerNode],
+        volumeStorage: [this.chooseItem.rootStorage],
+        volumeType: [this.chooseItem.rootStorageType],
+        volumeTypeId: [this.chooseItem.volumeTypeId],
+        configType: [this.chooseItem.machineType],
+        configTypeId: [this.chooseItem.machineTypeId],
+        autoScalingWorker: [false],
+        autoHealing: [true],
+        minimumNode: [null],
+        maximumNode: [null],
+        cpu: [this.chooseItem.cpu],
+        ram: [this.chooseItem.ram]
+      });
+
+      this.listFormWorker.push(wgf);
+    }
+
+    this.upgradePackDescription = item.packName + " / " + item.cpu + "vCPU / "
     + item.ram + "GB / " + item.rootStorage + "GB " + item.rootStorageName;
+
+    this.onCalculatePrice();
   }
 
   onChangeNodeNumber(event: number, index: number) {
@@ -345,7 +391,7 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
-  onSelectWorkerType(machineName: string, index: number) {
+  onSelectConfigType(machineName: string, index: number) {
     const selectedWorkerType = this.listOfWorkerType.find(item => item.machineName === machineName);
     this.listFormWorker.at(index).get('configTypeId').setValue(selectedWorkerType.id);
   }
@@ -366,6 +412,8 @@ export class UpgradeComponent implements OnInit {
     this.listFormWorker.at(index).get('configTypeId').setValue(selectedConfig.id);
     this.listFormWorker.at(index).get('ram').setValue(selectedConfig.ram);
     this.listFormWorker.at(index).get('cpu').setValue(selectedConfig.cpu);
+
+    this.onCalculatePrice();
   }
 
   onChangeVolumeWorker(event: number, index: number) {
@@ -381,14 +429,163 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
-  onCalculatePrice() {
+  getListPriceItem() {
+    this.clusterService.getListPriceItem()
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.listOfPriceItem = r.data;
+        this.initPrice();
+      } else {
+        this.notificationService.error("Thất bại", r.message);
+      }
+    });
+  }
 
+  priceOfCpu: number;
+  priceOfRam: number;
+  priceOfSsd: number;
+  priceOfHdd: number;
+  initPrice() {
+    this.listOfPriceItem.forEach(data => {
+      switch (data.item) {
+        case 'cpu':
+          this.priceOfCpu = data.price;
+          break;
+        case 'ram':
+          this.priceOfRam = data.price;
+          break;
+        case 'storage_ssd':
+          this.priceOfSsd = data.price;
+          break;
+        case 'storage_hdd':
+          this.priceOfHdd = data.price;
+          break;
+      }
+    });
+  }
+
+  remainCost: number;
+  upgradeCost: number;
+  currentRegisteredCost: number;
+  totalCost: number;
+  costPerDay: number;
+  onCalculatePrice() {
+    this.upgradeCost = this.getUpgradeCost();
+    this.remainCost = this.getRemainCost();
+
+    this.totalCost = this.upgradeCost - this.remainCost;
+  }
+
+  newTotalCpu: number;
+  newTotalRam: number;
+  newTotalStorage: number;
+  getUpgradeCost(): number {
+    this.newTotalCpu = 0;
+    this.newTotalRam = 0;
+    this.newTotalStorage = 0;
+    this.upgradeCost = 0;
+
+    this.currentRegisteredCost = this.getCurrentRegisteredCost();
+
+    if (this.chooseItem) {
+      // using pack
+      return this.chooseItem.price;
+
+    } else {
+
+      for (let i = 0; i < this.listFormWorker.length; i++) {
+        let wg = this.listFormWorker.at(i).value;
+        const cpu = wg.cpu ? wg.cpu : 0;
+        const ram = wg.ram ? wg.ram : 0;
+        const storage = +wg.volumeStorage ? +wg.volumeStorage : 0;
+        const autoScale = wg.autoScalingWorker;
+        let nodeNumber: number;
+        if (autoScale) {
+          // TODO: ...
+        } else {
+          nodeNumber = wg.nodeNumber ? wg.nodeNumber : 0;
+        }
+
+        this.newTotalCpu += nodeNumber * cpu;
+        this.newTotalRam += nodeNumber * ram;
+        this.newTotalStorage += nodeNumber * storage;
+      }
+
+      return (this.priceOfCpu * this.newTotalCpu
+        + this.priceOfRam * this.newTotalRam + this.priceOfSsd * this.newTotalStorage);
+    }
+  }
+
+  currentTotalCpu: number;
+  currentTotalRam: number;
+  currentTotalStorage: number;
+  getCurrentRegisteredCost() {
+    this.currentTotalCpu = 0;
+    this.currentTotalRam = 0;
+    this.currentTotalStorage = 0;
+    this.currentRegisteredCost = 0;
+
+    const offerId = this.detailCluster.offerId;
+    if (offerId != 0) {
+      // using pack
+      const pack = this.listOfServicePack.find(pack => pack.offerId = offerId);
+      return pack.price;
+
+    } else {
+
+      let wgs = this.detailCluster.workerGroup;
+      for (let i = 0; i < wgs.length; i++) {
+        const cpu = wgs[i].cpu ? wgs[i].cpu : 0;
+        const ram = wgs[i].ram ? wgs[i].ram : 0;
+        const storage = +wgs[i].volumeSize ? +wgs[i].volumeSize : 0;
+        const autoScale = wgs[i].autoScaling;
+        let nodeNumber: number;
+        if (autoScale) {
+          // TODO: ...
+        } else {
+          nodeNumber = wgs[i].nodeNumber ? wgs[i].nodeNumber : 0;
+        }
+
+        this.currentTotalCpu += nodeNumber * cpu;
+        this.currentTotalRam += nodeNumber * ram;
+        this.currentTotalStorage += nodeNumber * storage;
+      }
+
+      return this.priceOfCpu * this.currentTotalCpu
+        + this.priceOfRam * this.currentTotalRam + this.priceOfSsd * this.currentTotalStorage;
+    }
+  }
+
+  getCostPerDay() {
+    return Math.floor(this.currentRegisteredCost / 30);
+  }
+
+  getRemainCost(): number {
+    this.remainCost = 0;
+    let remainDays = this.getRemainDay();
+    return this.costPerDay * remainDays;
+  }
+
+  getRemainDay(): number {
+    let tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const createdDate = new Date(this.detailCluster.createdDate);
+    const usageTime = this.detailCluster.usageTime;
+    let expiredDate = createdDate.setMonth(createdDate.getMonth() + usageTime);
+
+    let diffTimes = Math.abs(expiredDate - tomorrow.getTime());
+    let diffDays = Math.floor(diffTimes / (1000 * 60 * 60 * 24));
+    return diffDays;
   }
 
   clearFormWorker() {
     while (this.listFormWorker.length != 0) {
       this.listFormWorker.removeAt(0);
     }
+
+    this.totalCost = 0;
+    this.upgradeCost = 0;
   }
 
   // validate duplicate worker group name
