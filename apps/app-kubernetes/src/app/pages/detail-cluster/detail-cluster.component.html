@@ -127,14 +127,6 @@
               </tr>
 
               <tr>
-                <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
-                    [label]="'Ngày khởi tạo'"></row-data></td>
-                <td class="w-50"><row-data
-                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
-                    [label]="'Ngày hết hạn'" [type]="'danger'"></row-data></td>
-              </tr>
-
-              <tr>
                 <td class="w-50">
                   <div nz-row>
                     <div nz-col [nzSpan]="8">Trạng thái</div>
@@ -146,6 +138,14 @@
                   </div>
                 </td>
                 <td class="w-50"><row-data [value]="detailCluster.description" [label]="'Mô tả'"></row-data></td>
+              </tr>
+
+              <tr>
+                <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
+                    [label]="'Ngày khởi tạo'"></row-data></td>
+                <td class="w-50"><row-data
+                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
+                    [label]="'Ngày hết hạn'" [type]="'danger'"></row-data></td>
               </tr>
 
               <tr>
@@ -205,7 +205,7 @@
                           <ng-template #editWorkerGroupNameTpl>
                             <nz-form-item>
                               <nz-form-control [nzErrorTip]="errorWorkerNameTpl">
-                                <input nz-input type="text" formControlName="workerGroupName"
+                                <input nz-input type="text" formControlName="workerGroupName" (ngModelChange)="checkDuplicate(i)"
                                   placeholder="Nhập tên nhóm worker" nzSize="large" />
                               </nz-form-control>
                               <ng-template #errorWorkerNameTpl let-control>
@@ -244,6 +244,9 @@
                               <ng-template #errorNodeNumberTpl>
                                 <ng-container *ngIf="control.hasError('required')">
                                   Số node không để trống
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('invalid')">
+                                  Số node không nhỏ hơn số đã sử dụng
                                 </ng-container>
                                 <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
                                   Số node trong khoảng từ 1-10

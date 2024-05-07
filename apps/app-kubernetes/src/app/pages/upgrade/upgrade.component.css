@@ -126,14 +126,8 @@ small {
   border: none;
 }
 
-.ant-table-tbody > tr > td {
-  border-bottom: none;
-  color: var(--Dark, #2b2d3b);
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px;
-  letter-spacing: 0.1px;
+.detailtable nz-table tr:nth-child(odd) {
+  background-color: #f0f1f4;
 }
 
 .item-header-disable {
