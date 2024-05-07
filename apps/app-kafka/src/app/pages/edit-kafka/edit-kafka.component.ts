@@ -28,6 +28,7 @@ export class EditKafkaComponent implements OnInit {
   kafkaUpdateDto: KafkaUpdateReq;
   isVisibleConfirm = false;
   isChangeForm = false;
+  isUpgradeVersion = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -103,6 +104,7 @@ export class EditKafkaComponent implements OnInit {
   handleConfirmPopup() {
     if (this.myform.controls.version.value != this.itemDetail.version) {
       this.isVisibleConfirm = true;
+      this.isUpgradeVersion = 1;
     } else {
       this.updateKafka();
     }
@@ -126,6 +128,7 @@ export class EditKafkaComponent implements OnInit {
       serviceName: this.myform.get('serviceName').value,
       version: this.myform.get('version').value,
       description: this.myform.get('description').value,
+      isUpgradeVersion: this.isUpgradeVersion
     }
 
     this.loadingSrv.open({ type: "spin", text: "Loading..." });

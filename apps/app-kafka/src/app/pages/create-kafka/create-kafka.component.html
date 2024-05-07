@@ -68,7 +68,7 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon> {{ 'app.service.description' | i18n }}</nz-form-label>
           <nz-form-control nzErrorTip="">
             <nz-textarea-count [nzMaxCharacterCount]="500">
-              <textarea formControlName="description" nz-input [placeholder]="'app.service.description' | i18n" 
+              <textarea formControlName="description" nz-input [placeholder]="'app.service.description' | i18n" maxlength="500"
                 [nzAutosize]="{ minRows: 5, maxRows: 12 }" nzSize="large">
               </textarea>
             </nz-textarea-count>
@@ -467,7 +467,7 @@
           <div class="label-price"> {{ 'app.kafka.cost-cpu' | i18n }}</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">{{ this.unitPrice.cpu * cpu | number: '1.0-0'}} VND</div>
+          <div class="value-price">{{ this.unitPrice.cpu * cpu * 3 | number: '1.0-0'}} VND</div>
           <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>
@@ -477,7 +477,7 @@
           <div class="label-price"> {{ 'app.kafka.cost-ram' | i18n }} </div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">{{ this.unitPrice.ram * ram | number: '1.0-0'}} VND</div>
+          <div class="value-price">{{ this.unitPrice.ram * ram * 3 | number: '1.0-0'}} VND</div>
           <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>
@@ -487,7 +487,7 @@
           <div class="label-price"> {{ 'app.kafka.cost-storage' | i18n }}</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">{{ this.unitPrice.storage * storage | number: '1.0-0'}} VND</div>
+          <div class="value-price">{{ this.unitPrice.storage * storage * 3 | number: '1.0-0'}} VND</div>
           <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>
@@ -498,7 +498,7 @@
           <div class="label-quantity"><i>({{ 'app.service.include' | i18n }} 10% VAT)</i></div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price total-price">{{ (this.unitPrice.cpu * cpu + this.unitPrice.ram * ram + this.unitPrice.storage * storage) * usageTime * 1.1 | number: '1.0-0'}} VND</div>
+          <div class="value-price total-price">{{ (this.unitPrice.cpu * cpu + this.unitPrice.ram * ram + this.unitPrice.storage * storage) * 3 * usageTime * 1.1 | number: '1.0-0'}} VND</div>
           <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>

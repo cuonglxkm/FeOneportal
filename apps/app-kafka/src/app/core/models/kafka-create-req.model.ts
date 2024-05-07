@@ -22,6 +22,7 @@ export interface KafkaUpdateReq {
     serviceName: string;
     version: string;
     description: string;
+    isUpgradeVersion: number;
 }
 
 export class KafkaUpgradeReq {

@@ -178,7 +178,7 @@ export class CreateKafkaComponent implements OnInit {
           offer.characteristicValues.forEach(item => {
             const characteristic = characteristicMap[item.charName];
             if (characteristic) {
-              offerKafka[characteristic] = Number.parseInt(item.charOptionValues[0]);
+              offerKafka[characteristic] = Number.parseInt(item.charOptionValues[0]) / 3;
             }
           });
           this.listOfferKafka.push(offerKafka);
@@ -377,9 +377,9 @@ export class CreateKafkaComponent implements OnInit {
   checkRegionResource() {
     const regionResource = new RegionResource();
     regionResource.regionId = this.regionId.toString();
-    regionResource.cpu = this.myform.controls['vCpu'].value;
-    regionResource.ram = this.myform.controls['ram'].value;
-    regionResource.storage = this.myform.controls['storage'].value;
+    regionResource.cpu = this.myform.controls['vCpu'].value * 3;
+    regionResource.ram = this.myform.controls['ram'].value * 3;
+    regionResource.storage = this.myform.controls['storage'].value * 3;
 
     this.kafkaService.checkRegionResource(regionResource)
     .subscribe((data) => {
@@ -438,7 +438,9 @@ export class CreateKafkaComponent implements OnInit {
       if (minInsync.value > replicationFactor.value) {
         replicationFactor.setErrors({'invalidvalue': true})
       } else {
-        minInsync.setErrors(null);
+        if (minInsync.hasError('invalidvalue')) {
+          minInsync.setErrors(null);
+        }
       }
     }
   }
@@ -450,7 +452,9 @@ export class CreateKafkaComponent implements OnInit {
       if (minInsync.value > replicationFactor.value) {
         minInsync.setErrors({'invalidvalue': true})
       } else {
-        replicationFactor.setErrors(null);
+        if (replicationFactor.hasError('invalidvalue')) {
+          replicationFactor.setErrors(null);
+        }
       }
     }
   }
