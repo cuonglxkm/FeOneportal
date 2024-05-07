@@ -129,8 +129,6 @@ export class ListFileSystemComponent implements OnInit {
   getProject() {
     this.projectService.getByProjectId(this.project).subscribe(data => {
       this.projectInfo = data
-
-      console.log('info', this.projectInfo)
     })
   }
 
