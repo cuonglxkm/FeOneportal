@@ -120,7 +120,7 @@
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU (<span class="text-red">*</span>)</nz-form-label>
                                         <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="cpuErrTpl">
                                             <nz-input-number-group nzSuffix="vCpu" nzSize="large">
-                                                <nz-input-number formControlName="vCpu" id="vCpu" autofocus
+                                                <nz-input-number formControlName="vCpu" id="vCpu" autofocus (keydown)="onKeyDown($event)"
                                                     (ngModelChange)="onChangeCpu($event)">
                                                 </nz-input-number>
                                             </nz-input-number-group>
@@ -147,7 +147,7 @@
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>RAM (<span class="text-red">*</span>)</nz-form-label>
                                         <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="ramErrTpl">
                                             <nz-input-number-group nzSuffix="GB" nzSize="large">
-                                                <nz-input-number formControlName="ram" id="ram" autofocus
+                                                <nz-input-number formControlName="ram" id="ram" autofocus (keydown)="onKeyDown($event)"
                                                   (ngModelChange)="onChangeRam($event)">
                                                 </nz-input-number>
                                               </nz-input-number-group>
@@ -174,7 +174,7 @@
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Storage (<span class="text-red">*</span>)</nz-form-label>
                                         <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="storageErrorTpl">
                                             <nz-input-number-group nzSuffix="GB" nzSize="large">
-                                                <nz-input-number formControlName="storage" id="storage" autofocus 
+                                                <nz-input-number formControlName="storage" id="storage" autofocus (keydown)="onKeyDown($event)"
                                                   (ngModelChange)="onChangeStorage($event)">
                                                 </nz-input-number>
                                             </nz-input-number-group>

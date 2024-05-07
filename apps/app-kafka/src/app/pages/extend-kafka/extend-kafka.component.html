@@ -77,7 +77,7 @@
                         </label>
                     </div>
                     <div class="w-100 box-duration">
-                        <nz-input-number [nzStatus]="statusInput" autofocus nzSize="large" [nzMin]="0"
+                        <nz-input-number [nzStatus]="statusInput" autofocus nzSize="large" [nzMin]="0" (keydown)="onKeyDown($event)"
                             [nzPlaceHolder]="'app.service.duration-placeholder' | i18n" [(ngModel)]="duration" (ngModelChange)="onChangeDuration()">
                         </nz-input-number>
                         <ng-container *ngIf="statusInput === 'error'">

@@ -190,16 +190,33 @@ export class CreateKafkaComponent implements OnInit {
     )
   }
 
-  onChangeCpu(event: number) {
+  onChangeCpu(event) {
     this.cpu = event;  
   }
 
-  onChangeRam(event: number) {
+  onChangeRam(event) {
     this.ram = event;
   }
 
-  onChangeStorage(event: number) {
+  onChangeStorage(event) {
     this.storage = event;
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
   }
 
   getListVersion() {

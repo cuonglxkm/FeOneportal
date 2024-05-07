@@ -143,8 +143,8 @@ export class ExtendKafkaComponent implements OnInit {
 
   setExpectExpiryDate() {
     const d = new Date(this.itemDetail.expiryDate)
-    d.setDate(d.getDate() + 1);
-    d.setMonth(d.getMonth() + this.duration);
+    d.setDate(d.getDate() + 1 + this.duration * 30);
+    // d.setMonth(d.getMonth() + this.duration);
     this.expectExpiryDate = new Date(d.getTime());
   }
 
@@ -189,6 +189,23 @@ export class ExtendKafkaComponent implements OnInit {
     const returnPath = window.location.pathname;
 
     this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
   }
 
 }
