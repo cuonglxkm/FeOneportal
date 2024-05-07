@@ -78,7 +78,7 @@ export class VpcDetailComponent implements OnInit{
     if (this.data.type == 'VPC') {
       this.listOfData.push({name : "CPU (vCPU)",total: total.quotavCpu + " vCPU",used:used.cpu + " vCPU",remain: (total.quotavCpu - used.cpu) + " vCPU"});
       this.listOfData.push({name : "RAM (GB)",total: total.quotaRamInGb + " GB",used:used.ram + " GB",remain:(total.quotaRamInGb - used.ram) + " GB"});
-      this.listOfData.push({name : "HHD (GB)",total: total.quotaHddInGb + " GB",used:used.hdd + " GB",remain:(total.quotaHddInGb - used.hdd) + " GB"});
+      this.listOfData.push({name : "HDD (GB)",total: total.quotaHddInGb + " GB",used:used.hdd + " GB",remain:(total.quotaHddInGb - used.hdd) + " GB"});
       this.listOfData.push({name : "SSD (GB)",total: total.quotaSSDInGb + " GB",used:used.ssd + " GB",remain:(total.quotaSSDInGb - used.ssd) + " GB"});
       this.listOfData.push({name : "Dung lượng Backup Volume/VN(GB)", total:total.quotaBackupVolumeInGb + " GB",used:used.backup + " GB",remain: (total.quotaBackupVolumeInGb - used.backup) + " GB"});
       this.listOfData.push({name : this.i18n.fanyi('app.amount') + " IP Floating",total: total.quotaIpFloatingCount,used:used.ipFloatingCount,remain:(total.quotaIpFloatingCount - used.ipFloatingCount)});
@@ -94,7 +94,7 @@ export class VpcDetailComponent implements OnInit{
       this.percentRam = (used.ram/total.quotaRamInGb)*100;
       this.percentHHD = (used.hdd/total.quotaHddInGb)*100;
       this.percentSSD = (used.ssd/total.quotaSSDInGb)*100;
-      this.percentIPFloating = 23;
+      this.percentIPFloating = (used.ssd/total.quotaSSDInGb)*100;
       this.percentBackup = (used.backup/total.quotaBackupVolumeInGb)*100;
     } else {
       this.listOfData.push({name : this.i18n.fanyi('app.amount') + " Network",total: total.quotaNetworkCount,used:used.networkCount,remain:(total.quotaNetworkCount - used.networkCount)});
