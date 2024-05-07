@@ -17,12 +17,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { G2TimelineData } from '@delon/chart/timeline';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from '@delon/abc/loading';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -44,6 +45,23 @@ export class InstancesEditVpcComponent implements OnInit {
   listSecurityGroupModel: SecurityGroupModel[] = [];
   listSecurityGroup: SecurityGroupModel[] = [];
 
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: InstancesService,
@@ -51,26 +69,16 @@ export class InstancesEditVpcComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     public message: NzMessageService,
-    private notification: NzNotificationService,
-    private loadingSrv: LoadingService
+    private notification: NzNotificationService
   ) {}
-
-  formatTimestamp(timestamp: number): string {
-    const date = new Date(timestamp);
-    const year = date.getUTCFullYear();
-    const month = `0${date.getUTCMonth() + 1}`.slice(-2);
-    const day = `0${date.getUTCDate()}`.slice(-2);
-    const hours = `0${date.getUTCHours()}`.slice(-2);
-    const minutes = `0${date.getUTCMinutes()}`.slice(-2);
-    const seconds = `0${date.getUTCSeconds()}`.slice(-2);
-    const milliseconds = `00${date.getUTCMilliseconds()}`.slice(-3);
-
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
-  }
 
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
     this.userEmail = this.tokenService.get()?.email;
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
+    this.getInfoVPC();
     this.activatedRoute.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
@@ -80,7 +88,6 @@ export class InstancesEditVpcComponent implements OnInit {
           this.cloudId = this.instancesModel.cloudId;
           this.regionId = this.instancesModel.regionId;
           this.getListIpPublic();
-          this.getAllSecurityGroup();
           this.dataService
             .getAllSecurityGroupByInstance(
               this.cloudId,
@@ -95,6 +102,42 @@ export class InstancesEditVpcComponent implements OnInit {
           this.cdr.detectChanges();
         });
       }
+    });
+  }
+
+  infoVPC: TotalVpcResource = new TotalVpcResource();
+  remainingRAM: number = 0;
+  remainingVolume: number = 0;
+  purchasedVolume: number = 0;
+  remainingVCPU: number = 0;
+  getInfoVPC() {
+    this.dataService.getInfoVPC(this.projectId).subscribe({
+      next: (data) => {
+        this.infoVPC = data;
+        if (this.instancesModel.volumeType == 0) {
+          this.purchasedVolume = this.infoVPC.cloudProject.quotaHddInGb;
+          this.remainingVolume =
+            this.infoVPC.cloudProject.quotaHddInGb -
+            this.infoVPC.cloudProjectResourceUsed.hdd;
+        } else {
+          this.purchasedVolume = this.infoVPC.cloudProject.quotaSSDInGb;
+          this.remainingVolume =
+            this.infoVPC.cloudProject.quotaSSDInGb -
+            this.infoVPC.cloudProjectResourceUsed.ssd;
+        }
+        this.remainingRAM =
+          this.infoVPC.cloudProject.quotaRamInGb -
+          this.infoVPC.cloudProjectResourceUsed.ram;
+        this.remainingVCPU =
+          this.infoVPC.cloudProject.quotavCpu -
+          this.infoVPC.cloudProjectResourceUsed.cpu;
+      },
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          'Lấy thông tin VPC không thành công'
+        );
+      },
     });
   }
 
@@ -127,9 +170,9 @@ export class InstancesEditVpcComponent implements OnInit {
       });
   }
 
-  vCPU: number;
-  ram: number;
-  storage: number;
+  vCPU: number = 0;
+  ram: number = 0;
+  storage: number = 0;
   instanceResize: InstanceResize = new InstanceResize();
   instanceResizeInit() {
     this.instanceResize.description = null;
@@ -139,17 +182,11 @@ export class InstancesEditVpcComponent implements OnInit {
     this.instanceResize.storage = this.storage + this.instancesModel.storage;
     this.instanceResize.addBtqt = 0;
     this.instanceResize.addBttn = 0;
-    this.instanceResize.typeName =
-      'SharedKernel.IntegrationEvents.Orders.Specifications.InstanceResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.instanceResize.serviceType = 1;
-    this.instanceResize.actionType = 4;
     this.instanceResize.serviceInstanceId = this.instancesModel.id;
     this.instanceResize.regionId = this.regionId;
-    this.instanceResize.serviceName = null;
+    this.instanceResize.serviceName = this.instancesModel.name;
     this.instanceResize.customerId = this.userId;
     this.instanceResize.projectId = this.projectId;
-    this.instanceResize.userEmail = this.userEmail;
-    this.instanceResize.actorEmail = this.userEmail;
   }
 
   order: Order = new Order();
@@ -183,6 +220,15 @@ export class InstancesEditVpcComponent implements OnInit {
     });
   }
 
+  isChange: boolean = false;
+  checkChangeConfig() {
+    if (this.storage != 0 || this.ram != 0 || this.vCPU != 0) {
+      this.isChange = true;
+    } else {
+      this.isChange = false;
+    }
+  }
+
   onRegionChange(region: RegionModel) {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
@@ -195,6 +241,10 @@ export class InstancesEditVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
+  navigateToCreate() {
+    this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
+  }
+
   navigateToChangeImage() {
     this.router.navigate([
       '/app-smart-cloud/instances/instances-edit-info/' + this.id,
@@ -203,18 +253,5 @@ export class InstancesEditVpcComponent implements OnInit {
 
   returnPage(): void {
     this.router.navigate(['/app-smart-cloud/instances']);
-  }
-
-  getAllSecurityGroup() {
-    this.dataService
-      .getAllSecurityGroup(
-        this.regionId,
-        this.tokenService.get()?.userId,
-        this.projectId
-      )
-      .subscribe((data: any) => {
-        this.listSecurityGroup = data;
-        this.cdr.detectChanges();
-      });
   }
 }
