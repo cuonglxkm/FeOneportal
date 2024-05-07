@@ -5,6 +5,9 @@ import { m_LBSDNListener } from '../../../../../shared/models/load-balancer.mode
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ListenerService } from '../../../../../shared/services/listener.service';
+import { da } from 'date-fns/locale';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-list-listener-in-lb',
@@ -18,13 +21,15 @@ export class ListListenerInLbComponent implements OnInit{
   project = JSON.parse(localStorage.getItem('projectId'));
 
   listListeners: m_LBSDNListener[] = []
-
   isLoading: boolean = false
   listenerStatus: Map<String, string>;
-
+  isVisibleDelete = false;
   pageSize: number = 5
   pageIndex: number = 1
+  disableDelete= true;
   constructor(private loadBalancerService: LoadBalancerService,
+              private listenerService: ListenerService,
+              public notification: NzNotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.listenerStatus = new Map<String, string>();
     this.listenerStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
@@ -32,6 +37,13 @@ export class ListListenerInLbComponent implements OnInit{
   }
 
   currentPageData: any
+  modalStyle = {
+    'padding': '20px',
+    'border-radius': '10px',
+    'width': '600px'
+  };
+  itemDelete: any;
+  nameDelete = '';
 
   onPageSizeChange(value) {
     this.pageSize = value
@@ -67,4 +79,29 @@ export class ListListenerInLbComponent implements OnInit{
     this.getListListenerInLB()
   }
 
+  confirmNameDelete(event: any) {
+    this.nameDelete = '';
+    if (event == this.itemDelete.name) {
+      this.disableDelete = false;
+    } else {
+      this.disableDelete = true;
+    }
+  }
+
+  openDelete() {
+    this.isVisibleDelete = false
+    this.listenerService.deleteListner(this.itemDelete.listenerId,this.idLB).subscribe(
+      data => {
+        this.notification.success('Thành công', 'Xóa thành công Listener')
+      },
+      error => {
+        this.notification.error('Thất bại', 'Xóa thất bại Listener')
+      }
+    )
+  }
+
+  activeModalDelete(data: any) {
+    this.itemDelete = data;
+    this.isVisibleDelete = true
+  }
 }
