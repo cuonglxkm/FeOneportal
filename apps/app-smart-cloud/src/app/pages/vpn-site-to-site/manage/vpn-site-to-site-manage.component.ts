@@ -1,12 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
-import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VpnSiteToSiteDTO } from 'src/app/shared/models/vpn-site-to-site';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
-import { debounceTime } from 'rxjs';
-import { Router } from '@angular/router';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { IpsecPoliciesComponent } from './ipsec-policies/ipsec-policies.component';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-vpn-site-to-site-manage',
@@ -62,14 +60,14 @@ export class VpnSiteToSiteManage {
           
         }
       if (isBegin) {
-        this.isBegin = this.response === null ? true : false;
+        this.isBegin = this.response ? false : true;
       }
     }, error => {
       this.isLoading = false;
       this.response = null;
       console.log(this.response);
       if (isBegin) {
-        this.isBegin = this.response === null ? true : false;
+        this.isBegin = this.response ? false : true;
       }
     })
   }

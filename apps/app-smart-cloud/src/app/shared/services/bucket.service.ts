@@ -45,11 +45,15 @@ export class BucketService extends BaseService {
     });
   }
 
-  createBucket(bucketName: string, type: string): Observable<any> {
+  createBucket(bucketName: string, type: string) {
     let url_ = `/object-storage/Bucket/Create?bucketName=${bucketName}&type=${type}`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      null,
+      {
+        headers: this.httpOptions.headers,
+        responseType: 'text',
+      }
     );
   }
 
@@ -61,22 +65,27 @@ export class BucketService extends BaseService {
     );
   }
 
-  setBucketVersioning(
-    bucketName: string,
-    isVersioning: boolean
-  ): Observable<any> {
+  setBucketVersioning(bucketName: string, isVersioning: boolean) {
     let url_ = `/object-storage/SetBucketVersioning?bucketName=${bucketName}&isVersioning=${isVersioning}`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      null,
+      {
+        headers: this.httpOptions.headers,
+        responseType: 'text',
+      }
     );
   }
 
-  setBucketACL(bucketName: string, type: string): Observable<any> {
+  setBucketACL(bucketName: string, type: string) {
     let url_ = `/object-storage/SetBucketACL?bucketName=${bucketName}&type=${type}`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      null,
+      {
+        headers: this.httpOptions.headers,
+        responseType: 'text',
+      }
     );
   }
 
@@ -86,7 +95,7 @@ export class BucketService extends BaseService {
     pageSize: number,
     searchValue: string
   ): Observable<any> {
-    let url_ = `/object-storage/BucketPolicy/GetPagging?bucketName=${bucketName}&pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`;
+    let url_ = `/object-storage/BucketPolicy/GetPaging?bucketName=${bucketName}&pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`;
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
@@ -194,12 +203,13 @@ export class BucketService extends BaseService {
     );
   }
 
-  deleteBucketWebsite(data: any): Observable<any> {
+  deleteBucketWebsite(data: any) {
     let url_ = `/object-storage/DeleteBucketWebsite`;
-    return this.http.delete<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      { headers: this.httpOptions.headers, body: data }
-    );
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
+      headers: this.httpOptions.headers,
+      body: data,
+      responseType: 'text',
+    });
   }
 
   getListBucketLifecycle(bucketName: string): Observable<any> {

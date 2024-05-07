@@ -48,32 +48,54 @@ export class StaticWebHostingComponent implements OnInit {
   }
 
   update() {
-    this.bucketWebsitecreate.bucketName = this.bucketName;
-    this.bucketWebsitecreate.indexDocumentSuffix =
-      this.bucketDetail.indexDocumentSuffix;
-    this.bucketWebsitecreate.errorDocument = this.bucketDetail.errorDocument;
-    if (this.bucketDetail.checkRedirectAllRequests) {
-      this.bucketWebsitecreate.redirectAllRequestsTo =
-        this.bucketDetail.redirectAllRequestsTo;
-    } else {
-      this.bucketWebsitecreate.redirectAllRequestsTo = '';
-    }
+    if (this.bucketDetail.isWebsite) {
+      this.bucketWebsitecreate.bucketName = this.bucketName;
+      this.bucketWebsitecreate.indexDocumentSuffix =
+        this.bucketDetail.indexDocumentSuffix;
+      this.bucketWebsitecreate.errorDocument = this.bucketDetail.errorDocument;
+      if (this.bucketDetail.checkRedirectAllRequests) {
+        this.bucketWebsitecreate.redirectAllRequestsTo =
+          this.bucketDetail.redirectAllRequestsTo;
+      } else {
+        this.bucketWebsitecreate.redirectAllRequestsTo = '';
+      }
 
-    this.bucketService.createBucketWebsite(this.bucketWebsitecreate).subscribe({
-      next: (data) => {
-        this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
-        this.notification.success(
-          '',
-          'Điều chỉnh Static Web Hosting thành công'
-        );
-      },
-      error: (e) => {
-        this.notification.error(
-          e.statusText,
-          'Điều chỉnh Static Web Hosting không thành công'
-        );
-      },
-    });
+      this.bucketService
+        .createBucketWebsite(this.bucketWebsitecreate)
+        .subscribe({
+          next: (data) => {
+            this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+            this.notification.success(
+              '',
+              'Chỉnh sửa Static Web Hosting thành công'
+            );
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              'Chỉnh sửa Static Web Hosting không thành công'
+            );
+          },
+        });
+    } else {
+      this.bucketService
+        .deleteBucketWebsite({ bucketName: this.bucketName })
+        .subscribe({
+          next: (data) => {
+            this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+            this.notification.success(
+              '',
+              'Chỉnh sửa Static Web Hosting thành công'
+            );
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              'Chỉnh sửa Static Web Hosting không thành công'
+            );
+          },
+        });
+    }
   }
 
   cancel() {

@@ -70,8 +70,8 @@ export class VpnServiceService extends BaseService {
         Object.assign(formCreate), {headers: this.getHeaders()})
   }
 
-  deleteVpnService(id: any, formDelete: FormDeleteVpnService) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/vpnservice/${id}`, 
+  deleteVpnService(formDelete: FormDeleteVpnService) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/vpnservice/delete`, 
     {body: formDelete, headers: this.getHeaders()}
     ).pipe(
       catchError((error: HttpErrorResponse) => {

@@ -1,7 +1,5 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import {
-  HttpClient
-} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -16,6 +14,7 @@ import { finalize } from 'rxjs/operators';
 import { ObjectObjectStorageModel } from '../../../shared/models/object-storage.model';
 import { BucketService } from '../../../shared/services/bucket.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -52,13 +51,14 @@ export class BucketDetailComponent implements OnInit {
   isVisibleVersioning = false;
   isVisibleDeleteVersion = false;
   isVisibleRestoreVersion = false;
+  isUpload = false;
   folderChange: string;
   modalStyle = {
     padding: '20px',
     'border-radius': '10px',
     width: '80%',
   };
-  uploadFailed: boolean = false
+  uploadFailed: boolean = false;
 
   lstFileUpdate: NzUploadFile[] = [];
 
@@ -129,8 +129,7 @@ export class BucketDetailComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService,
     private clipboard: Clipboard,
-    private http: HttpClient,
-    private https: _HttpClient
+    private modalService: NzModalService,
   ) {}
 
   ngOnInit(): void {
@@ -292,7 +291,6 @@ export class BucketDetailComponent implements OnInit {
     item.type = '';
   }
 
-
   toFolder1(item: any, isBucket) {
     if (isBucket) {
       this.listOfFolder = [];
@@ -352,9 +350,53 @@ export class BucketDetailComponent implements OnInit {
   }
 
   removeFile(item: NzUploadFile) {
-    let index = this.lstFileUpdate.findIndex((file) => file.uid === item.uid);
-    if (index >= 0) {
-      this.lstFileUpdate.splice(index, 1);
+    if (item.isUpload && item.isUpload === true && item.uploadId) {
+      let dataError = {
+        bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+        key: this.currentKey + item.name,
+        uploadId: item.uploadId,
+      };
+      const modal: NzModalRef = this.modalService.create({
+        nzTitle: 'Xóa file',
+        nzContent: 'File đang trong quá trình tải, bạn muốn xóa file chứ?',
+        nzFooter: [
+          {
+            label: 'Hủy',
+            type: 'default',
+            onClick: () => modal.destroy(),
+          },
+          {
+            label: 'Xác nhận',
+            type: 'primary',
+            onClick: () => {
+              this.service.abortmultipart(dataError).subscribe(
+                (data) => {
+                  let index = this.lstFileUpdate.findIndex(
+                    (file) => file.uid === item.uid
+                  );
+                  if (index >= 0) {
+                    this.lstFileUpdate.splice(index, 1);
+                  }
+                  this.notification.success(
+                    'Thành công',
+                    'Xóa file thành công'
+                  );
+                },
+                (error) => {
+                  console.log(error);
+                }
+              );
+              modal.destroy();
+            },
+          },
+        ],
+      });
+    } else {
+      let index = this.lstFileUpdate.findIndex((file) => file.uid === item.uid);
+      if (index >= 0) {
+        this.lstFileUpdate.splice(index, 1);
+      }
+      this.notification.success('Thành công', 'Xóa file thành công');
     }
   }
 
@@ -734,26 +776,24 @@ export class BucketDetailComponent implements OnInit {
 
     console.log(filesToUpload);
 
-
     if (filesToUpload.length == 0) {
       this.notification.warning('Cảnh báo', 'Tất cả các file đã được upload');
-    }else{
+    } else {
       const uploadNextFile = (index) => {
         if (index < filesToUpload.length) {
           const item = filesToUpload[index];
           item.percent = 0;
           this.uploadSingleFile(item).then(() => {
-
             uploadNextFile(index + 1);
           });
         }
       };
-  
+
       uploadNextFile(0);
     }
   }
 
-  uploadSingleFile(item) {   
+  uploadSingleFile(item) {
     if (item.uploaded) {
       this.notification.warning('Cảnh báo', 'File đã được upload');
       return Promise.resolve();
@@ -763,6 +803,7 @@ export class BucketDetailComponent implements OnInit {
 
     if (item.size > 10000000) {
       return new Promise<void>((resolve, reject) => {
+        item.isUpload = true;
         let start;
 
         var uploadPartsArray = [];
@@ -782,11 +823,11 @@ export class BucketDetailComponent implements OnInit {
 
         console.log(params);
 
-
         this.service.createMultiPartUpload(params).subscribe(
           (data) => {
             console.log(data);
             upload_id = data.data;
+            item.uploadId = data.data;
             createChunk(start);
           },
           (error) => {
@@ -895,7 +936,6 @@ export class BucketDetailComponent implements OnInit {
 
                 //next chunk starts at + chunkSize from start
                 start += chunkSize;
-                console.log(start);
 
                 //if start is smaller than file size - we have more to still upload
                 if (start < item.size) {
@@ -907,8 +947,8 @@ export class BucketDetailComponent implements OnInit {
               };
               xhr.onerror = () => {
                 this.notification.error('Thất bại', 'Upload thất bại');
-                this.uploadFailed = true
-                item.percentage = 100
+                this.uploadFailed = true;
+                item.percentage = 100;
                 let dataError = {
                   bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
                   key: this.currentKey + item.name,
@@ -922,7 +962,7 @@ export class BucketDetailComponent implements OnInit {
                     console.log(error);
                   }
                 );
-                reject()
+                reject();
               };
               xhr.send(blob);
             },
@@ -934,6 +974,7 @@ export class BucketDetailComponent implements OnInit {
       });
     } else {
       return new Promise<void>((resolve, reject) => {
+        item.isUpload = true;
         let data = {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
@@ -953,7 +994,7 @@ export class BucketDetailComponent implements OnInit {
               }
             };
             xhr.onload = () => {
-              item.uploaded = true;
+              item.isUpload = true;
               this.notification.success('Thành công', 'Upload thành công');
               this.loadData();
               resolve();
@@ -975,8 +1016,8 @@ export class BucketDetailComponent implements OnInit {
 
   handleCancelUploadFile() {
     this.lstFileUpdate = [];
-    this.listOfMetadata = []
-    this.radioValue = 'public-read'
+    this.listOfMetadata = [];
+    this.radioValue = 'public-read';
     this.isVisibleUploadFile = false;
     this.emptyFileUpload = true;
   }

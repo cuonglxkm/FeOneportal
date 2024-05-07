@@ -13,10 +13,14 @@ pipeline {
             }
         }
 
-        stage('Build and push images') {
+        stage('Build images') {
             steps {
                 sh 'docker compose --parallel 2 build'
-                sh 'docker image prune -f'
+            }
+        }
+
+        stage('Push images') {
+            steps {
                 sh 'docker compose push'
             }
         }
