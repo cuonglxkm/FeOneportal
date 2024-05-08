@@ -1,10 +1,10 @@
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
-import { KubernetesCluster, WorkerGroupModel } from '../../model/cluster.model';
+import { KubernetesCluster, Order, OrderItem, UpgradeWorkerGroupDto, WorkerGroupModel } from '../../model/cluster.model';
 import { ClusterService } from '../../services/cluster.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { PackModel } from '../../model/pack.model';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
@@ -16,6 +16,7 @@ import { PriceModel } from '../../model/price.model';
 import { K8sVersionModel } from '../../model/k8s-version.model';
 import { VlanService } from '../../services/vlan.service';
 import { forkJoin } from 'rxjs';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'one-portal-upgrade',
@@ -51,6 +52,7 @@ export class UpgradeComponent implements OnInit {
   listFormWorker: FormArray;
 
   DEFAULT_VOLUME_TYPE = KubernetesConstant.DEFAULT_VOLUME_TYPE;
+  defaultVolumeTypeName: string;
 
   carouselConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },
@@ -69,11 +71,12 @@ export class UpgradeComponent implements OnInit {
   constructor(
     private clusterService: ClusterService,
     private activatedRoute: ActivatedRoute,
-    private route: Router,
+    private router: Router,
     private notificationService: NzNotificationService,
     private titleService: Title,
     private fb: FormBuilder,
-    private vlanService: VlanService
+    private vlanService: VlanService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
     this.listOfServicePack = [];
     this.currentDate = new Date();
@@ -114,12 +117,14 @@ export class UpgradeComponent implements OnInit {
 
     const index = this.listFormWorker ? this.listFormWorker.length : 0;
     const wg = this.fb.group({
+      id: [null],
       workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index),
         Validators.pattern(KubernetesConstant.WORKERNAME_PATTERN)]],
       nodeNumber: [3, [Validators.required, Validators.min(1), Validators.max(10)]],
       volumeStorage: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
       volumeType: [this.DEFAULT_VOLUME_TYPE, [Validators.required]],
       volumeTypeId: [null, [Validators.required]],
+      volumeTypeName: [this.defaultVolumeTypeName, [Validators.required]],
       configType: [null, [Validators.required]],
       configTypeId: [null, [Validators.required]],
       autoScalingWorker: [false, Validators.required],
@@ -130,6 +135,12 @@ export class UpgradeComponent implements OnInit {
       ram: [null]
     });
     this.listFormWorker.push(wg);
+
+    // fill volumeTypeId by default value when add new worker group
+    const volumeType = this.listOfVolumeType?.find(item => item.volumeType === KubernetesConstant.DEFAULT_VOLUME_TYPE);
+    if (volumeType) {
+      this.listFormWorker.at(index).get('volumeTypeId').setValue(volumeType.id);
+    }
   }
 
   regionId: number;
@@ -224,6 +235,12 @@ export class UpgradeComponent implements OnInit {
       .subscribe((r: any) => {
         if (r && r.code == 200) {
           this.listOfVolumeType = r.data;
+
+          // get default volume type name
+          const vlt = this.listOfVolumeType.find(vlt => vlt.volumeType == this.DEFAULT_VOLUME_TYPE);
+          if (vlt) {
+            this.defaultVolumeTypeName = vlt.volumeTypeName;
+          }
         } else {
           this.notificationService.error("Thất bại", r.message);
         }
@@ -301,7 +318,6 @@ export class UpgradeComponent implements OnInit {
     this.upgradePackDescription = null;
     this.clearFormWorker();
 
-    let listOfDescriptionPack = [];
     const wgs: WorkerGroupModel[] = this.detailCluster.workerGroup;
 
     for (let i = 0; i < wgs.length; i++) {
@@ -333,13 +349,7 @@ export class UpgradeComponent implements OnInit {
       });
 
       this.listFormWorker.push(wg);
-
-      let str = '<div>' + wgs[i].workerGroupName + ' / ' + wgs[i].cpu + 'vCPU / ' + wgs[i].ram + 'GB / '
-          + wgs[i].volumeSize + 'GB ' + wgs[i].volumeTypeName + '</div>';
-      listOfDescriptionPack.push(str);
     }
-
-    this.upgradePackDescription = listOfDescriptionPack.join(' ');
   }
 
   onChoosePack(item: PackModel) {
@@ -351,14 +361,17 @@ export class UpgradeComponent implements OnInit {
       // this.myform.get('volumeCloudType').setValue(this.volumeCloudType);
 
       this.clearFormWorker();
+      let wgs = this.detailCluster.workerGroup; // using pack => only 1 worker group
 
       // add worker group
       let wgf = this.fb.group({
+        id: [wgs[0].id],
         workerGroupName: [KubernetesConstant.DEFAULT_WORKER_NAME],
         nodeNumber: [this.chooseItem.workerNode],
         volumeStorage: [this.chooseItem.rootStorage],
         volumeType: [this.chooseItem.rootStorageType],
         volumeTypeId: [this.chooseItem.volumeTypeId],
+        volumeTypeName: [this.chooseItem.rootStorageName],
         configType: [this.chooseItem.machineType],
         configTypeId: [this.chooseItem.machineTypeId],
         autoScalingWorker: [false],
@@ -485,8 +498,6 @@ export class UpgradeComponent implements OnInit {
     this.newTotalStorage = 0;
     this.upgradeCost = 0;
 
-    this.currentRegisteredCost = this.getCurrentRegisteredCost();
-
     if (this.chooseItem) {
       // using pack
       return this.chooseItem.price;
@@ -511,8 +522,10 @@ export class UpgradeComponent implements OnInit {
         this.newTotalStorage += nodeNumber * storage;
       }
 
-      return (this.priceOfCpu * this.newTotalCpu
-        + this.priceOfRam * this.newTotalRam + this.priceOfSsd * this.newTotalStorage);
+      let upgradeCostPerMonth = this.priceOfCpu * this.newTotalCpu
+        + this.priceOfRam * this.newTotalRam + this.priceOfSsd * this.newTotalStorage;
+
+      return upgradeCostPerMonth * this.remainDay / 30;
     }
   }
 
@@ -560,10 +573,11 @@ export class UpgradeComponent implements OnInit {
     return Math.floor(this.currentRegisteredCost / 30);
   }
 
+  remainDay: number;
   getRemainCost(): number {
     this.remainCost = 0;
-    let remainDays = this.getRemainDay();
-    return this.costPerDay * remainDays;
+    this.remainDay = this.getRemainDay();
+    return this.costPerDay * this.remainDay;
   }
 
   getRemainDay(): number {
@@ -630,6 +644,47 @@ export class UpgradeComponent implements OnInit {
   submitUpgrade() {
     this.validateForm();
 
+    let cluster = this.upgradeForm.value;
+    cluster.currentOfferId = this.detailCluster.offerId ? this.detailCluster.offerId : 0;
+    cluster.newOfferId = this.chooseItem ? this.chooseItem.offerId : 0;
+
+    cluster.currentTotalCpu = this.currentTotalCpu ? this.currentTotalCpu : 0;
+    cluster.currentTotalRam = this.currentTotalRam ? this.currentTotalRam : 0;
+    cluster.currentTotalStorage = this.currentTotalStorage ? this.currentTotalStorage : 0;
+
+    cluster.newVcpu = this.newTotalRam ? this.newTotalRam : 0;
+    cluster.newTotalRam = this.newTotalRam ? this.newTotalRam : 0;
+    cluster.newTotalStorage = this.newTotalStorage ? this.newTotalStorage : 0;
+
+    cluster.regionId = this.regionId;
+    cluster.serviceName = this.detailCluster.clusterName;
+
+    console.log({cluster: cluster});
+    console.log({form: this.upgradeForm});
+
+    // build order request
+    let order = new Order();
+    const userId = this.tokenService.get()?.userId;
+    order.customerId = userId;
+    order.createdByUserId = userId;
+    order.orderItems = [];
+
+    let orderItem = new OrderItem();
+    orderItem.price = this.totalCost;
+    orderItem.serviceDuration = this.detailCluster.usageTime;
+    orderItem.orderItemQuantity = 1;
+    orderItem.specificationType = KubernetesConstant.CLUSTER_UPGRADE_TYPE;
+    orderItem.specification = JSON.stringify(cluster);
+
+    order.orderItems = [...order.orderItems, orderItem];
+
+    console.log({order: order});
+    let returnPath = window.location.pathname;
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: order, path: returnPath}});
+  }
+
+  callme() {
+    console.log({form: this.upgradeForm});
   }
 
   handleShowModalCancelUpgrade() {
@@ -641,7 +696,7 @@ export class UpgradeComponent implements OnInit {
   }
 
   back2list() {
-    this.route.navigate(['/app-kubernetes']);
+    this.router.navigate(['/app-kubernetes']);
   }
 
   onChangeTab(index: number) {

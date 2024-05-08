@@ -8,6 +8,8 @@ export class KubernetesConstant {
 
   public static CLUSTER_CREATE_TYPE = 'k8s_create';
 
+  public static CLUSTER_UPGRADE_TYPE = 'k8s_resize';
+
   public static DEFAULT_VOLUME_TYPE = "ceph_ssd";
 
   public static DEFAULT_NETWORK_TYPE = "calico";

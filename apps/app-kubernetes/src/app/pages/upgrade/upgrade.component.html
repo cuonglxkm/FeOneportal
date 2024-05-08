@@ -430,7 +430,13 @@
                 {{upgradePackDescription}}
               </ng-container>
               <ng-template #customUpgradeConfigTpl>
-                <div [innerHTML]="upgradePackDescription"></div>
+                <ng-container *ngFor="let control of listFormWorker.controls">
+                  {{control.get('workerGroupName').value ? control.get('workerGroupName').value : ''}}
+                  / {{control.get('cpu').value ? control.get('cpu').value : ''}}vCPU
+                  / {{control.get('ram').value ? control.get('ram').value : ''}}GB
+                  / {{control.get('volumeStorage').value ? control.get('volumeStorage').value : ''}}GB
+                  {{control.get('volumeTypeName').value ? control.get('volumeTypeName').value : ''}}
+                </ng-container>
               </ng-template>
             </td>
           </tr>
@@ -531,7 +537,7 @@
 
         <div nz-row [nzGutter]="8" class="mt-5 price-panel">
           <div nz-col [nzSpan]="12">
-            <div class="mt-3 ml-3"><label>Thành tiền</label></div>
+            <div class="mt-3 ml-3"><label class="weight-600">Tổng cần thanh toán</label></div>
             <div class="mt-1 ml-3 mb-3 unit-color"><i>(Đã bao gồm 10% VAT)</i></div>
           </div>
           <div nz-col [nzSpan]="12">
@@ -551,7 +557,7 @@
 
           <div nz-col [nzSpan]="12">
             <button nz-button nzType="primary" nzBlock class="border-button" (click)="submitUpgrade()"
-              [disabled]="isSubmitting">
+              [disabled]="isSubmitting || upgradeForm.invalid || (chooseItem == null && isUsingPackConfig)">
               <ng-container *ngIf="isSubmitting; else paymentIconTpl">
                 <span nz-icon [nzType]="'loading'"></span>
               </ng-container>
@@ -569,6 +575,7 @@
               </ng-template>
               <span>Nâng cấp</span>
             </button>
+            <button nz-button (click)="callme()">call me</button>
           </div>
         </div>
       </nz-card>

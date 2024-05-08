@@ -817,7 +817,7 @@ export class ClusterComponent implements OnInit {
 
     const orderItem: OrderItem = new OrderItem();
     orderItem.price = this.totalPrice;
-    orderItem.orderItemQuantity = 1;         // fix test
+    orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
     orderItem.specification = JSON.stringify(cluster);
     orderItem.serviceDuration = this.usageTime;
