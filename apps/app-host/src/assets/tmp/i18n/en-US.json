@@ -1098,6 +1098,7 @@
   "app.action-history.information": "Information",
   "app.action-history.date": "Operation date",
 
+  "app.routers.active": "ACTIVE",
 
   "app.kafka.intro-text": "VNPT Message Streaming for Kafka is a data distribution platform for cloud-based systems. Kafka provides fast, stable, and fault-tolerant processing capabilities for Pub/Sub systems.",
   "app.kafka.init": "Initialize Kafka Cluster",

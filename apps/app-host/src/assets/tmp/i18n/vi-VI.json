@@ -982,7 +982,7 @@
   "app.action-history.information": "Thông tin",
   "app.action-history.date": "Ngày thao tác",
 
-
+  "app.routers.active": "Kích hoạt",
 
   "app.kafka.intro-text": "VNPT Message Streaming for Kafka là nền tảng phân phối dữ liệu cho các hệ thống qua đám mây. Kafka cung cấp khả năng xử lý nhanh, ổn định, chịu lỗi cao cho các hệ thống dạng Pub/Sub.",
   "app.kafka.init": "Khởi tạo Kafka Cluster",
