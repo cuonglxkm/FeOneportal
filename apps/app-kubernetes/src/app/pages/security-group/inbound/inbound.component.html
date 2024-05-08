@@ -40,13 +40,8 @@
         </td>
         <td></td>
         <td>
-          <ng-container *ngIf="item.portRange?.toLowerCase() == LOCK_RULE && item.protocol?.toLowerCase() == LOCK_RULE; else canDelRuleTpl">
-            <div nz-tooltip="Không thể xóa rule này" style="cursor: no-drop;">
-              <img src="assets/imgs/trash1.svg" alt="" style="margin-top: 0; width: fit-content;" />
-            </div>
-          </ng-container>
-          <ng-template #canDelRuleTpl>
-            <div class="ml-6">
+          <ng-container *ngIf="item | canDelRule; else cannotDelRuleTpl">
+            <div class="center-align">
               <one-portal-delete-inbound
                 nz-tooltip
                 nzTooltipTitle="Xóa Inbound"
@@ -56,6 +51,11 @@
                 [region]="regionId"
                 [project]="projectId"
                 (onOk)="handleOkDeleteInbound($event)" />
+            </div>
+          </ng-container>
+          <ng-template #cannotDelRuleTpl>
+            <div nz-tooltip="Không thể xóa rule này" class="lock-rule">
+              <img src="assets/imgs/trash1.svg" alt="" style="margin-top: 0; width: fit-content;" />
             </div>
           </ng-template>
         </td>

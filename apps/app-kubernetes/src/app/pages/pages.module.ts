@@ -62,6 +62,7 @@ import { ConvertUnitPipe } from '../pipes/convert-mb-unit.pipe';
 import { UpgradeComponent } from './upgrade/upgrade.component';
 import { ExtensionComponent } from './extension/extension.component';
 import { CheckUpgradePackPipe } from '../pipes/check-upgrade-pack.pipe';
+import { CanDelRulePipe } from '../pipes/can-del-rule.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -100,6 +101,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     UpgradeComponent,
     ExtensionComponent,
     CheckUpgradePackPipe,
+    CanDelRulePipe,
   ],
   imports: [
     CommonModule,

@@ -39,19 +39,22 @@
         <td>{{item.remoteGroupId}}</td>
         <td></td>
         <td>
-          <ng-container *ngIf="item.portRange?.toLowerCase() == LOCK_RULE && item.protocol?.toLowerCase() == LOCK_RULE; else canDelRuleTpl">
-            <div nz-tooltip="Không thể xóa rule này" style="cursor: no-drop;">
-              <img src="assets/imgs/trash1.svg" alt="" style="margin-top: 0; width: fit-content;" />
-            </div>
-          </ng-container>
-          <ng-template #canDelRuleTpl>
-            <div class="ml-5">
+          <ng-container *ngIf="item | canDelRule; else cannotDelRuleTpl">
+            <div class="center-align">
               <one-portal-delete-outbound
+                nz-tooltip
+                nzTooltipTitle="Xóa Outbound"
+                nzTooltipPlacement="top"
                 [idOutbound]="item.id"
                 [nameRule]="item.remoteIp"
                 [region]="regionId"
                 [project]="projectId"
                 (onOk)="handleOkDeleteOutbound($event)" />
+            </div>
+          </ng-container>
+          <ng-template #cannotDelRuleTpl>
+            <div nz-tooltip="Không thể xóa rule này" class="lock-rule">
+              <img src="assets/imgs/trash1.svg" alt="" style="margin-top: 0; width: fit-content;" />
             </div>
           </ng-template>
         </td>
