@@ -4,6 +4,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { LoadBalancerService } from '../../../shared/services/load-balancer.service';
 import { LoadBalancerModel } from '../../../shared/models/load-balancer.model';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-detail-load-balancer',
@@ -19,7 +20,8 @@ export class DetailLoadBalancerComponent implements OnInit{
 
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
-              private loadBalancerService: LoadBalancerService) {
+              private loadBalancerService: LoadBalancerService,
+              private notification: NzNotificationService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -38,6 +40,13 @@ export class DetailLoadBalancerComponent implements OnInit{
   getLoadBalancerById() {
     this.loadBalancerService.getLoadBalancerById(this.idLoadBalancer, true).subscribe(data => {
       this.loadBalancer = data
+    }, error => {
+      if(error.status == '404') {
+        this.notification.error('', 'Load Balancer không tồn tại')
+        this.router.navigate(['/app-smart-cloud/load-balancer/list'])
+      }
+      this.notification.error('', error.error.detail)
+      this.router.navigate(['/app-smart-cloud/load-balancer/list'])
     })
   }
 

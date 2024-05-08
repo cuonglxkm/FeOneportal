@@ -1,31 +1,59 @@
-<one-portal-header
-        title="Backup VM"
-        [path]="['Home', 'Dịch vụ', 'Backup VM']"
-        [regionId]="region"
-        (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
-/>
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'app.backup.vm.restore'|i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{'app.breadcrumb.home'|i18n}}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.backup.vm.restore'|i18n}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
 <nz-content>
-    <form nz-form [formGroup]="validateForm" nzLayout="vertical">
-        <!--    <nz-card>-->
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="16">
         <nz-card>
-            <div class="title"><h4><b>Restore Backup VM</b></h4></div>
-            <nz-row>
+          <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+            <!--    <nz-card>-->
+            <nz-card>
+              <div class="title"><h4><b>Restore Backup VM</b></h4></div>
+              <nz-row>
                 <nz-radio-group [(ngModel)]="selectedValueRadio" (ngModelChange)="onChangeStatus()"
                                 formControlName="radio">
-                    <label nz-radio nzValue="O" class="label">Restore vào máy ảo hiện tại </label>
-                    <label nz-radio nzValue="N" class="label">Restore vào máy ảo mới </label>
+                  <label nz-radio nzValue="O" class="label">Restore vào máy ảo hiện tại </label>
+                  <label nz-radio nzValue="N" class="label">Restore vào máy ảo mới </label>
                 </nz-radio-group>
-            </nz-row>
-        </nz-card>
-    </form>
-    <div *ngIf="selectedValueRadio === 'N'">
-        <one-portal-new-virtual-machine [region]="region"
-                                        [project]="project"
-                                        [backupVmId]="backupVmId"/>
-    </div>
-    <div *ngIf="selectedValueRadio === 'O'">
-        <one-portal-current-virtual-machine [region]="region"
+              </nz-row>
+            </nz-card>
+          </form>
+          <div *ngIf="selectedValueRadio === 'N'">
+            <one-portal-new-virtual-machine [region]="region"
                                             [project]="project"
                                             [backupVmId]="backupVmId"/>
-    </div>
+          </div>
+          <div *ngIf="selectedValueRadio === 'O'">
+            <one-portal-current-virtual-machine [region]="region"
+                                                [project]="project"
+                                                [backupVmId]="backupVmId"/>
+          </div>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-card>
+          <span class="text-card-header">Thông tin cấu hình</span>
+        </nz-card>
+      </nz-col>
+    </nz-row>
 </nz-content>
