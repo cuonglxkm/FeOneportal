@@ -14,6 +14,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { InstancesService } from '../../../instances/instances.service';
 import { RegionModel, ProjectModel, AppValidator } from '../../../../../../../../libs/common-utils/src';
+import { finalize } from 'rxjs/operators';
 
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -82,7 +83,7 @@ export class ListenerCreateComponent implements OnInit{
     listenerName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
     port: [80, Validators.required],
     member: [50000],
-    connection: [500],
+    connection: [5000],
     timeout: [50000],
     allowCIRR: ['', [Validators.required,AppValidator.ipWithCIDRValidator1]],
     description: [''],
@@ -119,6 +120,7 @@ export class ListenerCreateComponent implements OnInit{
   selectedAlgorithm = 'ROUND_ROBIN';
   selectedCheckMethod = 'HTTP';
   selectedHttpMethod = 'GET';
+  loading= false;
 
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
@@ -151,6 +153,7 @@ export class ListenerCreateComponent implements OnInit{
   }
 
   createListener(): boolean {
+    this.loading = true;
     let member = this.lstInstanceUse.map((item) => ({
       Name: item.Name,
       IpAddress: item.IpAddress,
@@ -197,7 +200,12 @@ export class ListenerCreateComponent implements OnInit{
       lbId: this.lbId,
     };
 
-    this.service.createListener(data).subscribe(
+    this.service.createListener(data)
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.lbId]);
+      }))
+      .subscribe(
       data => {
         this.notification.success('Thành công', 'Tạo mới listener thành công');
         this.dataListener = data;
@@ -307,5 +315,12 @@ export class ListenerCreateComponent implements OnInit{
         this.listCert = data;
       }
     )
+  }
+
+  checkPossiblePress(event: KeyboardEvent) {
+    const key = event.key;
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
+      event.preventDefault();
+    }
   }
 }

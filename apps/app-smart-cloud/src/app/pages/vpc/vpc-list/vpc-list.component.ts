@@ -50,6 +50,7 @@ export class VpcListComponent implements OnInit{
     name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/)] }),
     description: new FormControl(''),
   });
+  loadingDelete = false;
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -124,13 +125,14 @@ export class VpcListComponent implements OnInit{
   }
 
   openIpDelete() {
+    this.loadingDelete = true;
     this.vpcService.delete(this.itemDelete.id)
       .pipe(finalize(() => {
         this.getData(true);
         this.isVisibleDelete = false;
         this.isVisibleDeleteVPC = false;
-        debugger
         this.disableDelete = true;
+        this.loadingDelete = false;
       }))
       .subscribe(
         {

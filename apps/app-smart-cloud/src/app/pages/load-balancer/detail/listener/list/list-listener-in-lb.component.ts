@@ -8,6 +8,8 @@ import { I18NService } from '@core';
 import { ListenerService } from '../../../../../shared/services/listener.service';
 import { da } from 'date-fns/locale';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'one-portal-list-listener-in-lb',
@@ -25,11 +27,13 @@ export class ListListenerInLbComponent implements OnInit{
   listenerStatus: Map<String, string>;
   isVisibleDelete = false;
   pageSize: number = 5
+  loading = false;
   pageIndex: number = 1
   disableDelete= true;
   constructor(private loadBalancerService: LoadBalancerService,
               private listenerService: ListenerService,
               public notification: NzNotificationService,
+              private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.listenerStatus = new Map<String, string>();
     this.listenerStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
@@ -89,8 +93,14 @@ export class ListListenerInLbComponent implements OnInit{
   }
 
   openDelete() {
-    this.isVisibleDelete = false
-    this.listenerService.deleteListner(this.itemDelete.listenerId,this.idLB).subscribe(
+    this.loading = true;
+    this.listenerService.deleteListner(this.itemDelete.listenerId,this.idLB)
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.isVisibleDelete = false;
+        this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.idLB]);
+      }))
+      .subscribe(
       data => {
         this.notification.success('Thành công', 'Xóa thành công Listener')
       },

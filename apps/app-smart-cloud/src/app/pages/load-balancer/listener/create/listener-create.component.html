@@ -64,14 +64,8 @@
                  [placeholder]="'app.input.name' | i18n " [maxLength]="50" />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}
-            </ng-container>
-            <ng-container
-              *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}
-            </ng-container>
-            <ng-container
-              *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n : { name: 'Listener' } }}
-            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -105,7 +99,7 @@
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-input-number formControlName="port" [nzMin]="1" [nzMax]="65535" [nzStep]="1" nzSize="large"
-                               style="margin-left: -2px;"></nz-input-number>
+                               style="margin-left: -2px;" (keydown)="checkPossiblePress($event)"></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </nz-col>
@@ -122,7 +116,7 @@
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-input-number style="margin-left: -2px;width: 90%" formControlName="timeout" [nzMin]="0" nzSize="large"
-                               [nzStep]="1"></nz-input-number>
+                               [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </nz-col>
@@ -136,7 +130,7 @@
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-input-number style="margin-left: -2px;width: 90%" formControlName="member" [nzMin]="0" nzSize="large"
-                               [nzStep]="1"></nz-input-number>
+                               [nzStep]="1"(keydown)="checkPossiblePress($event)"></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </nz-col>
@@ -151,7 +145,7 @@
             <nz-form-control nzDisableAutoTips>
               <nz-input-number style="margin-left: -2px;width: 90%" formControlName="connection" [nzMin]="0"
                                nzSize="large"
-                               [nzStep]="1"></nz-input-number>
+                               [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </nz-col>
@@ -167,7 +161,7 @@
               <input nz-input
                      class="input-custom"
                      formControlName="allowCIRR"
-                     [placeholder]="'0.0.0.0/0'" [maxLength]="50" />
+                     [placeholder]="'1.0.0.0/0'" [maxLength]="50" />
               <!--              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="" [nzMin]="0"-->
               <!--                               [nzStep]="1"></nz-input-number>-->
             </nz-form-control>
@@ -234,12 +228,17 @@
           <nz-form-label>
             <span>{{ 'app.pool.name' | i18n }} (<span style="color: red;">*</span>) </span>
           </nz-form-label>
-          <nz-form-control nzDisableAutoTips>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input nz-input
                    class="input-custom"
                    formControlName="poolName"
                    [placeholder]="'validation.pool.name.pattern' | i18n"
                    [maxLength]="50" />
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}</ng-container>
+              <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -282,12 +281,15 @@
           <nz-form-label>
             <span>{{ 'app.health.monitor.name' | i18n }} (<span style="color: red;">*</span>) </span>
           </nz-form-label>
-          <nz-form-control nzDisableAutoTips>
-            <input nz-input
-                   class="input-custom"
-                   formControlName="healthName"
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+            <input nz-input class="input-custom" formControlName="healthName"
                    [placeholder]="'validation.health.monitor.name.pattern' | i18n"
-                   [maxLength]="50" />
+                   [maxLength]="50"/>
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}</ng-container>
+              <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
 
@@ -337,7 +339,7 @@
               <nz-form-control nzDisableAutoTips>
                 <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetries" [nzMin]="0"
                                  nzSize="large"
-                                 [nzStep]="1"></nz-input-number>
+                                 [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
@@ -352,7 +354,7 @@
               <nz-form-control nzDisableAutoTips>
                 <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetriesDown" [nzMin]="0"
                                  nzSize="large"
-                                 [nzStep]="1"></nz-input-number>
+                                 [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
@@ -368,7 +370,7 @@
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
                 <nz-input-number style="margin-left: -2px;width: 90%" formControlName="delay" [nzMin]="0" nzSize="large"
-                                 [nzStep]="1"></nz-input-number>
+                                 [nzStep]="1"(keydown)="checkPossiblePress($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
@@ -383,7 +385,7 @@
               <nz-form-control nzDisableAutoTips>
                 <nz-input-number style="margin-left: -2px;width: 90%" formControlName="timeoutHealth" [nzMin]="0"
                                  nzSize="large"
-                                 [nzStep]="1"></nz-input-number>
+                                 [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
@@ -413,7 +415,7 @@
             <input nz-input
                    class="input-custom"
                    formControlName="sucessCode"
-                   [placeholder]="'Nhập sucessCode'" [maxLength]="50" />
+                   [placeholder]="'Nhập sucessCode'" [maxLength]="50" (keydown)="checkPossiblePress($event)"/>
           </nz-form-control>
         </nz-form-item>
         <div class="text-right"
@@ -454,11 +456,11 @@
           <td>{{ item.IpAddress }}</td>
           <td>
             <nz-input-number [ngModel]="item.Port" [nzMin]="0" [nzStep]="1" nzSize="large"
-                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}"></nz-input-number>
+                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}" (keydown)="checkPossiblePress($event)"></nz-input-number>
           </td>
           <td>
             <nz-input-number [ngModel]="item.Weight" [nzMin]="0" [nzStep]="1" nzSize="large"
-                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}"></nz-input-number>
+                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}" (keydown)="checkPossiblePress($event)"></nz-input-number>
           </td>
           <td>
             <label nz-checkbox [(ngModel)]="item.Backup" [ngModelOptions]="{standalone: true}"></label>
@@ -596,7 +598,7 @@
                   style="border-color: #0066B3;background-color: white;"><span
             style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
           </button>
-          <button nzSize="large" (click)="createListener()" nz-button
+          <button nzSize="large" (click)="createListener()" nz-button [nzLoading]="loading"
                   nzType="primary" style="border: none;margin-left: 30px;">{{ 'app.complete' | i18n }}
           </button>
         </div>
