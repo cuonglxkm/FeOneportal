@@ -659,9 +659,10 @@ export class UpgradeComponent implements OnInit {
     cluster.regionId = this.regionId;
     cluster.serviceName = this.detailCluster.clusterName;
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
+    cluster.sortItem = 0;
 
-    console.log({cluster: cluster});
-    console.log({form: this.upgradeForm});
+    // console.log({cluster: cluster});
+    // console.log({form: this.upgradeForm});
 
     // build order request
     let order = new Order();

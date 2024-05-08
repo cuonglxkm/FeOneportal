@@ -608,7 +608,10 @@
 </ng-container>
 
 <ng-template #loadingTpl>
-  loading ...
+  <nz-card class="border-card">
+    <nz-table [nzTemplateMode]="true" [nzLoading]="true">
+    </nz-table>
+  </nz-card>
 </ng-template>
 
 <!-- modal upgrade -->
@@ -616,9 +619,12 @@
   (nzOnCancel)="handleCancelShowModalUpgrade()">
   <div *nzModalContent>
     <ng-container *ngIf="detailCluster.upgradeVersion?.length > 0; else noAvailableVersionTpl">
-      <p class="description-info">Lưu ý: Chỉ có thể nâng cấp phiên bản, không thực hiện việc hạ phiên bản.</p>
-      <p>Để tránh phát sinh vấn đề trong quá trình xử lý, chỉ nâng cấp phiên bản lần lượt theo thứ tự.</p>
-      <div>
+      <nz-alert nzType="warning" [nzDescription]="upgradeWarning" nzShowIcon></nz-alert>
+      <ng-template #upgradeWarning>
+        <p class="description-info">Lưu ý: Chỉ có thể nâng cấp phiên bản, không thực hiện việc hạ phiên bản.</p>
+        <p class="description-info">Để tránh phát sinh vấn đề trong quá trình xử lý, chỉ nâng cấp phiên bản lần lượt theo thứ tự.</p>
+      </ng-template>
+      <div class="mt-5">
         <nz-select nzPlaceHolder="Chọn phiên bản nâng cấp" [(ngModel)]="upgradeVersionCluster" class="w-100" nzSize="large">
           <nz-option *ngFor="let item of listOfK8sVersion" [nzLabel]="item.k8sVersion" [nzValue]="item.k8sVersion"
             [nzDisabled]="item.k8sVersion | checkUpgradeVersion : detailCluster.upgradeVersion"></nz-option>
@@ -626,7 +632,7 @@
       </div>
     </ng-container>
     <ng-template #noAvailableVersionTpl>
-      <span class="warning-description">Bạn đang sử dụng phiên bản <b>{{detailCluster.currentVersion}}</b> mới nhất</span>
+      <span style="font-size: 16px;">Bạn đang sử dụng phiên bản <b>{{detailCluster.currentVersion}}</b> mới nhất</span>
     </ng-template>
   </div>
   <div *nzModalFooter>
