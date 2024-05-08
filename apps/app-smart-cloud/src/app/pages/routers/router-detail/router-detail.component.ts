@@ -343,7 +343,7 @@ handleOkCreateStatic() {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            this.i18n.fanyi('app.router.note42')
+            this.i18n.fanyi('app.router.note43')
           );
         },
       });

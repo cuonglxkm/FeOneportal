@@ -85,7 +85,7 @@
         </tbody>
       </nz-table>
     </nz-tab>
-    <nz-tab nzTitle="Static Router">
+    <nz-tab nzTitle="Static Routes">
       <div class="text-right">
         <button
           nz-button
@@ -247,7 +247,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleCreateStatic"
-  nzTitle="Tạo mới Static Router"
+  nzTitle="Tạo mới Static Route"
   (nzOnCancel)="handleCancelCreateStatic()"
 >
 <form nz-form [formGroup]="formRouterStatic">
@@ -342,7 +342,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleDeleteStatic"
-  nzTitle="Xóa Static Router"
+  nzTitle="Xóa Static Route"
   (nzOnCancel)="handleCancelDeleteStatic()"
 >
   <div *nzModalContent>
