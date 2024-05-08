@@ -31,7 +31,7 @@ p {
 }
 
 .warning-description {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .w-100 {
@@ -74,6 +74,10 @@ input, .border-button {
   border-radius: 8px;
 }
 
+::ng-deep .ant-input-affix-wrapper {
+  border-radius: 8px;
+}
+
 .borderless {
   border: none;
 }
@@ -108,5 +112,10 @@ img {
 
 .bg-button {
   background-color: #0066B3;
+}
+
+.action-btn {
+  padding: 0;
+  height: 24px;
 }
 

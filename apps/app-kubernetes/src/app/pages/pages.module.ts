@@ -56,6 +56,13 @@ import { DeleteInboundComponent } from './security-group/rule/inbound/delete/del
 import { CreateOutboundComponent } from './security-group/rule/outbound/create/create-outbound.component';
 import { DeleteOutboundComponent } from './security-group/rule/outbound/delete/delete-outbound.component';
 import { FormRuleComponent } from './security-group/rule/form/form-rule.component';
+import { StatusCode2LabelPipe } from '../pipes/statusCode2label.pipe';
+import { Protocol2LabelPipe } from '../pipes/ipversion2label.pipe';
+import { ConvertUnitPipe } from '../pipes/convert-mb-unit.pipe';
+import { UpgradeComponent } from './upgrade/upgrade.component';
+import { ExtensionComponent } from './extension/extension.component';
+import { CheckUpgradePackPipe } from '../pipes/check-upgrade-pack.pipe';
+import { CanDelRulePipe } from '../pipes/can-del-rule.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -88,7 +95,13 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateOutboundComponent,
     DeleteOutboundComponent,
     FormRuleComponent,
-
+    StatusCode2LabelPipe,
+    Protocol2LabelPipe,
+    ConvertUnitPipe,
+    UpgradeComponent,
+    ExtensionComponent,
+    CheckUpgradePackPipe,
+    CanDelRulePipe,
   ],
   imports: [
     CommonModule,

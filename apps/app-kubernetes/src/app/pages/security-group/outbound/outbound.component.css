@@ -10,3 +10,16 @@
   position: relative;
   float: right;
 }
+
+.right-align {
+  text-align: right;
+}
+
+.center-align {
+  text-align: center;
+}
+
+.lock-rule {
+  cursor: no-drop;
+  text-align: center;
+}

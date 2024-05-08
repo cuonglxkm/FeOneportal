@@ -7,6 +7,10 @@
   font-size: 14px;
 }
 
+.w-30 {
+  width: 30%;
+}
+
 .w-50 {
   width: 50%;
 }
@@ -68,6 +72,12 @@ small {
   font-size: 16px;
 }
 
+.summary-info {
+  text-align: right;
+  font-weight: 600;
+  font-size: 16px;
+}
+
 .price-color {
   color: #0066b3;
   font-weight: 600;
@@ -120,6 +130,22 @@ small {
   background: transparent;
   border-radius: 2px 2px 0 0;
   border: none;
+}
+
+.detailtable nz-table tr:nth-child(odd) {
+  background-color: #f0f1f4;
+}
+
+.item-header-disable {
+  background-color: #F0F1F4 !important;
+}
+
+.item-name-disable {
+  color: #989BB3 !important;
+}
+
+.pack-item-disable {
+  pointer-events: none;
 }
 
 ::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
@@ -240,6 +266,7 @@ label, span {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .item-name {
@@ -280,6 +307,7 @@ label, span {
   line-height: 24px;
   letter-spacing: 0.10000000149011612px;
   padding: 20px;
+  cursor: pointer;
 }
 
 .choose .item-price,
@@ -333,4 +361,8 @@ label, span {
 .price-card {
   border: 1px solid #B2DEFF;
   border-radius: 8px;
+}
+
+.warning-description {
+  font-size: 14px;
 }
