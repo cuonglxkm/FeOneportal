@@ -238,9 +238,9 @@
                 <span class="text-label customSpan" style="width: 35%"
                   >{{ 'app.keypair.name' | i18n }}:</span
                 >
-                <span class="text-value-detail customSpan"
-                  >{{ instancesModel.keypair || '' }}</span
-                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.keypair || ''
+                }}</span>
               </nz-row>
             </nz-col>
             <nz-col nzSpan="12"> </nz-col>
@@ -259,7 +259,11 @@
         [isDetail]="false"
       ></one-portal-network-detail>
       <form style="width: 100%" nz-form [nzLayout]="'vertical'">
-        <nz-card style="border-radius: 8px" [nzBordered]="false">
+        <nz-card
+          style="border-radius: 8px"
+          [nzBordered]="false"
+          *ngIf="instancesModel"
+        >
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
           </div>
@@ -268,7 +272,12 @@
               >{{ 'app.current.config' | i18n }}: {{ instancesModel.cpu }} vCPU,
               {{ instancesModel.ram }}GB RAM, {{ instancesModel.storage }}GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
-              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span
+              ><span *ngIf="instancesModel.gpuCount != 0"
+                >, {{ instancesModel.gpuCount }} GPU</span
+              ><span *ngIf="instancesModel.gpuType != null"
+                >, {{ instancesModel.gpuType }}</span
+              >
             </span>
           </div>
           <div style="margin-bottom: 20px">
@@ -276,7 +285,12 @@
               >{{ 'app.adjust.config' | i18n }}: {{ instanceResize.cpu }} vCPU,
               {{ instanceResize.ram }}GB RAM, {{ instanceResize.storage }}GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
-              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span
+              ><span *ngIf="instancesModel.gpuCount != 0"
+                >, {{ instanceResize.gpuCount }} GPU</span
+              ><span *ngIf="instancesModel.gpuType != null"
+                >, {{ instanceResize.gpuType }}</span
+              >
             </span>
           </div>
           <nz-tabset
@@ -497,7 +511,11 @@
                 </table>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'app.gpu.configuration' | i18n">
+            <nz-tab
+              *ngIf="instancesModel.volumeType != 0"
+              [nzTitle]="'app.gpu.configuration' | i18n"
+              (nzClick)="onClickGpuConfig()"
+            >
               <div class="ant-table">
                 <table>
                   <thead class="ant-table-thead">
@@ -644,10 +662,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ volumeIntoMoney | number }} VND </label
+                          {{ gpuIntoMoney | number }} VND </label
                         ><br />
                         <label class="text-custom-price">
-                          {{ volumeUnitPrice | number }} VND
+                          {{ gpuUnitPrice | number }} VND
                         </label>
                       </td>
                     </tr>
@@ -672,8 +690,8 @@
                   >
                     <nz-option
                       *ngFor="let i of listGPUType"
-                      [nzLabel]="i.displayName"
-                      [nzValue]="i.displayName"
+                      [nzLabel]="i.offerName"
+                      [nzValue]="i.id"
                     />
                   </nz-select>
                 </nz-form-control>
@@ -693,7 +711,7 @@
     </nz-row>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
-    <div style="width: 100%">
+    <div style="width: 100%" *ngIf="instancesModel">
       <nz-affix [nzOffsetTop]="48">
         <nz-card style="border-radius: 8px">
           <div style="margin-bottom: 20px">
