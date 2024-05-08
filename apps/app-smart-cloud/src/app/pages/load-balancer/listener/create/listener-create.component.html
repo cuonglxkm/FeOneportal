@@ -191,7 +191,7 @@
                        nzPlaceHolder="--{{'project.note49' | i18n}}--"
                        [(ngModel)]="certId" [ngModelOptions]="{ standalone: true }">
               <nz-option *ngFor="let i of listCert" [nzLabel]="i.name"
-                         [nzValue]="i.secret_ref"/>
+                         [nzValue]="i.secret_ref" />
             </nz-select>
           </div>
         </nz-form-control>
@@ -218,7 +218,8 @@
           style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
         </button>
         <button
-          [disabled]="validateForm.controls['port'].invalid || validateForm.controls['allowCIRR'].invalid || validateForm.controls['listenerName'].invalid"
+          [disabled]="validateForm.controls['port'].invalid || validateForm.controls['allowCIRR'].invalid || validateForm.controls['listenerName'].invalid
+|| (protocolListener == 'TERMINATED_HTTPS' && (certId == null || certId == ''))"
           nzSize="large" (click)="nextStep()" nz-button nzType="primary"
           style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
         </button>
@@ -387,7 +388,7 @@
             </nz-form-item>
           </nz-col>
         </nz-row>
-        <nz-form-item>
+        <nz-form-item *ngIf="selectedCheckMethod == 'HTTP'">
           <nz-form-label>
             <span>Path (<span style="color: red;">*</span>) </span>
             <img style="margin-left: 10px"
@@ -401,7 +402,7 @@
                    [placeholder]="'Nhập path'" [maxLength]="50" />
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item>
+        <nz-form-item *ngIf="selectedCheckMethod == 'HTTP'">
           <nz-form-label>
             <span>Success code (<span style="color: red;">*</span>) </span>
             <img style="margin-left: 10px"
@@ -422,7 +423,7 @@
             style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
           </button>
           <button [disabled]="validateForm.controls['poolName'].invalid || validateForm.controls['healthName'].invalid
-          || validateForm.controls['path'].invalid || validateForm.controls['sucessCode'].invalid" nzSize="large"
+          || (selectedCheckMethod == 'HTTP' && (validateForm.controls['path'].invalid || validateForm.controls['sucessCode'].invalid))" nzSize="large"
                   (click)="nextStep()" nz-button nzType="primary"
                   style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
           </button>
