@@ -21,7 +21,7 @@ import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-ani
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from '@delon/abc/loading';
-import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 import { getCurrentRegionAndProject } from '@shared';
 
@@ -105,7 +105,7 @@ export class InstancesEditVpcComponent implements OnInit {
     });
   }
 
-  infoVPC: TotalVpcResource = new TotalVpcResource();
+  infoVPC: TotalVpcResource;
   remainingRAM: number = 0;
   remainingVolume: number = 0;
   purchasedVolume: number = 0;
@@ -233,7 +233,7 @@ export class InstancesEditVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  userChangeProject() {
+  onProjectChange(project: ProjectModel) {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 

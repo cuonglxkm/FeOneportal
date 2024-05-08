@@ -13,9 +13,7 @@
           'app.instances' | i18n
         }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item
-        >{{ 'app.instances.edit' | i18n }}
-      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.instances.edit' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -266,7 +264,7 @@
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
         </div>
-        <div style="margin-bottom: 20px">
+        <div style="margin-bottom: 20px" *ngIf="infoVPC">
           <span class="text-label"
             >{{ 'app.remain.configuration.in.vpc' | i18n }}:
             {{ remainingVCPU }}/{{ infoVPC.cloudProject.quotavCpu }} vCPU,
@@ -378,7 +376,7 @@
     </nz-row>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
-    <div style="width: 100%">
+    <div style="width: 100%" *ngIf="instancesModel">
       <nz-affix [nzOffsetTop]="48">
         <nz-card style="border-radius: 8px; width: 100%">
           <div style="margin-bottom: 20px">
