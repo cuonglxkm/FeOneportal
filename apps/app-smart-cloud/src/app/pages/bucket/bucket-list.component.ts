@@ -53,6 +53,7 @@ export class BucketListComponent implements OnInit {
 
   hasOS: boolean = undefined;
   hasObjectStorage() {
+    this.hasOS = undefined;
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
       .getObjectStorage()

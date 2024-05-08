@@ -72,16 +72,16 @@ export class PoolDetailComponent implements OnInit {
   ) {}
 
   idLB: number;
-  loadBalancer: LoadBalancerModel = new LoadBalancerModel()
+  loadBalancer: LoadBalancerModel = new LoadBalancerModel();
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe(params => {
+    this.activatedRoute.params.subscribe((params) => {
       this.idLB = params['idLB'];
     });
-    this.service.getLoadBalancerById(this.idLB, true).subscribe(data => {
-      this.loadBalancer = data
-    })
+    this.service.getLoadBalancerById(this.idLB, true).subscribe((data) => {
+      this.loadBalancer = data;
+    });
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
-    console.log("id pool", this.id)
+    console.log('id pool', this.id);
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
@@ -121,6 +121,7 @@ export class PoolDetailComponent implements OnInit {
         next: (data: any) => {
           this.listHealth = data.records;
           this.totalHealth = data.totalCount;
+          this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(
@@ -133,7 +134,7 @@ export class PoolDetailComponent implements OnInit {
 
   listCheckedMethod: any[] = [
     { displayName: 'HTTP' },
-    { displayName: 'HTTPS' },
+    { displayName: 'PING' },
     { displayName: 'TCP' },
   ];
 
@@ -143,6 +144,18 @@ export class PoolDetailComponent implements OnInit {
     { displayName: 'PUT' },
     { displayName: 'DELETE' },
   ];
+
+  isHttpType: boolean;
+  isNotHttp(event: string) {
+    this.healthForm.httpMethod = null;
+    this.healthForm.expectedCodes = null;
+    this.healthForm.urlPath = null;
+    if (event != 'HTTP') {
+      this.isHttpType = false;
+    } else {
+      this.isHttpType = true;
+    }
+  }
 
   isVisibleHealth: boolean = false;
   titleModalHealth: string;
@@ -297,8 +310,9 @@ export class PoolDetailComponent implements OnInit {
           )
           .subscribe({
             next: (data: any) => {
-              this.getListHealth();
               this.notification.success('', 'Xóa Health Monitor thành công');
+              this.listHealth = [];
+              this.cdr.detectChanges();
             },
             error: (e) => {
               this.isVisibleDelete = false;
