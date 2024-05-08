@@ -85,7 +85,7 @@ export class ListenerCreateComponent implements OnInit{
     member: [50000],
     connection: [5000],
     timeout: [50000],
-    allowCIRR: ['', [Validators.required,AppValidator.ipWithCIDRValidator1]],
+    allowCIRR: ['', [Validators.required,AppValidator.ipWithCIDRValidator]],
     description: [''],
 
     poolName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
