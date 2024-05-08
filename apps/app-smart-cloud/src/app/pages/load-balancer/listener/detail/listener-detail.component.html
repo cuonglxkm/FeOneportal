@@ -54,7 +54,7 @@
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <nz-radio-group [disabled]="true" [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}" nzSize="large">
-              <label nz-radio nzValue="HTTP">TERMINATED_HTTPS</label>
+              <label nz-radio nzValue="HTTP">HTTP</label>
               <label nz-radio nzValue="TCP">TCP</label>
               <label nz-radio nzValue="TERMINATED_HTTPS">TERMINATED_HTTPS</label>
             </nz-radio-group>
@@ -138,7 +138,7 @@
   </nz-card>
   <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
     <nz-tabset>
-      <nz-tab nzTitle="Pool">
+      <nz-tab nzTitle="Pool" *ngIf="protocolListener=='TCP'">
         <div class="text-card-header" style="margin-bottom: 30px;">{{ 'app.pool.list' | i18n }}</div>
         <nz-table [nzData]="listPool" [nzShowPagination]="false" [nzLoading]="loadingPool">
           <thead>

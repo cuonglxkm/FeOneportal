@@ -61,7 +61,7 @@
     <button nz-button (click)="isVisibleDelete = false">
       <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="openDelete()" [disabled]="disableDelete">
+    <button nz-button nzType="primary" [nzLoading]="loading" (click)="openDelete()" [disabled]="disableDelete">
       <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
