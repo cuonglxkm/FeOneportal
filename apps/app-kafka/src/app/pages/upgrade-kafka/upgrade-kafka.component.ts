@@ -51,6 +51,7 @@ export class UpgradeKafkaComponent implements OnInit {
   ram: number;
   cpu: number;
   storage: number;
+  broker = 3;
   initRam: number;
   initCpu: number;
   initStorage: number;
@@ -197,7 +198,7 @@ export class UpgradeKafkaComponent implements OnInit {
           offer.characteristicValues.forEach(item => {
             const characteristic = characteristicMap[item.charName];
             if (characteristic) {
-              offerKafka[characteristic] = Number.parseInt(item.charOptionValues[0]);
+              offerKafka[characteristic] = Number.parseInt(item.charOptionValues[0]) / 3;
             }
           });
           this.listOfferKafka.push(offerKafka);
@@ -260,11 +261,11 @@ export class UpgradeKafkaComponent implements OnInit {
   }
 
   setRemainAmount() {
-    this.remainAmount = (this.initRam * this.unitPrice.ram + this.initCpu * this.unitPrice.cpu + this.initStorage * this.unitPrice.storage) * this.remainMonth;
+    this.remainAmount = (this.initRam * this.unitPrice.ram + this.initCpu * this.unitPrice.cpu + this.initStorage * this.unitPrice.storage) * this.broker * this.remainMonth;
   }
 
   setUpgradeAmount() {
-    this.upgradeAmount = (this.ram * this.unitPrice.ram + this.cpu * this.unitPrice.cpu + this.storage * this.unitPrice.storage) * this.remainMonth;
+    this.upgradeAmount = (this.ram * this.unitPrice.ram + this.cpu * this.unitPrice.cpu + this.storage * this.unitPrice.storage) * this.broker * this.remainMonth;
   }
 
   backToList() {
