@@ -156,7 +156,7 @@
 
     <nz-form-item nzAlign="bottom" nzJustify="end">
       <nz-space nzSize="large">
-        <button *nzSpaceItem nz-button nzType="default" class="button-cancel">
+        <button *nzSpaceItem nz-button nzType="default" class="button-cancel" (click)="cancel()">
           <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}</button>
         <nz-form-control *nzSpaceItem>
           <button nz-button nzType="primary" [disabled]="!validateForm.valid || isInvalidGateway"

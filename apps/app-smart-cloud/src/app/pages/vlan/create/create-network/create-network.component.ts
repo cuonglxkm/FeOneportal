@@ -208,7 +208,7 @@ export class CreateNetworkComponent implements OnInit {
   }
 
   reset() {
-    this.validateForm.reset()
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
   }
 
   inputCheckPool(value) {

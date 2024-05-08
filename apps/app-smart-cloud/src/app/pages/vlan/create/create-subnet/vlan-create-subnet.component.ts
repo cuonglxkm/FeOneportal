@@ -304,6 +304,10 @@ export class VlanCreateSubnetComponent implements OnInit {
     this.dataSubjectGateway.next(value);
   }
 
+  cancel() {
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+  }
+
   ngOnInit() {
     this.idNetwork = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     let regionAndProject = getCurrentRegionAndProject();
