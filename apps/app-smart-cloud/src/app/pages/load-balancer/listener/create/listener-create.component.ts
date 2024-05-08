@@ -13,8 +13,7 @@ import { ListenerService } from '../../../../shared/services/listener.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { InstancesService } from '../../../instances/instances.service';
-import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
-import { da } from 'date-fns/locale';
+import { RegionModel, ProjectModel, AppValidator } from '../../../../../../../../libs/common-utils/src';
 
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -85,7 +84,7 @@ export class ListenerCreateComponent implements OnInit{
     member: [50000],
     connection: [500],
     timeout: [50000],
-    allowCIRR: ['', [Validators.required, ipAddressValidator()]],
+    allowCIRR: ['', [Validators.required,AppValidator.ipWithCIDRValidator1]],
     description: [''],
 
     poolName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
@@ -185,8 +184,8 @@ export class ListenerCreateComponent implements OnInit{
         maxRetries: this.validateForm.controls['maxRetries'].value,
         timeout: this.validateForm.controls['timeoutHealth'].value,
         // adminStateUp: true,
-        expectedCodes: this.validateForm.controls['sucessCode'].value,
-        urlPath: this.validateForm.controls['path'].value,
+        expectedCodes: this.selectedCheckMethod == 'HTTP' ? this.validateForm.controls['sucessCode'].value : '',
+        urlPath: this.selectedCheckMethod == 'HTTP' ? this.validateForm.controls['path'].value : '',
         maxRetriesDown: this.validateForm.controls['maxRetriesDown'].value,
 
       },
