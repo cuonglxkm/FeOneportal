@@ -85,7 +85,7 @@ export class ListenerCreateComponent implements OnInit{
     member: [50000],
     connection: [5000],
     timeout: [50000],
-    allowCIRR: ['', [Validators.required,AppValidator.ipWithCIDRValidator]],
+    allowCIRR: ['', [Validators.required,AppValidator.ipWithCIDRValidator1]],
     description: [''],
 
     poolName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
@@ -299,7 +299,7 @@ export class ListenerCreateComponent implements OnInit{
 
   protected readonly focus = focus;
   activeDropdownSSL = false;
-  listCert: any;
+  listCert: any = null;
   certId: any;
   changeProtocolListener(event: any) {
     if (event == 'TERMINATED_HTTPS') {

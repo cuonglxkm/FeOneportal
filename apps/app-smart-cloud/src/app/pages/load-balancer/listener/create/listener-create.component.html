@@ -55,7 +55,7 @@
       <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.listener.info' | i18n }}</div>
       <nz-form-item>
         <nz-form-label>
-          <span>{{ 'app.load.balancer.name' | i18n }} (<span style="color: red;">*</span>) </span>
+          <span>{{ 'app.listener.name' | i18n }} (<span style="color: red;">*</span>) </span>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input nz-input
@@ -175,14 +175,14 @@
                nz-tooltip="" alt="" />
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-          <div *ngIf="activeDropdownSSL == false">
+          <div *ngIf="listCert == null || listCert.length <= 0">
             <div class="text-label">Bạn chưa có Cert?</div>
-            <div class="text-label" style="color: darkblue" (click)="activeDropdownSSL = true">Click để tạo mới</div>
+            <a class="text-label" style="color: #0D67B1" [routerLink]="['/app-smart-cloud/object-storage/bucket']">Click để tạo mới</a>
           </div>
-          <div *ngIf="activeDropdownSSL == true">
+          <div *ngIf="listCert != null && listCert.length > 0">
             <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
-                       style="width: 90%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
-                       nzPlaceHolder="--{{'project.note49' | i18n}}--"
+                       style="width: 100%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
+                       nzPlaceHolder="--Chọn SSL Cert--"
                        [(ngModel)]="certId" [ngModelOptions]="{ standalone: true }">
               <nz-option *ngFor="let i of listCert" [nzLabel]="i.name"
                          [nzValue]="i.secret_ref" />
