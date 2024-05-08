@@ -18,6 +18,7 @@ import {
   OfferItem,
   Order,
   OrderItem,
+  SecurityGroupModel,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -358,6 +359,7 @@ export class InstancesEditComponent implements OnInit {
   }
 
   checkPermission: boolean = false;
+  listSecurityGroupModel: SecurityGroupModel[] = [];
   getCurrentInfoInstance(instanceId: number): void {
     this.dataService.getById(instanceId, true).subscribe({
       next: (data: any) => {
@@ -375,6 +377,17 @@ export class InstancesEditComponent implements OnInit {
         this.selectedElementFlavor = this.instancesModel.flavorId;
         this.region = this.instancesModel.regionId;
         this.projectId = this.instancesModel.projectId;
+        this.dataService
+            .getAllSecurityGroupByInstance(
+              this.instancesModel.cloudId,
+              this.region,
+              this.instancesModel.customerId,
+              this.instancesModel.projectId
+            )
+            .subscribe((datasg: any) => {
+              this.listSecurityGroupModel = datasg;
+              this.cdr.detectChanges();
+            });
         this.initFlavors();
       },
       error: (e) => {

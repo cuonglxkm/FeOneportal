@@ -21,7 +21,10 @@ import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-ani
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from '@delon/abc/loading';
-import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import {
+  ProjectModel,
+  RegionModel,
+} from '../../../../../../../libs/common-utils/src';
 import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 import { getCurrentRegionAndProject } from '@shared';
 
@@ -72,6 +75,7 @@ export class InstancesEditVpcComponent implements OnInit {
     private notification: NzNotificationService
   ) {}
 
+  checkPermission: boolean = false;
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
     this.userEmail = this.tokenService.get()?.email;
@@ -82,24 +86,31 @@ export class InstancesEditVpcComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
-        this.dataService.getById(this.id, true).subscribe((data: any) => {
-          this.instancesModel = data;
-          this.loading = false;
-          this.cloudId = this.instancesModel.cloudId;
-          this.regionId = this.instancesModel.regionId;
-          this.getListIpPublic();
-          this.dataService
-            .getAllSecurityGroupByInstance(
-              this.cloudId,
-              this.regionId,
-              this.instancesModel.customerId,
-              this.instancesModel.projectId
-            )
-            .subscribe((datasg: any) => {
-              this.listSecurityGroupModel = datasg;
-              this.cdr.detectChanges();
-            });
-          this.cdr.detectChanges();
+        this.dataService.getById(this.id, true).subscribe({
+          next: (data: any) => {
+            this.instancesModel = data;
+            this.loading = false;
+            this.cloudId = this.instancesModel.cloudId;
+            this.regionId = this.instancesModel.regionId;
+            this.getListIpPublic();
+            this.dataService
+              .getAllSecurityGroupByInstance(
+                this.cloudId,
+                this.regionId,
+                this.instancesModel.customerId,
+                this.instancesModel.projectId
+              )
+              .subscribe((datasg: any) => {
+                this.listSecurityGroupModel = datasg;
+                this.cdr.detectChanges();
+              });
+            this.cdr.detectChanges();
+          },
+          error: (e) => {
+            this.checkPermission = false;
+            this.notification.error(e.error.detail, '');
+            this.returnPage();
+          },
         });
       }
     });
