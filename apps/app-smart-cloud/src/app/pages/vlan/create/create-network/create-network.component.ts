@@ -221,6 +221,8 @@ export class CreateNetworkComponent implements OnInit {
         const dataJson = JSON.parse(JSON.stringify(data));
 
         this.pool = dataJson.ipRange
+        this.gateway = dataJson.gateWay
+
         if(!this.validateForm.controls.disableGatewayIp.value) {
           this.validateForm.controls.allocationPool.setValue(this.gateway)
         }

@@ -76,7 +76,7 @@
         <nz-form-control nzDisableAutoTips [nzErrorTip]="networkAddressErrorTpl">
           <input nz-input
                  class="input-custom"
-                 formControlName="subnetAddressRequired"
+                 formControlName="subnetAddressRequired" (ngModelChange)="inputCheckPool($event)"
                  [placeholder]="'x.x.0.0/16'" />
           <ng-template #networkAddressErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'app.vlan.note29' | i18n }}</ng-container>
@@ -126,10 +126,8 @@
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
           <input nz-input class="input-custom"
-                 formControlName="gateway"
-                 (ngModelChange)="inputGateway($event)"
-                 placeholder="{{ 'app.vlan.note35' | i18n }}"/>
-          <span *ngIf="isInvalidGateway" style="color: red;">IP không thuộc Allocation Pool </span>
+                 [value]="gateway"
+                 [disabled]="true"/>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
