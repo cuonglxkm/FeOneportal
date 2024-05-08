@@ -808,10 +808,10 @@
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ volumeIntoMoney | number }} VND </label
+                        {{ gpuIntoMoney | number }} VND </label
                       ><br />
                       <label class="text-custom-price">
-                        {{ volumeUnitPrice | number }} VND
+                        {{ gpuUnitPrice | number }} VND
                       </label>
                     </td>
                   </tr>
@@ -830,8 +830,8 @@
                     '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
                   "
                   [nzShowSearch]="true"
-                  [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="configGPU.gpuOfferId"
+                  [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 >
                   <nz-option
@@ -1532,7 +1532,7 @@
                         [ngModelOptions]="{ standalone: true }"
                         [(ngModel)]="data.ip"
                         [id]="'ip_' + data.id"
-                        (ngModelChange)="onInputIPv6($$event, data.id)"
+                        (ngModelChange)="onInputIPv6($event, data.id)"
                         nzSize="large"
                       >
                         <nz-option

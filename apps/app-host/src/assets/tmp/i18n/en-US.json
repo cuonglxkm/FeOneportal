@@ -429,7 +429,7 @@
 
   "validation.exist.instance.name": "This instance name has already been used, please choose another name",
   "validation.instance.password.required": "Please enter the password",
-  "validation.password.pattern": "The password must contain at least 12 characters, including digits, uppercase letters, lowercase letters, and special symbols",
+  "validation.password.pattern": "The password must contain at least 12 characters and at most 20 characters, including digits, uppercase letters, lowercase letters, and special symbols",
   "validation.correct.instance.name": "Please enter the correct instance name",
   "validation.instance.name.required": "Please enter the instance name",
   "validation.password.new.required": "Please enter the new password field",

@@ -311,7 +311,7 @@
 
   "validation.exist.instance.name": "Tên máy ảo này đã được sử dụng, vui lòng chọn tên khác",
   "validation.instance.password.required": "Vui lòng nhập mật khẩu",
-  "validation.password.pattern": "Mật khẩu phải chứa tối thiểu 12 ký tự, bao gồm các chữ số, chữ hoa, chữ thường và ký hiệu đặc biệt",
+  "validation.password.pattern": "Mật khẩu phải chứa tối thiểu 12 ký tự, tối đa 20 ký tự, bao gồm các chữ số, chữ hoa, chữ thường và ký hiệu đặc biệt",
   "validation.correct.instance.name": "Vui lòng nhập đúng tên máy ảo",
   "validation.instance.name.required": "Vui lòng nhập tên máy ảo",
   "validation.password.new.required": "Vui lòng nhập trường mật khẩu mới",
