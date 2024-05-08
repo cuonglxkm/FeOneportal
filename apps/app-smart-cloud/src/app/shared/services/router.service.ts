@@ -101,7 +101,7 @@ export class RouterService extends BaseService {
 
   updateRouter(data: RouterUpdate): Observable<any> {
     let url_ = `/routers/${data.id}`;
-    return this.http.post<any>(
+    return this.http.put<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
       this.httpOptions
