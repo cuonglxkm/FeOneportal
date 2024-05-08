@@ -1,10 +1,11 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import SecurityGroupRule, { SecurityGroupData } from '../../../model/security-group.model';
 import { ShareService } from '../../../services/share.service';
 import { SecurityGroupService } from '../../../services/security-group.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RuleSearchCondition } from '../../../shared/models/security-group-rule';
 import { finalize } from 'rxjs';
+import { KubernetesConstant } from '../../../constants/kubernetes.constant';
 
 @Component({
   selector: 'one-portal-outbound',
@@ -12,6 +13,8 @@ import { finalize } from 'rxjs';
   styleUrls: ['./outbound.component.css'],
 })
 export class OutboundComponent implements OnInit {
+
+  @Output() deletedOutbound = new EventEmitter<SecurityGroupRule>();
 
   listOfOutbound: SecurityGroupRule[];
   pageIndex: number;
@@ -23,6 +26,8 @@ export class OutboundComponent implements OnInit {
   securityGroupId: string;
 
   isLoadingOutbound: boolean;
+
+  readonly LOCK_RULE = KubernetesConstant.LOCK_RULE;
 
   constructor(
     private sgService: SecurityGroupService,
@@ -83,8 +88,11 @@ export class OutboundComponent implements OnInit {
       }});
   }
 
-  handleOkDeleteOutbound() {
+  handleOkDeleteOutbound(idOutbound: string) {
     this.getRuleOutbound();
+
+    const outbound = this.listOfOutbound.find(item => item.id == idOutbound);
+    this.deletedOutbound.emit(outbound);
   }
 
 }

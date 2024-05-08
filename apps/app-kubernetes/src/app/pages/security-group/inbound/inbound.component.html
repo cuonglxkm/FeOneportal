@@ -20,31 +20,44 @@
       <th>STT</th>
       <th>IP Version</th>
       <th>Protocol</th>
-      <th>PortRange</th>
+      <th>Port Range</th>
       <th>Remote IP Prefix</th>
+      <th>Remote Security Group</th>
+      <th>Mô tả</th>
       <th>Thao tác</th>
     </tr>
   </thead>
   <tbody>
     <ng-container *ngFor="let item of ruleTable.data; let i = index;">
       <tr>
-        <td>{{ i + 1 }}</td>
-        <td>{{item.remoteIp}}</td>
-        <td>{{item.protocol}}</td>
+        <td class="right-align">{{ i + 1 }}</td>
+        <td>{{item.etherType}}</td>
+        <td>{{item.protocol | protocol2label}}</td>
         <td>{{item.portRange}}</td>
         <td>{{item.remoteIpPrefix}}</td>
         <td>
-          <div class="ml-5">
-            <one-portal-delete-inbound
-              nz-tooltip
-              nzTooltipTitle="Xóa Inbound"
-              nzTooltipPlacement="top"
-              [idInbound]="item.id"
-              [nameRule]="item.remoteIp"
-              [region]="regionId"
-              [project]="projectId"
-              (onOk)="handleOkDeleteInbound()" />
-          </div>
+          {{item.remoteGroupId}}
+        </td>
+        <td></td>
+        <td>
+          <ng-container *ngIf="item | canDelRule; else cannotDelRuleTpl">
+            <div class="center-align">
+              <one-portal-delete-inbound
+                nz-tooltip
+                nzTooltipTitle="Xóa Inbound"
+                nzTooltipPlacement="top"
+                [idInbound]="item.id"
+                [nameRule]="item.remoteIp"
+                [region]="regionId"
+                [project]="projectId"
+                (onOk)="handleOkDeleteInbound($event)" />
+            </div>
+          </ng-container>
+          <ng-template #cannotDelRuleTpl>
+            <div nz-tooltip="Không thể xóa rule này" class="lock-rule">
+              <img src="assets/imgs/trash1.svg" alt="" style="margin-top: 0; width: fit-content;" />
+            </div>
+          </ng-template>
         </td>
       </tr>
     </ng-container>

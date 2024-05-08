@@ -202,6 +202,10 @@ export class VlanEditSubnetComponent implements OnInit {
 
   allocationPool: any;
 
+  cancel() {
+    this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
+  }
+
   getSubnetById(idSubnet) {
     this.vlanService.getSubnetById(idSubnet).subscribe(data => {
       this.subnet = data;

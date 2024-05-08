@@ -1,3 +1,4 @@
+import { KubernetesConstant } from "../constants/kubernetes.constant";
 import { KubernetesCluster } from "./cluster.model";
 
 export class SecurityGroupSearchCondition {
@@ -52,4 +53,16 @@ export class FormDeleteRule {
   userId: number
   regionId: number
   projectId: number
+}
+
+export class SGLoggingReqDto {
+
+  securityGroupName: string;
+  serviceOrderCode: string;
+  operation: string;
+  resourceType: string = KubernetesConstant.DEFAULT_RESOURCE;
+  userId: string;
+  action: string;
+  jsonRule: string;
+
 }

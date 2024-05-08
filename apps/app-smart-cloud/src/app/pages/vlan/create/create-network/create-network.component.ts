@@ -208,7 +208,7 @@ export class CreateNetworkComponent implements OnInit {
   }
 
   reset() {
-    this.validateForm.reset()
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
   }
 
   inputCheckPool(value) {
@@ -221,6 +221,8 @@ export class CreateNetworkComponent implements OnInit {
         const dataJson = JSON.parse(JSON.stringify(data));
 
         this.pool = dataJson.ipRange
+        this.gateway = dataJson.gateWay
+
         if(!this.validateForm.controls.disableGatewayIp.value) {
           this.validateForm.controls.allocationPool.setValue(this.gateway)
         }

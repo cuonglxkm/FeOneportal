@@ -44,7 +44,7 @@ import { ActionHistoryComponent } from './action-history/action-history.componen
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
 import { CurrentVirtualMachineComponent } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
-import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-virtual-machine.component';
+import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-vm-normal/new-virtual-machine.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
 import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
@@ -225,6 +225,7 @@ import { CreateIpFloatingNormalComponent } from './ip-floating/create-ip-floatin
 import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/extend-ip-floating.component';
 import { AttachIpFloatingLbComponent } from './load-balancer/list/attach/attach-ip-floating-lb.component';
 import { DetachIpFloatingLbComponent } from './load-balancer/list/detach/detach-ip-floating-lb.component';
+import { NewVirtualMachineVpcComponent } from './backup-vm/restore/new-virtual-machine/new-vm-vpc/new-virtual-machine-vpc.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -434,6 +435,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ExtendIpFloatingComponent,
     AttachIpFloatingLbComponent,
     DetachIpFloatingLbComponent,
+    NewVirtualMachineVpcComponent,
   ],
   imports: [
     CommonModule,

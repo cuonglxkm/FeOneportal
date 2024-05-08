@@ -123,7 +123,7 @@
           </nz-space>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-          <input nz-input class="input-custom" formControlName="gateway" placeholder="{{ 'app.vlan.note35' | i18n }}"/>
+          <input nz-input class="input-custom" [value]="subnet?.gatewayIp" placeholder="{{ 'app.vlan.note35' | i18n }}" [disabled]="true"/>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -151,7 +151,7 @@
 
     <nz-form-item nzAlign="bottom" nzJustify="end">
       <nz-space nzSize="large">
-        <button *nzSpaceItem nz-button nzType="default" class="button-cancel">
+        <button *nzSpaceItem nz-button nzType="default" class="button-cancel" (click)="cancel()">
           <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}</button>
         <nz-form-control *nzSpaceItem>
           <button nz-button nzType="primary" [disabled]="validateForm.invalid"

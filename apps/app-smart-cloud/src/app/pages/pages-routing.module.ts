@@ -1,6 +1,6 @@
 import { RouterModule, Routes } from '@angular/router';
 import { UserProfileComponent } from './user-profile/user-profile.component';
-import { inject, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { V1Component } from './test/v1.component';
 import { ListAllowAddressPairComponent } from './allow-address-pair/list/list-allow-address-pair.component';
 import { SshKeyComponent } from './ssh-key/ssh-key.component';
@@ -17,9 +17,15 @@ import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
-import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
-import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
-import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
+import {
+  CreateBackupVolumeComponent
+} from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
+import {
+  DetailBackupVolumeComponent
+} from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
+import {
+  ListBackupVolumeComponent
+} from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
 import { PolicyAttachComponent } from './policy/policy-attach/policy-attach.component';
 import { IamDashboardComponent } from './iam/dashboard/iam-dashboard.component';
 import { ListUserGroupComponent } from './iam/user-group/list/list-user-group.component';
@@ -38,11 +44,21 @@ import { PolicyUpdateComponent } from './policy/policy-update/policy-update.comp
 import { BlankScheduleBackupComponent } from './schedule-backup/blank/blank-schedule-backup.component';
 import { ListScheduleBackupComponent } from './schedule-backup/list/list-schedule-backup.component';
 import { CreateScheduleBackupComponent } from './schedule-backup/create/create-schedule-backup.component';
-import { EditScheduleBackupVmComponent } from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
-import { SnapshotScheduleListComponent } from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
-import { SnapshotScheduleCreateComponent } from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
-import { SnapshotScheduleDetailComponent } from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
-import { EditScheduleBackupVolumeComponent } from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
+import {
+  EditScheduleBackupVmComponent
+} from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
+import {
+  SnapshotScheduleListComponent
+} from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
+import {
+  SnapshotScheduleCreateComponent
+} from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
+import {
+  SnapshotScheduleDetailComponent
+} from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
+import {
+  EditScheduleBackupVolumeComponent
+} from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DetailIpPublicComponent } from './ip-public/detail-ip-public/detail-ip-public.component';
 import { PaymentDetailComponent } from './billing/payment/detail/payment-detail.component';
@@ -53,7 +69,9 @@ import { ListPaymentComponent } from './billing/payment/list/list-payment.compon
 import { OrderDetailComponent } from './order/order-detail/order-detail.component';
 import { RenewVolumeComponent } from './volume/component/renew-volume/renew-volume.component';
 import { ExtendIpPublicComponent } from './ip-public/extend-ip-public/extend-ip-public.component';
-import { SnapshotScheduleEditComponent } from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
+import {
+  SnapshotScheduleEditComponent
+} from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
 import { ListPackagesBackupComponent } from './backup-package/list/list-packages-backup.component';
 import { CreatePackageBackupComponent } from './backup-package/create/create-package-backup.component';
 import { DetailPackageBackupComponent } from './backup-package/detail/detail-package-backup.component';
@@ -83,16 +101,25 @@ import { ListWanComponent } from './wan/list/list-wan.component';
 import { ListFileSystemComponent } from './file-storage/list/list-file-system.component';
 import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
 import { FileSystemSnapshotComponent } from './file-system-snapshot/file-system-snapshot.component';
-import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
-import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.component';
-import { FileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
-import { CreateFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
-import { EditFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component';
+import {
+  CreateFileSystemSnapshotComponent
+} from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
+import {
+  FileSystemSnapshotDetailComponent
+} from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.component';
+import {
+  FileSystemSnapshotScheduleComponent
+} from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
+import {
+  CreateFileSystemSnapshotScheduleComponent
+} from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
+import {
+  EditFileSystemSnapshotScheduleComponent
+} from './file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component';
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ObjectStorageComponent } from './object-storage/object-storage.component';
 import { ObjectStorageCreateComponent } from './object-storage/object-storage-create/object-storage-create.component';
 import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
-import { PolicyService } from '../../../../../libs/common-utils/src/lib/services/policy.service';
 import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 import { ListSecurityGroupComponent } from './security-group/list/list-security-group.component';
 import { SecurityComponent } from './security/security.component';
@@ -122,22 +149,22 @@ const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   {
     path: 'dashboard',
-    component: DashboardComponent,
+    component: DashboardComponent
   },
   {
     path: 'user-profile',
-    component: UserProfileComponent,
+    component: UserProfileComponent
   },
   {
     path: 'test',
-    component: V1Component,
+    component: V1Component
   },
   {
     path: 'volumes',
     component: VolumeComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'volume:List',
+      permission: 'volume:List'
     }
   },
   {
@@ -145,7 +172,7 @@ const routes: Routes = [
     component: CreateVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:create',
+      permission: 'order:create'
     }
   },
   {
@@ -153,7 +180,7 @@ const routes: Routes = [
     component: DetailVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'volume:Get',
+      permission: 'volume:Get'
     }
   },
   {
@@ -161,7 +188,7 @@ const routes: Routes = [
     component: EditVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'volume:Update',
+      permission: 'volume:Update'
     }
   },
   {
@@ -169,7 +196,7 @@ const routes: Routes = [
     component: SshKeyComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'keypair:List',
+      permission: 'keypair:List'
     }
   },
   {
@@ -180,7 +207,7 @@ const routes: Routes = [
       ),
     canActivate: [PermissionGuard],
     data: {
-      permission: 'instance:List',
+      permission: 'instance:List'
     }
 
   },
@@ -189,7 +216,7 @@ const routes: Routes = [
     component: IpPublicComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'ippublic:List',
+      permission: 'ippublic:List'
     }
 
   },
@@ -198,7 +225,7 @@ const routes: Routes = [
     component: CreateUpdateIpPublicComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:create',
+      permission: 'order:create'
     }
 
   },
@@ -207,7 +234,7 @@ const routes: Routes = [
     component: DetailIpPublicComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'ippublic:Get',
+      permission: 'ippublic:Get'
     }
 
   },
@@ -216,7 +243,7 @@ const routes: Routes = [
     component: ExtendIpPublicComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:create',
+      permission: 'order:create'
     }
 
   },
@@ -225,7 +252,7 @@ const routes: Routes = [
     component: ListAllowAddressPairComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'instance:InstanceListAllowAddressPair',
+      permission: 'instance:InstanceListAllowAddressPair'
     }
   },
   {
@@ -233,7 +260,7 @@ const routes: Routes = [
     component: ActionHistoryComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'actionlogs:List',
+      permission: 'actionlogs:List'
     }
 
   },
@@ -242,7 +269,7 @@ const routes: Routes = [
     component: SnapshotVolumeListComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'volumesnapshot:List',
+      permission: 'volumesnapshot:List'
     }
   },
   {
@@ -250,7 +277,7 @@ const routes: Routes = [
     component: SnappshotvlDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'volumesnapshot:Get',
+      permission: 'volumesnapshot:Get'
     }
   },
   {
@@ -258,7 +285,7 @@ const routes: Routes = [
     component: ListBackupVmComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backup:List',
+      permission: 'backup:List'
     }
 
   },
@@ -267,7 +294,7 @@ const routes: Routes = [
     component: RestoreBackupVmComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backup:InstanceBackupRestore',
+      permission: 'backup:InstanceBackupRestore'
     }
   },
   {
@@ -275,7 +302,7 @@ const routes: Routes = [
     component: DetailBackupVmComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backup:Get',
+      permission: 'backup:Get'
     }
 
   },
@@ -284,7 +311,7 @@ const routes: Routes = [
     component: CreateBackupVmComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:create',
+      permission: 'order:create'
     }
 
   },
@@ -293,7 +320,7 @@ const routes: Routes = [
     component: CreateBackupVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:create',
+      permission: 'order:create'
     }
 
   },
@@ -302,7 +329,7 @@ const routes: Routes = [
     component: DetailBackupVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backup:Get',
+      permission: 'backup:Get'
     }
 
   },
@@ -311,20 +338,20 @@ const routes: Routes = [
     component: ListBackupVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backup:List',
+      permission: 'backup:List'
     }
 
   },
   {
     path: 'iam/dashboard',
-    component: IamDashboardComponent,
+    component: IamDashboardComponent
   },
   {
     path: 'iam/user-group',
     component: ListUserGroupComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iamgroup:List',
+      permission: 'iamgroup:List'
     }
 
   },
@@ -333,7 +360,7 @@ const routes: Routes = [
     component: CreateUserGroupComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iamgroup:Create',
+      permission: 'iamgroup:Create'
     }
 
   },
@@ -342,7 +369,7 @@ const routes: Routes = [
     component: DetailUserGroupComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iamgroup:Get',
+      permission: 'iamgroup:Get'
     }
 
   },
@@ -351,7 +378,7 @@ const routes: Routes = [
     component: PolicyAttachComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iampolicy:IamPolicyAttachOrDetach',
+      permission: 'iampolicy:IamPolicyAttachOrDetach'
     }
   },
   {
@@ -359,7 +386,7 @@ const routes: Routes = [
     component: PolicyDetachComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iampolicy:IamPolicyAttachOrDetach',
+      permission: 'iampolicy:IamPolicyAttachOrDetach'
     }
   },
   {
@@ -367,7 +394,7 @@ const routes: Routes = [
     component: PolicyDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iampolicy:Get',
+      permission: 'iampolicy:Get'
     }
 
   },
@@ -376,7 +403,7 @@ const routes: Routes = [
     component: PolicyUpdateComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iampolicy:Create',
+      permission: 'iampolicy:Create'
     }
   },
   {
@@ -385,7 +412,7 @@ const routes: Routes = [
       import('../pages/policy/policy.module').then((m) => m.PolicyModule),
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iampolicy:List',
+      permission: 'iampolicy:List'
     }
 
   },
@@ -394,7 +421,7 @@ const routes: Routes = [
     component: UserComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iamuser:List',
+      permission: 'iamuser:List'
     }
 
   },
@@ -403,7 +430,7 @@ const routes: Routes = [
     component: UserCreateComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iamuser:Create',
+      permission: 'iamuser:Create'
     }
 
   },
@@ -412,7 +439,7 @@ const routes: Routes = [
     component: UserDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iamuser:Get',
+      permission: 'iamuser:Get'
     }
 
   },
@@ -421,7 +448,7 @@ const routes: Routes = [
     component: AddPoliciesComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iamuser:Create',
+      permission: 'iamuser:Create'
     }
 
   },
@@ -430,7 +457,7 @@ const routes: Routes = [
     component: AddToGroupComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'AddToGroupComponent',
+      permission: 'AddToGroupComponent'
     }
   },
   {
@@ -438,7 +465,7 @@ const routes: Routes = [
     component: CreateUserComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iamgroup:Create',
+      permission: 'iamgroup:Create'
     }
 
   },
@@ -447,20 +474,20 @@ const routes: Routes = [
     component: CreatePolicyComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'iamgroup:Create',
+      permission: 'iamgroup:Create'
     }
 
   },
   {
     path: 'schedule/backup/blank',
-    component: BlankScheduleBackupComponent,
+    component: BlankScheduleBackupComponent
   },
   {
     path: 'schedule/backup/list',
     component: ListScheduleBackupComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backupschedule:Search',
+      permission: 'backupschedule:Search'
     }
   },
   {
@@ -468,7 +495,7 @@ const routes: Routes = [
     component: CreateScheduleBackupComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:create',
+      permission: 'order:create'
     }
 
   },
@@ -477,7 +504,7 @@ const routes: Routes = [
     component: EditScheduleBackupVmComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backupschedule:Update',
+      permission: 'backupschedule:Update'
     }
   },
   {
@@ -485,7 +512,7 @@ const routes: Routes = [
     component: EditScheduleBackupVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backupschedule:Update',
+      permission: 'backupschedule:Update'
     }
   },
   {
@@ -493,7 +520,7 @@ const routes: Routes = [
     component: SnapshotScheduleListComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'volumesnapshotschedule:List',
+      permission: 'volumesnapshotschedule:List'
     }
   },
   {
@@ -501,7 +528,7 @@ const routes: Routes = [
     component: SnapshotScheduleCreateComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'volumesnapshotschedule:Create',
+      permission: 'volumesnapshotschedule:Create'
     }
   },
   {
@@ -509,7 +536,7 @@ const routes: Routes = [
     component: SnapshotScheduleDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'volumesnapshotschedule:Get',
+      permission: 'volumesnapshotschedule:Get'
     }
   },
   {
@@ -517,7 +544,7 @@ const routes: Routes = [
     component: SnapshotScheduleEditComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'volumesnapshotschedule:Update',
+      permission: 'volumesnapshotschedule:Update'
     }
   },
   {
@@ -525,24 +552,24 @@ const routes: Routes = [
     component: PaymentDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'payment:Get',
+      permission: 'payment:Get'
     }
 
   },
   {
     path: 'billing/payments/success',
-    component: PaymentSuccessComponent,
+    component: PaymentSuccessComponent
   },
   {
     path: 'paymentFailed',
-    component: PaymentFailedComponent,
+    component: PaymentFailedComponent
   },
   {
     path: 'billing/payments',
     component: ListPaymentComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'payment:List',
+      permission: 'payment:List'
     }
 
   },
@@ -551,7 +578,7 @@ const routes: Routes = [
     component: OrderListComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:List',
+      permission: 'order:List'
     }
 
   },
@@ -560,7 +587,7 @@ const routes: Routes = [
     component: OrderDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Get',
+      permission: 'order:Get'
     }
 
   },
@@ -569,7 +596,7 @@ const routes: Routes = [
     component: RenewVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -578,7 +605,7 @@ const routes: Routes = [
     component: ListPackagesBackupComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backup:ListBackupPacket',
+      permission: 'backup:ListBackupPacket'
     }
   },
   {
@@ -586,7 +613,7 @@ const routes: Routes = [
     component: DetailPackageBackupComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backup:BackupPacketGet',
+      permission: 'backup:BackupPacketGet'
     }
   },
   {
@@ -594,7 +621,7 @@ const routes: Routes = [
     component: CreatePackageBackupComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -603,7 +630,7 @@ const routes: Routes = [
     component: EditBackupPackageComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backup:BackupPacketUpdate',
+      permission: 'backup:BackupPacketUpdate'
     }
   },
   {
@@ -611,20 +638,20 @@ const routes: Routes = [
     component: ExtendBackupPackageComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
   {
     path: 'order/cart',
-    component: PaymentSummaryComponent,
+    component: PaymentSummaryComponent
   },
   {
     path: 'volume/vpc/create',
     component: CreateVolumeVpcComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -633,7 +660,7 @@ const routes: Routes = [
     component: ResizeVolumeVpcComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -643,14 +670,14 @@ const routes: Routes = [
   // },
   {
     path: 'vlan/network/list',
-    component: ListVlanComponent,
+    component: ListVlanComponent
   },
   {
     path: 'vlan/network/detail/:id',
     component: VlanDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'vlan:List',
+      permission: 'vlan:List'
     }
 
   },
@@ -661,15 +688,15 @@ const routes: Routes = [
 
     canActivate: [PermissionGuard],
     data: {
-      permission: 'vpc:List',
-    },
+      permission: 'vpc:List'
+    }
   },
   {
     path: 'network/router',
     component: RouterListComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'router:List',
+      permission: 'router:List'
     }
 
   },
@@ -678,21 +705,21 @@ const routes: Routes = [
     component: RouterDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'router:Get',
+      permission: 'router:Get'
     }
 
   },
   {
     path: 'vlan/create/network',
-    component: CreateNetworkComponent,
+    component: CreateNetworkComponent
   },
   {
     path: 'vlan/:id/create/subnet',
-    component: VlanCreateSubnetComponent,
+    component: VlanCreateSubnetComponent
   },
   {
     path: 'vlan/:id/network/edit/subnet/:subnetId',
-    component: VlanEditSubnetComponent,
+    component: VlanEditSubnetComponent
   },
   // {
   //   path: 'vlan/:id/network/extend/subnet/:subnetId',
@@ -703,7 +730,7 @@ const routes: Routes = [
     component: ListIpFloatingComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'ipfloating:List',
+      permission: 'ipfloating:List'
     }
 
   },
@@ -712,7 +739,7 @@ const routes: Routes = [
     component: CreateIpFloatingNormalComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -721,7 +748,7 @@ const routes: Routes = [
     component: ExtendIpFloatingComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -730,7 +757,7 @@ const routes: Routes = [
     component: ListWanComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'ipwan:List',
+      permission: 'ipwan:List'
     }
 
   },
@@ -739,7 +766,7 @@ const routes: Routes = [
     component: CreateFileSystemComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -748,7 +775,7 @@ const routes: Routes = [
     component: ListFileSystemComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'fileStorages:GetListShareFileStorage',
+      permission: 'fileStorages:GetListShareFileStorage'
     }
   },
   {
@@ -756,7 +783,7 @@ const routes: Routes = [
     component: DetailFileSystemComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'fileStorages:GetShareFileStorage',
+      permission: 'fileStorages:GetShareFileStorage'
     }
   },
   {
@@ -764,7 +791,7 @@ const routes: Routes = [
     component: ResizeFileSystemComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -773,7 +800,7 @@ const routes: Routes = [
     component: ListAccessRuleComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'fileStorages:GetListShareRule',
+      permission: 'fileStorages:GetListShareRule'
     }
   },
   {
@@ -781,7 +808,7 @@ const routes: Routes = [
     component: ListSubUserComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'objectstorages:ObjectStorageUser',
+      permission: 'objectstorages:ObjectStorageUser'
     }
   },
   {
@@ -789,7 +816,7 @@ const routes: Routes = [
     component: CreateSubUserComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'objectstorages:ObjectStorageUser',
+      permission: 'objectstorages:ObjectStorageUser'
     }
   },
   {
@@ -797,7 +824,7 @@ const routes: Routes = [
     component: DashboardObjectStorageComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'objectstorages:ObjectStorageMonitor',
+      permission: 'objectstorages:ObjectStorageMonitor'
     }
   },
   {
@@ -805,7 +832,7 @@ const routes: Routes = [
     component: ListIpFloatingComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'ipfloating:List',
+      permission: 'ipfloating:List'
     }
 
   },
@@ -814,7 +841,7 @@ const routes: Routes = [
     component: FileSystemSnapshotComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'fileStorages:GetListShareSnapshotFileStorage',
+      permission: 'fileStorages:GetListShareSnapshotFileStorage'
     }
   },
   {
@@ -822,7 +849,7 @@ const routes: Routes = [
     component: CreateFileSystemSnapshotComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'fileStorages:CreateShareSnapshotFileStorage',
+      permission: 'fileStorages:CreateShareSnapshotFileStorage'
     }
   },
   {
@@ -830,7 +857,7 @@ const routes: Routes = [
     component: FileSystemSnapshotDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'fileStorages:GetShareSnapshotFileStorage',
+      permission: 'fileStorages:GetShareSnapshotFileStorage'
     }
   },
   {
@@ -838,7 +865,7 @@ const routes: Routes = [
     component: FileSystemSnapshotScheduleComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'fileStorages:GetListScheduleShareSnapshot',
+      permission: 'fileStorages:GetListScheduleShareSnapshot'
     }
   },
   {
@@ -846,7 +873,7 @@ const routes: Routes = [
     component: CreateFileSystemSnapshotScheduleComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'fileStorages:CreateScheduleShareSnapshot',
+      permission: 'fileStorages:CreateScheduleShareSnapshot'
     }
   },
   {
@@ -854,7 +881,7 @@ const routes: Routes = [
     component: EditFileSystemSnapshotScheduleComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'fileStorages:UpdateScheduleShareSnapshot',
+      permission: 'fileStorages:UpdateScheduleShareSnapshot'
     }
   },
   {
@@ -862,7 +889,7 @@ const routes: Routes = [
     component: BucketListComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'objectstorages:ObjectStorageUser',
+      permission: 'objectstorages:ObjectStorageUser'
     }
   },
   {
@@ -870,7 +897,7 @@ const routes: Routes = [
     component: BucketCreateComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'objectstorages:CreateBucket',
+      permission: 'objectstorages:CreateBucket'
     }
   },
   {
@@ -878,19 +905,19 @@ const routes: Routes = [
     component: BucketConfigureComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'objectstorages:GetBucket',
+      permission: 'objectstorages:GetBucket'
     }
   },
   {
     path: 'object-storage',
-    component: ObjectStorageComponent,
+    component: ObjectStorageComponent
   },
   {
     path: 'object-storage/create',
     component: ObjectStorageCreateComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -899,7 +926,7 @@ const routes: Routes = [
     component: ObjectStorageExtendComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -908,7 +935,7 @@ const routes: Routes = [
     component: ObjectStorageEditComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -917,7 +944,7 @@ const routes: Routes = [
     component: BucketDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'objectstorages:GetBucket',
+      permission: 'objectstorages:GetBucket'
     }
   },
   {
@@ -928,7 +955,7 @@ const routes: Routes = [
       ),
     canActivate: [PermissionGuard],
     data: {
-      permission: 'vpnsitetosites:List',
+      permission: 'vpnsitetosites:List'
     }
   },
   {
@@ -936,7 +963,7 @@ const routes: Routes = [
     component: S3KeyComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'objectstorages:Search',
+      permission: 'objectstorages:Search'
     }
   },
   {
@@ -947,7 +974,7 @@ const routes: Routes = [
       ),
     canActivate: [PermissionGuard],
     data: {
-      permission: 'SnapshotPackage:List',
+      permission: 'SnapshotPackage:List'
     }
   },
   {
@@ -955,7 +982,7 @@ const routes: Routes = [
     component: ListSecurityGroupComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'securitygroup:List',
+      permission: 'securitygroup:List'
     }
   },
   {
@@ -963,7 +990,7 @@ const routes: Routes = [
     component: ListLoadBalancerComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'loadbalancer:List',
+      permission: 'loadbalancer:List'
     }
   },
   {
@@ -971,7 +998,7 @@ const routes: Routes = [
     component: CreateLbNovpcComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -980,7 +1007,7 @@ const routes: Routes = [
     component: CreateLbVpcComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -989,7 +1016,7 @@ const routes: Routes = [
     component: DetailLoadBalancerComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'loadbalancer:Get',
+      permission: 'loadbalancer:Get'
     }
   },
   {
@@ -997,7 +1024,7 @@ const routes: Routes = [
     component: ListenerCreateComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'blsdnlistener:Create',
+      permission: 'blsdnlistener:Create'
     }
   },
   {
@@ -1005,7 +1032,7 @@ const routes: Routes = [
     component: ListenerDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'blsdnlistener:Get',
+      permission: 'blsdnlistener:Get'
     }
   },
   {
@@ -1013,20 +1040,20 @@ const routes: Routes = [
     component: ListenerUpdateComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'blsdnlistener:Update',
+      permission: 'blsdnlistener:Update'
     }
 
   },
   {
     path: 'security',
-    component: SecurityComponent,
+    component: SecurityComponent
   },
   {
     path: 'load-balancer/update/vpc/:id',
     component: EditLoadBalancerVpcComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'loadbalancer:Update',
+      permission: 'loadbalancer:Update'
     }
   },
   {
@@ -1034,7 +1061,7 @@ const routes: Routes = [
     component: ExtendLoadBalancerNormalComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -1043,19 +1070,19 @@ const routes: Routes = [
     component: PoolDetailComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'lbsdn:LoadBalancer',
+      permission: 'lbsdn:LoadBalancer'
     }
   },
   {
     path: 'load-balancer/:idLoadBalancer/listener/:idListener/create/l7-policy',
-    component: CreateL7PolicyComponent,
+    component: CreateL7PolicyComponent
   },
   {
     path: 'load-balancer/:idLoadBalancer/listener/:idListener/l7-policy/:idL7',
     component: DetailL7PolicyComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'lbsdn:LoadBalancer',
+      permission: 'lbsdn:LoadBalancer'
     }
   },
   {
@@ -1063,7 +1090,7 @@ const routes: Routes = [
     component: EditL7PolicyComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'lbsdn:LoadBalancer',
+      permission: 'lbsdn:LoadBalancer'
     }
   },
   {
@@ -1071,7 +1098,7 @@ const routes: Routes = [
     component: CreateFileSystemNormalComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -1080,7 +1107,7 @@ const routes: Routes = [
     component: ExtendFileSystemNormalComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
   },
@@ -1089,14 +1116,15 @@ const routes: Routes = [
     component: ResizeFileSystemNormalComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'order:Create',
+      permission: 'order:Create'
     }
 
-  },
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-export class PagesRoutingModule {}
+export class PagesRoutingModule {
+}

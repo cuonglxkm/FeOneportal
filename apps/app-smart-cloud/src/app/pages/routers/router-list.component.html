@@ -131,15 +131,15 @@
         </td>
         <td nzBreakWord>
           <div style="color: #0066b3">
-            {{ getStatus(data.status) }}
+            {{ data.status === 'ACTIVE' && 'app.routers.active' | i18n }}
           </div>
         </td>
         <td>
           <img
             src="assets/imgs/edit-2.svg"
             [ngStyle]="{'filter': data.isUsed ? 'invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%)' : ''}"
-            alt=""
             [class.disabled]="data.isUsed"
+            alt=""
             (click)="modalEdit(data)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="{{'app.text.edit' | i18n}}"
