@@ -70,7 +70,7 @@ export class RouterListComponent implements OnInit {
   isLoadingCreateRouter: boolean = false
   isLoadingDeleteRouter: boolean = false
   isLoadingEditRouter: boolean = false
-  
+
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -166,7 +166,7 @@ export class RouterListComponent implements OnInit {
             this.activeCreate = true;
             this.notification.error(
               e.statusText,
-              this.i18n.fanyi('app.router.note9')
+              this.i18n.fanyi('router.nofitacation.load.fail')
             );
           },
         });
@@ -221,16 +221,16 @@ export class RouterListComponent implements OnInit {
       next: (data) => {
         this.isLoadingCreateRouter = false
         this.isVisibleCreate = false;
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note10'));
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.create.sucess'));
         this.getDataList();
       },
       error: (error) => {
         this.isLoadingCreateRouter = false
         this.cdr.detectChanges()
         if(error.status === 500){
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note11'))
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.over.router.used'))
         }else{
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note12'))
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.nofitacation.create.fail'))
         }
       },
     });
@@ -259,7 +259,7 @@ export class RouterListComponent implements OnInit {
     this.isLoadingEditRouter = true
     this.dataService.updateRouter(this.routerUpdate).subscribe({
       next: (data) => {
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note13'));
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.edit.sucess'));
         this.isLoadingEditRouter = false
         this.isVisibleEdit = false;
         this.getDataList();
@@ -267,7 +267,7 @@ export class RouterListComponent implements OnInit {
       error: (e) => {
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
-          this.i18n.fanyi('app.router.note14')
+          this.i18n.fanyi('router.nofitacation.edit.fail')
         );
         this.isLoadingEditRouter = false
       },
@@ -295,7 +295,7 @@ export class RouterListComponent implements OnInit {
         .deleteRouter(this.cloudId, this.region, this.projectId)
         .subscribe({
           next: (data) => {
-            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note15'));
+            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.remove.sucess'));
             this.isLoadingDeleteRouter = false
             this.isVisibleDelete = false;
             this.reloadTable();
@@ -303,13 +303,13 @@ export class RouterListComponent implements OnInit {
           error: (e) => {
             this.notification.error(
               e.statusText,
-              this.i18n.fanyi('app.router.note16')
+              this.i18n.fanyi('router.nofitacation.remove.fail')
             );
             this.isLoadingDeleteRouter = false
           },
         });
     } else {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note16'));
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.nofitacation.remove.fail'));
     }
   }
 }

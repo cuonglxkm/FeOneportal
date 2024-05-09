@@ -130,7 +130,7 @@ export class RouterDetailComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            this.i18n.fanyi('app.router.note30')
+            this.i18n.fanyi('router.nofitacation.interface.sucess')
           );
         },
       });
@@ -153,7 +153,7 @@ export class RouterDetailComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            this.i18n.fanyi('app.router.note31')
+            this.i18n.fanyi('router.nofitacation.static.fail')
           );
         },
       });
@@ -187,7 +187,7 @@ export class RouterDetailComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            this.i18n.fanyi('app.router.note32')
+            this.i18n.fanyi('router.nofitacation.subnet.fail')
           );
           this.isLoadingSubnet = false;
         },
@@ -215,14 +215,14 @@ export class RouterDetailComponent implements OnInit {
       this.formRouterInterface.controls.ipAddress.value;
     this.routerInterfaceCreate.networkCustomer = '';
     console.log(this.formRouterInterface.controls.subnetId.value);
-    
+
     if(this.formRouterInterface.controls.subnetId.value === ''){
       this.notification.warning(this.i18n.fanyi('app.status.warning'), 'Vui lòng chọn subnet');
       this.isLoadingRouterInterface = false;
     }else{
       this.service.createRouterInterface(this.routerInterfaceCreate).subscribe(
         (data) => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note33'));
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.interface.create.sucess'));
           this.isLoadingRouterInterface = false;
           this.isVisibleCreateInterface = false;
           this.formRouterInterface.reset()
@@ -231,24 +231,24 @@ export class RouterDetailComponent implements OnInit {
         (error) => {
           this.isLoadingRouterInterface = false;
           console.log(error);
-  
+
           this.cdr.detectChanges();
           if (error.error.detail.includes('allocated in subnet')) {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note34'));
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.ip.existed'));
           } else if (error.error.detail === '(rule:create_port and (rule:create_port:fixed_ips and (rule:create_port:fixed_ips:subnet_id and rule:create_port:fixed_ips:ip_address))) is disallowed by policy') {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note35'));
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.subnet.disable'));
           }else if (error.status === 400) {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note36'));
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.select.subnet'));
           } else {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              this.i18n.fanyi('app.router.note37')
+              this.i18n.fanyi('router.nofitacation.create.fail')
             );
           }
         },
       );
     }
-    
+
   }
 
 
@@ -276,7 +276,7 @@ handleOkCreateStatic() {
     next: (data) => {
       this.notification.success(
         this.i18n.fanyi('app.status.success'),
-        this.i18n.fanyi('app.router.note38')
+        this.i18n.fanyi('router.nofitacation.static.create.success')
       );
       this.isLoadingRouterStatic = false;
       this.isVisibleCreateStatic = false;
@@ -288,7 +288,7 @@ handleOkCreateStatic() {
       this.cdr.detectChanges();
       this.notification.error(
         this.i18n.fanyi('app.status.fail'),
-        this.i18n.fanyi('app.router.note39')
+        this.i18n.fanyi('router.nofitacation.create.fail1')
       );
     },
   });
@@ -311,7 +311,7 @@ handleOkCreateStatic() {
       )
       .subscribe({
         next: () => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note40'));
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.interface.remove.success'));
           this.isVisibleDeleteInterface = false;
           this.isLoadingDeleteRouterInterface = false
           this.getRouterInterfaces();
@@ -319,7 +319,7 @@ handleOkCreateStatic() {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            this.i18n.fanyi('app.router.note41')
+            this.i18n.fanyi('router.nofitacation.interface.remove.fail')
           );
           this.isLoadingDeleteRouterInterface = false
         },
@@ -349,7 +349,7 @@ handleOkCreateStatic() {
       )
       .subscribe({
         next: (data: any) => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note42'));
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.static.remove.success'));
           this.isVisibleDeleteStatic = false;
           this.isLoadingDeleteRouterStatic = false
           this.getRouterStatic();
@@ -357,7 +357,7 @@ handleOkCreateStatic() {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            this.i18n.fanyi('app.router.note43')
+            this.i18n.fanyi('router.nofitacation.static.remove.fail')
           );
           this.isLoadingDeleteRouterStatic = false
         },

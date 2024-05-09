@@ -9,25 +9,25 @@
           [nzFooter]="null"
           (nzOnCancel)="handleCancelDelete()">
   <ng-template #modalTitle>
-    <span class="text-modal-title">{{'app.wan.note18' | i18n}}</span>
+    <span class="text-modal-title">{{'wan.label.ip.wan.remove' | i18n}}</span>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" (ngSubmit)="handleOkDelete()">
       <nz-alert nzBanner
                 nzShowIcon
-                nzMessage="{{'app.wan.note19' | i18n}} {{addressWan}}.">
+                nzMessage="{{'wan.alert.ip.wan.remove' | i18n}} {{addressWan}}.">
       </nz-alert>
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>{{'app.wan.note20' | i18n}}</span>
+            <span>{{'wan.confirm.ip.wan.remove' | i18n}}</span>
           </div>
         </nz-form-label>
         <nz-form-control>
           <input nz-input
                  class="input-custom"
                  formControlName="ip"
-                 placeholder="{{'app.wan.note21' | i18n}}" />
+                 placeholder="{{'wan.label.press' | i18n}}" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item nzAlign="bottom" nzJustify="center">

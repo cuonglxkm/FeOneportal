@@ -142,6 +142,7 @@ export class ListenerCreateComponent implements OnInit{
 
   nextStep() {
     this.step += 1;
+    this.sessionFix = this.protocolListener == 'TCP' ? 'TCP' : 'HTTP';
   }
 
   priviousStep() {
@@ -181,7 +182,7 @@ export class ListenerCreateComponent implements OnInit{
       },
       healthMonitors : {
         name: this.validateForm.controls['healthName'].value,
-        httpMethod: this.selectedHttpMethod,
+        httpMethod: this.selectedCheckMethod == 'HTTP' ? this.selectedHttpMethod : 0,
         type: this.selectedCheckMethod,
         delay: this.dataListener?.id,
         maxRetries: this.validateForm.controls['maxRetries'].value,

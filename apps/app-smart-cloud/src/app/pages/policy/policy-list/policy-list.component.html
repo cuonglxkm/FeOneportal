@@ -22,9 +22,9 @@
   <br>
   <div class="root-filter">
     <div class="filter-1">
-      <h3 style="display: flex; align-items: center; margin-right:10px">{{ 'app.policies.typePolicy' | i18n }}:</h3>
+      <div class="text-label" style="display: flex; align-items: center; margin-right:10px">{{ 'app.policies.typePolicy' | i18n }}:</div>
       <br>
-      <nz-select [(ngModel)]="selectedStatus" nzSize="large" style="width: 170px">
+      <nz-select [(ngModel)]="selectedStatus" (ngModelChange)="loadData()" nzSize="large" style="width: 200px">
         <nz-option *ngFor="let p of listPolicyType" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
       </nz-select>
     </div>
@@ -32,7 +32,7 @@
       <nz-input-group style="margin-right: 8px; width: 40%;" [nzPrefix]="suffixIconSearch"
                       nzSize="large">
         <input name="name" nz-input [placeholder]="'app.placeholder.search' | i18n " [ngModel]="searchValue"
-               (ngModelChange)="changeSearch($event)"/>
+               (ngModelChange)="changeSearch($event)" (keydown.enter)="search()"/>
       </nz-input-group>
       <ng-template #suffixIconSearch>
         <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" (click)="search()"/>

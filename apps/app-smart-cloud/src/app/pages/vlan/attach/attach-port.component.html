@@ -8,10 +8,10 @@
     <span class="text-modal-title">{{ 'app.policies.attach' | i18n }} Port</span>
   </div>
   <div *nzModalContent>
-    <nz-form-label>{{ 'app.wan.note15' | i18n }}</nz-form-label>
+    <nz-form-label>{{ 'wan.label.instance.select' | i18n }}</nz-form-label>
     <nz-select nzSize="default"
                [nzLoading]="isLoadingAttach"
-               nzPlaceHolder="--{{ 'app.wan.note15' | i18n }}--"
+               nzPlaceHolder="--{{ 'wan.label.instance.select' | i18n }}--"
                [(ngModel)]="instanceSelected"
                (ngModelChange)="instanceChange($event)"
                nzShowSearch

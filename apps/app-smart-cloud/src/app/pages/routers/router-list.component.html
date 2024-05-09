@@ -177,8 +177,8 @@
       <nz-row style="margin-top: 20px">
         <nz-col class="text-center" style="width: 100%"
           ><span class="text-intro-desc">
-            {{'app.router.note1' | i18n}}<br />
-          {{'app.router.note2' | i18n}}</span
+            {{'router.alert.connect' | i18n}}<br />
+          {{'router.alert.connect2' | i18n}}</span
           ></nz-col
         >
       </nz-row>
@@ -210,7 +210,7 @@
       {{'form.account.name' | i18n}} Router (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note3' | i18n}}"
+        nz-tooltip="{{'router.validate.length50' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -227,7 +227,7 @@
       >{{'app.select.network' | i18n}}
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note4' | i18n}}"
+        nz-tooltip="{{'router.network.list' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
     /></span>
@@ -286,7 +286,7 @@
       {{'form.account.name' | i18n}} Router(<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note3' | i18n}}"
+        nz-tooltip="{{'router.validate.length50' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -303,7 +303,7 @@
       >{{'app.select.network' | i18n}}
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note4' | i18n}}"
+        nz-tooltip="{{'router.network.list' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
     /></span>
@@ -366,16 +366,16 @@
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
       <div>
-        {{'app.router.note5' | i18n}} <b> {{ nameRouterDelete }} </b>
+        {{'router.alert.remove' | i18n}} <b> {{ nameRouterDelete }} </b>
       </div>
       <div>
-        {{'app.router.note6' | i18n}}
+        {{'router.alert.static.interface.remove' | i18n}}
       </div>
-      <div>{{'app.router.note7' | i18n}}</div>
+      <div>{{'router.alert.action.not.rollback' | i18n}}</div>
     </ng-template>
 
     <span class="text-label"
-      >{{'app.router.note8' | i18n}}</span
+      >{{'router.alert.press.to.remove' | i18n}}</span
     >
     <nz-form-control>
       <input
