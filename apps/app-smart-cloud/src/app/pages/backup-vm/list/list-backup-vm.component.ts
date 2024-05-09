@@ -97,17 +97,7 @@ export class ListBackupVmComponent implements OnInit {
   }
 
   handleOkDelete() {
-    this.isLoading = true
-    this.isVisibleDelete = false
-    this.backupVmService.delete(this.id).subscribe(data => {
-      this.isLoading = false
-      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.vm.notification.success.delete'))
-      this.getListBackupVM(false)
-    }, error => {
-      this.isLoading = false
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.backup.vm.notification.fail.delete'))
-      this.getListBackupVM(false)
-    })
+    setTimeout(() => {this.getListBackupVM(true)}, 1500)
   }
 
   getListBackupVM(isBegin) {

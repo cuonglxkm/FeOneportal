@@ -10,8 +10,10 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import {
   BackupVm,
-  BackupVMFormSearch, CreateBackupVmOrderData,
-  CreateBackupVmSpecification, FormCreateBackup,
+  BackupVMFormSearch,
+  CreateBackupVmOrderData,
+  CreateBackupVmSpecification,
+  FormCreateBackup,
   VolumeAttachment
 } from '../../../../shared/models/backup-vm';
 import { InstancesModel } from '../../../instances/instances.model';
@@ -71,8 +73,9 @@ export class CreateBackupVmNormalComponent implements OnInit {
     customerId: [0, [Validators.required]]
   });
 
-  volumeAttachSelected: VolumeDTO[] = []
+  volumeAttachSelected: VolumeDTO[] = [];
   formCreateBackup: FormCreateBackup = new FormCreateBackup();
+
   constructor(private backupVmService: BackupVmService,
               private instanceService: InstancesService,
               private backupPackageService: PackageBackupService,
@@ -159,8 +162,8 @@ export class CreateBackupVmNormalComponent implements OnInit {
 
   onSelectedInstance(value) {
     console.log('selected', value);
-    this.validateForm.controls.volumeToBackupIds.reset()
-    this.validateForm.controls.securityGroupToBackupIds.reset()
+    this.validateForm.controls.volumeToBackupIds.reset();
+    this.validateForm.controls.securityGroupToBackupIds.reset();
     this.instanceService.getInstanceById(value).subscribe(data => {
       this.instance = data;
       this.isLoading = false;
@@ -191,29 +194,30 @@ export class CreateBackupVmNormalComponent implements OnInit {
   onSelectedVolume(value) {
     console.log('value', value);
     this.sizeOfVlAttach = 0;
-    this.volumeAttachSelected = []
+    this.volumeAttachSelected = [];
     if (value.length >= 1) {
       value.forEach(item => {
         this.volumeService.getVolumeById(item).subscribe(data => {
-          this.volumeAttachSelected?.push(data)
+          this.volumeAttachSelected?.push(data);
           this.sizeOfVlAttach += data?.sizeInGB;
         });
       });
     } else {
-      this.volumeAttachSelected = []
+      this.volumeAttachSelected = [];
       this.sizeOfVlAttach = 0;
     }
   }
 
   offerId: number = 0;
+
   getOfferBackupVm() {
     this.catalogService.getCatalogOffer(this.project, this.region, '', 'backup-vm').subscribe(data => {
       data?.forEach(item => {
         this.catalogService.getDetailOffer(item.id).subscribe(data2 => {
-          this.offerId = data2.id
-        })
-      })
-    })
+          this.offerId = data2.id;
+        });
+      });
+    });
   }
 
   createBackupVmNormal(): void {

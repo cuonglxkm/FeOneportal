@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import {
   BackupVm,
-  BackupVMFormSearch, CreateBackupVmOrderData,
+  BackupVMFormSearch,
+  CreateBackupVmOrderData,
   CreateBackupVmSpecification,
   FormCreateBackup,
   VolumeAttachment
@@ -25,9 +26,9 @@ import { getCurrentRegionAndProject } from '@shared';
 @Component({
   selector: 'one-portal-create-backup-vm-vpc',
   templateUrl: './create-backup-vm-vpc.component.html',
-  styleUrls: ['./create-backup-vm-vpc.component.less'],
+  styleUrls: ['./create-backup-vm-vpc.component.less']
 })
-export class CreateBackupVmVpcComponent implements OnInit{
+export class CreateBackupVmVpcComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -72,8 +73,9 @@ export class CreateBackupVmVpcComponent implements OnInit{
     customerId: [0, [Validators.required]]
   });
 
-  volumeAttachSelected: VolumeDTO[] = []
+  volumeAttachSelected: VolumeDTO[] = [];
   formCreateBackup: FormCreateBackup = new FormCreateBackup();
+
   constructor(private backupVmService: BackupVmService,
               private instanceService: InstancesService,
               private backupPackageService: PackageBackupService,
@@ -160,8 +162,8 @@ export class CreateBackupVmVpcComponent implements OnInit{
 
   onSelectedInstance(value) {
     console.log('selected', value);
-    this.validateForm.controls.volumeToBackupIds.reset()
-    this.validateForm.controls.securityGroupToBackupIds.reset()
+    this.validateForm.controls.volumeToBackupIds.reset();
+    this.validateForm.controls.securityGroupToBackupIds.reset();
     this.instanceService.getInstanceById(value).subscribe(data => {
       this.instance = data;
       this.isLoading = false;
@@ -192,29 +194,30 @@ export class CreateBackupVmVpcComponent implements OnInit{
   onSelectedVolume(value) {
     console.log('value', value);
     this.sizeOfVlAttach = 0;
-    this.volumeAttachSelected = []
+    this.volumeAttachSelected = [];
     if (value.length >= 1) {
       value.forEach(item => {
         this.volumeService.getVolumeById(item).subscribe(data => {
-          this.volumeAttachSelected?.push(data)
+          this.volumeAttachSelected?.push(data);
           this.sizeOfVlAttach += data?.sizeInGB;
         });
       });
     } else {
-      this.volumeAttachSelected = []
+      this.volumeAttachSelected = [];
       this.sizeOfVlAttach = 0;
     }
   }
 
   offerId: number = 0;
+
   getOfferBackupVm() {
     this.catalogService.getCatalogOffer(this.project, this.region, '', 'backup-vm').subscribe(data => {
       data?.forEach(item => {
         this.catalogService.getDetailOffer(item.id).subscribe(data2 => {
-          this.offerId = data2.id
-        })
-      })
-    })
+          this.offerId = data2.id;
+        });
+      });
+    });
   }
 
   createBackupVmNormal(): void {
