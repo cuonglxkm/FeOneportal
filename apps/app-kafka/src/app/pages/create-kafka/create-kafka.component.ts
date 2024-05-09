@@ -391,6 +391,18 @@ export class CreateKafkaComponent implements OnInit {
     })
   }
 
+  checkExistedService() {
+    const serviceName = this.myform.controls['serviceName'].value;
+    this.kafkaService.checkExistedService(serviceName, this.regionId, this.projectId)
+    .subscribe((data) => {
+      if (data && data.code == 200) {
+        this.checkRegionResource();
+      } else {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Dịch vụ đã tồn tại');
+      }
+    })
+  }
+
   createKafkaService() {
     const dto = this.myform;
     this.kafkaCreateReq = {

@@ -2,7 +2,6 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { decamelize } from 'humps';
 import { Observable } from 'rxjs';
-import { AppConstants } from '../core/constants/app-constant';
 import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
 import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
@@ -231,4 +230,15 @@ export class KafkaService extends BaseService {
 
     return this.http.post<BaseResponse<null>>(this.kafkaUrl + `/kafka/check-resource`, json);
   }
+
+  checkExistedService(serviceName: string, regionId: number, projectId: number): Observable<BaseResponse<null>> {
+    const json = {
+      'service_name': serviceName,
+      'region_id': regionId,
+      'project_id': projectId
+    };
+
+    return this.http.post<BaseResponse<null>>(`${this.kafkaUrl}/kafka/check-existed`, json);
+  }
+
 }

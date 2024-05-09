@@ -207,7 +207,7 @@ export class CredentialsComponent implements OnInit {
   sendOtpChangePassword(serviceOrderCode: string, username: string){
     
     this.titleOtp = 'Mã xác thực OTP đã được gửi đến email: ' + this.userEmail;
-    this.loadingSrv.open();
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.kafkaService.forgotPassword(this.serviceOrderCode, username)
     .pipe(
       finalize(() => this.loadingSrv.close())
