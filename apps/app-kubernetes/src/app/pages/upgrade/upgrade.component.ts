@@ -201,8 +201,10 @@ export class UpgradeComponent implements OnInit {
     });
   }
 
+  projectName: string;
   onProjectChange(project: ProjectModel) {
     this.projectId = project.id;
+    this.projectName = project.projectName;
   }
 
   getListK8sVersion(regionId: number, cloudProfileName: string) {
@@ -660,6 +662,8 @@ export class UpgradeComponent implements OnInit {
     cluster.serviceName = this.detailCluster.clusterName;
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
     cluster.sortItem = 0;
+    cluster.jsonData = JSON.stringify({'ServiceOrderCode': this.serviceOrderCode});
+    cluster.tenant = this.projectName;
 
     // console.log({cluster: cluster});
     // console.log({form: this.upgradeForm});

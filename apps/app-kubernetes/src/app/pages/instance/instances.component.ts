@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ClusterService } from '../../services/cluster.service';
 import { EMPTY, Subject, catchError, debounceTime, distinctUntilChanged, filter, finalize, map, switchMap } from 'rxjs';
 import { InstanceModel } from '../../model/instance.model';
@@ -10,11 +10,12 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   templateUrl: './instances.component.html',
   styleUrls: ['./instances.component.css'],
 })
-export class InstancesComponent implements OnInit {
+export class InstancesComponent implements OnInit, OnChanges {
 
   @Input('namespace') namespace: string;
   @Input('serviceOrderCode') serviceOrderCode: string;
   @Input('projectId') projectId: number;
+  @Input('serviceStatus') serviceStatus: number;
 
   keySearch: string;
   pageSize: number;
@@ -26,12 +27,15 @@ export class InstancesComponent implements OnInit {
   isLoadingInstance: boolean;
   isVisibleModal: boolean;
   isSubmiting: boolean;
+  isServiceInProgressing: boolean;
 
   titleModal: string;
   contentModal: string;
   action: string;
 
   changeKeySearch = new Subject<string>();
+
+  INPROGRESS_STATUS = KubernetesConstant.INPROGRESS_STATUS;
 
   constructor(
     private clusterService: ClusterService,
@@ -45,6 +49,7 @@ export class InstancesComponent implements OnInit {
     this.pageIndex = 1;
     this.pageSize = 10;
     this.total = 0;
+    this.isServiceInProgressing = false;
   }
 
   ngOnInit(): void {
@@ -56,6 +61,14 @@ export class InstancesComponent implements OnInit {
       this.keySearch = key;
       this.searchInstances();
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.serviceStatus?.currentValue) {
+      this.INPROGRESS_STATUS.includes(this.serviceStatus)
+        ? this.isServiceInProgressing = true
+        : this.isServiceInProgressing = false;
+    }
   }
 
   searchInstances() {
@@ -75,9 +88,6 @@ export class InstancesComponent implements OnInit {
       this.listOfInstances = this.listOfInstances.map(item => {
         let isActive: boolean;
         item.status == KubernetesConstant.ACTIVE_INSTANCE ? isActive = true : isActive = false;
-
-        // let isProgressing: boolean;
-        // item.status
 
         return {
           isActive: isActive,

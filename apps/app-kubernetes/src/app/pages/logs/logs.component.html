@@ -49,7 +49,7 @@
 
     <!-- table -->
     <nz-table #logTable [nzData]="listOfLogs" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
-      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoading">
       <thead>
         <tr>
           <th class="header-table">Tên người dùng</th>

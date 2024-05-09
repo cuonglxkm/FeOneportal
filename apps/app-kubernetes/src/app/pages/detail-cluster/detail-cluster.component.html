@@ -1,5 +1,5 @@
 <ng-container *ngIf="detailCluster; else loadingTpl">
-  <!-- <ng-container *ngIf="!isEditMode; else submitModeTpl">
+  <ng-container *ngIf="!isEditMode; else submitModeTpl">
     <button nz-button nzType="primary" (click)="onEditCluster()" class="mb-3" [disabled]="detailCluster?.serviceStatus == 6">
       <span nz-icon nzType="edit" nzTheme="outline"></span>
       Chỉnh sửa
@@ -15,7 +15,7 @@
       <span nz-icon nzType="check" nzTheme="outline"></span>
       Xác nhận
     </button>
-  </ng-template> -->
+  </ng-template>
 
   <form nz-form [formGroup]="upgradeForm">
     <!-- Thông tin chung -->
