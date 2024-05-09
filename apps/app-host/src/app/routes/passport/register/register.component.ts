@@ -118,7 +118,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       self.status = 'ok';
     } else if (
       control.value &&
-      control.value.length > 6 &&
+      control.value.length > 7 &&
       control.value.length < 21
     ) {
       self.status = 'pass';
