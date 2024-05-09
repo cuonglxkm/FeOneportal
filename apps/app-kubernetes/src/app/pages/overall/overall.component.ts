@@ -7,6 +7,7 @@ import { VlanService } from '../../services/vlan.service';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
 import { switchMap } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'one-portal-overall',
@@ -18,14 +19,19 @@ export class OverallComponent implements OnInit {
   serviceOrderCode: string;
   detailCluster: KubernetesCluster;
 
+  selectedIndexTab: number = 0;
+
   constructor(
     private clusterService: ClusterService,
     private vlanService: VlanService,
     private notificationService: NzNotificationService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private titleService: Title
   ) {}
 
   ngOnInit(): void {
+    this.selectedIndexTab = +localStorage.getItem('currentTab') || 0;
+
     this.activatedRoute.params.subscribe(params => {
       this.serviceOrderCode = params['id'];
       this.getDetailCluster(this.serviceOrderCode);
@@ -43,6 +49,11 @@ export class OverallComponent implements OnInit {
     this.projectId = project.id;
   }
 
+  onChangeTab(index: number) {
+    this.selectedIndexTab = index;
+    localStorage.setItem('currentTab', index + '');
+  }
+
   getDetailCluster(serviceOrderCode: string) {
     this.clusterService.getDetailCluster(serviceOrderCode)
       .subscribe((r: any) => {
@@ -52,6 +63,7 @@ export class OverallComponent implements OnInit {
           this.getVlanbyId(this.detailCluster.vpcNetworkId);
           this.getKubeConfig(this.detailCluster.serviceOrderCode);
 
+          this.titleService.setTitle('Chi tiết cluster ' + this.detailCluster.clusterName);
         } else {
           this.notificationService.error("Thất bại", r.message);
         }

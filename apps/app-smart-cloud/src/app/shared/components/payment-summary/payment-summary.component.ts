@@ -114,8 +114,18 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'k8s_create':
             this.serviceType = 'k8s';
-            serviceItem.name = `k8s - ${specificationObj.clusterName}`;
+            serviceItem.name = `k8s - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
+            break;
+          case 'k8s_resize':
+            this.serviceType = 'k8s';
+            serviceItem.name = `k8s - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Nâng cấp';
+            break;
+          case 'k8s_extend':
+            this.serviceType = 'k8s';
+            serviceItem.name = `k8s - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Gia hạn';
             break;
           case 'objectstorage_create':
             serviceItem.name = `Object Storage`;
@@ -139,7 +149,7 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
             serviceItem.type = 'Nâng cấp';
             break;
-          case 'kafka_extend': 
+          case 'kafka_extend':
             this.serviceType = 'kafka';
             serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
             serviceItem.type = 'Gia hạn';

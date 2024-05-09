@@ -9,7 +9,7 @@
     <span class="text-label">Bạn có chắc chắn muốn xóa Inbound không?</span>
   </div>
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancel()" class="border-button">
+    <button nz-button nzType="default" (click)="handleCancel()" class="border-button" [disabled]="isLoading">
       <span nz-icon nzType="close" nzTheme="outline"></span>Hủy</button>
     <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isLoading" class="border-button">
       <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận

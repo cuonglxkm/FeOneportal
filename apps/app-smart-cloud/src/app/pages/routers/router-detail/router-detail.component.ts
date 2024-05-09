@@ -43,11 +43,16 @@ export class RouterDetailComponent implements OnInit {
   listOfRouterInteface: RouterInteface[] = [];
   listOfRouterStatic: StaticRouter[] = [];
   listSubnetFilter = [];
-  loading: boolean = true;
+  isLoadingListRouterInterface: boolean = true;
+  isLoadingListRouterStatic: boolean = true;
   isLoadingRouterInterface: boolean = false;
   isLoadingRouterStatic: boolean = false;
   isLoadingSubnet: boolean = false
+  isLoadingDeleteRouterInterface: boolean = false
+  isLoadingDeleteRouterStatic: boolean = false
   disableSubnet: boolean = true
+  isVisibleCreateInterface = false;
+  routerInterfaceCreate: RouterIntefaceCreate = new RouterIntefaceCreate();
 
   formRouterInterface: FormGroup<{
     subnetId: FormControl<string>;
@@ -108,18 +113,18 @@ export class RouterDetailComponent implements OnInit {
   }
 
   getRouterInterfaces() {
-    this.loading = true;
+    this.isLoadingListRouterInterface = true;
     this.service
       .getRouterInterfaces(this.routerId, this.regionId, this.vpcId)
       .pipe(
         finalize(() => {
-          this.loading= false;
+          this.isLoadingListRouterInterface= false;
           this.cdr.detectChanges();
         })
       )
       .subscribe({
         next: (data) => {
-          this.loading= false;
+          this.isLoadingListRouterInterface= false;
           this.listOfRouterInteface = data;
         },
         error: (e) => {
@@ -132,12 +137,12 @@ export class RouterDetailComponent implements OnInit {
   }
 
   getRouterStatic() {
-    this.loading = true;
+    this.isLoadingListRouterStatic = true;
     this.service
       .getRouterStatics(this.routerId, this.regionId, this.vpcId)
       .pipe(
         finalize(() => {
-          this.loading = false;
+          this.isLoadingListRouterStatic = false;
           this.cdr.detectChanges();
         })
       )
@@ -189,8 +194,7 @@ export class RouterDetailComponent implements OnInit {
       });
   }
 
-  isVisibleCreateInterface = false;
-  routerInterfaceCreate: RouterIntefaceCreate = new RouterIntefaceCreate();
+
   modalCreateRouterInterface() {
     this.isVisibleCreateInterface = true;
     this.getListSubnet();
@@ -210,33 +214,41 @@ export class RouterDetailComponent implements OnInit {
     this.routerInterfaceCreate.ipAddress =
       this.formRouterInterface.controls.ipAddress.value;
     this.routerInterfaceCreate.networkCustomer = '';
-    this.service.createRouterInterface(this.routerInterfaceCreate).subscribe(
-      (data) => {
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note33'));
-        this.isLoadingRouterInterface = false;
-        this.isVisibleCreateInterface = false;
-        this.formRouterInterface.reset()
-        this.getRouterInterfaces();
-      },
-      (error) => {
-        this.isLoadingRouterInterface = false;
-        console.log(error);
-
-        this.cdr.detectChanges();
-        if (error.error.detail.includes('allocated in subnet')) {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note34'));
-        } else if (error.error.detail === '(rule:create_port and (rule:create_port:fixed_ips and (rule:create_port:fixed_ips:subnet_id and rule:create_port:fixed_ips:ip_address))) is disallowed by policy') {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note35'));
-        }else if (error.status === 400) {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note36'));
-        } else {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.router.note37')
-          );
-        }
-      },
-    );
+    console.log(this.formRouterInterface.controls.subnetId.value);
+    
+    if(this.formRouterInterface.controls.subnetId.value === ''){
+      this.notification.warning(this.i18n.fanyi('app.status.warning'), 'Vui lòng chọn subnet');
+      this.isLoadingRouterInterface = false;
+    }else{
+      this.service.createRouterInterface(this.routerInterfaceCreate).subscribe(
+        (data) => {
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note33'));
+          this.isLoadingRouterInterface = false;
+          this.isVisibleCreateInterface = false;
+          this.formRouterInterface.reset()
+          this.getRouterInterfaces();
+        },
+        (error) => {
+          this.isLoadingRouterInterface = false;
+          console.log(error);
+  
+          this.cdr.detectChanges();
+          if (error.error.detail.includes('allocated in subnet')) {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note34'));
+          } else if (error.error.detail === '(rule:create_port and (rule:create_port:fixed_ips and (rule:create_port:fixed_ips:subnet_id and rule:create_port:fixed_ips:ip_address))) is disallowed by policy') {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note35'));
+          }else if (error.status === 400) {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note36'));
+          } else {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.router.note37')
+            );
+          }
+        },
+      );
+    }
+    
   }
 
 
@@ -287,10 +299,9 @@ handleOkCreateStatic() {
   modalDeleteInterface(subnetId: number) {
     this.isVisibleDeleteInterface = true;
     this.subnetId = subnetId;
-    console.log(subnetId);
   }
   handleOkDeleteInterface() {
-    this.isVisibleDeleteInterface = false;
+    this.isLoadingDeleteRouterInterface = true
     this.service
       .deleteRouterInterface(
         this.routerId,
@@ -301,6 +312,8 @@ handleOkCreateStatic() {
       .subscribe({
         next: () => {
           this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note40'));
+          this.isVisibleDeleteInterface = false;
+          this.isLoadingDeleteRouterInterface = false
           this.getRouterInterfaces();
         },
         error: (e) => {
@@ -308,6 +321,7 @@ handleOkCreateStatic() {
             e.statusText,
             this.i18n.fanyi('app.router.note41')
           );
+          this.isLoadingDeleteRouterInterface = false
         },
       });
   }
@@ -324,7 +338,7 @@ handleOkCreateStatic() {
     this.nextHop = item.nextHop;
   }
   handleOkDeleteStatic() {
-    this.isVisibleDeleteStatic = false;
+    this.isLoadingDeleteRouterStatic = true
     this.service
       .deleteStaticRouter(
         this.routerId,
@@ -336,15 +350,16 @@ handleOkCreateStatic() {
       .subscribe({
         next: (data: any) => {
           this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note42'));
-          setTimeout(() => {
-            this.getRouterStatic();
-          }, 1500);
+          this.isVisibleDeleteStatic = false;
+          this.isLoadingDeleteRouterStatic = false
+          this.getRouterStatic();
         },
         error: (e) => {
           this.notification.error(
             e.statusText,
-            this.i18n.fanyi('app.router.note42')
+            this.i18n.fanyi('app.router.note43')
           );
+          this.isLoadingDeleteRouterStatic = false
         },
       });
   }

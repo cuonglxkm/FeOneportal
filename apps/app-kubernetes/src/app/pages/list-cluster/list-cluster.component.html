@@ -111,17 +111,20 @@
               </ng-container>
             </td>
             <td>{{ item.apiEndpoint }}</td>
-            <td class="center-align">{{ item.totalNode ? item.totalNode : 0 }}</td>
-            <td class="center-align">{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
-            <td class="center-align">
-              <button nz-button nzType="text" nzTooltipTitle="Tải file cấu hình" nzTooltipPlacement="top" nz-tooltip
-                (click)="handleDownloadKubeConfig(item)" class="borderless">
-                <img src="assets/imgs/download-file.svg" style="width: fit-content;" alt="" />
-              </button>
+            <td class="right-align">{{ item.totalNode ? item.totalNode : 0 }}</td>
+            <td>{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
+            <td>
+              <img src="assets/imgs/edit-kafka.svg" style="cursor: pointer; width: fit-content; margin-right: 8px;" alt=""
+                [nz-tooltip]="'Nâng cấp'" routerLink="upgrade/{{item.serviceOrderCode}}" />
+              <img src="assets/imgs/download-file.svg" style="cursor: pointer; width: fit-content; margin-right: 8px;" alt=""
+                [nz-tooltip]="'Tải file cấu hình'" (click)="handleDownloadKubeConfig(item)" />
+              <img src="assets/imgs/calendar-tick.svg" style="cursor: pointer; width: fit-content; margin-right: 8px;" alt=""
+                [nz-tooltip]="'Gia hạn'" routerLink="extension/{{item.serviceOrderCode}}" />
+
               <ng-container *ngIf="item.serviceStatus | checkStatus as progressing">
                 <button nz-button nzType="text" nzTooltipTitle="Xóa cluster" nzTooltipPlacement="top" nz-tooltip
-                  (click)="showModalConfirmDeleteCluster(item)" class="borderless marleft-0" [disabled]="progressing == 2">
-                  <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer; margin-top: 0; width: fit-content;" />
+                  (click)="showModalConfirmDeleteCluster(item)" class="borderless marleft-0 action-btn" [disabled]="progressing == 2">
+                  <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer; width: fit-content;" />
                 </button>
               </ng-container>
             </td>

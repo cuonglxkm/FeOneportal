@@ -485,7 +485,7 @@ export class DetailClusterComponent implements OnInit {
         {{value}}
       </ng-container>
       <ng-template #truncateValueTpl>
-        <div [nzTooltipTitle]="contenTpl"
+        <div [nzTooltipTitle]="contentTpl"
           nzTooltipPlacement="bottom" nz-tooltip>
           {{value | truncateLabel}}
         </div>

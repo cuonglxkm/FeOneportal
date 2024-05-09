@@ -55,11 +55,12 @@ export class ClusterComponent implements OnInit {
   expiryDate: number;
 
   public DEFAULT_CIDR = KubernetesConstant.DEFAULT_CIDR;
+  public DEFAULT_SERVICE_CIDR = KubernetesConstant.DEFAULT_SERVICE_CIDR;
   public DEFAULT_VOLUME_TYPE = KubernetesConstant.DEFAULT_VOLUME_TYPE;
   public DEFAULT_NETWORK_TYPE = KubernetesConstant.DEFAULT_NETWORK_TYPE;
 
   carouselConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },  
+    grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },
     load: 1,
     speed: 250,
     // interval: {timing: 4000, initialDelay: 4000},
@@ -111,6 +112,7 @@ export class ClusterComponent implements OnInit {
       networkType: [this.DEFAULT_NETWORK_TYPE, Validators.required],
       vpcNetwork: [null, Validators.required],
       cidr: [this.DEFAULT_CIDR, [Validators.required, Validators.pattern(KubernetesConstant.IPV4_PATTERN)]],
+      serviceCidr: [this.DEFAULT_SERVICE_CIDR, [Validators.required, Validators.pattern(KubernetesConstant.IPV4_PATTERN)]],
       description: [null, [Validators.maxLength(255), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
       subnet: [null, [Validators.required]],
       subnetId: [null, [Validators.required]],
@@ -280,14 +282,6 @@ export class ClusterComponent implements OnInit {
     });
   }
 
-  listSubnetByNetwork: string[];
-  getSubnetAndCidrUsed(projectInfraId: number, networkId: number) {
-    this.clusterService.getSubnetByNamespaceAndNetwork(projectInfraId, networkId)
-    .subscribe((r: any) => {
-      this.listSubnetByNetwork = r.data;
-    });
-  }
-
   getListPriceItem() {
     this.clusterService.getListPriceItem()
     .subscribe((r: any) => {
@@ -385,6 +379,7 @@ export class ClusterComponent implements OnInit {
   }
 
   vlanCloudId: string;
+  mapOfSubnetByNetwork = new Map<string, string[]>();
   formSearchSubnet: FormSearchSubnet = new FormSearchSubnet();
   onSelectedVlan(vlanId: number) {
     this.vlanId = vlanId;
@@ -407,7 +402,7 @@ export class ClusterComponent implements OnInit {
 
       forkJoin({subnetObs, subnetUsedObs}).subscribe(data => {
         this.listOfSubnets = data['subnetObs'].records;
-        this.listSubnetByNetwork = data['subnetUsedObs'].data;
+        this.mapOfSubnetByNetwork = new Map(Object.entries(data['subnetUsedObs'].data));
       });
     }
   }
@@ -418,12 +413,12 @@ export class ClusterComponent implements OnInit {
     const subnet = this.listOfSubnets.find(item => item.id == subnetId);
     if (subnet != null) {
       const selectedVpcNetworkId = this.myform.get('vpcNetwork').value;
-
       this.subnetAddress = subnet.subnetAddressRequired;
-      if (this.listSubnetByNetwork && this.listSubnetByNetwork.length > 0) {
-        if (!this.listSubnetByNetwork.includes(this.subnetAddress)) {
+
+      for (let [k, v] of this.mapOfSubnetByNetwork.entries()) {
+        let subnetUsedArr: string[] = v;
+        if (subnetUsedArr.includes(this.subnetAddress) && selectedVpcNetworkId != k) {
           this.myform.get('subnet').setErrors({usedSubnet: true});
-          return;
         } else {
           delete this.myform.get('subnet').errors?.usedSubnet;
         }
@@ -575,6 +570,7 @@ export class ClusterComponent implements OnInit {
     }
   }
 
+  // check overlapse podcidr and subnet
   checkOverLapseIP() {
     let cidr = this.myform.get('cidr').value;
     let subnet = this.subnetAddress;
@@ -597,13 +593,37 @@ export class ClusterComponent implements OnInit {
     }
   }
 
-  onValidateIP(ip: string) {
+  // check overlapse servicecidr and podcidr
+  checkOverlapPodCidr() {
+    let podCidr = this.myform.get('cidr').value;
+    let serviceCidr = this.myform.get('serviceCidr').value;
+    let subnet = this.subnetAddress;
+
+    const reg = new RegExp(KubernetesConstant.CIDR_PATTERN);
+    if (!reg.test(podCidr) || !reg.test(serviceCidr)) return;
+
+    if (podCidr && serviceCidr) {
+      if (overlapCidr(podCidr, serviceCidr)) {
+        this.myform.get('serviceCidr').setErrors({overlapPodCidr: true});
+      } else {
+        delete this.myform.get('serviceCidr').errors?.overlapPodCidr;
+      }
+
+      if (overlapCidr(serviceCidr, subnet)) {
+        this.myform.get('serviceCidr').setErrors({overlapSubnet: true});
+      } else {
+        delete this.myform.get('serviceCidr').errors?.overlapSubnet;
+      }
+    }
+  }
+
+  onValidateIP(ip: string, control: string) {
     let tmp: string[] = ip?.split('.');
     if (ip && (tmp[2] != '0' || tmp[3] != '0')) {
-      this.myform.get('cidr').setErrors({invalid: true});
+      this.myform.get(control).setErrors({invalid: true});
       return;
     } else {
-      delete this.myform.get('cidr').errors?.invalid;
+      delete this.myform.get(control).errors?.invalid;
     }
   }
 
@@ -673,6 +693,10 @@ export class ClusterComponent implements OnInit {
 
   get cidr() {
     return this.myform.get('cidr').value + '/16';
+  }
+
+  get serviceCidr() {
+    return this.myform.get('serviceCidr').value + '/16';
   }
 
   get subnet() {
@@ -754,6 +778,7 @@ export class ClusterComponent implements OnInit {
     networking.subnetId = cluster.subnetId;
     networking.subnetCloudId = cluster.subnetCloudId;
     networking.networkCloudId = cluster.networkCloudId;
+    networking.serviceCidr = cluster.serviceCidr + '/16';
 
     cluster.networking = networking;
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
@@ -762,6 +787,7 @@ export class ClusterComponent implements OnInit {
     cluster.totalRam = this.totalRam;
     cluster.totalCpu = this.totalCpu;
     cluster.totalStorage = this.totalStorage;
+    cluster.serviceName = cluster.clusterName;
 
     // this.onSubmitOrder(cluster);
 
@@ -791,7 +817,7 @@ export class ClusterComponent implements OnInit {
 
     const orderItem: OrderItem = new OrderItem();
     orderItem.price = this.totalPrice;
-    orderItem.orderItemQuantity = 1;         // fix test
+    orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
     orderItem.specification = JSON.stringify(cluster);
     orderItem.serviceDuration = this.usageTime;

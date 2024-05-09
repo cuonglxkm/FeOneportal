@@ -533,6 +533,8 @@ export class InstancesCreateComponent implements OnInit {
     this.ramIntoMoney = 0;
     this.cpuUnitPrice = 0;
     this.cpuIntoMoney = 0;
+    this.gpuUnitPrice = 0;
+    this.gpuIntoMoney = 0;
   }
   //#endregion
 
