@@ -65,36 +65,35 @@ export class KafkaService extends BaseService {
     );
   }
 
-  sendOtpForgotPassword(
+  forgotPassword(
     serviceOrderCode: string,
     username: string
   ): Observable<BaseResponse<string>> {
+
+    const json = {
+      'service_order_code': serviceOrderCode,
+      'username': username
+    };
+
     return this.http.post<BaseResponse<string>>(
-      `${this.kafkaUrl}/otp/sendOtpForgotPass?service_order_code=${serviceOrderCode}&user_forgot=${username}`,
-      null
+      `${this.kafkaUrl}/users/forgot-password`, json
     );
   }
 
-  verifyOtpForgotPassword(
-    keyCheckOtp: string,
+  verifyOtp(
     serviceOrderCode: string,
-    otpValue: string
+    username: string,
+    otp: string
   ): Observable<BaseResponse<string>> {
-    const topic: string = AppConstants.TOPIC_FORGOT_PASS;
-    // fix user_code from local storage
-    const userCode = localStorage.getItem('user_code');
+
+    const json = {
+      'service_order_code': serviceOrderCode,
+      'username': username,
+      'otp': otp
+    }
 
     return this.http.post<BaseResponse<string>>(
-      `http://api.galaxy.vnpt.vn:30383/notification-ws-service/otp/committee-verify`,
-      {
-        keyCheckOtp,
-        otpValue,
-        topic,
-        data: JSON.stringify({
-          service_order_code: serviceOrderCode,
-          user_code: userCode,
-        }),
-      }
+      `${this.kafkaUrl}/users/verify-otp`, json
     );
   }
 

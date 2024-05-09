@@ -7,6 +7,8 @@ import { KafkaCredential } from '../../../core/models/kafka-credential.model';
 import { KafkaCredentialsService } from '../../../services/kafka-credentials.service';
 import { I18NService } from 'src/app/core/i18n/i18n.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { KafkaService } from 'src/app/services/kafka.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'one-portal-credentials',
@@ -45,11 +47,15 @@ export class CredentialsComponent implements OnInit {
   msgError = '';
   userNameDelete: string;
 
+  userEmail: string;
+
   constructor(
     private kafkaCredentialService: KafkaCredentialsService,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
+    private kafkaService: KafkaService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
   ) {
     this.tabStatus = this.showListCredentials;
     this.isVisibleOtpModal = false;
@@ -58,6 +64,7 @@ export class CredentialsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCredentials();
+    this.userEmail = this.tokenService.get()?.email;
   }
 
   updatePassword(data: KafkaCredential) {
@@ -199,24 +206,19 @@ export class CredentialsComponent implements OnInit {
 
   sendOtpChangePassword(serviceOrderCode: string, username: string){
     
-    //test
-    this.isVisibleOtpModal = true;
-    this.currentUserName = username;
-    this.titleOtp = 'Mã xác thực OTP đã được gửi đến email: nhiennd@vnpt.vn';
-    this.keyCheckOtp = '123456';
-    this.inputOtpCode = '';
-
-    /* Tạm ẩn luồng gửi mail 
-    this.kafkaService.sendOtpForgotPassword(this.serviceOrderCode, username).subscribe(r => {
+    this.titleOtp = 'Mã xác thực OTP đã được gửi đến email: ' + this.userEmail;
+    this.loadingSrv.open();
+    this.kafkaService.forgotPassword(this.serviceOrderCode, username)
+    .pipe(
+      finalize(() => this.loadingSrv.close())
+    )
+    .subscribe(r => {
       if(r && r.code === 200){
         this.isVisibleOtpModal = true;
         this.currentUserName = username;
-        this.titleOtp = r.msg;
-        this.keyCheckOtp = r.data;
         this.inputOtpCode = '';
       }
     })
-    */
   }
 
   verifyOtp(){
@@ -226,30 +228,19 @@ export class CredentialsComponent implements OnInit {
       });
       return;
     }
-
-    //test
-    if (this.inputOtpCode == '123456') {
-      this.closeOtpModal();
-      this.changeTabStatus(this.showForgotPassword);
-    } else {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Mã xác thực không đúng, xin vui lòng kiểm tra lại!', {
-        nzDuration: 2000,
-      });
-    }
-
-    /* Tạm ẩn luồng xác thực OTP
     this.kafkaService
-      .verifyOtpForgotPassword(
-        this.keyCheckOtp,
+      .verifyOtp(
         this.serviceOrderCode,
+        this.currentUserName,
         this.inputOtpCode
       )
       .subscribe((r) => {
         if (r && r.code == 200) {
           this.closeOtpModal();
           this.changeTabStatus(this.showForgotPassword);
+        } else {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), r.msg);
         }
       });
-    */
   }
 }
