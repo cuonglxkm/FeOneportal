@@ -281,6 +281,13 @@ export class InstancesService extends BaseService {
       );
   }
 
+  getPrices(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
+      data
+    );
+  }
+
   getListOffersByProductId(
     productId: string,
     regionId: string

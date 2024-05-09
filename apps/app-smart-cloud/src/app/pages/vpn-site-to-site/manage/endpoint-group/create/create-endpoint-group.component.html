@@ -75,13 +75,17 @@
                     nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
-            <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
+            <nz-checkbox-wrapper *ngIf="selectedType == 'subnet' && listSubnets.length !== 0" style="width: 100%;" (nzOnChange)="log($event)">
               <div *ngIf="selectedType == 'subnet'">
                 <div *ngFor="let item of listSubnets">
                   <div [ngModel]="checked" [nzValue]="item.cidr" nz-checkbox>{{ item.cidr }}</div>
                 </div>
               </div>
             </nz-checkbox-wrapper>
+
+            <ng-container *ngIf="selectedType == 'subnet' && listSubnets.length === 0">
+              <a style="display: block;" [routerLink]="['/app-smart-cloud/network/router/detail/' + routerId]">Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!</a>
+            </ng-container>
             
             
             <nz-form-label *ngIf="selectedType == 'cidr'">

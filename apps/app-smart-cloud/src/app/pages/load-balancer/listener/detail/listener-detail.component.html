@@ -54,7 +54,7 @@
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <nz-radio-group [disabled]="true" [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}" nzSize="large">
-              <label nz-radio nzValue="HTTP">TERMINATED_HTTPS</label>
+              <label nz-radio nzValue="HTTP">HTTP</label>
               <label nz-radio nzValue="TCP">TCP</label>
               <label nz-radio nzValue="TERMINATED_HTTPS">TERMINATED_HTTPS</label>
             </nz-radio-group>
@@ -179,7 +179,7 @@
           </tbody>
         </nz-table>
       </nz-tab>
-      <nz-tab nzTitle="L7 Policy">
+      <nz-tab nzTitle="L7 Policy" *ngIf="protocolListener!='TCP'">
         <nz-row style="display: flex;justify-content: space-between;margin-bottom: 30px;">
           <div class="text-card-header">Danh sách L7 Policy</div>
           <button *ngIf="currentPageData?.length > 0"  nz-button nzType="primary" nzSize="large" [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">

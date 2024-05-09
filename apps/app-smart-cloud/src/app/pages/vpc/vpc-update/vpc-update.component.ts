@@ -107,10 +107,6 @@ export class VpcUpdateComponent implements OnInit{
     description: new FormControl({value: 'loading data....', disabled: false}),
     numOfMonth: new FormControl({value: 1, disabled: true}, {validators: [Validators.required]}),
     //tab 1
-    ipType: new FormControl({
-      value: '',
-      disabled: true
-    }, {validators: this.selectIndexTab === 0 ? [Validators.required] : []}),
     //tab 2
     // vCPU: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
     // ram: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
@@ -226,8 +222,8 @@ export class VpcUpdateComponent implements OnInit{
           newQuotaSecurityGroupCount: this.numberSecurityGroup,
           // newQuotaKeypairCount: 0,// NON
           // newQuotaVolumeSnapshotCount: 0,//NON
-          newQuotaIpPublicCount: IPPublicNum,
-          newQuotaIpFloatingCount: IPFloating,
+          newQuotaIpPublicCount: this.selectIndexTab == 0 ? 1 : IPPublicNum,
+          newQuotaIpFloatingCount: this.selectIndexTab == 0 ? 0 : IPFloating,
           newQuotaNetworkCount: this.numberNetwork,
           newQuotaRouterCount: this.numberRouter,
           newQuotaLoadBalancerSdnCount: this.numberLoadBalancer,
@@ -235,7 +231,7 @@ export class VpcUpdateComponent implements OnInit{
           newVpnSiteToSiteOfferId: this.siteToSiteId,
           newQuotaShareInGb: this.numberFileSystem,
           newQuotaShareSnapshotInGb: this.numberFileScnapsshot,
-          newQuotaIpv6Count: IPV6,
+          newQuotaIpv6Count: this.selectIndexTab == 0 ? 0 : IPV6,
           typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
           serviceType: 1,
           serviceInstanceId: this.data.id,
@@ -312,13 +308,6 @@ export class VpcUpdateComponent implements OnInit{
           this.ssdOld = this.ssd = data.quotaSSDInGb;
           if (data.offerId != null) {
             this.selectIndexTab = 0;
-            if (data.quotaIpv6Count != 0) {
-              this.form.controls['ipType'].setValue('2');
-            } else if (data.quotaIpPublicCount != 0) {
-              this.form.controls['ipType'].setValue('0');
-            } else if (data.quotaIpFloatingCount != 0) {
-              this.form.controls['ipType'].setValue('1');
-            }
           } else {
             this.selectIndexTab = 1;
           }
@@ -405,8 +394,8 @@ export class VpcUpdateComponent implements OnInit{
           newQuotaSecurityGroupCount: this.numberSecurityGroup,
           // newQuotaKeypairCount: 0,// NON
           // newQuotaVolumeSnapshotCount: 0,//NON
-          newQuotaIpPublicCount: IPPublicNum,
-          newQuotaIpFloatingCount: IPFloating,
+          newQuotaIpPublicCount: this.selectIndexTab == 0 ? 1 : IPPublicNum,
+          newQuotaIpFloatingCount: this.selectIndexTab == 0 ? 0 : IPFloating,
           newQuotaNetworkCount: this.numberNetwork,
           newQuotaRouterCount: this.numberRouter,
           newQuotaLoadBalancerSdnCount: this.numberLoadBalancer,
@@ -414,7 +403,7 @@ export class VpcUpdateComponent implements OnInit{
           newVpnSiteToSiteOfferId: this.siteToSiteId,
           newQuotaShareInGb: this.numberFileSystem,
           newQuotaShareSnapshotInGb: this.numberFileScnapsshot,
-          newQuotaIpv6Count: IPV6,
+          newQuotaIpv6Count: this.selectIndexTab == 0 ? 1 : IPV6,
           typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
           serviceType: 12,
           serviceInstanceId: this.data.id,

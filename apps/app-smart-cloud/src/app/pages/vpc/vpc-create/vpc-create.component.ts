@@ -415,6 +415,8 @@ export class VpcCreateComponent implements OnInit {
   }
 
   changeTab(event: any) {
+    this.totalAmount = 0;
+    this.totalPayment = 0;
     this.selectIndexTab = event.index;
     this.calculateReal();
   }

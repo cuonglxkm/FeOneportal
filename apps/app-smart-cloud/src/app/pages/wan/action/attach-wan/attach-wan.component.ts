@@ -69,12 +69,12 @@ export class AttachWanComponent {
     this.wanService.action(formAction).subscribe(data => {
       this.isVisible = false
       this.isLoading = false
-      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.wan.note16'))
+      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('wan.nofitacation.instance.attach.sucess'))
       this.onOk.emit(data)
     }, error =>  {
       this.isVisible = false
       this.isLoading = false
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.wan.note17'))
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('wan.nofitacation.instance.attach.fail'))
     })
   }
 }

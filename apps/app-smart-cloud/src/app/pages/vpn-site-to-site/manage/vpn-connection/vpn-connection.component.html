@@ -84,20 +84,22 @@
       </td>
       <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
-          <span
-            style="margin-right: 10px; cursor: pointer"
-            [style.color]="data.status !== 'PENDING_CREATE' && '#0066b3'"
-            nz-icon
-            nzType="edit"
-            nzTheme="outline"
+          <img
+          [ngStyle]="{
+            filter: data.status === 'PENDING_CREATE'
+              ? 'invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%)'
+              : ''
+          }"
+          [class.disabled]="data.status === 'PENDING_CREATE'"
+          style="cursor: pointer; margin-right: 16px"
+          src="assets/imgs/edit-2.svg"
             [routerLink]="[
               '/app-smart-cloud/vpn-site-to-site/vpn-connection/edit/' + data.id
             ]"
             [nzPopoverContent]="'Sửa'"
             nz-popover
-            [class.disabled]="data.status === 'PENDING_CREATE'"
             nzPopoverPlacement="bottom"
-          ></span>
+          />
           <one-portal-delete-vpn-connection
             [region]="region"
             [project]="project"

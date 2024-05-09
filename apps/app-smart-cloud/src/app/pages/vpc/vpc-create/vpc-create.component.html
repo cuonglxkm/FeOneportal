@@ -131,87 +131,57 @@
           </nz-radio-group>
         </nz-form-item>
         <div *ngIf="vpcType != '1'">
-          <div class="text-card-header" style="margin-bottom: 20px">{{'app.info' | i18n}} Network</div>
+          <div class="text-card-header" style="margin-bottom: 20px">{{ 'app.info' | i18n }} Network</div>
           <nz-row>
-            <div style="margin-right: 10px;">{{'app.payment-detail.quantity' | i18n}} Network:</div>
-            <div>{{nwNormal}}</div>
+            <div style="margin-right: 10px;">{{ 'app.payment-detail.quantity' | i18n }} Network:</div>
+            <div>{{ nwNormal }}</div>
           </nz-row>
           <nz-row>
-            <div style="margin-right: 10px;">{{'app.payment-detail.quantity' | i18n}} Routers:</div>
-            <div>{{routerNormal}}</div>
+            <div style="margin-right: 10px;">{{ 'app.payment-detail.quantity' | i18n }} Routers:</div>
+            <div>{{ routerNormal }}</div>
           </nz-row>
           <nz-row>
-            <div style="margin-right: 10px;">{{'app.payment-detail.quantity' | i18n}} Security Group:</div>
-            <div>{{sgNormal}}</div>
+            <div style="margin-right: 10px;">{{ 'app.payment-detail.quantity' | i18n }} Security Group:</div>
+            <div>{{ sgNormal }}</div>
           </nz-row>
         </div>
         <div *ngIf="vpcType == '1'">
           <nz-tabset nzCentered nzSize="large" (nzSelectChange)="changeTab($event)">
             <nz-tab nzTitle="{{ 'config.package' | i18n }}">
-              <ngu-carousel #myCarouselFlavor
-                            [inputs]="carouselTileConfig"
-                            [dataSource]="listOfferFlavors"
-              >
-                <ngu-tile
-                  *nguCarouselDef="let item; index as i; let ani = animate"
-                  [@slider]="ani"
-                >
-                  <div
-                    style="cursor: pointer"
-                    (click)="onInputFlavors(item.id,item.offerName);"
-                    [id]="'flavor_' + item.id"
-                  >
+              <ngu-carousel #myCarouselFlavor [inputs]="carouselTileConfig" [dataSource]="listOfferFlavors">
+                <ngu-tile *nguCarouselDef="let item; index as i; let ani = animate" [@slider]="ani">
+                  <div style="cursor: pointer" (click)="onInputFlavors(item.id,item.offerName);"
+                       [id]="'flavor_' + item.id">
                     <nz-row>
-                      <nz-col
-                        style="padding-bottom: 5px"
-                        class="newClassFlavor text-center"
-                        [class.initialClassFlavor]="
-                        selectedElementFlavor === 'flavor_' + item.id
-                      "
-                      >
+                      <nz-col style="padding-bottom: 5px" class="newClassFlavor text-center"
+                              [class.initialClassFlavor]=" selectedElementFlavor === 'flavor_' + item.id">
                         <div style="position: relative;">
-                        <span
-                          class="nameFlavor"
-                          [class.initialNameFlavor]="
-                            selectedElementFlavor === 'flavor_' + item.id
-                          "
-                        >{{ item.offerName }}</span
-                        >
+                        <span class="nameFlavor"
+                              [class.initialNameFlavor]="selectedElementFlavor === 'flavor_' + item.id">{{ item.offerName }}</span>
                           <div style="margin-top: -16px">
-                            <img
-                              style="width: 100px"
-                              [src]="
-                              selectedElementFlavor === 'flavor_' + item.id
-                                ? 'assets/imgs/line2.svg'
-                                : 'assets/imgs/line.svg'
-                            "
-                              alt=""
-                            />
+                            <img style="width: 80%"
+                                 [src]="selectedElementFlavor === 'flavor_' + item.id? 'assets/imgs/line2.svg': 'assets/imgs/line.svg'"
+                                 alt="" />
                           </div>
-                          <span class="priceFlavor">{{
-                              item.price.fixedPrice.amount | number:'1.0-0':'en-US'
-                            }}</span
-                          ><span> {{ "app.payment-detail.month" | i18n }}</span>
-                        </div>
-                        <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
-                          <img src="assets/imgs/mostpop.svg">
-                        </div>
-                        <div
-                          style="width: 40px;height: 20px;background-color: red;border-radius: 5px;z-index: 1;position: absolute; right: 1%; top: 62%;">
-                          <span style="color: whitesmoke">-30%</span>
+                          <span class="priceFlavor">{{ item.price.fixedPrice.amount | number:'1.0-0':'en-US' }}</span>
+                          <span> {{ "app.payment-detail.month" | i18n }}</span>
+
+                          <!--image addition-->
+                          <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
+                            <img src="assets/imgs/mostpop.svg">
+                          </div>
+                          <div
+                            style="width: 40px;height: 20px;background-color: red;border-radius: 5px;z-index: 1;position: absolute; right: 1%; top: 62%;">
+                            <span style="color: whitesmoke">-30%</span>
+                          </div>
                         </div>
                       </nz-col>
                     </nz-row>
+                    <!--bottom-->
                     <nz-row>
-                      <nz-col
-                        style="width: 100%; padding-top: 5px"
-                        [class.flavor-footer-active]="
-                        selectedElementFlavor === 'flavor_' + item.id
-                      "
-                        [class.flavor-footer]="
-                        selectedElementFlavor != 'flavor_' + item.id
-                      "
-                      >
+                      <nz-col style="width: 100%; padding-top: 5px"
+                              [class.flavor-footer-active]="selectedElementFlavor === 'flavor_' + item.id"
+                              [class.flavor-footer]="selectedElementFlavor != 'flavor_' + item.id">
                         <div>
                           <p>{{ item.description }}</p>
                         </div>
@@ -388,7 +358,8 @@
                                  [nzDisabled]="disableIpConnectInternet"
                                  style="width: 90%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
                                  nzPlaceHolder="--{{'project.note40' | i18n}}--"
-                                 [(ngModel)]="ipConnectInternet" [ngModelOptions]="{standalone: true}" (ngModelChange)="openIpSubnet()">
+                                 [(ngModel)]="ipConnectInternet" [ngModelOptions]="{standalone: true}"
+                                 (ngModelChange)="openIpSubnet()">
                         <nz-option *ngFor="let i of listIpConnectInternet" [nzLabel]="i.displayName"
                                    [nzValue]="i.networkId +'--'+ i.displayName" />
                       </nz-select>
@@ -427,28 +398,28 @@
               </td>
             </table>
           </div>
-<!--          <div *ngIf="selectIndexTab == 0">-->
-<!--            <nz-form-item *ngIf="openIPType == true">-->
-<!--              <nz-form-label>{{ "project.note41" | i18n }} (<span class="text-red">*</span>)-->
-<!--                <img-->
-<!--                  style="margin-left: 10px"-->
-<!--                  nz-tooltip="{{'project.note41' | i18n}}"-->
-<!--                  src="assets/imgs/pajamas_question.svg"-->
-<!--                  alt=""-->
-<!--                /></nz-form-label>-->
-<!--              <nz-form-control>-->
-<!--                <nz-input-group nzCompact>-->
-<!--                  <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"-->
-<!--                             style="width: 95%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'-->
-<!--                             nzPlaceHolder="&#45;&#45;{{'project.note41' | i18n}}&#45;&#45;"-->
-<!--                             formControlName="ipType" (nzOpenChange)="calculate(null)">-->
-<!--                    <nz-option *ngFor="let i of listIpType" [nzLabel]="i.label"-->
-<!--                               [nzValue]="i.value" />-->
-<!--                  </nz-select>-->
-<!--                </nz-input-group>-->
-<!--              </nz-form-control>-->
-<!--            </nz-form-item>-->
-<!--          </div>-->
+          <!--          <div *ngIf="selectIndexTab == 0">-->
+          <!--            <nz-form-item *ngIf="openIPType == true">-->
+          <!--              <nz-form-label>{{ "project.note41" | i18n }} (<span class="text-red">*</span>)-->
+          <!--                <img-->
+          <!--                  style="margin-left: 10px"-->
+          <!--                  nz-tooltip="{{'project.note41' | i18n}}"-->
+          <!--                  src="assets/imgs/pajamas_question.svg"-->
+          <!--                  alt=""-->
+          <!--                /></nz-form-label>-->
+          <!--              <nz-form-control>-->
+          <!--                <nz-input-group nzCompact>-->
+          <!--                  <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"-->
+          <!--                             style="width: 95%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'-->
+          <!--                             nzPlaceHolder="&#45;&#45;{{'project.note41' | i18n}}&#45;&#45;"-->
+          <!--                             formControlName="ipType" (nzOpenChange)="calculate(null)">-->
+          <!--                    <nz-option *ngFor="let i of listIpType" [nzLabel]="i.label"-->
+          <!--                               [nzValue]="i.value" />-->
+          <!--                  </nz-select>-->
+          <!--                </nz-input-group>-->
+          <!--              </nz-form-control>-->
+          <!--            </nz-form-item>-->
+          <!--          </div>-->
           <div *ngIf="selectIndexTab == 1">
             <nz-row *ngIf="ipConnectInternet != null && ipConnectInternet != ''">
               <nz-form-item style="width: 80%">
@@ -601,7 +572,8 @@
                         <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
                                    style="width: 90%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
                                    nzPlaceHolder="--{{'project.note49' | i18n}}--"
-                                   [(ngModel)]="loadBalancerId" [ngModelOptions]="{ standalone: true }" (ngModelChange)="calculate(null)">
+                                   [(ngModel)]="loadBalancerId" [ngModelOptions]="{ standalone: true }"
+                                   (ngModelChange)="calculate(null)">
                           <nz-option *ngFor="let i of listLoadbalancer" [nzLabel]="i.offerName"
                                      [nzValue]="i.id" />
                         </nz-select>
@@ -658,7 +630,7 @@
                 </td>
                 <td style="width:40%">
                   <nz-form-item>
-                    <nz-form-label>{{ "volume.table.title.storage" | i18n }} File System Scnapsshot (GB)</nz-form-label>
+                    <nz-form-label>{{ "volume.table.title.storage" | i18n }} File System Snapshot(GB)</nz-form-label>
                     <nz-form-control>
                       <nz-row>
                         <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="1" [nzMax]="100" [nzStep]="1"
@@ -708,9 +680,10 @@
                     <nz-form-label>{{ 'project.note45' | i18n }}</nz-form-label>
                     <nz-form-control>
                       <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
-                                 style="width: 96%;border-radius: 10px;" [nzAllowClear] = 'true'
+                                 style="width: 96%;border-radius: 10px;" [nzAllowClear]='true'
                                  nzPlaceHolder="--{{'project.note45' | i18n}}--"
-                                 [(ngModel)]="siteToSiteId" [ngModelOptions]="{ standalone: true }" (ngModelChange)="calculate(null)">
+                                 [(ngModel)]="siteToSiteId" [ngModelOptions]="{ standalone: true }"
+                                 (ngModelChange)="calculate(null)">
                         <nz-option *ngFor="let i of listSiteToSite" [nzLabel]="i.offerName"
                                    [nzValue]="i.id" />
                       </nz-select>
@@ -807,7 +780,8 @@
             <div style="margin-top: 10px" class="text-label">File Storage:</div>
             <div style="margin-top: 10px" class="text-label">{{ numberFileSystem }}GB</div>
           </nz-row>
-          <nz-divider *ngIf="numberLoadBalancer != 0 || numberFileSystem != 0 || numberBackup != 0" style="margin: 10px 0"
+          <nz-divider *ngIf="numberLoadBalancer != 0 || numberFileSystem != 0 || numberBackup != 0"
+                      style="margin: 10px 0"
                       nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">

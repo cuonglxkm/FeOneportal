@@ -15,6 +15,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 
 @Component({
   selector: 'one-portal-create-endpoint-group',
@@ -24,7 +25,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../../libs/commo
 export class CreateEndpointGroupComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
-  listSubnets: FormListSubnetResponse[] = [];
+  listSubnets: FormListSubnetResponse[];
   subnetId = [];
   subnetCidr = [];
   listCidrInfo = [];
@@ -35,6 +36,8 @@ export class CreateEndpointGroupComponent implements OnInit {
   checked: boolean = false
   selectedType = 'cidr';
   isLoading: boolean = false;
+  routerId: string
+
   formCreateEndpointGroup: FormCreateEndpointGroup =
     new FormCreateEndpointGroup();
   form: FormGroup<{
@@ -66,11 +69,27 @@ export class CreateEndpointGroupComponent implements OnInit {
     return this.formCreateEndpointGroup;
   }
 
+  getVpns2s() {
+    this.vpnSiteToSiteService.getVpnSiteToSite(this.project)
+      .subscribe(data => {
+        if(data){   
+          this.routerId = data.routerId      
+        }
+     
+    }, error => {
+      this.notification.error(
+        'Thất bại',
+        'Lấy routerId thất bại'
+      );
+    })
+  }
+
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.getListSubnet();
+    this.getVpns2s()
   }
 
   constructor(
@@ -78,7 +97,8 @@ export class CreateEndpointGroupComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private fb: NonNullableFormBuilder,
     private notification: NzNotificationService,
-    private endpointGroupService: EndpointGroupService
+    private endpointGroupService: EndpointGroupService,
+    private vpnSiteToSiteService: VpnSiteToSiteService
   ) {}
 
   handleChangeType(event: any){

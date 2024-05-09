@@ -191,7 +191,7 @@ export class AppValidator {
 
   static ipWithCIDRValidator1(control: { value: string }): { [key: string]: boolean } | null { //validate input ip
     const ipAddress = control.value;
-    const ipRegex = /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/(3[0-2]|[12]?[0-9])$/;
+    const ipRegex = /^((25[0-5]|2[0-4][0-9]|[01]?[1-9][0-9]?)\.){1}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){2}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/(3[0-2]|[12]?[0-9])$/;
 
     // Kiểm tra xem địa chỉ IP có đúng định dạng không
     if (!ipRegex.test(ipAddress)) {

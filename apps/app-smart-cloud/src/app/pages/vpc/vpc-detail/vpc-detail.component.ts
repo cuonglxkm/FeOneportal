@@ -97,8 +97,9 @@ export class VpcDetailComponent implements OnInit{
       this.percentIPFloating = (used.ssd/total.quotaSSDInGb)*100;
       this.percentBackup = (used.backup/total.quotaBackupVolumeInGb)*100;
     } else {
-      this.listOfData.push({name : this.i18n.fanyi('app.amount') + " Network",total: total.quotaNetworkCount,used:used.networkCount,remain:(total.quotaNetworkCount - used.networkCount)});
-      this.listOfData.push({name : this.i18n.fanyi('app.amount') + " Security Group",total: total.quotaSecurityGroupCount,used:used.securityGroupCount,remain:(total.quotaSecurityGroupCount - used.securityGroupCount)});
+      this.listOfData.push({name : "Networks",total: total.quotaNetworkCount,used:used.networkCount,remain:(total.quotaNetworkCount - used.networkCount)});
+      this.listOfData.push({name : "Security Group",total: total.quotaSecurityGroupCount,used:used.securityGroupCount,remain:(total.quotaSecurityGroupCount - used.securityGroupCount)});
+      this.listOfData.push({name : "Routers",total: total.quotaRouterCount,used:used.routerCount,remain:(total.quotaRouterCount - used.routerCount)});
     }
 
     this.loading = false;

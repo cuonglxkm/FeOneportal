@@ -344,6 +344,7 @@ export class InstanceResize {
   cpu: number;
   gpuCount: any;
   gpuType: any;
+  newGpuTypeOfferId: any;
   typeName: string;
   newOfferId: number;
   serviceType: number;
@@ -471,9 +472,10 @@ export class IpCreate {
 }
 
 export class OfferItem {
-  id: number;
   productId: number;
-  offerName: string;
+  productName: any;
+  id: number;
+  offerName: any;
   price: Price;
   status: string;
   unitOfMeasure: string;

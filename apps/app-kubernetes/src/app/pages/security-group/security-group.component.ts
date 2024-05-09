@@ -2,11 +2,12 @@ import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@ang
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ClipboardService } from 'ngx-clipboard';
 import { finalize } from 'rxjs';
-import SecurityGroupRule, { SecurityGroup, SecurityGroupData, SecurityGroupSearchCondition } from '../../model/security-group.model';
+import SecurityGroupRule, { SGLoggingReqDto, SecurityGroup, SecurityGroupData, SecurityGroupSearchCondition } from '../../model/security-group.model';
 import { SecurityGroupService } from '../../services/security-group.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ShareService } from '../../services/share.service';
 import { KubernetesCluster } from '../../model/cluster.model';
+import { KubernetesConstant } from '../../constants/kubernetes.constant';
 
 @Component({
   selector: 'security-group',
@@ -38,6 +39,18 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
     this.listOfSG = [];
     this.listOfInbound = [];
     this.listOfOutbound = [];
+
+    this.shareService.$sgLogReq.subscribe((sgLogData: SGLoggingReqDto) => {
+      if (sgLogData) {
+        sgLogData.securityGroupName = this.detailCluster.securityGroupName;
+        sgLogData.serviceOrderCode = this.detailCluster.serviceOrderCode;
+
+        this.securityGroupService.createLogSG(sgLogData)
+        .subscribe((r: any) => {
+          console.log({response: r});
+        });
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -87,6 +100,25 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
       sgData.detailCluster = this.detailCluster;
       sgData.securityGroupId = this.selectedSG.id;
       this.shareService.emitSGData(sgData);
+    });
+  }
+
+  saveLogSG(rule: SecurityGroupRule) {
+    let logSG = new SGLoggingReqDto();
+    logSG.securityGroupName = this.detailCluster.securityGroupName;
+    logSG.serviceOrderCode = this.detailCluster.serviceOrderCode;
+    logSG.action = 'delete';
+    logSG.userId = this.tokenService.get()?.userId;
+    rule.direction == KubernetesConstant.INBOUND_RULE ?
+      logSG.operation = KubernetesConstant.DELETE_INBOUND_RULE
+      : logSG.operation = KubernetesConstant.DELETE_OUTBOUND_RULE;
+
+    let note = `Xóa rule (IP Version: ${rule.etherType}, Protocol: ${rule.protocol?.toUpperCase()}, Port Range: ${rule.portRange}, Remote IP: ${rule.remoteIp})`;
+    logSG.jsonRule = note;
+
+    this.securityGroupService.createLogSG(logSG)
+    .subscribe((r: any) => {
+      console.log({response: r});
     });
   }
 
