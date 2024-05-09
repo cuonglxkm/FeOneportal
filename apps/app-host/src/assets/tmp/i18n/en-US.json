@@ -1812,6 +1812,30 @@
   "app.backup.vm.title": "Backup VM - Backup, Security",
   "app.backup.vm.intro.desc": "An advanced VM backup solution, software that helps reduce snapshot costs and save your time by directly creating identical VM copies from existing VM backups.",
   "app.backup.vm.button.create" : "Initialize Backup VM",
+  "app.backup.vm.storage.remaining": "The remaining capacity of the backup package.",
+  "app.backup.vm.delete.title.modal": "Determine the deletion of Backup VM",
+
+  "app.backup.vm.tooltip.name": "Enter a backup name with a maximum of 50 characters, consisting only of letters, numbers, and underscores.",
+  "app.backup.vm.tooltip.vm": "Select the virtual machine to backup from the customer's virtual machine list within the specified region and project.",
+  "app.backup.vm.tooltip.backup.package": "Choose a backup package from the list of backup packages within the backup package feature of the platform service.",
+  "app.backup.vm.tooltip.security.group": "The list of security groups assigned to the selected virtual machine. Customers are allowed to remove some security groups before initiating the backup process.",
+  "app.backup.vm.tooltip.volume.attach": "The list of external attached volumes of the virtual machine, including volume type and volume capacity. Customers are allowed to remove some external volumes before backup.",
+  "app.backup.vm.tooltip.expire.date": "The expiration date of the backup package.",
+
+  "app.backup.vm.placeholder.input": "Enter backup name",
+
+  "app.backup.vm.alert.create.remaining.storage": "remaining",
+  "app.backup.vm.alert.storage": "less than the total operating system disk space and the capacity of the attached external volume",
+  "app.backup.vm.alert.create": "Please adjust the <b><i>{{name}}</i></b> setting to ensure uninterrupted VM backup process.",
+  "app.backup.vm.alert.delete": "You are currently deleting the backup",
+  "app.backup.vm.confirm.delete": "To proceed with deleting Backup {{name}}, please enter the Backup name for confirmation.",
+
+  "app.backup.vm.create.name.required": "Please enter the name for the Backup VM.",
+  "app.backup.vm.create.name.duplicateName": "The Backup VM name already exists. Please enter a different name.",
+  "app.backup.vm.create.name.pattern": "The Backup VM name should only contain letters, numbers, and underscores. Please enter a different name.",
+
   "app.backup.vm.notification.success.delete": "Backup VM deletion request successful",
-  "app.backup.vm.notification.fail.delete": "Backup VM deletion request failed"
+  "app.backup.vm.notification.fail.delete": "Backup VM deletion request failed",
+  "app.backup.vm.notification.create.request.send": "The request to create a backup of the virtual machine has been sent.",
+  "app.backup.vm.notification.input.name.delete": "Please enter the correct backup name."
 }

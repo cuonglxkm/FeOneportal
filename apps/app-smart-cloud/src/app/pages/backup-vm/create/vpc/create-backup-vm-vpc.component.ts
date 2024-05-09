@@ -22,6 +22,8 @@ import { VolumeService } from '../../../../shared/services/volume.service';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-backup-vm-vpc',
@@ -85,7 +87,8 @@ export class CreateBackupVmVpcComponent implements OnInit {
               private notification: NzNotificationService,
               private volumeService: VolumeService,
               private router: Router,
-              private catalogService: CatalogService) {
+              private catalogService: CatalogService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   validateDuplicateName(control) {
@@ -243,7 +246,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
       let createBackupVmOrderData = new CreateBackupVmOrderData();
       createBackupVmOrderData.customerId = this.tokenService.get()?.userId;
       createBackupVmOrderData.createdByUserId = this.tokenService.get()?.userId;
-      createBackupVmOrderData.note = 'Tạo backup máy ảo';
+      createBackupVmOrderData.note = this.i18n.fanyi('app.backup.vm.create.button');
       createBackupVmOrderData.orderItems = [
         {
           orderItemQuantity: 1,
@@ -258,7 +261,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
       this.backupVmService.create(createBackupVmOrderData).subscribe(data => {
         this.isLoading = false;
         console.log('data create', data);
-        this.notification.success('Thành công', 'Yêu cầu tạo backup máy ảo đã được gửi đi');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.vm.notification.create.request.send'));
         this.router.navigate(['/app-smart-cloud/backup-vm']);
       });
 

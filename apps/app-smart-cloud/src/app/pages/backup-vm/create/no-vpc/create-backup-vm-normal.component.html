@@ -29,9 +29,9 @@
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
-                  <span>Tên backup (<span style="color:#FF0000;">*</span>)</span>
+                  <span>{{'app.table.backup.vm.name'|i18n}} (<span style="color:#FF0000;">*</span>)</span>
                   <img nz-popover
-                       [nzPopoverContent]="'Nhập tên backup tối đa 50 ký tự và chỉ gồm ký tự chữ cái, số và dấu _'"
+                       [nzPopoverContent]="'app.backup.vm.tooltip.name'|i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
@@ -40,35 +40,31 @@
                          formControlName="backupName"
                          [maxlength]="50" />
                   <ng-template #nameBackupError let-control>
-                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Backup VM</ng-container>
-                    <ng-container *ngIf="control.hasError('duplicateName')">Tên Backup VM đã tồn tại, vui lòng nhập tên
-                      khác
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('pattern')">Tên Backup VM chỉ gồm ký tự chữ cái, số và dấu
-                      _, vui lòng nhập tên khác
-                    </ng-container>
+                    <ng-container *ngIf="control.hasError('required')">{{'app.backup.vm.create.name.required'|i18n}}</ng-container>
+                    <ng-container *ngIf="control.hasError('duplicateName')">{{'app.backup.vm.create.name.duplicateName'|i18n}}</ng-container>
+                    <ng-container *ngIf="control.hasError('pattern')">{{'app.backup.vm.create.name.pattern'|i18n}}</ng-container>
                   </ng-template>
                 </nz-form-control>
               </nz-form-item>
               <div *ngIf="instanceIdParam != undefined || instanceIdParam != null">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>Tên máy ảo (<span style="color:#FF0000;">*</span>)</span>
+                    <span>{{'app.instances.name'|i18n}} (<span style="color:#FF0000;">*</span>)</span>
                     <img nz-popover
-                         [nzPopoverContent]="'Chọn máy ảo cần Backup từ danh sách máy ảo của khách hàng thuộc khu vực và dự án mà khách hàng'"
+                         [nzPopoverContent]="'app.backup.vm.tooltip.vm'|i18n"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="instanceError">
                     <input nz-input class="input-custom" [value]="instance?.name" [disabled]="true" />
                     <ng-template #instanceError let-control>
-                      <ng-container *ngIf="control.hasError('required')">Vui lòng chọn máy ảo</ng-container>
+                      <ng-container *ngIf="control.hasError('required')">{{'volume.notification.input.select.vm'|i18n}}</ng-container>
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
                   <nz-form-label>
-                    <span>Hệ điều hành</span>
+                    <span>{{'app.instances.OS'|i18n}}</span>
                   </nz-form-label>
                   <nz-form-control>
                     <input nz-input class="input-custom" [value]="instance?.imageName" [disabled]="true" />
@@ -76,7 +72,7 @@
                 </nz-form-item>
                 <nz-form-item>
                   <nz-form-label>
-                    <span>Dung lượng ổ hệ điều hành</span>
+                    <span>{{'app.info.backup.vm.storage.flavor'|i18n}}</span>
                   </nz-form-label>
                   <nz-form-control>
                     <nz-input-group nzAddOnAfter="GB" style="width: 100%;">
@@ -88,9 +84,9 @@
               <div *ngIf="instanceIdParam == undefined || instanceIdParam == null">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>Tên máy ảo (<span style="color:#FF0000;">*</span>)</span>
+                    <span>{{'app.instances.name'|i18n}} (<span style="color:#FF0000;">*</span>)</span>
                     <img nz-popover
-                         [nzPopoverContent]="'Chọn máy ảo cần Backup từ danh sách máy ảo của khách hàng thuộc khu vực và dự án mà khách hàng'"
+                         [nzPopoverContent]="'app.backup.vm.tooltip.vm'|i18n"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </nz-form-label>
@@ -100,13 +96,13 @@
                       <nz-option *ngFor="let i of listInstances" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
                     </nz-select>
                     <ng-template #instanceError let-control>
-                      <ng-container *ngIf="control.hasError('required')">Vui lòng chọn máy ảo</ng-container>
+                      <ng-container *ngIf="control.hasError('required')">{{'volume.notification.input.select.vm'|i18n}}</ng-container>
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
                   <nz-form-label>
-                    <span>Hệ điều hành</span>
+                    <span>{{'app.instances.OS'|i18n}}</span>
                   </nz-form-label>
                   <nz-form-control>
                     <input nz-input class="input-custom" [value]="instance?.imageName" [disabled]="true" />
@@ -114,7 +110,7 @@
                 </nz-form-item>
                 <nz-form-item>
                   <nz-form-label>
-                    <span>Dung lượng ổ hệ điều hành</span>
+                    <span>{{'app.info.backup.vm.storage.flavor'|i18n}}</span>
                   </nz-form-label>
                   <nz-form-control>
                     <nz-input-group nzAddOnAfter="GB" style="width: 100%;">
@@ -125,7 +121,7 @@
               </div>
               <nz-form-item>
                 <nz-form-label>
-                  <span>Mô tả</span>
+                  <span>{{'app.info.backup.vm.description'|i18n}}</span>
                 </nz-form-label>
                 <nz-form-control>
                   <nz-textarea-count [nzMaxCharacterCount]="255">
@@ -139,16 +135,16 @@
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
-                  <span>Gói backup (<span style="color: #FF0000;">*</span>)</span>
+                  <span>{{'app.table.backup.vm.backup.package'|i18n}} (<span style="color: #FF0000;">*</span>)</span>
                   <img nz-popover
-                       [nzPopoverContent]="'Chọn gói backup từ danh sách gói backup trong chức năng gói backup của dịch vụ nền tảng'"
+                       [nzPopoverContent]="'app.backup.vm.tooltip.backup.package'|i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips>
                   <nz-select formControlName="backupPacketId"
                              nzSize="large"
-                             [nzPlaceHolder]="'Gói backup'"
+                             [nzPlaceHolder]="'app.table.backup.vm.backup.package'|i18n"
                              [nzShowSearch]="false"
                              [nzLoading]="isLoading" (ngModelChange)="onChangeBackupPackage($event)">
                     <nz-option *ngFor="let i of backupPackages"
@@ -159,7 +155,7 @@
               </nz-form-item>
               <nz-row nzGutter="18">
                 <nz-col nzSpan="10">
-                  <span class="text-label">Dung lượng Gói Backup</span>
+                  <span class="text-label">{{'app.backup.package.storage'|i18n}}</span>
                 </nz-col>
                 <nz-col nzSpan="8">
                   <span class="text-label"
@@ -171,7 +167,7 @@
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <nz-row nzGutter="18">
                 <nz-col nzSpan="10">
-                  <span class="text-label">Dung lượng đã dùng</span>
+                  <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
                 </nz-col>
                 <nz-col nzSpan="8">
                   <span class="text-label"
@@ -183,7 +179,7 @@
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <nz-row nzGutter="18">
                 <nz-col nzSpan="10">
-                  <span class="text-label">Dung lượng còn lại</span>
+                  <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
                 </nz-col>
                 <nz-col nzSpan="8">
                   <span class="text-label"
@@ -198,14 +194,14 @@
                 <nz-form-label>
                   <span>Security Group</span>
                   <img nz-popover
-                       [nzPopoverContent]="'danh sách security group của máy ảo đã chọn. Khách hàng được phép xóa bớt SG trước khi thực hiện backup'"
+                       [nzPopoverContent]="'app.backup.vm.tooltip.security.group'|i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control>
                   <nz-select formControlName="securityGroupToBackupIds"
                              nzSize="large"
-                             [nzPlaceHolder]="'Truy cập và bảo mật'"
+                             [nzPlaceHolder]="'Security Group'"
                              [nzShowSearch]="false"
                              nzMode="multiple"
                              [nzLoading]="isLoading">
@@ -217,16 +213,16 @@
               </nz-form-item>
               <nz-form-item style="margin-top: 10px;">
                 <nz-form-label>
-                  <span>Volume gắn ngoài</span>
+                  <span>{{'app.info.backup.vm.external.volume'|i18n}}</span>
                   <img nz-popover
-                       [nzPopoverContent]="'Danh sách volume gắn ngoài của máy ảo, kiểu volume, dung lượng volume đó. Khách hàng được phép xóa bớt volume gắn ngoài trước khi backup.'"
+                       [nzPopoverContent]="'app.backup.vm.tooltip.volume.attach'|i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control>
                   <nz-select formControlName="volumeToBackupIds"
                              nzSize="large"
-                             [nzPlaceHolder]="'Volume gắn ngoài'"
+                             [nzPlaceHolder]="'app.info.backup.vm.external.volume'|i18n"
                              [nzShowSearch]="false"
                              nzMode="multiple"
                              [nzLoading]="isLoading" (ngModelChange)="onSelectedVolume($event)">
@@ -238,9 +234,9 @@
               </nz-form-item>
               <nz-form-item>
                 <nz-form-label>
-                  <span style="color: #FF0000">Ngày hết hạn </span>
+                  <span style="color: #FF0000">{{ 'app.service.expiration-date'|i18n }} </span>
                   <img nz-popover
-                       [nzPopoverContent]="'Ngày hết hạn: Là ngày hết hạn của gói backup'"
+                       [nzPopoverContent]="'app.backup.vm.tooltip.expire.date'|i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                   <span style="color: #FF0000; margin-left: 10px;">{{ backupPackageDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>
@@ -257,9 +253,9 @@
                       [nzMessage]="titleMessage"
                       nzShowIcon></nz-alert>
             <ng-template #titleMessage>
-              <span style="color: #FF0000;">Dung lượng gói backup {{backupPackageDetail?.packageName}} (còn lại {{backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize}} GB)
-                nhỏ hơn tổng dung lượng ổ hệ điều hành và dung lượng Volume gắn ngoài ({{instance?.storage + sizeOfVlAttach}} GB). Quý khách hãy điều chỉnh
-                <b><i>{{backupPackageDetail?.packageName}}</i></b> để quá trình Backup VM không bị gián đoạn
+              <span style="color: #FF0000;">{{'app.backup.package.storage'|i18n}} {{backupPackageDetail?.packageName}} ({{'app.backup.vm.alert.create.remaining.storage'|i18n}} {{backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize}} GB)
+                {{'app.backup.vm.alert.storage'|i18n}} ({{instance?.storage + sizeOfVlAttach}} GB).
+                <span [innerHTML]="'app.backup.vm.alert.create'|i18n: {name: backupPackageDetail?.packageName }"></span>
               </span>
             </ng-template>
           </div>
@@ -268,26 +264,26 @@
     </nz-col>
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px;">
-        <span class="text-card-header">Thông tin cấu hình</span>
-        <div style="margin-top: 10px" class="text-value">Tên backup</div>
+        <span class="text-card-header">{{'app.config.parameters'|i18n}}</span>
+        <div style="margin-top: 10px" class="text-value">{{'app.table.backup.vm.name'|i18n}}</div>
         <div style="margin-top: 10px" class="text-label">
           {{ validateForm.controls.backupName.value }}
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Gói backup</div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.table.backup.vm.backup.package'|i18n }}</div>
         <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.packageName }}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Tên máy ảo</div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.instances.name'|i18n }}</div>
         <div style="margin-top: 10px" class="text-label">{{ instance?.name }}</div>
-        <div style="margin-top: 10px" class="text-label">Dung lượng ổ hệ điều hành - {{ instance?.storage }} GB</div>
+        <div style="margin-top: 10px" class="text-label">{{ 'app.info.backup.vm.storage.flavor'|i18n }} - {{ instance?.storage }} GB</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Volume gắn ngoài</div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.info.backup.vm.external.volume'|i18n }}</div>
         <div style="margin-top: 10px" class="text-label" *ngFor="let data of volumeAttachSelected">{{data?.name}} - {{data?.sizeInGB}} GB</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <div style="margin-top: 10px" class="text-value">Tổng dung lượng backup</div>
         <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Dung lượng còn lại gói backup</div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.backup.vm.storage.remaining'|i18n }}</div>
         <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row>
