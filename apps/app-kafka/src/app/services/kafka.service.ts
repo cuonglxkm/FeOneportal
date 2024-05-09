@@ -183,7 +183,8 @@ export class KafkaService extends BaseService {
       'service_order_code': req.serviceOrderCode,
       'service_name': req.serviceName,
       'version': req.version,
-      'description': req.description
+      'description': req.description,
+      'is_upgrade_version': req.isUpgradeVersion
     };
 
     return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/update', json, {headers: this.getHeaders()});
