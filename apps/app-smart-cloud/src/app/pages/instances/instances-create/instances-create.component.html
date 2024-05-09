@@ -831,6 +831,7 @@
                   "
                   [nzShowSearch]="true"
                   [(ngModel)]="configGPU.gpuOfferId"
+                  (ngModelChange)="changeGpuType()"
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 >
@@ -1629,6 +1630,13 @@
               instanceCreate.volumeType | uppercase
             }}</span
             >)
+          </div>
+          <div
+            *ngIf="instanceCreate.gpuCount"
+            style="margin-top: 10px"
+            class="text-label"
+          >
+            {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.setting' | i18n }}</div>

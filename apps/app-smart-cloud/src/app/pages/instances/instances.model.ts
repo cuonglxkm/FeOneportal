@@ -344,6 +344,7 @@ export class InstanceResize {
   cpu: number;
   gpuCount: any;
   gpuType: any;
+  newGpuTypeOfferId: any;
   typeName: string;
   newOfferId: number;
   serviceType: number;

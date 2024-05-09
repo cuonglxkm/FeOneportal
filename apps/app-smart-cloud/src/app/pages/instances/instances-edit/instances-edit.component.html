@@ -60,7 +60,6 @@
       <nz-card
         style="border-radius: 8px; width: 100%"
         [nzBordered]="false"
-        [nzLoading]="loading"
         *ngIf="instancesModel"
       >
         <div style="margin-bottom: 20px">
@@ -274,9 +273,8 @@
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
               <span *ngIf="instancesModel.volumeType == 1">SSD</span
               ><span *ngIf="instancesModel.gpuCount != 0"
-                >, {{ instancesModel.gpuCount }} GPU</span
-              ><span *ngIf="instancesModel.gpuType != null"
-                >, {{ instancesModel.gpuType }}</span
+                >, {{ instancesModel.gpuCount }} GPU (Nvidia
+                {{ instancesModel.gpuType }})</span
               >
             </span>
           </div>
@@ -286,10 +284,12 @@
               {{ instanceResize.ram }}GB RAM, {{ instanceResize.storage }}GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
               <span *ngIf="instancesModel.volumeType == 1">SSD</span
-              ><span *ngIf="instancesModel.gpuCount != 0"
-                >, {{ instanceResize.gpuCount }} GPU</span
-              ><span *ngIf="instancesModel.gpuType != null"
-                >, {{ instanceResize.gpuType }}</span
+              ><span
+                *ngIf="
+                  instanceResize.gpuCount != 0 && instanceResize.gpuType != null
+                "
+                >, {{ instanceResize.gpuCount }} GPU (Nvidia
+                {{ instanceResize.gpuType | uppercase }})</span
               >
             </span>
           </div>
@@ -299,7 +299,7 @@
             (keydown)="handleKeyboardEvent($event)"
           >
             <nz-tab
-              *ngIf="isConfigPackage"
+              *ngIf="isConfigPackage && instancesModel.gpuCount == 0"
               [nzTitle]="'app.Preconfigured.Package' | i18n"
               (nzClick)="onClickConfigPackage()"
             >
@@ -387,6 +387,7 @@
               </ngu-carousel>
             </nz-tab>
             <nz-tab
+              *ngIf="instancesModel.gpuCount == 0"
               [nzTitle]="'app.custom.configuration' | i18n"
               (nzClick)="onClickCustomConfig()"
             >
@@ -685,7 +686,8 @@
                     "
                     [nzShowSearch]="true"
                     [ngModelOptions]="{ standalone: true }"
-                    [(ngModel)]="configGPU.GPUType"
+                    [(ngModel)]="configGPU.gpuOfferId"
+                    (ngModelChange)="changeGpuType()"
                     nzSize="large"
                   >
                     <nz-option
@@ -753,6 +755,16 @@
               *ngIf="instancesModel.volumeType == 0"
               >HDD</span
             ><span *ngIf="instancesModel.volumeType == 1">SSD</span>)
+          </div>
+          <div
+            *ngIf="
+              instanceResize.gpuCount != 0 && instanceResize.gpuType != null
+            "
+            style="margin-top: 10px"
+            class="text-label"
+          >
+            {{ instanceResize.gpuCount }} GPU (Nvidia
+            {{ instanceResize.gpuType | uppercase }})
           </div>
           <nz-row
             style="
