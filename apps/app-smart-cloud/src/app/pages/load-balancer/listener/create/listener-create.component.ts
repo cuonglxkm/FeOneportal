@@ -15,38 +15,6 @@ import { getCurrentRegionAndProject } from '@shared';
 import { InstancesService } from '../../../instances/instances.service';
 import { RegionModel, ProjectModel, AppValidator } from '../../../../../../../../libs/common-utils/src';
 import { finalize } from 'rxjs/operators';
-
-export function ipAddressValidator(): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } | null => {
-    const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
-
-    for (const ipAddress of ipAddressList) {
-      if (!isValidIPAddress(ipAddress)) {
-        return { 'invalidIPAddress': { value: ipAddress } }; // Địa chỉ IP không hợp lệ
-      }
-    }
-
-    return null; // Địa chỉ IP hợp lệ
-  };
-}
-
-function isValidIPAddress(ipAddress: string): boolean {
-  // Kiểm tra xem địa chỉ IP có thuộc các dải cho phép không
-  if (
-    !ipAddress.startsWith('10.') &&
-    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.24.0.0') &&
-    !(ipAddress.startsWith('192.168.'))
-  ) {
-    return false;
-  }
-
-  // Kiểm tra định dạng của địa chỉ IP
-  if (!ipAddress.match(/^((\d{1,3}\.\d{1,3}\.0\.0\/16)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.0\/24))$/)) {
-    return false;
-  }
-  return true;
-}
-
 @Component({
   selector: 'one-portal-listener-create',
   templateUrl: './listener-create.component.html',
@@ -60,8 +28,9 @@ export class ListenerCreateComponent implements OnInit{
   step: number = 0;
   dataListener: any;
   lbId : any;
-  lstInstance = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: 0, Weight: 0, Backup: false,}];
-  lstInstanceUse = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: 0, Weight: 0, Backup: false,}];
+  order = 0;
+  lstInstance = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: 0, Weight: 0, Backup: false, order: 0 }];
+  lstInstanceUse = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: 0, Weight: 0, Backup: false, order: 0}];
   validateForm: FormGroup<{
     listenerName: FormControl<string>
     port: FormControl<number>
@@ -85,25 +54,25 @@ export class ListenerCreateComponent implements OnInit{
     member: [50000],
     connection: [5000],
     timeout: [50000],
-    allowCIRR: ['', [Validators.required,AppValidator.ipWithCIDRValidator1]],
+    allowCIRR: ['0.0.0.0/0', [Validators.required,AppValidator.ipWithCIDRValidator1]],
     description: [''],
 
     poolName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
     healthName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
-    maxRetries: [0],
-    maxRetriesDown: [0],
-    delay: [0],
-    timeoutHealth: [0],
-    path: ['',[Validators.required]],
-    sucessCode: ['',[Validators.required, Validators.pattern(/^[0-9_]*$/)]]
+    maxRetries: [3],
+    maxRetriesDown: [3],
+    delay: [5],
+    timeoutHealth: [5],
+    path: ['/',[Validators.required]],
+    sucessCode: ['200',[Validators.required, Validators.pattern(/^[0-9_]*$/)]]
   });
   protocolListener = 'HTTP';
   checkedSession: any;
   sessionFix = 'HTTP';
   listAlgorithm = [
-    { value: 'ROUND_ROBIN', name: 'Round robin' },
-    { value: 'LEAST_CONNECTIONS', name: 'Least connections' },
-    { value: 'SOURCE_IP', name: 'source ip' }
+    { value: 'ROUND_ROBIN', name: 'ROUND ROBIN' },
+    { value: 'LEAST_CONNECTIONS', name: 'LEAST CONNECTIONS' },
+    { value: 'SOURCE_IP', name: 'SOURCE IP' }
   ];
 
   listCheckMethod = [
@@ -245,24 +214,23 @@ export class ListenerCreateComponent implements OnInit{
     )
   }
 
-  removeInstance(item: any, action: number) {
-    console.log(item+ "itemID");
+  removeInstance(IpAddress: any,order: any, action: number) {
     if (action == 0) {
       //xoa
-      const index = this.lstInstanceUse.findIndex(e => e.id = item);
+      const index = this.lstInstanceUse.findIndex(e => e.order == order);
       if(index != -1) {
-        const data = this.lstInstanceUse[index];
-        this.lstInstance.push(data);
+        // const data = this.lstInstanceUse[index];
+        // this.lstInstance.push(data);
         this.lstInstanceUse.splice(index, 1);
       }
     } else {
       //them
-      const index = this.lstInstance.findIndex(e => e.id = item);
-      console.log(index + "itemID");
+      const index = this.lstInstance.findIndex(e => e.IpAddress == IpAddress);
       if(index >= 0) {
-        const data = this.lstInstance[index];
+        const data = {...this.lstInstance[index]};
+        data.order = Object.assign({}, this.order++);
         this.lstInstanceUse.push(data);
-        this.lstInstance.splice(index, 1);
+        // this.lstInstance.splice(index, 1);
       }
     }
   }
@@ -279,8 +247,8 @@ export class ListenerCreateComponent implements OnInit{
           status: instance.status,
           id: instance.id,
           IpAddress: item,
-          Port: 0,
-          Weight: 0,
+          Port: null,
+          Weight: null,
           Backup: false,
         }));
       } else {
@@ -289,8 +257,8 @@ export class ListenerCreateComponent implements OnInit{
           status: instance.status,
           id: instance.id,
           IpAddress: instance.ipPrivate,
-          Port: 0,
-          Weight: 0,
+          Port: null,
+          Weight: null,
           Backup: false,
         }]
       }
