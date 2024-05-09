@@ -270,7 +270,7 @@
                 </nz-form-control>
               </nz-form-item>
               <nz-form-item>
-                <nz-form-label>{{"project.note40" | i18n}} (<span class="text-red">*</span>)</nz-form-label>
+                <nz-form-label>{{"project.note40" | i18n}}</nz-form-label>
                 <nz-form-control>
                   <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
                                    [(ngModel)]="ipConnectInternet" [ngModelOptions]="{ standalone: true }" [nzDisabled]="true" nzSize="large"></nz-input-number>
@@ -516,7 +516,7 @@
               </td>
               <td style="width:40%">
                 <nz-form-item>
-                  <nz-form-label>{{"volume.table.title.storage" | i18n}} File System Scnapsshot (GB)</nz-form-label>
+                  <nz-form-label>{{"volume.table.title.storage" | i18n}} File System Snapshot (GB)</nz-form-label>
                   <nz-form-control>
                     <nz-row>
                       <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="1" [nzMax]="100" [nzStep]="1"
@@ -691,9 +691,9 @@
         <nz-row>
           <nz-col style="width: 100%">
             <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="updateVpc()"
-                    [disabled]="(form.invalid || (selectIndexTab == 0 && (selectedElementFlavor == null || form.controls['ipType'].value == ''))) || disisable == true">
+                    [disabled]="(form.invalid || (selectIndexTab == 0 && (selectedElementFlavor == null))) || disisable == true">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="form.invalid ? 'gray' : 'white'">{{'app.text.edit' | i18n}}</span>
+              <span [style.color]="(form.invalid || (selectIndexTab == 0 && (selectedElementFlavor == null))) || disisable == true ? 'gray' : 'white'">{{'app.text.edit' | i18n}}</span>
             </button>
           </nz-col>
         </nz-row>

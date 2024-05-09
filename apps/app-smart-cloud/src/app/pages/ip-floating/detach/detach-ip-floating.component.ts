@@ -47,17 +47,17 @@ export class DetachIpFloatingComponent implements OnInit {
       if(data) {
         this.isVisible = false
         this.isLoading = false
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.ip.floating6'))
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('ip.floating.nofitacation.detach.success'))
         this.onOk.emit(data)
       } else {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.ip.floating7'))
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('ip.floating.nofitacation.detach.fail'))
       }
     }, error => {
       this.isVisible = false
       this.isLoading = false
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.ip.floating7'))
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('ip.floating.nofitacation.detach.fail'))
     })
   }
 

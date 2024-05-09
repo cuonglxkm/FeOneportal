@@ -81,18 +81,18 @@ export class CreateWanComponent {
       if(data) {
         this.isVisible = false
         this.isLoading = false
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.wan.note11'))
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('wan.nofitacation.ip.wan.add.sucess'))
         this.onOk.emit(data)
         this.validateForm.reset()
       } else {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.wan.note12'))
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('wan.nofitacation.ip.wan.add.fail'))
       }
     }, error => {
       this.isVisible = false
       this.isLoading = false
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.wan.note12'))
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('wan.nofitacation.ip.wan.add.fail'))
     })
   }
 

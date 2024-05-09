@@ -310,7 +310,7 @@
               </nz-form-control>
             </nz-form-item>
           </nz-col>
-          <nz-col nzSpan="12">
+          <nz-col *ngIf="selectedCheckMethod == 'HTTP'" nzSpan="12">
             <nz-form-item>
               <nz-form-label>
                 <span>HTTP Method (<span style="color: red;">*</span>) </span>

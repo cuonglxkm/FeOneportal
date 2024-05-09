@@ -84,13 +84,7 @@
                   </nz-option>
                 </nz-select>
               </div>
-              <nz-table
-                *ngIf="serviceItem.isVisualTablePermiss"
-                #rowSelectionTable
-                [nzData]="serviceItem.permissions"
-                [nzFrontPagination]="false"
-                style="margin-top: 20px;"
-              >
+              <nz-table *ngIf="serviceItem.isVisualTablePermiss" #rowSelectionTable [nzData]="serviceItem.permissions" [nzFrontPagination]="false" style="margin-top: 20px;">
                 <thead>
                 <tr>
                   <th
@@ -188,7 +182,7 @@
           <thead>
           <tr>
             <th>Permissions policies</th>
-            <th>>{{'app.service.description' | i18n}}</th>
+            <th>{{'app.service.description' | i18n}}</th>
           </tr>
           </thead>
           <tbody>

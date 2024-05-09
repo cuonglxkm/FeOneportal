@@ -1,19 +1,19 @@
 <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
       nzTheme="outline" nz-popover
-      nzPopoverContent="{{'app.wan.note24' | i18n}}"
+      nzPopoverContent="{{'wan.label.ip.wan.detach' | i18n}}"
       nzPopoverPlacement="bottom" (click)="showModalDetach()"></span>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="{{'app.wan.note24' | i18n}}"
+<nz-modal [(nzVisible)]="isVisible" nzTitle="{{'wan.label.ip.wan.detach' | i18n}}"
           (nzOnCancel)="handleCancelDetach()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">{{'app.wan.note24' | i18n}} </span>
+    <span class="text-modal-title">{{'wan.label.ip.wan.detach' | i18n}} </span>
   </div>
   <div *nzModalContent>
     <nz-alert
       nzType="warning"
-      nzMessage="{{'app.wan.note26' | i18n}} {{addressWan}} {{'app.wan.note27' | i18n}} {{instance}}."
+      nzMessage="{{'wan.alert.ip.wan.detach' | i18n}} {{addressWan}} {{'wan.alert.out.instance' | i18n}} {{instance}}."
       nzShowIcon
     ></nz-alert>
-    <span style="margin-top: 24px;">{{'app.wan.note25' | i18n}}</span>
+    <span style="margin-top: 24px;">{{'wan.confirm.ip.wan.detach' | i18n}}</span>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancelDetach()" class="button-cancel">
