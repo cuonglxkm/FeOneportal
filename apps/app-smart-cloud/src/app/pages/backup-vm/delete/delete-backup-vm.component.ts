@@ -6,10 +6,19 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
   styleUrls: ['./delete-backup-vm.component.less'],
 })
 export class DeleteBackupVmComponent {
-  @Input() isVisible: boolean
-  @Input() isLoading: boolean
+  @Input() region: number
+  @Input() project: number
+  @Input() idBackup: number
+  @Input() backupName: string
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
+
+  isVisible: boolean = false
+  isLoading: boolean = false
+
+  showModal(){
+    this.isVisible = true
+  }
 
   handleCancel(): void {
     this.isVisible = false

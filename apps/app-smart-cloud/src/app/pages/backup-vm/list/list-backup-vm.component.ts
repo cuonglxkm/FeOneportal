@@ -77,6 +77,7 @@ export class ListBackupVmComponent implements OnInit {
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     this.formSearch.projectId = this.project
+    this.typeVPC = project?.type
     this.getListBackupVM(true)
   }
 
@@ -158,6 +159,17 @@ export class ListBackupVmComponent implements OnInit {
     });
   }
 
+  navigateToCreateBackup() {
+    // this.dataService.setSelectedObjectId(id)
+    if(this.typeVPC == 1) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/create/vpc']);
+    }
+
+    if(this.typeVPC == 0) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/create/no-vpc']);
+    }
+
+  }
 
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId
@@ -172,7 +184,7 @@ export class ListBackupVmComponent implements OnInit {
     //   this.loadProjects()
     // }
 
-    this.getListBackupVM(true)
+    setTimeout(() => {this.getListBackupVM(true)}, 1500)
   }
 
   getParam(): BackupVMFormSearch {

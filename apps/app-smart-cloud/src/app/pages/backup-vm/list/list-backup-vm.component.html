@@ -24,7 +24,7 @@
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase="false">
       <nz-card>
-        <nz-row nzJustify="space-between">
+        <nz-row nzGutter="24" nzJustify="space-between">
           <nz-col nzSpan="16">
             <nz-select [(ngModel)]="selectedValue"
                        nzSize="large"
@@ -52,6 +52,12 @@
                    [nzPopoverContent]="'app.service.search-text'|i18n"
                    [nzPopoverPlacement]="'bottom'" />
             </ng-template>
+          </nz-col>
+          <nz-col>
+            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateBackup()">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+              <span class="button-text-primary">{{'app.backup.vm.create.button'|i18n}}</span>
+            </button>
           </nz-col>
         </nz-row>
         <nz-table #fixedTable
@@ -97,8 +103,8 @@
               </div>
             </td>
             <td nzBreakWord>
-<!--              <span *ngIf="data.serviceStatus === 'KHOITAO'">-</span>-->
-              <span>{{ data.serviceStatus }}</span>
+              <span *ngIf="data.serviceStatus === 'KHOITAO'">-</span>
+              <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>
             </td>
             <td nzBreakWord>
               <div [ngSwitch]="data.status">
@@ -108,14 +114,8 @@
                        (click)="navigateToRestore(data.id)"
                        nz-popover nzPopoverPlacement="bottom"
                        [nzPopoverContent]="'Restore'" />
-                  <img src="assets/imgs/delete.svg" alt=""
-                       style="width: 30px; height: 30px; cursor: pointer; margin-left: 5px;"
-                       (click)="showModalDelete(data.id)"
-                       nz-popover nzPopoverPlacement="bottom"
-                       [nzPopoverContent]="'app.text.delete'|i18n" />
                   <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
                                                [isLoading]="isLoading"
-                                               (onCancel)="handleCancelDelete()"
                                                (onOk)="handleOkDelete()" />
                 </div>
                 <div *ngSwitchCase="'SUSPENDED'">

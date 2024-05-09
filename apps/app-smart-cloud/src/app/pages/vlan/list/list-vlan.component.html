@@ -69,7 +69,7 @@
       <tr *ngFor="let data of fixtable.data">
         <td><a [routerLink]="'/app-smart-cloud/vlan/network/detail/' + data.id">{{data.name}}</a></td>
         <td>{{data.subnetAddressRequired}}</td>
-        <td *ngIf="data.status == 'KHOITAO'">{{'app.status.running'|i18n}}</td>
+        <td *ngIf="data.status == 'KHOITAO'" style="color: #008D47;">{{'app.status.running'|i18n}}</td>
         <td>
           <div *ngIf="data.name.includes('pri_network')">
             <img nz-popover src="assets/imgs/edit-2.svg" alt=""

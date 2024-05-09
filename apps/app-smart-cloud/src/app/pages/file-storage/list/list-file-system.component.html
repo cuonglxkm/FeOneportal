@@ -66,11 +66,11 @@
           <tr>
             <th>STT</th>
             <th>{{ 'app.name' | i18n }}</th>
-            <th>{{ 'app.text.status' | i18n }}</th>
-            <th>{{ 'app.task.status' | i18n }}</th>
             <th>{{ 'app.file.system.type' | i18n }}</th>
             <th>{{ 'app.protocol' | i18n }}</th>
             <th>{{ 'app.capacity' | i18n }}</th>
+            <th>{{ 'app.text.status' | i18n }}</th>
+            <th>{{ 'app.task.status' | i18n }}</th>
             <th>{{ 'app.text.operation' | i18n }}</th>
           </tr>
           </thead>
@@ -78,11 +78,12 @@
           <tr *ngFor="let data of fixTable.data; index as i">
             <td>{{ i + 1 }}</td>
             <td><a [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
-            <td>{{ data.statusDisplay }}</td>
-            <td>{{ data.taskState.toUpperCase() }}</td>
             <td>{{ data.type }}</td>
             <td>{{ data.protocol }}</td>
             <td>{{ data.size }} GB</td>
+            <td *ngIf="data.statusDisplay.includes('Đang hoạt động')" style="color: #008D47;">{{ data.statusDisplay }}</td>
+            <td *ngIf="!data.statusDisplay.includes('Đang hoạt động')" style="color: #EA3829;">{{ data.statusDisplay }}</td>
+            <td>{{ data.taskState.toUpperCase() }}</td>
             <td>
               <div *ngIf="data.taskState.toUpperCase() === 'ERROR'">
                 <one-portal-delete-file-system [region]="region"

@@ -67,6 +67,8 @@ export class InstancesComponent implements OnInit {
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
 
+  typeVpc: number
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -165,6 +167,7 @@ export class InstancesComponent implements OnInit {
     this.activeCreate = false;
     this.loading = true;
     this.projectId = project.id;
+    this.typeVpc = project?.type
     this.getDataList();
   }
 
@@ -689,9 +692,14 @@ export class InstancesComponent implements OnInit {
   navigateToCreateBackup(id: number) {
     console.log('data ', id);
     // this.dataService.setSelectedObjectId(id)
-    this.router.navigate([
-      '/app-smart-cloud/instance/' + id + '/create-backup-vm',
-    ]);
+    if(this.typeVpc == 1) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/create/vpc', {instanceId: id}]);
+    }
+
+    if(this.typeVpc == 0) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/create/no-vpc', {instanceId: id}]);
+    }
+
   }
 
   createBackupSchedule(id: number) {

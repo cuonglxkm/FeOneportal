@@ -1,8 +1,12 @@
-
+<img src="assets/imgs/delete.svg" alt=""
+     style="width: 30px; height: 30px; cursor: pointer; margin-left: 5px;"
+     (click)="showModal()"
+     nz-popover nzPopoverPlacement="bottom"
+     [nzPopoverContent]="'app.text.delete'|i18n" />
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Xác nhận xóa Backup VM"
           (nzOnCancel)="handleCancel()" nzCentered>
   <div *nzModalTitle>
-    <p class="text-h5"><b>Xác nhận xóa Backup VM</b></p>
+    <span class="text-modal-title">Xác nhận xóa Backup VM</span>
   </div>
   <div *nzModalContent>
     <p class="text-p">Quý khách chắc chắn muốn xóa backup VM ?</p>

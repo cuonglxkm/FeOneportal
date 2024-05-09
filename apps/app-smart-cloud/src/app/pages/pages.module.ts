@@ -42,7 +42,6 @@ import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.
 import { DeleteBackupVmComponent } from './backup-vm/delete/delete-backup-vm.component';
 import { ActionHistoryComponent } from './action-history/action-history.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
-import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
 import { CurrentVirtualMachineComponent } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
 import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-vm-normal/new-virtual-machine.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -226,6 +225,8 @@ import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/exte
 import { AttachIpFloatingLbComponent } from './load-balancer/list/attach/attach-ip-floating-lb.component';
 import { DetachIpFloatingLbComponent } from './load-balancer/list/detach/detach-ip-floating-lb.component';
 import { NewVirtualMachineVpcComponent } from './backup-vm/restore/new-virtual-machine/new-vm-vpc/new-virtual-machine-vpc.component';
+import { CreateBackupVmNormalComponent } from './backup-vm/create/no-vpc/create-backup-vm-normal.component';
+import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup-vm-vpc.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -258,7 +259,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DeleteBackupVmComponent,
     ActionHistoryComponent,
     DetailBackupVmComponent,
-    CreateBackupVmComponent,
     CreateBackupVolumeComponent,
     ListBackupVolumeComponent,
     DetailBackupVolumeComponent,
@@ -436,6 +436,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AttachIpFloatingLbComponent,
     DetachIpFloatingLbComponent,
     NewVirtualMachineVpcComponent,
+    CreateBackupVmNormalComponent,
+    CreateBackupVmVpcComponent,
   ],
   imports: [
     CommonModule,

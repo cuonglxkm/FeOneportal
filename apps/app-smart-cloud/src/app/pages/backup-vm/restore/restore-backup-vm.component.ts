@@ -4,6 +4,8 @@ import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel, ProjectService, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { BackupVmService } from '../../../shared/services/backup-vm.service';
+import { BackupVm } from '../../../shared/models/backup-vm';
 
 @Component({
   selector: 'one-portal-restore-backup-vm',
@@ -24,6 +26,7 @@ export class RestoreBackupVmComponent implements OnInit {
   });
 
   backupVmId: number;
+  backupVm: BackupVm
 
   typeVpc: number //1-vpc 0-no vpc
 
@@ -31,7 +34,7 @@ export class RestoreBackupVmComponent implements OnInit {
               private location: Location,
               private route: ActivatedRoute,
               private router: Router,
-              private projectService: ProjectService) {
+              private backupService: BackupVmService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -51,8 +54,15 @@ export class RestoreBackupVmComponent implements OnInit {
   }
 
   goBack() {
-    this.location.back();
+    this.router.navigate(['/app-smart-cloud/backup-vm']);
   }
+
+  getDetailBackupVm(id) {
+    this.backupService.detail(id).subscribe(data => {
+      this.backupVm = data
+    })
+  }
+
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -62,6 +72,7 @@ export class RestoreBackupVmComponent implements OnInit {
 
     const backupVmId = this.route.snapshot.paramMap.get('id');
     this.backupVmId = parseInt(backupVmId);
+    this.getDetailBackupVm(this.backupVmId);
   }
 
 
