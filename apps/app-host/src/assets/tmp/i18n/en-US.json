@@ -1795,6 +1795,7 @@
   "app.backup.vm.detail": "Backup VM Details",
   "app.backup.vm.restore": "Restore Backup VM",
   "app.backup.vm.ìnformation": "Backup VM Information",
+  "app.backup.vm.create.button": "Create Backup VM",
   "app.table.backup.vm.name": "Name",
   "app.table.backup.vm.vm.original": "Root VM",
   "app.table.backup.vm.storage": "Capacity",

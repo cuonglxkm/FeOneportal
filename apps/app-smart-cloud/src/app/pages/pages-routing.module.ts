@@ -16,7 +16,6 @@ import { SnappshotvlDetailComponent } from './snapshot-volume/snapshotvl-detail/
 import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component';
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
-import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
 import {
   CreateBackupVolumeComponent
 } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
@@ -143,6 +142,8 @@ import { ResizeFileSystemNormalComponent } from './file-storage/no-vpc/resize/re
 import { CreateIpFloatingNormalComponent } from './ip-floating/create-ip-floating-normal.component';
 import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/extend-ip-floating.component';
 import { PermissionGuard } from '../shared/guard/PermissionGuard';
+import { CreateBackupVmNormalComponent } from './backup-vm/create/no-vpc/create-backup-vm-normal.component';
+import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup-vm-vpc.component';
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
 const routes: Routes = [
@@ -306,14 +307,30 @@ const routes: Routes = [
     }
 
   },
+  // {
+  //   path: 'instance/:id/create-backup-vm',
+  //   component: CreateBackupVmComponent,
+  //   canActivate: [PermissionGuard],
+  //   data: {
+  //     permission: 'order:create'
+  //   }
+  //
+  // },
   {
-    path: 'instance/:id/create-backup-vm',
-    component: CreateBackupVmComponent,
+    path: 'backup-vm/create/no-vpc',
+    component: CreateBackupVmNormalComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'order:create'
     }
-
+  },
+  {
+    path: 'backup-vm/create/vpc',
+    component: CreateBackupVmVpcComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create'
+    }
   },
   {
     path: 'backup-volume/create',

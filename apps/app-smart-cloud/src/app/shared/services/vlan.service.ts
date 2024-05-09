@@ -215,8 +215,8 @@ export class VlanService extends BaseService {
   }
 
   updateSubnet(idSubnet: number, formUpdateSubnet: FormUpdateSubnet) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`,
-      Object.assign(formUpdateSubnet)).pipe(catchError((error: HttpErrorResponse) => {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, Object.assign(formUpdateSubnet))
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
