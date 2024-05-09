@@ -17,7 +17,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
   templateUrl: './vpc-list.component.html',
   styleUrls: ['./vpc-list.component.less']
 })
-export class VpcListComponent implements OnInit{
+export class VpcListComponent implements OnInit {
   regionId: any;
   isBegin: Boolean = false;
   size = 10;
@@ -45,10 +45,10 @@ export class VpcListComponent implements OnInit{
   nameDelete: any = '';
   itemDelete: any;
   disableDelete = true;
-  isVisibleEditNormal= false;
+  isVisibleEditNormal = false;
   form = new FormGroup({
     name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/)] }),
-    description: new FormControl(''),
+    description: new FormControl('')
   });
   loadingDelete = false;
 
@@ -96,18 +96,20 @@ export class VpcListComponent implements OnInit{
   }
 
   edit(item: any) {
-    if (item.type == 'VPC') {
-      this.router.navigate(['/app-smart-cloud/vpc/update/' + item.id]);
-    } else {
-      this.form.controls['name'].setValue(item.displayName);
-      this.form.controls['description'].setValue(item.description);
-      this.isVisibleEditNormal = true;
-    }
+    // if (item.type == 'VPC') {
+    //   this.router.navigate(['/app-smart-cloud/vpc/update/' + item.id]);
+    // } else {
+    // }
+    this.form.controls['name'].setValue(item.displayName);
+    this.form.controls['description'].setValue(item.description);
+    this.itemDelete = item;
+    this.isVisibleEditNormal = true;
+
   }
 
   delete(itemDelete: any) {
     this.itemDelete = itemDelete;
-    if(itemDelete.type == 'VPC') {
+    if (itemDelete.type == 'VPC') {
       this.isVisibleDeleteVPC = true;
     } else {
       this.isVisibleDelete = true;
@@ -175,43 +177,26 @@ export class VpcListComponent implements OnInit{
   }
 
   updateVpc() {
-    const requestBody =
-      {
-        typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-        serviceType: 1,
-        customerId: this.tokenService.get()?.userId,
-        actionType: 12,
-        regionId: this.regionId,
-        description: this.form.controls['description'].value,
-        serviceName: this.form.controls['name'].value
-      }
     const request = {
       customerId: this.tokenService.get()?.userId,
-      createdByUserId: this.tokenService.get()?.userId,
-      note: "Cập nhật VPC",
-      orderItems: [
-        {
-          orderItemQuantity: 1,
-          specification: JSON.stringify(requestBody),
-          specificationType: "vpc_resize",
-          price: 0,
-        }
-      ]
-    }
+      id: this.itemDelete.id,
+      projectName: this.form.controls['name'].value,
+      description: this.form.controls['description'].value
+    };
 
-    this.ipService.createIpPublic(request)
+    this.vpcService.updateVpc(request, this.itemDelete.id)
       .pipe(finalize(() => {
         this.getData(true);
-        this.isVisibleEditNormal = false
+        this.isVisibleEditNormal = false;
       }))
       .subscribe(
-      data => {
-        this.notification.success('Thành công', 'Cập nhật dự án thành công');
-        this.router.navigate(['/app-smart-cloud/vpc']);
-      },
-      error => {
-        this.notification.error('Thất bại', 'Cập nhật dự án thất bại')
-      }
-    )
+        data => {
+          this.notification.success('Thành công', 'Cập nhật dự án thành công');
+          this.router.navigate(['/app-smart-cloud/vpc']);
+        },
+        error => {
+          this.notification.error('Thất bại', 'Cập nhật dự án thất bại');
+        }
+      );
   }
 }

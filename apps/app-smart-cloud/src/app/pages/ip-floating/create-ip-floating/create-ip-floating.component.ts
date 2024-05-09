@@ -71,12 +71,12 @@ export class CreateIpFloatingComponent implements OnInit{
       this.ipFloatingService.createIp(formCreate).subscribe(data => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.ip.floating19'))
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('ip.floating.nofitacation.add.success'))
         this.onOk.emit(data)
       }, error => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.ip.floating20'))
+        this.notification.error(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('ip.floating.nofitacation.add.fail'))
         this.validateForm.reset()
       })
     }

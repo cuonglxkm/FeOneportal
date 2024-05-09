@@ -36,9 +36,9 @@ export class PolicyListComponent {
   public optionJsonEditor: JsonEditorOptions;
 
   listPolicyType =[
-    {label: this.i18n.fanyi("app.policies.allTypePolicy"),value :"0"},
-    {label:"Portal managed",value :"1"},
-    {label:"Customer managed",value :"2"}
+    {label: this.i18n.fanyi("app.policies.allTypePolicy"),value :""},
+    {label:"Portal managed",value :"Portal managed"},
+    {label:"Customer managed",value :"Customer managed"}
   ];
 
   listAction =[
@@ -64,7 +64,7 @@ export class PolicyListComponent {
   loadData() {
     this.loading = true;
     this.service.searchPolicy(this.searchValue,this.index, this.size,
-      this.tokenService.get()?.userId, this.tokenService.get()?.token)
+      this.tokenService.get()?.userId, this.tokenService.get()?.token, this.selectedStatus)
       .pipe(finalize(() => {this.loading = false;}))
       .subscribe(
       (data)=>{

@@ -55,7 +55,7 @@
         [nzData]="listOfRouterInteface"
         (nzPageIndexChange)="getRouterInterfaces()"
         (nzPageSizeChange)="getRouterInterfaces()"
-        [nzLoading]="loading"
+        [nzLoading]="isLoadingListRouterInterface"
       >
         <thead>
           <tr>
@@ -110,7 +110,7 @@
         [nzData]="listOfRouterStatic"
         (nzPageIndexChange)="getRouterStatic()"
         (nzPageSizeChange)="getRouterStatic()"
-        [nzLoading]="loading"
+        [nzLoading]="isLoadingListRouterStatic"
       >
         <thead>
           <tr>
@@ -151,7 +151,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleCreateInterface"
-  nzTitle="{{'app.router.note18' | i18n}}"
+  nzTitle="{{'router.label.interface.create' | i18n}}"
   (nzOnCancel)="handleCancelCreateInterface()"
 >
 <form nz-form [formGroup]="formRouterInterface">
@@ -160,7 +160,7 @@
       {{'app.choose.subnet' | i18n}} (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note17' | i18n}}"
+        nz-tooltip="{{'router.alert.subnet.has.gateway' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -200,11 +200,11 @@
       <nz-form-control [nzErrorTip]="ipErrorTpl">
       <nz-form-label nzFor="name">
         <div>
-          <span>{{'app.router.note20' | i18n}}</span>
+          <span>{{'router.label.ip.interface' | i18n}}</span>
           (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
           <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note19' | i18n}}"
+        nz-tooltip="{{'router.alert.ip.equal.subnet.selected' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -218,9 +218,9 @@
       formControlName="ipAddress"
     />
       <ng-template #ipErrorTpl let-control>
-        <ng-container *ngIf="control.hasError('required')">{{'app.router.note21' | i18n}}</ng-container>
-        <ng-container *ngIf="control.hasError('invalidSubnetIP')">{{'app.router.note22' | i18n}}</ng-container>
-        <ng-container *ngIf="control.hasError('invalidLastNumber')">{{'app.router.note22' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('required')">{{'router.validate.ip.empty' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('invalidSubnetIP')">{{'router.validate.ip.fail' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('invalidLastNumber')">{{'router.validate.ip.fail' | i18n}}</ng-container>
       </ng-template>
     </nz-form-control>
     </nz-form-item>
@@ -253,10 +253,10 @@
 <form nz-form [formGroup]="formRouterStatic">
   <ng-container *nzModalContent>
     <div class="text-label">
-      {{'app.router.note23' | i18n}} (<span class="text-red">*</span>)
+      {{'router.label.cidr' | i18n}} (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note24' | i18n}}"
+        nz-tooltip="{{'router.alert.cidr.description' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -272,7 +272,7 @@
       Next Hop (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note25' | i18n}}"
+        nz-tooltip="{{'router.alert.subnet.selected.interface' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -308,7 +308,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleDeleteInterface"
-  nzTitle="{{'app.router.note26' | i18n}}"
+  nzTitle="{{'router.label.interface.remove' | i18n}}"
   (nzOnCancel)="handleCancelDeleteInterface()"
 >
   <div *nzModalContent>
@@ -318,8 +318,8 @@
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
-      <div>{{'app.router.note27' | i18n}}</div>
-      <div>{{'app.router.note28' | i18n}}</div>
+      <div>{{'router.alert.interface.remove' | i18n}}</div>
+      <div>{{'router.confirm.interface.remove' | i18n}}</div>
     </ng-template>
   </div>
   <div *nzModalFooter>
@@ -330,8 +330,9 @@
         alt=""
       />{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkDeleteInterface()">
+    <button nz-button nzType="primary" (click)="handleOkDeleteInterface()" [nzLoading]="isLoadingDeleteRouterInterface">
       <img
+      *ngIf="isLoadingDeleteRouterInterface === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
@@ -352,8 +353,8 @@
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
-      <div>{{'app.router.note29' | i18n}}</div>
-      <div>{{'app.router.note28' | i18n}}</div>
+      <div>{{'router.alert.static.remove' | i18n}}</div>
+      <div>{{'router.confirm.interface.remove' | i18n}}</div>
     </ng-template>
   </div>
   <div *nzModalFooter>
@@ -364,8 +365,9 @@
         alt=""
       />{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkDeleteStatic()">
+    <button nz-button nzType="primary" (click)="handleOkDeleteStatic()" [nzLoading]="isLoadingDeleteRouterStatic">
       <img
+        *ngIf="isLoadingDeleteRouterStatic === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
