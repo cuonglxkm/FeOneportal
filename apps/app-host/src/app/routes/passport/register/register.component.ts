@@ -1,15 +1,27 @@
-import {HttpContext} from '@angular/common/http';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormControl, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {ALLOW_ANONYMOUS} from '@delon/auth';
-import {_HttpClient} from '@delon/theme';
-import {MatchControl} from '@delon/util/form';
-import {NzSafeAny} from 'ng-zorro-antd/core/types';
-import {finalize} from 'rxjs';
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {ReCaptchaV3Service} from "ng-recaptcha";
+import { HttpContext } from '@angular/common/http';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  Validators,
+} from '@angular/forms';
+import { Router } from '@angular/router';
+import { ALLOW_ANONYMOUS } from '@delon/auth';
+import { _HttpClient } from '@delon/theme';
+import { MatchControl } from '@delon/util/form';
+import { NzSafeAny } from 'ng-zorro-antd/core/types';
+import { finalize } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { environment } from '@env/environment';
+import { AppValidator } from '../../../../../../../libs/common-utils/src';
 
 export interface UserCreateDto {
   email: string;
@@ -30,7 +42,7 @@ export interface UserCreateDto {
   selector: 'passport-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserRegisterComponent implements OnInit, OnDestroy {
   constructor(
@@ -39,31 +51,30 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     private http: _HttpClient,
     private cdr: ChangeDetectorRef,
     private notification: NzNotificationService
-  ) {
-  }
+  ) {}
 
   panel = {
     active: false,
     name: 'Thêm thông tin cá nhân',
-    disabled: false
-  }
+    disabled: false,
+  };
   // #region fields
 
   form = this.fb.nonNullable.group(
     {
       mail: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6), UserRegisterComponent.checkPassword.bind(this)]],
-      confirm: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, AppValidator.validPassword]],
+      confirm: ['', [Validators.required]],
       // mobilePrefix: ['+86'],
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       mobile: ['', [Validators.pattern(/^0\d{8,10}$/)]],
       province: ['', [Validators.required]],
       agreement: [true, [Validators.required]],
-      recaptchaReactive: ['', [Validators.required]]
+      recaptchaReactive: ['', [Validators.required]],
     },
     {
-      validators: MatchControl('password', 'confirm')
+      validators: MatchControl('password', 'confirm'),
     }
   );
   error = '';
@@ -75,7 +86,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   passwordProgressMap: { [key: string]: 'success' | 'normal' | 'exception' } = {
     ok: 'success',
     pass: 'normal',
-    pool: 'exception'
+    pool: 'exception',
   };
 
   // #endregion
@@ -99,16 +110,25 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self: NzSafeAny = this;
     self.visible = !!control.value;
-    if (control.value && control.value.length > 9 && control.value.length < 21) {
+    if (
+      control.value &&
+      control.value.length > 9 &&
+      control.value.length < 21
+    ) {
       self.status = 'ok';
-    } else if (control.value && control.value.length > 6 && control.value.length < 21) {
+    } else if (
+      control.value &&
+      control.value.length > 6 &&
+      control.value.length < 21
+    ) {
       self.status = 'pass';
     } else {
       self.status = 'pool';
     }
 
     if (self.visible) {
-      self.progress = control.value.length * 10 > 100 ? 100 : control.value.length * 10;
+      self.progress =
+        control.value.length * 10 > 100 ? 100 : control.value.length * 10;
     }
   }
 
@@ -134,7 +154,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
 
   submit(): void {
     this.error = '';
-    Object.keys(this.form.controls).forEach(key => {
+    Object.keys(this.form.controls).forEach((key) => {
       const control = (this.form.controls as NzSafeAny)[key] as AbstractControl;
       control.markAsDirty();
       control.updateValueAndValidity();
@@ -156,9 +176,8 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       channelSaleId: 0,
       taxCode: '',
       birthDay: new Date(),
-      haveIdentity: false
+      haveIdentity: false,
     };
-
 
     this.loading = true;
     this.cdr.detectChanges();
@@ -166,7 +185,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     let baseUrl = environment['baseUrl'];
     this.http
       .post(`${baseUrl}/users`, data, null, {
-        context: new HttpContext().set(ALLOW_ANONYMOUS, true)
+        context: new HttpContext().set(ALLOW_ANONYMOUS, true),
       })
       .pipe(
         finalize(() => {
@@ -174,14 +193,15 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
         })
       )
-      .subscribe((data) => {
-        this.router.navigate(['passport', 'register-result'], {queryParams: {email: data.email}});
-      }, error => {
-        let message = 'Xin vui lòng thử lại sau.'
-        if (error.error && error.error.detail) {
-          message = error.error.detail;
-        }
-        this.notification.error('Tạo tài khoản không thành công!', message);
+      .subscribe({
+        next: (data) => {
+          this.router.navigate(['passport', 'register-result'], {
+            queryParams: { email: data.email },
+          });
+        },
+        error: (error) => {
+          this.notification.error(error.error.detail, '');
+        },
       });
   }
 

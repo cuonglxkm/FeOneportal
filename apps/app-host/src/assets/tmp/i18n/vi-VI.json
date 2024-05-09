@@ -16,7 +16,7 @@
   "validation.password.strength.strong": "Mật khẩu mạnh",
   "validation.password.strength.medium": "Mật khẩu trung bình",
   "validation.password.strength.short": "Mật khẩu quá ngắn",
-  "validation.password.strength.msg": "Vui lòng nhập ít nhất 7-20 ký tự, gồm đủ chữ hoa, chữ thường, số và kí tự đặc biệt",
+  "validation.password.strength.msg": "Vui lòng nhập ít nhất 7-20 ký tự, gồm đủ chữ hoa, chữ thường, số và ký tự đặc biệt",
   "validation.confirm-password.required": "Vui lòng nhập lại mật khẩu",
   "validation.password.twice": "Mật khẩu nhập lại không khớp",
   "app.register.agreement": "Tôi đồng ý với các điều khoản",
