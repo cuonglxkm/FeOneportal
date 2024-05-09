@@ -331,7 +331,7 @@
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label>
-                <span>Max Retries</span>
+                <span>Max Retries (sec)</span>
                 <img style="margin-left: 10px"
                      nz-tooltip="Số lỗi kế nối được phép trước khi đánh dấu server là không hoạt động. Phải la một số từ 1 đến 10"
                      src="assets/imgs/pajamas_question.svg" alt="" />
@@ -346,7 +346,7 @@
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label>
-                <span>Max Retries Down</span>
+                <span>Max Retries Down (sec)</span>
                 <img style="margin-left: 10px"
                      nz-tooltip="Số kết nối được phép lỗi tối thiểu trước khi xác định là server xảy ra lỗi. Phải là một số từ 1 đến 10. Giá trị mặc định là 3"
                      src="assets/imgs/pajamas_question.svg" alt="" />
@@ -363,7 +363,7 @@
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label>
-                <span>Delay</span>
+                <span>Delay (sec)</span>
                 <img style="margin-left: 10px"
                      nz-tooltip="Khoảng thời gian giữa các lần kiểm tra tình trạng của mỗi server và phải lớn hơn bằng thời gian Timeout"
                      src="assets/imgs/pajamas_question.svg" alt="" />
@@ -377,7 +377,7 @@
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label>
-                <span>Timeout</span>
+                <span>Timeout (sec)</span>
                 <img style="margin-left: 10px"
                      nz-tooltip="Thời gian sau khi kiểm tra trạng thái của mỗi server. Giá trị phải lớn hơn hoặc bằng 0 và nhỏ hơn hoặc bằng thời gian Delay"
                      src="assets/imgs/pajamas_question.svg" alt="" />
@@ -455,11 +455,11 @@
           <td>{{ item.Name }}</td>
           <td>{{ item.IpAddress }}</td>
           <td>
-            <nz-input-number [ngModel]="item.Port" [nzMin]="0" [nzStep]="1" nzSize="large"
+            <nz-input-number [(ngModel)]="item.Port" [nzMin]="1" [nzMax]="65535" [nzStep]="1" nzSize="large"
                              style="margin-left: -2px;" [ngModelOptions]="{standalone: true}" (keydown)="checkPossiblePress($event)"></nz-input-number>
           </td>
           <td>
-            <nz-input-number [ngModel]="item.Weight" [nzMin]="0" [nzStep]="1" nzSize="large"
+            <nz-input-number [(ngModel)]="item.Weight" [nzMin]="0" [nzMax]="256" [nzStep]="1" nzSize="large"
                              style="margin-left: -2px;" [ngModelOptions]="{standalone: true}" (keydown)="checkPossiblePress($event)"></nz-input-number>
           </td>
           <td>
@@ -471,7 +471,7 @@
                   nz-tooltip
                   nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
                   nz-icon nzType="delete" nzTheme="outline"
-                  (click)="removeInstance(item.id,0)"></span>
+                  (click)="removeInstance(item.IpAddress, item.order,0)"></span>
           </td>
         </tr>
         </tbody>
@@ -496,7 +496,7 @@
                   nz-tooltip
                   [nzTooltipTitle]="'menu.more' | i18n" nzTooltipPlacement="bottom"
                   nz-icon nzType="plus" nzTheme="outline"
-                  (click)="removeInstance(item.id,1)"></span>
+                  (click)="removeInstance(item.IpAddress, item.order,1)"></span>
           </td>
         </tr>
         </tbody>
