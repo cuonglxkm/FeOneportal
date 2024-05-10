@@ -68,8 +68,8 @@ export class ObjectStorageEditComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            e.statusText,
-            'Lấy Object Strorage không thành công'
+            e.error.detail,
+            this.i18n.fanyi('app.notification.object.storage.fail')
           );
         },
       });

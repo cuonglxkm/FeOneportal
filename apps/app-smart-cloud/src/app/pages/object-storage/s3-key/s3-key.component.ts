@@ -9,6 +9,8 @@ import { ObjectStorageService } from 'src/app/shared/services/object-storage.ser
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
 import { SubUserService } from '../../../shared/services/sub-user.service';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-s3-key',
@@ -38,6 +40,7 @@ export class S3KeyComponent implements OnInit {
   searchBox: string = ''
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private service: ObjectObjectStorageService,
     private objectSevice: ObjectStorageService,
     private cdr: ChangeDetectorRef,
@@ -69,8 +72,8 @@ export class S3KeyComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            e.statusText,
-            'Lấy Object Strorage không thành công'
+            e.error.detail,
+            this.i18n.fanyi('app.notification.object.storage.fail')
           );
         },
       });
@@ -136,13 +139,13 @@ export class S3KeyComponent implements OnInit {
         next: (post) => {
           this.isLoadingDelete = false
           this.isVisibleDelete = false
-          this.notification.success('Thành công', 'Xóa s3 key thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.delete.s3.key.success'));
           this.getData()
         },
         error: (e) => {
           this.isLoadingDelete = false
           this.isVisibleDelete = false
-          this.notification.error('Thất bại', 'Xóa s3 key thất bại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.s3.key.fail'));
         },
       });
     this.getData();
@@ -160,19 +163,19 @@ export class S3KeyComponent implements OnInit {
       this.userCreate.subUserId === 'owner' ? '' : this.userCreate.subUserId;
     if (subuser === undefined) {
       this.isLoadingCreateS3key = false;
-      this.notification.warning('Cảnh báo', 'Vui lòng nhập User/SubUser');
+      this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.notification.enter.user.subUser'));
     } else {
       this.service.createS3Key(subuser).subscribe({
         next: (data) => {
           this.isLoadingCreateS3key = false;
           this.isVisibleCreate = false;
-          this.notification.success('Thành công', 'Tạo s3 key thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.s3.key.success'));
           this.userCreate.subUserId = '';
           this.getData();
         },
         error: (error) => {
           this.isLoadingCreateS3key = false;
-          this.notification.error('Thất bại', 'Tạo s3 key thất bại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.create.s3.key.fail'));
         },
       });
     }
@@ -200,12 +203,12 @@ export class S3KeyComponent implements OnInit {
       next: (data) => {
         this.isLoadingReCreateS3key = false;
         this.isVisibleReCreate = false;
-        this.notification.success('Thành công', 'Tạo lại SecretKey thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.regenerate.secretKey.success'));
         this.getData();
       },
       error: (error) => {
         this.isLoadingReCreateS3key = false;
-        this.notification.error('Thất bại', 'Tạo lại SecretKey thất bại');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.regenerate.secretKey.fail'));
       },
     });
   }
