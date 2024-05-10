@@ -68,7 +68,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       // mobilePrefix: ['+86'],
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      mobile: ['', [Validators.pattern(/^0\d{8,10}$/)]],
+      mobile: ['', [Validators.required, AppValidator.validPhoneNumber]],
       province: ['', [Validators.required]],
       agreement: [true, [Validators.required]],
       recaptchaReactive: ['', [Validators.required]],

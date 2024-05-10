@@ -4,6 +4,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadBalancerService } from '../../../../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormCreateL7Rule } from '../../../../../../../shared/models/load-balancer.model';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-create-l7-rule',
@@ -55,6 +57,7 @@ export class CreateL7RuleComponent implements AfterViewInit {
   @ViewChild('l7RuleInputName') l7RuleInputName!: ElementRef<HTMLInputElement>;
 
   constructor(private fb: NonNullableFormBuilder,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private loadBalancerService: LoadBalancerService,
               private notification: NzNotificationService) {
@@ -109,12 +112,12 @@ export class CreateL7RuleComponent implements AfterViewInit {
       this.loadBalancerService.createL7Rule(formCreateL7Rule).subscribe(data => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.success('Thành công', 'Tạo mới L7 Rule thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.L7.rule.success'))
         this.onOk.emit(data)
       }, error =>  {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error('Thất bại', 'Tạo mới L7 Rule thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.create.L7.rule.fail'))
         this.onOk.emit(error)
       })
     }

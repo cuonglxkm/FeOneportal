@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
 
@@ -25,6 +27,7 @@ export class DeleteFileSystemSnapshotScheduleComponent{
   });
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
               private fileSystemSnapshotSchedule: FileSystemSnapshotScheduleService
@@ -55,12 +58,12 @@ export class DeleteFileSystemSnapshotScheduleComponent{
         this.fileSystemSnapshotSchedule.delete(this.scheduleId).subscribe(data => {
             this.isVisible = false
             this.isLoading =  false
-            this.notification.success('Thành công', 'Xoá lịch FileSystem Snapshot thành công')
+            this.notification.success(this.i18n.fanyi('app.status.success'), 'Xoá lịch FileSystem Snapshot thành công')
             this.onOk.emit(data)
         }, error => {
           this.isVisible = false
           this.isLoading =  false
-          this.notification.error('Thất bại', 'Xoá lịch FileSystem Snapshot thất bại')
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Xoá lịch FileSystem Snapshot thất bại')
         })
     }
   } 

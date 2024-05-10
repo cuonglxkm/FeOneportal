@@ -4,7 +4,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { _HttpClient } from '@delon/theme';
+import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
 import { addDays, differenceInCalendarDays, setHours } from 'date-fns';
 import { DisabledTimeFn } from 'ng-zorro-antd/date-picker';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -15,6 +15,7 @@ import { ObjectObjectStorageModel } from '../../../shared/models/object-storage.
 import { BucketService } from '../../../shared/services/bucket.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -127,6 +128,7 @@ export class BucketDetailComponent implements OnInit {
     private bucketservice: BucketService,
     private activatedRoute: ActivatedRoute,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private notification: NzNotificationService,
     private clipboard: Clipboard,
     private modalService: NzModalService,
@@ -323,10 +325,10 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe(
         () => {
-          this.notification.success('Thành công', '`Thêm folder thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), '`Thêm folder thành công');
         },
         (error) => {
-          this.notification.error('Thất bại', 'Thêm folder thất bại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Thêm folder thất bại');
         }
       );
   }
@@ -396,7 +398,7 @@ export class BucketDetailComponent implements OnInit {
       if (index >= 0) {
         this.lstFileUpdate.splice(index, 1);
       }
-      this.notification.success('Thành công', 'Xóa file thành công');
+      this.notification.success(this.i18n.fanyi('app.status.success'), 'Xóa file thành công');
     }
   }
 
@@ -498,10 +500,10 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe(
         () => {
-          this.notification.success('Thành công', 'Xóa thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Xóa thành công');
         },
         (error) => {
-          this.notification.error('Thất bại', 'Xóa thất bại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Xóa thất bại');
         }
       );
   }
@@ -615,10 +617,10 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe(
         () => {
-          this.notification.success('Thành công', '`Sao chép thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), '`Sao chép thành công');
         },
         (error) => {
-          this.notification.error('Thất bại', 'Sao chép thất bại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Sao chép thất bại');
         }
       );
   }
@@ -646,10 +648,10 @@ export class BucketDetailComponent implements OnInit {
         )
         .subscribe(
           () => {
-            this.notification.success('Thành công', 'Phân quyền thành công');
+            this.notification.success(this.i18n.fanyi('app.status.success'), 'Phân quyền thành công');
           },
           (error) => {
-            this.notification.error('Thất bại', 'Phân quyền thất bại');
+            this.notification.error(this.i18n.fanyi('app.status.fail'), 'Phân quyền thất bại');
           }
         );
     }
@@ -708,10 +710,10 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe(
         () => {
-          this.notification.success('Thành công', '`Xóa phiên bản thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), '`Xóa phiên bản thành công');
         },
         (error) => {
-          this.notification.error('Thất bại', 'Xóa phiên bản thất bại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Xóa phiên bản thất bại');
         }
       );
   }
@@ -733,10 +735,10 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe(
         () => {
-          this.notification.success('Thành công', '`Khôi phục bản thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), '`Khôi phục bản thành công');
         },
         (error) => {
-          this.notification.error('Thất bại', 'Khôi phục phiên bản thất bại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Khôi phục phiên bản thất bại');
         }
       );
   }
@@ -881,17 +883,17 @@ export class BucketDetailComponent implements OnInit {
           xhr.onload = () => {
             if (xhr.status === 200) {
               item.uploaded = true;
-              this.notification.success('Thành công', 'Upload thành công');
+              this.notification.success(this.i18n.fanyi('app.status.success'), 'Upload thành công');
               this.loadData();
               resolve();
             } else {
-              this.notification.error('Thất bại', 'Upload thất bại');
+              this.notification.error(this.i18n.fanyi('app.status.fail'), 'Upload thất bại');
               reject();
             }
           };
 
           xhr.onerror = () => {
-            this.notification.error('Thất bại', 'Upload thất bại');
+            this.notification.error(this.i18n.fanyi('app.status.fail'), 'Upload thất bại');
             reject();
           };
 
@@ -946,7 +948,7 @@ export class BucketDetailComponent implements OnInit {
                 }
               };
               xhr.onerror = () => {
-                this.notification.error('Thất bại', 'Upload thất bại');
+                this.notification.error(this.i18n.fanyi('app.status.fail'), 'Upload thất bại');
                 this.uploadFailed = true;
                 item.percentage = 100;
                 let dataError = {
@@ -967,7 +969,7 @@ export class BucketDetailComponent implements OnInit {
               xhr.send(blob);
             },
             (error) => {
-              this.notification.error('Thất bại', 'Upload thất bại');
+              this.notification.error(this.i18n.fanyi('app.status.fail'), 'Upload thất bại');
             }
           );
         };
@@ -995,18 +997,18 @@ export class BucketDetailComponent implements OnInit {
             };
             xhr.onload = () => {
               item.isUpload = true;
-              this.notification.success('Thành công', 'Upload thành công');
+              this.notification.success(this.i18n.fanyi('app.status.success'), 'Upload thành công');
               this.loadData();
               resolve();
             };
             xhr.onerror = () => {
-              this.notification.error('Thất bại', 'Upload thất bại');
+              this.notification.error(this.i18n.fanyi('app.status.fail'), 'Upload thất bại');
               reject();
             };
             xhr.send(item.originFileObj);
           },
           (error) => {
-            this.notification.error('Thất bại', 'Upload thất bại');
+            this.notification.error(this.i18n.fanyi('app.status.fail'), 'Upload thất bại');
             reject();
           }
         );

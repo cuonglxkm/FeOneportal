@@ -261,7 +261,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lấy thông tin VPC không thành công'
+            this.i18n.fanyi('app.notify.get.vpc.info.fail')
           );
         },
       });

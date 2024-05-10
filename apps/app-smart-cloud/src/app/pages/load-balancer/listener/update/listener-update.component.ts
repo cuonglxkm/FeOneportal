@@ -10,6 +10,8 @@ import { LoadBalancerService } from '../../../../shared/services/load-balancer.s
 import { L7Policy } from '../../../../shared/models/load-balancer.model';
 import { finalize } from 'rxjs/operators';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-listener-update',
@@ -68,6 +70,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
               private activatedRoute: ActivatedRoute,
               private cdr: ChangeDetectorRef,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private loadBalancerService: LoadBalancerService) {
   }
 
@@ -108,11 +111,11 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
     };
     this.service.updateListener(data).subscribe(
       data => {
-        this.notification.success('Thành công', 'Cập nhật thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.update.listener.success'))
         this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.activatedRoute.snapshot.paramMap.get('lbId')]);
       },
       error => {
-        this.notification.error('Thất bại', 'Cập nhật thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.update.listener.fail'))
       }
     );
   }
