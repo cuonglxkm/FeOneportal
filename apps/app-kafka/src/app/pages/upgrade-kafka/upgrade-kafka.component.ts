@@ -230,7 +230,7 @@ export class UpgradeKafkaComponent implements OnInit {
   onChangeCpu(event: number) {
     this.cpu = event;
     if (event != null) {
-      if (event <= this.initCpu) {
+      if ((event < this.initCpu) || (event == this.initCpu && this.ram <= this.initRam && this.storage <= this.initStorage) ) {
         this.myform.controls['vCpu'].setErrors({'invalid': true});
       } else {
         this.setUpgradeAmount();
@@ -241,7 +241,7 @@ export class UpgradeKafkaComponent implements OnInit {
   onChangeRam(event: number) {
     this.ram = event;
     if (event != null) {
-      if (event <= this.initRam) {
+      if ((event < this.initRam) || (event == this.initRam && this.cpu <= this.initCpu && this.storage <= this.initStorage)) {
         this.myform.get('ram').setErrors({'invalid': true});
       } else {
         this.setUpgradeAmount();
@@ -252,7 +252,7 @@ export class UpgradeKafkaComponent implements OnInit {
   onChangeStorage(event: number) {
     this.storage = event;
     if (event != null) {
-      if (event <= this.initStorage) {
+      if ((event < this.initStorage) || (event == this.initStorage && this.cpu <= this.initCpu && this.ram <= this.initRam)) {
         this.myform.get('storage').setErrors({'invalid': true});
       } else {
         this.setUpgradeAmount();
