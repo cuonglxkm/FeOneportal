@@ -14,7 +14,6 @@ import { ActionHistoryComponent } from './action-history/action-history.componen
 import { SnapshotVolumeListComponent } from './snapshot-volume/snapshotvl-list/snapshotvl-list.component';
 import { SnappshotvlDetailComponent } from './snapshot-volume/snapshotvl-detail/snappshotvl-detail.component';
 import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component';
-import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import {
   CreateBackupVolumeComponent
@@ -290,14 +289,14 @@ const routes: Routes = [
     }
 
   },
-  {
-    path: 'backup-vm/restore-backup-vm/:id',
-    component: RestoreBackupVmComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'backup:InstanceBackupRestore'
-    }
-  },
+  // {
+  //   path: 'backup-vm/restore-backup-vm/:id',
+  //   component: RestoreBackupVmComponent,
+  //   canActivate: [PermissionGuard],
+  //   data: {
+  //     permission: 'backup:InstanceBackupRestore'
+  //   }
+  // },
   {
     path: 'backup-vm/detail-backup-vm/:id',
     component: DetailBackupVmComponent,
