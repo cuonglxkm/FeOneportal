@@ -1665,7 +1665,7 @@
   "app.backup.package.list": "Danh sách gói Backup",
   "app.backup.package.information": "Thông tin của gói Backup",
   "app.backup.package.name": "Tên gói Backup",
-  "app.backup.package.storage": "Dung lượng gói Backup",
+  "app.backup.package.storage": "Dung lượng gói backup",
   "app.backup.package.storage.current": "Dung lượng gói Backup hiện tại",
   "app.backup.package.storage.addition": "Dung lượng gói Backup bổ sung",
   "app.backup.package.storage.total": "Dung lượng",
@@ -1729,6 +1729,30 @@
   "app.backup.vm.button.create" : "Khởi tạo Backup VM",
   "app.backup.vm.title": "Backup VM - Sao lưu, bảo mật",
   "app.backup.vm.intro.desc": "Giải pháp sao lưu VM nâng cao, phần mềm giúp giảm chi phí chụp nhanh và tiết kiệm thời gian của bạn bằng cách tạo các bản sao VM giống hệt nhau trực tiếp từ các bản sao lưu VM hiện có.",
+  "app.backup.vm.storage.remaining": "Dung lượng còn lại gói backup",
+  "app.backup.vm.delete.title.modal": "Xác nhận xóa Backup VM",
+
+  "app.backup.vm.tooltip.name": "Nhập tên backup tối đa 50 ký tự và chỉ gồm ký tự chữ cái, số và dấu _",
+  "app.backup.vm.tooltip.vm": "Chọn máy ảo cần Backup từ danh sách máy ảo của khách hàng thuộc khu vực và dự án mà khách hàng",
+  "app.backup.vm.tooltip.backup.package": "Chọn gói backup từ danh sách gói backup trong chức năng gói backup của dịch vụ nền tảng",
+  "app.backup.vm.tooltip.security.group": "Danh sách security group của máy ảo đã chọn. Khách hàng được phép xóa bớt SG trước khi thực hiện backup",
+  "app.backup.vm.tooltip.volume.attach": "Danh sách volume gắn ngoài của máy ảo, kiểu volume, dung lượng volume đó. Khách hàng được phép xóa bớt volume gắn ngoài trước khi backup.",
+  "app.backup.vm.tooltip.expire.date": "Là ngày hết hạn của gói backup",
+  "app.backup.vm.placeholder.input": "Nhập tên Backup",
+
+  "app.backup.vm.alert.create.remaining.storage": "còn lại",
+  "app.backup.vm.alert.storage": "nhỏ hơn tổng dung lượng ổ hệ điều hành và dung lượng Volume gắn ngoài",
+  "app.backup.vm.alert.create": "Quý khách hãy điều chỉnh <b><i>{{name}}</i></b> để quá trình Backup VM không bị gián đoạn",
+  "app.backup.vm.alert.delete": "Bạn đang thực hiện xóa backup",
+  "app.backup.vm.confirm.delete": "Đế thực hiện xoá backup {{name}}, vui lòng nhập tên backup để xác nhận.",
+
+
+  "app.backup.vm.create.name.required": "Vui lòng nhập tên Backup VM",
+  "app.backup.vm.create.name.duplicateName": "Tên Backup VM đã tồn tại, vui lòng nhập tên khác",
+  "app.backup.vm.create.name.pattern": "Tên Backup VM chỉ gồm ký tự chữ cái, số và dấu _, vui lòng nhập tên khác",
+
   "app.backup.vm.notification.success.delete": "Yêu cầu xóa backup vm thành công",
-  "app.backup.vm.notification.fail.delete": "Yêu cầu xóa backup vm thất bại"
+  "app.backup.vm.notification.fail.delete": "Yêu cầu xóa backup vm thất bại",
+  "app.backup.vm.notification.create.request.send": "Yêu cầu tạo backup máy ảo đã được gửi đi",
+  "app.backup.vm.notification.input.name.delete": "Vui lòng nhập đúng tên bản backup"
 }

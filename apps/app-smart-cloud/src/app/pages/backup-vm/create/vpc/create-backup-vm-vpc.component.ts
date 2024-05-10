@@ -20,8 +20,15 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { CatalogService } from '../../../../shared/services/catalog.service';
-import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import {
+  ProjectModel,
+  ProjectService,
+  RegionModel,
+  SizeInCloudProject
+} from '../../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-backup-vm-vpc',
@@ -75,6 +82,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
 
   volumeAttachSelected: VolumeDTO[] = [];
   formCreateBackup: FormCreateBackup = new FormCreateBackup();
+  projectDetail: SizeInCloudProject
 
   constructor(private backupVmService: BackupVmService,
               private instanceService: InstancesService,
@@ -85,7 +93,9 @@ export class CreateBackupVmVpcComponent implements OnInit {
               private notification: NzNotificationService,
               private volumeService: VolumeService,
               private router: Router,
-              private catalogService: CatalogService) {
+              private catalogService: CatalogService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private projectService: ProjectService) {
   }
 
   validateDuplicateName(control) {
@@ -227,23 +237,47 @@ export class CreateBackupVmVpcComponent implements OnInit {
 
       let createBackupVmSpecification = new CreateBackupVmSpecification();
       createBackupVmSpecification.instanceId = this.validateForm.controls.instanceId.value;
-      createBackupVmSpecification.backupInstanceOfferId = this.offerId; // dùng để tính giá về sau
+      createBackupVmSpecification.backupInstanceOfferId = 0; // dùng để tính giá về sau
       createBackupVmSpecification.volumeToBackupIds = this.validateForm.controls.volumeToBackupIds.value;
-      createBackupVmSpecification.securityGroupToBackupIds = this.validateForm.controls.securityGroupToBackupIds.value;
+      // createBackupVmSpecification.securityGroupToBackupIds = this.validateForm.controls.securityGroupToBackupIds.value;
       createBackupVmSpecification.description = this.validateForm.controls.description.value;
       createBackupVmSpecification.backupPackageId = this.validateForm.controls.backupPacketId.value;
       createBackupVmSpecification.customerId = this.tokenService.get()?.userId;
-      createBackupVmSpecification.serviceName = this.validateForm.controls.backupName.value;
-      createBackupVmSpecification.regionId = this.region;
-      createBackupVmSpecification.serviceType = 9; // 9 là backup_vm
+      createBackupVmSpecification.actorEmail = this.tokenService.get()?.email;
+      createBackupVmSpecification.userEmail = this.tokenService.get()?.email;
       createBackupVmSpecification.vpcId = this.project;
+      createBackupVmSpecification.projectId = this.project
+      createBackupVmSpecification.regionId = this.region;
+      createBackupVmSpecification.serviceName = this.validateForm.controls.backupName.value;
+      createBackupVmSpecification.serviceType = 9; // 9 là backup_vm
+      createBackupVmSpecification.actionType = 0; // 0 là create
+      createBackupVmSpecification.serviceInstanceId = 0;
+      createBackupVmSpecification.createDateInContract = null
+      createBackupVmSpecification.saleDept = null
+      createBackupVmSpecification.saleDeptCode = null
+      createBackupVmSpecification.contactPersonEmail = null
+      createBackupVmSpecification.contactPersonPhone = null
+      createBackupVmSpecification.contactPersonName = null
+      createBackupVmSpecification.am = null
+      createBackupVmSpecification.amManager = null
+      createBackupVmSpecification.note = null
+      createBackupVmSpecification.isTrial = false
+      createBackupVmSpecification.offerId = 0
+      createBackupVmSpecification.couponCode = null
+      createBackupVmSpecification.dhsxkd_SubscriptionId = null
+      createBackupVmSpecification.dSubscriptionNumber = null
+      createBackupVmSpecification.dSubscriptionType = null
+      createBackupVmSpecification.oneSMEAddonId = null
+      createBackupVmSpecification.oneSME_SubscriptionId = null
+      createBackupVmSpecification.isSendMail = true
+      createBackupVmSpecification.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.InstanceBackupCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
 
       console.log(createBackupVmSpecification);
 
       let createBackupVmOrderData = new CreateBackupVmOrderData();
       createBackupVmOrderData.customerId = this.tokenService.get()?.userId;
       createBackupVmOrderData.createdByUserId = this.tokenService.get()?.userId;
-      createBackupVmOrderData.note = 'Tạo backup máy ảo';
+      createBackupVmOrderData.note = this.i18n.fanyi('app.backup.vm.create.button');
       createBackupVmOrderData.orderItems = [
         {
           orderItemQuantity: 1,
@@ -258,7 +292,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
       this.backupVmService.create(createBackupVmOrderData).subscribe(data => {
         this.isLoading = false;
         console.log('data create', data);
-        this.notification.success('Thành công', 'Yêu cầu tạo backup máy ảo đã được gửi đi');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.vm.notification.create.request.send'));
         this.router.navigate(['/app-smart-cloud/backup-vm']);
       });
 
@@ -273,6 +307,11 @@ export class CreateBackupVmVpcComponent implements OnInit {
     }
   }
 
+  getInfoProjectVpc(id) {
+    this.projectService.getProjectVpc(id).subscribe(data => {
+      this.projectDetail = data
+    })
+  }
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -281,6 +320,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
 
     if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
       this.instanceIdParam = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId'));
+      this.validateForm.controls.instanceId.setValue(this.instanceIdParam)
       this.getDataByInstanceId(this.instanceIdParam);
     } else {
       this.instanceIdParam = null;
@@ -291,5 +331,6 @@ export class CreateBackupVmVpcComponent implements OnInit {
     this.getBackupPackage();
 
     this.getOfferBackupVm();
+    this.getInfoProjectVpc(this.project);
   }
 }

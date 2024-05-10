@@ -41,22 +41,24 @@ export class CloudProject {
   quotaBackupVolumeInGb: number
   quotaSecurityGroupCount: number
   quotaKeypairCount: number
-  quotaVolumeSnapshotCount: number
+  quotaVolumeSnapshotInGb: number
   quotaIpPublicCount: number
   quotaIpFloatingCount: number
   quotaNetworkCount: number
   quotaRouterCount: number
   quotaLoadBalancerSDNCount: number
-  quotaShareInGb: number
-  quotaShareSnapshotInGb: number
   offerId: number
   offerIdLBSDN: number
+  vpnSiteToSiteOfferId: number
+  quotaShareInGb: number
+  quotaShareSnapshotInGb: number
   resourceStatus: string
   publicNetworkId: string
   publicNetworkAddress: string
   quotaIpv6Count: number
   type: string
   displayName: string
+  cloudId: string
 }
 
 export class CloudProjectResourceUsed {
@@ -70,12 +72,13 @@ export class CloudProjectResourceUsed {
   keypairCount: number
   volumeSnapshotCount: number
   ipPublicCount: number
+  ipFloatingCount: number
   networkCount: number
   routerCount: number
   loadBalancerSdnCount: number
   ipv6Count: number
-  quotaShareSnapshotInGb: number
   quotaShareInGb: number
+  quotaShareSnapshotInGb: number
 }
 
 export class SizeInCloudProject {
