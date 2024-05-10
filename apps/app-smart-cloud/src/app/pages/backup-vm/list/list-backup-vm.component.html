@@ -77,7 +77,7 @@
             <th nzLeft>{{ 'app.table.backup.vm.name'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.vm.original'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.storage'|i18n }}</th>
-            <th nzBreakWord>{{ 'app.table.backup.vm.backup.package'|i18n }}</th>
+            <th nzBreakWord *ngIf="typeVPC==0">{{ 'app.table.backup.vm.backup.package'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.create.date'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.expire.date'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.status'|i18n }}</th>
@@ -91,7 +91,7 @@
             </td>
             <td nzBreakWord> {{ data.instanceName }}</td>
             <td nzBreakWord nzAlign="right">{{ data.size }} GB</td>
-            <td nzBreakWord>{{ data.backupPackageName }}</td>
+            <td nzBreakWord *ngIf="typeVPC==0">{{ data.backupPackageName }}</td>
             <td nzBreakWord>{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
             <td nzBreakWord>{{ data.expirationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
             <td nzBreakWord>
@@ -100,6 +100,7 @@
                 <span class="suspended" *ngSwitchCase="'SUSPENDED'">{{ 'app.status.suspend'|i18n }}</span>
                 <span class="available" *ngSwitchCase="'CREATING'">{{ 'app.status.init'|i18n }}</span>
                 <span class="suspended" *ngSwitchCase="'DELETING'">{{ 'app.status.deleting'|i18n }}</span>
+                <span class="error" *ngSwitchCase="'ERROR'">{{ 'app.status.error'|i18n }}</span>
               </div>
             </td>
             <td nzBreakWord>
@@ -107,8 +108,8 @@
               <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>
             </td>
             <td nzBreakWord>
-              <div [ngSwitch]="data.status">
-                <div *ngSwitchCase="'AVAILABLE'">
+<!--              <div [ngSwitch]="data.status">-->
+                <div *ngIf="data.status.includes('AVAILABLE')">
                   <img src="assets/imgs/rotate-right.svg" alt=""
                        style="cursor: pointer;"
                        (click)="navigateToRestore(data.id)"
@@ -120,14 +121,20 @@
                                                [backupName]="data.name"
                                                (onOk)="handleOkDelete()" />
                 </div>
-                <div *ngSwitchCase="'SUSPENDED'">
+                <div *ngIf="data.status.includes('SUSPENDED')">
                   <one-portal-delete-backup-vm [region]="region"
                                                [project]="project"
                                                [idBackup]="data.id"
                                                [backupName]="data.name"
                                                (onOk)="handleOkDelete()" />
                 </div>
-              </div>
+                <div *ngIf="data.status.includes('AVAILABLE') && data.serviceStatus.includes('ERROR')">
+                  <one-portal-delete-backup-vm [region]="region"
+                                               [project]="project"
+                                               [idBackup]="data.id"
+                                               [backupName]="data.name"
+                                               (onOk)="handleOkDelete()" />
+                </div>
             </td>
           </tr>
           </tbody>

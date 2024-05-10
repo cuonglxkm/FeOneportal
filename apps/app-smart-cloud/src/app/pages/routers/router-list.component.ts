@@ -27,6 +27,7 @@ import { VlanService } from 'src/app/shared/services/vlan.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'one-portal-router-list',
@@ -49,15 +50,46 @@ export class RouterListComponent implements OnInit {
   searchGenderList: string[] = [];
   filterStatus = [
     { text: 'Tất cả trạng thái', value: '' },
-    { text: 'Đang khởi tạo', value: 'DANGKHOITAO' },
-    { text: 'Khởi tạo', value: 'KHOITAO' },
-    { text: 'Tạm ngưng', value: 'TAMNGUNG' },
+    { text: 'Kích hoạt', value: 'ACTIVE' },
+    { text: 'Chưa kích hoạt', value: 'INACTIVE' },
   ];
 
   listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
   listSubnet: [{ id: ''; text: 'Chọn Subnet' }];
   listIPAddress: [{ id: ''; text: 'Chọn địa chỉ IP' }];
   listIPAddressOnVLAN: [{ id: ''; text: 'Chọn địa chỉ IP' }];
+
+  form: FormGroup<{
+    name: FormControl<string>
+    network: FormControl<string>
+  }> = this.fb.group({
+    name: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
+      ],
+    ],
+    network: [''],
+  });
+
+  formEdit: FormGroup<{
+    name: FormControl<string>
+  }> = this.fb.group({
+    name: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
+      ],
+    ],
+  });
+
+  formDelete: FormGroup<{
+    name: FormControl<string>
+  }> = this.fb.group({
+    name: ['', [Validators.required, this.nameRouterValidator.bind(this)]]
+  });
 
   cloudId: string;
   region: number;
@@ -70,22 +102,23 @@ export class RouterListComponent implements OnInit {
   isLoadingCreateRouter: boolean = false
   isLoadingDeleteRouter: boolean = false
   isLoadingEditRouter: boolean = false
-
+  value: string = ''
+  status: string = ''
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: RouterService,
     private cdr: ChangeDetectorRef,
-    private router: Router,
     private notification: NzNotificationService,
-    private vlanService: VlanService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private fb: NonNullableFormBuilder
   ) {}
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.formEdit.controls.name.setValue(this.routerUpdate.routerName)
   }
 
   selectedChecked(e: any): void {
@@ -108,37 +141,19 @@ export class RouterListComponent implements OnInit {
     this.getDataList();
   }
 
-  // doSearch() {
-  //   if (this.region != undefined && this.region != null) {
-  //     this.loading = true;
-  //     this.dataService
-  //       .getListRouter(this.region, this.pageSize, this.currentPage)
-  //       .pipe(
-  //         finalize(() => {
-  //           this.loading = false;
-  //           this.cdr.detectChanges();
-  //         })
-  //       )
-  //       .subscribe({
-  //         next: (next) => {
-  //           this.dataList = next.records;
-  //           this.total = next.totalCount;
-  //         },
-  //         error: (e) => {
-  //           this.notification.error(
-  //             e.statusText,
-  //             'Lấy danh sách Router không thành công'
-  //           );
-  //         },
-  //       });
-  //   }
-  // }
+  doSearch(value: string) {
+    this.value = value
+  }
+
+  onChange(value: string) {
+    this.status = value
+  }
 
   getDataList() {
       this.formListRouter.currentPage = this.currentPage
       this.formListRouter.pageSize = this.pageSize
-      this.formListRouter.routerName = ''
-      this.formListRouter.status = ''
+      this.formListRouter.routerName = this.value
+      this.formListRouter.status = this.status
       this.formListRouter.regionId = this.region
       this.formListRouter.vpcId = this.projectId
       this.loading = true;
@@ -208,6 +223,8 @@ export class RouterListComponent implements OnInit {
 
   handleCancelCreate() {
     this.isVisibleCreate = false;
+    this.routerCreate.networkId = ''
+    this.routerCreate.routerName = ''
   }
 
   handleOkCreate() {
@@ -275,10 +292,8 @@ export class RouterListComponent implements OnInit {
   }
 
   isVisibleDelete: boolean = false;
-  nameVerify: string;
   nameRouterDelete: string;
   modalDelete(cloudId: string, nameRouter: string) {
-    this.nameVerify = '';
     this.cloudId = cloudId;
     this.nameRouterDelete = nameRouter;
     this.isVisibleDelete = true;
@@ -288,9 +303,16 @@ export class RouterListComponent implements OnInit {
     this.isVisibleDelete = false;
   }
 
+  nameRouterValidator(control: FormControl): { [key: string]: any } | null {
+    const name = control.value;
+    if (name !== this.nameRouterDelete) {
+      return { 'nameMismatch': true };
+    }
+    return null;
+  }
+
   handleOkDelete() {
     this.isLoadingDeleteRouter = true
-    if (this.nameVerify == this.nameRouterDelete) {
       this.dataService
         .deleteRouter(this.cloudId, this.region, this.projectId)
         .subscribe({
@@ -308,8 +330,5 @@ export class RouterListComponent implements OnInit {
             this.isLoadingDeleteRouter = false
           },
         });
-    } else {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.nofitacation.remove.fail'));
-    }
   }
 }

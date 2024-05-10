@@ -22,38 +22,14 @@
   </ng-template>
 </page-header>
 <nz-content>
-    <nz-row nzGutter="24">
-      <nz-col nzSpan="16">
-        <nz-card>
-          <form nz-form [formGroup]="validateForm" nzLayout="vertical">
-            <!--    <nz-card>-->
-            <nz-card>
-              <div class="title"><h4><b>Restore Backup VM</b></h4></div>
-              <nz-row>
-                <nz-radio-group [(ngModel)]="selectedValueRadio" (ngModelChange)="onChangeStatus()"
-                                formControlName="radio">
-                  <label nz-radio nzValue="O" class="label">Restore vào máy ảo hiện tại </label>
-                  <label nz-radio nzValue="N" class="label">Restore vào máy ảo mới </label>
-                </nz-radio-group>
-              </nz-row>
-            </nz-card>
-          </form>
-          <div *ngIf="selectedValueRadio === 'N'">
-            <one-portal-new-virtual-machine [region]="region"
-                                            [project]="project"
-                                            [backupVmId]="backupVmId"/>
-          </div>
-          <div *ngIf="selectedValueRadio === 'O'">
-            <one-portal-current-virtual-machine [region]="region"
-                                                [project]="project"
-                                                [backupVmId]="backupVmId"/>
-          </div>
-        </nz-card>
-      </nz-col>
-      <nz-col nzSpan="8">
-        <nz-card>
-          <span class="text-card-header">Thông tin cấu hình</span>
-        </nz-card>
-      </nz-col>
-    </nz-row>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">{{'app.backup.vm.ìnformation'|i18n}}</span>
+      </nz-card>
+    </nz-col>
+    <nz-col nzSpan="8">
+
+    </nz-col>
+  </nz-row>
 </nz-content>

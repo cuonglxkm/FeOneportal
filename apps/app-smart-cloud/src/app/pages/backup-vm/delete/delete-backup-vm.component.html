@@ -3,26 +3,26 @@
      (click)="showModal()"
      nz-popover nzPopoverPlacement="bottom"
      [nzPopoverContent]="'app.text.delete'|i18n" />
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Xác nhận xóa Backup VM"
+<nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzCentered>
   <div *nzModalTitle>
-    <span class="text-modal-title">Xác nhận xóa Backup VM</span>
+    <span class="text-modal-title">{{'app.backup.vm.delete.title.modal'|i18n}} {{backupName}}</span>
   </div>
   <div *nzModalContent>
     <nz-alert nzBanner
               nzShowIcon
-              [nzMessage]="'Bạn đang thực hiện xóa Backup'">
+              [nzMessage]="'app.backup.vm.alert.delete'|i18n">
     </nz-alert>
     <div style="margin-top: 10px;">
-      <span class="text-label">Đế thực hiện xoá Backup {{backupName}}, vui lòng nhập tên Backup để xác nhận.</span>
+      <span class="text-label">{{ 'app.backup.vm.confirm.delete'|i18n: {name: backupName} }}</span>
       <input nz-input #backupInputName
              style="margin-top: 10px;"
              class="input-custom"
              [ngModel]="value"
              (keydown.enter)="focusOkButton($event)"
              (ngModelChange)="onInputChange($event)"
-             [placeholder]="'Nhập tên Backup'" />
-      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên bản backup</span>
+             [placeholder]="'app.backup.vm.placeholder.input'|i18n" />
+      <span *ngIf="isInput" style="color: red;">{{ 'app.backup.vm.notification.input.name.delete'|i18n }}</span>
     </div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
