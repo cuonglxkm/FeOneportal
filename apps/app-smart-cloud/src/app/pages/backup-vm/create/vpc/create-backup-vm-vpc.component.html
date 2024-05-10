@@ -37,6 +37,7 @@
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="nameBackupError">
                   <input nz-input class="input-custom"
+                         appAutofocus
                          formControlName="backupName"
                          [maxlength]="50" />
                   <ng-template #nameBackupError let-control>
@@ -125,7 +126,7 @@
                 </nz-form-label>
                 <nz-form-control>
                   <nz-textarea-count [nzMaxCharacterCount]="255">
-                    <textarea nz-input class="input-custom"
+                    <textarea nz-input class="input-custom" [maxlength]="255"
                               [nzAutosize]="{ minRows: 3, maxRows: 5 }"
                               formControlName="description"></textarea>
                   </nz-textarea-count>
@@ -135,61 +136,18 @@
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
-                  <span>{{'app.table.backup.vm.backup.package'|i18n}} (<span style="color: #FF0000;">*</span>)</span>
+                  <span>{{'app.backup.package.storage'|i18n}} (<span style="color: #FF0000;">*</span>)</span>
                   <img nz-popover
                        [nzPopoverContent]="'app.backup.vm.tooltip.backup.package'|i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips>
-                  <nz-select formControlName="backupPacketId"
-                             nzSize="large"
-                             [nzPlaceHolder]="'app.table.backup.vm.backup.package'|i18n"
-                             [nzShowSearch]="false"
-                             [nzLoading]="isLoading" (ngModelChange)="onChangeBackupPackage($event)">
-                    <nz-option *ngFor="let i of backupPackages"
-                               [nzLabel]="i.packageName"
-                               [nzValue]="i.id" />
-                  </nz-select>
+                  <nz-input-group [nzAddOnAfter]="'GB'" style="width: 100%;">
+                    <input nz-input class="input-custom" [value]="projectDetail?.cloudProject.quotaBackupVolumeInGb" [disabled]="true" />
+                  </nz-input-group>
                 </nz-form-control>
               </nz-form-item>
-              <nz-row nzGutter="18">
-                <nz-col nzSpan="10">
-                  <span class="text-label">{{'app.backup.package.storage'|i18n}}</span>
-                </nz-col>
-                <nz-col nzSpan="8">
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize }} GB</span>
-                </nz-col>
-              </nz-row>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <nz-row nzGutter="18">
-                <nz-col nzSpan="10">
-                  <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
-                </nz-col>
-                <nz-col nzSpan="8">
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.usedSize }} GB</span>
-                </nz-col>
-              </nz-row>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <nz-row nzGutter="18">
-                <nz-col nzSpan="10">
-                  <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
-                </nz-col>
-                <nz-col nzSpan="8">
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize - backupPackageDetail?.usedSize }}
-                    GB</span>
-                </nz-col>
-              </nz-row>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <nz-form-item style="padding-top: 10px;">
                 <nz-form-label>
                   <span>Security Group</span>
@@ -248,15 +206,13 @@
           <!--          <span>Volume attach {{sizeOfVlAttach}}</span><br>-->
           <!--          <span>Total 1 {{instance?.storage + sizeOfVlAttach}}</span><br>-->
           <!--          <span>Total 2 {{backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize}}</span>-->
-          <div *ngIf="(instance?.storage + sizeOfVlAttach) > (backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize)">
+          <div *ngIf="(instance?.storage + sizeOfVlAttach) > (projectDetail?.cloudProject.quotaBackupVolumeInGb)">
             <nz-alert nzType="warning"
                       [nzMessage]="titleMessage"
                       nzShowIcon></nz-alert>
             <ng-template #titleMessage>
-              <span style="color: #FF0000;">{{'app.backup.package.storage'|i18n}} {{backupPackageDetail?.packageName}} ({{'app.backup.vm.alert.create.remaining.storage'|i18n}} {{backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize}} GB)
-                {{'app.backup.vm.alert.storage'|i18n}} ({{instance?.storage + sizeOfVlAttach}} GB).
-                <span [innerHTML]="'app.backup.vm.alert.create'|i18n: {name: backupPackageDetail?.packageName }"></span>
-              </span>
+              <span style="color: #FF0000;">Dung lượng backup nhỏ hơn dung lượng ổ hệ điều hành + tổng dung lượng volume gắn ngoài ({{instance?.storage + sizeOfVlAttach}} GB).
+                Quý khách hãy điều chỉnh dự án VPC để quá trình backup VM không bị gián đoạn.</span>
             </ng-template>
           </div>
         </form>
@@ -270,9 +226,6 @@
           {{ validateForm.controls.backupName.value }}
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">{{ 'app.table.backup.vm.backup.package'|i18n }}</div>
-        <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.packageName }}</div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <div style="margin-top: 10px" class="text-value">{{ 'app.instances.name'|i18n }}</div>
         <div style="margin-top: 10px" class="text-label">{{ instance?.name }}</div>
         <div style="margin-top: 10px" class="text-label">{{ 'app.info.backup.vm.storage.flavor'|i18n }} - {{ instance?.storage }} GB</div>
@@ -280,15 +233,12 @@
         <div style="margin-top: 10px" class="text-value">{{ 'app.info.backup.vm.external.volume'|i18n }}</div>
         <div style="margin-top: 10px" class="text-label" *ngFor="let data of volumeAttachSelected">{{data?.name}} - {{data?.sizeInGB}} GB</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Tổng dung lượng backup</div>
-        <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">{{ 'app.backup.vm.storage.remaining'|i18n }}</div>
-        <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</div>
+        <div style="margin-top: 10px" class="text-value">Dung lượng backup</div>
+        <div style="margin-top: 10px" class="text-label">{{ projectDetail?.cloudProject.quotaBackupVolumeInGb }} GB</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row>
           <nz-col style="width: 100%">
-            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createBackupVmNormal()"
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createBackupVmNormal()" [nzLoading]="isLoading"
                     [disabled]="validateForm.invalid">
               <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" alt="" />
               <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>

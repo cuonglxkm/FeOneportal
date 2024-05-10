@@ -3,11 +3,11 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">{{'app.breadcrumb.home'|i18n}}</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home'|i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.backup.vm.detail'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.backup.vm.detail'|i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 
@@ -23,39 +23,43 @@
 </page-header>
 <nz-content>
   <nz-card style="border-radius: 8px;">
-    <span class="text-card-header">{{'app.backup.vm.ìnformation'|i18n}}</span>
+    <span class="text-card-header">{{ 'app.backup.vm.ìnformation'|i18n }}</span>
     <form nz-form nzLayout="vertical">
       <nz-row nzGutter="24" style="margin-top: 24px;">
         <nz-col nzSpan="12">
           <nz-form-item>
             <nz-form-label>
-              <span>{{'app.table.backup.vm.name'|i18n}}</span>
+              <span>{{ 'app.table.backup.vm.name'|i18n }}</span>
             </nz-form-label>
             <nz-form-control>
-              <input nz-input class="input-custom" [value]="backupVm?.name" [disabled]="true"/>
+              <input nz-input class="input-custom" [value]="backupVm?.name" [disabled]="true" />
             </nz-form-control>
           </nz-form-item>
+          <div *ngIf="typeVpc == 1">
+            <nz-form-item>
+              <nz-form-label>
+                <span>{{ 'app.table.backup.vm.backup.package'|i18n }}</span>
+              </nz-form-label>
+              <nz-form-control>
+                <input nz-input class="input-custom" [value]="projectDetail?.cloudProject.quotaBackupVolumeInGb"
+                       [disabled]="true" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
           <nz-form-item>
             <nz-form-label>
-              <span>{{'app.table.backup.vm.backup.package'|i18n}}</span>
-            </nz-form-label>
-            <nz-form-control>
-              <input nz-input class="input-custom" [value]="backupVm?.backupPackageName" [disabled]="true" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label>
-              <span>{{'app.info.backup.vm.storage.flavor'|i18n}}</span>
+              <span>{{ 'app.info.backup.vm.storage.flavor'|i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <nz-input-group nzAddOnAfter="GB" style="width: 100%">
-                <input nz-input class="input-custom" [value]="backupVm?.systemInfoBackups[0].rootSize" [disabled]="true" />
+                <input nz-input class="input-custom" [value]="backupVm?.systemInfoBackups[0].rootSize"
+                       [disabled]="true" />
               </nz-input-group>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>{{'app.info.backup.vm.description'|i18n}}</span>
+              <span>{{ 'app.info.backup.vm.description'|i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <nz-textarea-count nzMaxCharacterCount="255">
@@ -67,20 +71,8 @@
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
-          <nz-form-label>
-            <span>{{'app.service.creation-date'|i18n}}: {{backupVm?.creationDate | date: 'dd/MM/yyyy'}}</span>
-          </nz-form-label>
-        </nz-form-item>
-          <nz-form-item>
             <nz-form-label>
-              <span style="color: #FF0000;">{{'app.service.expiration-date'|i18n}}: {{backupVm?.expirationDate | date: 'dd/MM/yyyy'}}</span>
-            </nz-form-label>
-          </nz-form-item>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <nz-form-item>
-            <nz-form-label>
-              <span>{{'app.info.backup.vm.vm.root'|i18n}}</span>
+              <span>{{ 'app.info.backup.vm.vm.root'|i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <input nz-input class="input-custom" [value]="backupVm?.instanceName" [disabled]="true" />
@@ -88,12 +80,73 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>{{'app.instances.OS'|i18n}}</span>
+              <span>{{ 'app.instances.OS'|i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <input nz-input class="input-custom" [value]="nameFlavorTextUnique" [disabled]="true" />
             </nz-form-control>
           </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>{{ 'app.service.creation-date'|i18n }}: {{ backupVm?.creationDate | date: 'dd/MM/yyyy' }}</span>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span style="color: #FF0000;">{{ 'app.service.expiration-date'|i18n }}
+                : {{ backupVm?.expirationDate | date: 'dd/MM/yyyy' }}</span>
+            </nz-form-label>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <div *ngIf="typeVpc == 0">
+            <nz-form-item>
+              <nz-form-label>
+                <span>{{ 'app.table.backup.vm.backup.package'|i18n }}</span>
+              </nz-form-label>
+              <nz-form-control>
+                <input nz-input class="input-custom" [value]="backupVm?.backupPackageName" [disabled]="true" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-row nzGutter="18">
+              <nz-col nzSpan="10">
+                <span class="text-label">Dung lượng Gói Backup</span>
+              </nz-col>
+              <nz-col nzSpan="8">
+                  <span class="text-label"
+                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
+                <span class="text-label"
+                      *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize }} GB</span>
+              </nz-col>
+            </nz-row>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-row nzGutter="18">
+              <nz-col nzSpan="10">
+                <span class="text-label">Dung lượng đã dùng</span>
+              </nz-col>
+              <nz-col nzSpan="8">
+                  <span class="text-label"
+                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
+                <span class="text-label"
+                      *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.usedSize }} GB</span>
+              </nz-col>
+            </nz-row>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-row nzGutter="18">
+              <nz-col nzSpan="10">
+                <span class="text-label">Dung lượng còn lại</span>
+              </nz-col>
+              <nz-col nzSpan="8">
+                  <span class="text-label"
+                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
+                <span class="text-label"
+                      *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize - backupPackageDetail?.usedSize }}
+                  GB</span>
+              </nz-col>
+            </nz-row>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          </div>
+
           <nz-form-item>
             <nz-form-label>
               <span>Security Group</span>
@@ -109,7 +162,7 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>{{'app.info.backup.vm.external.volume'|i18n}}</span>
+              <span>{{ 'app.info.backup.vm.external.volume'|i18n }}</span>
             </nz-form-label>
             <nz-form-control>
               <nz-textarea-count nzMaxCharacterCount="255">
@@ -123,6 +176,5 @@
         </nz-col>
       </nz-row>
     </form>
-
   </nz-card>
 </nz-content>

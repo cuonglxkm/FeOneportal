@@ -230,16 +230,40 @@ export class CreateBackupVmNormalComponent implements OnInit{
 
       let createBackupVmSpecification = new CreateBackupVmSpecification();
       createBackupVmSpecification.instanceId = this.validateForm.controls.instanceId.value;
-      createBackupVmSpecification.backupInstanceOfferId = this.offerId; // dùng để tính giá về sau
+      createBackupVmSpecification.backupInstanceOfferId = 0; // dùng để tính giá về sau
       createBackupVmSpecification.volumeToBackupIds = this.validateForm.controls.volumeToBackupIds.value;
       createBackupVmSpecification.securityGroupToBackupIds = this.validateForm.controls.securityGroupToBackupIds.value;
       createBackupVmSpecification.description = this.validateForm.controls.description.value;
       createBackupVmSpecification.backupPackageId = this.validateForm.controls.backupPacketId.value;
       createBackupVmSpecification.customerId = this.tokenService.get()?.userId;
-      createBackupVmSpecification.serviceName = this.validateForm.controls.backupName.value;
-      createBackupVmSpecification.regionId = this.region;
-      createBackupVmSpecification.serviceType = 9; // 9 là backup_vm
+      createBackupVmSpecification.actorEmail = this.tokenService.get()?.email;
+      createBackupVmSpecification.userEmail = this.tokenService.get()?.email;
       createBackupVmSpecification.vpcId = this.project;
+      createBackupVmSpecification.projectId = this.project
+      createBackupVmSpecification.regionId = this.region;
+      createBackupVmSpecification.serviceName = this.validateForm.controls.backupName.value;
+      createBackupVmSpecification.serviceType = 9; // 9 là backup_vm
+      createBackupVmSpecification.actionType = 0; // 0 là create
+      createBackupVmSpecification.serviceInstanceId = 0;
+      createBackupVmSpecification.createDateInContract = null
+      createBackupVmSpecification.saleDept = null
+      createBackupVmSpecification.saleDeptCode = null
+      createBackupVmSpecification.contactPersonEmail = null
+      createBackupVmSpecification.contactPersonPhone = null
+      createBackupVmSpecification.contactPersonName = null
+      createBackupVmSpecification.am = null
+      createBackupVmSpecification.amManager = null
+      createBackupVmSpecification.note = null
+      createBackupVmSpecification.isTrial = false
+      createBackupVmSpecification.offerId = 0
+      createBackupVmSpecification.couponCode = null
+      createBackupVmSpecification.dhsxkd_SubscriptionId = null
+      createBackupVmSpecification.dSubscriptionNumber = null
+      createBackupVmSpecification.dSubscriptionType = null
+      createBackupVmSpecification.oneSMEAddonId = null
+      createBackupVmSpecification.oneSME_SubscriptionId = null
+      createBackupVmSpecification.isSendMail = true
+      createBackupVmSpecification.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.InstanceBackupCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
 
       console.log(createBackupVmSpecification);
 
@@ -284,6 +308,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
 
     if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
       this.instanceIdParam = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId'));
+      this.validateForm.controls.instanceId.setValue(this.instanceIdParam)
       this.getDataByInstanceId(this.instanceIdParam);
     } else {
       this.instanceIdParam = null;

@@ -1,1 +1,35 @@
-<p>restore-backup-vm works!</p>
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'app.backup.vm.restore'|i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{'app.breadcrumb.home'|i18n}}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.backup.vm.restore'|i18n}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">{{'app.backup.vm.ìnformation'|i18n}}</span>
+      </nz-card>
+    </nz-col>
+    <nz-col nzSpan="8">
+
+    </nz-col>
+  </nz-row>
+</nz-content>

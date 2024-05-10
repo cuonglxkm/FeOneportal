@@ -191,7 +191,7 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input formControlName="description" id="description" [maxLength]="700"
+              <textarea nz-input formControlName="description" id="description" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('maxlength')">{{ 'validation.file.system.description.maxlength' | i18n }}</ng-container>
