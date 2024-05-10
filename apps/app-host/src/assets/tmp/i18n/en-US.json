@@ -1608,6 +1608,8 @@
   "project.note47": "For applications that require data protection and system performance maintenance, it is recommended to use Backup - precise backup to ensure safety and quick restoration when needed.",
   "project.note48": "Load Balancer helps distribute the load efficiently, improve system scalability, and enhance user experience.",
   "project.note49": "Select Load Balancer Package",
+  "project.note50": "Create project success",
+  "project.note51": "Create project fail",
   "status.enable": "Enable",
   "status.disable": "Disable",
   "status.deleted": "Deleted",
