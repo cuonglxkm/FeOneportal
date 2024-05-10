@@ -17,7 +17,21 @@ export class SecurityGroupModel {
   id: string;
   name: string;
   description: string;
-  // rulesInfo:   any;
+  rulesInfo: RulesInfo[];
+}
+
+export interface RulesInfo {
+  id: string;
+  remoteGroupId: string;
+  remoteIpPrefix: string;
+  portRangeMax: number;
+  portRangeMin: number;
+  protocol: string;
+  etherType: string;
+  direction: string;
+  securityGroupId: string;
+  portRange: string;
+  remoteIp: string;
 }
 
 export class IPPublicModel {
@@ -106,36 +120,10 @@ export class RebuildInstances {
 }
 
 export class UpdateInstances {
-  regionId: number;
   customerId: number;
   name: string;
-  projectId: number;
   securityGroups: string;
   id: number;
-}
-
-export class CreateInstances {
-  regionId: number;
-  currentNetworkCloudId: string;
-  useIPv6: boolean;
-  customerId: number;
-  usePrivateNetwork: boolean;
-  imageId: number;
-  flavorId: number;
-  name: string;
-  storage: number;
-  projectId: number;
-  snapshotCloudId: string;
-  listSecurityGroup: string[];
-  keypair: string;
-  domesticBandwidth: number;
-  intenationalBandwidth: number;
-  ramAdditional: number;
-  cpuAdditional: number;
-  bttnAdditional: number;
-  btqtAdditional: number;
-  initPassword: string;
-  ipPrivate: string;
 }
 
 export class InstancesModel {
@@ -240,34 +228,34 @@ export class InstanceCreate {
   cpu: number;
   volumeType: any;
   typeName: string;
-  vpcId: any;
-  oneSMEAddonId: any;
-  serviceType: number;
-  serviceInstanceId: number;
   customerId: number;
+  userEmail: any;
+  actorEmail: any;
+  vpcId: any;
+  regionId: number;
+  serviceName: any;
+  serviceType: number;
+  actionType: number;
+  serviceInstanceId: number;
   createDate: string;
   expireDate: string;
+  createDateInContract: any;
   saleDept: any;
   saleDeptCode: any;
   contactPersonEmail: any;
   contactPersonPhone: any;
   contactPersonName: any;
-  note: any;
-  createDateInContract: any;
   am: any;
   amManager: any;
+  note: any;
   isTrial: boolean;
   offerId: number;
   couponCode: any;
   dhsxkd_SubscriptionId: any;
   dSubscriptionNumber: any;
   dSubscriptionType: any;
+  oneSMEAddonId: any;
   oneSME_SubscriptionId: any;
-  actionType: number;
-  regionId: number;
-  serviceName: any;
-  userEmail: any;
-  actorEmail: any;
 }
 
 export class VolumeCreate {
@@ -307,6 +295,7 @@ export class VolumeCreate {
   typeName: string;
   userEmail: any;
   actorEmail: any;
+  iops: number;
 }
 
 export class Order {

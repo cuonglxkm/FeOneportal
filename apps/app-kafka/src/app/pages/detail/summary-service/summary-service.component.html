@@ -1,16 +1,24 @@
 <nz-card id="kafka-config">
     <fieldset class="custom-legend">
-        <legend>Thông tin cấu hình Kafka Instance</legend>
+        <legend>Thông tin cấu hình Kafka Cluster</legend>
         <div class="table-info">
-            <nz-table nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
+            <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
                 <tbody>
                     <tr>
-                        <td class="config-label">RAM:</td>
-                        <td><b>{{ram}} GiB</b></td>
+                        <td class="config-label">Broker</td>
+                        <td><b>3</b></td>
                     </tr>
                     <tr>
-                        <td class="config-label">CPU:</td>
-                        <td><b>{{cpu}} vCPU</b></td>
+                        <td class="config-label">CPU</td>
+                        <td><b>{{itemDetail.cpu}} vCPU</b></td>
+                    </tr>
+                    <tr>
+                        <td class="config-label">RAM</td>
+                        <td><b>{{itemDetail.ram}} GB</b></td>
+                    </tr>
+                    <tr>
+                        <td class="config-label">SSD</td>
+                        <td><b>{{itemDetail.storage}} GB</b></td>
                     </tr>
                 </tbody>
             </nz-table>
@@ -21,9 +29,9 @@
     <fieldset class="custom-legend mb-5">
         <legend>Thông tin cấu hình Endpoint</legend>
         <div class="copy-btn">
-            <button nz-button nzType="text" nzTooltipTitle="Copy" nzTooltipPlacement="top" nz-tooltip
+            <button nz-button nzType="default" nzTooltipTitle="Copy" nzTooltipPlacement="top" nz-tooltip class="btn-copy"
                 (click)="handleCopy()">
-                <span nz-icon nzType="copy" style="color:#2F54EB"></span>
+                <img src="assets/imgs/icon_copy1.svg" alt="" style="cursor: pointer"/>
             </button>
         </div>
         <div class="table-info">
@@ -31,19 +39,19 @@
                 <nz-table nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
                     <tbody>
                         <tr>
-                            <td class="config-label">Bootstrap server:</td>
+                            <td class="config-label">Bootstrap server</td>
                             <td><b>{{infoConnection.bootstrapServer}}</b></td>
                         </tr>
                         <tr>
-                            <td class="config-label">Sasl Mechanism:</td>
+                            <td class="config-label">Sasl Mechanism</td>
                             <td><b>{{infoConnection.saslMechanism}}</b></td>
                         </tr>
                         <tr>
-                            <td class="config-label">Security Protocol:</td>
+                            <td class="config-label">Security Protocol</td>
                             <td><b>{{infoConnection.securityProtocol}}</b></td>
                         </tr>
                         <tr>
-                            <td class="config-label">Sasl Jaas Config:</td>
+                            <td class="config-label">Sasl Jaas Config</td>
                             <td><b>{{infoConnection.saslJaasConfig}}</b></td>
                         </tr>
                     </tbody>
@@ -63,11 +71,11 @@
                         <tr *ngFor="let item of brokerConfigs">
                             <td class="config-label">
                                 <div>
-                                    {{item.configName}}:
+                                    {{item.configName}}
                                     <span class="ml-2"
                                         [nzTooltipTitle]="item.description"
                                         nzTooltipPlacement="rightTop" nz-tooltip>
-                                        <span nz-icon nzType="info-circle" nzTheme="fill" style="color:#2F54EB"></span>
+                                        <span nz-icon nzType="exclamation-circle" nzTheme="fill"></span>
                                     </span>
                                 </div>
                             </td>

@@ -71,7 +71,7 @@
                 >Vui lòng nhập thông tin</ng-container
               >
               <ng-container *ngIf="control.hasError('pattern')"
-                >Tên gồm 50 ký tự viết liền không dấu cách và không chứa ký tự
+                >Tên gồm 50 ký tự viết liền không dấu và không chứa ký tự
                 đặc biệt</ng-container
               >
             </ng-template>
@@ -203,12 +203,12 @@
                   [nzDescription]="nzDescriptionselectedHDDorSSD1"
                 >
                   <ng-template #nzAvatarselectedHDDorSSD1>
-                    <input
-                      style="cursor: pointer"
-                      type="radio"
-                      [checked]="activeBlockHDD"
+                    <label
+                      nz-radio
+                      [ngModel]="activeBlockHDD"
+                      [ngModelOptions]="{ standalone: true }"
                       (click)="initHDD()"
-                    />
+                    ></label>
                   </ng-template>
                   <ng-template #nzTitleselectedHDDorSSD1>
                     <b>HDD</b>
@@ -260,12 +260,12 @@
                   [nzDescription]="nzDescriptionselectedHDDorSSD2"
                 >
                   <ng-template #nzAvatarselectedHDDorSSD2>
-                    <input
-                      type="radio"
-                      style="cursor: pointer"
-                      [checked]="activeBlockSSD"
+                    <label
+                      nz-radio
+                      [ngModel]="activeBlockSSD"
+                      [ngModelOptions]="{ standalone: true }"
                       (click)="initSSD()"
-                    />
+                    ></label>
                   </ng-template>
                   <ng-template #nzTitleselectedHDDorSSD2>
                     <b>SSD</b>
@@ -307,15 +307,17 @@
           <nz-col nzSpan="18">
             <nz-slider
               [nzMin]="1"
-              [nzMax]="500"
+              [nzMax]="remainingVolume"
               [(ngModel)]="instanceCreate.volumeSize"
+              [ngModelOptions]="{ standalone: true }"
             ></nz-slider>
           </nz-col>
           <div nzSpan="6">
             <nz-input-number
               [nzMin]="1"
-              [nzMax]="500"
+              [nzMax]="remainingVolume"
               [(ngModel)]="instanceCreate.volumeSize"
+              [ngModelOptions]="{ standalone: true }"
             ></nz-input-number>
           </div>
         </nz-row>
@@ -328,15 +330,17 @@
           <nz-col nzSpan="18">
             <nz-slider
               [nzMin]="1"
-              [nzMax]="20"
+              [nzMax]="remainingRAM"
               [(ngModel)]="instanceCreate.ram"
+              [ngModelOptions]="{ standalone: true }"
             ></nz-slider>
           </nz-col>
           <div nzSpan="6">
             <nz-input-number
               [nzMin]="1"
-              [nzMax]="20"
+              [nzMax]="remainingRAM"
               [(ngModel)]="instanceCreate.ram"
+              [ngModelOptions]="{ standalone: true }"
             ></nz-input-number>
           </div>
         </nz-row>
@@ -349,15 +353,17 @@
           <nz-col nzSpan="18">
             <nz-slider
               [nzMin]="1"
-              [nzMax]="20"
+              [nzMax]="remainingVCPU"
               [(ngModel)]="instanceCreate.cpu"
+              [ngModelOptions]="{ standalone: true }"
             ></nz-slider>
           </nz-col>
           <div nzSpan="6">
             <nz-input-number
               [nzMin]="1"
-              [nzMax]="20"
+              [nzMax]="remainingVCPU"
               [(ngModel)]="instanceCreate.cpu"
+              [ngModelOptions]="{ standalone: true }"
             ></nz-input-number>
           </div>
         </nz-row>
@@ -377,17 +383,16 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label
-            >Chọn IP Public (<span class="text-red">*</span>)</nz-form-label
-          >
-          <nz-form-control nzErrorTip="Chọn IP Public *">
+          <nz-form-label>Chọn IP Public</nz-form-label>
+          <nz-form-control>
             <nz-select
               [nzShowSearch]="true"
               [(ngModel)]="ipPublicValue"
+              (ngModelChange)="onChangeIpPublic()"
               [ngModelOptions]="{ standalone: true }"
               nzSize="large"
             >
-              <nz-option nzLabel="Không sử dụng" nzValue="0" />
+              <nz-option nzLabel="Không sử dụng" [nzValue]="0" />
               <nz-option
                 *ngFor="let i of listIPPublic"
                 [nzLabel]="i.ipAddress || i.networkId"
@@ -395,15 +400,26 @@
               />
             </nz-select>
           </nz-form-control>
-        </nz-form-item>
-        <div>
-          <label
-            nz-checkbox
-            [(ngModel)]="isUseLAN"
-            [ngModelOptions]="{ standalone: true }"
-            >Sử dụng mạng LAN</label
+          <nz-form-label style="margin-top: 24px"
+            >Chọn VLAN gắn vào máy ảo (<span class="text-red">*</span
+            >)</nz-form-label
           >
-        </div>
+          <nz-form-control nzErrorTip="Chọn VLAN *">
+            <nz-select
+              [nzShowSearch]="true"
+              [(ngModel)]="vlanNetwork"
+              (ngModelChange)="getListPort()"
+              [ngModelOptions]="{ standalone: true }"
+              nzSize="large"
+            >
+              <nz-option
+                *ngFor="let i of listVlanNetwork"
+                [nzLabel]="i.name"
+                [nzValue]="i.cloudId"
+              />
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
       </nz-col>
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
@@ -441,6 +457,42 @@
         </div>
       </nz-col>
     </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col nzLg="12" nzMd="12" nzSm="24">
+        <nz-form-item
+          ><nz-form-label
+            >Chọn Port (<span class="text-red">*</span>)</nz-form-label
+          >
+          <nz-form-control>
+            <nz-select
+              [nzShowSearch]="true"
+              [(ngModel)]="port"
+              [ngModelOptions]="{ standalone: true }"
+              nzSize="large"
+            >
+              <nz-option
+                *ngFor="let i of listPort"
+                [nzLabel]="i.macAddress"
+                [nzValue]="i.macAddress"
+              />
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col
+        style="display: flex; align-items: center"
+        nzLg="12"
+        nzMd="12"
+        nzSm="24"
+      >
+        <label
+          nz-checkbox
+          [(ngModel)]="isUseLAN"
+          [ngModelOptions]="{ standalone: true }"
+          >Sử dụng mạng LAN</label
+        >
+      </nz-col>
+    </nz-row>
     <nz-row>
       <nz-form-label nzFor="name"
         >Chọn phương thức truy cập máy ảo (<span class="text-red">*</span
@@ -467,11 +519,12 @@
               [nzDescription]="nzDescriptionselectedPasswordOrSSHkey1"
             >
               <ng-template #nzAvatarselectedPasswordOrSSHkey1>
-                <input
-                  type="radio"
-                  [checked]="activeBlockPassword"
+                <label
+                  nz-radio
+                  [ngModel]="activeBlockPassword"
+                  [ngModelOptions]="{ standalone: true }"
                   (click)="initPassword()"
-                />
+                ></label>
               </ng-template>
               <ng-template #nzTitleselectedPasswordOrSSHkey1>
                 <b>Mật khẩu</b>
@@ -499,11 +552,12 @@
               [nzDescription]="nzDescriptionselectedPasswordOrSSHkey2"
             >
               <ng-template #nzAvatarselectedPasswordOrSSHkey2>
-                <input
-                  type="radio"
-                  [checked]="activeBlockSSHKey"
+                <label
+                  nz-radio
+                  [ngModel]="activeBlockSSHKey"
+                  [ngModelOptions]="{ standalone: true }"
                   (click)="initSSHkey()"
-                />
+                ></label>
               </ng-template>
               <ng-template #nzTitleselectedPasswordOrSSHkey2>
                 <b>SSH key</b>
@@ -636,7 +690,7 @@
   <div *nzModalContent>
     Quý khách chắn chắn muốn thực hiện khởi tạo máy ảo không?<br />• Tên máy ảo:
     {{ instanceCreate.serviceName }}<br />• Hệ điều hành: {{ nameImage }}<br />•
-    Gói cấu hình: {{ instanceCreate.cpu }} VCPU / {{ instanceCreate.ram }}GB RAM
+    Gói cấu hình: {{ instanceCreate.cpu }} vCPU / {{ instanceCreate.ram }}GB RAM
     / {{ instanceCreate.volumeSize }}GB {{ instanceCreate.vmType | uppercase }}
   </div>
   <div *nzModalFooter>

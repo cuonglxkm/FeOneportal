@@ -1,17 +1,14 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { KafkaService } from '../../../services/kafka.service';
-import { filter, finalize, map } from 'rxjs/operators';
-import { ClipboardService } from 'ngx-clipboard';
-import { InfoConnection } from '../../../core/models/info-connection.model';
-import { BrokerConfig } from '../../../core/models/broker-config.model';
-import { AppConstants } from '../../../core/constants/app-constant';
-import { NzNotificationService } from "ng-zorro-antd/notification";
-import { STColumn } from '@delon/abc/st';
-import { KafkaTopic } from '../../../core/models/kafka-topic.model';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzDescriptionsSize } from 'ng-zorro-antd/descriptions';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoadingService } from '@delon/abc/loading';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzNotificationService } from "ng-zorro-antd/notification";
+import { throwError } from 'rxjs';
+import { catchError, filter, finalize, map } from 'rxjs/operators';
+import { KafkaTopic } from '../../../core/models/kafka-topic.model';
+import { TopicService } from '../../../services/kafka-topic.service';
+import { camelizeKeys } from 'humps';
 @Component({
   selector: 'one-portal-topic-mngt',
   templateUrl: './topic-mngt.component.html',
@@ -22,6 +19,7 @@ export class TopicMngtComponent implements OnInit {
   @Input() serviceOrderCode: string;
 
   listTopic: KafkaTopic[] = [];
+  listTopicTestProducer: KafkaTopic[] = [];
   index: number = 1;
   size: number = 10;
   total: number;
@@ -30,9 +28,12 @@ export class TopicMngtComponent implements OnInit {
   selectedTopic: KafkaTopic;
   topicDetail: string;
 
+  deleteInfor: KafkaTopic;
+  deleteType: string = '';
+
   visibleConfigInfo: boolean;
-  isSubmitProduce: boolean = false;
   isVisible: boolean = false;
+  isDelVisible: boolean = false;
   loading = false;
 
   configInfo: object = new Object();
@@ -48,9 +49,10 @@ export class TopicMngtComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private kafkaService: KafkaService,
+    private topicService: TopicService,
     private modal: NzModalService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private loadingSrv: LoadingService,
   ) { }
 
   ngOnInit(): void {
@@ -73,9 +75,20 @@ export class TopicMngtComponent implements OnInit {
     this.control = this.listNum;
   }
 
+  getListTopic() {
+    this.topicService.getListTopic(1, 10000, "", this.serviceOrderCode)
+      .pipe(
+        filter((r) => r && r.code == 200),
+        map((r) => r.data)
+      )
+      .subscribe((data) => {
+        this.listTopicTestProducer = camelizeKeys(data?.results) as KafkaTopic[];
+      });
+  }
+
   getList() {
     this.loading = true
-    this.kafkaService.getListTopic(this.index, this.size, this.search, this.serviceOrderCode)
+    this.topicService.getListTopic(this.index, this.size, this.search, this.serviceOrderCode)
       .pipe(
         filter((r) => r && r.code == 200),
         map((r) => r.data)
@@ -83,11 +96,7 @@ export class TopicMngtComponent implements OnInit {
       .subscribe((data) => {
         this.total = data?.totals;
         this.size = data?.size;
-        let temp: KafkaTopic[] = [];
-        data.data.forEach(element => {
-          temp.push(new KafkaTopic(element));
-        });
-        this.listTopic = temp;
+        this.listTopic = camelizeKeys(data?.results) as KafkaTopic[];
         this.loading = false
       });
   }
@@ -134,6 +143,7 @@ export class TopicMngtComponent implements OnInit {
 
   testProduce() {
     this.isVisible = true
+    this.getListTopic();
   }
 
   submitModalForm(): void {
@@ -150,17 +160,26 @@ export class TopicMngtComponent implements OnInit {
     this.produceForm.get('configs').setValue('');
     this.produceForm.get('groupId').setValue('');
     this.produceForm.get('serviceOrderCode').setValue(this.serviceOrderCode);
+    this.getList();
   }
 
   handleSubmitTestProduce() {
     validateFormBeforeSubmit(this.produceForm);
 
     if (this.produceForm.valid) {
-      let data = this.produceForm.value;
-      this.isSubmitProduce = true;
 
-      this.kafkaService.testProduce(data)
-        .pipe(finalize(() => this.isSubmitProduce = false))
+      this.loadingSrv.open({ type: "spin", text: "Loading..." });
+
+      let data = this.produceForm.value;
+      this.topicService.testProduce(data)
+        .pipe(finalize(() => {
+          this.loadingSrv.close();
+          this.loadingSrv.open({ type: "spin", text: "Đang đồng bộ message..." });
+          setTimeout(() => {
+            this.handleSyncTopic(this.serviceOrderCode);
+          }, 6000);
+          
+        }))
         .subscribe((r: any) => {
           if (r && r.code == 200) {
             this.notification.success(
@@ -175,13 +194,12 @@ export class TopicMngtComponent implements OnInit {
                 }
               },
             );
-            this.getList()
             this.control = this.listNum;
             this.handleCloseProduceModal();
           } else {
             this.notification.error(
-              data.error_msg,
-              data.msg,
+              "Test producer thất bại",
+              r.msg,
               {
                 nzPlacement: 'bottomRight',
                 nzStyle: {
@@ -196,47 +214,69 @@ export class TopicMngtComponent implements OnInit {
     }
   }
 
-  deleteMessages(data: KafkaTopic) {
-    this.modal.confirm({
-      nzTitle: 'Bạn chắc chắn muốn xoá tất cả message của topic ' + data.topicName + ' không?',
-      nzOkText: 'Đồng ý',
-      nzOkType: 'primary',
-      nzOkDanger: true,
-      nzOnOk: () => {
-        this.kafkaService.deleteMessages(data.topicName, this.serviceOrderCode)
-          .subscribe(
-            (data: any) => {
-              if (data && data.code == 200) {
-                this.notification.success(
-                  'Thông báo',
-                  data.msg,
-                  {
-                    nzPlacement: 'bottomRight',
-                    nzStyle: {
-                      backgroundColor: '#dff6dd',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    }
-                  },
-                );
-                this.getList();
-              }
-            }
-          );
-      },
-      nzCancelText: 'Huỷ bỏ',
-      nzOnCancel: () => console.log('Huỷ')
-    });
+  showConfirm(info: KafkaTopic,type:string){
+    this.isDelVisible = true;
+    this.deleteInfor = info;
+    this.deleteType = type;
   }
 
-  showDeleteConfirm(data: KafkaTopic) {
-    this.modal.confirm({
-      nzTitle: 'Bạn chắc chắn muốn xoá Topic ' + data.topicName + ' ?',
-      nzOkText: 'Đồng ý',
-      nzOkType: 'primary',
-      nzOkDanger: true,
-      nzOnOk: () => {
-        this.kafkaService.deleteTopicKafka(data.topicName, this.serviceOrderCode)
+  handleCloseDelete(){
+    this.isDelVisible = false;
+  }
+
+  handleDeleteMessages(data: KafkaTopic) {
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+        this.topicService.deleteMessages(data.topicName, this.serviceOrderCode)
+        .pipe(finalize(() => {
+          this.loadingSrv.close();
+          this.loadingSrv.open({ type: "spin", text: "Đang đồng bộ message..." });
+
+          setTimeout(() => {
+            this.handleSyncTopic(this.serviceOrderCode);
+          }, 6000);
+        }))
+        .subscribe(
+          (data: any) => {
+            if (data && data.code == 200) {
+              this.notification.success(
+                'Thông báo',
+                data.msg,
+                {
+                  nzPlacement: 'bottomRight',
+                  nzStyle: {
+                    backgroundColor: '#dff6dd',
+                    borderRadius: '4px',
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                  }
+                },
+              );
+            } else {
+              this.notification.error(
+                'Thông báo',
+                data.msg,
+                {
+                  nzPlacement: 'bottomRight',
+                  nzStyle: {
+                    backgroundColor: '#fed9cc',
+                    borderRadius: '4px',
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                  }
+                },
+              );
+            }
+            this.isDelVisible = false;
+          }
+        );
+    
+  }
+
+  handleDeleteTopic(data: KafkaTopic) {
+    
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+        this.topicService.deleteTopicKafka(data.topicName, this.serviceOrderCode)
+        .pipe(finalize(() => {
+          this.loadingSrv.close();
+        }))
           .subscribe(
             (data: any) => {
               if (data && data.code == 200) {
@@ -252,15 +292,66 @@ export class TopicMngtComponent implements OnInit {
                     }
                   },
                 );
-                this.getList();
+              } else {
+                this.notification.error(
+                  "Xoá Topic thất bại",
+                  data.msg,
+                  {
+                    nzPlacement: 'bottomRight',
+                    nzStyle: {
+                      backgroundColor: '#fed9cc',
+                      borderRadius: '4px',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    }
+                  },
+                );
               }
+              this.getList();
+              this.isDelVisible = false;
             }
           );
-      },
-      nzCancelText: 'Huỷ',
-      nzOnCancel: () => console.log('Huỷ')
-    });
   }
+
+  handleSyncTopic(serviceOrderCode:string){
+
+    this.topicService.syncTopic(serviceOrderCode)
+    .pipe(finalize(() => {
+      this.loadingSrv.close();
+    }))
+      .subscribe(
+        (data: any) => {
+          if (data && data.code == 200) {
+            this.notification.success(
+              'Thông báo',
+              "Đồng bộ message thành công",
+              {
+                nzPlacement: 'bottomRight',
+                nzStyle: {
+                  backgroundColor: '#dff6dd',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                }
+              },
+            );
+          } else {
+            this.notification.error(
+              "Đồng bộ message thất bại",
+              data.msg,
+              {
+                nzPlacement: 'bottomRight',
+                nzStyle: {
+                  backgroundColor: '#fed9cc',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                }
+              },
+            );
+          }
+          this.getList();
+        }
+      );
+  }
+
 }
 export function validateFormBeforeSubmit(formGroup: FormGroup) {
   const noWhitespaceInHeadAndTailPattern = /^[^\s]+(\s+[^\s]+)*$/;

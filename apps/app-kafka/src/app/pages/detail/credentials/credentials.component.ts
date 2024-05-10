@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { filter, map } from 'rxjs/operators';
-import { KafkaCredentialsService } from '../../../services/kafka-credentials.service';
-import { KafkaCredential } from '../../../core/models/kafka-credential.model';
+import { LoadingService } from '@delon/abc/loading';
 import { camelizeKeys } from 'humps';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { KafkaService } from '../../../services/kafka.service';
+import { filter, finalize, map } from 'rxjs/operators';
+import { KafkaCredential } from '../../../core/models/kafka-credential.model';
+import { KafkaCredentialsService } from '../../../services/kafka-credentials.service';
 
 @Component({
   selector: 'one-portal-credentials',
@@ -36,12 +35,12 @@ export class CredentialsComponent implements OnInit {
   titleOtp: string;
   keyCheckOtp: string;
   inputOtpCode: string;
+  isVisibleDelete = false;
 
   constructor(
     private kafkaCredentialService: KafkaCredentialsService,
-    private kafkaService: KafkaService,
-    private modal: NzModalService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private loadingSrv: LoadingService
   ) {
     this.tabStatus = this.showListCredentials;
     this.isVisibleOtpModal = false;
@@ -63,26 +62,35 @@ export class CredentialsComponent implements OnInit {
   }
 
   deleteUser(data: KafkaCredential) {
-    this.modal.confirm({
-      nzTitle: 'Xoá tài khoản',
-      nzContent:
-        'Bạn chắc chắn muốn xoá tài khoản có username ' + data.username + '?',
-      nzOkText: 'Xác nhận xoá',
-      nzOkType: 'primary',
-      nzOkDanger: true,
-      nzOnOk: () => {
-        this.kafkaCredentialService
-          .deleteUser(this.serviceOrderCode, data.username)
-          .pipe(filter((r) => r && r.code == 200))
-          .subscribe(() => {
-            this.reload();
-            this.getCredentials();
-            this.notification.success('Thông báo', 'Xoá tài khoản thành công', {
-              nzDuration: 2000,
-            });
+    this.isVisibleDelete = true;
+    this.currentUserName = data.username;
+  }
+
+  handleCancelDelete() {
+    this.isVisibleDelete = false;
+  }
+
+  handleOkDelete() {
+    this.isVisibleDelete = false;
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.kafkaCredentialService
+      .deleteUser(this.serviceOrderCode, this.currentUserName)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe((data) => {
+        if (data && data.code == 200) {
+          this.reload();
+          this.getCredentials();
+          this.notification.success('Thông báo', data.msg, {
+            nzDuration: 2000,
           });
-      },
-    });
+        } else {
+          this.notification.error('Thất bại', data.msg);
+        }
+      });
   }
 
   changePage(event) {
@@ -164,6 +172,15 @@ export class CredentialsComponent implements OnInit {
   }
 
   sendOtpChangePassword(serviceOrderCode: string, username: string){
+    
+    //test
+    this.isVisibleOtpModal = true;
+    this.currentUserName = username;
+    this.titleOtp = 'Mã xác thực OTP đã được gửi đến email: nhiennd@vnpt.vn';
+    this.keyCheckOtp = '123456';
+    this.inputOtpCode = '';
+
+    /* Tạm ẩn luồng gửi mail 
     this.kafkaService.sendOtpForgotPassword(this.serviceOrderCode, username).subscribe(r => {
       if(r && r.code === 200){
         this.isVisibleOtpModal = true;
@@ -173,6 +190,7 @@ export class CredentialsComponent implements OnInit {
         this.inputOtpCode = '';
       }
     })
+    */
   }
 
   verifyOtp(){
@@ -182,6 +200,18 @@ export class CredentialsComponent implements OnInit {
       });
       return;
     }
+
+    //test
+    if (this.inputOtpCode == '123456') {
+      this.closeOtpModal();
+      this.changeTabStatus(this.showForgotPassword);
+    } else {
+      this.notification.error('Thông báo', 'Mã xác thực không đúng, xin vui lòng kiểm tra lại!', {
+        nzDuration: 2000,
+      });
+    }
+
+    /* Tạm ẩn luồng xác thực OTP
     this.kafkaService
       .verifyOtpForgotPassword(
         this.keyCheckOtp,
@@ -194,5 +224,6 @@ export class CredentialsComponent implements OnInit {
           this.changeTabStatus(this.showForgotPassword);
         }
       });
+    */
   }
 }

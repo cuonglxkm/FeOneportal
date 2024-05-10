@@ -15,7 +15,6 @@ import {DatePipe} from "@angular/common";
     styleUrls: ['./edit-schedule-backup-vm.component.less'],
 })
 export class EditScheduleBackupVmComponent implements OnInit {
-
     region = JSON.parse(localStorage.getItem('region')).regionId;
     project = JSON.parse(localStorage.getItem('projectId'));
     modeType: any = '4'
@@ -87,12 +86,12 @@ export class EditScheduleBackupVmComponent implements OnInit {
     }
 
     regionChanged(region: RegionModel) {
-        this.region = region.regionId
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
 
     }
 
     projectChanged(project: ProjectModel) {
-        this.project = project?.id
+      this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
     }
 
     validateSpecialCharacters(control) {

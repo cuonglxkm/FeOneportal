@@ -386,7 +386,6 @@ nav h1 {
 }
 
 .customSpan {
-  margin-top: 2%;
   margin-left: 2%;
 }
 
@@ -419,6 +418,16 @@ table.custom-table {
     background-color: #fff;
     border: none;
   }
+}
+
+::ng-deep .custom-divider {
+  .ant-divider-horizontal {
+    display: flex;
+    clear: both;
+    width: 100%;
+    min-width: 100%;
+    margin: 10px 0;
+}
 }
 
 .page-header-custom {

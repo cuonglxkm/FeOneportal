@@ -1,9 +1,34 @@
 .config-label {
-  width: 16%;
+  width: 25%;
 }
 
-#brokers-config .config-label {
-  width: 20%;
+@media only screen and (max-width: 1600px) {
+  .config-label {
+    width: 35%;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .config-label {
+    width: 45%;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .config-label {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .config-label {
+    width: 70%;
+  }
+}
+
+.btn-copy {
+  padding: 4px;
+  border-color: #E2E2E9;
 }
 
 .custom-legend {
@@ -30,10 +55,6 @@
   font-weight: bold;
 }
 
-.ant-table-tbody > tr > td {
-  border: none;
-}
-
 .table-info {
   padding: 20px;
 }
@@ -44,7 +65,7 @@
   margin-right: 25px;
 }
 
-#endpoint-config nz-table tr:nth-child(even),
+/* #endpoint-config nz-table tr:nth-child(even),
 #brokers-config nz-table tr:nth-child(even) {
   background-color: #e2e2e9;
-}
+} */

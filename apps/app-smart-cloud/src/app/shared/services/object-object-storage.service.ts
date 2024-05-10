@@ -10,11 +10,11 @@ import {ObjectObjectStorageModel} from "../models/object-storage.model";
 @Injectable({
   providedIn: 'root'
 })
-export class ObjectObjectStorageService extends BaseService{
+export class ObjectObjectStorageService extends BaseService {
 
   httpOptions = {
     headers: new HttpHeaders({
-      'Content-Type': 'application/json' ,
+      'Content-Type': 'application/json',
     })
   };
 
@@ -24,23 +24,78 @@ export class ObjectObjectStorageService extends BaseService{
     super();
   }
 
-  getData(bucketName: any, folderName: any,filterQuery: any, customerId: any, regionId: any, pageSize: any, currentPage: any): Observable<any> {
+  getData(bucketName: any, folderName: any, filterQuery: any, customerId: any, regionId: any, pageSize: any, currentPage: any): Observable<any> {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ListObject?bucketName=' + bucketName +
-      '&folderName=' + folderName+ '&customerId=' + customerId+
-      '&regionId=' + regionId+ '&filterQuery=' + filterQuery+
-      '&pageSize=' + pageSize+ '&currentPage=' + currentPage);
+      '&folderName=' + folderName + '&customerId=' + customerId +
+      '&regionId=' + regionId + '&filterQuery=' + filterQuery +
+      '&pageSize=' + pageSize + '&currentPage=' + currentPage);
   }
+
   getDataS3Key(search: any, pageSize: any, currentPage: any): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/keys/getpaging?pageSize=' + pageSize +'&currentPage=' + currentPage);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/keys/getpaging?pageSize=' + pageSize + '&currentPage=' + currentPage);
   }
 
   deleteS3key(data: any) {
     let httpOptionOk = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json' ,
+        'Content-Type': 'application/json',
       }),
       body: JSON.stringify(data)
     };
     return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/deleteS3Key', httpOptionOk);
+  }
+
+  createFolder(data: any) {
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/createFolder', data, this.httpOptions);
+  }
+
+  GetBucketTreeData(data: any): Observable<any> {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GetBucketTreeData', data, this.httpOptions);
+  }
+
+  copyProject(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CopyObject', data, this.httpOptions);
+  }
+
+  downloadFile(bucketName: string, key: string, versionId: string) {
+    let url = this.baseUrl + this.ENDPOINT.provisions + '/object-storage/download?bucketName=' + bucketName + '&key=' + key;
+    if (versionId != '') {
+      url += '&versionId=' + versionId
+    }
+    return this.http.get(url, {
+      // reportProgress: true,
+      observe: 'events',
+      responseType: 'blob'
+    });
+  }
+
+  blob(url: string, filename?: string): Observable<Blob> {
+    return this.http.get(url, {
+      responseType: 'blob'
+    })
+  }
+
+  deleteObject(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/DeleteMultipleObject', data, this.httpOptions);
+  }
+
+  deleteObjectSimple(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/DeleteObject', data, this.httpOptions);
+  }
+
+  getLinkShare(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ShareObject', data, this.httpOptions);
+  }
+
+  editPermission(bucketName: string, keyName: string, role: string) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ObjectAcl?bucketName=' + bucketName + '&keyName=' + keyName + '&role=' + role, this.httpOptions);
+  }
+
+  loadDataVersion(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GetObjectVersions', data, this.httpOptions);
+  }
+
+  restoreObject(data: { bucketName: string; versionId: string; key: string }) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/RestoreObjectVersion', data, this.httpOptions);
   }
 }

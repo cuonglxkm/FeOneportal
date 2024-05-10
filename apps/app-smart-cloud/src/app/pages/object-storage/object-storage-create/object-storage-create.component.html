@@ -32,6 +32,7 @@
               [nzMax]="1000"
               [nzStep]="1"
               [(ngModel)]="objectStorageCreate.quota"
+              (ngModelChange)="changeTotalAmount($event)"
               [ngModelOptions]="{ standalone: true }"
               nzSize="large"
             ></nz-input-number>
@@ -106,7 +107,7 @@
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmount | number }} VNĐ
+              {{ totalAmount | number }} VND
             </span>
           </nz-col>
         </nz-row>
@@ -126,7 +127,7 @@
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #ea3829" nzAlign="right">
               {{ totalincludesVAT | number }}
-              VNĐ
+              VND
             </span>
           </nz-col>
         </nz-row>

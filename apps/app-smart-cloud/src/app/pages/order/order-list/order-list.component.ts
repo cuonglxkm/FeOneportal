@@ -9,6 +9,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { PopupAddVolumeComponent } from '../../volume/component/popup-volume/popup-add-volume.component';
 import { OrderService } from '../../../shared/services/order.service';
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-list-order',
@@ -25,11 +26,11 @@ export class OrderListComponent implements OnInit {
 
   status = [
     { label: 'Tất cả', value: null },
-    { label: 'Tạo mới ', value: 1 },
+    { label: 'Mới tạo ', value: 1 },
     { label: 'Đã thanh toán', value: 2 },
-    { label: 'Đang khởi tạo dịch vụ ', value: 3 },
-    { label: 'Hoàn thành ', value: 4 },
-    { label: 'Đã hủy', value: 5 }
+    { label: 'Đang cài đặt', value: 3 },
+    { label: 'Đã cài đặt thành công', value: 4 },
+    { label: 'Gặp sự cố', value: 5 }
   ];
 
   orderCode: string;
@@ -44,13 +45,19 @@ export class OrderListComponent implements OnInit {
   isLoadingEntities: boolean;
   customerID: number;
 
+  value?: string;
   actionSelected: number;
-
+  isVisibleError: boolean = false
   onQueryParamsChange(params: NzTableQueryParams) {
     const { pageSize, pageIndex } = params;
     this.pageSize = pageSize;
     this.currentPage = pageIndex;
     this.searchSnapshotScheduleList();
+  }
+
+  refreshParams() {
+    this.pageSize = 5;
+    this.currentPage = 1;
   }
 
   searchSnapshotScheduleList() {
@@ -99,6 +106,7 @@ export class OrderListComponent implements OnInit {
 
   onChange(value: number) {
     this.searchStatus = value;
+    this.refreshParams()
     this.searchSnapshotScheduleList();
   }
 
@@ -107,6 +115,7 @@ export class OrderListComponent implements OnInit {
     // console.log("To Date: "+value[1]);
     this.fromDate = value[0];
     this.toDate = value[1];
+    this.refreshParams()
     this.searchSnapshotScheduleList();
   }
 
@@ -116,18 +125,33 @@ export class OrderListComponent implements OnInit {
   }
 
   onInputChange(value: string) {
-    this.searchName = value;
+    this.orderCode = value.toUpperCase();
     console.log('input text: ', this.searchName);
+    this.refreshParams()
+    this.doGetSnapSchedules(this.pageSize, this.currentPage, this.orderCode,
+      null, null, null, null, null, null, this.fromDate, this.toDate, this.searchStatus);
   }
 
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
   }
 
+  handleNavigateToContact(){
+
+  }
+
+  handleCancel(){
+    this.isVisibleError = false
+  }
+
+
+  handleOpenError(){
+    this.isVisibleError = true
+  }
+
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    this.searchSnapshotScheduleList();
   }
 
   projectChanged(project: ProjectModel) {

@@ -14,15 +14,12 @@ import { RegionModel } from 'src/app/shared/models/region.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectService } from 'src/app/shared/services/project.service';
 import {
   RouterCreate,
   RouterModel,
   RouterUpdate,
 } from 'src/app/shared/models/router.model';
 import { RouterService } from 'src/app/shared/services/router.service';
-import { IPSubnetModel } from '../instances/instances.model';
-import { InstancesService } from '../instances/instances.service';
 import {
   FormSearchNetwork,
   NetWorkModel,
@@ -74,8 +71,6 @@ export class RouterListComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private projectService: ProjectService,
-    private instancesService: InstancesService,
     private vlanService: VlanService
   ) {}
 
@@ -159,7 +154,7 @@ export class RouterListComponent implements OnInit {
             this.activeCreate = true;
             this.notification.error(
               e.statusText,
-              'Lấy danh sách máy ảo không thành công'
+              'Lấy danh sách Router không thành công'
             );
           },
         });
@@ -201,6 +196,7 @@ export class RouterListComponent implements OnInit {
   isVisibleCreate = false;
   modalCreate() {
     this.isVisibleCreate = true;
+    this.isTrigger = false;
   }
 
   handleCancelCreate() {
@@ -212,11 +208,11 @@ export class RouterListComponent implements OnInit {
     this.routerCreate.adminState = this.isTrigger;
     this.routerCreate.customerId = this.tokenService.get()?.userId;
     this.routerCreate.regionId = this.region;
-    this.routerCreate.projectId = this.projectId.toString();
     this.routerCreate.vpcId = this.projectId;
     this.dataService.createRouter(this.routerCreate).subscribe({
       next: (data) => {
         this.notification.success('', 'Tạo mới Router thành công');
+        this.getListNetwork();
       },
       error: (e) => {
         this.notification.error(
@@ -231,6 +227,7 @@ export class RouterListComponent implements OnInit {
   isVisibleEdit = false;
   modalEdit(dataRouter: RouterModel) {
     this.isVisibleEdit = true;
+    this.isTrigger = dataRouter.status.toUpperCase() == 'ACTIVE' ? true : false;
     this.cloudId = dataRouter.cloudId;
     this.routerUpdate.id = dataRouter.cloudId;
     this.routerUpdate.adminState = dataRouter.adminState;

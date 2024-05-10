@@ -13,6 +13,9 @@
             <nz-breadcrumb-item *ngIf="control==detailNum">
                 Danh sách message Topic: {{topicDetail}}
             </nz-breadcrumb-item>
+            <nz-breadcrumb-item *ngIf="control==editNum">
+                Cập nhật Topic: {{selectedTopic.topicName}}
+            </nz-breadcrumb-item>
         </nz-breadcrumb>
     </div>
     <div class="inner-content">
@@ -20,118 +23,67 @@
             <div class="filter" style="display: flex; align-items: center; margin-bottom: 20px;">
                 <div >
                     <nz-input-group nz-col [nzPrefix]="prefixTemplateUser" class="search">
-                        <input type="text" nz-input placeholder="Tìm kiếm" [(ngModel)]="search" (keyup.enter)="handleSearch()">
+                        <input type="text" maxlength="255" nz-input placeholder="Tìm kiếm" [(ngModel)]="search" (keyup.enter)="handleSearch()">
                     </nz-input-group>
-                    <ng-template #prefixTemplateUser><span nz-icon nzType="search"
-                            nzTheme="outline"></span></ng-template>
+                    <ng-template #prefixTemplateUser>
+                         <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                        </ng-template>
                 </div>
-                <div>
-                    <button nz-button nzType="primary" class="btn-search" (click)="openCreateForm()">
-                        <span nz-icon nzType="plus" style="color: #fff;" nzTheme="outline"></span>
+                <div class="nav-btn">
+                    <button style="  display: flex;justify-content: center;align-items: center;" nz-button nzType="primary" (click)="openCreateForm()">
+                        <span class="create-icon" nz-icon nzType="plus" nzTheme="outline"></span>
                         Tạo mới
                     </button>
-
-                    <button nz-button btn-default nzType="primary" (click)="testProduce()" nzDanger>Test Producer</button>
-                    <nz-modal class="fixBtn" [(nzVisible)]="isVisible" nzTitle="Test Producer" (nzOnCancel)="handleCloseProduceModal()">
-                        <ng-container *nzModalContent>
-                            <form nz-form [formGroup]="produceForm" (ngSubmit)="submitModalForm()">
-                                <nz-form-item>
-                                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired vFor="Topic">Topic</nz-form-label>
-                                    <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Hãy chọn Topic">
-                                        <nz-select [(ngModel)]="singleValue" formControlName="topicName" vPlaceHolder="Chọn một Topic">
-                                            <nz-option *ngFor="let item of listTopic" [nzLabel]="item.topicName" [nzValue]="item.topicName"></nz-option>
-                                        </nz-select>
-                                    </nz-form-control>
-                                </nz-form-item>
-                                <nz-form-item>
-                                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Số lượng</nz-form-label>
-                                    <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Số lượng message là số nguyên dương và trong khoảng 1-100">
-                                        <input type="number" placeholder="Nhập số lượng" nz-input formControlName="numberMessage" id="amount" />
-                                    </nz-form-control>
-                                </nz-form-item>
-
-                                <nz-form-item>
-                                    <nz-form-label [nzSm]="6" [nzXs]="24">Key</nz-form-label>
-                                    <nz-form-control [nzSm]="18" [nzXs]="24">
-                                        <input type="text" nz-input formControlName="key" placeholder="Nhập key" />
-                                    </nz-form-control>
-                                </nz-form-item>
-
-                                <nz-form-item>
-                                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Value</nz-form-label>
-                                    <nz-form-control [nzSm]="18" [nzXs]="24"
-                                        nzErrorTip="Value là bắt buộc và không quá 500 ký tự">
-                                        <textarea rows="6" nz-input formControlName="value" placeholder="Nhập value"
-                                            maxlength="500"></textarea>
-                                    </nz-form-control>
-                                </nz-form-item>
-                            </form>
-                        </ng-container>
-
-                        <div *nzModalFooter>
-                            <button nz-button nzType="primary" nzDanger (click)="handleCloseProduceModal()">Hủy bỏ</button>
-                            <button nz-button nzType="primary" (click)="handleSubmitTestProduce()"
-                                [disabled]="produceForm.invalid" [nzLoading]="isSubmitProduce">Test Producer</button>
-                        </div>
-                    </nz-modal>
+                    <button  nz-button nzType="primary" (click)="testProduce()" nzDanger>Test Producer</button>
                 </div>
             </div>
-            <nz-table [nzData]="listTopic" [nzLoading]="loading" #basicTable nzShowPagination nzShowSizeChanger class="tbl-acl" [nzTotal]="total" 
+            <nz-table id="topic" [nzScroll]="{x:'1100px'}" [nzData]="listTopic" [nzLoading]="loading" #basicTable nzShowPagination nzShowSizeChanger class="tbl-acl" [nzTotal]="total" 
             [nzFrontPagination]="false" [nzPageIndex]="index" [nzPageSize]="size" (nzPageIndexChange)="changePage($event)" (nzPageSizeChange)="changePageSize($event)">
-                <thead class="table-info">
+                <thead >
                     <tr>
-                        <th [nzAlign]="'center'" nzWidth="4%">STT</th>
+                        <th [nzAlign]="'center'" nzWidth="6%">STT</th>
                         <th>Tên Topic</th>
-                        <th nzWidth="8%">Partitions</th>
-                        <th nzWidth="8%">Replicas</th>
-                        <th nzWidth="20%">Tổng số lượng message</th>
-                        <th nzWidth="8%">Size</th>
-                        <th nzWidth="15%">Out of sync replicas</th>
-                        <th nzWidth="8%" [nzAlign]="'center'">Thao tác</th>
+                        <th nzWidth="9%" [nzAlign]="'center'">Partitions</th>
+                        <th nzWidth="8%" [nzAlign]="'center'">Replicas</th>
+                        <th nzWidth="20%" [nzAlign]="'center'">Tổng số lượng message</th>
+                        <th nzWidth="8%" [nzAlign]="'center'">Size</th>
+                        <th nzWidth="16%" [nzAlign]="'center'">Out of sync replicas</th>
+                        <th nzWidth="15%" [nzAlign]="'center'">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let data of basicTable.data; let i = index">
                         <td [nzAlign]="'center'">{{ i+1 }}</td>
                         <td><a (click)="detailTopic(data.topicName)">{{ data.topicName }}</a></td>
-                        <td>{{ data.partitions }}</td>
-                        <td>{{ data.replicas }}</td>
-                        <td>{{ data.sumMessage }}</td>
-                        <td>{{ data.sizeTopic }}</td>
-                        <td>{{ data.outOfSync != null ? data.outOfSync : 0 }}</td>
-                        <td [nzAlign]="'center'">
-                            <a nz-dropdown [nzDropdownMenu]="menu">
-                                <span nz-icon nzType="more" nzTheme="outline"></span>
-                            </a>
-                            <nz-dropdown-menu #menu="nzDropdownMenu">
-                                <ul nz-menu vSelectable>
-                                    <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="showTopicInfo(data)">
-                                            <span nz-icon nzType="info-circle" nzTheme="outline"></span> Thông tin
-                                        </button>
-                                    </li>
-                                    <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="detailTopic(data.topicName)">
-                                            <span nz-icon nzType="eye" nzTheme="outline"></span> Chi tiết
-                                        </button>
-                                    </li>
-                                    <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="deleteMessages(data)">
-                                            <span nz-icon nzType="delete-row" nzTheme="outline"></span> Xóa message
-                                        </button>
-                                    </li>
-                                    <li nz-menu-item>
-                                        <button nz-button nzType="text"  (click)="updateTopicForm(data)">
-                                            <span nz-icon nzType="edit" nzTheme="outline"></span> Cập nhật
-                                        </button>
-                                    </li>
-                                    <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="showDeleteConfirm(data)">
-                                            <span nz-icon nzType="delete" nzTheme="outline"></span> Xoá
-                                        </button>
-                                    </li>
-                                </ul>
-                            </nz-dropdown-menu>
+                        <td [nzAlign]="'center'">{{ data.partitions }}</td>
+                        <td [nzAlign]="'center'">{{ data.replicas }}</td>
+                        <td [nzAlign]="'center'">{{ data.sumMessage }}</td>
+                        <td [nzAlign]="'center'">{{ data.sizeTopic }}</td>
+                        <td [nzAlign]="'center'">{{ data.outOfSync != null ? data.outOfSync : 0 }}</td>
+                        <td [nzAlign]="'center'" style="display: flex;flex-wrap: nowrap;">
+                            
+                            <span class="mg-right" 
+                            nz-icon  nz-tooltip="Thông tin chi tiết"
+                            (click)="showTopicInfo(data)" >
+                            <img class="img" src="assets/imgs/info.svg" alt="" />
+                            </span> 
+
+                            <span class="mg-right-del" nz-tooltip="Xoá messages"
+                            (click)="showConfirm(data,'message')" nz-icon>
+                                <img class="dell-icon" src="assets/imgs/delete-msg-topic.svg" alt="" />
+                            </span> 
+
+                            <span class="mg-right"
+                           (click)="updateTopicForm(data)"
+                            [nz-tooltip]="'Cập nhật'" nz-icon >
+                            <img class="img" src="assets/imgs/edit-2.svg" alt="" />
+                            </span> 
+
+                            <span nz-popover (click)="showConfirm(data,'Topic')"
+                            [nz-tooltip]="'Xoá'" nz-icon >
+                            <img class="img" src="assets/imgs/trash1.svg" alt="" />
+                            </span> 
+
                         </td>
                     </tr>
                 </tbody>
@@ -145,11 +97,93 @@
         </div>
     </div>
 </nz-content>
-<nz-drawer [nzClosable]="true" [nzWidth]="580" (nzOnClose)="closeTopicInfo()" [nzVisible]="visibleConfigInfo" vPlacement="right">
-    <ng-container *nzDrawerContent>
-        <nz-descriptions nzTitle="Thông tin cấu hình" nzBordered>
-            <nz-descriptions-item [nzSpan]="3" *ngFor="let item of configInfo | keyvalue"
-                [nzTitle]="item.key">{{item.value}}</nz-descriptions-item>
-        </nz-descriptions>
+<nz-modal [nzClosable]="true" nzFooter=" " [nzTitle]=""  (nzOnCancel)="closeTopicInfo()" [nzWidth]="580" [(nzVisible)]="visibleConfigInfo" vPlacement="right">
+    
+    <ng-container *nzModalContent>
+        <h3><b>Thông tin Topic</b></h3>
+        <nz-table #basicTable nzShowPagination="false" [nzData]="configInfo | keyvalue" [nzPageSize]="50" [nzScroll]>
+            <thead>
+              <tr >
+                <th style="background-color: white;">Key</th>
+                <th style="background-color: white;">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of basicTable.data">
+                <td>{{ data.key }}</td>
+                <td>{{ data.value=="" || data.value==null?"None":data.value}}</td>
+              </tr>
+            </tbody>
+          </nz-table>
     </ng-container>
-</nz-drawer>
+</nz-modal>
+<nz-modal class="fixBtn" [(nzVisible)]="isDelVisible" [nzTitle]="'Xoá '+ deleteType" (nzOnCancel)="handleCloseDelete()">
+    <ng-container *nzModalContent >
+        <ng-container *ngIf="deleteType=='Topic'; else contentMessage" >
+           <h3 class="question"> Bạn có chắc chắn muốn xóa Topic <b>{{ deleteInfor.topicName }}</b> này không ?</h3>
+        </ng-container>
+        <ng-template #contentMessage>
+            <h3 class="question"> Bạn có chắc chắn muốn xóa tất cả các message của Topic <b>{{ deleteInfor.topicName }}</b> không ? </h3>
+        </ng-template>
+    </ng-container>
+    <div *nzModalFooter>
+        <button nz-button nzType="primary" nzGhost class="btn-accept" (click)="handleCloseDelete()"><img
+            style="padding-right: 10px;margin-top: -4px"
+            src="assets/imgs/cancel.svg"
+            alt=""/>Hủy</button>
+        <button nz-button nzType="primary" class="btn-accept" (click)="deleteType=='Topic'?handleDeleteTopic(deleteInfor):handleDeleteMessages(deleteInfor)" >
+            <img
+                    style="padding-right: 10px; margin-top: -4px"
+                    src="assets/imgs/confirm.svg"
+                    alt=""/>Xác nhận</button>
+    </div>
+</nz-modal>
+<nz-modal class="fixBtn" [(nzVisible)]="isVisible" nzTitle="Test Producer" (nzOnCancel)="handleCloseProduceModal()">
+    <ng-container *nzModalContent>
+        <form nz-form [formGroup]="produceForm" [nzLayout]="'vertical'" (ngSubmit)="submitModalForm()">
+            <nz-form-item>
+                <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired vFor="Topic">Topic</nz-form-label>
+                <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Hãy chọn Topic">
+                    <nz-select nzSize="large" nzShowSearch [(ngModel)]="singleValue" formControlName="topicName" vPlaceHolder="Chọn một Topic">
+                        <nz-option *ngFor="let item of listTopicTestProducer" [nzLabel]="item.topicName" [nzValue]="item.topicName"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired>Số lượng message</nz-form-label>
+                <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Số lượng message là số nguyên dương và trong khoảng 1-100">
+                    <input nzSize="large" type="number" placeholder="Nhập số lượng" nz-input formControlName="numberMessage" id="amount" />
+                </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+                <nz-form-label [nzSm]="8" [nzXs]="24">Key</nz-form-label>
+                <nz-form-control [nzSm]="24" [nzXs]="24">
+                    <input nzSize="large" type="text" nz-input formControlName="key" placeholder="Nhập key" />
+                </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+                <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired>Value</nz-form-label>
+                <nz-form-control [nzSm]="24" [nzXs]="24"
+                    nzErrorTip="Value là bắt buộc và không quá 500 ký tự">
+                    <textarea nzSize="large" rows="6" nz-input formControlName="value" placeholder="Nhập value"
+                        maxlength="500"></textarea>
+                </nz-form-control>
+            </nz-form-item>
+            
+        </form>
+    </ng-container>
+
+    <div *nzModalFooter>
+        <button nz-button nzType="primary" nzGhost class="btn-accept" (click)="handleCloseProduceModal()"><img
+            style="padding-right: 10px;margin-top: -4px"
+            src="assets/imgs/cancel.svg"
+            alt=""/>Hủy</button>
+        <button nz-button nzType="primary" (click)="handleSubmitTestProduce()"
+            [disabled]="produceForm.invalid" ><img
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/confirm.svg"
+            alt=""/>Test Producer</button>
+    </div>
+</nz-modal>

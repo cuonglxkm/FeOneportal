@@ -55,9 +55,9 @@ export class RenewVolumeComponent implements OnInit {
               private notification: NzNotificationService,
               private projectService: ProjectService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
-    this.volumeStatus.set('ERROR', 'Lỗi');
-    this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
+    this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
+    this.volumeStatus.set('ERROR', 'LỖI');
+    this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
 
     this.validateForm.get('time').valueChanges.subscribe((newValue: any) => {
       this.getTotalAmount();
@@ -94,15 +94,12 @@ export class RenewVolumeComponent implements OnInit {
       this.estimateExpireDate = new Date(exp);
       console.log('old', this.volumeInfo?.expirationDate);
       if (data.attachedInstances != null) {
-        this.attachedDto = data.attachedInstances;
+        this.volumeInfo.attachedInstances?.forEach(item => {
+          this.listVMs += item.instanceName.toString()
+        })
+        this.getTotalAmount()
       }
 
-      if (this.attachedDto.length > 1) {
-        this.attachedDto.forEach(vm => {
-          this.listVMs += vm.instanceName + '\n';
-        });
-      }
-      this.getTotalAmount()
     }, error => {
       this.isLoading = false;
       this.volumeInfo = null;
@@ -168,22 +165,28 @@ export class RenewVolumeComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.extendsDto),
         specificationType: 'volume_extend',
-        price: this.orderItem?.totalPayment?.amount,
+        price: this.orderItem?.totalAmount.amount,
         serviceDuration: this.validateForm.controls.time.value
       }
     ];
-    this.isLoadingRenew = true;
-    this.volumeService.extendsVolume(request).subscribe(
-      data => {
-        this.isLoadingRenew = false;
-        this.notification.success('Thành công', 'Gia hạn Volume thành công.');
-        this.router.navigate(['/app-smart-cloud/volume/detail/' + this.idVolume]);
-      }, error => {
-        this.isLoadingRenew = false;
-        this.notification.error('Thất bại', 'Gia hạn Volume không thành công.');
-
-      }
-    );
+    console.log('request', request)
+    console.log('unit', this.orderItem?.orderItemPrices[0]?.unitPrice.amount)
+    var returnPath: string = '/app-smart-cloud/volume/detail/'+this.idVolume;
+    this.router.navigate(['/app-smart-cloud/order/cart'], {
+      state: { data: request, path: returnPath },
+    });
+    // this.isLoadingRenew = true;
+    // this.volumeService.extendsVolume(request).subscribe(
+    //   data => {
+    //     this.isLoadingRenew = false;
+    //     this.notification.success('Thành công', 'Gia hạn Volume thành công.');
+    //     this.router.navigate(['/app-smart-cloud/volume/detail/' + this.idVolume]);
+    //   }, error => {
+    //     this.isLoadingRenew = false;
+    //     this.notification.error('Thất bại', 'Gia hạn Volume không thành công.');
+    //
+    //   }
+    // );
   }
 
   showModalConfirmRenew() {
@@ -212,7 +215,7 @@ export class RenewVolumeComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(this.extendsDto),
           specificationType: 'volume_extend',
-          price: this.orderItem?.totalPayment?.amount,
+          price: this.orderItem?.totalAmount.amount,
           serviceDuration: this.validateForm.controls.time.value
         }
       ];

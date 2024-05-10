@@ -94,7 +94,7 @@ export class ListPaymentComponent implements OnInit{
   
 
   onInputChange(value: string) {
-    this.value = value;
+    this.value = value.toUpperCase();
     console.log('input text: ', this.value)
     this.getListInvoices()
   }
@@ -219,7 +219,11 @@ export class ListPaymentComponent implements OnInit{
     // this.getListInvoices()
   }
 
-  getPaymentDetail(id: any) {
-    this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + id]);
+  getPaymentDetail(data: any) {
+    this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + data.id +'/' + data.orderNumber]);
+  }
+
+  getOrderDetail(ordernumber: any) {
+    this.router.navigate(['/app-smart-cloud/order/detail/' + ordernumber]);
   }
 }

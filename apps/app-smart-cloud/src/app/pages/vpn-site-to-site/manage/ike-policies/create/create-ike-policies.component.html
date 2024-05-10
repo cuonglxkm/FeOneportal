@@ -1,0 +1,273 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Tạo mới IKE Policies'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
+          >Dịch vụ hạ tầng</a
+        >
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+        >VPN site to site</a
+      ></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Tạo mới IKE Policy</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzSpan]="17" class="gutter-row">
+    <nz-card style="border-radius: 8px;">
+      <h2 class="custom-title">Thông tin IKE Policy</h2>
+      <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
+        <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired>Name</nz-form-label>
+            <input
+              nz-input
+              type="text"
+              required
+              placeholder="Nhập tên"
+              formControlName="name"
+            />
+            
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzRequired >Authorization Algorithm</nz-form-label>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              [(ngModel)]="ikePolicyModel.authorizationAlgorithm"
+              [ngModelOptions]="{standalone: true}"
+            >
+              <nz-option
+              *ngFor="let data of authorizationAlgorithm"
+              [nzLabel]="data.label"
+              [nzValue]="data.value"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control nzErrorTip="Trường dữ liệu không đuợc để trống!">
+                <nz-form-label nzFor="name" nzRequired >Encryption Algorithm</nz-form-label>
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="ikePolicyModel.encryptionAlgorithm"
+                  [ngModelOptions]="{standalone: true}"
+                >
+                  <nz-option
+                  *ngFor="let data of encryptionAlgorithm"
+                  [nzLabel]="data.label"
+                  [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+   
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control nzErrorTip="Trường dữ liệu không đuợc để trống!">
+                <div>
+                <nz-form-label nzFor="name" nzRequired>IKE version</nz-form-label>
+                <span nz-icon nzType="question-circle"
+                nzTheme="outline"
+                nz-popover
+                [nzPopoverContent]="'Là một giao thức được sử dụng để thiết lập liên lạc an toàn giữa hai thiết bị qua internet. Có 2 lựa chọn v1 và v2, v2 sẽ bao gồm nhiều phương pháp xác thực và mã hóa hơn đảm bảo tính bảo mật và toàn vẹn dữ liệu hơn. mặc định là v1.'"
+                max-width="15px"
+               ></span>
+            </div>
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="ikePolicyModel.ikeVersion"
+                  [ngModelOptions]="{standalone: true}"
+                >
+                  <nz-option
+                  *ngFor="let data of ikeVersion"
+                  [nzLabel]="data.label"
+                  [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+                
+              </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control nzErrorTip="Trường dữ liệu không đuợc để trống!">
+            <nz-form-label nzFor="name" nzRequired>Lifetime Units</nz-form-label>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              [(ngModel)]="ikePolicyModel.lifetimeUnit"
+              [ngModelOptions]="{standalone: true}"
+            >
+              <nz-option
+              *ngFor="let data of lifetimeUnit"
+              [nzLabel]="data.label"
+              [nzValue]="data.value"
+              ></nz-option>
+            </nz-select>
+            
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control  nzErrorTip="Trường dữ liệu không đuợc để trống!">
+            <nz-form-label nzFor="name" nzRequired >Lifetime Value</nz-form-label>
+            <nz-input-number 
+            [(ngModel)]="ikePolicyModel.lifetimeValue" 
+            style="width: 100%;margin-left: 0px;"
+            [nzMin]="60"
+            av
+            [nzStep]="1"
+            [ngModelOptions]="{standalone: true}"/>
+            
+            <!-- <input
+              nz-input
+              type="number"
+              required
+              [(ngModel)]="lifetimeValue" 
+              [ngModelOptions]="{standalone: true}"
+            /> -->
+            <!-- <nz-input-number [(ngModel)]="lifetimeValue" [nzMin]="60" [nzStep]="1"></nz-input-number> -->
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control  nzErrorTip="Trường dữ liệu không đuợc để trống!">
+            <nz-form-label nzFor="name" nzRequired>Perfect Forward Secrecy</nz-form-label>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              [(ngModel)]="ikePolicyModel.perfectForwardSecrey"
+              [ngModelOptions]="{standalone: true}"
+            >
+              <nz-option
+              *ngFor="let data of perfectForwardSecrey"
+              [nzLabel]="data.label"
+              [nzValue]="data.value"
+              ></nz-option>
+            </nz-select>
+            
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired >
+                IKE Phase1 Negotiation Mode </nz-form-label>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              [(ngModel)]="ikePolicyModel.ikePhase1NegotiationMode"
+              [ngModelOptions]="{standalone: true}"
+            >
+              <nz-option
+              *ngFor="let data of phase1Negotiation"
+              [nzLabel]="data.label"
+              [nzValue]="data.value"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      </form>
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="7" class="gutter-row">
+    <nz-card style="border-radius: 8px;">
+      <h2 class="custom-title">Thông số cấu hình</h2>
+      <div style="overflow: auto; height: 300px; margin-bottom: 16px;">
+        <div style="margin-bottom: 12px">
+          <h3 class="custom-subtitle">Name</h3>
+          <span>{{ikePolicyModel.name}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Authorization Algorithm</h3>
+          <span>{{ikePolicyModel.authorizationAlgorithm}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Encryption Algorithm</h3>
+          <span>{{ikePolicyModel.encryptionAlgorithm}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">IKE Version</h3>
+          <span>{{ikePolicyModel.ikeVersion}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Lifetime Units</h3>
+          <span>seconds</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Lifetime Value</h3>
+          <span>{{ikePolicyModel.lifetimeValue}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Perfect Forward Secrecy</h3>
+          <span>{{ikePolicyModel.perfectForwardSecrey}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">IKE Phase1 Negotiation Mode</h3>
+          <span>{{ikePolicyModel.ikePhase1NegotiationMode}}</span>
+        </div>
+      </div>
+      <button
+      (click)="handleCreate()"
+      nz-button
+      nzType="primary"
+      style="border: none; width: 100%; display: flex; align-items: center; gap: 5px; justify-content: center;"
+      nzSize="large"
+    >
+      <img
+        src="assets/imgs/wallet.svg"
+        alt=""
+      />
+      <span class="button-text-primary">Khởi tạo</span>
+    </button>
+      
+    </nz-card>
+  </div>
+</div>
+<div
+  class="text-right"
+  style="
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  "
+>
+</div>

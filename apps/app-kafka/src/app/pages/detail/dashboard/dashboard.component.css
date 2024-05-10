@@ -1,32 +1,31 @@
+.div-status-cluster {
+    text-align: center;
+    box-shadow: 3px 4px #E6F3FC;
+    border-radius: 8px;
+    width: 95%;
+    height: 120px;
+}
+
 .div-check {
     border: 1px solid #35d135;
-    text-align: center;
-    box-shadow: 3px 4px #8eb2d9;
-    border-radius: 2px;
-    background-image: linear-gradient(to right, #2eb82e, #5cd65c);
+    background-image: linear-gradient(to right, #06BC62, #01D069);
 }
 
 .div-unhealth {
     border: 1px solid #f27573;
-    text-align: center;
-    box-shadow: 3px 4px #8eb2d9;
-    border-radius: 2px;
-    background-image: linear-gradient(to right, #ef5350, #f27573);
+    background-image: linear-gradient(to right, #F74132, #EE6054);
 }
 
 .div-warning {
     border: 1px solid #ffb84d;
-    text-align: center;
-    box-shadow: 3px 4px #8eb2d9;
-    border-radius: 2px;
-    background-image: linear-gradient(to right, #ff9800, #ffb84d);
+    background-image: linear-gradient(to right, #FFA42E, #FFBB63);
 }
 
 .text-health {
     color: #ffffff;
     font-weight: 600;
     width: 100%;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .text-check {
@@ -37,21 +36,30 @@
 }
 
 .sum-info {
-    border: 1px solid #1363B9;
+    border: 1px solid #DCDEEF;
     text-align: center;
-    box-shadow: 3px 4px #8eb2d9;
-    border-radius: 2px;
+    box-shadow: 3px 4px #E6F3FC;
+    border-radius: 8px;
+    width: 95%;
+    height: 120px;
+}
+
+@media only screen and (max-width: 1600px) {
+    .div-status-cluster,
+    .sum-info {
+        width: 90%;
+    }
 }
 
 .sum-value {
-    color: #308ef3;
+    color: #0091FF;
     font-weight: 700;
     width: 100%;
     font-size: 24px;
 }
 
 .sum-offline {
-    color: #ff0000;
+    color: #F13F30;
     font-weight: 700;
     width: 100%;
 }
@@ -62,9 +70,26 @@
     font-size: 16px;
 }
 
+@media only screen and (max-width: 1400px) and (min-width: 1281px) {
+    .sum-lbl {
+        font-size: 15px;
+    }
+}
+
+@media only screen and (max-width: 1280px) and (min-width: 1200px) {
+    .sum-lbl {
+        font-size: 14px;
+    }
+    .text-check, .text-health {
+        font-size: 20px;
+    }
+}
+
 .general {
     background: #ffffff;
     margin-bottom: 16px;
+    padding: 20px 24px 20px 20px;
+    border-radius: 4px;
 }
 
 .tooltip-health {
@@ -73,4 +98,57 @@
 
 ::ng-deep .ant-card-head-title {
     min-height: 64px;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+.stats-chart {
+    float: right;
+}
+
+nz-select#range-time ::ng-deep .ant-select-selector,
+nz-select#cbx-unit ::ng-deep .ant-select-selector {
+    border-radius: 4px;
+}
+
+#cbx-unit {
+    vertical-align: bottom;
+}
+
+.lbl-unit {
+    margin-right: 5px;
+    font-style: italic;
+    font-weight: 600;
+}
+
+.title-cluster {
+    font-weight: 600;
+    font-size: 20px;
+    padding-left: 12px;
+}
+
+.title-card {
+    font-weight: 600;
+    font-size: 20px;
+    padding-left: 10px;
+}
+
+.general-2 ::ng-deep .ant-card-body {
+    padding: 20px 24px 20px 20px;
+}
+
+#btn-refresh {
+    width: 40px;
+    border-color: #E2E2E9;
+    margin-right: 16px;
+    position: relative;
+    top: -6px;
+}
+
+#img-refresh {
+    position: absolute;
+    top: 6px;
+    right: 6px
 }

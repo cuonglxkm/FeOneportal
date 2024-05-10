@@ -12,92 +12,125 @@
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
 <nz-content>
-  <nz-card style="border-radius: 8px;">
-    <nz-row nzJustify="space-between">
-      <nz-col [nzSpan]="8">
-        <span class="text-card-header">Danh sách File System</span>
-      </nz-col>
-      <nz-col [nzSpan]="16"  style="flex:none;">
-        <div>
-          <nz-input-group [nzPrefix]="prefixIconSearch"
-                          nzSize="large"
-                          style="width: 300px;">
-            <input name="name"
-                   nz-input
-                   placeholder="Tìm kiếm"
-                   [(ngModel)]="value"
-                   (input)="onInputChange($event.target['value'])"/>
-          </nz-input-group>
-          <ng-template #prefixIconSearch>
-            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
-          </ng-template>
-          <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large" (click)="navigateToCreateFileSystem()">
-            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
-            <span class="button-text-primary">Tạo File System</span>
+  <ng-container [ngSwitch]="isCheckBegin">
+    <ng-container *ngSwitchCase="false">
+      <nz-card style="border-radius: 8px;">
+        <nz-row nzJustify="space-between">
+          <nz-col [nzSpan]="8">
+            <span class="text-card-header">Danh sách File System</span>
+          </nz-col>
+          <nz-col [nzSpan]="16"  style="flex:none;">
+            <div>
+              <nz-input-group [nzPrefix]="prefixIconSearch"
+                              nzSize="large"
+                              style="width: 300px;">
+                <input name="name"
+                       nz-input
+                       placeholder="Tìm kiếm"
+                       [(ngModel)]="value"
+                       (input)="onInputChange($event.target['value'])"/>
+              </nz-input-group>
+              <ng-template #prefixIconSearch>
+                <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+              </ng-template>
+              <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large" (click)="navigateToCreateFileSystem()">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+                <span class="button-text-primary">Tạo File System</span>
+              </button>
+            </div>
+          </nz-col>
+        </nz-row>
+        <nz-table #fixTable
+                  style="margin-top: 24px;"
+                  nzShowPagination
+                  [nzData]="response?.records"
+                  [nzPageSize]="response?.pageSize"
+                  (nzPageSizeChange)="onPageSizeChange($event)"
+                  [nzPageIndex]="response?.currentPage"
+                  (nzPageIndexChange)="onPageIndexChange($event)"
+                  [nzTotal]="response?.totalCount"
+                  [nzFrontPagination]="false"
+                  [nzLoading]="isLoading">
+          <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên</th>
+            <th>Trạng thái</th>
+            <th>Trạng thái tác vụ</th>
+            <th>Loại File System</th>
+            <th>Giao thức</th>
+            <th>Dung lượng</th>
+            <th>Thao tác</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of fixTable.data; index as i">
+            <td>{{ i + 1 }}</td>
+            <td><a [href]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
+            <td>{{ data.statusDisplay }}</td>
+            <td>{{ data.status }}</td>
+            <td>{{ data.type }}</td>
+            <td>{{ data.protocol }}</td>
+            <td>{{ data.size }}</td>
+            <td>
+              <div>
+                <one-portal-edit-file-system [region]="region"
+                                             [project]="project"
+                                             [fileSystemId]="data.id"
+                                             (onOk)="handleOkEdit()"/>
+                <span style="color: #0066B3; margin-left: 15px; cursor: pointer;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
+                      [nzDropdownMenu]="opMenu"></span>
+                <nz-dropdown-menu #opMenu="nzDropdownMenu" >
+                  <ul nz-menu>
+                    <li nz-menu-item>Tạo Snapshot</li>
+                    <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/resize/' + data.id">Điều chỉnh dung lượng</li>
+                    <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/' + data.cloudId + '/access-rule/list'">Quản lý Access Rule</li>
+                    <one-portal-delete-file-system [region]="region"
+                                                   [project]="project"
+                                                   [fileSystemId]="data.id"
+                                                   (onOk)="handleOkDelete()" />
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-card>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <nz-card>
+        <result>
+          <nz-row>
+            <nz-col class="text-center" style="width: 100%">
+              <img src="/assets/imgs/file-system-blank.svg" alt="" />
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+              <span class="text-intro-title" style="color: #0066b3">File Storage <br>
+        Lưu trữ dữ liệu theo cấu trúc phân cấp</span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">File storage, hệ thống lưu trữ dữ liệu theo “cấu trúc phân cấp”.
+                  Dữ liệu sẽ được lưu trong các tập tin và thư mục, và được hiển thị cho cả hệ thống lưu trữ lẫn hệ thống truy xuất dưới cùng một định dạng.</span>
+            </nz-col>
+          </nz-row>
+          <button style="margin-top: 20px" nz-button [nzType]="'primary'"
+                  routerLink="/app-smart-cloud/schedule/backup/create" nzSize="large">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+            Tạo mới File Storage
           </button>
-        </div>
-      </nz-col>
-    </nz-row>
-    <nz-table #fixTable
-              style="margin-top: 24px;"
-              nzShowPagination
-              [nzData]="response?.records"
-              [nzPageSize]="response?.pageSize"
-              (nzPageSizeChange)="onPageSizeChange($event)"
-              [nzPageIndex]="response?.currentPage"
-              (nzPageIndexChange)="onPageIndexChange($event)"
-              [nzTotal]="response?.totalCount"
-              [nzFrontPagination]="false"
-              [nzLoading]="isLoading">
-      <thead>
-      <tr>
-        <th>STT</th>
-        <th>Tên</th>
-        <th>Trạng thái</th>
-        <th>Trạng thái tác vụ</th>
-        <th>Loại File System</th>
-        <th>Giao thức</th>
-        <th>Dung lượng</th>
-        <th>Thao tác</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let data of fixTable.data; index as i">
-        <td>{{ i + 1 }}</td>
-        <td><a [href]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
-        <td>{{ data.statusDisplay }}</td>
-        <td>{{ data.status }}</td>
-        <td>{{ data.type }}</td>
-        <td>{{ data.protocol }}</td>
-        <td>{{ data.size }}</td>
-        <td>
-          <div>
-            <one-portal-edit-file-system [region]="region"
-                                         [project]="project"
-                                         [fileSystemId]="data.id"
-                                         (onOk)="handleOkEdit()"/>
-            <span style="color: #0066B3; margin-left: 15px; cursor: pointer;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
-                  [nzDropdownMenu]="opMenu"></span>
-            <nz-dropdown-menu #opMenu="nzDropdownMenu" >
-              <ul nz-menu>
-                <li nz-menu-item>Tạo Snapshot</li>
-                <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/extend/' + data.id">Điều chỉnh dung lượng</li>
-                <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/' + data.cloudId + '/access-rule/list'">Quản lý Access Rule</li>
-                <one-portal-delete-file-system [region]="region"
-                                               [project]="project"
-                                               [fileSystemId]="data.id"
-                                               (onOk)="handleOkDelete()" />
-              </ul>
-            </nz-dropdown-menu>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
-  </nz-card>
+        </result>
+      </nz-card>
+    </ng-container>
+  </ng-container>
 </nz-content>

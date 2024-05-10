@@ -5,10 +5,9 @@ import { VolumeService } from '../../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from '../../../../shared/models/region.model';
 import { ProjectModel } from '../../../../shared/models/project.model';
-import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
+import { BaseResponse, NotificationService } from '../../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
-import { NotificationService } from 'src/app/shared/services/notification.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
@@ -69,12 +68,12 @@ export class VolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    // this.getListVolume(true)
+    this.getListVolume(true)
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project.id;
-    this.typeVPC = project.type;
+    this.project = project?.id;
+    this.typeVPC = project?.type;
     this.isLoading = true;
     this.getListVolume(true);
   }
@@ -163,11 +162,13 @@ export class VolumeComponent implements OnInit {
 
   //detach
   handleOkDetachVm() {
-    this.getListVolume(false);
+    setTimeout(() => {
+      this.getListVolume(false);
+    }, 1500)
   }
 
   handleOkDelete() {
-    this.getListVolume(false);
+    this.getListVolume(true);
   }
 
   //update
@@ -186,10 +187,15 @@ export class VolumeComponent implements OnInit {
 
   }
 
-  navigateToCreateScheduleBackup() {
-    this.router.navigate(['/app-smart-cloud/schedule/backup/create']);
+  navigateToCreateScheduleBackup(id) {
+    this.router.navigate(['/app-smart-cloud/schedule/backup/create'], {
+      queryParams: {type: 'VOLUME', idVolume: id}
+    });
   }
 
+  navigateToCreate() {
+    this.router.navigate(['/app-smart-cloud/volume/create'])
+  }
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -200,29 +206,31 @@ export class VolumeComponent implements OnInit {
     this.volumeService.model.subscribe(data => {
       console.log(data);
     });
+    if(!this.region && !this.project){
+      this.router.navigate(['/exception/500'])
+    }
     // this.getListVm()
     // this.getListVolume(true)
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
-      this.notificationService.connection.on('UpdateVolume', (data) => {
-        if (data) {
-          console.log(data);
-
-          let volumeId = data.serviceId;
-  
-          var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
-          if (foundIndex > -1) {
-            var record = this.response.records[foundIndex];
-  
-            record.status = data.status;
-            record.serviceStatus = data.serviceStatus;
-            
-            this.response.records[foundIndex] = record;
-            this.cdr.detectChanges();
-          }
-        }
-      });
     }
+
+    this.notificationService.connection.on('UpdateVolume', (data) => {
+      if (data) {
+        let volumeId = data.serviceId;
+
+        var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+        if (foundIndex > -1) {
+          var record = this.response.records[foundIndex];
+
+          record.status = data.status;
+          record.serviceStatus = data.serviceStatus;
+
+          this.response.records[foundIndex] = record;
+          this.cdr.detectChanges();
+        }
+      }
+    });
   }
 
 }

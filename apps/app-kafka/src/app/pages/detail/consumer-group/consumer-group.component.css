@@ -53,11 +53,6 @@
     box-shadow: 0 0 10px #719ECE;
 }
 
-nz-table#groups th {
-    background-color: #1363B9;
-    color: #ffff;
-}
-
 .block-info {
     border: 1px solid #1363B9;
     text-align: center;
@@ -126,15 +121,11 @@ nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
 
 .time-async {
     display: inline-block;
-    width: 130px;
+    width: 160px;
 }
 
 [nz-icon] {
     font-size: 20px;
-}
-
-.search-icon {
-    color: #989BB3;
 }
 
 .search {
@@ -155,4 +146,9 @@ nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
 
 ::ng-deep .ant-pagination-item {
     border-radius: 8px;
+}
+
+nz-tag {
+    border-radius: 3px;
+    font-size: 14px;
 }

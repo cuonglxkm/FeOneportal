@@ -2,7 +2,7 @@
   background: #fff;
   padding: 24px;
   min-height: 280px;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .search {
@@ -17,11 +17,9 @@
   justify-content: space-between;
 }
 
-
-[nz-button]{
+[nz-button] {
   height: 40px;
   border-radius: 8px;
-  font-weight: 600;
   font-size: 16px;
 }
 
@@ -33,13 +31,12 @@ nz-table.tbl-acl th {
   background-color: #E2EEFC;
   font-size: 16px;
   font-weight: 700;
-  line-height: 24px; 
+  line-height: 24px;
   letter-spacing: 0.1px;
 }
 
 [nz-icon] {
-  font-size: 20px;
-  color: #0074CC;
+  font-size: 24px;
 }
 
 ::ng-deep .ant-pagination-item-active {
@@ -52,11 +49,76 @@ nz-table.tbl-acl th {
   color: #ffffff;
 }
 
-::ng-deep .ant-pagination-item  {
+::ng-deep .ant-pagination-item {
   border-radius: 8px;
 }
 
-.breadcrumb{
+.breadcrumb {
   justify-content: space-between;
   margin: 15px;
+}
+
+.mg-right {
+  margin-right: 12px;
+  width: 24px;
+  height: 24px;
+}
+
+::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 8px;
+}
+
+::ng-deep .ant-descriptions-item-label{
+  font-weight: bold; 
+}
+
+.img {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+
+.nav-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-accept {
+  height: 40px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.create-icon{
+  color: #fff;
+  font-size: 20px;
+}
+
+.dell-icon{
+  cursor: pointer;
+  width: 35px;
+  height: 24px;
+}
+
+.mg-right-del{
+  margin-right: 12px;
+  width: 35px;
+  height: 24px;
+}
+
+.question{
+  text-align: center;
+  font-size: 16px;
+}
+
+nz-table#topic th {
+  background-color: #e2eefc;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+}
+
+@media only screen and (min-width: 1440px) {
 }

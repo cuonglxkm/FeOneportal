@@ -1,5 +1,7 @@
 {
+  "menu.search":"Tìm kiếm",
   "menu.account.center": "Thông tin tài khoản",
+  "menu.account.reset.password": "Đổi mật khẩu",
   "menu.account.logout": "Đăng xuất",
   "app.register.register": "Đăng ký",
   "app.register.des": "Đăng ký để sử dụng đầy đủ chức năng của hệ thống",

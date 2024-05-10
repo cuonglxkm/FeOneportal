@@ -15,6 +15,7 @@ import {DataPayment, InstancesModel, ItemPayment, VolumeCreate} from "../../../i
 import {InstancesService} from "../../../instances/instances.service";
 import {OrderItem} from "../../../../shared/models/price";
 import {ProjectService} from "../../../../shared/services/project.service";
+import { now } from 'lodash';
 
 @Component({
   selector: 'app-edit-volume',
@@ -55,6 +56,8 @@ export class EditVolumeComponent implements OnInit {
 
   listVMs: string = '';
 
+  dateEdit: Date;
+
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
@@ -65,22 +68,13 @@ export class EditVolumeComponent implements OnInit {
               private instanceService: InstancesService,
               private projectService: ProjectService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
-    this.volumeStatus.set('ERROR', 'Lỗi');
-    this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
+    this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
+    this.volumeStatus.set('ERROR', 'LỖI');
+    this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
-      if ([1, 2].includes(this.region)) {
-        if (value < 20) return this.iops = 0
-        if (value <= 200) return this.iops = 600
-        if (value <= 500) return this.iops = 1200
-        if (value <= 1000) return this.iops = 3000
-        if (value <= 2000) return this.iops = 6000
-      }
-      if ([3, 4].includes(this.region)) {
-        if (value < 40) return this.iops = 400
-        this.iops = value * 10
-      }
+      if(value <= 40) return (this.iops = 400);
+      this.iops = value * 10
     });
   }
 
@@ -165,7 +159,7 @@ export class EditVolumeComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(this.volumeEdit),
           specificationType: 'volume_resize',
-          price: this.orderItem?.totalPayment?.amount,
+          price: this.orderItem?.totalAmount.amount,
           serviceDuration: this.expiryTime
         }
       ]
@@ -175,12 +169,24 @@ export class EditVolumeComponent implements OnInit {
     }
   }
 
+  getMonthDifference(expiredDateStr: string, createdDateStr: string): number {
+    // Chuyển đổi chuỗi thành đối tượng Date
+    const expiredDate = new Date(expiredDateStr);
+    const createdDate = new Date(createdDateStr);
+
+    // Tính số tháng giữa hai ngày
+    const oneDay = 24 * 60 * 60 * 1000; // Số mili giây trong một ngày
+    const diffDays = Math.round(Math.abs((expiredDate.getTime() - createdDate.getTime()) / oneDay)); // Số ngày chênh lệch
+    const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
+    return diffMonths;
+  }
   goBack(): void {
     this.router.navigate(['/app-smart-cloud/volume/detail/' + this.volumeId])
   }
 
   ngOnInit() {
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'))
+    this.dateEdit = new Date();
     if(this.volumeId != undefined || this.volumeId != null) {
       console.log('id', this.volumeId)
       this.getVolumeById(this.volumeId)
@@ -208,7 +214,7 @@ export class EditVolumeComponent implements OnInit {
       this.instance = data
     })
   }
-
+  array: string[] = []
    getVolumeById(idVolume: number) {
     this.volumeService.getVolumeById(idVolume).subscribe(data => {
       if (data !== undefined && data != null) {
@@ -220,15 +226,18 @@ export class EditVolumeComponent implements OnInit {
         this.selectedValueRadio = data.volumeType
         this.validateForm.controls.radio.setValue(data.volumeType)
 
+        this.iops = this.volumeInfo?.iops
+
         if(this.volumeInfo?.instanceId != null) {
           this.getInstanceById(this.volumeInfo?.instanceId)
         }
-
-        if(this.volumeInfo.attachedInstances != null) {
-          this.volumeInfo.attachedInstances.forEach(item => {
-            this.listVMs += item.instanceName.toString() + ', '
+        console.log('volumesInfo', this.volumeInfo.attachedInstances)
+        if(data?.attachedInstances != null) {
+          this.volumeInfo?.attachedInstances?.forEach(item => {
+            this.listVMs += item.instanceName.toString()
           })
         }
+        this.getTotalAmount()
 
         //Thoi gian su dung
         const createDate = new Date(this.volumeInfo?.creationDate);
@@ -251,7 +260,7 @@ export class EditVolumeComponent implements OnInit {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id
     this.volumeEdit.newDescription = this.validateForm.controls.description.value
     this.volumeEdit.regionId = this.volumeInfo?.regionId;
-    this.volumeEdit.newSize = this.validateForm.controls.storage.value
+    this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB
     this.volumeEdit.iops = this.iops
     // editVolumeDto.newOfferId = 0;
     this.volumeEdit.serviceName = this.validateForm.controls.name.value
@@ -259,15 +268,13 @@ export class EditVolumeComponent implements OnInit {
     this.volumeEdit.customerId = this.tokenService.get()?.userId;
     this.volumeEdit.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
     const userString = localStorage.getItem('user');
-    const user = JSON.parse(userString);1
+    const user = JSON.parse(userString);
     this.volumeEdit.actorEmail = user.email;
     this.volumeEdit.userEmail = user.email;
     this.volumeEdit.serviceType = 2;
     this.volumeEdit.actionType = 4; //resize
   }
 
-  totalAmountVolume = 0;
-  totalAmountVolumeVAT = 0;
   orderItem: OrderItem = new OrderItem()
   unitPrice = 0
 
@@ -289,7 +296,7 @@ export class EditVolumeComponent implements OnInit {
     volumeResize.customerId = this.tokenService.get()?.userId;
     volumeResize.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
     const userString = localStorage.getItem('user');
-    const user = JSON.parse(userString);1
+    const user = JSON.parse(userString);
     volumeResize.actorEmail = user.email;
     volumeResize.userEmail = user.email;
     volumeResize.serviceType = 2;
@@ -326,47 +333,7 @@ export class EditVolumeComponent implements OnInit {
       this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount
     });
   }
-  //
-  // getProjectId(projectId: number) {
-  //   this.projectIdSearch = projectId;
-  // }
-  //
-  // async getRegionId(regionId: number) {
-  //   this.regionIdSearch = regionId;
-  //
-  //   this.vmList = [];
-  //   let userId = this.tokenService.get()?.userId;
-  //   this.getAllVmResponse = await this.volumeSevice.getListVM(userId, this.regionIdSearch).toPromise();
-  //   this.listAllVMs = this.getAllVmResponse.records;
-  //   this.listAllVMs.forEach((vm) => {
-  //     this.vmList.push({value: vm.id, label: vm.name});
-  //   })
-  // }
-  //
-  // editVolume() {
-  //   if (this.oldSize !== this.volumeInfo.sizeInGB) {
-  //     console.log('Call API Create.')
-  //     this.doEditSizeVolume();
-  //   } else {
-  //     console.log('Call API PUT')
-  //     this.doEditTextVolume();
-  //   }
-  // }
-  //
-  // async doEditTextVolume() {
-  //   let request = new EditTextVolumeModel();
-  //   request.volumeId = this.volumeInfo.id;
-  //   request.newDescription = this.volumeInfo.description;
-  //   request.newName = this.volumeInfo.name;
-  //   let response = this.volumeSevice.editTextVolume(request).toPromise();
-  //   if (await response == true) {
-  //     this.nzMessage.create('success', 'Chỉnh sửa thông tin Volume thành công.');
-  //     this.router.navigate(['/app-smart-cloud/volume']);
-  //   } else
-  //     return false;
-  //
-  // }
-  //
+
   doEditSizeVolume() {
     this.getTotalAmount()
     let request = new EditSizeVolumeModel();
@@ -378,43 +345,34 @@ export class EditVolumeComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.volumeEdit),
         specificationType: 'volume_resize',
-        price: this.orderItem?.totalPayment?.amount,
+        price: this.orderItem?.orderItemPrices[0]?.unitPrice.amount,
         serviceDuration: this.expiryTime
       }
     ]
-    this.isLoading = true
-    this.volumeService.editSizeVolume(request).subscribe(data => {
-        if (data.code == 200) {
-          this.isLoading = false
-          this.notification.success('Thành công', 'Chỉnh sửa Volume thành công.')
-          console.log(data);
-          this.router.navigate(['/app-smart-cloud/volumes']);
-        } else if (data.code == 310) {
-          this.isLoading = false;
-          // this.router.navigate([data.data]);
-          window.location.href = data.data;
-        } else {
-          this.isLoading = false
-          this.notification.error('Thất bại', 'Chỉnh sửa Volume thất bại.')
-        }
-      }
-    );
-
+    console.log('request', request)
+    console.log('price', this.orderItem?.orderItemPrices[0]?.unitPrice.amount)
+    var returnPath: string = '/app-smart-cloud/volume/detail/'+this.volumeId;
+    this.router.navigate(['/app-smart-cloud/order/cart'], {
+      state: { data: request, path: returnPath },
+    });
+    // this.isLoading = true
+    // this.volumeService.editSizeVolume(request).subscribe(data => {
+    //     if (data.code == 200) {
+    //       this.isLoading = false
+    //       this.notification.success('Thành công', 'Chỉnh sửa Volume thành công.')
+    //       console.log(data);
+    //       this.router.navigate(['/app-smart-cloud/volumes']);
+    //     } else if (data.code == 310) {
+    //       this.isLoading = false;
+    //       // this.router.navigate([data.data]);
+    //       window.location.href = data.data;
+    //     } else {
+    //       this.isLoading = false
+    //       this.notification.error('Thất bại', 'Chỉnh sửa Volume thất bại.')
+    //     }
+    //   }
+    // );
   }
-  //
-  // getPremiumVolume(size: number) {
-  //
-  //   if (size !== undefined && size != null) {
-  //
-  //
-  //     this.volumeSevice.getPremium(this.volumeInfo.volumeType, size, this.expiryTime).subscribe(data => {
-  //       if (data != null) {
-  //         this.nzMessage.create('success', 'Phí đã được cập nhật.')
-  //         this.priceVolumeInfo = data;
-  //       }
-  //     })
-  //   }
-  // }
 
-
+  protected readonly now = now;
 }

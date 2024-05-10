@@ -24,7 +24,7 @@
   </ng-template>
 </page-header>
 
-<nz-content >
+<nz-content>
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase="false">
       <nz-card>
@@ -44,20 +44,20 @@
             <nz-input-group
               style="width: 300px;"
               [nzPrefix]="prefixIconSearch"
-              nzSize="large"
-              [(ngModel)]="value"
-              (input)="onInputChange($event.target['value'])">
+              nzSize="large">
               <input
                 name="name"
                 nz-input
-                placeholder="Tìm kiếm tên ..."/>
+                placeholder="Tìm kiếm tên ..."
+                [(ngModel)]="value"
+                (input)="onInputChange($event.target['value'])" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img
                 src="assets/imgs/search.svg"
                 alt=""
                 style="cursor: pointer"
-                nz-tooltip="Tìm kiếm"/>
+                nz-tooltip="Tìm kiếm" />
             </ng-template>
           </nz-col>
         </nz-row>
@@ -88,7 +88,8 @@
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
-            <td nzAlign="center" nzLeft><a (click)="navigateToDetail(data.id)" nzTooltipTitle="Xem chi tết" nzTooltipPlacement="bottom" nz-tooltip>{{ data.name }}</a></td>
+            <td nzAlign="center" nzLeft><a (click)="navigateToDetail(data.id)" nzTooltipTitle="Xem chi tết"
+                                           nzTooltipPlacement="bottom" nz-tooltip>{{ data.name }}</a></td>
             <td nzAlign="center" nzBreakWord> {{ data.instanceName }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.size }} GB</td>
             <td nzAlign="center" nzBreakWord>{{ data.backupPackageName }}</td>
@@ -132,7 +133,7 @@
                       <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
                                                    [isLoading]="isLoading"
                                                    (onCancel)="handleCancelDelete()"
-                                                   (onOk)="handleOkDelete()"/>
+                                                   (onOk)="handleOkDelete()" />
                     </ul>
                   </nz-dropdown-menu>
                 </div>
@@ -145,7 +146,7 @@
                   <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
                                                [isLoading]="isLoading"
                                                (onCancel)="handleCancelDelete()"
-                                               (onOk)="handleOkDelete()"/>
+                                               (onOk)="handleOkDelete()" />
                 </div>
               </div>
             </td>
@@ -156,21 +157,29 @@
     </ng-container>
     <ng-container *ngSwitchDefault>
       <nz-card>
-        <nz-row nzJustify="center">
-          <img src="/assets/imgs/backup-vm-blank.png" width="450" height="450" alt="blank-security-group">
-        </nz-row>
-        <nz-row nzJustify="center" style="margin-top:15px;">
-          <div class="text-title">
-            <h1>Backup VM - Sao lưu, bảo mật</h1>
-          </div>
-        </nz-row>
-        <nz-row nzJustify="center">
-          <div class="text-subtitle" style="text-align: center;">Giải pháp sao lưu VM nâng cao, phần mềm giúp giảm chi phí chụp nhanh và tiết kiệm thời gian của bạn bằng
-            cách tạo các bản sao VM giống hệt nhau trực tiếp từ các bản sao lưu VM hiện có.</div>
-        </nz-row>
-        <nz-row nzJustify="center">
-          <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" [routerLink]="'/app-smart-cloud/schedule/backup/create'">Khởi tạo ngay</button>
-        </nz-row>
+        <result>
+          <nz-row>
+            <nz-col class="text-center" style="width: 100%">
+              <img src="assets/imgs/backupvm-blank.png" alt="" />
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+              <span class="text-intro-title" style="color: #0066b3">Backup VM - Sao lưu, bảo mật</span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">Giải pháp sao lưu VM nâng cao, phần mềm giúp giảm chi phí chụp nhanh và tiết kiệm thời gian của bạn bằng
+                              cách tạo các bản sao VM giống hệt nhau trực tiếp từ các bản sao lưu VM hiện có.</span>
+            </nz-col>
+          </nz-row>
+          <button style="margin-top: 20px" nz-button [nzType]="'primary'"
+                  [routerLink]="'/app-smart-cloud/schedule/backup/create'" nzSize="large">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+            Khởi tạo ngay
+          </button>
+        </result>
       </nz-card>
     </ng-container>
   </ng-container>

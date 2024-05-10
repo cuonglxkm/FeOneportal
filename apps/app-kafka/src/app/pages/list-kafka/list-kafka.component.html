@@ -1,0 +1,126 @@
+<page-header [breadcrumb]="breadcrumb" [title]="'Danh sách Kafka'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Danh sách Kafka</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<nz-content *ngIf="!isShowIntroductionPage; else introducePageTpl">
+  <nz-card>
+    <!-- filter -->
+    <div class="filter-div" nz-row>
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="4" [nzXl]="4">
+        <nz-select nzSize="default" nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="handleChange()"
+          [nzPlaceHolder]="'Trạng thái dịch vụ'" class="w-100" nzSize="large">
+          <nz-option *ngFor="let item of listOfStatusKafka" [nzValue]="item.id"
+            [nzLabel]="item.statusName"></nz-option>
+        </nz-select>
+      </div>
+
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="6" class="search-filter">
+        <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
+          <input [(ngModel)]="keySearch" (keyup.enter)="handleChange()" type="text" nz-input
+            placeholder="Tìm kiếm tên dịch vụ" />
+        </nz-input-group>
+        <ng-template #prefixButton>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+        </ng-template>
+      </div>
+
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="6" style="padding-left: 10px;">
+        <button nz-button nzType="default" class="btn-sync" (click)="handleChange()">
+          <span nz-icon nzType="sync" nzTheme="outline" class="icon-general"></span>
+        </button>
+      </div>
+
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="8" style="text-align: right;">
+        <button nz-button nzType="primary" routerLink="create" class="btn-create">
+          <span nz-icon nzType="plus" nzTheme="outline">
+          </span>
+          Tạo mới Kafka
+        </button>
+      </div>
+    </div>
+
+    <!-- table -->
+    <nz-table #kafkaTable [nzData]="listOfKafka" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
+      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="loading">
+      <thead>
+        <tr>
+          <th nzWidth="5%" nzAlign="center">STT</th>
+          <th nzWidth="15%">Tên Kafka</th>
+          <th nzWidth="10%">Phiên bản</th>
+          <th nzWidth="15%">Trạng thái</th>
+          <th nzWidth="15%">Endpoint</th>
+          <th nzWidth="15%">Gói dịch vụ</th>
+          <th nzWidth="15%">Thời gian tạo</th>
+          <th nzWidth="10%" nzAlign="center">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of kafkaTable.data; let i = index">
+          <td nzAlign="center">{{ i + 1 }}</td>
+          <td> <a [routerLink]="[item.serviceOrderCode ]">{{ item.serviceName }}</a></td>
+          <td>{{ item.apacheKafkaVersion }}</td>
+          <td>
+            <ng-container *ngIf="item.status | status2ColorPipe as status">
+              <span [ngStyle]="{color: status.color}">{{status.status}}</span>
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="item.endPoint">
+              <ng-container *ngFor="let item of item.endPoint.split(';')">
+                <span>{{ item }}</span> <br>
+              </ng-container>
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="item.servicePackName">{{ item.servicePackName}} / </ng-container>
+            {{ item.cpu }} vCPU / {{ item.ram}} RAM
+          </td>
+          <td>{{ item.createdDate | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+          <td nzAlign="center">
+            <img src="assets/imgs/edit-2.svg" alt="" style="cursor: pointer; margin-right: 16px;" [routerLink]="'edit/' + item.serviceOrderCode"
+              nz-tooltip="Chỉnh sửa" class="img-edit" />
+            <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; margin-right: 16px" [routerLink]="'upgrade/' + item.serviceOrderCode"
+              nz-tooltip="Nâng cấp" />
+            <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" nz-tooltip="Xóa" />
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-content>
+<ng-template #introducePageTpl>
+  <nz-content>
+    <nz-card>
+      <div class="align-center">
+        <!-- image -->
+        <div>
+          <img width="520px" height="256px" src="assets/imgs/kafka-service.jpg" alt="" />
+        </div>
+
+        <h3 class="mt-5 description-title">VNPT Message Streaming for Kafka</h3>
+
+        <!-- description -->
+        <div class="mt-3 description-content">
+          <span>
+            VNPT Message Streaming for Kafka là nền tảng phân phối dữ liệu cho các hệ thống qua đám mây. 
+            Kafka cung cấp khả năng xử lý nhanh, ổn định, chịu lỗi cao cho các hệ thống dạng Pub/Sub. 
+          </span>
+        </div>
+
+        <!-- create btn -->
+        <div class="mleft-16 mtop-15">
+          <button nz-button nzType="primary" routerLink="create" class="border-button">
+            Khởi tạo Kafka
+          </button>
+        </div>
+      </div>
+    </nz-card>
+  </nz-content>
+</ng-template>

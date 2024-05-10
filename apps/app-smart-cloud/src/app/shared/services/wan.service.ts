@@ -24,6 +24,9 @@ export class WanService extends BaseService {
     if(formSearch.customerId != undefined || formSearch.customerId != null) {
       params = params.append('customerId', formSearch.customerId)
     }
+    if(formSearch.projectId != undefined || formSearch.projectId != null) {
+      params = params.append('projectId', formSearch.projectId)
+    }
     if(formSearch.childChannels != undefined || formSearch.childChannels != null) {
       params = params.append('childChannels', formSearch.childChannels)
     }

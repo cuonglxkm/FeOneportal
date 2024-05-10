@@ -94,22 +94,20 @@
           <th>Chu kỳ</th>
           <th>Trạng thái</th>
           <th>Lần snapshot tiếp theo</th>
-          <th>Thao tác</th>
+          <th nzAlign="center">Thao tác</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td>
-            <span>lichsnapshot_01</span>
-          </td>
+        <tr *ngFor="let data of fixedTable.data, index as i">
+          <td>{{ i + 1 }}</td>
+          <td><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/' +data.id]">{{data.name}}</a></td>
           <td>file-system-01</td>
-          <td>5</td>
+          <td>{{data.maxSnapshot}}</td>
           <td>Hằng ngày</td>
           <td>Đang hoạt động</td>
           <td>27/03/2023 0:45:00 AM</td>
           <td>
-            <div>
+            <div class="d-flex gap-2 justify-content-center align-items-center">
               
               <span
                 style="color: #0066b3; margin-right: 10px; cursor: pointer"

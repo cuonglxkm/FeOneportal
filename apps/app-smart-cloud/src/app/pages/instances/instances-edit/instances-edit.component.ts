@@ -9,10 +9,8 @@ import {
   Renderer2,
   ViewChild,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   DataPayment,
-  IPPublicModel,
   InstanceResize,
   InstancesModel,
   ItemPayment,
@@ -20,13 +18,11 @@ import {
   OfferItem,
   Order,
   OrderItem,
-  SecurityGroupModel,
-  UpdateInstances,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
-import { finalize } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
@@ -55,24 +51,11 @@ class ConfigCustom {
   animations: [slider],
 })
 export class InstancesEditComponent implements OnInit {
-  form = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.max(50),
-        Validators.pattern(/^[a-zA-Z0-9]+$/),
-      ],
-    }),
-    // items: new FormArray<FormGroup<InstancesForm>>([]),
-  });
-
   //danh sách các biến của form model
   id: number;
   instancesModel: InstancesModel;
   instanceNameEdit: string = '';
 
-  updateInstances: UpdateInstances = new UpdateInstances();
   instanceResize: InstanceResize = new InstanceResize();
   order: Order = new Order();
   orderItem: OrderItem[] = [];
@@ -86,7 +69,6 @@ export class InstancesEditComponent implements OnInit {
   isUseLAN: boolean = false;
   passwordVisible = false;
   password?: string;
-  numberMonth: number = 1;
   offerFlavor: OfferItem = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
@@ -143,14 +125,12 @@ export class InstancesEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.userId = this.tokenService.get()?.userId;
     this.userEmail = this.tokenService.get()?.email;
     this.id = Number.parseInt(this.activeRoute.snapshot.paramMap.get('id'));
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-    this.getAllSecurityGroup();
     this.getListIpPublic();
     this.getCurrentInfoInstance(this.id);
 
@@ -187,21 +167,10 @@ export class InstancesEditComponent implements OnInit {
           this.cardHeight
         );
       });
+    this.onChangeCapacity();
+    this.onChangeRam();
+    this.onChangeVCPU();
   }
-
-  //#region HDD hay SDD
-  activeBlockHDD: boolean = true;
-  activeBlockSSD: boolean = false;
-
-  initHDD(): void {
-    this.activeBlockHDD = true;
-    this.activeBlockSSD = false;
-  }
-  initSSD(): void {
-    this.activeBlockHDD = false;
-    this.activeBlockSSD = true;
-  }
-  //#endregion
 
   isCustomconfig = false;
   onClickConfigPackage() {
@@ -215,32 +184,14 @@ export class InstancesEditComponent implements OnInit {
   }
 
   resetChangeConfig(): void {
-    this.configCustom.vCPU = this.instancesModel.cpu;
-    this.configCustom.ram = this.instancesModel.ram;
-    this.configCustom.capacity = this.instancesModel.storage;
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
     this.totalAmount = 0;
     this.totalincludesVAT = 0;
+    this.instanceResize.cpu = null;
+    this.instanceResize.ram = null;
+    this.instanceResize.storage = null;
   }
-
-  //#region Chọn IP Public Chọn Security Group
-  listIPPublic: IPPublicModel[] = [];
-  listSecurityGroup: SecurityGroupModel[] = [];
-  listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
-  selectedSecurityGroup: any[] = [];
-
-  getAllSecurityGroup() {
-    this.dataService
-      .getAllSecurityGroup(this.region, this.userId, this.projectId)
-      .subscribe((data: any) => {
-        console.log('getAllSecurityGroup', data);
-        this.listSecurityGroup = data;
-        //this.selectedSecurityGroup.push(this.listSecurityGroup[0]);
-      });
-  }
-
-  //#endregion
 
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
   listOfferFlavors: OfferItem[] = [];
@@ -256,7 +207,7 @@ export class InstancesEditComponent implements OnInit {
         this.listOfferFlavors = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
-        if (this.activeBlockHDD) {
+        if (this.instancesModel.volumeType == 0) {
           this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
             e.offerName.includes('HDD')
           );
@@ -276,7 +227,7 @@ export class InstancesEditComponent implements OnInit {
               this.listOfferFlavors[index] = null;
             }
             if (ch.charOptionValues[0] == 'CPU') {
-              e.description += ch.charOptionValues[1] + ' VCPU / ';
+              e.description += ch.charOptionValues[1] + ' vCPU / ';
               if (
                 Number.parseInt(ch.charOptionValues[1]) <
                 this.instancesModel.cpu
@@ -294,7 +245,7 @@ export class InstancesEditComponent implements OnInit {
               }
             }
             if (ch.charOptionValues[0] == 'HDD') {
-              if (this.activeBlockHDD) {
+              if (this.instancesModel.volumeType == 0) {
                 e.description += ch.charOptionValues[1] + ' GB HDD';
               } else {
                 e.description += ch.charOptionValues[1] + ' GB SSD';
@@ -333,19 +284,10 @@ export class InstancesEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  currentListSecurityGroup: any[] = [];
   getCurrentInfoInstance(instanceId: number): void {
     this.dataService.getById(instanceId, true).subscribe((data: any) => {
       this.instancesModel = data;
       this.instanceNameEdit = this.instancesModel.name;
-      if (this.instancesModel.volumeType == 0) {
-        this.activeBlockHDD = true;
-        this.activeBlockSSD = false;
-      }
-      if (this.instancesModel.volumeType == 1) {
-        this.activeBlockHDD = false;
-        this.activeBlockSSD = true;
-      }
       if (
         this.instancesModel.flavorId == 0 ||
         this.instancesModel.flavorId == null
@@ -353,29 +295,10 @@ export class InstancesEditComponent implements OnInit {
         this.isConfigPackage = false;
         this.isCustomconfig = true;
       }
-      this.configCustom.vCPU = this.instancesModel.cpu;
-      this.configCustom.ram = this.instancesModel.ram;
-      this.configCustom.capacity = this.instancesModel.storage;
       this.cdr.detectChanges();
       this.selectedElementFlavor = this.instancesModel.flavorId;
       this.region = this.instancesModel.regionId;
       this.projectId = this.instancesModel.projectId;
-      this.dataService
-        .getAllSecurityGroupByInstance(
-          this.instancesModel.cloudId,
-          this.instancesModel.regionId,
-          this.instancesModel.customerId,
-          this.instancesModel.projectId
-        )
-        .pipe(finalize(() => this.loadingSrv.close()))
-        .subscribe((datasg: any) => {
-          console.log('getAllSecurityGroupByInstance', datasg);
-          this.currentListSecurityGroup = datasg.map((obj) =>
-            obj.id.toString()
-          );
-          this.selectedSecurityGroup = this.currentListSecurityGroup;
-          this.cdr.detectChanges();
-        });
       this.initFlavors();
     });
   }
@@ -409,6 +332,137 @@ export class InstancesEditComponent implements OnInit {
       });
   }
 
+  onReloadInstanceDetail() {
+    this.router.navigate(['/app-smart-cloud/instances']);
+  }
+
+  volumeUnitPrice = 0;
+  volumeIntoMoney = 0;
+  ramUnitPrice = 0;
+  ramIntoMoney = 0;
+  cpuUnitPrice = 0;
+  cpuIntoMoney = 0;
+  getUnitPrice(volumeSize: number, ram: number, cpu: number) {
+    let tempInstance: InstanceResize = new InstanceResize();
+    tempInstance.currentFlavorId = this.instancesModel.flavorId;
+    tempInstance.cpu = cpu + this.instancesModel.cpu;
+    tempInstance.ram = ram + this.instancesModel.ram;
+    tempInstance.storage = volumeSize + this.instancesModel.storage;
+    tempInstance.newOfferId = 0;
+    tempInstance.newFlavorId = 0;
+    tempInstance.serviceInstanceId = this.instancesModel.id;
+    tempInstance.vpcId = this.projectId;
+    tempInstance.regionId = this.region;
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(tempInstance);
+    itemPayment.specificationType = 'instance_resize';
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    dataPayment.projectId = this.projectId;
+    this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien/đơn giá', result);
+      if (volumeSize != 0) {
+        this.volumeUnitPrice =
+          Number.parseFloat(result.data.totalAmount.amount) /
+          this.configCustom.capacity;
+        this.volumeIntoMoney = Number.parseFloat(
+          result.data.totalAmount.amount
+        );
+      }
+      if (ram != 0) {
+        this.ramUnitPrice =
+          Number.parseFloat(result.data.totalAmount.amount) /
+          this.configCustom.ram;
+        this.ramIntoMoney = Number.parseFloat(result.data.totalAmount.amount);
+      }
+      if (cpu != 0) {
+        this.cpuUnitPrice =
+          Number.parseFloat(result.data.totalAmount.amount) /
+          this.configCustom.vCPU;
+        this.cpuIntoMoney = Number.parseFloat(result.data.totalAmount.amount);
+      }
+      this.cdr.detectChanges();
+    });
+  }
+
+  onChangeConfigCustom() {
+    if (
+      this.configCustom.vCPU == 0 &&
+      this.configCustom.ram == 0 &&
+      this.configCustom.capacity == 0
+    ) {
+      this.totalAmount = 0;
+      this.totalincludesVAT = 0;
+    } else {
+      this.getTotalAmount();
+    }
+  }
+
+  dataSubjectVCPU: Subject<any> = new Subject<any>();
+  changeVCPU(value: number) {
+    this.dataSubjectVCPU.next(value);
+  }
+  onChangeVCPU() {
+    this.dataSubjectVCPU
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.configCustom.vCPU == 0) {
+          this.cpuUnitPrice = 0;
+          this.cpuIntoMoney = 0;
+          this.instanceResize.cpu = this.instancesModel.cpu;
+        } else {
+          this.getUnitPrice(0, 0, this.configCustom.vCPU);
+        }
+        this.onChangeConfigCustom();
+      });
+  }
+
+  dataSubjectRam: Subject<any> = new Subject<any>();
+  changeRam(value: number) {
+    this.dataSubjectRam.next(value);
+  }
+  onChangeRam() {
+    this.dataSubjectRam
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.configCustom.ram == 0) {
+          this.ramUnitPrice = 0;
+          this.ramIntoMoney = 0;
+          this.instanceResize.ram = this.instancesModel.ram;
+        } else {
+          this.getUnitPrice(0, this.configCustom.ram, 0);
+        }
+        this.onChangeConfigCustom();
+      });
+  }
+
+  dataSubjectCapacity: Subject<any> = new Subject<any>();
+  changeCapacity(value: number) {
+    this.dataSubjectCapacity.next(value);
+  }
+  onChangeCapacity() {
+    this.dataSubjectCapacity
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.configCustom.capacity == 0) {
+          this.volumeUnitPrice = 0;
+          this.volumeIntoMoney = 0;
+          this.instanceResize.storage = this.instancesModel.storage;
+        } else {
+          this.getUnitPrice(this.configCustom.capacity, 0, 0);
+        }
+        this.onChangeConfigCustom();
+      });
+  }
+
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/instances/instances-create']);
   }
@@ -429,8 +483,7 @@ export class InstancesEditComponent implements OnInit {
   save(): void {
     this.modalSrv.create({
       nzTitle: 'Xác nhận thông tin thay đổi',
-      nzContent:
-        'Quý khách chắn chắn muốn thực hiện thay đổi thông tin máy ảo?',
+      nzContent: 'Quý khách chắn chắn muốn thực hiện điều chỉnh máy ảo?',
       nzOkText: 'Đồng ý',
       nzCancelText: 'Hủy',
       nzOnOk: () => {
@@ -439,26 +492,15 @@ export class InstancesEditComponent implements OnInit {
     });
   }
 
-  onChangeConfigCustom() {
-    if (
-      this.configCustom.vCPU == this.instancesModel.cpu &&
-      this.configCustom.ram == this.instancesModel.ram &&
-      this.configCustom.capacity == this.instancesModel.storage
-    ) {
-      this.totalAmount = 0;
-      this.totalincludesVAT = 0;
-    } else {
-      this.getTotalAmount();
-    }
-  }
-
   instanceResizeInit() {
     this.instanceResize.description = null;
     this.instanceResize.currentFlavorId = this.instancesModel.flavorId;
     if (this.isCustomconfig) {
-      this.instanceResize.cpu = this.configCustom.vCPU;
-      this.instanceResize.ram = this.configCustom.ram;
-      this.instanceResize.storage = this.configCustom.capacity;
+      this.instanceResize.cpu =
+        this.configCustom.vCPU + this.instancesModel.cpu;
+      this.instanceResize.ram = this.configCustom.ram + this.instancesModel.ram;
+      this.instanceResize.storage =
+        this.configCustom.capacity + this.instancesModel.storage;
       this.instanceResize.newOfferId = 0;
       this.instanceResize.newFlavorId = 0;
     } else {
@@ -482,93 +524,36 @@ export class InstancesEditComponent implements OnInit {
     }
     this.instanceResize.addBtqt = 0;
     this.instanceResize.addBttn = 0;
-    this.instanceResize.typeName =
-      'SharedKernel.IntegrationEvents.Orders.Specifications.InstanceResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.instanceResize.serviceType = 1;
-    this.instanceResize.actionType = 4;
+    // this.instanceResize.typeName =
+    //   'SharedKernel.IntegrationEvents.Orders.Specifications.InstanceResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+    // this.instanceResize.serviceType = 1;
+    // this.instanceResize.actionType = 4;
     this.instanceResize.serviceInstanceId = this.instancesModel.id;
     this.instanceResize.regionId = this.region;
-    this.instanceResize.serviceName = null;
-    this.instanceResize.customerId = this.userId;
+    this.instanceResize.serviceName = 'Điều chỉnh';
     this.instanceResize.vpcId = this.projectId;
-    this.instanceResize.userEmail = this.userEmail;
-    this.instanceResize.actorEmail = this.userEmail;
   }
 
   readyEdit(): void {
-    this.updateInstances.id = this.instancesModel.id;
-    this.updateInstances.name = this.instanceNameEdit;
-    this.updateInstances.regionId = this.region;
-    this.updateInstances.projectId = this.projectId;
-    this.updateInstances.customerId = this.userId;
-    this.updateInstances.securityGroups = this.selectedSecurityGroup.join(',');
-    console.log('update instance', this.updateInstances);
+    this.instanceResizeInit();
+    let specificationInstance = JSON.stringify(this.instanceResize);
+    let orderItemInstanceResize = new OrderItem();
+    orderItemInstanceResize.orderItemQuantity = 1;
+    orderItemInstanceResize.specification = specificationInstance;
+    orderItemInstanceResize.specificationType = 'instance_resize';
+    orderItemInstanceResize.price = this.totalAmount;
+    this.orderItem.push(orderItemInstanceResize);
 
-    if (
-      this.offerFlavor != null ||
-      this.configCustom.vCPU != this.instancesModel.cpu ||
-      this.configCustom.ram != this.instancesModel.ram ||
-      this.configCustom.capacity != this.instancesModel.storage
-    ) {
-      this.dataService.update(this.updateInstances).subscribe({
-        next: (next) => {
-          console.log(next);
-          this.notification.success('', 'Cập nhật máy ảo thành công');
-        },
-        error: (e) => {
-          console.log(e);
-          this.notification.error(
-            e.statusText,
-            'Cập nhật máy ảo không thành công'
-          );
-        },
-      });
+    this.order.customerId = this.userId;
+    this.order.createdByUserId = this.userId;
+    this.order.note = 'instance resize';
+    this.order.orderItems = this.orderItem;
+    console.log('order instance resize', this.order);
 
-      this.instanceResizeInit();
-      let specificationInstance = JSON.stringify(this.instanceResize);
-      let orderItemInstanceResize = new OrderItem();
-      orderItemInstanceResize.orderItemQuantity = 1;
-      orderItemInstanceResize.specification = specificationInstance;
-      orderItemInstanceResize.specificationType = 'instance_resize';
-      orderItemInstanceResize.price = this.totalAmount / this.numberMonth;
-      orderItemInstanceResize.serviceDuration = this.numberMonth;
-      this.orderItem.push(orderItemInstanceResize);
-
-      this.order.customerId = this.userId;
-      this.order.createdByUserId = this.userId;
-      this.order.note = 'instance resize';
-      this.order.orderItems = this.orderItem;
-      console.log('order instance resize', this.order);
-
-      var returnPath: string = window.location.pathname;
-      this.router.navigate(['/app-smart-cloud/order/cart'], {
-        state: { data: this.order, path: returnPath },
-      });
-    } else {
-      this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-
-      this.dataService
-        .update(this.updateInstances)
-        .pipe(
-          finalize(() => {
-            this.loadingSrv.close();
-          })
-        )
-        .subscribe({
-          next: (next) => {
-            console.log(next);
-            this.notification.success('', 'Cập nhật máy ảo thành công');
-            this.router.navigate(['/app-smart-cloud/instances']);
-          },
-          error: (e) => {
-            console.log(e);
-            this.notification.error(
-              e.statusText,
-              'Cập nhật máy ảo không thành công'
-            );
-          },
-        });
-    }
+    var returnPath: string = window.location.pathname;
+    this.router.navigate(['/app-smart-cloud/order/cart'], {
+      state: { data: this.order, path: returnPath },
+    });
   }
 
   totalAmount: number = 0;
@@ -579,7 +564,6 @@ export class InstancesEditComponent implements OnInit {
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.instanceResize);
     itemPayment.specificationType = 'instance_resize';
-    itemPayment.serviceDuration = this.numberMonth;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];

@@ -1,0 +1,78 @@
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <span class="text-card-header">Danh sách  VPN Connections</span>
+<nz-row style="gap: 16px">
+  <nz-col>
+    <nz-input-group [nzPrefix]="prefixIconSearch"
+                    nzSize="large"
+                    style="width: 300px;">
+      <input [(ngModel)]="value"
+             nz-input
+             placeholder="Tìm kiếm theo tên"
+             (input)="onInputChange($event.target['value'])"
+             />
+    </nz-input-group>
+    <ng-template #prefixIconSearch>
+      <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+    </ng-template>
+  </nz-col>
+  <nz-col>
+      <button [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/create']" nz-button nzType="primary" nzSize="large">
+          <i nz-icon nzType="plus"></i>
+          <span class="button-text-primary">Tạo mới VPN Connection</span>
+        </button>
+  </nz-col>
+</nz-row>
+</div>
+<nz-table  #fixedTable
+style="margin-top: 20px"
+[nzData]="response?.records"
+[nzPageSize]="response?.pageSize"
+(nzPageSizeChange)="onPageSizeChange($event)"
+[nzPageIndex]="response?.currentPage"
+(nzPageIndexChange)="onPageIndexChange($event)"
+[nzTotal]="response?.totalCount"
+[nzFrontPagination]="false"
+[nzLoading]="isLoading">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>VPN Service</th>
+    <th>IKE Policy</th>
+    <th>IPsec Policy</th>
+    <th>Status</th>
+    <th nzAlign='center'>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of fixedTable.data">
+    <td><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/' +data.id]">{{data.name}}</a></td>
+    <td>
+      {{data.vpnService}}
+    </td>
+    <td>{{data.ikepolicy}}</td>
+    <td>{{data.ipSecPolicy}}</td>
+    <td>{{data.status === 'PENDING_CREATE' ? 'Pending Create' : data.status === 'DOWN' && 'Down'}}</td>
+    <td>
+        <div class="d-flex gap-2 justify-content-center align-items-center">
+          <span
+              style="color: #0066b3; margin-right: 10px; cursor: pointer"
+              nz-icon
+              nzType="edit"
+              nzTheme="outline"
+              [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/edit/' +data.id]"
+              [nzPopoverContent]="'Sửa'"
+              nz-popover
+              nzPopoverPlacement="bottom"
+            ></span>
+          <one-portal-delete-vpn-connection
+          [region]="region"
+          [project]="project"
+          [vpnconnectionid]="data.id"
+          [nameVpnconnection]="data.name"
+          (onOk)="handleOkDelete()"
+          ></one-portal-delete-vpn-connection>
+        </div>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

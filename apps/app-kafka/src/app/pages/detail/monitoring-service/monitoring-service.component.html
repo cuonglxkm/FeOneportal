@@ -1,0 +1,23 @@
+<nz-content>
+    <div class="inner-content">
+        <one-portal-monitoring-filter [serviceOrderCode]="serviceOrderCode"></one-portal-monitoring-filter>
+
+        <div nz-row vJustify="center" class="mb-5">
+            <div nz-col [nzSpan]="24">
+                <ng-container *ngIf="listOfResourceChartData.length > 0; else loadingChartTpl">
+                    <ng-container *ngFor="let chart of listOfResourceChartData">
+                        <apx-chart *ngIf="chart && chart?.series" [series]="chart.series" [chart]="chart.chart"
+                            [xaxis]="chart.xaxis" [yaxis]="chart.yaxis" [dataLabels]="chart.dataLabels"
+                            [grid]="chart.grid" [stroke]="chart.stroke" [title]="chart.title" [tooltip]="chart.tooltip">
+                        </apx-chart>
+                    </ng-container>
+                </ng-container>
+                <ng-template #loadingChartTpl>
+                    <div class="spin-style mt-5">
+                        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</nz-content>

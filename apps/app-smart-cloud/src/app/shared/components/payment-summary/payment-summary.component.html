@@ -5,7 +5,8 @@
         ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
       >
       <nz-breadcrumb-item> Thanh toán </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Cart </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Thanh toán dịch vụ </nz-breadcrumb-item>
+
     </nz-breadcrumb>
   </ng-template>
 </page-header>
@@ -16,22 +17,26 @@
         <span class="text-card-header">Thông tin khách hàng</span>
       </div>
       <nz-row>
-        <div nz-col nzSpan="12">
+        <div nz-col nzSpan="24">
           <nz-row style="height: 50px">
-            <span class="fw-600" style="width: 40%">Tên khách hàng:</span>
-            <span>{{ userModel.name || '' }}</span>
+            <span class="fw-600" nz-col nzSpan="4">Tên khách hàng:</span>
+            <span nz-col nzSpan="20">{{ userModel.name || '' }}</span>
           </nz-row>
           <nz-row style="height: 50px">
-            <span class="fw-600" style="width: 40%">Số điện thoại:</span>
-            <span>{{ userModel.phoneNumber }}</span>
+            <span class="fw-600" nz-col nzSpan="4">Số điện thoại:</span>
+            <span nz-col nzSpan="20">{{
+              userModel.phoneNumber === '' ? '-' : userModel.phoneNumber
+            }}</span>
           </nz-row>
           <nz-row style="height: 50px">
-            <span class="fw-600" style="width: 40%">Email:</span>
-            <span> {{ userModel.email }}</span>
+            <span class="fw-600" nz-col nzSpan="4">Email:</span>
+            <span nz-col nzSpan="20"> {{ userModel.email === '' ? '-' : userModel.email }}</span>
           </nz-row>
           <nz-row style="height: 50px">
-            <span class="fw-600" style="width: 40%">Địa chỉ:</span>
-            <span>{{ userModel.address }}</span>
+            <span class="fw-600" nz-col nzSpan="4">Địa chỉ:</span>
+            <span nz-col nzSpan="20">{{
+              userModel.address === '' ? '-' : userModel.address
+            }}</span>
           </nz-row>
         </div>
       </nz-row>
@@ -48,40 +53,29 @@
       >
         <thead>
           <tr>
-            <th style="width: 20px">STT</th>
-            <th>Dịch vụ</th>
-            <th>Đơn giá (VNĐ)</th>
-            <th>Thời hạn (Tháng)</th>
-            <th>Số lượng</th>
-            <th>Số tiền (VNĐ)</th>
+            <th>Tên dịch vụ</th>
+            <th>Hình thức</th>
+            <th nzAlign="right">Đơn giá (VND)</th>
+            <th nzAlign="right">Thời hạn (Tháng)</th>
+            <th nzAlign="right">Số lượng</th>
+            <th nzAlign="right">Số tiền (VND)</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of listServiceInfo; let i = index">
-            <td>
-              {{ i + 1 }}
-            </td>
-            <td class="text-blue">{{ item.name }}</td>
-            <td>{{ item.price }}</td>
-            <td>{{ item.duration }}</td>
-            <td>{{ item.amount }}</td>
-            <td>{{ item.currency }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.type }}</td>
+            <td nzAlign="right">{{ item.price | number: '1.0-0'  }}</td>
+            <td nzAlign="right">{{ item.duration }}</td>
+            <td nzAlign="right">{{ item.amount }}</td>
+            <td nzAlign="right">{{ item.currency | number: '1.0-0'  }}</td>
           </tr>
         </tbody>
       </nz-table>
     </nz-card>
-
-    <div style="border-radius: 8px" class="custom-div">
-      <label
-        nz-checkbox
-        [(ngModel)]="acceptTerm"
-        [ngModelOptions]="{ standalone: true }"
-        >Đồng ý với <a>Điều khoản đăng ký dịch vụ</a></label
-      >
-    </div>
   </div>
   <div nz-col nzSpan="8">
-    <nz-card style="border-radius: 8px">
+    <nz-card style="border-radius: 8px; border-color: #b2deff">
       <div style="margin-bottom: 20px">
         <span class="text-card-header">Thông tin thanh toán</span>
       </div>
@@ -90,8 +84,9 @@
           <tr style="margin-bottom: 5px">
             <td>Tổng tiền</td>
             <td style="text-align: right">
-              <span class="price">{{ totalAmount }} VND</span>
-              <span>VND/tháng</span>
+              <span class="price"
+                >{{ totalAmount | number: '1.0-0'  }} VND</span
+              >
             </td>
           </tr>
           <tr>
@@ -106,9 +101,11 @@
             <td>VAT(10%)</td>
             <td style="text-align: right">
               <span class="price"
-                >{{ (totalAmount - promotion) * 0.1 }} VND</span
+                >{{
+                  (totalAmount - promotion) * 0.1 | number : '1.0-0'
+                }}
+                VND</span
               >
-              <span>VND/tháng</span>
             </td>
           </tr>
           <tr>
@@ -141,23 +138,45 @@
             <td></td>
             <td></td>
           </tr>
-          <tr style="background-color: #CCE9FF; border-radius: 8px;">
-            <td style="padding: 10px;">
-              <span style="display: block; font-size: 16px; font-weight: 600;">Tổng thanh toán</span>
+          <tr style="background-color: #cce9ff">
+            <td style="padding: 10px; border-radius: 8px 0 0 8px">
+              <span style="display: block; font-size: 16px; font-weight: 600"
+                >Tổng thanh toán</span
+              >
               <span>( Đã bao gồm 10% VAT)</span>
             </td>
-            <td style="text-align: right; color: #EA3829; font-weight: 600; padding: 10px;">
-              {{ totalAmount - promotion + (totalAmount - promotion) * 0.1 }}
-              VNĐ
+            <td
+              style="
+                text-align: right;
+                color: #ea3829;
+                font-weight: 600;
+                padding: 10px;
+                border-radius: 0 8px 8px 0;
+              "
+            >
+              {{
+                totalAmount - promotion + (totalAmount - promotion) * 0.1
+                  | number: '1.0-0' 
+              }}
+              VND
             </td>
           </tr>
         </nz-table>
-        <div style="margin-top: 30px;">
+
+        <div style="border-radius: 8px" class="custom-div">
+          <label
+            nz-checkbox
+            [(ngModel)]="acceptTerm"
+            [ngModelOptions]="{ standalone: true }"
+            >Đồng ý với <a>Điều khoản đăng ký dịch vụ</a></label
+          >
+        </div>
+        <div style="margin-top: 10px">
           <button
-          [disabled]="!acceptTerm"
-          nz-button
-          nzType="primary"
-          (click)="payNow()"
+            [disabled]="!acceptTerm"
+            nz-button
+            nzType="primary"
+            (click)="payNow()"
             style="
               width: 100%;
               display: flex;
@@ -169,7 +188,11 @@
             <img src="assets/imgs/wallet.svg" />
             Thanh toán
           </button>
-          <button style="width: 100%; ; margin: 15px 0px 0px 0px; border: none" nz-button (click)="navigateToCreate()">
+          <button
+            style="width: 100%; margin: 15px 0px 0px 0px; border: none"
+            nz-button
+            (click)="navigateToCreate()"
+          >
             <img
               style="padding-right: 10px"
               src="assets/imgs/arrow-left-2.svg"
@@ -177,7 +200,6 @@
             />
             <span>Quay lại</span>
           </button>
-          
         </div>
       </div>
     </nz-card>

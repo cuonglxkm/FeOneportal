@@ -60,8 +60,6 @@
               <nz-input-number
                 style="width: 50%; margin-left: -1px"
                 [(ngModel)]="numberMonth"
-                (ngModelChange)="onChangeTime()"
-                [ngModelOptions]="{ standalone: true }"
                 [disabled]="true"
                 nzSize="large"
               ></nz-input-number>
@@ -75,7 +73,7 @@
           </nz-form-control>
         </nz-form-item>
         <div class="text-label" style="margin-top: -24px">
-          Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}
+          Ngày hết hạn: 
         </div>
       </nz-card>
       <nz-card style="border-radius: 8px">
@@ -140,7 +138,7 @@
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmount | number }} VNĐ
+              {{ totalAmount | number }} VND
             </span>
           </nz-col>
         </nz-row>
@@ -160,7 +158,7 @@
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #ea3829" nzAlign="right">
               {{ totalincludesVAT | number }}
-              VNĐ
+              VND
             </span>
           </nz-col>
         </nz-row>
@@ -171,7 +169,7 @@
               nz-button
               nzSize="large"
               nzType="primary"
-              (click)="create()"
+              (click)="update()"
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               Khởi tạo

@@ -12,7 +12,15 @@ export class BucketPolicy {
   sid: string;
   user: string;
   permission: string;
-  action: string[];
+  action: string[] = [];
+}
+
+export class bucketPolicyDetail {
+  subuser: string
+  permission: string
+  actions: string[] = []
+  sid: string
+  typeUser: string
 }
 
 export class BucketDetail {

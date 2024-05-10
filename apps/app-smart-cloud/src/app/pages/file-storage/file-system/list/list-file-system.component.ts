@@ -37,6 +37,7 @@ export class ListFileSystemComponent implements OnInit {
 
   onInputChange(value) {
     this.value = value;
+    this.getListFileSystem(false)
   }
 
   regionChanged(region: RegionModel) {

@@ -6,7 +6,7 @@
     <nz-breadcrumb-item>
       <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
     </nz-breadcrumb-item>
-    <nz-breadcrumb-item> Chỉnh sửa máy ảo </nz-breadcrumb-item>
+    <nz-breadcrumb-item> Điều chỉnh máy ảo </nz-breadcrumb-item>
   </nz-breadcrumb>
   <div class="text-right">
     <region-select-dropdown
@@ -19,7 +19,7 @@
   </div>
   <div>
     <nz-row style="margin-bottom: -10px">
-      <div class="page-header-custom">Chỉnh sửa máy ảo</div>
+      <div class="page-header-custom">Điều chỉnh máy ảo</div>
     </nz-row>
     <nz-row style="margin-top: 20px">
       <div style="width: 100%" class="non-pointer">
@@ -30,219 +30,215 @@
             alt=""
           />Tạo mới máy ảo
         </button>
-        <one-portal-instances-btn [instancesId]="id" style="margin-left: 8px">
+        <one-portal-instances-btn
+          [instancesId]="id"
+          (valueChanged)="onReloadInstanceDetail()"
+          style="margin-left: 8px"
+        >
         </one-portal-instances-btn>
       </div>
     </nz-row>
   </div>
 </page-header>
 
-<form nz-form [formGroup]="form" [nzLayout]="'vertical'" *ngIf="instancesModel">
+<form nz-form [nzLayout]="'vertical'" *ngIf="instancesModel">
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
-      <nz-card style="border-radius: 8px" [nzBordered]="false">
+      <nz-card
+        style="border-radius: 8px"
+        [nzBordered]="false"
+        [nzLoading]="loading"
+        *ngIf="instancesModel"
+      >
         <div style="margin-bottom: 20px">
           <span class="text-card-header">Thông tin máy ảo</span>
         </div>
-        <nz-alert
-          nzType="warning"
-          [nzDescription]="nzDescriptionWarning01"
-          nzShowIcon
-        ></nz-alert>
-        <ng-template #nzDescriptionWarning01>
-          <div>Host name không thay đổi khi điều chỉnh tên máy ảo</div>
-        </ng-template>
-        <br />
-        <nz-row nzGutter="16">
-          <nz-col nzLg="24" nzMd="12" nzSm="24">
-            <nz-form-item>
-              <nz-form-label nzFor="name"
-                >Tên máy ảo (<span class="text-red">*</span>)</nz-form-label
-              >
-              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                <input
-                  class="input-custom"
-                  nz-input
-                  formControlName="name"
-                  [(ngModel)]="instanceNameEdit"
-                  id="name"
-                  placeholder="Nhập tên máy ảo"
-                  maxlength="50"
-                  minlength="1"
-                  (change)="
-                    instanceCreate.serviceName =
-                      instanceCreate.serviceName.trim()
-                  "
-                />
-                <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng nhập thông tin</ng-container
-                  >
-                  <ng-container *ngIf="control.hasError('pattern')"
-                    >Tên gồm 50 ký tự viết liền không dấu cách và không chứa ký
-                    tự đặc biệt</ng-container
-                  >
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-          </nz-col>
-        </nz-row>
-        <nz-row nzGutter="16">
-          <nz-col nzLg="24" nzMd="12" nzSm="24">
-            <nz-form-item>
-              <nz-form-label nzFor="name"
-                >Hệ điều hành: {{ instancesModel.imageName }}
-                <a (click)="navigateToChangeImage()" style="margin-left: 15px">
-                  <img src="assets/imgs/refresh.svg" alt="" /><span
-                    style="margin-left: 15px"
-                    >Thay đổi</span
-                  ></a
+        <div class="customRow">
+          <nz-row>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >Tên máy ảo:</span
                 >
-              </nz-form-label>
-            </nz-form-item>
-          </nz-col>
-        </nz-row>
-        <nz-row nzGutter="16">
-          <nz-form-label
-            >Chọn loại Volume (<span class="text-red">*</span>)</nz-form-label
-          >
-        </nz-row>
-        <nz-radio-group
-          style="width: 100%; display: inline-flex"
-          name="selectedHDDorSSD"
-        >
-          <nz-row
-            [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
-            style="margin-top: 10px"
-            ><nz-col
-              [nzLg]="12"
-              [nzMd]="24"
-              [nzSm]="24"
-              [nzXl]="12"
-              [nzXs]="24"
-            >
-              <nz-card
-                style="border-radius: 4px"
-                [nzAlign]="'middle'"
-                [ngStyle]="{
-                    border: activeBlockHDD
-                  ? '1px solid #0066B3'
-                  : '1px solid #DADADA',
-                  height: cardHeight,
-                }"
-              >
-                <nz-row nzGutter="16">
-                  <nz-col nzSpan="20">
-                    <nz-card-meta
-                      [nzAvatar]="nzAvatarselectedHDDorSSD1"
-                      [nzTitle]="nzTitleselectedHDDorSSD1"
-                      [nzDescription]="nzDescriptionselectedHDDorSSD1"
-                    >
-                      <ng-template #nzAvatarselectedHDDorSSD1>
-                        <input
-                          type="radio"
-                          [disabled]="true"
-                          [checked]="activeBlockHDD"
-                          (click)="initHDD()"
-                        />
-                      </ng-template>
-                      <ng-template #nzTitleselectedHDDorSSD1>
-                        <b>HDD</b>
-                      </ng-template>
-                      <ng-template #nzDescriptionselectedHDDorSSD1>
-                        <ellipsis class="text-custom">
-                          Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao
-                          lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng công việc
-                          chuyên sâu thông lượng
-                        </ellipsis>
-                      </ng-template>
-                    </nz-card-meta></nz-col
-                  >
-                  <nz-col
-                    style="
-                      display: flex;
-                      align-items: center;
-                      margin-top: -24px;
-                    "
-                    [ngStyle]="{
-                      height: cardHeight,
-                    }"
-                    nzSpan="4"
-                  >
-                    <img
-                      [src]="
-                        activeBlockHDD
-                          ? 'assets/imgs/hdd-svgrepo-com-active.svg'
-                          : 'assets/imgs/hdd-svgrepo-com.svg'
-                      "
-                      alt=""
-                    />
-                  </nz-col>
-                </nz-row>
-              </nz-card>
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.name || ''
+                }}</span>
+              </nz-row>
             </nz-col>
-            <nz-col [nzLg]="12" [nzMd]="24" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-              <nz-card
-                style="border-radius: 4px"
-                [nzAlign]="'middle'"
-                [ngStyle]="{
-                  border: activeBlockSSD
-                  ? '1px solid #0066B3'
-                  : '1px solid #DADADA',
-                  height: cardHeight,
-                }"
-              >
-                <nz-row nzGutter="16">
-                  <nz-col nzSpan="20"
-                    ><nz-card-meta
-                      [nzAvatar]="nzAvatarselectedHDDorSSD2"
-                      [nzTitle]="nzTitleselectedHDDorSSD2"
-                      [nzDescription]="nzDescriptionselectedHDDorSSD2"
-                    >
-                      <ng-template #nzAvatarselectedHDDorSSD2>
-                        <input
-                          type="radio"
-                          [disabled]="true"
-                          [checked]="activeBlockSSD"
-                          (click)="initSSD()"
-                        />
-                      </ng-template>
-                      <ng-template #nzTitleselectedHDDorSSD2>
-                        <b>SSD</b>
-                      </ng-template>
-                      <ng-template #nzDescriptionselectedHDDorSSD2>
-                        <ellipsis class="text-custom"
-                          >Lựa chọn tốt hơn cho khối lượng công việc phân tích
-                          dữ liệu hoặc chơi game
-                        </ellipsis>
-                      </ng-template>
-                    </nz-card-meta>
-                  </nz-col>
-                  <nz-col
-                    style="
-                      display: flex;
-                      align-items: center;
-                      margin-top: -24px;
-                    "
-                    [ngStyle]="{
-                        height: cardHeight,
-                      }"
-                    nzSpan="4"
-                  >
-                    <img
-                      [src]="
-                        activeBlockSSD
-                          ? 'assets/imgs/ssd-svgrepo-com-active.svg'
-                          : 'assets/imgs/ssd-svgrepo-com.svg'
-                      "
-                      alt=""
-                    />
-                  </nz-col>
-                </nz-row>
-              </nz-card> </nz-col
-          ></nz-row>
-        </nz-radio-group>
-
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%">Hệ điều hành:</span>
+                <span class="text-value-detail"
+                  >{{ instancesModel.imageName }}
+                  <img
+                    style="cursor: pointer; margin-left: 10px"
+                    nz-tooltip="Thay đổi"
+                    src="assets/imgs/refresh.svg"
+                    alt=""
+                    (click)="navigateToChangeImage()"
+                /></span> </nz-row
+            ></nz-col>
+          </nz-row>
+          <nz-row style="background-color: #e2e2e9">
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >Gói cấu hình:</span
+                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.flavorName | slice : 3
+                }}</span>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >Truy cập và bảo mật:</span
+                >
+                <span
+                  class="text-value-detail"
+                  *ngFor="let item of listSecurityGroupModel; let first = first"
+                  >{{ !first ? ', ' : '' }}{{ item.name }}
+                </span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >Trạng thái tác vụ:</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState == 'SHUTOFF'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState == 'powering-off'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState == 'ACTIVE'"
+                  class="text-value-detail customSpan"
+                  style="color: #008d47"
+                  >{{ instancesModel.taskState }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState == 'powering-on'"
+                  class="text-value-detail customSpan"
+                  style="color: #008d47"
+                  >{{ instancesModel.taskState }}</span
+                >
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%">IP Public:</span>
+                <span class="text-value-detail">{{ listIPPublicStr }}</span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row style="background-color: #e2e2e9">
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >Loại ổ cứng:</span
+                >
+                <span
+                  *ngIf="instancesModel.volumeType == 0"
+                  class="text-value-detail customSpan"
+                  >HDD</span
+                >
+                <span
+                  *ngIf="instancesModel.volumeType == 1"
+                  class="text-value-detail customSpan"
+                  >SSD</span
+                >
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%">IP LAN:</span>
+                <span class="text-value-detail">{{ listIPLanStr }}</span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >Băng thông trong nước:</span
+                >
+                <span class="text-value-detail customSpan"
+                  >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
+                >
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >Băng thông quốc tế:</span
+                >
+                <span class="text-value-detail"
+                  >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
+                >
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row style="background-color: #e2e2e9">
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >Ngày khởi tạo:</span
+                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.createdDate | date : 'dd/MM/yyyy'
+                }}</span>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%">Ngày hết hạn:</span>
+                <span class="text-value-detail"
+                  >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
+                </span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+        </div>
+      </nz-card>
+      <one-portal-blockstorage-detail
+        [instancesId]="id"
+        [isDetail]="true"
+      ></one-portal-blockstorage-detail>
+      <one-portal-network-detail
+        [instancesId]="id"
+        [isDetail]="true"
+      ></one-portal-network-detail>
+      <nz-card style="border-radius: 8px" [nzBordered]="false">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">Thông tin điều chỉnh</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <span class="text-label"
+            >Cấu hình hiện tại: {{ instancesModel.cpu }} vCPU,
+            {{ instancesModel.ram }}GB RAM, {{ instancesModel.storage }}GB
+            <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+            <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+          </span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <span class="text-label"
+            >Cấu hình điều chỉnh: {{ instanceResize.cpu }} vCPU,
+            {{ instanceResize.ram }}GB RAM, {{ instanceResize.storage }}GB
+            <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+            <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+          </span>
+        </div>
         <nz-tabset nzCentered nzSize="large">
           <nz-tab
             *ngIf="isConfigPackage"
@@ -335,62 +331,112 @@
               <table>
                 <thead class="ant-table-thead">
                   <tr>
-                    <th>VCPU</th>
-                    <th>RAM (GB)</th>
-                    <th>Dung lượng (GB)</th>
-                    <th>IOPS</th>
-                    <th>Giá theo tháng (VNĐ)</th>
-                    <th>Giá theo giờ (VNĐ)</th>
+                    <th>Tài nguyên</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền/Đơn giá</th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
                   <tr>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="configCustom.vCPU"
-                        (ngModelChange)="onChangeConfigCustom()"
+                    <td style="width: 50%">
+                      <nz-form-label style="margin-left: -12px"
+                        >Dung lượng (<span class="text-red">*</span>) -
+                        GB</nz-form-label
+                      >
+                      <nz-slider
+                        [nzMin]="0"
+                        [nzMax]="1000"
+                        [(ngModel)]="configCustom.capacity"
+                        (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="instancesModel.cpu"
-                        [nzMax]="62"
-                        [nzStep]="1"
-                        nzSize="large"
-                      ></nz-input-number>
-                    </td>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="configCustom.ram"
-                        (ngModelChange)="onChangeConfigCustom()"
-                        [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="instancesModel.ram"
-                        [nzMax]="62"
-                        [nzStep]="1"
-                        nzSize="large"
-                      ></nz-input-number>
+                      ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="onChangeConfigCustom()"
+                        (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="instancesModel.storage"
-                        [nzMax]="100"
+                        [nzMin]="0"
+                        [nzMax]="1000"
                         [nzStep]="1"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
-                    <td>
+                    <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ configCustom.iops }}
+                        {{ volumeIntoMoney | number }} VND </label
+                      ><br />
+                      <label class="text-custom-price">
+                        {{ volumeUnitPrice | number }} VND
                       </label>
                     </td>
+                  </tr>
+                  <tr>
                     <td>
-                      <label class="text-custom-price">
-                        {{ configCustom.priceMonth }}
-                      </label>
+                      <nz-form-label style="margin-left: -12px"
+                        >RAM (<span class="text-red">*</span>) -
+                        GB</nz-form-label
+                      >
+                      <nz-slider
+                        [nzMin]="0"
+                        [nzMax]="62"
+                        [(ngModel)]="configCustom.ram"
+                        (ngModelChange)="changeRam($event)"
+                        [ngModelOptions]="{ standalone: true }"
+                      ></nz-slider>
                     </td>
                     <td>
+                      <nz-input-number
+                        [(ngModel)]="configCustom.ram"
+                        (ngModelChange)="changeRam($event)"
+                        [ngModelOptions]="{ standalone: true }"
+                        [nzMin]="0"
+                        [nzMax]="62"
+                        [nzStep]="1"
+                        nzSize="large"
+                      ></nz-input-number>
+                    </td>
+
+                    <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ configCustom.priceHour }}
+                        {{ ramIntoMoney | number }} VND </label
+                      ><br />
+                      <label class="text-custom-price">
+                        {{ ramUnitPrice | number }} VND
+                      </label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <nz-form-label style="margin-left: -12px"
+                        >CPU (<span class="text-red">*</span>) -
+                        vCPU</nz-form-label
+                      >
+                      <nz-slider
+                        [nzMin]="0"
+                        [nzMax]="62"
+                        [(ngModel)]="configCustom.vCPU"
+                        (ngModelChange)="changeVCPU($event)"
+                        [ngModelOptions]="{ standalone: true }"
+                      ></nz-slider>
+                    </td>
+                    <td>
+                      <nz-input-number
+                        [(ngModel)]="configCustom.vCPU"
+                        (ngModelChange)="changeVCPU($event)"
+                        [ngModelOptions]="{ standalone: true }"
+                        [nzMin]="0"
+                        [nzMax]="62"
+                        [nzStep]="1"
+                        nzSize="large"
+                      ></nz-input-number>
+                    </td>
+                    <td nzAlign="right">
+                      <label class="text-custom-price">
+                        {{ cpuIntoMoney | number }} VND </label
+                      ><br />
+                      <label class="text-custom-price">
+                        {{ cpuUnitPrice | number }} VND
                       </label>
                     </td>
                   </tr>
@@ -399,91 +445,54 @@
             </div>
           </nz-tab>
         </nz-tabset>
-        <br />
-        <nz-row nzGutter="16">
-          <nz-col nzLg="12" nzMd="12" nzSm="24">
-            <nz-form-item>
-              <nz-form-label>IP Public: {{ listIPPublicStr }}</nz-form-label>
-            </nz-form-item>
-          </nz-col>
-          <nz-col nzLg="12" nzMd="12" nzSm="24">
-            <nz-form-item>
-              <nz-form-label>IP LAN: {{ listIPLanStr }}</nz-form-label>
-            </nz-form-item>
-          </nz-col>
-        </nz-row>
-        <nz-row nzGutter="16">
-          <nz-col style="width: 100%">
-            <nz-form-item>
-              <nz-form-label>Chọn Security Group</nz-form-label>
-              <nz-form-control>
-                <nz-select
-                  nzMode="multiple"
-                  nzPlaceHolder="Chọn Security Group"
-                  [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="selectedSecurityGroup"
-                  nzSize="large"
-                >
-                  <nz-option
-                    *ngFor="let i of listSecurityGroup"
-                    [nzLabel]="i.name"
-                    [nzValue]="i.id"
-                  />
-                </nz-select>
-              </nz-form-control> </nz-form-item
-          ></nz-col>
-        </nz-row>
-
-        <nz-row style="margin-bottom: -26px" nzGutter="16">
-          <nz-col nzLg="12" nzMd="12" nzSm="24">
-            <nz-form-item
-              ><nz-form-label
-                >Thời gian bắt đầu sử dụng:
-                {{
-                  instancesModel.createdDate | date : 'dd/MM/yyyy'
-                }}</nz-form-label
-              ></nz-form-item
-            >
-          </nz-col>
-          <nz-col nzLg="12" nzMd="12" nzSm="24">
-            <nz-form-item>
-              <nz-form-label
-                ><span style="color: #ea3829"
-                  >Thời gian hết hạn sử dụng:
-                  {{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}</span
-                ></nz-form-label
-              >
-            </nz-form-item>
-          </nz-col>
-        </nz-row>
+        <div style="margin-top: 20px" class="text-label">
+          Ngày điều chỉnh: {{ today | date : 'dd/MM/yyyy' }}
+        </div>
       </nz-card>
-      <one-portal-blockstorage-detail
-        [instancesId]="id"
-        [isDetail]="false"
-      ></one-portal-blockstorage-detail>
-
-      <one-portal-network-detail
-        [instancesId]="id"
-        [isDetail]="false"
-      ></one-portal-network-detail>
     </nz-col>
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thành tiền</span>
+          <span class="text-card-header">Chi phí ước tính</span>
         </div>
-        <nz-row style="margin-bottom: 10px" nzGutter="16">
-          <nz-col nzSpan="16">
-            <span class="text-label"> Chi phí thay đổi cấu hình máy ảo: </span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmount | number }} VNĐ
-            </span>
-          </nz-col>
-        </nz-row>
+        <div class="text-value">Tên máy ảo</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ instancesModel.name }}
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div class="text-value">Hệ điều hành</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ instancesModel.imageName }}
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div class="text-value">Gói dịch vụ</div>
+        <div
+          *ngIf="instanceResize.cpu"
+          style="margin-top: 10px"
+          class="text-label"
+        >
+          {{ instanceResize.cpu }} CPUs
+        </div>
+        <div
+          *ngIf="instanceResize.ram"
+          style="margin-top: 10px"
+          class="text-label"
+        >
+          {{ instanceResize.ram }} GB RAM
+        </div>
+        <div
+          *ngIf="instanceResize.storage"
+          style="margin-top: 10px"
+          class="text-label"
+        >
+          {{ instanceResize.storage }} GB Root Disk (<span
+            *ngIf="instancesModel.volumeType == 0"
+            >HDD</span
+          ><span *ngIf="instancesModel.volumeType == 1">SSD</span>)
+        </div>
         <nz-row
           style="
+            margin-top: 16px;
             margin-bottom: 20px;
             background-color: #cce9ff;
             padding: 16px 0 16px 0;
@@ -492,47 +501,29 @@
           nzGutter="16"
         >
           <nz-col nzSpan="16">
-            <span class="text-label"> Thành tiền (Đã bao gồm 10% VAT): </span>
+            <span class="text-label">Tổng thanh toán</span><br />
+            <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #ea3829" nzAlign="right">
               {{ totalincludesVAT | number }}
-              VNĐ
+              VND
             </span>
           </nz-col>
         </nz-row>
         <nz-row>
-          <nz-col style="width: 100%" class="text-right">
-            <button nz-button (click)="cancel()">
-              <img
-                style="padding-right: 10px; margin-top: -4px"
-                src="assets/imgs/cancel.svg"
-                alt=""
-              />Hủy
-            </button>
+          <nz-col style="width: 100%">
             <button
+              style="width: 100%"
               nz-button
               nzSize="large"
               nzType="primary"
               (click)="save()"
-              [disabled]="
-                form.invalid ||
-                (totalincludesVAT == 0 &&
-                  instanceNameEdit == instancesModel.name &&
-                  selectedSecurityGroup == currentListSecurityGroup)
-              "
+              [disabled]="totalAmount == 0"
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span
-                [style.color]="
-                  form.invalid ||
-                  (totalincludesVAT == 0 &&
-                    instanceNameEdit == instancesModel.name &&
-                    selectedSecurityGroup == currentListSecurityGroup)
-                    ? 'gray'
-                    : 'white'
-                "
-                >Chỉnh sửa</span
+              <span [style.color]="totalAmount == 0 ? 'gray' : 'white'"
+                >Điều chỉnh</span
               >
             </button>
           </nz-col>

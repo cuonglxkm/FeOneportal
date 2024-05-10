@@ -1,0 +1,352 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Chỉnh sửa IPsecPolicies'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
+          >Dịch vụ hạ tầng</a
+        >
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+          >VPN site to site</a
+        ></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item>Chính sửa IPsec Policy</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzSpan]="17" class="gutter-row">
+    <nz-card style="border-radius: 8px">
+      <h2 class="custom-title">Thông tin IPsec Policy</h2>
+      <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="nameErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px;">
+                    <span>Name</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle"
+                          nzTheme="outline"
+                          nz-popover
+                          [nzPopoverContent]="'Tên của IPsec, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
+                          nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  required
+                  placeholder="Nhập tên"
+                  formControlName="name"
+                  class="input-custom"
+                />
+                <ng-template #nameErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">Tên ipsec policy không được để trống</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">Tên ipsec policy chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+                </ng-template> 
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px;">
+                    <span>Authorization Algorithm</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle"
+                          nzTheme="outline"
+                          nz-popover
+                          [nzPopoverContent]="'Thuật toán xác thực danh tính cho IPsec Policy bao gồm các lựa chọn: sha1, sha256, sha384, sha512 (dựa trên thuật toán băm mã hóa dựa theo số bit) mặc định sha1.'"
+                          nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedAuthorizationAlgorithm"
+                  [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
+                >
+                  <nz-option
+                    *ngFor="let data of authorizationAlgorithm"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px;">
+                    <span>Encryption Mode</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle"
+                          nzTheme="outline"
+                          nz-popover
+                          [nzPopoverContent]="'Giao thức này cung cấp tính bí mật dữ liệu bằng việc mật mã hóa các gói tin. Bao gồm tunnel và transport (mặc định là tunnel).'"
+                          nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedEncryptionMode"
+                  [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
+                >
+                  <nz-option
+                    *ngFor="let data of encryptionMode"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px;">
+                    <span>Encryption Algorithm</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle"
+                          nzTheme="outline"
+                          nz-popover
+                          [nzPopoverContent]="'Thuật toán mã hóa đối xứng sử dụng cho IPsec Policy bao gồm các lựa chọn: 3des, aes-128, aes-192, aes-256 ( dựa theo thuật toán mã hóa đối xứng  với độ dài khóa tương đương với số bit) mặc định aes-128.'"
+                          nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedEncryptionAlgorithm"
+                  [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
+                >
+                  <nz-option
+                    *ngFor="let data of encryptionAlgorithm"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control nzErrorTip="File System không đuợc để trống!">
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px;">
+                    <span>Lifetime Units</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle"
+                          nzTheme="outline"
+                          nz-popover
+                          [nzPopoverContent]="'Đơn vị đo thời gian tồn tại của IPsec Policy key (mặc định là giây).'"
+                          nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedLifetimeUnits"
+                  [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
+                >
+                  <nz-option
+                    *ngFor="let data of lifetimeUnits"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="lifeTimeValueErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px;">
+                    <span>Lifetime Value</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle"
+                          nzTheme="outline"
+                          nz-popover
+                          [nzPopoverContent]="' Giá trị của Lifetime units, Khách hàng tùy ý nhập giá trị lớn hơn 60 (mặc định là 3600).'"
+                          nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="number"
+                  formControlName="lifeTimeValue"
+                  required
+                  class="input-custom"
+                />
+                <ng-template #lifeTimeValueErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">Lifetime Value không được để trống</ng-container>
+                  <ng-container *ngIf="control.hasError('min')">Giá trị Lifetime Value phải lớn hơn 60</ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px;">
+                    <span>Perfect Forward Secrecy</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle"
+                          nzTheme="outline"
+                          nz-popover
+                          [nzPopoverContent]="'Perfect Forward Secrecy (PFS) là một tính năng bảo mật đảm bảo rằng ngay cả khi kẻ tấn công giành được quyền truy cập vào thông tin liên lạc được mã hóa, thì chúng cũng không thể giải mã các phiên liên lạc trước đây nếu chúng không có quyền truy cập vào các khóa mã hóa được sử dụng trong các phiên đó. Có các lựa chọn là group2, group5, group14 (mặc định là group5).'"
+                          nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedPerfectForwardSecrecy"
+                  [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
+                >
+                  <nz-option
+                    *ngFor="let data of perfectForwardSecrecy"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px;">
+                    <span>Transform Protocol</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle"
+                          nzTheme="outline"
+                          nz-popover
+                          [nzPopoverContent]="'Giao thức truyền tải mã hóa của IPsec bao gồm các lựa chọn: esp, ah, ah-esp (mặc định esp).'"
+                          nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedTransformProtocol"
+                  [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
+                >
+                  <nz-option
+                    *ngFor="let data of transformProtocol"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </form>
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="7" class="gutter-row">
+    <nz-card style="border-radius: 8px">
+      <h2 class="custom-title">Thông số cấu hình</h2>
+      <div style="overflow: auto; height: 358px; margin-bottom: 16px;">
+        <div style="margin-bottom: 12px">
+          <h3 class="custom-subtitle">Name</h3>
+          <span>{{form.value.name}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Authorization Algorithm</h3>
+          <span>{{selectedAuthorizationAlgorithm}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Encryption Mode</h3>
+          <span>{{selectedEncryptionMode}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Encryption Algorithm</h3>
+          <span>{{selectedEncryptionAlgorithm}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Lifetime Units</h3>
+          <span>{{selectedLifetimeUnits}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Lifetime Value</h3>
+          <span>{{form.value.lifeTimeValue}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Perfect Forward Secrecy</h3>
+          <span>{{selectedPerfectForwardSecrecy}}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Transform Protocol</h3>
+          <span>{{selectedTransformProtocol}}</span>
+        </div>
+      </div>
+      <button
+        (click)="handleEdit()"
+        nz-button
+        nzType="primary"
+        style="
+          border: none;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+        nzSize="large"
+        [disabled]="form.invalid"
+      >
+        <span
+          nz-icon
+          nzType="edit"
+        ></span>
+        <span class="button-text-primary">Chỉnh sửa</span>
+      </button>
+    </nz-card>
+  </div>
+</div>
+<div
+  class="text-right"
+  style="
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  "
+></div>

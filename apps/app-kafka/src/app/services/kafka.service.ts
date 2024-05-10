@@ -1,22 +1,41 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { decamelize } from 'humps';
 import { Observable } from 'rxjs';
 import { AppConstants } from '../core/constants/app-constant';
+import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
 import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
-import { ListTopicResponse } from '../core/models/topic-response.model';
-import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
-import { Pagination2 } from '../core/models/pagination2.model';
-import { decamelize } from 'humps';
+import { KafkaCreateReq, KafkaUpdateReq } from '../core/models/kafka-create-req.model';
+import { KafkaDetail, KafkaInfor } from '../core/models/kafka-infor.model';
+import { Pagination } from '../core/models/pagination.model';
+import { ServicePack } from '../core/models/service-pack.model';
+import { BaseService } from './base.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { KafkaVersion } from '../core/models/kafka-version.model';
+import { KafkaStatus } from '../core/models/status.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class KafkaService {
-  private baseUrl = 'http://api.galaxy.vnpt.vn:30383/kafka-service';
+export class KafkaService extends BaseService {
+  private kafkaUrl = this.baseUrl + '/kafka-service';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+
+    super()
+  }
+
+  private getHeaders() {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'user_root_id': this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
+    })
+  }
 
   getInfoConnection(
     serviceOrderCode: string
@@ -24,7 +43,7 @@ export class KafkaService {
     const params = new HttpParams().set('service_order_code', serviceOrderCode);
 
     return this.http.get<BaseResponse<InfoConnection>>(
-      `${this.baseUrl}/topic/get-info-connection`,
+      `${this.kafkaUrl}/kafka/connection-info`,
       {
         params,
       }
@@ -37,7 +56,7 @@ export class KafkaService {
     const params = new HttpParams().set('service_order_code', serviceOrderCode);
 
     return this.http.get<BaseResponse<BrokerConfig[]>>(
-      `${this.baseUrl}/config/broker-config`,
+      `${this.kafkaUrl}/configs/broker`,
       {
         params,
       }
@@ -49,7 +68,7 @@ export class KafkaService {
     username: string
   ): Observable<BaseResponse<string>> {
     return this.http.post<BaseResponse<string>>(
-      `${this.baseUrl}/otp/sendOtpForgotPass?service_order_code=${serviceOrderCode}&user_forgot=${username}`,
+      `${this.kafkaUrl}/otp/sendOtpForgotPass?service_order_code=${serviceOrderCode}&user_forgot=${username}`,
       null
     );
   }
@@ -77,118 +96,93 @@ export class KafkaService {
     );
   }
 
-  getListTopic(
-    page:number,
-    size:number,
-    search:string,
-    serviceOrderCode: string
-  ): Observable<BaseResponse<ListTopicResponse>> {
-    const params = new HttpParams().set('service_order_code', serviceOrderCode);
-    return this.http.get<BaseResponse<ListTopicResponse>>(
-      `${this.baseUrl}/topic/listTopicPortal?page=${page}&size=${size}&stringToSearch=${search}&serviceOrderCode=${serviceOrderCode}`
-    );
-  }
-
-  getListPartitions(
-    topicName: string,
-    serviceOrderCode: string
-  ): Observable<BaseResponse<any>> {
-    const params = new HttpParams().set('service_order_code', serviceOrderCode);
-    return this.http.get<BaseResponse<any>>(
-      `${this.baseUrl}/topic/listPartitions?topic=${
-        topicName || ''
-      }&serviceOrderCode=${serviceOrderCode || ''}`
-    );
-  }
-
-  getMessageTopicKafka(
-    nameTopic: string,
-    serviceOderCode: string,
-    page: number,
-    size: number,
-    from: number,
-    to: number,
-    listPar: string
-  ) {
-    nameTopic = nameTopic ? nameTopic : '';
-    const local_url = `${this.baseUrl}/topic/listMessages?page=${page}&from=${
-      from || ''
-    }&to=${
-      to || ''
-    }&size=${size}&topic=${nameTopic}&partitions=${listPar}&serviceOrderCode=${serviceOderCode}`;
-    return this.http.get(local_url);
-  }
-
   getSyncTime(serviceOrderCode: string) {
     return this.http.get(
-      `${this.baseUrl}/kafka/get-sync-time?service_order_code=${serviceOrderCode}`
+      `${this.kafkaUrl}/kafka/get-sync-time?service_order_code=${serviceOrderCode}`
     );
   }
+
+  getFlux() {
+    const eventSource = new EventSource(
+      `${this.kafkaUrl}/kafka/ws`
+    );
+
+    return eventSource;
+  }
+
   getAccessLogs(
     filters: FetchAccessLogs
-  ): Observable<BaseResponse<Pagination2<AccessLog[]>>> {
+  ): Observable<BaseResponse<Pagination<AccessLog[]>>> {
     let params = new HttpParams();
     Object.entries(filters).forEach(([key, value]) => {
       params = params.set(decamelize(key), value || '');
     });
     console.log(params);
 
-    return this.http.get<BaseResponse<Pagination2<AccessLog[]>>>(
-      `${this.baseUrl}/kafka/search-logs`,
+    return this.http.get<BaseResponse<Pagination<AccessLog[]>>>(
+      `${this.kafkaUrl}/kafka/search-logs`,
       {
         params,
       }
     );
   }
 
-  createTopic(
-    topicName: string,
-    partitionNum: number,
-    replicationFactorNum: number,
-    serviceOrderCode: string,
-    openSet: number,
-    jsonConfig: string
-  ) {
+  getListService(
+    page: number,
+    size: number,
+    keySearch: string,
+    status:number
+  ): Observable<BaseResponse<Pagination<KafkaInfor[]>>> {
+    return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch.trim()}&status=${status==null?"":status}`,{headers: this.getHeaders()});
+  }
+
+  createKafkaService(req: KafkaCreateReq): Observable<BaseResponse<null>> {
     const json = {
-      "service_order_code": serviceOrderCode,
-      "is_advanced": openSet,
-      "partition_num": partitionNum,
-      "replica_num": replicationFactorNum,
-      "topic_list": topicName,
-      "config_map": jsonConfig
-    }
-    const local_url = `${this.baseUrl}/topic/createTopicPortal`;
-    return this.http.post(local_url, json);
+      'service_name': req.serviceName,
+      'version': req.version,
+      'description': req.description,
+      'region_id': "1",
+      'config_type': req.configType ,
+      'service_pack_code': req.servicePackCode, 
+      'ram': req.ram,
+      'cpu': req.cpu,
+      'storage': req.storage,
+      'brokers': req.brokers, 
+      'num_partitions': req.numPartitions, 
+      'default_replication_factor': req.defaultReplicationFactor,
+      'min_insync_replicas': req.minInsyncReplicas,
+      'offset_topic_replication_factor': req.offsetTopicReplicationFactor,
+      'log_retention_hours': req.logRetentionHours,
+      'log_segment_bytes': req.logSegmentBytes
+    };
+
+    return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/create', json, {headers: this.getHeaders()});
   }
 
-  testProduce(obj: any) {
-    return this.http.post(`${this.baseUrl}/topic/testProducer`, obj);
+  getListPackageAvailable(): Observable<BaseResponse<ServicePack[]>> {
+    return this.http.get<BaseResponse<ServicePack[]>>(this.kafkaUrl + '/kafka/get-packages');
   }
 
-  deleteMessages(topicName: string, serviceOrderCode: string): Observable<any> {
+  getListVersion(): Observable<BaseResponse<KafkaVersion[]>> {
+    return this.http.get<BaseResponse<KafkaVersion[]>>(this.kafkaUrl + '/kafka/get-versions');
+  }
+
+  getListStatus(): Observable<BaseResponse<KafkaStatus[]>> {
+    return this.http.get<BaseResponse<KafkaStatus[]>>(this.kafkaUrl + '/kafka/get-status');
+  }
+
+  getDetail(serviceOrderCode: string): Observable<BaseResponse<KafkaDetail>> {
+    return this.http.get<BaseResponse<KafkaDetail>>(this.kafkaUrl + `/kafka/${serviceOrderCode}`);
+  }
+
+  update(req: KafkaUpdateReq): Observable<BaseResponse<null>> {
     const json = {
-      service_order_code: serviceOrderCode,
-      topic: topicName
-    }
+      'service_order_code': req.serviceOrderCode,
+      'service_name': req.serviceName,
+      'version': req.version,
+      'description': req.description
+    };
 
-    return this.http.post(`${this.baseUrl}/topic/deleteMessages`, json);
-  }
-
-  deleteTopicKafka(
-    nameTopic: string,
-    serviceOderCode: string
-  ) {
-    const local_url = `${this.baseUrl}/topic/deleteTopicPortal?topicName=${nameTopic}&serviceOrderCode=${serviceOderCode}`;
-    return this.http.get(local_url);
-  }
-
-  updateTopic(
-    topicName: string,
-    serviceOrderCode: string,
-    jsonConfig: object
-  ) {
-    const json = jsonConfig;
-    const local_url = `${this.baseUrl}/topic/updateTopicPortal?topicName=${topicName}&serviceOrderCode=${serviceOrderCode}`;
-    return this.http.post(local_url, json);
+    return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/update', json, {headers: this.getHeaders()});
   }
 }

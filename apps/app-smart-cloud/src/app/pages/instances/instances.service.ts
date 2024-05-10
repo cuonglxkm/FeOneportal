@@ -1,9 +1,14 @@
 import { Inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Flavors, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +24,7 @@ export class InstancesService extends BaseService {
 
   constructor(
     private http: HttpClient,
+    private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
     super();
@@ -28,7 +34,8 @@ export class InstancesService extends BaseService {
   postAction(data: any) {
     return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + '/instances/action',
-      data, { responseType: 'text' }
+      data,
+      { responseType: 'text' }
     );
   }
 
@@ -62,15 +69,15 @@ export class InstancesService extends BaseService {
   }
 
   getAllIPPublic(
-    regionId: any,
-    customerId: any,
-    status: any,
-    pageSize: any,
-    currentPage: any,
-    isCheckState: any,
-    ipAddress: any
+    projectId: number,
+    ipAddress: string,
+    customerId: number,
+    regionId: number,
+    pageSize: number,
+    currentPage: number,
+    isCheckState: any
   ): Observable<any> {
-    let url_ = `/Ip?status=${status}&customerId=${customerId}&regionId=${regionId}&pageSize=${pageSize}&currentPage=${currentPage}&isCheckState=${isCheckState}&ipAddress=${ipAddress}`;
+    let url_ = `/Ip?projectId=${projectId}&customerId=${customerId}&regionId=${regionId}&pageSize=${pageSize}&currentPage=${currentPage}&isCheckState=${isCheckState}&ipAddress=${ipAddress}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
@@ -176,12 +183,13 @@ export class InstancesService extends BaseService {
     );
   }
 
-  rebuild(data: any): Observable<any> {
+  rebuild(data: any) {
     let url_ = `/instances/rebuild`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      data
+      data,
+      { responseType: 'text' }
     );
   }
 
@@ -248,25 +256,51 @@ export class InstancesService extends BaseService {
   }
 
   getTotalAmount(data: any): Observable<any> {
-    return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
-      data
-    );
+    return this.http
+      .post<any>(this.baseUrl + this.ENDPOINT.orders + '/totalamount', data)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+            // Redirect to login page or show unauthorized message
+            this.router.navigate(['/passport/login']);
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+        })
+      );
   }
 
   getListOffersByProductId(productId: string): Observable<any> {
     return this.http.get<any>(
-      `${
-        this.baseUrl + this.ENDPOINT.catalogs
-      }/offers?productId=${productId}`
+      `${this.baseUrl + this.ENDPOINT.catalogs}/offers?productId=${productId}`
     );
   }
 
   getDetailProductByUniqueName(name: string): Observable<any> {
     return this.http.get<any>(
-      `${
-        this.baseUrl + this.ENDPOINT.catalogs
-      }/products?uniqueName=${name}`
+      `${this.baseUrl + this.ENDPOINT.catalogs}/products?uniqueName=${name}`
+    );
+  }
+
+  getListAllPortByNetwork(networkId: string, region: number): Observable<any> {
+    let url_ = `/vlans/listallportbynetworkid?networkId=${networkId}&region=${region}`;
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+  }
+
+  getInfoVPC(productId: number): Observable<any> {
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + '/projects/' + productId
+    );
+  }
+
+  checkExistName(name: string, regionId: number): Observable<boolean> {
+    let url_ = `/instances/exist-instancename?name=${name}&regionId=${regionId}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http.get<boolean>(
+      this.baseUrl + this.ENDPOINT.provisions + url_
     );
   }
 }

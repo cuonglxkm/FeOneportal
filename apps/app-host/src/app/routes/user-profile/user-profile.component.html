@@ -1,121 +1,140 @@
-<page-header [title]="'Thông tin tài khoản'"/>
-
-<nz-card nzTitle="Điều chỉnh/Cập nhật thông tin tài khoản">
-  <form nz-form [formGroup]="form" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
-
+<page-header [title]="'Thông tin tài khoản'" />
+<!-- <h1>{{'menu.search' |i18n}}</h1> -->
+<nz-card>
+  <div class="text-card-header" style="margin-bottom: 20px">
+    Cập nhật thông tin tài khoản
+  </div>
+  <form
+    nz-form
+    [formGroup]="form"
+    (ngSubmit)="submitForm()"
+    [nzLayout]="'vertical'"
+  >
     <nz-row nzGutter="16">
-      <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
+      <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
-          <nz-form-label nzRequired>Họ</nz-form-label>
-          <nz-form-control nzErrorTip="Họ không đuược để trống và chứa kí tự đặc biệt!">
-            <input maxlength="20" nz-input formControlName="surname" placeholder="Họ"/>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-
-      <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzRequired>Tên</nz-form-label>
-          <nz-form-control nzErrorTip="Tên không được để trống và chứa kí tự đặc biệt!">
-            <input nz-input formControlName="name" placeholder="Tên"/>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-
-    <nz-row nzGutter="16">
-      <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzRequired>Email</nz-form-label>
-          <nz-form-control nzErrorTip="Email không hợp lệ!">
-            <input nz-input formControlName="email" placeholder="Email"/>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-
-      <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzRequired>Số điện thoại</nz-form-label>
-          <nz-form-control nzErrorTip="Số điện thoại không hợp lệ!">
-            <input nz-input formControlName="phone" placeholder="Số điện thoại"/>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-
-
-    <nz-row nzGutter="16">
-      <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzRequired>Mã khách hàng</nz-form-label>
-          <nz-form-control nzErrorTip="Mã khách hàng">
-            <input [disabled]="true" nz-input formControlName="customer_code" placeholder="Mã khách hàng"/>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-
-      <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzRequired>Mã hợp đồng</nz-form-label>
-          <nz-form-control nzErrorTip="Mã hợp đồng">
-            <input nz-input formControlName="contract_code" placeholder="Mã hợp đồng"/>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-
-    <nz-row nzGutter="16">
-      <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzRequired>Tỉnh/Thành phố</nz-form-label>
-          <nz-form-control nzErrorTip="Tỉnh/Thành phố">
-            <input nz-input formControlName="province" placeholder="Tỉnh/Thành phố"/>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-
-      <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzRequired>Địa chỉ</nz-form-label>
-          <nz-form-control nzErrorTip="Địa chỉ không được để trống và chứa kí tự đặc biệt!">
-            <input maxlength="255" nz-input formControlName="address" placeholder="Địa chỉ"/>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-
-    <nz-row nzGutter="16">
-      <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label>Mật khẩu cũ</nz-form-label>
-          <nz-form-control nzErrorTip="Mật khẩu cũ không đúng!">
-            <input  type="password" (change)="onOldPassChange($event)" nz-input formControlName="old_password"
-                   placeholder="Mật khẩu cũ"/>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-
-    <nz-row nzGutter="16">
-      <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label>Mật khẩu mới</nz-form-label>
+          <nz-form-label>Họ (<span class="text-red">*</span>)</nz-form-label>
           <nz-form-control
-            nzErrorTip="Mật khẩu có 8-16 ký tự, gồm ít nhất 1 chữ viết thường, 1 chữ viết hoa, 1 ký tự đặc biệt, 1 chữ số, không trùng mật khẩu cũ">
-            <input type="password" (ngModelChange)="updateConfirmValidator()" minlength="8" maxlength="16" nz-input
-                   formControlName="new_password" placeholder="Mật khẩu mới"/>
+            nzErrorTip="Họ không được để trống và chứa kí tự đặc biệt!"
+          >
+            <input
+              maxlength="20"
+              nz-input
+              formControlName="surname"
+              placeholder="Họ"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzLg="6" nzMd="6" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>Tên (<span class="text-red">*</span>)</nz-form-label>
+          <nz-form-control
+            nzErrorTip="Tên không được để trống và chứa kí tự đặc biệt!"
+          >
+            <input
+              nz-input
+              formControlName="name"
+              placeholder="Tên"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzLg="6" nzMd="6" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>Email</nz-form-label>
+          <nz-form-control nzErrorTip="Email không hợp lệ!">
+            <input
+              nz-input
+              formControlName="email"
+              placeholder="Email"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzLg="6" nzMd="6" nzSm="24">
+        <nz-form-item>
+          <nz-form-label
+            >Số điện thoại (<span class="text-red">*</span>)</nz-form-label
+          >
+          <nz-form-control nzErrorTip="Số điện thoại không hợp lệ!">
+            <input
+              nz-input
+              formControlName="phone"
+              placeholder="Số điện thoại"
+              nzSize="large"
+            />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
     </nz-row>
 
     <nz-row nzGutter="16">
-      <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
+      <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Nhập lại mật khẩu mới</nz-form-label>
-          <nz-form-control nzErrorTip="Mật khẩu không khớp!">
-            <input type="password" nz-input (change)="onRetypePassChange($event)" formControlName="confirm_password"
-                   placeholder="Nhập lại mật khẩu mới"/>
+          <nz-form-label>Mã khách hàng</nz-form-label>
+          <nz-form-control nzErrorTip="Mã khách hàng">
+            <input
+              [disabled]="true"
+              nz-input
+              formControlName="customer_code"
+              placeholder="Mã khách hàng"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+
+      <nz-col nzLg="12" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>Mã hợp đồng</nz-form-label>
+          <nz-form-control nzErrorTip="Mã hợp đồng">
+            <input
+              nz-input
+              formControlName="contract_code"
+              placeholder="Mã hợp đồng"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+
+    <nz-row nzGutter="16">
+      <nz-col nzLg="12" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label
+            >Tỉnh/Thành phố (<span class="text-red">*</span>)</nz-form-label
+          >
+          <nz-form-control nzErrorTip="Tỉnh/Thành phố">
+            <input
+              nz-input
+              formControlName="province"
+              placeholder="Tỉnh/Thành phố"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+
+      <nz-col nzLg="12" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label
+            >Địa chỉ chi tiết (<span class="text-red">*</span>)</nz-form-label
+          >
+          <nz-form-control
+            nzErrorTip="Địa chỉ không được để trống và chứa kí tự đặc biệt!"
+          >
+            <input
+              maxlength="255"
+              nz-input
+              formControlName="address"
+              placeholder="Địa chỉ"
+              nzSize="large"
+            />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -124,13 +143,23 @@
     <div nz-row class="mb-md">
       <div nz-col nzSpan="24">
         <div class="text-right">
-          <button type="button" nz-button routerLink="/">Quay trở lại</button>
-          <button nz-button [nzType]="'primary'" [disabled]="form.invalid">Chỉnh sửa</button>
+          <button type="button" nz-button routerLink="/">
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/cancel.svg"
+              alt=""
+            />Hủy
+          </button>
+          <button nz-button [nzType]="'primary'" [disabled]="form.invalid">
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/confirm.svg"
+              alt=""
+            />
+            Cập nhật
+          </button>
         </div>
       </div>
     </div>
-
   </form>
 </nz-card>
-
-

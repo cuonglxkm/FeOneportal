@@ -23,6 +23,7 @@ class ServiceInfo {
   duration: number;
   amount: number;
   currency: number;
+  type: string;
 }
 
 class Discount {
@@ -66,8 +67,10 @@ export class PaymentSummaryComponent implements OnInit {
 
     if (state) {
       this.returnPath = state.path;
-      console.log({path: this.returnPath});
+      console.log({ path: this.returnPath });
       const myOrder = state.data;
+      console.log(state.data);
+
       this.order.customerId = myOrder.customerId;
       this.order.createdByUserId = myOrder.createdByUserId;
       this.order.note = myOrder.note;
@@ -75,43 +78,61 @@ export class PaymentSummaryComponent implements OnInit {
       console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
         var serviceItem = new ServiceInfo();
+        const specificationObj = JSON.parse(e.specification);
         switch (e.specificationType) {
           case 'instance_create':
-            serviceItem.name = 'Tạo máy ảo';
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.type = 'Tạo mới';
             break;
           case 'instance_resize':
-            serviceItem.name = 'Chỉnh sửa máy ảo';
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
+            serviceItem.type = `Chỉnh sửa`;
             break;
           case 'instance_extend':
-            serviceItem.name = 'Gia hạn máy ảo';
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.type = 'Gia hạn';
             break;
           case 'volume_create':
-            serviceItem.name = 'Tạo Volume';
+            serviceItem.name = `Volume - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Tạo mới';
             break;
           case 'volume_resize':
-            serviceItem.name = 'Chỉnh sửa Volume';
+            serviceItem.name = `Volume - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Chỉnh sửa';
             break;
           case 'volume_extend':
-            serviceItem.name = 'Gia hạn Volume';
+            serviceItem.name = `Volume - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Gia hạn';
             break;
           case 'ip_create':
-            serviceItem.name = 'Tạo IP';
+            serviceItem.name = `IP`;
+            serviceItem.type = 'Tạo mới';
             break;
           case 'ip_extend':
-            serviceItem.name = 'Gia hạn IP';
+            serviceItem.name = `IP`;
+            serviceItem.type = 'Gia hạn';
             break;
           case 'k8s_create':
-            this.serviceType = "k8s";
-            serviceItem.name = 'Tạo cluster';
+            this.serviceType = 'k8s';
+            serviceItem.name = `k8s`;
+            serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_create':
-            serviceItem.name = 'Tạo Object Storage';
+            serviceItem.name = `Object Storage`;
+            serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_resize':
-            serviceItem.name = 'Chỉnh sửa Object Storage';
+            serviceItem.name = `Object Storage`;
+            serviceItem.type = 'Chỉnh sửa';
             break;
           case 'objectstorage_extend':
-            serviceItem.name = 'Gia hạn Object Storage';
+            serviceItem.name = `Object Storage`;
+            serviceItem.type = 'Gia hạn';
+            break;
+          case 'kafka_create':
+            this.serviceType = 'kafka';
+            serviceItem.name = 'Kafka';
+            serviceItem.type = 'Tạo mới';
             break;
           default:
             serviceItem.name = '';
@@ -120,7 +141,11 @@ export class PaymentSummaryComponent implements OnInit {
         serviceItem.price = e.price;
         serviceItem.duration = e.serviceDuration;
         serviceItem.amount = e.orderItemQuantity;
-        serviceItem.currency = e.price * e.serviceDuration;
+        if (serviceItem.type == 'Chỉnh sửa') {
+          serviceItem.currency = e.price;
+        } else {
+          serviceItem.currency = e.price * e.serviceDuration;
+        }
         this.listServiceInfo.push(serviceItem);
       });
       this.listServiceInfo.forEach((e) => {
@@ -194,7 +219,11 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   chooseDiscount(code: string) {
-    this.discountPicked = code;
+    if (this.discountPicked === code) {
+      this.discountPicked = null;
+    } else {
+      this.discountPicked = code;
+    }
   }
 
   isVisibleDiscount: boolean = false;
@@ -225,12 +254,7 @@ export class PaymentSummaryComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          // for test when k8s needn't pay
-          if (this.serviceType == "k8s") {
-            this.router.navigate([`/app-smart-cloud/order/detail/${data.data.id}`]);
-          } else {
-            window.location.href = data.data;
-          }
+          window.location.href = data.data;
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Tạo order không thành công');
