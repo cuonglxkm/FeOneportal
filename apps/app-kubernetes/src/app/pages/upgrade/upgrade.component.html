@@ -377,9 +377,9 @@
 
                     <div>
                       <!-- remove btn -->
-                      <ng-container *ngIf="listFormWorker.length > 1 && !isUsingPackConfig">
+                      <ng-container *ngIf="listFormWorker.length > 1 && !isUsingPackConfig && control.get('id').value == null">
                         <button nz-button nzType="text" nzTooltipTitle="Xóa nhóm worker" nzTooltipPlacement="top"
-                          nz-tooltip class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i)">
+                          nz-tooltip class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i); onCalculatePrice();">
                           <span nz-icon nzType="delete"></span>
                         </button>
                       </ng-container>
@@ -431,11 +431,14 @@
               </ng-container>
               <ng-template #customUpgradeConfigTpl>
                 <ng-container *ngFor="let control of listFormWorker.controls">
-                  {{control.get('workerGroupName').value ? control.get('workerGroupName').value : ''}}
-                  / {{control.get('cpu').value ? control.get('cpu').value : ''}}vCPU
-                  / {{control.get('ram').value ? control.get('ram').value : ''}}GB
-                  / {{control.get('volumeStorage').value ? control.get('volumeStorage').value : ''}}GB
-                  {{control.get('volumeTypeName').value ? control.get('volumeTypeName').value : ''}}
+                  <div *ngIf="control.get('workerGroupName').value && control.get('cpu').value
+                    && control.get('ram').value && control.get('volumeStorage').value; else noneConfigTpl">
+                    {{control.get('workerGroupName').value ? control.get('workerGroupName').value : ''}}
+                    / {{control.get('cpu').value ? control.get('cpu').value : ''}}vCPU
+                    / {{control.get('ram').value ? control.get('ram').value : ''}}GB
+                    / {{control.get('volumeStorage').value ? control.get('volumeStorage').value : ''}}GB
+                    {{control.get('volumeTypeName').value ? control.get('volumeTypeName').value : ''}}
+                  </div>
                 </ng-container>
               </ng-template>
             </td>
@@ -510,11 +513,15 @@
               <div nz-col [nzSpan]="12">
                 <ng-container *ngFor="let control of listFormWorker.controls">
                   <div class="mr-3 mb-3 summary-info">
-                    {{control.get('workerGroupName').value ? control.get('workerGroupName').value : ''}}
-                    / {{control.get('cpu').value ? control.get('cpu').value : ''}}vCPU
-                    / {{control.get('ram').value ? control.get('ram').value : ''}}GB
-                    / {{control.get('volumeStorage').value ? control.get('volumeStorage').value : ''}}GB
-                    {{control.get('volumeTypeName').value ? control.get('volumeTypeName').value : ''}}
+                    <ng-container *ngIf="control.get('workerGroupName').value && control.get('cpu').value
+                      && control.get('ram').value && control.get('volumeStorage').value; else noneConfigTpl">
+                      {{control.get('workerGroupName').value}}
+                      / {{control.get('cpu').value}}vCPU
+                      / {{control.get('ram').value}}GB
+                      / {{control.get('volumeStorage').value}}GB
+                    {{control.get('volumeTypeName').value}}
+                    </ng-container>
+                    <ng-template #noneConfigTpl></ng-template>
                   </div>
                 </ng-container>
               </div>
@@ -556,8 +563,8 @@
           </div>
 
           <div nz-col [nzSpan]="12">
-            <button nz-button nzType="primary" nzBlock class="border-button" (click)="submitUpgrade()"
-              [disabled]="isSubmitting || upgradeForm.invalid || (chooseItem == null && isUsingPackConfig)">
+            <button nz-button nzType="primary" nzBlock class="border-button" (click)="onValidateInfo()"
+              [disabled]="isSubmitting || upgradeForm.invalid || (chooseItem == null && isUsingPackConfig) || detailCluster?.serviceStatus != 2">
               <ng-container *ngIf="isSubmitting; else paymentIconTpl">
                 <span nz-icon [nzType]="'loading'"></span>
               </ng-container>

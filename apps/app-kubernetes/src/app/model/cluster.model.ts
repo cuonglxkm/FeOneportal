@@ -178,15 +178,15 @@ export class UpgradeVersionClusterDto {
 export class UpgradeWorkerGroupDto {
 
   ServiceOrderCode: string;
-  ClusterName: string;
   // VolumeCloudSize: number;
   // VolumeCloudType: string;
+
   WorkerGroup: WorkerGroupReqDto[];
+  JsonData: string;
 
   constructor(obj: any) {
     if (obj) {
       this.ServiceOrderCode = obj.serviceOrderCode;
-      this.ClusterName = obj.clusterName;
 
       this.WorkerGroup = [];
       let wgs = obj.workerGroup;
@@ -194,6 +194,11 @@ export class UpgradeWorkerGroupDto {
         const wg = new WorkerGroupReqDto(wgs[i]);
         this.WorkerGroup.push(wg);
       }
+
+      this.JsonData = JSON.stringify({
+        ServiceOrderCode: this.ServiceOrderCode,
+        WorkerGroup: this.WorkerGroup
+      });
     }
   }
 }

@@ -53,6 +53,7 @@ export class ClusterComponent implements OnInit {
   vlanId: number;
 
   expiryDate: number;
+  isChangeInfo: boolean;
 
   public DEFAULT_CIDR = KubernetesConstant.DEFAULT_CIDR;
   public DEFAULT_SERVICE_CIDR = KubernetesConstant.DEFAULT_SERVICE_CIDR;
@@ -91,6 +92,7 @@ export class ClusterComponent implements OnInit {
     this.listOfWorkerType = [];
     this.listOfServicePack = [];
     this.isSubmitting = false;
+    this.isChangeInfo = false;
 
     this.getCurrentDate();
     this.getListPriceItem();
@@ -500,6 +502,7 @@ export class ClusterComponent implements OnInit {
 
   onSelectCustomPackTab() {
     this.chooseItem = null;
+    this.isChangeInfo = true;
     this.isUsingPackConfig = false;
     this.clearFormWorker();
     this.addWorkerGroup();
@@ -513,6 +516,7 @@ export class ClusterComponent implements OnInit {
   isUsingPackConfig: boolean = true;
   onChoosePack(item: PackModel) {
     this.chooseItem = item;
+    this.isChangeInfo = true;
     this.isUsingPackConfig = true;
 
     if (this.chooseItem) {
@@ -534,7 +538,9 @@ export class ClusterComponent implements OnInit {
         autoScalingWorker: [false],
         autoHealing: [true],
         minimumNode: [null],
-        maximumNode: [null]
+        maximumNode: [null],
+        cpu: [this.chooseItem.cpu],
+        ram: [this.chooseItem.ram]
       });
 
       this.listFormWorkerGroup.push(wgf);
