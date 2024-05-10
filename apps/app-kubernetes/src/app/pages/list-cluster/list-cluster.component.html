@@ -114,7 +114,7 @@
             <td class="right-align">{{ item.totalNode ? item.totalNode : 0 }}</td>
             <td>{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
             <td>
-              <img src="assets/imgs/edit-kafka.svg" style="cursor: pointer; width: fit-content; margin-right: 8px;" alt=""
+              <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; width: fit-content; margin-right: 8px;"
                 [nz-tooltip]="'Nâng cấp'" routerLink="upgrade/{{item.serviceOrderCode}}" />
               <img src="assets/imgs/download-file.svg" style="cursor: pointer; width: fit-content; margin-right: 8px;" alt=""
                 [nz-tooltip]="'Tải file cấu hình'" (click)="handleDownloadKubeConfig(item)" />

@@ -553,38 +553,47 @@
           </div>
 
           <nz-divider class="divider-style"></nz-divider>
-          <ng-container *ngIf="chooseItem; else customPackSummaryTpl">
-            <div nz-col [nzSpan]="12">
-              <div class="ml-3 mb-3"><label class="weight-600">Gói dịch vụ: <b>{{chooseItem.packName}}</b></label></div>
-            </div>
 
-            <div nz-col [nzSpan]="12">
-              <div class="mr-3 summary-info">
-                {{chooseItem.cpu}}vCPU / {{chooseItem.ram}}GB / {{chooseItem.rootStorage}}GB {{chooseItem.rootStorageName}}
-              </div>
-            </div>
-          </ng-container>
-          <ng-template #customPackSummaryTpl>
-            <div nz-col [nzSpan]="12">
-              <div class="ml-3 mb-3"><label class="weight-600">Thông tin nhóm worker</label></div>
-            </div>
-
-            <div nz-col [nzSpan]="12">
-              <ng-container *ngFor="let control of listFormWorkerGroup.controls">
-                <div class="mr-3 mb-3 summary-info">
-                  <ng-container *ngIf="control.get('workerGroupName').value && control.get('cpu').value
-                    && control.get('ram').value && control.get('volumeStorage').value; else noneConfigTpl">
-                    {{control.get('workerGroupName').value}}
-                    / {{control.get('cpu').value}}vCPU
-                    / {{control.get('ram').value}}GB
-                    / {{control.get('volumeStorage').value}}GB
-                  {{control.get('volumeTypeName').value}}
-                  </ng-container>
-                  <ng-template #noneConfigTpl></ng-template>
+          <ng-container *ngIf="isChangeInfo">
+            <ng-container *ngIf="chooseItem; else customPackSummaryTpl">
+              <div nz-row [nzGutter]="8">
+                <div nz-col [nzSpan]="12">
+                  <div class="ml-3 mb-3"><label class="weight-600">Gói dịch vụ: <b>{{chooseItem.packName}}</b></label></div>
                 </div>
-              </ng-container>
-            </div>
-          </ng-template>
+
+                <div nz-col [nzSpan]="12">
+                  <div class="mr-3 summary-info">
+                    {{chooseItem.cpu}}vCPU / {{chooseItem.ram}}GB / {{chooseItem.rootStorage}}GB {{chooseItem.rootStorageName}}
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #customPackSummaryTpl>
+              <div nz-row [nzGutter]="8">
+                <div nz-col [nzSpan]="12">
+                  <div class="ml-3 mb-3"><label class="weight-600">Thông tin nhóm worker</label></div>
+                </div>
+
+                <div nz-col [nzSpan]="12">
+                  <ng-container *ngFor="let control of listFormWorkerGroup.controls; let i = index;">
+                    <div class="mr-3 mb-3 summary-info">
+                      <ng-container *ngIf="control.get('workerGroupName').value && control.get('cpu').value
+                        && control.get('ram').value && control.get('volumeStorage').value; else noneConfigTpl">
+                        <div class="mb-3">
+                          {{control.get('workerGroupName')?.value}}
+                          / {{control.get('cpu')?.value}}vCPU
+                          / {{control.get('ram')?.value}}GB
+                          / {{control.get('volumeStorage')?.value}}GB
+                          {{control.get('volumeTypeName')?.value}}
+                        </div>
+                      </ng-container>
+                      <ng-template #noneConfigTpl></ng-template>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-template>
+          </ng-container>
 
           <!-- <nz-divider class="divider-style"></nz-divider> -->
 
