@@ -64,8 +64,8 @@
         <tbody>
         <tr *ngFor="let item of listOfData">
           <td (click)="viewDetail(item.id)" style="color: #0D67B0">{{ item.displayName }}</td>
-          <td *ngIf="item.type != 'VPC'" (click)="viewDetail(item.id)">none</td>
-          <td *ngIf="item.type != 'VPC'" (click)="viewDetail(item.id)">none</td>
+          <td *ngIf="item.type != 'VPC'" (click)="viewDetail(item.id)">-</td>
+          <td *ngIf="item.type != 'VPC'" (click)="viewDetail(item.id)">-</td>
           <td *ngIf="item.type == 'VPC'" (click)="viewDetail(item.id)">{{ item.createDate | date : "dd/MM/YYYY" }}</td>
           <td *ngIf="item.type == 'VPC'" (click)="viewDetail(item.id)">{{ item.expireDate | date : "dd/MM/YYYY" }}</td>
           <td (click)="viewDetail(item.id)">{{ item.resourceStatus }}</td>
