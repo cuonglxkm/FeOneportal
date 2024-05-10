@@ -4,10 +4,17 @@ import {BackupVm, SystemInfoBackup, VolumeBackup} from "../../../shared/models/b
 import {ActivatedRoute, Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {getCurrentRegionAndProject} from "@shared";
-import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import {
+  ProjectService,
+  RegionModel,
+  ProjectModel,
+  SizeInCloudProject
+} from '../../../../../../../libs/common-utils/src';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { PackageBackupModel } from '../../../shared/models/package-backup.model';
+import { PackageBackupService } from '../../../shared/services/package-backup.service';
 
 @Component({
   selector: 'one-portal-detail-backup-vm',
@@ -38,15 +45,17 @@ export class DetailBackupVmComponent implements OnInit {
 
 
   userId: number
-
-
+  typeVpc: number
+  projectDetail: SizeInCloudProject
+  backupPackageDetail: PackageBackupModel = new PackageBackupModel();
   constructor(private backupVmService: BackupVmService,
               private route: ActivatedRoute,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private projectService: ProjectService,
               private notification: NzNotificationService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private backupPackageService: PackageBackupService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -61,6 +70,7 @@ export class DetailBackupVmComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
+    this.typeVpc = project?.type
     console.log(this.project)
   }
 
@@ -106,6 +116,8 @@ export class DetailBackupVmComponent implements OnInit {
       this.nameVolumeBackupAttachNameUnique = this.nameVolumeBackupAttachName.join('\n')
       console.log('name', this.nameVolumeBackupAttachName)
       console.log('unique', this.nameVolumeBackupAttachNameUnique)
+
+      this.getBackupPackage(this.backupVm?.backupPacketId);
     }, error => {
       if(error.error.detail.includes('Not Found!')) {
         this.router.navigate(['/app-smart-cloud/backup-vm'])
@@ -115,6 +127,19 @@ export class DetailBackupVmComponent implements OnInit {
     })
   }
 
+  getInfoProjectVpc(id) {
+    this.projectService.getProjectVpc(id).subscribe(data => {
+      this.projectDetail = data
+    })
+  }
+
+  getBackupPackage(value) {
+    this.backupPackageService.detail(value).subscribe(data => {
+      this.backupPackageDetail = data;
+    });
+  }
+
+
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId
     const selectedDetailBackupId = this.route.snapshot.paramMap.get('id')
@@ -123,6 +148,7 @@ export class DetailBackupVmComponent implements OnInit {
     this.project = regionAndProject.projectId
     console.log(selectedDetailBackupId);
     if (selectedDetailBackupId !== undefined || selectedDetailBackupId !== null || selectedDetailBackupId !== '') {
+      this.getInfoProjectVpc(parseInt(selectedDetailBackupId))
       this.getBackupVmById(parseInt(selectedDetailBackupId))
     }
   }

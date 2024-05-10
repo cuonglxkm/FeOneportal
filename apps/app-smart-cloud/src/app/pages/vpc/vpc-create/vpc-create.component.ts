@@ -376,7 +376,7 @@ export class VpcCreateComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: 'vpc_create',
-          price: this.total.data.totalAmount.amount / numOfMonth,
+          price: this.vpcType == '1' ? this.total?.data?.totalAmount?.amount / numOfMonth : 0,
           serviceDuration: numOfMonth
         }
       ]

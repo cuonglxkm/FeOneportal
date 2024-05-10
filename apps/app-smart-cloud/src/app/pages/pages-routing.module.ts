@@ -14,7 +14,6 @@ import { ActionHistoryComponent } from './action-history/action-history.componen
 import { SnapshotVolumeListComponent } from './snapshot-volume/snapshotvl-list/snapshotvl-list.component';
 import { SnappshotvlDetailComponent } from './snapshot-volume/snapshotvl-detail/snappshotvl-detail.component';
 import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component';
-import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import {
   CreateBackupVolumeComponent
@@ -144,6 +143,7 @@ import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/exte
 import { PermissionGuard } from '../shared/guard/PermissionGuard';
 import { CreateBackupVmNormalComponent } from './backup-vm/create/no-vpc/create-backup-vm-normal.component';
 import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup-vm-vpc.component';
+import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
 const routes: Routes = [
@@ -718,7 +718,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'network/router/detail/:id',
+    path: 'network/router/detail/:name/:id',
     component: RouterDetailComponent,
     canActivate: [PermissionGuard],
     data: {

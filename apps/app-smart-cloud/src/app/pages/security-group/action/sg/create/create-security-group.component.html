@@ -38,7 +38,7 @@
           <span class="name-security-group">Mô tả</span>
         </nz-form-label>
         <nz-form-control>
-          <textarea rows="5" nz-input formControlName="description" [placeholder]="'Nhập mô tả'"></textarea>
+          <textarea rows="5" [maxlength]="255" nz-input formControlName="description" [placeholder]="'Nhập mô tả'"></textarea>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item nzAlign="bottom" nzJustify="center">

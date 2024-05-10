@@ -134,13 +134,39 @@ export class CreateBackupVmSpecification {
   volumeToBackupIds: number[]
   securityGroupToBackupIds: string[]
   description: string
-  backupPackageId: number | null
-  vpcId: number | null
+  backupPackageId: number
+  backupScheduleId: number
   customerId: number
-  actionType: 0
+  userEmail: string
+  actorEmail: string
+  projectId: number
+  vpcId: number
   regionId: number
   serviceName: string
   serviceType: number
+  actionType: number
+  serviceInstanceId: number
+  createDate: Date
+  expireDate: Date
+  createDateInContract: null
+  saleDept: null
+  saleDeptCode: null
+  contactPersonEmail: null
+  contactPersonPhone: null
+  contactPersonName: null
+  am: null
+  amManager: null
+  note: null
+  isTrial: false
+  offerId: number
+  couponCode: null
+  dhsxkd_SubscriptionId: null
+  dSubscriptionNumber: null
+  dSubscriptionType: null
+  oneSMEAddonId: null
+  oneSME_SubscriptionId: null
+  isSendMail: true
+  typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.InstanceBackupCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
 }
 
 export class CreateBackupVmOrderData {
@@ -153,7 +179,7 @@ export class CreateBackupVmOrderData {
       specification: string
       specificationType: "instancebackup_create"
       price: 0
-      serviceDuration: 1
+      serviceDuration: number
     }
   ]
 }
