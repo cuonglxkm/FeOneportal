@@ -15,6 +15,37 @@ import { getCurrentRegionAndProject } from '@shared';
 import { InstancesService } from '../../../instances/instances.service';
 import { RegionModel, ProjectModel, AppValidator } from '../../../../../../../../libs/common-utils/src';
 import { finalize } from 'rxjs/operators';
+export function ipAddressValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
+
+    for (const ipAddress of ipAddressList) {
+      if (!isValidIPAddress(ipAddress)) {
+        return { 'invalidIPAddress': { value: ipAddress } }; // Địa chỉ IP không hợp lệ
+      }
+    }
+
+    return null; // Địa chỉ IP hợp lệ
+  };
+}
+
+function isValidIPAddress(ipAddress: string): boolean {
+  // Kiểm tra xem địa chỉ IP có thuộc các dải cho phép không
+  if (
+    !ipAddress.startsWith('10.') &&
+    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.24.0.0') &&
+    !(ipAddress.startsWith('192.168.'))
+  ) {
+    return false;
+  }
+
+  // Kiểm tra định dạng của địa chỉ IP
+  if (!ipAddress.match(/^((\d{1,3}\.\d{1,3}\.0\.0\/16)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.0\/24))$/)) {
+    return false;
+  }
+  return true;
+}
+
 @Component({
   selector: 'one-portal-listener-create',
   templateUrl: './listener-create.component.html',
