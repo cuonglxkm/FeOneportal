@@ -2,7 +2,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
-import { KubernetesCluster, Order, OrderItem, UpgradeWorkerGroupDto, WorkerGroupModel } from '../../model/cluster.model';
+import { KubernetesCluster, Order, OrderItem, UpgradeWorkerGroupDto, WorkerGroupModel, WorkerGroupReqDto } from '../../model/cluster.model';
 import { ClusterService } from '../../services/cluster.service';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
@@ -691,7 +691,7 @@ export class UpgradeComponent implements OnInit {
 
     order.orderItems = [...order.orderItems, orderItem];
 
-    console.log({order: order});
+    // console.log({order: order});
     let returnPath = window.location.pathname;
     this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: order, path: returnPath}});
   }
@@ -715,8 +715,13 @@ export class UpgradeComponent implements OnInit {
     cluster.sortItem = 0;
     cluster.tenant = this.projectName;
 
-    const wgs = cluster.workerGroup;
-    cluster.jsonData = JSON.stringify({'ServiceOrderCode': this.serviceOrderCode, 'WorkerGroup': wgs});
+    const wgs: [] = cluster.workerGroup;
+    const tmp: WorkerGroupReqDto[] = [];
+    for (let i = 0; i < wgs.length; i++) {
+      const wg = new WorkerGroupReqDto(wgs[i]);
+      tmp.push(wg);
+    }
+    cluster.jsonData = JSON.stringify({'ServiceOrderCode': this.serviceOrderCode, 'WorkerGroup': tmp});
 
     return cluster;
   }
