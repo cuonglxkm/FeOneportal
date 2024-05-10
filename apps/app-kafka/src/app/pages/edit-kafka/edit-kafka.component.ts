@@ -29,6 +29,7 @@ export class EditKafkaComponent implements OnInit {
   isVisibleConfirm = false;
   isChangeForm = false;
   isUpgradeVersion = 0;
+  currentVersion: KafkaVersion;
 
   constructor(
     private fb: FormBuilder,
@@ -40,18 +41,15 @@ export class EditKafkaComponent implements OnInit {
     private loadingSrv: LoadingService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
-
-  }
-
-  ngOnInit(): void {
-
     this._activatedRoute.params.subscribe((params) => {
       this.serviceOrderCode = params.id;
       if (this.serviceOrderCode) {
         this.getDetail();
       }
     });
+  }
 
+  ngOnInit(): void {
     this.getListVersion();
     this.initForm();
   }
@@ -92,6 +90,7 @@ export class EditKafkaComponent implements OnInit {
         res => {
           if (res && res.code == 200) {
             this.listOfKafkaVersion = camelizeKeys(res.data) as KafkaVersion[];
+            this.currentVersion = this.listOfKafkaVersion.filter((e) => e.helmVersion == this.itemDetail.version)[0];
           }
         }
       )

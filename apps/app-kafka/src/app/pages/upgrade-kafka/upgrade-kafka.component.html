@@ -208,6 +208,7 @@
         <div nz-col [nzSpan]="8">
             <nz-card class="price-card">
                 <h3><b>{{'app.service.price-title' | i18n}}</b></h3>
+                <!-- Chi phí nâng cấp trong khoảng thời gian còn lại -->
                 <div nz-row [nzGutter]="8">
                     <div nz-col [nzSpan]="12">
                         <div class="label-price">{{'app.service.upgrade-cost' | i18n}}</div>
@@ -217,12 +218,25 @@
                     </div>
                 </div>
                 <nz-divider class="divider-style"></nz-divider>
+
+                <!-- Chi phí còn lại chưa dùng -->
                 <div nz-row [nzGutter]="8">
                     <div nz-col [nzSpan]="12">
                         <div class="label-price" style="margin-bottom: 10px;">{{'app.service.upgrade-remain-amount' | i18n}}</div>
                     </div>
                     <div nz-col [nzSpan]="12">
                         <div class="value-price" >- {{ remainAmount | number: '1.0-0'}} VND</div>
+                    </div>
+                </div>
+                <nz-divider class="divider-style"></nz-divider>
+
+                <!-- Chi phí VAT -->
+                <div nz-row [nzGutter]="8">
+                    <div nz-col [nzSpan]="12">
+                        <div class="label-price" style="margin-bottom: 10px;">Chi phí VAT (10%)</div>
+                    </div>
+                    <div nz-col [nzSpan]="12">
+                        <div class="value-price" >{{upgradeAmount === 0 ? 0 : (upgradeAmount - remainAmount) * 0.1 | number: '1.0-0'}} VND</div>
                     </div>
                 </div>
                 <nz-divider class="divider-style"></nz-divider>

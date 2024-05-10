@@ -462,6 +462,7 @@
   <div nz-col [nzSpan]="8" class="gutter-row">
     <nz-card class="price-card">
       <h3><b>{{ 'app.service.price-title' | i18n }}</b></h3>
+      <!-- chi phí cpu -->
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price"> {{ 'app.kafka.cost-cpu' | i18n }}</div>
@@ -472,6 +473,8 @@
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
+
+      <!-- chi phí ram -->
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price"> {{ 'app.kafka.cost-ram' | i18n }} </div>
@@ -482,6 +485,8 @@
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
+
+      <!-- chi phí storage -->
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price"> {{ 'app.kafka.cost-storage' | i18n }}</div>
@@ -492,6 +497,18 @@
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
+
+      <div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="12">
+          <div class="label-price"> Chi phí VAT (10%) </div>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <div class="value-price">{{ (this.unitPrice.cpu * cpu + this.unitPrice.ram * ram + this.unitPrice.storage * storage) * 3 * usageTime * 0.1 | number: '1.0-0'}} VND</div>
+          <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
+        </div>
+      </div>
+      <nz-divider class="divider-style"></nz-divider>
+
       <div nz-row [nzGutter]="8" class="mt-5 price-panel">
         <div nz-col [nzSpan]="12">
           <div class="label-price">{{ 'app.service.price-title' | i18n }}</div>
