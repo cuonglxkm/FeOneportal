@@ -182,7 +182,7 @@ export class ListenerCreateComponent implements OnInit{
       },
       healthMonitors : {
         name: this.validateForm.controls['healthName'].value,
-        httpMethod: this.selectedCheckMethod == 'HTTP' ? this.selectedHttpMethod : 0,
+        httpMethod: this.selectedCheckMethod == 'HTTP' ? this.selectedHttpMethod : '',
         type: this.selectedCheckMethod,
         delay: this.dataListener?.id,
         maxRetries: this.validateForm.controls['maxRetries'].value,
