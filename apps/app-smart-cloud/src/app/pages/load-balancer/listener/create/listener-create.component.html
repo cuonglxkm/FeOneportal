@@ -94,7 +94,7 @@
             <nz-form-label>
               <span>Port (<span style="color: red;">*</span>) </span>
               <img style="margin-left: 10px"
-                   nz-tooltip="Port được Listeners phục vụ. Port là số nguyên bất kì từ 1-65535. Một số port phổ biến cho các giao thức tương ứng có thể xem xét để lựa chọn như 89 (HTTP, TCP), 443 (HTTPs)"
+                   nz-tooltip="Port được Listeners phục vụ. Port là số nguyên bất kì từ 1-65535. Một số port phổ biến cho các giao thức tương ứng có thể xem xét để lựa chọn như 80 (HTTP, TCP), 443 (HTTPs)"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
@@ -401,7 +401,7 @@
             <input nz-input
                    class="input-custom"
                    formControlName="path"
-                   [placeholder]="'Nhập path'" [maxLength]="50" />
+                   [placeholder]="'Nhập path'" [maxLength]="50"/>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item *ngIf="selectedCheckMethod == 'HTTP'">
