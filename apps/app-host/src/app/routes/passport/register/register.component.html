@@ -18,7 +18,7 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-control [nzErrorTip]="'validation.password.required' | i18n">
+    <nz-form-control [nzErrorTip]="passErrorTpl">
       <nz-form-label [nzRequired]="true" [nzSm]="6" [nzXs]="24">Mật khẩu</nz-form-label>
       <nz-input-group
         nzSize="large"
@@ -29,23 +29,16 @@
         [(nzPopoverVisible)]="visible"
         nzPopoverOverlayClassName="register-password-cdk"
         [nzPopoverOverlayStyle]="{ 'width.px': 240 }"
-        [nzPopoverContent]="pwdCdkTpl"
       >
         <input nz-input type="password" formControlName="password" placeholder="Password"/>
       </nz-input-group>
-      <ng-template #pwdCdkTpl>
-        <div style="padding: 4px 0">
-          <ng-container [ngSwitch]="status">
-            <div *ngSwitchCase="'ok'" class="success">{{ 'validation.password.strength.strong' | i18n }}</div>
-            <div *ngSwitchCase="'pass'" class="warning">{{ 'validation.password.strength.medium' | i18n }}</div>
-            <div *ngSwitchDefault class="error">{{ 'validation.password.strength.short' | i18n }}</div>
-          </ng-container>
-          <div class="progress-{{ status }}">
-            <nz-progress [nzPercent]="progress" [nzStatus]="passwordProgressMap[status]" [nzStrokeWidth]="6"
-                         [nzShowInfo]="false"/>
-          </div>
-          <p class="mt-sm">{{ 'validation.password.strength.msg' | i18n }}</p>
-        </div>
+      <ng-template #passErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')"
+          >{{ 'validation.password.required' | i18n }}
+        </ng-container>
+        <ng-container *ngIf="control.hasError('validPassword')">{{
+          'validation.password.account.pattern' | i18n
+        }}</ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>

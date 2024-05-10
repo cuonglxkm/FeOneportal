@@ -54,11 +54,7 @@ export class UserProfileComponent implements OnInit {
     contract_code: new FormControl({ value: '', disabled: true }),
     province: new FormControl('', { validators: [Validators.required] }),
     address: new FormControl('', {
-      validators: [
-        Validators.required,
-        AppValidator.cannotContainSpecialCharactorExceptComma,
-        noAllWhitespace(),
-      ],
+      validators: [AppValidator.cannotContainSpecialCharactorExceptComma],
     }),
     old_password: new FormControl('', { validators: [] }),
     new_password: new FormControl({ value: '', disabled: true }),

@@ -18,7 +18,7 @@
             >)</nz-form-label
           >
           <nz-form-control
-            nzErrorTip="Họ không được để trống và chứa kí tự đặc biệt!"
+            nzErrorTip="Họ không được để trống và chứa ký tự đặc biệt!"
           >
             <input
               maxlength="20"
@@ -37,7 +37,7 @@
             >)</nz-form-label
           >
           <nz-form-control
-            nzErrorTip="Tên không được để trống và chứa kí tự đặc biệt!"
+            nzErrorTip="Tên không được để trống và chứa ký tự đặc biệt!"
           >
             <input
               nz-input
@@ -138,13 +138,8 @@
 
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label
-            >{{ 'form.account.address' | i18n }} (<span class="text-red">*</span
-            >)</nz-form-label
-          >
-          <nz-form-control
-            nzErrorTip="Địa chỉ không được để trống và chứa kí tự đặc biệt!"
-          >
+          <nz-form-label>{{ 'form.account.address' | i18n }}</nz-form-label>
+          <nz-form-control nzErrorTip="Địa chỉ không được chứa ký tự đặc biệt!">
             <input
               maxlength="255"
               nz-input
