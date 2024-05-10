@@ -126,8 +126,11 @@
 <nz-modal [(nzVisible)]="isVisibleDeleteVPC" nzTitle="{{ 'project.note21' | i18n }}" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
-              nzDescription="{{ 'project.note11' | i18n:{'name':itemDelete.displayName} }}"
+              [nzDescription]="alertOK"
               nzShowIcon style="margin-bottom: 10px;"></nz-alert>
+    <ng-template #alertOK>
+      <span [innerHTML]="'project.note13' | i18n:{'name':itemDelete.displayName}"></span>
+    </ng-template>
     <div class="text-label" style="margin-bottom: 3px; margin-top: 20px">{{ 'project.note10' | i18n }}</div>
     <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{itemDelete.displayName}}" [(ngModel)]="nameDelete"
            (ngModelChange)="confirmNameDelete($event)" type="text" />
@@ -146,11 +149,8 @@
 <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="{{ 'project.note22' | i18n }}" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
-              [nzDescription]="alertOK"
+              nzDescription="{{ 'project.note11' | i18n:{'name':itemDelete.displayName} }}"
               nzShowIcon style="margin-bottom: 10px;"></nz-alert>
-    <ng-template #alertOK>
-      <span [innerHTML]="'project.note13' | i18n:{'name':itemDelete.displayName}"></span>
-    </ng-template>
     <div class="text-label" style="margin-bottom: 3px; margin-top: 35px">{{ 'project.note15' | i18n }} </div>
     <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{itemDelete.displayName}}" [(ngModel)]="nameDelete"
            (ngModelChange)="confirmNameDelete($event)" type="text" />
