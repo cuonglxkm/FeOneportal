@@ -53,6 +53,7 @@ export class RouterDetailComponent implements OnInit {
   disableSubnet: boolean = true
   isVisibleCreateInterface = false;
   routerInterfaceCreate: RouterIntefaceCreate = new RouterIntefaceCreate();
+  nameRouter: string
 
   formRouterInterface: FormGroup<{
     subnetId: FormControl<string>;
@@ -105,6 +106,7 @@ export class RouterDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.routerId = this.activatedRoute.snapshot.paramMap.get('id');
+    this.nameRouter = this.activatedRoute.snapshot.paramMap.get('name');
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.vpcId = regionAndProject.projectId;
