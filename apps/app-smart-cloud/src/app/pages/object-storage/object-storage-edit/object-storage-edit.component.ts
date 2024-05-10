@@ -23,6 +23,8 @@ import {
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -38,6 +40,7 @@ export class ObjectStorageEditComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private service: ObjectStorageService,
     private router: Router,
     private activatedRoute: ActivatedRoute,

@@ -1,4 +1,4 @@
-import { Component, Inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListenerService } from '../../../../shared/services/listener.service';
@@ -20,7 +20,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
   idListener: any;
-  idLb: any;
+  idLb: number;
   listPool: any;
   listL7: L7Policy[];
   validateForm: FormGroup<{
@@ -66,14 +66,16 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
               private service: ListenerService,
               private notification: NzNotificationService,
               private activatedRoute: ActivatedRoute,
+              private cdr: ChangeDetectorRef,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private loadBalancerService: LoadBalancerService) {
   }
 
   ngOnInit(): void {
-    this.getData();
+    this.idLb = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('lbId'));
     this.idListener = this.activatedRoute.snapshot.paramMap.get('id');
-    this.idLb = this.activatedRoute.snapshot.paramMap.get('lbId');
+    this.getData();
+    this.cdr.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges) {

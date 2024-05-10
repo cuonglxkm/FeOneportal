@@ -16,6 +16,8 @@ import { LoadBalancerService } from '../../../../shared/services/load-balancer.s
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-create-lb-vpc',
@@ -71,6 +73,7 @@ export class CreateLbVpcComponent implements OnInit {
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private vlanService: VlanService,
               private catalogService: CatalogService,
               private projectService: ProjectService,
@@ -305,18 +308,26 @@ export class CreateLbVpcComponent implements OnInit {
         if (data != null) {
           if (data.code == 200) {
             this.isLoading = false;
-            this.notification.success('Thành công', 'Yêu cầu tạo Volume thành công.');
+            this.notification.success(
+              '',
+              this.i18n.fanyi('app.notification.request.create.LB.success')
+            );
             this.router.navigate(['/app-smart-cloud/load-balancer/list']);
           }
         } else {
           this.isLoading = false;
-          this.notification.error('Thất bại', 'Yêu cầu tạo Volume thất bại.');
-
+          this.notification.error(
+            '',
+            this.i18n.fanyi('app.notification.request.create.LB.fail')
+          );
         }
       },
       error => {
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Yêu cầu tạo Volume thất bại.');
+        this.notification.error(
+          '',
+          this.i18n.fanyi('app.notification.request.create.LB.fail')
+        );
       });
   }
 
