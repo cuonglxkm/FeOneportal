@@ -417,6 +417,20 @@ export class PoolDetailComponent implements OnInit {
   protocol_port: number;
   modalMember(checkCreate: boolean, data: MemberOfPool) {
     if (checkCreate) {
+      this.formMember = new FormGroup({
+        name: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        ipPrivate: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        port: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        weight: new FormControl('', {
+          validators: [Validators.required],
+        }),
+      });
       this.memberForm = new MemberCreateOfPool();
       this.memberForm.address = this.ipAddress;
       this.memberForm.protocol_port = this.protocol_port;
@@ -433,13 +447,16 @@ export class PoolDetailComponent implements OnInit {
     } else {
       this.formMember = new FormGroup({
         name: new FormControl('', {
-          validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/)],
+          validators: [
+            Validators.required,
+            Validators.pattern(/^[a-zA-Z0-9]*$/),
+          ],
         }),
         ipPrivate: new FormControl('', {
-          validators: [Validators.required],
+          validators: [],
         }),
         port: new FormControl('', {
-          validators: [Validators.required],
+          validators: [],
         }),
         weight: new FormControl('', {
           validators: [Validators.required],

@@ -725,6 +725,7 @@
   "app.alert.delete.member.or.health": "You are about to delete a {{typeDelete}}",
   "app.title.delete.health": "Delete the {{name}} Health Monitor",
   "app.title.delete.member": "Delete the {{name}} Member",
+  "app.alert.create.member": "When a member is designated as Backup, it will not receive messages until the other members (non-backup) are no longer active (down)",
 
   "app.notification.load.balancer.not.exist": "The Load Balancer does not exist",
   "app.notification.delete.load.balancer.success": "Delete Load Balancer successful",

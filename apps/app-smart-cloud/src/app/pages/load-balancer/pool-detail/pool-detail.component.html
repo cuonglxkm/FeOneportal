@@ -581,7 +581,7 @@
             nzSize="large"
           >
             <nz-option
-              *ngFor="let i of listIPPrivate"
+              *ngFor="let i of listMember"
               [nzLabel]="i.name"
               [nzValue]="i.id"
             />
@@ -590,11 +590,11 @@
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          IP Adress (<span class="text-red">*</span>)
+          IP Private (<span class="text-red">*</span>)
         </nz-form-label>
         <nz-form-control [nzErrorTip]="gpuErrorTpl">
           <nz-select
-            [nzPlaceHolder]="'-- ' + ('app.choose.method' | i18n) + ' --'"
+            [nzPlaceHolder]="'-- ' + ('app.choose.ip.private' | i18n) + ' --'"
             [nzShowSearch]="true"
             formControlName="ipPrivate"
             [(ngModel)]="memberForm.ipAddress"
@@ -660,6 +660,12 @@
         [(ngModel)]="memberForm.backup"
         [ngModelOptions]="{ standalone: true }"
       ></nz-switch>
+      <nz-alert
+      style="margin-top: 20px"
+      nzType="warning"
+      [nzDescription]="'app.alert.create.member' | i18n"
+      nzShowIcon
+    ></nz-alert>
     </form>
   </ng-container>
   <div *nzModalFooter>

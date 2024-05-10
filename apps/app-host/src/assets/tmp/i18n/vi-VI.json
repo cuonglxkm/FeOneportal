@@ -611,6 +611,7 @@
   "app.alert.delete.member.or.health": "Bạn đang thực hiện xóa {{typeDelete}}",
   "app.title.delete.health": "Xóa Health Monitor {{name}}",
   "app.title.delete.member": "Xóa Member {{name}}",
+  "app.alert.create.member": "Khi một member được chọn là Backup thì sẽ không nhận các bản tin cho đến khi các Member khác (non-backup) không còn hoạt động (down)",
 
   "app.notification.load.balancer.not.exist": "Load Balancer không tồn tại",
   "app.notification.delete.load.balancer.success": "Xóa Load Balancer thành công",
