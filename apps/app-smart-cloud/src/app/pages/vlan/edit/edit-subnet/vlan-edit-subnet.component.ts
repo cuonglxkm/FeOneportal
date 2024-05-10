@@ -213,9 +213,10 @@ export class VlanEditSubnetComponent implements OnInit {
       this.validateForm.controls.nameSubnet.setValue(this.subnet?.name);
       this.validateForm.controls.gateway.setValue(this.subnet?.gatewayIp);
       this.validateForm.controls.enableDhcp.setValue(this.subnet?.enableDhcp);
-      if (this.subnet.gatewayIp != undefined || this.subnet?.gatewayIp != null) {
+      if (this.subnet.gatewayIp != undefined || this.subnet?.gatewayIp != null || this.subnet?.gatewayIp != '') {
         this.validateForm.controls.disableGatewayIp.setValue(false);
-      } else {
+      }
+      if(this.subnet.gatewayIp == undefined || this.subnet?.gatewayIp == null || this.subnet?.gatewayIp == ''){
         this.validateForm.controls.disableGatewayIp.setValue(true);
       }
       this.allocationPool = this.subnet?.allocationPools.map(item => `${item.start}, ${item.end}`).join('\n');
@@ -227,13 +228,17 @@ export class VlanEditSubnetComponent implements OnInit {
     this.formUpdateSubnet.id = this.idSubnet;
     this.formUpdateSubnet.name = this.validateForm.controls.nameSubnet.value;
     this.formUpdateSubnet.enableDHCP = this.validateForm.controls.enableDhcp.value;
-    this.formUpdateSubnet.getwayIP = this.validateForm.controls.gateway.value;
+    if(this.validateForm.controls.disableGatewayIp.value) {
+      this.formUpdateSubnet.gatewayIP = ''
+    } else {
+      this.formUpdateSubnet.gatewayIP = this.validateForm.controls.gateway.value
+    }
     this.formUpdateSubnet.hostRoutes = null;
     console.log('edit', this.formUpdateSubnet);
     this.vlanService.updateSubnet(this.idSubnet, this.formUpdateSubnet).subscribe(data => {
         this.isLoading = false;
-        this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note40'));
+      this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
 
     }, error => {
       this.isLoading = false;

@@ -77,6 +77,7 @@ export class ListBackupVmComponent implements OnInit {
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     this.formSearch.projectId = this.project
+    this.typeVPC = project?.type
     this.getListBackupVM(true)
   }
 
@@ -96,17 +97,7 @@ export class ListBackupVmComponent implements OnInit {
   }
 
   handleOkDelete() {
-    this.isLoading = true
-    this.isVisibleDelete = false
-    this.backupVmService.delete(this.id).subscribe(data => {
-      this.isLoading = false
-      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.vm.notification.success.delete'))
-      this.getListBackupVM(false)
-    }, error => {
-      this.isLoading = false
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.backup.vm.notification.fail.delete'))
-      this.getListBackupVM(false)
-    })
+    setTimeout(() => {this.getListBackupVM(true)}, 1500)
   }
 
   getListBackupVM(isBegin) {
@@ -158,6 +149,17 @@ export class ListBackupVmComponent implements OnInit {
     });
   }
 
+  navigateToCreateBackup() {
+    // this.dataService.setSelectedObjectId(id)
+    if(this.typeVPC == 1) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/create/vpc']);
+    }
+
+    if(this.typeVPC == 0) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/create/no-vpc']);
+    }
+
+  }
 
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId
@@ -172,7 +174,7 @@ export class ListBackupVmComponent implements OnInit {
     //   this.loadProjects()
     // }
 
-    this.getListBackupVM(true)
+    setTimeout(() => {this.getListBackupVM(true)}, 1500)
   }
 
   getParam(): BackupVMFormSearch {

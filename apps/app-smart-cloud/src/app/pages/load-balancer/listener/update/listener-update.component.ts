@@ -163,12 +163,14 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   }
 
   private getPool(id: string) {
+    this.loadingPool = true;
     this.service.getPool(id, this.regionId, this.projectId)
       .pipe(finalize(()=>{
         this.loadingPool = false;
       })).subscribe(
       data => {
         this.listPool = data.records;
+        this.loadingPool = false;
       }
     )
   }

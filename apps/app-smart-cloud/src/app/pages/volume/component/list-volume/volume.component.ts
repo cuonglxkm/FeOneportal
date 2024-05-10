@@ -7,6 +7,8 @@ import { BaseResponse, NotificationService, ProjectModel, RegionModel } from '..
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'app-volume',
@@ -27,10 +29,10 @@ export class VolumeComponent implements OnInit {
   value: string;
 
   options = [
-    { label: 'Tất cả trạng thái', value: null },
-    { label: 'Đang hoạt động', value: 'KHOITAO' },
-    { label: 'Lỗi', value: 'ERROR' },
-    { label: 'Tạm ngừng', value: 'SUSPENDED' }
+    { label: this.i18n.fanyi('app.status.all'), value: null },
+    { label: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
+    { label: this.i18n.fanyi('app.status.error'), value: 'ERROR' },
+    { label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED' }
   ];
 
   pageSize: number = 10;
@@ -61,7 +63,8 @@ export class VolumeComponent implements OnInit {
               private fb: NonNullableFormBuilder,
               private cdr: ChangeDetectorRef,
               private notificationService: NotificationService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   regionChanged(region: RegionModel) {

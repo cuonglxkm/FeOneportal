@@ -1,18 +1,39 @@
-
+<img src="assets/imgs/delete.svg" alt=""
+     style="width: 30px; height: 30px; cursor: pointer; margin-left: 5px;"
+     (click)="showModal()"
+     nz-popover nzPopoverPlacement="bottom"
+     [nzPopoverContent]="'app.text.delete'|i18n" />
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Xác nhận xóa Backup VM"
           (nzOnCancel)="handleCancel()" nzCentered>
   <div *nzModalTitle>
-    <p class="text-h5"><b>Xác nhận xóa Backup VM</b></p>
+    <span class="text-modal-title">Xác nhận xóa Backup VM</span>
   </div>
   <div *nzModalContent>
-    <p class="text-p">Quý khách chắc chắn muốn xóa backup VM ?</p>
+    <nz-alert nzBanner
+              nzShowIcon
+              [nzMessage]="'Bạn đang thực hiện xóa Backup'">
+    </nz-alert>
+    <div style="margin-top: 10px;">
+      <span class="text-label">Đế thực hiện xoá Backup {{backupName}}, vui lòng nhập tên Backup để xác nhận.</span>
+      <input nz-input #backupInputName
+             style="margin-top: 10px;"
+             class="input-custom"
+             [ngModel]="value"
+             (keydown.enter)="focusOkButton($event)"
+             (ngModelChange)="onInputChange($event)"
+             [placeholder]="'Nhập tên Backup'" />
+      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên bản backup</span>
+    </div>
   </div>
-  <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{'app.button.cancel'|i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOk()"
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
             [nzLoading]="isLoading"
-            class="button-ok">Đồng ý
+            class="button-ok" >
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm'|i18n}}
     </button>
   </div>
 </nz-modal>
