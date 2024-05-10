@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
@@ -8,6 +8,8 @@ import { OfferDetail } from '../../../../shared/models/catalog.model';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-extend-load-balancer-vpc',
@@ -39,6 +41,7 @@ export class EditLoadBalancerVpcComponent implements OnInit{
   isLoading: boolean = false
 
   constructor(private router: Router,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder,
               private activatedRoute: ActivatedRoute,
               private loadBalancerService: LoadBalancerService,
@@ -119,10 +122,16 @@ export class EditLoadBalancerVpcComponent implements OnInit{
       this.loadBalancerService.updateLoadBalancer(formUpload).subscribe(data => {
         this.isLoading = false
         this.router.navigate(['/app-smart-cloud/load-balancer/list'])
-        this.notification.success('Thành công', 'Cập nhật thông tin Load Balancer thành công')
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notification.edit.load.balancer.success')
+        );
       }, error => {
         this.isLoading = false
-        this.notification.error('Thất bại', 'Cập nhật thông tin Load Balancer thất bại')
+        this.notification.error(
+          '',
+          this.i18n.fanyi('app.notification.edit.load.balancer.fail')
+        );
       })
     }
   }
