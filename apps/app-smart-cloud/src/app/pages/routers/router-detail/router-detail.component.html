@@ -90,7 +90,7 @@
         </tbody>
       </nz-table>
     </nz-tab>
-    <nz-tab nzTitle="Static Router">
+    <nz-tab nzTitle="Static Route">
       <div class="text-right">
         <button
           nz-button
@@ -143,16 +143,6 @@
     </nz-tab>
   </nz-tabset>
 </nz-card>
-<div class="text-right">
-  <button nz-button (click)="navigateToList()">
-    <img
-      style="padding-right: 10px; margin-top: -4px"
-      src="assets/imgs/arrow-left-2.svg"
-      alt=""
-    />
-    <span>{{'app.order-detail.back' | i18n}}</span>
-  </button>
-</div>
 
 <nz-modal
   [(nzVisible)]="isVisibleCreateInterface"
@@ -166,7 +156,7 @@
       <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="{{'app.router.note17' | i18n}}"
-        src="assets/imgs/message-question.svg"
+        src="assets/imgs/pajamas_question.svg"
         alt=""
       />
     </div>
@@ -210,7 +200,7 @@
           <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="{{'app.router.note19' | i18n}}"
-        src="assets/imgs/message-question.svg"
+        src="assets/imgs/pajamas_question.svg"
         alt=""
       />
         </div>
@@ -219,7 +209,7 @@
       style="margin-top: 5px"
       class="input-custom"
       nz-input
-      placeholder=""
+      placeholder="{{'router.label.ip.interface.example' | i18n}}"
       formControlName="ipAddress"
     />
       <ng-template #ipErrorTpl let-control>
@@ -262,7 +252,7 @@
       <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="{{'app.router.note24' | i18n}}"
-        src="assets/imgs/message-question.svg"
+        src="assets/imgs/pajamas_question.svg"
         alt=""
       />
     </div>
@@ -270,7 +260,7 @@
       style="margin-bottom: 16px; margin-top: 5px"
       class="input-custom"
       nz-input
-      placeholder=""
+      placeholder="10.0.0.1/24"
       formControlName="destinationCIDR"
     />
     <div class="text-label">
@@ -278,7 +268,7 @@
       <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="{{'app.router.note25' | i18n}}"
-        src="assets/imgs/message-question.svg"
+        src="assets/imgs/pajamas_question.svg"
         alt=""
       />
     </div>
@@ -286,7 +276,7 @@
       style="margin-top: 5px"
       class="input-custom"
       nz-input
-      placeholder=""
+      placeholder="192.168.0.145"
       formControlName="nextHop"
     />
   </ng-container>
