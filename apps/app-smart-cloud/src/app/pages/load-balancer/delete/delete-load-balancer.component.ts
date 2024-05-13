@@ -63,15 +63,18 @@ export class DeleteLoadBalancerComponent implements AfterViewInit{
           this.isVisible = false
           this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.delete.load.balancer.success'))
           this.onOk.emit(data)
+        this.value = null
       }, error => {
         console.log('error', error)
         this.isLoading = false
         this.isVisible = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.load.balancer.fail', error.error.detail))
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.load.balancer.fail.' + error.error.detail))
+        this.value = null
       })
     } else {
       this.isInput = true
       this.isLoading = false
+      this.value = null
     }
   }
 
