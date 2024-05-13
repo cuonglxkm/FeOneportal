@@ -310,6 +310,7 @@
   "app.apply": "Apply",
   "app.application.period": "Application period",
   "app.reason": "The reason",
+  "app.choose.attachment.method": "Choose attachment method",
 
   "app.ip.type": "IP Type",
   "app.ip.address": "IP Address",
@@ -496,6 +497,7 @@
   "app.notify.rescue.instances.fail": "Failed to RESCUE instance",
   "app.notify.unrescue.instances.success": "Successfully UNRESCUE instance",
   "app.notify.unrescue.instances.fail": "Failed to UNRESCUE instance",
+  "app.notify.get.service.package.fail": "Failed to retrieve configuration package information",
 
   "app.choose.snapshot": "Choose Snapshot",
   "app.choose.volume.type": "Choose Volume type",
@@ -916,6 +918,8 @@
   "app.payment.success": "PAYMENT SUCCESSFUL",
   "app.payment.fail": "PAYMENT FAILED",
 
+  "app.notify.fail.order.create": "Failed to create order",
+  "app.get.list.voucher.fail": "Failed to retrieve Voucher list",
   "app.transaction.fail": "The transaction failed",
   "app.transaction.code.exist": "The transaction code already exists",
   "app.data.format.not.correct": "The data is not in the correct format",

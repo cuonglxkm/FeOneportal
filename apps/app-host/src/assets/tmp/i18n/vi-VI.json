@@ -252,6 +252,7 @@
   "app.apply": "Áp dụng",
   "app.application.period": "Thời gian áp dụng",
   "app.reason": "Nguyên nhân",
+  "app.choose.attachment.method": "Chọn hình thức gắn",
 
   "app.input.name": "Nhập tên",
   "app.input.password": "Nhập mật khẩu",
@@ -382,6 +383,7 @@
   "app.notify.rescue.instances.fail": "RESCUE máy ảo không thành công",
   "app.notify.unrescue.instances.success": "UNRESCUE máy ảo thành công",
   "app.notify.unrescue.instances.fail": "UNRESCUE máy ảo không thành công",
+  "app.notify.get.service.package.fail": "Lấy thông tin gói cấu hình không thành công",
 
   "app.choose.snapshot": "chọn Snapshot",
   "app.choose.volume.type": "Chọn loại Volume",
@@ -805,6 +807,8 @@
   "app.payment.success": "THANH TOÁN THÀNH CÔNG",
   "app.payment.fail": "THANH TOÁN THẤT BẠI",
 
+  "app.notify.fail.order.create": "Tạo order không thành công",
+  "app.get.list.voucher.fail": "Lấy danh sách Voucher thất bại",
   "app.transaction.fail": "Giao dịch thất bại",
   "app.transaction.code.exist": "Mã giao dịch đã tồn tại",
   "app.data.format.not.correct": "Dữ liệu không đúng định dạng",
