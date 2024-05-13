@@ -408,7 +408,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.region,
         9999,
         1,
-        false
+        true
       )
       .subscribe((data: any) => {
         const currentDateTime = new Date().toISOString();

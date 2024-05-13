@@ -35,15 +35,12 @@
               minlength="1"
               (change)="userCreate.userName = userCreate.userName.trim()"
             />
-            <span class="nameField"
-              >{{ 'app.create-user.tooltip.nameUser' | i18n }}</span
-            >
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >Vui lòng nhập tên User
+                >{{ 'validation.info.required' | i18n }}
               </ng-container>
               <ng-container *ngIf="control.hasError('pattern')"
-                >Tên người dùng không hợp lệ
+                >{{ 'app.create-user.tooltip.nameUser' | i18n }}
               </ng-container>
             </ng-template>
           </nz-form-control>
@@ -68,10 +65,10 @@
             />
             <ng-template #emailErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >Vui lòng nhập email của User
+                >{{ 'validation.info.required' | i18n }}
               </ng-container>
               <ng-container *ngIf="control.hasError('email')"
-                >Email không hợp lệ
+                >{{ 'validation.email.wrong-format' | i18n }}
               </ng-container>
             </ng-template>
           </nz-form-control>

@@ -26,16 +26,29 @@
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
           <nz-form-label>Email</nz-form-label>
-          <nz-form-control nzErrorTip="Email không hợp lệ!">
-            <input nz-input formControlName="email" placeholder="Email" nzSize="large" />
+          <nz-form-control [nzErrorTip]="'validation.email.wrong-format' | i18n">
+            <input
+              nz-input
+              formControlName="email"
+              placeholder="Email"
+              nzSize="large"
+            />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
-          <nz-form-label>{{ 'form.account.phone' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
-          <nz-form-control [nzErrorTip]="'form.account.validate.phone' |i18n">
-            <input nz-input formControlName="phone" [placeholder]="'form.account.phone'|i18n" nzSize="large" />
+          <nz-form-label
+            >{{ 'form.account.phone' | i18n }} (<span class="text-red">*</span
+            >)</nz-form-label
+          >
+          <nz-form-control [nzErrorTip]="phoneErrorTpl">
+            <input
+              nz-input
+              formControlName="phone"
+              [placeholder]="'form.account.phone' | i18n"
+              nzSize="large"
+            />
           </nz-form-control>
         </nz-form-item>
         <ng-template #phoneErrorTpl let-control>
@@ -107,7 +120,6 @@
 
             {{ 'app.button.update' | i18n }}
           </button>
-
         </div>
       </div>
     </div>
