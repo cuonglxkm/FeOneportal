@@ -46,6 +46,7 @@
             <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.vlan.note44' | i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">{{ 'app.vlan.note45' | i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('duplicateName')">{{ 'app.vlan.note46' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('prefixError')">Vui lòng nhập tối thiểu 1 ký tự sau tiền tố vlan_</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>

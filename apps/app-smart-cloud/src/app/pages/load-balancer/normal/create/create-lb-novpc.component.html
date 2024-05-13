@@ -110,10 +110,15 @@
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips>
-                  <nz-select nzSize="large" (ngModelChange)="updateValue($event)" formControlName="subnet"
-                             [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'" nzAllowClear>
-                    <nz-option *ngFor="let index of listSubnets" [nzValue]="index.cloudId"
-                               [nzLabel]="index.name + '(' + index.subnetAddressRequired + ')'"></nz-option>
+                  <nz-select nzSize="large"
+                             [ngModel]="selectedSubnet"
+                             (ngModelChange)="updateValue($event)"
+                             formControlName="subnet"
+                             [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'"
+                             nzAllowClear>
+                    <nz-option *ngFor="let index of mapSubnetArray"
+                               [nzValue]="index.value"
+                               [nzLabel]="index.label"></nz-option>
                   </nz-select>
                 </nz-form-control>
               </nz-form-item>
