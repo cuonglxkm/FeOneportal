@@ -73,6 +73,10 @@ h3 {
   border-radius: 8px;
 }
 
+::ng-deep .ant-input-affix-wrapper {
+  border-radius: 8px;
+}
+
 input,
 textarea,
 .border-card,
@@ -81,7 +85,7 @@ textarea,
 }
 
 .warning-description {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .borderless {

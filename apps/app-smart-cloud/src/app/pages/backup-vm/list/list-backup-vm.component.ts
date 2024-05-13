@@ -8,6 +8,8 @@ import {Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {getCurrentRegionAndProject} from "@shared";
 import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-list-backup-vm',
@@ -27,14 +29,10 @@ export class ListBackupVmComponent implements OnInit {
   isLoading: boolean = false;
 
   status = [
-    {label: 'Tất cả', value: 'all'},
-    {label: 'Hoạt động', value: 'AVAILABLE'},
-    {label: 'Tạm dừng', value: 'SUSPENDED'}
+    {label: this.i18n.fanyi('app.payment.status.all'), value: 'all'},
+    {label: this.i18n.fanyi('app.status.running'), value: 'AVAILABLE'},
+    {label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED'}
   ]
-
-  serviceStatusMapping = {
-    KHOITAO: '-'
-  }
 
   selectedValue?: string = null
 
@@ -66,7 +64,8 @@ export class ListBackupVmComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private notification: NzNotificationService,
-              private projectService: ProjectService) {
+              private projectService: ProjectService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -78,6 +77,7 @@ export class ListBackupVmComponent implements OnInit {
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     this.formSearch.projectId = this.project
+    this.typeVPC = project?.type
     this.getListBackupVM(true)
   }
 
@@ -97,17 +97,7 @@ export class ListBackupVmComponent implements OnInit {
   }
 
   handleOkDelete() {
-    this.isLoading = true
-    this.isVisibleDelete = false
-    this.backupVmService.delete(this.id).subscribe(data => {
-      this.isLoading = false
-      this.notification.success('Thành công', 'Xóa thành công')
-      this.getListBackupVM(false)
-    }, error => {
-      this.isLoading = false
-      this.notification.error('Thất bại', 'Xóa thất bại')
-      this.getListBackupVM(false)
-    })
+    setTimeout(() => {this.getListBackupVM(true)}, 1500)
   }
 
   getListBackupVM(isBegin) {
@@ -138,12 +128,17 @@ export class ListBackupVmComponent implements OnInit {
     this.getListBackupVM(false)
   }
 
-  onQueryParamsChange(params: NzTableQueryParams) {
-    const {pageSize, pageIndex} = params
-    this.formSearch.pageSize = pageSize;
-    this.formSearch.currentPage = pageIndex
-    this.getListBackupVM(false);
+  onPageSizeChange(value) {
+    this.pageSize = value
+    this.getListBackupVM(false)
   }
+
+  onPageIndexChange(value) {
+    this.pageIndex = value
+    this.getListBackupVM(false)
+  }
+
+
 
   loadProjects() {
     this.projectService.getByRegion(this.region).subscribe(data => {
@@ -154,6 +149,17 @@ export class ListBackupVmComponent implements OnInit {
     });
   }
 
+  navigateToCreateBackup() {
+    // this.dataService.setSelectedObjectId(id)
+    if(this.typeVPC == 1) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/create/vpc']);
+    }
+
+    if(this.typeVPC == 0) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/create/no-vpc']);
+    }
+
+  }
 
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId
@@ -168,7 +174,7 @@ export class ListBackupVmComponent implements OnInit {
     //   this.loadProjects()
     // }
 
-    this.getListBackupVM(true)
+    setTimeout(() => {this.getListBackupVM(true)}, 1500)
   }
 
   getParam(): BackupVMFormSearch {

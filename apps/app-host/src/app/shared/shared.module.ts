@@ -8,6 +8,7 @@ import { AlainThemeModule } from '@delon/theme';
 
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
+import { SvgIconComponent } from './components/svg-icon/svg-icon.component';
 
 // #region third libs
 // import { NgxTinymceModule } from 'ngx-tinymce';
@@ -16,7 +17,9 @@ const THIRDMODULES: Array<Type<any>> = [];
 // #endregion
 
 // #region your componets & directives
-const COMPONENTS: Array<Type<any>> = [];
+const COMPONENTS: Array<Type<any>> = [
+  SvgIconComponent,
+];
 const DIRECTIVES: Array<Type<any>> = [];
 // #endregion
 

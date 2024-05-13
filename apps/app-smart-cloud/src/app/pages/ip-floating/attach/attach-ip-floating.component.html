@@ -1,7 +1,7 @@
 <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
       nzTheme="outline"
       nz-popover
-      nzPopoverContent="{{'app.ip.floating12' | i18n}}"
+      nzPopoverContent="{{'ip.floating.label.attach' | i18n}}"
       nzPopoverPlacement="bottom" (click)="showModal()"></span>
 <nz-modal [(nzVisible)]="isVisible"
           nzCentered
@@ -10,19 +10,19 @@
           [nzFooter]="null"
           (nzOnCancel)="handleCancel()">
   <ng-template #modalTitle>
-    <span class="text-modal-title">{{'app.ip.floating12' | i18n}}</span>
+    <span class="text-modal-title">{{'ip.floating.label.attach' | i18n}}</span>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm">
       <nz-alert nzType="warning"
-                nzDescription="{{'app.ip.floating13' | i18n}}"
+                nzDescription="{{'ip.floating.label.attaching' | i18n}}"
                 nzShowIcon
                 style="margin-bottom: 24px;">
       </nz-alert>
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>{{'app.ip.floating14' | i18n}} </span>
+            <span>{{'ip.floating.label.range' | i18n}} </span>
           </div>
         </nz-form-label>
       </nz-form-item>

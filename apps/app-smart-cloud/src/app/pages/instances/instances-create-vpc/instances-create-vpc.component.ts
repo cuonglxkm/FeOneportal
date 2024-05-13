@@ -23,7 +23,7 @@ import {
 } from '../instances.model';
 import { Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
-import { Observable, finalize, of } from 'rxjs';
+import { Observable, Subject, debounceTime, finalize, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
@@ -64,7 +64,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   public carouselTileItems$: Observable<number[]>;
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 2, lg: 5, all: 0 },
+    grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
     point: {
       visible: true,
@@ -81,6 +81,14 @@ export class InstancesCreateVpcComponent implements OnInit {
     name: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/)],
+    }),
+    passOrKeyFormControl: new FormControl('', {
+      validators: [
+        Validators.required,
+        Validators.pattern(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
+        ),
+      ],
     }),
   });
 
@@ -168,7 +176,6 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.initSnapshot();
     this.getAllIPPublic();
     this.getAllSecurityGroup();
-    this.getAllSSHKey();
     this.getListNetwork();
     this.getInfoVPC();
     this.breakpointObserver
@@ -182,19 +189,19 @@ export class InstancesCreateVpcComponent implements OnInit {
       .subscribe((result) => {
         if (result.breakpoints[Breakpoints.XSmall]) {
           // Màn hình cỡ nhỏ
-          this.cardHeight = '110px';
+          this.cardHeight = '130px';
         } else if (result.breakpoints[Breakpoints.Small]) {
           // Màn hình cỡ nhỏ - trung bình
-          this.cardHeight = '160px';
+          this.cardHeight = '180px';
         } else if (result.breakpoints[Breakpoints.Medium]) {
           // Màn hình trung bình
-          this.cardHeight = '190px';
+          this.cardHeight = '210px';
         } else if (result.breakpoints[Breakpoints.Large]) {
           // Màn hình lớn
-          this.cardHeight = '145px';
+          this.cardHeight = '165px';
         } else if (result.breakpoints[Breakpoints.XLarge]) {
           // Màn hình rất lớn
-          this.cardHeight = '130px';
+          this.cardHeight = '150px';
         }
 
         // Cập nhật chiều cao của card bằng Renderer2
@@ -204,7 +211,32 @@ export class InstancesCreateVpcComponent implements OnInit {
           this.cardHeight
         );
       });
+    this.checkExistName();
     this.cdr.detectChanges();
+  }
+
+  //Kiểm tra trùng tên máy ảo
+  dataSubjectName: Subject<any> = new Subject<any>();
+  changeName(value: number) {
+    this.dataSubjectName.next(value);
+  }
+
+  isExistName: boolean = false;
+  checkExistName() {
+    this.dataSubjectName
+      .pipe(
+        debounceTime(300) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.dataService.checkExistName(res, this.region).subscribe((data) => {
+          if (data == true) {
+            this.isExistName = true;
+          } else {
+            this.isExistName = false;
+          }
+          this.cdr.detectChanges();
+        });
+      });
   }
 
   infoVPC: TotalVpcResource = new TotalVpcResource();
@@ -229,7 +261,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lấy thông tin VPC không thành công'
+            this.i18n.fanyi('app.notify.get.vpc.info.fail')
           );
         },
       });
@@ -282,10 +314,24 @@ export class InstancesCreateVpcComponent implements OnInit {
       });
   }
 
-  
-
   nameImage: string = '';
-  onInputHDH(event: any, index: number, imageTypeId: number) {
+  disableKeypair: boolean = false;
+  onInputHDH(
+    event: any,
+    index: number,
+    imageTypeId: number,
+    uniqueKey: string
+  ) {
+    if (uniqueKey.toUpperCase() == 'WINDOWS') {
+      if (!this.activeBlockPassword) {
+        this.initPassword();
+      }
+      this.listSSHKey = [];
+      this.disableKeypair = true;
+    } else {
+      this.disableKeypair = false;
+      this.getAllSSHKey();
+    }
     this.hdh = event;
     this.selectedImageTypeId = imageTypeId;
     for (let i = 0; i < this.listSelectedImage.length; ++i) {
@@ -352,7 +398,6 @@ export class InstancesCreateVpcComponent implements OnInit {
   //#region Chọn IP Public Chọn Security Group
   listIPPublic: IPPublicModel[] = [];
   listSecurityGroup: SecurityGroupModel[] = [];
-  listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
@@ -363,18 +408,16 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.region,
         9999,
         1,
-        false
+        true
       )
       .subscribe((data: any) => {
-        this.listIPPublic = data.records;
+        const currentDateTime = new Date().toISOString();
+        this.listIPPublic = data.records.filter(
+          (e) =>
+            e.status == 0 && new Date(e.expiredDate) > new Date(currentDateTime)
+        );
         console.log('list IP public', this.listIPPublic);
       });
-  }
-
-  onChangeIpPublic() {
-    if (this.ipPublicValue != 0) {
-      this.isUseLAN = false;
-    }
   }
 
   listVlanNetwork: NetWorkModel[] = [];
@@ -455,22 +498,6 @@ export class InstancesCreateVpcComponent implements OnInit {
   //#endregion
 
   selectedElementFlavor: string = null;
-  isInitialClass = true;
-  isNewClass = false;
-
-  toggleClass(id: string) {
-    this.selectedElementFlavor = id;
-    if (this.selectedElementFlavor) {
-      this.isInitialClass = !this.isInitialClass;
-      this.isNewClass = !this.isNewClass;
-    } else {
-      this.isInitialClass = true;
-      this.isNewClass = false;
-    }
-
-    this.cdr.detectChanges();
-  }
-
   selectElementInputFlavors(id: string) {
     this.selectedElementFlavor = id;
   }
@@ -486,12 +513,28 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.activeBlockPassword = true;
     this.activeBlockSSHKey = false;
     this.selectedSSHKeyName = null;
+    this.form.setControl(
+      'passOrKeyFormControl',
+      new FormControl('', {
+        validators: [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
+          ),
+        ],
+      })
+    );
   }
   initSSHkey(): void {
     this.activeBlockPassword = false;
     this.activeBlockSSHKey = true;
     this.password = null;
-    this.getAllSSHKey();
+    this.form.setControl(
+      'passOrKeyFormControl',
+      new FormControl('', {
+        validators: [Validators.required],
+      })
+    );
   }
 
   getAllSSHKey() {
@@ -508,11 +551,6 @@ export class InstancesCreateVpcComponent implements OnInit {
       });
   }
 
-  onSSHKeyChange(event?: any) {
-    this.selectedSSHKeyName = event;
-    console.log('sshkey', event);
-  }
-
   //#endregion
 
   onRegionChange(region: RegionModel) {
@@ -523,28 +561,42 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  createInstancesForm(): FormGroup<InstancesForm> {
-    return new FormGroup({
-      name: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
-    });
+  isValid: boolean = false;
+  checkValidConfig() {
+    if (
+      !this.instanceCreate.volumeSize ||
+      this.instanceCreate.volumeSize == 0 ||
+      !this.instanceCreate.ram ||
+      this.instanceCreate.ram == 0 ||
+      !this.instanceCreate.cpu ||
+      this.instanceCreate.cpu == 0
+    ) {
+      this.isValid = false;
+    } else {
+      this.isValid = true;
+    }
   }
 
   instanceInit() {
     this.instanceCreate.description = null;
-
     this.instanceCreate.imageId = this.hdh;
     this.instanceCreate.iops = 0;
     this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
     this.instanceCreate.keypairName = this.selectedSSHKeyName;
     this.instanceCreate.securityGroups = this.selectedSecurityGroup;
     this.instanceCreate.network = null;
-    this.instanceCreate.isUsePrivateNetwork = this.isUseLAN;
+    this.instanceCreate.isUsePrivateNetwork =
+      this.vlanNetwork == '' ? false : true;
+    if (this.vlanNetwork != '') {
+      this.instanceCreate.privateNetId = this.vlanNetwork;
+    }
+    if (this.port != '') {
+      this.instanceCreate.privatePortId = this.port;
+    }
     this.instanceCreate.ipPublic = this.ipPublicValue;
     this.instanceCreate.password = this.password;
     this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
+    this.instanceCreate.encryption = false;
     this.instanceCreate.addRam = 0;
     this.instanceCreate.addCpu = 0;
     this.instanceCreate.addBttn = 0;
@@ -552,21 +604,11 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.instanceCreate.poolName = null;
     this.instanceCreate.usedMss = false;
     this.instanceCreate.customerUsingMss = null;
-
     this.instanceCreate.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
-    this.instanceCreate.typeName =
-      'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     this.instanceCreate.projectId = this.projectId;
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;
-    this.instanceCreate.customerId = this.tokenService.get()?.userId;
-
-    let currentDate = new Date();
-    let lastDate = new Date();
-    this.instanceCreate.createDate = currentDate.toISOString().substring(0, 19);
-    this.instanceCreate.expireDate = lastDate.toISOString().substring(0, 19);
-
     this.instanceCreate.saleDept = null;
     this.instanceCreate.saleDeptCode = null;
     this.instanceCreate.contactPersonEmail = null;
@@ -582,10 +624,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.instanceCreate.dSubscriptionNumber = null;
     this.instanceCreate.dSubscriptionType = null;
     this.instanceCreate.oneSME_SubscriptionId = null;
-    this.instanceCreate.actionType = 0;
     this.instanceCreate.regionId = this.region;
-    this.instanceCreate.userEmail = this.tokenService.get()['email'];
-    this.instanceCreate.actorEmail = this.tokenService.get()['email'];
   }
 
   isVisibleCreate: boolean = false;
@@ -601,37 +640,71 @@ export class InstancesCreateVpcComponent implements OnInit {
   }
 
   handleOkCreate(): void {
-    this.isVisibleCreate = false;
-    this.instanceInit();
+    this.dataService
+      .checkflavorforimage(
+        this.hdh,
+        this.instanceCreate.volumeSize,
+        this.instanceCreate.ram,
+        this.instanceCreate.cpu
+      )
+      .subscribe({
+        next: (data) => {
+          this.isVisibleCreate = false;
+          this.instanceInit();
 
-    let specificationInstance = JSON.stringify(this.instanceCreate);
-    let orderItemInstance = new OrderItem();
-    orderItemInstance.orderItemQuantity = 1;
-    orderItemInstance.specification = specificationInstance;
-    orderItemInstance.specificationType = 'instance_create';
-    this.orderItem.push(orderItemInstance);
-    console.log('order instance', orderItemInstance);
+          let specificationInstance = JSON.stringify(this.instanceCreate);
+          let orderItemInstance = new OrderItem();
+          orderItemInstance.orderItemQuantity = 1;
+          orderItemInstance.specification = specificationInstance;
+          orderItemInstance.specificationType = 'instance_create';
+          this.orderItem.push(orderItemInstance);
+          console.log('order instance', orderItemInstance);
 
-    this.order.customerId = this.tokenService.get()?.userId;
-    this.order.createdByUserId = this.tokenService.get()?.userId;
-    this.order.note = 'tạo vm';
-    this.order.orderItems = this.orderItem;
+          this.order.customerId = this.tokenService.get()?.userId;
+          this.order.createdByUserId = this.tokenService.get()?.userId;
+          this.order.note = 'tạo vm';
+          this.order.orderItems = this.orderItem;
 
-    // var returnPath: string = window.location.pathname;
-    // console.log('instance create', this.instanceCreate);
-    // this.router.navigate(['/app-smart-cloud/order/cart'], {
-    //   state: { data: this.order, path: returnPath },
-    // });
+          // var returnPath: string = window.location.pathname;
+          // console.log('instance create', this.instanceCreate);
+          // this.router.navigate(['/app-smart-cloud/order/cart'], {
+          //   state: { data: this.order, path: returnPath },
+          // });
 
-    this.dataService.create(this.order).subscribe({
-      next: (data: any) => {
-        this.notification.success('', 'Tạo máy ảo thành công');
-        this.router.navigate(['/app-smart-cloud/instances']);
-      },
-      error: (e) => {
-        this.notification.error(e.statusText, 'Tạo máy ảo không thành công');
-      },
-    });
+          this.dataService.create(this.order).subscribe({
+            next: (data: any) => {
+              this.notification.success(
+                '',
+                this.i18n.fanyi('app.notify.success.instances.order.create')
+              );
+              this.router.navigate(['/app-smart-cloud/instances']);
+            },
+            error: (e) => {
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('app.notify.fail.instances.order.create')
+              );
+            },
+          });
+        },
+        error: (e) => {
+          let numbers: number[] = [];
+          const regex = /\d+/g;
+          const matches = e.error.match(regex);
+          if (matches) {
+            numbers = matches.map((match) => parseInt(match));
+            this.notification.error(
+              '',
+              this.i18n.fanyi('app.notify.check.config.for.os', {
+                nameHdh: this.nameImage,
+                volume: numbers[0],
+                ram: numbers[1],
+                cpu: numbers[2],
+              })
+            );
+          }
+        },
+      });
   }
 
   handleCancelCreate() {

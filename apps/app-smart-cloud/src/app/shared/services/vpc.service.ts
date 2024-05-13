@@ -67,4 +67,8 @@ export class VpcService extends BaseService {
   delete(id: any):Observable<HttpResponse<any>> {
     return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/"+ id);
   }
+
+  updateVpc(request: any, id: any) {
+    return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/" + id, request, this.httpOptions);
+  }
 }

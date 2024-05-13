@@ -15,6 +15,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 
 @Component({
   selector: 'one-portal-create-endpoint-group',
@@ -24,7 +25,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../../libs/commo
 export class CreateEndpointGroupComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
-  listSubnets: FormListSubnetResponse[] = [];
+  listSubnets: FormListSubnetResponse[];
   subnetId = [];
   subnetCidr = [];
   listCidrInfo = [];
@@ -32,14 +33,17 @@ export class CreateEndpointGroupComponent implements OnInit {
     { label: 'Subnet(for local system)', value: 'subnet' },
     { label: 'Cidr(for external system)', value: 'cidr' },
   ];
-
+  checked: boolean = false
   selectedType = 'cidr';
   isLoading: boolean = false;
+  routerId: string
+
   formCreateEndpointGroup: FormCreateEndpointGroup =
     new FormCreateEndpointGroup();
   form: FormGroup<{
     name: FormControl<string>;
-    endpoints: FormControl<string>;
+    endpointsCidr: FormControl<string>;
+
   }> = this.fb.group({
     name: [
       '',
@@ -48,7 +52,7 @@ export class CreateEndpointGroupComponent implements OnInit {
         Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/),
       ],
     ],
-    endpoints: ['', Validators.required],
+    endpointsCidr: ['', Validators.required],
   });
 
   getData(): any {
@@ -60,9 +64,24 @@ export class CreateEndpointGroupComponent implements OnInit {
     this.formCreateEndpointGroup.type = this.selectedType;
     this.formCreateEndpointGroup.endpoints =
       this.selectedType === 'cidr'
-        ? this.form.controls.endpoints.value.split(' ')
+        ? this.form.controls.endpointsCidr.value.split(' ')
         : this.subnetId;
     return this.formCreateEndpointGroup;
+  }
+
+  getVpns2s() {
+    this.vpnSiteToSiteService.getVpnSiteToSite(this.project)
+      .subscribe(data => {
+        if(data){   
+          this.routerId = data.routerId      
+        }
+     
+    }, error => {
+      this.notification.error(
+        'Thất bại',
+        'Lấy routerId thất bại'
+      );
+    })
   }
 
   ngOnInit(): void {
@@ -70,6 +89,7 @@ export class CreateEndpointGroupComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.getListSubnet();
+    this.getVpns2s()
   }
 
   constructor(
@@ -77,13 +97,38 @@ export class CreateEndpointGroupComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private fb: NonNullableFormBuilder,
     private notification: NzNotificationService,
-    private endpointGroupService: EndpointGroupService
+    private endpointGroupService: EndpointGroupService,
+    private vpnSiteToSiteService: VpnSiteToSiteService
   ) {}
+
+  handleChangeType(event: any){
+    console.log(event);
+    console.log(this.form.controls.endpointsCidr.value);
+    this.form.controls.endpointsCidr.clearValidators();
+    this.form.controls.endpointsCidr.markAsPristine();
+    this.form.controls.endpointsCidr.reset();
+    if(event === 'cidr'){
+      this.listCidrInfo = []
+      this.subnetId = [];
+      this.form.controls.endpointsCidr.setValidators([
+        Validators.required,
+      ]);
+      this.form.controls.endpointsCidr.markAsPristine();
+    this.form.controls.endpointsCidr.reset();
+    }
+  }
 
   handleCreate() {
     this.isLoading = true;
     if (this.form.valid) {
-      this.formCreateEndpointGroup = this.getData();
+      if(this.selectedType === 'subnet' && this.subnetId.length === 0){
+        this.notification.warning(
+          'Cảnh báo',
+          'Vui lòng chọn subnet'
+        );
+        this.isLoading = false;
+      }else{
+        this.formCreateEndpointGroup = this.getData();
       console.log(this.formCreateEndpointGroup);
       this.endpointGroupService.create(this.formCreateEndpointGroup).subscribe(
         (data) => {
@@ -103,6 +148,7 @@ export class CreateEndpointGroupComponent implements OnInit {
           console.log(error);
         }
       );
+      }
     }
   }
 
@@ -139,4 +185,8 @@ export class CreateEndpointGroupComponent implements OnInit {
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
   }
+
 }
+
+
+

@@ -10,26 +10,26 @@
           [nzFooter]="null"
           (nzOnCancel)="handleCancel()">
   <ng-template #modalTitle>
-    <span class="text-modal-title">{{'app.ip.floating8' | i18n}}</span>
+    <span class="text-modal-title">{{'ip.floating.label.attach' | i18n}}</span>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
       <nz-alert nzType="warning"
-                nzDescription="{{'app.ip.floating9' | i18n}}"
+                nzDescription="{{'ip.floating.alert.remove.ip.address' | i18n}}"
                 nzShowIcon
                 style="margin-bottom: 24px;">
       </nz-alert>
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>{{'app.ip.floating10' | i18n}}</span>
+            <span>{{'ip.floating.alert.remove' | i18n}}</span>
           </div>
         </nz-form-label>
         <nz-form-control>
           <input nz-input
                  class="input-custom"
                  formControlName="name"
-                 placeholder="{{'app.ip.floating11' | i18n}}" />
+                 placeholder="{{'ip.floating.label.press' | i18n}}" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item nzAlign="bottom" nzJustify="center">

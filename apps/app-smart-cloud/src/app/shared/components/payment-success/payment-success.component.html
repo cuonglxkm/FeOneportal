@@ -5,7 +5,9 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item> Billing </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Thanh toán </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.payment.payment' | i18n }}
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 </page-header>
@@ -18,14 +20,15 @@
       alt=""
     />
     <br />
-    <span style="font-weight: 600; font-size: 20px; color: #52c41a"
-      >THANH TOÁN THÀNH CÔNG</span
-    >
+    <span style="font-weight: 600; font-size: 20px; color: #52c41a">{{
+      'app.payment.success' | i18n
+    }}</span>
     <br />
-    <span>Mã thanh toán: </span><span>{{ paymentCode }}</span>
-    <span> - Tổng tiền: </span
+    <span>{{ 'app.payment.paymentCode' | i18n }}: </span
+    ><span>{{ paymentCode }}</span>
+    <span> - {{ 'app.payment-detail.totalAmount' | i18n }}: </span
     ><span>{{ payment.totalAmount | number : '1.0-0' }} VND</span> <br />
-    <span> Kiểu thanh toán: Online</span>
+    <span> {{ 'app.payment-detail.paymentMethod' | i18n }}: Online</span>
   </div>
 </nz-card>
 
@@ -37,11 +40,13 @@
       alt=""
     />
     <br />
-    <span style="font-weight: 600; font-size: 20px; color: #ff4d4f"
-      >THANH TOÁN THẤT BẠI</span
-    >
+    <span style="font-weight: 600; font-size: 20px; color: #ff4d4f">{{
+      'app.payment.fail' | i18n
+    }}</span>
     <br />
-    <span>Đơn hàng của quý khách đã không thể hoàn tất thanh toán</span> <br />
-    <span style="color: #ff4d4f">Nguyên nhân: {{ causeOfFail }}</span>
+    <span>{{ 'app.order.fail.notify' | i18n }}</span> <br />
+    <span style="color: #ff4d4f"
+      >{{ 'app.reason' | i18n }}: {{ causeOfFail }}</span
+    >
   </div>
 </nz-card>

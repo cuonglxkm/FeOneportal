@@ -31,22 +31,22 @@
     <div *ngIf="typeVPC == 0" style="display: flex">
       <div style="margin-right: 8px;">
         <div nz-col nzSpan="4">
-          <button class="button-cancel"
-                  nzType="primary"
-                  (click)="navigateToRenew(volumeInfo.id)"
-                  nz-button>
-            <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
-            <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
+          <button class="button-fee"
+                  nz-button
+                  nzType="primary" (click)="navigateEditVolume(volumeInfo.id)">
+            <img src="assets/imgs/edit-1.svg" alt=""
+                 style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
+            <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
           </button>
         </div>
       </div>
       <div nz-col nzSpan="4">
-        <button class="button-fee"
-                nz-button
-                nzType="default" (click)="navigateEditVolume(volumeInfo.id)">
-          <img src="assets/imgs/edit-2.svg" alt=""
-               style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
-          <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
+        <button class="button-cancel"
+                nzType="default"
+                (click)="navigateToRenew(volumeInfo.id)"
+                nz-button>
+          <img src="assets/imgs/calendar-tick.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
+          <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
         </button>
       </div>
     </div>
@@ -54,8 +54,8 @@
       <div nz-col nzSpan="4">
         <button class="button-fee"
                 nz-button
-                nzType="default" (click)="navigateToResizeVPC(volumeInfo.id)">
-          <img src="assets/imgs/edit-2.svg" alt=""
+                nzType="primary" (click)="navigateToResizeVPC(volumeInfo.id)">
+          <img src="assets/imgs/edit-1.svg" alt=""
                style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
           <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
         </button>

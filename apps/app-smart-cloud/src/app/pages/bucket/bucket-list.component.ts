@@ -14,6 +14,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
 import { finalize } from 'rxjs';
 import { BucketModel } from 'src/app/shared/models/bucket.model';
+import { ObjectStorage } from 'src/app/shared/models/object-storage.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 
@@ -24,6 +25,7 @@ import { ObjectStorageService } from 'src/app/shared/services/object-storage.ser
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BucketListComponent implements OnInit {
+  objectStorage: ObjectStorage = new ObjectStorage();
   listBucket: BucketModel[] = [];
   pageNumber: number = 1;
   pageSize: number = 10;
@@ -51,13 +53,15 @@ export class BucketListComponent implements OnInit {
 
   hasOS: boolean = undefined;
   hasObjectStorage() {
+    this.hasOS = undefined;
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
-      .getUserInfo()
+      .getObjectStorage()
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
           if (data) {
+            this.objectStorage = data;
             this.hasOS = true;
             this.search();
           } else {
@@ -115,10 +119,16 @@ export class BucketListComponent implements OnInit {
   }
 
   extendObjectStorage() {
-    this.router.navigate(['/app-smart-cloud/object-storage/extend']);
+    this.router.navigate([
+      `/app-smart-cloud/object-storage/extend/${this.objectStorage.id}`,
+    ]);
   }
 
-  updateObjectStorage() {}
+  resizeObjectStorage() {
+    this.router.navigate([
+      `/app-smart-cloud/object-storage/edit/${this.objectStorage.id}`,
+    ]);
+  }
 
   deleteObjectStorage() {}
 

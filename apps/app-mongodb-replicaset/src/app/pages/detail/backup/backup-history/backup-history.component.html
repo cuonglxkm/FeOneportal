@@ -1,0 +1,58 @@
+<nz-content>
+  <nz-card>
+    <div class="mt-3">
+      <app-backup-list-header [parent-component]="'backup-history'" (command)="handleCommand($event)"></app-backup-list-header>
+
+      <div class="mt-5">
+        <nz-table [nzData]="backupRecordList" [nzFrontPagination]="true" nzShowSizeChanger [nzTotal]="total"
+          [nzPageIndex]="pageIndex" [nzPageSize]="pageSize" (nzPageIndexChange)="changePageIndex($event)"
+          (nzPageSizeChange)="changePageSize($event)">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th>Lịch backup</th>
+              <th>Backup file</th>
+              <th>Dung lượng</th>
+              <th>Thời gian bắt đầu</th>
+              <th>Thời gian kết thúc</th>
+              <th>Loại</th>
+              <th>Trạng thái</th>
+              <th>Chức năng</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let backup of backupRecordList; let i=index" style="border-spacing: 10px;;">
+              <td style="padding: 10px 10px;">{{i + 1}}</td>
+              <td>{{backup.scheduleName}}</td>
+              <td>{{backup.backupName}}</td>
+              <td>{{backup.backupSize}}</td>
+              <td>{{backup.startTime | date : 'HH:mm dd/MM/yyyy'}}</td>
+              <td>{{backup.endTime | date : 'HH:mm dd/MM/yyyy'}}</td>
+              <td>{{backup.type == 0 ? "Tự đông" : "Thủ công"}}</td>
+              <td>
+                <nz-tag class="py-0 px-2 noselect" nzColor="{{backup.status | status2color_backup}}">
+                  {{backup.status}}
+                </nz-tag>
+              </td>
+              <td>
+                <button *ngIf="backup.status == 'Đang backup' " nz-button nzType="text" nz-tooltip nzTooltipTitle="Hủy">
+                  <i nz-icon nzType="BoxMultiplySolid" nzColor="danger"
+                    (click)="setSelectedBackup(backup); requestCancelBackup()"></i>
+                </button>
+
+                <button *ngIf="backup.status == 'Thành công' " nz-button nzType="text" nz-tooltip nzTooltipTitle="Xóa">
+                  <i nz-icon nzType="Delete" nzColor="danger"
+                    (click)="setSelectedBackup(backup); requestDeleteBackupRecord()"></i>
+                </button>
+
+                <!-- <button *ngIf="backup.status == 'Thành công' " nz-button vType="text" nz-tooltip vTooltipTitle="Download file" (click)="setSelectedBackup(backup); getDirectoryTree()">
+              <i nz-icon vType="Download" vColor="primary"></i>
+            </button> -->
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+  </nz-card>
+</nz-content>

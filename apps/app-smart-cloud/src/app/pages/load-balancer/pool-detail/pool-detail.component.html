@@ -174,7 +174,7 @@
                 <img
                   src="assets/imgs/trash.svg"
                   alt=""
-                  (click)="modalDeleteHealth(data)"
+                  (click)="showModalDelete(true, item)"
                   style="cursor: pointer"
                   [nz-tooltip]="'app.delete' | i18n"
                 />
@@ -250,14 +250,14 @@
                 <img
                   src="assets/imgs/edit-2.svg"
                   alt=""
-                  (click)="modalEditMember(data)"
+                  (click)="modalMember(false, item)"
                   style="cursor: pointer; margin-right: 16px"
                   [nz-tooltip]="'app.text.edit' | i18n"
                 />
                 <img
                   src="assets/imgs/trash.svg"
                   alt=""
-                  (click)="modalDeleteMember(data)"
+                  (click)="showModalDelete(false, item)"
                   style="cursor: pointer"
                   [nz-tooltip]="'app.delete' | i18n"
                 />
@@ -320,6 +320,7 @@
                 [nzShowSearch]="true"
                 formControlName="checkMethod"
                 [(ngModel)]="healthForm.type"
+                (ngModelChange)="isNotHttp($event)"
                 [disabled]="!isCreate"
                 nzSize="large"
               >
@@ -442,7 +443,7 @@
           </nz-form-item>
         </div>
       </div>
-      <div style="display: flex">
+      <div *ngIf="isHttpType" style="display: flex">
         <div style="flex: 1; margin-right: 24px">
           <nz-form-item>
             <nz-form-label
@@ -483,7 +484,7 @@
                 class="input-custom"
                 nz-input
                 formControlName="expectedCode"
-                [(ngModel)]="healthForm.expectedCode"
+                [(ngModel)]="healthForm.expectedCodes"
                 [placeholder]="'app.input.code' | i18n"
                 [maxlength]="3"
               />
@@ -542,7 +543,7 @@
 >
   <ng-container *nzModalContent>
     <form nz-form [formGroup]="formMember" [nzLayout]="'vertical'">
-      <nz-form-item>
+      <nz-form-item *ngIf="!isCreate">
         <nz-form-label>
           {{ 'app.member.name' | i18n }} (<span class="text-red">*</span>)
         </nz-form-label>
@@ -566,32 +567,46 @@
           </ng-template>
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item>
+      <nz-form-item *ngIf="isCreate"> 
         <nz-form-label>
-          IP Adress (<span class="text-red">*</span>)
+          {{ 'app.member.name' | i18n }} (<span class="text-red">*</span>)
         </nz-form-label>
-        <nz-form-control>
-          <input
-            class="input-custom"
-            nz-input
-            [(ngModel)]="isCreate ? memberForm.address : memberForm.ipAddress"
-            [ngModelOptions]="{ standalone: true }"
+        <nz-form-control [nzErrorTip]="gpuErrorTpl">
+          <nz-select
+            [nzPlaceHolder]="'-- ' + ('app.choose.member' | i18n) + ' --'"
+            [nzShowSearch]="true"
+            formControlName="name"
+            [(ngModel)]="memberForm.memberId"
             [disabled]="!isCreate"
-          />
+            nzSize="large"
+          >
+            <nz-option
+              *ngFor="let i of listMember"
+              [nzLabel]="i.name"
+              [nzValue]="i.id"
+            />
+          </nz-select>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          Subnet (<span class="text-red">*</span>)
+          IP Private (<span class="text-red">*</span>)
         </nz-form-label>
-        <nz-form-control>
-          <input
-            class="input-custom"
-            nz-input
-            (ngModel)="(loadBalancer.subnetAddress)"
-            [ngModelOptions]="{ standalone: true }"
-            [disabled]="true"
-          />
+        <nz-form-control [nzErrorTip]="gpuErrorTpl">
+          <nz-select
+            [nzPlaceHolder]="'-- ' + ('app.choose.ip.private' | i18n) + ' --'"
+            [nzShowSearch]="true"
+            formControlName="ipPrivate"
+            [(ngModel)]="memberForm.ipAddress"
+            [disabled]="!isCreate"
+            nzSize="large"
+          >
+            <nz-option
+              *ngFor="let i of listIPPrivate"
+              [nzLabel]="i.address"
+              [nzValue]="i.id"
+            />
+          </nz-select>
         </nz-form-control>
       </nz-form-item>
       <div style="display: flex">
@@ -603,11 +618,11 @@
             <nz-form-control>
               <input
                 class="input-custom"
+                formControlName="port"
                 nz-input
                 [(ngModel)]="
                   isCreate ? memberForm.protocol_port : memberForm.port
                 "
-                [ngModelOptions]="{ standalone: true }"
                 [disabled]="true"
               />
             </nz-form-control>
@@ -645,6 +660,12 @@
         [(ngModel)]="memberForm.backup"
         [ngModelOptions]="{ standalone: true }"
       ></nz-switch>
+      <nz-alert
+      style="margin-top: 20px"
+      nzType="warning"
+      [nzDescription]="'app.alert.create.member' | i18n"
+      nzShowIcon
+    ></nz-alert>
     </form>
   </ng-container>
   <div *nzModalFooter>

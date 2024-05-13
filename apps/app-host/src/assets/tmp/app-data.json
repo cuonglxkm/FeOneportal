@@ -88,6 +88,12 @@
           ]
         },
         {
+          "text": "Dự án",
+          "icon": "anticon-profile",
+          "link": "/app-smart-cloud/project",
+          "action": "project:List"
+        },
+        {
           "text": "Dịch vụ hạ tầng",
           "icon": "anticon-cloud",
           "children": [
@@ -192,12 +198,6 @@
                   "link": "/app-smart-cloud/object"
                 }
               ]
-            },
-            {
-              "text": "VPC",
-              "icon": "anticon-profile",
-              "link": "/app-smart-cloud/vpc",
-              "action": "vpc:List"
             },
             {
               "text": "Khóa truy cập (Keypair)",
@@ -308,6 +308,12 @@
               "icon": "anticon-team"
             }
           ]
+        },
+        {
+          "text": "Operation History",
+          "icon": "anticon-edit",
+          "link": "/app-smart-cloud/operation-history"
+          
         }
       ]
     }

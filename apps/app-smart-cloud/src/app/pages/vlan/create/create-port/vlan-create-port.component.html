@@ -9,7 +9,7 @@
           [nzFooter]="footer"
           (nzOnCancel)="handleCancel()">
   <ng-template #modalTitle>
-    <span class="text-modal-title">{{ 'app.order.status.New' | i18n }}</span>
+    <span class="text-modal-title">{{ 'app.vlan.create.port' | i18n }}</span>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm" style="padding-bottom: 0;">
@@ -53,15 +53,16 @@
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>IP Address (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+            <span>IP Address</span>
 
-            <img nz-popover [nzPopoverContent]="'IP Address'"
+            <img nz-popover [nzPopoverContent]="'Nếu người dùng không nhập IP Address, hệ thống sẽ sinh ngẫu nhiên 1 IP Address thuộc địa chỉ Subnet đã chọn'"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
-          <input nz-input class="input-custom" formControlName="ipAddress" />
+          <input nz-input class="input-custom" formControlName="ipAddress" (ngModelChange)="inputPort($event)"/>
+          <span *ngIf="isInvalidGateway" style="color: #FF4D4F;">IP không thuộc Allocation Pool </span>
           <ng-template #ipAddressErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">IP Address không được để trống</ng-container>
             <ng-container *ngIf="control.hasError('invalidIp')">IP Address không hợp lệ</ng-container>
@@ -80,7 +81,7 @@
     </button>
     <button nz-button nzType="primary"
             (click)="submitForm()"
-            [nzLoading]="isLoading" [disabled]="!validateForm.valid"
+            [nzLoading]="isLoading" [disabled]="(!validateForm.valid) || isInvalidGateway"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>

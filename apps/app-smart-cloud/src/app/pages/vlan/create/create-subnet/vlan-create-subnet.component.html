@@ -76,7 +76,7 @@
         <nz-form-control nzDisableAutoTips [nzErrorTip]="networkAddressErrorTpl">
           <input nz-input
                  class="input-custom"
-                 formControlName="subnetAddressRequired"
+                 formControlName="subnetAddressRequired" (ngModelChange)="inputCheckPool($event)"
                  [placeholder]="'x.x.0.0/16'" />
           <ng-template #networkAddressErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'app.vlan.note29' | i18n }}</ng-container>
@@ -125,7 +125,9 @@
           </nz-space>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-          <input nz-input class="input-custom" formControlName="gateway" placeholder="{{ 'app.vlan.note35' | i18n }}"/>
+          <input nz-input class="input-custom"
+                 [value]="gateway"
+                 [disabled]="true"/>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -152,10 +154,10 @@
 
     <nz-form-item nzAlign="bottom" nzJustify="end">
       <nz-space nzSize="large">
-        <button *nzSpaceItem nz-button nzType="default" class="button-cancel">
+        <button *nzSpaceItem nz-button nzType="default" class="button-cancel" (click)="cancel()">
           <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}</button>
         <nz-form-control *nzSpaceItem>
-          <button nz-button nzType="primary" [disabled]="!validateForm.valid"
+          <button nz-button nzType="primary" [disabled]="!validateForm.valid || isInvalidGateway"
                   class="button-ok" (click)="handleCreate()" [nzLoading]="isLoading">
             <span nz-icon nzType="check" nzTheme="outline" ></span>{{ 'app.label.create' | i18n }}</button>
         </nz-form-control>

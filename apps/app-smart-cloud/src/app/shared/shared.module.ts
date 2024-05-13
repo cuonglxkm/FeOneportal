@@ -21,6 +21,7 @@ import { PaymentFailedComponent } from './components/payment-failed/payment-fail
 import { PaymentSummaryComponent } from './components/payment-summary/payment-summary.component';
 import { IsPermissionPipe } from './pipes/is-permission.pipe';
 import { ShareUsersComboboxComponent } from './components/share-users-combobox/share-users-combobox.component';
+import { SvgIconComponent } from './components/svg-icon/svg-icon.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -45,6 +46,7 @@ const COMPONENTS: Array<Type<any>> = [
   PaymentSuccessComponent,
   PaymentFailedComponent,
   ShareUsersComboboxComponent,
+  SvgIconComponent,
 ];
 const DIRECTIVES: Array<Type<any>> = [];
 
@@ -59,6 +61,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     AlainThemeModule.forChild(),
     DelonACLModule,
     DelonFormModule,
+    
     ...SHARED_DELON_MODULES,
     ...SHARED_ZORRO_MODULES,
     // third libs
@@ -70,6 +73,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     ...DIRECTIVES,
     PaymentSummaryComponent,
     IsPermissionPipe,
+    
   ],
   exports: [
     CommonModule,

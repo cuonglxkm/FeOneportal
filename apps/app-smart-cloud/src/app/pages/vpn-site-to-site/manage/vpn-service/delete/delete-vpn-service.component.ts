@@ -63,7 +63,7 @@ export class DeleteVpnServiceComponent{
     
     if(this.validateForm.valid) {
       if(this.vpnServiceName.includes(this.validateForm.controls.name.value)){
-        this.vpnServiceService.deleteVpnService(this.vpnServiceId,formDelete).subscribe(data => {
+        this.vpnServiceService.deleteVpnService(formDelete).subscribe(data => {
           if(data) {
             this.isVisible = false
             this.isLoading =  false
@@ -85,6 +85,5 @@ export class DeleteVpnServiceComponent{
       }
     }
   }
-
   
 }

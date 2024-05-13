@@ -10,13 +10,13 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   styleUrls: ['./delete-inbound.component.less'],
 })
 export class DeleteInboundComponent {
-  
+
   @Input() idInbound: string;
   @Input() nameRule: string;
   @Input() region: number;
   @Input() project: number;
   @Output() onCancel = new EventEmitter<void>();
-  @Output() onOk = new EventEmitter<void>();
+  @Output() onOk = new EventEmitter();
 
   isVisible: boolean = false;
   isLoading: boolean = false;
@@ -49,7 +49,7 @@ export class DeleteInboundComponent {
         this.isLoading = false;
         this.isVisible = false;
         this.notification.success('Thành công', 'Xóa Inbound ' + this.nameRule + ' thành công');
-        this.onOk.emit();
+        this.onOk.emit(this.idInbound);
       },
       error: () => {
         this.isLoading = false;

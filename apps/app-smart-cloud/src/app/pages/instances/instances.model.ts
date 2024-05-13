@@ -136,16 +136,7 @@ export class UpdateInstances {
 }
 
 export class InstancesModel {
-  type: any;
-  flavorName: string;
-  gpuType: any;
-  gpuCount: number;
-  volumeType: number;
-  createdDate: string;
-  expiredDate: string;
-  totalCount: number;
-  imageName: string;
-  offerId: number;
+  id: number;
   cloudId: string;
   name: string;
   flavorId: number;
@@ -153,7 +144,7 @@ export class InstancesModel {
   imageId: number;
   customerId: number;
   ipPublic: string;
-  ipPrivate: any;
+  ipPrivate: string;
   cpu: number;
   ram: number;
   storage: number;
@@ -166,17 +157,27 @@ export class InstancesModel {
   projectId: number;
   bttn: number;
   btqt: number;
-  ramAdditional: any;
-  cpuAdditional: any;
-  bttnAdditional: any;
-  btqtAdditional: any;
+  ramAdditional: number;
+  cpuAdditional: number;
+  bttnAdditional: number;
+  btqtAdditional: number;
   volumeRootId: number;
   status: string;
   taskState: string;
   rootStatus: string;
-  securityGroups: string;
-  computeHost: any;
-  id: number;
+  securityGroupStr: string;
+  computeHost: string;
+  keypair: string;
+  type: string;
+  flavorName: string;
+  gpuType: string;
+  gpuCount: number;
+  volumeType: number;
+  createdDate: string;
+  expiredDate: string;
+  totalCount: number;
+  imageName: string;
+  offerId: number;
 }
 
 export class InstanceFormSearch {
@@ -343,6 +344,7 @@ export class InstanceResize {
   cpu: number;
   gpuCount: any;
   gpuType: any;
+  newGpuTypeOfferId: any;
   typeName: string;
   newOfferId: number;
   serviceType: number;
@@ -470,9 +472,10 @@ export class IpCreate {
 }
 
 export class OfferItem {
-  id: number;
   productId: number;
-  offerName: string;
+  productName: any;
+  id: number;
+  offerName: any;
   price: Price;
   status: string;
   unitOfMeasure: string;

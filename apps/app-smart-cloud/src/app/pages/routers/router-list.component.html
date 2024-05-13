@@ -1,14 +1,22 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="('app.info' | i18n) + ' Router'"
+  [title]="('app.list' | i18n) + ' Routers'"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> {{'kafka.detail.manage' | i18n}} Router </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Network </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/network/router']"
+          >{{ 'app.list' | i18n }} Routers</a
+        >
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -26,7 +34,7 @@
   </ng-template>
 </page-header>
 
-<nz-card style="border-radius: 4px" *ngIf="!activeCreate">
+<nz-card style="border-radius: 4px" *ngIf="!isCheckBegin">
   <div style="margin-bottom: 20px" nz-row [nzGutter]="24">
     <div
       nz-col
@@ -39,11 +47,11 @@
     >
       <nz-select
         style="width: 20%"
-        [ngModelOptions]="{ standalone: true }"
-        nzPlaceHolder="{{'app.text.status' | i18n}}"
+        nzPlaceHolder="{{ 'app.text.status' | i18n }}"
         [nzShowSearch]="false"
-        (ngModelChange)="doSearch()"
+        (ngModelChange)="onChange($event)"
         nzSize="large"
+        [(ngModel)]="searchStatus"
       >
         <nz-option
           *ngFor="let i of filterStatus"
@@ -55,12 +63,14 @@
         style="margin-left: 10px; width: 50%; border-radius: 8px"
         [nzPrefix]="prefixIconSearch"
         nzSize="large"
+        (click)="doSearch(value)"
       >
         <input
           name="name"
           nz-input
-          placeholder="{{'app.button.search' | i18n}}"
-          (keyup.enter)="doSearch()"
+          placeholder="{{ 'app.button.search' | i18n }}"
+          (keyup.enter)="doSearch($event.target['value'])"
+          [(ngModel)]="value"
         />
       </nz-input-group>
       <ng-template #prefixIconSearch>
@@ -68,8 +78,8 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          nz-tooltip="{{'app.button.search' | i18n}}"
-          (click)="doSearch()"
+          nz-tooltip="{{ 'app.button.search' | i18n }}"
+          
         />
       </ng-template>
     </div>
@@ -89,7 +99,7 @@
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        {{'app.label.create' | i18n}} Router
+        {{ 'app.label.create' | i18n }} Router
       </button>
     </div>
   </div>
@@ -105,14 +115,13 @@
     (nzPageIndexChange)="getDataList()"
     (nzPageSizeChange)="getDataList()"
     [nzVirtualItemSize]="54"
-    [nzScroll]="{ x: '100%', y: '55vh' }"
   >
     <thead>
       <tr>
-        <th nzLeft>{{'app.create-user-groups.name' | i18n}}</th>
-        <th>{{'app.network.range' | i18n}}</th>
-        <th>{{'app.text.status' | i18n}}</th>
-        <th nzRight>{{'app.text.operation' | i18n}}</th>
+        <th nzLeft>{{ 'app.create-user-groups.name' | i18n }}</th>
+        <th>{{ 'app.network.range' | i18n }}</th>
+        <th>{{ 'app.text.status' | i18n }}</th>
+        <th nzRight>{{ 'app.text.operation' | i18n }}</th>
       </tr>
     </thead>
     <tbody>
@@ -120,38 +129,40 @@
         <td nzLeft>
           <a
             nz-tooltip
-            nzTooltipTitle="{{'app.view.detail' | i18n}}"
+            nzTooltipTitle="{{ 'app.view.detail' | i18n }}"
             nzTooltipPlacement="bottom"
-            [routerLink]="'/app-smart-cloud/network/router/detail/' + data.cloudId"
+            [routerLink]="
+              '/app-smart-cloud/network/router/detail/' + data.routerName + '/' + data.cloudId
+            "
             >{{ data.routerName }}</a
           >
         </td>
         <td nzLeft>
-          {{ data.networkAddress }}
+          {{ data.networkName }}
         </td>
         <td nzBreakWord>
-          <div style="color: #0066b3">
-            {{ getStatus(data.status) }}
+          <div>
+            {{ data.status === 'Kích hoạt' ? ('app.routers.active' | i18n) : ('app.routers.inactive' | i18n)  }}
           </div>
         </td>
         <td>
           <img
             src="assets/imgs/edit-2.svg"
-            [ngStyle]="{'filter': data.isUsed ? 'invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%)' : ''}"
-            alt=""
+            [ngStyle]="{ filter: data.isUsed ? 'grayscale(100%)' : '' }"
             [class.disabled]="data.isUsed"
+            alt=""
             (click)="modalEdit(data)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="{{'app.text.edit' | i18n}}"
+            nz-tooltip="{{ 'app.text.edit' | i18n }}"
           />
           <img
-            src="assets/imgs/trash.svg"
-            [ngStyle]="{'filter': data.isUsed ? 'invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%)' : ''}"
+            src="assets/imgs/delete.svg"
+            [ngStyle]="{ filter: data.isUsed ? 'grayscale(100%)' : '' }"
             alt=""
             [class.disabled]="data.isUsed"
             (click)="modalDelete(data.cloudId, data.routerName)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="{{'app.delete' | i18n}}"
+            nz-tooltip="{{ 'app.delete' | i18n }}"
           />
         </td>
       </tr>
@@ -159,7 +170,7 @@
   </nz-table>
 </nz-card>
 
-<div *ngIf="!loading && activeCreate">
+<div *ngIf="!loading && isCheckBegin">
   <nz-card style="border-radius: 4px">
     <result>
       <nz-row>
@@ -177,8 +188,8 @@
       <nz-row style="margin-top: 20px">
         <nz-col class="text-center" style="width: 100%"
           ><span class="text-intro-desc">
-            {{'app.router.note1' | i18n}}<br />
-          {{'app.router.note2' | i18n}}</span
+            {{'router.alert.connect' | i18n}}<br />
+          {{'router.alert.connect2' | i18n}}</span
           ></nz-col
         >
       </nz-row>
@@ -194,7 +205,7 @@
           src="assets/imgs/cloud-plus-bold.svg"
           alt=""
         />
-        {{'app.button.create' | i18n}} Router
+        {{ 'app.label.create' | i18n }} Router
       </button>
     </result>
   </nz-card>
@@ -202,118 +213,160 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleCreate"
-  nzTitle="{{'app.label.create' | i18n}} Router"
+  nzTitle="{{ 'app.label.create' | i18n }} Router"
   (nzOnCancel)="handleCancelCreate()"
 >
-  <ng-container *nzModalContent>
-    <div class="text-label">
-      {{'form.account.name' | i18n}} Router (<span class="text-red">*</span>)
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note3' | i18n}}"
-        src="assets/imgs/message-question.svg"
-        alt=""
-      />
-    </div>
-    <input
-      style="margin-bottom: 16px; margin-top: 5px"
-      class="input-custom"
-      nz-input
-      placeholder=""
-      [(ngModel)]="routerCreate.routerName"
-      [ngModelOptions]="{ standalone: true }"
-    />
-    <span class="text-label"
-      >{{'app.select.network' | i18n}}
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note4' | i18n}}"
-        src="assets/imgs/message-question.svg"
-        alt=""
-    /></span>
-    <nz-form-control style="margin-top: 5px">
-      <nz-input-group>
-        <nz-select
-          nzPlaceHolder="{{'app.select.network.dr' | i18n}}"
-          [nzShowSearch]="true"
-          [(ngModel)]="routerCreate.networkId"
-          nzSize="large"
-        >
-          <nz-option nzLabel="{{'app.select.network.dr' | i18n}}" [nzValue]="" />
-          <nz-option
-            *ngFor="let p of listNetwork"
-            [nzValue]="p.cloudId"
-            [nzLabel]="p.subnetAddressRequired === '' ? p.name : p.name + ' (' + p.subnetAddressRequired + ')'"
+  <form nz-form [formGroup]="form">
+    <ng-container *nzModalContent>
+      <nz-form-item style="margin-bottom: 0;">
+        <nz-form-control [nzErrorTip]="nameError">
+          <nz-form-label nzFor="name"
+            >{{ 'form.account.name' | i18n }} Router (<span class="text-red"
+              >*</span
+            >)</nz-form-label
+          >
+          <img
+            style="padding-right: 10px; margin-top: -4px"
+            nz-tooltip="{{ 'app.router.note3' | i18n }}"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
           />
-        </nz-select>
-      </nz-input-group>
-    </nz-form-control>
-    <label
-      class="text-label"
-      style="margin-top: 16px"
-      nz-checkbox
-      [(ngModel)]="isTrigger"
-      [ngModelOptions]="{ standalone: true }"
-      >{{'app.trigger' | i18n}}</label
-    >
-  </ng-container>
-  <div *nzModalFooter>
-    <button nz-button (click)="handleCancelCreate()">
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/cancel.svg"
-        alt=""
-      />{{'app.button.cancel' | i18n}}
-    </button>
-    <button nz-button nzType="primary" (click)="handleOkCreate()" [nzLoading]="isLoadingCreateRouter">
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/confirm.svg"
-        alt=""
-        *ngIf="isLoadingCreateRouter === false"
-      />{{'app.button.confirm' | i18n}}
-    </button>
-  </div>
+          <input
+            style="margin-bottom: 16px; margin-top: 5px"
+            class="input-custom"
+            nz-input
+            placeholder="{{ 'app.router.note43' | i18n }}"
+            [(ngModel)]="routerCreate.routerName"
+            formControlName="name"
+            [ngModelOptions]="{ standalone: true }"
+          />
+          <ng-template #nameError let-i>
+            <ng-container *ngIf="i.errors?.required">{{ 'app.router.note44' | i18n }}</ng-container>
+            <ng-container *ngIf="i.hasError('pattern')">{{ 'app.router.note45' | i18n }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <span class="text-label"
+        >{{ 'app.select.network' | i18n }}
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          nz-tooltip="{{ 'app.router.note4' | i18n }}"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+      /></span>
+      <nz-form-control style="margin-top: 5px">
+        <nz-input-group>
+          <nz-select
+            nzPlaceHolder="{{ 'app.select.network.dr' | i18n }}"
+            [nzShowSearch]="true"
+            [(ngModel)]="routerCreate.networkId"
+            formControlName="network"
+            nzSize="large"
+          >
+            <nz-option
+              nzLabel="{{ 'app.select.network.dr' | i18n }}"
+              [nzValue]=""
+            />
+            <nz-option
+              *ngFor="let p of listNetwork"
+              [nzValue]="p.cloudId"
+              [nzLabel]="
+                p.subnetAddressRequired === ''
+                  ? p.name
+                  : p.name + ' (' + p.subnetAddressRequired + ')'
+              "
+            />
+          </nz-select>
+        </nz-input-group>
+      </nz-form-control>
+      <label
+        class="text-label"
+        style="margin-top: 16px"
+        nz-checkbox
+        [(ngModel)]="isTrigger"
+        [ngModelOptions]="{ standalone: true }"
+        >{{ 'app.trigger' | i18n }}</label
+      >
+    </ng-container>
+    <div *nzModalFooter>
+      <button nz-button (click)="handleCancelCreate()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />{{ 'app.button.cancel' | i18n }}
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        (click)="handleOkCreate()"
+        [nzLoading]="isLoadingCreateRouter"
+        [disabled]="form.invalid"
+      >
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/confirm.svg"
+          alt=""
+          *ngIf="isLoadingCreateRouter === false"
+        />{{ 'app.button.confirm' | i18n }}
+      </button>
+    </div>
+  </form>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleEdit"
-  nzTitle="{{'app.text.edit' | i18n}} Router"
+  nzTitle="{{ 'app.text.edit' | i18n }} Router"
   (nzOnCancel)="handleCancelEdit()"
 >
-  <ng-container *nzModalContent>
-    <div class="text-label">
-      {{'form.account.name' | i18n}} Router(<span class="text-red">*</span>)
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note3' | i18n}}"
-        src="assets/imgs/message-question.svg"
-        alt=""
-      />
-    </div>
-    <input
+  <form nz-form [formGroup]="formEdit">
+  <ng-container *nzModalContent>   
+    <nz-form-item style="margin-bottom: 0;">
+      <nz-form-control [nzErrorTip]="nameError">
+        <nz-form-label nzFor="name"
+          >{{ 'form.account.name' | i18n }} Router (<span class="text-red"
+            >*</span
+          >)</nz-form-label
+        >
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          nz-tooltip="{{'router.validate.length50' | i18n}}"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
+        <input
       style="margin-bottom: 16px; margin-top: 5px"
       class="input-custom"
       nz-input
-      placeholder=""
+      formControlName="name"
+      placeholder="{{ 'app.router.note43' | i18n }}"
       [(ngModel)]="routerUpdate.routerName"
       [ngModelOptions]="{ standalone: true }"
     />
-    <span class="text-label"
-      >{{'app.select.network' | i18n}}
+        <ng-template #nameError let-i>
+          <ng-container *ngIf="i.errors?.required">{{ 'app.router.note44' | i18n }}</ng-container>
+          <ng-container *ngIf="i.hasError('pattern')">{{ 'app.router.note45' | i18n }}</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <span class="text-label" 
+      >{{ 'app.select.network' | i18n }}
       <img
-        style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note4' | i18n}}"
-        src="assets/imgs/message-question.svg"
-        alt=""
-    /></span>
-    <nz-form-control style="margin-top: 5px">
+      style="padding-right: 10px; margin-top: -4px"
+      nz-tooltip="{{ 'app.router.note4' | i18n }}"
+      src="assets/imgs/pajamas_question.svg"
+      alt=""
+  />
+      </span>
+    <nz-form-control style="margin-bottom: 5px">
       <nz-input-group>
-        <nz-select
-          nzPlaceHolder="{{'app.select.network.dr' | i18n}}"
+      <nz-select
+          nzPlaceHolder="{{ 'app.select.network.dr' | i18n }}"
           [nzShowSearch]="true"
           [(ngModel)]="routerUpdate.networkId"
           nzSize="large"
+          [nzDisabled]="true"
         >
           <nz-option
             *ngFor="let p of listNetwork"
@@ -325,11 +378,10 @@
     </nz-form-control>
     <label
       class="text-label"
-      style="margin-top: 16px"
       nz-checkbox
       [(ngModel)]="isTrigger"
       [ngModelOptions]="{ standalone: true }"
-      >{{'app.trigger' | i18n}}</label
+      >{{ 'app.trigger' | i18n }}</label
     >
   </ng-container>
   <div *nzModalFooter>
@@ -338,24 +390,32 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />{{'app.button.cancel' | i18n}}
+      />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkEdit()" >
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkEdit()"
+      [nzLoading]="isLoadingEditRouter"
+      [disabled]="formEdit.invalid"
+    >
       <img
+        *ngIf="isLoadingEditRouter === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
-        alt=""
-
-      />{{'app.button.confirm' | i18n}}
+        alt=""      
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
+</form>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleDelete"
-  nzTitle="{{'app.delete' | i18n}} Router"
+  nzTitle="{{ 'app.delete' | i18n }} Router"
   (nzOnCancel)="handleCancelDelete()"
 >
+  <form nz-form [formGroup]="formDelete">
   <ng-container *nzModalContent>
     <nz-alert
       style="margin-bottom: 16px"
@@ -365,26 +425,34 @@
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
       <div>
-        {{'app.router.note5' | i18n}} <b> {{ nameRouterDelete }} </b>
+        {{'router.alert.remove' | i18n}} <b> {{ nameRouterDelete }} </b>
       </div>
       <div>
-        {{'app.router.note6' | i18n}}
+        {{'router.alert.static.interface.remove' | i18n}}
       </div>
-      <div>{{'app.router.note7' | i18n}}</div>
+      <div>{{'router.alert.action.not.rollback' | i18n}}</div>
     </ng-template>
 
     <span class="text-label"
-      >{{'app.router.note8' | i18n}}</span
+      >{{'router.alert.press.to.remove' | i18n}}</span
     >
-    <nz-form-control>
+
+    <nz-form-item>
+    <nz-form-control [nzErrorTip]="nameError">
       <input
         class="input-custom"
         name="name"
+        formControlName="name"
         nz-input
         [(ngModel)]="nameVerify"
-        (keyup.enter)="andleOkDelete()"
+        (keyup.enter)="handleOkDelete()"
       />
+      <ng-template #nameError let-i>
+        <ng-container *ngIf="i.errors?.required">{{ 'app.router.note44' | i18n }}</ng-container>
+        <ng-container *ngIf="i.hasError('nameMismatch')">{{ 'app.router.note46' | i18n }}</ng-container>
+      </ng-template>
     </nz-form-control>
+  </nz-form-item>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDelete()">
@@ -392,15 +460,23 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />{{'app.button.cancel' | i18n}}
+      />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkDelete()">
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkDelete()"
+      [nzLoading]="isLoadingDeleteRouter"
+      [disabled]="formDelete.invalid"
+    >
       <img
+        *ngIf="isLoadingDeleteRouter === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      {{'app.button.confirm' | i18n}}
+      {{ 'app.button.confirm' | i18n }}
     </button>
   </div>
+</form>
 </nz-modal>

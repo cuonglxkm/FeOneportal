@@ -12,7 +12,7 @@ import {
 } from "../../pages/policy/policy.model";
 import {FormSearchUserGroup} from "../models/user-group.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import { BaseResponse } from '@one-portal/common-utils';
+import { BaseResponse } from '../models/base-response'; 
 
 
 @Injectable({

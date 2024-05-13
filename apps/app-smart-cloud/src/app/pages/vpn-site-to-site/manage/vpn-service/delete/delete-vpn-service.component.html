@@ -1,15 +1,17 @@
-<span
-  style="margin-right: 10px; cursor: pointer"
-  nz-icon
-  [style.color]="vpnServiceStatus !== 'PENDING_CREATE' && '#0066b3'"
-  nzType="delete"
-  nzTheme="outline"
+<img
+  src="assets/imgs/delete.svg"
+  style="cursor: pointer; width: 28px; height: 28px"
+  [ngStyle]="{
+    filter: vpnServiceStatus === 'PENDING_CREATE'
+      ? 'grayscale(100%)'
+      : ''
+  }"
+  [class.disabled]="vpnServiceStatus === 'PENDING_CREATE'"
   nz-popover
   [nzPopoverContent]="'Xóa'"
   nzPopoverPlacement="bottom"
-  [class.disabled]="vpnServiceStatus === 'PENDING_CREATE'"
   (click)="showModal()"
-></span>
+/>
 <nz-modal
   [(nzVisible)]="isVisible"
   nzCentered
@@ -34,7 +36,8 @@
         <nz-form-label>
           <div>
             <span
-              >Đế thực hiện xoá VPN Service <b>{{nameVpnService}}</b>, vui lòng nhập tên VPN Service để xác nhận.</span
+              >Đế thực hiện xoá VPN Service <b>{{ vpnServiceName }}</b
+              >, vui lòng nhập tên VPN Service để xác nhận.</span
             >
           </div>
         </nz-form-label>
@@ -46,8 +49,12 @@
             [placeholder]="'Nhập tên IPsec Policies'"
           />
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Tên Ipsec Policy không được để trống</ng-container>
-            <ng-container *ngIf="control.hasError('nameMismatch')">Tên không trùng khớp</ng-container>
+            <ng-container *ngIf="control.hasError('required')"
+              >Tên Ipsec Policy không được để trống</ng-container
+            >
+            <ng-container *ngIf="control.hasError('nameMismatch')"
+              >Tên không trùng khớp</ng-container
+            >
           </ng-template>
         </nz-form-control>
       </nz-form-item>

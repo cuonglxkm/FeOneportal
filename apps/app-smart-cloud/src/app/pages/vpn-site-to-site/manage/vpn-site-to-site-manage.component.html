@@ -53,7 +53,7 @@
         <button nz-button nzType="primary" (click)="extendVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && projectObject.type == 0)">
           <img
             style="padding-right: 10px; margin-top: -4px"
-            src="assets/imgs/redo.svg"
+            src="assets/imgs/calendar-tick2.svg"
             alt=""
           />
           Gia hạn
@@ -81,7 +81,8 @@
       Bandwidth: <span class="text-bold">{{response?.bandwidth}}</span>
     </div>
     <div style="margin-bottom: 15px" class="text-label">
-      Router VPN site to site: <a class="text-bold" target="_blank" nz-tooltip nzTooltipTitle="{{'app.view.detail' | i18n}}" nzTooltipPlacement="bottom" [routerLink]="'/app-smart-cloud/network/router/detail/' + response?.routerId">
+      Router VPN site to site: 
+      <a class="text-bold" target="_blank" nz-tooltip nzTooltipTitle="{{'app.view.detail' | i18n}}" nzTooltipPlacement="bottom" [routerLink]="['/app-smart-cloud/network/router/detail/' + response?.routerId]">
         {{ response?.routerName }}
         </a>
     </div>

@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   Input,
   Output,
   ViewChild
@@ -12,6 +13,8 @@ import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@ang
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormSearchListBalancer, FormUpdateLB, LoadBalancerModel } from '../../../../shared/models/load-balancer.model';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-update-load-balancer-normal',
@@ -46,6 +49,7 @@ export class UpdateLoadBalancerNormalComponent implements AfterViewInit{
 
   constructor(private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private loadBalancerService: LoadBalancerService) {
   }
 
@@ -109,12 +113,12 @@ export class UpdateLoadBalancerNormalComponent implements AfterViewInit{
     this.loadBalancerService.updateLoadBalancer(formUpload).subscribe(data => {
       this.isLoading = false
       this.isVisible = false
-      this.notification.success('Thành công', 'Cập nhật thông tin Load Balancer thành công')
+      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.update.LB.info.success'))
       this.onOk.emit(data)
     }, error => {
       this.isLoading = false
       this.isVisible = false
-      this.notification.error('Thất bại', 'Cập nhật thông tin Load Balancer thất bại')
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.update.LB.info.fail'))
     })
 
   }

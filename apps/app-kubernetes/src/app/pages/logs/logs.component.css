@@ -62,6 +62,10 @@ input, .border-button, .border-card {
   border-radius: 8px;
 }
 
+::ng-deep .ant-input-affix-wrapper {
+  border-radius: 8px;
+}
+
 .ant-picker {
   box-sizing: border-box;
   margin: 0;
@@ -106,6 +110,10 @@ img {
   margin-right: auto;
   font-size: 16px;
   color: #6C757D;
+}
+
+#type::first-letter {
+  text-transform: capitalize;
 }
 
 .bg-button {

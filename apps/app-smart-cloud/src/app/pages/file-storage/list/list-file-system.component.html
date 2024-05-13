@@ -66,11 +66,11 @@
           <tr>
             <th>STT</th>
             <th>{{ 'app.name' | i18n }}</th>
-            <th>{{ 'app.text.status' | i18n }}</th>
-            <th>{{ 'app.task.status' | i18n }}</th>
             <th>{{ 'app.file.system.type' | i18n }}</th>
             <th>{{ 'app.protocol' | i18n }}</th>
             <th>{{ 'app.capacity' | i18n }}</th>
+            <th>{{ 'app.text.status' | i18n }}</th>
+            <th>{{ 'app.task.status' | i18n }}</th>
             <th>{{ 'app.text.operation' | i18n }}</th>
           </tr>
           </thead>
@@ -78,20 +78,33 @@
           <tr *ngFor="let data of fixTable.data; index as i">
             <td>{{ i + 1 }}</td>
             <td><a [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
-            <td>{{ data.statusDisplay }}</td>
-            <td>{{ data.taskState.toUpperCase() }}</td>
             <td>{{ data.type }}</td>
             <td>{{ data.protocol }}</td>
             <td>{{ data.size }} GB</td>
-            <td *ngIf="!(['CREATING', 'ERROR'].includes(data.taskState.toUpperCase()))">
-              <div>
+            <td *ngIf="data.statusDisplay.includes('Đang hoạt động')" style="color: #008D47;">{{ data.statusDisplay }}</td>
+            <td *ngIf="!data.statusDisplay.includes('Đang hoạt động')" style="color: #EA3829;">{{ data.statusDisplay }}</td>
+            <td>{{ data.taskState.toUpperCase() }}</td>
+            <td>
+              <div *ngIf="data.taskState.toUpperCase() === 'ERROR'">
+                <one-portal-delete-file-system [region]="region"
+                                               [project]="project"
+                                               [fileSystemId]="data.id"
+                                               [fileSystemName]="data.name"
+                                               (onOk)="handleOkDelete()" />
+              </div>
+              <div *ngIf="!(['CREATING', 'ERROR'].includes(data.taskState.toUpperCase()))">
                 <one-portal-edit-file-system [region]="region"
                                              [project]="project"
                                              [fileSystem]="data"
                                              (onOk)="handleOkEdit()" />
+                <one-portal-delete-file-system [region]="region"
+                                               [project]="project"
+                                               [fileSystemId]="data.id"
+                                               [fileSystemName]="data.name"
+                                               (onOk)="handleOkDelete()" />
                 <img nz-dropdown
                      [nzDropdownMenu]="opMenu"
-                     src="assets/imgs/more1.svg" alt="" style="cursor: pointer; margin-left: 5px;"/>
+                     src="assets/imgs/more1.svg" alt="" style="cursor: pointer;"/>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li nz-menu-item>{{ 'app.snapshot.create' | i18n }}</li>
@@ -101,11 +114,6 @@
                         [routerLink]="'/app-smart-cloud/file-storage/file-system/' + data.cloudId + '/access-rule/list'">
                         {{ 'app.access.rule.manage' | i18n }}
                     </li>
-                    <one-portal-delete-file-system [region]="region"
-                                                   [project]="project"
-                                                   [fileSystemId]="data.id"
-                                                   [fileSystemName]="data.name"
-                                                   (onOk)="handleOkDelete()" />
                   </ul>
                 </nz-dropdown-menu>
               </div>

@@ -1,5 +1,5 @@
 <ng-container *ngIf="detailCluster; else loadingTpl">
-  <ng-container *ngIf="!isEditMode; else submitModeTpl">
+  <!-- <ng-container *ngIf="!isEditMode; else submitModeTpl">
     <button nz-button nzType="primary" (click)="onEditCluster()" class="mb-3" [disabled]="detailCluster?.serviceStatus == 6">
       <span nz-icon nzType="edit" nzTheme="outline"></span>
       Chỉnh sửa
@@ -15,7 +15,7 @@
       <span nz-icon nzType="check" nzTheme="outline"></span>
       Xác nhận
     </button>
-  </ng-template>
+  </ng-template> -->
 
   <form nz-form [formGroup]="upgradeForm">
     <!-- Thông tin chung -->
@@ -114,15 +114,16 @@
                     </div>
                   </div>
                 </td>
-                <td class="w-50"><row-data [value]="detailCluster.orderCode" [label]="'Mã đơn hàng'"></row-data></td>
-              </tr>
-
-              <tr>
-                <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
-                    [label]="'Ngày khởi tạo'"></row-data></td>
-                <td class="w-50"><row-data
-                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
-                    [label]="'Ngày hết hạn'" [type]="'danger'"></row-data></td>
+                <td class="w-50">
+                  <div nz-row>
+                    <div nz-col [nzSpan]="8">Mã đơn hàng</div>
+                    <div nz-col [nzSpan]="16">
+                      <span style="font-size: 16px; font-weight: 600;">
+                        <a [routerLink]="'/app-smart-cloud/order/detail/' + detailCluster.orderId" target="_blank">{{detailCluster.orderCode}}</a>
+                      </span>
+                    </div>
+                  </div>
+                </td>
               </tr>
 
               <tr>
@@ -137,6 +138,14 @@
                   </div>
                 </td>
                 <td class="w-50"><row-data [value]="detailCluster.description" [label]="'Mô tả'"></row-data></td>
+              </tr>
+
+              <tr>
+                <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
+                    [label]="'Ngày khởi tạo'"></row-data></td>
+                <td class="w-50"><row-data
+                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
+                    [label]="'Ngày hết hạn'" [type]="'danger'"></row-data></td>
               </tr>
 
               <tr>
@@ -196,7 +205,7 @@
                           <ng-template #editWorkerGroupNameTpl>
                             <nz-form-item>
                               <nz-form-control [nzErrorTip]="errorWorkerNameTpl">
-                                <input nz-input type="text" formControlName="workerGroupName"
+                                <input nz-input type="text" formControlName="workerGroupName" (ngModelChange)="checkDuplicate(i)"
                                   placeholder="Nhập tên nhóm worker" nzSize="large" />
                               </nz-form-control>
                               <ng-template #errorWorkerNameTpl let-control>
@@ -236,6 +245,9 @@
                                 <ng-container *ngIf="control.hasError('required')">
                                   Số node không để trống
                                 </ng-container>
+                                <ng-container *ngIf="control.hasError('invalid')">
+                                  Số node không nhỏ hơn số đã sử dụng
+                                </ng-container>
                                 <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
                                   Số node trong khoảng từ 1-10
                                 </ng-container>
@@ -267,6 +279,11 @@
                                   </nz-option>
                                 </nz-select>
                               </nz-form-control>
+                              <ng-template #errorConfigError let-control>
+                                <ng-container *ngIf="control.hasError('invalid')">
+                                  Không giảm cấu hình so với hiện tại
+                                </ng-container>
+                              </ng-template>
                             </nz-form-item>
                           </ng-template>
                         </div>
@@ -432,7 +449,7 @@
               </nz-table>
             </div>
 
-            <ng-container *ngIf="isEditMode">
+            <ng-container *ngIf="isEditMode || (listFormWorkerGroupUpgrade?.controls.length > 0 && i != listFormWorkerGroupUpgrade?.controls.length - 1)">
               <nz-divider nzDashed></nz-divider>
             </ng-container>
           </div>
@@ -467,6 +484,10 @@
 
               <tr>
                 <td class="w-50"><row-data [value]="vpcNetwork" [label]="'Mạng VPC'"></row-data></td>
+                <td class="w-50"><row-data [value]="detailCluster.serviceCidr" [label]="'Service CIDR'"></row-data></td>
+              </tr>
+
+              <tr>
                 <td class="w-50"><row-data [value]="detailCluster.subnet" [label]="'Subnet'"></row-data></td>
               </tr>
             </tbody>
@@ -638,7 +659,7 @@
     </ng-template>
   </div>
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancelModalUpgradeWorker()">
+    <button nz-button nzType="default" (click)="handleCancelModalUpgradeWorker()" [disabled]="isUpgradingWorker">
       <span nz-icon nzType="close" nzTheme="outline"></span>
       Hủy bỏ
     </button>

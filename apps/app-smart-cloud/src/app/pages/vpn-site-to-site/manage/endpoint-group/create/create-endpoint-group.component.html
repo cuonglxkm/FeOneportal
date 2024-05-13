@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo mới Endpoint Group'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Khởi tạo Endpoint Group'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -9,7 +9,7 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">VPN site to
           site</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Tạo mới Endpoint Group</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Khởi tạo Endpoint Group</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -58,14 +58,14 @@
                   nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
-            <nz-select class="input-select-custom" nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}">
+            <nz-select class="input-select-custom" nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}" (ngModelChange)="handleChangeType($event)">
               <nz-option *ngFor="let data of type" [nzLabel]="data.label"
                 [nzValue]="data.value"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-control>
+          <nz-form-control [nzErrorTip]="selectedType == 'cidr' && 'Cidr không được để trống'">
             <nz-form-label *ngIf="selectedType == 'subnet'">
               <div>
                 <span nzFor="name">Local Systems Subnets </span>
@@ -75,13 +75,17 @@
                     nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
-            <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
+            <nz-checkbox-wrapper *ngIf="selectedType == 'subnet' && listSubnets.length !== 0" style="width: 100%;" (nzOnChange)="log($event)">
               <div *ngIf="selectedType == 'subnet'">
                 <div *ngFor="let item of listSubnets">
-                  <div [ngModel]="false" [nzValue]="item.cidr" nz-checkbox formControlName="endpoints">{{ item.cidr }}</div>
+                  <div [ngModel]="checked" [nzValue]="item.cidr" nz-checkbox>{{ item.cidr }}</div>
                 </div>
               </div>
             </nz-checkbox-wrapper>
+
+            <ng-container *ngIf="selectedType == 'subnet' && listSubnets.length === 0">
+              <a style="display: block;" [routerLink]="['/app-smart-cloud/network/router/detail/' + routerId]">Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!</a>
+            </ng-container>
             
             
             <nz-form-label *ngIf="selectedType == 'cidr'">
@@ -93,7 +97,7 @@
                     nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
-            <input formControlName="endpoints" class="input-custom" *ngIf="selectedType == 'cidr'" nz-input type="text" placeholder="Cidr(for external systems)" />         
+            <input formControlName="endpointsCidr" class="input-custom" *ngIf="selectedType == 'cidr'" nz-input type="text" placeholder="Cidr(for external systems)" />         
           </nz-form-control>
         </nz-form-item>
       </form>
@@ -109,22 +113,22 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Type</h3>
-          <span formControlName="endpoints" *ngIf="selectedType == 'subnet'">Subnet(for local systems)</span>
-          <span formControlName="endpoints" *ngIf="selectedType == 'cidr'">Cidr(for external systems)</span>
+          <span *ngIf="selectedType == 'subnet'">Subnet(for local systems)</span>
+          <span *ngIf="selectedType == 'cidr'">Cidr(for external systems)</span>
         </div>
 
         <div style="margin-bottom: 20px">
-          <h3 formControlName="endpoints" *ngIf="selectedType == 'subnet'" class="custom-subtitle">Local Systems Subnets</h3>
-          <h3 formControlName="endpoints" *ngIf="selectedType == 'cidr'" class="custom-subtitle">External Systems CIDRs</h3>
-          <span *ngIf="selectedType == 'cidr'">{{form.value.endpoints}}</span>
+          <h3 *ngIf="selectedType == 'subnet'" class="custom-subtitle">Local Systems Subnets</h3>
+          <h3 *ngIf="selectedType == 'cidr'" class="custom-subtitle">External Systems CIDRs</h3>
+          <span *ngIf="selectedType == 'cidr'">{{form.value.endpointsCidr}}</span>
           <div *ngIf="selectedType == 'subnet'">
-              <label formControlName="endpoints" >{{listCidrInfo}}</label>
+              <label >{{listCidrInfo}}</label>
           </div>
         </div>
       </div>
       <button [nzLoading]="isLoading" (click)="handleCreate()" nz-button nzType="primary"
         style="border: none; width: 100%; display: flex; align-items: center; gap: 5px; justify-content: center;"
-        nzSize="large" [disabled]="form.invalid">
+        nzSize="large" [disabled]="form.invalid" [nzLoading]="isLoading">
         <img src="assets/imgs/wallet.svg" alt="" />
         <span class="button-text-primary">Khởi tạo</span>
       </button>

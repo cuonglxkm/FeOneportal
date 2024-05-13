@@ -49,17 +49,17 @@ export class DeleteWanComponent {
         if(data){
           this.isVisible = false
           this.isLoading = false
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.wan.note22'))
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('wan.nofitacation.ip.wan.remove.sucess'))
           this.onOk.emit(data)
         } else {
           this.isVisible = false
           this.isLoading = false
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.wan.note23'))
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('wan.nofitacation.ip.wan..remove.fail'))
         }
       }, error => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.wan.note23'))
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('wan.nofitacation.ip.wan..remove.fail'))
       })
     }
   }

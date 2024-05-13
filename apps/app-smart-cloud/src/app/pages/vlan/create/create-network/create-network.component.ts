@@ -35,10 +35,13 @@ export function ipAddressValidator(): ValidatorFn {
 // Hàm kiểm tra xem địa chỉ IP có hợp lệ không
 function isValidIPAddress(ipAddress: string): boolean {
   if (
-    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress < '172.25.0.0') &&
+    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.25.0.0') &&
     !(ipAddress.startsWith('192.168.')) &&
     !(ipAddress === '192.168.0.0')
   ) {
+    return false;
+  }
+  if (!ipAddress.match(/^((\d{1,3}\.\d{1,3}\.0\.0\/16)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.0\/24))$/)) {
     return false;
   }
 
@@ -83,6 +86,8 @@ export class CreateNetworkComponent implements OnInit {
 
   formCreateNetwork: FormCreateNetwork = new FormCreateNetwork();
 
+  isInvalidGateway: boolean = false
+
   validateForm: FormGroup<{
     nameNetwork: FormControl<string>
     nameSubnet: FormControl<string>
@@ -96,7 +101,8 @@ export class CreateNetworkComponent implements OnInit {
       AppValidator.startsWithValidator('vlan_'),
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
-      this.duplicateNameValidator.bind(this)]],
+      this.duplicateNameValidator.bind(this),
+      this.prefixValidator()]],
     nameSubnet: ['', [Validators.required,
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/)]],
@@ -109,7 +115,9 @@ export class CreateNetworkComponent implements OnInit {
   });
 
   pool: string = '';
+  gateway: string = ''
   dataSubjectCidr: Subject<any> = new Subject<any>();
+  dataSubjectGateway: Subject<any> = new Subject<any>();
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -122,6 +130,19 @@ export class CreateNetworkComponent implements OnInit {
 
       this.validateForm.get('gateway').reset();
     });
+
+    this.validateForm.get('nameNetwork').valueChanges.subscribe(value => {
+      if (!value.startsWith('vlan_')) {
+        this.validateForm.get('nameNetwork').setValue('vlan_' + value.replace(/^vlan_/i, ''), { emitEvent: false });
+      }
+    });
+  }
+
+  prefixValidator(): Validators {
+    return (control: FormControl): { [key: string]: any } | null => {
+      const isValid = control.value.startsWith('vlan_') && control.value.length > 5;
+      return isValid ? null : { prefixError: true };
+    };
   }
 
   regionChanged(region: RegionModel) {
@@ -154,7 +175,7 @@ export class CreateNetworkComponent implements OnInit {
       this.formCreateNetwork.regionId = this.region;
       this.formCreateNetwork.customerId = this.tokenService.get()?.userId;
       this.formCreateNetwork.subnetName = this.validateForm.controls.nameSubnet.value;
-      this.formCreateNetwork.gatewayIP = this.validateForm.controls.gateway.value;
+      this.formCreateNetwork.gateway = this.validateForm.controls.gateway.value;
       this.formCreateNetwork.dnsNameServer = null;
       // if(this.isInPurchasedSubnet())
       this.formCreateNetwork.allocationPool = this.validateForm.controls.allocationPool.value;
@@ -201,7 +222,7 @@ export class CreateNetworkComponent implements OnInit {
   }
 
   reset() {
-    this.validateForm.reset()
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
   }
 
   inputCheckPool(value) {
@@ -209,22 +230,45 @@ export class CreateNetworkComponent implements OnInit {
   }
 
   onInputCheckPool() {
-    this.dataSubjectCidr.pipe(debounceTime(500)).subscribe((res) => {
+    this.dataSubjectCidr.pipe(debounceTime(600)).subscribe((res) => {
       this.vlanService.checkAllocationPool(res).subscribe(data => {
         const dataJson = JSON.parse(JSON.stringify(data));
 
-        // Access ipRange value
-        const ipRange = dataJson.ipRange;
+        this.pool = dataJson.ipRange
+        this.gateway = dataJson.gateWay
 
-        // Split the IP range string
-        // const ipAddresses = ipRange.split(',').map(ip => ip.trim());
+        console.log('gateway', this.validateForm.controls.disableGatewayIp.value)
+        if(this.validateForm.controls.disableGatewayIp.value == false) {
+          console.log('here')
+          this.validateForm.controls.gateway.setValue(dataJson.gateWay)
+        }
 
-        this.pool = ipRange
+        this.validateForm.controls.allocationPool.setValue(this.pool)
         console.log('pool data', this.pool)
       })
     })
-
   }
+
+  invalidGateway: string
+
+  onCheckGateway() {
+    this.dataSubjectGateway.pipe(debounceTime(600)).subscribe((res) => {
+      this.vlanService.checkIpAvailable(res, this.validateForm.controls.networkAddress.value, '', this.region).subscribe(data => {
+        this.isInvalidGateway = false
+        const dataJson = JSON.parse(JSON.stringify(data));
+        console.log('gateway data', dataJson)
+      }, error => {
+        console.log('error', error.error)
+        this.isInvalidGateway = true
+        this.invalidGateway = error.error
+      })
+    })
+  }
+
+  inputGateway(value) {
+    this.dataSubjectGateway.next(value);
+  }
+
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -232,5 +276,6 @@ export class CreateNetworkComponent implements OnInit {
     this.project = regionAndProject.projectId;
     this.getListNetwork();
     this.onInputCheckPool();
+    this.onCheckGateway();
   }
 }

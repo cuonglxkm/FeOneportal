@@ -30,7 +30,8 @@ export class VlanEditComponent implements AfterViewInit {
       AppValidator.startsWithValidator('vlan_'),
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
-      this.duplicateNameValidator.bind(this)]]
+      this.duplicateNameValidator.bind(this),
+      this.prefixValidator()]]
   });
 
   nameList: string[] = [];
@@ -41,6 +42,12 @@ export class VlanEditComponent implements AfterViewInit {
               private notification: NzNotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder) {
+
+    this.validateForm.get('nameNetwork').valueChanges.subscribe(value => {
+      if (!value.startsWith('vlan_')) {
+        this.validateForm.get('nameNetwork').setValue('vlan_' + value.replace(/^vlan_/i, ''), { emitEvent: false });
+      }
+    });
   }
 
   duplicateNameValidator(control) {
@@ -51,6 +58,13 @@ export class VlanEditComponent implements AfterViewInit {
     } else {
       return null; // Name is unique
     }
+  }
+
+  prefixValidator(): Validators {
+    return (control: FormControl): { [key: string]: any } | null => {
+      const isValid = control.value.startsWith('vlan_') && control.value.length > 5;
+      return isValid ? null : { prefixError: true };
+    };
   }
 
   focusOkButton(event: KeyboardEvent): void {

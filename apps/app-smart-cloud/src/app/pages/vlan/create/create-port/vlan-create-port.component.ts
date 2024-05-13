@@ -13,6 +13,7 @@ import {
 } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-vlan-create-port',
@@ -46,6 +47,9 @@ export class VlanCreatePortComponent implements OnInit{
   isLoadingSubnet: boolean = false
 
   ipPort: string[] = []
+
+  isInvalidGateway: boolean = false
+  dataSubjectGateway: Subject<any> = new Subject<any>();
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -89,6 +93,29 @@ export class VlanCreatePortComponent implements OnInit{
 
       this.isLoadingSubnet = false
     })
+  }
+
+  invalidGateway: string
+
+  onCheckPort() {
+    this.dataSubjectGateway.pipe(debounceTime(600)).subscribe((res) => {
+      this.vlanService.getSubnetById(this.validateForm.controls.idSubnet.value).subscribe(item => {
+        this.vlanService.checkIpAvailable(res, item.subnetAddressRequired, this.networkCloudId, this.region).subscribe(data => {
+          this.isInvalidGateway = false
+          const dataJson = JSON.parse(JSON.stringify(data));
+          console.log('gateway data', dataJson)
+        }, error => {
+          console.log('error', error.error)
+          this.isInvalidGateway = true
+          this.invalidGateway = error.error
+        })
+      })
+
+    })
+  }
+
+  inputPort(value) {
+    this.dataSubjectGateway.next(value);
   }
 
   showModal(): void {
@@ -154,6 +181,7 @@ export class VlanCreatePortComponent implements OnInit{
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     this.getSubnetByNetworkId()
+    this.onCheckPort()
 
 
 
@@ -161,7 +189,7 @@ export class VlanCreatePortComponent implements OnInit{
     this.validateForm = this.fb.group({
       idSubnet: [0, [Validators.required]],
       namePort: ['', [Validators.required,  Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9_]*$/)]],
-      ipAddress: ['', [Validators.required, ipAddressValidator(this.subnetAddress), ipAddressExistsValidator(this.ipPort)]]
+      ipAddress: ['', [ipAddressValidator(this.subnetAddress), ipAddressExistsValidator(this.ipPort)]]
     });
 
   }

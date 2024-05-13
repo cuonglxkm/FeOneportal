@@ -24,6 +24,8 @@ import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-ani
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
@@ -70,6 +72,7 @@ export class InstancesEditInfoComponent implements OnInit {
     animation: 'lazy',
   };
 
+  nameHdh: string = '';
   onInputHDH(event: any, index: number, imageTypeId: number) {
     this.hdh = event;
     this.selectedImageTypeId = imageTypeId;
@@ -79,6 +82,10 @@ export class InstancesEditInfoComponent implements OnInit {
       }
     }
     this.isSelected = true;
+    const filteredImages = this.listOfImageByImageType
+      .get(imageTypeId)
+      .filter((e) => e.id == event);
+    this.nameHdh = filteredImages.length > 0 ? filteredImages[0].name : '';
     console.log('Hệ điều hành', this.hdh);
     console.log('list seleted Image', this.listSelectedImage);
   }
@@ -87,6 +94,7 @@ export class InstancesEditInfoComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
@@ -133,9 +141,9 @@ export class InstancesEditInfoComponent implements OnInit {
             this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
             this.instancesModel = dataInstance;
 
-            if (this.instancesModel.securityGroups != null) {
+            if (this.instancesModel.securityGroupStr != null) {
               let SGSet = new Set<string>(
-                this.instancesModel.securityGroups.split(',')
+                this.instancesModel.securityGroupStr.split(',')
               );
               this.securityGroupStr = Array.from(SGSet).join(', ');
             }
@@ -250,23 +258,34 @@ export class InstancesEditInfoComponent implements OnInit {
               next: (data: any) => {
                 this.notification.success(
                   '',
-                  'Thay đổi hệ điều hành thành công'
+                  this.i18n.fanyi('app.notify.change.os.success')
                 );
                 this.returnPage();
               },
               error: (e) => {
                 this.notification.error(
                   e.statusText,
-                  'Thay đổi hệ điều hành không thành công'
+                  this.i18n.fanyi('app.notify.change.os.fail')
                 );
               },
             });
         },
         error: (e) => {
-          this.notification.error(
-            '',
-            `Quý khách hiện không đủ tài nguyên để thực hiện việc chuyển đổi hệ điều hành. Vui lòng kiểm tra lại`
-          );
+          let numbers: number[] = [];
+          const regex = /\d+/g;
+          const matches = e.error.match(regex);
+          if (matches) {
+            numbers = matches.map((match) => parseInt(match));
+            this.notification.error(
+              '',
+              this.i18n.fanyi('app.notify.check.config.for.change.os', {
+                nameHdh: this.nameHdh,
+                volume: numbers[0],
+                ram: numbers[1],
+                cpu: numbers[2],
+              })
+            );
+          }
         },
       });
   }

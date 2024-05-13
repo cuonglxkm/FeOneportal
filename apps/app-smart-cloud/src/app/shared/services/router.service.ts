@@ -44,7 +44,7 @@ export class RouterService extends BaseService {
       params = params.append('currentPage', formSearch.currentPage)
     }
     if (formSearch.status != undefined || formSearch.status != null) {
-      params = params.append('statusId', formSearch.status)
+      params = params.append('status', formSearch.status)
     }
     return this.http.get<BaseResponse<RouterModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/routers/list_router', {
       params: params
@@ -100,8 +100,8 @@ export class RouterService extends BaseService {
   }
 
   updateRouter(data: RouterUpdate): Observable<any> {
-    let url_ = `/routers/${data.id}`;
-    return this.http.post<any>(
+    let url_ = `/routers`;
+    return this.http.put<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
       this.httpOptions

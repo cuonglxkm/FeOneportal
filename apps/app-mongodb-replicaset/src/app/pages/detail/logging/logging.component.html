@@ -1,0 +1,172 @@
+<nz-card>
+  <nz-affix [nzOffsetTop]="30">
+    <div nz-row class="affix-filter" nzJustify="center">
+      <div nz-col [nzSpan]="4">
+        <h2><b>Lịch sử thao tác</b></h2>
+      </div>
+
+      <div class="filter-option" nz-col [nzSpan]="5">
+        <nz-input-group [nzPrefix]="prefixTplUser" nzSize="large">
+          <input
+            type="text"
+            nz-input
+            class="w-75"
+            placeholder="Nhập tên người dùng"
+            [(ngModel)]="username"
+            (ngModelChange)="onSearch()"
+          />
+        </nz-input-group>
+        <ng-template #prefixTplUser>
+          <img
+            src="assets/imgs/search.svg"
+            alt=""
+            style="cursor: pointer"
+            nz-tooltip="Tìm kiếm"
+          />
+        </ng-template>
+      </div>
+      <div class="filter-option" nz-col [nzSpan]="5">
+        <nz-select
+          class="w-80"
+          [(ngModel)]="resource"
+          (ngModelChange)="onSearch()"
+          nzSize="large"
+          nzPlaceHolder="Loại Resource (Tất cả)"
+          nzShowSearch
+          nzAllowClear
+        >
+          <nz-option nzValue="Phân quyền" nzLabel="Phân quyền"></nz-option>
+          <nz-option nzValue="Backup" nzLabel="Backup"></nz-option>
+          <nz-option nzValue="Tài khoản" nzLabel="Tài khoản"></nz-option>
+          <nz-option
+            nzValue="Quản lý database"
+            nzLabel="Quản lý database"
+          ></nz-option>
+        </nz-select>
+      </div>
+      <div class="filter-option" nz-col [nzSpan]="5">
+        <nz-select
+          class="w-80"
+          [(ngModel)]="action"
+          (ngModelChange)="onSearch()"
+          nzSize="large"
+          nzPlaceHolder="Loại thao tác (Tất cả)"
+          nzShowSearch
+          nzAllowClear
+        >
+          <nz-option
+            nzValue="Thêm database"
+            nzLabel="Thêm database"
+          ></nz-option>
+          <nz-option nzValue="Xoá database" nzLabel="Xoá database"></nz-option>
+          <nz-option
+            nzValue="Thêm collection"
+            nzLabel="Thêm collection"
+          ></nz-option>
+          <nz-option
+            nzValue="Thêm tài khoản"
+            nzLabel="Thêm tài khoản"
+          ></nz-option>
+          <nz-option
+            nzValue="Cập nhật tài khoản"
+            nzLabel="Cập nhật tài khoản"
+          ></nz-option>
+          <nz-option
+            nzValue="Xoá tài khoản"
+            nzLabel="Xoá tài khoản"
+          ></nz-option>
+          <nz-option nzValue="Thêm quyền" nzLabel="Thêm quyền"></nz-option>
+          <nz-option
+            nzValue="Cập nhật quyền"
+            nzLabel="Cập nhật quyền"
+          ></nz-option>
+          <nz-option nzValue="Xoá quyền" nzLabel="Xoá quyền"></nz-option>
+          <nz-option nzValue="Tạo backup" nzLabel="Tạo backup"></nz-option>
+          <nz-option
+            nzValue="Cập nhật backup"
+            nzLabel="Cập nhật backup"
+          ></nz-option>
+          <nz-option nzValue="Xoá backup" nzLabel="Xoá backup"></nz-option>
+        </nz-select>
+      </div>
+      <div class="filter-option" nz-col [nzSpan]="5">
+        <nz-range-picker
+          class="w-100"
+          [(ngModel)]="date"
+          (ngModelChange)="onChangeDate($event); onSearch()"
+          nzSize="large"
+          nzFormat="dd/MM/yyyy"
+          [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']"
+        ></nz-range-picker>
+      </div>
+    </div>
+  </nz-affix>
+
+  <span nz-typography nzType="danger"><strong>Lịch sử thao tác sẽ được xoá sau 1 tháng</strong></span>
+
+
+  <!-- table -->
+  <div class="table">
+    <nz-table
+      id="access-logs"
+      #logTable
+      [nzData]="listOfLogs"
+      [nzPageIndex]="pageIndex"
+      [nzTotal]="total"
+      [nzPageSize]="pageSize"
+
+      [nzFrontPagination]="false"
+
+      (nzQueryParams)="onQueryParamsChange($event)"
+    >
+      <thead>
+        <tr>
+          <th nzWidth="6%" class="affix-header" nzAlign="center">
+            <div class="affix-bar">STT</div>
+
+          </th>
+          <th nzWidth="12%" class="affix-header">
+            <div class="affix-bar">Tên người dùng</div>
+          </th>
+
+          <th nzWidth="15%" class="affix-header" nzAlign="left">
+            <div class="affix-bar">Loại Resource</div>
+          </th>
+          <th nzWidth="15%" class="affix-header" nzAlign="left">
+            <div class="affix-bar">Thao tác</div>
+          </th>
+          <th nzWidth="15%" class="affix-header" nzAlign="left">
+            <div class="affix-bar">Ghi chú</div>
+          </th>
+          <th nzWidth="15%" class="affix-header" nzAlign="left">
+            <div class="affix-bar">Trạng thái</div>
+          </th>
+          <th nzWidth="12%" class="affix-header" nzAlign="left">
+            <div class="affix-bar">Thời gian</div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of logTable.data; let i = index">
+          <td nzAlign="center">{{ (pageIndex - 1) * pageSize + i + 1 }}</td>
+          <td>{{ item.username }}</td>
+          <td nzEllipsis nz-tooltip [nzTooltipTitle]="item.resource">
+            {{ item.resource }}
+          </td>
+
+          <td nzAlign="left">{{ item.action }}</td>
+          <td nzEllipsis nz-tooltip [nzTooltipTitle]="item.note" nzAlign="left">
+            {{ item.note }}
+          </td>
+          <td nzAlign="left" [style.color]="getStatusColor(item.status)">
+            {{ item.status }}
+          </td>
+          <td nzAlign="left">
+            {{ item.timestamp | date : 'dd/MM/yyyy HH:mm:ss' }}
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</nz-card>

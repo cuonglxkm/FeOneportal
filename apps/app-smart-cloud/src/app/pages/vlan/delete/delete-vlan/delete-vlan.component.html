@@ -1,4 +1,5 @@
-<img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
+<img src="assets/imgs/delete.svg"
+     style="cursor: pointer; width: 28px; height: 28px;"
      nz-popover
      nzPopoverContent="{{ 'app.button.remove' | i18n }}"
      nzPopoverPlacement="bottom" (click)="showModalDelete()"/>
@@ -18,6 +19,7 @@
              (ngModelChange)="onInput($event)"
              placeholder="{{ 'app.vlan.note71' | i18n }}"/>
       <span *ngIf="isInput" style="color: red;">{{ 'app.vlan.note72' | i18n }}</span>
+      <span *ngIf="isInputNull" style="color: red;">{{ 'app.vlan.note83' | i18n }}</span>
     </div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">

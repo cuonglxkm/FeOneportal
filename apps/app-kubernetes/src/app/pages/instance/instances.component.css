@@ -66,6 +66,10 @@ input, .border-button, .border-card {
   border-radius: 8px;
 }
 
+::ng-deep .ant-input-affix-wrapper {
+  border-radius: 8px;
+}
+
 .ant-picker {
   box-sizing: border-box;
   margin: 0;
@@ -93,6 +97,10 @@ input, .border-button, .border-card {
   text-align: center;
 }
 
+.right-align {
+  text-align: right;
+}
+
 img {
   border-radius: 4px;
 }
@@ -116,3 +124,6 @@ img {
   background-color: #0066B3;
 }
 
+.text-modal-title {
+  font-weight: 600;
+}

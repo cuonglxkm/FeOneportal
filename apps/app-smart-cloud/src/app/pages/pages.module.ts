@@ -38,13 +38,9 @@ import { SnapshotVolumeListComponent } from './snapshot-volume/snapshotvl-list/s
 import { SnappshotvlDetailComponent } from './snapshot-volume/snapshotvl-detail/snappshotvl-detail.component';
 import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component';
 import { LayoutDefaultModule } from '@delon/theme/layout-default';
-import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { DeleteBackupVmComponent } from './backup-vm/delete/delete-backup-vm.component';
 import { ActionHistoryComponent } from './action-history/action-history.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
-import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
-import { CurrentVirtualMachineComponent } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
-import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-virtual-machine.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
 import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
@@ -225,6 +221,9 @@ import { CreateIpFloatingNormalComponent } from './ip-floating/create-ip-floatin
 import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/extend-ip-floating.component';
 import { AttachIpFloatingLbComponent } from './load-balancer/list/attach/attach-ip-floating-lb.component';
 import { DetachIpFloatingLbComponent } from './load-balancer/list/detach/detach-ip-floating-lb.component';
+import { CreateBackupVmNormalComponent } from './backup-vm/create/no-vpc/create-backup-vm-normal.component';
+import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup-vm-vpc.component';
+import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -253,16 +252,12 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     SnapshotVolumeListComponent,
     SnappshotvlDetailComponent,
     ListBackupVmComponent,
-    RestoreBackupVmComponent,
     DeleteBackupVmComponent,
     ActionHistoryComponent,
     DetailBackupVmComponent,
-    CreateBackupVmComponent,
     CreateBackupVolumeComponent,
     ListBackupVolumeComponent,
     DetailBackupVolumeComponent,
-    CurrentVirtualMachineComponent,
-    NewVirtualMachineComponent,
     IamDashboardComponent,
     CreateUserGroupComponent,
     DeleteUserGroupComponent,
@@ -434,6 +429,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ExtendIpFloatingComponent,
     AttachIpFloatingLbComponent,
     DetachIpFloatingLbComponent,
+    CreateBackupVmNormalComponent,
+    CreateBackupVmVpcComponent,
+    RestoreBackupVmComponent,
   ],
   imports: [
     CommonModule,
