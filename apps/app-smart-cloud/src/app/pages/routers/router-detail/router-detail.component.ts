@@ -55,7 +55,6 @@ export class RouterDetailComponent implements OnInit {
   isVisibleCreateInterface = false;
   routerInterfaceCreate: RouterIntefaceCreate = new RouterIntefaceCreate();
   nameRouter: string
-
   formRouterInterface: FormGroup<{
     subnetId: FormControl<string>;
     ipAddress: FormControl<string>;
@@ -83,23 +82,6 @@ export class RouterDetailComponent implements OnInit {
       subnetId: ['', Validators.required],
       ipAddress: ['', Validators.required],
     });
-    // this.formRouterInterface
-    //   .get('subnetId')
-    //   .valueChanges.subscribe((selectedSubnetId) => {
-    //     const selectedSubnet = this.listSubnet.find(
-    //       (subnet) => subnet.id === parseInt(selectedSubnetId)
-    //     );
-    //     if (selectedSubnet) {
-    //       const networkAddress = selectedSubnet.networkAddress;
-    //       this.formRouterInterface
-    //         .get('ipAddress')
-    //         .setValidators([
-    //           Validators.required,
-    //           ipAddressValidatorRouter(networkAddress),
-    //         ]);
-    //       this.formRouterInterface.get('ipAddress').updateValueAndValidity();
-    //     }
-    //   });
   }
 
   ngOnInit(): void {
@@ -129,8 +111,8 @@ export class RouterDetailComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            e.statusText,
-            this.i18n.fanyi('router.nofitacation.interface.sucess')
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('router.alert.exist.router')
           );
         },
       });
@@ -152,8 +134,8 @@ export class RouterDetailComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            e.statusText,
-            this.i18n.fanyi('router.nofitacation.static.fail')
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('router.alert.exist.router')
           );
         },
       });
@@ -235,12 +217,14 @@ export class RouterDetailComponent implements OnInit {
           console.log(error);
 
           this.cdr.detectChanges();
-          if (error.error.detail.includes('allocated in subnet')) {
+          if (error.error.detail.includes('đã được phân bổ')) {
             this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.ip.existed'));
-          } else if (error.error.detail === '(rule:create_port and (rule:create_port:fixed_ips and (rule:create_port:fixed_ips:subnet_id and rule:create_port:fixed_ips:ip_address))) is disallowed by policy') {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.subnet.disable'));
+          } else if (error.error.detail === 'Địa chỉ IP không hợp lệ với Subnet đã chọn!') {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.ip.wrong'));
           }else if (error.status === 400) {
             this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.select.subnet'));
+          }else if (error.error.detail.includes('CIDR của subnet')) {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.cidr.wrong'));
           } else {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
