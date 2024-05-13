@@ -741,7 +741,7 @@
 
   "app.notification.load.balancer.not.exist": "The Load Balancer does not exist",
   "app.notification.delete.load.balancer.success": "Delete Load Balancer successful",
-  "app.notification.delete.load.balancer.fail": "Delete Load Balancer fail. <p>{{ error }}</p>",
+  "app.notification.delete.load.balancer.fail": "Delete Load Balancer fail.",
   "app.notification.edit.load.balancer.success": "Successfully edited Load Balancer",
   "app.notification.edit.load.balancer.fail": "Failed to edit Load Balancer",
   "app.notification.update.LB.info.success": "Successfully updated Load Balancer information",
@@ -1629,7 +1629,7 @@
   "app.router.note44": "Router name cannot be empty",
   "app.router.note45": "Router name contains 50 characters, written without accents, does not contain special characters except _",
   "app.router.note46": "Router name does not match",
-  
+
   "app.wan.note1": "WAN connection IP management",
   "app.wan.note2": "WAN connection IP range",
   "app.wan.note3": "WAN connection IP address list",
@@ -1711,7 +1711,7 @@
   "app.vlan.note28": "Subnet must be a subnet range of network x.x.0.0/16 (selected network CIDR)",
   "app.vlan.note29": "Address cannot be empty",
   "app.vlan.note30": "Please select ranges within: '172.16.0.0 - 172.24.0.0', and '192.168.0.0', and enter the correct address format: x.x.0.0/16, x.x.x.0/24",
-  "app.vlan.note31": "If a subnet is added to Router",
+  "app.vlan.note31": "If a subnet is added to a router interface, then the Gateway IP will not be disabled, and conversely, if a subnet does not have a gateway, then no router interface is added.",
   "app.vlan.note32": "DHCP is the mechanism for dynamically assigning IP addresses to the subnet. This means that when creating a Port without specifying an IP, DHCP will automatically assign an IP to the newly created Port. Advantages: No need to manage IP addresses manually, as the system will automatically allocate them. Disadvantages: DHCP will use three IPs for the DHCP server, which reduces the available IPs in the subnet. For example, if the subnet has only 8 IPs, only 5 will be available.",
   "app.vlan.note33": "Disable Gateway IP",
   "app.vlan.note34": "If the user does not choose Disable GatewayIP, the system automatically takes the first address in the network range as the gateway, and the user cannot edit this gateway address.",
@@ -1997,6 +1997,7 @@
   "app.backup.package.create.date": "Creation date",
   "app.backup.package.expire.date": "Expiration date",
   "app.backup.package.delete.modal.title": "Delete Backup Package",
+  "app.backup.config.vm.new": "Configure new virtual machine",
   "app.backup.package.delete.alert": "You are currently deleting the Backup Package {{name}}",
   "app.backup.package.delete.content.title": "To delete the Backup package {{name}}, please enter the package name to confirm.",
   "app.backup.package.delete.modal.alert.backupvm": "The Virtual Machine backups associated with this backup package will also be deleted.",
