@@ -48,6 +48,7 @@ export class CredentialsComponent implements OnInit {
   userNameDelete: string;
 
   userEmail: string;
+  isResendOTP = false;
 
   constructor(
     private kafkaCredentialService: KafkaCredentialsService,
@@ -169,7 +170,11 @@ export class CredentialsComponent implements OnInit {
   }
 
   requestResendOtp(){
+    this.isResendOTP = true;
     this.sendOtpChangePassword(this.serviceOrderCode, this.currentUserName);
+    setTimeout(() => {
+      this.isResendOTP = false;
+    }, 60000); // Cho phép gửi lại OTP sau 1 phút
   }
 
   closeOtpModal(){
