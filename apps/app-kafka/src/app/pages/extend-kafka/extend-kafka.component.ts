@@ -152,6 +152,9 @@ export class ExtendKafkaComponent implements OnInit {
   kafkaExtendObj: KafkaExtend = new KafkaExtend();
   initkafkaExtend() {
     this.jsonExtend.serviceOrderCode = this.itemDetail.serviceOrderCode;
+    this.jsonExtend.newExpireStartDate = this.startExpiryDate
+      .toISOString()
+      .substring(0, 19);
     this.kafkaExtendObj.jsonData = JSON.stringify(this.jsonExtend);
     this.kafkaExtendObj.serviceName = this.itemDetail.serviceName;
     this.kafkaExtendObj.newExpireDate = this.expectExpiryDate

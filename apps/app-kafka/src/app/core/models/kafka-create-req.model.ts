@@ -68,6 +68,7 @@ export class KafkaExtend {
 
 export class JsonDataExtend {
     serviceOrderCode: string;
+    newExpireStartDate: string;
 }
 
 export class JsonDataCreate {
