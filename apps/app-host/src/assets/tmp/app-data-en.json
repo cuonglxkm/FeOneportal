@@ -88,6 +88,12 @@
             ]
           },
           {
+            "text": "Project",
+            "icon": "anticon-profile",
+            "link": "/app-smart-cloud/project",
+            "action": "project:List"
+          },
+          {
             "text": "Infrastructure Services",
             "icon": "anticon-cloud",
             "children": [
@@ -192,12 +198,6 @@
                     "link": "/app-smart-cloud/object"
                   }
                 ]
-              },
-              {
-                "text": "VPC",
-                "icon": "anticon-profile",
-                "link": "/app-smart-cloud/vpc",
-                "action": "vpc:List"
               },
               {
                 "text": "Load balancer SDN",

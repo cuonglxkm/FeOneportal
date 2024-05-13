@@ -699,13 +699,13 @@ const routes: Routes = [
 
   },
   {
-    path: 'vpc',
+    path: 'project',
     loadChildren: () =>
-      import('../pages/vpc/vpc.module').then((m) => m.VpcModule),
+      import('../pages/project/project.module').then((m) => m.ProjectModule),
 
     canActivate: [PermissionGuard],
     data: {
-      permission: 'vpc:List'
+      permission: 'project:List'
     }
   },
   {

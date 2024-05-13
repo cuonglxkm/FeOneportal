@@ -15,12 +15,12 @@ import { OfferDetail } from '../../../shared/models/catalog.model';
 import { debounceTime, Subject } from 'rxjs';
 
 @Component({
-  selector: 'one-portal-vpc-update',
-  templateUrl: './vpc-update.component.html',
-  styleUrls: ['./vpc-update.component.less'],
+  selector: 'one-portal-project-update',
+  templateUrl: './project-update.component.html',
+  styleUrls: ['./project-update.component.less'],
   animations: [slider],
 })
-export class VpcUpdateComponent implements OnInit{
+export class ProjectUpdateComponent implements OnInit{
   public carouselTileConfig: NguCarouselConfig = {
     grid: {xs: 1, sm: 1, md: 2, lg: 4, all: 0},
     speed: 250,
@@ -193,7 +193,7 @@ export class VpcUpdateComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpc'])
+    this.router.navigate(['/app-smart-cloud/project'])
   }
 
   onChangeTime() {
@@ -203,7 +203,7 @@ export class VpcUpdateComponent implements OnInit{
   }
 
   backToList() {
-    this.router.navigate(['/app-smart-cloud/vpc'])
+    this.router.navigate(['/app-smart-cloud/project'])
   }
 
   updateVpc() {
