@@ -630,12 +630,8 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe(
         () => {
-<<<<<<< Updated upstream
-          this.notification.success(this.i18n.fanyi('app.status.success'), '`Sao chép thành công');
-=======
-          this.notification.success('Thành công', 'Sao chép thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Sao chép thành công');
           this.isVisibleCopy = false;
->>>>>>> Stashed changes
         },
         (error) => {
           this.notification.error(this.i18n.fanyi('app.status.fail'), 'Sao chép thất bại');
