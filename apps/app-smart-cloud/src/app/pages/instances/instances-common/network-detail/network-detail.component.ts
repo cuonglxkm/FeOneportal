@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnInit,
   Output,
@@ -18,6 +19,8 @@ import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-network-detail',
@@ -40,6 +43,7 @@ export class NetworkDetailComponent implements OnInit {
   portId: string; //sau chị Sim gán giá trị này cho em nhé để truyền vào param
 
   constructor(
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private route: Router,
@@ -118,12 +122,18 @@ export class NetworkDetailComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.notification.success('', 'Chỉnh sửa port thành công');
+          this.notification.success(
+            '',
+            this.i18n.fanyi('app.notify.edit.port.success')
+          );
           this.valueChanged.emit(data);
           this.getNetworkAndSecurityGroup();
         },
         error: (e) => {
-          this.notification.error('', 'Chỉnh sửa port không thành công');
+          this.notification.error(
+            '',
+            this.i18n.fanyi('app.notify.edit.port.fail')
+          );
         },
       });
   }

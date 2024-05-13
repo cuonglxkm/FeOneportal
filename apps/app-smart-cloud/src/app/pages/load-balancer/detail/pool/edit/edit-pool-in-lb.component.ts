@@ -1,15 +1,34 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FormUpdatePool, PoolDetail } from '../../../../../shared/models/load-balancer.model';
+import {
+  FormUpdatePool,
+  PoolDetail,
+} from '../../../../../shared/models/load-balancer.model';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-edit-pool-in-lb',
   templateUrl: './edit-pool-in-lb.component.html',
-  styleUrls: ['./edit-pool-in-lb.component.less']
+  styleUrls: ['./edit-pool-in-lb.component.less'],
 })
 export class EditPoolInLbComponent implements AfterViewInit {
   @Input() region: number;
@@ -24,15 +43,21 @@ export class EditPoolInLbComponent implements AfterViewInit {
   isLoading: boolean = false;
 
   validateForm: FormGroup<{
-    namePool: FormControl<string>
-    algorithm: FormControl<string>
-    session: FormControl<boolean>
+    namePool: FormControl<string>;
+    algorithm: FormControl<string>;
+    session: FormControl<boolean>;
   }> = this.fb.group({
-    namePool: ['', [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9_]*$/),
-      this.duplicateNameValidator.bind(this), Validators.maxLength(50)]],
+    namePool: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9_]*$/),
+        this.duplicateNameValidator.bind(this),
+        Validators.maxLength(50),
+      ],
+    ],
     algorithm: ['', [Validators.required]],
-    session: [false]
+    session: [false],
   });
 
   nameList: string[] = [];
@@ -42,18 +67,20 @@ export class EditPoolInLbComponent implements AfterViewInit {
   algorithms = [
     { value: 'Round_Robin', label: 'Round_Robin' },
     { value: 'Least_Connections', label: 'Least_Connections' },
-    { value: 'Source_IP', label: 'Source_IP' }
+    { value: 'Source_IP', label: 'Source_IP' },
   ];
 
   @ViewChild('poolInputName') poolInputName!: ElementRef<HTMLInputElement>;
 
-  constructor(private activatedRoute: ActivatedRoute,
-              private router: Router,
-              private fb: NonNullableFormBuilder,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private loadBalancerService: LoadBalancerService,
-              private notification: NzNotificationService) {
-  }
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private fb: NonNullableFormBuilder,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private loadBalancerService: LoadBalancerService,
+    private notification: NzNotificationService
+  ) {}
 
   focusOkButton(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
@@ -81,13 +108,15 @@ export class EditPoolInLbComponent implements AfterViewInit {
   }
 
   getDetailPool() {
-    this.loadBalancerService.getPoolDetail(this.poolId, this.loadBalancerId).subscribe(data => {
-      this.pool = data;
+    this.loadBalancerService
+      .getPoolDetail(this.poolId, this.loadBalancerId)
+      .subscribe((data) => {
+        this.pool = data;
 
-      this.validateForm.controls.namePool.setValue(data.name);
-      this.validateForm.controls.algorithm.setValue(data.lb_algorithm);
-      this.validateForm.controls.session.setValue(data.sessionPersistence);
-    });
+        this.validateForm.controls.namePool.setValue(data.name);
+        this.validateForm.controls.algorithm.setValue(data.lb_algorithm);
+        this.validateForm.controls.session.setValue(data.sessionPersistence);
+      });
   }
 
   handleCancel() {
@@ -97,7 +126,7 @@ export class EditPoolInLbComponent implements AfterViewInit {
   }
 
   handleOk() {
-    this.isLoading = true
+    this.isLoading = true;
     if (this.validateForm.valid) {
       let formUpdate = new FormUpdatePool();
       formUpdate.poolId = this.poolId;
@@ -107,25 +136,32 @@ export class EditPoolInLbComponent implements AfterViewInit {
       formUpdate.name = this.validateForm.controls.namePool.value;
       formUpdate.description = this.pool?.description;
       formUpdate.adminStateUp = this.pool?.adminStateUp;
-      formUpdate.lb_algorithm = this.validateForm.controls.algorithm.value
+      formUpdate.lb_algorithm = this.validateForm.controls.algorithm.value;
       formUpdate.customerId = this.tokenService.get()?.userId;
-      this.loadBalancerService.updatePool(this.poolId, formUpdate).subscribe(data => {
-        this.isVisible = false;
-        this.isLoading = false;
-        this.notification.success('Thành công', 'Cập nhật Pool thành công');
+      this.loadBalancerService.updatePool(this.poolId, formUpdate).subscribe({
+        next: (data) => {
+          this.isVisible = false;
+          this.isLoading = false;
+          this.notification.success(
+            '',
+            this.i18n.fanyi('app.notification.edit.pool.success')
+          );
 
-        this.onOk.emit(data);
-      }, error => {
-        this.isVisible = false;
-        this.isLoading = false;
-        this.notification.error('Thất bại', 'Cập nhật Pool thất bại ' + error.error.detail);
+          this.onOk.emit(data);
+        },
+        error: (error) => {
+          this.isVisible = false;
+          this.isLoading = false;
+          this.notification.error(
+            error.error.detail,
+            this.i18n.fanyi('app.notification.edit.pool.fail')
+          );
+        },
       });
     }
-
   }
 
   ngAfterViewInit() {
     this.poolInputName?.nativeElement.focus();
   }
-
 }

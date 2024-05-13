@@ -33,6 +33,8 @@ import {
   RegionModel,
   ProjectModel,
 } from '../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -97,6 +99,7 @@ export class InstancesEditComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private notification: NzNotificationService,
@@ -258,6 +261,8 @@ export class InstancesEditComponent implements OnInit {
     this.cpuIntoMoney = 0;
     this.gpuUnitPrice = '0';
     this.gpuIntoMoney = 0;
+    this.totalAmount = 0;
+    this.totalincludesVAT = 0;
   }
 
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
@@ -813,17 +818,16 @@ export class InstancesEditComponent implements OnInit {
   }
 
   readyEdit(): void {
-    if (this.isCustomconfig == false && this.offerFlavor == null) {
-      this.notification.error('', 'Vui lòng chọn gói cấu hình');
-      return;
-    }
     if (
       this.isCustomconfig == true &&
-      this.configCustom.vCPU == 0 &&
-      this.configCustom.ram == 0 &&
-      this.configCustom.capacity == 0
+      (this.configCustom.vCPU == 0 ||
+        this.configCustom.ram == 0 ||
+        this.configCustom.capacity == 0)
     ) {
-      this.notification.error('', 'Cấu hình tùy chọn chưa hợp lệ');
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.optional.configuration.invalid')
+      );
       return;
     }
     this.instanceResizeInit();

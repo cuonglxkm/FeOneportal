@@ -10,6 +10,8 @@ import {
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-resize-file-system',
@@ -41,6 +43,7 @@ export class ResizeFileSystemComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private fileSystemService: FileSystemService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService,
               private projectService: ProjectService) {
   }
@@ -108,16 +111,16 @@ export class ResizeFileSystemComponent implements OnInit {
       if (data != null) {
         if (data.code == 200) {
           this.isLoading = false;
-          this.notification.success('Thành công', 'Yêu cầu điều chỉnh File Storage thành công.');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu điều chỉnh File Storage thành công.');
           this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
         }
       } else {
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Yêu cầu điều chỉnh File Storage thất bại.');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu điều chỉnh File Storage thất bại.');
       }
     }, error => {
       this.isLoading = false;
-      this.notification.error('Thất bại', 'Yêu cầu điều chỉnh File Storage thất bại.');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu điều chỉnh File Storage thất bại.');
     });
 
   }

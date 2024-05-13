@@ -38,6 +38,14 @@
             <input nz-input formControlName="phone" [placeholder]="'form.account.phone'|i18n" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
+        <ng-template #phoneErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')"
+            >{{ 'validation.phone-number.required' | i18n }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('validPhoneNumber')">{{
+            'validation.phone-number.wrong-format' | i18n
+          }}</ng-container>
+        </ng-template>
       </nz-col>
     </nz-row>
 
