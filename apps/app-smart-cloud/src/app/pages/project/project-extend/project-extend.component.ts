@@ -12,11 +12,11 @@ import { I18NService } from '@core';
 import { IpPublicService } from '../../../shared/services/ip-public.service';
 
 @Component({
-  selector: 'one-portal-vpc-extend',
-  templateUrl: './vpc-extend.component.html',
-  styleUrls: ['./vpc-extend.component.less'],
+  selector: 'one-portal-project-extend',
+  templateUrl: './project-extend.component.html',
+  styleUrls: ['./project-extend.component.less'],
 })
-export class VpcExtendComponent implements OnInit{
+export class ProjectExtendComponent implements OnInit{
   regionId: any;
   listOfData = [{}];
   data: VpcModel;
@@ -56,7 +56,7 @@ export class VpcExtendComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpc'])
+    this.router.navigate(['/app-smart-cloud/project'])
   }
 
   private getData(id: any) {

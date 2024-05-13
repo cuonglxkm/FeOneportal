@@ -12,11 +12,11 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
-  selector: 'one-portal-vpc-detail',
-  templateUrl: './vpc-detail.component.html',
-  styleUrls: ['./vpc-detail.component.less'],
+  selector: 'one-portal-project-detail',
+  templateUrl: './project-detail.component.html',
+  styleUrls: ['./project-detail.component.less'],
 })
-export class VpcDetailComponent implements OnInit{
+export class ProjectDetailComponent implements OnInit{
   regionId: any;
   listOfData = [
     {}
@@ -47,7 +47,7 @@ export class VpcDetailComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpc'])
+    this.router.navigate(['/app-smart-cloud/project'])
   }
 
   private getData(id: any) {
@@ -106,10 +106,10 @@ export class VpcDetailComponent implements OnInit{
   }
 
   edit() {
-    this.router.navigate(['/app-smart-cloud/vpc/update/' + this.activatedRoute.snapshot.paramMap.get('id')])
+    this.router.navigate(['/app-smart-cloud/project/update/' + this.activatedRoute.snapshot.paramMap.get('id')])
   }
 
   extend() {
-    this.router.navigate(['/app-smart-cloud/vpc/extend/' + this.activatedRoute.snapshot.paramMap.get('id')])
+    this.router.navigate(['/app-smart-cloud/project/extend/' + this.activatedRoute.snapshot.paramMap.get('id')])
   }
 }

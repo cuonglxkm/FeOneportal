@@ -17,13 +17,13 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
-  selector: 'one-portal-vpc-create',
-  templateUrl: './vpc-create.component.html',
-  styleUrls: ['./vpc-create.component.less'],
+  selector: 'one-portal-project-create',
+  templateUrl: './project-create.component.html',
+  styleUrls: ['./project-create.component.less'],
   animations: [slider]
 })
 
-export class VpcCreateComponent implements OnInit {
+export class ProjectCreateComponent implements OnInit {
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
@@ -291,7 +291,7 @@ export class VpcCreateComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpc']);
+    this.router.navigate(['/app-smart-cloud/project']);
   }
 
   onChangeTime() {
@@ -386,7 +386,7 @@ export class VpcCreateComponent implements OnInit {
       this.ipService.createIpPublic(request).subscribe(
         data => {
           this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.note50'));
-          this.router.navigate(['/app-smart-cloud/vpc']);
+          this.router.navigate(['/app-smart-cloud/project']);
         },
         error => {
           this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'));

@@ -108,6 +108,7 @@ import { environment } from '@env/environment';
 export class LayoutBasicComponent {
   options: LayoutDefaultOptions = {
     logoExpanded: `./assets/imgs/logo-vnpt-cloud.svg`,
+    logoCollapsed: `./assets/imgs/logo-vnpt-cloud.svg`
   };
   searchToggleStatus = false;
   showSettingDrawer = !environment.production;
