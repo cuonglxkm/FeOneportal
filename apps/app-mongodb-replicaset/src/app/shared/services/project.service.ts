@@ -12,7 +12,7 @@ export class ProjectService extends BaseService {
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
@@ -22,7 +22,7 @@ export class ProjectService extends BaseService {
 
   getByRegion(regionId: number) {
     return this.http.get<ProjectModel[]>
-    (this.baseUrl + this.ENDPOINT.provisions  + `/projects?regionId=${regionId}`, {
+    (this.apiGwUrl + this.ENDPOINT.provisions  + `/projects?regionId=${regionId}`, {
       headers: this.getHeaders()
     });
   }

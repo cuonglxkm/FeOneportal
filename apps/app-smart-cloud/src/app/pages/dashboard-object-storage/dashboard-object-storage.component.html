@@ -1,37 +1,58 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Thống kê dịch vụ Object Storage'">
+<page-header
+  *ngIf="hasOS"
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'app.object.storage.statistics' | i18n"
+>
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{
+        'app.breadcrumb.home' | i18n
+      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{
+        'app.breadcrumb.infrastructure.service' | i18n
+      }}</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">Object Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">Bucket</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/object-storage/dashboard'">Thống kê dịch vụ Object Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        [routerLink]="'/app-smart-cloud/object-storage/dashboard'"
+        >{{ 'app.object.storage.statistics' | i18n }}</nz-breadcrumb-item
+      >
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
-<nz-content>
+<nz-content *ngIf="hasOS">
   <nz-card>
     <nz-row nzJustify="end">
-      <nz-col nzSpan="8" style="flex:none;">
-        <nz-select [nzPlaceHolder]="'Chọn Bucket'"
-                   style="width: 150px;"
-                   [ngModel]="bucketSelected"
-                   (ngModelChange)="onBucketChange($event)">
-          <nz-option *ngFor="let index of bucketList" [nzLabel]="index.bucketName" [nzValue]="index.bucketName"></nz-option>
+      <nz-col nzSpan="8" style="flex: none">
+        <nz-select
+          style="width: 150px"
+          [ngModel]="bucketSelected"
+          (ngModelChange)="onBucketChange($event)"
+        >
+          <nz-option
+            *ngFor="let index of bucketList"
+            [nzLabel]="index.bucketName"
+            [nzValue]="index.bucketName"
+          ></nz-option>
         </nz-select>
-        <nz-select style="margin-left: 10px; width: 100px;"
-                   [nzPlaceHolder]="'15 phút'"
-                   [ngModel]="timeSelected"
-                   (ngModelChange)="onTimeChange($event)">
-          <nz-option *ngFor="let i of times" [nzValue]="i.value" [nzLabel]="i.label"></nz-option>
+        <nz-select
+          style="margin-left: 10px; width: 100px"
+          [ngModel]="timeSelected"
+          (ngModelChange)="onTimeChange($event)"
+        >
+          <nz-option
+            *ngFor="let i of times"
+            [nzValue]="i.value"
+            [nzLabel]="i.label"
+          ></nz-option>
         </nz-select>
       </nz-col>
     </nz-row>
@@ -39,6 +60,9 @@
       <one-portal-chart [summary]="summary" />
     </div>
 
-<!--    <one-portal-chart-summary />-->
+    <!--    <one-portal-chart-summary />-->
   </nz-card>
 </nz-content>
+
+<div *ngIf="hasOS == undefined || hasOS == null"></div>
+<one-portal-object-storage *ngIf="hasOS == false"></one-portal-object-storage>

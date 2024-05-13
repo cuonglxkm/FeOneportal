@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
 } from '@angular/core';
 import {
@@ -11,13 +12,14 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { UserCreate } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 @Component({
   selector: 'one-portal-user-create',
   templateUrl: './user-create.component.html',
@@ -51,7 +53,8 @@ export class UserCreateComponent implements OnInit {
     private router: Router,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -95,13 +98,13 @@ export class UserCreateComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           console.log(data);
-          this.notification.success('', 'Tạo mới User thành công');
+          this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.create-user.noti.success"));
           this.navigateToList();
         },
         error: (e) => {
           this.notification.error(
-            e.statusText,
-            'Tạo mới User không thành công'
+            this.i18n.fanyi("app.status.fail"),
+            this.i18n.fanyi("app.create-user.noti.fail")
           );
         },
       });

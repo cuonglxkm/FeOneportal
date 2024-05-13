@@ -1,0 +1,91 @@
+<nz-content>
+  <nz-card class="border-card">
+    <!-- filter -->
+    <div class="flex-style marbot-5 mbot-24">
+      <div class="mt-1">
+        <h3>Nhật ký thao tác</h3>
+      </div>
+
+      <div class="mleft-16 w-20">
+        <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
+          <input type="text" nz-input placeholder="Tên người dùng" [(ngModel)]="userAction"
+            (ngModelChange)="this.changeUserKeySearch.next($event)" />
+        </nz-input-group>
+        <ng-template #prefixButton>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+        </ng-template>
+      </div>
+
+      <div class="mleft-16 w-20">
+        <nz-select nzSize="default" nzAllowClear [(ngModel)]="resourceType" (ngModelChange)="onChangeResourceType(); searchLogs()"
+          [nzPlaceHolder]="'Loại resource'" class="w-100" nzSize="large">
+          <nz-option *ngFor="let rt of listOfResourceType" [nzLabel]="rt.name"
+            [nzValue]="rt.value"></nz-option>
+        </nz-select>
+      </div>
+
+      <div class="mleft-16 w-20">
+        <nz-select nzSize="default" nzAllowClear [(ngModel)]="resource" (ngModelChange)="searchLogs()"
+          [nzPlaceHolder]="'Chọn nhóm worker'" class="w-100" nzSize="large" [nzDisabled]="isDisableWorkerFilter">
+          <nz-option *ngFor="let item of listOfWorkerGroupName" [nzLabel]="item"
+            [nzValue]="item"></nz-option>
+        </nz-select>
+      </div>
+
+      <div mleft-16 class="mleft-16 w-20">
+        <nz-range-picker
+          nzFormat="dd/MM/yyyy"
+          [(ngModel)]="date"
+          (ngModelChange)="onChangeDate($event); searchLogs();"
+          [nzSize]="'large'"
+          [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']"
+        ></nz-range-picker>
+      </div>
+    </div>
+
+    <div class="mb-1">
+      <small class="delete-color"><i>Hệ thống chỉ lưu nhật ký trong 30 ngày gần đây</i></small>
+    </div>
+
+    <!-- table -->
+    <nz-table #logTable [nzData]="listOfLogs" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
+      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+      <thead>
+        <tr>
+          <th class="header-table">Tên người dùng</th>
+          <th class="header-table">Loại resource</th>
+          <th class="header-table">Tên resource</th>
+          <th class="header-table">Thao tác</th>
+          <th class="header-table">Nội dung</th>
+          <th class="header-table">Thời gian thực hiện</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of logTable.data; let i = index;">
+          <td>{{ item.userAction }}</td>
+          <td id="type">{{ item.resourceType }}</td>
+          <td>{{ item.resource }}</td>
+          <td>{{ item.operation | action2label }}</td>
+          <td>
+            <ng-container *ngIf="item.note?.length <= 30; else truncateValueTpl">
+              {{ item.note }}
+            </ng-container>
+            <ng-template #truncateValueTpl>
+              <div nz-popover
+                nzPopoverTitle="Nội dung"
+                [nzPopoverContent]="contentTpl"
+                nzPopoverPlacement="bottom">
+                {{item.note | truncateLabel}}
+              </div>
+
+              <ng-template #contentTpl>
+                <div style="width: fit-content">{{item.note}}</div>
+              </ng-template>
+            </ng-template>
+          </td>
+          <td class="center-align">{{ item.opTime | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-content>

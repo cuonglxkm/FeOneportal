@@ -1,0 +1,154 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'app.file.system.manage' | i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <ng-container [ngSwitch]="isCheckBegin">
+    <ng-container *ngSwitchCase="false">
+      <nz-card style="border-radius: 8px;">
+        <nz-row nzJustify="space-between">
+          <nz-col [nzSpan]="8">
+            <span class="text-card-header">{{ 'app.file.system.list' | i18n }}</span>
+          </nz-col>
+          <nz-col [nzSpan]="16" style="flex:none;">
+            <div>
+              <nz-input-group [nzPrefix]="prefixIconSearch"
+                              nzSize="large"
+                              style="width: 300px;">
+                <input name="name"
+                       nz-input
+                       [nz-tooltip]="'app.button.search' | i18n"
+                       [(ngModel)]="value"
+                       (input)="onInputChange($event.target['value'])" />
+              </nz-input-group>
+              <ng-template #prefixIconSearch>
+                <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" />
+              </ng-template>
+              <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large"
+                      (click)="navigateToCreateFileSystem(typeVpc)">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+                <span class="button-text-primary">{{ 'app.file.system.create.button' | i18n }}</span>
+              </button>
+            </div>
+          </nz-col>
+        </nz-row>
+        <nz-table #fixTable
+                  style="margin-top: 24px;"
+                  nzShowSizeChanger
+                  [nzData]="response?.records"
+                  [nzPageSize]="response?.pageSize"
+                  (nzPageSizeChange)="onPageSizeChange($event)"
+                  [nzPageIndex]="response?.currentPage"
+                  (nzPageIndexChange)="onPageIndexChange($event)"
+                  [nzTotal]="response?.totalCount"
+                  [nzFrontPagination]="false"
+                  [nzLoading]="isLoading">
+          <thead>
+          <tr>
+            <th>STT</th>
+            <th>{{ 'app.name' | i18n }}</th>
+            <th>{{ 'app.file.system.type' | i18n }}</th>
+            <th>{{ 'app.protocol' | i18n }}</th>
+            <th>{{ 'app.capacity' | i18n }}</th>
+            <th>{{ 'app.text.status' | i18n }}</th>
+            <th>{{ 'app.task.status' | i18n }}</th>
+            <th>{{ 'app.text.operation' | i18n }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of fixTable.data; index as i">
+            <td>{{ i + 1 }}</td>
+            <td><a [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
+            <td>{{ data.type }}</td>
+            <td>{{ data.protocol }}</td>
+            <td>{{ data.size }} GB</td>
+            <td *ngIf="data.statusDisplay.includes('Đang hoạt động')" style="color: #008D47;">{{ data.statusDisplay }}</td>
+            <td *ngIf="!data.statusDisplay.includes('Đang hoạt động')" style="color: #EA3829;">{{ data.statusDisplay }}</td>
+            <td>{{ data.taskState.toUpperCase() }}</td>
+            <td>
+              <div *ngIf="data.taskState.toUpperCase() === 'ERROR'">
+                <one-portal-delete-file-system [region]="region"
+                                               [project]="project"
+                                               [fileSystemId]="data.id"
+                                               [fileSystemName]="data.name"
+                                               (onOk)="handleOkDelete()" />
+              </div>
+              <div *ngIf="!(['CREATING', 'ERROR'].includes(data.taskState.toUpperCase()))">
+                <one-portal-edit-file-system [region]="region"
+                                             [project]="project"
+                                             [fileSystem]="data"
+                                             (onOk)="handleOkEdit()" />
+                <one-portal-delete-file-system [region]="region"
+                                               [project]="project"
+                                               [fileSystemId]="data.id"
+                                               [fileSystemName]="data.name"
+                                               (onOk)="handleOkDelete()" />
+                <img nz-dropdown
+                     [nzDropdownMenu]="opMenu"
+                     src="assets/imgs/more1.svg" alt="" style="cursor: pointer;"/>
+                <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item>{{ 'app.snapshot.create' | i18n }}</li>
+                    <li nz-menu-item (click)="navigateToResizeFileSystem(typeVpc, data.id)">{{ 'app.capacity.resize' | i18n }}
+                    </li>
+                    <li nz-menu-item
+                        [routerLink]="'/app-smart-cloud/file-storage/file-system/' + data.cloudId + '/access-rule/list'">
+                        {{ 'app.access.rule.manage' | i18n }}
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-card>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <nz-card>
+        <result>
+          <nz-row>
+            <nz-col class="text-center" style="width: 100%">
+              <img src="/assets/imgs/file-system-blank.svg" alt="" />
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+              <span class="text-intro-title" style="color: #0066b3">File Storage <br>
+                {{ 'app.file.system.intro' | i18n }}</span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">{{ 'app.file.system.des' | i18n }}</span>
+            </nz-col>
+          </nz-row>
+          <button style="margin-top: 20px" nz-button [nzType]="'primary'"
+                  (click)="navigateToCreateFileSystem(typeVpc)" nzSize="large">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+            {{ 'app.file.system.create.button' | i18n }}
+          </button>
+        </result>
+      </nz-card>
+    </ng-container>
+  </ng-container>
+</nz-content>

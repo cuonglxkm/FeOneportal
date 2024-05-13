@@ -5,14 +5,13 @@ import PairInfo, {
   AllowAddressPairCreateOrDeleteForm,
   AllowAddressPairSearchForm
 } from 'src/app/shared/models/allow-address-pair';
-import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {AllowAddressPairService} from "../../../shared/services/allow-address-pair.service";
 import {ActivatedRoute} from "@angular/router";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import Pagination from "../../../shared/models/pagination";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 
 @Component({
@@ -32,7 +31,7 @@ export class ListAllowAddressPairComponent implements OnInit {
   isVisibleCreate = false;
   userId: number
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
 
   project = JSON.parse(localStorage.getItem('projectId'));
 

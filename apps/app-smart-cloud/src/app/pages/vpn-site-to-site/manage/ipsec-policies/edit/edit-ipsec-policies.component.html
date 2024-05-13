@@ -23,6 +23,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
@@ -179,6 +180,7 @@
                   [(ngModel)]="selectedLifetimeUnits"
                   [ngModelOptions]="{ standalone: true }"
                   class="input-select-custom"
+                  [disabled]="true"
                 >
                   <nz-option
                     *ngFor="let data of lifetimeUnits"
@@ -331,6 +333,7 @@
         "
         nzSize="large"
         [disabled]="form.invalid"
+        [nzLoading]="isLoading"
       >
         <span
           nz-icon

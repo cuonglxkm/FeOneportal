@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {ProjectModel} from "../../../shared/models/project.model";
-import {RegionModel} from "../../../shared/models/region.model";
+import {Component, OnInit, Inject} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PopupDetachPolicyComponent} from "../popup-policy/popup-detach-policy.component";
-import {PolicyService} from "../../../shared/services/policy.service";
+import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
-import {AttachOrDetachRequest} from "../policy.model";
-
+import {AttachOrDetachRequest} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 @Component({
   selector: 'one-portal-policy-detach',
   templateUrl: './policy-detach.component.html',
@@ -17,7 +17,7 @@ import {AttachOrDetachRequest} from "../policy.model";
 })
 export class PolicyDetachComponent implements OnInit {
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
 
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -26,7 +26,7 @@ export class PolicyDetachComponent implements OnInit {
   entitiesNameSearch: string;
 
   optionsEntities: NzSelectOptionInterface[] = [
-    {label: 'Tất cả các loại', value: null},
+    {label: this.i18n.fanyi("app.group-detail.allTypes"), value: null},
     {label: 'Users', value: 1},
     {label: 'Users Groups', value: 2},
 
@@ -88,16 +88,16 @@ export class PolicyDetachComponent implements OnInit {
     const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.name));
 
     const modal: NzModalRef = this.modalService.create({
-      nzTitle: 'Detach Policy',
+      nzTitle: this.i18n.fanyi("app.button.detach-policy"),
       nzContent: PopupDetachPolicyComponent,
       nzFooter: [
         {
-          label: 'Hủy',
+          label: this.i18n.fanyi("app.button.cancel"),
           type: 'default',
           onClick: () => modal.destroy()
         },
         {
-          label: 'Đồng ý',
+          label: this.i18n.fanyi("app.button.agree"),
           type: 'primary',
           onClick: () => {
             this.doDetachPolicy(requestData, this.policyName);
@@ -117,11 +117,11 @@ export class PolicyDetachComponent implements OnInit {
     request.items = requestData;
     console.log(request);
     this.policiService.attachOrDetach(request).subscribe(data => {
-        this.notification.success('Thành công', 'Gỡ Policy thành công');
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.detach-policy.noti.success"));
         this.searchEntities();
       },
       error => {
-        this.notification.error('Có lỗi xảy ra', 'Gỡ Policy thất bại');
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.detach-policy.noti.fail"));
       }
     )
 
@@ -162,7 +162,7 @@ export class PolicyDetachComponent implements OnInit {
         this.isLoadingEntities = false;
       },
       error => {
-        this.notification.error('Có lỗi xảy ra', 'Lấy danh sách Attached Entities thất bại');
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.detach-policy.attach-entities.noti.fail"));
         this.isLoadingEntities = false;
       }
     )
@@ -173,7 +173,8 @@ export class PolicyDetachComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private modalService: NzModalService,
     private notification: NzNotificationService,
-    private router: Router,) {
+    private router: Router,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
 }

@@ -8,6 +8,8 @@
     "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false,
     "baseUrl": "./",
     "paths": {
       "@shared": [

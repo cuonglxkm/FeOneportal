@@ -1,11 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { IpFloatingService } from '../../shared/services/ip-floating.service';
-import { RegionModel } from '../../shared/models/region.model';
-import { ProjectModel } from '../../shared/models/project.model';
 import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floating.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { BaseResponse } from '../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { debounceTime } from 'rxjs';
 
 @Component({
@@ -14,11 +12,11 @@ import { debounceTime } from 'rxjs';
   styleUrls: ['./list-ip-floating.component.less'],
 })
 export class ListIpFloatingComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   customerId: number
-
+  projectType: any;
   pageSize: number = 10
   pageIndex: number = 1
 
@@ -46,7 +44,8 @@ export class ListIpFloatingComponent implements OnInit {
 
   projectChange(project: ProjectModel) {
     this.project = project.id;
-    // this.projectType = project.type;
+    this.projectType = project.type;
+    console.log(this.projectType);
     this.getData(true);
   }
 

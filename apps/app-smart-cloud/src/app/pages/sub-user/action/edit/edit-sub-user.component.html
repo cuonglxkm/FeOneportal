@@ -1,43 +1,48 @@
-<span style="color: #0066B3;"
-      class="more"
-      nz-icon nzType="edit"
-      nzTheme="outline"
-      nz-popover
-      [nzPopoverContent]="'Chỉnh sửa'"
-      nzPopoverPlacement="bottom"
-      (click)="showModal()"></span>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Chỉnh sửa SubUser {{ idSubUser }}"
-          (nzOnCancel)="handleCancel()" nzMark="false">
-  <div *nzModalTitle>
-    <span class="text-modal-title">Chỉnh sửa thông tin Volume</span>
-  </div>
+<img style="color: #0066b3"
+     class="more"
+     src="assets/imgs/edit-2.svg" alt=""
+     nz-popover
+     [nz-tooltip]="'app.text.edit' | i18n"
+     (click)="showModal()" />
+<nz-modal [(nzVisible)]="isVisible"
+          [nzTitle]="'app.sub.user.edit' | i18n : { name: idSubUser }"
+          (nzOnCancel)="handleCancel()"
+          nzMark="false">
   <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
-    <form nz-form [formGroup]="validateForm"  nzLayout="vertical">
+    <form nz-form [formGroup]="validateForm" nzLayout="vertical">
       <nz-form-item>
         <nz-form-label nzFor="nameFileSystem">
-          <div style="margin-top: 15px;">
-            <span>Quyền truy cập</span>
-            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+          <div>
+            <span>{{ 'app.access.rights' | i18n }}</span>
+            (<span style="color: rgba(252, 16, 16, 1)">*</span>)
             <span nz-icon nzType="question-circle" nzTheme="outline"></span>
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-         <nz-select formControlName="access">
-           <nz-option nzValue="full" nzLabel="Tất cả quyền truy cập"></nz-option>
-           <nz-option nzValue="none" nzLabel="Không có quyền truy cập"></nz-option>
-         </nz-select>
+          <nz-select formControlName="access" nzSize="large">
+            <nz-option nzValue="full"
+                       [nzLabel]="'app.all.access.permission' | i18n"></nz-option>
+            <nz-option nzValue="none"
+                       [nzLabel]="'app.no.access.permission' | i18n"></nz-option>
+          </nz-select>
         </nz-form-control>
       </nz-form-item>
     </form>
   </div>
-  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px">
+    <button nz-button
+            nzType="default"
+            (click)="handleCancel()"
+            class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.text.delete' | i18n }}
     </button>
-    <button nz-button nzType="primary" [disabled]="!validateForm.valid"  (click)="handleOk()"
+    <button nz-button
+            nzType="primary"
+            [disabled]="!validateForm.valid"
+            (click)="handleOk()"
             [nzLoading]="isLoading"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

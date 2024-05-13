@@ -1,253 +1,429 @@
-<page-header>
-  <nz-breadcrumb style="float: left">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Trang chủ</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item> Chỉnh sửa máy ảo </nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="regionId"
-      (userChanged)="userChangeProject()"
-    ></project-select-dropdown>
-  </div>
-  <nz-row style="margin-bottom: -10px">
-    <span class="text-page-header" style="width: 50%">Chỉnh sửa máy ảo</span>
-  </nz-row>
-  <nz-row style="margin-top: 20px">
-    <div class="non-pointer" style="width: 100%">
-      <one-portal-instances-btn [instancesId]="id"> </one-portal-instances-btn>
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'app.instances.edit' | i18n"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/instances']">{{
+          'app.instances' | i18n
+        }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.instances.edit' | i18n }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (userChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+  <nz-row>
+    <div style="width: 100%" class="non-pointer">
+      <button nz-button nzType="primary" (click)="navigateToCreate()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/add-circle.svg"
+          alt=""
+        />{{ 'app.button.instance.create' | i18n }}
+      </button>
+      <one-portal-instances-btn
+        *ngIf="
+          instancesModel &&
+          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+        "
+        [instancesId]="id"
+        (valueChanged)="onReloadInstanceDetail()"
+        style="margin-left: 8px"
+      >
+      </one-portal-instances-btn>
     </div>
   </nz-row>
 </page-header>
-
-<nz-card
-  style="border-radius: 8px"
-  [nzBordered]="false"
-  [nzLoading]="loading"
-  *ngIf="instancesModel"
->
-  <div style="margin-bottom: 20px">
-    <span class="text-card-header">Thông tin máy ảo</span>
+<div nz-row [nzGutter]="24">
+  <div nz-col [nzSpan]="16" style="display: flex">
+    <nz-row>
+      <nz-card
+        style="border-radius: 8px; width: 100%"
+        [nzBordered]="false"
+        *ngIf="instancesModel"
+      >
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{
+            'app.instances.info' | i18n
+          }}</span>
+        </div>
+        <div class="customRow">
+          <nz-row>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.instances.name' | i18n }}:</span
+                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.name || ''
+                }}</span>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.instances.OS' | i18n }}:</span
+                >
+                <span class="text-value-detail"
+                  >{{ instancesModel.imageName }}
+                  <img
+                    style="cursor: pointer; margin-left: 10px"
+                    [nz-tooltip]="'app.change' | i18n"
+                    src="assets/imgs/refresh.svg"
+                    alt=""
+                    (click)="navigateToChangeImage()"
+                /></span> </nz-row
+            ></nz-col>
+          </nz-row>
+          <nz-row style="background-color: #e2e2e9">
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.configuration.package' | i18n }}:</span
+                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.flavorName | slice : 3
+                }}</span>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.alert.access.security' | i18n }}:</span
+                >
+                <span
+                  class="text-value-detail"
+                  *ngFor="let item of listSecurityGroupModel; let first = first"
+                  >{{ !first ? ', ' : '' }}{{ item.name }}
+                </span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.task.status' | i18n }}:</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState == 'SHUTOFF'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState == 'powering-off'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState == 'ACTIVE'"
+                  class="text-value-detail customSpan"
+                  style="color: #008d47"
+                  >{{ instancesModel.taskState }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState == 'powering-on'"
+                  class="text-value-detail customSpan"
+                  style="color: #008d47"
+                  >{{ instancesModel.taskState }}</span
+                >
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.ip.public' | i18n }}:</span
+                >
+                <span class="text-value-detail">{{ listIPPublicStr }}</span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row style="background-color: #e2e2e9">
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.hard.drive.type' | i18n }}:</span
+                >
+                <span
+                  *ngIf="instancesModel.volumeType == 0"
+                  class="text-value-detail customSpan"
+                  >HDD</span
+                >
+                <span
+                  *ngIf="instancesModel.volumeType == 1"
+                  class="text-value-detail customSpan"
+                  >SSD</span
+                >
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.ip.lan' | i18n }}:</span
+                >
+                <span class="text-value-detail">{{ listIPLanStr }}</span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.domestic.bandwidth' | i18n }}:</span
+                >
+                <span class="text-value-detail customSpan"
+                  >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
+                >
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.international.bandwidth' | i18n }}:</span
+                >
+                <span class="text-value-detail"
+                  >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
+                >
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row style="background-color: #e2e2e9">
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.service.creation-date' | i18n }}:</span
+                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.createdDate | date : 'dd/MM/yyyy'
+                }}</span>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.service.expiration-date' | i18n }}:</span
+                >
+                <span class="text-value-detail"
+                  >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
+                </span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row *ngIf="instancesModel.keypair">
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.keypair.name' | i18n }}:</span
+                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.keypair || ''
+                }}</span>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12"> </nz-col>
+          </nz-row>
+        </div>
+      </nz-card>
+      <one-portal-blockstorage-detail
+        [instancesId]="id"
+        [isDetail]="true"
+      ></one-portal-blockstorage-detail>
+      <one-portal-network-detail
+        style="width: 100%"
+        [instancesId]="id"
+        [isDetail]="false"
+      ></one-portal-network-detail>
+      <nz-card
+        style="border-radius: 8px; width: 100%"
+        [nzBordered]="false"
+        *ngIf="instancesModel"
+      >
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
+        </div>
+        <div style="margin-bottom: 20px" *ngIf="infoVPC">
+          <span class="text-label"
+            >{{ 'app.remain.configuration.in.vpc' | i18n }}:
+            {{ remainingVCPU }}/{{ infoVPC.cloudProject.quotavCpu }} vCPU,
+            {{ remainingRAM }}/{{ infoVPC.cloudProject.quotaRamInGb }} GB RAM,
+            {{ remainingVolume }}/{{ purchasedVolume }} GB
+            <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+            <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+          </span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <span class="text-label"
+            >{{ 'app.current.config' | i18n }}: {{ instancesModel.cpu }} vCPU,
+            {{ instancesModel.ram }} GB RAM, {{ instancesModel.storage }} GB
+            <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+            <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+          </span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <span class="text-label"
+            >{{ 'app.adjust.config' | i18n }}:
+            {{ vCPU + instancesModel.cpu }} vCPU,
+            {{ ram + instancesModel.ram }}GB RAM,
+            {{ storage + instancesModel.storage }}GB
+            <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+            <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+          </span>
+        </div>
+        <nz-row style="margin-bottom: 20px" nzGutter="24">
+          <nz-col nzLg="8" nzMd="8" nzSm="24">
+            <span class="text-label"
+              >Dung lượng tăng thêm (<span class="text-red">*</span>) - GB</span
+            >
+            <nz-row style="margin-top: 10px">
+              <nz-col nzSpan="18">
+                <nz-slider
+                  [(ngModel)]="storage"
+                  (ngModelChange)="checkChangeConfig()"
+                  [ngModelOptions]="{ standalone: true }"
+                  [nzMin]="0"
+                  [nzMax]="remainingVolume"
+                ></nz-slider>
+              </nz-col>
+              <div nzSpan="6">
+                <nz-input-number
+                  [(ngModel)]="storage"
+                  (ngModelChange)="checkChangeConfig()"
+                  (keydown)="onKeyDown($event)"
+                  [ngModelOptions]="{ standalone: true }"
+                  [nzMin]="0"
+                  [nzMax]="remainingVolume"
+                ></nz-input-number>
+              </div>
+            </nz-row>
+          </nz-col>
+          <nz-col nzLg="8" nzMd="8" nzSm="24">
+            <span class="text-label"
+              >RAM tăng thêm (<span class="text-red">*</span>) - GB</span
+            >
+            <nz-row style="margin-top: 10px">
+              <nz-col nzSpan="18">
+                <nz-slider
+                  [(ngModel)]="ram"
+                  (ngModelChange)="checkChangeConfig()"
+                  [ngModelOptions]="{ standalone: true }"
+                  [nzMin]="0"
+                  [nzMax]="remainingRAM"
+                ></nz-slider>
+              </nz-col>
+              <div nzSpan="6">
+                <nz-input-number
+                  [(ngModel)]="ram"
+                  (ngModelChange)="checkChangeConfig()"
+                  (keydown)="onKeyDown($event)"
+                  [ngModelOptions]="{ standalone: true }"
+                  [nzMin]="0"
+                  [nzMax]="remainingRAM"
+                ></nz-input-number>
+              </div>
+            </nz-row>
+          </nz-col>
+          <nz-col nzLg="8" nzMd="8" nzSm="24">
+            <span class="text-label"
+              >CPU tăng thêm (<span class="text-red">*</span>) - vCPU</span
+            >
+            <nz-row style="margin-top: 10px">
+              <nz-col nzSpan="18">
+                <nz-slider
+                  [(ngModel)]="vCPU"
+                  (ngModelChange)="checkChangeConfig()"
+                  [ngModelOptions]="{ standalone: true }"
+                  [nzMin]="0"
+                  [nzMax]="remainingVCPU"
+                ></nz-slider>
+              </nz-col>
+              <div nzSpan="6">
+                <nz-input-number
+                  [(ngModel)]="vCPU"
+                  (ngModelChange)="checkChangeConfig()"
+                  (keydown)="onKeyDown($event)"
+                  [ngModelOptions]="{ standalone: true }"
+                  [nzMin]="0"
+                  [nzMax]="remainingVCPU"
+                ></nz-input-number>
+              </div>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-row>
   </div>
-  <nz-row class="customRow">
-    <div nz-col nzSpan="12">
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan" style="width: 40%"
-          >Tên máy ảo:</span
-        >
-        <span class="text-value-detail customSpan">{{
-          instancesModel.name || ''
-        }}</span>
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan" style="width: 40%"
-          >Gói cấu hình:</span
-        >
-        <span class="text-value-detail customSpan">{{
-          instancesModel.flavorName | slice : 3
-        }}</span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan" style="width: 40%"
-          >Trạng thái:</span
-        >
-        <span
-          *ngIf="instancesModel.status == 'KHOITAO'"
-          class="text-value-detail customSpan"
-          style="color: #008d47"
-          >KHỞI TẠO</span
-        >
-        <span
-          *ngIf="instancesModel.status == 'ACTIVE'"
-          class="text-value-detail customSpan"
-          style="color: #008d47"
-          >ACTIVE</span
-        >
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan" style="width: 40%"
-          >Thời gian khởi tạo:</span
-        >
-        <span class="text-value-detail customSpan">{{
-          instancesModel.createdDate | date : 'dd/MM/yyyy'
-        }}</span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan" style="width: 40%"
-          >Băng thông trong nước:</span
-        >
-        <span class="text-value-detail customSpan"
-          >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
-        >
-      </nz-row>
+  <div nz-col [nzSpan]="8" style="display: flex">
+    <div style="width: 100%" *ngIf="instancesModel">
+      <nz-affix [nzOffsetTop]="48">
+        <nz-card style="border-radius: 8px; width: 100%">
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{
+              'app.estimated.cost' | i18n
+            }}</span>
+          </div>
+          <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ instancesModel.name }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ instancesModel.imageName }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{ 'app.text.package' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ vCPU + instancesModel.cpu }} CPUs
+          </div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ ram + instancesModel.ram }} GB RAM
+          </div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ storage + instancesModel.storage }} GB Root Disk (<span
+              *ngIf="instancesModel.volumeType == 0"
+              >HDD</span
+            >
+            <span *ngIf="instancesModel.volumeType == 1">SSD</span>)
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row>
+            <nz-col style="width: 100%">
+              <button
+                style="width: 100%"
+                nz-button
+                nzSize="large"
+                nzType="primary"
+                (click)="update()"
+                [disabled]="!isChange"
+              >
+                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <span>{{ 'app.button.resize' | i18n }}</span>
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-affix>
     </div>
-    <div nz-col nzSpan="12">
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan1" style="width: 40%"
-          >Hệ điều hành:</span
-        >
-        <span class="text-value-detail customSpan1"
-          >{{ instancesModel.imageName }}
-          <a
-            class="text-blue"
-            (click)="navigateToChangeImage()"
-            style="margin-left: 15px"
-          >
-            <img src="assets/imgs/undo.png" alt="" /><span
-              style="margin-left: 15px"
-              >Thay đổi</span
-            ></a
-          ></span
-        >
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan1" style="width: 40%"
-          >Truy cập và bảo mật:</span
-        >
-        <span
-          class="text-value-detail customSpan1"
-          *ngFor="let item of listSecurityGroupModel; let first = first"
-          >{{ !first ? ', ' : '' }}{{ item.name }}
-        </span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan1" style="width: 40%"
-          >IP Public:</span
-        >
-        <span class="text-value-detail customSpan1">{{ listIPPublicStr }}</span>
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan1" style="width: 40%">IP LAN:</span>
-        <span class="text-value-detail customSpan1">{{ listIPLanStr }}</span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan1" style="width: 40%"
-          >Băng thông quốc tế:</span
-        >
-        <span class="text-value-detail customSpan1"
-          >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
-        >
-      </nz-row>
-    </div>
-  </nz-row>
-</nz-card>
-<one-portal-blockstorage-detail
-  [instancesId]="id"
-  [isDetail]="true"
-></one-portal-blockstorage-detail>
-<one-portal-network-detail
-  [instancesId]="id"
-  [isDetail]="true"
-></one-portal-network-detail>
-<nz-card
-  style="border-radius: 8px"
-  [nzBordered]="false"
-  [nzLoading]="loading"
-  *ngIf="instancesModel"
->
-  <div style="margin-bottom: 20px">
-    <span class="text-card-header">Thông tin điều chỉnh</span>
   </div>
-  <nz-row style="margin-bottom: 20px" nzGutter="24">
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label">Dung lượng Volume Root đã dùng:</span>
-    </nz-col>
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label">RAM đã dùng:</span>
-    </nz-col>
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label">VCPU đã dùng:</span>
-    </nz-col>
-  </nz-row>
-  <nz-row style="margin-bottom: 20px" nzGutter="24">
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label"
-        >Dung lượng Volume Root tăng thêm (<span class="text-red">*</span>) -
-        GB</span
-      >
-      <nz-row style="margin-top: 10px">
-        <nz-col nzSpan="18">
-          <nz-slider [nzMin]="1" [nzMax]="500"></nz-slider>
-        </nz-col>
-        <div nzSpan="6">
-          <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
-        </div>
-      </nz-row>
-    </nz-col>
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label"
-        >RAM tăng thêm (<span class="text-red">*</span>) - GB</span
-      >
-      <nz-row style="margin-top: 10px">
-        <nz-col nzSpan="18">
-          <nz-slider [nzMin]="1" [nzMax]="20"></nz-slider>
-        </nz-col>
-        <div nzSpan="6">
-          <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
-        </div>
-      </nz-row>
-    </nz-col>
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label"
-        >CPU tăng thêm (<span class="text-red">*</span>) - vCPU</span
-      >
-      <nz-row style="margin-top: 10px">
-        <nz-col nzSpan="18">
-          <nz-slider [nzMin]="1" [nzMax]="20"></nz-slider>
-        </nz-col>
-        <div nzSpan="6">
-          <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
-        </div>
-      </nz-row>
-    </nz-col>
-  </nz-row>
-  <span class="text-label">Chọn Security Group gắn thêm</span>
-  <nz-row>
-    <nz-col nzSpan="24">
-      <nz-form-item>
-        <nz-form-control>
-          <nz-select
-            nzMode="multiple"
-            nzPlaceHolder="Chọn Security Group"
-            [ngModelOptions]="{ standalone: true }"
-            [(ngModel)]="selectedSecurityGroup"
-            [nzServerSearch]="true"
-            nzSize="large"
-          >
-            <nz-option
-              *ngFor="let i of listSecurityGroup"
-              [nzLabel]="i.name"
-              [nzValue]="i.name"
-            />
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-    </nz-col>
-  </nz-row>
-</nz-card>
-
-<nz-row>
-  <nz-col style="width: 100%" class="text-right">
-    <button nz-button (click)="cancel()">
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/cancel.svg"
-        alt=""
-      />Hủy
-    </button>
-    <button nz-button nzSize="large" nzType="primary" (click)="update()">
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/confirm.svg"
-        alt=""
-      />Cập nhật
-    </button>
-  </nz-col>
-</nz-row>
+</div>

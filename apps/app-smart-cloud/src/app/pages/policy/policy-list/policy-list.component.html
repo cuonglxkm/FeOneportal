@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách Policies'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.policies.title' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -11,30 +11,31 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
 <nz-card class="custom-card">
-  <span class="text-card-header">Thông tin Policy</span>
+  <span class="text-card-header">{{ 'app.policies.policyInfo' | i18n }}</span>
   <br>
   <div class="root-filter">
     <div class="filter-1">
-      <h3 style="display: flex; align-items: center; margin-right:10px">Loại policy:</h3>
+      <div class="text-label" style="display: flex; align-items: center; margin-right:10px">{{ 'app.policies.typePolicy' | i18n }}:</div>
       <br>
-      <nz-select [(ngModel)]="selectedStatus" nzSize="large" style="width: 170px">
+      <nz-select [(ngModel)]="selectedStatus" (ngModelChange)="loadData()" nzSize="large" style="width: 200px">
         <nz-option *ngFor="let p of listPolicyType" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
       </nz-select>
     </div>
     <div class="filter-2">
       <nz-input-group style="margin-right: 8px; width: 40%;" [nzPrefix]="suffixIconSearch"
                       nzSize="large">
-        <input name="name" nz-input placeholder="Tìm kiếm" [ngModel]="searchValue"
-               (ngModelChange)="changeSearch($event)"/>
+        <input name="name" nz-input [placeholder]="'app.placeholder.search' | i18n " [ngModel]="searchValue"
+               (ngModelChange)="changeSearch($event)" (keydown.enter)="search()"/>
       </nz-input-group>
       <ng-template #suffixIconSearch>
-        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" (click)="search()"/>
+        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" (click)="search()"/>
       </ng-template>
       <nz-select [(ngModel)]="selectedAction" (nzOpenChange)="selectAction($event)" nzSize="large"
                  style="width: 90px; margin-right: 10px;margin-left: 10px;">
@@ -53,7 +54,7 @@
       </button>
       <button nz-button nzType="primary" (click)="createPolicy()" nzSize="large">
         <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
-        <span class="button-text-primary">Tạo mới</span>
+        <span class="button-text-primary">{{'app.button.createNew' | i18n }}</span>
       </button>
     </div>
   </div>
@@ -66,9 +67,9 @@
     <tr>
       <th nzWidth="40px"></th>
       <th nzWidth="20px"></th>
-      <th>Tên</th>
-      <th>Type</th>
-      <th>Mô tả</th>
+      <th>{{ 'app.create-user-groups.name' | i18n }}</th>
+      <th>{{ 'app.create-user.type' | i18n }}</th>
+      <th>{{ 'app.service.description' | i18n }}</th>
     </tr>
     </thead>
     <tbody>
@@ -97,17 +98,17 @@
     </ng-container>
     </tbody>
   </nz-table>
-  <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa [name] Policy"
-            nzOkText="Đồng ý" nzCancelText="Hủy"
+  <nz-modal [(nzVisible)]="isVisibleDelete" [nzTitle]="('app.users.policies.delete' | i18n) + ['name'] + 'Policy'"
+            [nzOkText]="'app.button.agree' | i18n" [nzCancelText]="'app.button.cancel' | i18n"
             (nzOnCancel)="handleCancel()"
             (nzOnOk)="deleteHandlePolicy()">
     <ng-container *nzModalContent>
       <nz-alert nzType="warning" nzShowIcon
-                nzMessage="Bạn đang thực hiện xóa [name] policy. Hành động này không thể được hoàn tác"></nz-alert>
+                [nzMessage]="('app.users.deleteUser.titleAll' | i18n) + ' ' + ['name'] + ' ' + ('app.users.policies.delete.alert' | i18n)"></nz-alert>
       <br>
-      <p><b>Để thực hiện Xóa Policy, vui lòng nhập tên Policy để xác nhận</b></p>
+      <p><b>{{ 'app.users.policies.delete.confirm' | i18n }}</b></p>
 
-      <input nz-input placeholder="Nhập tên policy" [(ngModel)]="nameDelete" type="text"/>
+      <input nz-input [placeholder]="'app.users.policies.delete.input' | i18n" [(ngModel)]="nameDelete" type="text"/>
       <br/>
     </ng-container>
   </nz-modal>

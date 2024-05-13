@@ -3,15 +3,15 @@ import {Router} from "@angular/router";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {OrderItem} from "../../../shared/models/price";
 import {DataPayment, ItemPayment} from "../../instances/instances.model";
 import {InstancesService} from "../../instances/instances.service";
 import {BackupPackageRequestModel, FormCreateBackupPackage} from 'src/app/shared/models/package-backup.model';
-import {ProjectService} from 'src/app/shared/services/project.service';
 import {getCurrentRegionAndProject} from "@shared";
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 export class DateBackupPackage {
   createdDate: Date
@@ -24,7 +24,7 @@ export class DateBackupPackage {
   styleUrls: ['./create-package-backup.component.less'],
 })
 export class CreatePackageBackupComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   typeVPC: number
@@ -56,7 +56,8 @@ export class CreatePackageBackupComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
-              private instanceService: InstancesService) {
+              private instanceService: InstancesService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.validateForm.get('time').valueChanges.subscribe(data => {
       this.backupPackageDate.expiredDate = new Date(new Date()
         .setDate(this.backupPackageDate.createdDate.getDate() + data * 30))
@@ -112,7 +113,7 @@ export class CreatePackageBackupComponent implements OnInit {
       console.log('request', request)
       this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
     } else {
-      this.notification.warning('', 'Vui lòng nhập đầy đủ thông tin')
+      this.notification.warning('', this.i18n.fanyi('app.notification.warning.input'))
     }
   }
 
@@ -138,7 +139,7 @@ export class CreatePackageBackupComponent implements OnInit {
         //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
         if (data.code == 200) {
           this.isLoading = false;
-          this.notification.success('Thành công', 'Yêu cầu tạo gói backup thành công.')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.request.create.success'))
           this.router.navigate(['/app-smart-cloud/backup/packages']);
         }
         //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
@@ -149,7 +150,7 @@ export class CreatePackageBackupComponent implements OnInit {
         }
       } else {
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Yêu cầu tạo gói backup thất bại.' + data.message)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.request.create.fail', data.message))
       }
     })
   }

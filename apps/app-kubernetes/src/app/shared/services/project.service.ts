@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ProjectModel} from "../models/project.model";
+import { ProjectModel, SizeInCloudProject } from '../models/project.model';
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Injectable({
@@ -12,7 +12,7 @@ export class ProjectService extends BaseService {
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
@@ -23,6 +23,13 @@ export class ProjectService extends BaseService {
   getByRegion(regionId: number) {
     return this.http.get<ProjectModel[]>
     (this.baseUrl + this.ENDPOINT.provisions  + `/projects?regionId=${regionId}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getByProjectId(id: number) {
+    return this.http.get<SizeInCloudProject>
+    (this.baseUrl + this.ENDPOINT.provisions  + `/projects/${id}`, {
       headers: this.getHeaders()
     });
   }

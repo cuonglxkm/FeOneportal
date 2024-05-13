@@ -1,0 +1,170 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Khởi tạo VPN Service'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
+          >Dịch vụ hạ tầng</a
+        >
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+          >VPN site to site</a
+        ></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item>Khởi tạo VPN Service</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzSpan]="17" class="gutter-row">
+    <nz-card style="border-radius: 8px">
+      <h2 class="custom-title">Thông tin VPN Service</h2>
+      <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="24" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="nameErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px">
+                    <span>Name</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                    <span
+                      nz-icon
+                      nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="
+                        'Tên của VPN Service, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'
+                      "
+                      nzPopoverPlacement="bottom"
+                    ></span>
+                  </div>
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  required
+                  placeholder="Nhập tên"
+                  formControlName="name"
+                  class="input-custom"
+                />
+                <ng-template #nameErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')"
+                    >Tên Vpn Service không được để trống</ng-container
+                  >
+                  <ng-container *ngIf="control.hasError('pattern')"
+                    >Tên Vpn Service chỉ chứa kí tự viết thường, viết hoa, số,
+                    dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container
+                  >
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="24" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px">
+                    <span>Router</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                    <span
+                      nz-icon
+                      nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="
+                        'Router được tạo mặc định cho dịch vụ.'
+                      "
+                      nzPopoverPlacement="bottom"
+                    ></span>
+                  </div>
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  required
+                  [placeholder]="routerName"
+                  [disabled]="true"
+                  class="input-custom"
+                />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+        <div>
+          <nz-alert
+            nzBanner
+            [nzMessage]="vpnServiceMessage"
+          ></nz-alert>
+          <ng-template #vpnServiceMessage>
+            <div class="text-label">Router sử dụng cho VPN, IP gateway VPN ở phía VNPT Cloud sẽ là Ip gataway của Router.</div>
+            <div class="text-label">Router được tạo tự động khi khách hàng mua dịch vụ VPN site-to-site và dành riêng cho dịch vụ này, không dùng Router default của VPC có thể xung đột lưu lương truyền tải khi tất các gói tin truyền qua internet đi qua chung 1 router</div>
+          </ng-template>
+        </div>
+      </form>
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="7" class="gutter-row">
+    <nz-card style="border-radius: 8px">
+      <h2 class="custom-title">Thông số cấu hình</h2>
+      <div style="overflow: auto; margin-bottom: 16px">
+        <div style="margin-bottom: 12px">
+          <h3 class="custom-subtitle">Name</h3>
+          <span>{{ form.value.name }}</span>
+        </div>
+        <div style="margin-bottom: 12px">
+          <h3 class="custom-subtitle">Router</h3>
+          <span>{{ routerName }}</span>
+        </div>
+      </div>
+      <button
+        (click)="handleCreate()"
+        nz-button
+        nzType="primary"
+        style="
+          border: none;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          justify-content: center;
+        "
+        nzSize="large"
+        [disabled]="form.invalid"
+        [nzLoading]="isLoading"
+      >
+        <img src="assets/imgs/wallet.svg" alt="" />
+        <span class="button-text-primary">Khởi tạo</span>
+      </button>
+    </nz-card>
+  </div>
+</div>
+<div
+  class="text-right"
+  style="
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  "
+></div>

@@ -21,7 +21,7 @@ export class RouterCreate {
   adminState: boolean;
   routerName: string;
   networkId: string;
-  projectId: string;
+  projectId: number;
 }
 
 export class RouterUpdate {
@@ -64,4 +64,39 @@ export class StaticRouter {
   customerId: number;
   regionId: number;
   vpcId: number;
+}
+
+export class FormSearchRouter {
+  regionId: number;
+  vpcId: number;
+  routerName: string;
+  status: string;
+  pageSize: number;
+  currentPage: number;
+}
+
+export class Subnet {
+  id: number;
+  name: string;
+  networkAddress: string;
+  ipVersion: number;
+  gatewayIp: string;
+  enableDHCP: true;
+  dnsNameServer: string;
+  cloudId: string;
+  status: string;
+  networkId: number;
+  networkCloudId: string;
+  allocationPools: [
+    {
+      start: string;
+      end: string;
+    }
+  ];
+  hostRouters: [
+    {
+      destinationCidr: string;
+      nextHop: string;
+    }
+  ];
 }

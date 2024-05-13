@@ -3,12 +3,12 @@ import { Router } from '@angular/router';
 import { VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
-import { BaseResponse, NotificationService } from '../../../../../../../../libs/common-utils/src';
+import { BaseResponse, NotificationService, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'app-volume',
@@ -17,7 +17,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 })
 
 export class VolumeComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean = false;
@@ -29,10 +29,10 @@ export class VolumeComponent implements OnInit {
   value: string;
 
   options = [
-    { label: 'Tất cả trạng thái', value: null },
-    { label: 'Đang hoạt động', value: 'KHOITAO' },
-    { label: 'Lỗi', value: 'ERROR' },
-    { label: 'Tạm ngừng', value: 'SUSPENDED' }
+    { label: this.i18n.fanyi('app.status.all'), value: null },
+    { label: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
+    { label: this.i18n.fanyi('app.status.error'), value: 'ERROR' },
+    { label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED' }
   ];
 
   pageSize: number = 10;
@@ -63,12 +63,13 @@ export class VolumeComponent implements OnInit {
               private fb: NonNullableFormBuilder,
               private cdr: ChangeDetectorRef,
               private notificationService: NotificationService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    this.getListVolume(true)
+    this.getListVolume(true);
   }
 
   projectChanged(project: ProjectModel) {
@@ -164,7 +165,7 @@ export class VolumeComponent implements OnInit {
   handleOkDetachVm() {
     setTimeout(() => {
       this.getListVolume(false);
-    }, 1500)
+    }, 1500);
   }
 
   handleOkDelete() {
@@ -189,12 +190,12 @@ export class VolumeComponent implements OnInit {
 
   navigateToCreateScheduleBackup(id) {
     this.router.navigate(['/app-smart-cloud/schedule/backup/create'], {
-      queryParams: {type: 'VOLUME', idVolume: id}
+      queryParams: { type: 'VOLUME', idVolume: id }
     });
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/volume/create'])
+    this.router.navigate(['/app-smart-cloud/volume/create']);
   }
 
   ngOnInit() {
@@ -206,8 +207,8 @@ export class VolumeComponent implements OnInit {
     this.volumeService.model.subscribe(data => {
       console.log(data);
     });
-    if(!this.region && !this.project){
-      this.router.navigate(['/exception/500'])
+    if (!this.region && !this.project) {
+      this.router.navigate(['/exception/500']);
     }
     // this.getListVm()
     // this.getListVolume(true)

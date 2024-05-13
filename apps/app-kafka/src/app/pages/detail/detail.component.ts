@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { camelizeKeys } from 'humps';
 import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 import { KafkaService } from 'src/app/services/kafka.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-detail',
@@ -12,10 +15,13 @@ export class DetailComponent implements OnInit {
   selectedIndex = 0;
   serviceOrderCode: string;
   itemDetail: KafkaDetail;
+  regionId: number;
+  projectId: number;
 
   constructor(
     private _activatedRoute: ActivatedRoute,
-    private kafkaService: KafkaService
+    private kafkaService: KafkaService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) { }
 
   ngOnInit(): void {
@@ -33,6 +39,8 @@ export class DetailComponent implements OnInit {
       this.serviceOrderCode = params.id;
       this.getDetail();
     });
+
+    localStorage.setItem('locale', this.i18n.defaultLang);
   }
 
   setTransactionTabIndex(e: number) {
@@ -45,7 +53,9 @@ export class DetailComponent implements OnInit {
     .subscribe(
       res => {
         if (res && res.code == 200) {
-          this.itemDetail = res.data;
+          this.itemDetail = camelizeKeys(res.data) as KafkaDetail;
+          this.regionId = Number.parseInt(this.itemDetail.regionId);
+          this.projectId = Number.parseInt(this.itemDetail.projectId);
         }
       }
     )

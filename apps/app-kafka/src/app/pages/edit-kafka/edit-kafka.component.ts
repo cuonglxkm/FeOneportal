@@ -6,13 +6,15 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { camelizeKeys } from 'humps';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { KafkaUpdateReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 
 @Component({
-  selector: 'one-portal-edit-kafka',
+  selector: 'one-portal-extend-kafka',
   templateUrl: './edit-kafka.component.html',
   styleUrls: ['./edit-kafka.component.css'],
 })
@@ -23,7 +25,9 @@ export class EditKafkaComponent implements OnInit {
   listOfKafkaVersion: KafkaVersion[] = [];
   serviceOrderCode: string;
   itemDetail: KafkaDetail;
-  kafkaUpdateDto: KafkaUpdateReq = new KafkaUpdateReq();
+  kafkaUpdateDto: KafkaUpdateReq;
+  isVisibleConfirm = false;
+  isChangeForm = false;
 
   constructor(
     private fb: FormBuilder,
@@ -33,6 +37,7 @@ export class EditKafkaComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private router: Router,
     private loadingSrv: LoadingService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
 
   }
@@ -58,7 +63,7 @@ export class EditKafkaComponent implements OnInit {
             this.itemDetail = camelizeKeys(res.data) as KafkaDetail;
             this.updateDataForm();
           } else {
-            this.notification.error('Thất bại', res.msg);
+            this.notification.error(this.i18n.fanyi('app.status.fail'), res.msg);
           }
         }
       )
@@ -69,14 +74,15 @@ export class EditKafkaComponent implements OnInit {
       serviceName: [null,
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
       version: [null],
-      description: [null, [Validators.maxLength(500), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
+      description: [null, [Validators.maxLength(500)]],
     });
   }
 
-  updateDataForm() {    
+  updateDataForm() {
     this.myform.controls.serviceName.setValue(this.itemDetail.serviceName);
     this.myform.controls.version.setValue(this.itemDetail.version);
     this.myform.controls.description.setValue(this.itemDetail.description);
+    this.myform.controls.serviceName.disable();
   }
 
   getListVersion() {
@@ -94,11 +100,33 @@ export class EditKafkaComponent implements OnInit {
     this.router.navigate(['/app-kafka']);
   }
 
+  handleConfirmPopup() {
+    if (this.myform.controls.version.value != this.itemDetail.version) {
+      this.isVisibleConfirm = true;
+    } else {
+      this.updateKafka();
+    }
+  }
+
+  changeForm() {
+    if (this.myform.controls.description.value != this.itemDetail.description || this.myform.controls.version.value != this.itemDetail.version) {
+      this.isChangeForm = true;
+    } else {
+      this.isChangeForm = false;
+    }
+  }
+
+  handleCancelPopup() {
+    this.isVisibleConfirm = false;
+  }
+
   updateKafka() {
-    this.kafkaUpdateDto.serviceOrderCode = this.itemDetail.serviceOrderCode;
-    this.kafkaUpdateDto.serviceName = this.myform.get('serviceName').value;
-    this.kafkaUpdateDto.version = this.myform.get('version').value;
-    this.kafkaUpdateDto.description= this.myform.get('description').value;
+    this.kafkaUpdateDto = {
+      serviceOrderCode: this.itemDetail.serviceOrderCode,
+      serviceName: this.myform.get('serviceName').value,
+      version: this.myform.get('version').value,
+      description: this.myform.get('description').value,
+    }
 
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
     this.kafkaService.update(this.kafkaUpdateDto)
@@ -108,11 +136,11 @@ export class EditKafkaComponent implements OnInit {
     .subscribe(
       (data) => {
         if (data && data.code == 200) {
-          this.notification.success('Thành công', data.msg);
+          this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
           // navigate
           this.backToList();
         } else {
-          this.notification.error('Thất bại', data.msg);
+          this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
         }
       }
     );

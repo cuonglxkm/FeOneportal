@@ -1,13 +1,9 @@
-<span class="titlecard-custom">Thiết lập Bucket Policy</span>
+<span class="titlecard-custom">{{ 'app.set.bucket.policy' | i18n }}</span>
 <div style="margin-top: 20px; margin-bottom: 10px" class="text-label">
-  <span
-    >Bucket Policy là các tùy chọn chính sách truy cập có sẵn giúp cấp quyền
-    (Allow / Deny) cho các tài nguyên Simple Storage, sử dung ngôn ngữ chính
-    sách truy cập dạng JSON - based.</span
+  <span>{{ 'app.bucket.policy.intro' | i18n }}</span
   ><br /><br />
   <span>
-    Có thể thêm các điều kiện giới hạn hoặc điều kiện chi tiết thêm cho Bucket
-    Policy với thao tác Thêm Condition
+    {{ 'app.bucket.policy.intro.next' | i18n }}
   </span>
 </div>
 <div class="text-right p-0 m-b-0">
@@ -19,7 +15,7 @@
     <input
       name="name"
       nz-input
-      placeholder="Tìm kiếm tên"
+      [placeholder]="'app.placeholder.search' | i18n"
       [(ngModel)]="searchValue"
     />
   </nz-input-group>
@@ -28,7 +24,7 @@
       src="assets/imgs/search.svg"
       alt=""
       style="cursor: pointer"
-      nz-tooltip="Tìm kiếm"
+      [nz-tooltip]="'app.button.search' | i18n"
       (click)="searchBucketPolicy()"
     />
   </ng-template>
@@ -38,7 +34,7 @@
       src="assets/imgs/add-circle.svg"
       alt=""
     />
-    <span>Tạo mới Bucket Policy</span>
+    <span>{{ 'app.create.bucket.policy' | i18n }}</span>
   </button>
 </div>
 <nz-table
@@ -54,11 +50,11 @@
 >
   <thead>
     <tr>
-      <th>Người dùng</th>
-      <th>Quyền</th>
-      <th>Quyền thao tác</th>
+      <th>{{ 'app.user' | i18n }}</th>
+      <th>{{ 'app.permission' | i18n }}</th>
+      <th>{{ 'app.operation.permission' | i18n }}</th>
       <th>JSON</th>
-      <th>Thao tác</th>
+      <th>{{ 'app.text.operation' | i18n }}</th>
     </tr>
   </thead>
   <tbody>
@@ -69,21 +65,23 @@
         </td>
         <td>{{ item.permission }}</td>
         <td>{{ item.action }}</td>
-        <td><a (click)="modalJson(item.sid)">Xem chi tiết JSON</a></td>
+        <td>
+          <a (click)="modalJson(item.sid)">{{ 'app.view.detail' | i18n }}</a>
+        </td>
         <td nzRight>
           <img
             src="assets/imgs/edit-2.svg"
             alt=""
             (click)="modalUpdate(data.sid)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="Chỉnh sửa"
+            [nz-tooltip]="'app.text.edit' | i18n"
           />
           <img
             src="assets/imgs/trash.svg"
             alt=""
             (click)="modalDelete(data.sid)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="Xóa"
+            [nz-tooltip]="'app.text.delete' | i18n"
           />
         </td>
       </tr>
@@ -93,7 +91,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleCreate"
-  nzTitle="Tạo mới Bucket Policy"
+  [nzTitle]="'app.create.bucket.policy' | i18n"
   (nzOnCancel)="handleCancelCreate()"
 >
   <ng-container *nzModalContent>
@@ -106,16 +104,18 @@
           <label class="text-value" nz-radio [nzValue]="true">Subuser</label>
         </div>
         <div style="flex: 1">
-          <label class="text-value" nz-radio [nzValue]="false"
-            >Người dùng VNPT Cloud</label
-          >
+          <label class="text-value" nz-radio [nzValue]="false">{{
+            'app.user.vnpt.cloud' | i18n
+          }}</label>
         </div>
       </div>
     </nz-radio-group>
-    <div class="text-label">Người dùng (<span class="text-red">*</span>)</div>
+    <div class="text-label">
+      {{ 'app.user' | i18n }} (<span class="text-red">*</span>)
+    </div>
     <nz-select
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
-      [nzPlaceHolder]="'-- Chọn người dùng --'"
+      [nzPlaceHolder]="'-- ' + ('app.choose.user' | i18n) + ' --'"
       [nzShowSearch]="true"
       [nzLoading]="loadingSubuser"
       [(ngModel)]="emailUser"
@@ -128,13 +128,14 @@
       />
     </nz-select>
     <div *ngIf="userVnpt" style="margin-bottom: 16px" class="text-label">
-      Các Access key của người dùng này sẽ có quyền truy cập tới Bucket của Quý
-      khách
+      {{ 'app.alert.bucket.policy.create' | i18n }}
     </div>
-    <div class="text-label">Quyền (<span class="text-red">*</span>)</div>
+    <div class="text-label">
+      {{ 'app.permission' | i18n }} (<span class="text-red">*</span>)
+    </div>
     <nz-select
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
-      [nzPlaceHolder]="'-- Chọn người dùng --'"
+      [nzPlaceHolder]="'-- ' + ('app.choose.permission' | i18n) + ' --'"
       [nzShowSearch]="true"
       [(ngModel)]="permission"
       nzSize="large"
@@ -146,12 +147,16 @@
       />
     </nz-select>
     <div class="text-label">
-      Chọn thao tác quyền (<span class="text-red">*</span>)
+      {{ 'app.choose.operation.permission' | i18n }} (<span class="text-red"
+        >*</span
+      >)
     </div>
     <nz-select
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
       nzMode="multiple"
-      nzPlaceHolder="-- Chọn thao tác quyền --"
+      [nzPlaceHolder]="
+        '-- ' + ('app.choose.operation.permission' | i18n) + ' --'
+      "
       [(ngModel)]="listActionPermission"
       [nzShowSearch]="true"
       nzSize="large"
@@ -343,21 +348,21 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkCreate()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleUpdate"
-  nzTitle="Chỉnh sửa Bucket Policy"
+  [nzTitle]="('app.text.edit' | i18n) + 'Bucket Policy'"
   (nzOnCancel)="handleCancelUpdate()"
 >
   <ng-container *nzModalContent>
@@ -370,16 +375,18 @@
           <label class="text-value" nz-radio [nzValue]="true">Subuser</label>
         </div>
         <div style="flex: 1">
-          <label class="text-value" nz-radio [nzValue]="false"
-            >Người dùng VNPT Clou</label
-          >
+          <label class="text-value" nz-radio [nzValue]="false">{{
+            'app.user.vnpt.cloud' | i18n
+          }}</label>
         </div>
       </div>
     </nz-radio-group>
-    <div class="text-label">Người dùng (<span class="text-red">*</span>)</div>
+    <div class="text-label">
+      {{ 'app.user' | i18n }} (<span class="text-red">*</span>)
+    </div>
     <nz-select
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
-      [nzPlaceHolder]="'-- Chọn người dùng --'"
+      [nzPlaceHolder]="'-- ' + ('app.choose.user' | i18n) + ' --'"
       [nzShowSearch]="true"
       nzSize="large"
     >
@@ -390,13 +397,14 @@
       />
     </nz-select>
     <div *ngIf="userVnpt" style="margin-bottom: 16px" class="text-label">
-      Các Access key của người dùng này sẽ có quyền truy cập tới Bucket của Quý
-      khách
+      {{ 'app.alert.bucket.policy.create' | i18n }}
     </div>
-    <div class="text-label">Quyền (<span class="text-red">*</span>)</div>
+    <div class="text-label">
+      {{ 'app.permission' | i18n }} (<span class="text-red">*</span>)
+    </div>
     <nz-select
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
-      [nzPlaceHolder]="'-- Chọn người dùng --'"
+      [nzPlaceHolder]="'-- ' + ('app.choose.permission' | i18n) + ' --'"
       [nzShowSearch]="true"
       nzSize="large"
     >
@@ -407,12 +415,16 @@
       />
     </nz-select>
     <div class="text-label">
-      Chọn thao tác quyền (<span class="text-red">*</span>)
+      {{ 'app.choose.operation.permission' | i18n }} (<span class="text-red"
+        >*</span
+      >)
     </div>
     <nz-select
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
       nzMode="multiple"
-      nzPlaceHolder="-- Chọn thao tác quyền --"
+      [nzPlaceHolder]="
+        '-- ' + ('app.choose.operation.permission' | i18n) + ' --'
+      "
       [(ngModel)]="bucketPolicyUpdate.action"
       [nzShowSearch]="true"
       nzSize="large"
@@ -604,25 +616,25 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkUpdate()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleDelete"
-  nzTitle="Xác nhận xóa Policy"
+  [nzTitle]="'app.delete.policy' | i18n"
   (nzOnCancel)="handleCancelDelete()"
 >
   <ng-container *nzModalContent>
-    <div>Quý khách muốn thực hiện xóa Policy?</div>
+    <div>{{ 'app.alert.delete.policy' | i18n }}</div>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDelete()">
@@ -630,7 +642,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkDelete()">
       <img
@@ -638,7 +650,7 @@
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Xác nhận
+      {{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
@@ -669,7 +681,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Đóng
+      />{{ 'app.close' | i18n }}
     </button>
   </div>
 </nz-modal>

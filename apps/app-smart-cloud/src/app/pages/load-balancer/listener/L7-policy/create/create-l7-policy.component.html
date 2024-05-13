@@ -1,0 +1,194 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'app.l7.policy.create' | i18n" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>{{
+        'app.breadcrumb.home' | i18n
+      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{
+          'app.breadcrumb.infrastructure.service' | i18n
+        }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">{{
+          'app.load.balancer.detail' | i18n
+        }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/detail/{{ idListener }}">{{
+          'app.listener.detail' | i18n
+        }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.l7.policy.create' | i18n
+      }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">{{ 'app.l7.policy.info' | i18n }}</span>
+        <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>{{ 'app.l7.policy.name' | i18n }} (<span style="color: red">*</span>)</span>
+              <img nz-popover
+                   [nzPopoverContent]="'validation.l7.policy.name.pattern' | i18n"
+                   nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameL7ErrorTpl">
+              <input nz-input class="input-custom" formControlName="nameL7" [maxlength]="50" [placeholder]="'app.input.name' | i18n" appAutofocus/>
+              <ng-template #nameL7ErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n : {name: 'L7 Policy'} }}</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>{{ 'app.execute.action' | i18n }} (<span style="color: red">*</span>)</span>
+              <img nz-popover
+                   [nzPopoverContent]="popover"
+                   nzPopoverPlacement="right" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+              <ng-template #popover>
+                <span class="text-label" [innerHTML]="'app.tooltip.execute.action' | i18n"></span>
+              </ng-template>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <nz-select formControlName="action" nzSize="large" (ngModelChange)="onActionChange()" [nzPlaceHolder]="'app.choose.execute.action' | i18n">
+                <nz-option *ngFor="let option of actionList" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngIf="validateForm.controls.action.value == 'REDIRECT_TO_POOL'">
+            <nz-form-label>
+              <span>{{ 'app.pool.choose' | i18n }} (<span style="color: red;">*</span>)</span>
+              <img nz-popover
+                   [nzPopoverContent]="'app.tooltip.choose.pool' | i18n"
+                   nzPopoverPlacement="right" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <nz-select formControlName="pool" nzSize="large" [nzPlaceHolder]="'app.pool.choose' | i18n">
+                              <nz-option *ngFor="let option of listPool" [nzValue]="option.id" [nzLabel]="option.name"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngIf="validateForm.controls.action.value == 'REDIRECT_TO_URL'">
+            <nz-form-label>
+              <span>URL (<span style="color: red;">*</span>)</span>
+              <img nz-popover
+                   [nzPopoverContent]="'app.tooltip.url' | i18n"
+                   nzPopoverPlacement="right" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="urlErrorTpl">
+              <input nz-input class="input-custom" formControlName="url" [placeholder]="'app.input.url' | i18n" />
+              <ng-template #urlErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('invalidUrl')">{{ 'validation.url.name.pattern' | i18n }}</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>{{ 'app.priority' | i18n }} (<span style="color: red">*</span>)</span>
+              <img nz-popover
+                   [nzPopoverContent]="popoverPriority"
+                   nzPopoverPlacement="right" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+              <ng-template #popoverPriority>
+                <span class="text-label" [innerHTML]="'app.tooltip.priority' | i18n"></span>
+              </ng-template>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <nz-input-number style="width: 100%; margin-left: 0;" [nzMin]="1" [nzStep]="1" class="input-custom" formControlName="prioritize" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <div style="display: flex;">
+              <span class="text-label">{{ 'app.text.status' | i18n }} (<span style="color: red;">*</span>)</span>
+              <img style="margin-left: 10px"
+                   nz-popover [nzPopoverContent]="'app.tooltip.l7.policy.status' | i18n"
+                   nzPopoverPlacement="bottom"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+              <nz-switch style="margin-left: 15px;" formControlName="status" (ngModelChange)="onSwitchStatus()" [nzCheckedChildren]="'app.on' | i18n"
+                         [nzUnCheckedChildren]="'app.off' | i18n"></nz-switch>
+            </div>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzFor="description">
+              <div class="label">
+                <span>{{ 'app.service.description' | i18n }}</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+                                                    <textarea nz-input class="input-custom"
+                                                              formControlName="description"
+                                                              [placeholder]="'app.input.des' | i18n" [maxLength]="255"
+                                                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+              <ng-template #descriptionErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('maxlength')">{{'app.description.maxLength.255' | i18n}}</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </nz-card>
+    </nz-col>
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px;">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{'app.config.parameters' | i18n}}</span>
+        </div>
+        <div style="margin-top: 10px" class="text-value">{{'app.l7.policy.name' | i18n}}</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ validateForm.controls.nameL7.getRawValue() }}
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div style="margin-top: 10px" class="text-value">{{'app.execute.action' | i18n}}</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ validateForm.controls.action.getRawValue() }}
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div style="margin-top: 10px" class="text-value">{{'app.priority' | i18n}}</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ validateForm.controls.prioritize.getRawValue() }}
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div style="margin-top: 10px" class="text-value">{{'app.text.status' | i18n}}</div>
+        <div style="margin-top: 10px" class="text-label">
+          <span *ngIf="status == true">{{'app.ON' | i18n}}</span>
+          <span *ngIf="status == false">{{'app.OFF' | i18n}}</span>
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <nz-row>
+          <nz-col style="width: 100%">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid" (click)="submitForm()" [nzLoading]="isLoading">
+              <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;"/>
+              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+            </button>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</nz-content>

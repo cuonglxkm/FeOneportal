@@ -216,4 +216,12 @@ export class OrderService extends BaseService {
       this.httpOptions
     );
   }
+
+  createOrder(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders,
+      data,
+      this.httpOptions
+    );
+  }
 }

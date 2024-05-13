@@ -12,7 +12,7 @@ import {
 } from "../../pages/policy/policy.model";
 import {FormSearchUserGroup} from "../models/user-group.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import { BaseResponse } from '@one-portal/common-utils';
+import { BaseResponse } from '../models/base-response'; 
 
 
 @Injectable({
@@ -24,7 +24,7 @@ export class PolicyService extends BaseService {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-      'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
     })
   };
 

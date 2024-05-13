@@ -1,17 +1,22 @@
-<page-header [content]="content" [breadcrumb]="breadcrumb" [action]="action" [title]="'Backup Volume'">
+<page-header [content]="content"
+             [breadcrumb]="breadcrumb"
+             [action]="action" [title]="'app.breadcrumb.list.backup.volume'|i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Backup Volume</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{'app.breadcrumb.home'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.breadcrumb.block.storage'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'volume.title.breadcrumb.backup.volume'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.breadcrumb.list.backup.volume'|i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
-
   <ng-template #content>
     <div *ngIf="!isBegin" nz-row class="mb-md" style="display: flex; flex-direction: column;">
       <!--    <h2 style="margin-bottom: 30px;">Danh sách Backup volume</h2>-->
@@ -22,7 +27,7 @@
           <nz-option *ngFor="let s of listStatus" [nzLabel]="s.label" [nzValue]="s.value"></nz-option>
         </nz-select>
         <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton" style="margin-left: 25px;">
-          <input #searchBox type="text" nz-input placeholder="Tìm kiến tên,dung lượng,volume..."
+          <input #searchBox type="text" nz-input placeholder="Tìm kiến"
                  style="width: 350px"/>
           <ng-template #suffixButton>
             <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
@@ -39,9 +44,16 @@
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
       <!--  Bảng-->
-      <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfData"
-                [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
-                (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
+      <nz-table #rowSelectionTable
+                [nzFrontPagination]="false"
+                nzShowPagination
+                nzShowSizeChanger
+                [nzData]="listOfData"
+                [nzTotal]="total"
+                [nzPageSize]="size"
+                (nzPageSizeChange)="onPageSizeChange($event)"
+                (nzPageIndexChange)="onPageIndexChange($event)"
+                [nzLoading]="loading">
         <thead>
         <tr>
           <th>Tên</th>

@@ -15,7 +15,7 @@ export class PaymentSuccessComponent implements OnInit {
   orderId: number;
   paymentSuccess: boolean = false;
   causeOfFail: string = '';
-
+  serviceName: string = '';
   constructor(
     private router: Router,
     private paymentService: PaymentService,
@@ -83,7 +83,7 @@ export class PaymentSuccessComponent implements OnInit {
         this.orderService
           .getOrderBycode(this.payment.orderNumber)
           .subscribe((result) => {
-            this.orderId = result.id;
+            this.orderId = result.id;   
             setTimeout(() => {
               this.router.navigate([
                 `/app-smart-cloud/order/detail/${this.orderId}`,

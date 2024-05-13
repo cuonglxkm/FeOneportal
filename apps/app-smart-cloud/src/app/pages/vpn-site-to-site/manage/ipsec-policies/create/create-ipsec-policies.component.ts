@@ -5,8 +5,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormCreateIpsecPolicy } from 'src/app/shared/models/ipsec-policy';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
 
 
@@ -16,7 +15,7 @@ import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service
   styleUrls: ['./create-ipsec-policies.component.less'],
 })
 export class CreateIpsecPoliciesComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   authorizationAlgorithm = [

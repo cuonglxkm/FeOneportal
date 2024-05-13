@@ -36,7 +36,7 @@ export interface VolumeBackup {
   customerId: number,
   scheduleId: number,
   instanceBackupId: number,
-  isBootable: true,
+  isBootable: boolean,
   iops: number,
   offerId: number,
   cloudIdentity: number,

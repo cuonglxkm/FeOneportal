@@ -16,6 +16,8 @@ import { environment } from '@env/environment';
 import { ICONS } from '../../../style-icons';
 import { ICONS_AUTO } from '../../../style-icons-auto';
 import { I18NService } from '../i18n/i18n.service';
+import { CoreDataService } from '../../../../../../libs/common-utils/src';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 /**
  * Used for application startup
@@ -31,19 +33,23 @@ export class StartupService {
     private aclService: ACLService,
     private titleService: TitleService,
     private httpClient: HttpClient,
-    private router: Router
+    private router: Router,
+    private policyService: PolicyService,
+    private regionProjectService: CoreDataService
   ) {
     iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
   }
 
   load(): Observable<void> {
-
     const defaultLang = this.i18n.defaultLang;
+    console.log(defaultLang);
+    
     const baseUrl = environment['baseUrl'];
 
     return zip(
       this.i18n.loadLangData(defaultLang),
-      this.httpClient.get('assets/tmp/app-data.json'),
+      
+      defaultLang !== 'vi-VI' ? this.httpClient.get('assets/tmp/app-data-en.json') : this.httpClient.get('assets/tmp/app-data.json'),
       // localStorage.getItem('_token')
       //   ? this.httpClient.get(baseUrl + '/provisions/object-storage/userinfo')
       //   : of(null)
@@ -60,7 +66,8 @@ export class StartupService {
         ]) => {
           // setting language data
           this.i18n.use(defaultLang, langData);
-
+          console.log(appData);
+          
           this.settingService.setApp({
             name: 'One Portal',
             description: 'One Portal',
@@ -71,6 +78,9 @@ export class StartupService {
           this.aclService.setFull(true);
 
           this.menuService.add(appData.menu);
+          this.regionProjectService.getCoreData();
+          //this.checkPermissionAction(this.menuService['data']);
+          
           // if (checkData) {
           //   let json = {
           //     key: 'Object Storage',
@@ -112,6 +122,17 @@ export class StartupService {
         }
       )
     );
+  }
+
+  async checkPermissionAction(datas: any[]){
+    datas.forEach(async (item) =>{
+      if(item.action){
+        item._hidden = !(await this.policyService.hasPermission(item.action));
+      }
+      if(item.children && item.children.length > 0){
+        await this.checkPermissionAction(item.children);
+      }
+    });
   }
 }
 

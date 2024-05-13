@@ -1,150 +1,155 @@
-<div nz-row nzGutter="16" class="general" *ngIf="isHealth !== null">
-    <div class="title-cluster" style="width: 100%; margin-bottom: 15px;">
-        Trạng thái cluster
-    </div>
-    <ng-container *ngIf="isHealth === clusterHealth; else otherHealth">
+<ng-container *ngIf="isHealth !== null">
+    <div nz-row class="general">
+        <!-- only health -->
         <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="div-check div-status-cluster p-md">
                 <span class="text-health">Cluster</span>
                 <label class="text-check">HEALTH</label>
             </div>
         </div>
-    </ng-container>
-    
-    <ng-template #otherHealth>
-        <ng-container *ngIf="isHealth === clusterUnHealth; else warningHealth">
-            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
-                <div nz-row nzType="flex" nzAlign="middle" class="div-unhealth div-status-cluster p-md" nz-tooltip
-                    [nzTooltipTitle]="isHealthMsg" [nzTooltipColor]="'#ef5350'" nzTooltipPlacement="bottom"
-                    nzTooltipOverlayClassName="tooltip-health">
-                    <span class="text-health">Cluster</span>
-                    <label class="text-check">UNHEALTH</label>
-                </div>
-            </div>
+        <!-- <ng-container *ngIf="isHealth === clusterHealth || isHealth === clusterWarning; else otherHealth">
         </ng-container>
-    </ng-template>
-
-    <ng-template #warningHealth>
-        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
-            <div nz-row nzType="flex" nzAlign="middle" class="div-warning div-status-cluster p-md" nz-tooltip
-                [nzTooltipTitle]="isHealthMsg" [nzTooltipColor]="'#ffa31a'" nzTooltipPlacement="bottom"
-                nzTooltipOverlayClassName="tooltip-health">
-                <span class="text-health">Cluster</span>
-                <label class="text-check">WARNING</label>
-            </div>
-        </div>
-    </ng-template>
-
-    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
-        <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
-            <div class="sum-value">{{ statisticsNumber.topic }}</div>
-            <label class="text-nowrap mb0 sum-lbl">Tổng số topic</label>
-        </div>
-    </div>
-    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
-        <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
-            <div class="sum-value">{{statisticsNumber.partition}}</div>
-            <p class="text-nowrap mb0 sum-lbl">Tổng số partition</p>
-        </div>
-    </div>
-    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
-        <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
-            <div class="sum-value">{{statisticsNumber.message}}</div>
-            <p class="text-nowrap mb0 sum-lbl">Tổng số message</p>
-        </div>
-    </div>
-    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
-        <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
-            <div class="sum-value" [style.color]="getOffParColor()">{{statisticsNumber.offline_partition}}</div>
-            <p class="text-nowrap mb0 sum-lbl">Tổng số partition offline</p>
-        </div>
-    </div>
-</div>
-
-<div nz-row nzGutter="16" class="general-2">
-    <div nz-col nzXs="24" nzMd="24">
-        <nz-card [nzBordered]="false">
-            <div class="title-card" style="width: 100%;">
-                Health check
-            </div>
-            <div id="health-chart">
-                <apx-chart *ngIf="chartHealthCheck && chartHealthCheck.series" [series]="chartHealthCheck.series"
-                    [chart]="chartHealthCheck.chart" [xaxis]="chartHealthCheck.xaxis" [yaxis]="chartHealthCheck.yaxis"
-                    [dataLabels]="chartHealthCheck.dataLabels" [grid]="chartHealthCheck.grid"
-                    [colors]="chartHealthCheck.colors" [legend]="chartHealthCheck.legend"
-                    [tooltip]="chartHealthCheck.tooltip">
-                </apx-chart>
-            </div>
-        </nz-card>
-    </div>
-</div>
-
-<div nz-row nzGutter="16" class="general-2">
-    <div nz-col nzXs="24" nzMd="24">
-        <nz-card [nzBordered]="false">
-            <div class="title-card" style="width: 100%; margin-bottom: 20px;">
-                <span>Biểu đồ giám sát</span>
-                <div class="stats-chart">
-                    <button id="btn-refresh" nz-button nzType="default" (click)="getInfo4Chart()">
-                        <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
-                    </button>
-                    <nz-select id="range-time" [(ngModel)]="previousTimeMins" (ngModelChange)="onChangeTime()" nzSize="large">
-                        <nz-option *ngFor="let time of listRangeTime" [nzLabel]="time.label" [nzValue]="time.value"></nz-option>
-                    </nz-select>
-                </div>
-            </div>
-            <!-- Giám sát Producers -->
-            <div nz-row style="margin-bottom: 30px;">
-                <div nz-col nzXs="24" nzMd="11">
-                    <div id="chart-producers">
-                        <apx-chart *ngIf="chartProducers && chartProducers.series" [series]="chartProducers.series"
-                            [chart]="chartProducers.chart" [xaxis]="chartProducers.xaxis" [yaxis]="chartProducers.yaxis"
-                            [dataLabels]="chartProducers.dataLabels" [fill]="chartProducers.fill" [grid]="chartProducers.grid"
-                            [stroke]="chartProducers.stroke" [title]="chartProducers.title" [tooltip]="chartProducers.tooltip">
-                        </apx-chart>
+        
+        <ng-template #otherHealth>
+            <ng-container *ngIf="isHealth === clusterUnHealth">
+                <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
+                    <div nz-row nzType="flex" nzAlign="middle" class="div-unhealth div-status-cluster p-md" nz-tooltip
+                        [nzTooltipTitle]="isHealthMsg" [nzTooltipColor]="'#ef5350'" nzTooltipPlacement="bottom"
+                        nzTooltipOverlayClassName="tooltip-health">
+                        <span class="text-health">Cluster</span>
+                        <label class="text-check">UNHEALTH</label>
                     </div>
                 </div>
-                <div nz-col nzXs="0" nzMd="2"></div>
-                <!-- Giám sát Consumers -->
-                <div nz-col nzXs="24" nzMd="11">
-                    <div id="chart-consumers">
-                        <apx-chart *ngIf="chartConsumers && chartConsumers.series" [series]="chartConsumers.series"
-                            [chart]="chartConsumers.chart" [xaxis]="chartConsumers.xaxis" [yaxis]="chartConsumers.yaxis"
-                            [dataLabels]="chartConsumers.dataLabels" [fill]="chartConsumers.fill" [grid]="chartConsumers.grid"
-                            [stroke]="chartConsumers.stroke" [title]="chartConsumers.title" [tooltip]="chartConsumers.tooltip">
-                        </apx-chart>
-                    </div>
-                </div>
+            </ng-container>
+        </ng-template> -->
+    
+        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
+            <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
+                <div class="sum-value">{{ statisticsNumber.topic }}</div>
+                <label class="text-nowrap mb0 sum-lbl">{{ 'kafka.dashboard.info-topic' | i18n }}</label>
             </div>
-            <div nz-row>
-                <!-- Giám sát Messages -->
-                <div nz-col nzXs="24" nzMd="11">
-                    <div style="min-height: 32px; width: 100%;"></div>
-                    <div id="chart-message">
-                        <apx-chart *ngIf="chartMessage && chartMessage.series" [series]="chartMessage.series"
-                            [chart]="chartMessage.chart" [xaxis]="chartMessage.xaxis" [yaxis]="chartMessage.yaxis"
-                            [dataLabels]="chartMessage.dataLabels" [fill]="chartMessage.fill" [grid]="chartMessage.grid"
-                            [stroke]="chartMessage.stroke" [title]="chartMessage.title" [tooltip]="chartMessage.tooltip">
-                        </apx-chart>
-                    </div>
+        </div>
+        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
+            <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
+                <div class="sum-value">{{statisticsNumber.partition}}</div>
+                <p class="text-nowrap mb0 sum-lbl">{{ 'kafka.dashboard.info-partition' | i18n }}</p>
+            </div>
+        </div>
+        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
+            <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
+                <div class="sum-value">{{statisticsNumber.message}}</div>
+                <p class="text-nowrap mb0 sum-lbl">{{ 'kafka.dashboard.info-message' | i18n }}</p>
+            </div>
+        </div>
+        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
+            <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
+                <div class="sum-value" [style.color]="getOffParColor()">{{statisticsNumber.offline_partition}}</div>
+                <p class="text-nowrap mb0 sum-lbl">{{ 'kafka.dashboard.info-partition-offline' | i18n }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div nz-row class="general-2">
+        <div nz-col nzXs="24" nzMd="24">
+            <nz-card [nzBordered]="false" style="min-height: 142px;">
+                <div class="title-card" style="width: 100%;">
+                    Health Check
                 </div>
-                <div nz-col nzXs="0" nzMd="2"></div>
-                <!-- Giám sát Storage -->
-                <div nz-col nzXs="24" nzMd="11">
-                    <div style="min-height: 32px; text-align: right;">
-                        <nz-select id="cbx-unit" [(ngModel)]="unitStorage" (ngModelChange)="onChangeUnitStorage()" nzSize="large">
-                            <nz-option *ngFor="let unit of listUnit" [nzLabel]="unit.label" [nzValue]="unit.value"></nz-option>
+                <div id="health-chart">
+                    <apx-chart *ngIf="chartHealthCheck && chartHealthCheck.series" [series]="chartHealthCheck.series"
+                        [chart]="chartHealthCheck.chart" [xaxis]="chartHealthCheck.xaxis" [yaxis]="chartHealthCheck.yaxis"
+                        [dataLabels]="chartHealthCheck.dataLabels" [grid]="chartHealthCheck.grid"
+                        [colors]="chartHealthCheck.colors" [legend]="chartHealthCheck.legend"
+                        [tooltip]="chartHealthCheck.tooltip">
+                    </apx-chart>
+                </div>
+            </nz-card>
+        </div>
+    </div>
+    
+    <div nz-row class="general-2">
+        <div nz-col nzXs="24" nzMd="24">
+            <nz-card [nzBordered]="false">
+                <div class="title-card" style="width: 100%; margin-bottom: 20px;">
+                    <span>{{ 'kafka.dashboard.chart' | i18n }}</span>
+                    <div class="stats-chart">
+                        <button id="btn-refresh" nz-button nzType="default" (click)="getInfo4Chart()">
+                            <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
+                        </button>
+                        <nz-select id="range-time" [(ngModel)]="previousTimeMins" (ngModelChange)="onChangeTime()" nzSize="large">
+                            <nz-option *ngFor="let time of listRangeTime" [nzLabel]="time.label" [nzValue]="time.value"></nz-option>
                         </nz-select>
                     </div>
-                    <div id="chart-storage">
-                        <apx-chart *ngIf="chartStorage && chartStorage.series" [series]="chartStorage.series"
-                            [chart]="chartStorage.chart" [xaxis]="chartStorage.xaxis" [yaxis]="chartStorage.yaxis"
-                            [dataLabels]="chartStorage.dataLabels" [fill]="chartStorage.fill" [grid]="chartStorage.grid"
-                            [stroke]="chartStorage.stroke" [title]="chartStorage.title" [tooltip]="chartStorage.tooltip">
-                        </apx-chart>
+                </div>
+                <div nz-row [nzGutter]="16">
+                    <!-- Mức sử dụng CPU -->
+                    <div nz-col nzXs="24" nzMd="12">
+                        <div id="chart-cpu" class="chart-container">
+                            <apx-chart *ngIf="chartCpu && chartCpu.series" [series]="chartCpu.series"
+                                [chart]="chartCpu.chart" [xaxis]="chartCpu.xaxis" [yaxis]="chartCpu.yaxis"
+                                [dataLabels]="chartCpu.dataLabels" [fill]="chartCpu.fill" [grid]="chartCpu.grid"
+                                [stroke]="chartCpu.stroke" [title]="chartCpu.title" [tooltip]="chartCpu.tooltip">
+                            </apx-chart>
+                        </div>
+                    </div>
+                    <!-- Giám sát Producers -->
+                    <div nz-col nzXs="24" nzMd="12">
+                        <div id="chart-producers" class="chart-container">
+                            <apx-chart *ngIf="chartProducers && chartProducers.series" [series]="chartProducers.series"
+                                [chart]="chartProducers.chart" [xaxis]="chartProducers.xaxis" [yaxis]="chartProducers.yaxis"
+                                [dataLabels]="chartProducers.dataLabels" [fill]="chartProducers.fill" [grid]="chartProducers.grid"
+                                [stroke]="chartProducers.stroke" [title]="chartProducers.title" [tooltip]="chartProducers.tooltip">
+                            </apx-chart>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div nz-row [nzGutter]="16" style="margin-top: 20px;">
+                    <!-- Mức sử dụng RAM -->
+                    <div nz-col nzXs="24" nzMd="12">
+                        <div id="chart-ram" class="chart-container">
+                            <apx-chart *ngIf="chartRam && chartRam.series" [series]="chartRam.series"
+                                [chart]="chartRam.chart" [xaxis]="chartRam.xaxis" [yaxis]="chartRam.yaxis"
+                                [dataLabels]="chartRam.dataLabels" [fill]="chartRam.fill" [grid]="chartRam.grid"
+                                [stroke]="chartRam.stroke" [title]="chartRam.title" [tooltip]="chartRam.tooltip">
+                            </apx-chart>
+                        </div>
+                    </div>
+                    <!-- Giám sát Consumers -->
+                    <div nz-col nzXs="24" nzMd="12">
+                        <div id="chart-consumers" class="chart-container">
+                            <apx-chart *ngIf="chartConsumers && chartConsumers.series" [series]="chartConsumers.series"
+                                [chart]="chartConsumers.chart" [xaxis]="chartConsumers.xaxis" [yaxis]="chartConsumers.yaxis"
+                                [dataLabels]="chartConsumers.dataLabels" [fill]="chartConsumers.fill" [grid]="chartConsumers.grid"
+                                [stroke]="chartConsumers.stroke" [title]="chartConsumers.title" [tooltip]="chartConsumers.tooltip">
+                            </apx-chart>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </nz-card>
+                <div nz-row [nzGutter]="16" style="margin-top: 20px;">
+                    <!-- Giám sát Storage -->
+                    <div nz-col nzXs="24" nzMd="12">
+                        <div id="chart-storage" class="chart-container">
+                            <apx-chart *ngIf="chartStorage && chartStorage.series" [series]="chartStorage.series"
+                                [chart]="chartStorage.chart" [xaxis]="chartStorage.xaxis" [yaxis]="chartStorage.yaxis"
+                                [dataLabels]="chartStorage.dataLabels" [fill]="chartStorage.fill" [grid]="chartStorage.grid"
+                                [stroke]="chartStorage.stroke" [title]="chartStorage.title" [tooltip]="chartStorage.tooltip">
+                            </apx-chart>
+                        </div>
+                    </div>
+                    <!-- Giám sát Messages -->
+                    <div nz-col nzXs="24" nzMd="12">
+                        <div id="chart-message" class="chart-container">
+                            <apx-chart *ngIf="chartMessage && chartMessage.series" [series]="chartMessage.series"
+                                [chart]="chartMessage.chart" [xaxis]="chartMessage.xaxis" [yaxis]="chartMessage.yaxis"
+                                [dataLabels]="chartMessage.dataLabels" [fill]="chartMessage.fill" [grid]="chartMessage.grid"
+                                [stroke]="chartMessage.stroke" [title]="chartMessage.title" [tooltip]="chartMessage.tooltip">
+                            </apx-chart>
+                        </div>
+                    </div>    
+                </div>
+            </nz-card>
+        </div>
     </div>
-</div>
+</ng-container>

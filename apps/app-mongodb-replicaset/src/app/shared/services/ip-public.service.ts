@@ -15,7 +15,7 @@ export class IpPublicService extends BaseService{
     headers: new HttpHeaders({
       'Content-Type': 'application/json' ,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-      'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
     })
   };
 

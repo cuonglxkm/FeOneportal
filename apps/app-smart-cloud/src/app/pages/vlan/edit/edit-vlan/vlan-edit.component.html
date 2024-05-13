@@ -1,31 +1,35 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="edit"
-      nzTheme="outline"
-      nz-popover
-      [nzPopoverContent]="'Chỉnh sửa'"
-      (click)="showModalEditVlan()"
-      nzPopoverPlacement="bottom"></span>
-<nz-modal [(nzVisible)]="isVisibleEditVlan" nzTitle="Chỉnh sửa"
+<img nz-popover src="assets/imgs/edit-2.svg" alt=""
+     nzPopoverPlacement="bottom"
+     (click)="showModalEditVlan()"
+     style="cursor: pointer; margin-right: 16px"
+     nzPopoverContent="{{ 'app.text.edit' | i18n }}" />
+<nz-modal [(nzVisible)]="isVisibleEditVlan" nzTitle="{{ 'app.text.edit' | i18n }}"
           (nzOnCancel)="handleCancelEditVlan()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Chỉnh sửa</span>
+    <span class="text-modal-title">{{ 'app.text.edit' | i18n }}</span>
   </div>
   <div *nzModalContent>
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>Tên Network</span>
+            <span>{{ 'app.vlan.note3' | i18n }}</span>
             (<span style="color: rgba(252, 16, 16, 1);">*</span>)
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameNetworkErrorTpl">
-          <input nz-input class="input-custom" formControlName="nameNetwork" />
+          <input #vlanNetworkInputName
+                 nz-input
+                 class="input-custom"
+                 formControlName="nameNetwork"
+                 (keydown.enter)="focusOkButton($event)"/>
         </nz-form-control>
         <ng-template #nameNetworkErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">Tên network không được bỏ trống</ng-container>
-          <ng-container *ngIf="control.hasError('startsWith')">Tên network phải bắt đầu bằng tiền tố 'vlan_'</ng-container>
-          <ng-container *ngIf="control.hasError('maxlength')">Tên network tối đa 50 ký tự</ng-container>
-          <ng-container *ngIf="control.hasError('pattern')">Tên network không được chứa ký tự đặc biệt</ng-container>
+          <ng-container *ngIf="control.hasError('required')">{{ 'app.vlan.note42' | i18n }}</ng-container>
+          <ng-container *ngIf="control.hasError('startsWith')">{{ 'app.vlan.note43' | i18n }}</ng-container>
+          <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.vlan.note44' | i18n }}</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">{{ 'app.vlan.note45' | i18n }}</ng-container>
+          <ng-container *ngIf="control.hasError('duplicateName')">{{ 'app.vlan.note46' | i18n }}</ng-container>
         </ng-template>
       </nz-form-item>
     </form>
@@ -33,13 +37,13 @@
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancelEditVlan()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary"
             (click)="handleOkEditVlan()"
             [nzLoading]="isLoadingEditVlan"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

@@ -1,14 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
+import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
 import {UserGroupService} from "../../../../shared/services/user-group.service";
 import {FormSearchUserGroup, FormUserGroup} from "../../../../shared/models/user-group.model";
-import {PolicyModel} from "../../../policy/policy.model";
+import {PolicyModel} from "../../../../../../../../libs/common-utils/src/lib/models/policy.model";
 import {User} from "../../../../shared/models/user.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {Router} from '@angular/router';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-user-group',
@@ -17,19 +18,19 @@ import {Router} from '@angular/router';
 })
 export class CreateUserGroupComponent implements OnInit {
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   isLoading: boolean = false;
 
   validateForm: FormGroup<{
     groupName: FormControl<string>
-    parentName: FormControl<string>
+    //parentName: FormControl<string>
     policyNames: FormControl<string[]>
     userNames: FormControl<string[]>
   }>
 
-  listGroupParent = []
-  listGroupParentUnique: string[] = []
+  //listGroupParent = []
+  //listGroupParentUnique: string[] = []
   formSearch: FormSearchUserGroup = new FormSearchUserGroup()
 
   listPoliciesSelected: string[] = []
@@ -55,13 +56,14 @@ export class CreateUserGroupComponent implements OnInit {
     private location: Location,
     private userGroupService: UserGroupService,
     private notification: NzNotificationService,
-    private router: Router
+    private router: Router,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.validateForm = this.fb.group({
       groupName: ['', [Validators.required,
         Validators.pattern(/^[\w+=,.@\-_]{1,128}$/),
         Validators.maxLength(128), Validators.minLength(3)]],
-      parentName: [null as string | null],
+      //parentName: [null as string | null],
       policyNames: [null as string[] | null],
       userNames: [null as string[] | null]
     });
@@ -75,24 +77,24 @@ export class CreateUserGroupComponent implements OnInit {
     this.project = project?.id
   }
 
-  getGroupParent() {
-    this.userGroupService.search(this.formSearch).subscribe(data => {
-      data.records.forEach(item => {
-        if (this.listGroupParent?.length > 0) {
-          this.listGroupParent.push(item.parent)
-        } else {
-          this.listGroupParent = [item.parent]
-        }
-        this.listGroupParentUnique = [...new Set(this.listGroupParent)]
+  // getGroupParent() {
+  //   this.userGroupService.search(this.formSearch).subscribe(data => {
+  //     data.records.forEach(item => {
+  //       if (this.listGroupParent?.length > 0) {
+  //         this.listGroupParent.push(item.parent)
+  //       } else {
+  //         this.listGroupParent = [item.parent]
+  //       }
+  //       this.listGroupParentUnique = [...new Set(this.listGroupParent)]
 
-      })
-      console.log('list data', this.listGroupParent)
-      console.log('ist data unique', this.listGroupParentUnique)
+  //     })
+  //     console.log('list data', this.listGroupParent)
+  //     console.log('ist data unique', this.listGroupParentUnique)
 
-    }, error => {
-      this.listGroupParentUnique = []
-    })
-  }
+  //   }, error => {
+  //     this.listGroupParentUnique = []
+  //   })
+  // }
 
   submitForm(): void {
     console.log(this.validateForm.valid);
@@ -124,9 +126,9 @@ export class CreateUserGroupComponent implements OnInit {
       })
       console.log(this.validateForm.getRawValue());
       this.formCreate.groupName = this.validateForm.value.groupName
-      if(this.validateForm.value.parentName != null) {
-        this.formCreate.parentName = this.validateForm.value.parentName.toString()
-      }
+      // if(this.validateForm.value.parentName != null) {
+      //   this.formCreate.parentName = this.validateForm.value.parentName.toString()
+      // }
       this.formCreate.policyNames = this.validateForm.value.policyNames
       this.formCreate.users = this.validateForm.value.userNames
       this.isLoadingConfirm = true
@@ -134,12 +136,12 @@ export class CreateUserGroupComponent implements OnInit {
         console.log('data return', data)
         this.isVisibleCreate = false
         this.isLoadingConfirm = false
-        this.notification.success('Thành công', 'Tạo mới group thành công')
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.user-group.noti.success"))
         this.validateForm.reset()
         this.router.navigate(['/app-smart-cloud/iam/user-group'])
       }, error => {
         this.isLoadingConfirm = false
-        this.notification.error('Thất bại', 'Tạo mới thất bại')
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user-group.noti.fail"))
       })
 
       console.log('data', this.formCreate)
@@ -184,7 +186,7 @@ export class CreateUserGroupComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getGroupParent()
+    //this.getGroupParent()
     this.getNameParent()
   }
 

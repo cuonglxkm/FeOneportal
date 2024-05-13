@@ -1,0 +1,106 @@
+.ant-table-tbody > tr > td {
+  font-size: 16px;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.label-col {
+  width: 40%;
+}
+
+.border-right-none {
+  border-right: none;
+}
+
+.detailtable nz-table tr:nth-child(odd) {
+  background-color: #f0f1f4;
+}
+
+.row-odd {
+  background-color: #f0f1f4;
+}
+
+.padbot-zero {
+  padding-bottom: 0 !important;
+}
+
+.padtop-5 {
+  padding-top: 5px;
+}
+
+.description-info {
+  font-weight: 600;
+}
+
+.primary-color {
+  color: #0066b3;
+}
+
+.danger-color {
+  color: #ea3829;
+}
+
+.action-icon {
+  position: relative;
+  float: right;
+  height: fit-content;
+}
+
+::ng-deep .ant-card-head {
+  min-height: 48px;
+  margin-bottom: -1px;
+  padding: 0 24px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 500;
+  font-size: 16px;
+  background: transparent;
+  border-radius: 2px 2px 0 0;
+  border: none;
+}
+
+::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 8px;
+}
+
+::ng-deep .ant-input-affix-wrapper {
+  border-radius: 8px;
+}
+
+input,
+textarea,
+.border-card,
+.border-button {
+  border-radius: 8px;
+}
+
+.warning-description {
+  font-size: 16px;
+}
+
+.borderless {
+  border: none;
+}
+
+.modal-view {
+  height: 360px;
+  overflow-y: scroll;
+  border: 1px solid #d8d6de;
+  border-radius: 8px;
+  padding: 5px 5px 5px 5px;
+}
+
+.modal-btn {
+  position: relative;
+  text-align: right;
+}

@@ -27,6 +27,14 @@ export class VlanService extends BaseService {
     super();
   }
 
+  private getHeaders() {
+    return new HttpHeaders({
+      'Content-Type': 'text',
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
+    })
+  }
+
   getVlanNetworks(formSearch: FormSearchNetwork) {
     let params = new HttpParams()
     if (formSearch.vlanName != undefined || formSearch.vlanName != null) {
@@ -207,8 +215,8 @@ export class VlanService extends BaseService {
   }
 
   updateSubnet(idSubnet: number, formUpdateSubnet: FormUpdateSubnet) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`,
-      Object.assign(formUpdateSubnet)).pipe(catchError((error: HttpErrorResponse) => {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, Object.assign(formUpdateSubnet))
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -314,5 +322,29 @@ export class VlanService extends BaseService {
         }
         return throwError(error);
       }))
+  }
+
+  getListVlanSubnets(pageSize: number, pageNumber: number, region: number, projectId: number) {
+    return this.http.get<BaseResponse<Subnet[]>>(this.baseUrl + this.ENDPOINT.provisions
+      + `/vlans/vlansubnets?pageSize=${pageSize}&pageNumber=${pageNumber}&region=${region}&vpcId=${projectId}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
+
+  checkAllocationPool(cidr: string) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/calculateiprange?cidr=${cidr}`,
+      { responseType: 'json' }
+    );
+  }
+
+  checkIpAvailable(ip: string, cidr: string, networkId: string, regionId: number) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/CheckIpAvailable?ip=${ip}&cidr=${cidr}&networkId=${networkId}&regionId=${regionId}`)
   }
 }

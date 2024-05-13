@@ -1,0 +1,739 @@
+<page-header [breadcrumb]="breadcrumb" [title]="'app.pool.info' | i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a>Pool</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a>{{ 'app.pool.detail' | i18n }}</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<nz-card style="border-radius: 4px" [nzBordered]="false">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">{{ 'app.pool.info' | i18n }}</span>
+  </div>
+  <form nz-form nzLayout="vertical">
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="12">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> {{ 'app.pool.name' | i18n }} </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px"
+              nz-input
+              [(ngModel)]="poolDetail.name"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label>
+            {{ 'app.pool.session.method' | i18n }}
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px"
+              nz-input
+              [(ngModel)]="poolDetail.type"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row style="margin-top: 20px" nzGutter="24">
+      <nz-col nzSpan="12">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> {{ 'app.algorithm' | i18n }} </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px"
+              nz-input
+              [(ngModel)]="poolDetail.lb_algorithm"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> {{ 'app.protocol' | i18n }} </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px"
+              nz-input
+              [(ngModel)]="poolDetail.protocol"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+  </form>
+</nz-card>
+<nz-card style="border-radius: 4px" [nzBordered]="false">
+  <nz-tabset nzSize="large">
+    <nz-tab nzTitle="Health Monitors">
+      <div nz-row [nzGutter]="24">
+        <div
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <span class="text-card-header">{{
+            'app.health.monitor.list' | i18n
+          }}</span>
+        </div>
+        <div
+          class="text-right p-0 m-b-0"
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <button
+            *ngIf="listHealth.length == 0"
+            nz-button
+            nzType="primary"
+            (click)="modalHealth(true, null)"
+          >
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/add-circle.svg"
+              alt=""
+            />
+            <span>{{ 'app.health.monitor.create' | i18n }}</span>
+          </button>
+        </div>
+      </div>
+      <nz-table
+        style="margin-top: 10px"
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzScroll]="{ x: '100%', y: '300px' }"
+        [nzFrontPagination]="false"
+        [nzTotal]="totalHealth"
+        [nzData]="listHealth"
+        (nzPageIndexChange)="getListHealth()"
+        (nzPageSizeChange)="getListHealth()"
+        [nzLoading]="loadingHealth"
+      >
+        <thead>
+          <tr>
+            <th>{{ 'app.health.monitor.name' | i18n }}</th>
+            <th>{{ 'app.check.type' | i18n }}</th>
+            <th>{{ 'app.method' | i18n }}</th>
+            <th>{{ 'app.activity.status' | i18n }}</th>
+            <th>{{ 'app.provisioning.status' | i18n }}</th>
+            <th>{{ 'app.text.operation' | i18n }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of listHealth; let i = index">
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>{{ item.type }}</td>
+              <td>{{ item.httpMethod }}</td>
+              <td>{{ item.operating_status }}</td>
+              <td>{{ item.provisioning_status }}</td>
+              <td>
+                <img
+                  src="assets/imgs/edit-2.svg"
+                  alt=""
+                  (click)="modalHealth(false, item)"
+                  style="cursor: pointer; margin-right: 16px"
+                  [nz-tooltip]="'app.text.edit' | i18n"
+                />
+                <img
+                  src="assets/imgs/trash.svg"
+                  alt=""
+                  (click)="showModalDelete(true, item)"
+                  style="cursor: pointer"
+                  [nz-tooltip]="'app.delete' | i18n"
+                />
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+    <nz-tab nzTitle="Members">
+      <div nz-row [nzGutter]="24">
+        <div
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <span class="text-card-header">{{ 'app.member.list' | i18n }}</span>
+        </div>
+        <div
+          class="text-right p-0 m-b-0"
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <button nz-button nzType="primary" (click)="modalMember(true, null)">
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/add-circle.svg"
+              alt=""
+            />
+            <span>{{ 'app.member.create' | i18n }}</span>
+          </button>
+        </div>
+      </div>
+      <nz-table
+        style="margin-top: 10px"
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzScroll]="{ x: '100%', y: '250px' }"
+        [nzFrontPagination]="false"
+        [nzData]="listMember"
+        (nzPageIndexChange)="getListMember()"
+        (nzPageSizeChange)="getListMember()"
+        [nzLoading]="loadingMember"
+      >
+        <thead>
+          <tr>
+            <th>{{ 'app.member.name' | i18n }}</th>
+            <th>IP Address</th>
+            <th>Port</th>
+            <th>Weight</th>
+            <th>{{ 'app.text.status' | i18n }}</th>
+            <th>{{ 'app.text.operation' | i18n }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of listMember; let i = index">
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>{{ item.ipAddress }}</td>
+              <td>{{ item.port }}</td>
+              <td>{{ item.weight }}</td>
+              <td>{{ item.status }}</td>
+              <td>
+                <img
+                  src="assets/imgs/edit-2.svg"
+                  alt=""
+                  (click)="modalMember(false, item)"
+                  style="cursor: pointer; margin-right: 16px"
+                  [nz-tooltip]="'app.text.edit' | i18n"
+                />
+                <img
+                  src="assets/imgs/trash.svg"
+                  alt=""
+                  (click)="showModalDelete(false, item)"
+                  style="cursor: pointer"
+                  [nz-tooltip]="'app.delete' | i18n"
+                />
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+  </nz-tabset>
+</nz-card>
+
+<nz-modal
+  nzWidth="70%"
+  [(nzVisible)]="isVisibleHealth"
+  [nzTitle]="titleModalHealth"
+  (nzOnCancel)="handleCancelHealth()"
+>
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+      <div style="display: flex">
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label>
+              {{ 'app.health.monitor.name' | i18n }} (<span class="text-red"
+                >*</span
+              >)
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+              <input
+                #nameInput
+                class="input-custom"
+                nz-input
+                formControlName="name"
+                [(ngModel)]="healthForm.name"
+                [placeholder]="'app.input.name' | i18n"
+                [maxlength]="50"
+              />
+              <ng-template #nameErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">{{
+                  'validation.info.required' | i18n
+                }}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{
+                  'validation.health.monitor.name.pattern' | i18n
+                }}</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label
+              >{{ 'app.health.monitor.method' | i18n }} (<span class="text-red"
+                >*</span
+              >)</nz-form-label
+            >
+            <nz-form-control [nzErrorTip]="gpuErrorTpl">
+              <nz-select
+                [nzPlaceHolder]="'-- ' + ('app.choose.method' | i18n) + ' --'"
+                [nzShowSearch]="true"
+                formControlName="checkMethod"
+                [(ngModel)]="healthForm.type"
+                (ngModelChange)="isNotHttp($event)"
+                [disabled]="!isCreate"
+                nzSize="large"
+              >
+                <nz-option
+                  *ngFor="let i of listCheckedMethod"
+                  [nzLabel]="i.displayName"
+                  [nzValue]="i.displayName"
+                />
+              </nz-select>
+            </nz-form-control>
+            <ng-template #gpuErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">{{
+                'validation.choose.method' | i18n
+              }}</ng-container>
+            </ng-template>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1">
+          <nz-form-item>
+            <nz-form-label>
+              Max Retries Down (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control
+              nzDisableAutoTips
+              [nzErrorTip]="maxRetriesDownErrorTpl"
+            >
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                [(ngModel)]="healthForm.maxRetriesDown"
+                (keydown)="onKeyDown($event)"
+                formControlName="maxRetriesDown"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
+              <ng-template #maxRetriesDownErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >{{ 'validation.info.required' | i18n }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div style="display: flex">
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label>
+              Delay (sec) (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="delayErrorTpl">
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                [(ngModel)]="healthForm.delay"
+                (keydown)="onKeyDown($event)"
+                formControlName="delay"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
+              <ng-template #delayErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >{{ 'validation.info.required' | i18n }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label>
+              Max Retries(<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control
+              nzDisableAutoTips
+              [nzErrorTip]="maxRetriesErrorTpl"
+            >
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                [(ngModel)]="healthForm.maxRetries"
+                (keydown)="onKeyDown($event)"
+                formControlName="maxRetries"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
+              <ng-template #maxRetriesErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >{{ 'validation.info.required' | i18n }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1">
+          <nz-form-item>
+            <nz-form-label>
+              Timeout (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="timeoutErrorTpl">
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                [(ngModel)]="healthForm.timeout"
+                (keydown)="onKeyDown($event)"
+                formControlName="timeout"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
+              <ng-template #timeoutErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >{{ 'validation.info.required' | i18n }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div *ngIf="isHttpType" style="display: flex">
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label
+              >HTTP Method (<span class="text-red">*</span>)</nz-form-label
+            >
+            <nz-form-control [nzErrorTip]="gpuErrorTpl">
+              <nz-select
+                [nzPlaceHolder]="'-- ' + ('app.choose.method' | i18n) + ' --'"
+                [nzShowSearch]="true"
+                formControlName="httpMethod"
+                [(ngModel)]="healthForm.httpMethod"
+                nzSize="large"
+              >
+                <nz-option
+                  *ngFor="let i of listMethod"
+                  [nzLabel]="i.displayName"
+                  [nzValue]="i.displayName"
+                />
+              </nz-select>
+            </nz-form-control>
+            <ng-template #gpuErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">{{
+                'validation.choose.method' | i18n
+              }}</ng-container>
+            </ng-template>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label>
+              Expected Codes (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control
+              nzDisableAutoTips
+              [nzErrorTip]="expectedCodeErrorTpl"
+            >
+              <input
+                class="input-custom"
+                nz-input
+                formControlName="expectedCode"
+                [(ngModel)]="healthForm.expectedCodes"
+                [placeholder]="'app.input.code' | i18n"
+                [maxlength]="3"
+              />
+              <ng-template #expectedCodeErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >{{ 'validation.info.required' | i18n }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1">
+          <nz-form-item>
+            <nz-form-label> Path </nz-form-label>
+            <nz-form-control>
+              <input
+                class="input-custom"
+                nz-input
+                [(ngModel)]="healthForm.urlPath"
+                [ngModelOptions]="{ standalone: true }"
+                [placeholder]="'app.input.url' | i18n"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelHealth()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkHealth()"
+      [disabled]="form.invalid"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />{{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleMember"
+  [nzTitle]="titleModalMember"
+  (nzOnCancel)="handleCancelMember()"
+>
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="formMember" [nzLayout]="'vertical'">
+      <nz-form-item>
+        <nz-form-label>
+          {{ 'app.member.name' | i18n }} (<span class="text-red">*</span>)
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+          <input
+            #memberInput
+            class="input-custom"
+            nz-input
+            formControlName="name"
+            [(ngModel)]="memberForm.name"
+            [placeholder]="'app.input.name' | i18n"
+            [maxlength]="50"
+          />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.info.required' | i18n
+            }}</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{
+              'validation.member.name.pattern' | i18n
+            }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          IP Adress (<span class="text-red">*</span>)
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            class="input-custom"
+            nz-input
+            [(ngModel)]="isCreate ? memberForm.address : memberForm.ipAddress"
+            [ngModelOptions]="{ standalone: true }"
+            [disabled]="!isCreate"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          Subnet (<span class="text-red">*</span>)
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            class="input-custom"
+            nz-input
+            (ngModel)="(loadBalancer.subnetAddress)"
+            [ngModelOptions]="{ standalone: true }"
+            [disabled]="true"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <div style="display: flex">
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label>
+              Port (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control>
+              <input
+                class="input-custom"
+                nz-input
+                [(ngModel)]="
+                  isCreate ? memberForm.protocol_port : memberForm.port
+                "
+                [ngModelOptions]="{ standalone: true }"
+                [disabled]="true"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1">
+          <nz-form-item>
+            <nz-form-label>
+              Weight (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="weightErrorTpl">
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                [(ngModel)]="memberForm.weight"
+                (keydown)="onKeyDown($event)"
+                formControlName="weight"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
+              <ng-template #weightErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >{{ 'validation.info.required' | i18n }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <span class="text-label">Backup</span>
+      <nz-switch
+        style="margin-left: 20px"
+        nzSize="small"
+        [(ngModel)]="memberForm.backup"
+        [ngModelOptions]="{ standalone: true }"
+      ></nz-switch>
+    </form>
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelMember()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkMember()"
+      [disabled]="formMember.invalid"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />{{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleDelete"
+  [nzTitle]="titleDelete"
+  (nzOnCancel)="handleCancelDelete()"
+>
+  <div *nzModalContent>
+    <nz-alert
+      style="margin-bottom: 20px"
+      nzType="warning"
+      [nzDescription]="customTemplateMessageDelete"
+      nzShowIcon
+    ></nz-alert>
+    <span class="text-label">
+      {{
+        'app.note.delete.member.or.health'
+          | i18n : { name: dataDelete.name, typeDelete: typeDelete }
+      }}
+    </span>
+    <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
+      ><nz-form-control>
+        <input
+          class="input-custom"
+          nz-input
+          [(ngModel)]="inputConfirm"
+          [ngModelOptions]="{ standalone: true }"
+          (keyup.enter)="handleOkDelete()"
+        />
+        <div *ngIf="checkInputConfirm" style="color: #ff4d4f">
+          {{
+            'validation.correct.member.or.health.name'
+              | i18n : { typeDelete: typeDelete }
+          }}
+        </div>
+        <div *ngIf="checkInputEmpty" style="color: #ff4d4f">
+          {{
+            'validation.member.or.health.name.required'
+              | i18n : { typeDelete: typeDelete }
+          }}
+        </div>
+      </nz-form-control></nz-form-item
+    >
+  </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDelete()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkDelete()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />{{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
+</nz-modal>
+<ng-template #customTemplateMessageDelete>
+  <div>
+    {{
+      'app.alert.delete.member.or.health' | i18n : { typeDelete: typeDelete }
+    }}
+  </div>
+</ng-template>

@@ -1,6 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { Router } from '@angular/router';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
@@ -10,6 +8,9 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { PopupAddVolumeComponent } from '../../volume/component/popup-volume/popup-add-volume.component';
 import { OrderService } from '../../../shared/services/order.service';
 import {getCurrentRegionAndProject} from "@shared";
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-list-order',
@@ -18,19 +19,19 @@ import {getCurrentRegionAndProject} from "@shared";
 })
 export class OrderListComponent implements OnInit {
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   searchStatus?: number = null;
   searchName?: string;
 
   status = [
-    { label: 'Tất cả', value: null },
-    { label: 'Mới tạo ', value: 1 },
-    { label: 'Đã thanh toán', value: 2 },
-    { label: 'Đang cài đặt', value: 3 },
-    { label: 'Đã cài đặt thành công', value: 4 },
-    { label: 'Gặp sự cố', value: 5 }
+    { label: this.i18n.fanyi("app.order.status.All"), value: null },
+    { label: this.i18n.fanyi("app.order.status.New"), value: 1 },
+    { label: this.i18n.fanyi("app.order.status.Paid"), value: 2 },
+    { label: this.i18n.fanyi("app.order.status.InProcessing"), value: 3 },
+    { label: this.i18n.fanyi("app.order.status.Completed"), value: 4 },
+    { label: this.i18n.fanyi("app.order.status.Cancelled"), value: 5 }
   ];
 
   orderCode: string;
@@ -96,7 +97,8 @@ export class OrderListComponent implements OnInit {
               private orderService: OrderService,
               private modalService: NzModalService,
               private snapshotVolumeService: SnapshotVolumeService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   ngOnInit(): void {

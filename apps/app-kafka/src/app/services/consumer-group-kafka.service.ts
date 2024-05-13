@@ -6,6 +6,7 @@ import { KafkaConsumerGroup, KafkaConsumerGroupDetail, KafkaConsumerGroupTopic }
 import { Pagination } from '../core/models/pagination.model';
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
+import Base from '@antv/g2/lib/base';
 
 @Injectable({
     providedIn: 'root'
@@ -25,7 +26,7 @@ export class ConsumerGroupKafkaService extends BaseService {
     private getHeaders() {
         return new HttpHeaders({
             'Content-Type': 'application/json',
-            'user_root_id': this.tokenService.get()?.userId,
+            'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
             'Authorization': 'Bearer ' + this.tokenService.get()?.token
         })
     }
@@ -63,6 +64,10 @@ export class ConsumerGroupKafkaService extends BaseService {
             }
         }
         return this.http.delete<BaseResponse<null>>(this.consumerGroupUrl, json);
+    }
+
+    sync(serviceOrderCode: string): Observable<BaseResponse<null>> {
+        return this.http.post<BaseResponse<null>>(`${this.consumerGroupUrl}/sync/${serviceOrderCode}`, {});
     }
 
 }

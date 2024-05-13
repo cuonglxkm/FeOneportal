@@ -1,0 +1,132 @@
+<img
+style="cursor: pointer; margin-right: 16px"
+src="assets/imgs/edit-2.svg"
+  nz-popover
+  [nzPopoverContent]="'Sửa'"
+  nzPopoverPlacement="bottom"
+  (click)="showModal()"
+/>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzCentered
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-template #modalTitle>
+    <h4><b>Chỉnh sửa thông tin Endpoint Group</b></h4>
+  </ng-template>
+  <ng-template #modalContent>
+    <form
+      nz-form
+      nzLayout="vertical"
+      [formGroup]="validateForm"
+    >
+      <nz-form-item>
+        <div>
+          <span>Name</span>
+          (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+          <span
+            nz-icon
+            nzType="question-circle"
+            nzTheme="outline"
+            nz-popover
+            [nzPopoverContent]="
+              'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'
+            "
+            nzPopoverPlacement="bottom"
+          ></span>
+        </div>
+        <nz-form-control
+          nzDisableAutoTips
+          [nzErrorTip]="nameErrorTpl"
+          style="margin-top: 10px"
+        >
+          <input
+            nz-input
+            formControlName="nameEndpointGroup"
+            id="nameEndpointGroup"
+            placeholder="Vui lòng nhập thông tin"
+            [maxlength]="50"
+            class="input-custom"
+          />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >Vui lòng nhập thông tin</ng-container
+            >
+            <ng-container *ngIf="control.hasError('pattern')"
+              >Name : Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z,
+              số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng
+              trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.</ng-container
+            >
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="nameFileSystem">
+          <div>
+            <span>Type</span>
+            (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+            <span
+              nz-icon
+              nzType="question-circle"
+              nzTheme="outline"
+              nz-popover
+              [nzPopoverContent]="
+                'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'
+              "
+              nzPopoverPlacement="bottom"
+            ></span>
+          </div>
+        </nz-form-label>
+        <input
+          nz-input
+          class="input-custom"
+          type="text"
+          [disabled]="true"
+          [placeholder]="type === 'subnet' ? 'Subnet(for local systems)' : 'Cidr(for external systems)'"
+        />
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control>
+          <nz-form-label *ngIf="type == 'subnet'" nzFor="name"
+            >Subnet:</nz-form-label
+          >
+          <nz-form-label *ngIf="type == 'cidr'" nzFor="name"
+            >Cidr:</nz-form-label
+          >
+          <div
+            *ngFor="let item of endpoints"
+            style="margin-bottom: 15px"
+            class="text-label"
+          >
+            <div>{{ item }}</div>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+      <div class="d-flex justify-content-end">
+        <button
+          nz-button
+          nzType="default"
+          (click)="handleCancel()"
+        >
+          Quay lại
+        </button>
+        <button
+          nz-button
+          nzType="primary"
+          [disabled]="!validateForm.valid"
+          (click)="handleOk()"
+          [nzLoading]="isLoading"
+          class="button-ok"
+        >
+          <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+        </button>
+      </div>
+    </form>
+  </ng-template>
+</nz-modal>

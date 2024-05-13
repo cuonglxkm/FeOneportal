@@ -1,10 +1,10 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { BehaviorSubject, catchError, throwError } from 'rxjs';
 import { BaseResponse } from "../../../../../../libs/common-utils/src";
 import { FormCreateEndpointGroup, FormDeleteEndpointGroup, FormDetailEndpointGroup, FormEditEndpointGroup, FormSearchEndpointGroup } from "../models/endpoint-group";
+import { Inject, Injectable } from '@angular/core';
 import { BaseService } from './base.service';
+import { BehaviorSubject, catchError, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +22,7 @@ export class EndpointGroupService extends BaseService {
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
@@ -83,8 +83,8 @@ export class EndpointGroupService extends BaseService {
       }))
   }
 
-  editEndpoinGroup(id: string, formEdit: FormEditEndpointGroup) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/endpoint_groups/${id}`,
+  editEndpoinGroup(formEdit: FormEditEndpointGroup) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/endpoint_groups/${formEdit.id}?name=${formEdit.name}&description=${formEdit.description}&vpcId=${formEdit.vpcId}&regionId=${formEdit.regionId}&`,
       Object.assign(formEdit)).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
@@ -95,5 +95,18 @@ export class EndpointGroupService extends BaseService {
           return throwError(error);
         }))
   }
-
+  
+  listSubnetEndpointGroup(projectId: number, region: number){
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions +
+      `/vpn-sitetosite/endpoint_groups/list_subnet?projectId=${projectId}&regionId=${region}`).pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+        }))
+  }
 }

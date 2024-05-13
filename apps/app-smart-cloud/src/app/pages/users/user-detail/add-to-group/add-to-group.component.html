@@ -21,6 +21,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
@@ -77,7 +78,7 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          nz-tooltip="Tìm kiếm"
+          [nz-tooltip]="'app.button.search' | i18n"
           (click)="getGroup()"
         />
       </ng-template>
@@ -184,7 +185,7 @@
         src="assets/imgs/arrow-left-2.svg"
         alt=""
       />
-      <span>Quay lại</span>
+      <span>{{ 'app.button.back' | i18n }}</span>
     </button>
     <button nz-button nzType="primary" (click)="addToGroups()">
       <img

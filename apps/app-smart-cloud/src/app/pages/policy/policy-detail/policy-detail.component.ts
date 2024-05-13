@@ -1,14 +1,14 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {ProjectModel} from "../../../shared/models/project.model";
-import {RegionModel} from "../../../shared/models/region.model";
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
-import {RegionService} from "../../../shared/services/region.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {PolicyInfo} from "../policy.model";
-import {PolicyService} from "../../../shared/services/policy.service";
+import {PolicyInfo} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
+import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
+import { RegionService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-policy-detail',
@@ -31,7 +31,8 @@ export class PolicyDetailComponent implements OnInit {
               private policyService: PolicyService,
               private router: Router,
               private notification: NzNotificationService,
-              private activatedRoute: ActivatedRoute,) {
+              private activatedRoute: ActivatedRoute,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.editorOptions = new JsonEditorOptions()
     // this.editorOptions.modes = ['code', 'text', 'tree', 'view'];
     this.editorOptions.mode = 'code'; //set only one mode
@@ -39,7 +40,7 @@ export class PolicyDetailComponent implements OnInit {
 
   }
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
 
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -104,7 +105,7 @@ export class PolicyDetailComponent implements OnInit {
         this.isLoadingPolicyInfo = false
       },
       error => {
-        this.notification.error('Có lỗi xảy ra', ' Lấy thông tin policy thất bại');
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.policy-detail.noti.fail"));
         this.isLoadingPolicyInfo = false;
       }
     );
@@ -122,7 +123,7 @@ export class PolicyDetailComponent implements OnInit {
         this.jsonPermission = data.records
         this.isLoadingPer = false;
       }, error => {
-        this.notification.error('Có lỗi xảy ra', ' Lấy danh sách Permission thất bại.');
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.policy.permission.noti.fail"));
         this.isLoadingPer = false;
       }
     )
@@ -155,7 +156,7 @@ export class PolicyDetailComponent implements OnInit {
         this.isLoadingEntities = false;
       },
       error => {
-        this.notification.error('Có lỗi sảy ra', 'Lấy danh sách Attached Entities thất bại');
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.detach-policy.attach-entities.noti.fail"));
         this.isLoadingEntities = false;
       }
     )

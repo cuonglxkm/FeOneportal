@@ -1,20 +1,21 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {ProjectModel} from "../../../shared/models/project.model";
-import {RegionModel} from "../../../shared/models/region.model";
 import {JsonEditorOptions} from "ang-jsoneditor";
-import {PolicyService} from "../../../shared/services/policy.service";
+import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {
   PermissionDTO,
   PolicyInfo,
   ServicePermissionDetail,
   ServicePolicyDTO,
   UpdatePolicyRequest
-} from "../policy.model";
+} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
 import {result} from "lodash";
 import {concatMap, flatMap, forkJoin, map, of} from "rxjs";
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 class Pannel {
   id: string;
@@ -40,7 +41,7 @@ export class PolicyUpdateComponent implements OnInit {
 
   public editorOptions: JsonEditorOptions;
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
 
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -71,7 +72,8 @@ export class PolicyUpdateComponent implements OnInit {
     private modalService: NzModalService,
     private router: Router,
     private notification: NzNotificationService,
-    private policyService: PolicyService) {
+    private policyService: PolicyService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
 
     this.editorOptions = new JsonEditorOptions()
     this.editorOptions.mode = 'code';
@@ -140,7 +142,7 @@ export class PolicyUpdateComponent implements OnInit {
     }).catch((error) => {
       this.policyInfo = null;
       this.isLoadding = false;
-      this.notification.error('Có lỗi xảy ra', 'Lấy thông tin Policy thất bại.');
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.policy-detail.noti.fail"));
     });
 
 
@@ -176,13 +178,13 @@ export class PolicyUpdateComponent implements OnInit {
       updateRequest.actions = listAcction;
 
       this.policyService.createPolicy(updateRequest).subscribe(data => {
-        this.notification.success('Thành công ', 'Chỉnh sửa thành công');
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.edit-policy.noti.sucess"));
       },error => {
-        this.notification.error('Có lỗi xảy ra ', 'Chỉnh sửa thất bại');
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.edit-policy.noti.fail"));
       })
       console.log(updateRequest);
     }else{
-      this.notification.warning('Cảnh báo', 'Chưa có dịch vào được chọn');
+      this.notification.warning(this.i18n.fanyi("app.status.warning"), 'Chưa có dịch vào được chọn');
     }
   }
 

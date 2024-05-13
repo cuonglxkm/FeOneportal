@@ -1,42 +1,21 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="title">
+             [title]="'app.backup.package.breadcrumb.create.backup.package'|i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/backup/packages">Backup</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/backup/packages">Tạo gói Backup</a>
-      </nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{'app.breadcrumb.home'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup/packages'">{{'app.backup.package.breadcrumb.backup'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup/packages'">{{'app.backup.package.breadcrumb.create.backup.package'|i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
-    </div>
-  </ng-template>
-  <ng-template #title>
-    <div nz-row nzJustify="space-between">
-      <nz-row>
-        <!--        <nz-col>-->
-        <!--          <span nz-icon-->
-        <!--                nzType="arrow-left"-->
-        <!--                nzTheme="outline"-->
-        <!--                [routerLink]="'/app-smart-cloud/backup/packages'"-->
-        <!--                style="margin-right: 10px;"></span>-->
-        <!--        </nz-col>-->
-        <nz-col>
-          <div>Tạo gói Backup</div>
-        </nz-col>
-      </nz-row>
     </div>
   </ng-template>
 </page-header>
@@ -44,18 +23,17 @@
   <form nz-form [formGroup]="validateForm" nzLayout="vertical">
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
-        <nz-card>
-          <span class="text-card-header">Thông tin của gói Backup</span>
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">{{'app.backup.package.information'|i18n}}</span>
           <nz-form-item>
             <nz-form-label nzFor="name">
               <div style="margin-top: 15px;">
-                <span>Tên gói Backup</span>
+                <span>{{'app.backup.package.name'|i18n}}</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'Tên gói backup của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.'"
-                      nzPopoverPlacement="bottom"></span>
+                <img nz-popover
+                     [nzPopoverContent]="'app.tooltip.backup.package.name'|i18n"
+                     nzPopoverPlacement="bottom"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -63,26 +41,23 @@
                      class="input-custom"
                      formControlName="namePackage"
                      [(ngModel)]="namePackage"
-                     [placeholder]="'Nhập tên gói'" [maxLength]="70" />
+                     [placeholder]="'app.placeholder.backup.package.name'|i18n" [maxLength]="70" />
               <ng-template #nameErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Backup</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng
-                  Việt
-                </ng-container>
-                <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{ 'app.backup.package.name.required'|i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{'app.backup.package.name.required'|i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('maxLength')">{{ 'app.backup.package.name.required'|i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label nzFor="storage">
               <div class="label">
-                <span>Dung lượng gói Backup</span>
+                <span>{{ 'app.backup.package.storage'|i18n }}</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'Dung lượng mặc định tối thiểu là 1, chưa giới hạn dung lượng tối đa'"
-                      nzPopoverPlacement="bottom"></span>
+                <img nz-popover
+                     [nzPopoverContent]="'app.tooltip.backup.package.storage'|i18n"
+                     nzPopoverPlacement="bottom"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
@@ -94,27 +69,28 @@
                                [nzMin]="1"
                                [nzStep]="1" />
               <ng-template #storageErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của gói Backup
-                </ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{'app.backup.package.storage.required'|i18n}}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label nzFor="description">
               <div class="label">
-                <span>Mô tả</span>
+                <span>{{'app.backup.package.description'|i18n}}</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-          <textarea nz-input
-                    formControlName="description"
-                    id="description"
-                    [placeholder]="'Nhập mô tả'"
-                    [maxLength]="255"
-                    [nzAutosize]="{ minRows: 3, maxRows: 5 }">
-          </textarea>
+              <nz-textarea-count [nzMaxCharacterCount]="255">
+                <textarea nz-input
+                          formControlName="description"
+                          class="input-custom"
+                          [placeholder]="'app.placeholder.backup.package.description'|i18n"
+                          [maxLength]="255"
+                          [nzAutosize]="{ minRows: 3, maxRows: 5 }">
+                </textarea>
+              </nz-textarea-count>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{'app.backup.package.description.maxLength'|i18n}}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -123,13 +99,12 @@
               <nz-form-item>
                 <nz-form-label nzFor="time">
                   <div class="label">
-                    <span>Thời gian sử dụng</span>
-                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - Tháng
-                    <span nz-icon nzType="question-circle"
-                          nzTheme="outline"
-                          nz-popover
-                          [nzPopoverContent]="'Mỗi tháng tương đương 30 ngày.'"
-                          nzPopoverPlacement="bottom"></span>
+                    <span>{{'app.backup.package.time.used'|i18n}}</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - {{'app.Month'|i18n}}
+                    <img nz-popover
+                         [nzPopoverContent]="'app.placeholder.backup.package.time'|i18n"
+                         nzPopoverPlacement="bottom"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
                   </div>
                 </nz-form-label>
                 <nz-form-control>
@@ -144,116 +119,75 @@
               </nz-form-item>
             </nz-col>
             <nz-col nzSpan="8" class="create-date">
-              <span
-                *ngIf="orderItem?.orderItemPrices?.length > 0">Ngày khởi tạo: {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
+              <span class="text-label"
+                *ngIf="orderItem?.orderItemPrices?.length > 0">{{'app.backup.package.create.date'|i18n}}: {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
             </nz-col>
           </nz-row>
           <nz-form-item>
-            <nz-form-label nzFor="time">
-              <div class="label">
+            <nz-form-label nzFor="time"  class="text-label">
                 <span style="color: rgba(252, 16, 16, 1);"
-                      *ngIf="orderItem?.orderItemPrices?.length > 0">Ngày hết hạn: {{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
-              </div>
+                      *ngIf="orderItem?.orderItemPrices?.length > 0">{{'app.backup.package.expire.date'|i18n}}: {{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
             </nz-form-label>
           </nz-form-item>
         </nz-card>
       </nz-col>
-      <nz-col nzSpan="8">
-        <!--          <span class="text-card-header">Chi phí ước tính</span>-->
-        <!--          <nz-table>-->
-        <!--            <tr>-->
-        <!--              <td>Chi phí gói Backup</td>-->
-        <!--              <td nzAlign="right">-->
-        <!--                <b-->
-        <!--                  *ngIf="orderItem?.orderItemPrices?.length > 0">{{orderItem?.orderItemPrices[0].unitPrice.amount}} {{orderItem?.orderItemPrices[0].unitPrice.currency}}</b>-->
-        <!--                <b *ngIf="orderItem?.orderItemPrices?.length <= 0">0 VNĐ</b>-->
-        <!--              </td>-->
-        <!--            </tr>-->
-        <!--            <tr>-->
-        <!--              <td></td>-->
-        <!--              <td nzAlign="right">VNĐ/tháng</td>-->
-        <!--            </tr>-->
-        <!--            <tr>-->
-        <!--              <td>Thành tiền</td>-->
-        <!--              <td nzAlign="right" style="color: #EA3829;">-->
-        <!--                <b-->
-        <!--                  *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</b>-->
-        <!--                <b *ngIf="orderItem == undefined || orderItem == null">0 VNĐ</b>-->
-        <!--              </td>-->
-        <!--            </tr>-->
-        <!--            <tr>-->
-        <!--              <td><i>(Đã bao gồm 10% VAT)</i></td>-->
-        <!--              <td nzAlign="right">VNĐ/tháng</td>-->
-        <!--            </tr>-->
-        <!--          </nz-table>-->
-        <!--          <button class="btn-create" [disabled]="!validateForm.valid" (click)="navigateToPaymentSummary()">-->
-        <!--            <div style="color: white;line-height: 24px; word-wrap: break-word">-->
-        <!--              <span nz-icon nzType="wallet" nzTheme="outline"></span>-->
-        <!--              Khởi tạo-->
-        <!--            </div>-->
-        <!--          </button>-->
-        <!--        </nz-card>-->
+      <nz-col nzSpan="8" style="border-radius: 8px;">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Chi phí ước tính</span>
-          <div style="margin-left: 20px;">
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-              <nz-col nzSpan="16">
-                <span class="text-value">Tên Gói Backup</span>
-              </nz-col>
-            </nz-row>
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-              <nz-col nzSpan="16">
-                <span class="text-label" [innerText]="namePackage"></span>
-              </nz-col>
-            </nz-row>
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-              <nz-col nzSpan="16">
-                <span class="text-value">Dung lượng gói Backup</span>
-              </nz-col>
-            </nz-row>
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-              <nz-col nzSpan="16">
-                <span class="text-label" [innerText]="storage"></span>
-              </nz-col>
-            </nz-row>
-            <nz-row style="margin-bottom: 10px" nzGutter="16">
-              <nz-col nzSpan="16">
-                <span class="text-value">Chi phí gói Backup 1 tháng</span>
-              </nz-col>
-              <nz-col class="text-right" nzSpan="8">
-                <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
-                      nzAlign="right">0 VNĐ</span>
-                <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
-                      nzAlign="right">
-                  {{ orderItem?.orderItemPrices[0].unitPrice.amount | number }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
-                </span>
-              </nz-col>
-            </nz-row>
-            <nz-row style="margin-bottom: 20px; background-color: #cce9ff;padding: 16px 0 16px 0;border-radius: 8px;"
-                    nzGutter="16">
-              <nz-col nzSpan="16">
-                <div style="display: inline-grid;">
-                  <span class="text-value">Tổng thành tiền</span>
-                  <i>( Đã bao gồm 10% VAT)</i>
-                </div>
-              </nz-col>
-              <nz-col class="text-right" nzSpan="8">
-                <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
-                  {{ orderItem?.totalPayment?.amount | number }} {{ orderItem?.totalPayment?.currency }}
-                </span>
-                <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">
-                  0 VNĐ
-                </span>
-              </nz-col>
-            </nz-row>
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{'app.estimated.cost'|i18n}}</span>
           </div>
+          <div class="text-value">{{'app.backup.package.name'|i18n}}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ validateForm.controls.namePackage.value }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+
+          <div class="text-value">{{'app.backup.package.storage'|i18n}}</div>
+          <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.storage.value }} GB</div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">{{'app.cost.a.month'|i18n}}</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
+                    nzAlign="right">
+              0 VND
+            </span>
+              <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
+                    nzAlign="right">
+              {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+            </span>
+            </nz-col>
+          </nz-row>
+          <nz-row
+            style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          "
+            nzGutter="16"
+          >
+            <nz-col nzSpan="16">
+              <span class="text-label">{{'app.total.payment'|i18n}}</span><br />
+              <span class="text-note-italicized">({{ 'app.include.vat'|i18n:{"vat":"10"} }})</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+              0 VND
+            </span>
+              <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+              {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
+            </span>
+            </nz-col>
+          </nz-row>
           <nz-row>
-            <nz-col style="width: 100%" class="text-right">
-              <button class="btn-create" [disabled]="!validateForm.valid" (click)="navigateToPaymentSummary()">
-                <div style="color: white;line-height: 24px; word-wrap: break-word">
-                  <span nz-icon nzType="wallet" nzTheme="outline"></span>
-                  Khởi tạo
-                </div>
+            <nz-col style="width: 100%">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
+                      [disabled]="validateForm.invalid">
+                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{'app.button.create'|i18n}}</span>
               </button>
             </nz-col>
           </nz-row>

@@ -1,9 +1,9 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Danh sách Users'">
+<page-header [breadcrumb]="breadcrumb" [title]="'app.users.listUser' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
-      >
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item> Users </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -20,7 +20,7 @@
         <input
           name="name"
           nz-input
-          placeholder="Tìm kiếm tên, thời gian tạo ..."
+          [placeholder]="'app.users.search' | i18n"
           [ngModel]="searchParam"
           (ngModelChange)="changeSearch($event)"
         />
@@ -30,7 +30,7 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          nz-tooltip="Tìm kiếm"
+          [nz-tooltip]="'app.button.search' | i18n"
           (click)="getData()"
         />
       </ng-template>
@@ -46,7 +46,7 @@
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        <span>Tạo mới</span>
+        <span>{{"app.users.button.create" | i18n}}</span>
       </button>
     </div>
   </div>
@@ -74,9 +74,9 @@
           (nzCheckedChange)="onAllChecked($event)"
           nzLeft
         ></th>
-        <th>Tên User</th>
-        <th>Groups</th>
-        <th>Thời gian tạo</th>
+        <th>{{"app.users.nameUser" | i18n}}</th>
+        <th>{{"app.users.groups" | i18n}}</th>
+        <th>{{"app.users.createDate" | i18n}}</th>
       </tr>
     </thead>
     <tbody>
@@ -116,17 +116,16 @@
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
       <div>
-        Bạn đang thực hiện xóa User <span> {{ userDelete }} </span>
+        {{ 'app.users.deleteUser.title' | i18n }} <span> {{ userDelete }} </span>
       </div>
       <div>
-        Việc thực hiện xóa User cũng sẽ xóa tất cả dữ liệu liên quan tới User
-        này
+        {{ 'app.users.deleteUser.des' | i18n }}
       </div>
-      <div>Hành động này không thể được hoàn tác</div>
+      <div>{{ 'app.users.deleteUser.desAll2' | i18n }}</div>
     </ng-template>
 
     <span class="text-label"
-      >Để thực hiện xóa User, vui lòng nhập tên User để xác nhận</span
+      >{{ 'app.users.deleteUser.input' | i18n }}</span
     >
     <nz-form-control>
       <input
@@ -143,7 +142,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkDelete()">
       <img
@@ -151,7 +150,7 @@
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Xác nhận
+      {{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
@@ -170,16 +169,15 @@
     ></nz-alert>
     <ng-template #customTemplateMessageDeleteUsers>
       <div>
-        Bạn đang thực hiện xóa <span>{{ setOfCheckedName.size }}</span> User
+        {{ 'app.users.deleteUser.titleAll' | i18n }}<span>{{ setOfCheckedName.size }}</span> User
       </div>
       <div>
-        Việc thực hiện xóa các Users đồng thời cũng sẽ xóa toàn bộ dữ liệu liên
-        quan tới những User đó
+        {{ 'app.users.deleteUser.desAll' | i18n }}
       </div>
-      <div>Hành động này không thể được hoàn tác</div>
+      <div>{{ 'app.users.deleteUser.desAll2' | i18n }}</div>
     </ng-template>
     <span class="text-label"
-      >Để thực hiện xóa các Users, vui lòng nhập "delete" để xác nhận</span
+      >{{ 'app.users.deleteUser.inputAll' | i18n }}</span
     >
     <nz-form-control>
       <input

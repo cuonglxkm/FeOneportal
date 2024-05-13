@@ -1,0 +1,231 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'app.file.system.extend' | i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/'+idFileSystem ">{{ 'app.file.system.detail' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/'+ idFileSystem +'/extend'">{{ 'app.file.system.extend' | i18n }}
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="16">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">{{ 'app.file.system.info' | i18n }}</span>
+          <nz-row nzGutter="24" nzJustify="space-between" style="margin-top: 25px;">
+            <nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label>
+                  <span>{{ 'app.file.system.name' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <img nz-popover
+                         [nzPopoverContent]="contentTemplateFSname"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                    <ng-template #contentTemplateFSname>
+                    <span
+                      [innerHTML]="'app.tooltip.file.system.name.pattern' | i18n"
+                    ></span>
+                  </ng-template>
+                </nz-form-label>
+                <nz-form-control>
+                  <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.name"  [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>
+                  <span>{{ 'app.protocol' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <img nz-popover
+                       [nzPopoverContent]="contentTemplateFSProtocol"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
+                       <ng-template #contentTemplateFSProtocol>
+                        <span
+                          [innerHTML]="'app.tooltip.file.system.name.protocol' | i18n"
+                        ></span>
+                      </ng-template>
+                </nz-form-label>
+                <nz-form-control>
+                  <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.shareProto"  [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <div style="display: flex;">
+                  <nz-switch [nzDisabled]="true" formControlName="snapshot" ></nz-switch>
+                  <span style="margin-left: 10px; margin-top: 1px;" class="text-label">{{ 'app.file.system.create.from.snapshot' | i18n }}</span>
+                </div>
+              </nz-form-item>
+              <nz-form-item *ngIf="validateForm.controls.snapshot.value === true">
+                <nz-form-label>
+                  <div>
+                    <span>Snapshot (</span>
+                    <span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <img nz-popover
+                         [nzPopoverContent]="'app.snapshot.file.system' | i18n"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </div>
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips>
+                  <input nz-input class="input-custom" />
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label>
+                  <span>{{ 'app.file.system.type' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <img nz-popover
+                       [nzPopoverContent]="'app.tooltip.file.system.type' | i18n"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
+                </nz-form-label>
+                <nz-form-control>
+                  <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.type" [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label nzFor="storage">
+                  <div>
+                    <span>{{ 'app.capacity' | i18n }} (GB) (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                    <img nz-popover
+                         [nzPopoverContent]="'Tối thiểu là 1'"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </div>
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips>
+                  <input nz-input class="input-custom" style="width: 100%; margin-left: 0;" [value]="fileSystem?.size" [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+          </nz-row>
+          <nz-form-item>
+            <nz-form-label>
+              <div>
+                <span>{{ 'app.service.description' | i18n }}</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+              <textarea nz-input class="input-custom" [value]="fileSystem.description" [maxLength]="255"
+                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"  [disabled]="true"></textarea>
+              <ng-template #descriptionErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-card>
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">{{ 'app.extension.info' | i18n }}</span>
+          <nz-row nzJustify="space-between" style="margin-top: 15px;">
+            <nz-col>
+              <nz-form-label>
+                <span>{{ 'app.service.start.date' | i18n }}: {{fileSystem?.createdDate | date: 'dd/MM/yyyy'}} </span>
+              </nz-form-label>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-form-label>
+                <span>{{ 'app.service.expiration-date' | i18n }}:  {{fileSystem?.expireDate | date: 'dd/MM/yyyy'}}</span>
+              </nz-form-label>
+            </nz-col>
+          </nz-row>
+          <nz-form-item style="margin-top: 10px;">
+            <nz-form-label nzFor="time">
+              <div class="label">
+                <span>{{ 'app.months.for.extend' | i18n }}</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+              <nz-input-number style="width:100%; margin-left: 0;" nzAutoFocus class="input-custom" (ngModelChange)="changeTime($event)" formControlName="time" nzMin="1" nzMax="100"/>
+              <ng-template #dateErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min') || control.hasError('pattern')">{{ 'app.more.0.less.100' | i18n }}</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-row>
+            <nz-col>
+              <nz-form-label>
+                <span style="color: #F50000;" *ngIf="orderItem?.orderItemPrices?.length > 0">{{ 'app.expected.expiry.date' | i18n }}: {{ orderItem?.orderItemPrices[0].expiredDate | date: 'dd/MM/yyyy'}} </span>
+              </nz-form-label>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.file.system.name' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ fileSystem?.name }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.file.system.type' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ fileSystem?.type }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.protocol' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span class="text-label">{{ fileSystem?.shareProto }}</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.capacity' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span class="text-label">{{ fileSystem?.size }} GB</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value"> {{ 'app.cost.a.month' | i18n }} </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3" nzAlign="right">0 VND</span>
+              <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          " nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
+              <span class="text-note-italicized">({{ 'app.include.vat' | i18n : { vat: '10' } }})</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">0 VND</span>
+              <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+                {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row>
+            <nz-col style="width: 100%">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="!validateForm.valid" (click)="navigateToPaymentSummary()">
+                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.extend' | i18n }}</span>
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+  </form>
+</nz-content>

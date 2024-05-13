@@ -81,6 +81,9 @@ export class HeaderUserComponent {
     //     console.log(error)
     //   });
 
+    localStorage.removeItem('UserRootId');
+    localStorage.removeItem('projects');
+
     window.location.href =
       environment['sso'].issuer +
       `/connect/logout?oi_au_id=${id_token}&post_logout_redirect_uri=${decodeURIComponent(

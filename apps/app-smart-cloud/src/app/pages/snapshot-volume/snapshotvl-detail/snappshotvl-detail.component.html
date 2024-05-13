@@ -18,6 +18,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="getRegionId($event)"
       ></region-select-dropdown>
@@ -49,7 +50,7 @@
               formControlName="name"
               [(ngModel)]="snapshotName"
               id="name"
-              placeholder="Nhập tên máy ảo"
+              placeholder="Nhập tên"
               maxlength="50"
               minlength="1"
             />

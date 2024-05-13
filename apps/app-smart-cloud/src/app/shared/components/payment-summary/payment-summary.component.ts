@@ -81,15 +81,15 @@ export class PaymentSummaryComponent implements OnInit {
         const specificationObj = JSON.parse(e.specification);
         switch (e.specificationType) {
           case 'instance_create':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'instance_resize':
             serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
-            serviceItem.type = `Chỉnh sửa`;
+            serviceItem.type = `Điều chỉnh`;
             break;
           case 'instance_extend':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
             serviceItem.type = 'Gia hạn';
             break;
           case 'volume_create':
@@ -98,7 +98,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'volume_resize':
             serviceItem.name = `Volume - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Chỉnh sửa';
+            serviceItem.type = 'Điều chỉnh';
             break;
           case 'volume_extend':
             serviceItem.name = `Volume - ${specificationObj.serviceName}`;
@@ -114,8 +114,18 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'k8s_create':
             this.serviceType = 'k8s';
-            serviceItem.name = `k8s`;
+            serviceItem.name = `k8s - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
+            break;
+          case 'k8s_resize':
+            this.serviceType = 'k8s';
+            serviceItem.name = `k8s - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Nâng cấp';
+            break;
+          case 'k8s_extend':
+            this.serviceType = 'k8s';
+            serviceItem.name = `k8s - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Gia hạn';
             break;
           case 'objectstorage_create':
             serviceItem.name = `Object Storage`;
@@ -123,7 +133,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'objectstorage_resize':
             serviceItem.name = `Object Storage`;
-            serviceItem.type = 'Chỉnh sửa';
+            serviceItem.type = 'Điều chỉnh';
             break;
           case 'objectstorage_extend':
             serviceItem.name = `Object Storage`;
@@ -131,7 +141,42 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'kafka_create':
             this.serviceType = 'kafka';
-            serviceItem.name = 'Kafka';
+            serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Tạo mới';
+            break;
+          case 'kafka_resize':
+            this.serviceType = 'kafka';
+            serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Nâng cấp';
+            break;
+          case 'kafka_extend':
+            this.serviceType = 'kafka';
+            serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Gia hạn';
+            break;
+          case 'vpnsitetosite_create':
+            serviceItem.name = `Vpn Site To Site`;
+            serviceItem.type = 'Tạo mới';
+            break;
+          case 'vpnsitetosite_extend':
+            serviceItem.name = `Vpn Site To Site`;
+            serviceItem.type = 'Gia hạn';
+            break;
+          case 'vpnsitetosite_resize':
+            serviceItem.name = `Vpn Site To Site`;
+            serviceItem.type = 'Chỉnh sửa';
+            break;
+          case 'snapshotpackage_create':
+            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Tạo mới';
+            break;
+          case 'snapshotpackage_resize':
+            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Chỉnh sửa';
+            break;
+          case 'mongodb_create':
+            this.serviceType = 'mongodb';
+            serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
             break;
           default:
@@ -141,7 +186,7 @@ export class PaymentSummaryComponent implements OnInit {
         serviceItem.price = e.price;
         serviceItem.duration = e.serviceDuration;
         serviceItem.amount = e.orderItemQuantity;
-        if (serviceItem.type == 'Chỉnh sửa') {
+        if (serviceItem.type == 'Điều chỉnh') {
           serviceItem.currency = e.price;
         } else {
           serviceItem.currency = e.price * e.serviceDuration;
@@ -196,7 +241,7 @@ export class PaymentSummaryComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lây danh sách Voucher không thất bại'
+            'Lây danh sách Voucher thất bại'
           );
         },
       });
@@ -253,8 +298,14 @@ export class PaymentSummaryComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (data: any) => {
-          window.location.href = data.data;
+        next: (result: any) => {
+          if (result.code == 310) {
+            window.location.href = result.data;
+          } else if (result.code == 200) {
+            this.router.navigate([
+              `/app-smart-cloud/order/detail/${result.data.id}`,
+            ]);
+          }
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Tạo order không thành công');

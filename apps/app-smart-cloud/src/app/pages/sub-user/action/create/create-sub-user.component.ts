@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { FormCreateSubUser } from '../../../../shared/models/sub-user.model';
 import { ObjectStorageService } from '../../../../shared/services/object-storage.service';
@@ -9,6 +7,7 @@ import { SubUserService } from '../../../../shared/services/sub-user.service';
 import { UserInfoObjectStorage } from '../../../../shared/models/object-storage.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-sub-user',
@@ -16,7 +15,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   styleUrls: ['./create-sub-user.component.less'],
 })
 export class CreateSubUserComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   value: string
@@ -34,15 +33,27 @@ export class CreateSubUserComponent implements OnInit{
     name: FormControl<string>
     access: FormControl<string>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\-]+$/)]],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\-]+$/), this.duplicateNameValidator.bind(this)]],
     access: ['full', [Validators.required]]
   })
+
+  nameList: string[] = []
 
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private objectStorageService: ObjectStorageService,
               private subUserService: SubUserService,
               private notification: NzNotificationService) {
+  }
+
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
   }
 
   onInputChange(value) {
@@ -57,12 +68,20 @@ export class CreateSubUserComponent implements OnInit{
     this.project = project?.id
   }
 
-  updateData(value: string) {
+  updateData(value) {
     this.name = value;
   }
 
   updateAccess(value: string) {
     this.access = value;
+  }
+
+  getListSubUser() {
+    this.subUserService.getListSubUser(null, 99999, 1).subscribe(data => {
+      data?.records?.forEach(item => {
+        this.nameList?.push(item?.subUserId);
+      });
+    })
   }
 
   submitForm() {
@@ -96,9 +115,6 @@ export class CreateSubUserComponent implements OnInit{
     })
   }
 
-  cancel() {
-    this.validateForm.reset()
-  }
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -106,6 +122,7 @@ export class CreateSubUserComponent implements OnInit{
     this.project = regionAndProject.projectId;
 
     this.getInformationOfUserObject()
+    this.getListSubUser()
 
   }
 }

@@ -24,4 +24,11 @@ export class FormSearchIKEPolicy {
   pageSize: number
 }
 
+export class FormDeleteIKEPolicy {
+  projectId: number
+  regionId: number
+  cloudId: string
+  customerId: number
+}
+
 

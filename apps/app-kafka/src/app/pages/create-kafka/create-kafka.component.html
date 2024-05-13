@@ -1,13 +1,21 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Tạo mới Kafka'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.kafka.init' | i18n ">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-kafka']">Kafka</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+  </ng-template>
+
+  <!-- action -->
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="onProjectChange($event)"></project-select-dropdown>
+    </div>
   </ng-template>
 </page-header>
 
@@ -16,29 +24,29 @@
     <form nz-form [formGroup]="myform" nzLayout="horizontal" nzLabelAlign="left">
       
       <nz-card class="border-card">
-        <h3>Thông tin chung</h3>
-        <span nzType="secondary" style="color: #6C757D">Vui lòng hoàn thiện đầy đủ các thông tin vào form bên dưới. <br>
+        <h3>{{ 'app.service.general-info' | i18n }}</h3>
+        <!-- <span nzType="secondary" style="color: #6C757D">Vui lòng hoàn thiện đầy đủ các thông tin vào form bên dưới. 
           Các trường thông tin có dấu (<span style="color: #ff4d4f;">*</span>) là các thông tin bắt buộc nhập.
-        </span>
+        </span> -->
         <div nz-row [nzGutter]="24">
           <div nz-col [nzSpan]="12">
             <nz-form-item class="mt-4">
-              <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Tên Kafka</nz-form-label>
+              <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>{{ 'app.kafka.name' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
               <nz-form-control [nzErrorTip]="kafkaErrorTpl">
                 <nz-input-group class="w-100" nzSize="large">
-                  <input nz-input type="text" placeholder="Nhập tên kafka" formControlName="serviceName" id="serviceName"
+                  <input nz-input type="text" [placeholder]="'app.kafka.name-placeholder' | i18n" formControlName="serviceName" id="serviceName"
                     autofocus />
                 </nz-input-group>
               </nz-form-control>
               <ng-template #kafkaErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                  <div>Vui lòng nhập tên dịch vụ Kafka</div>
+                  <div>{{ 'validation.service.name-required' | i18n }}</div>
                 </ng-container>
                 <ng-container *ngIf="control.hasError('minlength') || control.hasError('maxlength')">
-                  <div>Tên Kafka trong khoảng từ 5-50 ký tự</div>
+                  <div>{{ 'validation.service.name-length' | i18n }}</div>
                 </ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">
-                  <div>Tên Kafka chỉ bao gồm các chữ thường, chữ hoa, số và các ký tự _-</div>
+                  <div>{{ 'validation.service.name-pattern' | i18n }}</div>
                 </ng-container>
               </ng-template>
             </nz-form-item>
@@ -46,10 +54,10 @@
 
           <div nz-col [nzSpan]="12">
             <nz-form-item class="mt-4">
-              <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Phiên bản Kafka</nz-form-label>
-              <nz-form-control nzErrorTip="Vui lòng chọn phiên bản Kafka">
-                <nz-select formControlName="version" *ngFor="let data of listOfKafkaVersion" nzPlaceHolder="Chọn phiên bản Kafka" nzSize="large">
-                  <nz-option [nzValue]="data.helmVersion" [nzLabel]="data.apacheKafkaVersion"></nz-option>
+              <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>{{ 'app.kafka.version' | i18n}} (<span class="text-red">*</span>)</nz-form-label>
+              <nz-form-control [nzErrorTip]="'validation.service.version-required' | i18n">
+                <nz-select formControlName="version" [nzPlaceHolder]="'app.kafka.version-placeholder' | i18n" nzSize="large">
+                  <nz-option *ngFor="let data of listOfKafkaVersion" [nzValue]="data.helmVersion" [nzLabel]="data.apacheKafkaVersion"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
@@ -57,28 +65,32 @@
         </div>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="24" [nzXs]="24">Mô tả</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon> {{ 'app.service.description' | i18n }}</nz-form-label>
           <nz-form-control nzErrorTip="">
-            <textarea formControlName="description" nz-input placeholder="Mô tả dịch vụ" [nzAutosize]="{ minRows: 5, maxRows: 12 }" nzSize="large"></textarea>
+            <nz-textarea-count [nzMaxCharacterCount]="500">
+              <textarea formControlName="description" nz-input [placeholder]="'app.service.description' | i18n" 
+                [nzAutosize]="{ minRows: 5, maxRows: 12 }" nzSize="large">
+              </textarea>
+            </nz-textarea-count>
           </nz-form-control>
         </nz-form-item>
       </nz-card>
       
       <nz-card class="border-card">
-        <h3><b>Các gói dịch vụ</b></h3>
+        <h3><b>{{ 'app.service.packages-text' | i18n }}</b></h3>
         <nz-tabset nzCentered>
-          <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="clicktab()">
+          <nz-tab [nzTitle]="'app.Preconfigured.Package' | i18n" (nzClick)="clicktab()">
             <ng-template nz-tab>
-              <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfServicePack" class="carousel-div">
+              <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfferKafka" class="carousel-div">
                 <div *nguCarouselDef="let item;" class="item">
                   <div class="pack-item" [ngClass]="{ 'choose': item===chooseitem}" (click)="handleChoosePack(item)">
                     <div class="item-header">
                       <div class="item-name">
-                        <span>{{item.servicePackName}}</span>
+                        <span>{{item.offerName}}</span>
                         <div class="item-price">
                           <div class="price">
-                            <span>{{ item.price | CustomCurrency }}</span><br>
-                            <span class="unit-price">đ/tháng</span>
+                            <span>{{ item.price.fixedPrice.amount | number: '1.0-0' }}</span><br>
+                            <span class="unit-price">{{'app.order-detail.month' | i18n}}</span>
                           </div>
                         </div>
                       </div>
@@ -97,189 +109,350 @@
             </ng-template>
           </nz-tab>
           
-          <nz-tab nzTitle="Cấu hình tùy chọn">
-            <nz-form-item>
-              <div nz-col [nzSpan]="4"></div>
-              <nz-form-label [nzSm]="4" [nzXs]="24" nzRequired>vCPU</nz-form-label>
-              <nz-form-control [nzSm]="8" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị vCpu">
-                <input nz-input type="number" formControlName="vCpu" id="vCpu" autofocus />
-              </nz-form-control>
-            </nz-form-item>
+          <nz-tab [nzTitle]="'app.custom.configuration' | i18n">
+            <div nz-row class="customize-config">
+              <div nz-col [nzSpan]="5">
+                <nz-form-item>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>{{ 'app.kafka.broker' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
+                  <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="'validation.kafka.broker-required' | i18n">
+                    <input nz-input type="number" formControlName="broker" id="broker" autofocus nzSize="large" />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
 
-            <nz-form-item>
-              <div nz-col [nzSpan]="4"></div>
-              <nz-form-label [nzSm]="4" [nzXs]="24" nzRequired>RAM</nz-form-label>
-              <nz-form-control [nzSm]="8" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị Ram">
-                <input nz-input type="number" formControlName="ram" id="ram" autofocus />
-              </nz-form-control>
-            </nz-form-item>
+              <div nz-col [nzSpan]="5" class="config-suffix">
+                <nz-form-item>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU (<span class="text-red">*</span>)</nz-form-label>
+                  <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="cpuErrTpl">
+                    <nz-input-number-group nzSuffix="vCpu" nzSize="large">
+                      <nz-input-number formControlName="vCpu" id="vCpu" autofocus [nzMin]="0"
+                        (ngModelChange)="onChangeCpu($event)">
+                      </nz-input-number>
+                    </nz-input-number-group>
+                  </nz-form-control>
+                  <ng-template #cpuErrTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                        {{'kafka.upgrade.value.required' | i18n}}
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('min')">
+                        {{'kafka.upgrade.cpu-min' | i18n}}
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('max')">
+                        {{'kafka.upgrade.cpu-max' | i18n}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-item>
+              </div>
 
-            <nz-form-item>
-              <div nz-col [nzSpan]="4"></div>
-              <nz-form-label [nzSm]="4" [nzXs]="24" nzRequired>Storage</nz-form-label>
-              <nz-form-control [nzSm]="8" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị Storage">
-                <input nz-input type="number" formControlName="storage" id="storage" autofocus />
-              </nz-form-control>
-            </nz-form-item>
-
-            <nz-form-item>
-              <div nz-col [nzSpan]="4"></div>
-              <nz-form-label [nzSm]="4" [nzXs]="24" nzRequired>Broker</nz-form-label>
-              <nz-form-control [nzSm]="8" [nzXs]="24" nzErrorTip="Vui lòng nhập số lượng Broker">
-                <input nz-input type="number" formControlName="broker" id="broker" autofocus />
-              </nz-form-control>
-            </nz-form-item>
+              <div nz-col [nzSpan]="5" class="config-suffix">
+                <nz-form-item>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>RAM (<span class="text-red">*</span>)</nz-form-label>
+                  <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="ramErrTpl">
+                    <nz-input-number-group nzSuffix="GB" nzSize="large">
+                      <nz-input-number formControlName="ram" id="ram" autofocus [nzMin]="0"
+                        (ngModelChange)="onChangeRam($event)">
+                      </nz-input-number>
+                    </nz-input-number-group>
+                  </nz-form-control>
+                  <ng-template #ramErrTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                        {{'kafka.upgrade.value.required' | i18n}}
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('min')">
+                        {{'kafka.upgrade.ram-min' | i18n}}
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('max')">
+                        {{'kafka.upgrade.ram-max' | i18n}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-item>
+              </div>
+  
+              <div nz-col [nzSpan]="5" class="config-suffix">
+                <nz-form-item>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Storage (<span class="text-red">*</span>)</nz-form-label>
+                  <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="storageErrorTpl">
+                    <nz-input-number-group nzSuffix="GB" nzSize="large">
+                      <nz-input-number formControlName="storage" id="storage" autofocus [nzMin]="0"
+                        (ngModelChange)="onChangeStorage($event)">
+                      </nz-input-number>
+                    </nz-input-number-group>
+                  </nz-form-control>
+                  <ng-template #storageErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                        {{'kafka.upgrade.value.required' | i18n}}
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('min')">
+                        {{'kafka.upgrade.storage-min' | i18n}}
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('max')">
+                        {{'kafka.upgrade.storage-max' | i18n}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-item>
+              </div>
+  
+              
+            </div>
           </nz-tab>
         </nz-tabset>
       </nz-card>
 
       <nz-card class="border-card">
-        <h3><b>Cấu hình khác</b></h3>
-        <nz-radio-group formControlName="configType" (ngModelChange)="onChangeConfig($event)">
-          <label nz-radio [nzValue]="0" class="other-config">Cấu hình mặc định <b>(Khuyến nghị)</b></label>
-          <label nz-radio [nzValue]="1" class="other-config">Cấu hình tùy chỉnh</label>
+        <h3><b>{{ 'app.service.broker-config' | i18n }}</b></h3>
+        <nz-radio-group formControlName="configType" (ngModelChange)="onChangeConfig($event)" style="margin-bottom: 15px;">
+          <label nz-radio [nzValue]="0" class="other-config" style="margin-right: 80px;">{{ 'app.service.default-config' | i18n}} <b>({{ 'app.service.recommend' | i18n}})</b></label>
+          <label nz-radio [nzValue]="1" class="other-config">{{ 'app.service.custom-config' | i18n }}</label>
         </nz-radio-group>
 
         <ng-container *ngIf="showCustomConfig">
           <nz-form-item>
-            <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="numPartitions" nzRequired>
-                num.partitions
-                <div class="info-icon" 
-                    nzTooltipTitle="Cấu hình quy định số lượng partition (phân vùng) mà một topic có thể có khi nó được tạo. Mỗi partition là một phần của topic và chứa một phần của dữ liệu. Partition giúp Kafka phân phối và xử lý dữ liệu một cách hiệu quả" nzTooltipPlacement="rightTop" nz-tooltip>
-                    <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                </div>
+            <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="numPartitions" nzNoColon>
+                num.partitions (<span class="text-red">*</span>)
+                <img
+                  style="margin-left: 10px"
+                  [nzTooltipTitle]="'tooltip.kafka.numPartitions' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
             </nz-form-label>
             <nz-form-control [nzErrorTip]="numPartitionsErrorTpl">
-                <input type="number" nz-input placeholder="Nhập số partition" 
+                <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' num.partitions' " 
                     formControlName="numPartitions" (keypress)="isNumber($event)" 
                     id="numPartitions"  />
             </nz-form-control>
             <ng-template #numPartitionsErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    Giá trị num.partitions không được để trống
+                    {{ 'validation.kafka-required-1' | i18n }} num.partitions {{ 'validation.kafka-required-2' | i18n }}
                 </ng-container>
                 <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                    Giá trị num.partitions là số nguyên dương và trong khoảng 1-100
+                    {{ 'validation.kafka.numPartitions-length' | i18n }}
                 </ng-container>
             </ng-template>
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="defaultReplicationFactor" nzRequired>
-                  default.replication.factor
-                  <div class="info-icon" 
-                      nzTooltipTitle="Cấu hình quy định số lượng replica mặc định cho một topic khi topic đó được tạo" nzTooltipPlacement="rightTop" nz-tooltip>
-                      <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                  </div>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="defaultReplicationFactor" nzNoColon>
+                  default.replication.factor (<span class="text-red">*</span>)
+                  <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'tooltip.kafka.replicationFactor' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="defaultReplicationFactorTpl">
-                  <input type="number" nz-input placeholder="Nhập số default.replication.factor" 
+                  <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' default.replication.factor' "
                       formControlName="defaultReplicationFactor" (keypress)="isNumber($event)" 
-                      id="defaultReplicationFactor" (ngModelChange)="onChangeReplicationFactorAndMinInsync();" />
+                      id="defaultReplicationFactor" (ngModelChange)="onChangeDefaultReplicationFactor();" />
               </nz-form-control>
               <ng-template #defaultReplicationFactorTpl let-control>
+                  <ng-container *ngIf="control.hasError('invalidvalue')">
+                    {{ 'validation.kafka.replicationFactor-invalid' | i18n }}
+                  </ng-container>
                   <ng-container *ngIf="control.hasError('required')">
-                      Giá trị default.replication.factor không được để trống
+                    {{ 'validation.kafka-required-1' | i18n }} default.replication.factor {{ 'validation.kafka-required-2' | i18n }}
                   </ng-container>
                   <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                      Giá trị default.replication.factor là số nguyên dương và trong khoảng 1-3
+                    {{ 'validation.kafka.replicationFactor-length' | i18n }}
                   </ng-container>
               </ng-template>
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="minInsyncReplicas" nzRequired>
-                  min.insync.replicas
-                  <div class="info-icon" 
-                      nzTooltipTitle="Xác định số lượng tối thiểu các replica của 1 partition mà producer cần đợi xác nhận từ trước khi coi message là đã được ghi an toàn" nzTooltipPlacement="rightTop" nz-tooltip>
-                      <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                  </div>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="minInsyncReplicas" nzNoColon>
+                  min.insync.replicas (<span class="text-red">*</span>)
+                  <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'tooltip.kafka.minInsyncReplicas' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="minInsyncReplicasTpl">
-                  <input type="number" nz-input placeholder="Nhập số min.insync.replicas" 
+                  <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' min.insync.replicas' "
                       formControlName="minInsyncReplicas" (keypress)="isNumber($event)" 
                       id="minInsyncReplicas" (ngModelChange)="onChangeReplicationFactorAndMinInsync()" />
               </nz-form-control>
               <ng-template #minInsyncReplicasTpl let-control>
                   <ng-container *ngIf="control.hasError('invalidvalue')">
-                      Giá trị min.insync.replicas cần nhỏ hơn hoặc bằng default.replication.factor
+                    {{ 'validation.kafka.minInsyncReplicas-invalid' | i18n }}
                   </ng-container>
                   <ng-container *ngIf="control.hasError('required')">
-                      Giá trị min.insync.replicas không được để trống
+                    {{ 'validation.kafka-required-1' | i18n }} min.insync.replicas {{ 'validation.kafka-required-2' | i18n }}
                   </ng-container>
                   <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                      Giá trị min.insync.replicas là số nguyên dương và trong khoảng 1-3
+                    {{ 'validation.kafka.minInsyncReplicas-length' | i18n }}
                   </ng-container>
               </ng-template>
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="offsetTopicReplicationFactor" nzRequired>
-                  offset.topic.replication.factor
-                  <div class="info-icon" 
-                      nzTooltipTitle="Cấu hình quy định số lượng replica mặc định cho topic '__consumer_offsets'; topic này lưu trữ thông tin về offset của consumer, giúp theo dõi vị trí đọc của mỗi consumer trong mỗi partition" nzTooltipPlacement="rightTop" nz-tooltip>
-                      <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                  </div>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="offsetTopicReplicationFactor" nzNoColon>
+                  offset.topic.replication.factor (<span class="text-red">*</span>)
+                  <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'tooltip.kafka.offsetTopicReplica' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="offsetTopicReplicationFactorTpl">
-                  <input type="number" nz-input placeholder="Nhập số offset.topic.replication.factor" 
+                  <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' offset.topic.replication.factor' " 
                       formControlName="offsetTopicReplicationFactor" (keypress)="isNumber($event)" id="offsetTopicReplicationFactor" />
               </nz-form-control>
               <ng-template #offsetTopicReplicationFactorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">
-                      Giá trị offset.topic.replication.factor không được để trống
+                    {{ 'validation.kafka-required-1' | i18n }} offset.topic.replication.factor {{ 'validation.kafka-required-2' | i18n }}
                   </ng-container>
                   <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                      Giá trị offset.topic.replication.factor là số nguyên dương và trong khoảng 1-3
+                    {{ 'validation.kafka.offsetTopicReplica-length' | i18n }}
                   </ng-container>
               </ng-template>
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="logRetentionHours" nzRequired>
-                  log.retention.hours
-                  <div class="info-icon" 
-                      nzTooltipTitle="Cấu hình đặc tả thời gian giữ lại (retention) cho các log của partition trong Kafka; cấu hình này xác định bao lâu dữ liệu log sẽ được giữ lại trước khi bị xóa. Giá trị -1 là không giới hạn" nzTooltipPlacement="rightTop" nz-tooltip>
-                      <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                  </div>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="logRetentionHours" nzNoColon>
+                  log.retention.hours (<span class="text-red">*</span>)
+                  <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'tooltip.kafka.logRetentionHours' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="logRetentionHoursTpl">
-                  <input type="number" nz-input placeholder="Nhập số log.retention.hours" 
-                      formControlName="logRetentionHours"  id="logRetentionHours" />
+                  <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' log.retention.hours' " 
+                      formControlName="logRetentionHours" id="logRetentionHours" />
                       <!-- (keypress)="isNumberInt($event)" -->
               </nz-form-control>
               <ng-template #logRetentionHoursTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">
-                      Giá trị log.retention.hours không được để trống
+                    {{ 'validation.kafka-required-1' | i18n }} log.retention.hours {{ 'validation.kafka-required-2' | i18n }}
                   </ng-container>
                   <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                      Giá trị log.retention.hours là số nguyên dương nằm trong khoảng -1 đến 2.147.483.647 
+                    {{ 'validation.kafka.logRetentionHours-length' | i18n }}
                   </ng-container>
               </ng-template>
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="logSegmentBytes" nzRequired>
-                  log.segment.bytes
-                  <div class="info-icon" 
-                      nzTooltipTitle="Cấu hình quy định kích thước tối đa của mỗi segment trong log của 1 partition; log trong Kafka được chia thành các segment để quản lý và xóa dữ liệu hiệu quả" nzTooltipPlacement="rightTop" nz-tooltip>
-                      <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                  </div>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="logSegmentBytes" nzNoColon>
+                  log.segment.bytes (<span class="text-red">*</span>)
+                  <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'tooltip.kafka.logSegmentBytes' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="logSegmentBytesTpl">
-                  <input type="number" nz-input placeholder="Nhập số log.segment.bytes" 
+                  <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' log.segment.bytes' " 
                       formControlName="logSegmentBytes" (keypress)="isNumber($event)" id="logSegmentBytes" />
               </nz-form-control>
               <ng-template #logSegmentBytesTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">
-                      Giá trị log.segment.bytes không được để trống
+                    {{ 'validation.kafka-required-1' | i18n }} log.segment.bytes {{ 'validation.kafka-required-2' | i18n }}
                   </ng-container>
                   <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                      Giá trị log.segment.bytes là số nguyên dương nằm trong khoảng 1 đến 10.737.418.240 (10GB)
+                    {{ 'validation.kafka.logSegmentBytes-length' | i18n }}
                   </ng-container>
               </ng-template>
           </nz-form-item>
         </ng-container>
+      </nz-card>
+
+      <nz-card class="border-card">
+        <h3><b>{{ 'app.service.network-config' | i18n }}</b></h3>
+        
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzFor="vpcNetwork" [nzSm]="24" [nzXs]="24" nzNoColon>Mạng VPC (<span class="text-red">*</span>)</nz-form-label>
+              <nz-form-control nzErrorTip="Mạng VPC không để trống">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn mạng VPC" formControlName="vpcNetwork" id="vpcNetwork" nzSize="large" 
+                  class="w-85" (ngModelChange)="onSelectedVlan($event)">
+                  <nz-option *ngFor="let item of listOfVPCNetworks" 
+                    [nzLabel]="item.name" [nzValue]="item.id">
+                  </nz-option>
+                </nz-select>
+                <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip 
+                  class="borderless" (click)="refreshVPCNetwork()">
+                  <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
+                </button>
+                <div class="small-description">
+                  <p style="font-size: 12px;">Chọn một VPC cho Kafka Cluster của bạn.
+                    <a routerLink="/app-smart-cloud/vlan/network/list" target="_balnk">Nhấp vào đây để quản lý các VPC
+                      của bạn</a>
+                    </p>
+                </div>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzFor="subnet" nzFor="vpcNetwork" [nzSm]="24" [nzXs]="24" nzNoColon>Subnet (<span class="text-red">*</span>)</nz-form-label>
+              <nz-form-control [nzErrorTip]="errorSubnetTpl">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-85" nzSize="large"
+                  (ngModelChange)="onSelectSubnet($event)">
+                  <ng-container *ngFor="let item of listOfSubnets">
+                    <ng-container *ngIf="item.enableDhcp; else disableSubnetTpl">
+                      <nz-option [nzLabel]="item.subnetAddressRequired"
+                        [nzValue]="item.id"></nz-option>
+                    </ng-container>
+                    <ng-template #disableSubnetTpl>
+                      <nz-option nzCustomContent [nzLabel]="item.subnetAddressRequired"
+                        [nzValue]="item.subnetAddressRequired" [nzDisabled]="true">
+                        <div nzTooltipTitle="Chưa mở DHCP" nzTooltipPlacement="bottom" nz-tooltip>
+                          {{item.subnetAddressRequired}}
+                        </div>
+                      </nz-option>
+                    </ng-template>
+                  </ng-container>
+                </nz-select>
+                <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip 
+                  class="borderless" (click)="refreshSubnet()">
+                  <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
+                </button>
+                <!-- <div class="small-description">
+                  <p style="font-size: 12px;">Lựa chọn subnet cho cluster này</p>
+                </div> -->
+              </nz-form-control>
+              <ng-template #errorSubnetTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  Subnet không để trống
+                </ng-container>
+                <ng-container *ngIf="control.hasError('usedSubnet')">
+                  Subnet đã được sử dụng
+                </ng-container>
+              </ng-template>
+            </nz-form-item>
+          </div>
+        </div>
+      </nz-card>
+
+      <nz-card class="border-card">
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="12" class="box-duration">
+            <nz-form-item>
+              <nz-form-label [nzXs]="24" [nzSm]="24" nzNoColon>{{ 'app.service.duration' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
+              <nz-form-control [nzXs]="24" [nzSm]="24" [nzErrorTip]="'validation.kafka.duration-required' | i18n">
+                <nz-input-number formControlName="usageTime" id="usageTime" autofocus nzSize="large" [nzMin]="0"
+                  [nzPlaceHolder]="'app.service.duration-placeholder' | i18n" (ngModelChange)="onChangeUsageTime()">
+                </nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12">
+            <div>
+              <p style="padding-top: 30px; margin-bottom: 0px;">{{ 'app.text.creation-time' | i18n }}: {{createDate | date: 'dd/MM/yyyy'}}</p>
+              <ng-container *ngIf="expiryDate">
+                <p style="color: #ea3829;">{{ 'app.service.expiration-date' | i18n }}: {{expiryDate | date: 'dd/MM/yyyy'}}</p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
       </nz-card>
 
     </form>
@@ -288,49 +461,45 @@
   <!-- payment -->
   <div nz-col [nzSpan]="8" class="gutter-row">
     <nz-card class="price-card">
-      <h3><b>Thành tiền</b></h3>
+      <h3><b>{{ 'app.service.price-title' | i18n }}</b></h3>
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
-          <div class="label-price">Chi phí vCPU</div>
-          <div class="label-quantity">300.000 đồng x 3 cái</div>
+          <div class="label-price"> {{ 'app.kafka.cost-cpu' | i18n }}</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">1.000.000 VNĐ</div>
-          <div class="unit-total">VNĐ/tháng</div>
+          <div class="value-price">{{ this.unitPrice.cpu * cpu | number: '1.0-0'}} VND</div>
+          <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
-          <div class="label-price">Chi phí RAM</div>
-          <div class="label-quantity">300.000 đồng x 3 cái</div>
+          <div class="label-price"> {{ 'app.kafka.cost-ram' | i18n }} </div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">1.000.000 VNĐ</div>
-          <div class="unit-total">VNĐ/tháng</div>
+          <div class="value-price">{{ this.unitPrice.ram * ram | number: '1.0-0'}} VND</div>
+          <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
-          <div class="label-price">Chi phí Storage</div>
-          <div class="label-quantity">300.000 đồng x 3 cái</div>
+          <div class="label-price"> {{ 'app.kafka.cost-storage' | i18n }}</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">1.000.000 VNĐ</div>
-          <div class="unit-total">VNĐ/tháng</div>
+          <div class="value-price">{{ this.unitPrice.storage * storage | number: '1.0-0'}} VND</div>
+          <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
-
       <div nz-row [nzGutter]="8" class="mt-5 price-panel">
         <div nz-col [nzSpan]="12">
-          <div class="label-price">Thành tiền</div>
-          <div class="label-quantity"><i>(Đã bao gồm 10% VAT)</i></div>
+          <div class="label-price">{{ 'app.service.price-title' | i18n }}</div>
+          <div class="label-quantity"><i>({{ 'app.service.include' | i18n }} 10% VAT)</i></div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price total-price">3.000.000 VNĐ</div>
-          <div class="unit-total">VNĐ/tháng</div>
+          <div class="value-price total-price">{{ (this.unitPrice.cpu * cpu + this.unitPrice.ram * ram + this.unitPrice.storage * storage) * usageTime * 1.1 | number: '1.0-0'}} VND</div>
+          <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>
 
@@ -338,17 +507,48 @@
         <div nz-col [nzSpan]="12">
           <button nz-button nzType="default" nzBlock class="border-button" (click)="onCancelCreate()">
             <span nz-icon nzType="close" nzTheme="outline"></span>
-            <b> Hủy</b>
+            <b> {{ 'app.button.cancel' | i18n }}</b>
           </button>
         </div>
 
         <div nz-col [nzSpan]="12">
           <button nz-button nzType="primary" nzBlock class="border-button" (click)="onSubmitPayment()"
             [disabled]="myform.invalid">
-            <b>Khởi tạo</b>
+            <b>{{ 'app.button.create' | i18n }}</b>
           </button>
         </div>
       </div>
+
+      <!-- Modal cancle create -->
+        <nz-modal
+          [(nzVisible)]="isVisibleCancle"
+          [nzTitle]="'app.kafka.create.cancel-title' | i18n"
+          (nzOnCancel)="handleCancelPopup()"
+          nzKeyboard="false"
+          nzMaskClosable="false"
+        >
+        <div *nzModalContent>
+          <div style="text-align: center; font-size: 16px;">{{ 'app.kafka.create.cancel-body' | i18n }} <br>
+            <i>{{ 'app.kafka.create.note' | i18n }} </i>
+          </div>
+        </div>
+        <div *nzModalFooter>
+          <button nz-button (click)="handleCancelPopup()" style="margin-right: 10px;">
+              <img
+                  style="padding-right: 10px; margin-top: -4px"
+                  src="assets/imgs/cancel.svg"
+                  alt=""
+              />{{ 'app.button.cancel' | i18n }}
+          </button>
+          <button nz-button nzType="primary" (click)="handleOkCancle()">
+              <img
+                  style="padding-right: 10px; margin-top: -4px"
+                  src="assets/imgs/confirm.svg"
+                  alt=""
+              />{{ 'app.button.confirm' | i18n }}
+          </button>
+        </div>  
+      </nz-modal>
     </nz-card>
   </div>
 </div>

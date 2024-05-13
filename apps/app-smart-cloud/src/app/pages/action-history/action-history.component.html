@@ -1,26 +1,14 @@
 <page-header
   [breadcrumb]="breadcrumb"
-  [action]="action"
-  [title]="'Lịch sử thao tác'"
+  [title]="'app.breadcrumb.action-history' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Home</a>
+        <a [routerLink]="['/']">{{"app.breadcrumb.home" | i18n}}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>Action History</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{"app.breadcrumb.action-history" | i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
-  </ng-template>
-  <ng-template #action>
-    <div class="alain-custom-action text-right">
-      <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="regionId"
-        (valueChanged)="projectChange($event)"
-      ></project-select-dropdown>
-    </div>
   </ng-template>
 </page-header>
 
@@ -43,7 +31,7 @@
         <input
           name="name"
           nz-input
-          placeholder="Tìm kiếm  theo thao tác, dịch vụ, loại dịch vụ"
+          [placeholder]="'app.action-history.search' | i18n"
           [(ngModel)]="searchParam"
           (keyup.enter)="getData()"
         />
@@ -53,7 +41,7 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          nz-tooltip="Tìm kiếm"
+          [nz-tooltip]="'app.button.search' | i18n"
           (click)="doSearch()"
         />
       </ng-template>
@@ -71,26 +59,29 @@
     (nzPageSizeChange)="getData()"
     (nzPageIndexChange)="getData()"
     [nzScroll]="{ x: '100%', y: '55vh' }"
+    [nzLoading]="isLoading"
   >
     <thead>
       <tr>
         <th>ID</th>
-        <th>Thao tác</th>
-        <th>Loại dịch vụ</th>
-        <th>Tên dịch vụ</th>
-        <th>Khu vực</th>
-        <th>Thông tin</th>
-        <th>Ngày tạo tác</th>
+        <th>{{"app.action-history.operation" | i18n}}</th>
+        <th>{{"app.action-history.serviceType" | i18n}}</th>
+        <th>{{"app.action-history.serviceName" | i18n}}</th>
+        <th>{{"app.action-history.region" | i18n}}</th>
+        <th>{{"app.action-history.information" | i18n}}</th>
+        <th>{{"app.action-history.operation-account" | i18n}}</th>
+        <th>{{"app.action-history.date" | i18n}}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let item of listOfActionHistory">
-        <td>{{ item.eventID }}</td>
+        <td>{{ item.eventId.substring(0,7) }}</td>
         <td>{{ item.eventName }}</td>
         <td>{{ item.resourceType }}</td>
         <td>{{ item.resourceName }}</td>
         <td>{{ item.regionText }}</td>
-        <td>{{ item.additionalInfo }}</td>
+        <td>{{ item.summary }}</td>
+        <td>{{ (item.actor == "" ?  "Hệ thống tự động" : item.actor) }}</td>
         <td>{{ item.createdTime | date : 'HH:mm:ss dd/MM/yyyy' }}</td>
       </tr>
     </tbody>

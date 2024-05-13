@@ -6,18 +6,21 @@ import {
   OnInit,
 } from '@angular/core';
 import {
-  BlockStorageAttachments,
   InstancesModel,
   Network,
   SecurityGroupModel,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { G2TimelineData } from '@delon/chart/timeline';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { finalize } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import {
+  ProjectModel,
+  RegionModel,
+} from '../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-instances-detail',
@@ -34,11 +37,12 @@ export class InstancesDetailComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
     private route: Router,
-    public message: NzMessageService
+    private notification: NzNotificationService
   ) {}
 
   formatTimestamp(timestamp: number): string {
@@ -54,29 +58,42 @@ export class InstancesDetailComponent implements OnInit {
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
   }
 
+  checkPermission: boolean = false;
   ngOnInit(): void {
+    this.getData();
+  }
+
+  getData() {
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
-        this.dataService.getById(this.id, true).subscribe((data: any) => {
-          this.instancesModel = data;
-          this.loading = false;
-          this.cloudId = this.instancesModel.cloudId;
-          this.regionId = this.instancesModel.regionId;
-          this.getListIpPublic();
-          this.getMonitorData();
-          this.dataService
-            .getAllSecurityGroupByInstance(
-              this.cloudId,
-              this.regionId,
-              this.instancesModel.customerId,
-              this.instancesModel.projectId
-            )
-            .subscribe((datasg: any) => {
-              this.listSecurityGroupModel = datasg;
-              this.cdr.detectChanges();
-            });
-          this.cdr.detectChanges();
+        this.dataService.getById(this.id, true).subscribe({
+          next: (data: any) => {
+            this.checkPermission = true;
+            this.instancesModel = data;
+            this.loading = false;
+            this.cloudId = this.instancesModel.cloudId;
+            this.regionId = this.instancesModel.regionId;
+            this.getListIpPublic();
+            this.getMonitorData();
+            this.dataService
+              .getAllSecurityGroupByInstance(
+                this.cloudId,
+                this.regionId,
+                this.instancesModel.customerId,
+                this.instancesModel.projectId
+              )
+              .subscribe((datasg: any) => {
+                this.listSecurityGroupModel = datasg;
+                this.cdr.detectChanges();
+              });
+            this.cdr.detectChanges();
+          },
+          error: (e) => {
+            this.checkPermission = false;
+            this.notification.error(e.error.detail, '');
+            this.returnPage();
+          },
         });
       }
     });
@@ -123,10 +140,21 @@ export class InstancesDetailComponent implements OnInit {
     this.route.navigate(['/app-smart-cloud/instances']);
   }
 
+  project: ProjectModel;
+  onProjectChange(project: ProjectModel) {
+    this.project = project;
+  }
+
   navigateToEdit() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit/' + this.id,
-    ]);
+    if (this.project.type == 0) {
+      this.route.navigate([
+        '/app-smart-cloud/instances/instances-edit/' + this.id,
+      ]);
+    } else {
+      this.route.navigate([
+        '/app-smart-cloud/instances/instances-edit-vpc/' + this.id,
+      ]);
+    }
   }
 
   navigateToChangeImage() {
@@ -152,38 +180,55 @@ export class InstancesDetailComponent implements OnInit {
 
   GSCPU = [
     {
-      key: 'cpu',
-      name: 'CPU',
-    },
-    {
       key: 'ram',
       name: 'RAM',
     },
     {
-      key: 'network',
-      name: 'Network',
+      key: 'cpu',
+      name: 'vCPU',
     },
     {
       key: 'diskio',
-      name: 'Disk IOPS',
+      name: 'DiskIO',
     },
     {
-      key: 'diskrw',
-      name: 'Disk Read / Write',
+      key: 'network',
+      name: 'Network IO',
     },
+
+    // {
+    //   key: 'diskrw',
+    //   name: 'Disk Read / Write',
+    // },
   ];
   GSTIME = [
     {
       key: 5,
-      name: '5 phút',
+      name: '5 ' + this.i18n.fanyi('app.minute'),
     },
     {
       key: 15,
-      name: '15 phút',
+      name: '15 ' + this.i18n.fanyi('app.minute'),
     },
     {
       key: 60,
-      name: '1 giờ',
+      name: '1 ' + this.i18n.fanyi('app.hour'),
+    },
+    {
+      key: 1440,
+      name: '1 ' + this.i18n.fanyi('app.day'),
+    },
+    {
+      key: 10080,
+      name: '1 ' + this.i18n.fanyi('app.week'),
+    },
+    {
+      key: 302400,
+      name: '1 ' + this.i18n.fanyi('app.month'),
+    },
+    {
+      key: 907200,
+      name: '3 ' + this.i18n.fanyi('app.months'),
     },
   ];
 

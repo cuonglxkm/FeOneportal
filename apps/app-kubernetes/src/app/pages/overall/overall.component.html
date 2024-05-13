@@ -1,0 +1,82 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-kubernetes']">Container</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-kubernetes']">Danh sách cluster</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Quản lý Cluster: <ng-container *ngIf="detailCluster"><b>{{detailCluster?.clusterName}}</b></ng-container>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+
+  <!-- action -->
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)" [isDetail]="true"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="onProjectChange($event)" [isDetail]="true"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<nz-tabset [nzSelectedIndex]="selectedIndexTab" (nzSelectedIndexChange)="onChangeTab($event)" nzSize="large">
+  <!-- detail tab -->
+  <nz-tab [nzTitle]="detailTitleTpl">
+    <ng-template nz-tab>
+      <one-portal-detail-cluster
+        [vpcNetwork]="vpcNetwork"
+        [yamlString]="yamlString"
+        [sshKeyString]="sshKeyString"
+      ></one-portal-detail-cluster>
+    </ng-template>
+  </nz-tab>
+  <ng-template #detailTitleTpl>
+    <label>Chi tiết dịch vụ</label>
+  </ng-template>
+
+  <!-- instance tab -->
+  <nz-tab [nzTitle]="instanceTitleTpl">
+    <ng-template nz-tab>
+      <cluster-instances
+        [namespace]="detailCluster?.namespace"
+        [serviceOrderCode]="detailCluster?.serviceOrderCode"
+        [projectId]="projectId">
+      </cluster-instances>
+    </ng-template>
+  </nz-tab>
+  <ng-template #instanceTitleTpl>
+    <label>Instance</label>
+  </ng-template>
+
+  <!-- security group tab -->
+  <!-- disable this tab if cluster is creating -->
+  <nz-tab [nzTitle]="sgTitleTpl" [nzDisabled]="detailCluster?.serviceStatus == 1">
+    <ng-template nz-tab>
+      <security-group [regionId]="regionId" [projectId]="projectId"
+        [detailCluster]="detailCluster"></security-group>
+    </ng-template>
+  </nz-tab>
+  <ng-template #sgTitleTpl>
+    <label [ngClass]="{'no-access': detailCluster?.serviceStatus == 1}">
+      Security Group
+    </label>
+  </ng-template>
+
+  <!-- log tab -->
+  <nz-tab [nzTitle]="logTitleTpl">
+    <ng-template nz-tab>
+      <one-portal-logs
+        [serviceOrderCode]="detailCluster?.serviceOrderCode"
+      ></one-portal-logs>
+    </ng-template>
+  </nz-tab>
+  <ng-template #logTitleTpl>
+    <label>Nhật ký thao tác</label>
+  </ng-template>
+</nz-tabset>

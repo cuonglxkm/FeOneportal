@@ -5,6 +5,7 @@
 //@import url('https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap');
 @import '@fontsource/inter';
 @import '@delon/theme/theme-default.less';
+@import '../assets/color.less';
 
 // ==========The following is the custom theme variable area==========
 // The theme paraments can be generated at https://ng-alain.github.io/ng-alain/
@@ -57,6 +58,10 @@
     .ant-form-item-required-mark-optional
   )::before {
   display: none;
+}
+
+.ant-form label {
+  font-size: 16px;
 }
 
 .ant-table-thead > tr > th {
@@ -157,7 +162,7 @@ u {
 }
 
 .ant-select:not(.ant-select-customize-input) .ant-select-selector {
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
@@ -200,32 +205,77 @@ u {
 .ant-input-affix-wrapper {
   // Input group
   border-radius: 8px;
+  padding:0px 11px;
 }
 
+//Input
 .ant-input {
   border-radius: 8px;
+  height: 40px;
+  font-size: 16px;
 }
-
+.ant-select-show-search.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  cursor: text;
+  border-radius: 8px;
+  height: 40px;
+  font-size: 16px;
+}
 .input-custom {
   display: flex;
   height: 40px;
-  border-radius: 8px;
+  border-radius: 4px;
   justify-content: space-between;
   align-items: center;
+  font-size: 16px;
 }
 
-.input-select-custom{
+// END INPUT
+
+//SELECT
+
+.input-select-custom {
   height: 40px;
 }
 
-.input-select-option-custom{
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  height: 100%;
+}
+
+.ant-select-single .ant-select-selector .ant-select-selection-item {
   display: flex;
   align-items: center;
 }
 
+share-users-combobox nz-select-item.ant-select-selection-item,
+project-select-dropdown nz-select-item.ant-select-selection-item {
+  display: block !important;
+  flex: unset;
+}
 
+.ant-select-selector{
+  display: flex;
+  align-items: center;
+}
 
-// END INPUT
+//END SELECT
+
+//DATE PICKPER
+.ant-picker{
+  border-radius: 8px;
+}
+
+.input-date-picker{
+  height: 40px;
+}
+//END DATE PICKPER
+
+//CARD
+
+.ant-card {
+  border-radius: 8px;
+}
+
+//END CARD
 
 // BUTTON
 
@@ -247,7 +297,7 @@ u {
 }
 
 .ant-btn-primary {
-  color: #ffffff;
+  color: @white;
   border-color: @button-primary-color;
   background-color: @button-primary-color;
   border-radius: @button-border-medium-radius;
@@ -257,7 +307,7 @@ u {
 .ant-btn-primary:focus {
   border-color: @button-primary-color-hover;
   background: @button-primary-color-hover;
-  color: #ffffff;
+  color: @white;
 }
 
 // END BUTTON
@@ -315,8 +365,9 @@ body {
 }
 
 .text-card-header {
-  color: #333333;
-  font-size: 20px;
+  // color: #333333;
+  color:@text-subtitle-color;
+  font-size: @subtitle-fontsize;
   font-weight: 600;
   line-height: 28px;
   letter-spacing: 0.10000000149011612px;
@@ -366,8 +417,8 @@ body {
 }
 
 .page-header__title {
-  color: #2b2d3b;
-  font-size: 28px;
+  color: @text-title-color;
+  font-size: @title-fontsize;
   font-weight: 600;
   line-height: 40px;
   letter-spacing: 0.1px;
@@ -402,6 +453,26 @@ body {
   text-align: left;
 }
 
+.text-card-header-dashboard {
+  font-family: Inter, serif;
+  font-size: 45px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+  color: #0074cc;
+}
+
+.text-body-card-dashboard {
+  font-family: Inter, serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+  color: #2b2d3b;
+}
+
 // MENU
 .sidebar-nav__selected > .sidebar-nav__item-link {
   color: #0074cc;
@@ -426,4 +497,12 @@ body {
 body {
   scrollbar-color: rgba(0, 0, 0, 0.3) #fafafa;
 }
+
+.items-center-icon{
+  display: flex;
+  align-items: center;
+  margin:0px 10px;
+  cursor: pointer;
+}
 // END MENU
+

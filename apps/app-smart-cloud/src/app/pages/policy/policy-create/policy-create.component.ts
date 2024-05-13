@@ -1,18 +1,18 @@
 import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
-import {PermissionPolicyModel} from "../policy.model";
-import {PolicyService} from "../../../shared/services/policy.service";
+import {PermissionPolicyModel} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
+import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {AppValidator} from "../../../../../../../libs/common-utils/src";
+import {AppValidator, ProjectModel, RegionModel} from "../../../../../../../libs/common-utils/src";
 import {ClipboardService} from "ngx-clipboard";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {finalize} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
 import qrcodegen from "ng-zorro-antd/qr-code/qrcodegen";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-policy-create',
@@ -93,7 +93,8 @@ export class PolicyCreateComponent {
   constructor(private service: PolicyService, private router: Router,
               private clipboardService: ClipboardService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private notification: NzNotificationService,) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = "code";
   }
@@ -333,11 +334,11 @@ export class PolicyCreateComponent {
     this.service.createPolicy(request)
       .subscribe({
         next: post => {
-          this.notification.success('Thành công', 'Tạo mới thành công policy')
+          this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.create-policy.noti.success1"))
           this.router.navigate(['/app-smart-cloud/policy']);
         },
         error: e => {
-          this.notification.error('Thất bại', 'Tạo mới thất bại policy')
+          this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.create-policy.noti.fail1"))
         },
       });
     this.isVisibleCreate = false;

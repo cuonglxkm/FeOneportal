@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { VpnConnectionDetail } from 'src/app/shared/models/vpn-connection';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
 
@@ -13,7 +12,7 @@ import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.ser
   styleUrls: ['./detail-vpn-connection.component.less'],
 })
 export class DetailVpnConnectionComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean = false;
@@ -48,7 +47,7 @@ export class DetailVpnConnectionComponent implements OnInit {
       .subscribe(
         (data) => {
           this.vpnConnection = data;
-          console.log(data);
+          
 
           this.isLoading = false;
         },

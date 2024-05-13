@@ -1,0 +1,538 @@
+<nz-card style="width: auto; min-height: 500px;">
+  <nz-spin [nzSpinning]="isLoading">
+    <nz-header>
+      <span class="mx-2" nz-typography>Databases: <strong> {{totalDatabase}} </strong></span>
+      <span class="mx-2" nz-typography>Collections: <strong> {{totalCollection}} </strong></span>
+    </nz-header>
+
+    <nz-layout>
+      <nz-sider nzCollapsible nzBreakpoint="lg" [nzCollapsedWidth]="0">
+        <div class="ml-2 mr-2">
+          <div class="mt-2 mb-2">
+            <button nz-button nzType="primary" nzBlock nzShape="round" (click)="showCreateDB()">
+              <span nz-icon nzType="plus" nzTheme="outline"></span>Tạo Database
+            </button>
+          </div>
+
+          <div class="mt-2">
+            <input nz-input placeholder="Tìm kiếm database" [ngModel]="inputValue"
+              (ngModelChange)="onChangeSearch($event)" />
+          </div>
+        </div>
+        <div class="ml-2 mt-2" style="overflow-x: hidden; overflow-y: auto; height: 70%">
+          <ul nz-menu nzMode="inline">
+            <li nz-menu-item *ngFor="let db of listOfDatabase" (click)="changeInput(db.db)"
+              [nzSelected]="db.isSelected">
+              <span nz-icon nzType="database" nzTheme="outline"></span>
+              {{ db.db }}
+            </li>
+          </ul>
+        </div>
+      </nz-sider>
+      <nz-content>
+        <div class="mx-5 mb-5 mt-2" nz-row>
+          <div nz-col nzSpan="16" class="">
+            <div nz-row *ngIf="totalDatabase > 0">
+              <h2 nz-col>
+                <span *ngIf="currentDatabase !== ''">Database: </span>
+                <span style="color: #0074cc"><strong>{{ currentDatabase }}</strong></span>
+              </h2>
+
+              <div nz-col class="mt-1 ml-4" *ngIf="totalDatabase > 0">
+                <img class="mx-2" (click)="synDatabase()" src="assets/imgs/refresh.svg" alt="" style="cursor: pointer;"
+                  nz-tooltip="Đồng bộ" />
+                <img (click)="showDelDB()" src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;"
+                  nz-tooltip="Xóa database" />
+              </div>
+            </div>
+
+            <div nz-row nzJustify="start" nzAlign="middle" *ngIf="totalDatabase > 0">
+              <span nz-col nzSpan="6" *ngIf="storageSize !== ''">Dung lượng : <strong>{{ storageSize }}</strong></span>
+              <span nz-col nzSpan="4" *ngIf="totalDocument !== ''">Document: <strong>{{ totalDocument }}</strong></span>
+              <span nz-col nzSpan="4" *ngIf="indexSize !== ''">Index: <strong>{{ indexSize }}</strong></span>
+              <span nz-col nzSpan="6" *ngIf="size !== ''">Dung lượng index: <strong>{{ indexSize }}</strong></span>
+            </div>
+          </div>
+
+          <div nz-col nzSpan="8" nzAlign="middle" class="mt-4">
+            <div nz-row nzJustify="end">
+              <div>
+                <button nz-button [disabled]="currentDatabase === '' || totalDatabase == 0" nzType="primary"
+                  style="margin-right: 0;" (click)="showCreateCollection()">
+                  <span nz-icon nzType="plus" nzTheme="outline"></span>
+                  Tạo collection
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <nz-table class="mx-5" nzBordered #basicTable [nzSize]="'default'" nzShowPagination
+            [nzFrontPagination]="false" [nzData]="listOfCollection" [nzTotal]="total" [nzPageSize]="pageSize"
+            [nzPageIndex]="pageIndex" (nzPageSizeChange)="handlePageSizeChange($event)"
+            (nzPageIndexChange)="handlePageIndexChange($event)">
+            <thead>
+              <tr>
+                <th [nzAlign]="'center'" nzWidth="5%">STT</th>
+                <th [nzAlign]="'left'" nzWidth="20%">Tên Collection</th>
+                <th [nzAlign]="'center'" nzWidth="10%">Dung lượng</th>
+                <th [nzAlign]="'center'" nzWidth="10%">Storage size</th>
+                <th [nzAlign]="'center'" nzWidth="10%">Bản ghi</th>
+                <th [nzAlign]="'center'" nzWidth="10%">Index</th>
+                <th [nzAlign]="'center'" nzWidth="5%">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of basicTable.data; let i = index">
+                <td [nzAlign]="'center'">{{ (Number(i)+1 + pageSize*(pageIndex-1)) }}</td>
+                <td [nzAlign]="'left'" nzBreakWord>
+                  {{ data.coll }}
+                  <nz-tag [nzColor]="'blue'" *ngIf="data.collection_type">{{
+                    data.collection_type
+                    }}</nz-tag>
+                </td>
+                <td [nzAlign]="'center'">
+                  {{ convertNumber(data.size) }}
+                </td>
+                <td [nzAlign]="'center'">
+                  {{ convertNumber(data.storage_size) }}
+                </td>
+                <td [nzAlign]="'center'">{{ data.document_total }}</td>
+                <td [nzAlign]="'center'">{{ data.indexes }}</td>
+                <td [nzAlign]="'center'">
+                  <img (click)="dropCollection(currentDatabase, data.coll)" src="assets/imgs/trash1.svg" alt=""
+                    style="cursor: pointer;" nz-tooltip="Xóa" />
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </nz-content>
+    </nz-layout>
+  </nz-spin>
+</nz-card>
+<nz-modal [(nzVisible)]="isShowCreateColl" nzTitle="Thêm mới Collection" [nzFooter]="footerCreColl"
+  [nzContent]="createColl" (nzOnCancel)="cancleCreateColl()"></nz-modal>
+<ng-template #createColl>
+  <form nz-form nzLayout="vertical" [formGroup]="validateFormAddColl">
+    <nz-form-item>
+      <nz-form-label nzSpan="12" nzFor="databaseName" nzLabelAlign="left">Tên database (<span class="text-red">*</span>)
+      </nz-form-label>
+      <nz-form-control nzSpan="24">
+        <input nzSize="large" nz-input type="text" formControlName="currentDB" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzSpan="12" nzFor="collectionName" nzLabelAlign="left">Tên collection (<span
+          class="text-red">*</span>)
+      </nz-form-label>
+      <nz-form-control nzSpan="24" [nzErrorTip]="collectionError">
+        <input nz-input nzSize="large" name="collectionName" type="collectionName" id="collectionName"
+          formControlName="collectionName" placeholder="Nhập tên collection" />
+
+        <ng-template #collectionError let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Collection không được để trống.
+          </ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">
+            Collection chỉ bao gồm: chữ, số, '_' và tối đa 128 ký tự.
+          </ng-container>
+          <ng-container *ngIf="control.hasError('maxLength')">
+            Collection chỉ bao gồm: chữ, số, '_' và tối đa 128 ký tự.
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <div nz-row>
+      <nz-form-label nz-col nzSpan="12" nzFor="options" nzLabelAlign="left">Chọn loại collection
+      </nz-form-label>
+      <div nz-col nzSpan="24">
+        <nz-select nzSize="large" style="width: 100%;border-radius: 8px;" nzShowSearch nzAllowClear=""
+          nzPlaceHolder="Chọn tùy chọn" [ngModelOptions]="{ standalone: true }" [(ngModel)]="selectedOptionColl"
+          (ngModelChange)="onChangeSelectColl()">
+          <nz-option nzLabel="Capped Collection" nzValue="capped" nzCustomContent>
+            Capped Collection
+            <img style="margin-left: 10px"
+              [nzTooltipTitle]="'Capped Collection có dung lượng cố định mà các hành động insert hoặc truy xuất dữ liệu dựa trên thứ tự insert Khi dữ liệu mới được ghi vào vượt quá dung lượng đã cấu hình, dữ liệu cũ nhất được tự động xoá bỏ.'"
+              nz-tooltip src="assets/imgs/pajamas_question.svg" alt="" />
+          </nz-option>
+
+          <nz-option nzLabel="TimeSeries Collection" nzValue="time" nzCustomContent>
+            TimeSeries Collection
+            <img style="margin-left: 10px"
+              [nzTooltipTitle]="'Time series collection lưu trữ hiệu quả các chuỗi đo lường trong một khoảng thời gian. Dữ liệu time series là bất kỳ dữ liệu nào được thu thập theo thời gian và được xác định duy nhất bởi một hoặc nhiều tham số không thay đổi. Các tham số không thay đổi xác định dữ liệu time series thường là metadata của nguồn dữ liệu.'"
+              nz-tooltip src="assets/imgs/pajamas_question.svg" alt="" />
+          </nz-option>
+        </nz-select>
+      </div>
+    </div>
+
+    <div *ngIf="selectedOptionColl === 'capped'" class="mt-5">
+      <nz-form-item>
+        <nz-form-label nzSpan="12" nzFor="sizeName" nzLabelAlign="left">Dung lượng (<span class="text-red">*</span>)
+          <img style="margin-left: 10px"
+            [nzTooltipTitle]="'Giới hạn dung lượng tối đa của collection, đơn vị byte.'" nz-tooltip
+            src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzSpan="24" [nzErrorTip]="sizeError">
+          <nz-input-group nzSize="large" [nzAddOnAfter]="addOnAfterTemplate">
+            <input nz-input nzSize="large" name="sizeName" type="text" id="sizeName" formControlName="sizeColl" />
+          </nz-input-group>
+          <ng-template #addOnAfterTemplate style="border-radius: 0 8px 8px 0 !important;">
+            <nz-select nzSize="large" style="border-radius: 0 8px 8px 0 !important; width: 80px !important;" [ngModel]="typeData" >
+              <nz-option nzLabel="GB" nzValue="gb"></nz-option>
+              <nz-option nzLabel="MB" nzValue="mb"></nz-option>
+              <nz-option nzLabel="KB" nzValue="kb"></nz-option>
+              <nz-option nzLabel="B" nzValue="b"></nz-option>
+            </nz-select>
+          </ng-template>
+          <ng-template #sizeError let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Size của collection không được để trống.
+            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern') || control.hasError('min') || control.hasError('max')">
+              Size của collection là số nguyên dương, phải lớn hơn 0 và tối đa 2147483648 byte.
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div *ngIf="selectedOptionColl === 'time'" class="mt-5">
+      <nz-form-item>
+        <nz-form-label nzSpan="12" nzFor="timeseriesName" nzLabelAlign="left">timeField (<span
+            class="text-red">*</span>)
+          <img style="margin-left: 10px"
+            [nzTooltipTitle]="'Tên của trường chứa thời gian trong mỗi time series document. Các document trong time series collection phải có kiểu dữ liệu BSON UTC datetime hợp lệ làm giá trị cho trường thời gian.'"
+            nz-tooltip src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzSpan="24" [nzErrorTip]="timestampCollError">
+          <input nz-input nzSize="large" name="timestampName" type="text" id="timestampName"
+            formControlName="timestampColl" maxlength="100" (ngModelChange)="checkDuplicateTSColl()" />
+          <ng-template #timestampCollError let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Tên timeField không được để trống.
+            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">
+              Tên timeField chứa tối đa 100 ký tự, chỉ bao gồm 2 ký tự đặc biệt ‘-“ “_”
+            </ng-container>
+            <ng-container *ngIf="control.hasError('duplicate')">
+              Tên timeField và metaField không thể trùng nhau. Vui lòng nhập tên khác.
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzSpan="12" nzFor="metaName" nzLabelAlign="left">metaField
+          <img style="margin-left: 10px"
+            [nzTooltipTitle]="'Tên của trường chứa metadata trong mỗi time series document. Metadata trong trường được chỉ định phải là dữ liệu được sử dụng để gắn nhãn cho một nhóm document duy nhất. Metadata hiếm khi thay đổi.'"
+            nz-tooltip src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzSpan="24" [nzErrorTip]="metaCollError">
+          <input (ngModelChange)="checkDuplicateMDColl()" nz-input nzSize="large" maxlength="100" name="metaName"
+            type="text" id="metaName" formControlName="metaColl" />
+
+          <ng-template #metaCollError let-control>
+            <ng-container *ngIf="control.hasError('pattern')">
+              Tên metaField chứa tối đa 100 ký tự, chỉ bao gồm 2 ký tự đặc biệt ‘-“ “_”
+            </ng-container>
+            <ng-container *ngIf="control.hasError('duplicate')">
+              Tên timeField và metaField không thể trùng nhau. Vui lòng nhập tên khác.
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzSpan="12" nzFor="metaName" nzLabelAlign="left">Độ chi tiết (<span class="text-red">*</span>)
+          <img style="margin-left: 10px"
+            [nzTooltipTitle]="'Các giá trị có thể có là giây, phút và giờ. Nên đặt mức độ chi tiết thành giá trị khớp nhất với thời gian giữa các timestamp liên tiếp. Điều này cải thiện hiệu suất bằng cách tối ưu hóa cách MongoDB lưu trữ dữ liệu trong time series collection.'"
+            nz-tooltip src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzSpan="24" nzErrorTip="Vui lòng chọn độ chi tiết.">
+          <nz-select nzSize="large" nzShowSearch nzAllowClear formControlName="granularityColl">
+            <nz-option nzLabel="Giây" nzValue="SECONDS"></nz-option>
+            <nz-option nzLabel="Phút" nzValue="MINUTES"></nz-option>
+            <nz-option nzLabel="Giờ" nzValue="HOURS"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+  </form>
+</ng-template>
+
+<ng-template #footerCreColl>
+  <div nz-row nzJustify="end">
+    <div>
+      <button nz-button type="button" nzType="primary" (click)="cancleCreateColl()" nzGhost>
+        <span nz-icon nzType="close" nzTheme="outline"></span>
+        Hủy
+      </button>
+    </div>
+
+    <div>
+      <button nz-button nzType="primary" [disabled]="!validateFormAddColl.valid" (click)="submitFormAddColl()">
+        <span nz-icon nzType="check" nzTheme="outline"></span>
+        Thêm mới
+      </button>
+    </div>
+
+  </div>
+</ng-template>
+<!-- drop collection -->
+<nz-modal [(nzVisible)]="isDelColl" nzTitle="Xóa Collection" (nzOnCancel)="hideDelColl()" [nzFooter]="deleteColl"
+  [nzContent]="delColl"></nz-modal>
+<ng-template #delColl>
+  <nz-alert nzType="warning" [nzDescription]="deleteColl" nzShowIcon></nz-alert>
+  <ng-template #deleteColl>
+    Để xóa collection <strong>{{ currentCollection }}</strong>, nhập lại tên collection để xác nhận xóa.
+  </ng-template>
+  <input class="mt-3" nz-input [(ngModel)]="inputDelColl" (ngModelChange)="onChangeDelColl()" />
+
+</ng-template>
+
+<ng-template #deleteColl>
+  <div nz-row class="center" nzJustify="end">
+    <div>
+      <button nz-button nzType="primary" (click)="hideDelColl()" nzGhost>
+        <span nz-icon nzType="close" nzTheme="outline"></span>
+        Hủy
+      </button>
+    </div>
+    <div>
+      <button nz-button nzType="primary" [disabled]="isValidButtonDelColl" (click)="delCollection()">
+        <span nz-icon nzType="check" nzTheme="outline"></span>
+        Xác nhận
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+
+<!-- drop database -->
+<nz-modal [(nzVisible)]="isShowDelDB" nzTitle="Xóa Database" (nzOnCancel)="hideDelDB()" [nzFooter]="footerDelDb"
+  [nzContent]="delDB"></nz-modal>
+<ng-template #delDB>
+  <nz-alert nzType="warning" [nzDescription]="dellMess" nzShowIcon></nz-alert>
+  <ng-template #dellMess>
+    Để xóa database <strong>{{ currentDatabase }}</strong>, nhập lại tên database để xác nhận xóa.
+  </ng-template>
+
+  <div style="justify-content: center;display: flex;">
+    <div nz-col nzSpan="24" style="min-height: 65px; margin-top: 15px;">
+      <nz-input-group nzSize="large" [nzSuffix]="prefixTemplate" [ngClass]="{ 'err-service': isErrorCheckDelete }">
+        <input nzSize="large" type="text" style="border-radius: 8px;" nz-input [(ngModel)]="inputDelDB"
+          (ngModelChange)="onChangeDelDB()" placeholder="Nhập tên database" />
+      </nz-input-group>
+      <div class="err-msg">{{msgError}}</div>
+      <ng-template #prefixTemplate>
+        <span nz-icon *ngIf="isErrorCheckDelete" style="font-size: 20px;" nzType="info-circle" nzTheme="twotone"
+          [nzTwotoneColor]="'#ff4d4f'"></span>
+        <span nz-icon *ngIf="!isErrorCheckDelete && !isInitModal" style="font-size: 20px;" nzType="check-circle"
+          nzTheme="twotone" [nzTwotoneColor]="'#52c41a'"></span>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #footerDelDb>
+  <div nz-row nzJustify="end">
+    <div>
+      <button nz-button nzType="primary" (click)="hideDelDB()" nzGhost>
+        <span nz-icon nzType="close" nzTheme="outline"></span>
+        Hủy
+      </button>
+    </div>
+
+    <div>
+      <button nz-button nzType="primary" [disabled]="!(!isErrorCheckDelete && !isInitModal)" (click)="delDatabase()">
+        <span nz-icon nzType="check" nzTheme="outline"></span>
+        Xác nhận
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- create database -->
+<nz-modal [(nzVisible)]="isShowCreateDB" nzTitle="Thêm mới Database" (nzOnCancel)="hideCreateDB()"
+  [nzFooter]="footerCreDb" [nzContent]="createDB"></nz-modal>
+<ng-template #createDB>
+  <form nz-form nzLayout="vertical" [formGroup]="validateFormAddDb">
+    <nz-form-item>
+      <nz-form-label nzSpan="12" nzFor="databaseName" nzLabelAlign="left">Tên database (<span class="text-red">*</span>)
+      </nz-form-label>
+      <nz-form-control nzSpan="24" [nzErrorTip]="databaseError">
+        <input nz-input nzSize="large" name="databaseName" type="databaseName" id="databaseName"
+          formControlName="dbName" placeholder="Nhập tên database" />
+        <ng-template #databaseError let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Database không được để trống.
+          </ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">
+            Database chỉ bao gồm: chữ, số, '_' và tối đa 64 ký tự.
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzSpan="12" nzFor="collectionName" nzLabelAlign="left">Tên collection (<span
+          class="text-red">*</span>)
+      </nz-form-label>
+      <nz-form-control nzSpan="24" [nzErrorTip]="collectionError">
+        <input nz-input nzSize="large" name="collectionName" type="collectionName" formControlName="collectionDb"
+          placeholder="Nhập tên collection" />
+
+        <ng-template #collectionError let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Collection không được để trống.
+          </ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">
+            Collection chỉ bao gồm: chữ, số, '_' và tối đa 128 ký tự.
+          </ng-container>
+          <ng-container *ngIf="control.hasError('maxLength')">
+            Collection chỉ bao gồm: chữ, số, '_' và tối đa 128 ký tự.
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <div nz-row>
+      <nz-form-label nz-col nzSpan="12" nzFor="options" nzLabelAlign="left">Chọn loại collection
+      </nz-form-label>
+      <div nz-col nzSpan="24">
+        <nz-select nzSize="large" style="width: 100%" nzShowSearch nzAllowClear nzPlaceHolder="Tùy chọn"
+          [ngModelOptions]="{ standalone: true }" [(ngModel)]="selectedOptionDatabase"
+          (ngModelChange)="onChangeSelectDB()">
+          <nz-option nzLabel="Capped Collection" nzValue="capped" nzCustomContent>
+            Capped Collection
+            <img style="margin-left: 10px"
+              [nzTooltipTitle]="'Capped Collection có dung lượng cố định mà các hành động insert hoặc truy xuất dữ liệu dựa trên thứ tự insert Khi dữ liệu mới được ghi vào vượt quá dung lượng đã cấu hình, dữ liệu cũ nhất được tự động xoá bỏ.'"
+              nz-tooltip src="assets/imgs/pajamas_question.svg" alt="" />
+          </nz-option>
+
+          <nz-option nzLabel="TimeSeries Collection" nzValue="time" nzCustomContent>
+            TimeSeries Collection
+            <img style="margin-left: 10px"
+              [nzTooltipTitle]="'Time series collection lưu trữ hiệu quả các chuỗi đo lường trong một khoảng thời gian. Dữ liệu time series là bất kỳ dữ liệu nào được thu thập theo thời gian và được xác định duy nhất bởi một hoặc nhiều tham số không thay đổi. Các tham số không thay đổi xác định dữ liệu time series thường là metadata của nguồn dữ liệu.'"
+              nz-tooltip src="assets/imgs/pajamas_question.svg" alt="" />
+          </nz-option>
+        </nz-select>
+      </div>
+    </div>
+
+    <div *ngIf="selectedOptionDatabase === 'capped'" class="mt-5">
+      <nz-form-item>
+        <nz-form-label nzSpan="12" nzFor="sizeName" nzLabelAlign="left">Dung lượng (<span class="text-red">*</span>)
+          <img style="margin-left: 10px"
+            [nzTooltipTitle]="'Giới hạn dung lượng tối đa của collection, đơn vị byte.'" nz-tooltip
+            src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzSpan="24" [nzErrorTip]="sizeError">
+        <nz-input-group nzSize="large" [nzAddOnAfter]="addOnAfterTemplateDB">
+          <input nz-input nzSize="large" name="sizeName" type="text" formControlName="sizeDb" />
+        </nz-input-group>
+        <ng-template #addOnAfterTemplateDB>
+          <nz-select [ngModel]="typeData"  style="border-radius: 0 8px 8px 0 !important; width: 80px !important;">
+            <nz-option nzLabel="GB" nzValue="gb"></nz-option>
+            <nz-option nzLabel="MB" nzValue="mb"></nz-option>
+            <nz-option nzLabel="KB" nzValue="kb"></nz-option>
+            <nz-option nzLabel="B" nzValue="b"></nz-option>
+          </nz-select>
+        </ng-template>
+          <ng-template #sizeError let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Size của collection không được để trống.
+            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern') || control.hasError('min') || control.hasError('max')">
+              Size của collection là số nguyên dương, phải lớn hơn 0 và nhỏ hơn 2147483648 byte.
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div *ngIf="selectedOptionDatabase === 'time'" class="mt-5">
+      <nz-form-item>
+        <nz-form-label nzSpan="12" nzFor="timeseriesName" nzLabelAlign="left">timeField (<span
+            class="text-red">*</span>)
+          <img style="margin-left: 10px"
+            [nzTooltipTitle]="'Tên của trường chứa thời gian trong mỗi time series document. Các document trong time series collection phải có kiểu dữ liệu BSON UTC datetime hợp lệ làm giá trị cho trường thời gian.'"
+            nz-tooltip src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzSpan="24" [nzErrorTip]="timestampError">
+          <input nz-input nzSize="large" name="timestampName" type="timestampName" maxlength="100"
+            formControlName="timestampDb" (ngModelChange)="checkDuplicateTS()" />
+          <ng-template #timestampError let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Tên timeField không được để trống.
+            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">
+              Tên timeField chứa tối đa 100 ký tự, chỉ bao gồm 2 ký tự đặc biệt ‘-“ “_”
+            </ng-container>
+            <ng-container *ngIf="control.hasError('duplicate')">
+              Tên timeField và metaField không thể trùng nhau. Vui lòng nhập tên khác.
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzSpan="12" nzFor="metaName" nzLabelAlign="left">metaField
+          <img style="margin-left: 10px"
+            [nzTooltipTitle]="'Tên của trường chứa metadata trong mỗi time series document. Metadata trong trường được chỉ định phải là dữ liệu được sử dụng để gắn nhãn cho một nhóm document duy nhất. Metadata hiếm khi thay đổi.'"
+            nz-tooltip src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzSpan="24" [nzErrorTip]="metaError">
+          <input nz-input nzSize="large" maxlength="100" name="metaName" type="metaName" formControlName="metaDb"
+            (ngModelChange)="checkDuplicateMD()" />
+
+          <ng-template #metaError let-control>
+            <ng-container *ngIf="control.hasError('pattern')">
+              Tên metaField chứa tối đa 100 ký tự, chỉ bao gồm 2 ký tự đặc biệt ‘-“ “_”
+            </ng-container>
+            <ng-container *ngIf="control.hasError('duplicate')">
+              Tên timeField và metaField không thể trùng nhau. Vui lòng nhập tên khác.
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzSpan="12" nzFor="metaName" nzLabelAlign="left">Độ chi tiết (<span class="text-red">*</span>)
+          <img style="margin-left: 10px"
+            [nzTooltipTitle]="'Các giá trị có thể có là giây, phút và giờ. Nên đặt mức độ chi tiết thành giá trị khớp nhất với thời gian giữa các timestamp liên tiếp. Điều này cải thiện hiệu suất bằng cách tối ưu hóa cách MongoDB lưu trữ dữ liệu trong time series collection.'"
+            nz-tooltip src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzSpan="24" nzErrorTip="Vui lòng chọn độ chi tiết.">
+          <nz-select nzSize="large" nzShowSearch nzAllowClear formControlName="granularityDb">
+            <nz-option nzLabel="Giây" nzValue="SECONDS"></nz-option>
+            <nz-option nzLabel="Phút" nzValue="MINUTES"></nz-option>
+            <nz-option nzLabel="Giờ" nzValue="HOURS"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </form>
+</ng-template>
+<ng-template #footerCreDb>
+  <div nz-row nzJustify="end">
+    <div>
+      <button nz-button nzType="primary" type="button" (click)="hideCreateDB()" nzGhost><span nz-icon nzType="close"
+          nzTheme="outline"></span>
+        Hủy
+      </button>
+    </div>
+    <div>
+      <nz-form-control>
+        <button nz-button nzType="primary" [disabled]="!validateFormAddDb.valid" (click)="submitFormAddDb()">
+          <span nz-icon nzType="check" nzTheme="outline"></span>
+          Thêm mới
+        </button>
+      </nz-form-control>
+    </div>
+  </div>
+</ng-template>

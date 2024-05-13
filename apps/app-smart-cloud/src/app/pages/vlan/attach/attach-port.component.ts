@@ -5,6 +5,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { ActivatedRoute } from '@angular/router';
 import { InstancesService } from '../../instances/instances.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-attach-port',
@@ -25,14 +27,18 @@ export class AttachPortComponent {
   isLoading: boolean = false
   instanceSelected: string
 
+  isSelected: boolean = false
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private vlanService: VlanService,
               private instancesService: InstancesService) {
   }
 
   instanceChange(value) {
     this.instanceSelected = value
+
+    this.isSelected = false
   }
 
   showModalAttach() {
@@ -43,6 +49,8 @@ export class AttachPortComponent {
   handleCancelAttach() {
     this.isVisibleAttach = false
     this.isLoadingAttach = false
+    this.instanceSelected = null
+    this.isSelected = false
     this.onCancel.emit()
   }
 
@@ -50,17 +58,29 @@ export class AttachPortComponent {
     console.log('instance', this.instanceSelected)
     console.log('region', this.region)
     this.isLoadingAttach = true
-    this.vlanService.attachPort(this.id, this.instanceSelected, this.region, this.project).subscribe(data => {
-      console.log('attach', data)
-      this.isVisibleAttach = false
+    if(this.instanceSelected == undefined) {
+      this.isSelected = true
       this.isLoadingAttach = false
-      this.notification.success('Thành công', 'Gắn port vào máy ảo thành công')
-      this.onOk.emit()
-    }, error => {
-      this.isVisibleAttach = false
-      this.isLoadingAttach = false
-      this.notification.error('Thất bại', 'Gắn port vào máy ảo thất bại')
-    })
+    } else {
+      this.isSelected = false
+      this.isLoadingAttach = true
+
+      this.vlanService.attachPort(this.id, this.instanceSelected, this.region, this.project).subscribe(data => {
+        console.log('attach', data)
+        this.isVisibleAttach = false
+        this.isLoadingAttach = false
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note63'))
+        setTimeout(() => {
+          this.onOk.emit(data)
+        }, 1500);
+      }, error => {
+        this.isVisibleAttach = false
+        this.isLoadingAttach = false
+        this.instanceSelected = null
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note64') + error.error.detail)
+      })
+    }
+
   }
 
   getListVm() {

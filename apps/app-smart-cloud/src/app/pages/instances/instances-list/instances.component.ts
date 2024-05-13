@@ -7,22 +7,29 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import {
+  InstanceAction,
   InstancesModel,
+  Network,
   SecurityGroupModel,
   UpdateInstances,
+  VlanSubnet,
 } from '../instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectService } from 'src/app/shared/services/project.service';
-import { NotificationService } from '../../../../../../../libs/common-utils/src';
+import { NotificationService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subject, debounceTime } from 'rxjs';
+import {
+  FormSearchNetwork,
+  NetWorkModel,
+} from 'src/app/shared/models/vlan.model';
+import { VlanService } from 'src/app/shared/services/vlan.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 class SearchParam {
   status: string = '';
@@ -45,20 +52,14 @@ export class InstancesComponent implements OnInit {
   total = 1;
   loading = true;
   filterStatus = [
-    { text: 'Tất cả trạng thái', value: '' },
-    { text: 'Đang khởi tạo', value: 'DANGKHOITAO' },
-    { text: 'Đang hoạt động', value: 'KHOITAO' },
-    { text: 'Chậm gia hạn, vi phạm điều khoản', value: 'TAMNGUNG' },
+    { text: this.i18n.fanyi('app.status.all'), value: '' },
+    { text: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
+    { text: this.i18n.fanyi('app.status.suspended'), value: 'TAMNGUNG' },
   ];
 
-  listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
-  listSubnet: [{ id: ''; text: 'Chọn Subnet' }];
-  listIPAddress: [{ id: ''; text: 'Chọn địa chỉ IP' }];
   listIPAddressOnVLAN: [{ id: ''; text: 'Chọn địa chỉ IP' }];
 
   selectedOptionAction: string;
-  actionData: InstancesModel;
-
   region: number;
   projectId: number;
   project: ProjectModel;
@@ -66,21 +67,27 @@ export class InstancesComponent implements OnInit {
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
 
+  typeVpc: number
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private vlanService: VlanService
   ) {}
 
   ngOnInit() {
+    console.log('current language', this.i18n.currentLang);
     this.searchParam.status = '';
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.userId = this.tokenService.get()?.userId;
+    this.getListNetwork();
     this.getAllSecurityGroup();
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
@@ -112,9 +119,30 @@ export class InstancesComponent implements OnInit {
 
             case 'SHUTOFF':
             case 'START':
+            case 'REBOOT':
               var record = this.dataList[foundIndex];
 
               record.taskState = data.taskState;
+
+              this.dataList[foundIndex] = record;
+              this.cdr.detectChanges();
+              break;
+
+            case 'RESIZING':
+            case 'RESIZED':
+              var record = this.dataList[foundIndex];
+
+              if (data.status) {
+                record.status = data.status;
+              }
+
+              if (data.taskState) {
+                record.taskState = data.taskState;
+              }
+
+              if (data.flavorName) {
+                record.flavorName = data.flavorName;
+              }
 
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
@@ -123,11 +151,7 @@ export class InstancesComponent implements OnInit {
         }
       }
     });
-  }
-
-  selectedChecked(e: any): void {
-    // @ts-ignore
-    this.checkedCashArray = [...e];
+    this.checkExistName();
   }
 
   onRegionChange(region: RegionModel) {
@@ -143,6 +167,7 @@ export class InstancesComponent implements OnInit {
     this.activeCreate = false;
     this.loading = true;
     this.projectId = project.id;
+    this.typeVpc = project?.type
     this.getDataList();
   }
 
@@ -239,47 +264,122 @@ export class InstancesComponent implements OnInit {
     }
   }
 
-  showHandleGanVLAN() {
+  listVlanNetwork: NetWorkModel[] = [];
+  getListNetwork(): void {
+    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+    formSearchNetwork.region = this.region;
+    formSearchNetwork.project = this.projectId;
+    formSearchNetwork.pageNumber = 0;
+    formSearchNetwork.pageSize = 9999;
+    formSearchNetwork.vlanName = '';
+    this.vlanService
+      .getVlanNetworks(formSearchNetwork)
+      .subscribe((data: any) => {
+        this.listVlanNetwork = data.records;
+        this.cdr.detectChanges();
+      });
+  }
+
+  changeVlanNetwork(networkCloudId: string) {
+    this.listSubnet = [];
+    this.instanceAction.subnetId = null;
+    this.instanceAction.ipAddress = null;
+    this.getVlanSubnets(networkCloudId);
+  }
+
+  listSubnet: VlanSubnet[] = [];
+  loadingSubnet: boolean = false;
+  getVlanSubnets(networkCloudId: string): void {
+    this.loadingSubnet = true;
+    this.dataService
+      .getVlanSubnets(9999, 0, this.region, networkCloudId)
+      .pipe(
+        finalize(() => {
+          this.loadingSubnet = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.listSubnet = data.records;
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy danh sách Subnet không thành công'
+          );
+        },
+      });
+  }
+
+  instanceAction: InstanceAction = new InstanceAction();
+  showHandleGanVLAN(id: number) {
+    this.instanceAction = new InstanceAction();
+    this.instanceAction.id = id;
+    this.instanceAction.command = 'attachinterface';
     this.isVisibleGanVLAN = true;
   }
 
   handleCancelGanVLAN(): void {
-    this.actionData = null;
     this.isVisibleGanVLAN = false;
   }
 
   handleOkGanVLAN(): void {
-    this.notification.success('', 'Gắn VLAN thành công');
-    //this.actionData = null;
     this.isVisibleGanVLAN = false;
-    // var body = {};
-    // this.dataService.postAction(this.actionData.id, body).subscribe(
-    //   (data: any) => {
-    //     console.log(data);
-    //     if (data == true) {
-    //       this.notification.success('', 'Gắn VLAN thành công');
-    //     } else {
-    //       this.notification.error('', 'Gắn VLAN không thành công');
-    //     }
-    //   },
-    //   () => {
-    //     this.notification.error('', 'Gắn VLAN không thành công');
-    //   }
-    // );
+    this.dataService.postAction(this.instanceAction).subscribe({
+      next: (data: any) => {
+        if (data == 'Thao tác thành công') {
+          this.notification.success('', 'Gắn VLAN thành công');
+          this.reloadTable();
+        } else {
+          this.notification.error('', 'Gắn VLAN không thành công');
+        }
+      },
+      error: (e) => {
+        this.notification.error(e.statusText, 'Gắn VLAN không thành công');
+      },
+    });
   }
 
-  showHandleGoKhoiVLAN() {
+  listOfPrivateNetwork: Network[];
+  getListIpPublic(id: number) {
+    this.dataService
+      .getPortByInstance(id, this.region)
+      .subscribe((dataNetwork: any) => {
+        //list IP Lan
+        this.listOfPrivateNetwork = dataNetwork.filter(
+          (e: Network) => e.isExternal == false
+        );
+        this.cdr.detectChanges();
+      });
+  }
+
+  showHandleGoKhoiVLAN(id: number) {
+    this.instanceAction = new InstanceAction();
+    this.instanceAction.id = id;
+    this.instanceAction.command = 'detachinterface';
     this.isVisibleGoKhoiVLAN = true;
   }
 
   handleCancelGoKhoiVLAN(): void {
-    this.actionData = null;
     this.isVisibleGoKhoiVLAN = false;
   }
 
   handleOkGoKhoiVLAN(): void {
-    this.notification.success('', 'Gỡ khỏi VLAN thành công');
     this.isVisibleGoKhoiVLAN = false;
+    this.dataService.postAction(this.instanceAction).subscribe({
+      next: (data: any) => {
+        if (data == 'Thao tác thành công') {
+          this.notification.success('', 'Gỡ khỏi VLAN thành công');
+          this.reloadTable();
+        } else {
+          this.notification.error('', 'Gỡ khỏi VLAN không thành công');
+        }
+      },
+      error: (e) => {
+        this.notification.error(e.statusText, 'Gỡ khỏi VLAN không thành công');
+      },
+    });
   }
 
   isExpand = false;
@@ -307,7 +407,7 @@ export class InstancesComponent implements OnInit {
             this.reloadTable();
           }, 1500);
         } else {
-          this.notification.error('', 'Yêu cầu tắt máy ảo không thất bại');
+          this.notification.error('', 'Yêu cầu tắt máy ảo thất bại');
         }
       },
       error: (e) => {
@@ -367,16 +467,19 @@ export class InstancesComponent implements OnInit {
     this.dataService.postAction(body).subscribe({
       next: (data) => {
         if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Khởi động lại máy ảo thành công');
+          this.notification.success(
+            '',
+            'Yêu cầu khởi động lại máy ảo đã được gửi đi'
+          );
           setTimeout(() => {
             this.reloadTable();
           }, 1500);
         } else {
-          ('Khởi động lại máy ảo không thành công');
+          ('Yêu cầu khởi động lại máy ảo thất bại');
         }
       },
       error: (e) => {
-        this.notification.error('', 'Khởi động lại máy ảo không thành công');
+        this.notification.error('', 'Yêu cầu khởi động lại máy ảo thất bại');
       },
     });
   }
@@ -452,11 +555,7 @@ export class InstancesComponent implements OnInit {
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.max(50),
-        Validators.pattern(/^[a-zA-Z0-9]+$/),
-      ],
+      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/)],
     }),
   });
   updateInstances: UpdateInstances = new UpdateInstances();
@@ -500,6 +599,37 @@ export class InstancesComponent implements OnInit {
 
   handleCancelEdit() {
     this.isVisibleEdit = false;
+  }
+
+  //Kiểm tra trùng tên máy ảo
+  dataSubjectName: Subject<any> = new Subject<any>();
+  changeName(value: number) {
+    this.dataSubjectName.next(value);
+  }
+
+  isExistName: boolean = false;
+  checkExistName() {
+    this.dataSubjectName
+      .pipe(
+        debounceTime(300) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.updateInstances.name == this.instanceEdit.name) {
+          this.isExistName = false;
+          this.cdr.detectChanges();
+        } else {
+          this.dataService
+            .checkExistName(res, this.region)
+            .subscribe((data) => {
+              if (data == true) {
+                this.isExistName = true;
+              } else {
+                this.isExistName = false;
+              }
+              this.cdr.detectChanges();
+            });
+        }
+      });
   }
 
   handleOkEdit() {
@@ -562,8 +692,20 @@ export class InstancesComponent implements OnInit {
   navigateToCreateBackup(id: number) {
     console.log('data ', id);
     // this.dataService.setSelectedObjectId(id)
+    if(this.typeVpc == 1) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/create/vpc', {instanceId: id}]);
+    }
+
+    if(this.typeVpc == 0) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/create/no-vpc', {instanceId: id}]);
+    }
+
+  }
+
+  createBackupSchedule(id: number) {
     this.router.navigate([
-      '/app-smart-cloud/instance/' + id + '/create-backup-vm',
+      '/app-smart-cloud/schedule/backup/create',
+      { instanceId: id },
     ]);
   }
 }

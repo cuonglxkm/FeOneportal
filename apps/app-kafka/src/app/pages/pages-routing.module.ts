@@ -5,6 +5,7 @@ import { LoadTopicComponent } from "./detail/topic-mngt/load-topic/load-topic.co
 import { ListKafkaComponent } from "./list-kafka/list-kafka.component";
 import { EditKafkaComponent } from "./edit-kafka/edit-kafka.component";
 import { UpgradeKafkaComponent } from "./upgrade-kafka/upgrade-kafka.component";
+import { ExtendKafkaComponent } from "./extend-kafka/extend-kafka.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '', pathMatch: 'full'},
@@ -19,6 +20,10 @@ const routes: Routes = [
   {
     path: 'edit/:id',
     component: EditKafkaComponent
+  },
+  {
+    path: 'extend/:id',
+    component: ExtendKafkaComponent
   },
   {
     path: 'upgrade/:id',

@@ -1,54 +1,66 @@
+<!-- eslint-disable @angular-eslint/template/eqeqeq -->
 <nz-content>
-    <div class="breadcrumb">
-        <nz-breadcrumb vSeparator=">>">
-            <nz-breadcrumb-item>
-                Topic
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item>
-                <a (click)="Cancel()">Danh sách Topic</a>
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item *ngIf="control==createNum">
-                Tạo mới Topic
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item *ngIf="control==detailNum">
-                Danh sách message Topic: {{topicDetail}}
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item *ngIf="control==editNum">
-                Cập nhật Topic: {{selectedTopic.topicName}}
-            </nz-breadcrumb-item>
-        </nz-breadcrumb>
-    </div>
     <div class="inner-content">
+        <div class="breadcrumb">
+            <nz-breadcrumb vSeparator=">>">
+                <nz-breadcrumb-item>
+                    Topic
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    <a (click)="Cancel()">{{ 'kakfa.topic.list' | i18n }}</a>
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item *ngIf="control==createNum">
+                    {{ 'kakfa.topic.create' | i18n }}
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item *ngIf="control==detailNum">
+                    {{ 'kafka.topic.message' | i18n }}: {{topicDetail}}
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item *ngIf="control==editNum">
+                    {{ 'kakfa.topic.update' | i18n }}: {{selectedTopic.topicName}}
+                </nz-breadcrumb-item>
+            </nz-breadcrumb>
+        </div>
+        
         <div *ngIf="control == listNum">
             <div class="filter" style="display: flex; align-items: center; margin-bottom: 20px;">
-                <div >
+                <div>
                     <nz-input-group nz-col [nzPrefix]="prefixTemplateUser" class="search">
-                        <input type="text" maxlength="255" nz-input placeholder="Tìm kiếm" [(ngModel)]="search" (keyup.enter)="handleSearch()">
+                        <input type="text" maxlength="255" nz-input [placeholder]="'app.service.search-text' | i18n" [(ngModel)]="search" (keyup.enter)="handleSearch()">
                     </nz-input-group>
                     <ng-template #prefixTemplateUser>
-                         <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
-                        </ng-template>
+                        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text' | i18n" />
+                    </ng-template>
+
+                    <button id="btn-refresh" nz-button nzType="default" (click)="handleSyncTopic()">
+                        <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
+                    </button>
                 </div>
                 <div class="nav-btn">
                     <button style="  display: flex;justify-content: center;align-items: center;" nz-button nzType="primary" (click)="openCreateForm()">
                         <span class="create-icon" nz-icon nzType="plus" nzTheme="outline"></span>
-                        Tạo mới
+                        {{ 'app.service.create' | i18n }}
                     </button>
-                    <button  nz-button nzType="primary" (click)="testProduce()" nzDanger>Test Producer</button>
+                    <button  nz-button nzType="primary" (click)="testProduce()">Test Producer</button>
                 </div>
             </div>
+            <div class="async">{{'kafka.cg.sync-time' | i18n}}:
+                <ng-container *ngIf="syncInfo">
+                    <span class="time-async">{{syncInfo.topic}}</span>
+                </ng-container>
+            </div>
+            
             <nz-table id="topic" [nzScroll]="{x:'1100px'}" [nzData]="listTopic" [nzLoading]="loading" #basicTable nzShowPagination nzShowSizeChanger class="tbl-acl" [nzTotal]="total" 
             [nzFrontPagination]="false" [nzPageIndex]="index" [nzPageSize]="size" (nzPageIndexChange)="changePage($event)" (nzPageSizeChange)="changePageSize($event)">
                 <thead >
                     <tr>
-                        <th [nzAlign]="'center'" nzWidth="6%">STT</th>
-                        <th>Tên Topic</th>
+                        <th [nzAlign]="'center'" nzWidth="6%">{{ 'app.service.order-number' | i18n }}</th>
+                        <th>{{ 'kakfa.topic.name' | i18n }}</th>
                         <th nzWidth="9%" [nzAlign]="'center'">Partitions</th>
                         <th nzWidth="8%" [nzAlign]="'center'">Replicas</th>
-                        <th nzWidth="20%" [nzAlign]="'center'">Tổng số lượng message</th>
+                        <th nzWidth="20%" [nzAlign]="'center'">{{ 'kakfa.topic.total-message' | i18n }}</th>
                         <th nzWidth="8%" [nzAlign]="'center'">Size</th>
                         <th nzWidth="16%" [nzAlign]="'center'">Out of sync replicas</th>
-                        <th nzWidth="15%" [nzAlign]="'center'">Thao tác</th>
+                        <th nzWidth="15%" [nzAlign]="'center'">{{ 'app.text.operation' | i18n }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,30 +70,23 @@
                         <td [nzAlign]="'center'">{{ data.partitions }}</td>
                         <td [nzAlign]="'center'">{{ data.replicas }}</td>
                         <td [nzAlign]="'center'">{{ data.sumMessage }}</td>
-                        <td [nzAlign]="'center'">{{ data.sizeTopic }}</td>
+                        <td [nzAlign]="'center'">{{ data.size.value }} {{ data.size.unit }}</td>
                         <td [nzAlign]="'center'">{{ data.outOfSync != null ? data.outOfSync : 0 }}</td>
-                        <td [nzAlign]="'center'" style="display: flex;flex-wrap: nowrap;">
-                            
-                            <span class="mg-right" 
-                            nz-icon  nz-tooltip="Thông tin chi tiết"
-                            (click)="showTopicInfo(data)" >
-                            <img class="img" src="assets/imgs/info.svg" alt="" />
+                        <td [nzAlign]="'center'" >
+                            <span class="mg-right" nz-icon [nz-tooltip]="'kakfa.topic.detail-tooltip' | i18n" (click)="showTopicInfo(data)" >
+                                <img class="img" src="assets/imgs/info.svg" alt="" />
                             </span> 
 
-                            <span class="mg-right-del" nz-tooltip="Xoá messages"
-                            (click)="showConfirm(data,'message')" nz-icon>
+                            <span class="mg-right-del" [nz-tooltip]="'kakfa.topic.delete-message-tooltip' | i18n" (click)="showConfirm(data,'message')" nz-icon>
                                 <img class="dell-icon" src="assets/imgs/delete-msg-topic.svg" alt="" />
                             </span> 
 
-                            <span class="mg-right"
-                           (click)="updateTopicForm(data)"
-                            [nz-tooltip]="'Cập nhật'" nz-icon >
-                            <img class="img" src="assets/imgs/edit-2.svg" alt="" />
+                            <span class="mg-right" (click)="updateTopicForm(data)" [nz-tooltip]="'app.button.update' | i18n" nz-icon >
+                                <img class="img" src="assets/imgs/edit-kafka.svg" alt="" />
                             </span> 
 
-                            <span nz-popover (click)="showConfirm(data,'Topic')"
-                            [nz-tooltip]="'Xoá'" nz-icon >
-                            <img class="img" src="assets/imgs/trash1.svg" alt="" />
+                            <span nz-popover (click)="showConfirm(data,'Topic')" [nz-tooltip]="'app.text.delete' | i18n" nz-icon >
+                                <img class="img" src="assets/imgs/trash1.svg" alt="" />
                             </span> 
 
                         </td>
@@ -100,12 +105,12 @@
 <nz-modal [nzClosable]="true" nzFooter=" " [nzTitle]=""  (nzOnCancel)="closeTopicInfo()" [nzWidth]="580" [(nzVisible)]="visibleConfigInfo" vPlacement="right">
     
     <ng-container *nzModalContent>
-        <h3><b>Thông tin Topic</b></h3>
+        <h3><b>{{ 'kafka.topic.info-title' | i18n }}</b></h3>
         <nz-table #basicTable nzShowPagination="false" [nzData]="configInfo | keyvalue" [nzPageSize]="50" [nzScroll]>
             <thead>
               <tr >
-                <th style="background-color: white;">Key</th>
-                <th style="background-color: white;">Value</th>
+                <th style="background-color: white;">{{ 'kafka.topic.info-config' | i18n }}</th>
+                <th style="background-color: white;">{{ 'kafka.topic.info-value' | i18n }}</th>
               </tr>
             </thead>
             <tbody>
@@ -117,57 +122,72 @@
           </nz-table>
     </ng-container>
 </nz-modal>
-<nz-modal class="fixBtn" [(nzVisible)]="isDelVisible" [nzTitle]="'Xoá '+ deleteType" (nzOnCancel)="handleCloseDelete()">
-    <ng-container *nzModalContent >
+<nz-modal class="fixBtn" [(nzVisible)]="isDelVisible" [nzTitle]="('app.text.delete' | i18n) + ' ' + deleteType" (nzOnCancel)="handleCloseDelete()">
+    <ng-container *nzModalContent style="padding-bottom: 0px;">
         <ng-container *ngIf="deleteType=='Topic'; else contentMessage" >
-           <h3 class="question"> Bạn có chắc chắn muốn xóa Topic <b>{{ deleteInfor.topicName }}</b> này không ?</h3>
+           <h3 class="question"> {{ 'kafka.topic.delete-content-1' | i18n }} <b>{{ deleteInfor.topicName }}</b> ? <br>
+            {{ 'kafka.topic.delete-content-2' | i18n }}</h3>
+            <div style="justify-content: center;display: flex;">
+                <div nz-col nzSpan="16">
+                    <nz-input-group nzSize="large" [nzSuffix]="prefixTemplate" [ngClass]="{ 'err-name': err_mess!=='' }">
+                    <input  nzSize="large" type="text" style="border-radius: 8px;"
+                    nz-input [(ngModel)]="delTopic" (ngModelChange)="checkName()" [placeholder]="'kakfa.topic.name-placeholder' | i18n" />
+                    </nz-input-group>
+                    <!-- <div class="error-del">{{err_mess}}</div> -->
+                    <ng-template #prefixTemplate >
+                        <span nz-icon *ngIf="err_mess!==''" style="font-size: 20px;" nzType="exclamation-circle" nzTheme="twotone" [nzTwotoneColor]="'#ff4d4f'"></span>
+                        <span nz-icon *ngIf="err_mess==='' && !new" style="font-size: 20px;" nzType="check-circle" nzTheme="twotone" [nzTwotoneColor]="'#52c41a'"></span>
+                    </ng-template>
+                    
+                </div>
+            </div>
         </ng-container>
         <ng-template #contentMessage>
-            <h3 class="question"> Bạn có chắc chắn muốn xóa tất cả các message của Topic <b>{{ deleteInfor.topicName }}</b> không ? </h3>
+            <h3 class="question"> {{ 'kafka.topic.delete-msg' | i18n }} <br> <b>{{ deleteInfor.topicName }}</b> ? </h3>
         </ng-template>
     </ng-container>
     <div *nzModalFooter>
         <button nz-button nzType="primary" nzGhost class="btn-accept" (click)="handleCloseDelete()"><img
             style="padding-right: 10px;margin-top: -4px"
             src="assets/imgs/cancel.svg"
-            alt=""/>Hủy</button>
-        <button nz-button nzType="primary" class="btn-accept" (click)="deleteType=='Topic'?handleDeleteTopic(deleteInfor):handleDeleteMessages(deleteInfor)" >
+            alt=""/>{{ 'app.button.cancel' | i18n }}</button>
+        <button [disabled]="err_mess!==''" nz-button nzType="primary" class="btn-accept" (click)="deleteType=='Topic'?handleDeleteTopic(deleteInfor):handleDeleteMessages(deleteInfor)" >
             <img
                     style="padding-right: 10px; margin-top: -4px"
                     src="assets/imgs/confirm.svg"
-                    alt=""/>Xác nhận</button>
+                    alt=""/>{{ 'app.button.confirm' | i18n }}</button>
     </div>
 </nz-modal>
 <nz-modal class="fixBtn" [(nzVisible)]="isVisible" nzTitle="Test Producer" (nzOnCancel)="handleCloseProduceModal()">
-    <ng-container *nzModalContent>
+    <ng-container *nzModalContent >
         <form nz-form [formGroup]="produceForm" [nzLayout]="'vertical'" (ngSubmit)="submitModalForm()">
             <nz-form-item>
-                <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired vFor="Topic">Topic</nz-form-label>
+                <nz-form-label [nzSm]="8" [nzXs]="24" nzNoColon vFor="Topic">Topic (<span class="text-red">*</span>)</nz-form-label>
                 <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Hãy chọn Topic">
-                    <nz-select nzSize="large" nzShowSearch [(ngModel)]="singleValue" formControlName="topicName" vPlaceHolder="Chọn một Topic">
+                    <nz-select nzSize="large" nzShowSearch [(ngModel)]="singleValue" formControlName="topicName" [nzPlaceHolder]="'kafka.topic.test-producer-topic' | i18n">
                         <nz-option *ngFor="let item of listTopicTestProducer" [nzLabel]="item.topicName" [nzValue]="item.topicName"></nz-option>
                     </nz-select>
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>
-                <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired>Số lượng message</nz-form-label>
-                <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Số lượng message là số nguyên dương và trong khoảng 1-100">
-                    <input nzSize="large" type="number" placeholder="Nhập số lượng" nz-input formControlName="numberMessage" id="amount" />
+                <nz-form-label [nzSm]="10" [nzXs]="24" nzNoColon>{{ 'kafka.topic.test-producer-message' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
+                <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="'kafka.topic.test-producer-message-valid' | i18n">
+                    <input nzSize="large" type="number" [placeholder]="'kafka.topic.test-producer-message-pld' | i18n" nz-input formControlName="numberMessage" id="amount" />
                 </nz-form-control>
             </nz-form-item>
 
             <nz-form-item>
-                <nz-form-label [nzSm]="8" [nzXs]="24">Key</nz-form-label>
+                <nz-form-label [nzSm]="8" [nzXs]="24" nzNoColon>Key</nz-form-label>
                 <nz-form-control [nzSm]="24" [nzXs]="24">
-                    <input nzSize="large" type="text" nz-input formControlName="key" placeholder="Nhập key" />
+                    <input nzSize="large" type="text" nz-input formControlName="key" [placeholder]="'kafka.topic.test-producer-key-pld' | i18n" />
                 </nz-form-control>
             </nz-form-item>
 
             <nz-form-item>
-                <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired>Value</nz-form-label>
+                <nz-form-label [nzSm]="8" [nzXs]="24" nzNoColon>Value (<span class="text-red">*</span>)</nz-form-label>
                 <nz-form-control [nzSm]="24" [nzXs]="24"
-                    nzErrorTip="Value là bắt buộc và không quá 500 ký tự">
-                    <textarea nzSize="large" rows="6" nz-input formControlName="value" placeholder="Nhập value"
+                    [nzErrorTip]="'kafka.topic.test-producer-value-valid' | i18n">
+                    <textarea nzSize="large" rows="6" nz-input formControlName="value" [placeholder]="'kafka.topic.test-producer-value-pld' | i18n"
                         maxlength="500"></textarea>
                 </nz-form-control>
             </nz-form-item>
@@ -179,7 +199,7 @@
         <button nz-button nzType="primary" nzGhost class="btn-accept" (click)="handleCloseProduceModal()"><img
             style="padding-right: 10px;margin-top: -4px"
             src="assets/imgs/cancel.svg"
-            alt=""/>Hủy</button>
+            alt=""/>{{ 'app.button.cancel' | i18n }}</button>
         <button nz-button nzType="primary" (click)="handleSubmitTestProduce()"
             [disabled]="produceForm.invalid" ><img
             style="padding-right: 10px; margin-top: -4px"

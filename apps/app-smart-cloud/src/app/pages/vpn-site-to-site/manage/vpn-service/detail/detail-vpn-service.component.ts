@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VPNServiceDetail } from 'src/app/shared/models/vpn-service';
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
@@ -14,7 +13,7 @@ import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
   styleUrls: ['./detail-vpn-service.component.less'],
 })
 export class DetailVpnServiceComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   isLoading: boolean = false
 
@@ -44,7 +43,6 @@ ngOnInit(): void {
   }
 
   getVpnServiceById(id) {
-    debugger
     this.isLoading = true
     this.vpnServiceService.getVpnServiceById(id,this.project,this.region).subscribe(data => {
       this.vpnService = data;

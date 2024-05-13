@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
+import { VlanService } from '../../../shared/services/vlan.service';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-vlan-detail',
@@ -10,13 +10,16 @@ import { getCurrentRegionAndProject } from '@shared';
   styleUrls: ['./vlan-detail.component.less'],
 })
 export class VlanDetailComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   idNetwork: number
 
+  networkName: string
+
   constructor(private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private vlanService: VlanService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -31,6 +34,11 @@ export class VlanDetailComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/vlan/network/list'])
   }
 
+  getVlanByNetworkId() {
+    this.vlanService.getVlanByNetworkId(this.idNetwork).subscribe(data => {
+      this.networkName = data.name
+    })
+  }
   ngOnInit() {
     this.idNetwork = Number.parseInt(this.route.snapshot.paramMap.get('id'))
     let regionAndProject = getCurrentRegionAndProject()
@@ -38,6 +46,7 @@ export class VlanDetailComponent implements OnInit {
     this.project = regionAndProject.projectId
 
     console.log('project', this.project)
+    this.getVlanByNetworkId()
   }
 
 }

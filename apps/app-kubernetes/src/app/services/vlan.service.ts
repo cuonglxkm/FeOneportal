@@ -16,10 +16,12 @@ export class VlanService extends BaseService {
     super();
   }
 
+  baseUrl: string = "https://api.onsmartcloud.com";
+
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
@@ -89,6 +91,9 @@ export class VlanService extends BaseService {
     }
     if (formSearchSubnet.networkId != undefined || formSearchSubnet.networkId != null) {
       params = params.append('networkId', formSearchSubnet.networkId);
+    }
+    if (formSearchSubnet.vpcId != undefined || formSearchSubnet.vpcId != null) {
+      params = params.append('vpcId', formSearchSubnet.vpcId);
     }
     return this.http.get<BaseResponse<Subnet[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {
       headers: this.getHeaders(),

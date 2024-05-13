@@ -1,19 +1,19 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Xem chi tiết Network'" xmlns="http://www.w3.org/1999/html">
+             title="{{ 'app.vlan.note65' | i18n }}" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>VLAN</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        VLAN
+        <a routerLink="/app-smart-cloud/vlan/network/list">{{ 'app.vlan.note1' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/vlan/network/list">Danh sách Network</a>
-      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.vlan.note65' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
@@ -27,8 +27,8 @@
       <nz-tab nzTitle="Subnet">
         <one-portal-detail-subnet [region]="region" [project]="project" [idNetwork]="idNetwork" />
       </nz-tab>
-      <nz-tab nzTitle="Port">
-        <one-portal-detail-port [region]="region" [project]="project" [idNetwork]="idNetwork"/>
+      <nz-tab  nzTitle="Port">
+        <one-portal-detail-port [region]="region" [project]="project" [idNetwork]="idNetwork" />
       </nz-tab>
     </nz-tabset>
   </nz-card>

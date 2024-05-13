@@ -4,37 +4,89 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { getCurrentRegionAndProject } from '@shared';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
   NonNullableFormBuilder,
-  ValidationErrors,
+  ValidatorFn,
   Validators
 } from '@angular/forms';
-import { FormCreateNetwork } from '../../../../shared/models/vlan.model';
-import { AppValidator } from '../../../../../../../../libs/common-utils/src';
+import { FormCreateNetwork, FormSearchNetwork } from '../../../../shared/models/vlan.model';
+import { AppValidator, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { debounceTime, Subject } from 'rxjs';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+
+export function ipAddressValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
+
+    for (const ipAddress of ipAddressList) {
+      if (!isValidIPAddress(ipAddress)) {
+        return { 'invalidIPAddress': { value: ipAddress } }; // Địa chỉ IP không hợp lệ
+      }
+    }
+
+    return null; // Địa chỉ IP hợp lệ
+  };
+}
+
+// Hàm kiểm tra xem địa chỉ IP có hợp lệ không
+function isValidIPAddress(ipAddress: string): boolean {
+  if (
+    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.25.0.0') &&
+    !(ipAddress.startsWith('192.168.')) &&
+    !(ipAddress === '192.168.0.0')
+  ) {
+    return false;
+  }
+  if (!ipAddress.match(/^((\d{1,3}\.\d{1,3}\.0\.0\/16)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.0\/24))$/)) {
+    return false;
+  }
+
+  // Kiểm tra định dạng của địa chỉ IP
+  const ipAndPrefix = ipAddress.split('/');
+  const ipParts = ipAndPrefix[0].split('.');
+  const prefixLength = parseInt(ipAndPrefix[1], 10);
+
+  // Kiểm tra xem địa chỉ IP có đúng dạng không
+  if (ipParts.length !== 4 || isNaN(prefixLength) || prefixLength < 0 || prefixLength > 32) {
+    return false;
+  }
+
+  // Kiểm tra xem phần prefix có hợp lệ không
+  for (const part of ipParts) {
+    if (parseInt(part, 10) < 0 || parseInt(part, 10) > 255) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 @Component({
   selector: 'one-portal-create-network',
   templateUrl: './create-network.component.html',
-  styleUrls: ['./create-network.component.less'],
+  styleUrls: ['./create-network.component.less']
 })
-export class CreateNetworkComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+
+
+export class CreateNetworkComponent implements OnInit {
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  isLoading: boolean = false
+  isLoading: boolean = false;
 
-  isDisableGatewayIp: boolean = false
-  isDhcp: boolean = false
+  isDisableGatewayIp: boolean = false;
+  isDhcp: boolean = false;
 
-  isActiveHostRoute: boolean = false
-  listHostRoutes = []
+  isActiveHostRoute: boolean = false;
+  listHostRoutes = [];
 
-  formCreateNetwork: FormCreateNetwork = new FormCreateNetwork()
+  formCreateNetwork: FormCreateNetwork = new FormCreateNetwork();
+
+  isInvalidGateway: boolean = false
 
   validateForm: FormGroup<{
     nameNetwork: FormControl<string>
@@ -45,105 +97,169 @@ export class CreateNetworkComponent implements OnInit{
     gateway: FormControl<string>
     allocationPool: FormControl<string>
   }> = this.fb.group({
-    nameNetwork: ['', [Validators.required,
+    nameNetwork: ['vlan_', [Validators.required,
       AppValidator.startsWithValidator('vlan_'),
       Validators.maxLength(50),
-      Validators.pattern(/^[a-zA-Z0-9_]*$/)]],
+      Validators.pattern(/^[a-zA-Z0-9_]*$/),
+      this.duplicateNameValidator.bind(this)]],
     nameSubnet: ['', [Validators.required,
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/)]],
-    networkAddress: ['', [Validators.required, this.validate.bind(this)]],
+    networkAddress: ['', [Validators.required,
+      ipAddressValidator()]],
     disableGatewayIp: [false],
-    dhcp: [false],
+    dhcp: [true],
     gateway: [''],
     allocationPool: [null as string, []]
   });
 
+  pool: string = '';
+  gateway: string = ''
+  dataSubjectCidr: Subject<any> = new Subject<any>();
+  dataSubjectGateway: Subject<any> = new Subject<any>();
+
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private vlanService: VlanService,
               private route: ActivatedRoute,
-              private fb: NonNullableFormBuilder,) {
+              private fb: NonNullableFormBuilder) {
     this.validateForm.get('disableGatewayIp').valueChanges.subscribe(() => {
 
-      this.validateForm.get('gateway').reset()
-    })
-  }
-
-  validate(control: AbstractControl): ValidationErrors | null {
-    const ipAddress = control.value;
-    if (!ipAddress) {
-      return null; // Để trống được phép
-    }
-
-    // Kiểm tra định dạng IP và phạm vi
-    const ipRegex = /^(10\.(2[1-9]|[3-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.0\.0|172\.(1[6-9]|2[0-4])\.0\.0|192\.168\.0\.0)(\/(16|24))?$/;
-    if (!ipRegex.test(ipAddress)) {
-      return { 'invalidIp': true };
-    }
-
-    return null; // IP hợp lệ
+      this.validateForm.get('gateway').reset();
+    });
   }
 
   regionChanged(region: RegionModel) {
-    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+    this.router.navigate(['/app-smart-cloud/vlan/network/list']);
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project?.id
+    this.project = project?.id;
   }
 
   userChanged(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+    this.router.navigate(['/app-smart-cloud/vlan/network/list']);
   }
 
   disableGatewayIp(value) {
-    this.isDisableGatewayIp = value
+    this.isDisableGatewayIp = value;
   }
 
   dhcp(value) {
-    this.isDhcp = value
+    this.isDhcp = value;
   }
 
-  submitForm(){
-    if(this.validateForm.valid) {
-      this.isLoading = true
-      console.log('value form', this.validateForm.getRawValue())
-      this.formCreateNetwork.networktAddress = this.validateForm.controls.networkAddress.value
-      this.formCreateNetwork.name = this.validateForm.controls.nameNetwork.value
-      this.formCreateNetwork.vpcId = this.project
-      this.formCreateNetwork.regionId = this.region
-      this.formCreateNetwork.customerId = this.tokenService.get()?.userId
-      this.formCreateNetwork.subnetName = this.validateForm.controls.nameSubnet.value
-      this.formCreateNetwork.gatewayIP = this.validateForm.controls.gateway.value
-      this.formCreateNetwork.dnsNameServer = null
+  submitForm() {
+    if (this.validateForm.valid) {
+      this.isLoading = true;
+      console.log('value form', this.validateForm.getRawValue());
+      this.formCreateNetwork.networktAddress = this.validateForm.controls.networkAddress.value;
+      this.formCreateNetwork.name = this.validateForm.controls.nameNetwork.value;
+      this.formCreateNetwork.vpcId = this.project;
+      this.formCreateNetwork.regionId = this.region;
+      this.formCreateNetwork.customerId = this.tokenService.get()?.userId;
+      this.formCreateNetwork.subnetName = this.validateForm.controls.nameSubnet.value;
+      this.formCreateNetwork.gatewayIP = this.validateForm.controls.gateway.value;
+      this.formCreateNetwork.dnsNameServer = null;
       // if(this.isInPurchasedSubnet())
-      this.formCreateNetwork.allocationPool = this.validateForm.controls.allocationPool.value
-      this.formCreateNetwork.enableDHCP = this.validateForm.controls.dhcp.value
-      this.formCreateNetwork.hostRoutes = null
+      this.formCreateNetwork.allocationPool = this.validateForm.controls.allocationPool.value;
+      this.formCreateNetwork.enableDHCP = this.validateForm.controls.dhcp.value;
+      this.formCreateNetwork.hostRoutes = null;
 
       this.vlanService.createNetwork(this.formCreateNetwork).subscribe(data => {
-        this.isLoading = false
-        this.router.navigate(['/app-smart-cloud/vlan/network/list'])
-        this.notification.success('Thành công', 'Thêm mới Network thành công')
+        this.isLoading = false;
+        this.router.navigate(['/app-smart-cloud/vlan/network/list']);
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note57'));
 
       }, error => {
-        this.isLoading = false
-        this.notification.error('Thất bại', 'Thêm mới Network thất bại')
-      })
+        this.isLoading = false;
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note58'), error.error.detail);
+      });
     } else {
-      console.log('value form invalid', this.validateForm.getRawValue())
+      console.log('value form invalid', this.validateForm.getRawValue());
     }
   }
 
-  isInPurchasedSubnet(ipAddress: string): boolean {
-    return false;
+  nameList: string[] = [];
+
+  getListNetwork() {
+    let formSearch = new FormSearchNetwork();
+    formSearch.project = this.project;
+    formSearch.region = this.region;
+    formSearch.pageNumber = 1;
+    formSearch.pageSize = 9999;
+    this.vlanService.getVlanNetworks(formSearch).subscribe(data => {
+      data?.records?.forEach(item => {
+        this.nameList?.push(item.name);
+      });
+    });
   }
 
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
+
+  reset() {
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+  }
+
+  inputCheckPool(value) {
+    this.dataSubjectCidr.next(value);
+  }
+
+  onInputCheckPool() {
+    this.dataSubjectCidr.pipe(debounceTime(600)).subscribe((res) => {
+      this.vlanService.checkAllocationPool(res).subscribe(data => {
+        const dataJson = JSON.parse(JSON.stringify(data));
+
+        this.pool = dataJson.ipRange
+        this.gateway = dataJson.gateWay
+
+        if(!this.validateForm.controls.disableGatewayIp.value) {
+          this.validateForm.controls.allocationPool.setValue(this.gateway)
+        }
+
+        this.validateForm.controls.allocationPool.setValue(this.pool)
+        console.log('pool data', this.pool)
+      })
+    })
+  }
+
+  invalidGateway: string
+
+  onCheckGateway() {
+    this.dataSubjectGateway.pipe(debounceTime(600)).subscribe((res) => {
+      this.vlanService.checkIpAvailable(res, this.validateForm.controls.networkAddress.value, '', this.region).subscribe(data => {
+        this.isInvalidGateway = false
+        const dataJson = JSON.parse(JSON.stringify(data));
+        console.log('gateway data', dataJson)
+      }, error => {
+        console.log('error', error.error)
+        this.isInvalidGateway = true
+        this.invalidGateway = error.error
+      })
+    })
+  }
+
+  inputGateway(value) {
+    this.dataSubjectGateway.next(value);
+  }
+
+
   ngOnInit() {
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
+    this.getListNetwork();
+    this.onInputCheckPool();
+    this.onCheckGateway();
   }
 }

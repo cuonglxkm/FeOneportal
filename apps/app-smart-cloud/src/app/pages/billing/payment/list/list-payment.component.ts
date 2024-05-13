@@ -1,13 +1,13 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {PaymentModel, PaymentSearch} from "../../../../shared/models/payment.model";
-import {BaseResponse} from "../../../../../../../../libs/common-utils/src";
+import {BaseResponse, ProjectModel, RegionModel} from "../../../../../../../../libs/common-utils/src";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {PaymentService} from "../../../../shared/services/payment.service";
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
 import { Router } from '@angular/router';
 import {NzTableQueryParams} from "ng-zorro-antd/table";
-import {PolicyModel} from "../../../policy/policy.model";
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+
 
 @Component({
   selector: 'one-portal-list-payment',
@@ -15,7 +15,7 @@ import {PolicyModel} from "../../../policy/policy.model";
   styleUrls: ['./list-payment.component.less'],
 })
 export class ListPaymentComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   selectedValue?: string = null
@@ -28,9 +28,9 @@ export class ListPaymentComponent implements OnInit{
   isLoading: boolean = false
 
   status = [
-    {label: 'Tất cả', value: 'all'},
-    {label: 'Đã thanh toán', value: 'PAID'},
-    {label: 'Chưa thanh toán', value: 'NO'}
+    {label: this.i18n.fanyi('app.payment.status.all'), value: 'all'},
+    {label: this.i18n.fanyi('app.payment.status.paid'), value: 'PAID'},
+    {label: this.i18n.fanyi('app.payment.status.unpaid'), value: 'NO'}
   ]
 
   dateFormat = 'dd/MM/yyyy';
@@ -56,7 +56,9 @@ export class ListPaymentComponent implements OnInit{
   formSearch: PaymentSearch = new PaymentSearch()
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private paymentService: PaymentService, private router: Router,) {
+              private paymentService: PaymentService, private router: Router,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+            ) {
   }
 
   regionChanged(region: RegionModel) {

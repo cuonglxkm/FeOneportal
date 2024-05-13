@@ -13,6 +13,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
@@ -117,11 +118,11 @@
       <tr>
         <th>Tên</th>
         <th>Volume</th>
-        <th>Số bản ghi tối đa</th>
-        <th>Chu kỳ</th>
+        <th>{{ 'app.maximum.number.of.record' | i18n }}</th>
+        <th>{{ 'app.cycle' | i18n }}</th>
         <th>Trạng thái dịch vụ</th>
-        <th>Lần Snapshot tiếp theo</th>
-        <th>Thao tác</th>
+        <th>{{ 'app.next.snapshot' | i18n }}</th>
+        <th>{{ 'app.text.operation' | i18n }}</th>
       </tr>
     </thead>
     <tbody>
@@ -131,9 +132,20 @@
         </td>
         <td>{{ data.volumeName }}</td>
         <td>{{ data.maxSnapshot }}</td>
-        <td>Theo tuần</td>
+        <td> {{
+          data.mode === 1
+            ? 'Hằng ngày'
+            : data.mode === 2
+            ? 'Theo thứ'
+            : data.mode === 3
+            ? 'Theo tuần'
+            : data.mode === 4 && 'Theo tháng'
+        }}</td>
         <td *ngIf="data.status == 'ACTIVE'" style="color: #52c41a">
           Đang hoạt động
+        </td>
+        <td *ngIf="data.status == 'DISABLED'" style="color: red">
+          Tạm ngưng
         </td>
         <td>{{ data.nextRuntime | date : 'HH:mm:ss dd/MM/yyyy' }}</td>
         <td nzRight>

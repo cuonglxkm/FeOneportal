@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BehaviorSubject, catchError, throwError } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { FormSearchVpnService, VPNServiceDetail } from '../models/vpn-service';
+import { FormCreateVpnService, FormDeleteVpnService, FormEditVpnService, FormSearchVpnService, VPNServiceDetail } from '../models/vpn-service';
 import { BaseService } from './base.service';
 
 @Injectable({
@@ -22,7 +22,7 @@ export class VpnServiceService extends BaseService {
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
@@ -63,5 +63,30 @@ export class VpnServiceService extends BaseService {
         }
         return throwError(error);
       }))
+  }
+
+  create(formCreate: FormCreateVpnService) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/vpnservice/create',
+        Object.assign(formCreate), {headers: this.getHeaders()})
+  }
+
+  deleteVpnService(formDelete: FormDeleteVpnService) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/vpnservice/delete`, 
+    {body: formDelete, headers: this.getHeaders()}
+    ).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
+
+  edit(formEdit: FormEditVpnService) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/vpnservice/update',
+        Object.assign(formEdit), {headers: this.getHeaders()})
   }
 }

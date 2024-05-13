@@ -1,223 +1,330 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'volume.button.create' | i18n" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.block.storage' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title.breadcrumb.list' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/volume/create">{{ 'volume.button.create' | i18n }}</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChangeProject($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
 <nz-content>
   <form nz-form [formGroup]="validateForm" nzLayout="vertical">
-    <nz-card style="border-radius: 8px;">
-      <span class="text-card-header">Thông tin Volume</span>
-      <nz-form-item>
-        <nz-form-label nzFor="name">
-          <div style="margin-top: 15px;">
-            <span>Tên Volume</span>
-            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt.'"
-                  nzPopoverPlacement="bottom"></span>
-          </div>
-        </nz-form-label>
-        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input nz-input
-                 class="input-custom"
-                 formControlName="name"
-                 [placeholder]="'Nhập tên Volume'" [maxLength]="70"/>
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng
-              Việt
-            </ng-container>
-            <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
-            <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Volume khác</ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <div style="display: flex;">
-          <nz-switch formControlName="isSnapshot" (ngModelChange)="onSwitchSnapshot()" nzCheckedChildren="ON"
-                     nzUnCheckedChildren="OFF"></nz-switch>
-          <span style="margin-left: 10px; margin-top: 1px;">Tạo từ Snapshot</span>
-          <span nz-icon nzType="question-circle" style="margin-left: 5px; margin-top: 5px;"
-                nzTheme="outline"
-                nz-popover
-                [nzPopoverContent]="'Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot'"
-                nzPopoverPlacement="bottom"></span>
-        </div>
-      </nz-form-item>
-      <div *ngIf="isInitSnapshot === true">
-        <nz-form-item *ngIf="isInitSnapshot">
-          <nz-form-label nzFor="snapshot">
-            <div class="label">
-              <span>Chọn Snapshot</span>
-              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-            </div>
-          </nz-form-label>
-          <nz-form-control nzDisableAutoTips [nzErrorTip]="snapshotErrorTpl">
-            <nz-select nzSize="default"
-                       formControlName="snapshot"
-                       id="snapshot"
-                       [nzPlaceHolder]="'-Chọn Snapshot-'"
-                       [nzShowSearch]="false"
-                       [(ngModel)]="snapshotSelected"
-                       (ngModelChange)="snapshotSelectedChange($event)"
-                       style="width: 100%;">
-              <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
-                         [nzValue]="item.value"></nz-option>
-              <ng-template #snapshotErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng chọn Snapshot</ng-container>
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="16">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">{{ 'volume.detail.title'|i18n }}</span>
+          <nz-form-item>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>{{ 'volume.table.title.name.volume'|i18n }}</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <img nz-popover [nzPopoverContent]="'volume.tooltip.input.name' | i18n"
+                     nzPopoverPlacement="bottom"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+              <input nz-input appAutofocus
+                     class="input-custom"
+                     formControlName="name"
+                     [placeholder]="'volume.notification.input.name.delete' | i18n" [maxLength]="50" />
+              <ng-template #nameErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">{{ 'volume.notification.input.name.required'|i18n }}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{ 'volume.notification.input.name.pattern'|i18n }}
+                </ng-container>
+                <ng-container
+                  *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength'|i18n }}
+                </ng-container>
+                <ng-container
+                  *ngIf="control.hasError('duplicateName')">{{ 'volume.notification.input.name.duplicateName'|i18n }}
+                </ng-container>
               </ng-template>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-      <nz-form-item>
-        <nz-form-label nzFor="volumeType">
-          <div class="label">
-            <span>Chọn loại volume</span>
-            <span style="color: rgba(252, 16, 16, 1); "> *</span>
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau'"
-                  nzPopoverPlacement="bottom"></span>
-          </div>
-        </nz-form-label>
-        <nz-form-control nzDisableAutoTips>
-          <nz-radio-group [(ngModel)]="selectedValueRadio"
-                          (ngModelChange)="onChangeStatus()"
-                          formControlName="radio"
-                          [disabled]="isInitSnapshot">
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
             <div style="display: flex;">
-              <div nz-radio nzValue="hdd"
-                   [ngStyle]="{'background-color': selectedValueRadio === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"
-                   style="padding: 10px;border: thin; border-radius: 5px;">
-                <h3><b>HDD</b></h3>
-                Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
-                công việc chuyên sâu thông lượng
-              </div>
-              <div nz-radio nzValue="ssd"
-                   [ngStyle]="{'background-color': selectedValueRadio === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"
-                   style="padding: 10px;border: thin; border-radius: 5px;">
-                <h3><b>SSD</b></h3>
-                Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
-                công việc chuyên sâu thông lượng
-              </div>
+              <nz-switch formControlName="isSnapshot" (ngModelChange)="onSwitchSnapshot()" nzCheckedChildren="ON"
+                         nzUnCheckedChildren="OFF"></nz-switch>
+              <span style="margin-left: 10px; margin-top: 1px;"
+                    class="text-label">{{ 'app.instances.from.snapshot'|i18n }}</span>
+              <img style="margin-left: 10px"
+                   nz-popover [nzPopoverContent]="'volume.tooltip.switch.snapshot'|i18n"
+                   nzPopoverPlacement="bottom"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
             </div>
-          </nz-radio-group>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label nzFor="storage">
-          <div style="margin-top: 15px;">
-            <span>Dung lượng </span>
-            (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Dung lượng Volume tối thiểu là 1'"
-                  nzPopoverPlacement="bottom"></span>
-          </div>
-        </nz-form-label>
-        <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
-          <nz-input-number formControlName="storage"
-                           id="storage"
-                           class="input-custom"
-                           style="width: 100%;"
-                           [nzMin]="1" [nzStep]="1"></nz-input-number>
-          <ng-template #storageErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng</ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>
-          <span>{{ iops }}</span>
-        </nz-form-label>
-      </nz-form-item>
-      <label nz-checkbox formControlName="isEncryption">Mã hóa Volume</label>
-      <span nz-icon nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="'Mã hóa volume để tăng tính bảo mật đọc, ghi cho volume'"
-            nzPopoverPlacement="bottom"></span>
-      <br>
-      <label nz-checkbox style="margin-top: 10px;" formControlName="isMultiAttach">Gắn nhiều máy ảo</label>
-      <span nz-icon nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="'Volume có thể gắn đồng thời vào nhiều máy ảo khác nhau. Nếu chọn volume multi attach thì không thể chọn mã hóa volume'"
-            nzPopoverPlacement="bottom"></span>
-      <nz-form-item style="margin-top: 10px;">
-        <nz-form-label nzFor="instanceName">
-          <div class="label">
-            <span>Chọn máy ảo</span>
-            <span nz-icon nzType="question-circle" style="margin-left: 5px;"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Chọn máy ảo để gắn volume'"
-                  nzPopoverPlacement="bottom"></span>
-          </div>
-        </nz-form-label>
-        <nz-form-control>
-          <nz-select nzSize="default"
-                     formControlName="instanceId"
-                     id="instanceId"
-                     [nzPlaceHolder]="'-Chọn máy ảo-'"
-                     [nzShowSearch]="false"
-                     [(ngModel)]="instanceSelected"
-                     (ngModelChange)="instanceSelectedChange($event)"
-                     style="width: 100%;">
-            <nz-option *ngFor="let item of listInstances" [nzLabel]="item.name"
-                       [nzValue]="item.id"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label nzFor="description">
-          <div class="label">
-            <span>Mô tả</span>
-          </div>
-        </nz-form-label>
-        <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input formControlName="description" id="description" [maxLength]="700"
-                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
-          <ng-template #descriptionErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 700 kí tự</ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item nzAlign="bottom" nzJustify="end">
-        <nz-space nzSize="large">
-          <button *nzSpaceItem nz-button nzType="default" class="button-cancel" (click)="clear()">
-            <span nz-icon nzType="close" nzTheme="outline"></span>Hủy</button>
-          <nz-form-control *nzSpaceItem>
-            <button nz-button nzType="primary" [disabled]="!validateForm.valid"
-                    class="button-ok" (click)="showConfirmCreate()">
-              <span nz-icon nzType="check" nzTheme="outline" ></span>Tạo mới</button>
-            <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Xác nhận khởi tạo Volume" nzTabScrollList="true"
-                      (nzOnCancel)="handleCancelCreate()" nzCentered>
-              <div *nzModalTitle>
-                <p class="text-h5"><b>Xác nhận khởi tạo Volume</b></p>
-              </div>
-              <div *nzModalContent>
-
-                <div>
-                  <b style="text-align: center">Quý khách chắn chắn muốn thực hiện khởi tạo Volume?</b>
+          </nz-form-item>
+          <div *ngIf="isInitSnapshot === true">
+            <nz-form-item *ngIf="isInitSnapshot">
+              <nz-form-label nzFor="snapshot">
+                <div class="label">
+                  <span>{{ 'volume.action.snapshot.select'|i18n }}</span>
+                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 </div>
+              </nz-form-label>
+              <nz-form-control nzDisableAutoTips [nzErrorTip]="snapshotErrorTpl">
+                <nz-select nzSize="large"
+                           formControlName="snapshot"
+                           [nzPlaceHolder]="'volume.action.type.volume.select'|i18n"
+                           [nzShowSearch]="false"
+                           [(ngModel)]="snapshotSelected"
+                           (ngModelChange)="snapshotSelectedChange($event)"
+                           style="width: 100%;">
+                  <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
+                             [nzValue]="item.value"></nz-option>
+                  <ng-template #snapshotErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">{{ 'volume.tooltip.required.snapshot'|i18n }}
+                    </ng-container>
+                  </ng-template>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <nz-form-item>
+            <nz-form-label nzFor="volumeType">
+              <div class="label">
+                <span>{{ 'app.choose.volume.type'|i18n }}</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <img nz-popover [nzPopoverContent]="'volume.tooltip.select.type.volume'|i18n"
+                     nzPopoverPlacement="bottom"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <nz-radio-group formControlName="radio"
+                              [disabled]="isInitSnapshot">
+                <nz-row [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
+                        style="margin-top: 10px">
+                  <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+                    <nz-card style="border-radius: 4px">
+                      <nz-row nzGutter="16">
+                        <nz-col nzSpan="20">
+                          <nz-card-meta [nzAvatar]="nzAvatarselectedHDDorSSD1"
+                                        [nzTitle]="nzTitleselectedHDDorSSD1"
+                                        [nzDescription]="nzDescriptionselectedHDDorSSD1">
+                            <ng-template #nzAvatarselectedHDDorSSD1>
+                              <label [tabIndex]="0" nz-radio
+                                     [ngModel]="selectedValueHDD"
+                                     [ngModelOptions]="{ standalone: true }"
+                                     (click)="onChangeStatusHDD()"
+                                     (keyup.enter)="onChangeStatusHDD()"></label>
+                            </ng-template>
+                            <ng-template #nzTitleselectedHDDorSSD1>
+                              <b>{{ 'volume.hdd'|i18n }}</b>
+                            </ng-template>
+                            <ng-template #nzDescriptionselectedHDDorSSD1>
+                              <span class="text-label">{{ 'volume.hdd.description'|i18n }}</span>
+                            </ng-template>
+                          </nz-card-meta>
+                        </nz-col>
+                      </nz-row>
+                    </nz-card>
+                  </nz-col>
+                  <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+                    <nz-card style="border-radius: 4px">
+                      <nz-row nzGutter="16">
+                        <nz-col nzSpan="20">
+                          <nz-card-meta [nzAvatar]="nzAvatarselectedHDDorSSD2"
+                                        [nzTitle]="nzTitleselectedHDDorSSD2"
+                                        [nzDescription]="nzDescriptionselectedHDDorSSD2">
+                            <ng-template #nzAvatarselectedHDDorSSD2>
+                              <label [tabIndex]="0" nz-radio
+                                     [ngModel]="selectedValueSSD"
+                                     [ngModelOptions]="{ standalone: true }"
+                                     (click)="onChangeStatusSSD()"
+                                     (keyup.enter)="onChangeStatusSSD()"></label>
+                            </ng-template>
+                            <ng-template #nzTitleselectedHDDorSSD2><b>{{ 'volume.ssd'|i18n }}</b></ng-template>
+                            <ng-template #nzDescriptionselectedHDDorSSD2>
+                              <span class="text-label">{{ 'volume.ssd.description'|i18n }}</span>
+                            </ng-template>
+                          </nz-card-meta>
+                        </nz-col>
+                      </nz-row>
+                    </nz-card>
+                  </nz-col>
+                </nz-row>
+              </nz-radio-group>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzFor="storage">
+              <div style="margin-top: 15px;">
+                <span>{{ 'volume.table.title.storage'|i18n }}</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
+                <img nz-popover [nzPopoverContent]="'volume.tooltip.storage'|i18n"
+                     nzPopoverPlacement="bottom"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
+              <nz-input-number formControlName="storage"
+                               id="storage"
+                               class="input-custom"
+                               style="width: 100%; margin-left: 0;"
+                               [nzMin]="1" [nzStep]="1"></nz-input-number>
+              <ng-template #storageErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.required.storage' | i18n }}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{ 'volume.input.storage.required'|i18n }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>{{ 'volume.table.title.iops' |i18n }}</span>
+              <img nz-popover [nzPopoverContent]="'volume.tooltip.iops'|i18n"
+                   nzPopoverPlacement="bottom" style="margin-left: 5px; margin-right: 10px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+              <span>{{ iops }}</span>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
+            <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
+              <label *ngIf="typeEncrypt == true"
+                     nz-checkbox
+                     [nzDisabled]="!(enableEncrypt === enableMultiAttach) && !enableEncrypt"
+                     formControlName="isEncryption" (click)="onChangeStatusEncrypt()">
+                {{ 'volume.info.type.encrypt' |i18n }}
+                <img nz-popover
+                     [nzPopoverContent]="'volume.tooltip.type.encrypt'|i18n"
+                     nzPopoverPlacement="bottom"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </label>
 
+              <br>
+              <label *ngIf="typeMultiple == true"
+                     nz-checkbox
+                     [nzDisabled]="!(enableEncrypt === enableMultiAttach) && !enableMultiAttach"
+                     style="margin-top: 10px;"
+                     formControlName="isMultiAttach" (click)="onChangeStatusMultiAttach()">
+                {{ 'volume.info.type.multiAttach' |i18n }}
+                <img nz-popover
+                     [nzPopoverContent]="'volume.tooltip.type.multiAttach'|i18n"
+                     nzPopoverPlacement="bottom"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </label>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item style="margin-top: 10px;">
+            <nz-form-label nzFor="instanceName">
+              <div class="label">
+                <span>{{ 'volume.modal.attach.title' | i18n }}</span>
+                <img nz-popover [nzPopoverContent]="'volume.tooltip.select.instance' | i18n"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
-              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                <button nz-button nzType="default" (click)="handleCancelCreate()" class="button-cancel">
-                  <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
-                </button>
-                <button nz-button nzType="primary"
-                        (click)="handleOkCreate()"
-                        [nzLoading]="isLoadingCreate"
-                        class="button-ok">
-                  <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
-                </button>
+            </nz-form-label>
+            <nz-form-control>
+              <nz-select nzSize="large"
+                         formControlName="instanceId"
+                         [nzPlaceHolder]="'volume.modal.attach.title'|i18n"
+                         [nzShowSearch]="false"
+                         [(ngModel)]="instanceSelected"
+                         (ngModelChange)="instanceSelectedChange($event)"
+                         style="width: 100%;">
+                <nz-option *ngFor="let item of listInstances" [nzLabel]="item.name"
+                           [nzValue]="item.id"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzFor="description">
+              <div class="label">
+                <span>{{ 'volume.table.title.description'|i18n }}</span>
               </div>
-            </nz-modal>
-          </nz-form-control>
-        </nz-space>
-      </nz-form-item>
-    </nz-card>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+              <nz-textarea-count [nzMaxCharacterCount]="255">
+                <textarea nz-input formControlName="description" class="input-custom" [maxLength]="255"
+                          [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+              </nz-textarea-count>
+              <ng-template #descriptionErrorTpl let-control>
+                <ng-container
+                  *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength'|i18n }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-card style="border-radius: 8px;">
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
+          </div>
+          <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ validateForm.controls.name.getRawValue() }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{ 'app.volume.type' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span *ngIf="volumeCreate.volumeType == 'hdd'">{{ 'volume.hdd' | i18n }}</span>
+            <span *ngIf="volumeCreate.volumeType == 'ssd'">{{ 'volume.ssd' | i18n }}</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{ 'volume.storage.volume' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">{{ volumeCreate.volumeSize }} GB</div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{ 'volume.table.title.iops' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">{{ this.iops }}</div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row>
+            <nz-col style="width: 100%">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmCreate()"
+                      [disabled]="validateForm.invalid">
+                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
+              </button>
+              <nz-modal [(nzVisible)]="isVisibleCreate" nzTabScrollList="true"
+                        (nzOnCancel)="handleCancelCreate()" nzCentered>
+                <div *nzModalTitle>
+                  <span class="text-modal-header">{{ 'volume.modal.confirm.title.create'|i18n }}</span>
+                </div>
+                <div *nzModalContent>
+                  <div>
+                    <span class="text-label" style="text-align: center">{{ 'volume.modal.confirm.content'|i18n }}</span>
+                  </div>
+                </div>
+                <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                  <button nz-button nzType="default" (click)="handleCancelCreate()" class="button-cancel">
+                    <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel'|i18n }}
+                  </button>
+                  <button nz-button nzType="primary"
+                          (click)="handleOkCreate()"
+                          [nzLoading]="isLoadingCreate"
+                          class="button-ok">
+                    <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
+                  </button>
+                </div>
+              </nz-modal>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-col>
+    </nz-row>
   </form>
 </nz-content>

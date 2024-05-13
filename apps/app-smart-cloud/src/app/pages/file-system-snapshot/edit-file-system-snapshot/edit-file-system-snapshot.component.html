@@ -17,7 +17,7 @@
   (nzOnCancel)="handleCancel()"
 >
   <ng-template #modalTitle>
-    <h4><b>Chỉnh sửa File System Snapshot</b></h4>
+    <h4><b>{{ 'app.file.system.snapshot.edit' | i18n }}</b></h4>
   </ng-template>
   <ng-template #modalContent>
     <form
@@ -28,7 +28,7 @@
     >
       <nz-form-item>
         <div>
-          <span>Tên Snapshot</span>
+          <span>{{ 'app.snapshot.name' | i18n }}</span>
           <span style="color: rgba(252, 16, 16, 1)"> *</span>
         </div>
         <nz-form-control
@@ -39,23 +39,18 @@
           <input
             nz-input
             formControlName="name"
-            id="name"
-            placeholder="Vui lòng nhập thông tin"
             [maxlength]="50"
           />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập thông tin</ng-container
-            >
-            <ng-container *ngIf="control.hasError('startsWith')"
-              >Tên phải bắt đầu bằng SG_</ng-container
+              >{{ 'validation.info.required' | i18n }}</ng-container
             >
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <div>
-          <span>Tên File System</span>
+          <span>{{ 'app.file.system.name' | i18n }}</span>
           <span style="color: rgba(252, 16, 16, 1)"> *</span>
         </div>
         <nz-form-control
@@ -63,14 +58,14 @@
         >
           <input
             nz-input
-            value="asdsad"
+            [value]="data?.shareName"
             disabled="true"
           />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <div>
-          <span>Dung lượng - GB</span>
+          <span>{{ 'app.capacity' | i18n }} - GB</span>
           <span style="color: rgba(252, 16, 16, 1)"> *</span>
         </div>
         <nz-form-control
@@ -78,14 +73,14 @@
         >
           <input
             nz-input
-            [value]="5"
+            [value]="data?.size"
             disabled="true"
           />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <div>
-          <span>Ngày cấp dịch vụ</span>
+          <span>{{ 'app.service.start.date' | i18n }}</span>
           <span style="color: rgba(252, 16, 16, 1)"> *</span>
         </div>
         <nz-form-control
@@ -93,20 +88,18 @@
         >
           <input
             nz-input
-            [value]="5"
+            [value]="data?.createdDate | date: 'dd/MM/yyyy'"
             disabled="true"
           />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <span class="name-security-group">Mô tả</span>
+        <span class="name-security-group">{{ 'app.service.description' | i18n }}</span>
         <nz-form-control style="margin-top: 10px">
           <textarea
             rows="5"
             nz-input
             formControlName="description"
-            id="description"
-            placeholder="Cập nhật thông tin mô tả"
           ></textarea>
         </nz-form-control>
       </nz-form-item>
@@ -119,7 +112,7 @@
             (click)="handleCancel()"
             class="button-back"
           >
-            Quay lại
+            {{ 'app.button.back' | i18n }}
           </button>
           <nz-form-control *nzSpaceItem>
             <button
@@ -129,7 +122,7 @@
               class="button-new"
               [disabled]="!validateForm.valid"
             >
-              Tạo mới
+              {{ 'app.text.edit' | i18n }}
             </button>
           </nz-form-control>
         </nz-space>

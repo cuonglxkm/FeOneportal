@@ -1,0 +1,70 @@
+export interface AppDetail {
+    service_code: string ;
+    service_name: string;
+    service_status: number;
+    service_order_code: string;
+    created_user: string;
+    created_name: string;
+    updated_user: string;
+    created_date: Date;
+    updated_date: Date;
+    expires_date: Date;
+    avatar: string;
+    version: string;
+    pbm_version: string;
+    cluster_ip: string;
+    connection_string: string;
+    cluster_tier: number;
+    cluster_tier_label: string;
+    cpu: number;
+    memory: number;
+    memory_unit: string;
+    storage: number;
+    storage_unit: string;
+    management_domain: string;
+    management_user: string;
+    monitoring_domain: string;
+    monitoring_user: string;
+    created_org_name: string;
+    cluster_name: string;
+    cluster_id: string;
+    region_name: string;
+    region_id: string;
+    reject_reason: string;
+    service_pack_code:string;
+  }
+
+
+export class MongodbDetail {
+    id: number;
+    service_code: string;
+    service_name: string;
+    service_status: number;
+    order_id: number;
+    version: string;
+    cluster_id: string;
+    cluster_name: string;
+    region_id: number;
+    region_name: string;
+    rancher_code: string;
+    project_id: string;
+    service_pack_code: string;
+    offer_id: number;
+    offer_name: string | null;
+    pbm_version: string | null;
+    cluster_ip: string;
+    user_admin: string;
+    // password_admin: string;
+    connection_string: string;
+    cpu: number;
+    ram: number;
+    storage: number;
+    description: string;
+    created_user_id: number;
+    created_user_email: string;
+    created_name: string | null;
+    updated_user_id: number | null;
+    created_date: Date;
+    expires_date: Date;
+    updated_date: Date;
+}

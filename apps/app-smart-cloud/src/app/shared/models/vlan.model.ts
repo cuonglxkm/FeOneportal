@@ -122,7 +122,7 @@ export class FormCreateSubnet {
 export class FormUpdateSubnet {
   id: number
   name: string
-  getwayIP: string
+  gatewayIP: string
   enableDHCP: boolean
   hostRoutes: string
 }

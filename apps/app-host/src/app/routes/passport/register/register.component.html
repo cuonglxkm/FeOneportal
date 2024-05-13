@@ -178,6 +178,7 @@
   <nz-form-item>
     <re-captcha
       formControlName="recaptchaReactive"
+      key="publicKey" lang="en"
       (resolved)="addTokenLog('Reactive form mode resolved', $event)">
     </re-captcha>
   </nz-form-item>
@@ -191,7 +192,7 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <button [disabled]="form.invalid" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="submit">
+    <button [disabled]="form.invalid || this.form.controls['agreement'].value != true" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="submit">
       {{ 'app.register.register' | i18n }}
     </button>
 

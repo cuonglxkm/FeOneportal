@@ -1,19 +1,14 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
-import { getCurrentRegionAndProject } from '@shared';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { VlanService } from '../../../shared/services/vlan.service';
-import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { FileSystemModel, FormSearchFileSystem } from 'src/app/shared/models/file-system.model';
-import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 
 
 @Component({
@@ -22,24 +17,20 @@ import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-sn
   styleUrls: ['./create-file-system-snapshot.component.less'],
 })
 export class CreateFileSystemSnapshotComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
-  value: string;
 
+  value: string;
   pageSize: number = 10;
   pageIndex: number = 1;
-
   response: BaseResponse<FileSystemModel[]>;
-
   isLoading: boolean = false;
-
   isCheckBegin: boolean = false;
-
   customerId: number;
+  selectedFileSystemName: string;
+  
+  formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot = new FormCreateFileSystemSnapShot();
 
-  formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot =
-    new FormCreateFileSystemSnapShot();
-    selectedFileSystemName: string;
   form: FormGroup<{
     nameFileSystem: FormControl<number>;
     nameSnapshot: FormControl<string>
@@ -69,18 +60,21 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
     formSearch.isCheckState = false;
     formSearch.pageSize = this.pageSize;
     formSearch.currentPage = this.pageIndex;
-
+    
     this.fileSystemService.search(formSearch)
 
       .subscribe(data => {
         this.isLoading = false;
         console.log('data file system', data);
         this.response = data;
+
       }, error => {
         this.isLoading = false;
         this.response = null;
       });
   }  
+
+
 
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject()
@@ -99,9 +93,6 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
     private notification: NzNotificationService
   ) {}
 
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
-  }
 
   getData(): any {
     this.formCreateFileSystemSnapshot.customerId =
@@ -117,10 +108,10 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
     this.formCreateFileSystemSnapshot.force = true
     this.formCreateFileSystemSnapshot.size = 1
     this.formCreateFileSystemSnapshot.vpcId = this.project
-    this.formCreateFileSystemSnapshot.scheduleId = 1
+    this.formCreateFileSystemSnapshot.scheduleId = 0
     return this.formCreateFileSystemSnapshot;
   }
-  // request = new CreateScheduleSnapshotDTO();
+  
   handleCreate() {
     this.isLoading = true;
     if (this.form.valid) {
@@ -135,14 +126,18 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
               'Thành công',
               'Tạo mới file system snapshot thành công'
             );
+            this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
           },
           (error) => {
             this.isLoading = false
-            this.notification.error(
-              'Thất bại',
-              'Tạo mới file system snapshot thất bại'
-            );
-            console.log(error);
+            if (error.status === 500) {
+              this.notification.error('Thất bại', 'Chỉ có thể tạo khi trạng thái của file system là Khởi tạo');
+            }else{
+              this.notification.error(
+                'Thất bại',
+                'Tạo mới file system snapshot thất bại'
+              );
+            }
           }
         );
     }

@@ -37,12 +37,14 @@
                 {
                   "text": "Thanh toán",
                   "icon": "anticon-dashboard",
-                  "link": "/app-smart-cloud/billing/payments"
+                  "link": "/app-smart-cloud/billing/payments",
+                  "action": "payment:List"
                 },
                 {
                   "text": "Đơn hàng",
                   "icon": "anticon-dashboard",
-                  "link": "/app-smart-cloud/order/list"
+                  "link": "/app-smart-cloud/order/list",
+                  "action": "order:List"
                 }
               ]
             },
@@ -57,27 +59,31 @@
                 },
                 {
                   "text": "Users",
-                  "link": "/app-smart-cloud/users"
+                  "link": "/app-smart-cloud/users",
+                  "action": "iamuser:List"
                 },
                 {
                   "text": "Groups",
-                  "link": "/app-smart-cloud/iam/user-group"
+                  "link": "/app-smart-cloud/iam/user-group",
+                  "action": "iamgroup:List"
                 },
                 {
                   "text": "Policies",
-                  "link": "/app-smart-cloud/policy"
+                  "link": "/app-smart-cloud/policy",
+                  "action": "iampolicy:List"
                 }
               ]
             },
             {
               "text": "Bảo mật",
               "icon": "anticon-dashboard",
-              "link": "/app-smart-cloud/action-history"
+              "link": "/app-smart-cloud/security"
             },
             {
               "text": "Lịch sử tác động",
               "icon": "anticon-dashboard",
-              "link": "/app-smart-cloud/action-history"
+              "link": "/app-smart-cloud/action-history",
+              "action": "actionlogs:List"
             }
           ]
         },
@@ -88,7 +94,8 @@
             {
               "text": "VM (Máy ảo)",
               "icon": "anticon-laptop",
-              "link": "/app-smart-cloud/instances"
+              "link": "/app-smart-cloud/instances",
+              "action": "instance:List"
             },
             {
               "text": "Block Storage",
@@ -96,15 +103,23 @@
               "children": [
                 {
                   "text": "Volume",
-                  "link": "/app-smart-cloud/volumes"
+                  "link": "/app-smart-cloud/volumes",
+                  "action": "volume:List"
                 },
                 {
                   "text": "Snapshot Volume",
-                  "link": "/app-smart-cloud/snapshotvls"
+                  "link": "/app-smart-cloud/snapshotvls",
+                  "action": "volumesnapshot:List"
                 },
                 {
                   "text": "Lịch Snapshot",
-                  "link": "/app-smart-cloud/schedule/snapshot/list"
+                  "link": "/app-smart-cloud/schedule/snapshot/list",
+                  "action": "volumesnapshotschedule:List"
+                },
+                {
+                  "text": "Gói Snapshot",
+                  "link": "/app-smart-cloud/snapshot/packages",
+                  "action": "SnapshotPackage:List"
                 }
               ]
             },
@@ -115,22 +130,26 @@
                 {
                   "text": "Backup VM",
                   "icon": "anticon-dashboard",
-                  "link": "/app-smart-cloud/backup-vm"
+                  "link": "/app-smart-cloud/backup-vm",
+                  "action": "backup:List"
                 },
                 {
                   "text": "Backup Volume",
                   "icon": "anticon-user",
-                  "link": "/app-smart-cloud/backup-volume"
+                  "link": "/app-smart-cloud/backup-volume",
+                  "action": "backup:List"
                 },
                 {
                   "text": "Lập lịch Backup",
                   "icon": "anticon-calendar",
-                  "link": "/app-smart-cloud/schedule/backup/list"
+                  "link": "/app-smart-cloud/schedule/backup/list",
+                  "action": "backupschedule:Search"
                 },
                 {
                   "text": "Gói Backup",
                   "icon": "anticon-calendar",
-                  "link": "/app-smart-cloud/backup/packages"
+                  "link": "/app-smart-cloud/backup/packages",
+                  "action": "backup:ListBackupPacket"
                 }
               ]
             },
@@ -141,23 +160,28 @@
                 {
                   "text": "IP Public",
                   "icon": "anticon-exception",
-                  "link": "/app-smart-cloud/ip-public"
+                  "link": "/app-smart-cloud/ip-public",
+                  "action": "ippublic:List"
                 },
                 {
                   "text": "IP Floating",
-                  "link": "/app-smart-cloud/networks/ip-floating/list"
+                  "link": "/app-smart-cloud/networks/ip-floating/list",
+                  "action": "ipfloating:List"
                 },
                 {
                   "text": "Dải IP Kết nối WAN",
-                  "link": "/app-smart-cloud/networks/ip-wan/list"
+                  "link": "/app-smart-cloud/networks/ip-wan/list",
+                  "action": "ipwan:List"
                 },
                 {
                   "text": "Mạng LAN (VLAN)",
-                  "link": "/app-smart-cloud/vlan/network/list"
+                  "link": "/app-smart-cloud/vlan/network/list",
+                  "action": "vlan:List"
                 },
                 {
                   "text": "Router",
-                  "link": "/app-smart-cloud/network/router"
+                  "link": "/app-smart-cloud/network/router",
+                  "action": "router:List"
                 },
                 {
                   "text": "Direct Connect",
@@ -172,21 +196,26 @@
             {
               "text": "VPC",
               "icon": "anticon-profile",
-              "link": "/app-smart-cloud/vpc"
-            },
-            {
-              "text": "Load balancer SDN",
-              "link": "/app-smart-cloud/object"
+              "link": "/app-smart-cloud/vpc",
+              "action": "vpc:List"
             },
             {
               "text": "Khóa truy cập (Keypair)",
               "icon": "anticon-mail",
-              "link": "/app-smart-cloud/ssh-key"
+              "link": "/app-smart-cloud/keypair",
+              "action": "keypair:List"
             },
             {
               "text": "Security Group",
               "icon": "anticon-profile",
-              "link": "/app-smart-cloud/security-group"
+              "link": "/app-smart-cloud/security-group/list",
+              "action": "securitygroup:List"
+            },
+            {
+              "text": "Load Balancer SDN",
+              "link": "/app-smart-cloud/load-balancer/list",
+              "icon": "anticon-cluster",
+              "action": "loadbalancer:List"
             },
             {
               "key": "Object Storage",
@@ -195,19 +224,23 @@
               "children": [
                 {
                   "text": "Bucket",
-                  "link": "/app-smart-cloud/object-storage/bucket"
+                  "link": "/app-smart-cloud/object-storage/bucket",
+                  "action": "objectstorages:ObjectStorageUser"
                 },
                 {
                   "text": "Sub User",
-                  "link": "/app-smart-cloud/object-storage/sub-user/list"
+                  "link": "/app-smart-cloud/object-storage/sub-user/list",
+                  "action": "objectstorages:ObjectStorageUser"
                 },
                 {
                   "text": "S3 Key",
-                  "link": "/app-smart-cloud/object"
+                  "link": "/app-smart-cloud/object-storage/s3-key",
+                  "action": "objectstorages:Search"
                 },
                 {
                   "text": "Thống kê",
-                  "link": "/app-smart-cloud/object-storage/dashboard"
+                  "link": "/app-smart-cloud/object-storage/dashboard",
+                  "action": "objectstorages:ObjectStorageMonitor"
                 }
               ]
             },
@@ -218,22 +251,26 @@
               "children": [
                 {
                   "text": "File System",
-                  "link": "/app-smart-cloud/file-storage/file-system/list"
+                  "link": "/app-smart-cloud/file-storage/file-system/list",
+                  "action": "fileStorages:GetListShareFileStorage"
                 },
                 {
                   "text": "File System Snapshot",
-                  "link": "/app-smart-cloud/file-system-snapshot/list"
+                  "link": "/app-smart-cloud/file-system-snapshot/list",
+                  "action": "fileStorages:GetListShareSnapshotFileStorage"
                 },
                 {
                   "text": "Lịch Snapshot File System ",
-                  "link": "/app-smart-cloud/file-system-snapshot-schedule/list"
+                  "link": "/app-smart-cloud/file-system-snapshot-schedule/list",
+                  "action": "fileStorages:GetListScheduleShareSnapshot"
                 }
               ]
             },
             {
               "text": "VPN Site to Site",
               "link": "/app-smart-cloud/vpn-site-to-site/manage",
-              "icon": "anticon-profile"
+              "icon": "anticon-profile",
+              "action": "vpnsitetosites:List"
             }
           ]
         },

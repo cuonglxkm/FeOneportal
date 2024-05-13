@@ -1,121 +1,229 @@
-<h2  *ngIf="mode == createNumber"><b>Tạo mới Topic</b></h2>
-<h2 *ngIf="mode == updateNumber"><b>Cập nhật Topic</b></h2>
+<!-- eslint-disable @angular-eslint/template/eqeqeq -->
+<h2  *ngIf="mode == createNumber"><b>{{ 'kakfa.topic.create' | i18n}}</b></h2>
+<h2 *ngIf="mode == updateNumber"><b>{{ 'kakfa.topic.update' | i18n}}</b></h2>
 <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
     <div nz-row>
         <nz-form-item nz-col nzSpan="12">
-            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="20" nzRequired nzFor="name_tp">Tên Topic
-                <i class="tip" nz-icon [nzType]="'info-circle'"
-                    nzTooltipTitle="Chỉ dùng các ký tự chữ cái thường, chữ hoa, hoặc số. Tối đa 255 ký tự."
-                    nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="20" nzFor="name_tp" nzNoColon>{{ 'kakfa.topic.name' | i18n }} (<span class="text-red">*</span>)
             </nz-form-label>
-            <nz-form-control nz-form-label [nzSpan]="20" [nzErrorTip]="nameErrorTpl">
-                <input nz-input name="name_tp" formControlName="name_tp" type="text" id="name_tp"
-                    placeholder="Nhập tên Topic">
+            <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="nameErrorTpl">
+                <input  nz-input name="name_tp" nzSize="large" formControlName="name_tp" type="text" id="name_tp"
+                    [placeholder]="'kakfa.topic.name-placeholder' | i18n">
                 <ng-template #nameErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">
-                        Tên topic không được để trống
+                        {{ 'validation.kafka.topic.name-required' | i18n }}
                     </ng-container>
                     <ng-container *ngIf="control.hasError('pattern'); else errLength">
-                        Tên Topic chỉ bao gồm các ký tự chữ, số và ký tự đặc biệt -
+                        {{ 'validation.kafka.topic.name-pattern' | i18n }}
                     </ng-container>
                     <ng-template #errLength>
                         <ng-container *ngIf="control.hasError('minlength') || control.hasError('maxlength')">
-                            Tên Topic phải có tối thiểu 5 và tối đa 255 ký tự 
+                            {{ 'validation.kafka.topic.name-length' | i18n }}
                         </ng-container>
                     </ng-template>
                 </ng-template>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item nz-col nzSpan="12">
-            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="23" nzRequired>Số lượng phân vùng (Partition)
-                <i class="tip" nz-icon [nzType]="'exclamation-circle'" nzTooltipTitle="Số lượng partion của Topic"
-                    nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="23" nzNoColon>{{ 'kafka.topic.partition' | i18n }} (<span class="text-red">*</span>)
+                <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'kafka.topic.partition-tooltip' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                />
             </nz-form-label>
-            <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="errMessPartition">
+            <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="partitionErrTpl">
                 <input nz-input nzSize="large" name="partition" formControlName="partition" type="text" id="partition"
                     (keydown)="onKeyDown($event)" (ngModelChange)="changePartition()" placeholder="3">
+                <ng-template #partitionErrTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                        {{ 'validation.kafka.topic.partition-required' | i18n }}
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('pattern') || control.hasError('min') || control.hasError('max')">
+                        {{ 'validation.kafka.topic.partition-length' | i18n }}
+                    </ng-container>
+                </ng-template>
             </nz-form-control>
         </nz-form-item>
     </div>
     <div nz-row>
         <nz-form-item nz-col nzSpan="12">
-            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="23" nzFor="rep_fac" nzRequired>Số nhân bản (Replication
-                Factor)
-                <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                    nzTooltipTitle="Số lần một phần tử dữ liệu sẽ được sao chép và lưu trữ trên các broker khác nhau"
-                    nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="23" nzFor="replicaFactor" nzNoColon>{{ 'kafka.topic.replica' | i18n }} (<span class="text-red">*</span>)
+                <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'kafka.topic.replica-tooltip' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                />
             </nz-form-label>
-            <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="errMessRep">
-                <input nz-input nzSize="large" type="text" name="rep_fac" id="rep_fac" formControlName="rep_fac"
-                    (keydown)="onKeyDown($event)" (ngModelChange)="checkRep()" placeholder="3">
+            <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="replicaErrTpl">
+                <input nz-input nzSize="large" type="text" name="replicaFactor" id="replicaFactor" formControlName="replicaFactor"
+                    (keydown)="onKeyDown($event)" (ngModelChange)="changeReplica()" placeholder="3">
             </nz-form-control>
+            <ng-template #replicaErrTpl let-control>
+                <ng-container *ngIf="control.hasError('invalidvalue')">
+                    {{ 'validation.kafka.topic.replica-invalid' | i18n }}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('required')">
+                    {{ 'validation.kafka.topic.replica-required' | i18n }}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern') || control.hasError('min') || control.hasError('max')">
+                    {{ 'validation.kafka.topic.replica-length' | i18n }}
+                </ng-container>
+            </ng-template>
         </nz-form-item>
     </div>
     <ng-container *ngIf="mode==createNumber">
         <nz-form-item nzSpan="13" style="display: inline; font-size: 16px;" >
-            <b>Cài đặt nâng cao </b>
-            <nz-switch class="ml-2" [(ngModel)]="openSet" [ngModelOptions]="{standalone: true}"
+            <b>{{ 'kafka.topic.advanced-settings' | i18n }}</b>
+            <nz-switch class="ml-2" [(ngModel)]="isSettingAdvanced" [ngModelOptions]="{standalone: true}"
                 (ngModelChange)="changeSwitch()"> </nz-switch>
         </nz-form-item>
     </ng-container>
-    <ng-container *ngIf="openSet">
+    <ng-container *ngIf="isSettingAdvanced">
         <div nz-row style="margin-top: 20px;">
             <div nz-col nzSpan="12">
+
                 <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="max_mess">max.message.bytes
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Kích thước tối đa của 1 message" nzTooltipPlacement="rightTop"
-                            [nzTheme]="'fill'" nz-tooltip></i>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="minInsync">min.insync.replicas
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.min-insync-replicas' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Kích thước tin nhắn tối đa trong khoảng 1 - 100.000.000 byte">
-                        <input nz-input nzSize="large" name="max_mess" formControlName="max_mess" type="text"
-                            id="max_mess" (keydown)="onKeyDown($event)" placeholder="1048588">
+                        [nzErrorTip]="minInsyncErrTpl">
+                        <input nz-input nzSize="large" name="minInsync" type="text" id="minInsync" formControlName="minInsync"
+                            (keydown)="onKeyDown($event)" placeholder="2" (ngModelChange)="changeMinInsync()">
+                    </nz-form-control>
+                    <ng-template #minInsyncErrTpl let-control>
+                        <ng-container *ngIf="control.hasError('invalidvalue')">
+                            {{ 'validation.kafka.topic.minInsync-invalid' | i18n }}
+                        </ng-container>
+                        <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                            {{ 'validation.kafka.topic.minInsync-length' | i18n }}
+                        </ng-container>
+                    </ng-template>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="deleteRet">delete.retention.ms
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.delete-retention' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23"
+                        nzErrorTip="Delete.retention.ms là số nguyên dương nằm trong khoảng 0 đến 864.000.000">
+                        <input nz-input nzSize="large" name="deleteRet" formControlName="deleteRet" type="text"
+                            id="deleteRet" (keydown)="onKeyDown($event)" placeholder="86.400.000">
                     </nz-form-control>
                 </nz-form-item>
+
                 <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="policy">cleanup.policy
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'" nzTooltipTitle="Chính sách dọn dẹp"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="reten_bytes">retention.bytes
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.retention-bytes' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23"
+                        nzErrorTip="Retention.bytes là số nguyên nằm trong khoảng -1 đến 100.000.000.000 bytes(≈100 GB)">
+                        <input nz-input nzSize="large" name="reten_bytes" type="text" id="reten_bytes"
+                            (keydown)="onKeyDownIgnore($event)" formControlName="reten_bytes"
+                            placeholder="1.000.000.000">
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segment_ms">segment.ms
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-ms' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23"
+                        nzErrorTip="Segment.ms là số nguyên dương nằm trong khoảng 1 đến 6.048.000.000">
+                        <input nz-input nzSize="large" name="segment_ms" type="text" id="segment_ms"
+                            (keydown)="onKeyDown($event)" formControlName="segment_ms" placeholder="604.800.000">
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="mess_time_type">message.timestamp.type
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-timestamp' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
-                        <nz-select nzSize="large" formControlName="policy">
-                            <nz-option nzValue="delete" nzLabel="Delete"></nz-option>
-                            <nz-option nzValue="compact" nzLabel="Compact"></nz-option>
-                            <nz-option nzValue="delete,compact" nzLabel="Delete & Compact"></nz-option>
+                        <nz-select nzSize="large" formControlName="mess_time_type">
+                            <nz-option nzValue="CreateTime" nzLabel="CreateTime"></nz-option>
+                            <nz-option nzValue="LogAppendTime" nzLabel="LogAppendTime"></nz-option>
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
+
                 <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="minSync">min.insync.replicas
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Số lượng thành viên đang được đồng bộ dữ liệu (bao gồm cả leader)"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segment">segment.bytes
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-bytes' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Min.insync.replica là số nguyên nằm trong khoảng 1 đến 3">
-                        <input nz-input nzSize="large" name="minSync" type="text" id="minSync" formControlName="minSync"
-                            (keydown)="onKeyDown($event)" placeholder="2">
+                    <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="segmentByteErrTpl">
+                        <input nz-input nzSize="large" name="segment" type="text" id="segment" formControlName="segment"
+                            (keydown)="onKeyDown($event)" placeholder="14" (ngModelChange)="changeSegment()">
                     </nz-form-control>
+                    <ng-template #segmentByteErrTpl let-control>
+                        <ng-container *ngIf="control.hasError('invalidvalue')">
+                            {{ 'validation.kafka.topic.segmentByte-invalid' | i18n }}
+                        </ng-container>
+                        <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                            {{ 'validation.kafka.topic.segmentByte-length' | i18n }}
+                        </ng-container>
+                    </ng-template>
                 </nz-form-item>
+
                 <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="unClean">unclean.leader.election.enable
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Cho phép hoặc vô hiệu hóa khả năng bầu chọn leader khi broker leader bị mất kết nối với một số replica"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12"
+                        nzFor="mess_down_enable">message.downconversion.enable
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-downconversion' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
-                        <nz-select nzSize="large" formControlName="unClean">
-                            <nz-option nzValue="false" nzLabel="False"></nz-option>
+                        <nz-select nzSize="large" formControlName="mess_down_enable">
                             <nz-option nzValue="true" nzLabel="True"></nz-option>
+                            <nz-option nzValue="false" nzLabel="False"></nz-option>
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
+
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="comp_type">compression.type
-                        <i class="tip" [nzTheme]="'fill'" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Phương thức nén dữ liệu khi đẩy vào topic" nzTooltipPlacement="rightTop"
-                            nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.compression-type' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-select nzSize="large" formControlName="comp_type">
@@ -128,53 +236,15 @@
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12"
-                        nzFor="lead_rep">leader.replication.throttled.replicas
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Danh sách các replica (bản sao) của leader partition mà người dùng muốn hạn chế tốc độ sao chép từ leader xuống. Kiểm soát tải hoặc quản lý tốc độ sao chép đối với các replica cụ thể."
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23">
-                        <nz-form-control nz-form-label>
-                            <nz-select nzSize="large" formControlName="lead_rep">
-                                <nz-option nzValue="none" nzLabel="None"></nz-option>
-                                <nz-option nzValue="*" nzLabel="*"></nz-option>
-                            </nz-select>
-                        </nz-form-control>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12"
-                        nzFor="mess_down_enable">message.downconversion.enable
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Thông số cho biết liệu hệ thống có cho phép tự động chuyển đổi (downconvert) dữ liệu khi nó được gửi từ Producer với một phiên bản giao thức cao hơn xuống phiên bản giao thức thấp hơn để đáp ứng yêu cầu từ phía Consumer"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23">
-                        <nz-select nzSize="large" formControlName="mess_down_enable">
-                            <nz-option nzValue="true" nzLabel="True"></nz-option>
-                            <nz-option nzValue="false" nzLabel="False"></nz-option>
-                        </nz-select>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="deleteRet">delete.retention.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Thời gian tối thiểu mà một tin nhắn sẽ được giữ lại trong partition (theo thời gian milliseconds) trước khi bị xóa"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Delete.retention.ms là số nguyên dương nằm trong khoảng 0 đến 864.000.000">
-                        <input nz-input nzSize="large" name="deleteRet" formControlName="deleteRet" type="text"
-                            id="deleteRet" (keydown)="onKeyDown($event)" placeholder="86.400.000">
-                    </nz-form-control>
-                </nz-form-item>
+
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segm_jitt">segment.jitter.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Thông số xác định một khoảng thời gian ngẫu nhiên được thêm vào cho thời điểm tạo segment mới trong log. Khoảng thời gian ngẫu nhiên này giúp tránh tình trạng tất cả các partition trong broker cluster cùng tạo segment mới cùng một lúc, giúp phân phối tải và giảm tải cho broker"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-jitter' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Segment.jitter.ms là số nguyên nằm trong khoảng từ 0 đến 9.007.199.254.740.991">
@@ -182,24 +252,16 @@
                             formControlName="segm_jitt" (keydown)="onKeyDown($event)" placeholder="0">
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="flush_ms">flush.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Khoảng thời gian tối thiểu giữa các lần đẩy dữ liệu từ producer đến broker"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Flush.ms là số nguyên dương nằm trong khoảng 0 đến 9.007.199.254.740.991">
-                        <input nz-input nzSize="large" name="flush_ms" type="text" id="flush_ms"
-                            formControlName="flush_ms" (keydown)="onKeyDown($event)" placeholder="0">
-                    </nz-form-control>
-                </nz-form-item>
+
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12"
                         nzFor="foll_repl">follower.replication.throttled.replicas
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Xác định danh sách các replica mà Kafka Broker hạn chế tốc độ sao chép dữ liệu từ leader xuống"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.follower-replication' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-form-control nz-form-label>
@@ -210,49 +272,15 @@
                         </nz-form-control>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segment">segment.bytes
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Kích thước tối đa cho một segment (phần) của log trên broker (theo byte)"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Segment.bytes là số nguyên dương nằm trong khoảng 14 đến 2.147.483.647 bytes">
-                        <input nz-input nzSize="large" name="segment" type="text" id="segment" formControlName="segment"
-                            (keydown)="onKeyDown($event)" placeholder="14">
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="flush_mess">flush.messages
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Cài đặt này cho phép chỉ định một khoảng thời gian mà tại đó sẽ buộc fsync dữ liệu được ghi vào nhật ký"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Flush.messages là số nguyên dương nằm trong khoảng 1 đến 9.007.199.254.740.991">
-                        <input nz-input nzSize="large" name="flush_mess" type="text" id="flush_mess"
-                            (keydown)="onKeyDown($event)" formControlName="flush_mess" placeholder="0">
-                    </nz-form-control>
-                </nz-form-item>
-            </div>
-            <div nz-col nzSpan="12">
-                <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="retention_ms">retention.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Thời gian tối thiểu mà một message sẽ được giữ lại trong partition (theo thời gian milliseconds), giá trị -1 là không giới hạn thời gian"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Retention.ms là số nguyên nằm trong khoảng -1 đến 9.007.199.254.740.991">
-                        <input nz-input nzSize="large" name="retention_ms" type="text" id="retention_ms"
-                            (keydown)="onKeyDownIgnore($event)" formControlName="retention_ms" placeholder="0">
-                    </nz-form-control>
-                </nz-form-item>
+
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="mess_format">message.format.version
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Phiên bản giao thức Kafka được sử dụng cho producer và consumer. Việc cấu hình sai thông số này có thể dẫn đến Consumer sử dụng version cũ không thể sử dụng được dữ liệu"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-format' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-select nzSize="large" formControlName="mess_format" nzShowSearch>
@@ -262,60 +290,15 @@
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="max_comp">max.compaction.lag.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Thời gian tối đa mà một message sẽ không đủ điều kiện để tham gia quá trình kết hợp (compaction) trong log. Chỉ áp dụng cho các logs đang được kết hợp. Sau khi Compaction, hệ thống chỉ giữ lại value gần nhất của các message có cùng key"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Max.compaction.lag.ms là số nguyên dương nằm trong khoảng 1 đến 9.007.199.254.740.991">
-                        <input nz-input nzSize="large" name="max_comp" type="text" id="max_comp"
-                            formControlName="max_comp" (keydown)="onKeyDown($event)" placeholder="0">
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="file_delete">file.delete.delay.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Thời gian delay trước khi xoá 1 tệp khỏi filesystem"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="File.delete.delay.ms là số nguyên dương nằm trong khoảng 0 đến 6.000.000">
-                        <input nz-input nzSize="large" name="file_delete" type="text" id="file_delete"
-                            (keydown)="onKeyDown($event)" formControlName="file_delete" placeholder="60000">
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="mess_time_type">message.timestamp.type
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Xác định cách Kafka xử lý thông tin về thời gian (timestamp) của message"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23">
-                        <nz-select nzSize="large" formControlName="mess_time_type">
-                            <nz-option nzValue="CreateTime" nzLabel="CreateTime"></nz-option>
-                            <nz-option nzValue="LogAppendTime" nzLabel="LogAppendTime"></nz-option>
-                        </nz-select>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="min_compac">min.compaction.lag.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Thời gian tối đa mà một message sẽ không đủ điều kiện để tham gia quá trình kết hợp (compaction) trong log. Chỉ áp dụng cho các logs đang được kết hợp. Sau khi Compaction, hệ thống chỉ giữ lại value gần nhất của các message có cùng key."
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Min.compaction.lag.ms là số nguyên dương nằm trong khoảng 0 đến 1.800.000">
-                        <input nz-input nzSize="large" name="min_compac" type="text" id="min_compac"
-                            (keydown)="onKeyDown($event)" formControlName="min_compac" placeholder="0">
-                    </nz-form-control>
-                </nz-form-item>
+
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="preallocate ">preallocate
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Xác định liệu hệ thống có nên cấp phát trước (preallocate) không gian cho segment trước khi ghi dữ liệu."
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.preallocate' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-select nzSize="large" formControlName="preallocate">
@@ -326,23 +309,13 @@
                 </nz-form-item>
 
                 <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="min_clean">min.cleanable.dirty.ratio
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Xác định tỷ lệ tối thiểu của dữ liệu dirty (chưa được kết hợp) so với dữ liệu clean (đã được kết hợp) mà Kafka giữ lại trước khi thực hiện quá trình compacting"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
-                    </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Min.cleanable.dirty.ratio là số nằm trong khoảng 0 đến 1 ">
-                        <input nz-input nzSize="large" name="min_clean" type="text" id="min_clean"
-                            formControlName="min_clean" (keydown)="onKeyDownDot($event)" placeholder="0.5">
-                    </nz-form-control>
-                </nz-form-item>
-
-                <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="index_inter">index.interval.bytes
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Kích thước của một entry trong index file của một segment (theo byte)."
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.index-interval' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Index.interval.bytes là số nguyên dương nằm trong khoảng 0 đến 2.147.483.647 bytes">
@@ -351,39 +324,91 @@
                     </nz-form-control>
                 </nz-form-item>
 
+            </div>
+            
+            <div nz-col nzSpan="12">
                 <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="reten_bytes">retention.bytes
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Số lượng byte tối đa mà một partition có thể giữ lại trước khi dữ liệu cũ bị xóa, giá trị -1 là không giới hạn dung lượng"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="policy">cleanup.policy
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.cleanup-policy' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
-                    <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Retention.bytes là số nguyên nằm trong khoảng -1 đến 100.000.000.000 bytes(≈100 GB)">
-                        <input nz-input nzSize="large" name="reten_bytes" type="text" id="reten_bytes"
-                            (keydown)="onKeyDownIgnore($event)" formControlName="reten_bytes"
-                            placeholder="1.000.000.000">
+                    <nz-form-control nz-form-label [nzSpan]="23">
+                        <nz-select nzSize="large" formControlName="policy">
+                            <nz-option nzValue="delete" nzLabel="Delete"></nz-option>
+                            <nz-option nzValue="compact" nzLabel="Compact"></nz-option>
+                            <nz-option nzValue="delete,compact" nzLabel="Delete & Compact"></nz-option>
+                        </nz-select>
                     </nz-form-control>
                 </nz-form-item>
 
                 <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segment_ms">segment.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Thời gian tối đa mà một segment (phần) của log có thể tồn tại trước khi tạo một segment mới, giá trị -1 là không giới hạn thời gian"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="retention_ms">retention.ms
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.retention-ms' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
-                        nzErrorTip="Segment.ms là số nguyên dương nằm trong khoảng 1 đến 6.048.000.000">
-                        <input nz-input nzSize="large" name="segment_ms" type="text" id="segment_ms"
-                            (keydown)="onKeyDown($event)" formControlName="segment_ms" placeholder="604.800.000">
+                        nzErrorTip="Retention.ms là số nguyên nằm trong khoảng -1 đến 9.007.199.254.740.991">
+                        <input nz-input nzSize="large" name="retention_ms" type="text" id="retention_ms"
+                            (keydown)="onKeyDownIgnore($event)" formControlName="retention_ms" placeholder="0">
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="maxMessage">max.message.bytes
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.max-message-bytes' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="maxMessageErrTpl">
+                        <input nz-input nzSize="large" name="maxMessage" formControlName="maxMessage" type="text" (ngModelChange)="changeMaxMessage()"
+                            id="maxMessage" (keydown)="onKeyDown($event)" placeholder="1048588">
+                    </nz-form-control>
+                    <ng-template #maxMessageErrTpl let-control>
+                        <ng-container *ngIf="control.hasError('invalidvalue')">
+                            {{ 'validation.kafka.topic.maxMessage-invalid' | i18n }}
+                        </ng-container>
+                        <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                            {{ 'validation.kafka.topic.maxMessage-length' | i18n }}
+                        </ng-container>
+                    </ng-template>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="min_compac">min.compaction.lag.ms
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.min-compaction' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23"
+                        nzErrorTip="Min.compaction.lag.ms là số nguyên dương nằm trong khoảng 0 đến 1.800.000">
+                        <input nz-input nzSize="large" name="min_compac" type="text" id="min_compac"
+                            (keydown)="onKeyDown($event)" formControlName="min_compac" placeholder="0">
                     </nz-form-control>
                 </nz-form-item>
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12"
                         nzFor="mess_time_diff">message.timestamp.difference.max.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Giới hạn thời gian tối đa giữa timestamps của tin nhắn producer và timestamps của tin nhắn khi ghi vào hệ thống"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-timestamp-difference' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Message.timestamp.difference.max.ms là số nguyên dương nằm trong khoảng 0 đến 9.007.199.254.740.991">
@@ -393,10 +418,130 @@
                 </nz-form-item>
 
                 <nz-form-item>
-                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segm_index">segment.index.bytes
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            nzTooltipTitle="Kích thước tối đa cho một index file của một segment (theo byte) "
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="max_comp">max.compaction.lag.ms
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.max-compaction-lag' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23"
+                        nzErrorTip="Max.compaction.lag.ms là số nguyên dương nằm trong khoảng 1 đến 9.007.199.254.740.991">
+                        <input nz-input nzSize="large" name="max_comp" type="text" id="max_comp"
+                            formControlName="max_comp" (keydown)="onKeyDown($event)" placeholder="0">
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12"
+                        nzFor="lead_rep">leader.replication.throttled.replicas
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.leader-replication' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23">
+                        <nz-form-control nz-form-label>
+                            <nz-select nzSize="large" formControlName="lead_rep">
+                                <nz-option nzValue="none" nzLabel="None"></nz-option>
+                                <nz-option nzValue="*" nzLabel="*"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-control>
+                </nz-form-item> 
+                
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="unclean_leader">unclean.leader.election.enable
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.unclean-leader' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23">
+                        <nz-select nzSize="large" formControlName="unclean_leader">
+                            <nz-option nzValue="false" nzLabel="False"></nz-option>
+                            <nz-option nzValue="true" nzLabel="True"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="flush_ms">flush.ms
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.flush' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23"
+                        nzErrorTip="Flush.ms là số nguyên dương nằm trong khoảng 0 đến 9.007.199.254.740.991">
+                        <input nz-input nzSize="large" name="flush_ms" type="text" id="flush_ms"
+                            formControlName="flush_ms" (keydown)="onKeyDown($event)" placeholder="0">
+                    </nz-form-control>
+                </nz-form-item>
+                
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="flush_mess">flush.messages
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.flush-messages' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23"
+                        nzErrorTip="Flush.messages là số nguyên dương nằm trong khoảng 1 đến 9.007.199.254.740.991">
+                        <input nz-input nzSize="large" name="flush_mess" type="text" id="flush_mess"
+                            (keydown)="onKeyDown($event)" formControlName="flush_mess" placeholder="0">
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="file_delete">file.delete.delay.ms
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.file-delete' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23"
+                        nzErrorTip="File.delete.delay.ms là số nguyên dương nằm trong khoảng 0 đến 6.000.000">
+                        <input nz-input nzSize="large" name="file_delete" type="text" id="file_delete"
+                            (keydown)="onKeyDown($event)" formControlName="file_delete" placeholder="60000">
+                    </nz-form-control>
+                </nz-form-item>              
+            
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="min_clean">min.cleanable.dirty.ratio
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.min-cleanable' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
+                    </nz-form-label>
+                    <nz-form-control nz-form-label [nzSpan]="23"
+                        nzErrorTip="Min.cleanable.dirty.ratio là số nằm trong khoảng 0 đến 1 ">
+                        <input nz-input nzSize="large" name="min_clean" type="text" id="min_clean"
+                            formControlName="min_clean" (keydown)="onKeyDownDot($event)" placeholder="0.5">
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segmentIndex">segment.index.bytes
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-index' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Segment.index.bytes là số nguyên dương nằm trong khoảng 4 đến 2.147.483.647">
@@ -415,20 +560,20 @@
         <button nz-button (click)="cancelForm()" class="btn-accept"><img
             style="padding-right: 10px;margin-top: -4px"
             src="assets/imgs/cancel.svg"
-            alt=""/>Hủy bỏ</button>
+            alt=""/>{{ 'app.button.cancel' | i18n }}</button>
         <ng-container *ngIf="mode==createNumber">
             <button class="btn-accept" nz-button nzType="primary" [disabled]="(validateForm && validateForm.invalid)"
                 (click)="createTopic()"><img
                 style="padding-right: 10px; margin-top: -4px"
                 src="assets/imgs/confirm.svg"
-                alt=""/>Tạo mới</button>
+                alt=""/>{{ 'app.button.create' | i18n }}</button>
         </ng-container>
         <ng-container *ngIf="mode==updateNumber">
             <button class="btn-accept" nz-button nzType="primary" [disabled]="(validateForm && validateForm.invalid)"
                 (click)="updateTopic()"><img
                 style="padding-right: 10px; margin-top: -4px"
                 src="assets/imgs/confirm.svg"
-                alt=""/>Cập nhật</button>
+                alt=""/>{{ 'app.button.update' | i18n }}</button>
         </ng-container>
         <div nz-col nzSpan="1"></div>
     </div>

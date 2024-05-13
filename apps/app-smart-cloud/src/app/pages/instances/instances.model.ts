@@ -35,21 +35,30 @@ export interface RulesInfo {
 }
 
 export class IPPublicModel {
+  id: number;
   ipAddress: string;
   portCloudId: string;
   customerId: number;
-  attachedVmId: null;
+  attachedVmId: number;
   region: number;
   regionText: string;
-  createDate: Date;
+  createDate: string;
   status: number;
   cloudIdentity: number;
   projectName: string;
   projectId: number;
   networkId: string;
-  iPv6Address: null;
-  serviceStatus: null;
-  id: number;
+  iPv6Address: string;
+  serviceStatus: string;
+  attachedVm: string;
+  expiredDate: string;
+  resourceStatus: string;
+  suspendType: string;
+  typeIP: string;
+  network: string;
+  fixedIpAddress: string;
+  loadbalancerId: number;
+  loadbalancerName: string;
 }
 
 export class Flavors {
@@ -155,15 +164,20 @@ export class InstancesModel {
   volumeRootId: number;
   status: string;
   taskState: string;
+  rootStatus: string;
   securityGroupStr: string;
   computeHost: string;
+  keypair: string;
   type: string;
   flavorName: string;
+  gpuType: string;
+  gpuCount: number;
   volumeType: number;
   createdDate: string;
   expiredDate: string;
   totalCount: number;
   imageName: string;
+  offerId: number;
 }
 
 export class InstanceFormSearch {
@@ -227,11 +241,16 @@ export class InstanceCreate {
   ram: number;
   cpu: number;
   volumeType: any;
+  gpuType: any;
+  gpuCount: any;
+  gpuTypeOfferId: any;
+  privateNetId: any;
+  privatePortId: any;
   typeName: string;
   customerId: number;
   userEmail: any;
   actorEmail: any;
-  vpcId: any;
+  projectId: any;
   regionId: number;
   serviceName: any;
   serviceType: number;
@@ -266,7 +285,7 @@ export class VolumeCreate {
   instanceToAttachId: any;
   isMultiAttach: boolean;
   isEncryption: boolean;
-  vpcId: any;
+  projectId: any;
   oneSMEAddonId: any;
   serviceType: number;
   serviceInstanceId: number;
@@ -323,6 +342,9 @@ export class InstanceResize {
   storage: number;
   ram: number;
   cpu: number;
+  gpuCount: any;
+  gpuType: any;
+  newGpuTypeOfferId: any;
   typeName: string;
   newOfferId: number;
   serviceType: number;
@@ -331,7 +353,7 @@ export class InstanceResize {
   regionId: number;
   serviceName: any;
   customerId: number;
-  vpcId: any;
+  projectId: any;
   userEmail: any;
   actorEmail: any;
 }
@@ -450,9 +472,10 @@ export class IpCreate {
 }
 
 export class OfferItem {
-  id: number;
   productId: number;
-  offerName: string;
+  productName: any;
+  id: number;
+  offerName: any;
   price: Price;
   status: string;
   unitOfMeasure: string;
@@ -511,7 +534,7 @@ export class InstanceExtend {
   regionId: number;
   serviceName: any;
   customerId: number;
-  vpcId: any;
+  projectId: any;
   typeName: string;
   serviceType: number;
   actionType: number;
@@ -519,4 +542,41 @@ export class InstanceExtend {
   newExpireDate: string;
   userEmail: any;
   actorEmail: any;
+}
+
+export class InstanceAction {
+  command: string;
+  suspendType: string;
+  networkId: string;
+  portId: string;
+  subnetId: string;
+  ipAddress: string;
+  id: number;
+}
+
+export class VlanSubnet {
+  id: number;
+  name: string;
+  subnetCloudId: string;
+  ipVerison: number;
+  networkCloudId: string;
+  customerId: number;
+  mayAoGan: any;
+  networkId: number;
+  allocationPools: any;
+  hostRouters: any;
+  enableDhcp: boolean;
+  networkName: string;
+  gatewayIp: string;
+  cloudId: string;
+  vlanId: number;
+  adminState: boolean;
+  shared: boolean;
+  type: any;
+  subnetAddressRequired: string;
+  status: string;
+  vpcId: number;
+  region: any;
+  regionText: any;
+  subnets: any;
 }

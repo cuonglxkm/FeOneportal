@@ -1,48 +1,48 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
-import {ActivatedRoute, Router} from "@angular/router";
-import {PackageBackupService} from "../../../shared/services/package-backup.service";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
+import { Component, Inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PackageBackupService } from '../../../shared/services/package-backup.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import {
   BackupPackageRequestModel,
   FormExtendBackupPackageModel,
   PackageBackupModel
-} from "../../../shared/models/package-backup.model";
-import {OrderItem} from "../../../shared/models/price";
-import {DataPayment, ItemPayment} from "../../instances/instances.model";
-import {InstancesService} from "../../instances/instances.service";
-import {ProjectService} from "../../../shared/services/project.service";
-import {getCurrentRegionAndProject} from "@shared";
+} from '../../../shared/models/package-backup.model';
+import { OrderItem } from '../../../shared/models/price';
+import { DataPayment, ItemPayment } from '../../instances/instances.model';
+import { InstancesService } from '../../instances/instances.service';
+import { getCurrentRegionAndProject } from '@shared';
+import { ProjectModel, ProjectService, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-extend-backup-package',
   templateUrl: './extend-backup-package.component.html',
-  styleUrls: ['./extend-backup-package.component.less'],
+  styleUrls: ['./extend-backup-package.component.less']
 })
-export class ExtendBackupPackageComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+export class ExtendBackupPackageComponent implements OnInit {
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  isLoading: boolean = false
+  isLoading: boolean = false;
 
-  idBackupPackage: number
+  idBackupPackage: number;
 
-  packageBackupModel: PackageBackupModel = new PackageBackupModel()
+  packageBackupModel: PackageBackupModel = new PackageBackupModel();
 
   validateForm: FormGroup<{
     time: FormControl<number>
   }> = this.fb.group({
     time: [1, [Validators.required]]
-  })
+  });
 
-  estimateExpiredDate: Date
-  expiredDate: Date
+  estimateExpiredDate: Date;
+  expiredDate: Date;
 
-  isVisibleConfirmExtend: boolean = false
-  isLoadingExtend: boolean = false
+  isVisibleConfirmExtend: boolean = false;
+  isLoadingExtend: boolean = false;
 
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
@@ -51,50 +51,51 @@ export class ExtendBackupPackageComponent implements OnInit{
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
               private instanceService: InstancesService,
-              private projectService: ProjectService) {
+              private projectService: ProjectService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.validateForm.get('time').valueChanges.subscribe(data => {
-      this.estimateExpiredDate = new Date(new Date().setDate(new Date(this.expiredDate).getDate() + data*30))
-      this.getTotalAmount()
-    })
+      this.estimateExpiredDate = new Date(new Date().setDate(new Date(this.expiredDate).getDate() + data * 30));
+      this.getTotalAmount();
+    });
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    this.router.navigate(['/app-smart-cloud/backup/packages'])
+    this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/backup/packages']);
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project?.id
+    this.project = project?.id;
   }
 
   userChanged(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/backup/packages'])
+    this.router.navigate(['/app-smart-cloud/backup/packages']);
   }
 
   getDetailPackageBackup(id) {
     this.packageBackupService.detail(id).subscribe(data => {
-      console.log('data', data)
-      this.packageBackupModel = data
-      this.expiredDate = this.packageBackupModel.expirationDate
-      console.log('estimate', new Date(new Date().setDate(new Date(this.expiredDate).getDate() + 30)))
-      this.estimateExpiredDate = new Date(new Date().setDate(new Date(this.expiredDate).getDate() + 30))
-      this.getTotalAmount()
-    })
+      console.log('data', data);
+      this.packageBackupModel = data;
+      this.expiredDate = this.packageBackupModel.expirationDate;
+      console.log('estimate', new Date(new Date().setDate(new Date(this.expiredDate).getDate() + 30)));
+      this.estimateExpiredDate = new Date(new Date().setDate(new Date(this.expiredDate).getDate() + 30));
+      this.getTotalAmount();
+    });
   }
 
   submitForm() {
-    if(this.validateForm.valid) {
-      this.doExtend()
+    if (this.validateForm.valid) {
+      this.doExtend();
     }
   }
 
   doExtend() {
-    this.isLoading = true
-    this.getTotalAmount()
-    let request: BackupPackageRequestModel = new BackupPackageRequestModel()
+    this.isLoading = true;
+    this.getTotalAmount();
+    let request: BackupPackageRequestModel = new BackupPackageRequestModel();
     request.customerId = this.formExtendBackupPackage.customerId;
     request.createdByUserId = this.formExtendBackupPackage.customerId;
-    request.note = 'gia hạn gói backup';
+    request.note = this.i18n.fanyi('app.backup.package.breadcrumb.extend');
     request.orderItems = [
       {
         orderItemQuantity: 1,
@@ -103,14 +104,14 @@ export class ExtendBackupPackageComponent implements OnInit{
         price: this.orderItem?.totalPayment?.amount,
         serviceDuration: this.validateForm.controls.time.value
       }
-    ]
-    console.log('request', request)
+    ];
+    console.log('request', request);
     this.packageBackupService.createOrder(request).subscribe(data => {
       if (data != undefined || data != null) {
         //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
         if (data.code == 200) {
           this.isLoading = false;
-          this.notification.success('Thành công', 'Gia hạn gói backup thành công.')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.extend.success'));
           this.router.navigate(['/app-smart-cloud/backup/packages']);
         }
         //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
@@ -121,74 +122,76 @@ export class ExtendBackupPackageComponent implements OnInit{
         }
       } else {
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Gia hạn gói backup thất bại.' + data.message)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.extend.fail'));
       }
-    })
+    });
   }
 
   showConfirmExtend() {
-    this.isVisibleConfirmExtend = true
+    this.isVisibleConfirmExtend = true;
   }
 
   handleOk() {
-    this.isVisibleConfirmExtend = false
-    this.submitForm()
+    this.isVisibleConfirmExtend = false;
+    this.submitForm();
   }
 
   handleCancel() {
-    this.isVisibleConfirmExtend = false
+    this.isVisibleConfirmExtend = false;
   }
 
   reset() {
-    this.validateForm.reset()
+    this.validateForm.reset();
   }
 
-  formExtendBackupPackage: FormExtendBackupPackageModel = new FormExtendBackupPackageModel()
+  formExtendBackupPackage: FormExtendBackupPackageModel = new FormExtendBackupPackageModel();
+
   backupPackageInit() {
-    this.formExtendBackupPackage.regionId = this.region
-    this.formExtendBackupPackage.serviceName = this.packageBackupModel.packageName
-    this.formExtendBackupPackage.customerId = this.packageBackupModel.customerId
-    this.formExtendBackupPackage.vpcId = this.project.toString()
-    this.formExtendBackupPackage.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.BackupPacketExtendSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null'
-    this.formExtendBackupPackage.serviceType = 14
-    this.formExtendBackupPackage.actionType = 3
-    this.formExtendBackupPackage.serviceInstanceId = this.packageBackupModel.id
-    this.formExtendBackupPackage.newExpireDate = this.estimateExpiredDate
+    this.formExtendBackupPackage.regionId = this.region;
+    this.formExtendBackupPackage.serviceName = this.packageBackupModel.packageName;
+    this.formExtendBackupPackage.customerId = this.packageBackupModel.customerId;
+    this.formExtendBackupPackage.vpcId = this.project.toString();
+    this.formExtendBackupPackage.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.BackupPacketExtendSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null';
+    this.formExtendBackupPackage.serviceType = 14;
+    this.formExtendBackupPackage.actionType = 3;
+    this.formExtendBackupPackage.serviceInstanceId = this.packageBackupModel.id;
+    this.formExtendBackupPackage.newExpireDate = this.estimateExpiredDate;
     this.formExtendBackupPackage.userEmail = this.tokenService.get()?.email;
     this.formExtendBackupPackage.actorEmail = this.tokenService.get()?.email;
   }
 
-  orderItem: OrderItem = new OrderItem()
-  unitPrice = 0
+  orderItem: OrderItem = new OrderItem();
+  unitPrice = 0;
 
   getTotalAmount() {
-    this.backupPackageInit()
+    this.backupPackageInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.formExtendBackupPackage);
     itemPayment.specificationType = 'backuppacket_extend';
     itemPayment.sortItem = 0;
-    itemPayment.serviceDuration = this.validateForm.controls.time.value
+    itemPayment.serviceDuration = this.validateForm.controls.time.value;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
       console.log('thanh tien backup package', result.data);
-      this.orderItem = result.data
-      this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount
-      this.estimateExpiredDate = this.orderItem.orderItemPrices[0].expiredDate
+      this.orderItem = result.data;
+      this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount;
+      this.estimateExpiredDate = this.orderItem.orderItemPrices[0].expiredDate;
     });
   }
-  typeVPC: number
+
+  typeVPC: number;
 
   ngOnInit() {
-    this.idBackupPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'))
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
+    this.idBackupPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
     // this.customerId = this.tokenService.get()?.userId
-    if(this.idBackupPackage) {
-      this.getDetailPackageBackup(this.idBackupPackage)
+    if (this.idBackupPackage) {
+      this.getDetailPackageBackup(this.idBackupPackage);
 
       // this.getTotalAmount()
     }

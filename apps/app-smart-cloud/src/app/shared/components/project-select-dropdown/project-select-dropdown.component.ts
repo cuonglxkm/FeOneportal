@@ -1,12 +1,11 @@
 import {Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ProjectService} from "../../services/project.service";
-import {ProjectModel} from "../../models/project.model";
 import {SshKeyService} from "../../../pages/ssh-key/ssh-key.service";
 import {ModalHelper} from "@delon/theme";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {DomSanitizer} from "@angular/platform-browser";
+import { ProjectModel, ProjectService } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'project-select-dropdown',
@@ -34,23 +33,22 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    if (localStorage.getItem('region') != null) {
-        this.regionId = JSON.parse(localStorage.getItem('region')).regionId;
+    if (localStorage.getItem('regionId') != null) {
+        this.regionId = JSON.parse(localStorage.getItem('regionId'));
       // this.valueChanged.emit(this.selectedRegion)
     }
     // this.loadProjects();
   }
 
-  loadProjects() {
+  loadProjects(reload: boolean) {
     if (this.regionId == null)
       return;
-    this.projectService.getByRegion(this.regionId).subscribe(data => {
-      // console.log(data);
-      this.listProject = data;
+    
+    if (localStorage.getItem('projects') && reload == false) {
+      this.listProject = JSON.parse(localStorage.getItem('projects'));
       if (this.listProject.length > 0) {
         if (localStorage.getItem('projectId') != null) {
-          this.selectedProject = this.listProject.find(item =>
-            item.id == JSON.parse(localStorage.getItem('projectId')));
+          this.selectedProject = this.listProject.find(item => item.id == JSON.parse(localStorage.getItem('projectId')));
           if (this.selectedProject == null) {
             this.selectedProject = this.listProject[0];
             localStorage.setItem('projectId', this.selectedProject.id + "")
@@ -61,19 +59,41 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
           this.valueChanged.emit(this.listProject[0])
           localStorage.setItem('projectId', this.selectedProject.id + "")
         }
-
       }
-    }, error => {
-      this.listProject = [];
-      this.selectedProject = null;
-      this.valueChanged.emit(null)
-      localStorage.removeItem('projectId')
-    });
+    } else {
+      this.projectService.getByRegion(this.regionId).subscribe(data => {
+        // console.log(data);
+        this.listProject = data;
+        if (this.listProject.length > 0) {
+          if (localStorage.getItem('projectId') != null) {
+            this.selectedProject = this.listProject.find(item =>
+              item.id == JSON.parse(localStorage.getItem('projectId')));
+            if (this.selectedProject == null) {
+              this.selectedProject = this.listProject[0];
+              localStorage.setItem('projectId', this.selectedProject.id + "")
+            }
+            this.valueChanged.emit(this.selectedProject)
+          } else {
+            this.selectedProject = this.listProject[0];
+            this.valueChanged.emit(this.listProject[0])
+            localStorage.setItem('projectId', this.selectedProject.id + "")
+          }
+        }
+      }, error => {
+        this.listProject = [];
+        this.selectedProject = null;
+        this.valueChanged.emit(null)
+        localStorage.removeItem('projectId')
+      }); 
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.regionId) {
-      this.loadProjects();
+    if (changes.regionId && changes.regionId.previousValue == undefined) {
+      this.loadProjects(false);
+    }
+    else {
+      this.loadProjects(true);
     }
   }
 }

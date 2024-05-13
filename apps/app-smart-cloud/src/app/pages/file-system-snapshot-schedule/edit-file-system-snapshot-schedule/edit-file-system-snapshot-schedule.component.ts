@@ -1,173 +1,257 @@
 import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { CreateScheduleSnapshotDTO } from 'src/app/shared/models/snapshotvl.model';
-import { ProjectService } from 'src/app/shared/services/project.service';
-import { AppValidator } from '../../../../../../../libs/common-utils/src';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { getCurrentRegionAndProject } from '@shared';
-import { FormCreateFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
+import { FileSystemModel, FormSearchFileSystem } from 'src/app/shared/models/file-system.model';
+import { FileSystemSnapshotScheduleDetail, FormEditFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
 import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
+import { FileSystemService } from 'src/app/shared/services/file-system.service';
+import { BaseResponse, ProjectModel, ProjectService, RegionModel } from '../../../../../../../libs/common-utils/src';
 
-
+interface SelectedFileSystem {
+  id: number;
+  name: string;
+}
 @Component({
-  selector: 'one-portal-edit-file-system-snapshot-schedule',
+  selector: 'one-portal-extend-file-system-snapshot-schedule',
   templateUrl: './edit-file-system-snapshot-schedule.component.html',
   styleUrls: ['./edit-file-system-snapshot-schedule.component.less'],
 })
 export class EditFileSystemSnapshotScheduleComponent implements OnInit{
-  
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
+
   isLoading: boolean = false;
-  customerId: number
-  defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
-  FileSystem: string[] = ['Apples', 'Nails', 'Bananas', 'Helicopters'];
-  listOfSelectedValue: string[] = [];
+  customerId: number;
   time: Date = new Date();
-  nameSnapshot: string = ''
-  snapshotRecord = 1;
-  numberOfWeekSelected: string = ''
-  daysOfWeekSelected: string = ''
-  months: number = 1
-  modeType: string = '0'
+  modeType: string = '0';
   listOfSelectedDate: string[] = [];
-  dateDone: number = 1
+  value: string;
+  pageSize: number = 100;
+  pageIndex: number = 1;
+  response: BaseResponse<FileSystemModel[]>;
+  selectedFileSystemName: SelectedFileSystem[];
+
+  formEditFileSystemSsSchedule: FormEditFileSystemSsSchedule =new FormEditFileSystemSsSchedule();
+  fileSystemSnapshotScheduleDetail: FileSystemSnapshotScheduleDetail = new FileSystemSnapshotScheduleDetail();
+
   dateOptions: NzSelectOptionInterface[] = [
-    { label: 'Hằng ngày', value: '0' },
-    { label: 'Theo thứ', value: '1' },
-    { label: 'Theo tuần', value: '2' },
-    { label: 'Theo tháng', value: '3' },
+    { label: 'Hằng ngày', value: '1' },
+    { label: 'Theo thứ', value: '2' },
+    { label: 'Theo tuần', value: '3' },
+    { label: 'Theo tháng', value: '4' },
   ];
 
   daysOfWeek = [
-    {label: 'Thứ 2', value: '1'},
-    {label: 'Thứ 3', value: '2'},
-    {label: 'Thứ 4', value: '3'},
-    {label: 'Thứ 5', value: '4'},
-    {label: 'Thứ 6', value: '5'},
-    {label: 'Thứ 7', value: '6'},
-    {label: 'Chủ nhật', value: '7'}
-  ]
+    { label: 'Thứ 2', value: '1' },
+    { label: 'Thứ 3', value: '2' },
+    { label: 'Thứ 4', value: '3' },
+    { label: 'Thứ 5', value: '4' },
+    { label: 'Thứ 6', value: '5' },
+    { label: 'Thứ 7', value: '6' },
+    { label: 'Chủ nhật', value: '7' },
+  ];
   numberOfWeek = [
-    {label: '1 Tuần', value: '1'},
-    {label: '2 Tuần', value: '2'},
-    {label: '3 Tuần', value: '3'}
-  ]
-
+    { label: '1 Tuần', value: 1 },
+    { label: '2 Tuần', value: 2 },
+    { label: '3 Tuần', value: 3 },
+  ];
 
   FileSystemSnapshotForm: FormGroup<{
     name: FormControl<string>;
-    listOfFileSystem: FormControl<string[]>,
-    runtime: FormControl<Date>,
-    mode: FormControl<string>,
-    dayOfWeek: FormControl<string>,
-    daysOfWeek: FormControl<string[]>,
-    intervalWeek: FormControl<number>,
-    intervalMonth: FormControl<number>,
-    maxSnapshot: FormControl<number>,
-    description: FormControl<string>,
-    dates: FormControl<string>,
-
-
+    listOfFileSystem: FormControl<number[]>;
+    runtime: FormControl<Date>;
+    mode: FormControl<string>;
+    dayOfWeek: FormControl<string>;
+    daysOfWeek: FormControl<string[]>;
+    intervalWeek: FormControl<number>;
+    intervalMonth: FormControl<number>;
+    maxSnapshot: FormControl<number>;
+    description: FormControl<string>;
+    dates: FormControl<string>;
   }> = this.fb.group({
-    name: ['', [Validators.required, AppValidator.cannotContainSpecialCharactor]],
-    listOfFileSystem: [[] as string[], Validators.required],
+    name: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/),
+      ],
+    ],
+    listOfFileSystem: [[] as number[], Validators.required],
     runtime: [new Date(), Validators.required],
     mode: [this.dateOptions[0].value as string, Validators.required],
-    dayOfWeek: '',
-    daysOfWeek: [[] as string[]],
-    intervalWeek: [null as number],
-    intervalMonth: [1, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
-    maxSnapshot: [1, [Validators.required, Validators.min(1)]],
+    dayOfWeek: ['' as string, [Validators.required]],
+    daysOfWeek: [[] as string[], Validators.required],
+    intervalWeek: [0 as number, Validators.required],
+    intervalMonth: [
+      0 as number,
+      [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)],
+    ],
+    maxSnapshot: [1 as number, [Validators.required, Validators.min(1)]],
     description: ['', [Validators.maxLength(700)]],
-    dates: ['1', [Validators.required]],
-
+    dates: ['1' as string, [Validators.required]],
   });
 
+  // updateSelectedFileSystems(selectedFileSystems: number[]): void {
+  //   if (this.response && this.response.records) {
+  //     this.selectedFileSystemName = [];
+  //     selectedFileSystems.forEach((selectedId) => {
+  //       const selectedOption = this.response.records.find(
+  //         (option) => option.id === selectedId
+  //       );
+  //       if (selectedOption) {
+  //         this.selectedFileSystemName.push({
+  //           id: selectedOption.id,
+  //           name: selectedOption.name
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
-  isNotSelected(value: string): boolean {
-    return this.listOfSelectedValue.indexOf(value) === -1;
-  }
-  
-  
   snapshotMode = this.dateOptions[0].value;
   isNotSelectedDate(value: string): boolean {
     return this.listOfSelectedDate.indexOf(value) === -1;
   }
- 
-  getDayLabelMulti(selectedValue: string): string {
-    const selectedDay = this.daysOfWeek.find(day => day.value === selectedValue);
-    return selectedDay ? selectedDay.label : '';
-}
-getDayLabel(selectedValue: string): string {
-  const selectedDay = this.daysOfWeek.find(day => day.value === selectedValue);
-  return selectedDay ? selectedDay.label : '';
-}
 
-formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule = new FormCreateFileSystemSsSchedule() 
+  getDayLabelMulti(selectedValue: string): string {
+    const selectedDay = this.daysOfWeek.find(
+      (day) => day.value === selectedValue
+    );
+    return selectedDay ? selectedDay.label : '';
+  }
+  getDayLabel(selectedValue: string): string {
+    const selectedDay = this.daysOfWeek.find(
+      (day) => day.value === selectedValue
+    );
+    return selectedDay ? selectedDay.label : '';
+  }
+
+
   ngOnInit(): void {
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
-    console.log(this.region);
-    
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.getListFileSystem();
+    this.getScheduleById(this.activatedRoute.snapshot.paramMap.get('id'))
+
   }
 
   regionChange(region: RegionModel) {
-    this.region = region.regionId
-    this.projectService.getByRegion(this.region).subscribe(data => {
+    this.region = region.regionId;
+    this.projectService.getByRegion(this.region).subscribe((data) => {
       if (data.length) {
-        localStorage.setItem("projectId", data[0].id.toString())
-        this.router.navigate(['/app-smart-cloud/file-system-snapshot-schedule/edit/1'])
+        localStorage.setItem('projectId', data[0].id.toString());
+        this.router.navigate([
+          '/app-smart-cloud/file-system-snapshot-schedule/create',
+        ]);
       }
     });
   }
 
   projectChange(project: ProjectModel) {
-    this.project = project?.id
+    this.project = project?.id;
   }
-  submitForm(): void {
-    this.isLoading = true
-    if (this.FileSystemSnapshotForm.valid) {
-      this.formCreateFileSystemSsSchedule = this.getData()
-      console.log(this.formCreateFileSystemSsSchedule);
-      this.formCreateFileSystemSsSchedule.runtime = this.datepipe.transform(this.FileSystemSnapshotForm.controls.runtime.value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
-      this.fileSystemSnapshotScheduleService.create(this.formCreateFileSystemSsSchedule).subscribe(data => {
-        this.notification.success('Thành công', 'Tạo mới lịch backup vm thành công')
-      }, error => {
-        this.notification.error('Thất bại', 'Tạo mới lịch backup vm thất bại')
-        console.log(error);
-        
-      })
-      
-    }
+
+
+  getScheduleById(id) {
+    this.isLoading = true;
+    this.fileSystemSnapshotScheduleService
+      .detail(id)
+      .subscribe(
+        (data) => {
+          this.fileSystemSnapshotScheduleDetail = data;
+          console.log(data);
+          const shareIds = data.items.map((item) => {
+            return item
+          })
+
+          this.FileSystemSnapshotForm.controls.name.setValue(data.name);
+          this.FileSystemSnapshotForm.controls.listOfFileSystem.setValue(shareIds);
+          this.FileSystemSnapshotForm.controls.runtime.setValue(new Date(data.runtime));
+          this.FileSystemSnapshotForm.controls.mode.setValue(data.mode.toString());
+          this.FileSystemSnapshotForm.controls.daysOfWeek.setValue(data.daysOfWeek ? data.daysOfWeek.split(',') : [""]);
+          this.FileSystemSnapshotForm.controls.maxSnapshot.setValue(data.maxSnapshot);
+          this.FileSystemSnapshotForm.controls.description.setValue(data.description);
+          this.FileSystemSnapshotForm.controls.intervalMonth.setValue(data.mode === 4 ? data.interval : 0);
+          this.FileSystemSnapshotForm.controls.dates.setValue(data.dates.toString());
+          this.FileSystemSnapshotForm.controls.intervalWeek.setValue(data.mode === 3 ? data.interval : 0);
+          this.FileSystemSnapshotForm.controls.dayOfWeek.setValue(data.daysOfWeek ? data.daysOfWeek : "");
+
+          this.snapshotMode = data.mode.toString()
+          this.isLoading = false;
+        },
+        (error) => {
+          this.fileSystemSnapshotScheduleDetail = null;
+          this.isLoading = false;
+        }
+      );
+  }
+
+
+
+  getListFileSystem() {
+    this.isLoading = true;
+    let formSearch = new FormSearchFileSystem();
+    formSearch.vpcId = this.project;
+    formSearch.regionId = this.region;
+    formSearch.name = this.value;
+    formSearch.isCheckState = false;
+    formSearch.pageSize = this.pageSize;
+    formSearch.currentPage = this.pageIndex;
+    this.fileSystemService
+      .search(formSearch)
+      .subscribe(
+        (data) => {
+          this.isLoading = false;
+          console.log(data);
+
+          this.response = data;
+        },
+        (error) => {
+          this.isLoading = false;
+          this.response = null;
+        }
+      );
   }
 
   getData(): any {
-    this.formCreateFileSystemSsSchedule.customerId = this.tokenService.get()?.userId
-    this.formCreateFileSystemSsSchedule.regionId = this.region
-    this.formCreateFileSystemSsSchedule.projectId = this.project
-    this.formCreateFileSystemSsSchedule.name = this.FileSystemSnapshotForm.controls.name.value
-    this.formCreateFileSystemSsSchedule.description = this.FileSystemSnapshotForm.controls.description.value
-    this.formCreateFileSystemSsSchedule.mode = parseInt(this.FileSystemSnapshotForm.controls.mode.value)
-    this.formCreateFileSystemSsSchedule.dayOfWeek = this.FileSystemSnapshotForm.controls.dayOfWeek.value
-    this.formCreateFileSystemSsSchedule.daysOfWeek = this.FileSystemSnapshotForm.controls.daysOfWeek.value
-    this.formCreateFileSystemSsSchedule.description = this.FileSystemSnapshotForm.controls.description.value
-    this.formCreateFileSystemSsSchedule.intervalWeek = this.FileSystemSnapshotForm.controls.intervalWeek.value
-    this.formCreateFileSystemSsSchedule.dates = this.FileSystemSnapshotForm.controls.dates.value
-    this.formCreateFileSystemSsSchedule.duration = 1
-    this.formCreateFileSystemSsSchedule.runtime = this.FileSystemSnapshotForm.controls.runtime.value
-    this.formCreateFileSystemSsSchedule.intervalMonth = this.FileSystemSnapshotForm.controls.intervalMonth.value
-    this.formCreateFileSystemSsSchedule.maxSnapshot = this.FileSystemSnapshotForm.controls.maxSnapshot.value
-    this.formCreateFileSystemSsSchedule.shareIds = [0]
+    this.formEditFileSystemSsSchedule.scheduleId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'))
+    this.formEditFileSystemSsSchedule.customerId =
+      this.tokenService.get()?.userId;
+    this.formEditFileSystemSsSchedule.regionId = this.region;
+    this.formEditFileSystemSsSchedule.projectId = this.project;
+    this.formEditFileSystemSsSchedule.name =
+      this.FileSystemSnapshotForm.controls.name.value;
+    this.formEditFileSystemSsSchedule.description =
+      this.FileSystemSnapshotForm.controls.description.value;
+    this.formEditFileSystemSsSchedule.mode = parseInt(
+      this.FileSystemSnapshotForm.controls.mode.value
+    );
+    this.formEditFileSystemSsSchedule.dayOfWeek =
+      this.FileSystemSnapshotForm.controls.dayOfWeek.value;
+    this.formEditFileSystemSsSchedule.daysOfWeek =
+      this.FileSystemSnapshotForm.controls.daysOfWeek.value;
+    this.formEditFileSystemSsSchedule.description =
+      this.FileSystemSnapshotForm.controls.description.value;
+    this.formEditFileSystemSsSchedule.intervalWeek =
+      this.FileSystemSnapshotForm.controls.intervalWeek.value;
+    this.formEditFileSystemSsSchedule.dates =
+      this.FileSystemSnapshotForm.controls.dates.value.toString();
+    this.formEditFileSystemSsSchedule.duration = 1;
+    this.formEditFileSystemSsSchedule.runtime =
+      this.FileSystemSnapshotForm.controls.runtime.value;
+    this.formEditFileSystemSsSchedule.intervalMonth =
+      this.FileSystemSnapshotForm.controls.intervalMonth.value;
+    this.formEditFileSystemSsSchedule.maxSnapshot =
+      this.FileSystemSnapshotForm.controls.maxSnapshot.value;
+    this.formEditFileSystemSsSchedule.shareIds = this.FileSystemSnapshotForm.controls.listOfFileSystem.value;
 
-    return this.formCreateFileSystemSsSchedule
+    return this.formEditFileSystemSsSchedule;
   }
 
   modeChange(value: string) {
@@ -190,146 +274,111 @@ formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule = new FormCreateF
     this.FileSystemSnapshotForm.controls.dates.clearValidators();
     this.FileSystemSnapshotForm.controls.dates.markAsPristine();
     this.FileSystemSnapshotForm.controls.dates.reset();
-    if (value === '0') {
-      this.modeType = '0'
-    } else if (value === '1') {
-      this.modeType = '1'
-      this.FileSystemSnapshotForm.controls.daysOfWeek.setValidators([Validators.required]);
+    if (value === '1') {
+      this.modeType = '1';
+    } else if (value === '2') {
+      this.modeType = '2';
+      this.FileSystemSnapshotForm.controls.daysOfWeek.setValidators([
+        Validators.required,
+      ]);
       this.FileSystemSnapshotForm.controls.daysOfWeek.markAsDirty();
       this.FileSystemSnapshotForm.controls.daysOfWeek.reset();
-    } else if (value === '2') {
-      this.modeType = '2'
+    } else if (value === '3') {
+      this.modeType = '3';
 
-      this.FileSystemSnapshotForm.controls.dayOfWeek.setValidators([Validators.required]);
+      this.FileSystemSnapshotForm.controls.dayOfWeek.setValidators([
+        Validators.required,
+      ]);
       this.FileSystemSnapshotForm.controls.dayOfWeek.markAsDirty();
       this.FileSystemSnapshotForm.controls.dayOfWeek.reset();
 
-      this.FileSystemSnapshotForm.controls.intervalWeek.setValidators([Validators.required]);
+      this.FileSystemSnapshotForm.controls.intervalWeek.setValidators([
+        Validators.required,
+      ]);
       this.FileSystemSnapshotForm.controls.intervalWeek.markAsDirty();
       this.FileSystemSnapshotForm.controls.intervalWeek.reset();
-    } else if (value === '3') {
-      this.modeType = '3'
-      this.FileSystemSnapshotForm.controls.intervalMonth.setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
+    } else if (value === '4') {
+      this.modeType = '4';
+      this.FileSystemSnapshotForm.controls.intervalMonth.setValidators([
+        Validators.required,
+        Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/),
+      ]);
       this.FileSystemSnapshotForm.controls.intervalMonth.markAsDirty();
       this.FileSystemSnapshotForm.controls.intervalMonth.reset();
 
-      this.FileSystemSnapshotForm.controls.dates.setValidators([Validators.required]);
+      this.FileSystemSnapshotForm.controls.dates.setValidators([
+        Validators.required,
+      ]);
       this.FileSystemSnapshotForm.controls.dates.markAsDirty();
       this.FileSystemSnapshotForm.controls.dates.reset();
     }
   }
 
 
-  // doGetListVolume() {
-  //   this.isLoading = true;
-  //   this.volumeList = [];
-  //   this.volumeService
-  //     .getVolumes(this.userId, this.project, this.region, 1000, 1, null, null)
-  //     .subscribe({
-  //       next: (next) => {
-  //         next.records.forEach((volume) => {
-  //           this.volumeList.push({ value: volume.id, label: volume.name });
-  //         });
-  //         this.isLoading = false;
-  //         console.log('list volumes', this.volumeList);
-  //       },
-  //       error: (e) => {
-  //         this.notification.error(
-  //           'Có lỗi xảy ra',
-  //           'Lấy danh sách Volume thất bại'
-  //         );
-  //         this.isLoading = false;
-  //       },
-  //     });
-  // }
-
   constructor(
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private fb: NonNullableFormBuilder,
-    // private modalService: NzModalService,
     private fileSystemSnapshotScheduleService: FileSystemSnapshotScheduleService,
     private notification: NzNotificationService,
     private datepipe: DatePipe,
-    private projectService: ProjectService
-  ) {}
-
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
+    private projectService: ProjectService,
+    private fileSystemService: FileSystemService,
+    private activatedRoute: ActivatedRoute
+  ) {
+    this.FileSystemSnapshotForm.get('daysOfWeek').valueChanges.subscribe((selectedDays: string[]) => {
+      this.listOfSelectedDate = selectedDays;
+    });
+    this.FileSystemSnapshotForm.get('listOfFileSystem').valueChanges.subscribe((selectedFS: number[]) => {
+      if (this.response && this.response.records) {
+        this.selectedFileSystemName = selectedFS.map(selectedId => {
+          const selectedOption = this.response.records.find(option => option.id === selectedId);
+          if (selectedOption) {
+            return { id: selectedOption.id, name: selectedOption.name };
+          } else {
+            return null;
+          }
+        }).filter(selectedFileSystem => selectedFileSystem !== null);
+      }
+    });
   }
-  request = new CreateScheduleSnapshotDTO();
-  // create() {
-  //   const modal: NzModalRef = this.modalService.create({
-  //     nzTitle: 'Xác nhận tạo lịch Snapshot',
-  //     nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện tạo lịch Snapshot?</p>`,
-  //     nzFooter: [
-  //       {
-  //         label: 'Hủy',
-  //         type: 'default',
-  //         onClick: () => modal.destroy(),
-  //       },
-  //       {
-  //         label: 'Đồng ý',
-  //         type: 'primary',
-  //         onClick: () => {
-  //           this.isLoading = true;
-  //           this.request.dayOfWeek = this.dateStart;
-  //           this.request.daysOfWeek = [];
-  //           this.request.description = this.descSchedule;
-  //           this.request.intervalWeek = 1; // fix cứng số tuần  = 1;
-  //           this.request.mode = 3; //fix cứng chế độ = theo tuần ;
-  //           this.request.dates = 0;
-  //           this.request.duration = 0;
-  //           this.request.volumeId = this.volumeId;
-  //           this.request.runtime = this.time.toISOString();
-  //           this.request.intervalMonth = 0;
-  //           this.request.maxBaxup = 1; // fix cứng số bản
-  //           this.request.snapshotPacketId = 0;
-  //           this.request.customerId = this.userId;
-  //           this.request.projectId = this.project;
-  //           this.request.regionId = this.region;
-  //           console.log(this.request);
-  //           this.snapshotService.createSnapshotSchedule(this.request).subscribe(
-  //             (data) => {
-  //               if (data != null) {
-  //                 console.log(data);
-  //                 this.isLoading = false;
-  //                 this.notification.success('Success', 'Tạo lịch thành công');
-  //                 this.router.navigate([
-  //                   '/app-smart-cloud/schedule/snapshot/list',
-  //                 ]);
-  //               } else {
-  //                 this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
-  //                 this.isLoading = false;
-  //               }
-  //             },
-  //             (error) => {
-  //               console.log(error);
-  //               this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
-  //               this.isLoading = false;
-  //             }
-  //           );
-  //           modal.destroy();
-  //         },
-  //       },
-  //     ],
-  //   });
-  // }
 
-  // checkSpecialSnapshotName(str: string): boolean {
-  //   //check ký tự đặc biệt
-  //   const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-  //   return specialCharacters.test(str);
-  // }
+  handleEdit() {
+    this.isLoading = true;
+    if (this.FileSystemSnapshotForm.valid) {
+      this.formEditFileSystemSsSchedule = this.getData();
+      console.log(this.formEditFileSystemSsSchedule);
+      this.formEditFileSystemSsSchedule.runtime = this.datepipe.transform(
+        this.FileSystemSnapshotForm.controls.runtime.value,
+        'yyyy-MM-ddTHH:mm:ss',
+        'vi-VI'
+      );
 
-  // onRegionChange(region: RegionModel) {
-  //   this.region = region.regionId;
-  // }
+      this.fileSystemSnapshotScheduleService
+        .edit(this.formEditFileSystemSsSchedule)
+        .subscribe(
+          (data) => {
+            this.isLoading = false
 
-  // onProjectChange(project: ProjectModel) {
-  //   this.project = project?.id;
-  //   this.doGetListVolume();
-  // }
+            this.notification.success(
+              'Thành công',
+              'Chỉnh sửa lịch file system thành công'
+            );
+            this.router.navigate(['/app-smart-cloud/file-system-snapshot-schedule/list']);
+          },
+          (error) => {
+            this.isLoading = false
 
-  
+            this.notification.error(
+              'Thất bại',
+              'Chỉnh sửa lịch file system thất bại'
+            );
+            console.log(error);
+          }
+        );
+    }
+  }
+
+
+
 }

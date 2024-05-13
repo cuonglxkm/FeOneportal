@@ -1,6 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,7 +9,9 @@ import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { InstancesService } from '../../../instances/instances.service';
 import { EditSizeVolumeModel } from '../../../../shared/models/volume.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProjectService } from '../../../../shared/services/project.service';
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-renew-volume',
@@ -19,7 +19,7 @@ import { ProjectService } from '../../../../shared/services/project.service';
   styleUrls: ['./renew-volume.component.less']
 })
 export class RenewVolumeComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   idVolume: number;
@@ -35,7 +35,7 @@ export class RenewVolumeComponent implements OnInit {
   validateForm: FormGroup<{
     time: FormControl<number>
   }> = this.fb.group({
-    time: [1, Validators.required]
+    time: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]]
   });
 
   isLoading: boolean = false;
@@ -53,11 +53,12 @@ export class RenewVolumeComponent implements OnInit {
               private fb: NonNullableFormBuilder,
               private instanceService: InstancesService,
               private notification: NzNotificationService,
-              private projectService: ProjectService) {
+              private projectService: ProjectService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
-    this.volumeStatus.set('ERROR', 'LỖI');
-    this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
+    this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running').toUpperCase());
+    this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error').toUpperCase());
+    this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend').toUpperCase());
 
     this.validateForm.get('time').valueChanges.subscribe((newValue: any) => {
       this.getTotalAmount();
@@ -66,6 +67,7 @@ export class RenewVolumeComponent implements OnInit {
 
 
   regionChanged(region: RegionModel) {
+    this.region = region.regionId
     this.router.navigate(['/app-smart-cloud/volumes']);
   }
 
@@ -117,7 +119,7 @@ export class RenewVolumeComponent implements OnInit {
     this.extendsDto.serviceInstanceId = this.volumeInfo?.id;
     this.extendsDto.regionId = this.volumeInfo?.regionId;
     this.extendsDto.serviceName = this.volumeInfo?.name;
-    this.extendsDto.vpcId = this.volumeInfo?.vpcId;
+    this.extendsDto.projectId = this.volumeInfo?.vpcId;
     this.extendsDto.customerId = this.tokenService?.get()?.userId;
     this.extendsDto.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     const userString = localStorage.getItem('user');
@@ -159,7 +161,7 @@ export class RenewVolumeComponent implements OnInit {
     let request = new EditSizeVolumeModel();
     request.customerId = this.extendsDto.customerId;
     request.createdByUserId = this.extendsDto.customerId;
-    request.note = 'extend volume';
+    request.note = this.i18n.fanyi('volume.note.extend');
     request.orderItems = [
       {
         orderItemQuantity: 1,
@@ -175,18 +177,6 @@ export class RenewVolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: request, path: returnPath },
     });
-    // this.isLoadingRenew = true;
-    // this.volumeService.extendsVolume(request).subscribe(
-    //   data => {
-    //     this.isLoadingRenew = false;
-    //     this.notification.success('Thành công', 'Gia hạn Volume thành công.');
-    //     this.router.navigate(['/app-smart-cloud/volume/detail/' + this.idVolume]);
-    //   }, error => {
-    //     this.isLoadingRenew = false;
-    //     this.notification.error('Thất bại', 'Gia hạn Volume không thành công.');
-    //
-    //   }
-    // );
   }
 
   showModalConfirmRenew() {
@@ -209,7 +199,7 @@ export class RenewVolumeComponent implements OnInit {
       let request = new EditSizeVolumeModel();
       request.customerId = this.extendsDto.customerId;
       request.createdByUserId = this.extendsDto.customerId;
-      request.note = 'extend volume';
+      request.note =  this.i18n.fanyi('volume.note.extend');
       request.orderItems = [
         {
           orderItemQuantity: 1,

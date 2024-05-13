@@ -1,0 +1,45 @@
+<img src="assets/imgs/delete.svg" alt=""
+     style="cursor: pointer; width: 28px; height: 28px; margin-left: 5px;"
+     nz-popover
+     [nzPopoverContent]="'app.delete' | i18n"
+     nzPopoverPlacement="bottom" (click)="showModal()"/>
+<nz-modal [(nzVisible)]="isVisible"
+          (nzOnCancel)="handleCancel()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">{{ 'app.file.system.delete' | i18n: {name: fileSystemName} }}</span>
+  </div>
+  <div *nzModalContent>
+    <nz-alert nzBanner
+              nzShowIcon
+              [nzDescription]="contentTemplate">
+    </nz-alert>
+    <ng-template #contentTemplate>
+      <span
+        [innerHTML]="'app.alert.delete.file.system' | i18n"
+      ></span>
+    </ng-template>
+    <div>
+      <span class="text-label" [innerHTML]="'app.note.delete.file.system' | i18n: {name: fileSystemName}"></span>
+      <input nz-input #fileSystemInputName
+             style="margin-top: 10px;"
+             class="input-custom"
+             [ngModel]="value"
+             (keydown.enter)="focusOkButton($event)"
+             (ngModelChange)="onInput($event)"
+             [placeholder]="'app.input.name' | i18n"/>
+      <span *ngIf="isInput" style="color: red;">{{ 'validation.correct.file.system.name' | i18n }}</span>
+    </div>
+
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
+</nz-modal>

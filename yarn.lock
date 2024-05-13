@@ -6202,6 +6202,13 @@ ci-info@^3.2.0:
   resolved "https://registry.npmjs.org/ci-info/-/ci-info-3.9.0.tgz"
   integrity sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==
 
+cidr-tools@^9.1.1:
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/cidr-tools/-/cidr-tools-9.1.1.tgz#8b40a42b4b309e1af658e24f492613b972b522c9"
+  integrity sha512-jnOGG/AI0y3KiEkn5ummB6o7iCKUUXeh5H9FV+IM64j2ryVpbwxQOwNR49r2fdRviOzWBCDmsRAKHFamR6DJHQ==
+  dependencies:
+    ip-bigint "^8.0.2"
+
 cjs-module-lexer@^1.0.0:
   version "1.2.3"
   resolved "https://registry.npmjs.org/cjs-module-lexer/-/cjs-module-lexer-1.2.3.tgz"
@@ -9005,6 +9012,11 @@ internmap@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/internmap/-/internmap-1.0.1.tgz"
   integrity sha512-lDB5YccMydFBtasVtxnZ3MRBHuaoE8GKsppq+EchKL2U4nK/DmEpPHNH8MZe5HkMtpSiTSOZwfN0tzYjO/lJEw==
+
+ip-bigint@^8.0.2:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/ip-bigint/-/ip-bigint-8.0.2.tgz#deb73a0c0eccc34f64b45ebfcc5187477a7745df"
+  integrity sha512-UMKHGx7+4O2mD/6jnpNtt4UMA0tRQ3XAiNVYlbLssFU1LegKqKwPqbqtLVW7lQU/c6rCWI1hcxxs4TP96Xa+rQ==
 
 ip@^2.0.0:
   version "2.0.0"

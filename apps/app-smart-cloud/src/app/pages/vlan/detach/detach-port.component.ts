@@ -3,6 +3,9 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { InstancesService } from '../../instances/instances.service';
+import { debounceTime } from 'rxjs';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-detach-port',
@@ -22,6 +25,7 @@ export class DetachPortComponent {
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private vlanService: VlanService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private instancesService: InstancesService) {
   }
 
@@ -36,16 +40,19 @@ export class DetachPortComponent {
   }
 
   handleOkDetachPort() {
-    this.vlanService.detachPort(this.id, this.region, this.project).subscribe(data => {
+    this.isLoadingDetach = true
+    this.vlanService.detachPort(this.id, this.region, this.project)
+      .pipe(debounceTime(1500))
+      .subscribe(data => {
       console.log('detach', data)
       this.isVisibleDetach = false
       this.isLoadingDetach = false
-      this.notification.success('Thành công', 'Gỡ port vào máy ảo thành công')
-      this.onOk.emit()
+      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note49'))
+      setTimeout(() => {this.onOk.emit(data)}, 2500)
     }, error => {
       this.isVisibleDetach = false
       this.isLoadingDetach = false
-      this.notification.error('Thất bại', 'Gỡ port vào máy ảo thất bại')
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note50') + error.error.detail)
     })
   }
 }

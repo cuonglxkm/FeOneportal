@@ -6,6 +6,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { InstancesModel } from '../../../instances/instances.model';
 import { FormAction } from '../../../../shared/models/wan.model';
 import { WanService } from '../../../../shared/services/wan.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-attach-wan',
@@ -29,6 +31,7 @@ export class AttachWanComponent {
               private instancesService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private wanService: WanService) {
   }
 
@@ -66,12 +69,12 @@ export class AttachWanComponent {
     this.wanService.action(formAction).subscribe(data => {
       this.isVisible = false
       this.isLoading = false
-      this.notification.success('Thành công', 'Gán máy ảo thành công')
+      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('wan.nofitacation.instance.attach.sucess'))
       this.onOk.emit(data)
     }, error =>  {
       this.isVisible = false
       this.isLoading = false
-      this.notification.error('Thất bại', 'Gán máy ảo thất bại')
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('wan.nofitacation.instance.attach.fail'))
     })
   }
 }

@@ -32,7 +32,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 })
 export class InstancesExtendComponent implements OnInit {
   loading = true;
-  instancesModel: InstancesModel;
+  instancesModel: InstancesModel = new InstancesModel();
   listSecurityGroupModel: SecurityGroupModel[] = [];
   id: number;
   regionId: number;
@@ -51,35 +51,60 @@ export class InstancesExtendComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private modalSrv: NzModalService,
     private loadingSrv: LoadingService,
     private notification: NzNotificationService
   ) {}
 
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
   ngOnInit(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.customerId = this.tokenService.get()?.userId;
     this.email = this.tokenService.get()?.email;
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-    this.service.getById(this.id, true).subscribe((data) => {
-      this.instancesModel = data;
-      this.regionId = this.instancesModel.regionId;
-      this.loading = false;
-      this.getListIpPublic();
-      this.getTotalAmount();
-      this.service
-        .getAllSecurityGroupByInstance(
-          this.instancesModel.cloudId,
-          this.regionId,
-          this.instancesModel.customerId,
-          this.instancesModel.projectId
-        )
-        .pipe(finalize(() => this.loadingSrv.close()))
-        .subscribe((datasg: any) => {
-          this.listSecurityGroupModel = datasg;
-          this.cdr.detectChanges();
-        });
-      this.cdr.detectChanges();
+    this.service.getById(this.id, true).subscribe({
+      next: (data) => {
+        this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+        this.instancesModel = data;
+        this.regionId = this.instancesModel.regionId;
+        this.loading = false;
+        let expiredDate = new Date(this.instancesModel.expiredDate);
+        expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+        this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
+        this.getListIpPublic();
+        this.getTotalAmount();
+        this.service
+          .getAllSecurityGroupByInstance(
+            this.instancesModel.cloudId,
+            this.regionId,
+            this.instancesModel.customerId,
+            this.instancesModel.projectId
+          )
+          .pipe(finalize(() => this.loadingSrv.close()))
+          .subscribe((datasg: any) => {
+            this.listSecurityGroupModel = datasg;
+            this.cdr.detectChanges();
+          });
+        this.cdr.detectChanges();
+      },
+      error: (e) => {
+        this.notification.error(e.error.detail, '');
+        this.router.navigate(['/app-smart-cloud/instances']);
+      },
     });
     this.onChangeTime();
   }
@@ -123,6 +148,7 @@ export class InstancesExtendComponent implements OnInit {
         debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
+        this.numberMonth = res;
         if (res == 0) {
           this.isDisable = true;
           this.totalAmount = 0;
@@ -139,9 +165,9 @@ export class InstancesExtendComponent implements OnInit {
 
   instanceExtendInit() {
     this.instanceExtend.regionId = this.regionId;
-    this.instanceExtend.serviceName = 'Gia hạn';
+    this.instanceExtend.serviceName = this.instancesModel.name;
     this.instanceExtend.customerId = this.customerId;
-    this.instanceExtend.vpcId = this.instancesModel.projectId;
+    this.instanceExtend.projectId = this.instancesModel.projectId;
     this.instanceExtend.typeName =
       'SharedKernel.IntegrationEvents.InstanceExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     this.instanceExtend.serviceType = 1;
@@ -167,7 +193,7 @@ export class InstancesExtendComponent implements OnInit {
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.instancesModel.projectId;
     console.log('dataPayment extend', dataPayment);
-    this.service.getTotalAmount(dataPayment).subscribe((result) => {
+    this.service.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
       this.totalincludesVAT = Number.parseFloat(
@@ -212,6 +238,12 @@ export class InstancesExtendComponent implements OnInit {
   navigateToEdit() {
     this.router.navigate([
       '/app-smart-cloud/instances/instances-edit/' + this.id,
+    ]);
+  }
+
+  navigateToChangeImage() {
+    this.router.navigate([
+      '/app-smart-cloud/instances/instances-edit-info/' + this.id,
     ]);
   }
 

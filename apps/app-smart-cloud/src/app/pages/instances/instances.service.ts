@@ -9,6 +9,7 @@ import { Flavors, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
+import { OfferDetail } from '../../shared/models/catalog.model';
 
 @Injectable({
   providedIn: 'root',
@@ -83,13 +84,12 @@ export class InstancesService extends BaseService {
   }
 
   getAllSSHKey(
-    vpcId: any,
     regionId: any,
     userId: any,
     pageSize: any,
     currentPage: any
   ): Observable<any> {
-    let url_ = `/keypair?vpcId=${vpcId}&regionId=${regionId}&userId=${userId}&pageSize=${pageSize}&currentPage=${currentPage}`;
+    let url_ = `/keypair?regionId=${regionId}&userId=${userId}&pageSize=${pageSize}&currentPage=${currentPage}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
@@ -176,11 +176,19 @@ export class InstancesService extends BaseService {
 
   resetpassword(data: any): Observable<any> {
     let url_ = `/instances/resetpassword?id=${data.id}&newPassword=${data.newPassword}`;
-    url_ = url_.replace(/[?&]$/, '');
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      ''
+      '',
+      this.httpOptions
     );
+  }
+
+  changePassword(id: number, newPassword: string) {
+    let url_ = `/instances/${id}/change_password?newPassword=${newPassword}`;
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + url_, '', {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+    });
   }
 
   rebuild(data: any) {
@@ -241,10 +249,10 @@ export class InstancesService extends BaseService {
 
   updatePortVM(data: any) {
     let url_ = `/instances/updateport`;
-    return this.http.put<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      data
-    );
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + url_, data, {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+    });
   }
 
   getListOffers(regionId: number, unitOfMeasure: string): Observable<any> {
@@ -273,9 +281,21 @@ export class InstancesService extends BaseService {
       );
   }
 
-  getListOffersByProductId(productId: string): Observable<any> {
-    return this.http.get<any>(
-      `${this.baseUrl + this.ENDPOINT.catalogs}/offers?productId=${productId}`
+  getPrices(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
+      data
+    );
+  }
+
+  getListOffersByProductId(
+    productId: string,
+    regionId: string
+  ): Observable<OfferDetail[]> {
+    return this.http.get<OfferDetail[]>(
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/offers?productId=${productId}&regionId=${regionId}`
     );
   }
 
@@ -300,6 +320,27 @@ export class InstancesService extends BaseService {
     let url_ = `/instances/exist-instancename?name=${name}&regionId=${regionId}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<boolean>(
+      this.baseUrl + this.ENDPOINT.provisions + url_
+    );
+  }
+
+  getVlanSubnets(
+    pageSize: number,
+    pageNumber: number,
+    region: number,
+    networkCloudId: string
+  ) {
+    return this.http.get<any>(
+      this.baseUrl +
+        this.ENDPOINT.provisions +
+        `/vlans/vlansubnets?pageSize=${pageSize}&pageNumber=${pageNumber}&region=${region}&networkCloudId=${networkCloudId}`,
+      this.httpOptions
+    );
+  }
+
+  checkflavorforimage(imageId : number, storage : number, ram  : number, cpu : number): Observable<any> {
+    let url_ = `/instances/checkflavorforimage?imageId=${imageId}&storage=${storage}&ram=${ram}&cpu=${cpu}`;
+    return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_
     );
   }

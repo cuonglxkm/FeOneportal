@@ -1,11 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { IpFloatingService } from '../../shared/services/ip-floating.service';
-import { RegionModel } from '../../shared/models/region.model';
-import { ProjectModel } from '../../shared/models/project.model';
 import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floating.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { BaseResponse } from '../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { debounceTime } from 'rxjs';
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
@@ -16,7 +14,7 @@ import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-sn
   styleUrls: ['./file-system-snapshot.component.less'],
 })
 export class FileSystemSnapshotComponent {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   customerId: number
@@ -31,6 +29,8 @@ export class FileSystemSnapshotComponent {
   isLoading: boolean = false
 
   isBegin: boolean = false
+
+  filteredData: any[];
 
   formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot()
 
@@ -65,17 +65,20 @@ export class FileSystemSnapshotComponent {
     this.getData();
   }
 
-  onInputChange(value){
-    if(value == undefined || value == ""){
-      this.value = null
+  onInputChange(value: string): void {
+    if (!value || value.trim() === "") { 
+      this.filteredData = this.response.records; 
+    } else {
+      this.filteredData = this.response.records.filter(item => 
+        item.name.toLowerCase().includes(value.toLowerCase())
+      ); 
     }
-    this.value = value
-    this.getData()
+    console.log(value);
+    
+    console.log(this.filteredData);
+    
   }
 
-  showModalCreateIpFloating() {
-
-  }
 
   getData() {
     this.isLoading = true
@@ -89,15 +92,18 @@ export class FileSystemSnapshotComponent {
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
-        console.log('data', data)
       this.response = data
+      this.filteredData = data.records
     })
   }
 
-  handleOkCreateFileSystemSnapShot() {
+  handleOkDeleteFileSystemSnapShot() {
     this.getData()
   }
 
+  handleOkEditFileSystemSnapShot(){
+    this.getData()
+  }
   ngOnInit() {
 
     let regionAndProject = getCurrentRegionAndProject();

@@ -2,16 +2,17 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
 } from '@angular/core';
-import { RegionModel } from '../../shared/models/region.model';
-import { ProjectModel } from '../../shared/models/project.model';
 import { Router } from '@angular/router';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-user',
@@ -37,7 +38,8 @@ export class UserComponent implements OnInit {
     private service: UserService,
     private router: Router,
     private notification: NzNotificationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -81,9 +83,9 @@ export class UserComponent implements OnInit {
       let arrayFromSet = Array.from(this.setOfCheckedName);
       this.userDelete = arrayFromSet[0];
       this.isVisibleDelete = true;
-      this.nameModal = 'Xóa User ' + this.userDelete;
+      this.nameModal = this.i18n.fanyi("app.users.deleteUser.deleteUser") + this.userDelete;
     } else if (this.setOfCheckedName.size > 1) {
-      this.nameModal = 'Xóa ' + this.setOfCheckedName.size + ' User';
+      this.nameModal = this.i18n.fanyi("app.users.deleteUser.deleteUsers")+ ' ' + this.setOfCheckedName.size + ' ' + this.i18n.fanyi("app.users.deleteUser.deleteUsers2");
       this.isVisibleDeleteUsers = true;
     }
     console.log('user delete', this.userDelete);
@@ -103,15 +105,15 @@ export class UserComponent implements OnInit {
       this.service.deleteUsers(this.setOfCheckedName).subscribe({
         next: (data) => {
           console.log(data);
-          this.notification.success('', 'Xóa User thành công');
+          this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.user.delete.noti.success"));
           this.reloadTable();
         },
         error: (e) => {
-          this.notification.error(e.statusText, 'Xóa User không thành công');
+          this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user.delete.noti.fail"));
         },
       });
     } else {
-      this.notification.error('', 'Xóa User không thành công');
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user.delete.noti.fail"));
     }
   }
 
@@ -122,18 +124,18 @@ export class UserComponent implements OnInit {
         next: (data) => {
           console.log(data);
           this.notification.success(
-            '',
-            'Xóa ' + this.setOfCheckedName.size + ' Users thành công'
+            this.i18n.fanyi("app.status.success"),
+            this.i18n.fanyi("app.user-group.deleteMany.title") + ' ' + this.setOfCheckedName.size + ' ' + this.i18n.fanyi("app.user.delete.noti.success")
           );
           this.setOfCheckedName.clear();
           this.reloadTable();
         },
         error: (e) => {
-          this.notification.error(e.statusText, 'Xóa Users không thành công');
+          this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user.delete.noti.fail"));
         },
       });
     } else {
-      this.notification.error('', 'Xóa Users không thành công');
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user.delete.noti.fail"));
     }
   }
 

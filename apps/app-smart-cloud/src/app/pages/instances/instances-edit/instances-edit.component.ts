@@ -18,20 +18,21 @@ import {
   OfferItem,
   Order,
   OrderItem,
+  SecurityGroupModel,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
 import { debounceTime, Subject } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { LoadingService } from '@delon/abc/loading';
-import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import {
+  RegionModel,
+  ProjectModel,
+} from '../../../../../../../libs/common-utils/src';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -39,8 +40,14 @@ class ConfigCustom {
   ram?: number = 0;
   capacity?: number = 0;
   iops?: string = '000';
-  priceHour?: string = '000';
-  priceMonth?: string = '000';
+}
+
+class ConfigGPU {
+  CPU: number = 0;
+  ram: number = 0;
+  storage: number = 0;
+  GPU: number = 0;
+  gpuOfferId: number = null;
 }
 
 @Component({
@@ -72,6 +79,7 @@ export class InstancesEditComponent implements OnInit {
   offerFlavor: OfferItem = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
+  configGPU: ConfigGPU = new ConfigGPU();
   isConfigPackage: boolean = true;
   cardHeight: string = '160px';
 
@@ -90,12 +98,10 @@ export class InstancesEditComponent implements OnInit {
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: InstancesService,
-    private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private notification: NzNotificationService,
     private router: Router,
     private activeRoute: ActivatedRoute,
-    private loadingSrv: LoadingService,
     private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver
@@ -124,6 +130,46 @@ export class InstancesEditComponent implements OnInit {
     }
   }
 
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault(); // Ngăn chặn hành vi mặc định của các phím mũi tên
+
+      const tabs = document.querySelectorAll('.ant-tabs-tab'); // Lấy danh sách các tab
+      const activeTab = document.querySelector('.ant-tabs-tab-active'); // Lấy tab đang active
+
+      // Tìm index của tab đang active
+      let activeTabIndex = Array.prototype.indexOf.call(tabs, activeTab);
+
+      if (event.key === 'ArrowLeft') {
+        activeTabIndex -= 1; // Di chuyển tới tab trước đó
+      } else if (event.key === 'ArrowRight') {
+        activeTabIndex += 1; // Di chuyển tới tab tiếp theo
+      }
+
+      // Kiểm tra xem tab có hợp lệ không
+      if (activeTabIndex >= 0 && activeTabIndex < tabs.length) {
+        (tabs[activeTabIndex] as HTMLElement).click(); // Kích hoạt tab mới
+      }
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
     this.userEmail = this.tokenService.get()?.email;
@@ -132,8 +178,7 @@ export class InstancesEditComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.getListIpPublic();
-    this.getCurrentInfoInstance(this.id);
-
+    this.getListGpuType();
     this.breakpointObserver
       .observe([
         Breakpoints.XSmall,
@@ -170,27 +215,49 @@ export class InstancesEditComponent implements OnInit {
     this.onChangeCapacity();
     this.onChangeRam();
     this.onChangeVCPU();
+    this.onhangeCpuOfGpu();
+    this.onChangeRamOfGpu();
+    this.onChangeStorageOfGpu();
+    this.onChangeGpu();
   }
 
+  isPreConfigPackage = true;
   isCustomconfig = false;
+  isGpuConfig = false;
   onClickConfigPackage() {
-    this.resetChangeConfig();
+    this.isPreConfigPackage = true;
     this.isCustomconfig = false;
+    this.isGpuConfig = false;
+    this.resetData();
   }
 
   onClickCustomConfig() {
-    this.resetChangeConfig();
+    this.isPreConfigPackage = false;
     this.isCustomconfig = true;
+    this.isGpuConfig = false;
+    this.resetData();
   }
 
-  resetChangeConfig(): void {
+  onClickGpuConfig() {
+    this.isPreConfigPackage = false;
+    this.isCustomconfig = false;
+    this.isGpuConfig = true;
+    this.resetData();
+  }
+
+  resetData() {
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
-    this.totalAmount = 0;
-    this.totalincludesVAT = 0;
-    this.instanceResize.cpu = null;
-    this.instanceResize.ram = null;
-    this.instanceResize.storage = null;
+    this.configGPU = new ConfigGPU();
+    this.configCustom = new ConfigCustom();
+    this.volumeUnitPrice = '0';
+    this.volumeIntoMoney = 0;
+    this.ramUnitPrice = '0';
+    this.ramIntoMoney = 0;
+    this.cpuUnitPrice = '0';
+    this.cpuIntoMoney = 0;
+    this.gpuUnitPrice = '0';
+    this.gpuIntoMoney = 0;
   }
 
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
@@ -260,6 +327,9 @@ export class InstancesEditComponent implements OnInit {
           });
         });
         this.listOfferFlavors = this.listOfferFlavors.filter((e) => e != null);
+        this.listOfferFlavors = this.listOfferFlavors.sort(
+          (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
+        );
         console.log('list offer flavor chỉnh sửa', this.listOfferFlavors);
         this.cdr.detectChanges();
       });
@@ -284,22 +354,43 @@ export class InstancesEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
+  checkPermission: boolean = false;
+  listSecurityGroupModel: SecurityGroupModel[] = [];
   getCurrentInfoInstance(instanceId: number): void {
-    this.dataService.getById(instanceId, true).subscribe((data: any) => {
-      this.instancesModel = data;
-      this.instanceNameEdit = this.instancesModel.name;
-      if (
-        this.instancesModel.flavorId == 0 ||
-        this.instancesModel.flavorId == null
-      ) {
-        this.isConfigPackage = false;
-        this.isCustomconfig = true;
-      }
-      this.cdr.detectChanges();
-      this.selectedElementFlavor = this.instancesModel.flavorId;
-      this.region = this.instancesModel.regionId;
-      this.projectId = this.instancesModel.projectId;
-      this.initFlavors();
+    this.dataService.getById(instanceId, true).subscribe({
+      next: (data: any) => {
+        this.checkPermission = true;
+        this.instancesModel = data;
+        this.instanceNameEdit = this.instancesModel.name;
+        if (
+          this.instancesModel.flavorId == 0 ||
+          this.instancesModel.flavorId == null
+        ) {
+          this.isConfigPackage = false;
+          this.isCustomconfig = true;
+        }
+        this.cdr.detectChanges();
+        this.selectedElementFlavor = this.instancesModel.flavorId;
+        this.region = this.instancesModel.regionId;
+        this.projectId = this.instancesModel.projectId;
+        this.dataService
+          .getAllSecurityGroupByInstance(
+            this.instancesModel.cloudId,
+            this.region,
+            this.instancesModel.customerId,
+            this.instancesModel.projectId
+          )
+          .subscribe((datasg: any) => {
+            this.listSecurityGroupModel = datasg;
+            this.cdr.detectChanges();
+          });
+        this.initFlavors();
+      },
+      error: (e) => {
+        this.checkPermission = false;
+        this.notification.error(e.error.detail, '');
+        this.returnPage();
+      },
     });
   }
 
@@ -336,13 +427,21 @@ export class InstancesEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  volumeUnitPrice = 0;
+  volumeUnitPrice = '0';
   volumeIntoMoney = 0;
-  ramUnitPrice = 0;
+  ramUnitPrice = '0';
   ramIntoMoney = 0;
-  cpuUnitPrice = 0;
+  cpuUnitPrice = '0';
   cpuIntoMoney = 0;
-  getUnitPrice(volumeSize: number, ram: number, cpu: number) {
+  gpuUnitPrice = '0';
+  gpuIntoMoney = 0;
+  getUnitPrice(
+    volumeSize: number,
+    ram: number,
+    cpu: number,
+    gpu: number,
+    gpuTypeOfferId: number
+  ) {
     let tempInstance: InstanceResize = new InstanceResize();
     tempInstance.currentFlavorId = this.instancesModel.flavorId;
     tempInstance.cpu = cpu + this.instancesModel.cpu;
@@ -351,7 +450,16 @@ export class InstancesEditComponent implements OnInit {
     tempInstance.newOfferId = 0;
     tempInstance.newFlavorId = 0;
     tempInstance.serviceInstanceId = this.instancesModel.id;
-    tempInstance.vpcId = this.projectId;
+    tempInstance.gpuCount = gpu + this.instancesModel.gpuCount;
+    tempInstance.newGpuTypeOfferId = gpuTypeOfferId;
+    if (this.configGPU.gpuOfferId) {
+      tempInstance.gpuType = this.listGPUType.filter(
+        (e) => e.id == this.configGPU.gpuOfferId
+      )[0].characteristicValues[0].charOptionValues[0];
+    } else {
+      tempInstance.gpuType = this.instancesModel.gpuType;
+    }
+    tempInstance.projectId = this.projectId;
     tempInstance.regionId = this.region;
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -361,27 +469,63 @@ export class InstancesEditComponent implements OnInit {
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.projectId;
-    this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+    this.dataService.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien/đơn giá', result);
       if (volumeSize != 0) {
-        this.volumeUnitPrice =
-          Number.parseFloat(result.data.totalAmount.amount) /
-          this.configCustom.capacity;
+        if (this.isCustomconfig) {
+          this.volumeUnitPrice = (
+            Number.parseFloat(result.data.totalAmount.amount) /
+            this.configCustom.capacity
+          ).toFixed(0);
+        }
+        if (this.isGpuConfig) {
+          this.volumeUnitPrice = (
+            Number.parseFloat(result.data.totalAmount.amount) /
+            this.configGPU.storage
+          ).toFixed(0);
+        }
         this.volumeIntoMoney = Number.parseFloat(
           result.data.totalAmount.amount
         );
       }
       if (ram != 0) {
-        this.ramUnitPrice =
-          Number.parseFloat(result.data.totalAmount.amount) /
-          this.configCustom.ram;
+        if (this.isCustomconfig) {
+          this.ramUnitPrice = (
+            Number.parseFloat(result.data.totalAmount.amount) /
+            this.configCustom.ram
+          ).toFixed(0);
+        }
+        if (this.isGpuConfig) {
+          this.ramUnitPrice = (
+            Number.parseFloat(result.data.totalAmount.amount) /
+            this.configGPU.ram
+          ).toFixed(0);
+        }
         this.ramIntoMoney = Number.parseFloat(result.data.totalAmount.amount);
       }
       if (cpu != 0) {
-        this.cpuUnitPrice =
-          Number.parseFloat(result.data.totalAmount.amount) /
-          this.configCustom.vCPU;
+        if (this.isCustomconfig) {
+          this.cpuUnitPrice = (
+            Number.parseFloat(result.data.totalAmount.amount) /
+            this.configCustom.vCPU
+          ).toFixed(0);
+        }
+        if (this.isGpuConfig) {
+          this.cpuUnitPrice = (
+            Number.parseFloat(result.data.totalAmount.amount) /
+            this.configGPU.CPU
+          ).toFixed(0);
+        }
         this.cpuIntoMoney = Number.parseFloat(result.data.totalAmount.amount);
+      }
+      if (gpu != 0) {
+        if (this.isGpuConfig) {
+          this.gpuUnitPrice = (
+            Number.parseFloat(result.data.totalAmount.amount) /
+            this.configGPU.GPU
+          ).toFixed(0);
+        }
+        this.gpuIntoMoney = Number.parseFloat(result.data.totalAmount.amount);
       }
       this.cdr.detectChanges();
     });
@@ -389,15 +533,23 @@ export class InstancesEditComponent implements OnInit {
 
   onChangeConfigCustom() {
     if (
-      this.configCustom.vCPU == 0 &&
-      this.configCustom.ram == 0 &&
-      this.configCustom.capacity == 0
+      (this.isCustomconfig &&
+        this.configCustom.vCPU == 0 &&
+        this.configCustom.ram == 0 &&
+        this.configCustom.capacity == 0) ||
+      (this.isGpuConfig &&
+        this.configGPU.CPU == 0 &&
+        this.configGPU.ram == 0 &&
+        this.configGPU.storage == 0 &&
+        this.configGPU.GPU == 0 &&
+        this.configGPU.gpuOfferId == 0)
     ) {
       this.totalAmount = 0;
       this.totalincludesVAT = 0;
     } else {
       this.getTotalAmount();
     }
+    this.cdr.detectChanges();
   }
 
   dataSubjectVCPU: Subject<any> = new Subject<any>();
@@ -411,11 +563,11 @@ export class InstancesEditComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.configCustom.vCPU == 0) {
-          this.cpuUnitPrice = 0;
+          this.cpuUnitPrice = '0';
           this.cpuIntoMoney = 0;
           this.instanceResize.cpu = this.instancesModel.cpu;
         } else {
-          this.getUnitPrice(0, 0, this.configCustom.vCPU);
+          this.getUnitPrice(0, 0, this.configCustom.vCPU, 0, null);
         }
         this.onChangeConfigCustom();
       });
@@ -432,11 +584,11 @@ export class InstancesEditComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.configCustom.ram == 0) {
-          this.ramUnitPrice = 0;
+          this.ramUnitPrice = '0';
           this.ramIntoMoney = 0;
           this.instanceResize.ram = this.instancesModel.ram;
         } else {
-          this.getUnitPrice(0, this.configCustom.ram, 0);
+          this.getUnitPrice(0, this.configCustom.ram, 0, 0, null);
         }
         this.onChangeConfigCustom();
       });
@@ -453,15 +605,134 @@ export class InstancesEditComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.configCustom.capacity == 0) {
-          this.volumeUnitPrice = 0;
+          this.volumeUnitPrice = '0';
           this.volumeIntoMoney = 0;
           this.instanceResize.storage = this.instancesModel.storage;
         } else {
-          this.getUnitPrice(this.configCustom.capacity, 0, 0);
+          this.getUnitPrice(this.configCustom.capacity, 0, 0, 0, null);
         }
         this.onChangeConfigCustom();
       });
   }
+
+  //#region Cấu hình GPU
+  listGPUType: OfferItem[] = [];
+  getListGpuType() {
+    this.dataService
+      .getListOffers(this.region, 'vm-flavor-gpu')
+      .subscribe((data) => {
+        this.listGPUType = data.filter(
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+        );
+        this.getCurrentInfoInstance(this.id);
+      });
+  }
+
+  dataSubjectCpuGpu: Subject<any> = new Subject<any>();
+  changeCpuOfGpu(value: number) {
+    this.dataSubjectCpuGpu.next(value);
+  }
+  onhangeCpuOfGpu() {
+    this.dataSubjectCpuGpu
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.configGPU.CPU == 0) {
+          this.cpuUnitPrice = '0';
+          this.cpuIntoMoney = 0;
+          this.instanceResize.cpu = this.instancesModel.cpu;
+          this.cdr.detectChanges();
+        } else {
+          this.getUnitPrice(0, 0, this.configGPU.CPU, 0, null);
+        }
+        this.onChangeConfigCustom();
+      });
+  }
+
+  dataSubjectRamGpu: Subject<any> = new Subject<any>();
+  changeRamOfGpu(value: number) {
+    this.dataSubjectRamGpu.next(value);
+  }
+  onChangeRamOfGpu() {
+    this.dataSubjectRamGpu
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.configGPU.ram == 0) {
+          this.ramUnitPrice = '0';
+          this.ramIntoMoney = 0;
+          this.instanceResize.ram = this.instancesModel.ram;
+          this.cdr.detectChanges();
+        } else {
+          this.getUnitPrice(0, this.configGPU.ram, 0, 0, null);
+        }
+        this.onChangeConfigCustom();
+      });
+  }
+
+  dataSubjectStorageGpu: Subject<any> = new Subject<any>();
+  changeStorageOfGpu(value: number) {
+    this.dataSubjectStorageGpu.next(value);
+  }
+  onChangeStorageOfGpu() {
+    this.dataSubjectStorageGpu
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.configGPU.storage == 0) {
+          this.volumeUnitPrice = '0';
+          this.volumeIntoMoney = 0;
+          this.instanceResize.storage = this.instancesModel.storage;
+          this.cdr.detectChanges();
+        } else {
+          this.getUnitPrice(this.configGPU.storage, 0, 0, 0, null);
+        }
+        this.onChangeConfigCustom();
+      });
+  }
+
+  dataSubjectGpu: Subject<any> = new Subject<any>();
+  changeGpu(value: number) {
+    this.dataSubjectGpu.next(value);
+  }
+  onChangeGpu() {
+    this.dataSubjectGpu
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.configGPU.GPU == 0) {
+          this.gpuUnitPrice = '0';
+          this.gpuIntoMoney = 0;
+          this.instanceResize.gpuCount = this.instancesModel.gpuCount;
+          this.cdr.detectChanges();
+        } else {
+          if (this.configGPU.gpuOfferId != 0) {
+            this.getUnitPrice(
+              0,
+              0,
+              0,
+              this.configGPU.GPU,
+              this.configGPU.gpuOfferId
+            );
+          } else {
+            this.getUnitPrice(0, 0, 0, this.configGPU.GPU, null);
+          }
+        }
+        this.onChangeConfigCustom();
+      });
+  }
+
+  changeGpuType() {
+    if (this.configGPU.GPU != 0) {
+      this.getUnitPrice(0, 0, 0, this.configGPU.GPU, this.configGPU.gpuOfferId);
+    }
+    this.getTotalAmount();
+  }
+  //#End cấu hình GPU
 
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/instances/instances-create']);
@@ -480,18 +751,6 @@ export class InstancesEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  save(): void {
-    this.modalSrv.create({
-      nzTitle: 'Xác nhận thông tin thay đổi',
-      nzContent: 'Quý khách chắn chắn muốn thực hiện điều chỉnh máy ảo?',
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        this.readyEdit();
-      },
-    });
-  }
-
   instanceResizeInit() {
     this.instanceResize.description = null;
     this.instanceResize.currentFlavorId = this.instancesModel.flavorId;
@@ -503,6 +762,23 @@ export class InstancesEditComponent implements OnInit {
         this.configCustom.capacity + this.instancesModel.storage;
       this.instanceResize.newOfferId = 0;
       this.instanceResize.newFlavorId = 0;
+    } else if (this.isGpuConfig) {
+      this.instanceResize.newOfferId = 0;
+      this.instanceResize.newFlavorId = 0;
+      this.instanceResize.newGpuTypeOfferId = this.configGPU.gpuOfferId;
+      this.instanceResize.ram = this.configGPU.ram + this.instancesModel.ram;
+      this.instanceResize.cpu = this.configGPU.CPU + this.instancesModel.cpu;
+      this.instanceResize.storage =
+        this.configGPU.storage + this.instancesModel.storage;
+      this.instanceResize.gpuCount =
+        this.configGPU.GPU + this.instancesModel.gpuCount;
+      if (this.configGPU.gpuOfferId) {
+        this.instanceResize.gpuType = this.listGPUType.filter(
+          (e) => e.id == this.configGPU.gpuOfferId
+        )[0].characteristicValues[0].charOptionValues[0];
+      } else {
+        this.instanceResize.gpuType = this.instancesModel.gpuType;
+      }
     } else {
       this.instanceResize.newOfferId = this.offerFlavor.id;
       this.offerFlavor.characteristicValues.forEach((e) => {
@@ -522,6 +798,8 @@ export class InstancesEditComponent implements OnInit {
         }
       });
     }
+    this.instanceResize.gpuCount =
+      this.instancesModel.gpuCount + this.configGPU.GPU;
     this.instanceResize.addBtqt = 0;
     this.instanceResize.addBttn = 0;
     // this.instanceResize.typeName =
@@ -530,11 +808,24 @@ export class InstancesEditComponent implements OnInit {
     // this.instanceResize.actionType = 4;
     this.instanceResize.serviceInstanceId = this.instancesModel.id;
     this.instanceResize.regionId = this.region;
-    this.instanceResize.serviceName = 'Điều chỉnh';
-    this.instanceResize.vpcId = this.projectId;
+    this.instanceResize.serviceName = this.instancesModel.name;
+    this.instanceResize.projectId = this.projectId;
   }
 
   readyEdit(): void {
+    if (this.isCustomconfig == false && this.offerFlavor == null) {
+      this.notification.error('', 'Vui lòng chọn gói cấu hình');
+      return;
+    }
+    if (
+      this.isCustomconfig == true &&
+      this.configCustom.vCPU == 0 &&
+      this.configCustom.ram == 0 &&
+      this.configCustom.capacity == 0
+    ) {
+      this.notification.error('', 'Cấu hình tùy chọn chưa hợp lệ');
+      return;
+    }
     this.instanceResizeInit();
     let specificationInstance = JSON.stringify(this.instanceResize);
     let orderItemInstanceResize = new OrderItem();
@@ -568,7 +859,7 @@ export class InstancesEditComponent implements OnInit {
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.projectId;
-    this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+    this.dataService.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
       this.totalincludesVAT = Number.parseFloat(

@@ -61,23 +61,28 @@ export class DetailPortComponent implements OnInit{
   }
 
   handleOkAttach() {
-    this.getVlanByNetworkId()
+    setTimeout(() => {this.getVlanByNetworkId()}, 1000)
   }
 
   handleOkDetach() {
-    this.getVlanByNetworkId()
+    setTimeout(() => {this.getVlanByNetworkId()}, 1000)
+
   }
 
   handleOkDeletePort() {
-    this.getVlanByNetworkId()
+    setTimeout(() => {
+      this.getVlanByNetworkId()}, 1500)
+
   }
 
   handleOkCreatePort() {
-    this.getVlanByNetworkId()
+    setTimeout(() => {this.getVlanByNetworkId()}, 1000)
   }
 
   getVlanByNetworkId() {
-    this.vlanService.getVlanByNetworkId(this.idNetwork).subscribe(data => {
+    this.vlanService.getVlanByNetworkId(this.idNetwork)
+      .pipe(debounceTime(1500))
+      .subscribe(data => {
       this.networkName = data.name
       this.networkCloudId = data.cloudId
       this.getPortByNetwork(data.cloudId)

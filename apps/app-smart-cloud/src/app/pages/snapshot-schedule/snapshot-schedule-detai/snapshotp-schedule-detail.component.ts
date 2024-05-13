@@ -1,11 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-detail-schedule-snapshot',
@@ -13,7 +12,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   styleUrls: ['./snapshotp-schedule-detail.component.less'],
 })
 export class SnapshotScheduleDetailComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean;

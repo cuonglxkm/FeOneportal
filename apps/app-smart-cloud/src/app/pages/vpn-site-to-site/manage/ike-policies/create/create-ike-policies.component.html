@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Tạo mới IKE Policies'"
+  [title]="'Khởi tạo IKE Policies'"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -16,11 +16,12 @@
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
         >VPN site to site</a
       ></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Tạo mới IKE Policy</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Khởi tạo IKE Policy</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
@@ -41,14 +42,22 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired>Name</nz-form-label>
+            <nz-form-label nzFor="name" >Name</nz-form-label>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Tên của IPsec, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
+                  nzPopoverPlacement="bottom"></span>
             <input
               nz-input
               type="text"
               required
               placeholder="Nhập tên"
               formControlName="name"
+              class="input-custom"
             />
+           
             
           </nz-form-control>
           </nz-form-item>
@@ -56,8 +65,15 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzRequired >Authorization Algorithm</nz-form-label>
+            <nz-form-label  >Authorization Algorithm</nz-form-label>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Thuật toán xác thực danh tính cho IPsec Policy bao gồm các lựa chọn: sha1, sha256, sha384, sha512 (dựa trên thuật toán băm mã hóa dựa theo số bit) mặc định sha1.'"
+                  nzPopoverPlacement="bottom"></span>
             <nz-select
+              class="input-select-custom"
               nzShowSearch
               nzAllowClear
               [(ngModel)]="ikePolicyModel.authorizationAlgorithm"
@@ -75,9 +91,16 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control nzErrorTip="Trường dữ liệu không đuợc để trống!">
-                <nz-form-label nzFor="name" nzRequired >Encryption Algorithm</nz-form-label>
+                <nz-form-label nzFor="name"  >Encryption Algorithm</nz-form-label>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Thuật toán mã hóa đối xứng sử dụng cho IPsec Policy bao gồm các lựa chọn: 3des, aes-128, aes-192, aes-256 ( dựa theo thuật toán mã hóa đối xứng  với độ dài khóa tương đương với số bit) mặc định aes-128.'"
+                      nzPopoverPlacement="bottom"></span>
                 <nz-select
                   nzShowSearch
+                  class="input-select-custom"
                   nzAllowClear
                   [(ngModel)]="ikePolicyModel.encryptionAlgorithm"
                   [ngModelOptions]="{standalone: true}"
@@ -96,7 +119,8 @@
           <nz-form-item >
             <nz-form-control nzErrorTip="Trường dữ liệu không đuợc để trống!">
                 <div>
-                <nz-form-label nzFor="name" nzRequired>IKE version</nz-form-label>
+                <nz-form-label nzFor="name" >IKE version</nz-form-label>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <span nz-icon nzType="question-circle"
                 nzTheme="outline"
                 nz-popover
@@ -106,6 +130,7 @@
             </div>
                 <nz-select
                   nzShowSearch
+                  class="input-select-custom"
                   nzAllowClear
                   [(ngModel)]="ikePolicyModel.ikeVersion"
                   [ngModelOptions]="{standalone: true}"
@@ -123,9 +148,16 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control nzErrorTip="Trường dữ liệu không đuợc để trống!">
-            <nz-form-label nzFor="name" nzRequired>Lifetime Units</nz-form-label>
+            <nz-form-label nzFor="name" >Lifetime Units</nz-form-label>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Đơn vị đo thời gian tồn tại của IPsec Policy key (mặc định là giây).'"
+                  nzPopoverPlacement="bottom"></span>
             <nz-select
               nzShowSearch
+              class="input-select-custom"
               nzAllowClear
               [(ngModel)]="ikePolicyModel.lifetimeUnit"
               [ngModelOptions]="{standalone: true}"
@@ -143,12 +175,18 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control  nzErrorTip="Trường dữ liệu không đuợc để trống!">
-            <nz-form-label nzFor="name" nzRequired >Lifetime Value</nz-form-label>
+            <nz-form-label nzFor="name"  >Lifetime Value</nz-form-label>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="' Giá trị của Lifetime units, Khách hàng tùy ý nhập giá trị lớn hơn 60 (mặc định là 3600).'"
+                  nzPopoverPlacement="bottom"></span>
             <nz-input-number 
             [(ngModel)]="ikePolicyModel.lifetimeValue" 
             style="width: 100%;margin-left: 0px;"
+            class="input-custom"
             [nzMin]="60"
-            av
             [nzStep]="1"
             [ngModelOptions]="{standalone: true}"/>
             
@@ -166,9 +204,16 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control  nzErrorTip="Trường dữ liệu không đuợc để trống!">
-            <nz-form-label nzFor="name" nzRequired>Perfect Forward Secrecy</nz-form-label>
+            <nz-form-label nzFor="name" >Perfect Forward Secrecy</nz-form-label>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Perfect Forward Secrecy (PFS) là một tính năng bảo mật đảm bảo rằng ngay cả khi kẻ tấn công giành được quyền truy cập vào thông tin liên lạc được mã hóa, thì chúng cũng không thể giải mã các phiên liên lạc trước đây nếu chúng không có quyền truy cập vào các khóa mã hóa được sử dụng trong các phiên đó. Có các lựa chọn là group2, group5, group14 (mặc định là group5).'"
+                  nzPopoverPlacement="bottom"></span>
             <nz-select
               nzShowSearch
+              class="input-select-custom"
               nzAllowClear
               [(ngModel)]="ikePolicyModel.perfectForwardSecrey"
               [ngModelOptions]="{standalone: true}"
@@ -186,10 +231,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >
+            <nz-form-label nzFor="name"  >
                 IKE Phase1 Negotiation Mode </nz-form-label>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Có 2 lựa chọn là Main và aggressive ( mặc định là main sẽ đảm bảo mật hơn)'"
+                      nzPopoverPlacement="bottom"></span>
             <nz-select
               nzShowSearch
+              class="input-select-custom"
               nzAllowClear
               [(ngModel)]="ikePolicyModel.ikePhase1NegotiationMode"
               [ngModelOptions]="{standalone: true}"
@@ -210,7 +262,7 @@
   <div nz-col [nzSpan]="7" class="gutter-row">
     <nz-card style="border-radius: 8px;">
       <h2 class="custom-title">Thông số cấu hình</h2>
-      <div style="overflow: auto; height: 300px; margin-bottom: 16px;">
+      <div style="overflow: auto; height: 332px; margin-bottom: 16px;">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
           <span>{{ikePolicyModel.name}}</span>
@@ -250,6 +302,8 @@
       nzType="primary"
       style="border: none; width: 100%; display: flex; align-items: center; gap: 5px; justify-content: center;"
       nzSize="large"
+      [disabled]="!form.valid"
+      [nzLoading]="isLoading"
     >
       <img
         src="assets/imgs/wallet.svg"

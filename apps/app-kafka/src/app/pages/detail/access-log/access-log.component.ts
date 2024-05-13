@@ -23,6 +23,14 @@ export class AccessLogComponent implements OnInit {
     TEST_PRODUCER: 'Test producer',
   };
 
+  resourceType = {
+    TOPIC: 'Topic',
+    CONSUMER_GROUP: 'Consumer group',
+    BROKER: 'Broker',
+    USER: 'User',
+    MESSAGE: 'Message'
+  }
+
   isEndOfPage: boolean;
   windowScrolled: boolean;
   isEndOfList: boolean;
@@ -46,38 +54,9 @@ export class AccessLogComponent implements OnInit {
     this.resourceSearch = '';
     this.operationSearch = '';
     this.page = 1;
-    this.size = 20;
+    this.size = 10;
     this.total = 0;
     this.isEndOfPage = false;
-  }
-
-  @HostListener('window:scroll', ['$event'])
-  onWindowScroll() {
-    // auto load when user scroll to end of page
-    const pos =
-      (document.documentElement.scrollTop || document.body.scrollTop) +
-      document.documentElement.offsetHeight;
-    const max = document.documentElement.scrollHeight;
-    if (pos === max) {
-      if (this.size < this.total) {
-        this.isEndOfList = false;
-        this.isEndOfPage = true;
-        this.size += 20;
-        this.getAccessLogs();
-      } else {
-        this.isEndOfList = true;
-      }
-    }
-
-    // check user scroll
-    if (document.documentElement.scrollTop || document.body.scrollTop > 100) {
-      this.windowScrolled = true;
-    } else if (
-      document.documentElement.scrollTop ||
-      document.body.scrollTop < 10
-    ) {
-      this.windowScrolled = false;
-    }
   }
 
   ngOnInit(): void {
@@ -100,16 +79,6 @@ export class AccessLogComponent implements OnInit {
     this.getAccessLogs();
   }
 
-  scrollToTop() {
-    (function smoothscroll() {
-      const currentScroll =
-        document.documentElement.scrollTop || document.body.scrollTop;
-      if (currentScroll > 0) {
-        window.requestAnimationFrame(smoothscroll);
-        window.scrollTo(0, currentScroll - currentScroll / 8);
-      }
-    })();
-  }
 
   getAccessLogs() {
     const filters: FetchAccessLogs = {
@@ -127,16 +96,15 @@ export class AccessLogComponent implements OnInit {
     this.kafkaService
       .getAccessLogs(filters)
       .pipe(
-        filter((r) => r && r.code == 200),
-        map((r) => r.data),
         finalize(() => {
-          this.isEndOfPage = false;
-          this.loadingSrv.close()
+          this.loadingSrv.close();
         })
       )
       .subscribe((data) => {
-        this.accessLogs = camelizeKeys(data.results) as AccessLog[];
-        this.total = data.totals;
+        if (data && data.code == 200) {
+          this.accessLogs = camelizeKeys(data.data.results) as AccessLog[];
+          this.total = data.data.totals;
+        }
       });
   }
 }

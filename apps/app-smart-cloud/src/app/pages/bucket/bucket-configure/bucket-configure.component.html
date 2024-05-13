@@ -1,26 +1,34 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Cấu hình Bucket'">
+<page-header [breadcrumb]="breadcrumb" [title]="'app.config.bucket' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+        ><a [routerLink]="['/']">{{
+          'app.breadcrumb.home' | i18n
+        }}</a></nz-breadcrumb-item
       >
       <nz-breadcrumb-item
         ><a [routerLink]="['/app-smart-cloud/object-storage/bucket']">Bucket</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Cấu hình Bucket </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.config.bucket' | i18n }}
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 </page-header>
 <nz-card style="border-radius: 4px" [nzBordered]="false">
   <div style="margin-bottom: 20px" class="text-card-header">
-    Thông tin Bucket
+    {{ 'app.bucket.info' | i18n }}
   </div>
   <div style="margin-bottom: 10px" class="text-label">Bucket:</div>
   <div style="margin-bottom: 10px" class="text-label">URL:</div>
-  <div style="margin-bottom: 10px" class="text-label">Dung lượng đã dùng:</div>
+  <div style="margin-bottom: 10px" class="text-label">
+    {{ 'app.used.capacity' | i18n }}:
+  </div>
   <nz-tabset nzSize="large">
     <nz-tab nzTitle="Access Control List">
-      <span class="titlecard-custom">Thiết lập Access Control List</span>
+      <span class="titlecard-custom">{{
+        'app.set.access.control.list' | i18n
+      }}</span>
       <nz-radio-group
         style="width: 100%; margin-top: 10px"
         [(ngModel)]="bucketDetail.aclType"
@@ -35,15 +43,12 @@
         </nz-row>
       </nz-radio-group>
       <div style="margin-top: 20px" class="text-label">
-        <span>Cấu hình quyền truy cập cho Bucket:</span><br />
+        <span>{{ 'app.config.access.bucket' | i18n }}:</span><br />
         <nz-row style="padding-left: 10px"
-          >• Public: Tất cả mọi người đều có thể truy cập thông tin của bucket,
-          không ảnh hưởng đến quyền của object. Bucket public nhưng nếu object
-          private thì cũng không truy cập được từ bên ngoài.</nz-row
+          >• Public: {{ 'app.alert.bucket.public' | i18n }}</nz-row
         >
         <nz-row style="padding-left: 10px"
-          >• Private: Giới hạn truy cập chỉ cho phép người dùng có AccessKey và
-          SecretKey.</nz-row
+          >• Private: {{ 'app.config.access.bucket.private' | i18n }}</nz-row
         >
       </div>
       <nz-row nzGutter="16" style="display: inline">
@@ -53,47 +58,42 @@
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/cancel.svg"
               alt=""
-            />Hủy
+            />{{ 'app.button.cancel' | i18n }}
           </button>
-          <button
-            nz-button
-            nzType="primary"
-            (click)="setBucketACL()"
-          >
+          <button nz-button nzType="primary" (click)="setBucketACL()">
             <img
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/confirm.svg"
               alt=""
             />
-            Cập nhật
+            {{ 'app.text.edit' | i18n }}
           </button>
         </div>
       </nz-row>
     </nz-tab>
     <nz-tab nzTitle="Versioning">
-      <span class="titlecard-custom">Thiết lập Versioning</span>
+      <span class="titlecard-custom">{{ 'app.set.versioning' | i18n }}</span>
       <nz-radio-group
         style="width: 100%; margin-top: 10px"
         [(ngModel)]="bucketDetail.isVersioning"
       >
         <nz-row>
           <nz-col nzSpan="12">
-            <label class="text-value" nz-radio [nzValue]="true">Bật</label>
+            <label class="text-value" nz-radio [nzValue]="true">{{
+              'app.on' | i18n
+            }}</label>
           </nz-col>
           <nz-col nzSpan="12">
-            <label class="text-value" nz-radio [nzValue]="false">Tắt</label>
+            <label class="text-value" nz-radio [nzValue]="false">{{
+              'app.off' | i18n
+            }}</label>
           </nz-col>
         </nz-row>
       </nz-radio-group>
       <div style="margin-top: 20px" class="text-label">
-        <span
-          >Cấu hình Versioning: Cấu hình cho phép lưu trữ toàn bộ dữ liệu trong
-          Bucket với các phiên bản khác nhau</span
+        <span>{{ 'app.config.versioning' | i18n }}</span
         ><br /><br />
-        <span style="color: #eb1414"
-          >Lưu ý: Lưu trữ nhiều phiên bản khác nhau sẽ có thể gây ra tăng dung
-          lượng lưu trữ dữ liệu trên Bucket</span
-        >
+        <span style="color: #eb1414">{{ 'app.note.versioning' | i18n }}</span>
       </div>
       <nz-row nzGutter="16" style="display: inline">
         <div style="float: right">
@@ -102,7 +102,7 @@
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/cancel.svg"
               alt=""
-            />Hủy
+            />{{ 'app.button.cancel' | i18n }}
           </button>
           <button nz-button nzType="primary" (click)="setBucketVersioning()">
             <img
@@ -110,7 +110,7 @@
               src="assets/imgs/confirm.svg"
               alt=""
             />
-            Cập nhật
+            {{ 'app.text.edit' | i18n }}
           </button>
         </div>
       </nz-row>

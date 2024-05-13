@@ -12,7 +12,7 @@ import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { environment } from '@env/environment';
 import { PaymentService } from 'src/app/shared/services/payment.service';
 import { PaymentModel } from 'src/app/shared/models/payment.model';
-import { Observable } from 'rxjs';
+import { Observable, pipe, shareReplay, tap } from 'rxjs';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { OrderDTOSonch } from 'src/app/shared/models/order.model';
 
@@ -36,6 +36,7 @@ export class PaymentDetailComponent implements OnInit {
     data: OrderDTOSonch
     userModel$: Observable<UserModel>;
     id: number;
+    userModel: UserModel
   orderNumber:string
   constructor(
     private service: PaymentService,
@@ -56,11 +57,16 @@ export class PaymentDetailComponent implements OnInit {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + accessToken,
       }),
-      context: new HttpContext().set(ALLOW_ANONYMOUS, true),
-  });
+    }).pipe(
+      tap(user => {
+        this.userModel = user;
+        console.log(this.userModel);
+        
+      }),
+      shareReplay(1) 
+    );
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.orderNumber = this.activatedRoute.snapshot.paramMap.get('orderNumber');
-    console.log(this.activatedRoute.snapshot.paramMap);
     
     this.getPaymentDetail();
     this.getOrderDetail()
@@ -69,16 +75,12 @@ export class PaymentDetailComponent implements OnInit {
   getPaymentDetail() {
     this.service.getPaymentById(this.id).subscribe((data: any) => {
       this.payment = data;
-      console.log(data);
-      this.cdr.detectChanges();
     });
   }
 
   getOrderDetail() {
     this.orderService.getOrderBycode(this.orderNumber).subscribe((data: any) => {
       this.data = data;
-      console.log(data);
-      this.cdr.detectChanges();
     });
   }
 

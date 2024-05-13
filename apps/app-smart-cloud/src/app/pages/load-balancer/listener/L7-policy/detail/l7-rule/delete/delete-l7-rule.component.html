@@ -1,0 +1,30 @@
+<img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
+     nz-popover
+     [nzPopoverContent]="'app.delete' | i18n"
+     nzPopoverPlacement="bottom" (click)="showModal()"/>
+<nz-modal [(nzVisible)]="isVisible"
+          (nzOnCancel)="handleCancel()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">{{ 'app.title.delete.l7.rule' | i18n }}</span>
+  </div>
+  <div *nzModalContent>
+    <nz-alert nzBanner
+              nzShowIcon
+              [nzDescription]="'app.alert.delete.l7.rule' | i18n">
+    </nz-alert>
+    <div style="margin-top: 10px;">
+      <span class="text-label" (keydown.enter)="focusOkButton($event)" [innerHTML]="'app.note.delete.l7.rule' | i18n"></span>
+    </div>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
+</nz-modal>

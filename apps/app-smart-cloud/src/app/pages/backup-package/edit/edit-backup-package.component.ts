@@ -1,6 +1,4 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -14,16 +12,16 @@ import {
 import {OrderItem} from "../../../shared/models/price";
 import {DataPayment, ItemPayment} from "../../instances/instances.model";
 import {InstancesService} from "../../instances/instances.service";
-import {ProjectService} from "../../../shared/services/project.service";
 import {getCurrentRegionAndProject} from "@shared";
+import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
-  selector: 'one-portal-edit-backup-package',
+  selector: 'one-portal-extend-backup-package',
   templateUrl: './edit-backup-package.component.html',
   styleUrls: ['./edit-backup-package.component.less'],
 })
 export class EditBackupPackageComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   idBackupPackage: number
@@ -31,7 +29,7 @@ export class EditBackupPackageComponent implements OnInit{
   validateForm: FormGroup<{
     storage: FormControl<number>
   }> = this.fb.group({
-    storage: [1, [Validators.required]]
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]]
   })
 
   isLoading: boolean = false

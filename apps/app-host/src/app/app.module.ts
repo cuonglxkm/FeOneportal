@@ -24,17 +24,24 @@ import {SimpleInterceptor} from "@delon/auth";
 
 
 import {DatePipe, registerLocaleData} from "@angular/common";
-import {NZ_DATE_LOCALE, NZ_I18N, provideNzI18n, zh_CN,  en_US as zorroLang} from "ng-zorro-antd/i18n";
+import {NZ_DATE_LOCALE, NZ_I18N, provideNzI18n, vi_VN, zh_CN,  en_US as zorroLang} from "ng-zorro-antd/i18n";
 import {DELON_LOCALE, en_US as delonLang, ALAIN_I18N_TOKEN} from "@delon/theme";
 import {enUS as dateLang} from "date-fns/locale";
 // import { default as ngLang } from '@angular/common/locales/zh';
 import { default as ngLang } from '@angular/common/locales/en';
 
 
+const customLanguagePack = {
+  ...vi_VN,
+    Empty: {
+      description: "Không có dữ liệu"
+    }
+  
+}
 
 
 const LANG = {
-  abbr: 'zh',
+  abbr: 'en',
   ng: ngLang,
   zorro: zorroLang,
   date: dateLang,
@@ -51,7 +58,7 @@ const LANG_PROVIDES = [
 
 const I18NSERVICE_PROVIDES = [
   { provide: ALAIN_I18N_TOKEN, useClass: I18NService, multi: false },
-  { provide: NZ_I18N, useValue: zh_CN }
+  { provide: NZ_I18N, useValue: customLanguagePack }
 ];
 
 const INTERCEPTOR_PROVIDES = [
@@ -65,7 +72,7 @@ const FORM_MODULES = [JsonSchemaModule];
 import { StartupService } from '@core';
 import {Observable} from "rxjs";
 import { GlobalConfigModule } from './global-config.module';
-import { NotificationService } from '../../../../libs/common-utils/src/lib/notification-service';
+import { NotificationService } from '../../../../libs/common-utils/src';
 export function StartupServiceFactory(startupService: StartupService): () => Observable<void> {
   return () => startupService.load();
 }
@@ -107,7 +114,7 @@ const APPINIT_PROVIDES = [
     // ...GLOBAL_THIRD_MODULES,
     ...FORM_MODULES
   ],
-  providers: [...LANG_PROVIDES, ...INTERCEPTOR_PROVIDES, ...I18NSERVICE_PROVIDES, ...APPINIT_PROVIDES, DatePipe],
+  providers: [ ...INTERCEPTOR_PROVIDES, ...I18NSERVICE_PROVIDES, ...APPINIT_PROVIDES, DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

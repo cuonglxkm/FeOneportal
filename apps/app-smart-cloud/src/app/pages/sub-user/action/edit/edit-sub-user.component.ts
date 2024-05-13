@@ -24,7 +24,7 @@ export class EditSubUserComponent {
   validateForm: FormGroup<{
     access: FormControl<string>
   }> = this.fb.group({
-    access: ['', [Validators.required]]
+    access: ['full', [Validators.required]]
   })
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -36,8 +36,6 @@ export class EditSubUserComponent {
   showModal() {
     this.isVisible = true
   }
-
-
 
   handleCancel() {
     this.isVisible = false
@@ -56,6 +54,7 @@ export class EditSubUserComponent {
     } else {
       this.validateForm.controls.access.setValue('full')
     }
+    formUpdate.access = this.validateForm.controls.access.value
     this.subUserService.updateSubUser(formUpdate).subscribe(data => {
       if(data) {
         this.isLoading = false

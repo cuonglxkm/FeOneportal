@@ -6,6 +6,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../../../shared/services/volume.service';
 import { AddVolumetoVmModel } from '../../../../../shared/models/volume.model';
 import { AttachedDto } from '../../../../../shared/dto/volume.dto';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-attach-volume',
@@ -27,6 +29,7 @@ export class AttachVolumeComponent implements AfterViewInit{
   isVisible: boolean = false
 
   listVm: InstancesModel[]
+  listVmUnique: InstancesModel[] = []
 
   instanceSelected: any
 
@@ -36,7 +39,8 @@ export class AttachVolumeComponent implements AfterViewInit{
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private volumeService: VolumeService,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   ngAfterViewInit(): void {
@@ -51,7 +55,6 @@ export class AttachVolumeComponent implements AfterViewInit{
   showModal() {
     this.isVisible = true
     this.getListVm()
-
   }
 
   handleCancel() {
@@ -73,7 +76,13 @@ export class AttachVolumeComponent implements AfterViewInit{
       true, this.tokenService.get()?.userId).subscribe(data => {
       this.isLoading = false
       this.listVm = data.records
-      console.log('listvm', this.listVm)
+      this.listVm = this.listVm.filter(item => item.taskState === 'ACTIVE')
+      this.listVm.forEach(item => {
+        const exists = this.instanceInVolume.some(itemAttach => itemAttach.instanceId === item.id)
+        if(!exists) {
+          this.listVmUnique?.push(item)
+        }
+      })
     })
   }
 
@@ -88,7 +97,7 @@ export class AttachVolumeComponent implements AfterViewInit{
       this.volumeService.getVolumeById(this.volumeId).subscribe(data => {
         if(data != null) {
           if (data.isMultiAttach == false && data.attachedInstances?.length == 1) {
-            this.notification.error('Thất bại', 'Volume này chỉ có thể gắn với một máy ảo.')
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.fail.attach.multiple'))
             this.isLoadingAttach = false;
           } else {
             let addVolumetoVmRequest = new AddVolumetoVmModel();
@@ -101,7 +110,7 @@ export class AttachVolumeComponent implements AfterViewInit{
               if (data == true) {
                 this.isVisible = false
                 this.isLoading = false;
-                this.notification.success('Thành công', 'Yêu cầu gắn Volume thành công.')
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.attach.success'))
                 setTimeout(() => {
                   this.onOk.emit(data)
                 }, 1500);
@@ -111,7 +120,7 @@ export class AttachVolumeComponent implements AfterViewInit{
                 console.log('data', data)
                 this.isVisible = false
                 this.isLoading = false;
-                this.notification.error('Thất bại', 'Yêu cầu gắn Volume thất bại.')
+                this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.attach.success'))
                 setTimeout(() => {
                   this.onOk.emit(data)
                 }, 1500);
@@ -120,7 +129,7 @@ export class AttachVolumeComponent implements AfterViewInit{
               console.log('eror', error)
               this.isVisible = false
               this.isLoading = false;
-              this.notification.error('Thất bại', 'Yêu cầu gắn Volume thất bại.')
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.attach.fail'))
               setTimeout(() => {
                 this.onOk.emit(error)
               }, 1500);
@@ -129,7 +138,7 @@ export class AttachVolumeComponent implements AfterViewInit{
         } else {
           this.isVisible = false
           this.isLoadingAttach = false;
-          this.notification.error('Thất bại', 'Yêu cầu gắn Volume thất bại.')
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.attach.fail'))
         }
       })
       // this.cdr.detectChanges();

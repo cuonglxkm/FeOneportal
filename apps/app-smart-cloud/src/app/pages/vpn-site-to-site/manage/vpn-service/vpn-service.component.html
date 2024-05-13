@@ -1,1 +1,93 @@
-<div>VPN Service</div>
+<div style="display: flex; justify-content: space-between; align-items: center">
+    <span class="text-card-header">Danh sách  VPN Services</span>
+    <nz-row style="gap: 16px">
+      <nz-col>
+        <nz-input-group
+          [nzPrefix]="prefixIconSearch"
+          nzSize="large"
+          style="width: 300px"
+        >
+          <input
+            q1
+            nz-input
+            placeholder="Tìm kiếm theo tên"
+            (input)="onInputChange($event.target['value'])"
+          />
+        </nz-input-group>
+        <ng-template #prefixIconSearch>
+          <img
+            src="assets/imgs/search.svg"
+            alt=""
+            style="cursor: pointer"
+            nz-tooltip="Tìm kiếm"
+          />
+        </ng-template>
+      </nz-col>
+      <nz-col>
+        <button
+          [routerLink]="[
+            '/app-smart-cloud/vpn-site-to-site/vpn-service/create'
+          ]"
+          nz-button
+          nzType="primary"
+          nzSize="large"
+        >
+          <i nz-icon nzType="plus"></i>
+          <span class="button-text-primary">Tạo mới VPN Services</span>
+        </button>
+      </nz-col>
+    </nz-row>
+  </div>
+  <nz-table
+    #fixedTable
+    style="margin-top: 20px"
+    [nzData]="response?.records"
+    [nzPageSize]="response?.pageSize"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzPageIndex]="response?.currentPage"
+    (nzPageIndexChange)="onPageIndexChange($event)"
+    [nzTotal]="response?.totalCount"
+    [nzFrontPagination]="false"
+    [nzLoading]="isLoading"
+  >
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>IP VPN Gateway</th>
+        <th>Router</th>
+        <th>Status</th>
+        <th nzAlign="center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of fixedTable.data; index as i">
+        <td>
+          <a
+            [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-service/' + data.id]"
+            >{{ data.name }}</a
+          >
+        </td>
+        <td>{{ data.vpnGatway }}</td>
+        <td>{{ data.routerName }}</td>
+        <td>{{ data.status }}</td>
+        <td>
+          <div class="d-flex gap-2 justify-content-center align-items-center">
+            <one-portal-edit-vpn-service [region]="region"
+            [project]="project"
+            [vpnServiceId]="data.id"
+            [vpnServiceName]="data.name"
+            [vpnServiceStatus]="data.status"
+            [vpnRouterName]="data.routerName"
+            (onOk)="handleOkEdit()"></one-portal-edit-vpn-service>
+            <one-portal-delete-vpn-service [region]="region"
+            [project]="project"
+            [vpnServiceId]="data.id"
+            [vpnServiceStatus]="data.status"
+            [vpnServiceName]="data.name"
+            (onOk)="handleOkDelete()"></one-portal-delete-vpn-service>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  

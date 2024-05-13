@@ -1,0 +1,76 @@
+@import '../../../../../assets/color.less';
+.body-form {
+    border-radius: 8px;
+    .left-content{
+        .left-content-card{
+            border-radius: 8px;
+        }
+    }
+    .header-content {
+        margin: 12px 0;
+    }
+    .tr-selected{
+        background: @blue-background;
+        td {
+            background: none !important;
+            color: @blue-text !important;
+        }
+    }
+    .right-form {
+        border-radius: 8px;
+        border: 1px solid @blue-border;
+        .right-title {
+            margin-bottom: 20px;
+        }
+
+        .right-form-content-month {
+            margin-bottom: 10px;
+            border-top: 2px solid @white;
+            padding-top: 10px;
+        }
+
+        .right-form-content-total {
+            margin-bottom: 20px;
+            background-color: @blue-background;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+        }
+    }
+}
+
+
+
+.vat-money {
+    color: @red-money;
+}
+
+.month-money{
+    color: @blue-text;
+}
+
+.disable-class {
+    cursor: default;
+    background-color: @grey-background;
+    color: @grey-text;
+    td {
+        background: none !important;
+        color: @grey-text !important;
+    }
+}
+
+.title-pading-left{
+    padding-left: 0 !important;
+}
+
+.red-text {
+    color: @red-text;
+}
+
+.input-number-element {
+    margin-left: 0;
+}
+
+.ant-btn-primary[disabled] {
+    border-color: @reuse-tab-border-color;
+    background: @grey-3;
+}

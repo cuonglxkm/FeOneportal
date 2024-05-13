@@ -1,0 +1,47 @@
+export class FormOrderCreateStorage {
+  projectId: number
+  shareProtocol: string
+  size: number
+  name: string
+  description: string
+  displayName: string
+  displayDescription: string
+  shareType: string
+  snapshotId: string
+  isPublic: boolean
+  shareGroupId: string
+  metadata: string
+  shareNetworkId: string
+  availabilityZone: string
+  schedulerHints: string
+  actorId: number
+  vpcId: number
+  customerId: number
+  userEmail: string
+  actorEmail: string
+  regionId: number
+  serviceName: string
+  serviceType: number
+  actionType: number
+  serviceInstanceId: number
+  createDate: Date
+  expireDate: Date
+  createDateInContract: string
+  saleDept: string
+  saleDeptCode: string
+  contactPersonEmail: string
+  contactPersonPhone: string
+  contactPersonName: string
+  am: string
+  amManager: string
+  note: string
+  isTrial: boolean
+  offerId: number
+  couponCode: string
+  dhsxkd_SubscriptionId: string
+  dSubscriptionNumber: string
+  dSubscriptionType: string
+  oneSMEAddonId: string
+  oneSME_SubscriptionId: string
+  typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.ShareCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+}

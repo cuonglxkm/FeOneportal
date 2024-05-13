@@ -1,0 +1,28 @@
+<button nz-button nzType="primary" [disabled]="disabled"
+        class="button-add" (click)="showModal()">
+  <span nz-icon nzType="plus" nzTheme="outline"></span> Thêm mới
+</button>
+<nz-modal
+  nzCentered
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="null"
+  [nzWidth]="1050"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-template #modalTitle>
+    <span class="text-modal-title">Thêm mới Outbound</span>
+  </ng-template>
+  <ng-template #modalContent>
+    <one-portal-form-rule
+      direction="egress"
+      securityGroupId="{{ condition.securityGroupId }}"
+      region="{{ condition.regionId }}"
+      project="{{ condition.projectId }}"
+      (onCancel)="handleCancel()"
+      (onOk)="handleOk()"
+    />
+  </ng-template>
+</nz-modal>
+

@@ -1,0 +1,243 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.listener.detail' | i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/load-balancer/list']">Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/load-balancer/detail/' + idLb]">Chi tiết Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="[]">{{ 'app.listener.detail' | i18n }}</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="onRegionChange($event)" isDetail="true"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)" isDetail="true"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
+  <nz-card class="text-label" nzTitle="" style="border-radius: 8px;" [nzLoading]="loadingDetail">
+    <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.listener.info' | i18n }}</div>
+    <nz-form-item>
+      <nz-form-label>
+        <span>{{ 'app.load.balancer.name' | i18n }} (<span style="color: red;">*</span>) </span>
+      </nz-form-label>
+      <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+        <nz-input-number [nzDisabled]="true"
+                         class="input-custom"
+               formControlName="listenerName"  style="margin-left: -2px;width: 100%"
+               />
+        <ng-template #nameErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
+          <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n : { name: 'Listener' } }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-row>
+      <nz-col nzSpan="16">
+        <nz-form-item>
+          <nz-form-label>
+            <span>{{ 'app.protocol' | i18n }} (<span style="color: red;">*</span>) </span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <nz-radio-group [disabled]="true" [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}" nzSize="large">
+              <label nz-radio nzValue="HTTP">HTTP</label>
+              <label nz-radio nzValue="TCP">TCP</label>
+              <label nz-radio nzValue="TERMINATED_HTTPS">TERMINATED_HTTPS</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Port (<span style="color: red;">*</span>) </span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <nz-input-number nzSize="large" formControlName="port" [nzMin]="0" [nzStep]="1" [nzDisabled]="true"
+                             style="margin-left: -2px;"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+
+    <nz-row>
+      <nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Client timeout (ms)</span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <nz-input-number [nzDisabled]="true" style="margin-left: -2px;width: 90%" formControlName="timeout" [nzMin]="0" nzSize="large"
+                             [nzStep]="1"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Member</span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <nz-input-number [nzDisabled]="true" style="margin-left: -2px;width: 90%" formControlName="member" [nzMin]="0" nzSize="large"
+                             [nzStep]="1"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Connection</span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <nz-input-number [nzDisabled]="true" style="margin-left: -2px;width: 90%" formControlName="connection" [nzMin]="0" nzSize="large"
+                             [nzStep]="1"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Allowed CIDRs (<span style="color: red;">*</span>) </span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <nz-input-number
+                   class="input-custom"
+                   formControlName="allowCIRR"
+                   [nzDisabled]="true" style="margin-left: -2px;width: 90%"/>
+            <!--              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="" [nzMin]="0"-->
+            <!--                               [nzStep]="1"></nz-input-number>-->
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+
+
+    <nz-form-item>
+      <nz-form-label>
+        <span>{{ 'app.service.description' | i18n }}</span>
+      </nz-form-label>
+      <nz-form-control nzDisableAutoTips>
+          <textarea nz-input [disabled]="true" [nzAutosize]="{ minRows: 3 }" [placeholder]="'app.input.des' | i18n" style="width: 100%"
+                    [ngModel]="description" [ngModelOptions]="{standalone : true}"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
+    <nz-tabset>
+      <nz-tab nzTitle="Pool">
+        <div class="text-card-header" style="margin-bottom: 30px;">{{ 'app.pool.list' | i18n }}</div>
+        <nz-table [nzData]="listPool" [nzShowPagination]="false" [nzLoading]="loadingPool">
+          <thead>
+          <tr>
+            <th>{{ 'app.pool.name' | i18n }}</th>
+            <th>{{ 'app.protocol' | i18n }}</th>
+            <th>{{ 'app.algorithm' | i18n }}</th>
+            <th>{{ 'app.activity.status' | i18n }}</th>
+            <th>{{ 'app.provisioning.status' | i18n }}</th>
+            <th>{{ 'app.text.operation' | i18n }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of listPool">
+            <td>{{ item.name }}</td>
+            <td>{{ item.protocol }}</td>
+            <td>{{ item.algorithm }}</td>
+            <td>ONLINE</td>
+            <td>ACTIVE</td>
+            <td>
+              <!----Chỉnh sửa----->
+              <one-portal-edit-pool-in-lb [region]="regionId"
+                                  [project]="projectId"
+                                  [poolId]="item.id"
+                                  [loadBalancerId]="idLb"
+                                  [listenerId]="idListener"
+                                  (onOk)="handleEditOk()" />
+              <!----Xóa---->
+              <one-portal-delete-pool-in-lb [region]="regionId"
+                                    [project]="projectId"
+                                    [poolId]="item.id"
+                                    [loadBlancerId]="idLb"
+                                    [listenerId]="idListener"
+                                    [namePool]="item.name"
+                                    (onOk)="handleDeleteOk()" />
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+      <nz-tab nzTitle="L7 Policy" *ngIf="protocolListener!='TCP'">
+        <nz-row style="display: flex;justify-content: space-between;margin-bottom: 30px;">
+          <div class="text-card-header">Danh sách L7 Policy</div>
+          <button *ngIf="currentPageData?.length > 0"  nz-button nzType="primary" nzSize="large" [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">
+            <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt="" />
+            <span class="button-text-primary">{{ 'app.l7.policy.create.button' | i18n }}</span>
+          </button>
+        </nz-row>
+        <nz-table *ngIf="currentPageData?.length > 0" #fixedTable
+                  nzShowPagination
+                  [nzData]="currentPageData || []"
+                  [nzFrontPagination]="false"
+                  [nzLoading]="isLoading"
+                  [nzTotal]="listL7?.length"
+                  [nzPageSize]="pageSize"
+                  [nzPageIndex]="pageIndex"
+                  (nzPageSizeChange)="onPageSizeChange($event)"
+                  (nzPageIndexChange)="onPageIndexChange($event)"  [nzShowPagination]="false">
+          <thead>
+          <tr>
+            <th>{{ 'app.l7.policy.name' | i18n }}</th>
+            <th>{{ 'app.priority' | i18n }} </th>
+            <th>{{ 'app.action' | i18n }}</th>
+            <th>{{ 'app.activity.status' | i18n }}</th>
+            <th>{{ 'app.provisioning.status' | i18n }}</th>
+            <th>{{ 'app.text.operation' | i18n }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of fixedTable.data">
+            <td style="color: #0D67B1"><a [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/l7-policy/'+ item.id">{{ item.name }}</a></td>
+            <td>{{ item?.position }}</td>
+            <td>{{ item?.action }}</td>
+            <td>{{ item?.operatingStatus }}</td>
+            <td>{{ item?.provisioningStatus }}</td>
+            <td>
+              <!----Chỉnh sửa----->
+              <img nz-popover src="assets/imgs/edit-2.svg"
+                   alt=""
+                   nzPopoverPlacement="bottom"
+                   [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/l7-policy/edit/'+ item.id"
+                   style="cursor: pointer; margin-right: 16px"
+                   [nzPopoverContent]="'Chỉnh sửa'" />
+              <!----Xóa---->
+              <one-portal-delete-l7-policy [region]="regionId" [project]="projectId" [idL7]="item?.id" [L7Name]="item?.name" (onOk)="handleDeleteL7PolicyOk()"/>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+        <div *ngIf="currentPageData?.length <= 0" style="display: flex;text-align: center;width: 425px;justify-content: center;align-items: center;margin-left: 401px;">
+          <nz-alert nzType="warning" [nzMessage]="titleWarning" nzShowIcon>
+            <ng-template #titleWarning>
+                <span class="text-label" style="color: red;">*Quý khách chưa có L7 Policy nào!</span><br>
+                <span class="text-label">Quý khách có thể khởi tạo <a [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">L7 Policy</a> tại đây!</span>
+            </ng-template>
+          </nz-alert>
+        </div>
+
+      </nz-tab>
+    </nz-tabset>
+  </nz-card>
+</form>

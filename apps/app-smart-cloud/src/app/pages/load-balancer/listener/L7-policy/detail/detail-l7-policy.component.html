@@ -1,0 +1,143 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'app.l7.policy.detail' | i18n" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>{{
+        'app.breadcrumb.home' | i18n
+      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">{{ 'app.load.balancer.detail' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/{{ idListener }}">{{ 'app.listener.detail' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.l7.policy.detail' | i18n }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card style="border-radius: 8px;">
+    <span class="text-card-header">{{ 'app.l7.policy.info' | i18n }}</span>
+    <form nz-form nzLayout="vertical">
+      <nz-row nzGutter="24">
+        <nz-col nzSpan="12">
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>{{ 'app.l7.policy.name' | i18n }}</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <input nz-input class="input-custom" [value]="l7Policy?.name" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>{{ 'app.execute.action' | i18n }}</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <input nz-input class="input-custom" [value]="l7Policy?.action" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>{{ 'app.service.description' | i18n }}</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <textarea nz-input class="input-custom"
+                        [value]="l7Policy?.description"
+                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"
+                        [disabled]="true"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>{{ 'app.priority' | i18n }}</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <input nz-input class="input-custom" [value]="l7Policy?.position" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <div style="display: flex;">
+              <span style="margin-right: 15px;">{{ 'app.text.status' | i18n }}</span>
+              <nz-switch [ngModel]="l7Policy?.adminStateUp" [ngModelOptions]="{standalone: true}" [nzDisabled]="true"></nz-switch>
+            </div>
+
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+    </form>
+  </nz-card>
+  <nz-card style="border-radius: 8px;">
+    <span class="text-card-header">{{ 'app.l7.rule.info' | i18n }}</span>
+    <img nz-popover
+         [nzPopoverContent]="'app.tooltip.l7.rule' | i18n"
+         nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
+         src="assets/imgs/pajamas_question.svg" alt="" />
+    <nz-row nzJustify="space-between">
+      <nz-col></nz-col>
+      <nz-col>
+        <one-portal-create-l7-rule [region]="region" [project]="project" [l7policyId]="idL7Policy" (onOk)="handleCreateL7Rule()"/>
+      </nz-col>
+    </nz-row>
+    <nz-table #fixedTable
+              style="margin-top: 20px;"
+              nzShowPagination
+              [nzData]="l7RuleList || []"
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoadingL7Rule"
+              [nzTotal]="l7RuleList.length"
+              [nzPageSize]="pageSize"
+              [nzPageIndex]="pageIndex"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              (nzPageIndexChange)="onPageIndexChange($event)">
+
+      <thead>
+      <tr>
+        <th>{{ 'app.criterion' | i18n }}</th>
+        <th>{{ 'app.condition' | i18n }}</th>
+        <th>Key</th>
+        <th>{{ 'app.value' | i18n }}</th>
+        <th>{{ 'app.reverse.mechanism' | i18n }}</th>
+        <th>{{ 'app.activity.status' | i18n }}</th>
+        <th>{{ 'app.provisioning.status' | i18n }}</th>
+        <th>{{ 'app.action' | i18n }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of fixedTable.data">
+        <td nzAlign="left">{{ data.type }}</td>
+        <td nzAlign="left">{{ data.compareType }}</td>
+        <td nzAlign="right">{{ data.key }}</td>
+        <td nzAlign="right">{{ data.value }}</td>
+        <td nzAlign="left" [ngSwitch]="data.invert">
+          <span *ngSwitchCase="false">FALSE</span>
+          <span *ngSwitchCase="true">TRUE</span>
+        </td>
+        <td nzAlign="left">{{ data.operatingStatus }}</td>
+        <td nzAlign="left">{{ data.provisioningStatus }}</td>
+        <td>
+          <one-portal-delete-l7-rule [region]="region" [project]="project" [idL7Policy]="idL7Policy" [idL7Rule]="data.id" [nameRule]="data.type" (onOk)="handleDeleteL7Rule()"/>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-content>

@@ -1,11 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { IpFloatingService } from '../../shared/services/ip-floating.service';
-import { RegionModel } from '../../shared/models/region.model';
-import { ProjectModel } from '../../shared/models/project.model';
 import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floating.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { BaseResponse } from '../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { debounceTime } from 'rxjs';
 import { FileSystemSnapshotScheduleModel, FormSearchFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
 import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
@@ -16,12 +14,12 @@ import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-
   styleUrls: ['./file-system-snapshot-schedule.component.less'],
 })
 export class FileSystemSnapshotScheduleComponent {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   customerId: number
 
-  pageSize: number = 10
+  pageSize: number = 5
   pageIndex: number = 1
 
   value: string
@@ -67,9 +65,15 @@ export class FileSystemSnapshotScheduleComponent {
     if(value == undefined || value == ""){
       this.value = null
     }
+    
     this.value = value
     this.getData()
   }
+
+  handleDeleteSchedule(){
+    this.getData()
+  }
+  
 
 
   getData() {
@@ -79,6 +83,7 @@ export class FileSystemSnapshotScheduleComponent {
     formSearchFileSystemSsSchedule.regionId = this.region
     formSearchFileSystemSsSchedule.pageSize = this.pageSize
     formSearchFileSystemSsSchedule.pageNumber = this.pageIndex
+    formSearchFileSystemSsSchedule.projectId = this.project
     this.fileSystemSnapshotScheduleService.getFileSystemSsSchedule(formSearchFileSystemSsSchedule)
       .pipe(debounceTime(500))
       .subscribe(data => {

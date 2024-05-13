@@ -2,18 +2,22 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingService } from '@delon/abc/loading';
-import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { camelizeKeys } from 'humps';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize } from 'rxjs';
+import { EMPTY, catchError, finalize, map } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaCreateReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
+import { OfferKafka } from 'src/app/core/models/offer.model';
 import { Order, OrderItem } from 'src/app/core/models/order.model';
+import { ProjectModel } from 'src/app/core/models/project.model';
+import { RegionModel } from 'src/app/core/models/region.model';
 import { ServicePack } from 'src/app/core/models/service-pack.model';
+import { FormSearchNetwork, FormSearchSubnet, NetWorkModel, Subnet } from 'src/app/core/models/vlan.model';
 import { KafkaService } from 'src/app/services/kafka.service';
+import { VlanService } from 'src/app/services/vlan.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,7 +29,7 @@ export class CreateKafkaComponent implements OnInit {
 
   myform: FormGroup;
 
-  chooseitem: ServicePack;
+  chooseitem: OfferKafka;
 
   carouselConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },
@@ -46,26 +50,50 @@ export class CreateKafkaComponent implements OnInit {
 
   showCustomConfig = false;
 
-  kafkaCreateReq: KafkaCreateReq = new KafkaCreateReq();
+  kafkaCreateReq: KafkaCreateReq;
   servicePackCode: string;
   @ViewChild('myCarousel') myCarousel: NguCarousel<any>;
   usageTime = 1;
+  createDate: Date;
+  expiryDate: Date;
+  ram = 0;
+  cpu = 0;
+  storage = 0;
+  unitPrice = {
+    ram: 240000,
+    cpu: 105000,
+    storage: 8500
+  }
+
+  regionId: number;
+  projectId: number;
+  cloudProfileId: string;
+  vlanId: number;
+  listOfVPCNetworks: NetWorkModel[];
+  listOfSubnets: Subnet[];
+
+  isVisibleCancle = false;
+  listOfferKafka: OfferKafka[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private modalService: NzModalService,
     private router: Router,
     private loadingSrv: LoadingService,
     private kafkaService: KafkaService,
     private notification: NzNotificationService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private vlanService: VlanService,
   ) {
+    this.listOfVPCNetworks = [];
+    this.listOfSubnets = [];
   }
 
   ngOnInit(): void {
-    this.getListPackage();
     this.getListVersion();
     this.initForm();
+    this.createDate = new Date();
+    this.setExpiryDate();
+    this.getUnitPrice();
   }
 
   initForm() {
@@ -73,19 +101,27 @@ export class CreateKafkaComponent implements OnInit {
       serviceName: [null,
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
       version: [null],
-      description: [null, [Validators.maxLength(255), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
-      vCpu: [null, [Validators.required]],
-      ram: [null, [Validators.required]],
-      storage: [null, [Validators.required, Validators.min(1), Validators.max(1024)]],
+      description: [null, [Validators.maxLength(500)]],
+      vCpu: [null, [Validators.required, Validators.pattern("^[0-9]*$"), Validators.min(1), Validators.max(16)]],
+      ram: [null, [Validators.required, Validators.pattern("^[0-9]*$"), Validators.min(1), Validators.max(64)]],
+      storage: [null, [Validators.required, Validators.min(1), Validators.max(2000), Validators.pattern("^[0-9]*$")]],
       broker: [3, [Validators.required]],
+      usageTime: [1, [Validators.required]],
       configType: [0, [Validators.required]],
       numPartitions: [3],
       defaultReplicationFactor: [3],
       minInsyncReplicas: [2],
       offsetTopicReplicationFactor: [3],
       logRetentionHours: [168],
-      logSegmentBytes: [1073741824]
+      logSegmentBytes: [1073741824],
+      vpcNetwork: [null, [Validators.required]],
+      subnet: [null, [Validators.required]],
+      subnetId: [null, [Validators.required]],
+      subnetCloudId: [null, [Validators.required]],
+
     });
+
+    this.myform.controls.broker.disable();
   }
 
   getListPackage() {
@@ -99,6 +135,70 @@ export class CreateKafkaComponent implements OnInit {
     )
   }
 
+  getUnitPrice() {
+    const unitMap = {
+      'cpu': 'cpu',
+      'ram': 'ram',
+      'storage': 'storage_ssd'
+    };
+    this.kafkaService.getUnitPrice()
+    .subscribe(
+      res => {
+        if (res && res.code == 200) {
+          res.data.forEach(e => {
+            const map = unitMap[e.item];
+            if (map) {
+              this.unitPrice[map] = e.price;
+            }
+          })
+        }
+      }
+    )
+  }
+
+  getListOffers() {
+    this.listOfferKafka = [];
+    const characteristicMap = {
+      'cpu': 'cpu',
+      'ram': 'ram',
+      'storage': 'storage'
+    };
+    this.kafkaService.getListOffers(this.regionId, 'kafka')
+    .subscribe(
+      (data) => {
+        data.forEach(offer => {
+          const offerKafka = new OfferKafka();
+          offerKafka.id = offer.id;
+          offerKafka.offerName = offer.offerName;
+          offerKafka.price = offer.price;
+          offerKafka.broker = 3;
+          offer.characteristicValues.forEach(item => {
+            const characteristic = characteristicMap[item.charName];
+            if (characteristic) {
+              offerKafka[characteristic] = Number.parseInt(item.charOptionValues[0]);
+            }
+          });
+          this.listOfferKafka.push(offerKafka);
+        });
+        this.listOfferKafka = this.listOfferKafka.sort(
+          (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
+        );
+      }
+    )
+  }
+
+  onChangeCpu(event: number) {
+    this.cpu = event;  
+  }
+
+  onChangeRam(event: number) {
+    this.ram = event;
+  }
+
+  onChangeStorage(event: number) {
+    this.storage = event;
+  }
+
   getListVersion() {
     this.kafkaService.getListVersion()
       .subscribe(
@@ -110,18 +210,114 @@ export class CreateKafkaComponent implements OnInit {
       )
   }
 
+  vlanCloudId: string;
+  formSearchSubnet: FormSearchSubnet = new FormSearchSubnet();
+  onSelectedVlan(vlanId: number) {
+    this.vlanId = vlanId;
+    if (this.vlanId) {
+      // this.getSubnetByVlanNetwork();
+      const vlan = this.listOfVPCNetworks.find(item => item.id == vlanId);
+      this.vlanCloudId = vlan.cloudId;
+
+      this.formSearchSubnet.pageSize = 1000;
+      this.formSearchSubnet.pageNumber = 0;
+      this.formSearchSubnet.networkId = this.vlanId;
+      this.formSearchSubnet.region = this.regionId;
+      this.formSearchSubnet.vpcId = this.projectId;
+      this.formSearchSubnet.customerId = this.tokenService.get()?.userId;
+
+      this.vlanService.getListSubnet(this.formSearchSubnet)
+      .subscribe((r) => {
+        if (r && r.records) {
+          this.listOfSubnets = r.records;
+        }
+      })
+
+      // clear subnet
+      this.myform.get('subnet').setValue(null);
+    }
+  }
+
+  formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+  getVlanNetwork(projectId: number) {
+    this.formSearchNetwork.projectId = projectId;
+    this.formSearchNetwork.pageSize = 1000;
+    this.formSearchNetwork.pageNumber = 0;
+    this.formSearchNetwork.region = this.regionId;
+
+    if (projectId && this.regionId) {
+      this.vlanService.getVlanNetworks(this.formSearchNetwork)
+      .subscribe((r) => {
+        if (r && r.records) {
+          this.listOfVPCNetworks = r.records;
+        }
+      });
+    }
+  }
+
+  refreshVPCNetwork() {
+    this.getVlanNetwork(this.projectId);
+  }
+
+  refreshSubnet() {
+    this.getSubnetByVlanNetwork();
+  }
+
+  getSubnetByVlanNetwork() {
+    this.formSearchSubnet.pageSize = 1000;
+    this.formSearchSubnet.pageNumber = 0;
+    this.formSearchSubnet.networkId = this.vlanId;
+    this.formSearchSubnet.region = this.regionId;
+    this.formSearchSubnet.vpcId = this.projectId;
+    this.formSearchSubnet.customerId = this.tokenService.get()?.userId;
+
+    this.vlanService.getListSubnet(this.formSearchSubnet).pipe(
+      map(r => r.records),
+      catchError(response => {
+        console.error("fail to get list subnet: {}", response);
+        return EMPTY;
+      })
+    )
+    .subscribe((data: any) => {
+      this.listOfSubnets = data;
+    });
+  }
+
+  onSelectSubnet(subnetId: number) {
+    const subnet = this.listOfSubnets.find(item => item.id == subnetId);
+    if (subnet != null) {
+      this.myform.get('subnetId').setValue(subnetId);
+      this.myform.get('subnetCloudId').setValue(subnet.subnetCloudId);
+    }
+  }
+
+  // catch event region change and reload data
+  onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
+    this.getListOffers();
+  }
+
+  onProjectChange(project: ProjectModel) {
+    this.projectId = project.id;
+    this.getVlanNetwork(this.projectId);
+  }
+
   onSubmitPayment() {
 
-    const kafka = this.myform.value;
+    const kafka = this.myform.getRawValue();
     const data: Order = new Order();
     const userId = this.tokenService.get()?.userId;
     data.customerId = userId;
     data.createdByUserId = userId;
     data.orderItems = [];
-    kafka.offerId = 229;
+    kafka.offerId = this.chooseitem != null ? this.chooseitem.id : 0;
+    kafka.regionId = this.regionId;
+    kafka.projectId = this.projectId;
+    kafka.vpcId = this.projectId;
+    kafka.offerName = this.chooseitem != null ? this.chooseitem.offerName : '';
 
     const orderItem: OrderItem = new OrderItem();
-    orderItem.price = 100000;
+    orderItem.price = (this.unitPrice.cpu * this.cpu + this.unitPrice.ram * this.ram + this.unitPrice.storage * this.storage) * this.usageTime;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = AppConstants.KAKFA_CREATE_TYPE;
     orderItem.specification = JSON.stringify(kafka);
@@ -131,27 +327,30 @@ export class CreateKafkaComponent implements OnInit {
 
     const returnPath = window.location.pathname;
 
-    // this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
-    this.createKafkaService();
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
+    // this.createKafkaService();
   }
 
   createKafkaService() {
     const dto = this.myform;
-    this.kafkaCreateReq.serviceName = dto.get('serviceName').value;
-    this.kafkaCreateReq.version = dto.get('version').value;
-    this.kafkaCreateReq.description = dto.get('description').value;
-    this.kafkaCreateReq.servicePackCode = this.servicePackCode;
-    this.kafkaCreateReq.cpu = dto.get('vCpu').value;
-    this.kafkaCreateReq.ram = dto.get('ram').value;
-    this.kafkaCreateReq.storage = dto.get('storage').value;
-    this.kafkaCreateReq.brokers = dto.get('broker').value;
-    this.kafkaCreateReq.configType = dto.get('configType').value;
-    this.kafkaCreateReq.numPartitions = dto.get('numPartitions').value;
-    this.kafkaCreateReq.defaultReplicationFactor = dto.get('defaultReplicationFactor').value;
-    this.kafkaCreateReq.minInsyncReplicas = dto.get('minInsyncReplicas').value;
-    this.kafkaCreateReq.offsetTopicReplicationFactor = dto.get('offsetTopicReplicationFactor').value;
-    this.kafkaCreateReq.logRetentionHours = dto.get('logRetentionHours').value;
-    this.kafkaCreateReq.logSegmentBytes = dto.get('logSegmentBytes').value;
+    this.kafkaCreateReq = {
+      serviceName: dto.get('serviceName').value,
+      version: dto.get('version').value,
+      description: dto.get('description').value,
+      ram: dto.get('ram').value,
+      cpu: dto.get('vCpu').value,
+      servicePackCode: this.servicePackCode,
+      storage: dto.get('storage').value,
+      brokers: dto.get('broker').value,
+      usageTime: dto.get('usageTime').value,
+      configType: dto.get('configType').value,
+      numPartitions: dto.get('numPartitions').value,
+      defaultReplicationFactor: dto.get('defaultReplicationFactor').value,
+      minInsyncReplicas: dto.get('minInsyncReplicas').value,
+      offsetTopicReplicationFactor: dto.get('offsetTopicReplicationFactor').value,
+      logRetentionHours: dto.get('logRetentionHours').value,
+      logSegmentBytes: dto.get('logSegmentBytes').value,
+    }
 
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
     this.kafkaService.createKafkaService(this.kafkaCreateReq)
@@ -172,17 +371,39 @@ export class CreateKafkaComponent implements OnInit {
 
   }
 
+  onChangeDefaultReplicationFactor() {
+    const replicationFactor = this.myform.controls['defaultReplicationFactor'];
+    const minInsync = this.myform.controls['minInsyncReplicas'];
+    if (replicationFactor.value != null && minInsync.value != null) {
+      if (minInsync.value > replicationFactor.value) {
+        replicationFactor.setErrors({'invalidvalue': true})
+      } else {
+        minInsync.setErrors(null);
+      }
+    }
+  }
+
   onChangeReplicationFactorAndMinInsync() {
-    console.log("");
+    const replicationFactor = this.myform.controls['defaultReplicationFactor'];
+    const minInsync = this.myform.controls['minInsyncReplicas'];
+    if (replicationFactor.value != null && minInsync.value != null) {
+      if (minInsync.value > replicationFactor.value) {
+        minInsync.setErrors({'invalidvalue': true})
+      } else {
+        replicationFactor.setErrors(null);
+      }
+    }
   }
   
-  handleChoosePack(item: ServicePack) {
+  handleChoosePack(item: OfferKafka) {
     this.chooseitem = item;
-    this.servicePackCode = item.servicePackCode;
     this.myform.get('vCpu').setValue(item.cpu);
     this.myform.get('ram').setValue(item.ram);
     this.myform.get('storage').setValue(item.storage);
     this.myform.get('broker').setValue(item.broker);
+    this.ram = item.ram;
+    this.cpu = item.cpu;
+    this.storage = item.storage;
   }
 
   clicktab(){    
@@ -190,17 +411,16 @@ export class CreateKafkaComponent implements OnInit {
   }
 
   onCancelCreate() {
-    this.modalService.create({
-      nzTitle: 'Xác nhận hủy tạo mới Kafka',
-      nzContent: '<h3>Bạn có chắc chắn muốn ngừng tạo mới dịch vụ Kafka?'
-        + '<br> <i>Lưu ý: Các thông tin đã nhập sẽ không được lưu lại.</i></h3>',
-      nzBodyStyle: { textAlign: 'center' },
-      nzOkText: 'Xác nhận',
-      nzOkType: 'primary',
-      nzOkDanger: false,
-      nzOnOk: () => this.navigateToList(),
-      nzCancelText: 'Hủy'
-    });
+    this.isVisibleCancle = true;
+  }
+
+  handleCancelPopup() {
+    this.isVisibleCancle = false;
+  }
+
+  handleOkCancle() {
+    this.isVisibleCancle = false;
+    this.navigateToList()
   }
   
   navigateToList() {
@@ -226,35 +446,45 @@ export class CreateKafkaComponent implements OnInit {
   }
 
   addValidateForAdvancedConfig() {
-    this.myform.controls['num.partitions'].setValidators([Validators.required, Validators.min(1), Validators.max(100)]);
-    this.myform.controls['default.replication.factor'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
-    this.myform.controls['min.insync.replicas'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
-    this.myform.controls['offset.topic.replication.factor'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
-    this.myform.controls['log.retention.hours'].setValidators([Validators.required, Validators.min(-1), Validators.max(2147483647)]);
-    this.myform.controls['log.segment.bytes'].setValidators([Validators.required, Validators.min(1), Validators.max(10737418240)]);
+    this.myform.controls['numPartitions'].setValidators([Validators.required, Validators.min(1), Validators.max(100)]);
+    this.myform.controls['defaultReplicationFactor'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
+    this.myform.controls['minInsyncReplicas'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
+    this.myform.controls['offsetTopicReplicationFactor'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
+    this.myform.controls['logRetentionHours'].setValidators([Validators.required, Validators.min(-1), Validators.max(2147483647)]);
+    this.myform.controls['logSegmentBytes'].setValidators([Validators.required, Validators.min(1), Validators.max(10737418240)]);
 
-    this.myform.controls['num.partitions'].updateValueAndValidity();
-    this.myform.controls['default.replication.factor'].updateValueAndValidity();
-    this.myform.controls['min.insync.replicas'].updateValueAndValidity();
-    this.myform.controls['offset.topic.replication.factor'].updateValueAndValidity();
-    this.myform.controls['log.retention.hours'].updateValueAndValidity();
-    this.myform.controls['log.segment.bytes'].updateValueAndValidity();
+    this.updateValueAndValidConfig();
   }
 
   removeValidateOfAdvancedConfig() {
-    this.myform.controls['num.partitions'].clearValidators();
-    this.myform.controls['default.replication.factor'].clearValidators();
-    this.myform.controls['min.insync.replicas'].clearValidators();
-    this.myform.controls['offset.topic.replication.factor'].clearValidators();
-    this.myform.controls['log.retention.hours'].clearValidators();
-    this.myform.controls['log.segment.bytes'].clearValidators();
+    this.myform.controls['numPartitions'].clearValidators();
+    this.myform.controls['defaultReplicationFactor'].clearValidators();
+    this.myform.controls['minInsyncReplicas'].clearValidators();
+    this.myform.controls['offsetTopicReplicationFactor'].clearValidators();
+    this.myform.controls['logRetentionHours'].clearValidators();
+    this.myform.controls['logSegmentBytes'].clearValidators();
 
-    this.myform.controls['num.partitions'].updateValueAndValidity();
-    this.myform.controls['default.replication.factor'].updateValueAndValidity();
-    this.myform.controls['min.insync.replicas'].updateValueAndValidity();
-    this.myform.controls['offset.topic.replication.factor'].updateValueAndValidity();
-    this.myform.controls['log.retention.hours'].updateValueAndValidity();
-    this.myform.controls['log.segment.bytes'].updateValueAndValidity();
+    this.updateValueAndValidConfig();
+  }
+
+  updateValueAndValidConfig() {
+    this.myform.controls['numPartitions'].updateValueAndValidity();
+    this.myform.controls['defaultReplicationFactor'].updateValueAndValidity();
+    this.myform.controls['minInsyncReplicas'].updateValueAndValidity();
+    this.myform.controls['offsetTopicReplicationFactor'].updateValueAndValidity();
+    this.myform.controls['logRetentionHours'].updateValueAndValidity();
+    this.myform.controls['logSegmentBytes'].updateValueAndValidity();
+  }
+
+  onChangeUsageTime() {
+    this.usageTime = this.myform.controls.usageTime.value;
+    this.setExpiryDate();
+  }
+
+  setExpiryDate() {
+    const d = new Date();
+    d.setMonth(this.createDate.getMonth() + this.usageTime);
+    this.expiryDate = new Date(d.getTime());
   }
 
 }

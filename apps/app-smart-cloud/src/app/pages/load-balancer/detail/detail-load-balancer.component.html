@@ -1,0 +1,130 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'app.load.balancer.detail' | i18n" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>{{
+        'app.breadcrumb.home' | i18n
+      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{
+          'app.breadcrumb.infrastructure.service' | i18n
+        }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">{{
+          'app.load.balancer.detail' | i18n
+        }}</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card>
+    <span class="text-card-header">{{ 'app.load.balancer.info' | i18n }}</span>
+    <form nz-form nzLayout="vertical">
+      <nz-row nzGutter="24" nzJustify="space-between">
+        <nz-col nzSpan="12">
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>{{ 'app.load.balancer.name' | i18n }}</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.name" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>VIP Address</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.ipAddress" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>{{ 'app.service.description' | i18n }}</span>
+            </nz-form-label>
+            <nz-form-control>
+              <textarea nz-input class="input-custom" [value]="loadBalancer.description" [nzAutosize]="{ minRows: 3, maxRows: 5 }" [disabled]="true"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>Floating IP</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.floatingIPAddress" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>{{ 'app.service.start.date' | i18n }}</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.createDate | date: 'dd/MM/yyyy'" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>{{ 'app.service.expiration-date' | i18n }}</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.expiredDate | date: 'dd/MM/yyyy'" [disabled]="true"/>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+    </form>
+  </nz-card>
+  <nz-card>
+    <nz-tabset>
+      <ng-template #titleListener>
+        <span class="text-label">Listener</span>
+      </ng-template>
+      <ng-template #titlePool>
+        <span class="text-label">Pool</span>
+      </ng-template>
+      <nz-tab [nzTitle]="titleListener">
+        <nz-row nzJustify="space-between">
+          <nz-col>
+            <span class="text-card-header">{{ 'app.listener.list' | i18n }}</span>
+          </nz-col>
+          <nz-col>
+            <button nz-button nzType="primary" nzSize="large" (click)="loadToCreateListener()">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+              <span class="button-text-primary">{{ 'app.listener.create.button' | i18n }}</span>
+            </button>
+          </nz-col>
+        </nz-row>
+        <one-portal-list-listener-in-lb [idLB]="idLoadBalancer" />
+
+      </nz-tab>
+      <nz-tab [nzTitle]="titlePool" >
+        <nz-row nzJustify="space-between">
+          <nz-col>
+            <span class="text-card-header">{{ 'app.pool.list' | i18n }}</span>
+          </nz-col>
+          <nz-col>
+            <one-portal-create-pool-in-lb [region]="region" [project]="project" [loadbalancerId]="idLoadBalancer" (onOk)="handleCreatePoolOk()"/>
+          </nz-col>
+        </nz-row>
+        <one-portal-list-pool-load-balancer [checkCreate]="checkCreate" [idLB]="idLoadBalancer"/>
+      </nz-tab>
+    </nz-tabset>
+  </nz-card>
+</nz-content>

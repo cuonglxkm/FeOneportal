@@ -1,44 +1,24 @@
-<page-header [title]="'Thông tin tài khoản'" />
-<!-- <h1>{{'menu.search' |i18n}}</h1> -->
+<page-header [title]="'menu.account.center' | i18n" />
+
 <nz-card>
   <div class="text-card-header" style="margin-bottom: 20px">
-    Cập nhật thông tin tài khoản
+    {{ 'form.account.update.information' | i18n }}
   </div>
-  <form
-    nz-form
-    [formGroup]="form"
-    (ngSubmit)="submitForm()"
-    [nzLayout]="'vertical'"
-  >
+  <form nz-form [formGroup]="form" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
     <nz-row nzGutter="16">
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Họ (<span class="text-red">*</span>)</nz-form-label>
-          <nz-form-control
-            nzErrorTip="Họ không được để trống và chứa kí tự đặc biệt!"
-          >
-            <input
-              maxlength="20"
-              nz-input
-              formControlName="surname"
-              placeholder="Họ"
-              nzSize="large"
-            />
+          <nz-form-label>{{ 'form.account.surname' | i18n }} (<span class="text-red">*</span>)  <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  nz-tooltip="Không quá 20 ký tự, không chứa ký tự đặc biệt"></one-portal-svg-icon></nz-form-label>
+          <nz-form-control nzErrorTip="Họ không được để trống và chứa kí tự đặc biệt!">
+            <input maxlength="20" nz-input formControlName="surname" placeholder="Họ" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Tên (<span class="text-red">*</span>)</nz-form-label>
-          <nz-form-control
-            nzErrorTip="Tên không được để trống và chứa kí tự đặc biệt!"
-          >
-            <input
-              nz-input
-              formControlName="name"
-              placeholder="Tên"
-              nzSize="large"
-            />
+          <nz-form-label>{{ 'form.account.name' | i18n }} (<span class="text-red">*</span>) <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  nz-tooltip="Không quá 20 ký tự, không chứa ký tự đặc biệt"></one-portal-svg-icon></nz-form-label>
+          <nz-form-control nzErrorTip="Tên không được để trống và chứa kí tự đặc biệt!">
+            <input nz-input formControlName="name" placeholder="Tên" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -46,27 +26,15 @@
         <nz-form-item>
           <nz-form-label>Email</nz-form-label>
           <nz-form-control nzErrorTip="Email không hợp lệ!">
-            <input
-              nz-input
-              formControlName="email"
-              placeholder="Email"
-              nzSize="large"
-            />
+            <input nz-input formControlName="email" placeholder="Email" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
-          <nz-form-label
-            >Số điện thoại (<span class="text-red">*</span>)</nz-form-label
-          >
+          <nz-form-label>{{ 'form.account.phone' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
           <nz-form-control nzErrorTip="Số điện thoại không hợp lệ!">
-            <input
-              nz-input
-              formControlName="phone"
-              placeholder="Số điện thoại"
-              nzSize="large"
-            />
+            <input nz-input formControlName="phone" placeholder="Số điện thoại" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -75,29 +43,21 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Mã khách hàng</nz-form-label>
+          <nz-form-label>{{ 'form.account.guestCode' | i18n }}</nz-form-label>
           <nz-form-control nzErrorTip="Mã khách hàng">
-            <input
-              [disabled]="true"
-              nz-input
-              formControlName="customer_code"
-              placeholder="Mã khách hàng"
-              nzSize="large"
-            />
+            <input [disabled]="true" nz-input formControlName="customer_code" [placeholder]="'form.account.guestCode' | i18n "
+              nzSize="large" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
 
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Mã hợp đồng</nz-form-label>
+          <nz-form-label>{{
+            'form.account.contractCode' | i18n
+            }}</nz-form-label>
           <nz-form-control nzErrorTip="Mã hợp đồng">
-            <input
-              nz-input
-              formControlName="contract_code"
-              placeholder="Mã hợp đồng"
-              nzSize="large"
-            />
+            <input nz-input formControlName="contract_code" placeholder="Mã hợp đồng" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -106,35 +66,21 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label
-            >Tỉnh/Thành phố (<span class="text-red">*</span>)</nz-form-label
-          >
+          <nz-form-label>{{ 'form.account.city' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
           <nz-form-control nzErrorTip="Tỉnh/Thành phố">
-            <input
-              nz-input
-              formControlName="province"
-              placeholder="Tỉnh/Thành phố"
-              nzSize="large"
-            />
+            <nz-select [nzPlaceHolder]="'Chọn Tỉnh/Thành phố'" [nzShowSearch]="true" formControlName="province"
+              nzSize="large">
+              <nz-option *ngFor="let i of provinceList" [nzLabel]="i" [nzValue]="i" />
+            </nz-select>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
 
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label
-            >Địa chỉ chi tiết (<span class="text-red">*</span>)</nz-form-label
-          >
-          <nz-form-control
-            nzErrorTip="Địa chỉ không được để trống và chứa kí tự đặc biệt!"
-          >
-            <input
-              maxlength="255"
-              nz-input
-              formControlName="address"
-              placeholder="Địa chỉ"
-              nzSize="large"
-            />
+          <nz-form-label>{{ 'form.account.address' | i18n }} (<span class="text-red">*</span>) <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  nz-tooltip="Điền địa chỉ bao gồm quận/huyện - thị xã và số nhà"></one-portal-svg-icon></nz-form-label>
+          <nz-form-control nzErrorTip="Địa chỉ không được để trống và chứa kí tự đặc biệt!">
+            <input maxlength="255" nz-input formControlName="address" placeholder="Địa chỉ" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -144,20 +90,15 @@
       <div nz-col nzSpan="24">
         <div class="text-right">
           <button type="button" nz-button routerLink="/">
-            <img
-              style="padding-right: 10px; margin-top: -4px"
-              src="assets/imgs/cancel.svg"
-              alt=""
-            />Hủy
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{
+            'app.button.cancel' | i18n }}
           </button>
           <button nz-button [nzType]="'primary'" [disabled]="form.invalid">
-            <img
-              style="padding-right: 10px; margin-top: -4px"
-              src="assets/imgs/confirm.svg"
-              alt=""
-            />
-            Cập nhật
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />
+
+            {{ 'app.button.update' | i18n }}
           </button>
+
         </div>
       </div>
     </div>

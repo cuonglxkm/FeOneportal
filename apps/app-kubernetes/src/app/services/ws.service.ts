@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Client, StompConfig, messageCallbackType } from '@stomp/stompjs';
-
+import { NotificationConstant } from '../constants/notification.constant';
+import { environment } from '@env/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationWsService {
 
-  private readonly wsUrl: string = `wss://api.onsmartcloud.com/k8s-service/ws-endpoint`;
+  // private readonly wsUrl: string = `wss://api.onsmartcloud.com/k8s-service/ws-endpoint`;
+  // private readonly wsUrl: string = 'wss://idg-api-gw.onsmartcloud.com/k8s-service/ws-endpoint';
 
   private client: Client;
 
@@ -17,9 +19,11 @@ export class NotificationWsService {
   private _isConnected: boolean;
 
   private static instance: NotificationWsService;
+  baseApiUrl = environment['baseUrl'];
 
   constructor() {
-    const stompConfig = new WSStompConfig(this.wsUrl, "", 5000);
+    const wsUrl = this.parseWsEndpoint(this.baseApiUrl);
+    const stompConfig = new WSStompConfig(wsUrl, "", 5000);
 
     this.client = new Client(stompConfig);
 
@@ -69,6 +73,24 @@ export class NotificationWsService {
   sendMessage(destination: string, body: string): void {
     this.client.publish({ destination, body });
   }
+
+  parseWsEndpoint(baseUrl: string) {
+    const baseApiUrl = baseUrl + '/k8s-service'
+    const wsEndpoint = NotificationConstant.WS_ENDPOINT;
+
+    let wsPrefix: string;
+    if (baseApiUrl.toLowerCase().startsWith('https://')) {
+      wsPrefix = 'wss://' + baseApiUrl.toLowerCase().substring(8);
+    } else if (baseApiUrl.toLowerCase().startsWith('http://')) {
+      wsPrefix = 'ws://' + baseApiUrl.toLowerCase().substring(7);
+    } else {
+      wsPrefix = baseApiUrl;
+    }
+    return (
+      wsPrefix +
+      (wsPrefix.endsWith('/') ? wsEndpoint.substr(1) : wsEndpoint)
+    );
+  }
 }
 
 class WSStompConfig extends StompConfig {
@@ -80,6 +102,6 @@ class WSStompConfig extends StompConfig {
     };
     this.reconnectDelay = reconnectDelay;
 
-    // this.connectHeaders = {'Authorization': 'Bearer ' + token}
+    this.connectHeaders = {'Authorization': 'Bearer ' + token};
   }
 }

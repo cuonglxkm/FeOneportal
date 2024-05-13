@@ -17,13 +17,15 @@ import {
   OfferItem,
 } from '../instances.model';
 import { InstancesService } from '../instances.service';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
@@ -70,6 +72,7 @@ export class InstancesEditInfoComponent implements OnInit {
     animation: 'lazy',
   };
 
+  nameHdh: string = '';
   onInputHDH(event: any, index: number, imageTypeId: number) {
     this.hdh = event;
     this.selectedImageTypeId = imageTypeId;
@@ -79,6 +82,10 @@ export class InstancesEditInfoComponent implements OnInit {
       }
     }
     this.isSelected = true;
+    const filteredImages = this.listOfImageByImageType
+      .get(imageTypeId)
+      .filter((e) => e.id == event);
+    this.nameHdh = filteredImages.length > 0 ? filteredImages[0].name : '';
     console.log('Hệ điều hành', this.hdh);
     console.log('list seleted Image', this.listSelectedImage);
   }
@@ -87,6 +94,7 @@ export class InstancesEditInfoComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
@@ -119,7 +127,6 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
@@ -129,9 +136,9 @@ export class InstancesEditInfoComponent implements OnInit {
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
-        this.dataService
-          .getById(this.id, true)
-          .subscribe((dataInstance: any) => {
+        this.dataService.getById(this.id, true).subscribe({
+          next: (dataInstance: any) => {
+            this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
             this.instancesModel = dataInstance;
 
             if (this.instancesModel.securityGroupStr != null) {
@@ -142,10 +149,7 @@ export class InstancesEditInfoComponent implements OnInit {
             }
             this.region = this.instancesModel.regionId;
             this.getListIpPublic();
-            this.getAllOfferImage(
-              this.imageTypeId,
-              this.instancesModel.imageId
-            );
+            this.getAllOfferImage(this.imageTypeId);
             this.dataService
               .getImageById(this.instancesModel.imageId)
               .pipe(finalize(() => this.loadingSrv.close()))
@@ -156,7 +160,12 @@ export class InstancesEditInfoComponent implements OnInit {
                 this.cdr.detectChanges();
               });
             this.cdr.detectChanges();
-          });
+          },
+          error: (e) => {
+            this.notification.error(e.error.detail, '');
+            this.returnPage();
+          },
+        });
       }
     });
     this.cdr.detectChanges();
@@ -186,7 +195,7 @@ export class InstancesEditInfoComponent implements OnInit {
     });
   }
 
-  getAllOfferImage(imageTypeId: any[], currentImageId: number) {
+  getAllOfferImage(imageTypeId: any[]) {
     imageTypeId.forEach((id) => {
       let listImage: Image[] = [];
       this.listOfImageByImageType.set(id, listImage);
@@ -203,11 +212,9 @@ export class InstancesEditInfoComponent implements OnInit {
                 tempImage.name = e.offerName;
               }
               if (char.charOptionValues[0] == 'ImageTypeId') {
-                if (tempImage.id != currentImageId) {
-                  this.listOfImageByImageType
-                    .get(Number.parseInt(char.charOptionValues[1]))
-                    .push(tempImage);
-                }
+                this.listOfImageByImageType
+                  .get(Number.parseInt(char.charOptionValues[1]))
+                  .push(tempImage);
               }
             });
           }
@@ -229,25 +236,56 @@ export class InstancesEditInfoComponent implements OnInit {
     this.isVisibleUpdate = true;
   }
   handleOkUpdate() {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-    this.isVisibleUpdate = false;
-    this.rebuildInstances.regionId = this.instancesModel.regionId;
-    this.rebuildInstances.customerId = this.instancesModel.customerId;
-    this.rebuildInstances.imageId = this.hdh;
-    this.rebuildInstances.id = this.instancesModel.id;
     this.dataService
-      .rebuild(this.rebuildInstances)
-      .pipe(finalize(() => this.loadingSrv.close()))
+      .checkflavorforimage(
+        this.hdh,
+        this.instancesModel.storage,
+        this.instancesModel.ram,
+        this.instancesModel.cpu
+      )
       .subscribe({
-        next: (data: any) => {
-          this.notification.success('', 'Thay đổi hệ điều hành thành công');
-          this.returnPage();
+        next: (data) => {
+          this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+          this.isVisibleUpdate = false;
+          this.rebuildInstances.regionId = this.instancesModel.regionId;
+          this.rebuildInstances.customerId = this.instancesModel.customerId;
+          this.rebuildInstances.imageId = this.hdh;
+          this.rebuildInstances.id = this.instancesModel.id;
+          this.dataService
+            .rebuild(this.rebuildInstances)
+            .pipe(finalize(() => this.loadingSrv.close()))
+            .subscribe({
+              next: (data: any) => {
+                this.notification.success(
+                  '',
+                  'Thay đổi hệ điều hành thành công'
+                );
+                this.returnPage();
+              },
+              error: (e) => {
+                this.notification.error(
+                  e.statusText,
+                  'Thay đổi hệ điều hành không thành công'
+                );
+              },
+            });
         },
         error: (e) => {
-          this.notification.error(
-            e.statusText,
-            'Thay đổi hệ điều hành không thành công'
-          );
+          let numbers: number[] = [];
+          const regex = /\d+/g;
+          const matches = e.error.match(regex);
+          if (matches) {
+            numbers = matches.map((match) => parseInt(match));
+            this.notification.error(
+              '',
+              this.i18n.fanyi('app.notify.check.config.for.change.os', {
+                nameHdh: this.nameHdh,
+                volume: numbers[0],
+                ram: numbers[1],
+                cpu: numbers[2],
+              })
+            );
+          }
         },
       });
   }

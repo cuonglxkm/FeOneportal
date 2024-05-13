@@ -1,40 +1,76 @@
-<page-header>
-  <nz-breadcrumb style="float: left">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Trang chủ</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item> Chi tiết máy ảo </nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="regionId"
-      (userChanged)="userChangeProject()"
-    ></project-select-dropdown>
-  </div>
-  <nz-row style="margin-bottom: -10px">
-    <span class="text-page-header" style="width: 50%">Chi tiết máy ảo</span>
-  </nz-row>
-  <nz-row style="margin-top: 20px">
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'app.instances.detail' | i18n"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/instances']">{{
+          'app.instances' | i18n
+        }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.instances.detail' | i18n }}
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (valueChanged)="onProjectChange($event)"
+        (userChanged)="userChangeProject()"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+  <nz-row>
     <div class="non-pointer" style="width: 100%">
       <button
         nz-button
         [nzType]="'primary'"
         (click)="activeGSCard()"
-        *ngIf="!activeGS"
+        *ngIf="
+          !activeGS &&
+          instancesModel &&
+          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+        "
       >
-        <i nz-icon nzType="eye"></i> <span>Giám sát</span>
+        <i nz-icon nzType="eye"></i> <span>{{ 'app.monitor' | i18n }}</span>
       </button>
-      <button nz-button [nzType]="'primary'" (click)="navigateToEdit()">
+      <button
+        *ngIf="
+          instancesModel &&
+          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+        "
+        nz-button
+        [nzType]="'primary'"
+        (click)="navigateToEdit()"
+      >
         <i nz-icon nzType="edit"></i>
-        <span>Điều chỉnh</span>
+        <span>{{ 'app.button.resize' | i18n }}</span>
       </button>
       <one-portal-instances-btn
+        *ngIf="
+          instancesModel &&
+          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+        "
         [instancesId]="id"
         (valueChanged)="onReloadInstanceDetail($event)"
         style="margin-left: 8px"
@@ -48,7 +84,7 @@
   <div style="margin-bottom: 20px">
     <nz-row nzGutter="16">
       <nz-col nzSpan="8">
-        <span class="text-card-header">Giám sát</span>
+        <span class="text-card-header">{{ 'app.monitor' | i18n }}</span>
       </nz-col>
       <nz-col class="text-right" nzSpan="16">
         <nz-select
@@ -99,14 +135,14 @@
   *ngIf="instancesModel"
 >
   <div style="margin-bottom: 20px">
-    <span class="text-card-header">Thông tin máy ảo</span>
+    <span class="text-card-header">{{ 'app.instances.info' | i18n }}</span>
   </div>
   <div class="customRow">
     <nz-row>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Tên máy ảo:</span
+            >{{ 'app.instances.name' | i18n }}:</span
           >
           <span class="text-value-detail customSpan">{{
             instancesModel.name || ''
@@ -115,12 +151,14 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
-          <span class="text-label" style="width: 35%">Hệ điều hành:</span>
+          <span class="text-label" style="width: 35%"
+            >{{ 'app.instances.OS' | i18n }}:</span
+          >
           <span class="text-value-detail"
             >{{ instancesModel.imageName }}
             <img
               style="cursor: pointer; margin-left: 10px"
-              nz-tooltip="Thay đổi"
+              [nz-tooltip]="'app.change' | i18n"
               src="assets/imgs/refresh.svg"
               alt=""
               (click)="navigateToChangeImage()"
@@ -131,7 +169,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Gói cấu hình:</span
+            >{{ 'app.configuration.package' | i18n }}:</span
           >
           <span class="text-value-detail customSpan">{{
             instancesModel.flavorName | slice : 3
@@ -141,7 +179,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label" style="width: 35%"
-            >Truy cập và bảo mật:</span
+            >{{ 'app.alert.access.security' | i18n }}:</span
           >
           <span
             class="text-value-detail"
@@ -155,7 +193,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Trạng thái tác vụ:</span
+            >{{ 'app.task.status' | i18n }}:</span
           >
           <span
             *ngIf="instancesModel.taskState == 'SHUTOFF'"
@@ -185,7 +223,9 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
-          <span class="text-label" style="width: 35%">IP Public:</span>
+          <span class="text-label" style="width: 35%"
+            >{{ 'app.ip.public' | i18n }}:</span
+          >
           <span class="text-value-detail">{{ listIPPublicStr }}</span>
         </nz-row></nz-col
       >
@@ -194,7 +234,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Loại ổ cứng:</span
+            >{{ 'app.hard.drive.type' | i18n }}:</span
           >
           <span
             *ngIf="instancesModel.volumeType == 0"
@@ -210,7 +250,9 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
-          <span class="text-label" style="width: 35%">IP LAN:</span>
+          <span class="text-label" style="width: 35%"
+            >{{ 'app.ip.lan' | i18n }}:</span
+          >
           <span class="text-value-detail">{{ listIPLanStr }}</span>
         </nz-row></nz-col
       >
@@ -219,7 +261,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Băng thông trong nước:</span
+            >{{ 'app.domestic.bandwidth' | i18n }}:</span
           >
           <span class="text-value-detail customSpan"
             >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
@@ -228,7 +270,9 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
-          <span class="text-label" style="width: 35%">Băng thông quốc tế:</span>
+          <span class="text-label" style="width: 35%"
+            >{{ 'app.international.bandwidth' | i18n }}:</span
+          >
           <span class="text-value-detail"
             >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
           >
@@ -239,7 +283,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Ngày khởi tạo:</span
+            >{{ 'app.service.creation-date' | i18n }}:</span
           >
           <span class="text-value-detail customSpan">{{
             instancesModel.createdDate | date : 'dd/MM/yyyy'
@@ -248,20 +292,38 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
-          <span class="text-label" style="width: 35%">Ngày hết hạn:</span>
+          <span class="text-label" style="width: 35%"
+            >{{ 'app.service.expiration-date' | i18n }}:</span
+          >
           <span class="text-value-detail"
             >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
           </span>
         </nz-row></nz-col
       >
     </nz-row>
+    <nz-row *ngIf="instancesModel.keypair">
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label customSpan" style="width: 35%"
+            >{{ 'app.keypair.name' | i18n }}:</span
+          >
+          <span class="text-value-detail customSpan"
+            >{{ instancesModel.keypair || '' }}</span
+          >
+        </nz-row>
+      </nz-col>
+      <nz-col nzSpan="12"> </nz-col>
+    </nz-row>
   </div>
 </nz-card>
 <one-portal-blockstorage-detail
+  *ngIf="checkPermission"
   [instancesId]="id"
   [isDetail]="true"
 ></one-portal-blockstorage-detail>
 <one-portal-network-detail
+  *ngIf="checkPermission"
   [instancesId]="id"
   [isDetail]="true"
+  (valueChanged)="getData()"
 ></one-portal-network-detail>

@@ -1,13 +1,14 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo IP Public'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="('app.create' | i18n) + ' IP Public'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">IP Public</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Tạo IP Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.create' | i18n}} IP Public</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
@@ -17,57 +18,57 @@
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
-        <span class="text-card-header">Thông tin IP Pulbic</span>
+        <span class="text-card-header">{{'app.ip.public.info' | i18n}}</span>
         <div nz-row class="mb-md pt-5">
           <div nz-col nzSpan="11">
-            <nz-form-label nzFor="name">Dải IP <span class="text-red">*</span>
+            <nz-form-label nzFor="name">{{'app.ip.range' | i18n}} <span class="text-red">*</span>
               <img
                 style="margin-left: 10px"
-                nz-tooltip="IP sẽ được cấp trong dải IP tương ứng"
+                nz-tooltip="{{'app.ip.public.note' | i18n}}"
                 src="assets/imgs/pajamas_question.svg"
                 alt=""
               />
             </nz-form-label>
             <nz-input-group nzCompact>
               <nz-select nzSize="large" [nzLoading]="loadingIp" [nzDisabled]="disableIp"
-                         style="width: 100%;border-radius: 10px;" nzPlaceHolder="--Chọn dải IP--"
+                         style="width: 100%;border-radius: 10px;" nzPlaceHolder="{{'app.ip.public.select.ip.dropdown' | i18n}}"
                          formControlName="ipSubnet" (nzOpenChange)="caculator(null)">
                 <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.displayName+'|||'+i.networkId" />
               </nz-select>
             </nz-input-group>
           </div>
           <div nz-col nzSpan="12" style="margin-left: 15px">
-            <nz-form-label>Máy ảo
+            <nz-form-label>{{'app.instances' | i18n}}
               <img
                 style="margin-left: 10px"
-                nz-tooltip="Chọn máy ảo để gắn thêm IP Public"
+                nz-tooltip="{{'app.ip.public.note2' | i18n}}"
                 src="assets/imgs/pajamas_question.svg"
                 alt=""
               /></nz-form-label>
             <nz-input-group nzCompact>
               <nz-select [nzLoading]="loadingInstanse" nzSize="large" [nzDisabled]="disableInstanse"
                          [nzAllowClear]="true" formControlName="instanceSelected" style="width: 96%"
-                         nzPlaceHolder="--Chọn máy ảo--" (ngModelChange)="caculator(null)">
+                         nzPlaceHolder="{{'app.ip.public.select.instance.dropdown' | i18n}}" (ngModelChange)="caculator(null)">
                 <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.name+'|||'+i.id" />
               </nz-select>
             </nz-input-group>
           </div>
         </div>
         <div style="margin-top: 20px;" *ngIf="checkIpv6 !== null">
-          <label nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }"
+          <label class="text-label" nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }"
                  (ngModelChange)="caculator(null)">IPv6</label>
           <img
             style="margin-left: 10px"
-            nz-tooltip="Sử dụng công nghệ Dual Stack cho phép mua kèm IPv6 với IPv4 được tạo ra"
+            nz-tooltip="{{'app.ip.public.note3' | i18n}}"
             src="assets/imgs/pajamas_question.svg"
             alt=""
           />
         </div>
         <div nz-row class="mb-md pt-5">
           <div nz-col nzSpan="11">
-            <nz-form-label>Thời gian sử dụng (<span class="text-red">*</span>) - Tháng <img
+            <nz-form-label>{{'app.service.used' | i18n}} (<span class="text-red">*</span>) - {{'app.month' | i18n}} <img
               style="margin-left: 10px"
-              nz-tooltip="Thời gian khách hàng mua IP Public để sử dụng, tính theo tháng."
+              nz-tooltip="{{'app.ip.public.note4' | i18n}}"
               src="assets/imgs/pajamas_question.svg"
               alt=""
             /></nz-form-label>
@@ -82,19 +83,18 @@
                   nzStep="1"
                   nzSize="large" />
                 <ng-template #dateErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
-                  </ng-container>
-                  <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
-                  <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                  <ng-container *ngIf="control.hasError('required')">{{'app.more.0.less.100' | i18n}}</ng-container>
+                  <ng-container *ngIf="control.hasError('max')">{{'app.more.0.less.100' | i18n}}</ng-container>
+                  <ng-container *ngIf="control.hasError('min')">{{'app.more.0.less.100' | i18n}}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
           </div>
           <div nz-col nzSpan="12" style="margin-left: 15px">
-            <p style="margin-top: 39px;">Thời gian bắt đầu sử dụng: {{ dateString | date:'dd/MM/yyyy' }}</p>
+            <p style="margin-top: 39px;">{{'app.time.start' | i18n}}: {{ dateString | date:'dd/MM/yyyy' }}</p>
           </div>
         </div>
-        <p style="color: red"><b style="color: red">Ngày hết hạn: </b>{{dateStringExpired | date : "dd/MM/YYYY"}}</p>
+        <p style="color: red"><b style="color: red">{{'app.service.expiration-date' | i18n}}: </b>{{dateStringExpired | date : "dd/MM/YYYY"}}</p>
       </nz-card>
     </nz-col>
 
@@ -102,20 +102,20 @@
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px" [nzLoading]="loadingCalculate">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Chi phí ước tính</span>
+          <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
         </div>
-        <div class="text-value">Dải IP</div>
-        <div style="margin-top: 10px" class="text-label">{{ipName}}</div>
+        <div class="text-value">{{'app.ip.range' | i18n}}</div>
+        <div style="margin-top: 10px" class="text-label">{{ ipName }}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">Gắn vào máy ảo</div>
-        <div style="margin-top: 10px" class="text-label">{{VMName}}</div>
+        <div class="text-value">{{'app.attach.to.vm' | i18n}}</div>
+        <div style="margin-top: 10px" class="text-label">{{ VMName }}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">Loại IP</div>
-        <div style="margin-top: 10px" class="text-label">{{checkIpv6 == true ? 'IPv6' : 'IPv4'}}</div>
+        <div class="text-value">{{'app.ip.type' | i18n}}</div>
+        <div style="margin-top: 10px" class="text-label">{{ checkIpv6 == true ? 'IPv6' : 'IPv4' }}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col nzSpan="16">
-            <span class="text-value"> Chi phí {{ this.form.controls['numOfMonth'].value || 0 }} tháng </span>
+            <span class="text-value"> {{'app.service.cost' | i18n}} {{ this.form.controls['numOfMonth'].value || 0 }} {{'app.month' | i18n}} </span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
@@ -124,11 +124,6 @@
             </span>
           </nz-col>
         </nz-row>
-<!--        <nz-row style="margin-bottom: 10px">-->
-<!--          <nz-col style="width: 100%" class="text-right">-->
-<!--            <span class="text-label"> VND/tháng </span>-->
-<!--          </nz-col>-->
-<!--        </nz-row>-->
         <nz-row style="
             margin-bottom: 20px;
             background-color: #cce9ff;
@@ -136,18 +131,19 @@
             border-radius: 8px;
           " nzGutter="16">
           <nz-col nzSpan="16">
-            <span class="text-label">Tổng thanh toán</span><br />
-            <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+            <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
+            <span class="text-note-italicized">{{'app.include.vat' | i18n:{"vat":"10"} }}</span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | number }}VND</span>
+            <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | number }} VND</span>
           </nz-col>
         </nz-row>
         <nz-row>
           <nz-col style="width: 100%">
-            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()" [disabled]="form.invalid">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
+                    [disabled]="form.invalid">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="form.invalid ? 'gray' : 'white'">Khởi tạo</span>
+              <span [style.color]="form.invalid ? 'gray' : 'white'">{{'app.button.create' | i18n}}</span>
             </button>
           </nz-col>
         </nz-row>

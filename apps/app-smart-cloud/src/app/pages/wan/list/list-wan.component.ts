@@ -1,11 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FormSearch, WanIP } from '../../../shared/models/wan.model';
 import { WanService } from '../../../shared/services/wan.service';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
@@ -14,7 +12,7 @@ import { getCurrentRegionAndProject } from '@shared';
   styleUrls: ['./list-wan.component.less'],
 })
 export class ListWanComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   pageSize: number = 10

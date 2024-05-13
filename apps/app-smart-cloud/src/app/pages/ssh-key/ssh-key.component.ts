@@ -1,30 +1,27 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {SshKeyService} from 'src/app/pages/ssh-key/ssh-key.service';
-import {AppValidator, BaseResponse} from "../../../../../../libs/common-utils/src";
-import {SshKey} from './dto/ssh-key';
-import {ModalHelper} from '@delon/theme';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {RegionModel} from "../../shared/models/region.model";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {ProjectModel} from "../../shared/models/project.model";
-import {NzMessageService} from "ng-zorro-antd/message";
-import {finalize} from "rxjs/operators";
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {getCurrentRegionAndProject} from "@shared";
+import { Component, Inject, OnInit } from '@angular/core';
+import { SshKeyService } from 'src/app/pages/ssh-key/ssh-key.service';
+import { AppValidator, BaseResponse, RegionModel } from '../../../../../../libs/common-utils/src';
+import { SshKey } from './dto/ssh-key';
+import { ModalHelper } from '@delon/theme';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { finalize } from 'rxjs/operators';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-ssh-key',
   templateUrl: './ssh-key.component.html',
-  styleUrls: ['./ssh-key.component.less'],
+  styleUrls: ['./ssh-key.component.less']
 })
 export class SshKeyComponent implements OnInit {
   //input
-  searchKey: string = "";
+  searchKey: string = '';
   regionId: any;
-  projectId: any;
   size = 10;
-  index: any = 0;
+  index: any = 1;
   total: any = 0;
 
   //output
@@ -45,7 +42,7 @@ export class SshKeyComponent implements OnInit {
   modalStyle = {
     'padding': '20px',
     'border-radius': '10px',
-    'width': '1000px',
+    'width': '1000px'
   };
 
   constructor(private sshKeyService: SshKeyService, private mh: ModalHelper, private modal: NzModalService,
@@ -53,7 +50,7 @@ export class SshKeyComponent implements OnInit {
   }
 
   onPageSizeChange(event: any) {
-    this.size = event
+    this.size = event;
     this.loadSshKeys(false);
   }
 
@@ -68,22 +65,26 @@ export class SshKeyComponent implements OnInit {
     this.form.get('public_key').disable();
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
-    this.projectId = regionAndProject.projectId;
+    this.loadSshKeys(true);
   }
 
   loadSshKeys(isCheckBegin: boolean): void {
     this.loading = true;
-    this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, this.index, this.size, this.searchKey)
+    this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, '', this.regionId, this.index, this.size, this.searchKey)
       .pipe(finalize(() => this.loading = false))
-      .subscribe(response => {
-        this.listOfData = (this.checkNullObject(response) ? [] : response.records);
+      .subscribe(
+        response => {
+          this.listOfData = (this.checkNullObject(response) ? [] : response.records);
           this.total = (this.checkNullObject(response) ? 0 : response.totalCount);
-          this.index = (this.checkNullObject(response) ? 0 : response.currentPage);
           if (isCheckBegin) {
             this.isBegin = this.checkNullObject(this.listOfData) || this.listOfData.length < 1 ? true : false;
             this.refreshParams();
           }
-      });
+        },
+        error => {
+          this.listOfData = [];
+          this.notification.error('Thất bại', 'Lấy danh sách thất bại keypair');
+        });
 
   }
 
@@ -93,11 +94,14 @@ export class SshKeyComponent implements OnInit {
     this.loadSshKeys(false);
   }
 
+  nameDelete = '';
+
   //DELETE
   deleteKey(key: SshKey) {
     this.data = key;
-    console.log("delete" + key)
-    this.showModal()
+    this.nameDelete = key.name;
+    console.log('delete' + key);
+    this.showModal();
   }
 
   //CREATE
@@ -117,31 +121,37 @@ export class SshKeyComponent implements OnInit {
   }
 
   handleDelete(number: any): void {
+    this.index = 1;
     this.loading = true;
     // call api
     this.sshKeyService.deleteSshKey(this.data.id)
-      .pipe(finalize(() => this.loading = false))
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.handleCancel(null);
+      }))
       .subscribe(() => {
-      this.loadSshKeys(true);
-      this.notification.success('Thành công', 'Xóa thành công keypair')
-    });
+        this.loadSshKeys(true);
+        this.notification.success('Thành công', 'Xóa thành công keypair');
+      });
     this.isVisibleDelete = false;
   }
 
   handleCancel(form: any): void {
-    console.log('Button cancel clicked')
     this.isVisibleDelete = false;
     this.isVisibleCreate = false;
     this.isVisibleDetail = false;
-    form.resetForm();
+    form?.resetForm();
+    this.nameDeleteInput = '';
+    this.onTabchange(0, form);
   }
 
   indexTab: number = 0;
 
   handleCreate(form: any): void {
+    this.index = 1;
     this.loading = true;
     let namePrivate: string;
-    let publickey: string = "";
+    let publickey: string = '';
 
     if (this.indexTab === 0) {
       namePrivate = this.form.controls['keypair_name_1'].value;
@@ -152,26 +162,32 @@ export class SshKeyComponent implements OnInit {
 
     const ax = {
       name: namePrivate,
-      vpcId: this.projectId,
+      vpcId: 0,
       customerId: this.tokenService.get()?.userId,
       regionId: this.regionId,
-      publicKey: publickey,
-    }
+      publicKey: publickey
+    };
 
     this.sshKeyService.createSshKey(ax)
-      .pipe(finalize(() => this.loading = false))
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.handleCancel(form);
+      }))
       .subscribe({
-      next: post => {
-        this.loadSshKeys(true);
-        this.notification.success('Thành công', 'Tạo mới thành công keypair')
-      },
-      error: e => {
-        this.loadSshKeys(true);
-        this.notification.error('Thất bại', 'Tạo mới thất bại keypair')
-      },
-    });
-    this.isVisibleCreate = false;
-    form.resetForm();
+        next: post => {
+          this.loadSshKeys(true);
+          this.notification.success('Thành công', 'Tạo mới thành công keypair');
+        },
+        error: e => {
+          if (e && e.error && e.error.detail && e.error.detail === `Key pair '${namePrivate}' already exists.`) {
+            this.notification.warning('Cảnh báo', `Tên keypair '${namePrivate}' đã được sử dụng, vui lòng nhập tên khác.`);
+          } else if (e && e.error && e.error.detail && e.error.detail === `Keypair data is invalid: failed to generate fingerprint`) {
+            this.notification.warning('Cảnh báo', `Public Key không đúng định dạng. Vui lòng nhập Public Key khác.`);
+          } else {
+            this.notification.error('Thất bại', 'Tạo mới thất bại keypair');
+          }
+        }
+      });
   }
 
   onTabchange(event: any, form: any) {
@@ -186,25 +202,22 @@ export class SshKeyComponent implements OnInit {
       this.form.get('public_key').enable();
     }
 
-    form.resetForm();
+    form?.resetForm();
   }
 
   form = new FormGroup({
-    keypair_name_1: new FormControl('', {validators: [Validators.required, AppValidator.validKeypairName]}),
-    keypair_name_2: new FormControl('', {validators: [Validators.required, AppValidator.validKeypairName]}),
-    public_key: new FormControl('', {validators: [Validators.required]}),
+    keypair_name_1: new FormControl('', { validators: [Validators.required, AppValidator.validKeypairName] }),
+    keypair_name_2: new FormControl('', { validators: [Validators.required, AppValidator.validKeypairName] }),
+    public_key: new FormControl('', { validators: [Validators.required] })
   });
+  nameDeleteInput = '';
 
   submitForm(): void {
-    console.log("submitForm")
+    console.log('submitForm');
   }
 
   onRegionChange(region: RegionModel) {
-    this.regionId = this.checkNullObject(region) ? "" : region.regionId;
-  }
-
-  projectChange(project: ProjectModel) {
-    this.projectId =  this.checkNullObject(project) ? "" : project.id;
+    this.regionId = this.checkNullObject(region) ? '' : region.regionId;
     this.loadSshKeys(true);
   }
 
@@ -219,6 +232,22 @@ export class SshKeyComponent implements OnInit {
   refreshParams() {
     this.searchKey = '';
     this.size = 10;
-    this.index = 0;
+    this.index = 1;
+  }
+
+  fontSize = 16;
+
+  enterCreate(form: any) {
+    if (this.indexTab === 0 && this.form.controls['keypair_name_1'].value != '' && !this.form.invalid) {
+      this.handleCreate(form);
+    } else if (this.indexTab === 1 && this.form.controls['keypair_name_2'].value != '' && this.form.controls['public_key'].value != '' && !this.form.invalid) {
+      this.handleCreate(form);
+    }
+  }
+
+  enterDelete(id: any) {
+    if (this.nameDeleteInput == this.nameDelete) {
+      this.handleDelete(id);
+    }
   }
 }

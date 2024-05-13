@@ -1,0 +1,5 @@
+<img *ngIf="internetFacing === true && ipFloatingAddress == null" style="padding-right: 10px; cursor: pointer;"
+     src="assets/imgs/add.svg"
+     nz-popover
+     [nzPopoverContent]="'Gắn Ip Floating'"
+     nzPopoverPlacement="bottom" (click)="showModal()"/>

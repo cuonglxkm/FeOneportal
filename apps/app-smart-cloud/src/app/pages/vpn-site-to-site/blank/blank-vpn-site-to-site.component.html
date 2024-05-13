@@ -12,6 +12,7 @@ xmlns="http://www.w3.org/1999/html"
 </ng-template>
 <ng-template #action>
   <div class="alain-custom-action text-right">
+    <share-users-combobox></share-users-combobox>
     <region-select-dropdown
       (valueChanged)="regionChanged($event)"
     ></region-select-dropdown>
@@ -36,6 +37,6 @@ xmlns="http://www.w3.org/1999/html"
     <div class="text-subtitle" style="text-align: center;">VPN site to site cung cấp một kênh kết nối an toàn giữ các vị trí vật lý hoặc mạng máy tính khác nhau. <br /> Cho phép các vị trí đia lý khác nhau truy cập vào tài nguyên nội bộ</div>
   </nz-row>
   <nz-row nzJustify="center" class="pb-15">
-    <button style="text-align: center; margin-top: 10px" nz-button nzType="primary">Tạo mới VPN site to site</button>
+    <button *ngIf="('order:Create' | IsPermissionPipe)" [routerLink]="['/app-smart-cloud/vpn-site-to-site/create']" style="text-align: center; margin-top: 10px" nz-button nzType="primary">Tạo mới VPN site to site</button>
   </nz-row>
 </nz-card>

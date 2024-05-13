@@ -1,50 +1,51 @@
-<li nz-menu-item (click)="showModal()">Chỉnh sửa</li>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Chỉnh sửa thông tin Volume"
+<li nz-menu-item (click)="showModal()">{{'volume.menu.update.volume' | i18n}}</li>
+<nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMark="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Chỉnh sửa thông tin Volume</span>
+    <span class="text-modal-title">{{'volume.modal.title.update' | i18n}}</span>
   </div>
   <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
       <nz-form-item>
         <nz-form-label nzFor="nameVolume">
           <div style="margin-top: 15px;">
-            <span>Tên Volume</span>
+            <span>{{'volume.table.title.name.volume' | i18n}}</span>
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-            <span nz-icon nzType="question-circle" nz-popover
-                  [nzPopoverContent]="'Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt.'"
-                  nzPopoverPlacement="bottom" nzTheme="outline"></span>
+            <img nz-popover [nzPopoverContent]="'volume.tooltip.input.name' | i18n"
+                 nzPopoverPlacement="bottom"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input nz-input
+          <input nz-input #volumeInputName
+                 class="input-custom"
                  formControlName="nameVolume"
-
-                 [placeholder]="'Nhập tên gói'" [maxLength]="50"/>
+                 [placeholder]="'volume.notification.input.name.delete' | i18n" [maxLength]="50"
+                 (keydown.enter)="focusOkButton($event)"/>
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách,
-              dấu tiếng Việt
-            </ng-container>
-            <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{'volume.notification.input.name.required' | i18n}}</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{'volume.notification.input.name.pattern' | i18n}}</ng-container>
+            <ng-container *ngIf="control.hasError('maxLength')">{{'volume.notification.input.name.maxLength' | i18n}}</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">{{'volume.notification.input.name.duplicateName' | i18n}}</ng-container>
+
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label nzFor="description">
           <div class="label">
-            <span>Mô tả</span>
+            <span>{{'volume.table.title.description' | i18n}}</span>
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-                    <textarea nz-input
+                    <textarea nz-input [tabIndex]="0"
+                              class="input-custom"
                               formControlName="description"
-                              [placeholder]="'Nhập mô tả'"
+                              [placeholder]="'volume.tooltip.input.description' | i18n"
                               [maxLength]="255"
                               [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
           <ng-template #descriptionErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự
-            </ng-container>
+            <ng-container *ngIf="control.hasError('maxlength')">{{'volume.notification.input.description.maxLength' | i18n}}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -52,12 +53,12 @@
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{'app.button.cancel'|i18n}}
     </button>
     <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleOk()"
             [nzLoading]="isLoadingUpdate"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm'|i18n}}
     </button>
   </div>
 </nz-modal>

@@ -1,53 +1,63 @@
-import {Component, Inject} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {IpPublicModel} from "../../../shared/models/ip-public.model";
-import {VpcModel} from "../../../shared/models/vpc.model";
-import {finalize} from "rxjs/operators";
-import {IpPublicService} from "../../../shared/services/ip-public.service";
-import {Router} from "@angular/router";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {InstancesService} from "../../instances/instances.service";
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {VpcService} from "../../../shared/services/vpc.service";
-import {getCurrentRegionAndProject} from "@shared";
+import { Component, Inject, OnInit } from '@angular/core';
+import { VpcModel } from '../../../shared/models/vpc.model';
+import { finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { VpcService } from '../../../shared/services/vpc.service';
+import { getCurrentRegionAndProject } from '@shared';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { IpPublicService } from '../../../shared/services/ip-public.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-vpc-list',
   templateUrl: './vpc-list.component.html',
-  styleUrls: ['./vpc-list.component.less'],
+  styleUrls: ['./vpc-list.component.less']
 })
-export class VpcListComponent {
-  regionId = JSON.parse(localStorage.getItem('region')).regionId;
+export class VpcListComponent implements OnInit {
+  regionId: any;
   isBegin: Boolean = false;
   size = 10;
   index: number = 1;
   total: number = 0;
   loading = false;
   isVisibleDelete = false;
+  isVisibleDeleteVPC = false;
 
   listOfData: VpcModel[] = [];
 
   searchKey = '';
   selectedStatus = '';
   statusData = [
-    {name: 'Tất cả trạng thái', value: ''},
-    {name: 'ENABLE', value: 'ENABLE'},
-    {name: 'DISABLE', value: 'DISABLE'},
-    {name: 'DELETED', value: 'DELETED'}];
+    { name: this.i18n.fanyi('app.status.all'), value: '' },
+    { name: this.i18n.fanyi('status.enable'), value: 'ENABLE' },
+    { name: this.i18n.fanyi('status.disable'), value: 'DISABLE' },
+    { name: this.i18n.fanyi('status.deleted'), value: 'DELETED' }];
 
   modalStyle = {
     'padding': '20px',
     'border-radius': '10px',
-    'width': '600px',
+    'width': '600px'
   };
   nameDelete: any = '';
   itemDelete: any;
   disableDelete = true;
+  isVisibleEditNormal = false;
+  form = new FormGroup({
+    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/)] }),
+    description: new FormControl('')
+  });
+  loadingDelete = false;
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private vpcService: VpcService,
-              private notification: NzNotificationService,) {
+              private ipService: IpPublicService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private notification: NzNotificationService) {
 
   }
 
@@ -76,7 +86,7 @@ export class VpcListComponent {
   }
 
   onPageSizeChange(event: any) {
-    this.size = event
+    this.size = event;
     this.getData(false);
   }
 
@@ -85,35 +95,57 @@ export class VpcListComponent {
     this.getData(false);
   }
 
-  edit(id: number) {
-    this.router.navigate(['/app-smart-cloud/vpc/update/' + id]);
+  edit(item: any) {
+    // if (item.type == 'VPC') {
+    //   this.router.navigate(['/app-smart-cloud/vpc/update/' + item.id]);
+    // } else {
+    // }
+    this.form.controls['name'].setValue(item.displayName);
+    this.form.controls['description'].setValue(item.description);
+    this.itemDelete = item;
+    this.isVisibleEditNormal = true;
+
   }
 
   delete(itemDelete: any) {
     this.itemDelete = itemDelete;
-    this.isVisibleDelete = true;
+    if (itemDelete.type == 'VPC') {
+      this.isVisibleDeleteVPC = true;
+    } else {
+      this.isVisibleDelete = true;
+    }
+
   }
 
   handleCancel() {
+    this.nameDelete = '';
     this.isVisibleDelete = false;
+    this.isVisibleDeleteVPC = false;
+    debugger
+    this.isVisibleEditNormal = false;
+    this.disableDelete = true;
   }
 
   openIpDelete() {
-    this.vpcService.delete(this.itemDelete.cloudIdentityId)
+    this.loadingDelete = true;
+    this.vpcService.delete(this.itemDelete.id)
       .pipe(finalize(() => {
         this.getData(true);
         this.isVisibleDelete = false;
+        this.isVisibleDeleteVPC = false;
+        this.disableDelete = true;
+        this.loadingDelete = false;
       }))
       .subscribe(
         {
           next: post => {
-            this.notification.success('Thành công', 'Xóa thành công VPC')
+            this.notification.success('Thành công', 'Xóa thành công VPC');
           },
           error: e => {
-            this.notification.error('Thất bại', 'Xóa thất bại VPC')
-          },
+            this.notification.error('Thất bại', 'Xóa thất bại VPC');
+          }
         }
-      )
+      );
   }
 
   search(inputSearch: any) {
@@ -132,10 +164,39 @@ export class VpcListComponent {
   }
 
   confirmNameDelete(event: any) {
-    if (event == this.itemDelete.cloudProjectName) {
+    this.nameDelete = '';
+    if (event == this.itemDelete.displayName) {
       this.disableDelete = false;
     } else {
       this.disableDelete = true;
     }
+  }
+
+  redirectTo() {
+
+  }
+
+  updateVpc() {
+    const request = {
+      customerId: this.tokenService.get()?.userId,
+      id: this.itemDelete.id,
+      projectName: this.form.controls['name'].value,
+      description: this.form.controls['description'].value
+    };
+
+    this.vpcService.updateVpc(request, this.itemDelete.id)
+      .pipe(finalize(() => {
+        this.getData(true);
+        this.isVisibleEditNormal = false;
+      }))
+      .subscribe(
+        data => {
+          this.notification.success('Thành công', 'Cập nhật dự án thành công');
+          this.router.navigate(['/app-smart-cloud/vpc']);
+        },
+        error => {
+          this.notification.error('Thất bại', 'Cập nhật dự án thất bại');
+        }
+      );
   }
 }

@@ -1,10 +1,11 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import {
   AbstractControl,
@@ -15,9 +16,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
-import { filter, finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
+import { AppConstants } from 'src/app/core/constants/app-constant';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
 import {
   ChangePasswordKafkaCredential,
   CreateKafkaCredentialData,
@@ -31,7 +35,7 @@ import { KafkaCredentialsService } from 'src/app/services/kafka-credentials.serv
   templateUrl: './credential-action.component.html',
   styleUrls: ['./credential-action.component.css'],
 })
-export class CreateCredentialComponent implements OnDestroy {
+export class CreateCredentialComponent implements OnInit, OnDestroy {
   @Input() serviceOrderCode: string;
   @Output() closeFormEvent = new EventEmitter();
 
@@ -53,7 +57,6 @@ export class CreateCredentialComponent implements OnDestroy {
   tabSubcription: Subscription;
 
   pwdTplString: string;
-  confirmTplString: string;
 
   validateForm: FormGroup<{
     username: FormControl<string>;
@@ -62,11 +65,15 @@ export class CreateCredentialComponent implements OnDestroy {
     checkPassword: FormControl<string>;
   }>;
 
+  passwordText = 'Mật khẩu';
+  newPasswordText = 'Mật khẩu mới';
+
   constructor(
     private fb: NonNullableFormBuilder,
     private kafkaCredentialService: KafkaCredentialsService,
     private notification: NzNotificationService,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
     this.oldPasswordVisible = false;
     this.passwordVisible = false;
@@ -82,23 +89,25 @@ export class CreateCredentialComponent implements OnDestroy {
       }
     );
 
-    this.pwdTplString =
-      this.activatedTab !== this.showCreateCredential
-        ? 'mật khẩu mới'
-        : 'mật khẩu';
-    this.confirmTplString = (() => {
-      switch (this.activatedTab) {
-        case this.showCreateCredential:
-          return 'Tạo mới';
-        case this.showUpdatePassword:
-          return 'Cập nhật';
-        case this.showForgotPassword:
-          return 'Xác nhận';
-        default:
-          return null;
-      }
-    })();
+    
+  }
 
+  ngOnInit(): void {
+    this.initForm();
+
+    if (localStorage.getItem('locale') == AppConstants.LOCALE_EN) {
+      this.changeLangData();
+    }
+
+    this.pwdTplString = this.activatedTab !== this.showCreateCredential ? this.newPasswordText : this.passwordText;
+  }
+
+  changeLangData() {
+    this.passwordText = 'Password';
+    this.newPasswordText = 'New password';
+  }
+
+  initForm() {
     this.validateForm = this.fb.group({
       username: [
         {
@@ -172,11 +181,11 @@ export class CreateCredentialComponent implements OnDestroy {
           .subscribe((data) => {
             if (data && data.code == 200) {
               this.closeFormEvent.emit();
-              this.notification.success('Thông báo', data.msg, {
+              this.notification.success(this.i18n.fanyi('app.status.success'), data.msg, {
                 nzDuration: 2000,
               });
             } else {
-              this.notification.error('Thất bại', data.msg);
+              this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
             }
           });
         break;
@@ -200,11 +209,11 @@ export class CreateCredentialComponent implements OnDestroy {
           .subscribe((data) => {
             if (data && data.code == 200) {
               this.closeFormEvent.emit();
-              this.notification.success('Thông báo', data.msg, {
+              this.notification.success(this.i18n.fanyi('app.status.success'), data.msg, {
                 nzDuration: 2000,
               });
             } else {
-              this.notification.error('Thất bại', data.msg);
+              this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
             }
           });
         break;
@@ -227,11 +236,11 @@ export class CreateCredentialComponent implements OnDestroy {
           .subscribe((data) => {
             if (data && data.code == 200) {
               this.closeFormEvent.emit();
-              this.notification.success('Thông báo', data.msg, {
+              this.notification.success(this.i18n.fanyi('app.status.success'), data.msg, {
                 nzDuration: 2000,
               });
             } else {
-              this.notification.error('Thất bại', data.msg);
+              this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
             }
           });
         break;
@@ -252,6 +261,10 @@ export class CreateCredentialComponent implements OnDestroy {
     } else if (usernameControl.hasError('pattern')) {
       this.usernameError =
         'Tên tài khoản chỉ bao gồm chữ cái thường, chữ hoa hoặc chữ số';
+    } else if (usernameControl.value == 'admin') {
+      usernameControl.setErrors({'not-allowed': true});
+      this.usernameError = 
+        'Tên tài khoản không được phép đặt là admin';
     }
   }
 

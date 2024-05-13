@@ -21,3 +21,17 @@ export class FormSearchFileSystemSnapshot {
     scheduleId: number
     size: number
     }
+
+export class FormEditFileSystemSnapShot{
+  id: number;
+  name: string;
+  description: string;
+  vpcId: number;
+  regionId: number;
+  customerId: number
+}
+
+export class FormDeleteFileSystemSnapshot{
+  id:number;
+  customerId: number;
+}

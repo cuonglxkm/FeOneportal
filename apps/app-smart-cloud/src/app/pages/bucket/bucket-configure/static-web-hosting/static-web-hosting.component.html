@@ -1,11 +1,8 @@
-<span class="titlecard-custom">Thiết lập Static Web Hosting</span>
+<span class="titlecard-custom">{{ 'app.set' | i18n }} Static Web Hosting</span>
 <div style="margin-top: 10px" class="text-label">
-  <span>Cấu hình Bucket hoạt động như một WebServer dành cho Website tĩnh</span
+  <span>{{ 'app.static.web.hosting.intro' | i18n }}</span
   ><br /><br />
-  <span
-    >Trên bucket chỉ chứa các dữ liệu tĩnh của website: HTML, CSS, JS,
-    ảnh...</span
-  >
+  <span>{{ 'app.static.web.hosting.intro.next' | i18n }}</span>
 </div>
 <nz-radio-group
   style="width: 100%; margin-top: 10px"
@@ -13,30 +10,33 @@
 >
   <nz-row>
     <nz-col nzSpan="12">
-      <label class="text-value" nz-radio [nzValue]="true">Bật</label>
+      <label class="text-value" nz-radio [nzValue]="true">{{
+        'app.on' | i18n
+      }}</label>
     </nz-col>
     <nz-col nzSpan="12">
-      <label class="text-value" nz-radio [nzValue]="false">Tắt</label>
+      <label class="text-value" nz-radio [nzValue]="false">{{
+        'app.off' | i18n
+      }}</label>
     </nz-col>
   </nz-row>
 </nz-radio-group>
 <nz-row *ngIf="bucketDetail.isWebsite" nzGutter="24"
   ><nz-col nzSpan="12">
     <div style="margin-top: 16px">
-      File chứa nội dung hiển thị trang chủ của website có link là Endpoint bên
-      dưới
+      {{ 'app.file.static.web.hosting' | i18n }}
     </div>
-    <div style="margin-top: 16px">Ví dụ: index.html</div>
+    <div style="margin-top: 16px">{{ 'app.example' | i18n }}: index.html</div>
   </nz-col>
   <nz-col nzSpan="12">
     <div style="margin-top: 16px">
-      File chứa nội dung hiển thị lỗi của website
+      {{ 'app.file.static.web.hosting.error' | i18n }}
     </div>
-    <div style="margin-top: 16px">Ví dụ: error.html</div>
+    <div style="margin-top: 16px">{{ 'app.example' | i18n }}: error.html</div>
   </nz-col>
 </nz-row>
 <div *ngIf="bucketDetail.isWebsite" style="margin-top: 16px; color: #eb1414">
-  Lưu ý: Để website hoạt động hãy đảm bảo file đã được public
+  {{ 'app.note.static.web.hosting' | i18n }}
 </div>
 <nz-row *ngIf="bucketDetail.isWebsite" nzGutter="24"
   ><nz-col nzSpan="12">
@@ -57,7 +57,7 @@
       nz-checkbox
       [(ngModel)]="bucketDetail.checkRedirectAllRequests"
       [ngModelOptions]="{ standalone: true }"
-      >Chuyển hướng đến một địa chỉ web khác</label
+      >{{ 'app.label.static.web.hosting' | i18n }}</label
     >
     <input
       style="margin-top: 16px"
@@ -119,7 +119,7 @@
       style="padding-right: 10px; margin-top: -4px"
       src="assets/imgs/cancel.svg"
       alt=""
-    />Hủy
+    />{{ 'app.button.cancel' | i18n }}
   </button>
   <button nz-button nzType="primary" (click)="update()">
     <img
@@ -127,6 +127,6 @@
       src="assets/imgs/confirm.svg"
       alt=""
     />
-    Cập nhật
+    {{ 'app.text.edit' | i18n }}
   </button>
 </div>

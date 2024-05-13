@@ -1,13 +1,13 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'Khởi tạo User'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
-      >
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Tạo User </nz-breadcrumb-item>
+      <nz-breadcrumb-item> {{ 'app.breadcrumb.createUser' | i18n }} </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 </page-header>
@@ -15,13 +15,13 @@
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
   <nz-card [nzBordered]="false" style="border-radius: 4px">
     <div style="margin-bottom: 20px">
-      <span class="text-card-header">Thông tin của User</span>
+      <span class="text-card-header">{{ 'app.create-user.userInfomation' | i18n }}</span>
     </div>
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label nzFor="name"
-            >Tên của User (<span class="text-red">*</span>)</nz-form-label
+            >{{ 'app.create-user.nameUser' | i18n }} (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input
@@ -30,14 +30,13 @@
               formControlName="name"
               [(ngModel)]="userCreate.userName"
               id="name"
-              placeholder="Nhập tên của User"
+              [placeholder]="'app.create-user.nameUser.placeholder' | i18n"
               maxlength="64"
               minlength="1"
               (change)="userCreate.userName = userCreate.userName.trim()"
             />
             <span class="nameField"
-              >Tên người dùng có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z, a-z,
-              0-9, và + = , . @ _ -</span
+              >{{ 'app.create-user.tooltip.nameUser' | i18n }}</span
             >
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
@@ -53,7 +52,7 @@
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label nzFor="email"
-            >Email của User (<span class="text-red">*</span>)</nz-form-label
+            >{{ 'app.create-user.emailUser' | i18n }} (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="emailErrorTpl">
             <input
@@ -62,7 +61,7 @@
               formControlName="email"
               [(ngModel)]="userCreate.email"
               id="email"
-              placeholder="Nhập email của User"
+              [placeholder]="'app.create-user.emailUser.placeholder' | i18n"
               maxlength="250"
               minlength="1"
               (change)="userCreate.email = userCreate.email.trim()"
@@ -89,23 +88,21 @@
         ></nz-alert>
         <ng-template #nzDescriptionWarning06>
           <div>
-            User sẽ nhận thông tin đăng nhập vào hệ thống thông qua Email được
-            điền phía trên.
+            {{ 'app.create-user.alert.first' | i18n }}
           </div>
           <div>
-            Tài khoản Email của User phải là tài khoản Email đã được sử dụng để
-            đăng ký trên hệ thống.
+            {{ 'app.create-user.alert.second' | i18n }}
           </div>
           <div>
-            Nếu User chưa có tài khoản Email, vui lòng truy cập
+            {{ 'app.create-user.alert.third' | i18n }}
             <a
               href="https://workspace.google.com/business/signup/welcome?hl=vi&source=gafb-gmail-hero-vi&ga_region=japac&ga_country=vi&ga_lang=vi&__utma=61317162.261098870.1701847451.1701847451.1701847477.2&__utmb=61317162.0.10.1701847477&__utmc=61317162&__utmx=-&__utmz=61317162.1701847477.2.2.utmcsr=google|utmgclid=Cj0KCQiAsburBhCIARIsAExmsu4c4aTp3VM7eYOsERmsjtaT7CEB2NOhMpNItqa7LdD0KZyuGJcYPakaAggUEALw_wcB|utmgclsrc=aw.ds|utmccn=1605214-Workspace-APAC-VN-vi-BKWS-BRO-Gmai-DesknTabl|utmcmd=cpc|utmctr=KW_%C4%91%C4%83ng%20nh%E1%BA%ADp%20gmail%20m%E1%BB%9Bi|utmcct=text-ad-none-none-DEV_c-CRE_629112839914-ADGP_Hybrid%20|%20BKWS%20-%20BRO%20|%20Txt_Gmail_New-KWID_43700077974856437-kwd-315104593351&__utmv=-&__utmk=185946606"
               target="_blank"
               rel="noreferrer"
               class="list-item-link"
-              >[link đăng ký]</a
+              >[{{ 'app.create-user.alert.link' | i18n }}]</a
             >
-            để thực hiện đăng ký.
+            {{ 'app.create-user.alert.fourth' | i18n }}
           </div>
         </ng-template>
       </nz-col>
@@ -136,7 +133,7 @@
         src="assets/imgs/arrow-left-2.svg"
         alt=""
       />
-      <span>Quay lại</span>
+      <span>{{ 'app.button.back' | i18n }}</span>
     </button>
     <button
       nz-button
@@ -149,14 +146,14 @@
         src="assets/imgs/add-circle.svg"
         alt=""
       />
-      <span>Thêm User</span>
+      <span>{{ 'app.button.addUser' | i18n }}</span>
     </button>
   </div>
 </div>
 
 <nz-modal
   [(nzVisible)]="isVisibleCreate"
-  nzTitle="Xác nhận tạo User"
+  [nzTitle]="'app.create-user.confirm.title' | i18n "
   (nzOnCancel)="handleCancelCreate()"
 >
   <ng-container *nzModalContent>
@@ -167,14 +164,14 @@
     ></nz-alert>
     <ng-template #customTemplateMessageCreate>
       <div>
-        Bạn đang thực hiện tạo mới User <span>{{ userCreate.userName }}</span>
+        {{ 'app.create-user.confirm.alert' | i18n }} <span>{{ userCreate.userName }}</span>
       </div>
     </ng-template>
     <nz-row nzGutter="16" style="margin-top: 10px">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <div
-          >Để thực hiện tạo mới User, vui lòng chọn "<b>Đồng ý</b>" để xác nhận.</div
-        >
+        <div>
+          {{ 'app.create-user.confirm.des' | i18n }}
+        </div>
       </nz-col>
     </nz-row>
   </ng-container>
@@ -184,14 +181,14 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkCreate()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Đồng ý
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

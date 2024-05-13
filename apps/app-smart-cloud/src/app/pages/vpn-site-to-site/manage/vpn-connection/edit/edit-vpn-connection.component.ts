@@ -9,10 +9,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { FormEditVpnConnection, VpnConnectionDetail } from 'src/app/shared/models/vpn-connection';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-edit-vpn-connection',
@@ -20,13 +19,15 @@ import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.ser
   styleUrls: ['./edit-vpn-connection.component.less'],
 })
 export class EditVpnConnectionComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   formEditVpnConnection: FormEditVpnConnection = new FormEditVpnConnection();
   vpnConnection: VpnConnectionDetail = new VpnConnectionDetail();
+
   preSharedKeyVisible: boolean = false;
   isLoading: boolean = false
+
   form: FormGroup<{
     peerRemoteIp: FormControl<string>;
     peerId: FormControl<string>;
@@ -59,7 +60,7 @@ export class EditVpnConnectionComponent implements OnInit {
       .subscribe(
         (data) => {
           this.vpnConnection = data;
-          console.log(data);
+
           this.form.controls.peerRemoteIp.setValue(data.peerRemoteIp);
           this.form.controls.peerId.setValue(data.peerId);
           this.form.controls.preSharedKey.setValue(data.preSharedKey);

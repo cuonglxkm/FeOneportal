@@ -8,6 +8,8 @@ import { IpFloatingService } from '../../../shared/services/ip-floating.service'
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { FormSearchNetwork, NetWorkModel, Port } from '../../../shared/models/vlan.model';
 import { FormAction } from '../../../shared/models/ip-floating.model';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-attach-ip-floating',
@@ -46,6 +48,7 @@ export class AttachIpFloatingComponent implements OnInit {
               private route: ActivatedRoute,
               private vlanService: VlanService,
               private ipFloatingService: IpFloatingService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder) {
   }
 
@@ -72,12 +75,12 @@ export class AttachIpFloatingComponent implements OnInit {
       this.ipFloatingService.action(formAction).subscribe(data => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.success('Thành công', 'Gắn IP Floating thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('ip.floating.nofitacation.attach.success'))
         this.onOk.emit(data)
       }, error => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error('Thất bại', 'Gắn IP Floating thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('ip.floating.nofitacation.attach.fail'))
       })
     }
 

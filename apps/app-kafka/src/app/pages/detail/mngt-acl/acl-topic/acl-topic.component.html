@@ -4,16 +4,16 @@
         <ng-container *ngIf="showForm===idListForm">
             <div class="filter">
                 <nz-input-group [nzPrefix]="prefixIconButton" class="search">
-                    <input type="text" nz-input placeholder="Tìm kiếm" (keyup.enter)="onSearch()"
+                    <input type="text" nz-input [placeholder]="'app.service.search-text' | i18n" (keyup.enter)="onSearch()"
                         [(ngModel)]="searchText" />
                 </nz-input-group>
                 <ng-template #prefixIconButton>
-                    <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                    <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text' | i18n" />
                 </ng-template>
 
                 <button nz-button nzType="primary" class="btn-create" (click)="createForm()">
                     <span nz-icon nzType="plus" nzTheme="outline" style="vertical-align: middle;"></span>
-                    Tạo mới ACL
+                    {{ 'kafka.acl.create' | i18n }}
                 </button>
             </div>
             <div>
@@ -23,15 +23,15 @@
                     (nzPageIndexChange)="changePage($event)" [nzScroll]="{ x: '1100px' }">
                     <thead>
                         <tr>
-                            <th nzWidth="6%" nzAlign="center">STT</th>
-                            <th nzWidth="10%">Tài khoản</th>
+                            <th nzWidth="6%" nzAlign="center">{{ 'app.service.order-number' | i18n }}</th>
+                            <th nzWidth="10%">{{ 'kafka.user' | i18n }}</th>
                             <th nzWidth="14%">Topic</th>
                             <th nzWidth="10%" nzAlign="center">Exact / Prefixed</th>
-                            <th nzWidth="15%" nzAlign="center">Nhóm quyền</th>
-                            <th nzWidth="10%" nzAlign="center">Máy chủ</th>
-                            <th nzWidth="10%" nzAlign="center">Quyền</th>
-                            <th nzWidth="15%" nzAlign="center">Ngày tạo</th>
-                            <th nzWidth="10%" nzAlign="center">Thao tác</th>
+                            <th nzWidth="15%" nzAlign="center">{{ 'kafka.acl.permission-group' | i18n }}</th>
+                            <th nzWidth="10%" nzAlign="center">{{ 'kafka.acl.host' | i18n }}</th>
+                            <th nzWidth="10%" nzAlign="center">{{ 'kafka.acl.permission' | i18n }}</th>
+                            <th nzWidth="15%" nzAlign="center">{{ 'app.text.created-date' | i18n }}</th>
+                            <th nzWidth="10%" nzAlign="center">{{ 'app.text.operation' | i18n }}</th>
                     </thead>
                     <tbody>
                         <tr *ngFor="let data of aclTopic.data; let i = index">
@@ -40,7 +40,8 @@
                             <td>{{ data.resourceName }}
                             </td>
                             <td nzAlign="center">
-                                <nz-tag class="tag-prefix">{{ data.patternType }}</nz-tag>
+                                {{ data.patternType }}
+                                <!-- <nz-tag class="tag-prefix">{{ data.patternType }}</nz-tag> -->
                             </td>
                             <td nzAlign="center">{{ data.permissionGroupName }}</td>
                             <td nzAlign="center">{{ data.host }}</td>
@@ -49,11 +50,11 @@
                             </td>
                             <td nzAlign="center">{{ data.createdDate | date : 'dd/MM/yyyy HH:mm' }}</td>
                             <td nzAlign="center">
-                                <img src="assets/imgs/edit-2.svg" alt="" style="cursor: pointer;" (click)="updateACLTopic(data)"
-                                nz-tooltip="Cập nhật" class="img-edit"/>
+                                <img src="assets/imgs/edit-kafka.svg" alt="" style="cursor: pointer;" (click)="updateACLTopic(data)"
+                                [nz-tooltip]="'app.button.update' | i18n" class="img-edit"/>
 
                                 <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" (click)="showDeleteConfirm(data)" 
-                                nz-tooltip="Xóa" />
+                                [nz-tooltip]="'app.text.delete' | i18n" />
                             </td>
                         </tr>
                     </tbody>
@@ -63,14 +64,14 @@
             <!-- Modal Detele -->
             <nz-modal
                 [(nzVisible)]="isVisibleDelete"
-                nzTitle="Xóa quyền ACLs của Topic"
+                nzTitle="Xóa quyền ACLs"
                 (nzOnCancel)="handleCancelDelete()"
                 nzKeyboard="false"
                 nzMaskClosable="false"
             >
                 <ng-container *nzModalContent>
-                    <h3 style="text-align: center;">Bạn có chắc chắn muốn xoá ACL của <br> 
-                        <b> user {{ this.currentAclTopic.principal }} </b> không ?
+                    <h3 style="text-align: center;">{{ 'kafka.acl.delete-content' | i18n }} <br> 
+                        user <b> {{ this.currentAclTopic.principal }} </b> ?
                     </h3>
                 </ng-container>
                 <div *nzModalFooter>
@@ -79,14 +80,14 @@
                             style="padding-right: 10px; margin-top: -4px"
                             src="assets/imgs/cancel.svg"
                             alt=""
-                        />Hủy
+                        />{{ 'app.button.cancel' | i18n }}
                     </button>
                     <button nz-button nzType="primary" (click)="handleOkDelete()">
                         <img
                             style="padding-right: 10px; margin-top: -4px"
                             src="assets/imgs/confirm.svg"
                             alt=""
-                        />Xác nhận
+                        />{{ 'app.button.confirm' | i18n }}
                     </button>
                 </div>  
             </nz-modal>
@@ -94,15 +95,19 @@
 
         <!-- display create form -->
         <ng-container *ngIf="showForm===idCreateForm || showForm===idUpdateForm">
+            <h2 *ngIf="showForm===idCreateForm"><b>{{ 'kafka.acl.title' | i18n}}</b></h2>
+            <h2 *ngIf="showForm===idUpdateForm"><b>{{ 'kafka.acl.edit' | i18n}}</b></h2>
             <form nz-form [formGroup]="aclTopicForm" [nzLabelAlign]="'left'" (ngSubmit)="submitForm()">
                 <!-- Tài khoản -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="4" nzRequired nzFor="principal" class="lbl-form">Tài khoản</nz-form-label>
-                    <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn tài khoản">
-                        <nz-select nzMode="multiple" nzPlaceHolder="Tài khoản" [nzMaxTagPlaceholder]="tagPlaceHolder" nzSize="large"
+                    <nz-form-label [nzSpan]="4" nzNoColon nzFor="principal" class="lbl-form">{{ 'kafka.user' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
+                    <nz-form-control [nzSpan]="8" [nzErrorTip]="'kafka.acl.user-tooltip' | i18n">
+                        <nz-select nzMode="multiple" [nzPlaceHolder]="'kafka.acl.user-pld' | i18n" 
+                            [nzMaxTagPlaceholder]="tagPlaceHolder" nzSize="large" [nzShowArrow]="true"
                             id="principal" formControlName="principal" [nzDisabled]="isEdit">
-                            <nz-option *ngFor="let item of listOfPrincipals" [nzLabel]="item.username"
-                                [nzValue]="item.username"></nz-option>
+                            <nz-option *ngFor="let item of listOfPrincipals" 
+                                [nzLabel]="item.username" [nzValue]="item.username">
+                            </nz-option>
                         </nz-select>
                         <ng-template #tagPlaceHolder let-selectedList> và {{ selectedList.length }} tài khoản
                         </ng-template>
@@ -110,7 +115,7 @@
                 </nz-form-item>
                 <!-- Topic -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="4" nzRequired nzFor="topic" class="lbl-form">Topic</nz-form-label>
+                    <nz-form-label [nzSpan]="4" nzNoColon nzFor="topic" class="lbl-form">Topic (<span class="text-red">*</span>)</nz-form-label>
                     <div nz-col [nzSpan]="8">
                         <nz-radio-group [(ngModel)]="tabTopicValue" (ngModelChange)="onChangeRadioTopic()" nzSize="large"
                             [ngModelOptions]="{standalone: true}" class="topic-radio" nzButtonStyle="solid">
@@ -120,12 +125,14 @@
                                 [nzDisabled]="isEdit && tabTopicValue!==topicPrefixed">Prefixed</label>
                         </nz-radio-group>
                         <ng-container *ngIf="tabTopicValue===topicExtract; else prefixedBlock">
-                            <nz-form-control nzErrorTip="Vui lòng chọn topic">
-                                <nz-select nzMode="multiple" nzPlaceHolder="Chọn Topic" [nzDisabled]="isEdit" nzSize="large"
-                                    [nzMaxTagPlaceholder]="topicPlaceHolder" formControlName="topic">
+                            <nz-form-control [nzErrorTip]="'kafka.acl.topic-tooltip' | i18n">
+                                <nz-select nzMode="multiple" [nzPlaceHolder]="'kafka.acl.topic-pld' | i18n" 
+                                    [nzDisabled]="isEdit" nzSize="large" [nzMaxTagPlaceholder]="topicPlaceHolder" 
+                                    formControlName="topic" [nzShowArrow]="true">
                                     <ng-container *ngFor="let item of listOfTopic">
-                                        <nz-option *ngIf="!isLoadingTopic" [nzLabel]="item.topicName"
-                                            [nzValue]="item.topicName"></nz-option>
+                                        <nz-option *ngIf="!isLoadingTopic" 
+                                            [nzLabel]="item.topicName" [nzValue]="item.topicName">
+                                        </nz-option>
                                     </ng-container>
                                     <nz-option *ngIf="isLoadingTopic" nzDisabled nzCustomContent>
                                         <span nz-icon nzType="loading" nzTheme="outline"></span> Loading Data...
@@ -136,19 +143,18 @@
                             </nz-form-control>
                         </ng-container>
                         <ng-template #prefixedBlock>
-                            <nz-form-control nzErrorTip="Vui lòng nhập prefixed">
+                            <nz-form-control [nzErrorTip]="'kafka.acl.topic-prefixed-err' | i18n">
                                 <input nz-input class="prefixed-input" type="text" formControlName="topicPrefixed"
-                                    placeholder="Nhập prefixed" nzSize="large">
+                                    [placeholder]="'kafka.acl.topic-prefixed-pld' | i18n" nzSize="large">
                             </nz-form-control>
                         </ng-template>
                     </div>
                 </nz-form-item>
                 <!-- Nhóm quyền -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="4" nzRequired nzFor="permissionGroup" class="lbl-form">Nhóm
-                        quyền</nz-form-label>
-                    <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn nhóm quyền">
-                        <nz-select nzPlaceHolder="Nhóm quyền" formControlName="permissionGroup" nzSize="large">
+                    <nz-form-label [nzSpan]="4" nzNoColon nzFor="permissionGroup" class="lbl-form">{{'kafka.acl.permission-group' | i18n}} (<span class="text-red">*</span>)</nz-form-label>
+                    <nz-form-control [nzSpan]="8" [nzErrorTip]="'kafka.acl.permission-group-err' | i18n">
+                        <nz-select [nzPlaceHolder]="'kafka.acl.permission-group' | i18n" formControlName="permissionGroup" nzSize="large">
                             <nz-option *ngFor="let item of listOfPermissionGroup" [nzLabel]="item.value"
                                 [nzValue]="item.key">
                             </nz-option>
@@ -157,9 +163,8 @@
                 </nz-form-item>
                 <!-- Permission -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="4" nzRequired nzFor="permission"
-                        class="lbl-form">Permission</nz-form-label>
-                    <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn permission">
+                    <nz-form-label [nzSpan]="4" nzNoColon nzFor="permission" class="lbl-form">Permission (<span class="text-red">*</span>)</nz-form-label>
+                    <nz-form-control [nzSpan]="8" [nzErrorTip]="'kafka.acl.permission-err' | i18n">
                         <nz-select nzPlaceHolder="Permission" formControlName="permission" nzSize="large">
                             <nz-option *ngFor="let item of listOfPermission" [nzLabel]="item" [nzValue]="item">
                             </nz-option>
@@ -168,21 +173,23 @@
                 </nz-form-item>
                 <!-- Máy chủ -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="4" nzRequired nzFor="host" class="lbl-form">Máy chủ
-                        <span class="exclamation-icon" nz-icon nzType="exclamation-circle" nzTheme="fill"
-                            nzTooltipTitle="Giá trị mặc định 0.0.0.0 nghĩa là cho phép kết nối từ bất cứ đâu."
-                            nzTooltipPlacement="bottom" nz-tooltip>
-                        </span>
+                    <nz-form-label [nzSpan]="4" nzNoColon nzFor="host" class="lbl-form">{{ 'kafka.acl.host' | i18n }} (<span class="text-red">*</span>)
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'kafka.acl.host-note' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control [nzSpan]="8" [nzErrorTip]="errorTpl">
                         <input nz-input type="text" formControlName="host" nzSize="large"
                             pattern='^(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$' placeholder="0.0.0.0" />
                         <ng-template #errorTpl let-control>
                             <ng-container *ngIf="control.hasError('required')">
-                                Vui lòng nhập địa chỉ máy chủ
+                                {{'validation.kafka.acl.host-required' | i18n}}
                             </ng-container>
                             <ng-container *ngIf="control.hasError('pattern')">
-                                Địa chỉ máy chủ không hợp lệ
+                                {{'validation.kafka.acl.host-pattern' | i18n}}
                             </ng-container>
                         </ng-template>
                     </nz-form-control>
@@ -195,7 +202,7 @@
                                     style="padding-right: 10px; margin-top: -4px"
                                     src="assets/imgs/cancel.svg"
                                     alt=""
-                                />Hủy bỏ
+                                />{{ 'app.button.cancel' | i18n }}
                             </button>
                             <ng-container *ngIf="showForm===idCreateForm">
                                 <button nz-button nzType="primary">
@@ -203,7 +210,7 @@
                                         style="padding-right: 10px; margin-top: -4px"
                                         src="assets/imgs/confirm.svg"
                                         alt=""
-                                    />Tạo mới
+                                    />{{ 'app.service.create' | i18n }}
                                 </button>
                             </ng-container>
                             <ng-container *ngIf="showForm===idUpdateForm">
@@ -212,7 +219,7 @@
                                         style="padding-right: 10px; margin-top: -4px"
                                         src="assets/imgs/confirm.svg"
                                         alt=""
-                                    />Cập nhật
+                                    />{{'app.button.update' | i18n}}
                                 </button>
                             </ng-container>
                         </div>

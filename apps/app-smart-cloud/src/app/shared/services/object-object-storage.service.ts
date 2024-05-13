@@ -6,6 +6,7 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {IpPublicModel} from "../models/ip-public.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {ObjectObjectStorageModel} from "../models/object-storage.model";
+import { formDeleteS3Key, s3KeyGenerate } from '../models/s3key.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,17 +33,21 @@ export class ObjectObjectStorageService extends BaseService {
   }
 
   getDataS3Key(search: any, pageSize: any, currentPage: any): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/keys/getpaging?pageSize=' + pageSize + '&currentPage=' + currentPage);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/keys/getpaging?pageSize=' + pageSize + '&pageNumber=' + currentPage);
   }
 
-  deleteS3key(data: any) {
-    let httpOptionOk = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-      body: JSON.stringify(data)
-    };
-    return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/deleteS3Key', httpOptionOk);
+  createS3Key(subUser: string) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/createS3Key?subUser=' + subUser, this.httpOptions);
+  }
+
+  generateS3Key(data: s3KeyGenerate) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/generateS3Key', data, this.httpOptions);
+  }
+
+  deleteS3key(data: formDeleteS3Key) {
+    return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/deleteS3Key', {
+      body: Object.assign(data)
+    })
   }
 
   createFolder(data: any) {
@@ -97,5 +102,21 @@ export class ObjectObjectStorageService extends BaseService {
 
   restoreObject(data: { bucketName: string; versionId: string; key: string }) {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/RestoreObjectVersion', data, this.httpOptions);
+  }
+
+  getSignedUrl(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GeneratePreSignedForUpload', data, this.httpOptions);
+  }
+
+  createMultiPartUpload(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CreateMultipartUpload', data, this.httpOptions);
+  }
+
+  completemultipart(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CompleteMultipartUpload', data, this.httpOptions);
+  }
+
+  abortmultipart(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/AbortMultipartUpload', data, this.httpOptions);
   }
 }

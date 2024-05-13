@@ -1,7 +1,5 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
 import {IpPublicService} from "../../../shared/services/ip-public.service";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {InstancesService} from "../../instances/instances.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {
@@ -12,7 +10,7 @@ import {
   ValidationErrors,
   Validators
 } from "@angular/forms";
-import {AppValidator} from "../../../../../../../libs/common-utils/src";
+import {AppValidator, ProjectModel, RegionModel} from "../../../../../../../libs/common-utils/src";
 import {finalize} from "rxjs/operators";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {Router} from "@angular/router";
@@ -26,7 +24,7 @@ import {CatalogService} from "../../../shared/services/catalog.service";
   styleUrls: ['./create-update-ip-public.component.less'],
 })
 export class CreateUpdateIpPublicComponent implements OnInit {
-  regionId = JSON.parse(localStorage.getItem('region')).regionId;
+  regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
   checkIpv6: boolean = null;
   selectedAction: any;

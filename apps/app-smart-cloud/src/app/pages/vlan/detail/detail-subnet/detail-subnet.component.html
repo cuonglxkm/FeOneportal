@@ -4,18 +4,18 @@
                     nzSize="large"
                     style="width: 300px;">
       <input name="name"
-             nz-input placeholder="Tìm kiếm"
+             nz-input placeholder="{{ 'volume.tooltip.title.filter.img' | i18n }}"
              [(ngModel)]="valueSubnet"
              (input)="onInputChangeSubnet($event.target['value'])" />
     </nz-input-group>
     <ng-template #prefixIconSearch>
-      <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+      <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
     </ng-template>
   </nz-col>
   <nz-col nzSpan="8" style="flex:none;">
     <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateSubnet()">
       <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
-      <span class="button-text-primary">Tạo mới Subnet</span>
+      <span class="button-text-primary">{{ 'app.vlan.note66' | i18n }}</span>
     </button>
   </nz-col>
 </nz-row>
@@ -30,10 +30,10 @@
           [nzLoading]="isLoading">
   <thead>
   <tr>
-    <th>Tên Subnet</th>
+    <th>{{ 'app.vlan.note5' | i18n }}</th>
     <th>Subnet</th>
     <th>Gateway</th>
-    <th *ngIf="!networkName?.includes('pri_network')">Thao tác</th>
+    <th *ngIf="!networkName?.includes('pri_network')">{{ 'app.text.operation' | i18n }}</th>
   </tr>
   </thead>
   <tbody>
@@ -42,15 +42,14 @@
     <td>{{ data.subnetAddressRequired }}</td>
     <td>{{ data.gatewayIp }}</td>
     <td *ngIf="!networkName?.includes('pri_network')">
-              <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="edit"
-                    nzTheme="outline"
-                    (click)="navigateToEditSubnet(data.id)"
-                    nz-popover
-                    [nzPopoverContent]="'Chỉnh sửa'"
-                    nzPopoverPlacement="bottom"></span>
+      <img nz-popover src="assets/imgs/edit-2.svg" alt=""
+           nzPopoverPlacement="bottom" (click)="navigateToEditSubnet(data.id)"
+           style="cursor: pointer; margin-right: 16px;"
+           nzPopoverContent="{{ 'app.text.edit' | i18n }}" disabled="true"/>
       <one-portal-delete-subnet [region]="region"
                                 [project]="project"
                                 [id]="data.id"
+                                [nameSubnet]="data.name"
                                 (onOk)="handleOkDeleteSubnet()" />
     </td>
   </tr>

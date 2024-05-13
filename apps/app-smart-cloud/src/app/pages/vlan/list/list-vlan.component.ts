@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
 import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
-import { AppValidator, BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { AppValidator, BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
@@ -16,7 +14,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   styleUrls: ['./list-vlan.component.less'],
 })
 export class ListVlanComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   typeVPC: number

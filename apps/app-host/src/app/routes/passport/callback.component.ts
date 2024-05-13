@@ -18,7 +18,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from '@env/environment';
 import { UserModel } from '../../../../../../libs/common-utils/src/lib/shared-model';
 import { of, switchMap, zip } from 'rxjs';
-import { NotificationService } from '../../../../../../libs/common-utils/src/lib/notification-service';
+import { CoreDataService, NotificationService } from '../../../../../../libs/common-utils/src';
 
 export interface TokenResponse {
   [key: string]: NzSafeAny;
@@ -53,6 +53,7 @@ export class CallbackComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private menuService: MenuService,
     private notificationService: NotificationService,
+    private coreDataService: CoreDataService
   ) {}
 
   ngOnInit(): void {
@@ -73,6 +74,9 @@ export class CallbackComponent implements OnInit {
       .set('code', this.code)
       .set('redirect_uri', environment['sso'].callback);
 
+    localStorage.removeItem('UserRootId');
+    localStorage.removeItem('PermissionOPA');
+    localStorage.removeItem('ShareUsers');
     let baseUrl = environment['baseUrl'];
     this.httpClient
       .post<TokenResponse>(this.url + '/connect/token', params.toString(), {
@@ -113,8 +117,8 @@ export class CallbackComponent implements OnInit {
             );
         })
       )
-      .subscribe(
-        (response) => {
+      .subscribe({ 
+        next : (response) => {
           this.settingsSrv.setUser({
             ...this.settingsSrv.user,
             ...response,
@@ -123,6 +127,7 @@ export class CallbackComponent implements OnInit {
           if (this.notificationService.connection == undefined) {
             this.notificationService.initiateSignalrConnection(true);
           }
+          this.coreDataService.getCoreData();
           // this.httpClient
           //   .get(baseUrl + '/provisions/object-storage/userinfo')
           //   .subscribe((checkData) => {
@@ -163,10 +168,10 @@ export class CallbackComponent implements OnInit {
           //     }
           //   });
         },
-        (error) => {
+        error : (error) => {
           console.log(error);
           setTimeout(() => this.router.navigateByUrl(`/exception/500`));
         }
-      );
+    });
   }
 }

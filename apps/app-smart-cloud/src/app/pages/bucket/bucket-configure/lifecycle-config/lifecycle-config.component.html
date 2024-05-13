@@ -1,15 +1,9 @@
-<span class="titlecard-custom">Thiết lập Lifecycle</span>
+<span class="titlecard-custom">{{ 'app.set' | i18n }} Lifecycle</span>
 <div style="margin-top: 20px; margin-bottom: 10px" class="text-label">
-  <span>
-    Bucket Lifecycle cho phép bạn khả năng quản lý tuổi thọ và sự tự động hóa
-    của các đối tượng (objects) trong các bucket.</span
+  <span> {{ 'app.lifeCycle.config.intro' | i18n }}</span
   ><br /><br />
   <span>
-    Với Bucket Lifecycle, bạn có thể định nghĩa các quy tắc tự động cho các đối
-    tượng trong bucket của mình, bao gồm cả việc xóa các đối tượng đã hết hạn
-    hoặc không còn cần thiết để giảm chi phí lưu trữ. Việc sử dụng Bucket
-    Lifecycle cũng giúp giảm tải công việc quản trị và tăng tính khả dụng của
-    các đối tượng trong bucket.
+    {{ 'app.lifeCycle.config.intro.next' | i18n }}
   </span>
 </div>
 <div class="text-right p-0 m-b-0">
@@ -21,7 +15,7 @@
     <input
       name="name"
       nz-input
-      placeholder="Tìm kiếm tên"
+      [placeholder]="'app.placeholder.search' | i18n"
       [(ngModel)]="inputSearch"
     />
   </nz-input-group>
@@ -30,7 +24,7 @@
       src="assets/imgs/search.svg"
       alt=""
       style="cursor: pointer"
-      nz-tooltip="Tìm kiếm"
+      [nz-tooltip]="'app.button.search' | i18n"
       (click)="searchLifeCycle()"
     />
   </ng-template>
@@ -40,7 +34,7 @@
       src="assets/imgs/add-circle.svg"
       alt=""
     />
-    <span>Tạo mới Bucket Policy</span>
+    <span>{{ 'app.lifeCycle.create' | i18n }}</span>
   </button>
 </div>
 <nz-table
@@ -56,13 +50,13 @@
 >
   <thead>
     <tr>
-      <th>Trạng thái</th>
-      <th>Tiền tố</th>
-      <th>Bộ lọc (Key:Value)</th>
-      <th>Thời hạn xóa file (Version hiện tại)</th>
-      <th>Thời hạn xóa file (Không phải version hiện tại)</th>
-      <th>Thời gian xóa Multipart upload không hoàn thành</th>
-      <th>Thao tác</th>
+      <th>{{ 'app.text.status' | i18n }}</th>
+      <th>{{ 'app.prefix' | i18n }}</th>
+      <th>{{ 'app.filter' | i18n }} (Key:Value)</th>
+      <th>{{ 'app.delete.file.current.version' | i18n }}</th>
+      <th>{{ 'app.delete.file.non.current.version' | i18n }}</th>
+      <th>{{ 'app.delete.multi.upload' | i18n }}</th>
+      <th>{{ 'app.text.operation' | i18n }}</th>
     </tr>
   </thead>
   <tbody>
@@ -82,14 +76,14 @@
             alt=""
             (click)="modalUpdate(item)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="Chỉnh sửa"
+            [nz-tooltip]="'app.text.edit' | i18n"
           />
           <img
             src="assets/imgs/trash.svg"
             alt=""
             (click)="modalDelete(item)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="Xóa"
+            [nz-tooltip]="'app.text.delete' | i18n"
           />
         </td>
       </tr>
@@ -99,7 +93,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleCreate"
-  nzTitle="Tạo mới Bucket Lifecycle"
+  [nzTitle]="'app.lifeCycle.create' | i18n"
   (nzOnCancel)="handleCancelCreate()"
 >
   <ng-container *nzModalContent>
@@ -108,13 +102,13 @@
       nz-checkbox
       [(ngModel)]="lifecycleCreate.enabled"
       [ngModelOptions]="{ standalone: true }"
-      >Bật bộ lọc</label
+      >{{ 'app.enable.filter' | i18n }}</label
     >
     <div style="margin-top: 16px" class="text-label">
-      Tiền tố
+      {{ 'app.prefix' | i18n }}
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip='Tiền tố xác định một hoặc nhiều tệp áp dụng quy tắc (ví dụ: "logs/"). Tiền tố trống có nghĩa là tất cả các tệp'
+        [nz-tooltip]="'app.lifeCycle.tooltip.prefix' | i18n"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -123,12 +117,13 @@
       style="margin-bottom: 16px; margin-top: 5px"
       class="input-custom"
       nz-input
-      placeholder="Nhập tiền tố"
+      [placeholder]="'app.input.prefix' | i18n"
       [(ngModel)]="lifecycleCreate.prefix"
       [ngModelOptions]="{ standalone: true }"
     />
     <div class="text-label">
-      Lọc theo Tag<img
+      {{ 'app.filter.by.tag' | i18n
+      }}<img
         style="margin-left: 5px"
         src="assets/imgs/ei_plus.svg"
         alt=""
@@ -139,8 +134,7 @@
       class="text-label"
       style="color: #eb1414; margin-top: 16px; margin-bottom: 10px"
     >
-      Lưu ý: Bạn chỉ có thể áp dụng một bộ lọc "Tiền tố" hoặc "Tag", để sử dụng
-      cả hai bạn phải tạo một bộ lọc mới.
+      {{ 'app.lifeCycle.note' | i18n }}
     </div>
     <div *ngFor="let item of listTag">
       <div style="display: flex">
@@ -149,7 +143,7 @@
             style="margin-bottom: 8px"
             class="input-custom"
             nz-input
-            placeholder="Nhập Key"
+            [placeholder]="'app.input.key' | i18n"
             [(ngModel)]="item.key"
             [ngModelOptions]="{ standalone: true }"
           />
@@ -159,7 +153,7 @@
             style="margin-bottom: 8px"
             class="input-custom"
             nz-input
-            placeholder="Nhập Value"
+            [placeholder]="'app.input.value' | i18n"
             [(ngModel)]="item.value"
             [ngModelOptions]="{ standalone: true }"
           />
@@ -183,7 +177,7 @@
       nz-checkbox
       [(ngModel)]="lifecycleCreate.isSetExpiration_Day"
       [ngModelOptions]="{ standalone: true }"
-      >Thời hạn xóa file (Version hiện tại)</label
+      >{{ 'app.delete.file.current.version' | i18n }}</label
     >
     <div style="display: flex; margin-top: 5px">
       <div style="flex: 2; padding-right: 16px">
@@ -201,7 +195,7 @@
         class="text-label"
         style="flex: 3; display: flex; align-items: center"
       >
-        Ngày - Kể từ ngày tạo
+        {{ 'app.lifeCycle.text.input1' | i18n }}
       </div>
     </div>
     <label
@@ -210,7 +204,7 @@
       nz-checkbox
       [(ngModel)]="lifecycleCreate.isSetNoncurrentVersionExpiration_Day"
       [ngModelOptions]="{ standalone: true }"
-      >Thời hạn xóa file (Không phải version hiện tại)</label
+      >{{ 'app.delete.file.non.current.version' | i18n }}</label
     >
     <div style="display: flex; margin-top: 5px">
       <div style="flex: 2; padding-right: 16px">
@@ -230,7 +224,7 @@
         class="text-label"
         style="flex: 3; display: flex; align-items: center"
       >
-        Ngày - Từ ngày thành bản cũ
+        {{ 'app.lifeCycle.text.input2' | i18n }}
       </div>
     </div>
     <label
@@ -239,7 +233,7 @@
       nz-checkbox
       [(ngModel)]="lifecycleCreate.isSetAbortIncompleteMultipartUpload_Day"
       [ngModelOptions]="{ standalone: true }"
-      >Thời gian xóa Multipart upload không hoàn thành</label
+      >{{ 'app.delete.multi.upload' | i18n }}</label
     >
     <div style="display: flex; margin-top: 5px">
       <div style="flex: 2; padding-right: 16px">
@@ -259,7 +253,7 @@
         class="text-label"
         style="flex: 3; display: flex; align-items: center"
       >
-        Ngày - Từ ngày bắt đầu upload
+        {{ 'app.lifeCycle.text.input3' | i18n }}
       </div>
     </div>
   </ng-container>
@@ -269,14 +263,14 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkCreate()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
@@ -295,7 +289,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkDelete()">
       <img
@@ -303,14 +297,14 @@
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Xác nhận
+      {{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleUpdate"
-  nzTitle="Chỉnh sửa Bucket Lifecycle"
+  [nzTitle]="'app.lifeCycle.edit' | i18n"
   (nzOnCancel)="handleCancelUpdate()"
 >
   <ng-container *nzModalContent>
@@ -319,13 +313,13 @@
       nz-checkbox
       [(ngModel)]="lifecycleUpdate.enabled"
       [ngModelOptions]="{ standalone: true }"
-      >Bật bộ lọc</label
+      >{{ 'app.enable.filter' | i18n }}</label
     >
     <div style="margin-top: 16px" class="text-label">
-      Tiền tố
+      {{ 'app.prefix' | i18n }}
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip='Tiền tố xác định một hoặc nhiều tệp áp dụng quy tắc (ví dụ: "logs/"). Tiền tố trống có nghĩa là tất cả các tệp'
+        [nz-tooltip]="'app.lifeCycle.tooltip.prefix' | i18n"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -334,12 +328,13 @@
       style="margin-bottom: 16px; margin-top: 5px"
       class="input-custom"
       nz-input
-      placeholder="Nhập tiền tố"
+      [placeholder]="'app.input.prefix' | i18n"
       [(ngModel)]="lifecycleUpdate.prefix"
       [ngModelOptions]="{ standalone: true }"
     />
     <div class="text-label">
-      Lọc theo Tag<img
+      {{ 'app.filter.by.tag' | i18n
+      }}<img
         style="margin-left: 5px"
         src="assets/imgs/ei_plus.svg"
         alt=""
@@ -350,8 +345,7 @@
       class="text-label"
       style="color: #eb1414; margin-top: 16px; margin-bottom: 10px"
     >
-      Lưu ý: Bạn chỉ có thể áp dụng một bộ lọc "Tiền tố" hoặc "Tag", để sử dụng
-      cả hai bạn phải tạo một bộ lọc mới.
+      {{ 'app.lifeCycle.note' | i18n }}
     </div>
     <div *ngFor="let item of listTag">
       <div style="display: flex">
@@ -360,7 +354,7 @@
             style="margin-bottom: 8px"
             class="input-custom"
             nz-input
-            placeholder="Nhập Key"
+            [placeholder]="'app.input.key' | i18n"
             [(ngModel)]="item.key"
             [ngModelOptions]="{ standalone: true }"
           />
@@ -370,7 +364,7 @@
             style="margin-bottom: 8px"
             class="input-custom"
             nz-input
-            placeholder="Nhập Value"
+            [placeholder]="'app.input.value' | i18n"
             [(ngModel)]="item.value"
             [ngModelOptions]="{ standalone: true }"
           />
@@ -394,7 +388,7 @@
       nz-checkbox
       [(ngModel)]="lifecycleUpdate.isSetExpiration_Day"
       [ngModelOptions]="{ standalone: true }"
-      >Thời hạn xóa file (Version hiện tại)</label
+      >{{ 'app.delete.file.current.version' | i18n }}</label
     >
     <div style="display: flex; margin-top: 5px">
       <div style="flex: 2; padding-right: 16px">
@@ -412,7 +406,7 @@
         class="text-label"
         style="flex: 3; display: flex; align-items: center"
       >
-        Ngày - Kể từ ngày tạo
+        {{ 'app.lifeCycle.text.input1' | i18n }}
       </div>
     </div>
     <label
@@ -421,7 +415,7 @@
       nz-checkbox
       [(ngModel)]="lifecycleUpdate.isSetNoncurrentVersionExpiration_Day"
       [ngModelOptions]="{ standalone: true }"
-      >Thời hạn xóa file (Không phải version hiện tại)</label
+      >{{ 'app.delete.file.non.current.version' | i18n }}</label
     >
     <div style="display: flex; margin-top: 5px">
       <div style="flex: 2; padding-right: 16px">
@@ -441,7 +435,7 @@
         class="text-label"
         style="flex: 3; display: flex; align-items: center"
       >
-        Ngày - Từ ngày thành bản cũ
+        {{ 'app.lifeCycle.text.input2' | i18n }}
       </div>
     </div>
     <label
@@ -450,7 +444,7 @@
       nz-checkbox
       [(ngModel)]="lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day"
       [ngModelOptions]="{ standalone: true }"
-      >Thời gian xóa Multipart upload không hoàn thành</label
+      >{{ 'app.delete.multi.upload' | i18n }}</label
     >
     <div style="display: flex; margin-top: 5px">
       <div style="flex: 2; padding-right: 16px">
@@ -470,7 +464,7 @@
         class="text-label"
         style="flex: 3; display: flex; align-items: center"
       >
-        Ngày - Từ ngày bắt đầu upload
+        {{ 'app.lifeCycle.text.input3' | i18n }}
       </div>
     </div>
   </ng-container>
@@ -480,14 +474,14 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkUpdate()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

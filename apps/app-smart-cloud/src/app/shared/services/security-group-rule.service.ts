@@ -1,7 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { SecurityGroupSearchCondition } from '../models/security-group';
-import SecurityGroupRule, { RuleSearchCondition, SecurityGroupRuleCreateForm } from '../models/security-group-rule';
+import SecurityGroupRule, {
+  FormDeleteRule,
+  RuleSearchCondition,
+  SecurityGroupRuleCreateForm
+} from '../models/security-group-rule';
 import { BaseService } from './base.service';
 import { catchError, Observable, throwError } from 'rxjs';
 import Pagination from '../models/pagination';
@@ -18,7 +22,7 @@ export class SecurityGroupRuleService extends BaseService {
     }
 
     create(form: SecurityGroupRuleCreateForm) {
-        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form))
+        return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form))
           .pipe(
           catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
@@ -44,6 +48,20 @@ export class SecurityGroupRuleService extends BaseService {
             }
             return throwError(error);
           }))
+    }
+
+    deleteRule(formDeleteRule: FormDeleteRule) {
+      return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', {
+        body: formDeleteRule
+      }).pipe(catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+        }))
     }
 
 

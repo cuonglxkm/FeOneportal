@@ -5,6 +5,12 @@ import {
   Inject,
   OnInit,
 } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { STIcon } from '@delon/abc/st';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -15,10 +21,13 @@ import {
   RouterInteface,
   RouterIntefaceCreate,
   StaticRouter,
+  Subnet,
 } from 'src/app/shared/models/router.model';
-import { FormSearchSubnet, Subnet } from 'src/app/shared/models/vlan.model';
+
 import { RouterService } from 'src/app/shared/services/router.service';
-import { VlanService } from 'src/app/shared/services/vlan.service';
+import { ProjectModel, RegionModel, ipAddressValidatorRouter } from '../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-router-detail',
@@ -33,7 +42,27 @@ export class RouterDetailComponent implements OnInit {
   networkId: number;
   listOfRouterInteface: RouterInteface[] = [];
   listOfRouterStatic: StaticRouter[] = [];
-  loading: boolean = true;
+  listSubnetFilter = [];
+  isLoadingListRouterInterface: boolean = true;
+  isLoadingListRouterStatic: boolean = true;
+  isLoadingRouterInterface: boolean = false;
+  isLoadingRouterStatic: boolean = false;
+  isLoadingSubnet: boolean = false
+  isLoadingDeleteRouterInterface: boolean = false
+  isLoadingDeleteRouterStatic: boolean = false
+  disableSubnet: boolean = true
+  isVisibleCreateInterface = false;
+  routerInterfaceCreate: RouterIntefaceCreate = new RouterIntefaceCreate();
+
+  formRouterInterface: FormGroup<{
+    subnetId: FormControl<string>;
+    ipAddress: FormControl<string>;
+  }>;
+
+  formRouterStatic: FormGroup<{
+    destinationCIDR: FormControl<string>;
+    nextHop: FormControl<string>;
+  }>;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -42,49 +71,78 @@ export class RouterDetailComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private notification: NzNotificationService,
-    private vlanService: VlanService
-  ) {}
+    private fb: NonNullableFormBuilder,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+  ) {
+    this.formRouterInterface = this.fb.group({
+      subnetId: ['', Validators.required],
+      ipAddress: ['', Validators.required],
+    });
+
+    this.formRouterStatic = this.fb.group({
+      destinationCIDR: ['', Validators.required],
+      nextHop: ['', Validators.required],
+    });
+
+    this.formRouterInterface
+      .get('subnetId')
+      .valueChanges.subscribe((selectedSubnetId) => {
+        const selectedSubnet = this.listSubnet.find(
+          (subnet) => subnet.id === parseInt(selectedSubnetId)
+        );
+        if (selectedSubnet) {
+          const networkAddress = selectedSubnet.networkAddress;
+          this.formRouterInterface
+            .get('ipAddress')
+            .setValidators([
+              Validators.required,
+              ipAddressValidatorRouter(networkAddress),
+            ]);
+          this.formRouterInterface.get('ipAddress').updateValueAndValidity();
+        }
+      });
+  }
 
   ngOnInit(): void {
-    this.routerId = this.activatedRoute.snapshot.paramMap.get('routerId');
+    this.routerId = this.activatedRoute.snapshot.paramMap.get('id');
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.vpcId = regionAndProject.projectId;
     this.getRouterInterfaces();
     this.getRouterStatic();
-    this.getListSubnet();
   }
 
   getRouterInterfaces() {
-    this.loading = true;
+    this.isLoadingListRouterInterface = true;
     this.service
       .getRouterInterfaces(this.routerId, this.regionId, this.vpcId)
       .pipe(
         finalize(() => {
-          this.loading = false;
+          this.isLoadingListRouterInterface= false;
           this.cdr.detectChanges();
         })
       )
       .subscribe({
         next: (data) => {
+          this.isLoadingListRouterInterface= false;
           this.listOfRouterInteface = data;
         },
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lấy danh sách Router Interface không thành công'
+            this.i18n.fanyi('router.nofitacation.interface.sucess')
           );
         },
       });
   }
 
   getRouterStatic() {
-    this.loading = true;
+    this.isLoadingListRouterStatic = true;
     this.service
       .getRouterStatics(this.routerId, this.regionId, this.vpcId)
       .pipe(
         finalize(() => {
-          this.loading = false;
+          this.isLoadingListRouterStatic = false;
           this.cdr.detectChanges();
         })
       )
@@ -95,32 +153,51 @@ export class RouterDetailComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lấy danh sách Router Static không thành công'
+            this.i18n.fanyi('router.nofitacation.static.fail')
           );
         },
       });
   }
 
   listSubnet: Subnet[] = [];
-  getListSubnet() {
-    let formSearchSubnet = new FormSearchSubnet();
-    formSearchSubnet.networkId = this.networkId;
-    formSearchSubnet.customerId = this.tokenService.get()?.userId;
-    formSearchSubnet.region = this.regionId;
-    formSearchSubnet.pageSize = 9999;
-    formSearchSubnet.pageNumber = 0;
-    formSearchSubnet.name = null;
 
-    this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe((data) => {
-      console.log('data-subnet', data);
-      this.listSubnet = data.records;
-    });
+  getListSubnet() {
+    this.isLoadingSubnet = true
+    this.service
+      .getListSubnet(this.routerId, this.regionId, this.vpcId)
+      .pipe(
+        finalize(() => {
+          this.isLoadingSubnet= false;
+          this.disableSubnet= false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.isLoadingSubnet = false;
+            this.disableSubnet = false;
+            this.listSubnetFilter = data.filter((record) => record !== null);
+            this.listSubnet = [
+              { id: '', name: '-- Chọn Subnet --', networkAddress: '' },
+              ...this.listSubnetFilter,
+            ];
+          }
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('router.nofitacation.subnet.fail')
+          );
+          this.isLoadingSubnet = false;
+        },
+      });
   }
 
-  isVisibleCreateInterface = false;
-  routerInterfaceCreate: RouterIntefaceCreate = new RouterIntefaceCreate();
+
   modalCreateRouterInterface() {
     this.isVisibleCreateInterface = true;
+    this.getListSubnet();
   }
 
   handleCancelCreateInterface() {
@@ -128,53 +205,94 @@ export class RouterDetailComponent implements OnInit {
   }
 
   handleOkCreateInterface() {
-    this.isVisibleCreateInterface = false;
+    this.isLoadingRouterInterface = true;
     this.routerInterfaceCreate.regionId = this.regionId;
     this.routerInterfaceCreate.routerId = this.routerId;
-    this.service.createRouterInterface(this.routerInterfaceCreate).subscribe({
-      next: (data) => {
-        this.notification.success('', 'Tạo mới Router Interface thành công');
-        this.getRouterInterfaces();
-      },
-      error: (e) => {
-        this.notification.error(
-          e.statusText,
-          'Tạo mới Router Interface không thành công'
-        );
-      },
-    });
+    this.routerInterfaceCreate.subnetId = parseInt(
+      this.formRouterInterface.controls.subnetId.value
+    );
+    this.routerInterfaceCreate.ipAddress =
+      this.formRouterInterface.controls.ipAddress.value;
+    this.routerInterfaceCreate.networkCustomer = '';
+    console.log(this.formRouterInterface.controls.subnetId.value);
+
+    if(this.formRouterInterface.controls.subnetId.value === ''){
+      this.notification.warning(this.i18n.fanyi('app.status.warning'), 'Vui lòng chọn subnet');
+      this.isLoadingRouterInterface = false;
+    }else{
+      this.service.createRouterInterface(this.routerInterfaceCreate).subscribe(
+        (data) => {
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.interface.create.sucess'));
+          this.isLoadingRouterInterface = false;
+          this.isVisibleCreateInterface = false;
+          this.formRouterInterface.reset()
+          this.getRouterInterfaces();
+        },
+        (error) => {
+          this.isLoadingRouterInterface = false;
+          console.log(error);
+
+          this.cdr.detectChanges();
+          if (error.error.detail.includes('allocated in subnet')) {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.ip.existed'));
+          } else if (error.error.detail === '(rule:create_port and (rule:create_port:fixed_ips and (rule:create_port:fixed_ips:subnet_id and rule:create_port:fixed_ips:ip_address))) is disallowed by policy') {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.subnet.disable'));
+          }else if (error.status === 400) {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.select.subnet'));
+          } else {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('router.nofitacation.create.fail')
+            );
+          }
+        },
+      );
+    }
+
   }
+
 
   isVisibleCreateStatic = false;
   staticRouterCreate: StaticRouter = new StaticRouter();
   modalCreateRouterStatic() {
     this.isVisibleCreateStatic = true;
-    this.staticRouterCreate.routerId = this.routerId;
-    this.staticRouterCreate.regionId = this.regionId;
-    this.staticRouterCreate.customerId = this.tokenService.get()?.userId;
-    this.staticRouterCreate.vpcId = this.vpcId;
-    this.service.createStaticRouter(this.staticRouterCreate).subscribe({
-      next: (data) => {
-        this.notification.success('', 'Tạo mới Static Router thành công');
-        this.getRouterStatic();
-      },
-      error: (e) => {
-        this.notification.error(
-          e.statusText,
-          'Tạo mới Static Router không thành công'
-        );
-      },
-    });
   }
 
   handleCancelCreateStatic() {
     this.isVisibleCreateStatic = false;
   }
 
-  handleOkCreateStatic() {
-    this.isVisibleCreateStatic = false;
-    this.notification.success('', 'Tạo mới Static Router thành công');
-  }
+handleOkCreateStatic() {
+  this.isLoadingRouterStatic = true;
+  this.staticRouterCreate.routerId = this.routerId;
+  this.staticRouterCreate.regionId = this.regionId;
+  this.staticRouterCreate.vpcId = this.vpcId;
+  this.staticRouterCreate.destinationCIDR =
+    this.formRouterStatic.controls.destinationCIDR.value;
+  this.staticRouterCreate.nextHop =
+    this.formRouterStatic.controls.nextHop.value;
+  this.staticRouterCreate.customerId = this.tokenService.get()?.userId;
+  this.service.createStaticRouter(this.staticRouterCreate).subscribe({
+    next: (data) => {
+      this.notification.success(
+        this.i18n.fanyi('app.status.success'),
+        this.i18n.fanyi('router.nofitacation.static.create.success')
+      );
+      this.isLoadingRouterStatic = false;
+      this.isVisibleCreateStatic = false;
+      this.formRouterStatic.reset();
+      this.getRouterStatic();
+    },
+    error: (error) => {
+      this.isLoadingRouterStatic = false;
+      this.cdr.detectChanges();
+      this.notification.error(
+        this.i18n.fanyi('app.status.fail'),
+        this.i18n.fanyi('router.nofitacation.create.fail1')
+      );
+    },
+  });
+}
 
   isVisibleDeleteInterface: boolean = false;
   subnetId: number = 0;
@@ -183,7 +301,7 @@ export class RouterDetailComponent implements OnInit {
     this.subnetId = subnetId;
   }
   handleOkDeleteInterface() {
-    this.isVisibleDeleteInterface = false;
+    this.isLoadingDeleteRouterInterface = true
     this.service
       .deleteRouterInterface(
         this.routerId,
@@ -192,24 +310,18 @@ export class RouterDetailComponent implements OnInit {
         this.vpcId
       )
       .subscribe({
-        next: (data: any) => {
-          if (data == 'Thao tác thành công') {
-            this.notification.success('', 'Xóa Router Interface thành công');
-            setTimeout(() => {
-              this.getRouterInterfaces();
-            }, 1500);
-          } else {
-            this.notification.error(
-              '',
-              'Xóa Router Interface không thành công'
-            );
-          }
+        next: () => {
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.interface.remove.success'));
+          this.isVisibleDeleteInterface = false;
+          this.isLoadingDeleteRouterInterface = false
+          this.getRouterInterfaces();
         },
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Xóa Router Interface không thành công'
+            this.i18n.fanyi('router.nofitacation.interface.remove.fail')
           );
+          this.isLoadingDeleteRouterInterface = false
         },
       });
   }
@@ -226,7 +338,7 @@ export class RouterDetailComponent implements OnInit {
     this.nextHop = item.nextHop;
   }
   handleOkDeleteStatic() {
-    this.isVisibleDeleteStatic = false;
+    this.isLoadingDeleteRouterStatic = true
     this.service
       .deleteStaticRouter(
         this.routerId,
@@ -237,20 +349,17 @@ export class RouterDetailComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          if (data == 'Thao tác thành công') {
-            this.notification.success('', 'Xóa Static Router thành công');
-            setTimeout(() => {
-              this.getRouterStatic();
-            }, 1500);
-          } else {
-            this.notification.error('', 'Xóa Static Router không thành công');
-          }
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.static.remove.success'));
+          this.isVisibleDeleteStatic = false;
+          this.isLoadingDeleteRouterStatic = false
+          this.getRouterStatic();
         },
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Xóa Static Router không thành công'
+            this.i18n.fanyi('router.nofitacation.static.remove.fail')
           );
+          this.isLoadingDeleteRouterStatic = false
         },
       });
   }
@@ -258,14 +367,17 @@ export class RouterDetailComponent implements OnInit {
     this.isVisibleDeleteStatic = false;
   }
 
-  onRegionChange(region: any) {
-    this.navigateToList();
+  onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
   }
-  onProjectChange(project: any) {
-    this.navigateToList();
+
+  onProjectChange(project: ProjectModel) {
+    this.vpcId = project?.id;
   }
 
   navigateToList() {
     this.router.navigate(['/app-smart-cloud/network/router']);
   }
+
+
 }

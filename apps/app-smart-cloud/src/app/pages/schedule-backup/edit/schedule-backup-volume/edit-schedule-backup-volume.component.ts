@@ -6,16 +6,15 @@ import {ScheduleService} from "../../../../shared/services/schedule.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {DatePipe} from "@angular/common";
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
-  selector: 'one-portal-edit-schedule-backup-volume',
+  selector: 'one-portal-extend-schedule-backup-volume',
   templateUrl: './edit-schedule-backup-volume.component.html',
   styleUrls: ['./edit-schedule-backup-volume.component.less'],
 })
 export class EditScheduleBackupVolumeComponent {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   modeType: any = '4'
   mode = [

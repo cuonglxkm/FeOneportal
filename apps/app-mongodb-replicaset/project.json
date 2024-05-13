@@ -27,6 +27,12 @@
       },
       "configurations": {
         "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/app-mongodb-replicaset/src/environments/environment.ts",
+              "with": "apps/app-mongodb-replicaset/src/environments/environment.prod.ts"
+            }
+          ],
           "budgets": [
             {
               "type": "initial",

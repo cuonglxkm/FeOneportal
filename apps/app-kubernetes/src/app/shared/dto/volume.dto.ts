@@ -95,6 +95,7 @@ export class EditSizeMemoryVolumeDTO{
   typeName: string;
   userEmail: string;
   actorEmail:string;
+  iops:number
 }
 
 export class ExtendVolumeDTO{

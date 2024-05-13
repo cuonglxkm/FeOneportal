@@ -1,15 +1,12 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
 import {Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {FormUpdate, PackageBackupModel, ServiceInPackage} from "../../../shared/models/package-backup.model";
-import {BaseResponse} from "../../../../../../../libs/common-utils/src";
+import {BaseResponse, ProjectModel, ProjectService, RegionModel} from "../../../../../../../libs/common-utils/src";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {getCurrentRegionAndProject} from "@shared";
-import {ProjectService} from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-list-packages-backup',
@@ -17,7 +14,7 @@ import {ProjectService} from 'src/app/shared/services/project.service';
   styleUrls: ['./list-packages-backup.component.less'],
 })
 export class ListPackagesBackupComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   pageSize: number = 10
@@ -145,27 +142,7 @@ export class ListPackagesBackupComponent implements OnInit {
   serviceInPackage: ServiceInPackage = new ServiceInPackage()
 
   handleDeletedOk() {
-    this.isLoadingDelete = true
-
-    if (this.valueDelete.includes(this.packageName)) {
-      this.packageBackupService.delete(this.idBackupPackage).subscribe(data => {
-        this.isLoadingDelete = false
-        this.isVisibleDelete = false
-        this.notification.success('Thành công', 'Xóa gói backup thành công')
-        this.getListPackageBackups(false)
-      }, error => {
-        this.isLoadingDelete = false
-        this.isVisibleDelete = false
-        console.log('error', error)
-        this.notification.error('Thất bại', 'Xóa gói backup thất bại')
-      })
-    } else {
-      this.notification.error('Error', 'Vui lòng nhập đúng thông tin')
-    }
-  }
-
-  handleDeleteCancel() {
-    this.isVisibleDelete = false
+    this.getListPackageBackups(false);
   }
 
   showUpdate(data: PackageBackupModel) {

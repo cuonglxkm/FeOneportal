@@ -6,16 +6,19 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Home</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
+        <a [routerLink]="['/app-smart-cloud/instances']">{{
+          'app.instances' | i18n
+        }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>Chỉnh sửa thông tin máy ảo</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
@@ -127,7 +130,7 @@
         khôi phục lại.</b
       >
       <br />- Dữ liệu nằm trên volume gắn ngoài sẽ không bị ảnh hưởng. <br />-
-      Sau khi điều chỉnh thành công, mật khẩu đăng nhập mới sẽ được gửi vào
+      Sau khi điều chỉnh thành công, mật khẩu đăng nhập ban đầu sẽ được gửi vào
       email <b>{{ email }}</b
       >. <br />- Quá trình điều chỉnh hệ điều hành sẽ mất khoảng 15 đến 20 phút
       tùy dung lượng của volume root của máy ảo. <br />- Cấu hình máy ảo (<span
@@ -147,7 +150,7 @@
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/cancel.svg"
           alt=""
-        />Hủy
+        />{{ 'app.button.cancel' | i18n }}
       </button>
       <button
         nz-button
@@ -180,14 +183,14 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkUpdate()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
