@@ -115,7 +115,7 @@
       <p style="display: inline-block; margin-right: 20px">
         Đã chọn {{ countObjectSelected }} Objects.
       </p>
-      <button nz-button nzType="primary" (click)="uploadFile()" nzSize="large">
+      <button nz-button nzType="primary" (click)="downloadZipFile()" nzSize="large">
         <img
           style="padding-right: 10px"
           src="assets/imgs/download-vector.png"
@@ -168,7 +168,7 @@
         style="font-weight: bold; padding-right: 10px"
         (click)="toFolder1(item, false)"
       >
-        > {{ item.name }}
+        > {{ filterName }}
       </div>
     </ng-container>
   </div>
@@ -202,8 +202,8 @@
     <tbody>
       <tr *ngFor="let item of rowSelectionTable.data">
         <td
-          [nzChecked]="setOfCheckedId.has(item.key)"
-          (nzCheckedChange)="onItemChecked(item.key, $event)"
+          [nzChecked]="setOfCheckedId.has(item)"
+          (nzCheckedChange)="onItemChecked(item, $event)"
         ></td>
         <td *ngIf="item.objectType != 'folder'">{{ item.keyName }}</td>
         <td
@@ -303,7 +303,7 @@
   [(nzVisible)]="isVisibleFilter"
   nzTitle="Lọc danh sách Object"
   (nzOnCancel)="handleCancel()"
-  (nzOnOk)="openFilter()"
+  (nzOnOk)="handleOkFilter()"
   nzOkText="Xác nhận"
   nzCancelText="Hủy"
   [nzStyle]="modalStyle"
@@ -322,7 +322,7 @@
         <tr *ngFor="let item of dataFilter">
           <td style="width: 28%">
             <nz-select
-              [(ngModel)]="item.name"
+              [(ngModel)]="filterName"
               (ngModelChange)="selectCol(item, $event)"
               nzSize="large"
               style="width: 100%"
@@ -336,11 +336,11 @@
           </td>
           <td style="width: 20%">
             <nz-select
-              *ngIf="item.name == 'Tên'"
-              [(ngModel)]="item.condition"
+              *ngIf="filterName == 'Tên'"
+              [(ngModel)]="filterCondition"
               (ngModelChange)="selectCondition(item.orderNum, 1, $event)"
               nzSize="large"
-              [nzPlaceHolder]="item.condition"
+              [nzPlaceHolder]="filterCondition"
               style="width: 100%"
             >
               <nz-option
@@ -350,11 +350,11 @@
               ></nz-option>
             </nz-select>
             <nz-select
-              *ngIf="item.name == 'Thời gian chỉnh sửa'"
-              [(ngModel)]="item.condition"
+              *ngIf="filterName == 'Thời gian chỉnh sửa'"
+              [(ngModel)]="filterCondition"
               (ngModelChange)="selectCondition(item.orderNum, 2, $event)"
               nzSize="large"
-              [nzPlaceHolder]="item.condition"
+              [nzPlaceHolder]="filterCondition"
               style="width: 100%"
             >
               <nz-option
@@ -364,11 +364,11 @@
               ></nz-option>
             </nz-select>
             <nz-select
-              *ngIf="item.name == 'Dung lượng'"
-              [(ngModel)]="item.condition"
+              *ngIf="filterName == 'Dung lượng'"
+              [(ngModel)]="filterCondition"
               (ngModelChange)="selectCondition(item.orderNum, 3, $event)"
               nzSize="large"
-              [nzPlaceHolder]="item.condition"
+              [nzPlaceHolder]="filterCondition"
               style="width: 100%"
             >
               <nz-option
@@ -381,22 +381,22 @@
           <td style="width: 47%">
             <input
               nzSize="large"
-              *ngIf="item.name == 'Tên'"
+              *ngIf="filterName == 'Tên'"
               nz-input
               placeholder="Basic usage"
-              [(ngModel)]="item.value"
+              [(ngModel)]="filterValueName"
               type="text"
               style="width: 100%"
             />
             <nz-date-picker
-              *ngIf="item.name == 'Thời gian chỉnh sửa'"
-              [(ngModel)]="item.value"
+              *ngIf="filterName == 'Thời gian chỉnh sửa'"
+              [(ngModel)]="filterValueDate"
               nzSize="large"
               style="width: 100%"
             ></nz-date-picker>
             <nz-input-number
-              *ngIf="item.name == 'Dung lượng'"
-              [(ngModel)]="item.value"
+              *ngIf="filterName == 'Dung lượng'"
+              [(ngModel)]="filterValueSize"
               [nzMin]="0"
               [nzMax]="62"
               [nzStep]="1"
@@ -404,9 +404,9 @@
               style="width: 60%"
             ></nz-input-number>
             <nz-select
-              *ngIf="item.name == 'Dung lượng' && item.condition == 'Lớn hơn'"
-              [(ngModel)]="item.type"
-              (ngModelChange)="selectType(item.condition, $event)"
+              *ngIf="filterName == 'Dung lượng' && filterCondition == 'Lớn hơn'"
+              [(ngModel)]="selectTypeMore"
+              (ngModelChange)="selectType(filterCondition, $event)"
               nzSize="large"
               [nzPlaceHolder]="item.type"
               style="width: 30%; margin-left: 5%"
@@ -418,9 +418,9 @@
               ></nz-option>
             </nz-select>
             <nz-select
-              *ngIf="item.name == 'Dung lượng' && item.condition == 'Nhỏ hơn'"
-              [(ngModel)]="item.type"
-              (ngModelChange)="selectType(item.condition, $event)"
+              *ngIf="filterName == 'Dung lượng' && filterCondition == 'Nhỏ hơn'"
+              [(ngModel)]="selectTypeLess"
+              (ngModelChange)="selectType(filterCondition, $event)"
               nzSize="large"
               [nzPlaceHolder]="item.type"
               style="width: 30%; margin-left: 5%"
@@ -490,7 +490,7 @@
           alt=""
         />
         <ng-container *ngFor="let item of listOfFolder">
-          <div style="font-weight: bold">>{{ item.name }}</div>
+          <div style="font-weight: bold">>{{ filterName }}</div>
         </ng-container>
       </div>
       <div>Tên thư mục (<span class="red-star">*</span>)</div>
@@ -564,7 +564,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of lstFileUpdate; i as index">
-            <td>{{ item.name }}</td>
+            <td>{{ filterName }}</td>
             <td style="width: 400px">{{ item.type }}</td>
             <td style="width: 400px">
               <div>{{ (item.size / 1024).toFixed(2) }} KB</div>
@@ -860,16 +860,14 @@
   nzCancelText="Hủy"
   [nzStyle]="modalStyle"
 >
-  <ng-container *nzModalContent>
+  <ng-container *nzModalContent >
     <div class="text-label">Hiệu lực đến</div>
     <nz-date-picker
       class="input-date-picker"
       nzFormat="yyyy-MM-dd HH:mm:ss"
       [nzDisabledDate]="disabledDate"
-      [nzDisabledTime]="disabledDateTime"
-      [nzShowTime]="{ nzDefaultOpenValue: timeDefaultValue }"
       [ngModel]="dateShare"
-      (ngModelChange)="getLinkShare()"
+      (ngModelChange)="getLinkShare($event)"
       style="width: 100%; border-radius: 4px"
     ></nz-date-picker>
     <div class="text-label" style="margin-top: 15px">Đường dẫn chia sẻ</div>
@@ -879,7 +877,11 @@
       [disabled]="true"
       nzSize="large"
       [ngModel]="linkShare"
+      *ngIf="isLoadingGetLink === false"
     />
+    <div class="input-share">
+    <nz-skeleton [nzLoading]="isLoadingGetLink"  [nzActive]="true" [nzTitle]="false" [nzParagraph]="{ rows: 1, width: '100%' }"></nz-skeleton>
+  </div>
   </ng-container>
 </nz-modal>
 
