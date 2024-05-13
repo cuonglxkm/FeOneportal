@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { debounceTime, finalize } from 'rxjs/operators';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
@@ -42,22 +42,13 @@ export class RouterListComponent implements OnInit {
   currentPage = 1;
   pageSize = 10;
   total = 1;
-  loading = true;
-  filterGender = [
-    { text: 'male', value: 'male' },
-    { text: 'female', value: 'female' },
-  ];
+  loading = false;
   searchGenderList: string[] = [];
   filterStatus = [
     { text: 'Tất cả trạng thái', value: '' },
     { text: 'Kích hoạt', value: 'Kích hoạt' },
     { text: 'Chưa kích hoạt', value: 'Chưa kích hoạt' },
   ];
-
-  listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
-  listSubnet: [{ id: ''; text: 'Chọn Subnet' }];
-  listIPAddress: [{ id: ''; text: 'Chọn địa chỉ IP' }];
-  listIPAddressOnVLAN: [{ id: ''; text: 'Chọn địa chỉ IP' }];
 
   form: FormGroup<{
     name: FormControl<string>
@@ -129,69 +120,56 @@ export class RouterListComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     // Handle the region change event
-    this.activeCreate = false;
     this.loading = true;
     this.region = region.regionId;
     console.log(this.tokenService.get()?.userId);
   }
 
   onProjectChange(project: ProjectModel) {
-    this.activeCreate = false;
     this.loading = true;
     this.projectId = project.id;
     this.getDataList(true);
   }
 
   doSearch(value: string) {
-    console.log(value);
-    
     this.routerName = value
     this.getDataList(false)
   }
 
   onChange(value: string) {
-    console.log(value);
-    
     this.searchStatus = value
     this.getDataList(false)
   }
 
   getDataList(isBegin) {
-      this.formListRouter.currentPage = this.currentPage
+    debugger
+    this.formListRouter.currentPage = this.currentPage
       this.formListRouter.pageSize = this.pageSize
       this.formListRouter.routerName = this.routerName
       this.formListRouter.status = this.searchStatus
       this.formListRouter.regionId = this.region
       this.formListRouter.vpcId = this.projectId
       this.loading = true;
+
       this.dataService
-        .getListRouter(this.formListRouter)
-        .pipe(
-          finalize(() => {
-            this.loading = false;
-          })
-        )
-        .subscribe({
-          next: (data) => {
-              this.dataList = data.records;
-              this.total = data.totalCount;
-              if (isBegin) {
-                this.isCheckBegin = this.dataList.length < 1 || this.dataList === null ? true : false;
-              }
-          },
-          error: (e) => {
-            this.notification.error(
-              this.i18n.fanyi('app.status.fail'),
-              this.i18n.fanyi('router.nofitacation.load.fail')
-            );
-          },
-        });
+      .getListRouter(this.formListRouter)
+      .pipe(debounceTime(500))
+      .subscribe(data => {
+        this.loading = false
+        this.dataList = data.records;
+        this.total = data.totalCount;
+        console.log(this.dataList);   
+        if (isBegin) {
+          this.isCheckBegin = this.dataList.length < 1 || this.dataList === null ? true : false;
+        }
+        this.cdr.detectChanges();
+    }, error => {
+      this.loading = false
+        this.dataList = null
+      })
   }
 
-  reloadTable() {
-    this.dataList = [];
-    this.getDataList(false);
-  }
+  
 
   getStatus(value: string): string {
     const foundItem = this.filterStatus.find((item) => item.value === value);
@@ -321,7 +299,7 @@ export class RouterListComponent implements OnInit {
             this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.remove.sucess'));
             this.isLoadingDeleteRouter = false
             this.isVisibleDelete = false;
-            this.reloadTable();
+            this.getDataList(false);
           },
           error: (e) => {
             this.notification.error(
