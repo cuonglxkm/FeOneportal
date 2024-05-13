@@ -16,6 +16,8 @@ import { finalize } from 'rxjs';
 import { PaymentSummaryService } from '../../services/payment-summary.service';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 class ServiceInfo {
   name: string;
@@ -60,7 +62,8 @@ export class PaymentSummaryComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private http: HttpClient,
     private loadingSrv: LoadingService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras.state as { data: any; path: string };
@@ -81,15 +84,21 @@ export class PaymentSummaryComponent implements OnInit {
         const specificationObj = JSON.parse(e.specification);
         switch (e.specificationType) {
           case 'instance_create':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
+            serviceItem.name =
+              this.i18n.fanyi('app.instances') +
+              ` - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'instance_resize':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
+            serviceItem.name =
+              this.i18n.fanyi('app.instances') +
+              ` - ${specificationObj.serviceName}`;
             serviceItem.type = `Điều chỉnh`;
             break;
           case 'instance_extend':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
+            serviceItem.name =
+              this.i18n.fanyi('app.instances') +
+              ` - ${specificationObj.serviceName}`;
             serviceItem.type = 'Gia hạn';
             break;
           case 'volume_create':

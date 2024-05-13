@@ -9,6 +9,8 @@ import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-s
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 
 @Component({
@@ -87,6 +89,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
   constructor(
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fb: NonNullableFormBuilder,
      private fileSystemService: FileSystemService,
      private fileSystemSnapshotService: FileSystemSnapshotService,
@@ -123,7 +126,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
           (data) => {
             this.isLoading = false
             this.notification.success(
-              'Thành công',
+              this.i18n.fanyi('app.status.success'),
               'Tạo mới file system snapshot thành công'
             );
             this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
@@ -131,10 +134,10 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
           (error) => {
             this.isLoading = false
             if (error.status === 500) {
-              this.notification.error('Thất bại', 'Chỉ có thể tạo khi trạng thái của file system là Khởi tạo');
+              this.notification.error(this.i18n.fanyi('app.status.fail'), 'Chỉ có thể tạo khi trạng thái của file system là Khởi tạo');
             }else{
               this.notification.error(
-                'Thất bại',
+                this.i18n.fanyi('app.status.fail'),
                 'Tạo mới file system snapshot thất bại'
               );
             }

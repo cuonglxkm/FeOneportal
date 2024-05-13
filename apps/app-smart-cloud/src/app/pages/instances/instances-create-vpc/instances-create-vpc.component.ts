@@ -261,7 +261,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lấy thông tin VPC không thành công'
+            this.i18n.fanyi('app.notify.get.vpc.info.fail')
           );
         },
       });
@@ -408,7 +408,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.region,
         9999,
         1,
-        false
+        true
       )
       .subscribe((data: any) => {
         const currentDateTime = new Date().toISOString();

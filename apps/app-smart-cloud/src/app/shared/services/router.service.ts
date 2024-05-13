@@ -44,7 +44,7 @@ export class RouterService extends BaseService {
       params = params.append('currentPage', formSearch.currentPage)
     }
     if (formSearch.status != undefined || formSearch.status != null) {
-      params = params.append('statusId', formSearch.status)
+      params = params.append('status', formSearch.status)
     }
     return this.http.get<BaseResponse<RouterModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/routers/list_router', {
       params: params

@@ -1,6 +1,8 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-delete-l7-policy',
@@ -25,6 +27,7 @@ export class DeleteL7PolicyComponent implements AfterViewInit {
   @ViewChild('L7InputName') L7InputName!: ElementRef<HTMLInputElement>;
 
   constructor(private loadBalancerService: LoadBalancerService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService) {
   }
 
@@ -60,19 +63,19 @@ export class DeleteL7PolicyComponent implements AfterViewInit {
         if (data) {
           this.isLoading = false
           this.isVisible = false
-          this.notification.success('Thành công', 'Xóa L7 Policy thành công')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.delete.l7.policy.success'))
           this.onOk.emit(data)
         } else {
           console.log('data', data)
           this.isLoading = false
           this.isVisible = false
-          this.notification.error('Thất bại', 'Xóa L7 Policy thất bại')
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.l7.policy.fail'))
         }
       }, error => {
         console.log('error', error)
         this.isLoading = false
         this.isVisible = false
-        this.notification.error('Thất bại', 'Xóa L7 Policy thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.l7.policy.fail'))
       })
     } else {
       this.isInput = true

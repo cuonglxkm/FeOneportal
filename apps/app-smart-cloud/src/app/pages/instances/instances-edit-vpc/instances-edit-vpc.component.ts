@@ -24,6 +24,8 @@ import {
   ProjectModel,
 } from '../../../../../../../libs/common-utils/src';
 import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -62,6 +64,7 @@ export class InstancesEditVpcComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
@@ -139,7 +142,7 @@ export class InstancesEditVpcComponent implements OnInit {
       error: (e) => {
         this.notification.error(
           e.statusText,
-          'Lấy thông tin VPC không thành công'
+          this.i18n.fanyi('app.notify.get.vpc.info.fail')
         );
       },
     });
@@ -212,13 +215,13 @@ export class InstancesEditVpcComponent implements OnInit {
 
     this.dataService.create(this.order).subscribe({
       next: (data: any) => {
-        this.notification.success('', 'Cập nhật máy ảo hành công');
+        this.notification.success('', this.i18n.fanyi('app.notify.update.instances.success'));
         this.router.navigate(['/app-smart-cloud/instances']);
       },
       error: (e) => {
         this.notification.error(
           e.statusText,
-          'Cập nhật máy ảo không thành công'
+          this.i18n.fanyi('app.notify.update.instances.fail')
         );
       },
     });

@@ -15,6 +15,8 @@ import { getCurrentRegionAndProject } from '@shared';
 import { InstancesService } from '../../../instances/instances.service';
 import { RegionModel, ProjectModel, AppValidator } from '../../../../../../../../libs/common-utils/src';
 import { finalize } from 'rxjs/operators';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
@@ -128,6 +130,7 @@ export class ListenerCreateComponent implements OnInit{
               private instancesService: InstancesService,
               private activatedRoute: ActivatedRoute,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
@@ -208,12 +211,12 @@ export class ListenerCreateComponent implements OnInit{
       }))
       .subscribe(
       data => {
-        this.notification.success('Thành công', 'Tạo mới listener thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.listener.success'));
         this.dataListener = data;
         return true;
       },
       error => {
-        this.notification.error(' Thất bại', 'Tạo mới listener thất bại');
+        this.notification.error(' Thất bại', this.i18n.fanyi('app.notification.create.listener.fail'));
         return false;
       }
     );

@@ -718,7 +718,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'network/router/detail/:id',
+    path: 'network/router/detail/:name/:id',
     component: RouterDetailComponent,
     canActivate: [PermissionGuard],
     data: {

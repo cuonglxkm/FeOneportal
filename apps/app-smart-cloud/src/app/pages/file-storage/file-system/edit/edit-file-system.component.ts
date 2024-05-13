@@ -9,6 +9,8 @@ import {
 import { FileSystemService } from '../../../../shared/services/file-system.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-edit-file-system',
@@ -42,6 +44,7 @@ export class EditFileSystemComponent implements AfterViewInit {
   @ViewChild('fileSystemInputName') fileSystemInputName!: ElementRef<HTMLInputElement>;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder,
               private fileSystemService: FileSystemService,
               private notification: NzNotificationService,
@@ -127,13 +130,13 @@ export class EditFileSystemComponent implements AfterViewInit {
     this.fileSystemService.edit(formEdit).subscribe(data => {
       this.isLoading = false;
       this.isVisible = false;
-      this.notification.success('Thành công', 'Cập nhật File System thành công');
+      this.notification.success(this.i18n.fanyi('app.status.success'), 'Cập nhật File System thành công');
 
       this.onOk.emit(data);
     }, error => {
       this.isLoading = false;
       this.isVisible = false;
-      this.notification.error('Thất bại', 'Cập nhật File System thất bại');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Cập nhật File System thất bại');
     });
   }
 }

@@ -64,13 +64,13 @@
         <tbody>
         <tr *ngFor="let item of listOfData">
           <td (click)="viewDetail(item.id)" style="color: #0D67B0">{{ item.displayName }}</td>
-          <td *ngIf="item.type != 'VPC'" (click)="viewDetail(item.id)">none</td>
-          <td *ngIf="item.type != 'VPC'" (click)="viewDetail(item.id)">none</td>
-          <td *ngIf="item.type == 'VPC'" (click)="viewDetail(item.id)">{{ item.createDate | date : "dd/MM/YYYY" }}</td>
-          <td *ngIf="item.type == 'VPC'" (click)="viewDetail(item.id)">{{ item.expireDate | date : "dd/MM/YYYY" }}</td>
-          <td (click)="viewDetail(item.id)">{{ item.resourceStatus }}</td>
-          <td (click)="viewDetail(item.id)">{{ item.serviceStatus }}</td>
-          <td (click)="viewDetail(item.id)">{{ item.type == 'VPC' ? ('project.note4' | i18n) : ('project.note5' | i18n)}}</td>
+          <td *ngIf="item.type != 'VPC'">-</td>
+          <td *ngIf="item.type != 'VPC'">-</td>
+          <td *ngIf="item.type == 'VPC'">{{ item.createDate | date : "dd/MM/YYYY" }}</td>
+          <td *ngIf="item.type == 'VPC'">{{ item.expireDate | date : "dd/MM/YYYY" }}</td>
+          <td >{{ item.resourceStatus }}</td>
+          <td >{{ item.serviceStatus }}</td>
+          <td >{{ item.type == 'VPC' ? ('project.note4' | i18n) : ('project.note5' | i18n)}}</td>
           <!--          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: forestgreen">Đang hoạt động</td>-->
           <!--          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>-->
           <!--          <td *ngIf="item.status === 0">-</td>-->
@@ -126,8 +126,11 @@
 <nz-modal [(nzVisible)]="isVisibleDeleteVPC" nzTitle="{{ 'project.note21' | i18n }}" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
-              nzDescription="{{ 'project.note11' | i18n:{'name':itemDelete.displayName} }}"
+              [nzDescription]="alertOK"
               nzShowIcon style="margin-bottom: 10px;"></nz-alert>
+    <ng-template #alertOK>
+      <span [innerHTML]="'project.note13' | i18n:{'name':itemDelete.displayName}"></span>
+    </ng-template>
     <div class="text-label" style="margin-bottom: 3px; margin-top: 20px">{{ 'project.note10' | i18n }}</div>
     <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{itemDelete.displayName}}" [(ngModel)]="nameDelete"
            (ngModelChange)="confirmNameDelete($event)" type="text" />
@@ -146,11 +149,8 @@
 <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="{{ 'project.note22' | i18n }}" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
-              [nzDescription]="alertOK"
+              nzDescription="{{ 'project.note11' | i18n:{'name':itemDelete.displayName} }}"
               nzShowIcon style="margin-bottom: 10px;"></nz-alert>
-    <ng-template #alertOK>
-      <span [innerHTML]="'project.note13' | i18n:{'name':itemDelete.displayName}"></span>
-    </ng-template>
     <div class="text-label" style="margin-bottom: 3px; margin-top: 35px">{{ 'project.note15' | i18n }} </div>
     <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{itemDelete.displayName}}" [(ngModel)]="nameDelete"
            (ngModelChange)="confirmNameDelete($event)" type="text" />
