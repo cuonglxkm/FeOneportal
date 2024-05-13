@@ -42,6 +42,15 @@
   "form.account.contractCode": "Mã hợp đồng",
   "form.account.city": "Tỉnh/Thành Phố",
   "form.account.address": "Địa chỉ chi tiết",
+
+  "form.account.tooltip.info":"Không quá 20 ký tự, không chứa ký tự đặc biệt",
+  "form.account.validate.name":"Tên không được để trống và chứa kí tự đặc biệt!",
+  "form.account.validate.surname":"Họ không được để trống và chứa kí tự đặc biệt!",
+  "form.account.validate.phone":"Số điện thoại không hợp lệ!",
+  "form.account.validate.address":"Tỉnh/Thành phố",
+
+
+
   "app.account.validation": "Vui lòng nhập đầy đủ thông tin",
   "app.account.form.success": "Cập nhật tài khoản thành công!",
   "app.account.form.fail": "Cập nhật tài khoản không thành công!",

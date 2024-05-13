@@ -51,6 +51,7 @@
 </page-header>
 <nz-content>
   <nz-card>
+
     <nz-table #rowSelectionTable nzShowSizeChanger [nzData]="response?.records" [nzPageIndex]="response?.currentPage"
       [nzTotal]="response?.totalCount" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoading"
       [nzFrontPagination]="false" (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">

@@ -8,18 +8,19 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
-          <nz-form-label>{{ 'form.account.surname' | i18n }} (<span class="text-red">*</span>)  <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  nz-tooltip="Không quá 20 ký tự, không chứa ký tự đặc biệt"></one-portal-svg-icon></nz-form-label>
-          <nz-form-control nzErrorTip="Họ không được để trống và chứa kí tự đặc biệt!">
-            <input maxlength="20" nz-input formControlName="surname" placeholder="Họ" nzSize="large" />
+          <nz-form-label>{{ 'form.account.surname' | i18n }} (<span class="text-red">*</span>)  <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  [nz-tooltip]="'form.account.tooltip.info'| i18n"></one-portal-svg-icon></nz-form-label>
+          <nz-form-control [nzErrorTip]="'form.account.validate.surname'|i18n">
+            <input maxlength="20" nz-input formControlName="surname" [placeholder]="'form.account.surname'|i18n" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
-          <nz-form-label>{{ 'form.account.name' | i18n }} (<span class="text-red">*</span>) <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  nz-tooltip="Không quá 20 ký tự, không chứa ký tự đặc biệt"></one-portal-svg-icon></nz-form-label>
-          <nz-form-control nzErrorTip="Tên không được để trống và chứa kí tự đặc biệt!">
-            <input nz-input formControlName="name" placeholder="Tên" nzSize="large" />
+          <nz-form-label>{{ 'form.account.name' | i18n }} (<span class="text-red">*</span>) <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  [nz-tooltip]="'form.account.tooltip.info'| i18n"></one-portal-svg-icon></nz-form-label>
+          <nz-form-control [nzErrorTip]="'form.account.validate.name'|i18n">
+            <input nz-input formControlName="name" [placeholder]="'form.account.name' |i18n" nzSize="large" />
           </nz-form-control>
+
         </nz-form-item>
       </nz-col>
       <nz-col nzLg="6" nzMd="6" nzSm="24">
@@ -33,8 +34,8 @@
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
           <nz-form-label>{{ 'form.account.phone' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
-          <nz-form-control nzErrorTip="Số điện thoại không hợp lệ!">
-            <input nz-input formControlName="phone" placeholder="Số điện thoại" nzSize="large" />
+          <nz-form-control [nzErrorTip]="'form.account.validate.phone' |i18n">
+            <input nz-input formControlName="phone" [placeholder]="'form.account.phone'|i18n" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -67,7 +68,7 @@
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label>{{ 'form.account.city' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
-          <nz-form-control nzErrorTip="Tỉnh/Thành phố">
+          <nz-form-control [nzErrorTip]="'form.account.validate.address' | i18n">
             <nz-select [nzPlaceHolder]="'Chọn Tỉnh/Thành phố'" [nzShowSearch]="true" formControlName="province"
               nzSize="large">
               <nz-option *ngFor="let i of provinceList" [nzLabel]="i" [nzValue]="i" />
@@ -78,9 +79,9 @@
 
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>{{ 'form.account.address' | i18n }} (<span class="text-red">*</span>) <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  nz-tooltip="Điền địa chỉ bao gồm quận/huyện - thị xã và số nhà"></one-portal-svg-icon></nz-form-label>
-          <nz-form-control nzErrorTip="Địa chỉ không được để trống và chứa kí tự đặc biệt!">
-            <input maxlength="255" nz-input formControlName="address" placeholder="Địa chỉ" nzSize="large" />
+          <nz-form-label>{{ 'form.account.address' | i18n }}  <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  nz-tooltip="Điền địa chỉ bao gồm quận/huyện - thị xã và số nhà"></one-portal-svg-icon></nz-form-label>
+          <nz-form-control >
+            <input maxlength="255" nz-input formControlName="address" [placeholder]="'form.account.address' | i18n " nzSize="large" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>

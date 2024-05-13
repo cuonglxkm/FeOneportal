@@ -164,6 +164,12 @@
   "form.account.contractCode": "Contract Code",
   "form.account.city": "Province/City",
   "form.account.address": "Address",
+  "form.account.tooltip.info":"No more than 20 characters, no special characters",
+  "form.account.validate.name":"The name cannot be empty or contain special characters!",
+  "form.account.validate.surname":"Last name cannot be blank or contain special characters!",
+  "form.account.validate.phone":"Invalid phone number!",
+  "form.account.validate.address":"Province/City",
+
   "app.account.validation": "Please enter complete information!",
   "app.account.form.success": "Account updated successfully!",
   "app.account.form.fail": "Account update failed",
