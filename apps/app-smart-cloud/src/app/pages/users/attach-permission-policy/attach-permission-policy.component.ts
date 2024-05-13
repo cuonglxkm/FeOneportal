@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   Input,
   OnInit,
   Output,
@@ -23,6 +24,8 @@ import { PolicyService } from '../../../../../../../libs/common-utils/src';
 import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ClipboardService } from 'ngx-clipboard';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-attach-permission-policy',
@@ -49,10 +52,9 @@ export class AttachPermissionPolicyComponent implements OnInit {
   cardHeight: string = '130px';
 
   filterStatus = [
-    { text: 'Tất cả các loại', value: '' },
-    { text: 'Khởi tạo', value: 'KHOITAO' },
-    { text: 'Hủy', value: 'HUY' },
-    { text: 'Tạm ngưng', value: 'TAMNGUNG' },
+    { text: this.i18n.fanyi('app.status.all'), value: '' },
+    { text: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
+    { text: this.i18n.fanyi('app.status.suspended'), value: 'TAMNGUNG' },
   ];
 
   changeFilterStatus(e: any): void {
@@ -60,6 +62,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
   }
 
   constructor(
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private service: UserService,
     private policyService: PolicyService,
     public message: NzMessageService,

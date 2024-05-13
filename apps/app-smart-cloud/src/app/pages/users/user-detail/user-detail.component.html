@@ -332,7 +332,7 @@
               src="assets/imgs/add-circle.svg"
               alt=""
             />
-            <span>Thêm vào Groups</span>
+            <span>{{ 'app.user-detail.addToGroup' | i18n }}</span>
           </button>
         </div>
       </div>
@@ -359,10 +359,10 @@
               (nzCheckedChange)="onAllCheckedGroup($event)"
               nzLeft
             ></th>
-            <th>Tên Group</th>
-            <th>Số lượng User</th>
+            <th>{{ 'app.create-user.nameGroup' | i18n }}</th>
+            <th>{{ 'app.create-user.numberOfUser' | i18n }}</th>
             <th>Attached policies</th>
-            <th>Thời gian tạo</th>
+            <th>{{ 'app.users.createDate' | i18n }}</th>
           </tr>
         </thead>
         <tbody>

@@ -51,7 +51,7 @@
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
           <nz-form-label>Email</nz-form-label>
-          <nz-form-control nzErrorTip="Email không hợp lệ!">
+          <nz-form-control [nzErrorTip]="'validation.email.wrong-format' | i18n">
             <input
               nz-input
               formControlName="email"
@@ -71,7 +71,7 @@
             <input
               nz-input
               formControlName="phone"
-              placeholder="Số điện thoại"
+              [placeholder]="'form.account.phone' | i18n"
               nzSize="large"
             />
           </nz-form-control>
