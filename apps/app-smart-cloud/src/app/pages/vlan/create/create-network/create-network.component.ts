@@ -101,7 +101,8 @@ export class CreateNetworkComponent implements OnInit {
       AppValidator.startsWithValidator('vlan_'),
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
-      this.duplicateNameValidator.bind(this)]],
+      this.duplicateNameValidator.bind(this),
+      this.prefixValidator()]],
     nameSubnet: ['', [Validators.required,
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/)]],
@@ -129,6 +130,19 @@ export class CreateNetworkComponent implements OnInit {
 
       this.validateForm.get('gateway').reset();
     });
+
+    this.validateForm.get('nameNetwork').valueChanges.subscribe(value => {
+      if (!value.startsWith('vlan_')) {
+        this.validateForm.get('nameNetwork').setValue('vlan_' + value.replace(/^vlan_/i, ''), { emitEvent: false });
+      }
+    });
+  }
+
+  prefixValidator(): Validators {
+    return (control: FormControl): { [key: string]: any } | null => {
+      const isValid = control.value.startsWith('vlan_') && control.value.length > 5;
+      return isValid ? null : { prefixError: true };
+    };
   }
 
   regionChanged(region: RegionModel) {
@@ -161,7 +175,7 @@ export class CreateNetworkComponent implements OnInit {
       this.formCreateNetwork.regionId = this.region;
       this.formCreateNetwork.customerId = this.tokenService.get()?.userId;
       this.formCreateNetwork.subnetName = this.validateForm.controls.nameSubnet.value;
-      this.formCreateNetwork.gatewayIP = this.validateForm.controls.gateway.value;
+      this.formCreateNetwork.gateway = this.validateForm.controls.gateway.value;
       this.formCreateNetwork.dnsNameServer = null;
       // if(this.isInPurchasedSubnet())
       this.formCreateNetwork.allocationPool = this.validateForm.controls.allocationPool.value;
@@ -223,8 +237,10 @@ export class CreateNetworkComponent implements OnInit {
         this.pool = dataJson.ipRange
         this.gateway = dataJson.gateWay
 
-        if(!this.validateForm.controls.disableGatewayIp.value) {
-          this.validateForm.controls.allocationPool.setValue(this.gateway)
+        console.log('gateway', this.validateForm.controls.disableGatewayIp.value)
+        if(this.validateForm.controls.disableGatewayIp.value == false) {
+          console.log('here')
+          this.validateForm.controls.gateway.setValue(dataJson.gateWay)
         }
 
         this.validateForm.controls.allocationPool.setValue(this.pool)

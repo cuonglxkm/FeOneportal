@@ -28,7 +28,7 @@
       </nz-select>
       <div *ngIf="isSelected">{{ 'volume.notification.input.select.vm' | i18n }}</div>
     </div>
-    <div *ngIf="!isMultiple || (isMultiple && instanceInVolume.length == 1)">
+    <div *ngIf="!isMultiple || (isMultiple && instanceInVolume?.length == 1)">
       <div>
         <span class="text-label" style="text-align: center">{{'volume.alert.message.confirm.detach'|i18n}}</span>
       </div>

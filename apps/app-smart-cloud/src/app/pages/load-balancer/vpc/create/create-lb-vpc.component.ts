@@ -167,6 +167,7 @@ export class CreateLbVpcComponent implements OnInit {
       if(selected){
         this.selectedValueSpan.nativeElement.innerText = selected.name + '(' + selected.subnetAddressRequired + ')';
       }
+      this.getIpBySubnet(selected?.cloudId)
     }
 
   }
@@ -228,8 +229,8 @@ export class CreateLbVpcComponent implements OnInit {
     });
   }
 
-  getIpBySubnet() {
-    this.loadBalancerService.getIPBySubnet(this.validateForm.controls.subnet.value, this.project, this.region).subscribe(data => {
+  getIpBySubnet(subnetId) {
+    this.loadBalancerService.getIPBySubnet(subnetId, this.project, this.region).subscribe(data => {
       this.ipFloating = data;
     });
   }
@@ -363,7 +364,7 @@ export class CreateLbVpcComponent implements OnInit {
     this.validateForm.controls.radio.setValue('floatingIp');
     this.getListVlanSubnet();
     this.searchProduct();
-    this.getIpBySubnet();
+    // this.getIpBySubnet();
     this.getListLoadBalancer();
     this.getListSubnetInternetFacing();
   }
