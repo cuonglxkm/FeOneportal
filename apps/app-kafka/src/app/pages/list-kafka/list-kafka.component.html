@@ -38,7 +38,7 @@
       </div>
 
       <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="6" class="search-filter">
-        <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
+        <nz-input-group nzSearch [nzPrefix]="prefixButton" class="w-100" nzSize="large">
           <input [(ngModel)]="keySearch" (keyup.enter)="handleChange()" type="text" nz-input
             [placeholder]="'app.service.search' | i18n" />
         </nz-input-group>

@@ -4,12 +4,6 @@
     min-height: 280px;
 }
 
-.search {
-    border-radius: 8px;
-    width: 300px;
-    height: 40px;
-}
-
 .filter {
     display: flex;
     align-items: center;
