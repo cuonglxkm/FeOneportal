@@ -102,10 +102,10 @@ export class ListListenerInLbComponent implements OnInit{
       }))
       .subscribe(
       data => {
-        this.notification.success('Thành công', 'Xóa thành công Listener')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.delete.listener.success'))
       },
       error => {
-        this.notification.error('Thất bại', 'Xóa thất bại Listener')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.listener.fail'))
       }
     )
   }

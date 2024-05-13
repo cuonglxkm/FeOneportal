@@ -50,8 +50,8 @@ export class RouterListComponent implements OnInit {
   searchGenderList: string[] = [];
   filterStatus = [
     { text: 'Tất cả trạng thái', value: '' },
-    { text: 'Kích hoạt', value: 'ACTIVE' },
-    { text: 'Chưa kích hoạt', value: 'INACTIVE' },
+    { text: 'Kích hoạt', value: 'Kích hoạt' },
+    { text: 'Chưa kích hoạt', value: 'Chưa kích hoạt' },
   ];
 
   listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
@@ -102,9 +102,10 @@ export class RouterListComponent implements OnInit {
   isLoadingCreateRouter: boolean = false
   isLoadingDeleteRouter: boolean = false
   isLoadingEditRouter: boolean = false
-  value: string = ''
-  status: string = ''
-
+  routerName: string = ''
+  searchStatus: string = ''
+  isCheckBegin: boolean = false;
+  value: string
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: RouterService,
@@ -138,22 +139,28 @@ export class RouterListComponent implements OnInit {
     this.activeCreate = false;
     this.loading = true;
     this.projectId = project.id;
-    this.getDataList();
+    this.getDataList(true);
   }
 
   doSearch(value: string) {
-    this.value = value
+    console.log(value);
+    
+    this.routerName = value
+    this.getDataList(false)
   }
 
   onChange(value: string) {
-    this.status = value
+    console.log(value);
+    
+    this.searchStatus = value
+    this.getDataList(false)
   }
 
-  getDataList() {
+  getDataList(isBegin) {
       this.formListRouter.currentPage = this.currentPage
       this.formListRouter.pageSize = this.pageSize
-      this.formListRouter.routerName = this.value
-      this.formListRouter.status = this.status
+      this.formListRouter.routerName = this.routerName
+      this.formListRouter.status = this.searchStatus
       this.formListRouter.regionId = this.region
       this.formListRouter.vpcId = this.projectId
       this.loading = true;
@@ -162,25 +169,19 @@ export class RouterListComponent implements OnInit {
         .pipe(
           finalize(() => {
             this.loading = false;
-            this.cdr.detectChanges();
           })
         )
         .subscribe({
           next: (data) => {
-            if (data != null && data.records && data.records.length > 0) {
-              this.activeCreate = false;
               this.dataList = data.records;
               this.total = data.totalCount;
-            } else {
-              this.activeCreate = true;
-            }
-            this.cdr.detectChanges();
+              if (isBegin) {
+                this.isCheckBegin = this.dataList.length < 1 || this.dataList === null ? true : false;
+              }
           },
           error: (e) => {
-            this.dataList = [];
-            this.activeCreate = true;
             this.notification.error(
-              e.statusText,
+              this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.nofitacation.load.fail')
             );
           },
@@ -189,7 +190,7 @@ export class RouterListComponent implements OnInit {
 
   reloadTable() {
     this.dataList = [];
-    this.getDataList();
+    this.getDataList(false);
   }
 
   getStatus(value: string): string {
@@ -239,7 +240,7 @@ export class RouterListComponent implements OnInit {
         this.isLoadingCreateRouter = false
         this.isVisibleCreate = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.create.sucess'));
-        this.getDataList();
+        this.getDataList(false);
       },
       error: (error) => {
         this.isLoadingCreateRouter = false
@@ -279,7 +280,7 @@ export class RouterListComponent implements OnInit {
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.edit.sucess'));
         this.isLoadingEditRouter = false
         this.isVisibleEdit = false;
-        this.getDataList();
+        this.getDataList(false);
       },
       error: (e) => {
         this.notification.error(

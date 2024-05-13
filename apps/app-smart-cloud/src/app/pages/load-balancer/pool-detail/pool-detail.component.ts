@@ -417,6 +417,20 @@ export class PoolDetailComponent implements OnInit {
   protocol_port: number;
   modalMember(checkCreate: boolean, data: MemberOfPool) {
     if (checkCreate) {
+      this.formMember = new FormGroup({
+        name: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        ipPrivate: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        port: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        weight: new FormControl('', {
+          validators: [Validators.required],
+        }),
+      });
       this.memberForm = new MemberCreateOfPool();
       this.memberForm.address = this.ipAddress;
       this.memberForm.protocol_port = this.protocol_port;
@@ -431,19 +445,28 @@ export class PoolDetailComponent implements OnInit {
         this.memberInput.nativeElement.focus();
       }, 300);
     } else {
+      this.formMember = new FormGroup({
+        name: new FormControl('', {
+          validators: [
+            Validators.required,
+            Validators.pattern(/^[a-zA-Z0-9]*$/),
+          ],
+        }),
+        ipPrivate: new FormControl('', {
+          validators: [],
+        }),
+        port: new FormControl('', {
+          validators: [],
+        }),
+        weight: new FormControl('', {
+          validators: [Validators.required],
+        }),
+      });
       this.memberForm = data;
       this.isCreate = false;
       this.titleModalMember = this.i18n.fanyi('app.member.edit');
     }
     this.isVisibleMember = true;
-    this.formMember = new FormGroup({
-      name: new FormControl('', {
-        validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/)],
-      }),
-      weight: new FormControl('', {
-        validators: [Validators.required],
-      }),
-    });
   }
 
   handleOkMember() {

@@ -8,6 +8,8 @@ import { LoadBalancerService } from '../../../../../shared/services/load-balance
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { urlValidator } from '../create/create-l7-policy.component';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-edit-l7-policy',
@@ -60,6 +62,7 @@ export class EditL7PolicyComponent implements OnInit {
               private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private loadBalancerService: LoadBalancerService,
               private notification: NzNotificationService) {
   }
@@ -189,12 +192,12 @@ export class EditL7PolicyComponent implements OnInit {
 
       this.loadBalancerService.updateL7Policy(this.idL7Policy, formUpdateL7Policy).subscribe(data => {
         this.isLoading = false
-        this.notification.success('Thành công', 'Cập nhật L7 Policy thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.update.l7.policy.success'))
         //navigate detail listener
         this.router.navigate(['/app-smart-cloud/load-balancer/' + this.idLoadBalancer + '/listener/detail' + this.idListener])
       }, error => {
         this.isLoading = false
-        this.notification.error('Thất bại', 'Cập nhật L7 Policy thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.update.l7.policy.fail'))
       })
     }
   }
