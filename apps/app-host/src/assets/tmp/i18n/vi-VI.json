@@ -1074,7 +1074,7 @@
   "kafka.password-confirm": "Xác nhận mật khẩu",
   "kafka.user.forgot-pw-title": "Quên mật khẩu tài khoản",
   "kafka.user.forgot-pw-email": "Mã xác thực OTP đã được gửi đến email",
-  "kafka.user.otp": "Xin vui lòng nhập mã xác thực OTP",
+  "kafka.user.otp": "Vui lòng nhập mã xác thực OTP vào ô dưới đây.",
   "kafka.user.not-otp": "Bạn chưa nhận được mã ?",
   "kafka.user.resend-otp": "Gửi lại OTP",
   "kafka.user.delete": "Xóa tài khoản",

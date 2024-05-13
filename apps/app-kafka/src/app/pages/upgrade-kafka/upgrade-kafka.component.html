@@ -260,7 +260,7 @@
                     </div>
 
                     <div nz-col [nzSpan]="12">
-                        <button nz-button nzType="primary" nzBlock [disabled]="myform.invalid || upgradeAmount === 0"
+                        <button nz-button nzType="primary" nzBlock [disabled]="myform.invalid || (upgradeAmount - remainAmount) <= 0"
                             (click)="onSubmitPayment()">
                             <img style="padding-right: 10px; margin-top: -4px; height: 20px;"
                                 src="assets/imgs/upgrade-white.svg" alt="" />

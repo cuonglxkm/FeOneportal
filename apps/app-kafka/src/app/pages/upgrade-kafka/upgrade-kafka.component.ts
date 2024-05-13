@@ -230,7 +230,7 @@ export class UpgradeKafkaComponent implements OnInit {
   onChangeCpu(event: number) {
     this.cpu = event;
     if (event != null) {
-      if ((event < this.initCpu) || (event == this.initCpu && this.ram <= this.initRam && this.storage <= this.initStorage) ) {
+      if ((event < this.initCpu)) {
         this.myform.controls['vCpu'].setErrors({'invalid': true});
       } else {
         this.setUpgradeAmount();
@@ -241,7 +241,7 @@ export class UpgradeKafkaComponent implements OnInit {
   onChangeRam(event: number) {
     this.ram = event;
     if (event != null) {
-      if ((event < this.initRam) || (event == this.initRam && this.cpu <= this.initCpu && this.storage <= this.initStorage)) {
+      if ((event < this.initRam)) {
         this.myform.get('ram').setErrors({'invalid': true});
       } else {
         this.setUpgradeAmount();
@@ -252,7 +252,7 @@ export class UpgradeKafkaComponent implements OnInit {
   onChangeStorage(event: number) {
     this.storage = event;
     if (event != null) {
-      if ((event < this.initStorage) || (event == this.initStorage && this.cpu <= this.initCpu && this.ram <= this.initRam)) {
+      if ((event < this.initStorage)) {
         this.myform.get('storage').setErrors({'invalid': true});
       } else {
         this.setUpgradeAmount();
@@ -265,7 +265,14 @@ export class UpgradeKafkaComponent implements OnInit {
   }
 
   setUpgradeAmount() {
-    this.upgradeAmount = (this.ram * this.unitPrice.ram + this.cpu * this.unitPrice.cpu + this.storage * this.unitPrice.storage) * this.broker * this.remainMonth;
+    if (this.ram == this.initRam && 
+      this.cpu == this.initCpu && 
+      this.storage == this.initStorage
+    ) {
+      this.upgradeAmount = 0;
+    } else {
+      this.upgradeAmount = (this.ram * this.unitPrice.ram + this.cpu * this.unitPrice.cpu + this.storage * this.unitPrice.storage) * this.broker * this.remainMonth;
+    }
   }
 
   backToList() {

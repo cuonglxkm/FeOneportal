@@ -37,7 +37,8 @@ nz-card {
   width: 100%;
 }
 
-input,
+input, 
+nz-input-group, 
 .border-button,
 ::ng-deep .ant-select-selector {
   border-radius: 8px !important;
