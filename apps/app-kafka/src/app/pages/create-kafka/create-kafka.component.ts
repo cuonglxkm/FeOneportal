@@ -109,7 +109,7 @@ export class CreateKafkaComponent implements OnInit {
       ram: [null, [Validators.required, Validators.pattern("^[0-9]*$"), Validators.min(1), Validators.max(64)]],
       storage: [null, [Validators.required, Validators.min(1), Validators.max(2000), Validators.pattern("^[0-9]*$")]],
       broker: [3, [Validators.required]],
-      usageTime: [1, [Validators.required]],
+      usageTime: [1, [Validators.required, Validators.min(1), Validators.max(100)]],
       configType: [0, [Validators.required]],
       numPartitions: [3],
       defaultReplicationFactor: [3],

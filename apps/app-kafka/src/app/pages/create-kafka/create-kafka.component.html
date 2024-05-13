@@ -437,11 +437,19 @@
           <div nz-col [nzSpan]="12" class="box-duration">
             <nz-form-item>
               <nz-form-label [nzXs]="24" [nzSm]="24" nzNoColon>{{ 'app.service.duration' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
-              <nz-form-control [nzXs]="24" [nzSm]="24" [nzErrorTip]="'validation.kafka.duration-required' | i18n">
+              <nz-form-control [nzXs]="24" [nzSm]="24" [nzErrorTip]="errDuration">
                 <nz-input-number formControlName="usageTime" id="usageTime" autofocus nzSize="large" [nzMin]="0" (keydown)="onKeyDown($event)"
                   [nzPlaceHolder]="'app.service.duration-placeholder' | i18n" (ngModelChange)="onChangeUsageTime()">
                 </nz-input-number>
               </nz-form-control>
+              <ng-template #errDuration let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{'validation.kafka.duration-required' | i18n}}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                  Thời gian sử dụng nằm trong khoảng từ 1 - 100
+                </ng-container>
+              </ng-template>
             </nz-form-item>
           </div>
           <div nz-col [nzSpan]="12">
