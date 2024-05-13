@@ -52,6 +52,7 @@ export class BucketDetailComponent implements OnInit {
   isVisibleVersioning = false;
   isVisibleDeleteVersion = false;
   isVisibleRestoreVersion = false;
+  isLoadingCopy = false;
   isUpload = false;
   folderChange: string;
   modalStyle = {
@@ -549,13 +550,20 @@ export class BucketDetailComponent implements OnInit {
     }
   }
 
+  activeRow: any;
   toFolder(event: any) {
+    console.log(event);
+    this.activeRow = event;
     if (event.folderKey != undefined) {
       this.folderChange = event.folderKey;
     } else {
       this.folderChange = event.bucketName;
     }
   }
+
+  isActive(item: any): boolean {
+    return this.activeRow === item;
+}
 
   downloadFile(versionId: any) {
     this.service
@@ -587,19 +595,23 @@ export class BucketDetailComponent implements OnInit {
     };
     this.service.GetBucketTreeData(data).subscribe((data) => {
       this.treeFolder = data;
+      console.log(this.treeFolder);
+      
     });
   }
 
   copyFolder() {
-    this.isVisibleCopy = false;
+
+    this.isLoadingCopy = true
     let destinationKey = '';
     let destinationBucket = '';
     if (this.folderChange.includes('/')) {
       const separatorIndex = this.folderChange.indexOf('/');
       destinationBucket = this.folderChange.substring(0, separatorIndex);
-      destinationKey = this.folderChange.substring(separatorIndex + 1);
+      destinationKey = this.folderChange.substring(separatorIndex + 1) + this.dataAction.key;
     } else {
       destinationBucket = this.folderChange;
+      destinationKey = this.dataAction.key;
     }
     const data = {
       sourceKey: this.dataAction.key,
@@ -612,12 +624,14 @@ export class BucketDetailComponent implements OnInit {
       .copyProject(data)
       .pipe(
         finalize(() => {
+          this.isLoadingCopy = false;
           this.loadData();
         })
       )
       .subscribe(
         () => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), '`Sao chép thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Sao chép thành công');
+          this.isVisibleCopy = false;
         },
         (error) => {
           this.notification.error(this.i18n.fanyi('app.status.fail'), 'Sao chép thất bại');
