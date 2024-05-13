@@ -84,4 +84,6 @@ export class CloudProjectResourceUsed {
 export class SizeInCloudProject {
   cloudProject: CloudProject
   cloudProjectResourceUsed: CloudProjectResourceUsed
+  creationDate: Date
+  expirationDate: Date
 }

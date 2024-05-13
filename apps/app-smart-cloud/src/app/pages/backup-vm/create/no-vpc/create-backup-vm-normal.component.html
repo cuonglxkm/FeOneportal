@@ -23,7 +23,7 @@
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card style="border-radius: 8px;">
-        <span class="text-card-header">Thông tin backup</span>
+        <span class="text-card-header">{{'app.backup.vm.ìnformation'|i18n}}</span>
         <form nz-form [formGroup]="validateForm" nzLayout="vertical">
           <nz-row nzGutter="24" style="margin-top: 25px;">
             <nz-col nzSpan="12">
@@ -281,7 +281,7 @@
         <div style="margin-top: 10px" class="text-value">{{ 'app.info.backup.vm.external.volume'|i18n }}</div>
         <div style="margin-top: 10px" class="text-label" *ngFor="let data of volumeAttachSelected">{{data?.name}} - {{data?.sizeInGB}} GB</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Tổng dung lượng backup</div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.info.backup.vm.total.storage'|i18n }}</div>
         <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <div style="margin-top: 10px" class="text-value">{{ 'app.backup.vm.storage.remaining'|i18n }}</div>

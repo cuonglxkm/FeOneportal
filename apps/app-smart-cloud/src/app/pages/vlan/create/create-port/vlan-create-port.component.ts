@@ -189,7 +189,7 @@ export class VlanCreatePortComponent implements OnInit{
     this.validateForm = this.fb.group({
       idSubnet: [0, [Validators.required]],
       namePort: ['', [Validators.required,  Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9_]*$/)]],
-      ipAddress: ['', [Validators.required, ipAddressValidator(this.subnetAddress), ipAddressExistsValidator(this.ipPort)]]
+      ipAddress: ['', [ipAddressValidator(this.subnetAddress), ipAddressExistsValidator(this.ipPort)]]
     });
 
   }

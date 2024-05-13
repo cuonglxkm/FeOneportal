@@ -19,6 +19,7 @@
              (ngModelChange)="onInput($event)"
              placeholder="{{ 'app.vlan.note71' | i18n }}"/>
       <span *ngIf="isInput" style="color: red;">{{ 'app.vlan.note72' | i18n }}</span>
+      <span *ngIf="isInputNull" style="color: red;">{{ 'app.vlan.note83' | i18n }}</span>
     </div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
