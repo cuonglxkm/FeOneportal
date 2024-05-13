@@ -13,9 +13,12 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item> Network </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/network/router']"
-          ><span class="breadcrumb-custom">Router</span></a
-        >
+        <a [routerLink]="['/app-smart-cloud/network/router']">
+          Router</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/network/router']">
+          {{ 'router.detail' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -28,6 +31,7 @@
     <project-select-dropdown
       [regionId]="regionId"
       (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
     ></project-select-dropdown>
     </div>
   </ng-template>
@@ -73,7 +77,7 @@
           <ng-container *ngFor="let item of listOfRouterInteface">
             <tr>
               <td>
-                <a>{{ item.subnetName }}</a>
+                {{ item.subnetName }}
               </td>
               <td>{{ item.ipAddress }}</td>
               <td>
@@ -214,8 +218,8 @@
     />
       <ng-template #ipErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">{{'router.validate.ip.empty' | i18n}}</ng-container>
-        <ng-container *ngIf="control.hasError('invalidSubnetIP')">{{'router.validate.ip.fail' | i18n}}</ng-container>
-        <ng-container *ngIf="control.hasError('invalidLastNumber')">{{'router.validate.ip.fail' | i18n}}</ng-container>
+        <!-- <ng-container *ngIf="control.hasError('invalidSubnetIP')">{{'router.validate.ip.fail' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('invalidLastNumber')">{{'router.validate.ip.fail' | i18n}}</ng-container> -->
       </ng-template>
     </nz-form-control>
     </nz-form-item>
@@ -246,39 +250,61 @@
   (nzOnCancel)="handleCancelCreateStatic()"
 >
 <form nz-form [formGroup]="formRouterStatic">
-  <ng-container *nzModalContent>
-    <div class="text-label">
-      {{'router.label.cidr' | i18n}} (<span class="text-red">*</span>)
-      <img
+  <ng-container *nzModalContent>  
+    <nz-form-item style="margin-bottom: 0px;">
+      <nz-form-control [nzErrorTip]="cidrErrorTpl">
+      <nz-form-label nzFor="name">
+        <div>
+          <span>{{'router.label.cidr' | i18n}}</span>
+          (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+          <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="{{'app.router.note24' | i18n}}"
         src="assets/imgs/pajamas_question.svg"
         alt=""
       />
-    </div>
-    <input
+        </div>
+      </nz-form-label>
+      <input
       style="margin-bottom: 16px; margin-top: 5px"
       class="input-custom"
       nz-input
       placeholder="10.0.0.1/24"
       formControlName="destinationCIDR"
     />
-    <div class="text-label">
-      NextHop (<span class="text-red">*</span>)
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note25' | i18n}}"
-        src="assets/imgs/pajamas_question.svg"
-        alt=""
-      />
-    </div>
-    <input
+      <ng-template #cidrErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">{{'router.validate.cidr.empty' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">{{'router.validate.cidr.pattern' | i18n}}</ng-container>
+      </ng-template>
+    </nz-form-control>
+    </nz-form-item>
+    <nz-form-item style="margin-bottom: 0px;">
+      <nz-form-control [nzErrorTip]="nextHopErrorTpl">
+      <nz-form-label nzFor="name">
+        <div>
+          <span>NextHop</span>
+          (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+          <img
+          style="padding-right: 10px; margin-top: -4px"
+          nz-tooltip="{{'app.router.note25' | i18n}}"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
+        </div>
+      </nz-form-label>
+      <input
       style="margin-top: 5px"
       class="input-custom"
       nz-input
       placeholder="192.168.0.145"
       formControlName="nextHop"
     />
+      <ng-template #nextHopErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">{{'router.validate.nextHop.empty' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">{{'router.validate.nextHop.pattern' | i18n}}</ng-container>
+      </ng-template>
+    </nz-form-control>
+    </nz-form-item>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelCreateStatic()">
@@ -288,13 +314,13 @@
         alt=""
       />{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreateStatic()" [nzLoading]="isLoadingRouterStatic">
+    <button nz-button nzType="primary" (click)="handleOkCreateStatic()" [disabled]="formRouterStatic.invalid" [nzLoading]="isLoadingRouterStatic">
       <img
         *ngIf="isLoadingRouterStatic === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-
+        
       />{{'app.button.confirm' | i18n}}
     </button>
   </div>

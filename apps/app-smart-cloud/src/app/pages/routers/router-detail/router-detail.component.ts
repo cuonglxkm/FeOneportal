@@ -28,6 +28,7 @@ import { RouterService } from 'src/app/shared/services/router.service';
 import { ProjectModel, RegionModel, ipAddressValidatorRouter } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { IP_ADDRESS_REGEX, NEXTHOP_REGEX } from 'src/app/shared/constants/constants';
 
 @Component({
   selector: 'one-portal-router-detail',
@@ -63,7 +64,10 @@ export class RouterDetailComponent implements OnInit {
   formRouterStatic: FormGroup<{
     destinationCIDR: FormControl<string>;
     nextHop: FormControl<string>;
-  }>;
+  }> = this.fb.group({
+    destinationCIDR: ['', [Validators.required, Validators.pattern(IP_ADDRESS_REGEX)]],
+    nextHop: ['', [Validators.required, Validators.pattern(NEXTHOP_REGEX)]],
+  });;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -79,29 +83,23 @@ export class RouterDetailComponent implements OnInit {
       subnetId: ['', Validators.required],
       ipAddress: ['', Validators.required],
     });
-
-    this.formRouterStatic = this.fb.group({
-      destinationCIDR: ['', Validators.required],
-      nextHop: ['', Validators.required],
-    });
-
-    this.formRouterInterface
-      .get('subnetId')
-      .valueChanges.subscribe((selectedSubnetId) => {
-        const selectedSubnet = this.listSubnet.find(
-          (subnet) => subnet.id === parseInt(selectedSubnetId)
-        );
-        if (selectedSubnet) {
-          const networkAddress = selectedSubnet.networkAddress;
-          this.formRouterInterface
-            .get('ipAddress')
-            .setValidators([
-              Validators.required,
-              ipAddressValidatorRouter(networkAddress),
-            ]);
-          this.formRouterInterface.get('ipAddress').updateValueAndValidity();
-        }
-      });
+    // this.formRouterInterface
+    //   .get('subnetId')
+    //   .valueChanges.subscribe((selectedSubnetId) => {
+    //     const selectedSubnet = this.listSubnet.find(
+    //       (subnet) => subnet.id === parseInt(selectedSubnetId)
+    //     );
+    //     if (selectedSubnet) {
+    //       const networkAddress = selectedSubnet.networkAddress;
+    //       this.formRouterInterface
+    //         .get('ipAddress')
+    //         .setValidators([
+    //           Validators.required,
+    //           ipAddressValidatorRouter(networkAddress),
+    //         ]);
+    //       this.formRouterInterface.get('ipAddress').updateValueAndValidity();
+    //     }
+    //   });
   }
 
   ngOnInit(): void {
@@ -204,6 +202,8 @@ export class RouterDetailComponent implements OnInit {
 
   handleCancelCreateInterface() {
     this.isVisibleCreateInterface = false;
+    this.formRouterInterface.controls.subnetId.setValue('')
+    this.formRouterInterface.controls.ipAddress.setValue('')
   }
 
   handleOkCreateInterface() {
@@ -262,6 +262,8 @@ export class RouterDetailComponent implements OnInit {
 
   handleCancelCreateStatic() {
     this.isVisibleCreateStatic = false;
+    this.formRouterStatic.controls.destinationCIDR.setValue('');
+    this.formRouterStatic.controls.nextHop.setValue('');
   }
 
 handleOkCreateStatic() {
@@ -371,10 +373,15 @@ handleOkCreateStatic() {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    this.router.navigate(['/app-smart-cloud/network/router']);
   }
 
   onProjectChange(project: ProjectModel) {
     this.vpcId = project?.id;
+  }
+
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/network/router']);
   }
 
   navigateToList() {

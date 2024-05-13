@@ -14,7 +14,7 @@
       <nz-breadcrumb-item> Network </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/network/router']"
-          ><span class="breadcrumb-custom">Router</span></a
+          >{{ 'app.list' | i18n }} Routers</a
         >
       </nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -217,7 +217,7 @@
 >
   <form nz-form [formGroup]="form">
     <ng-container *nzModalContent>
-      <nz-form-item>
+      <nz-form-item style="margin-bottom: 0;">
         <nz-form-control [nzErrorTip]="nameError">
           <nz-form-label nzFor="name"
             >{{ 'form.account.name' | i18n }} Router (<span class="text-red"
@@ -321,7 +321,7 @@
 >
   <form nz-form [formGroup]="formEdit">
   <ng-container *nzModalContent>   
-    <nz-form-item>
+    <nz-form-item style="margin-bottom: 0;">
       <nz-form-control [nzErrorTip]="nameError">
         <nz-form-label nzFor="name"
           >{{ 'form.account.name' | i18n }} Router (<span class="text-red"
@@ -349,10 +349,16 @@
         </ng-template>
       </nz-form-control>
     </nz-form-item>
-    <span class="text-label"
+    <span class="text-label" 
       >{{ 'app.select.network' | i18n }}
+      <img
+      style="padding-right: 10px; margin-top: -4px"
+      nz-tooltip="{{ 'app.router.note4' | i18n }}"
+      src="assets/imgs/pajamas_question.svg"
+      alt=""
+  />
       </span>
-    <nz-form-control>
+    <nz-form-control style="margin-bottom: 5px">
       <nz-input-group>
       <nz-select
           nzPlaceHolder="{{ 'app.select.network.dr' | i18n }}"
