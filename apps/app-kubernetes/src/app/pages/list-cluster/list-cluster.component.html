@@ -2,12 +2,12 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-kubernetes']">Container</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>Danh sách cluster</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.cluster.list' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 
@@ -37,11 +37,11 @@
 
             <div class="mleft-16 w-35">
               <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
-                <input type="text" nz-input placeholder="Tìm kiếm Kubernetes Cluster" [(ngModel)]="keySearch"
+                <input type="text" nz-input [placeholder]="'app.cluster.filter' | i18n" [(ngModel)]="keySearch"
                   (ngModelChange)="searchCluster()" />
               </nz-input-group>
               <ng-template #prefixButton>
-                <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" />
               </ng-template>
             </div>
 
@@ -61,7 +61,7 @@
                 <path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z" /><path d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z" />
               </svg>
             </span>
-            Tạo cluster
+            {{ 'app.cluster.create' | i18n }}
           </button>
         </div>
       </div>
@@ -73,14 +73,14 @@
         [nzLoading]="isLoadingCluster">
         <thead>
           <tr>
-            <th class="header-table">STT</th>
-            <th class="header-table">Tên cluster</th>
-            <th class="header-table">Phiên bản</th>
-            <th class="header-table">Trạng thái dịch vụ</th>
-            <th class="header-table">API Endpoint</th>
-            <th class="header-table">Tổng số node</th>
-            <th class="header-table">Ngày tạo</th>
-            <th class="header-table">Thao tác</th>
+            <th class="header-table">{{ 'app.order.ordinalNumber' | i18n }}</th>
+            <th class="header-table">{{ 'app.cluster.name' | i18n }}</th>
+            <th class="header-table">{{ 'app.text.version' | i18n }}</th>
+            <th class="header-table">{{ 'app.service.status' | i18n }}</th>
+            <th class="header-table">{{ 'app.cluster.api-endpoint' | i18n }}</th>
+            <th class="header-table">{{ 'app.cluster.total-node' | i18n }}</th>
+            <th class="header-table">{{ 'app.text.created-date' | i18n }}</th>
+            <th class="header-table">{{ 'app.text.operation' | i18n }}</th>
           </tr>
         </thead>
         <tbody>
@@ -115,14 +115,14 @@
             <td>{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
             <td>
               <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; width: fit-content; margin-right: 8px;"
-                [nz-tooltip]="'Nâng cấp'" routerLink="upgrade/{{item.serviceOrderCode}}" />
+                [nz-tooltip]="'app.text.upgrade' | i18n" routerLink="upgrade/{{item.serviceOrderCode}}" />
               <img src="assets/imgs/download-file.svg" style="cursor: pointer; width: fit-content; margin-right: 8px;" alt=""
-                [nz-tooltip]="'Tải file cấu hình'" (click)="handleDownloadKubeConfig(item)" />
+                [nz-tooltip]="'app.cluster.download-config' | i18n" (click)="handleDownloadKubeConfig(item)" />
               <img src="assets/imgs/calendar-tick.svg" style="cursor: pointer; width: fit-content; margin-right: 8px;" alt=""
-                [nz-tooltip]="'Gia hạn'" routerLink="extension/{{item.serviceOrderCode}}" />
+                [nz-tooltip]="'app.extend' |  i18n" routerLink="extension/{{item.serviceOrderCode}}" />
 
               <ng-container *ngIf="item.serviceStatus | checkStatus as progressing">
-                <button nz-button nzType="text" nzTooltipTitle="Xóa cluster" nzTooltipPlacement="top" nz-tooltip
+                <button nz-button nzType="text" [nzTooltipTitle]="'app.cluster.delete-cluster' | i18n" nzTooltipPlacement="top" nz-tooltip
                   (click)="showModalConfirmDeleteCluster(item)" class="borderless marleft-0 action-btn" [disabled]="progressing == 2">
                   <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer; width: fit-content;" />
                 </button>
@@ -150,8 +150,7 @@
         <!-- description -->
         <div class="mt-3 description-content">
           <span>
-            VNPT Kubernetes Service là một nền tảng dựa trên Kubernetes đảm bảo hiệu quả cao cho doanh nghiệp bằng cách
-            chạy các ứng dụng được đóng gói container trên đám mây, an toàn bảo mật, ổn định và hiệu năng cao
+            {{ 'app.cluster.summary' | i18n }}
           </span>
         </div>
 
@@ -160,7 +159,7 @@
           <button nz-button nzType="primary" nzSize="large" routerLink="create" class="border-button bg-button">
             <span class="padleft-24 padright-24">
               <img style="padding-right: 10px;" src="assets/imgs/cloud-plus-bold.svg" alt=""/>
-              Tạo mới Kubernetes
+              {{ 'app.cluster.create-service' | i18n }}
             </span>
           </button>
         </div>
@@ -172,30 +171,30 @@
 
 <nz-modal [(nzVisible)]="isShowModalDeleteCluster" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
   (nzOnCancel)="handleCloseModalDelete()">
-  <ng-template #modalTitle>Xác nhận xóa Cluster {{selectedCluster.clusterName}}</ng-template>
+  <ng-template #modalTitle>{{ 'app.cluster.confirm-delete' | i18n }} {{selectedCluster.clusterName}}</ng-template>
 
   <ng-template #modalContent>
     <nz-alert
       nzType="warning"
       [nzDescription]="deleteWarning" nzShowIcon></nz-alert>
     <ng-template #deleteWarning>
-      <div class="warning-description">Điều này là không thể hoàn tác. Chúng tôi sẽ xóa hoàn toàn cụm Cluster của bạn và tất cả các tài nguyên liên quan.</div>
-      <div class="delete-color warning-description mt-1"><b>Tất cả các node sẽ bị xoá và không thể khôi phục.</b></div>
-      <div class="warning-description mt-1">Nhập `<b class="delete-color">{{selectedCluster.clusterName}}</b>` trong hộp văn bản dưới đây để xác nhận xóa cụm cluster này.</div>
+      <div class="warning-description">{{ 'app.cluster.warning-delete-1' | i18n }}</div>
+      <div class="delete-color warning-description mt-1"><b>{{ 'app.cluster.warning-delete-2' | i18n }}</b></div>
+      <div class="warning-description mt-1">{{ 'app.cluster.enter' | i18n}} `<b class="delete-color">{{selectedCluster.clusterName}}</b>` {{ 'app.cluster.warning-delete-3' | i18n }}</div>
     </ng-template>
-    <input type="text" nz-input [(ngModel)]="deleteClusterName" placeholder="Nhập tên cluster để xác nhận xóa" nzSize="large" class="mt-3"
+    <input type="text" nz-input [(ngModel)]="deleteClusterName" [placeholder]="'app.cluster.input-warning-delete' | i18n" nzSize="large" class="mt-3"
       (ngModelChange)="onInputDeleteCluster($event)" autofocus />
   </ng-template>
 
   <ng-template #modalFooter>
     <button nz-button nzType="default" (click)="handleCloseModalDelete()" [disabled]="isSubmitDelete">
       <span nz-icon nzType="close" nzTheme="outline"></span>
-      Hủy
+      {{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleDeleteCluster()"
       [nzLoading]="isDeleting" [disabled]="isWrongName" [nzLoading]="isSubmitDelete">
       <span nz-icon nzType="check" nzTheme="outline"></span>
-      Xác nhận
+      {{ 'app.button.confirm' | i18n }}
     </button>
   </ng-template>
 </nz-modal>

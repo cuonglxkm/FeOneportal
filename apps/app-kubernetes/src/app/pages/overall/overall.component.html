@@ -2,16 +2,16 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-kubernetes']">Container</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-kubernetes']">Danh sách cluster</a>
+        <a [routerLink]="['/app-kubernetes']">{{ 'app.cluster.list' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Quản lý Cluster: <ng-container *ngIf="detailCluster"><b>{{detailCluster?.clusterName}}</b></ng-container>
+        {{ 'app.cluster.manage-cluster' | i18n }}: <ng-container *ngIf="detailCluster"><b>{{detailCluster?.clusterName}}</b></ng-container>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -37,7 +37,7 @@
     </ng-template>
   </nz-tab>
   <ng-template #detailTitleTpl>
-    <label>Chi tiết dịch vụ</label>
+    <label>{{ 'app.cluster.detail-cluster' | i18n }}</label>
   </ng-template>
 
   <!-- instance tab -->
@@ -52,7 +52,7 @@
     </ng-template>
   </nz-tab>
   <ng-template #instanceTitleTpl>
-    <label>Instance</label>
+    <label>Worker node</label>
   </ng-template>
 
   <!-- security group tab -->
@@ -78,6 +78,6 @@
     </ng-template>
   </nz-tab>
   <ng-template #logTitleTpl>
-    <label>Nhật ký thao tác</label>
+    <label>{{ 'app.cluster.log' | i18n }}</label>
   </ng-template>
 </nz-tabset>
