@@ -254,18 +254,11 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     };
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success(
-            '',
-            this.i18n.fanyi('app.notify.request.start.instances.success')
-          );
-          this.valueChanged.emit(data);
-        } else {
-          this.notification.error(
-            '',
-            this.i18n.fanyi('app.notify.request.start.instances.fail')
-          );
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.request.start.instances.success')
+        );
+        this.valueChanged.emit(data);
       },
       error: (e) => {
         this.notification.error(

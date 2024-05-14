@@ -313,7 +313,7 @@
   "app.alert.shutdown.instance": "Quý khách chắn chắn muốn thực hiện tắt máy ảo?",
   "app.alert.reboot.instance": "Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?",
   "app.alert.rescue.instance": "Quý khách chắn chắn muốn thực hiện RESCUE máy ảo?",
-  "app.alert.attach.to.vlan": "Trong trường hợp 1 Network của quý khách có nhiều Subnet, quý khách cần lựa chọn Subnet và điền IP muốn gán cho máy ảo. Khi quý khách nhạp IP vui lòng chọn IP chưa được sử dụng bởi máy ảo nào và IP này thuộc dải IP được cấu hình trong Subnet tương ứng",
+  "app.alert.attach.to.vlan": "Từ dải Subnet đã chọn quý khách sẽ nhập địa chỉ IP Address nằm trong dải đó để có thể gắn vào máy ảo",
   "app.alert.detach.from.vlan": "Mỗi kết nối từ máy ảo với VLAN tương ứng với 1 IP được cấp, lựa chọn IP từ danh sách dưới đây để thực hiện gỡ kết nối máy ảo khỏi VLAN",
   "app.alert.unrescue.instance": "Quý khách chắn chắn muốn thực hiện UNRESCUE máy ảo?",
   "app.alert.delete.instance": "Để thực hiện xóa máy ảo {{name}}, vui lòng nhập tên máy ảo để xác nhận",
@@ -417,6 +417,7 @@
   "app.international.bandwidth": "Băng thông quốc tế",
   "app.remain.configuration.in.vpc": "Cấu hình còn lại trong dự án VPC",
   "app.keypair.name": "Tên Keypair",
+  "app.note.create.port": "Vui lòng tạo Port để sử dụng tính năng này!",
 
   "app.disk.type": "Kiểu Volume",
   "app.volume.type": "Loại Volume",
