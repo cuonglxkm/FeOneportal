@@ -148,12 +148,12 @@ export class BucketListComponent implements OnInit {
   }
 
   handleOkDeleteBucket() {
-    this.isVisibleDeleteBucket = false;
     if (this.codeVerify == this.bucketDeleteName) {
       this.bucketService.deleteBucket(this.bucketDeleteName).subscribe({
         next: (data) => {
           if (data == 'Thao tác thành công') {
             this.notification.success('', 'Xóa Bucket thành công');
+            this.isVisibleDeleteBucket = false;
             this.search();
           } else {
             this.notification.error('', 'Xóa Bucket không thành công');

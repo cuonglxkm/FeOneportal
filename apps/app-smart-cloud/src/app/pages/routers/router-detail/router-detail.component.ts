@@ -2,8 +2,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import {
   FormControl,
@@ -44,6 +46,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouterDetailComponent implements OnInit {
+  @ViewChild('ipAdress') firstNameRef: ElementRef;
   routerId: string;
   regionId: number;
   vpcId: number;
@@ -243,6 +246,7 @@ export class RouterDetailComponent implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.alert.ip.existed')
             );
+            this.firstNameRef.nativeElement.focus()
           } else if (
             error.error.detail === 'Địa chỉ IP không hợp lệ với Subnet đã chọn!'
           ) {

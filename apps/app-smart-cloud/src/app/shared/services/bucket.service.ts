@@ -38,7 +38,7 @@ export class BucketService extends BaseService {
   }
 
   deleteBucket(bucketName: string) {
-    let url_ = `/object-storage/CleanBucket?bucketName=${bucketName}`;
+    let url_ = `/object-storage/Bucket/Delete/?bucketName=${bucketName}`;
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
       headers: this.httpOptions.headers,
       responseType: 'text',

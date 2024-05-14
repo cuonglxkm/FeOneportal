@@ -58,7 +58,7 @@ export class RouterListComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
       ],
     ],
     network: [''],
@@ -71,7 +71,7 @@ export class RouterListComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
       ],
     ],
   });
@@ -282,6 +282,7 @@ export class RouterListComponent implements OnInit {
 
   handleCancelDelete() {
     this.isVisibleDelete = false;
+    this.formDelete.reset()
   }
 
   nameRouterValidator(control: FormControl): { [key: string]: any } | null {
@@ -299,6 +300,7 @@ export class RouterListComponent implements OnInit {
         .subscribe({
           next: (data) => {
             this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.remove.sucess'));
+            this.formDelete.reset()
             this.isLoadingDeleteRouter = false
             this.isVisibleDelete = false;
             this.getDataList(true);
