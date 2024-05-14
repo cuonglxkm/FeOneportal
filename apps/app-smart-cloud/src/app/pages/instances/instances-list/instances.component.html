@@ -541,7 +541,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleGoKhoiVLAN"
-  nzTitle="Gỡ khỏi VLAN"
+  [nzTitle]="'app.detach.from.vlan' | i18n"
   (nzOnCancel)="handleCancelGoKhoiVLAN()"
 >
   <ng-container *nzModalContent>
