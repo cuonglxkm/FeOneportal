@@ -1,21 +1,34 @@
-<page-header *ngIf="hasOS"
-             [breadcrumb]="breadcrumb"
-             [action]="action"
-             [title]="'app.sub.user.manage' | i18n">
+<page-header
+  *ngIf="hasOS"
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'app.sub.user.manage' | i18n"
+>
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{
+        'app.breadcrumb.home' | i18n
+      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.breadcrumb.infrastructure.service' | i18n
+      }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Object Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'">Subuser</nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'"
+        >Subuser</nz-breadcrumb-item
+      >
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
-                               [regionId]="region"></project-select-dropdown>
+      <region-select-dropdown
+        (valueChanged)="regionChanged($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        (valueChanged)="projectChanged($event)"
+        [regionId]="region"
+      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -27,46 +40,70 @@
       </nz-col>
       <nz-col [nzSpan]="16" style="flex: none">
         <div>
-          <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 300px">
-            <input name="name"
-                   nz-input
-                   [placeholder]="'app.placeholder.search' | i18n"
-                   [(ngModel)]="value" (input)="onInputChange($event.target['value'])" />
+          <nz-input-group
+            [nzPrefix]="prefixIconSearch"
+            nzSize="large"
+            style="width: 300px"
+          >
+            <input
+              name="name"
+              nz-input
+              [placeholder]="'app.placeholder.search' | i18n"
+              [(ngModel)]="value"
+              (input)="onInputChange($event.target['value'])"
+            />
           </nz-input-group>
           <ng-template #prefixIconSearch>
-            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"
-                 [nz-tooltip]="'app.button.search' | i18n" />
+            <img
+              src="assets/imgs/search.svg"
+              alt=""
+              style="cursor: pointer"
+              [nz-tooltip]="'app.button.search' | i18n"
+            />
           </ng-template>
-          <button style="margin-left: 10px" nz-button nzType="primary" nzSize="large"
-                  (click)="navigateToCreateSubUser()">
-            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
-            <span class="button-text-primary">{{ 'app.sub.user.create.button' | i18n }}</span>
+          <button
+            style="margin-left: 10px"
+            nz-button
+            nzType="primary"
+            nzSize="large"
+            (click)="navigateToCreateSubUser()"
+          >
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/add-circle.svg"
+              alt=""
+            />
+            <span class="button-text-primary">{{
+              'app.sub.user.create.button' | i18n
+            }}</span>
           </button>
         </div>
       </nz-col>
     </nz-row>
-    <nz-table #fixTable
-              style="margin-top: 24px"
-              nzShowPagination
-              [nzData]="response?.records"
-              [nzPageSize]="response?.pageSize"
-              (nzPageSizeChange)="onPageSizeChange($event)"
-              [nzPageIndex]="response?.currentPage"
-              (nzPageIndexChange)="onPageIndexChange($event)"
-              [nzTotal]="response?.totalCount"
-              [nzFrontPagination]="false"
-              [nzLoading]="isLoading">
+    <nz-table
+      #fixTable
+      style="margin-top: 24px"
+      nzShowPagination
+      [nzData]="response?.records"
+      [nzPageSize]="response?.pageSize"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzPageIndex]="response?.currentPage"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzTotal]="response?.totalCount"
+      [nzFrontPagination]="false"
+      [nzLoading]="isLoading"
+    >
       <thead>
-      <tr>
-        <th>STT</th>
-        <th>{{ 'app.sub.user.name' | i18n }}</th>
-        <th>Access Key</th>
-        <th>{{ 'app.access.rights' | i18n }}</th>
-        <th>{{ 'app.text.operation' | i18n }}</th>
-      </tr>
+        <tr>
+          <th>STT</th>
+          <th>{{ 'app.sub.user.name' | i18n }}</th>
+          <th>Access Key</th>
+          <th>{{ 'app.access.rights' | i18n }}</th>
+          <th>{{ 'app.text.operation' | i18n }}</th>
+        </tr>
       </thead>
       <tbody>
-      <ng-container *ngFor="let data of fixTable.data; index as i">
+        <ng-container *ngFor="let data of fixTable.data; index as i">
         <tr *ngFor="let key of data.keys; index as k">
           <td *ngIf="k === 0">{{ i + 1 }}</td>
           <td *ngIf="k !== 0">{{ '' }}</td>
@@ -75,8 +112,11 @@
             <nz-row nzJustify="space-between">
               <nz-col>{{ key.accessKey }}</nz-col>
               <nz-col>
+                <div class="d-flex gap-2">
+                <div>+2</div>
                 <img src="assets/imgs/icon_copy1.svg" alt="" style="cursor: pointer"
                      nz-tooltip="Copy" (click)="copyText(key.accessKey)" />
+                    </div>
               </nz-col>
             </nz-row>
           </td>

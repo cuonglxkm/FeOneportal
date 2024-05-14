@@ -1502,6 +1502,7 @@
   "router.nofitacation.create.sucess": "Successfully created a new Router.",
   "router.alert.over.router.used": "Router quota exceeded, 5/5 Routers used, need to allocate 1 more Router.",
   "router.alert.exist.router": "Router is not exist.",
+  "router.alert.wrong.format": "Incorrectly entered Router format. Please check again!",
   "router.nofitacation.create.fail": "Failed to create a new Router.",
   "router.nofitacation.edit.sucess": "Successfully edited the Router.",
   "router.nofitacation.edit.fail": "Failed to edit the Router.",

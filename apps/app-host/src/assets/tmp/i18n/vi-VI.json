@@ -1390,6 +1390,7 @@
   "router.nofitacation.create.sucess": "Tạo mới Router thành công",
   "router.alert.over.router.used": "Vượt quá quota Router, đã sử dụng 5/5 Router, cần cấp thêm 1 Router",
   "router.alert.exist.router": "Router không tồn tại",
+  "router.alert.wrong.format": "Nhập sai định dạng Router. Vui lòng kiểm tra lại!",
   "router.nofitacation.create.fail": "Tạo mới Router không thành công",
   "router.nofitacation.edit.sucess": "Chỉnh sửa Router thành công",
   "router.nofitacation.edit.fail": "Chỉnh sửa Router không thành công",
