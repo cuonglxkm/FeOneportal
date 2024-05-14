@@ -50,7 +50,7 @@
   "form.account.validate.surname":"Họ không được để trống và chứa kí tự đặc biệt!",
   "form.account.validate.phone":"Số điện thoại không hợp lệ!",
   "form.account.validate.address":"Tỉnh/Thành phố",
-  
+
 
 
 
@@ -1664,6 +1664,7 @@
   "project.note3": "Tạo dự án",
   "project.note4": "Dự án VPC",
   "project.note5": "Dự án thường",
+  "project.default": "Dự án mặc định",
   "project.note6": "Khách hàng có thể khởi tạo một dự án thường hoặc dự án VPC -cung cấp trọn gói hạ tầng tính toán, lưu trữ và network cho phép Khách hàng tự thiết lập trung tâm dữ liệu ảo hóa trên VNPT Cloud.",
   "project.note7": "Hoặc đọc thêm về quản lý dự án",
   "project.note9": "Khởi tạo VPC",

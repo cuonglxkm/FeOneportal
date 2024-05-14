@@ -1775,6 +1775,7 @@
   "project.note3": "Create Project",
   "project.note4": "VPC Project",
   "project.note5": "Regular Project",
+  "project.default": "Default Project",
   "project.note6": "Customers can create either a regular project or a VPC project - providing a comprehensive package of compute, storage, and network infrastructure that allows customers to set up virtualized data centers on VNPT Cloud.",
   "project.note7": "or learn more about project management",
   "project.note9": "Initialize VPC",
