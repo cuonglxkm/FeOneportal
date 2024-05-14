@@ -114,7 +114,7 @@
                     </div>
                   </div>
                 </td>
-                <td class="w-50">
+                <!-- <td class="w-50">
                   <div nz-row>
                     <div nz-col [nzSpan]="8">{{ 'app.cluster.order-code' | i18n }}</div>
                     <div nz-col [nzSpan]="16">
@@ -123,32 +123,8 @@
                       </span>
                     </div>
                   </div>
-                </td>
-              </tr>
+                </td> -->
 
-              <tr>
-                <td class="w-50">
-                  <div nz-row>
-                    <div nz-col [nzSpan]="8">{{ 'app.text.status' | i18n }}</div>
-                    <div nz-col [nzSpan]="16">
-                      <ng-container *ngIf="detailCluster.serviceStatus | status2ColorPipe as status">
-                        <span [ngStyle]="{color: status.color, 'font-weight': 600}">{{status.status}}</span>
-                      </ng-container>
-                    </div>
-                  </div>
-                </td>
-                <td class="w-50"><row-data [value]="detailCluster.description" [label]="'app.cluster.description' | i18n"></row-data></td>
-              </tr>
-
-              <tr>
-                <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
-                    [label]="'app.text.creation-time' | i18n"></row-data></td>
-                <td class="w-50"><row-data
-                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
-                    [label]="'app.service.expiration-date' | i18n" [type]="'danger'"></row-data></td>
-              </tr>
-
-              <tr>
                 <td class="w-50">
                   <div nz-row>
                     <div nz-col [nzSpan]="8">{{ 'app.config' | i18n }}</div>
@@ -179,6 +155,29 @@
                   </div>
                 </td>
               </tr>
+
+              <tr>
+                <td class="w-50">
+                  <div nz-row>
+                    <div nz-col [nzSpan]="8">{{ 'app.text.status' | i18n }}</div>
+                    <div nz-col [nzSpan]="16">
+                      <ng-container *ngIf="detailCluster.serviceStatus | status2ColorPipe as status">
+                        <span [ngStyle]="{color: status.color, 'font-weight': 600}">{{status.status}}</span>
+                      </ng-container>
+                    </div>
+                  </div>
+                </td>
+                <td class="w-50"><row-data [value]="detailCluster.description" [label]="'app.cluster.description' | i18n"></row-data></td>
+              </tr>
+
+              <tr>
+                <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
+                    [label]="'app.text.creation-time' | i18n"></row-data></td>
+                <td class="w-50"><row-data
+                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
+                    [label]="'app.service.expiration-date' | i18n" [type]="'danger'"></row-data></td>
+              </tr>
+
             </tbody>
           </nz-table>
         </div>

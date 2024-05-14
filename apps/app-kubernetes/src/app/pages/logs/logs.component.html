@@ -12,12 +12,12 @@
             (ngModelChange)="this.changeUserKeySearch.next($event)" />
         </nz-input-group>
         <ng-template #prefixButton>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" />
         </ng-template>
       </div>
 
       <div class="mleft-16 w-20">
-        <nz-select nzSize="default" nzAllowClear [(ngModel)]="resourceType" (ngModelChange)="onChangeResourceType(); searchLogs()"
+        <nz-select nzSize="default" nzAllowClear [(ngModel)]="resourceType" (ngModelChange)="onChangeResourceType($event); searchLogs()"
           [nzPlaceHolder]="'app.cluster.resource-type' | i18n" class="w-100" nzSize="large">
           <nz-option *ngFor="let rt of listOfResourceType" [nzLabel]="rt.name"
             [nzValue]="rt.value"></nz-option>

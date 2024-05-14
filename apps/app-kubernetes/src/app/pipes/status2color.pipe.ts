@@ -9,20 +9,20 @@ export class Status2ColorPipe implements PipeTransform {
   transform(status: number): StatusModel {
     switch(status) {
       case 0:
-        return new StatusModel("#FFBB63", "Chưa gia hạn");
+        return new StatusModel("#FFBB63", "cluster.status.not-yet-extend");
       case 1:
-        return new StatusModel("#0066b0", "Đang khởi tạo");
+        return new StatusModel("#0066b0", "cluster.status.initialing");
       case 2:
-        return new StatusModel("#008d47", "Đang hoạt động");
+        return new StatusModel("#008d47", "cluster.status.running");
       case 6:
-        return new StatusModel("#0066b0", "Đang nâng cấp");
+        return new StatusModel("#0066b0", "cluster.status.upgrading");
       case 7:
-        return new StatusModel("#EA3829", "Đang xóa");
+        return new StatusModel("#EA3829", "cluster.status.deleting");
       case 11:
-        return new StatusModel("#EA3829", "Khởi tạo thất bại");
+        return new StatusModel("#EA3829", "cluster.status.failed");
 
       default:
-        return new StatusModel("#4c4f67", "Không xác định");
+        return new StatusModel("#4c4f67", "cluster.status.unknow");
     }
 
   }

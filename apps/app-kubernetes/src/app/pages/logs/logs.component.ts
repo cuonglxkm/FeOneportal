@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Subject, debounceTime, distinctUntilChanged, finalize, map } from 'rxjs';
 import { LogModel } from '../../model/log.model';
 import { ClusterService } from '../../services/cluster.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'one-portal-logs',
@@ -10,7 +11,7 @@ import { ClusterService } from '../../services/cluster.service';
 })
 export class LogsComponent implements OnInit {
 
-  @Input('serviceOrderCode') serviceOrderCode: string;
+  serviceOrderCode: string;
 
   userAction: string;
   operation: string;
@@ -37,7 +38,8 @@ export class LogsComponent implements OnInit {
   listOfWorkerGroupName: string[];
 
   constructor(
-    private clusterService: ClusterService
+    private clusterService: ClusterService,
+    private activatedRoute: ActivatedRoute
   ) {
     this.userAction = '';
     this.operation = '';
@@ -50,7 +52,10 @@ export class LogsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getWorkerGroupOfCluster(this.serviceOrderCode);
+    this.activatedRoute.params.subscribe(params => {
+      this.serviceOrderCode = params['id'];
+      this.getWorkerGroupOfCluster(this.serviceOrderCode);
+    });
 
     this.changeUserKeySearch.pipe(
       debounceTime(500),
@@ -111,7 +116,8 @@ export class LogsComponent implements OnInit {
   }
 
   isDisableWorkerFilter: boolean = true;
-  onChangeResourceType() {
+  onChangeResourceType(resourceType: string) {
+    if (resourceType == null || resourceType == undefined) this.resource = null;
     this.resourceType && this.resourceType == 'worker' ? this.isDisableWorkerFilter = false : this.isDisableWorkerFilter = true;
   }
 

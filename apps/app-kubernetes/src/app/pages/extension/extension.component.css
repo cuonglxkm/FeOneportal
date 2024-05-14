@@ -366,3 +366,7 @@ label, span {
 .warning-description {
   font-size: 14px;
 }
+
+.border-cell {
+  border-top: 1px solid #f0f0f0;
+}

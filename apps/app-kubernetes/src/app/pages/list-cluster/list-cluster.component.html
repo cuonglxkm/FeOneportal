@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách cluster'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.cluster.list' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -29,7 +29,7 @@
           <div class="flex-style marbot-5 mbot-24">
             <div class="w-25">
               <nz-select nzSize="default" nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="searchCluster()"
-                [nzPlaceHolder]="'Trạng thái'" class="w-100" nzSize="large">
+                [nzPlaceHolder]="'app.order.status' | i18n" class="w-100" nzSize="large">
                 <nz-option *ngFor="let status of listOfStatusCluster" [nzLabel]="status.statusName"
                   [nzValue]="status.id"></nz-option>
               </nz-select>
@@ -46,7 +46,7 @@
             </div>
 
             <div>
-              <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip
+              <button nz-button nzType="text" [nzTooltipTitle]="'app.cluster.refresh' | i18n" nzTooltipPlacement="top" nz-tooltip
                 (click)="searchCluster()" class="borderless">
                 <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
               </button>
@@ -104,7 +104,7 @@
                   <div class="flex-style">
                     <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"
                       [nzStatus]="item.serviceStatus == 11 ? 'exception' : ''"></nz-progress>
-                    <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{status.status}}</span>
+                    <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{ status.status | i18n }}</span>
                   </div>
                 </ng-template>
 
