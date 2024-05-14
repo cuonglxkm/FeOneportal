@@ -201,12 +201,10 @@ export class VlanEditSubnetComponent implements OnInit {
     formSearchSubnet.name = null;
     this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
       data?.records?.forEach(item => {
-        if(item.name != this.validateForm.controls.nameSubnet.value) {
-          this.nameList?.push(item.name);
-        }
-
+        this.nameList?.push(item.name);
       });
-
+      this.nameList = this.nameList.filter(item => item != this.validateForm.controls.nameSubnet.value)
+      console.log(this.nameList)
     });
   }
 
@@ -277,7 +275,7 @@ export class VlanEditSubnetComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.getSubnetById(this.idSubnet);
-    this.getListSubnet();
+    setTimeout(() => {this.getListSubnet();}, 500)
   }
 
 }
