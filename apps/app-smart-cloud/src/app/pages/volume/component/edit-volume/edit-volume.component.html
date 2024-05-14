@@ -114,7 +114,7 @@
               <nz-col nzSpan="12">
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
                   <input nz-input class="input-custom"
-                         [value]="getMonthDifference(volumeInfo?.expirationDate, volumeInfo?.createDate) + ' ' +this.i18n.fanyi('volume.month')"
+                         [value]="getMonthDifference(volumeInfo?.expirationDate, volumeInfo?.creationDate) + ' ' +this.i18n.fanyi('volume.month')"
                          [disabled]="true" />
                   <ng-template #dateErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min')">{{'volume.input.time'|i18n}}</ng-container>
@@ -125,8 +125,8 @@
                 <nz-form-item>
                   <nz-form-label nzFor="now">
                     <div class="label">
-                      <span>{{'app.service.start.date'|i18n}}: </span>
-                      <span>{{ volumeInfo?.createDate | date: 'dd/MM/yyyy' }}</span>
+                      <span>{{'app.service.creation-date'|i18n}}: </span>
+                      <span>{{ volumeInfo?.creationDate | date: 'dd/MM/yyyy' }}</span>
                     </div>
                   </nz-form-label>
                 </nz-form-item>

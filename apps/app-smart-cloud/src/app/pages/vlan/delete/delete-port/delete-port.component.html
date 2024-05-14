@@ -8,8 +8,8 @@
     <span class="text-modal-title">{{ 'app.delete' | i18n }} Port</span>
   </div>
   <div *nzModalContent>
-    <span class="text-label">{{ 'app.vlan.note78' | i18n }}</span><br>
-    <span class="text-label" *ngIf="noti" style="color: red">{{ 'app.vlan.note79' | i18n }}</span>
+    <span class="text-label">Bạn có chắc chắn muốn xóa Port {{portName}} không?</span><br>
+<!--    <span class="text-label" *ngIf="noti" style="color: red">{{ 'app.vlan.note79' | i18n }}</span>-->
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancelDeletePort()" class="button-cancel">
