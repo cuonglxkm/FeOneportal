@@ -107,22 +107,27 @@ export class VlanCreatePortComponent implements OnInit{
 
   onCheckPort() {
     this.dataSubjectGateway.pipe(debounceTime(600)).subscribe((res) => {
-      this.vlanService.getSubnetById(this.validateForm.controls.idSubnet.value).subscribe(item => {
-        this.vlanService.checkIpAvailable(res, item.subnetAddressRequired, this.networkCloudId, this.region).subscribe(data => {
-          this.isInvalidGateway = false
-          this.invalidGateway = ''
-          const dataJson = JSON.parse(JSON.stringify(data));
-          console.log('gateway data', dataJson)
-        }, error => {
-          if(error.status == '400') {
-            console.log('error', error.error)
-            this.isInvalidGateway = true
-            this.invalidGateway = error.error
-          } else {
-            this.invalidGateway = 'Ip address không hợp lệ'
-          }
+      if(res == null || res == '') {
+        this.invalidGateway = ''
+      } else {
+        this.vlanService.getSubnetById(this.validateForm.controls.idSubnet.value).subscribe(item => {
+          this.vlanService.checkIpAvailable(res, item.subnetAddressRequired, this.networkCloudId, this.region).subscribe(data => {
+            this.isInvalidGateway = false
+            this.invalidGateway = ''
+            const dataJson = JSON.parse(JSON.stringify(data));
+            console.log('gateway data', dataJson)
+          }, error => {
+            if(error.status == '400') {
+              console.log('error', error.error)
+              this.isInvalidGateway = true
+              this.invalidGateway = error.error
+            } else {
+              this.invalidGateway = 'Ip address không hợp lệ'
+            }
+          })
         })
-      })
+      }
+
 
     })
   }
@@ -146,6 +151,7 @@ export class VlanCreatePortComponent implements OnInit{
   }
 
   submitForm(): void {
+
     if (this.validateForm.valid) {
       console.log('form', this.validateForm.getRawValue())
       let formCreatePort = new FormCreatePort()
@@ -154,6 +160,7 @@ export class VlanCreatePortComponent implements OnInit{
       formCreatePort.regionId = this.region
       formCreatePort.subnetId = this.validateForm.controls.idSubnet.value
       formCreatePort.ipAddress = this.validateForm.controls.ipAddress.value
+
       this.isLoading = true
       this.vlanService.createPort(formCreatePort).subscribe(data => {
           this.isLoading = false
@@ -199,15 +206,6 @@ export class VlanCreatePortComponent implements OnInit{
   }
 
   ngOnInit() {
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
-    this.getSubnetByNetworkId()
-    this.onCheckPort()
-
-
-
-
     this.validateForm = this.fb.group({
       idSubnet: [0, [Validators.required]],
       namePort: ['', [Validators.required,
@@ -217,6 +215,19 @@ export class VlanCreatePortComponent implements OnInit{
       ]],
       ipAddress: [null as string, [ipAddressValidator(this.subnetAddress), ipAddressExistsValidator(this.ipPort)]]
     });
+
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    this.getSubnetByNetworkId()
+    this.onCheckPort()
+
+
+    if(this.validateForm.controls.ipAddress.value == null) {
+      this.invalidGateway = ''
+    }
+
+
 
   }
 
