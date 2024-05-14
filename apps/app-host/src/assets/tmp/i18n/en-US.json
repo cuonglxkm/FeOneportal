@@ -277,6 +277,7 @@
   "app.detach": "Detach",
   "app.extend": "Extend",
   "app.delete": "Delete",
+  "app.deleteManyObject": "Delete many objects",
   "app.status.success": "Success",
   "app.status.fail": "Fail",
   "app.status.warning": "Warning",

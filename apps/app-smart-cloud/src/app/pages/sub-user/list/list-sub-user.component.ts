@@ -14,23 +14,6 @@ import { LoadingService } from '@delon/abc/loading';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
-interface ParentItemData {
-  key: number;
-  name: string;
-  platform: string;
-  version: string;
-  upgradeNum: number | string;
-  creator: string;
-  createdAt: string;
-  expand: boolean;
-}
-
-interface ChildrenItemData {
-  key: number;
-  name: string;
-  date: string;
-  upgradeNum: string;
-}
 @Component({
   selector: 'one-portal-list-sub-user',
   templateUrl: './list-sub-user.component.html',
@@ -50,6 +33,10 @@ export class ListSubUserComponent implements OnInit {
   isLoading: boolean = false;
 
   isCheckBegin: boolean = false;
+
+  listSubuser: any
+
+  isExpand: boolean = false
 
   constructor(
     private router: Router,
@@ -134,6 +121,18 @@ export class ListSubUserComponent implements OnInit {
           this.response = data;
           this.isLoading = false;
 
+          const transformedData = data.records.map(record => {  
+            const [firstKey, ...remainingKeys] = record.keys;
+            return {
+              ...record,
+              ...firstKey,  
+              keys: remainingKeys  
+            };
+          });
+        
+          this.listSubuser = transformedData
+          
+
           if (isBegin) {
             this.isCheckBegin =
               this.response.records.length < 1 || this.response.records === null
@@ -160,32 +159,18 @@ export class ListSubUserComponent implements OnInit {
     this.clipboardService.copyFromContent(data);
   }
 
-  listOfParentData: ParentItemData[] = [];
-  listOfChildrenData: ChildrenItemData[] = [];
+  handleExpandAccessKey(index){ 
+    this.isExpand = this.isExpand === index ? null : index;
+  }
+
+  handleCloseExpand(){
+    this.isExpand = false
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.hasObjectStorage();
-    for (let i = 0; i < 3; ++i) {
-      this.listOfParentData.push({
-        key: i,
-        name: 'Screem',
-        platform: 'iOS',
-        version: '10.3.4.5654',
-        upgradeNum: 500,
-        creator: 'Jack',
-        createdAt: '2014-12-24 23:12:00',
-        expand: false,
-      });
-    }
-    for (let i = 0; i < 3; ++i) {
-      this.listOfChildrenData.push({
-        key: i,
-        date: '2014-12-24 23:12:00',
-        name: 'This is production name',
-        upgradeNum: 'Upgraded: 56',
-      });
-    }
   }
 }
