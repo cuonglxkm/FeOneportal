@@ -292,7 +292,7 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row>
             <nz-col style="width: 100%">
-              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid" (click)="doCreateLoadBalancerVpc()">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid" (click)="doCreateLoadBalancerVpc()" [nzLoading]="loadingCreate">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;"/>
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>

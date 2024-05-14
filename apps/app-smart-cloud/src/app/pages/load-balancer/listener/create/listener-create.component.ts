@@ -87,7 +87,7 @@ export class ListenerCreateComponent implements OnInit{
     member: [50000],
     connection: [5000],
     timeout: [50000],
-    allowCIRR: ['0.0.0.0/0', [Validators.required,AppValidator.ipWithCIDRValidator1]],
+    allowCIRR: ['0.0.0.0/0', [Validators.required,AppValidator.ipWithCIDRValidator]],
     description: [''],
 
     poolName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
@@ -123,6 +123,7 @@ export class ListenerCreateComponent implements OnInit{
   selectedCheckMethod = 'HTTP';
   selectedHttpMethod = 'GET';
   loading= false;
+  private disableMember = false;
 
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
@@ -187,7 +188,7 @@ export class ListenerCreateComponent implements OnInit{
         name: this.validateForm.controls['healthName'].value,
         httpMethod: this.selectedCheckMethod == 'HTTP' ? this.selectedHttpMethod : '',
         type: this.selectedCheckMethod,
-        delay: this.dataListener?.id,
+        delay: this.validateForm.controls['delay'].value,
         maxRetries: this.validateForm.controls['maxRetries'].value,
         timeout: this.validateForm.controls['timeoutHealth'].value,
         // adminStateUp: true,
@@ -325,5 +326,19 @@ export class ListenerCreateComponent implements OnInit{
     if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
       event.preventDefault();
     }
+  }
+
+  checkDuplicatePortWeight() {
+    for (let i=0; i<this.lstInstanceUse.length-1; i++) {
+      const model = this.lstInstanceUse[i];
+      for (let j= i+1; j<this.lstInstanceUse.length; j++) {
+        const check = this.lstInstanceUse[j];
+        if (model.IpAddress == check.IpAddress && model.Port == check.Port && model.Weight == check.Weight) {
+          this.disableMember = true
+          return;
+        }
+      }
+    }
+    this.disableMember = false;
   }
 }

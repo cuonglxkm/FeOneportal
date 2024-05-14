@@ -36,7 +36,7 @@
   margin-left: -24px;
   padding: 12px 24px 0 24px;
   border-bottom: none;
-  background-color: #ebf0f9;
+  background-color: inherit;
 }
 
 // END HEADER
@@ -257,6 +257,7 @@ project-select-dropdown nz-select-item.ant-select-selection-item {
 .ant-select-selector {
   display: flex;
   align-items: center;
+  font-size: @textbox-fontsize;
 }
 
 //END SELECT
@@ -523,6 +524,22 @@ body {
 ::ng-deep .ant-tooltip-arrow-content .ant-tooltip-arrow-content::before {
   background-color: #fff !important;
 }
+.icon-svg{
+display: flex;
+align-items: center;
+}
+.justify-center-icon{
+  justify-content: center;
+}
+.ant-picker-input > input {
+  font-size:@textbox-fontsize; /* Thay đổi kích thước font và sử dụng !important nếu cần thiết */
+}
+.lable-fontsize{
+  font-size: @lable-fontsize;
+}
+.link_breadcrumb{
+ color: @link-breadcrumb-color !important;
+}
 
 .ant-popover-title {
   min-width: 177px;
@@ -535,4 +552,7 @@ body {
   display: grid;
   align-items: center;
   justify-content: center;
+}
+.icon-padding-right{
+  padding-right: @icon-padding-right;
 }

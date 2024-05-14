@@ -456,11 +456,11 @@
           <td>{{ item.IpAddress }}</td>
           <td>
             <nz-input-number [(ngModel)]="item.Port" [nzMin]="1" [nzMax]="65535" [nzStep]="1" nzSize="large"
-                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}" (keydown)="checkPossiblePress($event)"></nz-input-number>
+                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}" (keydown)="checkPossiblePress($event)" (ngModelChange)="checkDuplicatePortWeight()"></nz-input-number>
           </td>
           <td>
             <nz-input-number [(ngModel)]="item.Weight" [nzMin]="0" [nzMax]="256" [nzStep]="1" nzSize="large"
-                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}" (keydown)="checkPossiblePress($event)"></nz-input-number>
+                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}" (keydown)="checkPossiblePress($event)" (ngModelChange)="checkDuplicatePortWeight()"></nz-input-number>
           </td>
           <td>
             <label nz-checkbox [(ngModel)]="item.Backup" [ngModelOptions]="{standalone: true}"></label>
@@ -507,7 +507,7 @@
                 style="border-color: #0066B3;background-color: white;"><span
           style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
         </button>
-        <button nzSize="large" (click)="nextStep()" nz-button nzType="primary"
+        <button nzSize="large" (click)="nextStep()" nz-button nzType="primary" [disabled]="disableMember"
                 style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
         </button>
       </div>

@@ -120,7 +120,7 @@
               <label nz-checkbox formControlName="disableGatewayIp">
                 <nz-space [nzSize]="4">
                   <span *nzSpaceItem class="text-value">{{ 'app.vlan.note33' | i18n }}</span>
-                  <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note82' | i18n }}"
+                  <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note31' | i18n }}"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-space>
@@ -130,9 +130,15 @@
               <label nz-checkbox formControlName="dhcp">
                 <nz-space [nzSize]="4">
                   <span *nzSpaceItem class="text-value">DHCP</span>
-                  <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note16' | i18n }}"
+                  <img *nzSpaceItem nz-popover [nzPopoverContent]="titleMessage"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
+                  <ng-template #titleMessage>
+                    <span>- DHCP là cơ chế cấp phát động địa chỉ IP cho subnet đó.</span><br>
+                    <span>- Tức là khi tạo Port mà không chỉ định IP nào thì DHCP sẽ tự gán vào Port vừa tạo 1 IP</span><br>
+                    <span>- Ưu điểm: Không cần quản lý địa chỉ IP, hệ thống sẽ tự động cấp phát địa chỉ IP <br>
+                      - Nhược điểm: DHCP nó sẽ dùng ngay 02 IP cho DHCP server. điều này dẫn tới việc nếu subnet chỉ có 8 IP chẳng hạn, sẽ chỉ dùng dc có 6 IP</span>
+                  </ng-template>
                 </nz-space>
               </label>
             </div>
@@ -143,7 +149,7 @@
         <nz-form-label>
           <nz-space [nzSize]="4">
             <span *nzSpaceItem>Gateway</span>
-            <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note34' | i18n }}"
+            <img *nzSpaceItem nz-popover [nzPopoverContent]="'Hệ thống tự động lấy địa chỉ đầu tiên trong dải mạng làm gateway và người không thể thực hiện chỉnh sửa địa chỉ gateway này'"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </nz-space>
@@ -159,9 +165,14 @@
         <nz-form-label>
           <nz-space [nzSize]="4">
             <span *nzSpaceItem>Allocation Pool</span>
-            <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note36' | i18n }}"
-                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                 src="assets/imgs/pajamas_question.svg" alt="" />
+<!--            <img *nzSpaceItem nz-popover [nzPopoverContent]="titlePool"-->
+<!--                 nzPopoverPlacement="bottom" style="margin-left: 5px;"-->
+<!--                 src="assets/imgs/pajamas_question.svg" alt="" />-->
+            <ng-template #titlePool>
+              <span>- Điền 1 IP bắt đầu và 1 IP kết thúc của dải mạng cách nhau bởi dấu, <br>
+- Yêu cầu chọn các dải trong khoảng: “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24 <br>
+- IP sau lớn hơn IP trước (ví dụ: 172.16.0.2, 172.16.0.3)</span>
+            </ng-template>
           </nz-space>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>

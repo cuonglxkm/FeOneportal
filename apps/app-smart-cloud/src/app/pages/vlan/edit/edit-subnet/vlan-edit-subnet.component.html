@@ -91,7 +91,7 @@
         <nz-form-control style="margin-top: 24px;">
           <div nz-row>
             <div nz-col nzSpan="12">
-              <label nz-checkbox formControlName="disableGatewayIp">
+              <label nz-checkbox formControlName="disableGatewayIp" (nzCheckedChange)="onChangeClickGateway($event)">
                 <nz-space [nzSize]="4" nzAlign="center">
                   <span *nzSpaceItem class="text-value">{{ 'app.vlan.note33' | i18n }}</span>
                   <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note31' | i18n }}"
@@ -101,7 +101,7 @@
               </label>
             </div>
             <div nz-col nzSpan="12">
-              <label nz-checkbox formControlName="enableDhcp" >
+              <label nz-checkbox formControlName="enableDhcp" (nzCheckedChange)="onChangeClickDisableDhcp($event)" >
                 <nz-space [nzSize]="4" nzAlign="center">
                   <span *nzSpaceItem class="text-value">DHCP</span>
                   <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note32' | i18n }}"
@@ -113,7 +113,7 @@
           </div>
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item *ngIf="!validateForm.controls.disableGatewayIp.value">
+      <nz-form-item *ngIf="validateForm.controls.disableGatewayIp.value == false">
         <nz-form-label>
           <nz-space [nzSize]="4" nzAlign="center">
             <span *nzSpaceItem>Gateway</span>
@@ -123,16 +123,16 @@
           </nz-space>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-          <input nz-input class="input-custom" [value]="subnet?.gatewayIp" placeholder="{{ 'app.vlan.note35' | i18n }}" [disabled]="true"/>
+          <input nz-input class="input-custom" [value]="validateForm.controls.gateway.value" placeholder="{{ 'app.vlan.note35' | i18n }}" [disabled]="true"/>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
           <nz-space [nzSize]="4">
             <span *nzSpaceItem>Allocation Pool</span>
-            <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note36' | i18n }}"
-                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                 src="assets/imgs/pajamas_question.svg" alt="" />
+<!--            <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note36' | i18n }}"-->
+<!--                 nzPopoverPlacement="bottom" style="margin-left: 5px;"-->
+<!--                 src="assets/imgs/pajamas_question.svg" alt="" />-->
           </nz-space>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="allocationPoolErrorTpl">

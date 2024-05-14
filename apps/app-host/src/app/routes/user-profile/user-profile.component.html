@@ -88,7 +88,7 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>{{ 'form.account.city' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
+          <nz-form-label>{{ 'form.account.city' | i18n }} (<span class="text-red">*</span>) </nz-form-label>
           <nz-form-control [nzErrorTip]="'form.account.validate.address' | i18n">
             <nz-select [nzPlaceHolder]="'Chọn Tỉnh/Thành phố'" [nzShowSearch]="true" formControlName="province"
               nzSize="large">
@@ -100,7 +100,7 @@
 
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>{{ 'form.account.address' | i18n }}  <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  nz-tooltip="Điền địa chỉ bao gồm quận/huyện - thị xã và số nhà"></one-portal-svg-icon></nz-form-label>
+          <nz-form-label>{{ 'form.account.address' | i18n }}  <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  [nz-tooltip]="'form.account.tooltip.address'|i18n"></one-portal-svg-icon></nz-form-label>
           <nz-form-control >
             <input maxlength="255" nz-input formControlName="address" [placeholder]="'form.account.address' | i18n " nzSize="large" />
           </nz-form-control>
