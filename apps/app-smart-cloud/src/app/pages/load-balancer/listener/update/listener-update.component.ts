@@ -9,7 +9,7 @@ import { da } from 'date-fns/locale';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { L7Policy } from '../../../../shared/models/load-balancer.model';
 import { finalize } from 'rxjs/operators';
-import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel, AppValidator } from '../../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
@@ -42,7 +42,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
     member: [1],
     connection: [1],
     timeout: [1],
-    allowCIRR: ['', [Validators.required, ipAddressValidator()]],
+    allowCIRR: ['', [Validators.required, AppValidator.ipWithCIDRValidator]],
     description: [''],
 
     poolName: [0]
@@ -63,6 +63,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   loadingDetail = true;
   loadingL7 = true;
   loadingPool = true;
+  data: any;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
@@ -99,7 +100,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
 
   updateListener() {
     const data = {
-      id: this.activatedRoute.snapshot.paramMap.get('id'),
+      id: this.data.listenerId,
       lbId: this.activatedRoute.snapshot.paramMap.get('lbId'),
       idleTimeOutConnection: this.validateForm.controls['connection'].value,
       allowedCIDR: this.validateForm.controls['allowCIRR'].value,
@@ -135,6 +136,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       }))
       .subscribe(
       data => {
+        this.data = data;
         this.validateForm.controls['listenerName'].setValue(data.name);
         this.validateForm.controls['port'].setValue(data.port);
         this.validateForm.controls['timeout'].setValue(data.timeoutClientData);

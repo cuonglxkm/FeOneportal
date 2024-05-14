@@ -38,6 +38,7 @@
   <div style="margin-bottom: 20px" nz-row [nzGutter]="24">
     <div
       nz-col
+      class="d-flex"
       [nzLg]="12"
       [nzMd]="12"
       [nzSm]="24"
@@ -46,7 +47,7 @@
       [nzXXl]="12"
     >
       <nz-select
-        style="width: 20%"
+        style="width: 25%"
         nzPlaceHolder="{{ 'app.text.status' | i18n }}"
         [nzShowSearch]="false"
         (ngModelChange)="onChange($event)"
@@ -170,7 +171,7 @@
   </nz-table>
 </nz-card>
 
-<div *ngIf="!loading && isCheckBegin">
+<div *ngIf="isCheckBegin">
   <nz-card style="border-radius: 4px">
     <result>
       <nz-row>
@@ -218,7 +219,7 @@
 >
   <form nz-form [formGroup]="form">
     <ng-container *nzModalContent>
-      <nz-form-item style="margin-bottom: 0;">
+      <nz-form-item>
         <nz-form-control [nzErrorTip]="nameError">
           <nz-form-label nzFor="name"
             >{{ 'form.account.name' | i18n }} Router (<span class="text-red"
@@ -232,7 +233,7 @@
             alt=""
           />
           <input
-            style="margin-bottom: 16px; margin-top: 5px"
+            style="margin-top: 5px"
             class="input-custom"
             nz-input
             placeholder="{{ 'app.router.note43' | i18n }}"

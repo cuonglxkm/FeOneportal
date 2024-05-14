@@ -142,7 +142,6 @@ export class RouterListComponent implements OnInit {
   }
 
   getDataList(isBegin) {
-    debugger
     this.formListRouter.currentPage = this.currentPage
       this.formListRouter.pageSize = this.pageSize
       this.formListRouter.routerName = this.routerName
@@ -161,6 +160,8 @@ export class RouterListComponent implements OnInit {
         console.log(this.dataList);   
         if (isBegin) {
           this.isCheckBegin = this.dataList.length < 1 || this.dataList === null ? true : false;
+          console.log(this.isCheckBegin);
+          
         }
         this.cdr.detectChanges();
     }, error => {
@@ -218,7 +219,9 @@ export class RouterListComponent implements OnInit {
         this.isLoadingCreateRouter = false
         this.isVisibleCreate = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.create.sucess'));
-        this.getDataList(false);
+        this.routerCreate.networkId = ''
+        this.routerCreate.routerName = ''
+        this.getDataList(true);
       },
       error: (error) => {
         this.isLoadingCreateRouter = false
@@ -299,7 +302,7 @@ export class RouterListComponent implements OnInit {
             this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.remove.sucess'));
             this.isLoadingDeleteRouter = false
             this.isVisibleDelete = false;
-            this.getDataList(false);
+            this.getDataList(true);
           },
           error: (e) => {
             this.notification.error(

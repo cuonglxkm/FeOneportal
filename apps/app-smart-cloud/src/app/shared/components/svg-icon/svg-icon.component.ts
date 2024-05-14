@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 
 @Component({
-  selector: 'app-svg-icon',
+  selector: 'one-portal-svg-icon',
   templateUrl: './svg-icon.component.html',
 })
 

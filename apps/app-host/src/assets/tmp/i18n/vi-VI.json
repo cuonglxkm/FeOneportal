@@ -45,10 +45,12 @@
   "form.account.address": "Địa chỉ chi tiết",
 
   "form.account.tooltip.info":"Không quá 20 ký tự, không chứa ký tự đặc biệt",
+  "form.account.tooltip.address":"Điền địa chỉ bao gồm quận/huyện - thị xã và số nhà",
   "form.account.validate.name":"Tên không được để trống và chứa kí tự đặc biệt!",
   "form.account.validate.surname":"Họ không được để trống và chứa kí tự đặc biệt!",
   "form.account.validate.phone":"Số điện thoại không hợp lệ!",
   "form.account.validate.address":"Tỉnh/Thành phố",
+  
 
 
 
@@ -1388,6 +1390,7 @@
   "router.nofitacation.create.sucess": "Tạo mới Router thành công",
   "router.alert.over.router.used": "Vượt quá quota Router, đã sử dụng 5/5 Router, cần cấp thêm 1 Router",
   "router.alert.exist.router": "Router không tồn tại",
+  "router.alert.wrong.format": "Nhập sai định dạng Router. Vui lòng kiểm tra lại!",
   "router.nofitacation.create.fail": "Tạo mới Router không thành công",
   "router.nofitacation.edit.sucess": "Chỉnh sửa Router thành công",
   "router.nofitacation.edit.fail": "Chỉnh sửa Router không thành công",
