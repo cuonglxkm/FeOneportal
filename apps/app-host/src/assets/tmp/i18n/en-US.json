@@ -428,7 +428,7 @@
   "app.alert.shutdown.instance": "Are you sure you want to turn off the instance?",
   "app.alert.reboot.instance": "Are you sure you want to reboot the instance?",
   "app.alert.rescue.instance": "Are you sure you want to RESCUE the instance?",
-  "app.alert.attach.to.vlan": "If your network has multiple subnets, please select a subnet and enter the IP you want to assign to the instance. When entering the IP, please choose an IP not yet used by any instance, and this IP belongs to the IP range configured in the corresponding subnet",
+  "app.alert.attach.to.vlan": "From the selected Subnet range, please enter an IP Address within that range to attach to the instance",
   "app.alert.detach.from.vlan": "Each connection from an instance to the corresponding VLAN is assigned 1 IP. Choose an IP from the list below to disconnect the instance from the VLAN",
   "app.alert.unrescue.instance": "Are you sure you want to UNRESCUE the instance?",
   "app.alert.delete.instance": "To delete the {{name}} instance, please enter the instance name to confirm",
@@ -532,6 +532,7 @@
   "app.international.bandwidth": "International bandwidth",
   "app.remain.configuration.in.vpc": "The remaining configuration in the VPC project",
   "app.keypair.name": "Keypair name",
+  "app.note.create.port": "Please create a Port to use this feature!",
 
   "app.disk.type": "Disk type",
   "app.volume.type": "Volume type",
