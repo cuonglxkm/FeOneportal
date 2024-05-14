@@ -82,6 +82,7 @@ export class JsonDataCreate {
     logSegmentBytes: number;
     subnetId: number;
     subnetCloudId: string;
+    networkId: number;
 }
 
 export class KafkaCreateOrder {

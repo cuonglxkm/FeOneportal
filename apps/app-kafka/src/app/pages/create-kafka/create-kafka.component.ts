@@ -343,6 +343,7 @@ export class CreateKafkaComponent implements OnInit {
     jsonData.logSegmentBytes = this.myform.controls['logSegmentBytes'].value;
     jsonData.subnetId = this.myform.controls['subnetId'].value;
     jsonData.subnetCloudId = this.myform.controls['subnetCloudId'].value;
+    jsonData.networkId = this.vlanId;
 
     kafkaSpec.serviceName = this.myform.controls['serviceName'].value;
     kafkaSpec.vCpu = this.myform.controls['vCpu'].value;

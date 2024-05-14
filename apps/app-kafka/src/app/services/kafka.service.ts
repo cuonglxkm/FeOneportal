@@ -54,13 +54,9 @@ export class KafkaService extends BaseService {
   getBrokerConfigOfService(
     serviceOrderCode: string
   ): Observable<BaseResponse<BrokerConfig[]>> {
-    const params = new HttpParams().set('service_order_code', serviceOrderCode);
 
     return this.http.get<BaseResponse<BrokerConfig[]>>(
-      `${this.kafkaUrl}/configs/broker`,
-      {
-        params,
-      }
+      `${this.kafkaUrl}/kafka/${serviceOrderCode}/configs`,
     );
   }
 

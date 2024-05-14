@@ -13,6 +13,10 @@ import { Order, OrderItem } from 'src/app/core/models/order.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { FormSearchSubnet, Subnet } from 'src/app/core/models/vlan.model';
+import { VlanService } from 'src/app/services/vlan.service';
+import { filter, map } from 'rxjs';
+import { InfoConnection } from 'src/app/core/models/info-connection.model';
 
 @Component({
   selector: 'one-portal-extend-kafka',
@@ -43,6 +47,10 @@ export class ExtendKafkaComponent implements OnInit {
     cpu: 105000,
     storage: 8500
   }
+  listOfSubnets: Subnet[];
+  gatewayIp = '';
+  subnetAddress = '';
+  infoConnection: InfoConnection;
 
   constructor(
     private router: Router,
@@ -52,7 +60,9 @@ export class ExtendKafkaComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private _activatedRoute: ActivatedRoute,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private vlanService: VlanService,
   ) {
+    this.listOfSubnets = [];
   }
 
   ngOnInit(): void {
@@ -65,6 +75,7 @@ export class ExtendKafkaComponent implements OnInit {
       this.serviceOrderCode = params.id;
       if (this.serviceOrderCode) {
         this.getDetail();
+        this.getInfoConnection();
       }
     });
 
@@ -111,11 +122,52 @@ export class ExtendKafkaComponent implements OnInit {
             this.expiryDate = this.startExpiryDate = new Date(this.itemDetail.expiryDate);
             this.startExpiryDate.setDate(this.expiryDate.getDate() + 1);
             this.setExpectExpiryDate();
+
+            if (this.itemDetail) {
+              this.getListSubnet(166);
+            }
           } else {
             this.notification.error(this.i18n.fanyi('app.status.fail'), res.msg);
           }
         }
       )
+  }
+
+  getInfoConnection() {
+    this.kafkaService
+      .getInfoConnection(this.serviceOrderCode)
+      .pipe(
+        filter((r) => r && r.code == 200),
+        map((r) => r.data)
+      )
+      .subscribe((data) => {
+        this.infoConnection = camelizeKeys(data) as InfoConnection;
+      });
+  }
+
+  formSearchSubnet: FormSearchSubnet = new FormSearchSubnet();
+  getListSubnet(networkId: number) {
+
+    this.formSearchSubnet.pageSize = 1000;
+    this.formSearchSubnet.pageNumber = 0;
+    this.formSearchSubnet.networkId = networkId;
+    this.formSearchSubnet.region = this.regionId;
+    this.formSearchSubnet.vpcId = this.projectId;
+    this.formSearchSubnet.customerId = this.tokenService.get()?.userId;
+
+    this.vlanService.getListSubnet(this.formSearchSubnet)
+    .subscribe((r) => {
+      if (r && r.records) {
+        this.listOfSubnets = r.records;
+        if (this.listOfSubnets) {
+          const subnet = this.listOfSubnets.find(item => item.subnetCloudId == '2f31df66-2a7f-49a5-b1d8-a1a2484acf67');
+          if (subnet != null) {
+            this.gatewayIp = subnet.gatewayIp;
+            this.subnetAddress = subnet.subnetAddressRequired;
+          }
+        }
+      }
+    })
   }
 
   backToList() {

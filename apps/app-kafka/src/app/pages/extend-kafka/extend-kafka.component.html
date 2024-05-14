@@ -27,43 +27,131 @@
         <div nz-col [nzSpan]="16" class="form-new">
             <nz-card class="border-card" id="general">
                 <h3><b>{{'app.service.general-info' | i18n}}</b></h3>
-                <div nz-row>
-                    <div nz-col [nzSpan]="5">{{'app.kafka.name' | i18n}}:</div>
-                    <div><b>{{this.itemDetail.serviceName}}</b></div>
-                </div>
-                <div nz-row>
-                    <div nz-col [nzSpan]="5">{{'app.service.creation-date' | i18n}}:</div>
-                    <div>{{ itemDetail.createdDate | date: 'dd/MM/yyyy' }}</div>
-                </div>
-                <div nz-row>
-                    <div nz-col [nzSpan]="5">{{'app.service.expiration-date' | i18n}}:</div>
-                    <div style="color: #ea3829"><b>{{ itemDetail.expiryDate | date: 'dd/MM/yyyy' }}</b></div>
-                </div>
-                <div nz-row>
-                    <div nz-col [nzSpan]="5">{{'app.service.package' | i18n}}:</div>
-                    <div><b>{{this.itemDetail.offerName}}</b></div>
-                </div> 
-                <div nz-row>
-                    <div nz-col [nzSpan]="4">
-                        <ul>
-                            <li>{{'app.kafka.broker' | i18n}}: 3</li>
-                            <li>RAM: {{itemDetail.ram}} GB</li>
-                        </ul>
+                <div class="table-info" nz-row>
+                    <div nz-col [nzSpan]="12">
+                        <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']" style="width: 98%;">
+                            <tbody>
+                                <tr>
+                                    <td class="config-label">{{ 'app.kafka.name' | i18n }}:</td>
+                                    <td>{{itemDetail.serviceName}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="config-label">{{ 'app.text.status' | i18n }}:</td>
+                                    <td>
+                                        <ng-container *ngIf="itemDetail.serviceStatus | status2ColorPipe as status">
+                                            <span [ngStyle]="{color: status.color}">{{status.status}}</span>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="config-label">{{'app.configuration.package' | i18n}}:</td>
+                                    <td>
+                                        <ng-container *ngIf="itemDetail.offerName; else custom">{{ itemDetail.offerName }}</ng-container>
+                                        <ng-template #custom> {{'app.service.custom' | i18n}}</ng-template>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="config-label">{{'app.kafka.broker' | i18n}}:</td>
+                                    <td>3</td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
                     </div>
-                    <div nz-col [nzSpan]="6"></div>
-                    <div>
-                        <ul>
-                            <li>CPU: {{itemDetail.cpu}} VCPU</li>
-                            <li>Storage: {{itemDetail.storage}} GB</li>
-                        </ul>
+                    <div nz-col [nzSpan]="12">
+                        <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']" style="width: 98%; float: right;">
+                            <tbody>
+                                <tr>
+                                    <td class="config-label">{{'app.kafka.version' | i18n}}:</td>
+                                    <td>{{itemDetail.version}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="config-label">{{'app.payment.orderCode' | i18n}}:</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="config-label">{{'app.config' | i18n}}:</td>
+                                    <td>{{ itemDetail.cpu }} vCPU/ {{ itemDetail.ram}} GB RAM/ {{ itemDetail.storage }} GB Storage</td>
+                                </tr>
+                                <tr>
+                                    <td class="config-label">{{'app.service.description' | i18n}}:</td>
+                                    <td>{{itemDetail.description}}</td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
+                    </div>
+                </div>
+            </nz-card>
+
+            <nz-card class="border-card">
+                <h3>{{'kafka.overview.enpoint' | i18n}}</h3>
+                <div class="table-info" nz-row>
+                    <div nz-col [nzSpan]="12">
+                        <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']" style="width: 98%;">
+                            <tbody>
+                                <tr>
+                                    <td class="config-label">Bootstrap Server:</td>
+                                    <td>{{infoConnection.bootstrapServer}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="config-label">Sasl Mechanism:</td>
+                                    <td>{{infoConnection.saslMechanism}}</td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
+                    </div>
+                    <div nz-col [nzSpan]="12">
+                        <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']" style="width: 98%; float: right;">
+                            <tbody>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td class="config-label">Security Protocol:</td>
+                                    <td>{{infoConnection.securityProtocol}}</td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
+                    </div>
+                </div>
+            </nz-card>
+
+            <nz-card class="border-card">
+                <h3>Thông tin Network</h3>
+                <div class="table-info" id="table-network" nz-row>
+                    <div nz-col [nzSpan]="12">
+                        <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']" style="width: 98%;">
+                            <tbody>
+                                <tr>
+                                    <td class="config-label">Mạng VPC:</td>
+                                    <td>{{gatewayIp}}</td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
+                    </div>
+                    <div nz-col [nzSpan]="12">
+                        <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']" style="width: 98%; float: right;">
+                            <tbody>
+                                <tr>
+                                    <td class="config-label">Subnet:</td>
+                                    <td>{{subnetAddress}}</td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
                     </div>
                 </div>
             </nz-card>
 
             <nz-card class="border-card" id="general">
-                <h3><b>{{'app.extension.info' | i18n}}</b></h3>
+                <h3>{{'app.extension.info' | i18n}}</h3>
+
                 <div nz-row>
-                    {{'app.extend.start.date' | i18n}}: {{ startExpiryDate | date: 'dd/MM/yyyy' }}
+                    <div nz-col [nzSpan]="8" class="red-color">
+                        {{'app.service.creation-date' | i18n}}:&nbsp; {{ itemDetail.createdDate | date: 'dd/MM/yyyy' }}
+                    </div>
+                    <div nz-col class="red-color">
+                        {{'app.service.expiration-date' | i18n}}:&nbsp; {{ itemDetail.expiryDate | date: 'dd/MM/yyyy' }}
+                    </div>
                 </div>
                 <div nz-row>
                     <div class="w-100">
@@ -85,8 +173,8 @@
                         </ng-container>
                     </div>
                 </div>
-                <div nz-row style="color: #ea3829">
-                    {{'app.expected.expiry.date' | i18n}}:&nbsp; <p style="color: #ea3829"> <b>{{ expectExpiryDate | date: 'dd/MM/yyyy' }}</b> </p>
+                <div nz-row class="red-color">
+                    {{'app.expected.expiry.date' | i18n}}:&nbsp; {{ expectExpiryDate | date: 'dd/MM/yyyy' }}
                 </div>
 
             </nz-card>
@@ -96,23 +184,47 @@
         <!-- payment -->
         <div nz-col [nzSpan]="8">
             <nz-card class="price-card">
-                <h3><b>{{ 'app.service.price-title' | i18n }}</b></h3>
+                <h3><b>{{ 'app.estimated.cost' | i18n }}</b></h3>
+
                 <div nz-row [nzGutter]="8">
-                    <div nz-col [nzSpan]="12">
-                        <div class="label-price">{{'app.extend.cost' | i18n}}</div>
+                    <div nz-col>
+                        <div class="label-price" style="font-weight: 600;">{{ 'app.kafka.name' | i18n }}</div>
+                        <div class="label-price">{{itemDetail.serviceName}}</div>
                     </div>
-                    <div nz-col [nzSpan]="12">
-                        <div class="value-price">{{ extendAmount | number: '1.0-0'}} VNĐ</div>
+                </div>
+                <nz-divider class="divider-style"></nz-divider>
+
+                <div nz-row [nzGutter]="8">
+                    <div nz-col>
+                        <div class="label-price" style="font-weight: 600;">{{ 'app.configuration.package' | i18n }}: 
+                            <ng-container *ngIf="itemDetail.offerName; else custom">{{ itemDetail.offerName }}</ng-container>
+                            <ng-template #custom> {{'app.service.custom' | i18n}}</ng-template>
+                        </div>
+                        <div class="label-price">
+                            {{ itemDetail.cpu }} vCPU<br>
+                            {{ itemDetail.ram}} GB RAM<br>
+                            {{ itemDetail.storage }} GB Storage
+                        </div>
                     </div>
                 </div>
                 <nz-divider class="divider-style"></nz-divider>
 
                 <div nz-row [nzGutter]="8">
                     <div nz-col [nzSpan]="12">
-                        <div class="label-price">Chi phí VAT (10%)</div>
+                        <div class="label-price" style="font-weight: 600;">{{'app.service.cost' | i18n}} {{duration}} {{'app.month' | i18n}}</div>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <div class="value-price">{{extendAmount === 0 ? 0 : extendAmount * 0.1 | number: '1.0-0'}} VNĐ</div>
+                        <div class="value-price">{{ extendAmount | number: '1.0-0'}} VND</div>
+                    </div>
+                </div>
+                <nz-divider class="divider-style"></nz-divider>
+
+                <div nz-row [nzGutter]="8">
+                    <div nz-col [nzSpan]="12">
+                        <div class="label-price" style="font-weight: 600;">Chi phí VAT (10%)</div>
+                    </div>
+                    <div nz-col [nzSpan]="12">
+                        <div class="value-price">{{extendAmount === 0 ? 0 : extendAmount * 0.1 | number: '1.0-0'}} VND</div>
                     </div>
                 </div>
                 <nz-divider class="divider-style"></nz-divider>
@@ -123,7 +235,7 @@
                         <div class="label-quantity"><i>({{ 'app.service.include' | i18n }} 10% VAT)</i></div>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <div class="value-price total-price"> {{extendAmount === 0 ? 0 : extendAmount * 1.1 | number: '1.0-0'}} VNĐ</div>
+                        <div class="value-price total-price"> {{extendAmount === 0 ? 0 : extendAmount * 1.1 | number: '1.0-0'}} VND</div>
                     </div>
                 </div>
 

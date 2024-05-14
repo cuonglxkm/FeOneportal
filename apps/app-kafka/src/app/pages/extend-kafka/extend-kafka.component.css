@@ -34,6 +34,8 @@ h3 {
 
 .border-card {
     border-radius: 8px;
+    font-size: 16px;
+    line-height: 40px;
 }
 
 .divider-style {
@@ -46,10 +48,10 @@ h3 {
     border-radius: 5px;
 }
 
-#general {
+/* #general {
     font-size: 16px;
     line-height: 40px;
-}
+} */
 
 .w-100 {
     width: 100%;
@@ -68,4 +70,25 @@ h3 {
 
 .box-duration ::ng-deep .ant-input-number-handler-wrap {
     margin-right: 3px;
+}
+
+.table-info nz-table tr:nth-child(even), #table-network nz-table tr{
+  background-color: #E2E2E9;
+}
+
+.table-info {
+    border: 1px solid #C4C6D4;
+    border-radius: 4px;
+}
+
+.config-label {
+    width: 35%;
+}
+
+.table-info nz-table td:nth-child(even) {
+    font-weight: 600;
+}
+
+.red-color {
+    color: #ea3829;
 }
