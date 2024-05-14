@@ -1629,7 +1629,7 @@
   "app.vlan.note49": "Yêu cầu gỡ port khỏi máy ảo thành công",
   "app.vlan.note50": "Yêu cầu gỡ port khỏi máy ảo thất bại. ",
   "app.vlan.note51": "Yêu cầu xoá Port thành công",
-  "app.vlan.note52": "Yêu cầu xoá Port thất bại. ",
+  "app.vlan.note52": "Xoá Port thất bại. ",
   "app.vlan.note53": "Xoá subnet thành công",
   "app.vlan.note54": "Xoá subnet thất bại. ",
   "app.vlan.note55": "Xoá Network thành công.",

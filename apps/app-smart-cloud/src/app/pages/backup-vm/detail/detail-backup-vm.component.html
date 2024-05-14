@@ -24,7 +24,7 @@
 <nz-content>
   <nz-card style="border-radius: 8px;">
     <span class="text-card-header">{{ 'app.backup.vm.ìnformation'|i18n }}</span>
-    <div class="customRow">
+    <div class="customRow" style="margin-top: 25px;">
       <nz-row>
         <nz-col nzSpan="12">
           <nz-row style="padding: 12px 0 12px 0">
@@ -58,7 +58,7 @@
         <nz-col nzSpan="12">
           <nz-row style="padding: 12px 0 12px 0">
             <span class="text-label customSpan" style="width: 35%">{{ 'app.backup.package.storage' | i18n }}</span>
-            <span class="text-value-detail">{{ backupPackageDetail?.sizeInGB }} GB</span>
+            <span class="text-value-detail" style="margin-left: 2%;">{{ backupPackageDetail?.sizeInGB }} GB</span>
           </nz-row>
         </nz-col>
         <nz-col nzSpan="12">
@@ -71,8 +71,8 @@
       <nz-row style="background-color: #e2e2e9">
         <nz-col nzSpan="12">
           <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label" style="width: 35%">{{ 'app.used.capacity' | i18n }}</span>
-            <span class="text-value-detail">{{ backupPackageDetail?.usedSize }} GB</span>
+            <span class="text-label" style="width: 35%; margin-left: 2%;">{{ 'app.used.capacity' | i18n }}</span>
+            <span class="text-value-detail" style="margin-left: 2%;">{{ backupPackageDetail?.usedSize }} GB</span>
           </nz-row>
         </nz-col>
         <nz-col nzSpan="12">
@@ -86,14 +86,14 @@
         <nz-col nzSpan="12">
           <nz-row style="padding: 12px 0 12px 0">
             <span class="text-label customSpan"
-                  style="width: 35%">{{ 'app.backup.package.storage.remaining' | i18n }}</span>
-            <span class="text-value-detail">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }}GB</span>
+                  style="width: 35%; margin-left: 2%">{{ 'app.backup.package.storage.remaining' | i18n }}</span>
+            <span class="text-value-detail" style="margin-left: 2%;">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }}GB</span>
           </nz-row>
         </nz-col>
         <nz-col nzSpan="12">
           <nz-row style="padding: 12px 0 12px 0">
             <span class="text-label" style="width: 35%">{{ 'app.info.backup.vm.external.volume' |i18n }}</span>
-            <span class="text-value-detail">{{ nameVolumeBackupAttachNameUnique }}</span>
+            <span class="text-value-detail" >{{ nameVolumeBackupAttachNameUnique }}</span>
           </nz-row>
         </nz-col>
       </nz-row>
@@ -106,8 +106,8 @@
         </nz-col>
         <nz-col nzSpan="12">
           <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label" style="width: 35%">{{ 'app.service.expiration-date' | i18n }}</span>
-            <span class="text-value-detail">{{ backupVm?.expirationDate | date : 'dd/MM/yyyy' }}</span>
+            <span class="text-label" style="width: 35%; color: #EB1414;">{{ 'app.service.expiration-date' | i18n }}</span>
+            <span class="text-value-detail" style="color: #EB1414">{{ backupVm?.expirationDate | date : 'dd/MM/yyyy' }}</span>
           </nz-row>
         </nz-col>
       </nz-row>
