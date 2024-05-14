@@ -90,6 +90,7 @@ export class AttachPortComponent {
       this.isLoading = false
       this.listVm = data.records
       console.log('listvm', this.listVm)
+      this.listVm = this.listVm.filter(item => item.taskState === 'ACTIVE' && item.status === 'KHOITAO')
     })
   }
 }

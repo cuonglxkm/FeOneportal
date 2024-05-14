@@ -188,7 +188,7 @@ export class ListenerCreateComponent implements OnInit{
         name: this.validateForm.controls['healthName'].value,
         httpMethod: this.selectedCheckMethod == 'HTTP' ? this.selectedHttpMethod : '',
         type: this.selectedCheckMethod,
-        delay: this.dataListener?.id,
+        delay: this.validateForm.controls['delay'].value,
         maxRetries: this.validateForm.controls['maxRetries'].value,
         timeout: this.validateForm.controls['timeoutHealth'].value,
         // adminStateUp: true,

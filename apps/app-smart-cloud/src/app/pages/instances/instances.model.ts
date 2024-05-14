@@ -549,9 +549,9 @@ export class InstanceAction {
   suspendType: string;
   networkId: string;
   portId: string;
-  subnetId: string;
   ipAddress: string;
   id: number;
+  customerId: number;
 }
 
 export class VlanSubnet {

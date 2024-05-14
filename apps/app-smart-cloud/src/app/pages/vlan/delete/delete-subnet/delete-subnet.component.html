@@ -3,7 +3,7 @@
      nzPopoverContent="{{ 'app.delete' | i18n }}"
      nzPopoverPlacement="bottom" (click)="showModalDeleteSubnet()"/>
 <nz-modal [(nzVisible)]="isVisibleDeleteSubnet"
-          (nzOnCancel)="handleCancelDeleteSubnet()" nzCentered>
+          (nzOnCancel)="handleCancelDeleteSubnet()">
   <div *nzModalTitle>
     <span class="text-modal-title">{{ 'app.delete' | i18n }} Subnet {{ nameSubnet }}</span>
   </div>
@@ -15,7 +15,7 @@
            [(ngModel)]="value"
            (ngModelChange)="onInputChange($event)"
            (keydown.enter)="focusOkButton($event)"
-           placeholder="{{ 'app.vlan.note71' | i18n }}"/>
+           placeholder="{{ 'app.vlan.note6' | i18n }}"/>
     <span *ngIf="isInput" style="color: red;">{{ 'app.vlan.note77' | i18n }}</span>
   </div>
   <div *nzModalFooter>

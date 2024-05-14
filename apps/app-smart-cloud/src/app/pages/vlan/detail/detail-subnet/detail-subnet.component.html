@@ -20,7 +20,7 @@
   </nz-col>
 </nz-row>
 <nz-table #fixTableSubnet
-          nzShowPagination
+          nzShowSizeChanger
           [nzData]="responseSubnet?.records"
           [nzTotal]="responseSubnet?.totalCount"
           (nzPageSizeChange)="onPageSizeChangeSubnet($event)"
