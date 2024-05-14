@@ -58,7 +58,7 @@ export class RouterListComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
       ],
     ],
     network: [''],
@@ -71,7 +71,7 @@ export class RouterListComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
       ],
     ],
   });

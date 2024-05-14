@@ -228,7 +228,7 @@
           {{ item.key }}
         </td>
         <td>{{ (item.size / 1024).toFixed(2) }} KB</td>
-        <td>{{ item.objectType }}</td>
+        <td style="text-transform: capitalize;">{{ item.objectType }}</td>
         <td>{{ item.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
         <td>{{ item.isPublic == true ? 'Public' : 'Private' }}</td>
         <td>

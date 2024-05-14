@@ -137,6 +137,7 @@
     style="margin-top: 10px"
     #rowSelectionTable
     nzShowSizeChanger
+    [nzScroll]="{ y: '250px' }"
     [nzFrontPagination]="false"
     [nzData]="listBucket"
     (nzPageSizeChange)="search()"
@@ -144,13 +145,13 @@
   >
     <thead>
       <tr>
-        <th nzLeft>{{ 'app.bucket.name' | i18n }}</th>
-        <th>URL</th>
-        <th>{{ 'app.access.rights' | i18n }}</th>
-        <th>Versioning</th>
-        <th>{{ 'app.service.creation-date' | i18n }}</th>
-        <th>{{ 'app.text.status' | i18n }}</th>
-        <th nzRight>{{ 'app.text.operation' | i18n }}</th>
+        <th nzWidth="150px" nzLeft>{{ 'app.bucket.name' | i18n }}</th>
+        <th nzWidth="150px">URL</th>
+        <th nzWidth="150px">{{ 'app.access.rights' | i18n }}</th>
+        <th nzWidth="150px">Versioning</th>
+        <th nzWidth="150px">{{ 'app.service.creation-date' | i18n }}</th>
+        <th nzWidth="150px">{{ 'app.text.status' | i18n }}</th>
+        <th nzWidth="150px" nzRight>{{ 'app.text.operation' | i18n }}</th>
       </tr>
     </thead>
     <tbody>
