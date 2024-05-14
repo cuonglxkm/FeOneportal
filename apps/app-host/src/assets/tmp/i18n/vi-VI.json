@@ -810,6 +810,8 @@
   "app.payment.voucher.not.found": "Rất tiếc! Không thể tìm thấy mã voucher này",
   "app.payment.success": "THANH TOÁN THÀNH CÔNG",
   "app.payment.fail": "THANH TOÁN THẤT BẠI",
+  "app.payment.pay.now":"Thanh toán ngay",
+
 
   "app.notify.fail.order.create": "Tạo order không thành công",
   "app.get.list.voucher.fail": "Lấy danh sách Voucher thất bại",
@@ -894,7 +896,9 @@
   "app.users.button.create": "Tạo mới",
   "app.users.nameUser": "Tên User",
   "app.users.groups": "Groups",
+  "app.users.group": "Group",
   "app.users.createDate": "Thời gian tạo",
+  "app.users.button.create.user":"Tạo mới User",
 
   "app.breadcrumb.createUser": "Tạo User",
   "app.create-user.userInfomation": "Thông tin của User",
@@ -936,6 +940,8 @@
   "app.button.back": "Quay lại",
   "app.button.addUser": "Thêm User",
   "app.users.deleteUser.titleAll": "Bạn đang thực hiện xóa",
+  "app.users.deleteUser.title": "Bạn đang thực hiện xóa",
+  "app.users.deleteUser.des": "Việc thực hiện xóa các Users đồng thời cũng sẽ xóa toàn bộ dữ liệu liên quan tới những User đó",
   "app.users.deleteUser.desAll": "Việc thực hiện xóa các Users đồng thời cũng sẽ xóa toàn bộ dữ liệu liên quan tới những User đó",
   "app.users.deleteUser.desAll2": "Hành động này không thể được hoàn tác",
   "app.users.deleteUser.input": "Để thực hiện xóa User, vui lòng nhập tên User để xác nhận",
@@ -960,6 +966,11 @@
   "app.iam-dashboard.conceptIAM": "Khái niệm về IAM?",
   "app.iam-dashboard.conceptPolicy": "Khái niệm về Policy?",
   "app.iam-dashboard.createGroup": "Cách khởi tạo Group?",
+  "app.iam-dashboard.home":"Trang chủ",
+
+  "app.user.group.join":"Các Groups mà User đang tham gia",
+  "app.user.group.maximum.groups":"Một người dùng có thể là thành viên của tối đa 10 nhóm cùng một lúc",
+  "app.user.initialize":"Khởi tạo User",
 
   "app.breadcrumb.user-group": "User Groups",
   "app.user-group.userGroupList": "Danh sách User Groups",

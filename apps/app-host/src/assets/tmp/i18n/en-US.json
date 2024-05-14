@@ -920,6 +920,7 @@
   "app.payment.voucher.not.found": "We're sorry! This voucher code couldn't be found",
   "app.payment.success": "PAYMENT SUCCESSFUL",
   "app.payment.fail": "PAYMENT FAILED",
+  "app.payment.pay.now":"Pay Now",
 
   "app.notify.fail.order.create": "Failed to create order",
   "app.get.list.voucher.fail": "Failed to retrieve Voucher list",
@@ -1004,6 +1005,11 @@
   "app.iam-dashboard.conceptIAM": "Concept of IAM?",
   "app.iam-dashboard.conceptPolicy": "Concept of Policy?",
   "app.iam-dashboard.createGroup": "How to create Group?",
+  "app.iam-dashboard.home":"Home",
+
+  "app.user.group.join":"The Groups that the User is participating in",
+  "app.user.group.maximum.groups":"A user can be a member of up to 10 groups at the same time",
+  "app.user.initialize":"Initialize User",
 
   "app.users.listUser": "List of Users",
   "app.users.detail": "User detail",
@@ -1011,7 +1017,9 @@
   "app.users.button.create": "Create",
   "app.users.nameUser": "Name of User",
   "app.users.groups": "Groups",
+  "app.users.group": "Group",
   "app.users.createDate": "Create Date",
+  "app.users.button.create.user":"Create New User",
   "app.users.deleteUser.titleAll": "You are deleting",
   "app.users.deleteUser.title": "You are deleting",
   "app.users.deleteUser.des": "Deleting a User will also delete all data related to this User",

@@ -35,37 +35,37 @@
     </nz-row>
     <nz-row style="padding-top: 50px">
       <div nz-col nzSpan="12">
-        <nz-row style="height: 50px" class="lable-fontsize">
+        <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.customerName" | i18n}}:</span>
           <span class="fw-600">{{ (userModel$ | async)?.name === '' ? '-' : (userModel$ | async)?.name}}</span>
         </nz-row>
-        <nz-row style="height: 50px" class="lable-fontsize">
+        <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.phone" | i18n}}:</span>
           <span class="fw-600">{{ (userModel$ | async)?.phoneNumber === '' ? '-' : (userModel$ | async)?.phoneNumber}}</span>
         </nz-row>
-        <nz-row style="height: 50px" class="lable-fontsize">
+        <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.customerName" | i18n}}:</span>
           <span class="fw-600"> {{ (userModel$ | async)?.email === '' ? '-' : (userModel$ | async)?.email }}</span>
         </nz-row>
-        <nz-row style="height: 50px" class="lable-fontsize">
+        <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.address" | i18n}}:</span>
           <span class="fw-600">{{ (userModel$ | async)?.address === '' ? '-' :  (userModel$ | async)?.address}}</span>
         </nz-row>
       </div>
       <div nz-col nzSpan="12">
-        <nz-row style="height: 50px" class="lable-fontsize">
+        <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.createDate" | i18n}}:</span>
           <span class="fw-600">{{ payment.createdDate | date : 'dd/MM/yyyy' }} </span>
         </nz-row>
-        <nz-row style="height: 50px"  class="lable-fontsize">
+        <nz-row style="height: 50px"  class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.paymentMethod" | i18n}}:</span>
           <span class="fw-600"> {{ payment.paymentLatestStatus }} </span>
         </nz-row>
-        <nz-row style="height: 50px" class="lable-fontsize">
+        <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.orderCode" | i18n}}:</span>
           <span class="fw-600" style="color: #248FCC;">{{ payment.orderNumber }}</span>
         </nz-row>
-        <nz-row style="height: 50px" class="lable-fontsize">
+        <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.invoiceCode" | i18n}}:</span>
           <span class="fw-600" style="color: #248FCC;">{{ payment.invoiceIssuedId === 0 ? '-' : payment.invoiceIssuedId  }}</span>
         </nz-row>
@@ -79,7 +79,7 @@
         style="background-color: #E58200; border: none; outline: none; padding: 0 50px; display: flex; align-items: center; gap: 5px; margin:1rem 0rem;"
       >
         <img src="assets/imgs/wallet.svg" alt="" />
-        <span>Thanh toán ngay</span>
+        <span>{{"app.payment.pay.now" |i18n}}</span>
       </button>
     </div>
   </nz-card>
@@ -98,7 +98,7 @@
       <thead>
         <tr>
           <th>{{"app.payment-detail.serviceName" | i18n}}</th>
-          <th>Hình thức</th>
+          <th>{{"app.payment.service.type" |i18n}}</th>
           <th>{{"app.payment-detail.price" | i18n}}</th>
           <th>{{"app.payment-detail.remain" | i18n}}</th>
           <th>{{"app.payment-detail.quantity" | i18n}}</th>
@@ -127,7 +127,7 @@
       </div>
       <div>
         <nz-table>
-          <tr style="margin-bottom: 5px" class="lable-fontsize">
+          <tr style="margin-bottom: 5px" class="label-fontsize">
             <td >{{"app.payment-detail.totalAmount" | i18n}}</td>
             <td style="text-align: right">
               <span class="price">{{payment.amount | number: '1.0-0'}} VND</span>
@@ -142,7 +142,7 @@
             <td></td>
             <td></td>
           </tr>
-          <tr style="margin-bottom: 5px" class="lable-fontsize">
+          <tr style="margin-bottom: 5px" class="label-fontsize">
             <td >VAT(10%)</td>
             <td style="text-align: right">
               <span class="price"
@@ -159,7 +159,7 @@
             <td></td>
             <td></td>
           </tr>
-          <tr style="background-color: #CCE9FF" class="lable-fontsize">
+          <tr style="background-color: #CCE9FF" class="label-fontsize">
             <td style="padding: 10px; border-radius: 8px 0 0 8px">
               <span style="display: block; font-size: 16px; font-weight: 600;">{{"app.payment-detail.totalPayment" | i18n}}</span>
               <span>({{"app.payment-detail.vat" | i18n}})</span>
