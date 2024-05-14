@@ -25,7 +25,7 @@
   </nz-col>
 </nz-row>
 <nz-table #fixTablePort
-          nzShowPagination
+          nzShowSizeChanger
           [nzData]="responsePort?.records"
           [nzTotal]="responsePort?.totalCount"
           (nzPageSizeChange)="onPageSizeChangePort($event)"
@@ -47,7 +47,10 @@
   <tbody>
   <tr *ngFor="let index of fixTablePort.data">
     <td>{{ index.name }}</td>
-    <td>{{ index.fixedIPs }}</td>
+    <td>
+      <span *ngFor="let ip of index.fixedIPs; let last = last">
+        {{ ip }}<br *ngIf="!last">
+      </span></td>
     <td>{{ index.macAddress }}</td>
     <td>{{ index.attachedDevice }}</td>
     <td>{{ index.status }}</td>
@@ -76,6 +79,7 @@
         <one-portal-delete-port [region]="region"
                                 [project]="project"
                                 [id]="index.id"
+                                [portName]="index.fixedIPs.join(',')"
                                 [attach]="index.instanceName"
                                 (onOk)="handleOkDeletePort()"/>
       </div>

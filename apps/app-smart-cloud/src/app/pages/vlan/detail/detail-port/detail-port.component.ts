@@ -90,6 +90,6 @@ export class DetailPortComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.getVlanByNetworkId()
+    setTimeout(() => {this.getVlanByNetworkId()}, 2000)
   }
 }

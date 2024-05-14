@@ -71,7 +71,6 @@ export class InstancesComponent implements OnInit {
   activeCreate: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
-  isChoosePort: boolean = true;
 
   typeVpc: number;
 
@@ -271,6 +270,7 @@ export class InstancesComponent implements OnInit {
   }
 
   listVlanNetwork: NetWorkModel[] = [];
+  vlanCloudId: string;
   getListNetwork(): void {
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
     formSearchNetwork.region = this.region;
@@ -282,20 +282,25 @@ export class InstancesComponent implements OnInit {
       .getVlanNetworks(formSearchNetwork)
       .subscribe((data: any) => {
         this.listVlanNetwork = data.records;
+        this.vlanCloudId = this.listVlanNetwork[0].cloudId;
+        this.getListPort(this.vlanCloudId);
+        this.getVlanSubnets(this.vlanCloudId);
         this.cdr.detectChanges();
       });
   }
 
   listPort: Port[] = [];
   port: string = '';
+  portLoading: boolean;
   getListPort(networkCloudId: string) {
+    this.portLoading = true;
+    this.listPort = [];
     this.dataService
       .getListAllPortByNetwork(networkCloudId, this.region)
       .subscribe({
         next: (data) => {
-          data.forEach((e: Port) => {
-            this.listPort.push(e);
-          });
+          this.listPort = data;
+          this.portLoading = false;
         },
         error: (e) => {
           this.notification.error(
@@ -308,15 +313,17 @@ export class InstancesComponent implements OnInit {
 
   changeVlanNetwork(networkCloudId: string) {
     this.listSubnet = [];
-    this.instanceAction.subnetId = null;
     this.instanceAction.ipAddress = null;
     this.getVlanSubnets(networkCloudId);
     this.getListPort(networkCloudId);
   }
 
   listSubnet: VlanSubnet[] = [];
+  listSubnetStr: string = '';
   loadingSubnet: boolean = false;
   getVlanSubnets(networkCloudId: string): void {
+    this.listSubnet = [];
+    this.listSubnetStr = '';
     this.loadingSubnet = true;
     this.dataService
       .getVlanSubnets(9999, 0, this.region, networkCloudId)
@@ -329,6 +336,9 @@ export class InstancesComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.listSubnet = data.records;
+          this.listSubnetStr = this.listSubnet
+            .map((item) => `${item.name} (${item.subnetAddressRequired})`)
+            .join(', ');
         },
         error: (e) => {
           this.notification.error(
@@ -340,8 +350,22 @@ export class InstancesComponent implements OnInit {
   }
 
   instanceAction: InstanceAction = new InstanceAction();
+  isChoosePort: boolean = true;
+  formGanVlan = new FormGroup({
+    ipAddress: new FormControl('', {
+      validators: [
+        Validators.pattern(
+          /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})){3}$/
+        ),
+      ],
+    }),
+  });
   showHandleGanVLAN(id: number) {
+    this.isChoosePort = true;
     this.instanceAction = new InstanceAction();
+    this.instanceAction.networkId = this.vlanCloudId;
+    this.getListPort(this.vlanCloudId);
+    this.getVlanSubnets(this.vlanCloudId);
     this.instanceAction.id = id;
     this.instanceAction.command = 'attachinterface';
     this.isVisibleGanVLAN = true;
@@ -355,18 +379,11 @@ export class InstancesComponent implements OnInit {
     this.isVisibleGanVLAN = false;
     this.dataService.postAction(this.instanceAction).subscribe({
       next: (data: any) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success(
-            '',
-            this.i18n.fanyi('app.notify.attach.vlan.success')
-          );
-          this.reloadTable();
-        } else {
-          this.notification.error(
-            '',
-            this.i18n.fanyi('app.notify.attach.vlan.fail')
-          );
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.attach.vlan.success')
+        );
+        this.reloadTable();
       },
       error: (e) => {
         this.notification.error(
@@ -378,7 +395,7 @@ export class InstancesComponent implements OnInit {
   }
 
   listOfPrivateNetwork: Network[];
-  getListIpPublic(id: number) {
+  getListIpPrivate(id: number) {
     this.dataService
       .getPortByInstance(id, this.region)
       .subscribe((dataNetwork: any) => {
@@ -386,6 +403,7 @@ export class InstancesComponent implements OnInit {
         this.listOfPrivateNetwork = dataNetwork.filter(
           (e: Network) => e.isExternal == false
         );
+        this.isVisibleGoKhoiVLAN = true;
         this.cdr.detectChanges();
       });
   }
@@ -394,6 +412,7 @@ export class InstancesComponent implements OnInit {
     this.instanceAction = new InstanceAction();
     this.instanceAction.id = id;
     this.instanceAction.command = 'detachinterface';
+    this.getListIpPrivate(id);
     this.isVisibleGoKhoiVLAN = true;
   }
 
@@ -405,18 +424,11 @@ export class InstancesComponent implements OnInit {
     this.isVisibleGoKhoiVLAN = false;
     this.dataService.postAction(this.instanceAction).subscribe({
       next: (data: any) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success(
-            '',
-            this.i18n.fanyi('app.notify.detach.vlan.success')
-          );
-          this.reloadTable();
-        } else {
-          this.notification.error(
-            '',
-            this.i18n.fanyi('app.notify.detach.vlan.fail')
-          );
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.detach.vlan.success')
+        );
+        this.reloadTable();
       },
       error: (e) => {
         this.notification.error(
@@ -441,20 +453,13 @@ export class InstancesComponent implements OnInit {
     };
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success(
-            '',
-            this.i18n.fanyi('app.notify.request.shutdown.instances.success')
-          );
-          setTimeout(() => {
-            this.reloadTable();
-          }, 1500);
-        } else {
-          this.notification.error(
-            '',
-            this.i18n.fanyi('app.notify.request.shutdown.instances.fail')
-          );
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.request.shutdown.instances.success')
+        );
+        setTimeout(() => {
+          this.reloadTable();
+        }, 1500);
       },
       error: (e) => {
         this.notification.error(
@@ -481,20 +486,13 @@ export class InstancesComponent implements OnInit {
     };
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success(
-            '',
-            this.i18n.fanyi('app.notify.request.start.instances.success')
-          );
-          setTimeout(() => {
-            this.reloadTable();
-          }, 1500);
-        } else {
-          this.notification.error(
-            '',
-            this.i18n.fanyi('app.notify.request.start.instances.fail')
-          );
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.request.start.instances.success')
+        );
+        setTimeout(() => {
+          this.reloadTable();
+        }, 1500);
       },
       error: (e) => {
         this.notification.error(
@@ -521,20 +519,13 @@ export class InstancesComponent implements OnInit {
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success(
-            '',
-            this.i18n.fanyi('app.notify.request.reboot.instances.success')
-          );
-          setTimeout(() => {
-            this.reloadTable();
-          }, 1500);
-        } else {
-          this.notification.error(
-            '',
-            this.i18n.fanyi('app.notify.request.reboot.instances.fail')
-          );
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.request.reboot.instances.success')
+        );
+        setTimeout(() => {
+          this.reloadTable();
+        }, 1500);
       },
       error: (e) => {
         this.notification.error(
@@ -561,20 +552,13 @@ export class InstancesComponent implements OnInit {
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success(
-            '',
-            this.i18n.fanyi('app.notify.rescue.instances.success')
-          );
-          setTimeout(() => {
-            this.reloadTable();
-          }, 1500);
-        } else {
-          this.notification.error(
-            '',
-            this.i18n.fanyi('app.notify.rescue.instances.fail')
-          );
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.rescue.instances.success')
+        );
+        setTimeout(() => {
+          this.reloadTable();
+        }, 1500);
       },
       error: (e) => {
         this.notification.error(
@@ -601,20 +585,13 @@ export class InstancesComponent implements OnInit {
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success(
-            '',
-            this.i18n.fanyi('app.notify.unrescue.instances.success')
-          );
-          setTimeout(() => {
-            this.reloadTable();
-          }, 1500);
-        } else {
-          this.notification.error(
-            '',
-            this.i18n.fanyi('app.notify.unrescue.instances.fail')
-          );
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.unrescue.instances.success')
+        );
+        setTimeout(() => {
+          this.reloadTable();
+        }, 1500);
       },
       error: (e) => {
         this.notification.error(

@@ -243,7 +243,11 @@ export class VlanCreateSubnetComponent implements OnInit {
     this.formCreateSubnet.vlanId = this.idNetwork;
     this.formCreateSubnet.region = this.region;
     this.formCreateSubnet.networktAddress = this.validateForm.controls.subnetAddressRequired.value;
-    this.formCreateSubnet.gatewayIP = this.validateForm.controls.gateway.value;
+    if(this.validateForm.controls.disableGatewayIp.value) {
+      this.formCreateSubnet.gatewayIP = null
+    } else {
+      this.formCreateSubnet.gatewayIP = this.validateForm.controls.gateway.value
+    }
     this.formCreateSubnet.allocationPool = this.validateForm.controls.allocationPool.value;
     this.formCreateSubnet.dnsNameServer = null;
     this.formCreateSubnet.enableDHCP = this.validateForm.controls.enableDhcp.value;

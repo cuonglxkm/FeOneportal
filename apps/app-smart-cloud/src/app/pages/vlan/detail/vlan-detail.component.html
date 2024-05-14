@@ -24,11 +24,17 @@
 <nz-content>
   <nz-card>
     <nz-tabset>
-      <nz-tab nzTitle="Subnet">
+      <nz-tab [nzTitle]="titleSubnet">
         <one-portal-detail-subnet [region]="region" [project]="project" [idNetwork]="idNetwork" />
+        <ng-template #titleSubnet>
+          <span class="text-label">Subnet</span>
+        </ng-template>
       </nz-tab>
-      <nz-tab  nzTitle="Port">
+      <nz-tab [nzTitle]="titlePort">
         <one-portal-detail-port [region]="region" [project]="project" [idNetwork]="idNetwork" />
+        <ng-template #titlePort>
+          <span class="text-label">Port</span>
+        </ng-template>
       </nz-tab>
     </nz-tabset>
   </nz-card>

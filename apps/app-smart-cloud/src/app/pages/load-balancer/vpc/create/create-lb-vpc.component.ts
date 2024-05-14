@@ -18,6 +18,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-create-lb-vpc',
@@ -290,6 +291,7 @@ export class CreateLbVpcComponent implements OnInit {
 
 
   doCreateLoadBalancerVpc() {
+    this.loadingCreate = true;
     this.loadBalancerInit();
     let request: FormOrder = new FormOrder();
     request.customerId = this.formCreateLoadBalancer.customerId;
@@ -305,7 +307,11 @@ export class CreateLbVpcComponent implements OnInit {
       }
     ];
     console.log(request);
-    this.loadBalancerService.createLoadBalancer(request).subscribe(data => {
+    this.loadBalancerService.createLoadBalancer(request)
+      .pipe(finalize(() => {
+        this.loadingCreate = false;
+      }))
+      .subscribe(data => {
         if (data != null) {
           if (data.code == 200) {
             this.isLoading = false;
@@ -334,6 +340,7 @@ export class CreateLbVpcComponent implements OnInit {
 
   mapSubnet: Map<string, string> = new Map<string, string>();
   mapSubnetArray: { value: string, label: string }[] = [];
+  loadingCreate = false;
 
   setDataToMap(data: any) {
     // Xóa dữ liệu hiện có trong mapSubnet (nếu cần)
