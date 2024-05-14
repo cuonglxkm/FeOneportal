@@ -26,6 +26,8 @@ export class KubernetesConstant {
 
   public static LOCK_RULE = "any";
 
+  public static IPv4 = "IPv4";
+
   // instance
   public static ACTIVE_INSTANCE = 'active';
 

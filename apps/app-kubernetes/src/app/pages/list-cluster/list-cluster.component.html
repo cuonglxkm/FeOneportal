@@ -96,7 +96,7 @@
                 <ng-container *ngIf="item.serviceStatus == 2; else ortherStatusTpl">
                   <div class="flex-style">
                     <nz-progress [nzPercent]="100" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
-                    <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{status.status}}</span>
+                    <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{ status.status | i18n }}</span>
                   </div>
                 </ng-container>
 

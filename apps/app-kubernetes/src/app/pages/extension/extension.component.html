@@ -47,7 +47,7 @@
                     <div nz-col [nzSpan]="8">{{ 'app.text.status' | i18n }}</div>
                     <div nz-col [nzSpan]="16">
                       <ng-container *ngIf="detailCluster.serviceStatus | status2ColorPipe as status">
-                        <span [ngStyle]="{color: status.color, 'font-weight': 600}">{{status.status}}</span>
+                        <span [ngStyle]="{color: status.color, 'font-weight': 600}">{{ status.status | i18n }}</span>
                       </ng-container>
                     </div>
                   </div>
@@ -248,7 +248,7 @@
 
             <div nz-col [nzSpan]="12">
               <ng-container *ngFor="let item of detailCluster?.workerGroup">
-                <div class="mb-3">
+                <div class="mb-3 summary-info">
                   {{item.workerGroupName}} / {{item.cpu}}vCPU / {{item.ram}}GB / {{item.volumeSize}}GB {{item.volumeTypeName}}
                 </div>
               </ng-container>

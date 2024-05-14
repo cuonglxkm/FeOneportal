@@ -1055,12 +1055,17 @@
   "app.cluster.upgrade-note": "Khách hàng chỉ có thể nâng cấp cấu hình lên cao hơn mức hiện tại đang sử dụng.",
 
   "cluster.status.not-yet-extend": "Chưa gia hạn",
-  "cluster.status.running": "Đang khởi tạo",
-  "cluster.status.initialing": "Đang khởi tạo",
+  "cluster.status.running": "Đang hoạt động",
+  "cluster.status.initializing": "Đang khởi tạo",
   "cluster.status.upgrading": "Đang nâng cấp",
   "cluster.status.deleting": "Đang xóa",
   "cluster.status.failed": "Khởi tạo thất bại",
   "cluster.status.unknow": "Không xác định",
+
+  "cluster.instance.running": "Đang chạy",
+  "cluster.instance.stopped": "Đã dừng",
+  "cluster.instance.reboot": "Khởi động lại",
+  "cluster.instance.unknow": "Không xác định",
 
   "app.cluster.manage-cluster": "Quản lý Cluster",
   "app.cluster.detail-cluster": "Chi tiết dịch vụ",
@@ -1192,6 +1197,12 @@
   "cluster.validate.to-port": "Vui lòng nhập số nguyên trong khoảng 1 đến 65535 và phải lớn hơn hoặc bằng From Port",
   "cluster.validate.ip": "Vui lòng nhập đúng định dạng IP x.x.x.x/x (subnet mask không vượt quá 32, octet không vượt quá 255)",
   "cluster.placeholder.extend-month": "Nhập số tháng cần gia hạn",
+  "cluster.instances.stop-notify-1": "Tạm dừng hoạt động node {{name}}",
+  "cluster.instances.stop-notify-2": "Bạn có chắc chắn muốn dừng hoạt động node {{name}} ?",
+  "cluster.instances.reboot-notify-1": "Khởi động lại node {{name}}",
+  "cluster.instances.reboot-notify-2": "Bạn có chắc chắn muốn khởi động lại node {{name}} ?",
+  "cluster.instances.start-notify-1": "Bật node {{name}}",
+  "cluster.instances.start-notify-2": "Bạn có chắc muốn bật node {{name}} ?",
 
   "app.text.version": "Phiên bản",
   "app.text.status": "Trạng thái",

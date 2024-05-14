@@ -11,7 +11,7 @@ export class Status2ColorPipe implements PipeTransform {
       case 0:
         return new StatusModel("#FFBB63", "cluster.status.not-yet-extend");
       case 1:
-        return new StatusModel("#0066b0", "cluster.status.initialing");
+        return new StatusModel("#0066b0", "cluster.status.initializing");
       case 2:
         return new StatusModel("#008d47", "cluster.status.running");
       case 6:

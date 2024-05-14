@@ -58,7 +58,7 @@
                     <div nz-col [nzSpan]="8">{{ 'app.text.status' | i18n }}</div>
                     <div nz-col [nzSpan]="16">
                       <ng-container *ngIf="detailCluster.serviceStatus | status2ColorPipe as status">
-                        <span [ngStyle]="{color: status.color, 'font-weight': 600}">{{status.status}}</span>
+                        <span [ngStyle]="{color: status.color, 'font-weight': 600}">{{ status.status | i18n }}</span>
                       </ng-container>
                     </div>
                   </div>

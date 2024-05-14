@@ -42,7 +42,7 @@
           <td>{{ item.workerGroupName }}</td>
           <td>
             <ng-container *ngIf="item.status | statusCode2Label as status">
-              <span [ngStyle]="{color: status.color}">{{status.status}}</span>
+              <span [ngStyle]="{color: status.color}">{{ status.status | i18n }}</span>
             </ng-container>
           </td>
           <td>{{ item.privateIP }}</td>
@@ -76,10 +76,10 @@
 <!-- modal -->
 <nz-modal [(nzVisible)]="isVisibleModal" (nzOnCancel)="handleCancelModalAction()">
   <div *nzModalTitle>
-    <span class="text-modal-title">{{titleModal}}</span>
+    <span class="text-modal-title">{{titleModal | i18n : {name: selectedInstance.instanceName} }}</span>
   </div>
   <div *nzModalContent style="display: flex; flex-direction: column;">
-    <span class="text-label">{{contentModal}}</span>
+    <span class="text-label">{{contentModal | i18n : {name: selectedInstance.instanceName} }}</span>
   </div>
   <div *nzModalFooter>
     <button nz-button nzType="default" (click)="handleCancelModalAction()" class="border-button" [disabled]="isSubmiting">

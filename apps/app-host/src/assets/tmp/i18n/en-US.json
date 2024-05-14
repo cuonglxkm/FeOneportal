@@ -1171,11 +1171,16 @@
 
   "cluster.status.not-yet-extend": "Not Extended",
   "cluster.status.running": "Running",
-  "cluster.status.initialing": "Initialing",
+  "cluster.status.initializing": "Initializing",
   "cluster.status.upgrading": "Upgrading",
   "cluster.status.deleting": "Deleting",
   "cluster.status.failed": "Initialization failed",
   "cluster.status.unknow": "Unknow",
+
+  "cluster.instance.running": "Running",
+  "cluster.instance.stopped": "Stopped",
+  "cluster.instance.reboot": "Rebooting",
+  "cluster.instance.unknow": "Unknow",
 
   "app.cluster.manage-cluster": "Cluster Management",
   "app.cluster.detail-cluster": "Service Details",
@@ -1308,6 +1313,12 @@
   "cluster.validate.to-port": "Please enter an integer between 1 and 65535 and it must be greater than or equal to From Port",
   "cluster.validate.ip": "Please enter the correct IP format x.x.x.x/x (subnet mask not exceeding 32, octet not exceeding 255)",
   "cluster.placeholder.extend-month": "Enter the number of extended months",
+  "cluster.instances.stop-notify-1": "Stop node {{name}}",
+  "cluster.instances.stop-notify-2": "Are you sure you want to stop node {{name}} ?",
+  "cluster.instances.reboot-notify-1": "Reboot node {{name}}",
+  "cluster.instances.reboot-notify-2": "Are you sure you want to reboot node {{name}} ?",
+  "cluster.instances.start-notify-1": "Start node {{name}}",
+  "cluster.instances.start-notify-2": "Are you sure you want to start node {{name}} ?",
 
   "app.text.version": "Version",
   "app.text.status": "Status",

@@ -116,18 +116,18 @@ export class InstancesComponent implements OnInit, OnChanges {
     if (action == null || action == undefined) {
       if (item.isActive) {
         // turn off node
-        this.titleModal = `Tạm dừng hoạt động node ${item.instanceName}`;
-        this.contentModal = `Bạn có chắc chắn muốn dừng hoạt động node ${item.instanceName} ?`;
+        this.titleModal = `cluster.instances.stop-notify-1`;
+        this.contentModal = `cluster.instances.stop-notify-2`;
         this.action = 'STOP';
       } else {
         // start node
-        this.titleModal = `Bật node ${item.instanceName}`;
-        this.contentModal = `Bạn có chắc muốn bật node ${item.instanceName} ?`;
+        this.titleModal = `cluster.instances.start-notify-1`;
+        this.contentModal = `cluster.instances.start-notify-2`;
         this.action = 'START';
       }
     } else if (action == 'REBOOT-SOFT') {
-      this.titleModal = `Khởi động lại node ${item.instanceName}`;
-      this.contentModal = `Bạn có chắc chắn muốn khởi động lại node ${item.instanceName} ?`;
+      this.titleModal = `cluster.instances.reboot-notify-1`;
+      this.contentModal = `cluster.instances.reboot-notify-2`;
       this.action = action;
     }
 
