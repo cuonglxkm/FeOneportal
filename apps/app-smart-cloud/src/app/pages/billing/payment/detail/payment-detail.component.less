@@ -1,4 +1,5 @@
 @import '@delon/theme/index';
+@import '../../../../../assets/color.less';
 
 .custom-div {
   margin-top: 20px;
@@ -10,27 +11,33 @@
 }
 
 .paidField {
-  font-size: 12px;
-  padding: 7px;
+  font-size: @status-payment-fontsize;
+  padding: 0px 10px 0px 10px;
   border-radius: 15px;
-  background-color: #008D47;
+  background-color: @paid-background-color;
   color: #fff;
+  display: flex;
+  align-items: center;
 }
 
 .initField {
-  font-size: 12px;
-  padding: 7px;
+  font-size: @status-payment-fontsize;
+  padding: 0px 10px 0px 10px;
   border-radius: 15px;
   background-color: #E58200;
   color: #fff;
+  display: flex;
+  align-items: center;
 }
 
 .failedField{
-  font-size: 12px;
-  padding: 7px;
+  font-size: @status-payment-fontsize;
+  padding: 0px 10px 0px 10px;
   border-radius: 15px;
   background-color: #E58200;
   color: #fff;
+  display: flex;
+  align-items: center;
 }
 
 .fw-600 {
