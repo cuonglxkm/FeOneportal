@@ -162,6 +162,7 @@
   "app.detach": "Gỡ",
   "app.extend": "Gia hạn",
   "app.delete": "Xóa",
+  "app.deleteManyObject": "Xóa nhiều objects",
   "app.status.success" : "Thành công",
   "app.status.fail" : "Thất bại",
   "app.status.warning" : "Cảnh báo",
@@ -1522,7 +1523,7 @@
   "app.router.note42": "Xóa Static Router thành công",
   "app.router.note43": "Vui lòng nhập tên Router",
   "app.router.note44": "Tên router không được để trống",
-  "app.router.note45": "Tên router chứa 50 kí tự, viết liền không dấu, không chứa kí tự đặc biệt ngoại trừ dấu _",
+  "app.router.note45": "Tên router chứa tối đa 50 ký tự, viết liền không dấu, không chứa kí tự đặc biệt ngoại trừ dấu _",
   "app.router.note46": "Tên Router không trùng khớp",
 
   "app.wan.note1": "Quản lý IP kết nối WAN",

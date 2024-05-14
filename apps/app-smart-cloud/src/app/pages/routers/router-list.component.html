@@ -228,7 +228,7 @@
           >
           <img
             style="padding-right: 10px; margin-top: -4px"
-            nz-tooltip="{{ 'app.router.note3' | i18n }}"
+            nz-tooltip="{{ 'app.router.note45' | i18n }}"
             src="assets/imgs/pajamas_question.svg"
             alt=""
           />
@@ -240,6 +240,7 @@
             [(ngModel)]="routerCreate.routerName"
             formControlName="name"
             [ngModelOptions]="{ standalone: true }"
+            [maxlength]="50"
           />
           <ng-template #nameError let-i>
             <ng-container *ngIf="i.errors?.required">{{ 'app.router.note44' | i18n }}</ng-container>

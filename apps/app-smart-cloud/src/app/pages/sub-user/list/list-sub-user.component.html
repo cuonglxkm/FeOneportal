@@ -84,7 +84,7 @@
       #fixTable
       style="margin-top: 24px"
       nzShowPagination
-      [nzData]="response?.records"
+      [nzData]="listSubuser"
       [nzPageSize]="response?.pageSize"
       (nzPageSizeChange)="onPageSizeChange($event)"
       [nzPageIndex]="response?.currentPage"
@@ -104,44 +104,66 @@
       </thead>
       <tbody>
         <ng-container *ngFor="let data of fixTable.data; index as i">
-        <tr *ngFor="let key of data.keys; index as k">
-          <td *ngIf="k === 0">{{ i + 1 }}</td>
-          <td *ngIf="k !== 0">{{ '' }}</td>
-          <td>{{ key.userId }}</td>
-          <td>
-            <nz-row nzJustify="space-between">
-              <nz-col>{{ key.accessKey }}</nz-col>
-              <nz-col>
-                <div class="d-flex gap-2">
-                <div>+2</div>
-                <img src="assets/imgs/icon_copy1.svg" alt="" style="cursor: pointer"
-                     nz-tooltip="Copy" (click)="copyText(key.accessKey)" />
+          <tr>
+            <td>{{ i + 1 }}</td>
+            <td>{{ data.userId }}</td>
+            <td>
+              <nz-row nzJustify="space-between">
+                <nz-col>
+                  <div>{{ data.accessKey }}</div>
+                </nz-col>
+                <nz-col>
+                  <div class="d-flex gap-2 align-items-center">
+                    <div class="accesskey-number" (click)="handleExpandAccessKey(i)">
+                      <span>+{{ data.keys.length }}</span>
+                      <span style="font-size: 12px;" nz-icon nzType="down" nzTheme="outline"></span>
+                      <ng-container *ngIf="isExpand === i">
+                      <div class="accesskey-expand">
+                        <div class="accesskey-flex" *ngFor="let expandedKey of data.keys">
+                        <div>{{expandedKey.accessKey}}</div>
+                        <img src="assets/imgs/icon_copy1.svg" alt="" style="cursor: pointer"
+                             nz-tooltip="Copy" (click)="copyText(expandedKey.accessKey)" />
+                        </div>
+                      </div>
+                    </ng-container>
                     </div>
-              </nz-col>
-            </nz-row>
-          </td>
-          <td>
-            <div *ngIf="data.permissions.includes('full-control')">
-              {{ 'app.all.access.permission' | i18n }}
-            </div>
-            <div *ngIf="!data.permissions.includes('full-control')">
-              {{ 'app.no.access.permission' | i18n }}
-            </div>
-          </td>
-          <td>
-            <one-portal-edit-sub-user [region]="region"
-                                      [project]="project"
-                                      [idSubUser]="data.subUserId"
-                                      [uid]="data.userId"
-                                      (onOk)="handleOkEdit()" />
-            <one-portal-delete-sub-user [region]="region"
-                                        [project]="project"
-                                        [idSubUser]="data.subUserId"
-                                        [uid]="data.userId"
-                                        (onOk)="handleOkDelete()" />
-          </td>
-        </tr>
-      </ng-container>
+                    <img
+                      src="assets/imgs/icon_copy1.svg"
+                      alt=""
+                      style="cursor: pointer"
+                      nz-tooltip="Copy"
+                      (click)="copyText(key.accessKey)"
+                    />
+                  </div>
+                </nz-col>
+              </nz-row>
+            </td>
+            <td>
+              <div *ngIf="data.permissions.includes('full-control')">
+                {{ 'app.all.access.permission' | i18n }}
+              </div>
+              <div *ngIf="!data.permissions.includes('full-control')">
+                {{ 'app.no.access.permission' | i18n }}
+              </div>
+            </td>
+            <td>
+              <one-portal-edit-sub-user
+                [region]="region"
+                [project]="project"
+                [idSubUser]="data.subUserId"
+                [uid]="data.userId"
+                (onOk)="handleOkEdit()"
+              />
+              <one-portal-delete-sub-user
+                [region]="region"
+                [project]="project"
+                [idSubUser]="data.subUserId"
+                [uid]="data.userId"
+                (onOk)="handleOkDelete()"
+              />
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
     </nz-table>
   </nz-card>

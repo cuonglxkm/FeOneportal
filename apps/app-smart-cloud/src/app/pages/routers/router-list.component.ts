@@ -156,8 +156,7 @@ export class RouterListComponent implements OnInit {
       .subscribe(data => {
         this.loading = false
         this.dataList = data.records;
-        this.total = data.totalCount;
-        console.log(this.dataList);   
+        this.total = data.totalCount;  
         if (isBegin) {
           this.isCheckBegin = this.dataList.length < 1 || this.dataList === null ? true : false;
           console.log(this.isCheckBegin);
@@ -205,6 +204,7 @@ export class RouterListComponent implements OnInit {
     this.isVisibleCreate = false;
     this.routerCreate.networkId = ''
     this.routerCreate.routerName = ''
+    this.form.reset()
   }
 
   handleOkCreate() {
@@ -219,8 +219,7 @@ export class RouterListComponent implements OnInit {
         this.isLoadingCreateRouter = false
         this.isVisibleCreate = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.create.sucess'));
-        this.routerCreate.networkId = ''
-        this.routerCreate.routerName = ''
+        this.form.reset()
         this.getDataList(true);
       },
       error: (error) => {

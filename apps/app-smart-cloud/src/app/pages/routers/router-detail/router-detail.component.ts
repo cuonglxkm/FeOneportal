@@ -147,6 +147,7 @@ export class RouterDetailComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.alert.exist.router')
           );
+          this.router.navigate(['/app-smart-cloud/network/router']);
         },
       });
   }
@@ -193,8 +194,8 @@ export class RouterDetailComponent implements OnInit {
 
   handleCancelCreateInterface() {
     this.isVisibleCreateInterface = false;
-    this.formRouterInterface.controls.subnetId.setValue('');
-    this.formRouterInterface.controls.ipAddress.setValue('');
+    this.formRouterInterface.controls.subnetId.reset();
+    this.formRouterInterface.controls.ipAddress.reset();
   }
 
   handleOkCreateInterface() {
@@ -275,8 +276,8 @@ export class RouterDetailComponent implements OnInit {
 
   handleCancelCreateStatic() {
     this.isVisibleCreateStatic = false;
-    this.formRouterStatic.controls.destinationCIDR.setValue('');
-    this.formRouterStatic.controls.nextHop.setValue('');
+    this.formRouterStatic.controls.destinationCIDR.reset();
+    this.formRouterStatic.controls.nextHop.reset();
   }
 
   handleOkCreateStatic() {
