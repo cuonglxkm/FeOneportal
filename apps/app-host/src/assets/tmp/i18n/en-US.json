@@ -918,6 +918,7 @@
   "app.payment.voucher.not.found": "We're sorry! This voucher code couldn't be found",
   "app.payment.success": "PAYMENT SUCCESSFUL",
   "app.payment.fail": "PAYMENT FAILED",
+  "app.payment.pay.now":"Pay Now",
 
   "app.notify.fail.order.create": "Failed to create order",
   "app.get.list.voucher.fail": "Failed to retrieve Voucher list",
@@ -1002,6 +1003,7 @@
   "app.iam-dashboard.conceptIAM": "Concept of IAM?",
   "app.iam-dashboard.conceptPolicy": "Concept of Policy?",
   "app.iam-dashboard.createGroup": "How to create Group?",
+  "app.iam-dashboard.home":"Home",
 
   "app.users.listUser": "List of Users",
   "app.users.detail": "User detail",

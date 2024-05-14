@@ -212,7 +212,7 @@ u {
 //Input
 .ant-input {
   border-radius: 8px;
-  height: 40px;
+  // height: 40px;
   font-size: 16px;
 }
 .ant-select-show-search.ant-select:not(.ant-select-customize-input)
@@ -534,13 +534,15 @@ align-items: center;
 .ant-picker-input > input {
   font-size:@textbox-fontsize; /* Thay đổi kích thước font và sử dụng !important nếu cần thiết */
 }
-.lable-fontsize{
-  font-size: @lable-fontsize;
+.label-fontsize{
+  font-size: @label-fontsize;
 }
 .link_breadcrumb{
  color: @link-breadcrumb-color !important;
 }
-
+// .link_breadcrumb:hover{
+//   color:#0066b3  !important
+// }
 .ant-popover-title {
   min-width: 177px;
   min-height: 32px;
@@ -555,4 +557,7 @@ align-items: center;
 }
 .icon-padding-right{
   padding-right: @icon-padding-right;
+}
+.textbox-radius-lg{
+  border-radius: @textbox-radius-lg;
 }
