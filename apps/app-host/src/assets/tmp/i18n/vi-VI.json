@@ -50,7 +50,7 @@
   "form.account.validate.surname":"Họ không được để trống và chứa kí tự đặc biệt!",
   "form.account.validate.phone":"Số điện thoại không hợp lệ!",
   "form.account.validate.address":"Tỉnh/Thành phố",
-  
+
 
 
 
@@ -162,6 +162,7 @@
   "app.detach": "Gỡ",
   "app.extend": "Gia hạn",
   "app.delete": "Xóa",
+  "app.deleteManyObject": "Xóa nhiều objects",
   "app.status.success" : "Thành công",
   "app.status.fail" : "Thất bại",
   "app.status.warning" : "Cảnh báo",
@@ -1418,7 +1419,7 @@
   "router.validate.cidr.empty": "Destination CIDR không được để trống",
   "router.validate.nextHop.empty": "NextHop không được để trống",
   "router.validate.nextHop.pattern": "NextHop không đúng định dạng",
-  "router.validate.cidr.pattern": "Destination CIDR phải có dạng x.x.x.x/16 hoặc x.x.x.x/24",
+  "router.validate.cidr.pattern": "Destination CIDR phải có dạng x.x.0.0/16 hoặc x.x.x.0/24",
   "router.validate.ip.fail": "Địa chỉ IP sai định dạng",
   "router.label.cidr": "Destination CIDR",
   "router.alert.cidr.description": "Destination CIDR, điểm đích muốn đến, hiểu đơn giản là muốn tới địa điểm này, thì phải đi qua đường IP ở NextHop",
@@ -1533,7 +1534,7 @@
   "app.router.note42": "Xóa Static Router thành công",
   "app.router.note43": "Vui lòng nhập tên Router",
   "app.router.note44": "Tên router không được để trống",
-  "app.router.note45": "Tên router chứa 50 kí tự, viết liền không dấu, không chứa kí tự đặc biệt ngoại trừ dấu _",
+  "app.router.note45": "Tên router chứa tối đa 50 ký tự, viết liền không dấu, không chứa ký tự đặc biệt ngoại trừ dấu _",
   "app.router.note46": "Tên Router không trùng khớp",
 
   "app.wan.note1": "Quản lý IP kết nối WAN",
@@ -1639,7 +1640,7 @@
   "app.vlan.note49": "Yêu cầu gỡ port khỏi máy ảo thành công",
   "app.vlan.note50": "Yêu cầu gỡ port khỏi máy ảo thất bại. ",
   "app.vlan.note51": "Yêu cầu xoá Port thành công",
-  "app.vlan.note52": "Yêu cầu xoá Port thất bại. ",
+  "app.vlan.note52": "Xoá Port thất bại. ",
   "app.vlan.note53": "Xoá subnet thành công",
   "app.vlan.note54": "Xoá subnet thất bại. ",
   "app.vlan.note55": "Xoá Network thành công.",
@@ -1676,6 +1677,7 @@
   "project.note3": "Tạo dự án",
   "project.note4": "Dự án VPC",
   "project.note5": "Dự án thường",
+  "project.default": "Dự án mặc định",
   "project.note6": "Khách hàng có thể khởi tạo một dự án thường hoặc dự án VPC -cung cấp trọn gói hạ tầng tính toán, lưu trữ và network cho phép Khách hàng tự thiết lập trung tâm dữ liệu ảo hóa trên VNPT Cloud.",
   "project.note7": "Hoặc đọc thêm về quản lý dự án",
   "project.note9": "Khởi tạo VPC",

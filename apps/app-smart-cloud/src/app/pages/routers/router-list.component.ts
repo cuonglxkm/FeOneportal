@@ -58,7 +58,7 @@ export class RouterListComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
       ],
     ],
     network: [''],
@@ -71,7 +71,7 @@ export class RouterListComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
       ],
     ],
   });
@@ -156,8 +156,7 @@ export class RouterListComponent implements OnInit {
       .subscribe(data => {
         this.loading = false
         this.dataList = data.records;
-        this.total = data.totalCount;
-        console.log(this.dataList);   
+        this.total = data.totalCount;  
         if (isBegin) {
           this.isCheckBegin = this.dataList.length < 1 || this.dataList === null ? true : false;
           console.log(this.isCheckBegin);
@@ -205,6 +204,7 @@ export class RouterListComponent implements OnInit {
     this.isVisibleCreate = false;
     this.routerCreate.networkId = ''
     this.routerCreate.routerName = ''
+    this.form.reset()
   }
 
   handleOkCreate() {
@@ -219,8 +219,7 @@ export class RouterListComponent implements OnInit {
         this.isLoadingCreateRouter = false
         this.isVisibleCreate = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.create.sucess'));
-        this.routerCreate.networkId = ''
-        this.routerCreate.routerName = ''
+        this.form.reset()
         this.getDataList(true);
       },
       error: (error) => {
@@ -283,6 +282,7 @@ export class RouterListComponent implements OnInit {
 
   handleCancelDelete() {
     this.isVisibleDelete = false;
+    this.formDelete.reset()
   }
 
   nameRouterValidator(control: FormControl): { [key: string]: any } | null {
@@ -300,6 +300,7 @@ export class RouterListComponent implements OnInit {
         .subscribe({
           next: (data) => {
             this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.remove.sucess'));
+            this.formDelete.reset()
             this.isLoadingDeleteRouter = false
             this.isVisibleDelete = false;
             this.getDataList(true);

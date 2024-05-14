@@ -49,7 +49,7 @@ export class DeletePortComponent {
         console.log('delete', data)
         this.isVisibleDeletePort = false
         this.isLoadingDeletePort = false
-        this.notification.success(this.i18n.fanyi('app.status.success'),'Yêu cầu xóa port ' + this.portName + ' thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'),'Xóa port ' + this.portName + ' thành công')
         setTimeout(() => {this.onOk.emit(data)}, 1500)
       }, error => {
         this.isVisibleDeletePort = false

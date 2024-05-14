@@ -62,13 +62,22 @@
         </thead>
         <tbody>
         <tr *ngFor="let item of listOfData">
-          <td (click)="viewDetail(item.id)" style="color: #0D67B0">{{ item.displayName }}</td>
+          <td>
+            <a
+            nz-tooltip
+            [nzTooltipTitle]="'app.view.detail' | i18n"
+            nzTooltipPlacement="bottom"
+            [routerLink]="
+              '/app-smart-cloud/project/detail/' + item.id
+            "
+            >{{ item.displayName }}</a>
+          </td>
           <td *ngIf="item.type != 'VPC'">-</td>
           <td *ngIf="item.type != 'VPC'">-</td>
           <td *ngIf="item.type == 'VPC'">{{ item.createDate | date : "dd/MM/YYYY" }}</td>
           <td *ngIf="item.type == 'VPC'">{{ item.expireDate | date : "dd/MM/YYYY" }}</td>
           <td >{{ item.resourceStatus }}</td>
-          <td >{{ item.type == 'VPC' ? ('project.note4' | i18n) : ('project.note5' | i18n)}}</td>
+          <td >{{ item.type == 'VPC' ? ('project.note4' | i18n) : (item.type == 'Default' ? ('project.default' | i18n) :('project.note5' | i18n))}}</td>
           <!--          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: forestgreen">Đang hoạt động</td>-->
           <!--          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>-->
           <!--          <td *ngIf="item.status === 0">-</td>-->
@@ -85,7 +94,7 @@
                     (click)="edit(item)"
               ></span>
               <!----Xóa---->
-              <span style="color: #0066B3"
+              <span style="color: #0066B3" *ngIf="item.type != 'Default'"
                     nz-tooltip
                     nzTooltipTitle="{{ 'app.delete' | i18n }}" nzTooltipPlacement="bottom"
                     nz-icon nzType="delete" nzTheme="outline"
