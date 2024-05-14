@@ -14,6 +14,7 @@ export class DeletePortComponent {
   @Input() region: number
   @Input() project: number
   @Input() id: string
+  @Input() portName: string
   @Input() attach: any
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
@@ -48,16 +49,17 @@ export class DeletePortComponent {
         console.log('delete', data)
         this.isVisibleDeletePort = false
         this.isLoadingDeletePort = false
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note51'))
+        this.notification.success(this.i18n.fanyi('app.status.success'),'Yêu cầu xóa port ' + this.portName + ' thành công')
         setTimeout(() => {this.onOk.emit(data)}, 1500)
       }, error => {
         this.isVisibleDeletePort = false
         this.isLoadingDeletePort = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note52'), error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note52') + error.error)
       })
     } else {
-      this.noti = true
+      this.isVisibleDeletePort = false
       this.isLoadingDeletePort = false
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Port đã được gắn vào máy ảo, vui lòng gỡ ra khỏi máy ảo trước khi xóa')
     }
 
   }

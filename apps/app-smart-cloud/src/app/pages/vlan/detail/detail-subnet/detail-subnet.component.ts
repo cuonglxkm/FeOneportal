@@ -93,7 +93,8 @@ export class DetailSubnetComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.getVlanByNetworkId();
-    this.getSubnetByNetwork();
+    setTimeout(() => {this.getVlanByNetworkId();}, 2000)
+
+    setTimeout(() => {this.getSubnetByNetwork();}, 2000)
   }
 }

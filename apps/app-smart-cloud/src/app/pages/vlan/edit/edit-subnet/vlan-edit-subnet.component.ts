@@ -171,6 +171,26 @@ export class VlanEditSubnetComponent implements OnInit {
 
   nameList: string[] = [];
 
+  onChangeClickDisableDhcp(value) {
+    this.validateForm.controls.enableDhcp.setValue(value)
+  }
+
+  onChangeClickGateway(value) {
+    console.log('1')
+    if(value == true) {
+      this.validateForm.controls.disableGatewayIp.setValue(value)
+    } else {
+      console.log('here')
+      this.validateForm.controls.disableGatewayIp.setValue(false)
+      this.vlanService.checkAllocationPool(this.subnet?.subnetAddressRequired).subscribe(data => {
+        const dataJson = JSON.parse(JSON.stringify(data));
+        console.log('gateway', dataJson.gateWay)
+        this.validateForm.controls.gateway.setValue(dataJson.gateWay)
+      })
+    }
+  }
+
+
   getListSubnet() {
     let formSearchSubnet = new FormSearchSubnet();
     formSearchSubnet.region = this.region;
@@ -183,7 +203,7 @@ export class VlanEditSubnetComponent implements OnInit {
       data?.records?.forEach(item => {
         this.nameList?.push(item.name);
 
-        this.nameList = this.nameList?.filter(item => !(item.includes(this.validateForm.get('nameSubnet').getRawValue())));
+        this.nameList = this.nameList?.filter(item => item !==  this.validateForm.get('nameSubnet').getRawValue());
       });
     });
   }
