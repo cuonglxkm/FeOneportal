@@ -1520,7 +1520,7 @@
   "router.validate.cidr.empty": "Destination CIDR cannot be empty.",
   "router.validate.nextHop.empty": "NextHop cannot be empty.",
   "router.validate.nextHop.pattern": "Invalid NextHop format",
-  "router.validate.cidr.pattern": "Destination CIDR must be in x.x.x.x/16 or x.x.x.x/24",
+  "router.validate.cidr.pattern": "Destination CIDR must be in x.x.0.0/16 or x.x.x.0/24",
   "router.validate.ip.fail": "Invalid IP address format.",
   "router.label.cidr": "Destination CIDR",
   "router.alert.cidr.description": "Destination CIDR, the destination point to reach, meaning that to reach this location, it must go through the IP route at NextHop.",

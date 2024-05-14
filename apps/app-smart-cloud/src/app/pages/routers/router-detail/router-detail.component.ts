@@ -123,10 +123,10 @@ export class RouterDetailComponent implements OnInit {
           this.listOfRouterInteface = data;
         },
         error: (e) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('router.alert.exist.router')
-          );
+          // this.notification.error(
+          //   this.i18n.fanyi('app.status.fail'),
+          //   this.i18n.fanyi('router.alert.exist.router')
+          // );
         },
       });
   }
