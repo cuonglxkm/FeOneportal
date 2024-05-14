@@ -1408,7 +1408,7 @@
   "router.validate.cidr.empty": "Destination CIDR không được để trống",
   "router.validate.nextHop.empty": "NextHop không được để trống",
   "router.validate.nextHop.pattern": "NextHop không đúng định dạng",
-  "router.validate.cidr.pattern": "Destination CIDR phải có dạng x.x.x.x/16 hoặc x.x.x.x/24",
+  "router.validate.cidr.pattern": "Destination CIDR phải có dạng x.x.0.0/16 hoặc x.x.x.0/24",
   "router.validate.ip.fail": "Địa chỉ IP sai định dạng",
   "router.label.cidr": "Destination CIDR",
   "router.alert.cidr.description": "Destination CIDR, điểm đích muốn đến, hiểu đơn giản là muốn tới địa điểm này, thì phải đi qua đường IP ở NextHop",
@@ -1523,7 +1523,7 @@
   "app.router.note42": "Xóa Static Router thành công",
   "app.router.note43": "Vui lòng nhập tên Router",
   "app.router.note44": "Tên router không được để trống",
-  "app.router.note45": "Tên router chứa tối đa 50 ký tự, viết liền không dấu, không chứa kí tự đặc biệt ngoại trừ dấu _",
+  "app.router.note45": "Tên router chứa tối đa 50 ký tự, viết liền không dấu, không chứa ký tự đặc biệt ngoại trừ dấu _",
   "app.router.note46": "Tên Router không trùng khớp",
 
   "app.wan.note1": "Quản lý IP kết nối WAN",
