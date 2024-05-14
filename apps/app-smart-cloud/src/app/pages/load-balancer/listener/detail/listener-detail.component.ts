@@ -154,4 +154,11 @@ export class ListenerDetailComponent implements OnInit {
   }
 
   description: any;
+
+  navigateToDetail(id: any) {
+    this.router.navigate([
+      '/app-smart-cloud/load-balancer/pool-detail/' + id,
+      { idLB: this.idLb },
+    ]);
+  }
 }
