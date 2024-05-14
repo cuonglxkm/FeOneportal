@@ -215,6 +215,7 @@
       nz-input
       placeholder="{{'router.label.ip.interface.example' | i18n}}"
       formControlName="ipAddress"
+      #ipAdress
     />
       <ng-template #ipErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">{{'router.validate.ip.empty' | i18n}}</ng-container>

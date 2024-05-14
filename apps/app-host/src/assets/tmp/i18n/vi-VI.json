@@ -50,7 +50,7 @@
   "form.account.validate.surname":"Họ không được để trống và chứa kí tự đặc biệt!",
   "form.account.validate.phone":"Số điện thoại không hợp lệ!",
   "form.account.validate.address":"Tỉnh/Thành phố",
-  
+
 
 
 
@@ -162,6 +162,7 @@
   "app.detach": "Gỡ",
   "app.extend": "Gia hạn",
   "app.delete": "Xóa",
+  "app.deleteManyObject": "Xóa nhiều objects",
   "app.status.success" : "Thành công",
   "app.status.fail" : "Thất bại",
   "app.status.warning" : "Cảnh báo",
@@ -315,7 +316,7 @@
   "app.alert.shutdown.instance": "Quý khách chắn chắn muốn thực hiện tắt máy ảo?",
   "app.alert.reboot.instance": "Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?",
   "app.alert.rescue.instance": "Quý khách chắn chắn muốn thực hiện RESCUE máy ảo?",
-  "app.alert.attach.to.vlan": "Trong trường hợp 1 Network của quý khách có nhiều Subnet, quý khách cần lựa chọn Subnet và điền IP muốn gán cho máy ảo. Khi quý khách nhạp IP vui lòng chọn IP chưa được sử dụng bởi máy ảo nào và IP này thuộc dải IP được cấu hình trong Subnet tương ứng",
+  "app.alert.attach.to.vlan": "Từ dải Subnet đã chọn quý khách sẽ nhập địa chỉ IP Address nằm trong dải đó để có thể gắn vào máy ảo",
   "app.alert.detach.from.vlan": "Mỗi kết nối từ máy ảo với VLAN tương ứng với 1 IP được cấp, lựa chọn IP từ danh sách dưới đây để thực hiện gỡ kết nối máy ảo khỏi VLAN",
   "app.alert.unrescue.instance": "Quý khách chắn chắn muốn thực hiện UNRESCUE máy ảo?",
   "app.alert.delete.instance": "Để thực hiện xóa máy ảo {{name}}, vui lòng nhập tên máy ảo để xác nhận",
@@ -419,6 +420,7 @@
   "app.international.bandwidth": "Băng thông quốc tế",
   "app.remain.configuration.in.vpc": "Cấu hình còn lại trong dự án VPC",
   "app.keypair.name": "Tên Keypair",
+  "app.note.create.port": "Vui lòng tạo Port để sử dụng tính năng này!",
 
   "app.disk.type": "Kiểu Volume",
   "app.volume.type": "Loại Volume",
@@ -1521,7 +1523,7 @@
   "app.router.note42": "Xóa Static Router thành công",
   "app.router.note43": "Vui lòng nhập tên Router",
   "app.router.note44": "Tên router không được để trống",
-  "app.router.note45": "Tên router chứa 50 kí tự, viết liền không dấu, không chứa kí tự đặc biệt ngoại trừ dấu _",
+  "app.router.note45": "Tên router chứa tối đa 50 ký tự, viết liền không dấu, không chứa kí tự đặc biệt ngoại trừ dấu _",
   "app.router.note46": "Tên Router không trùng khớp",
 
   "app.wan.note1": "Quản lý IP kết nối WAN",
@@ -1664,6 +1666,7 @@
   "project.note3": "Tạo dự án",
   "project.note4": "Dự án VPC",
   "project.note5": "Dự án thường",
+  "project.default": "Dự án mặc định",
   "project.note6": "Khách hàng có thể khởi tạo một dự án thường hoặc dự án VPC -cung cấp trọn gói hạ tầng tính toán, lưu trữ và network cho phép Khách hàng tự thiết lập trung tâm dữ liệu ảo hóa trên VNPT Cloud.",
   "project.note7": "Hoặc đọc thêm về quản lý dự án",
   "project.note9": "Khởi tạo VPC",

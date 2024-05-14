@@ -64,7 +64,7 @@ export class BucketDetailComponent implements OnInit {
   uploadFailed: boolean = false;
 
   lstFileUpdate: NzUploadFile[] = [];
-
+  isLoadingDeleteObjects: boolean = false;
   listOfFilter: any;
   colReal = ['Tên', 'Thời gian chỉnh sửa', 'Dung lượng'];
   conditionNameReal = ['Bằng', 'Bao gồm', 'Bắt đầu', 'Kêt thức'];
@@ -109,21 +109,9 @@ export class BucketDetailComponent implements OnInit {
   percent = 0;
   keyName: string;
   isLoadingGetLink: boolean = false;
-  range(start: number, end: number): number[] {
-    const result: number[] = [];
-    for (let i = start; i < end; i++) {
-      result.push(i);
-    }
-    return result;
-  }
-
+  isVisibleDeleteObject: boolean = false;
   disabledDate = (current: Date): boolean =>
     differenceInCalendarDays(current, this.today) < 0;
-  // disabledDateTime: DisabledTimeFn = () => ({
-  //   nzDisabledHours: () => this.range(0, 24).splice(4, 20),
-  //   nzDisabledMinutes: () => this.range(30, 60),
-  //   nzDisabledSeconds: () => [55, 56],
-  // });
   activePrivate = true;
   filterName: string;
   filterCondition: string;
@@ -1192,7 +1180,6 @@ export class BucketDetailComponent implements OnInit {
     var yyyy = today.getFullYear();
 
     let date = mm + '_' + dd + '_' + yyyy;
-    console.log(this.setOfCheckedId);
     
     let zipFile: JSZip = new JSZip();
     this.setOfCheckedId.forEach((item: any) => {
@@ -1201,9 +1188,9 @@ export class BucketDetailComponent implements OnInit {
       }else{
         this.service.downloadFile(this.bucket.bucketName, item.key, '').subscribe(
           (fileData: any) => {
-            // Assuming fileData contains the file name and content
-            const fileName = item.key; // Adjust this based on your response structure
-            const fileContent = fileData.body; // Adjust this based on your response structure
+            
+            const fileName = item.key; 
+            const fileContent = fileData.body; 
   
             // Add the file to the zip
             zipFile.file(fileName, fileContent);
@@ -1223,5 +1210,45 @@ export class BucketDetailComponent implements OnInit {
       anchor.click();
       window.URL.revokeObjectURL(objectUrl);
     });
+  }
+
+  showModalDeleteObject(){
+    this.isVisibleDeleteObject = true;
+  }
+
+  handleCancelDeleteObject(){
+    this.isVisibleDeleteObject = false;
+  }
+
+  handledeleteObjects(){
+    this.isLoadingDeleteObjects = true
+    let data = {
+      bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+      customerId: this.tokenService.get()?.userId,
+      regionId: 0,
+      selectedItems: [...this.setOfCheckedId],
+    }
+
+    this.service.deleteObject(data).subscribe(
+      (data) => {
+        this.isVisibleDeleteObject = false;
+        this.isLoadingDeleteObjects = false
+        this.notification.success(
+          this.i18n.fanyi('app.status.success'),
+          'Xóa object thành công'
+        );
+        this.setOfCheckedId.clear();
+        this.countObjectSelected = 0
+        this.loadData()
+      },
+      (error) => {
+        this.isLoadingDeleteObjects = false
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          'Xóa object thất bại'
+        );
+      }
+    );
+    
   }
 }
