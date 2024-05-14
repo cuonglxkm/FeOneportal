@@ -34,7 +34,7 @@
   </ng-template>
 </page-header>
 
-<nz-card style="border-radius: 4px" *ngIf="!activeCreate">
+<nz-card style="border-radius: 4px" *ngIf="!isCheckBegin">
   <div style="margin-bottom: 20px" nz-row [nzGutter]="24">
     <div
       nz-col
@@ -115,7 +115,6 @@
     (nzPageIndexChange)="getDataList()"
     (nzPageSizeChange)="getDataList()"
     [nzVirtualItemSize]="54"
-    [nzScroll]="{ x: '100%', y: '55vh' }"
   >
     <thead>
       <tr>

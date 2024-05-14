@@ -59,7 +59,7 @@ export interface SystemInfoBackup {
 }
 
 export interface SecurityGroupBackup {
-  id: number,
+  id: string,
   instanceBackupId: number,
   sgName: string,
   protocol: string,

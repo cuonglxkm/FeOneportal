@@ -59,6 +59,7 @@ export class DetachVolumeComponent {
   }
 
   handleOk() {
+    console.log('here')
     this.doDetach();
   }
 
@@ -77,14 +78,16 @@ export class DetachVolumeComponent {
   doDetach() {
     this.isLoading = true;
     if (this.isMultiple) {
-      if(this.instanceInVolumeSelected == undefined) {
+      console.log('multiple')
+
+      if(this.listInstanceInVolume.length > 1 && this.instanceInVolumeSelected == undefined) {
         this.isSelected = true
         this.isLoading = false
       } else {
         this.isLoading = true
         let addVolumetoVmRequest = new AddVolumetoVmModel();
         addVolumetoVmRequest.volumeId = this.volumeId;
-        console.log('attach', this.listInstanceInVolume);
+        console.log('detach', this.listInstanceInVolume);
         addVolumetoVmRequest.instanceId = Number.parseInt(this.instanceInVolumeSelected);
         addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
 
@@ -115,6 +118,7 @@ export class DetachVolumeComponent {
       }
 
     } else {
+      console.log('not multiple')
       this.isSelected = false
 
       let addVolumetoVmRequest = new AddVolumetoVmModel();

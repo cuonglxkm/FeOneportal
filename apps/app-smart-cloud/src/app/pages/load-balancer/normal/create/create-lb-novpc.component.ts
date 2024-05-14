@@ -129,12 +129,16 @@ export class CreateLbNovpcComponent implements OnInit {
 
 
   updateValue(value): void {
-    const selectedOption = this.listSubnets?.find(option => option.cloudId === value);
-    if (selectedOption) {
-      this.selectedValueSpan.nativeElement.innerText = selectedOption.name + '(' + selectedOption.subnetAddressRequired + ')';
-    }
-  }
 
+    if (this.listSubnets) {
+      const selected = this.listSubnets?.find(option => option.cloudId === value);
+      if(selected){
+        this.selectedValueSpan.nativeElement.innerText = selected.name + '(' + selected.subnetAddressRequired + ')';
+      }
+      this.getIpBySubnet(selected?.cloudId)
+    }
+
+  }
   userChanged(project: ProjectModel) {
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);
   }
@@ -233,8 +237,8 @@ export class CreateLbNovpcComponent implements OnInit {
 
   }
 
-  getIpBySubnet() {
-    this.loadBalancerService.getIPBySubnet(this.validateForm.controls.subnet.value, this.project, this.region).subscribe(data => {
+  getIpBySubnet(subnetId) {
+    this.loadBalancerService.getIPBySubnet(subnetId, this.project, this.region).subscribe(data => {
       this.ipFloating = data;
     });
   }
@@ -363,6 +367,29 @@ export class CreateLbNovpcComponent implements OnInit {
     });
   }
 
+  mapSubnet: Map<string, string> = new Map<string, string>();
+  mapSubnetArray: { value: string, label: string }[] = [];
+  setDataToMap(data: any) {
+    // Xóa dữ liệu hiện có trong mapSubnet (nếu cần)
+    this.mapSubnet?.clear();
+    // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
+    for (const key of Object.keys(data)) {
+      this.mapSubnet?.set(key, data[key]);
+    }
+  }
+
+  getListSubnetInternetFacing() {
+    this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region).subscribe(data => {
+      this.setDataToMap(data);
+      if (this.mapSubnet instanceof Map) {
+        // Chuyển đổi Map thành mảng các cặp khóa/giá trị
+        for (const [key, value] of this.mapSubnet.entries()) {
+          this.mapSubnetArray?.push({ value: value, label: key });
+        }
+      }
+    });
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -371,8 +398,10 @@ export class CreateLbNovpcComponent implements OnInit {
     this.validateForm.controls.radio.setValue('floatingIp');
     this.getListVlanSubnet();
     this.searchProduct();
-    this.getIpBySubnet();
+    // this.getIpBySubnet();
     this.getListLoadBalancer();
+
+    this.getListSubnetInternetFacing();
   }
 
 

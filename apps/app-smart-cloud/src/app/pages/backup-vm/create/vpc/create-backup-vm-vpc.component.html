@@ -23,7 +23,7 @@
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card style="border-radius: 8px;">
-        <span class="text-card-header">Thông tin backup</span>
+        <span class="text-card-header">{{'app.backup.vm.ìnformation'|i18n}}</span>
         <form nz-form [formGroup]="validateForm" nzLayout="vertical">
           <nz-row nzGutter="24" style="margin-top: 25px;">
             <nz-col nzSpan="12">
@@ -148,6 +148,32 @@
                   </nz-input-group>
                 </nz-form-control>
               </nz-form-item>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              <nz-row nzGutter="18">
+                <nz-col nzSpan="10">
+                  <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
+                </nz-col>
+                <nz-col nzSpan="8">
+                  <span class="text-label"
+                        *ngIf="projectDetail == undefined || projectDetail == null">0 GB</span>
+                  <span class="text-label"
+                        *ngIf="projectDetail != undefined">{{ projectDetail?.cloudProjectResourceUsed?.backup }} GB</span>
+                </nz-col>
+              </nz-row>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              <nz-row nzGutter="18">
+                <nz-col nzSpan="10">
+                  <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
+                </nz-col>
+                <nz-col nzSpan="8">
+                  <span class="text-label"
+                        *ngIf="projectDetail == undefined || projectDetail == null">0 GB</span>
+                  <span class="text-label"
+                        *ngIf="projectDetail != undefined">{{ projectDetail?.cloudProject?.quotaBackupVolumeInGb - projectDetail?.cloudProjectResourceUsed?.backup }}
+                    GB</span>
+                </nz-col>
+              </nz-row>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <nz-form-item style="padding-top: 10px;">
                 <nz-form-label>
                   <span>Security Group</span>
@@ -194,10 +220,10 @@
                 <nz-form-label>
                   <span style="color: #FF0000">{{ 'app.service.expiration-date'|i18n }} </span>
                   <img nz-popover
-                       [nzPopoverContent]="'app.backup.vm.tooltip.expire.date'|i18n"
+                       [nzPopoverContent]="'app.backup.vm.tooltip.expire.date.vpc'|i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
-                  <span style="color: #FF0000; margin-left: 10px;">{{ backupPackageDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>
+                  <span style="color: #FF0000; margin-left: 10px;">{{ projectDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>
                 </nz-form-label>
               </nz-form-item>
             </nz-col>
@@ -211,8 +237,7 @@
                       [nzMessage]="titleMessage"
                       nzShowIcon></nz-alert>
             <ng-template #titleMessage>
-              <span style="color: #FF0000;">Dung lượng backup nhỏ hơn dung lượng ổ hệ điều hành + tổng dung lượng volume gắn ngoài ({{instance?.storage + sizeOfVlAttach}} GB).
-                Quý khách hãy điều chỉnh dự án VPC để quá trình backup VM không bị gián đoạn.</span>
+              <span style="color: #FF0000;">{{'app.backup.vm.alert.storage.vpc'|i18n: {storage: (instance?.storage + sizeOfVlAttach)} }}</span>
             </ng-template>
           </div>
         </form>
@@ -233,8 +258,11 @@
         <div style="margin-top: 10px" class="text-value">{{ 'app.info.backup.vm.external.volume'|i18n }}</div>
         <div style="margin-top: 10px" class="text-label" *ngFor="let data of volumeAttachSelected">{{data?.name}} - {{data?.sizeInGB}} GB</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Dung lượng backup</div>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.info.backup.vm.total.storage'|i18n }}</div>
         <div style="margin-top: 10px" class="text-label">{{ projectDetail?.cloudProject.quotaBackupVolumeInGb }} GB</div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.backup.vm.storage.remaining'|i18n }}</div>
+        <div style="margin-top: 10px" class="text-label">{{ projectDetail?.cloudProject?.quotaBackupVolumeInGb - projectDetail?.cloudProjectResourceUsed?.backup }} GB</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row>
           <nz-col style="width: 100%">

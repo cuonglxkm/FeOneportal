@@ -13,11 +13,11 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
-  selector: 'one-portal-vpc-list',
-  templateUrl: './vpc-list.component.html',
-  styleUrls: ['./vpc-list.component.less']
+  selector: 'one-portal-project-list',
+  templateUrl: './project-list.component.html',
+  styleUrls: ['./project-list.component.less']
 })
-export class VpcListComponent implements OnInit {
+export class ProjectListComponent implements OnInit {
   regionId: any;
   isBegin: Boolean = false;
   size = 10;
@@ -25,7 +25,7 @@ export class VpcListComponent implements OnInit {
   total: number = 0;
   loading = false;
   isVisibleDelete = false;
-  isVisibleDeleteVPC = false;
+  isVisibleDeleteProject = false;
 
   listOfData: VpcModel[] = [];
 
@@ -110,7 +110,7 @@ export class VpcListComponent implements OnInit {
   delete(itemDelete: any) {
     this.itemDelete = itemDelete;
     if (itemDelete.type == 'VPC') {
-      this.isVisibleDeleteVPC = true;
+      this.isVisibleDeleteProject = true;
     } else {
       this.isVisibleDelete = true;
     }
@@ -120,7 +120,7 @@ export class VpcListComponent implements OnInit {
   handleCancel() {
     this.nameDelete = '';
     this.isVisibleDelete = false;
-    this.isVisibleDeleteVPC = false;
+    this.isVisibleDeleteProject = false;
     debugger
     this.isVisibleEditNormal = false;
     this.disableDelete = true;
@@ -132,7 +132,7 @@ export class VpcListComponent implements OnInit {
       .pipe(finalize(() => {
         this.getData(true);
         this.isVisibleDelete = false;
-        this.isVisibleDeleteVPC = false;
+        this.isVisibleDeleteProject = false;
         this.disableDelete = true;
         this.loadingDelete = false;
       }))
@@ -155,12 +155,12 @@ export class VpcListComponent implements OnInit {
     this.getData(false);
   }
 
-  createVpc() {
-    this.router.navigate(['/app-smart-cloud/vpc/create']);
+  createProject() {
+    this.router.navigate(['/app-smart-cloud/project/create']);
   }
 
   viewDetail(id: number) {
-    this.router.navigate(['/app-smart-cloud/vpc/detail/' + id]);
+    this.router.navigate(['/app-smart-cloud/project/detail/' + id]);
   }
 
   confirmNameDelete(event: any) {
@@ -176,7 +176,7 @@ export class VpcListComponent implements OnInit {
 
   }
 
-  updateVpc() {
+  updateProject() {
     const request = {
       customerId: this.tokenService.get()?.userId,
       id: this.itemDelete.id,
@@ -192,7 +192,7 @@ export class VpcListComponent implements OnInit {
       .subscribe(
         data => {
           this.notification.success('Thành công', 'Cập nhật dự án thành công');
-          this.router.navigate(['/app-smart-cloud/vpc']);
+          this.router.navigate(['/app-smart-cloud/project']);
         },
         error => {
           this.notification.error('Thất bại', 'Cập nhật dự án thất bại');

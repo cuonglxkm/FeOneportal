@@ -30,6 +30,7 @@ import { Subject, debounceTime } from 'rxjs';
 import {
   FormSearchNetwork,
   NetWorkModel,
+  Port,
 } from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { I18NService } from '@core';
@@ -70,6 +71,7 @@ export class InstancesComponent implements OnInit {
   activeCreate: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
+  isChoosePort: boolean = true;
 
   typeVpc: number;
 
@@ -284,11 +286,32 @@ export class InstancesComponent implements OnInit {
       });
   }
 
+  listPort: Port[] = [];
+  port: string = '';
+  getListPort(networkCloudId: string) {
+    this.dataService
+      .getListAllPortByNetwork(networkCloudId, this.region)
+      .subscribe({
+        next: (data) => {
+          data.forEach((e: Port) => {
+            this.listPort.push(e);
+          });
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('app.notify.get.list.port')
+          );
+        },
+      });
+  }
+
   changeVlanNetwork(networkCloudId: string) {
     this.listSubnet = [];
     this.instanceAction.subnetId = null;
     this.instanceAction.ipAddress = null;
     this.getVlanSubnets(networkCloudId);
+    this.getListPort(networkCloudId);
   }
 
   listSubnet: VlanSubnet[] = [];
@@ -402,11 +425,6 @@ export class InstancesComponent implements OnInit {
         );
       },
     });
-  }
-
-  isExpand = false;
-  clickIPAddress(): void {
-    this.isExpand = !this.isExpand;
   }
 
   isVisibleShutdown: boolean = false;
@@ -773,5 +791,22 @@ export class InstancesComponent implements OnInit {
       '/app-smart-cloud/schedule/backup/create',
       { instanceId: id },
     ]);
+  }
+
+  instancesModel: InstancesModel = new InstancesModel();
+  detailConfigPackage(id: number) {
+    this.instancesModel = new InstancesModel();
+    this.dataService.getById(id, true).subscribe({
+      next: (data: any) => {
+        this.instancesModel = data;
+        this.cdr.detectChanges();
+      },
+      error: (e) => {
+        this.notification.error(
+          '',
+          this.i18n.fanyi('app.notify.get.service.package.fail')
+        );
+      },
+    });
   }
 }

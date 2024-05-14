@@ -229,7 +229,7 @@ export class VlanEditSubnetComponent implements OnInit {
     this.formUpdateSubnet.name = this.validateForm.controls.nameSubnet.value;
     this.formUpdateSubnet.enableDHCP = this.validateForm.controls.enableDhcp.value;
     if(this.validateForm.controls.disableGatewayIp.value) {
-      this.formUpdateSubnet.gatewayIP = ''
+      this.formUpdateSubnet.gatewayIP = null
     } else {
       this.formUpdateSubnet.gatewayIP = this.validateForm.controls.gateway.value
     }
