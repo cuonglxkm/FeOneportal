@@ -20,7 +20,7 @@
 
 @button-border-medium-radius: 8px;
 
-@breadcrumb-active: #035DED;
+@breadcrumb-active: #035ded;
 // HEADER
 .alain-default__header-logo-expanded {
   max-width: 90%;
@@ -36,7 +36,7 @@
   margin-left: -24px;
   padding: 12px 24px 0 24px;
   border-bottom: none;
-  background-color: #ebf0f9;
+  background-color: inherit;
 }
 
 // END HEADER
@@ -206,7 +206,7 @@ u {
 .ant-input-affix-wrapper {
   // Input group
   border-radius: 8px;
-  padding:0px 11px;
+  padding: 0px 11px;
 }
 
 //Input
@@ -215,7 +215,8 @@ u {
   height: 40px;
   font-size: 16px;
 }
-.ant-select-show-search.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+.ant-select-show-search.ant-select:not(.ant-select-customize-input)
+  .ant-select-selector {
   cursor: text;
   border-radius: 8px;
   height: 40px;
@@ -253,7 +254,7 @@ project-select-dropdown nz-select-item.ant-select-selection-item {
   flex: unset;
 }
 
-.ant-select-selector{
+.ant-select-selector {
   display: flex;
   align-items: center;
 }
@@ -261,11 +262,11 @@ project-select-dropdown nz-select-item.ant-select-selection-item {
 //END SELECT
 
 //DATE PICKPER
-.ant-picker{
+.ant-picker {
   border-radius: 8px;
 }
 
-.input-date-picker{
+.input-date-picker {
   height: 40px;
 }
 //END DATE PICKPER
@@ -367,7 +368,7 @@ body {
 
 .text-card-header {
   // color: #333333;
-  color:@text-subtitle-color;
+  color: @text-subtitle-color;
   font-size: @subtitle-fontsize;
   font-weight: 600;
   line-height: 28px;
@@ -499,14 +500,13 @@ body {
   scrollbar-color: rgba(0, 0, 0, 0.3) #fafafa;
 }
 
-.items-center-icon{
+.items-center-icon {
   display: flex;
   align-items: center;
-  margin:0px 10px;
+  margin: 0px 10px;
   cursor: pointer;
 }
 // END MENU
-
 
 //BREADCRUMB
 .breadcrumb-custom {
@@ -515,12 +515,24 @@ body {
 
 //END BREADCRUMB
 
-.ant-tooltip-inner{
-  background-color: #fff ;
-  color: #000 ;
-  box-shadow: 0px 4px 10px 0px #0000001A;
-
+.ant-tooltip-inner {
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0px 4px 10px 0px #0000001a;
 }
-::ng-deep .ant-tooltip-arrow-content .ant-tooltip-arrow-content::before{
+::ng-deep .ant-tooltip-arrow-content .ant-tooltip-arrow-content::before {
   background-color: #fff !important;
+}
+
+.ant-popover-title {
+  min-width: 177px;
+  min-height: 32px;
+  margin: 0;
+  padding: 5px 16px 4px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 600;
+  border-bottom: 1px solid #f0f0f0;
+  display: grid;
+  align-items: center;
+  justify-content: center;
 }
