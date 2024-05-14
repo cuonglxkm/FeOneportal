@@ -46,7 +46,7 @@ const COMPONENTS: Array<Type<any>> = [
   PaymentSuccessComponent,
   PaymentFailedComponent,
   ShareUsersComboboxComponent,
-  SvgIconComponent,
+  SvgIconComponent
 ];
 const DIRECTIVES: Array<Type<any>> = [];
 

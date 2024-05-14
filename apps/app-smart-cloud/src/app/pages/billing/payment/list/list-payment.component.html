@@ -1,4 +1,4 @@
-<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
+<!-- <page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
   [title]="'app.payment.title' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -30,7 +30,7 @@
       </div>
       <div *nzSpaceItem>
         <nz-input-group style="width: 380px;" nzSearch [nzPrefix]="prefixIconSearch">
-          <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input 
+          <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
             [placeholder]="'app.payment.searchPlaceHolder' | i18n" />
         </nz-input-group>
         <ng-template #prefixIconSearch>
@@ -48,10 +48,61 @@
       <span>{{"app.payment.download" | i18n}}</span>
     </button>
   </ng-template>
+</page-header> -->
+
+<page-header  [breadcrumb]="breadcrumb" [action]="action"
+  [title]="'app.payment.title' | i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item>{{"app.breadcrumb.home" | i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item> <a [routerLink]="['/app-smart-cloud/billing/payments']">Billing</a> </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{"app.payment.payment" | i18n}}
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)" [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+
 </page-header>
+
+
 <nz-content>
   <nz-card>
-
+    <div class="justify-content-extra">
+      <nz-space [nzSize]="24">
+        <div *nzSpaceItem>
+          <nz-select [(ngModel)]="selectedValue" (ngModelChange)="onChange($event)"
+            [nzPlaceHolder]="'app.payment.status' | i18n" style="width: 150px" class="input-select-custom">
+            <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+          </nz-select>
+        </div>
+        <div *nzSpaceItem>
+          <nz-range-picker class="input-date-picker" [(ngModel)]="dateRange" (ngModelChange)="onDateRangeChange($event)" 
+            [nzDisabledDate]="disabledDate" [nzFormat]="dateFormat"></nz-range-picker>
+        </div>
+        <div *nzSpaceItem>
+          <nz-input-group style="width: 380px;" nzSearch [nzPrefix]="prefixIconSearch">
+            <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+              [placeholder]="'app.payment.searchPlaceHolder' | i18n" />
+          </nz-input-group>
+          <ng-template #prefixIconSearch>
+            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+          </ng-template>
+        </div>
+      </nz-space>
+      <button class="d-flex align-items-center gap-3" nz-button nzSize="default" style="cursor: pointer; margin-left: 5px"
+      (click)="downloadMany()" [disabled]="!downloadList.length">
+        <one-portal-svg-icon class="icon-svg" [icon]="'icon_download'"></one-portal-svg-icon>
+      <span>{{"app.payment.download" | i18n}}</span>
+    </button>
+    </div>
     <nz-table #rowSelectionTable nzShowSizeChanger [nzData]="response?.records" [nzPageIndex]="response?.currentPage"
       [nzTotal]="response?.totalCount" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoading"
       [nzFrontPagination]="false" (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
@@ -81,13 +132,15 @@
             {{"app.payment.status.unpaid" | i18n}}
           </td>
           <td *ngIf="data.paymentLatestStatus === 'PAID'" (click)="serviceDownload(data.invoiceIssuedId)"
-            style="cursor: pointer; text-align: center;" nzBreakWord>
-            <img alt="" src="assets/imgs/download.svg" />
+            style="cursor: pointer; text-align: center; color:#0066B0 " class="" nzBreakWord>
+            <!-- <img alt="" src="assets/imgs/download.svg" /> -->
+            <one-portal-svg-icon class="icon-svg justify-center-icon " [icon]="'icon_download'"></one-portal-svg-icon>
           </td>
           <td *ngIf="data.paymentLatestStatus != 'PAID'" class="unpaid" nzBreakWord>
-            <img
+            <!-- <img
               style="filter: invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%);"
-              alt="" src="assets/imgs/download.svg" />
+              alt="" src="assets/imgs/download.svg" /> -->
+                <one-portal-svg-icon class="icon-svg justify-center-icon" [icon]="'icon_download'"></one-portal-svg-icon>
           </td>
         </tr>
       </tbody>
