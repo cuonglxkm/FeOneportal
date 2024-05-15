@@ -3,12 +3,12 @@
              [title]="'Security Group'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.iam-dashboard.home' | i18n}}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{'app.breadcrumb.infrastructure.service' | i18n}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/security-group">Danh sách Security Group</a>
+        <a routerLink="/app-smart-cloud/security-group">{{'sg.title.list' | i18n}}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -24,7 +24,7 @@
   <one-portal-create-security-group [region]="region"
                                     [project]="project"
                                     nz-tooltip
-                                    nzTooltipTitle="Tạo mới Security Group"
+                                    nzTooltipTitle="{{'sg.title.create' | i18n}}"
                                     nzTooltipPlacement="bottom"
                                     (onOk)="handleOKCreateSG()" />
 </page-header>
@@ -34,7 +34,7 @@
       <nz-card>
         <div style="display: flex; justify-content: space-between">
           <div>
-            <span class="text-card-header">Danh sách Security Group</span>
+            <span class="text-card-header">{{'sg.title.list' | i18n}}</span>
           </div>
           <div class="label">
             <span class="text-label">Security group: </span>
@@ -43,9 +43,9 @@
                          nzShowSearch
                          nzAllowClear
                          nz-tooltip
-                         nzTooltipTitle="Chọn Security Group"
+                         nzTooltipTitle="{{'sg.alert.select' | i18n}}"
                          nzTooltipPlacement="bottom"
-                         nzPlaceHolder="Select a security"
+                         nzPlaceHolder="{{'sg.alert.select' | i18n}}"
                          [(ngModel)]="selectedSG"
                          [nzLoading]="isLoadingSG"
                          nzSize="large"
@@ -67,7 +67,7 @@
                     <img src="assets/imgs/bin.svg"
                          alt="" class="icon-image disable-image"
                          nz-tooltip
-                         [nzTooltipTitle]="'Không thể xóa Security Group mặc định của dịch vụ K8S'"
+                         nzTooltipTitle="{{'sg.alert.remove.k8s' | i18n}}"
                          nzTooltipPlacement="bottom"/>
                   </button>
                 </div>
@@ -77,7 +77,7 @@
           </div>
         </div>
         <div style="margin-bottom: 16px; display: flex; gap: 40px; margin-top: 10px;">
-          <div class="text-value">Mô tả:</div>
+          <div class="text-value">{{'app.service.description' | i18n}}:</div>
           <div *ngIf="selectedSG?.description && selectedSG?.description !== ''" class="text-label description-detail">
             {{ selectedSG?.description }}
           </div>
@@ -98,7 +98,7 @@
             align-items: center;
             background-color: #e1edf8;
           ">
-              <div class="code-box-title text-value">Quản lý Gán/Gỡ Security Group</div>
+              <div class="code-box-title text-value">{{'sg.title.detach.attach' | i18n}}</div>
             </div>
             <div style="margin: 10px 15px">
               <nz-table #basicTable
@@ -112,14 +112,14 @@
                         [nzLoading]="isLoadingVm">
                 <thead>
                 <tr>
-                  <th nzAlign="center" class="text-th" nzLeft>Tên máy ảo</th>
-                  <th nzAlign="center" class="text-th" nzBreakWord>Trạng thái</th>
+                  <th nzAlign="center" class="text-th" nzLeft>{{'app.instances.name' | i18n}}</th>
+                  <th nzAlign="center" class="text-th" nzBreakWord>{{'app.payment.status' | i18n}}</th>
                   <th nzAlign="center" class="text-th" nzBreakWord>
-                    Trạng thái tác vụ
+                    {{'app.task.status' | i18n}}
                   </th>
                   <th nzAlign="center" class="text-th" nzBreakWord>IP LAN</th>
                   <th nzAlign="center" class="text-th" nzBreakWord>IP Public</th>
-                  <th nzAlign="center" class="text-th" style="width: 216px" nzBreakWord>Thao tác
+                  <th nzAlign="center" class="text-th" style="width: 216px" nzBreakWord>{{'app.action-history.operation' | i18n}}
                   </th>
                 </tr>
                 </thead>
@@ -161,18 +161,17 @@
         </nz-row>
         <nz-row style="margin-top: 20px">
           <nz-col class="text-center" style="width: 100%">
-            <span class="text-intro-title" style="color: #0066b3">SECURITY GROUP<br>Truy cập, bảo mật</span>
+            <span class="text-intro-title" style="color: #0066b3">SECURITY GROUP<br>{{'sg.alert.secu.access' | i18n}}</span>
           </nz-col>
         </nz-row>
         <nz-row style="margin-top: 20px">
           <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều
-                loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.</span>
+                <span class="text-intro-desc">{{'sg.des1' | i18n}}</span>
           </nz-col>
         </nz-row>
         <button style="margin-top: 20px" nz-button [nzType]="'primary'" nzSize="large">
           <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-          Tạo mới Security Group
+          {{'sg.title.create' | i18n}}
         </button>
       </result>
     </ng-container>

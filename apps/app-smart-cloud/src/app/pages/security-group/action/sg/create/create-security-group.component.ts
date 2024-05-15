@@ -5,6 +5,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { SecurityGroupService } from '../../../../../shared/services/security-group.service';
 import { AppValidator } from '../../../../../../../../../libs/common-utils/src';
 import { FormCreateSG, SecurityGroupSearchCondition } from '../../../../../shared/models/security-group';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-security-group',
@@ -41,6 +43,7 @@ export class CreateSecurityGroupComponent implements AfterViewInit{
   constructor(private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private securityGroupService: SecurityGroupService) {
   }
 
@@ -103,14 +106,14 @@ export class CreateSecurityGroupComponent implements AfterViewInit{
       this.securityGroupService.createSecurityGroup(formCreateSG).subscribe(data => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.success("Thành công", "Tạo mới Security Group thành công")
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('sg.notification.create.success'))
         this.onOk.emit()
         this.nameList = []
         this.validateForm.reset()
       }, error => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error("Thất bại", error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
         this.validateForm.reset()
       })
     }
