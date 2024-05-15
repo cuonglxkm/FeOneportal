@@ -53,6 +53,7 @@ export class ClusterComponent implements OnInit {
   vlanId: number;
 
   expiryDate: number;
+  isChangeInfo: boolean;
 
   public DEFAULT_CIDR = KubernetesConstant.DEFAULT_CIDR;
   public DEFAULT_SERVICE_CIDR = KubernetesConstant.DEFAULT_SERVICE_CIDR;
@@ -91,6 +92,7 @@ export class ClusterComponent implements OnInit {
     this.listOfWorkerType = [];
     this.listOfServicePack = [];
     this.isSubmitting = false;
+    this.isChangeInfo = false;
 
     this.getCurrentDate();
     this.getListPriceItem();
@@ -144,6 +146,7 @@ export class ClusterComponent implements OnInit {
       volumeStorage: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
       volumeType: [this.DEFAULT_VOLUME_TYPE, [Validators.required]],
       volumeTypeId: [null, [Validators.required]],
+      volumeTypeName: [this.defaultVolumeTypeName],
       configType: [null, [Validators.required]],
       configTypeId: [null, [Validators.required]],
       autoScalingWorker: [false, Validators.required],
@@ -199,6 +202,7 @@ export class ClusterComponent implements OnInit {
       })
   }
 
+  defaultVolumeTypeName: string;
   getListVolumeType(regionId: number,cloudProfileName: string) {
     this.listOfVolumeType = [];
     this.clusterService.getListVolumeTypes(regionId, cloudProfileName)
@@ -206,10 +210,11 @@ export class ClusterComponent implements OnInit {
         if (r && r.code == 200) {
           this.listOfVolumeType = r.data;
 
-          // for the first time the form is initialized,
-          // if data is not already loaded, volumeTypeId will not fill value
-          // const volumeType = this.listOfVolumeType.find(item => item.volumeType === this.DEFAULT_VOLUME_TYPE);
-          // this.listFormWorkerGroup.at(0).get('volumeTypeId').setValue(volumeType.id);
+          // get default volume type name
+          const vlt = this.listOfVolumeType.find(vlt => vlt.volumeType == this.DEFAULT_VOLUME_TYPE);
+          if (vlt) {
+            this.defaultVolumeTypeName = vlt.volumeTypeName;
+          }
         } else {
           this.notificationService.error("Thất bại", r.message);
         }
@@ -490,6 +495,7 @@ export class ClusterComponent implements OnInit {
         this.listFormWorkerGroup.at(index).get('minimumNode').updateValueAndValidity();
       }
     }
+    console.log(this.listFormWorkerGroup.at(0).get('workerGroupName').value);
   }
 
   onSelectPackTab() {
@@ -500,6 +506,7 @@ export class ClusterComponent implements OnInit {
 
   onSelectCustomPackTab() {
     this.chooseItem = null;
+    this.isChangeInfo = true;
     this.isUsingPackConfig = false;
     this.clearFormWorker();
     this.addWorkerGroup();
@@ -513,6 +520,7 @@ export class ClusterComponent implements OnInit {
   isUsingPackConfig: boolean = true;
   onChoosePack(item: PackModel) {
     this.chooseItem = item;
+    this.isChangeInfo = true;
     this.isUsingPackConfig = true;
 
     if (this.chooseItem) {
@@ -534,7 +542,9 @@ export class ClusterComponent implements OnInit {
         autoScalingWorker: [false],
         autoHealing: [true],
         minimumNode: [null],
-        maximumNode: [null]
+        maximumNode: [null],
+        cpu: [this.chooseItem.cpu],
+        ram: [this.chooseItem.ram]
       });
 
       this.listFormWorkerGroup.push(wgf);

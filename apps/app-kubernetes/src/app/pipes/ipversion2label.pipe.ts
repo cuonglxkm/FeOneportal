@@ -11,6 +11,8 @@ export class Protocol2LabelPipe implements PipeTransform {
         return 'TCP';
       case 'udp':
         return 'UDP';
+      case 'icmp':
+        return 'ICMP';
       case 'any':
         return 'Any';
 

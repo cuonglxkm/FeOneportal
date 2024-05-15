@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
@@ -13,13 +13,16 @@ import { VolumeTypeModel } from '../../model/volume-type.model';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NetWorkModel } from '../../model/vlan.model';
 import { ShareService } from '../../services/share.service';
+import { NotificationConstant } from '../../constants/notification.constant';
+import { NotificationWsService } from '../../services/ws.service';
+import { messageCallbackType } from '@stomp/stompjs';
 
 @Component({
   selector: 'one-portal-detail-cluster',
   templateUrl: './detail-cluster.component.html',
   styleUrls: ['./detail-cluster.component.css'],
 })
-export class DetailClusterComponent implements OnInit {
+export class DetailClusterComponent implements OnInit, OnDestroy {
 
   @Input('vpcNetwork') vpcNetwork: string;
   @Input('yamlString') yamlString: string;
@@ -64,7 +67,8 @@ export class DetailClusterComponent implements OnInit {
     private notificationService: NzNotificationService,
     private clipboardService: ClipboardService,
     private fb: FormBuilder,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private websocketService: NotificationWsService
   ) {
     this.listOfK8sVersion = [];
     this.showModalKubeConfig = false;
@@ -91,6 +95,12 @@ export class DetailClusterComponent implements OnInit {
       // volumeCloudType: [null, [Validators.required]],
       workerGroup: this.listFormWorkerGroupUpgrade
     });
+
+    this.openWs();
+  }
+
+  ngOnDestroy(): void {
+    this.websocketService.disconnect();
   }
 
   getDetailCluster(serviceOrderCode: string) {
@@ -114,6 +124,58 @@ export class DetailClusterComponent implements OnInit {
     this.isEditMode = true;
     this.getListWorkerType(this.regionId, this.cloudProfileId);
     this.getListVolumeType(this.regionId, this.cloudProfileId);
+  }
+
+  // websocket
+  private openWs() {
+    // list topic subscribe
+    const topicSpecificUser = NotificationConstant.WS_SPECIFIC_TOPIC + "/" + '';
+    const topicBroadcast = NotificationConstant.WS_BROADCAST_TOPIC;
+
+    const notificationMessageCb = (noti) => {
+      if (noti.body) {
+        try {
+          const notificationMessage = JSON.parse(noti.body);
+          if (notificationMessage.content && notificationMessage.content?.length > 0) {
+            if (notificationMessage.status == NotificationConstant.NOTI_SUCCESS) {
+              this.notificationService.success(
+                NotificationConstant.NOTI_SUCCESS_LABEL,
+                notificationMessage.content);
+
+              // refresh page
+              this.getDetailCluster(this.serviceOrderCode);
+
+            } else {
+              this.notificationService.error(
+                NotificationConstant.NOTI_ERROR_LABEL,
+                notificationMessage.content);
+            }
+          }
+        } catch (ex) {
+          console.log("parse message error: ", ex);
+        }
+
+      }
+    }
+
+    this.initNotificationWebsocket([
+      { topics: [topicBroadcast, topicSpecificUser], cb: notificationMessageCb }
+    ]);
+  }
+
+  private initNotificationWebsocket(topicCBs: Array<{ topics: string[], cb: messageCallbackType }>) {
+
+    setTimeout(() => {
+      this.websocketService = NotificationWsService.getInstance();
+      this.websocketService.connect(
+        () => {
+          for (const topicCB of topicCBs) {
+            for (const topic of topicCB.topics) {
+              this.websocketService.subscribe(topic, topicCB.cb);
+            }
+          }
+        });
+    }, 1000);
   }
 
   initFormWorkerGroup(wgs: WorkerGroupModel[]) {

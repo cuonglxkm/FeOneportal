@@ -91,15 +91,19 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
         }
       })
 
-      this.listOfInbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'ingress');
-      this.listOfOutbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'egress');
+      if (this.selectedSG) {
+        this.listOfInbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'ingress');
+        this.listOfOutbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'egress');
 
-      let sgData = new SecurityGroupData();
-      sgData.projectId = this.projectId;
-      sgData.regionId = this.regionId;
-      sgData.detailCluster = this.detailCluster;
-      sgData.securityGroupId = this.selectedSG.id;
-      this.shareService.emitSGData(sgData);
+        let sgData = new SecurityGroupData();
+        sgData.projectId = this.projectId;
+        sgData.regionId = this.regionId;
+        sgData.detailCluster = this.detailCluster;
+        sgData.securityGroupId = this.selectedSG?.id;
+        this.shareService.emitSGData(sgData);
+      } else {
+        this.notificationService.error("Thất bại", "Không có thông tin security group");
+      }
     });
   }
 

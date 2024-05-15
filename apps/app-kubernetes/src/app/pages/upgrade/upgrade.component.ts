@@ -2,7 +2,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
-import { KubernetesCluster, Order, OrderItem, UpgradeWorkerGroupDto, WorkerGroupModel } from '../../model/cluster.model';
+import { KubernetesCluster, Order, OrderItem, UpgradeWorkerGroupDto, WorkerGroupModel, WorkerGroupReqDto } from '../../model/cluster.model';
 import { ClusterService } from '../../services/cluster.service';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
@@ -15,7 +15,7 @@ import { VolumeTypeModel } from '../../model/volume-type.model';
 import { PriceModel } from '../../model/price.model';
 import { K8sVersionModel } from '../../model/k8s-version.model';
 import { VlanService } from '../../services/vlan.service';
-import { forkJoin } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
@@ -201,8 +201,10 @@ export class UpgradeComponent implements OnInit {
     });
   }
 
+  projectName: string;
   onProjectChange(project: ProjectModel) {
     this.projectId = project.id;
+    this.projectName = project.projectName;
   }
 
   getListK8sVersion(regionId: number, cloudProfileName: string) {
@@ -548,6 +550,7 @@ export class UpgradeComponent implements OnInit {
 
       let wgs = this.detailCluster.workerGroup;
       for (let i = 0; i < wgs.length; i++) {
+        console.log(wgs[i]);
         const cpu = wgs[i].cpu ? wgs[i].cpu : 0;
         const ram = wgs[i].ram ? wgs[i].ram : 0;
         const storage = +wgs[i].volumeSize ? +wgs[i].volumeSize : 0;
@@ -556,14 +559,14 @@ export class UpgradeComponent implements OnInit {
         if (autoScale) {
           // TODO: ...
         } else {
-          nodeNumber = wgs[i].nodeNumber ? wgs[i].nodeNumber : 0;
+          nodeNumber = wgs[i].minimumNode ? wgs[i].minimumNode : 0;
         }
 
         this.currentTotalCpu += nodeNumber * cpu;
         this.currentTotalRam += nodeNumber * ram;
         this.currentTotalStorage += nodeNumber * storage;
       }
-
+      console.log(this.currentTotalRam, this.currentTotalCpu, this.currentTotalStorage);
       return this.priceOfCpu * this.currentTotalCpu
         + this.priceOfRam * this.currentTotalRam + this.priceOfSsd * this.currentTotalStorage;
     }
@@ -641,27 +644,36 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
-  submitUpgrade() {
+  onValidateInfo = () => {
     this.validateForm();
 
-    let cluster = this.upgradeForm.value;
-    cluster.currentOfferId = this.detailCluster.offerId ? this.detailCluster.offerId : 0;
-    cluster.newOfferId = this.chooseItem ? this.chooseItem.offerId : 0;
+    this.isSubmitting = true;
+    let cluster = this.setClusterData();
+    // this.submitUpgrade(cluster);
 
-    cluster.currentTotalCpu = this.currentTotalCpu ? this.currentTotalCpu : 0;
-    cluster.currentTotalRam = this.currentTotalRam ? this.currentTotalRam : 0;
-    cluster.currentTotalStorage = this.currentTotalStorage ? this.currentTotalStorage : 0;
+    let reqDto = new UpgradeWorkerGroupDto(cluster);
+    this.clusterService.validateUpgradeCluster(reqDto)
+    .pipe(finalize(() => this.isSubmitting = false))
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        let status = r.data;
+        if (status == 'upgraded') {
+          // only change name, redirect list service
+          this.notificationService.success('Thành công', r.message);
+          this.router.navigate(['/app-kubernetes']);
 
-    cluster.newVcpu = this.newTotalRam ? this.newTotalRam : 0;
-    cluster.newTotalRam = this.newTotalRam ? this.newTotalRam : 0;
-    cluster.newTotalStorage = this.newTotalStorage ? this.newTotalStorage : 0;
+        } else {
+          // call payment
+          this.submitUpgrade(cluster);
+        }
+      }
+    });
 
-    cluster.regionId = this.regionId;
-    cluster.serviceName = this.detailCluster.clusterName;
-    cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
+  }
 
-    console.log({cluster: cluster});
-    console.log({form: this.upgradeForm});
+  submitUpgrade(cluster: any) {
+    // console.log({cluster: cluster});
+    // console.log({form: this.upgradeForm});
 
     // build order request
     let order = new Order();
@@ -679,9 +691,39 @@ export class UpgradeComponent implements OnInit {
 
     order.orderItems = [...order.orderItems, orderItem];
 
-    console.log({order: order});
+    // console.log({order: order});
     let returnPath = window.location.pathname;
     this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: order, path: returnPath}});
+  }
+
+  setClusterData() {
+    let cluster = this.upgradeForm.value;
+    cluster.currentOfferId = this.detailCluster.offerId ? this.detailCluster.offerId : 0;
+    cluster.newOfferId = this.chooseItem ? this.chooseItem.offerId : 0;
+
+    cluster.currentTotalCpu = this.currentTotalCpu ? this.currentTotalCpu : 0;
+    cluster.currentTotalRam = this.currentTotalRam ? this.currentTotalRam : 0;
+    cluster.currentTotalStorage = this.currentTotalStorage ? this.currentTotalStorage : 0;
+
+    cluster.newVcpu = this.newTotalRam ? this.newTotalRam : 0;
+    cluster.newTotalRam = this.newTotalRam ? this.newTotalRam : 0;
+    cluster.newTotalStorage = this.newTotalStorage ? this.newTotalStorage : 0;
+
+    cluster.regionId = this.regionId;
+    cluster.serviceName = this.detailCluster.clusterName;
+    cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
+    cluster.sortItem = 0;
+    cluster.tenant = this.projectName;
+
+    const wgs: [] = cluster.workerGroup;
+    const tmp: WorkerGroupReqDto[] = [];
+    for (let i = 0; i < wgs.length; i++) {
+      const wg = new WorkerGroupReqDto(wgs[i]);
+      tmp.push(wg);
+    }
+    cluster.jsonData = JSON.stringify({'ServiceOrderCode': this.serviceOrderCode, 'WorkerGroup': tmp});
+
+    return cluster;
   }
 
   callme() {
