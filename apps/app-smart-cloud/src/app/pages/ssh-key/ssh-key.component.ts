@@ -2,14 +2,14 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { SshKeyService } from 'src/app/pages/ssh-key/ssh-key.service';
 import { AppValidator, BaseResponse, RegionModel } from '../../../../../../libs/common-utils/src';
 import { SshKey } from './dto/ssh-key';
-import { ModalHelper } from '@delon/theme';
+import { ALAIN_I18N_TOKEN, ModalHelper } from '@delon/theme';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize } from 'rxjs/operators';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-ssh-key',
@@ -46,6 +46,7 @@ export class SshKeyComponent implements OnInit {
   };
 
   constructor(private sshKeyService: SshKeyService, private mh: ModalHelper, private modal: NzModalService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private notification: NzNotificationService) {
   }
 
@@ -83,7 +84,7 @@ export class SshKeyComponent implements OnInit {
         },
         error => {
           this.listOfData = [];
-          this.notification.error('Thất bại', 'Lấy danh sách thất bại keypair');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('keypair.notification.load.list.fail'));
         });
 
   }
@@ -129,10 +130,14 @@ export class SshKeyComponent implements OnInit {
         this.loading = false;
         this.handleCancel(null);
       }))
-      .subscribe(() => {
+      .subscribe(
+        data=> {
         this.loadSshKeys(true);
-        this.notification.success('Thành công', 'Xóa thành công keypair');
-      });
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('keypair.remove.success'));
+      },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('keypair.remove.fail'));
+        });
     this.isVisibleDelete = false;
   }
 
@@ -176,15 +181,15 @@ export class SshKeyComponent implements OnInit {
       .subscribe({
         next: post => {
           this.loadSshKeys(true);
-          this.notification.success('Thành công', 'Tạo mới thành công keypair');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('keypair.create.success'));
         },
         error: e => {
           if (e && e.error && e.error.detail && e.error.detail === `Key pair '${namePrivate}' already exists.`) {
-            this.notification.warning('Cảnh báo', `Tên keypair '${namePrivate}' đã được sử dụng, vui lòng nhập tên khác.`);
+            this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('keypair.create.fail.duplicatename', {namePrivate : namePrivate}));
           } else if (e && e.error && e.error.detail && e.error.detail === `Keypair data is invalid: failed to generate fingerprint`) {
-            this.notification.warning('Cảnh báo', `Public Key không đúng định dạng. Vui lòng nhập Public Key khác.`);
+            this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('keypair.create.fail.form'));
           } else {
-            this.notification.error('Thất bại', 'Tạo mới thất bại keypair');
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('keypair.create.fail'));
           }
         }
       });

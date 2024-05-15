@@ -201,14 +201,14 @@ export class IpPublicComponent implements OnInit {
       .subscribe(
       {
         next: post => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.delete.success') + ' IP Public')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.delete.success'))
         },
         error: e => {
           if(e && e.error && e.error.detail && e.error.detail === "VM need a IP"){
             this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.instances') + ' ' + this.instanceName + ' '
               + this.i18n.fanyi('app.ip.public.attach.warning'));
           } else {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.delete.fail') +' IP Public')
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.delete.fail'))
           }
         },
       }
