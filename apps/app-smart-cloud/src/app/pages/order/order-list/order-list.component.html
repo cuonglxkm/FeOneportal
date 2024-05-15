@@ -11,9 +11,9 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="region" (valueChanged)="projectChanged($event)"
-        (userChanged)="projectChanged($event)"></project-select-dropdown>
+      <!-- <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown> -->
+      <!-- <project-select-dropdown [regionId]="region" (valueChanged)="projectChanged($event)"
+        (userChanged)="projectChanged($event)"></project-select-dropdown> -->
     </div>
   </ng-template>
 </page-header>
@@ -50,9 +50,11 @@
       <tr>
         <th>{{"app.order.ordinalNumber" | i18n}}</th>
         <th>{{"app.order.ordercode" | i18n}}</th>
-        <th>{{"app.order.service" | i18n}}</th>
-        <th>{{"app.order.createDate" | i18n}}</th>
-        <th>{{"app.order.status" | i18n}}</th>
+        <th>{{"app.order.name.service" | i18n}}</th>
+       
+        <th>{{"app.order.time.order" | i18n}}</th>
+        <th>{{"app.order.status.order" | i18n}}</th>
+        <th>{{"app.order.status.installation" | i18n}}</th>
       </tr>
     </thead>
     <tbody>
@@ -61,9 +63,44 @@
         <td>
           <a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a>
         </td>
-        <td>{{ data.note }}</td>
+        <!-- <td>{{ data.note }}</td> -->
+        <td>{{ data?.orderItems[0] }}</td>
+      
         <td>{{ data.orderDate | date : 'HH:mm:ss dd/MM/YYYY' }}</td>
         <td [ngStyle]="{
+          color:
+           data.statusCode === 'New'
+              ? '#CFEA29EB'
+              : data.statusCode === 'InProcessing'
+              ? '#0066B0'
+              : data.statusCode === 'Completed'
+              ? 'green'
+              : data.statusCode === 'Paid'
+              ? '#C4621A' 
+              :data.statusCode === 'Cancelled'
+              ? 'red'
+              :data.statusCode === 'Error'
+              ? 'red'
+              : ''
+        }">
+        <!-- <span class="mr-2" style="cursor: pointer;" (click)="handleOpenError()"
+          *ngIf="data.statusCode === 'Cancelled'" nz-icon nzType="warning" nzTheme="outline"></span> -->
+        <span>
+          {{  data.statusCode === 'New'
+          ? ("app.order.status.orderplaced" | i18n)
+          : data.statusCode === 'InProcessing'
+          ? ("app.order.status.InProcessing" | i18n)
+          : data.statusCode === 'Completed'
+          ? ("app.order.status.Installed" | i18n)
+          : data.statusCode === 'Paid'
+          ? ("app.order.status.Paid" | i18n)
+          :data.statusCode === 'Cancelled'
+          ? ("app.order.status.cancelled" | i18n)
+          :data.statusCode === 'Error'
+          ? ("app.order.status.error" | i18n)
+          : '' }}</span>
+      </td>
+        <!-- <td [ngStyle]="{
             color:
               data.statusCode === 'Cancelled'
                 ? 'red'
@@ -91,7 +128,40 @@
             : data.statusCode === 'InProcessing'
             ? ("app.order.status.InProcessing" | i18n)
             : '' }}</span>
-        </td>
+        </td> -->
+        <td [ngStyle]="{
+          color:
+           data.statusCode === 'New'
+              ? '#CFEA29EB'
+              : data.statusCode === 'InProcessing'
+              ? '#0066B0'
+              : data.statusCode === 'Completed'
+              ? 'green'
+              : data.statusCode === 'Paid'
+              ? '#C4621A' 
+              :data.statusCode === 'Cancelled'
+              ? 'red'
+              :data.statusCode === 'Error'
+              ? 'red'
+              : ''
+        }">
+        <span class="mr-2" style="cursor: pointer;" (click)="handleOpenError()"
+          *ngIf="data.statusCode === 'Error'" nz-icon nzType="warning" nzTheme="outline"></span>
+        <span >
+          {{  data.statusCode === 'New'
+          ? '-'
+          : data.statusCode === 'InProcessing'
+          ? ("app.order.status.InProcessing" | i18n)
+          : data.statusCode === 'Completed'
+          ? ("app.order.status.Installed" | i18n)
+          : data.statusCode === 'Paid'
+          ? '-'
+          :data.statusCode === 'Cancelled'
+          ? '-'
+          :data.statusCode === 'Error'
+          ? ("app.order.status.error" | i18n)
+          : '' }}</span>
+      </td>
       </tr>
     </tbody>
   </nz-table>
