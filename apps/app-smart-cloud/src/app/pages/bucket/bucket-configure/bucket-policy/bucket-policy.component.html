@@ -414,6 +414,7 @@
       [nzShowSearch]="true"
       nzSize="large"
       formControlName="permission"
+      [nzMaxTagCount]="2"
     >
       <nz-option
         *ngFor="let p of listPermission"
@@ -436,6 +437,8 @@
       [nzShowSearch]="true"
       nzSize="large"
       formControlName="listActionPermission"
+      [nzMaxTagCount]="1"
+      [nzMaxTagPlaceholder]="tagPlaceHolder"
     >
       <nz-option-group nzLabel="SUGGESTED COMBO">
         <nz-option
@@ -617,6 +620,7 @@
         </nz-option>
       </nz-option-group>
     </nz-select>
+    <ng-template #tagPlaceHolder let-selectedList>and {{ selectedList.length }} more selected</ng-template>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelUpdate()">

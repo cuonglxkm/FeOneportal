@@ -55,12 +55,12 @@ export class BucketPolicyComponent implements OnInit {
     isUserOther: FormControl<string>
     emailUser: FormControl<string>
     permission: FormControl<string>
-    listActionPermission: FormControl<string>
+    listActionPermission: FormControl<string[]>
   }> = this.fb.group({
     isUserOther: ['',Validators.required],
     emailUser: ['',Validators.required],
     permission: ['',Validators.required],
-    listActionPermission: ['',Validators.required],
+    listActionPermission: [[] as string[],Validators.required],
   });
 
   searchBucketPolicy() {
@@ -253,7 +253,6 @@ export class BucketPolicyComponent implements OnInit {
   modalUpdate(sid: string) {
     this.isVisibleUpdate = true;
     this.getListSubuser();
-    this.setActionPermission.clear();
     this.bucketService.getBucketPolicyDetail(sid, this.bucketName).subscribe({
       next: (data) => {
         console.log(data);
@@ -279,8 +278,11 @@ export class BucketPolicyComponent implements OnInit {
   }
 
   handleOkUpdate() {
+
     this.isVisibleUpdate = false;
-    this.listActionPermission.forEach((e) => {
+    console.log(this.formEdit.controls.listActionPermission.value);
+    
+    this.formEdit.controls.listActionPermission.value.forEach((e) => {
       if (e == 'selectAll') {
         this.setActionPermission.add('CreateBucket');
         this.setActionPermission.add('DeleteBucketPolicy');
@@ -375,8 +377,8 @@ export class BucketPolicyComponent implements OnInit {
       .updateBucketPolicy(
         this.bucketName,
         this.bucketPolicyUpdate.sid,
-        this.bucketPolicyUpdate.permission,
-        this.bucketPolicyUpdate.subuser,
+        this.formEdit.controls.permission.value,
+        this.formEdit.controls.emailUser.value,
         this.isUserOther,
         Array.from(this.setActionPermission)
       )
