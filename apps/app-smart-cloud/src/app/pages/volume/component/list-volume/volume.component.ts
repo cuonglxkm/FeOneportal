@@ -133,6 +133,8 @@ export class VolumeComponent implements OnInit {
       }, error => {
         this.isLoading = false;
         this.response = null;
+        console.log(error);
+        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
       });
   }
 

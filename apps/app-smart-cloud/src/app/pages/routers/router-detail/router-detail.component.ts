@@ -68,7 +68,10 @@ export class RouterDetailComponent implements OnInit {
   formRouterInterface: FormGroup<{
     subnetId: FormControl<string>;
     ipAddress: FormControl<string>;
-  }>;
+  }>  = this.fb.group({
+    subnetId: ['', Validators.required],
+    ipAddress: ['', Validators.required]
+  });;
 
   formRouterStatic: FormGroup<{
     destinationCIDR: FormControl<string>;
@@ -91,10 +94,6 @@ export class RouterDetailComponent implements OnInit {
     private fb: NonNullableFormBuilder,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
-    this.formRouterInterface = this.fb.group({
-      subnetId: ['', Validators.required],
-      ipAddress: ['', Validators.required]
-    });
   }
 
   ngOnInit(): void {
@@ -313,7 +312,17 @@ export class RouterDetailComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.alert.wrong.format')
           );
-        } else {
+        } else if (error.error.detail.includes('Next hop không được nhập trùng với địa')) {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('router.validate.duplicate.nexthop')
+          );
+        } else if (error.error.detail.includes('Destination CIDR và Nexthop đã tồn tại')) {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('router.validate.duplicate.cidr')
+          );
+        }else {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.nofitacation.create.fail1')

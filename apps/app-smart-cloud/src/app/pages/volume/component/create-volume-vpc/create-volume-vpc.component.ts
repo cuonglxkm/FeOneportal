@@ -1,13 +1,12 @@
-import { ChangeDetectorRef, Component, Inject, Input, OnInit } from '@angular/core';
-import { CreateVolumeRequestModel, GetAllVmModel } from '../../../../shared/models/volume.model';
-import { CreateVolumeDto, VmDto } from '../../../../shared/dto/volume.dto';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { CreateVolumeRequestModel } from '../../../../shared/models/volume.model';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { InstancesModel, VolumeCreate } from '../../../instances/instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { SnapshotVolumeService } from '../../../../shared/services/snapshot-volume.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
@@ -28,7 +27,6 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
-
 
 
   isLoadingAction = false;
@@ -88,7 +86,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   isLoadingCreate: boolean = false;
 
   selectedValueHDD = true;
-  selectedValueSSD = false
+  selectedValueSSD = false;
 
   typeMultiple: boolean;
   typeEncrypt: boolean;
@@ -110,11 +108,11 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
-      this.enableMultiAttach = value
+      this.enableMultiAttach = value;
     });
 
     this.validateForm.get('isEncryption').valueChanges.subscribe((value) => {
-      this.enableEncrypt = value
+      this.enableEncrypt = value;
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
@@ -127,16 +125,17 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   dataSubjectStorage: Subject<any> = new Subject<any>();
+
   changeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
         console.log('total amount');
         // this.getTotalAmount()
-      })
+      });
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
     this.router.navigate(['/app-smart-cloud/volumes']);
   }
 
@@ -147,8 +146,8 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.getListSnapshot();
     this.getListInstance();
 
-    this.getCatalogOffer('MultiAttachment')
-    this.getCatalogOffer('Encryption')
+    this.getCatalogOffer('MultiAttachment');
+    this.getCatalogOffer('Encryption');
 
     this.getListVolumes();
   }
@@ -216,20 +215,20 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   changeValueStorage(value) {
-    this.dataSubjectStorage.next(value)
+    this.dataSubjectStorage.next(value);
   }
 
   onChangeStatusSSD() {
-    this.selectedValueSSD = true
-    this.selectedValueHDD = false
+    this.selectedValueSSD = true;
+    this.selectedValueHDD = false;
 
     console.log('Selected option changed ssd:', this.selectedValueSSD);
-    if(this.selectedValueSSD) {
-      this.volumeCreate.volumeType = 'ssd'
-      if(this.validateForm.get('storage').value <= 40) {
-        this.iops = 400
+    if (this.selectedValueSSD) {
+      this.volumeCreate.volumeType = 'ssd';
+      if (this.validateForm.get('storage').value <= 40) {
+        this.iops = 400;
       } else {
-        this.iops = this.validateForm.get('storage').value * 10
+        this.iops = this.validateForm.get('storage').value * 10;
       }
     }
 
@@ -237,40 +236,41 @@ export class CreateVolumeVpcComponent implements OnInit {
 
 
   onChangeStatusHDD() {
-    this.selectedValueHDD = true
-    this.selectedValueSSD = false
+    this.selectedValueHDD = true;
+    this.selectedValueSSD = false;
     console.log('Selected option changed hdd:', this.selectedValueHDD);
     // this.iops = this.validateForm.get('storage').value * 10
-    if(this.selectedValueHDD) {
-      this.volumeCreate.volumeType = 'hdd'
-      this.iops = 300
+    if (this.selectedValueHDD) {
+      this.volumeCreate.volumeType = 'hdd';
+      this.iops = 300;
     }
   }
 
   onChangeStatusEncrypt() {
-    this.enableEncrypt = true
-    this.enableMultiAttach = false
-    if(this.enableEncrypt) {
-      this.validateForm.controls.isEncryption.setValue(this.enableEncrypt)
-      this.validateForm.controls.isMultiAttach.setValue(this.enableMultiAttach)
+    this.enableEncrypt = true;
+    this.enableMultiAttach = false;
+    if (this.enableEncrypt) {
+      this.validateForm.controls.isEncryption.setValue(this.enableEncrypt);
+      this.validateForm.controls.isMultiAttach.setValue(this.enableMultiAttach);
     }
   }
 
   onChangeStatusMultiAttach() {
-    this.enableEncrypt = false
-    this.enableMultiAttach = true
-    if(this.enableMultiAttach) {
-      this.validateForm.controls.isEncryption.setValue(this.enableEncrypt)
-      this.validateForm.controls.isMultiAttach.setValue(this.enableMultiAttach)
+    this.enableEncrypt = false;
+    this.enableMultiAttach = true;
+    if (this.enableMultiAttach) {
+      this.validateForm.controls.isEncryption.setValue(this.enableEncrypt);
+      this.validateForm.controls.isMultiAttach.setValue(this.enableMultiAttach);
     }
   }
+
   ngOnInit() {
-    if(this.selectedValueHDD) {
-      this.iops = 300
+    if (this.selectedValueHDD) {
+      this.iops = 300;
     }
-    if(this.selectedValueSSD) {
-      if(this.validateForm.controls.storage.value <= 40) return (this.iops = 400);
-      this.iops = this.validateForm.controls.storage.value * 10
+    if (this.selectedValueSSD) {
+      if (this.validateForm.controls.storage.value <= 40) return (this.iops = 400);
+      this.iops = this.validateForm.controls.storage.value * 10;
     }
 
     if (this.selectedValueHDD) {
@@ -280,10 +280,10 @@ export class CreateVolumeVpcComponent implements OnInit {
       this.volumeCreate.volumeType = 'ssd';
     }
 
-    this.volumeCreate.volumeSize = this.validateForm.controls.storage.value
+    this.volumeCreate.volumeSize = this.validateForm.controls.storage.value;
 
     this.getListInstance();
-    this.changeValueInput()
+    this.changeValueInput();
   }
 
   duplicateNameValidator(control) {
@@ -299,8 +299,11 @@ export class CreateVolumeVpcComponent implements OnInit {
   onSwitchSnapshot() {
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
     console.log('snap shot', this.isInitSnapshot);
-    if(this.isInitSnapshot == true) {
-      this.validateForm.controls.snapshot.setValidators(Validators.required)
+    if (this.isInitSnapshot) {
+      this.validateForm.controls.snapshot.setValidators(Validators.required);
+    } else {
+      this.validateForm.controls.snapshot.clearValidators();
+      this.validateForm.controls.snapshot.updateValueAndValidity();
     }
   }
 
@@ -396,7 +399,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   doCreateVolumeVPC() {
-    this.isLoadingCreate = true
+    this.isLoadingCreate = true;
     if (this.validateForm.valid) {
       this.volumeInit();
       let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
@@ -418,7 +421,9 @@ export class CreateVolumeVpcComponent implements OnInit {
             if (data.code == 200) {
               this.isLoadingAction = false;
               this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
-              setTimeout(() => {this.router.navigate(['/app-smart-cloud/volumes']);}, 2500)
+              setTimeout(() => {
+                this.router.navigate(['/app-smart-cloud/volumes']);
+              }, 2500);
             }
           } else {
             this.isLoadingAction = false;
