@@ -465,7 +465,9 @@ export class InstancesCreateVpcComponent implements OnInit {
         .subscribe({
           next: (data) => {
             data.forEach((e: Port) => {
-              this.listPort.push(e);
+              if (e.attachedDeviceId == '') {
+                this.listPort.push(e);
+              }
             });
           },
           error: (e) => {

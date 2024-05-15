@@ -613,7 +613,7 @@
         </nz-form-label>
         <nz-form-control [nzErrorTip]="gpuErrorTpl">
           <nz-select
-            [nzPlaceHolder]="'-- ' + ('app.choose.ip.private' | i18n) + ' --'"
+            [nzPlaceHolder]="'-- ' + ('app.choose.ip.address' | i18n) + ' --'"
             [nzShowSearch]="true"
             formControlName="ipPrivate"
             [(ngModel)]="memberForm.address"
@@ -639,8 +639,9 @@
                 class="input-custom"
                 formControlName="port"
                 nz-input
-                [(ngModel)]="memberForm.protocol_port"
-                [disabled]="true"
+                [(ngModel)]="
+                  isCreate ? memberForm.protocol_port : memberForm.port
+                "
               />
             </nz-form-control>
           </nz-form-item>

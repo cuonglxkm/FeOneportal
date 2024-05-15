@@ -17,6 +17,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
 import { AppValidator } from '../../../../../../../../../libs/common-utils/src';
 import { finalize } from 'rxjs/operators';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 export function integerInRangeValidator(min: number, max: number): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -109,6 +111,7 @@ export class FormRuleComponent implements OnInit {
               private securityGroupRuleService: SecurityGroupRuleService,
               private notification: NzNotificationService,
               private cdr: ChangeDetectorRef,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private router: Router) {
     this.validateForm.controls.remoteIpPrefix.setValidators([Validators.required, AppValidator.ipWithCIDRValidator])
     this.validateForm.controls.portRangeMin.setValidators([Validators.required, Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/), integerInRangeValidator(1, 65535)])
@@ -303,14 +306,14 @@ export class FormRuleComponent implements OnInit {
         data => {
           // if(data.includes('')) {
           this.isLoading = false;
-          this.notification.success('Thành công', 'Tạo mới thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('sg.create.success'));
           this.onOk.emit(data);
           // }
 
         },
         error => {
           this.isLoading = false;
-          this.notification.error('Thất bại', error.error.detail);
+          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
         }
       );
     } else {
