@@ -88,7 +88,7 @@
             [nzDisabledDate]="disabledDate" [nzFormat]="dateFormat"></nz-range-picker>
         </div>
         <div *nzSpaceItem>
-          <nz-input-group style="width: 380px;" nzSearch [nzPrefix]="prefixIconSearch">
+          <nz-input-group style="width: 380px;height: 40px;" nzSearch [nzPrefix]="prefixIconSearch">
             <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
               [placeholder]="'app.payment.searchPlaceHolder' | i18n" />
           </nz-input-group>

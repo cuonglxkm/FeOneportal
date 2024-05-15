@@ -1,17 +1,18 @@
 <page-header [breadcrumb]="breadcrumb"
              [title]="'IAM Dashboard'">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Home</a>
+        <a [routerLink]="['/']" class="link_breadcrumb">{{"app.iam-dashboard.home"| i18n}}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">IAM</a>
+        <a [routerLink]="['/']" class="link_breadcrumb">IAM</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="'/app-smart-cloud/iam/dashboard'">IAM Dashboard</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
 <!--  <ng-template #action>-->
 <!--    <div class="alain-custom-action text-right">-->
@@ -23,7 +24,7 @@
 </page-header>
 <nz-content>
   <nz-card [nzLoading]="loading">
-    <h3>{{"app.iam-dashboard.generalInformation" | i18n}}</h3>
+    <h3 class="text-card-header">{{"app.iam-dashboard.generalInformation" | i18n}}</h3>
     <nz-table #rowSelectionTable
               [nzData]="listOfData"
               [nzShowPagination]="false">
@@ -41,16 +42,16 @@
       </tbody>
     </nz-table>
   </nz-card>
-  <nz-card [nzTitle]="'app.iam-dashboard.learnAbout' | i18n">
+  <nz-card  [nzTitle]="'app.iam-dashboard.learnAbout' | i18n">
     <div style="line-height: 28px">
-      <div>
-        <a>{{"app.iam-dashboard.conceptIAM" | i18n}}</a>
+      <div class=" link-dashboard">
+        <a class="label-fontsize">{{"app.iam-dashboard.conceptIAM" | i18n}}</a>
       </div>
-      <div>
-        <a>{{"app.iam-dashboard.conceptPolicy" | i18n}}</a>
+      <div class=" link-dashboard">
+        <a class="label-fontsize ">{{"app.iam-dashboard.conceptPolicy" | i18n}}</a>
       </div>
-      <div>
-        <a>{{"app.iam-dashboard.createGroup" | i18n}}</a>
+      <div class=" link-dashboard">
+        <a class="label-fontsize ">{{"app.iam-dashboard.createGroup" | i18n}}</a>
       </div>
     </div>
 

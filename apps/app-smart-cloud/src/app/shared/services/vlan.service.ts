@@ -27,6 +27,14 @@ export class VlanService extends BaseService {
     super();
   }
 
+  private reloadSubject = new BehaviorSubject<boolean>(false);
+
+  reloadObservable = this.reloadSubject.asObservable();
+
+  triggerReload() {
+    this.reloadSubject.next(true);
+  }
+
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'text',

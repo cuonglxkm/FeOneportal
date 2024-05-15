@@ -1,7 +1,7 @@
 <div class="add-btn mb-5">
   <one-portal-create-outbound
     nz-tooltip
-    nzTooltipTitle="Thêm mới Outbound"
+    [nzTooltipTitle]="'app.cluster.new-outbound' | i18n"
     nzTooltipPlacement="bottom"
     [disabled]="!securityGroupId"
     [condition]="{
@@ -18,14 +18,14 @@
   (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoadingOutbound">
   <thead>
     <tr>
-      <th>STT</th>
+      <th>{{ 'app.order.ordinalNumber' | i18n }}</th>
       <th>IP Version</th>
       <th>Protocol</th>
-      <th>PortRange</th>
+      <th>Port Range</th>
       <th>Remote IP Prefix</th>
       <th>Remote Security Group</th>
-      <th>Mô tả</th>
-      <th>Thao tác</th>
+      <th>{{ 'app.cluster.description' | i18n }}</th>
+      <th>{{ 'app.text.operation' | i18n }}</th>
     </tr>
   </thead>
   <tbody>
@@ -43,7 +43,7 @@
             <div class="center-align">
               <one-portal-delete-outbound
                 nz-tooltip
-                nzTooltipTitle="Xóa Outbound"
+                [nzTooltipTitle]="'app.cluster.delete-outbound' | i18n"
                 nzTooltipPlacement="top"
                 [idOutbound]="item.id"
                 [nameRule]="item.remoteIp"
@@ -53,7 +53,7 @@
             </div>
           </ng-container>
           <ng-template #cannotDelRuleTpl>
-            <div nz-tooltip="Không thể xóa rule này" class="lock-rule">
+            <div [nz-tooltip]="'app.cluster.lock-rule' | i18n" class="lock-rule">
               <img src="assets/imgs/trash1.svg" alt="" style="margin-top: 0; width: fit-content;" />
             </div>
           </ng-template>

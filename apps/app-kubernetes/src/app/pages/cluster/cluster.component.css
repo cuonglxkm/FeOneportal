@@ -334,3 +334,9 @@ label, span {
   border: 1px solid #B2DEFF;
   border-radius: 8px;
 }
+
+.summary-info {
+  text-align: right;
+  font-weight: 600;
+  font-size: 16px;
+}

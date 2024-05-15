@@ -4,7 +4,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { FormSearchSubnet, Subnet } from '../../../../shared/models/vlan.model';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
-
+import { debounceTime } from 'rxjs';
+import { Location } from '@angular/common'
 @Component({
   selector: 'one-portal-detail-subnet',
   templateUrl: './detail-subnet.component.html',
@@ -29,7 +30,8 @@ export class DetailSubnetComponent implements OnInit, OnChanges {
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private vlanService: VlanService) {
+              private vlanService: VlanService,
+              private location: Location) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -72,11 +74,14 @@ export class DetailSubnetComponent implements OnInit, OnChanges {
       this.responseSubnet = null;
       this.isLoading = false;
     });
+
+
   }
 
   getVlanByNetworkId() {
     this.vlanService.getVlanByNetworkId(this.idNetwork).subscribe(data => {
       this.networkName = data.name;
+      this.networkCloudId = data.cloudId
     });
   }
 
@@ -89,8 +94,17 @@ export class DetailSubnetComponent implements OnInit, OnChanges {
   }
 
   handleOkDeleteSubnet() {
-    this.getSubnetByNetwork();
+    setTimeout(() => {
+      this.vlanService.triggerReload();
+      this.getSubnetByNetwork();
+      this.getVlanByNetworkId();
+    }, 2000)
+    // setTimeout(() => {this.getSubnetByNetwork();}, 2000)
+    // window.location.reload()
   }
+
+  networkCloudId: string = ''
+
 
   ngOnInit() {
     setTimeout(() => {this.getVlanByNetworkId();}, 2000)
