@@ -5,21 +5,21 @@
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">{{'app.breadcrumb.home'|i18n}}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service'|i18n}}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.block.storage'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'volume.title.breadcrumb.backup.volume'|i18n}}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.list.backup.volume'|i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" (userChanged)="projectChange($event)"></project-select-dropdown>
+      <project-select-dropdown [regionId]="regionId"
+                               (valueChanged)="projectChange($event)"
+                               (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
   <ng-template #content>
     <div *ngIf="!isBegin" nz-row class="mb-md" style="display: flex; flex-direction: column;">
-      <!--    <h2 style="margin-bottom: 30px;">Danh sách Backup volume</h2>-->
       <div style="display: flex; align-items: center;">
         <h4 style="display: inline-block; margin-right: 20px;">Trạng thái:</h4>
         <nz-select nzPlaceHolder="Tất cả trạng thái" [(ngModel)]="selectedStatus"
@@ -74,7 +74,7 @@
           <td (click)="detailKey(data)">{{ data.volumeName }}</td>
           <td (click)="detailKey(data)">{{ data.vpcName }}</td>
           <td (click)="detailKey(data)">{{ data.size }}GB</td>
-          <td (click)="detailKey(data)">{{ data.backupPackgeName }}</td>
+          <td (click)="detailKey(data)">{{ data.backupPackageName }}</td>
           <td (click)="detailKey(data)">{{ data.creationDate | date:'HH:mm:ss - dd/MM/yyyy' }}</td>
           <td (click)="detailKey(data)">{{ data.expirationDate | date:'dd/MM/yyyy' }}</td>
           <td (click)="detailKey(data)" [ngStyle]="{'color': getStatusColor(data.status)}">
