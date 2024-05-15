@@ -6,7 +6,7 @@
           Outbound
         </div>
         <one-portal-create-outbound
-          nz-tooltip nzTooltipTitle="Thêm mới Outbound" nzTooltipPlacement="bottom"
+          nz-tooltip nzTooltipTitle="{{ 'app.cluster.new-outbound' | i18n }}" nzTooltipPlacement="bottom"
           [disabled]="!securityGroupId"
           [condition]="{
                       userId: condition.userId,
@@ -35,7 +35,7 @@
             <th nzAlign="center" class="text-th" nzBreakWord>Protocol</th>
             <th nzAlign="center" class="text-th" nzBreakWord>Port Range</th>
             <th nzAlign="center" class="text-th" nzBreakWord>Remote IP Prefix</th>
-            <th nzAlign="center" class="text-th" style="width: 216px;" nzBreakWord>Thao tác</th>
+            <th nzAlign="center" class="text-th" style="width: 216px;" nzBreakWord>{{ 'app.action-history.operation' | i18n }}</th>
           </tr>
           </thead>
           <tbody>

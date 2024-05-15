@@ -111,7 +111,7 @@ export class ListLoadBalancerComponent implements OnInit{
   }
 
   navigateToCreateListener(idLb: number) {
-    this.router.navigate(['load-balancer/' + idLb + '/listener/create'])
+    this.router.navigate(['/app-smart-cloud/load-balancer/' + idLb + '/listener/create'])
   }
 
   ngOnInit(): void {
