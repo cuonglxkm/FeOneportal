@@ -96,9 +96,11 @@
                       </div>
                     </div>
                     <div class="item-body">
-                      {{item.broker}} Broker - {{item.cpu}} VCPU / <br>
-                      {{item.ram}}GB RAM / <br>
-                      {{item.storage}}GB SDD
+                      <div class="item-broker">{{item.broker}} Broker</div>
+                      <div>
+                        {{item.cpu}} VCPU/ {{item.ram}}GB RAM/ <br>
+                        {{item.storage}}GB Storage/ Broker
+                      </div> 
                     </div>
                   </div>
                 </div>
@@ -122,7 +124,7 @@
 
               <div nz-col [nzSpan]="5" class="config-suffix">
                 <nz-form-item>
-                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU (<span class="text-red">*</span>)</nz-form-label>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU / Broker (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="cpuErrTpl">
                     <nz-input-number-group nzSuffix="vCpu" nzSize="large">
                       <nz-input-number formControlName="vCpu" id="vCpu" autofocus [nzMin]="0"
@@ -146,7 +148,7 @@
 
               <div nz-col [nzSpan]="5" class="config-suffix">
                 <nz-form-item>
-                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>RAM (<span class="text-red">*</span>)</nz-form-label>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>RAM / Broker(<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="ramErrTpl">
                     <nz-input-number-group nzSuffix="GB" nzSize="large">
                       <nz-input-number formControlName="ram" id="ram" autofocus [nzMin]="0"
@@ -170,7 +172,7 @@
   
               <div nz-col [nzSpan]="5" class="config-suffix">
                 <nz-form-item>
-                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Storage (<span class="text-red">*</span>)</nz-form-label>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Storage / Broker (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="storageErrorTpl">
                     <nz-input-number-group nzSuffix="GB" nzSize="large">
                       <nz-input-number formControlName="storage" id="storage" autofocus [nzMin]="0"
@@ -191,8 +193,6 @@
                   </ng-template>
                 </nz-form-item>
               </div>
-  
-              
             </div>
           </nz-tab>
         </nz-tabset>

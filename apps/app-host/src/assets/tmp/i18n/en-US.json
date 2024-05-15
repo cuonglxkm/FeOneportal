@@ -1451,6 +1451,7 @@
   "app.status.error": "Error",
 
   "validation.service.name-required": "The service name cannot be empty",
+  "validation.service.name-not-correct": "The service name is not correct",
   "validation.service.name-length": "The service name should be between 5 and 50 characters",
   "validation.service.name-pattern": "The service name can only include lowercase letters, uppercase letters, numbers, and the characters _ and -",
   "validation.service.version-required": "Version cannot be empty",

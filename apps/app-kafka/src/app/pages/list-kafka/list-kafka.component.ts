@@ -185,10 +185,10 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     this.isInitModal = false;
     if (this.serviceNameDelete.length == 0) {
       this.isErrorCheckDelete = true;
-      this.msgError = 'Vui lòng nhập tên dịch vụ';
+      this.msgError = this.i18n.fanyi('validation.service.name-required');
     } else if (this.serviceNameDelete != this.currentKafka.serviceName) {
       this.isErrorCheckDelete = true;
-      this.msgError = 'Tên dịch vụ nhập chưa đúng';
+      this.msgError = this.i18n.fanyi('validation.service.name-not-correct');
     } else {
       this.isErrorCheckDelete = false;
       this.msgError = '';

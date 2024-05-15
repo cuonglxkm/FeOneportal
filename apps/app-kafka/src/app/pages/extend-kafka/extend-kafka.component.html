@@ -43,17 +43,6 @@
                                         </ng-container>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td class="config-label">{{'app.configuration.package' | i18n}}:</td>
-                                    <td>
-                                        <ng-container *ngIf="itemDetail.offerName; else custom">{{ itemDetail.offerName }}</ng-container>
-                                        <ng-template #custom> {{'app.service.custom' | i18n}}</ng-template>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="config-label">{{'app.kafka.broker' | i18n}}:</td>
-                                    <td>3</td>
-                                </tr>
                             </tbody>
                         </nz-table>
                     </div>
@@ -65,16 +54,11 @@
                                     <td>{{itemDetail.version}}</td>
                                 </tr>
                                 <tr>
-                                    <td class="config-label">{{'app.payment.orderCode' | i18n}}:</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="config-label">{{'app.config' | i18n}}:</td>
-                                    <td>{{ itemDetail.cpu }} vCPU/ {{ itemDetail.ram}} GB RAM/ {{ itemDetail.storage }} GB Storage</td>
-                                </tr>
-                                <tr>
-                                    <td class="config-label">{{'app.service.description' | i18n}}:</td>
-                                    <td>{{itemDetail.description}}</td>
+                                    <td class="config-label">{{'app.configuration.package' | i18n}}:</td>
+                                    <td>
+                                        <ng-container *ngIf="itemDetail.offerName; else custom">{{ itemDetail.offerName }}</ng-container>
+                                        <ng-template #custom> {{'app.service.custom' | i18n}}</ng-template>
+                                    </td>
                                 </tr>
                             </tbody>
                         </nz-table>
@@ -201,6 +185,7 @@
                             <ng-template #custom> {{'app.service.custom' | i18n}}</ng-template>
                         </div>
                         <div class="label-price">
+                            3 Broker<br>
                             {{ itemDetail.cpu }} vCPU<br>
                             {{ itemDetail.ram}} GB RAM<br>
                             {{ itemDetail.storage }} GB Storage

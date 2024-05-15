@@ -136,7 +136,7 @@
               <input  nzSize="large" type="text" style="border-radius: 8px;"
               nz-input [(ngModel)]="serviceNameDelete" (ngModelChange)="checkServiceNameDel()" [placeholder]="'app.kafka.name-placeholder' | i18n" />
             </nz-input-group>
-            <!-- <div class="err-msg">{{msgError}}</div> -->
+            <div class="err-msg">{{msgError}}</div>
             <ng-template #prefixTemplate >
               <span nz-icon *ngIf="isErrorCheckDelete" style="font-size: 20px;" nzType="exclamation-circle" nzTheme="twotone" [nzTwotoneColor]="'#ff4d4f'"></span>
               <span nz-icon *ngIf="!isErrorCheckDelete && !isInitModal" style="font-size: 20px;" nzType="check-circle" nzTheme="twotone" [nzTwotoneColor]="'#52c41a'"></span>
