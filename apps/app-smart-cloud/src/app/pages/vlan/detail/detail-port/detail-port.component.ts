@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { debounceTime, Subscription } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-detail-port',
@@ -32,7 +33,8 @@ export class DetailPortComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private vlanService: VlanService) {
+              private vlanService: VlanService,
+              private notification: NzNotificationService) {
     this.subscription = this.vlanService.reloadObservable.subscribe(reload => {
       if (reload) {
         setTimeout(() => {
@@ -80,6 +82,7 @@ export class DetailPortComponent implements OnInit, OnDestroy {
       }, error => {
         this.responsePort = null;
         this.isLoading = false;
+        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
       });
   }
 
