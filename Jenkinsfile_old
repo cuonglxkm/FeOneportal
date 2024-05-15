@@ -9,8 +9,8 @@ pipeline {
     environment {
         registry = "registry.onsmartcloud.com"
         registryCredential = "cloud-harbor-id"
-        k8sCredential = "k8s-cred"
-        ENV = "dev"
+        k8sCredential = "k8s-oneportal-stag"
+        ENV = "stag"
     }
     stages {
 
