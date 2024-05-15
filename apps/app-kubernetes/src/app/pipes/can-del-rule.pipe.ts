@@ -13,17 +13,21 @@ export class CanDelRulePipe implements PipeTransform {
     const protocol = rule.protocol?.toLowerCase();
     const remoteGroupId = rule.remoteGroupId;
     const securityGroupId = rule.securityGroupId;
+    const ipVersion = rule.etherType;
     const LOCK_RULE = KubernetesConstant.LOCK_RULE;
+    const IPv4 = KubernetesConstant.IPv4;
 
     switch(direction) {
       case 'ingress':
-        if (portRange == LOCK_RULE && protocol == LOCK_RULE && remoteGroupId == securityGroupId) {
+        if (portRange == LOCK_RULE && protocol == LOCK_RULE
+            && remoteGroupId == securityGroupId && ipVersion == IPv4) {
           return false;
         }
         return true;
 
       case 'egress':
-        if (portRange == LOCK_RULE && protocol == LOCK_RULE && remoteGroupId == null) {
+        if (portRange == LOCK_RULE && protocol == LOCK_RULE
+            && remoteGroupId == null && ipVersion == IPv4) {
           return false;
         }
         return true;

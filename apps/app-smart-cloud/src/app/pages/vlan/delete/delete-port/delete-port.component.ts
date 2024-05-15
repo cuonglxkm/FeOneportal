@@ -30,6 +30,14 @@ export class DeletePortComponent {
               private vlanService: VlanService) {
   }
 
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.handleOkDeletePort();
+    }
+  }
+
+
   showModalDeletePort() {
     this.isVisibleDeletePort = true
     this.isLoadingDeletePort = false

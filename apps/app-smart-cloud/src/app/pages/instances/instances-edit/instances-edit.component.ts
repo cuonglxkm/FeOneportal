@@ -82,7 +82,6 @@ export class InstancesEditComponent implements OnInit {
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
   configGPU: ConfigGPU = new ConfigGPU();
-  isConfigPackage: boolean = true;
   cardHeight: string = '160px';
 
   public carouselTileConfig: NguCarouselConfig = {
@@ -361,6 +360,8 @@ export class InstancesEditComponent implements OnInit {
 
   checkPermission: boolean = false;
   listSecurityGroupModel: SecurityGroupModel[] = [];
+  isConfigPackageAtInitial: boolean = true;
+  isConfigGpuAtInitial: boolean = false;
   getCurrentInfoInstance(instanceId: number): void {
     this.dataService.getById(instanceId, true).subscribe({
       next: (data: any) => {
@@ -371,8 +372,13 @@ export class InstancesEditComponent implements OnInit {
           this.instancesModel.flavorId == 0 ||
           this.instancesModel.flavorId == null
         ) {
-          this.isConfigPackage = false;
+          this.isConfigPackageAtInitial = false;
           this.isCustomconfig = true;
+        }
+        if (this.instancesModel.gpuCount != 0) {
+          this.isConfigPackageAtInitial = false;
+          this.isConfigGpuAtInitial = true;
+          this.isGpuConfig = true;
         }
         this.cdr.detectChanges();
         this.selectedElementFlavor = this.instancesModel.flavorId;
@@ -827,6 +833,17 @@ export class InstancesEditComponent implements OnInit {
       this.notification.error(
         '',
         this.i18n.fanyi('app.notify.optional.configuration.invalid')
+      );
+      return;
+    }
+    if (
+      this.isGpuConfig == true &&
+      (this.configGPU.GPU == 0 || this.configGPU.gpuOfferId == 0) &&
+      this.instancesModel.gpuCount == 0
+    ) {
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.gpu.configuration.invalid')
       );
       return;
     }

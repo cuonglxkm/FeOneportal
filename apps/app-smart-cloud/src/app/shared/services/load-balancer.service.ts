@@ -447,4 +447,8 @@ export class LoadBalancerService extends BaseService {
     })
   }
 
+  getPortByInstance(instanceId: number, region: number): Observable<any> {
+    let url_ = `/instances/port?instanceId=${instanceId}&region=${region}`;
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+  }
 }

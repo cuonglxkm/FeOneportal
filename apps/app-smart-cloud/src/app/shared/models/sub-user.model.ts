@@ -16,12 +16,14 @@ export class FormUpdateSubUser {
   uid: string
   subuser: string
   access: string
+  actorEmail: string
 }
 
 export class FormDeleteSubUser {
   uid: string
   subuser: string
   purge_data: true
+  actorEmail: string
 }
 
 export class FormCreateSubUser {

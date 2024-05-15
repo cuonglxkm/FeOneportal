@@ -1,24 +1,24 @@
 <img src="assets/imgs/add.svg"
      nz-popover
-     [nzPopoverContent]="'Gắn Security Group'"
+     nzPopoverContent="{{'sg.title.attach' | i18n}}"
      nzPopoverPlacement="bottom"
      (click)="showModal()"
      style="cursor: pointer;"/>
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()">
   <div *nzModalTitle>
-    <p class="text-modal-title">Gắn Security Group</p>
+    <p class="text-modal-title">{{'sg.title.attach' | i18n}}</p>
   </div>
   <div *nzModalContent>
-    <p class="text-label">Quý khách có thực sự muốn gắn Security Group này vào máy ảo?</p>
+    <p class="text-label">{{'sg.confirm.attach' | i18n}}</p>
   </div>
   <div *nzModalFooter>
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy</button>
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{'app.button.cancel' | i18n}}</button>
     <button nz-button nzType="primary" (click)="handleOk()"
             [nzLoading]="isLoading"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm' | i18n}}
     </button>
   </div>
 </nz-modal>

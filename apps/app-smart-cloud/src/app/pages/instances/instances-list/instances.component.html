@@ -480,7 +480,7 @@
             <nz-form-control *ngIf="listPort.length != 0">
               <nz-select
                 [nzShowSearch]="true"
-                [(ngModel)]="port"
+                [(ngModel)]="instanceAction.portId"
                 [ngModelOptions]="{ standalone: true }"
                 nzSize="large"
               >
@@ -541,7 +541,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleGoKhoiVLAN"
-  nzTitle="Gỡ khỏi VLAN"
+  [nzTitle]="'app.detach.from.vlan' | i18n"
   (nzOnCancel)="handleCancelGoKhoiVLAN()"
 >
   <ng-container *nzModalContent>

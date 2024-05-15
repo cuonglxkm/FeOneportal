@@ -26,7 +26,10 @@ import {
   MemberUpdateOfPool,
   PoolDetail,
 } from 'src/app/shared/models/load-balancer.model';
+import { InstanceService } from 'src/app/shared/services/instance.service';
 import { LoadBalancerService } from 'src/app/shared/services/load-balancer.service';
+import { InstancesModel } from '../../instances/instances.model';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-pool-detail',
@@ -67,6 +70,7 @@ export class PoolDetailComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private service: LoadBalancerService,
+    private instanceService: InstanceService,
     private cdr: ChangeDetectorRef,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -88,6 +92,7 @@ export class PoolDetailComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getListInstance();
     this.service.getPoolDetail(this.id, this.idLB).subscribe({
       next: (data: any) => {
         this.poolDetail = data;
@@ -135,6 +140,33 @@ export class PoolDetailComponent implements OnInit {
       });
   }
 
+  loadingMember: boolean = true;
+  listMember: MemberOfPool[] = [];
+  getListMember() {
+    this.listMember = [];
+    this.loadingMember = true;
+    this.service
+      .getListMember(this.id, this.regionId, this.projectId)
+      .pipe(
+        finalize(() => {
+          this.loadingMember = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data: any) => {
+          this.listMember = data;
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('app.notification.get.list.member.fail')
+          );
+        },
+      });
+  }
+
+  //#region Tạo, chỉnh sửa Health monitor
   listCheckedMethod: any[] = [
     { displayName: 'HTTP' },
     { displayName: 'PING' },
@@ -281,7 +313,9 @@ export class PoolDetailComponent implements OnInit {
   handleCancelHealth() {
     this.isVisibleHealth = false;
   }
+  //#endregion
 
+  //#region Xóa Health monitor hoặc Member
   isVisibleDelete: boolean = false;
   titleDelete: string = '';
   typeDelete: string;
@@ -353,11 +387,14 @@ export class PoolDetailComponent implements OnInit {
           )
           .subscribe({
             next: (data: any) => {
-              this.getListMember();
               this.notification.success(
                 '',
                 this.i18n.fanyi('app.notification.delete.member.success')
               );
+              this.listMember = this.listMember.filter(
+                (e) => e.id != this.dataDelete.id
+              );
+              this.cdr.detectChanges();
             },
             error: (e) => {
               this.isVisibleDelete = false;
@@ -383,40 +420,54 @@ export class PoolDetailComponent implements OnInit {
     this.checkInputConfirm = false;
     this.checkInputEmpty = false;
   }
+  //#endregion
 
-  loadingMember: boolean = true;
-  listMember: MemberOfPool[] = [];
-  getListMember() {
-    this.loadingMember = true;
-    this.service
-      .getListMember(this.id, this.regionId, this.projectId)
-      .pipe(
-        finalize(() => {
-          this.loadingMember = false;
-          this.cdr.detectChanges();
-        })
+  //#region Tạo, chỉnh sửa member
+  instanceList: InstancesModel[] = [];
+  getListInstance() {
+    this.instanceService
+      .search(
+        1,
+        9999,
+        this.regionId,
+        this.projectId,
+        '',
+        '',
+        true,
+        this.tokenService.get()?.userId
       )
       .subscribe({
-        next: (data: any) => {
-          this.listMember = data;
+        next: (data) => {
+          this.instanceList = data.records;
+          this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(
             e.statusText,
-            this.i18n.fanyi('app.notification.get.list.member.fail')
+            this.i18n.fanyi('app.notify.get.list.instance')
           );
         },
       });
+  }
+
+  listIPPrivate: string[] = [];
+  onChangeInstance(name: string) {
+    this.memberForm.address = null;
+    this.listIPPrivate = [];
+    let instanceSelected = this.instanceList.filter((e) => e.name == name)[0];
+    if (instanceSelected) {
+      this.listIPPrivate = instanceSelected.ipPrivate.split(', ');
+    }
+    console.log('list ip cho vm', this.listIPPrivate);
   }
 
   isVisibleMember: boolean = false;
   titleModalMember: string;
   memberForm: any;
   formMember: FormGroup;
-  ipAddress: string;
-  protocol_port: number;
   modalMember(checkCreate: boolean, data: MemberOfPool) {
     if (checkCreate) {
+      this.isCreate = true;
       this.formMember = new FormGroup({
         name: new FormControl('', {
           validators: [Validators.required],
@@ -432,19 +483,14 @@ export class PoolDetailComponent implements OnInit {
         }),
       });
       this.memberForm = new MemberCreateOfPool();
-      this.memberForm.address = this.ipAddress;
-      this.memberForm.protocol_port = this.protocol_port;
       this.memberForm.poolId = this.id;
       this.memberForm.subnetId = this.loadBalancer.subnetId;
       this.memberForm.customerId = this.tokenService.get()?.userId;
       this.memberForm.regionId = this.regionId;
-      this.memberForm.vpcId = this.projectId;
-      this.isCreate = true;
+      this.memberForm.vpcId = this.projectId;    
       this.titleModalMember = this.i18n.fanyi('app.member.create');
-      setTimeout(() => {
-        this.memberInput.nativeElement.focus();
-      }, 300);
     } else {
+      this.isCreate = false;
       this.formMember = new FormGroup({
         name: new FormControl('', {
           validators: [
@@ -455,7 +501,7 @@ export class PoolDetailComponent implements OnInit {
         ipPrivate: new FormControl('', {
           validators: [],
         }),
-        port: new FormControl('', {
+        port: new FormControl({ value: '', disabled: true }, {
           validators: [],
         }),
         weight: new FormControl('', {
@@ -463,7 +509,7 @@ export class PoolDetailComponent implements OnInit {
         }),
       });
       this.memberForm = data;
-      this.isCreate = false;
+      this.memberForm.protocol_port = data.port;
       this.titleModalMember = this.i18n.fanyi('app.member.edit');
     }
     this.isVisibleMember = true;
@@ -486,7 +532,10 @@ export class PoolDetailComponent implements OnInit {
               '',
               this.i18n.fanyi('app.notification.create.member.success')
             );
-            this.getListMember();
+            setTimeout(() => {
+              this.getListMember();
+              this.getListMember();
+            }, 1000);
           },
           error: (e) => {
             this.notification.error(
@@ -520,7 +569,10 @@ export class PoolDetailComponent implements OnInit {
               '',
               this.i18n.fanyi('app.notification.edit.member.success')
             );
-            this.getListMember();
+            setTimeout(() => {
+              this.getListMember();
+              this.getListMember();
+            }, 1000);
           },
           error: (e) => {
             this.notification.error(
@@ -531,8 +583,17 @@ export class PoolDetailComponent implements OnInit {
         });
     }
   }
+  //#endregion
 
   handleCancelMember() {
     this.isVisibleMember = false;
+  }
+
+  onRegionChange(region: RegionModel) {
+    this.router.navigate(['/app-smart-cloud/load-balancer/list']);
+  }
+
+  userChangeProject() {
+    this.router.navigate(['/app-smart-cloud/load-balancer/list']);
   }
 }

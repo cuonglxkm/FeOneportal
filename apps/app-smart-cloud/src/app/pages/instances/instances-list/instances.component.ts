@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { concatMap, finalize, takeWhile } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import {
   InstanceAction,
@@ -26,7 +26,7 @@ import {
   RegionModel,
 } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, from } from 'rxjs';
 import {
   FormSearchNetwork,
   NetWorkModel,
@@ -174,6 +174,7 @@ export class InstancesComponent implements OnInit {
     this.projectId = project.id;
     this.typeVpc = project?.type;
     this.getDataList();
+    this.getListNetwork();
   }
 
   doSearch() {
@@ -290,7 +291,6 @@ export class InstancesComponent implements OnInit {
   }
 
   listPort: Port[] = [];
-  port: string = '';
   portLoading: boolean;
   getListPort(networkCloudId: string) {
     this.portLoading = true;
@@ -299,7 +299,7 @@ export class InstancesComponent implements OnInit {
       .getListAllPortByNetwork(networkCloudId, this.region)
       .subscribe({
         next: (data) => {
-          this.listPort = data;
+          this.listPort = data.filter((e) => e.attachedDeviceId == '');
           this.portLoading = false;
         },
         error: (e) => {
@@ -312,7 +312,6 @@ export class InstancesComponent implements OnInit {
   }
 
   changeVlanNetwork(networkCloudId: string) {
-    this.listSubnet = [];
     this.instanceAction.ipAddress = null;
     this.getVlanSubnets(networkCloudId);
     this.getListPort(networkCloudId);
@@ -368,6 +367,7 @@ export class InstancesComponent implements OnInit {
     this.getVlanSubnets(this.vlanCloudId);
     this.instanceAction.id = id;
     this.instanceAction.command = 'attachinterface';
+    this.instanceAction.customerId = this.userId;
     this.isVisibleGanVLAN = true;
   }
 
@@ -383,7 +383,8 @@ export class InstancesComponent implements OnInit {
           '',
           this.i18n.fanyi('app.notify.attach.vlan.success')
         );
-        this.reloadTable();
+        this.getDataList();
+        this.getDataList();
       },
       error: (e) => {
         this.notification.error(
@@ -412,6 +413,7 @@ export class InstancesComponent implements OnInit {
     this.instanceAction = new InstanceAction();
     this.instanceAction.id = id;
     this.instanceAction.command = 'detachinterface';
+    this.instanceAction.customerId = this.userId;
     this.getListIpPrivate(id);
     this.isVisibleGoKhoiVLAN = true;
   }
@@ -428,7 +430,8 @@ export class InstancesComponent implements OnInit {
           '',
           this.i18n.fanyi('app.notify.detach.vlan.success')
         );
-        this.reloadTable();
+        this.getDataList();
+        this.getDataList();
       },
       error: (e) => {
         this.notification.error(

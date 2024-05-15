@@ -111,9 +111,9 @@
 <!--Gắn-->
 <nz-modal [(nzVisible)]="isVisibleMounted" nzTitle="{{'app.attach' | i18n}} IP Public" (nzOnCancel)="handleCancel()" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
-    <h4>{{'app.instances' | i18n}}</h4>
+    <div class="text-label">{{'app.instances' | i18n}}</div>
     <nz-select [nzLoading]="loadingAtt" [nzDisabled]="disableAtt" [(ngModel)]="instanceSelected" style="width: 100%"
-               nzPlaceHolder="{{'app.ip.public.select.instance.dropdown' | i18n}}">
+               nzPlaceHolder="{{'app.ip.public.select.instance.dropdown' | i18n}}" nzSize="large">
       <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.id"/>
     </nz-select>
     <div *ngIf="isSelected" style="color: red;">{{'app.ip.public.select.instance' | i18n}}</div>

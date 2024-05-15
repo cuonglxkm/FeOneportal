@@ -133,6 +133,8 @@ export class VolumeComponent implements OnInit {
       }, error => {
         this.isLoading = false;
         this.response = null;
+        console.log(error);
+        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
       });
   }
 
@@ -140,16 +142,6 @@ export class VolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volume/create']);
   }
 
-  // navigateToCreateBackupVolume(id: number, startDate: Date, endDate: Date, nameVolume: string) {
-  //   this.router.navigate(['/app-smart-cloud/backup-volume/create'], {
-  //     queryParams: {
-  //       idVolume: id,
-  //       startDate: startDate,
-  //       endDate: endDate,
-  //       nameVolume: nameVolume
-  //     }
-  //   });
-  // }
 
   navigateToCreateVolumeVPC() {
     this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
@@ -210,8 +202,7 @@ export class VolumeComponent implements OnInit {
     if (!this.region && !this.project) {
       this.router.navigate(['/exception/500']);
     }
-    // this.getListVm()
-    // this.getListVolume(true)
+
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
     }
