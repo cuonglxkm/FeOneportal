@@ -467,6 +467,7 @@ export class PoolDetailComponent implements OnInit {
   formMember: FormGroup;
   modalMember(checkCreate: boolean, data: MemberOfPool) {
     if (checkCreate) {
+      this.isCreate = true;
       this.formMember = new FormGroup({
         name: new FormControl('', {
           validators: [Validators.required],
@@ -486,10 +487,10 @@ export class PoolDetailComponent implements OnInit {
       this.memberForm.subnetId = this.loadBalancer.subnetId;
       this.memberForm.customerId = this.tokenService.get()?.userId;
       this.memberForm.regionId = this.regionId;
-      this.memberForm.vpcId = this.projectId;
-      this.isCreate = true;
+      this.memberForm.vpcId = this.projectId;    
       this.titleModalMember = this.i18n.fanyi('app.member.create');
     } else {
+      this.isCreate = false;
       this.formMember = new FormGroup({
         name: new FormControl('', {
           validators: [
@@ -508,7 +509,7 @@ export class PoolDetailComponent implements OnInit {
         }),
       });
       this.memberForm = data;
-      this.isCreate = false;
+      this.memberForm.protocol_port = data.port;
       this.titleModalMember = this.i18n.fanyi('app.member.edit');
     }
     this.isVisibleMember = true;
@@ -532,6 +533,7 @@ export class PoolDetailComponent implements OnInit {
               this.i18n.fanyi('app.notification.create.member.success')
             );
             setTimeout(() => {
+              this.getListMember();
               this.getListMember();
             }, 1000);
           },
@@ -568,6 +570,7 @@ export class PoolDetailComponent implements OnInit {
               this.i18n.fanyi('app.notification.edit.member.success')
             );
             setTimeout(() => {
+              this.getListMember();
               this.getListMember();
             }, 1000);
           },
