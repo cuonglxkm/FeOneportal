@@ -246,21 +246,18 @@ export class CreateVolumeVpcComponent implements OnInit {
     }
   }
 
-  onChangeStatusEncrypt() {
-    this.enableEncrypt = true;
-    this.enableMultiAttach = false;
-    if (this.enableEncrypt) {
-      this.validateForm.controls.isEncryption.setValue(this.enableEncrypt);
-      this.validateForm.controls.isMultiAttach.setValue(this.enableMultiAttach);
+  onChangeStatusEncrypt(value) {
+    console.log('value change encrypt', value);
+    if(value == true) {
+      this.validateForm.controls.isEncryption.setValue(true)
+      this.validateForm.controls.isMultiAttach.setValue(false)
     }
   }
 
-  onChangeStatusMultiAttach() {
-    this.enableEncrypt = false;
-    this.enableMultiAttach = true;
-    if (this.enableMultiAttach) {
-      this.validateForm.controls.isEncryption.setValue(this.enableEncrypt);
-      this.validateForm.controls.isMultiAttach.setValue(this.enableMultiAttach);
+  onChangeStatusMultiAttach(value) {
+    if(value == true) {
+      this.validateForm.controls.isMultiAttach.setValue(true)
+      this.validateForm.controls.isEncryption.setValue(false)
     }
   }
 
@@ -330,9 +327,10 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   getListInstance() {
     this.instanceService.search(1, 9999, this.region, this.project,
-      '', '', false, this.tokenService.get()?.userId)
+      '', '', true, this.tokenService.get()?.userId)
       .subscribe(data => {
         this.listInstances = data.records;
+        this.listInstances = data.records.filter(item => item.taskState === 'ACTIVE' && item.status === 'KHOITAO');
         this.cdr.detectChanges();
       });
   }
