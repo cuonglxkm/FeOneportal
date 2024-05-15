@@ -68,7 +68,7 @@
 
             <nz-card class="border-card">
                 <h3>{{'kafka.overview.enpoint' | i18n}}</h3>
-                <div class="table-info" nz-row>
+                <div class="table-info" nz-row *ngIf="infoConnection">
                     <div nz-col [nzSpan]="12">
                         <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']" style="width: 98%;">
                             <tbody>

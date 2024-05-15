@@ -124,7 +124,7 @@ export class ExtendKafkaComponent implements OnInit {
             this.setExpectExpiryDate();
 
             if (this.itemDetail) {
-              this.getListSubnet(166);
+              this.getListSubnet(this.itemDetail.networkId);
             }
           } else {
             this.notification.error(this.i18n.fanyi('app.status.fail'), res.msg);
@@ -160,7 +160,7 @@ export class ExtendKafkaComponent implements OnInit {
       if (r && r.records) {
         this.listOfSubnets = r.records;
         if (this.listOfSubnets) {
-          const subnet = this.listOfSubnets.find(item => item.subnetCloudId == '2f31df66-2a7f-49a5-b1d8-a1a2484acf67');
+          const subnet = this.listOfSubnets.find(item => item.subnetCloudId == this.itemDetail.subnetCloudId);
           if (subnet != null) {
             this.gatewayIp = subnet.gatewayIp;
             this.subnetAddress = subnet.subnetAddressRequired;
