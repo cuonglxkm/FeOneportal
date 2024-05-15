@@ -500,7 +500,7 @@ export class PoolDetailComponent implements OnInit {
         ipPrivate: new FormControl('', {
           validators: [],
         }),
-        port: new FormControl('', {
+        port: new FormControl({ value: '', disabled: true }, {
           validators: [],
         }),
         weight: new FormControl('', {
