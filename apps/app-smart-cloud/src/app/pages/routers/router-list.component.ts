@@ -40,7 +40,7 @@ export class RouterListComponent implements OnInit {
   dataList: RouterModel[] = [];
   isTrigger: boolean = false;
   currentPage = 1;
-  pageSize = 10;
+  pageSize = 3;
   total = 1;
   loading = false;
   searchGenderList: string[] = [];

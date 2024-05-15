@@ -64,7 +64,10 @@
           {{ item.user }}
         </td>
         <td>{{ item.permission }}</td>
-        <td>{{ item.action }}</td>
+        <td title="{{ item.action }}" style="overflow: hidden;
+        font-weight: normal;
+        white-space: nowrap;
+        text-overflow: ellipsis;" >{{ item.action }}</td>
         <td>
           <a (click)="modalJson(item.sid)">{{ 'app.view.detail' | i18n }}</a>
         </td>
@@ -394,9 +397,9 @@
       formControlName="emailUser"
     >
       <nz-option
-        *ngFor="let p of listUser"
-        [nzValue]="p.cloudId"
-        [nzLabel]="p.name"
+        *ngFor="let p of listSubuser"
+        [nzValue]="p.subUserId"
+        [nzLabel]="p.subUserId"
       />
     </nz-select>
     <div *ngIf="userVnpt" style="margin-bottom: 16px" class="text-label">

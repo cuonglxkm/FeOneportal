@@ -251,7 +251,7 @@ export class BucketPolicyComponent implements OnInit {
   isVisibleUpdate = false;
   bucketPolicyUpdate: bucketPolicyDetail = new bucketPolicyDetail();
   modalUpdate(sid: string) {
-    this.isVisibleCreate = true;
+    this.isVisibleUpdate = true;
     this.getListSubuser();
     this.setActionPermission.clear();
     this.bucketService.getBucketPolicyDetail(sid, this.bucketName).subscribe({
@@ -259,6 +259,11 @@ export class BucketPolicyComponent implements OnInit {
         console.log(data);
         
         this.bucketPolicyUpdate = data;
+
+        this.formEdit.controls.emailUser.setValue(data.subuser);
+        this.formEdit.controls.permission.setValue(data.permission);
+        const actions = data.actions.map(item => item.split(':')[1])
+        this.formEdit.controls.listActionPermission.setValue(actions);
       },
       error: (e) => {
         this.notification.error(
