@@ -126,7 +126,8 @@ export class S3KeyComponent implements OnInit {
     this.isLoadingDelete = true
    this.formDeleteS3Key = {
       access_key: this.key,
-      customerId: this.tokenService.get().userId
+      customerId: this.tokenService.get().userId,
+      actorEmail: ''
     };
     this.service
       .deleteS3key(this.formDeleteS3Key)

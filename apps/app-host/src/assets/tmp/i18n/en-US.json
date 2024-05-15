@@ -1717,6 +1717,8 @@
   "router.validate.cidr.empty": "Destination CIDR cannot be empty.",
   "router.validate.nextHop.empty": "NextHop cannot be empty.",
   "router.validate.nextHop.pattern": "Invalid NextHop format",
+  "router.validate.duplicate.nexthop": "Next hop must not be entered with the same Router Interface IP address. Please check again!",
+  "router.validate.duplicate.cidr": "Destination CIDR and Nexthop already exist. Please check again!",
   "router.validate.cidr.pattern": "Destination CIDR must be in x.x.0.0/16 or x.x.x.0/24",
   "router.validate.ip.fail": "Invalid IP address format.",
   "router.label.cidr": "Destination CIDR",

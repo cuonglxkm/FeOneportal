@@ -40,7 +40,7 @@ export class RouterListComponent implements OnInit {
   dataList: RouterModel[] = [];
   isTrigger: boolean = false;
   currentPage = 1;
-  pageSize = 10;
+  pageSize = 3;
   total = 1;
   loading = false;
   searchGenderList: string[] = [];
@@ -65,7 +65,7 @@ export class RouterListComponent implements OnInit {
   });
 
   formEdit: FormGroup<{
-    name: FormControl<string>
+    name: FormControl<string>,
   }> = this.fb.group({
     name: [
       '',
@@ -238,7 +238,7 @@ export class RouterListComponent implements OnInit {
   isVisibleEdit = false;
   modalEdit(dataRouter: RouterModel) {
     this.isVisibleEdit = true;
-    this.isTrigger = dataRouter.status.toUpperCase() == 'ACTIVE' ? true : false;
+    this.isTrigger = dataRouter.status == 'Kích hoạt' ? true : false;
     this.cloudId = dataRouter.cloudId;
     this.routerUpdate.id = dataRouter.cloudId;
     this.routerUpdate.adminState = dataRouter.adminState;
@@ -247,6 +247,8 @@ export class RouterListComponent implements OnInit {
     this.routerUpdate.routerName = dataRouter.routerName;
     this.routerUpdate.vpcId = dataRouter.vpcId;
     this.routerUpdate.networkId = dataRouter.networkId;
+
+    console.log(this.routerUpdate)
   }
 
   handleCancelEdit() {
