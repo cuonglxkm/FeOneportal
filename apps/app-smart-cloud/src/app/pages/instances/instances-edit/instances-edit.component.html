@@ -299,7 +299,7 @@
             (keydown)="handleKeyboardEvent($event)"
           >
             <nz-tab
-              *ngIf="isConfigPackage && instancesModel.gpuCount == 0"
+              *ngIf="isConfigPackageAtInitial && instancesModel.gpuCount == 0"
               [nzTitle]="'app.Preconfigured.Package' | i18n"
               (nzClick)="onClickConfigPackage()"
             >
@@ -387,7 +387,7 @@
               </ngu-carousel>
             </nz-tab>
             <nz-tab
-              *ngIf="instancesModel.gpuCount == 0"
+              *ngIf="!isConfigGpuAtInitial && instancesModel.gpuCount == 0"
               [nzTitle]="'app.custom.configuration' | i18n"
               (nzClick)="onClickCustomConfig()"
             >
@@ -679,7 +679,7 @@
                     >*</span
                   >)</nz-form-label
                 >
-                <nz-form-control [nzErrorTip]="gpuErrorTpl">
+                <nz-form-control>
                   <nz-select
                     [nzPlaceHolder]="
                       '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
@@ -697,11 +697,6 @@
                     />
                   </nz-select>
                 </nz-form-control>
-                <ng-template #gpuErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng chọn GPU Type
-                  </ng-container>
-                </ng-template>
               </nz-form-item>
             </nz-tab>
           </nz-tabset>
