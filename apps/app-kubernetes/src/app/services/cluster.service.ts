@@ -69,6 +69,10 @@ export class ClusterService extends BaseService {
       { headers: this.getHeaders() });
   }
 
+  getUserInfo(userId: number) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.users}/${userId}`, {headers: this.getHeaders()});
+  }
+
   getDetailCluster(serviceOrderCode: string) {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/detail-cluster/${serviceOrderCode}`, { headers: this.getHeaders() });
   }

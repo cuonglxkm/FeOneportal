@@ -12,6 +12,7 @@ import { forkJoin } from 'rxjs';
 import { VlanService } from '../../services/vlan.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { PriceModel } from '../../model/price.model';
+import { UserInfo } from '../../model/user.model';
 
 @Component({
   selector: 'one-portal-extension',
@@ -25,7 +26,7 @@ export class ExtensionComponent implements OnInit {
 
   totalCost: number;
   vatCost: number;
-  costPerMonth: number;
+  costByMonth: number;
   extendMonth: number;
   expiryDate: number;
 
@@ -59,6 +60,7 @@ export class ExtensionComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       this.serviceOrderCode = params['id'];
     });
+    this.getUserInfo(this.tokenService.get()?.userId);
   }
 
   regionId: number;
@@ -95,12 +97,20 @@ export class ExtensionComponent implements OnInit {
       }
 
       // init calculate cost
-      this.onSelectUsageTime(this.extendMonth);
+      this.setUsageTime();
     });
   }
 
   onProjectChange(project: ProjectModel) {
     this.projectId = project.id;
+  }
+
+  userInfo: UserInfo;
+  getUserInfo(userId: number) {
+    this.clusterService.getUserInfo(userId)
+    .subscribe((r: any) => {
+      this.userInfo = r;
+    });
   }
 
   vpcNetwork: string;
@@ -148,23 +158,58 @@ export class ExtensionComponent implements OnInit {
     });
   }
 
-  expectedExpirationDate: number;
-  onSelectUsageTime(event: any) {
-    if (event) {
-      let d = new Date(this.expiryDate);
-      d.setMonth(d.getMonth() + Number(event));
-      d.setDate(d.getDate() + 1);
-      this.expectedExpirationDate = d.getTime();
-
-      this.onCalculatePrice();
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
     }
+  }
+
+  statusInput: string;
+  msgError: string;
+  errMin = 'cluster.validate.min-error.extend';
+  errMax = 'cluster.validate.max-error.extend';
+  onChangeDuration() {
+    if (this.extendMonth < 1) {
+      this.statusInput = 'error';
+      this.msgError = this.errMin;
+      return;
+    } else if (this.extendMonth > 100) {
+      this.statusInput = 'error';
+      this.msgError = this.errMax;
+      return;
+    } else {
+      this.statusInput = null;
+      this.msgError = '';
+    }
+    this.setUsageTime();
+  }
+
+
+  expectedExpirationDate: number;
+  setUsageTime() {
+    let d = new Date(this.expiryDate);
+    d.setDate(d.getDate() + Number(this.extendMonth) * 30 + 1);
+    this.expectedExpirationDate = d.getTime();
+
+    this.onCalculatePrice();
   }
 
   onCalculatePrice() {
     let offerId = this.detailCluster.offerId;
 
     if (offerId != 0) {
-      this.costPerMonth = this.currentPack.price;
+      this.costByMonth = this.currentPack.price * this.extendMonth;
     } else {
       let wgs = this.detailCluster.workerGroup;
       let totalRam = 0, totalCpu = 0, totalStorage = 0;
@@ -186,11 +231,11 @@ export class ExtensionComponent implements OnInit {
         totalStorage += nodeNumber * storage;
       }
 
-      this.costPerMonth = totalRam * this.priceOfRam + totalCpu * this.priceOfCpu + totalStorage * this.priceOfSsd;
+      this.costByMonth = (totalRam * this.priceOfRam + totalCpu * this.priceOfCpu + totalStorage * this.priceOfSsd) * this.extendMonth;
     }
 
-    this.vatCost = this.costPerMonth * 0.1;
-    this.totalCost = (this.costPerMonth + this.vatCost) * this.extendMonth;
+    this.vatCost = this.costByMonth * 0.1;
+    this.totalCost = this.costByMonth + this.vatCost;
   }
 
   onExtendService() {
@@ -201,7 +246,7 @@ export class ExtensionComponent implements OnInit {
     order.orderItems = [];
 
     let orderItem = new OrderItem();
-    orderItem.price = this.costPerMonth;
+    orderItem.price = this.costByMonth;
     orderItem.serviceDuration = this.extendMonth;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_EXTEND_TYPE;
@@ -210,7 +255,11 @@ export class ExtensionComponent implements OnInit {
       serviceName: this.detailCluster.clusterName,
       jsonData: JSON.stringify({
         ServiceOrderCode: this.serviceOrderCode,
-        ExtendMonth: this.extendMonth
+        ExtendMonth: this.extendMonth,
+        Id: this.userInfo.id,
+        UserName: this.userInfo.name,
+        PhoneNumber: this.userInfo.phoneNumber,
+        UserEmail: this.userInfo.email
       })
     };
     orderItem.specification = JSON.stringify(req);

@@ -1252,7 +1252,7 @@
   "app.cluster.created-date": "Service initialization date",
   "app.cluster.vat-cost-1": "Including {{vat}}% VAT",
   "app.cluster.vat-cost-2": "VAT Cost ({{vat}}%)",
-  "app.cost.a.month": "Cost per month",
+  "app.cost.month": "Cost {{month}} month(s)",
 
   "cluster.validate.required": "Cannot be left empty!",
   "cluster.placeholder.cluster-name": "Enter cluster name",
@@ -1319,6 +1319,8 @@
   "cluster.instances.reboot-notify-2": "Are you sure you want to reboot node {{name}} ?",
   "cluster.instances.start-notify-1": "Start node {{name}}",
   "cluster.instances.start-notify-2": "Are you sure you want to start node {{name}} ?",
+  "cluster.validate.min-error.extend": "Enter a minimum of 1 month",
+  "cluster.validate.max-error.extend": "Enter a maximum of 100 months",
 
   "app.text.version": "Version",
   "app.text.status": "Status",

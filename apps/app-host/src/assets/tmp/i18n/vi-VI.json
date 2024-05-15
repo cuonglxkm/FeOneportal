@@ -1137,6 +1137,7 @@
   "app.cluster.created-date": "Ngày khởi tạo dịch vụ",
   "app.cluster.vat-cost-1": "Đã bao gồm {{vat}}% VAT",
   "app.cluster.vat-cost-2": "Chi phí VAT ({{vat}}%)",
+  "app.cost.month": "Chi phí {{month}} tháng",
 
   "cluster.validate.required": "Không được để trống!",
   "cluster.placeholder.cluster-name": "Nhập tên cluster",
@@ -1203,6 +1204,8 @@
   "cluster.instances.reboot-notify-2": "Bạn có chắc chắn muốn khởi động lại node {{name}} ?",
   "cluster.instances.start-notify-1": "Bật node {{name}}",
   "cluster.instances.start-notify-2": "Bạn có chắc muốn bật node {{name}} ?",
+  "cluster.validate.min-error.extend": "Nhập số tháng tối thiểu là 1",
+  "cluster.validate.max-error.extend": "Nhập số tháng tối đa là 100",
 
   "app.text.version": "Phiên bản",
   "app.text.status": "Trạng thái",

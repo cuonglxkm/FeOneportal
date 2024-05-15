@@ -20,6 +20,8 @@ import { ShareService } from '../../services/share.service';
 import { VlanService } from '../../services/vlan.service';
 import { ProjectModel } from '../../shared/models/project.model';
 import { RegionModel } from '../../shared/models/region.model';
+import { User } from '../../shared/models/user.model';
+import { UserInfo } from '../../model/user.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -132,6 +134,7 @@ export class ClusterComponent implements OnInit {
     // display expiry time
     const usageTimeInit = this.myform.get('usageTime').value;
     this.onSelectUsageTime(usageTimeInit);
+    this.getUserInfo(this.tokenService.get()?.userId);
   }
 
   addWorkerGroup(e?: MouseEvent): void {
@@ -264,6 +267,14 @@ export class ClusterComponent implements OnInit {
     )
     .subscribe((data: any) => {
       this.listOfSubnets = data;
+    });
+  }
+
+  userInfo: UserInfo;
+  getUserInfo(userId: number) {
+    this.clusterService.getUserInfo(userId)
+    .subscribe((r: any) => {
+      this.userInfo = r;
     });
   }
 
@@ -475,7 +486,7 @@ export class ClusterComponent implements OnInit {
   onSelectUsageTime(event: any) {
     if (event) {
       let d = new Date();
-      d.setMonth(d.getMonth() + Number(event));
+      d.setDate(d.getDate() + Number(event) * 30);
       this.expiryDate = d.getTime();
     }
   }
@@ -798,6 +809,12 @@ export class ClusterComponent implements OnInit {
     cluster.totalCpu = this.totalCpu;
     cluster.totalStorage = this.totalStorage;
     cluster.serviceName = cluster.clusterName;
+    cluster.jsonData = JSON.stringify({
+      Id: this.userInfo.id,
+      UserName: this.userInfo.name,
+      PhoneNumber: this.userInfo.phoneNumber,
+      UserEmail: this.userInfo.email
+    });
 
     // this.onSubmitOrder(cluster);
 
