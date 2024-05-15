@@ -15,13 +15,13 @@ pipeline {
 
         stage('Build images') {
             steps {
-                sh 'docker compose --parallel 2 build'
+                sh 'docker compose -f compose-test.yml --parallel 2 build'
             }
         }
 
         stage('Push images') {
             steps {
-                sh 'docker compose push'
+                sh 'docker compose -f compose-test.yml push'
             }
         }
 
