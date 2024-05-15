@@ -6,6 +6,7 @@ import { FormSearchSubnet, Subnet } from '../../../../shared/models/vlan.model';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 import { debounceTime } from 'rxjs';
 import { Location } from '@angular/common'
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 @Component({
   selector: 'one-portal-detail-subnet',
   templateUrl: './detail-subnet.component.html',
@@ -31,7 +32,7 @@ export class DetailSubnetComponent implements OnInit, OnChanges {
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private vlanService: VlanService,
-              private location: Location) {
+              private notification: NzNotificationService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -73,6 +74,7 @@ export class DetailSubnetComponent implements OnInit, OnChanges {
     }, error => {
       this.responseSubnet = null;
       this.isLoading = false;
+      this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
     });
 
 

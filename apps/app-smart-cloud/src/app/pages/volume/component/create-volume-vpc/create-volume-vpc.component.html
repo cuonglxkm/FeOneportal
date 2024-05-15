@@ -205,21 +205,19 @@
             <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
               <label *ngIf="typeEncrypt == true"
                      nz-checkbox
-                     [nzDisabled]="!(enableEncrypt === enableMultiAttach) && !enableEncrypt"
-                     formControlName="isEncryption" (click)="onChangeStatusEncrypt()">
+                     formControlName="isEncryption" (nzCheckedChange)="onChangeStatusEncrypt($event)">
                 {{ 'volume.info.type.encrypt' |i18n }}
                 <img nz-popover
                      [nzPopoverContent]="'volume.tooltip.type.encrypt'|i18n"
                      nzPopoverPlacement="bottom"
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </label>
-
-              <br>
+            </nz-form-control>
+            <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
               <label *ngIf="typeMultiple == true"
                      nz-checkbox
-                     [nzDisabled]="!(enableEncrypt === enableMultiAttach) && !enableMultiAttach"
                      style="margin-top: 10px;"
-                     formControlName="isMultiAttach" (click)="onChangeStatusMultiAttach()">
+                     formControlName="isMultiAttach" (nzCheckedChange)="onChangeStatusMultiAttach($event)">
                 {{ 'volume.info.type.multiAttach' |i18n }}
                 <img nz-popover
                      [nzPopoverContent]="'volume.tooltip.type.multiAttach'|i18n"
@@ -228,6 +226,29 @@
               </label>
             </nz-form-control>
           </nz-form-item>
+<!--          <nz-form-item style="margin-top: 10px;" *ngIf="validateForm.controls.isMultiAttach.value == true">-->
+<!--            <nz-form-label nzFor="instanceName">-->
+<!--              <div class="label">-->
+<!--                <span>{{ 'volume.modal.attach.title' | i18n }}</span>-->
+<!--                <img nz-popover [nzPopoverContent]="'volume.tooltip.select.instance' | i18n"-->
+<!--                     nzPopoverPlacement="bottom" style="margin-left: 5px;"-->
+<!--                     src="assets/imgs/pajamas_question.svg" alt="" />-->
+<!--              </div>-->
+<!--            </nz-form-label>-->
+<!--            <nz-form-control>-->
+<!--              <nz-select nzSize="large"-->
+<!--                         formControlName="instanceId"-->
+<!--                         nzMode="multiple"-->
+<!--                         [nzPlaceHolder]="'volume.modal.attach.title'|i18n"-->
+<!--                         [nzShowSearch]="false"-->
+<!--                         [(ngModel)]="instanceSelected"-->
+<!--                         (ngModelChange)="instanceSelectedChange($event)"-->
+<!--                         style="width: 100%;">-->
+<!--                <nz-option *ngFor="let item of listInstances" [nzLabel]="item.name"-->
+<!--                           [nzValue]="item.id"></nz-option>-->
+<!--              </nz-select>-->
+<!--            </nz-form-control>-->
+<!--          </nz-form-item>-->
           <nz-form-item style="margin-top: 10px;">
             <nz-form-label nzFor="instanceName">
               <div class="label">
@@ -259,7 +280,7 @@
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
               <nz-textarea-count [nzMaxCharacterCount]="255">
                 <textarea nz-input formControlName="description" class="input-custom" [maxLength]="255"
-                          [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+                          [nzAutosize]="{ minRows: 3, maxRows: 5 }" [placeholder]="'volume.tooltip.description'|i18n"></textarea>
               </nz-textarea-count>
               <ng-template #descriptionErrorTpl let-control>
                 <ng-container

@@ -88,6 +88,7 @@
           <thead>
           <tr>
             <th nzLeft>{{ 'volume.table.title.name.volume' | i18n }}</th>
+            <th nzBreakWord>{{'volume.table.title.type.volume' | i18n}}</th>
             <th nzBreakWord>{{ 'volume.table.title.storage' | i18n }} (GB)</th>
             <th nzBreakWord>{{ 'volume.table.title.iops' | i18n }}</th>
             <th nzBreakWord>{{ 'volume.table.title.status.volume' | i18n }}</th>
@@ -99,6 +100,10 @@
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
             <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + data.id">{{data.name}}</a></td>
+            <td nzBreakWord>
+              <span *ngIf="data.volumeType == 'hdd'">HDD</span>
+              <span *ngIf="data.volumeType == 'ssd'">SSD</span>
+            </td>
             <td nzBreakWord nzAlign="right">{{data.sizeInGB}}</td>
             <td nzBreakWord nzAlign="right">
               <div *ngIf="data.iops == null">200</div>
@@ -276,10 +281,13 @@
             <tbody>
             <tr *ngFor="let i of fixedTable2.data">
               <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + i.id">{{i.name}}</a></td>
-              <td nzBreakWord>{{i.volumeType}}</td>
-              <td nzBreakWord>{{i.sizeInGB}}</td>
               <td nzBreakWord>
-                <div *ngIf="i.iops == null">200</div>
+                <span *ngIf="i.volumeType == 'hdd'">HDD</span>
+                <span *ngIf="i.volumeType == 'ssd'">SSD</span>
+              </td>
+              <td nzBreakWord nzAlign="right">{{i.sizeInGB}}</td>
+              <td nzBreakWord nzAlign="right">
+                <div *ngIf="i.iops == null">300</div>
                 <div *ngIf="i.iops != null">{{i.iops}}</div>
               </td>
               <td nzBreakWord>
@@ -310,15 +318,13 @@
               </td>
               <td>
                 <div>
-                  <one-portal-attach-volume *ngIf="!i.isMultiAttach && i.attachedInstances.length <= 0"
-                                            [region]="region"
+                  <one-portal-attach-volume [region]="region"
                                             [project]="project"
                                             [volumeId]="i.id"
                                             [multiple]="i.isMultiAttach"
                                             [instanceInVolume]="i.attachedInstances"
                                             (onOk)="handleOkAttachVm()" />
-                  <one-portal-detach-volume *ngIf="!i.isMultiAttach && i.attachedInstances.length > 0"
-                                            [region]="region"
+                  <one-portal-detach-volume [region]="region"
                                             [project]="project"
                                             [volumeId]="i.id"
                                             [isMultiple]="i.isMultiAttach"

@@ -233,7 +233,7 @@
         alt=""
       />{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreateInterface()" [nzLoading]="isLoadingRouterInterface">
+    <button nz-button nzType="primary" (click)="handleOkCreateInterface()" [disabled]="formRouterInterface.invalid" [nzLoading]="isLoadingRouterInterface">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"

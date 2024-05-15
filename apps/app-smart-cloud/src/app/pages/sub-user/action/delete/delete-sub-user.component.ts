@@ -64,6 +64,7 @@ export class DeleteSubUserComponent implements AfterViewInit {
       formDelete.uid = this.uid;
       formDelete.subuser = this.idSubUser;
       formDelete.purge_data = true;
+      formDelete.actorEmail = '';
       this.subUserService.deleteSubUser(formDelete).subscribe(data => {
         this.isLoading = false;
         this.notification.success('Thành công', 'Xoá thông tin Sub-User thành công');

@@ -17,7 +17,6 @@ import { ObjectObjectStorageService } from '../../../shared/services/object-obje
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { I18NService } from '@core';
 import * as JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 import mime from 'mime';
 
 

@@ -1,6 +1,6 @@
 <button nz-button nzType="primary" [disabled]="disabled"
         class="button-add" (click)="showModal()">
-  <span nz-icon nzType="plus" nzTheme="outline"></span> Thêm mới
+  <span nz-icon nzType="plus" nzTheme="outline"></span>{{ 'app.cluster.add-new' | i18n }}
 </button>
 <nz-modal
   nzCentered
@@ -12,7 +12,7 @@
   (nzOnCancel)="handleCancel()"
 >
   <ng-template #modalTitle>
-    <span class="text-modal-title">Thêm mới Outbound</span>
+    <span class="text-modal-title">{{ 'app.cluster.new-outbound' | i18n }}</span>
   </ng-template>
   <ng-template #modalContent>
     <one-portal-form-rule

@@ -82,7 +82,7 @@ export class DetailVolumeComponent implements OnInit {
           });
         }
       }, error => {
-        if (error.error.detail.includes('Not Found')) {
+        if (error.statusText.includes('Not Found')) {
           this.router.navigate(['/app-smart-cloud/volumes']);
           this.notification.error('', this.i18n.fanyi('volume.notification.access.denied'));
         } else {

@@ -224,6 +224,7 @@ import { DetachIpFloatingLbComponent } from './load-balancer/list/detach/detach-
 import { CreateBackupVmNormalComponent } from './backup-vm/create/no-vpc/create-backup-vm-normal.component';
 import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup-vm-vpc.component';
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
+import { RestoreBackupVolumeComponent } from './volume/component/backup-volume/restore-backup-volume/restore-backup-volume.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -432,6 +433,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateBackupVmNormalComponent,
     CreateBackupVmVpcComponent,
     RestoreBackupVmComponent,
+    RestoreBackupVolumeComponent,
   ],
   imports: [
     CommonModule,

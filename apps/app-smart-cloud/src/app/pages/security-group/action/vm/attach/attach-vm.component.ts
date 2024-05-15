@@ -3,6 +3,8 @@ import { ExecuteAttachOrDetach } from '../../../../../shared/models/security-gro
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { SecurityGroupService } from '../../../../../shared/services/security-group.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-attach-vm',
@@ -22,6 +24,7 @@ export class AttachVmComponent {
 
   constructor( @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
                private notification: NzNotificationService,
+               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
                private securityGroupService: SecurityGroupService) {
   }
 
@@ -47,12 +50,12 @@ export class AttachVmComponent {
     this.securityGroupService.attachOrDetach(attachOrDetachForm).subscribe(data => {
       this.isLoading = false
       this.isVisible = false
-      this.notification.success('Thành công', 'Gắn Security Group vào máy ảo thành công')
+      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('sg.notification.attach.success'))
       this.onOk.emit()
     }, error => {
       this.isLoading = false
       this.isVisible = false
-      this.notification.error('Thất bại', 'Gắn Security Group vào máy ảo thất bại, ' + error.error.detail)
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('sg.notification.attach.fail') + error.error.detail)
     })
   }
 }
