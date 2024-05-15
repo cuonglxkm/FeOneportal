@@ -68,6 +68,7 @@
     "jspdf": "^2.5.1",
     "jszip": "^3.10.1",
     "lodash": "^4.17.21",
+    "mime": "^4.0.3",
     "mockjs": "^1.1.0",
     "ng-apexcharts": "^1.8.0",
     "ng-recaptcha": "^13.2.1",

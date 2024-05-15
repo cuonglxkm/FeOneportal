@@ -1,11 +1,18 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'app.users.listUser' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users']">{{"app.breadcrumb.account"|i18n}}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users']">IAM</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item> Users </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
 </page-header>
 
@@ -34,19 +41,20 @@
           (click)="getData()"
         />
       </ng-template>
-      <button style="border: none" nz-button (click)="showModal()">
-        <img style="margin-top: -4px" src="assets/imgs/trash.svg" />
-      </button>
       <button style="border: none" nz-button (click)="reloadTable()">
         <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
       </button>
+      <button style="border: none" nz-button (click)="showModal()">
+        <img style="margin-top: -4px;filter: invert(25%) sepia(84%) saturate(3672%) hue-rotate(351deg) brightness(100%) contrast(84%);" src="assets/imgs/trash.svg" />
+      </button>
+      
       <button nz-button nzType="primary" (click)="navigateToCreate()">
         <img
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        <span>{{"app.users.button.create" | i18n}}</span>
+        <span>{{"app.users.button.create.user" | i18n}}</span>
       </button>
     </div>
   </div>
@@ -75,7 +83,7 @@
           nzLeft
         ></th>
         <th>{{"app.users.nameUser" | i18n}}</th>
-        <th>{{"app.users.groups" | i18n}}</th>
+        <th>{{"app.users.group" | i18n}}</th>
         <th>{{"app.users.createDate" | i18n}}</th>
       </tr>
     </thead>
@@ -89,7 +97,7 @@
         <td nzLeft>
           <a
             nz-tooltip
-            nzTooltipTitle="Xem chi tiết"
+            [nzTooltipTitle]="'app.view.detail'|i18n"
             nzTooltipPlacement="bottom"
             [routerLink]="'/app-smart-cloud/users/detail/' + item.userName"
             >{{ item.userName }}</a

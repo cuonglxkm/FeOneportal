@@ -2,16 +2,16 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-kubernetes']">Container</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-kubernetes']">Danh sách cluster</a>
+        <a [routerLink]="['/app-kubernetes']">{{ 'app.cluster.list' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Nâng cấp dịch vụ: <b>{{detailCluster?.clusterName || ''}}</b>
+        {{ 'app.cluster.upgrade-service' | i18n }}: <b>{{detailCluster?.clusterName || ''}}</b>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -30,21 +30,21 @@
   <div nz-col [nzSpan]="16" class="gutter-row">
     <ng-container *ngIf="detailCluster; else loadingClusterTpl">
       <nz-card class="border-card">
-        <h3>Thông tin chung</h3>
+        <h3>{{ 'app.cluster.overall' | i18n }}</h3>
         <div class="detailtable">
           <nz-table [nzTemplateMode]="true" nzBordered>
             <tbody>
               <tr>
-                <td class="w-50"><row-data [value]="detailCluster.clusterName" [label]="'Tên Cluster'"></row-data></td>
+                <td class="w-50"><row-data [value]="detailCluster.clusterName" [label]="'app.cluster.name' | i18n"></row-data></td>
                 <td class="w-50"><row-data [value]="detailCluster.currentVersion"
-                    [label]="'Phiên bản Kubernetes'"></row-data></td>
+                    [label]="'app.cluster.version' | i18n "></row-data></td>
               </tr>
 
               <tr>
-                <td class="w-50"><row-data [value]="detailCluster.apiEndpoint" [label]="'API Endpoint'"></row-data></td>
-                <td class="w-50">
+                <td class="w-50"><row-data [value]="detailCluster.apiEndpoint" [label]="'app.cluster.api-endpoint' | i18n"></row-data></td>
+                <!-- <td class="w-50">
                   <div nz-row>
-                    <div nz-col [nzSpan]="8">Mã đơn hàng</div>
+                    <div nz-col [nzSpan]="8">{{ 'app.cluster.order-code' | i18n }}</div>
                     <div nz-col [nzSpan]="16">
                       <span style="font-size: 16px; font-weight: 600;">
                         <a [routerLink]="'/app-smart-cloud/order/detail/' + detailCluster.orderId"
@@ -52,29 +52,29 @@
                       </span>
                     </div>
                   </div>
-                </td>
-              </tr>
-
-              <tr>
+                </td> -->
                 <td class="w-50">
                   <div nz-row>
-                    <div nz-col [nzSpan]="8">Trạng thái</div>
+                    <div nz-col [nzSpan]="8">{{ 'app.text.status' | i18n }}</div>
                     <div nz-col [nzSpan]="16">
                       <ng-container *ngIf="detailCluster.serviceStatus | status2ColorPipe as status">
-                        <span [ngStyle]="{color: status.color, 'font-weight': 600}">{{status.status}}</span>
+                        <span [ngStyle]="{color: status.color, 'font-weight': 600}">{{ status.status | i18n }}</span>
                       </ng-container>
                     </div>
                   </div>
                 </td>
-                <td class="w-50"><row-data [value]="detailCluster.description" [label]="'Mô tả'"></row-data></td>
               </tr>
 
               <tr>
                 <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
-                    [label]="'Ngày khởi tạo'"></row-data></td>
+                    [label]="'app.text.creation-time' | i18n"></row-data></td>
                 <td class="w-50"><row-data
                     [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
-                    [label]="'Ngày hết hạn'" [type]="'danger'"></row-data></td>
+                    [label]="'app.service.expiration-date' | i18n" [type]="'danger'"></row-data></td>
+              </tr>
+
+              <tr>
+                <td><row-data [value]="detailCluster.description" [label]="'app.cluster.description' | i18n"></row-data></td>
               </tr>
 
             </tbody>
@@ -84,22 +84,22 @@
 
       <!-- Thông tin worker group -->
       <nz-card class="border-card">
-        <h3>Thông tin nhóm worker</h3>
+        <h3>{{ 'app.cluster.wg-info' | i18n }}</h3>
         <ng-container *ngFor="let item of detailCluster.workerGroup ; let i = index;">
           <div nz-row>
             <div nz-col [nzSpan]="24" class="detailtable">
               <nz-table [nzTemplateMode]="true" nzBordered>
                 <tbody>
                   <tr>
-                    <td class="w-50"><row-data [value]="item.workerGroupName" [label]="'Tên nhóm worker'"></row-data>
+                    <td class="w-50"><row-data [value]="item.workerGroupName" [label]="'app.cluster.worker-group-name' | i18n"></row-data>
                     </td>
-                    <td class="w-50"><row-data [value]="item.minimumNode" [label]="'Số node'"></row-data></td>
+                    <td class="w-50"><row-data [value]="item.minimumNode" [label]="'app.cluster.node-number' | i18n"></row-data></td>
                   </tr>
 
                   <tr>
                     <td class="w-50"><row-data [value]="item.cpu + 'vCPU / ' + item.ram + 'GB'"
-                        [label]="'Cấu hình'"></row-data></td>
-                    <td class="w-50"><row-data [value]="item.volumeSize" [label]="'Ổ cứng (GB)'"></row-data></td>
+                        [label]="'app.config' | i18n"></row-data></td>
+                    <td class="w-50"><row-data [value]="item.volumeSize" [label]="'app.cluster.storage' | i18n"></row-data></td>
                   </tr>
 
                   <tr>
@@ -107,18 +107,18 @@
                       <div nz-row>
                         <div nz-col [nzSpan]="8">Auto scale</div>
                         <div nz-col [nzSpan]="16" class="description-info">
-                          <span class="weight-600">{{item.autoScalingWorker == true ? 'Bật': 'Tắt'}}</span>
+                          <span class="weight-600">{{item.autoScalingWorker == true ? ('app.start' | i18n) : ('app.off' | i18n)}}</span>
                         </div>
                       </div>
                     </td>
 
-                    <td class="w-50"><row-data [value]="item.volumeTypeName" [label]="'Loại ổ cứng'"></row-data></td>
+                    <td class="w-50"><row-data [value]="item.volumeTypeName" [label]="'app.hard.drive.type' | i18n"></row-data></td>
                   </tr>
 
                   <ng-container *ngIf="isAutoScale">
                     <tr>
-                      <td class="w-50"><row-data [value]="item.minimumNode" [label]="'Minimum node'"></row-data></td>
-                      <td class="w-50"><row-data [value]="item.maximumNode" [label]="'Maximum node'"></row-data></td>
+                      <td class="w-50"><row-data [value]="item.minimumNode" [label]="'app.cluster.minimum-node' | i18n"></row-data></td>
+                      <td class="w-50"><row-data [value]="item.maximumNode" [label]="'app.cluster.maximum-node' | i18n"></row-data></td>
                     </tr>
                   </ng-container>
                 </tbody>
@@ -134,19 +134,19 @@
 
       <!-- Thông tin network -->
       <nz-card class="border-card">
-        <h3>Thông tin network</h3>
+        <h3>{{ 'app.cluster.network' | i18n }}</h3>
         <div nz-row>
           <div nz-col [nzSpan]="24" class="detailtable">
             <nz-table [nzTemplateMode]="true" nzBordered>
               <tbody>
                 <tr>
                   <td class="w-50"><row-data [value]="detailCluster.networkType | network2label"
-                      [label]="'Loại network'"></row-data></td>
+                      [label]="'app.cluster.network-type' | i18n"></row-data></td>
                   <td class="w-50"><row-data [value]="detailCluster.cidr" [label]="'Pod CIDR'"></row-data></td>
                 </tr>
 
                 <tr>
-                  <td class="w-50"><row-data [value]="vpcNetwork" [label]="'Mạng VPC'"></row-data></td>
+                  <td class="w-50"><row-data [value]="vpcNetwork" [label]="'app.cluster.vpc-network' | i18n"></row-data></td>
                   <td class="w-50"><row-data [value]="detailCluster.serviceCidr" [label]="'Service CIDR'"></row-data>
                   </td>
                 </tr>
@@ -168,12 +168,11 @@
     </ng-template>
 
     <nz-card class="border-card">
-      <h3 class="mb-5">Cấu hình nâng cấp</h3>
+      <h3 class="mb-5">{{ 'app.cluster.upgrade-config' | i18n }}</h3>
 
       <nz-alert nzType="warning" [nzDescription]="upgradeWarning" nzShowIcon></nz-alert>
       <ng-template #upgradeWarning>
-        <span class="warning-description">Khách hàng chỉ có thể nâng cấp cấu hình lên cao hơn mức hiện tại đang sử
-          dụng.</span>
+        <span class="warning-description">{{ 'app.cluster.upgrade-note' | i18n }}</span>
       </ng-template>
 
       <nz-tabset nzCentered class="mt-5" [nzSelectedIndex]="selectedTabIndex" (nzSelectedIndexChange)="onChangeTab($event)">
@@ -191,7 +190,7 @@
                     <div class="item-price">
                       <div class="price">
                         <span>{{ item.price | customCurrency }}</span><br>
-                        <span class="unit-price">đ/tháng</span>
+                        <span class="unit-price">{{ 'app.cluster.unit-price-1' | i18n }}</span>
                       </div>
                     </div>
                   </div>
@@ -214,7 +213,7 @@
         </nz-tab>
 
         <ng-template #titleDefaultPack>
-          <span>Gói cấu hình sẵn</span>
+          <span>{{ 'app.cluster.pack' | i18n }}</span>
         </ng-template>
 
         <nz-tab [nzTitle]="titleCustomizePack" (nzClick)="onSelectCustomPackTab()">
@@ -225,33 +224,33 @@
                 <div nz-row [nzGutter]="16" class="group-border mb-5">
                   <div nz-col [nzSpan]="12">
                     <nz-form-item>
-                      <nz-form-label nzFor="workerGroupName">Tên nhóm worker (<span
+                      <nz-form-label nzFor="workerGroupName">{{ 'app.cluster.worker-group-name' | i18n }} (<span
                           class="required-color">*</span>)</nz-form-label>
                       <nz-form-control [nzErrorTip]="errorWorkerNameTpl">
                         <input nz-input type="text" formControlName="workerGroupName" id="workerGroupName"
-                          placeholder="Nhập tên nhóm worker" nzSize="large" (ngModelChange)="checkDuplicate(i)" />
+                          [placeholder]="'cluster.placeholder.wg-name' | i18n" nzSize="large" (ngModelChange)="checkDuplicate(i)" />
                       </nz-form-control>
                       <ng-template #errorWorkerNameTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">
-                          Tên nhóm worker không để trống
+                          {{ 'cluster.validate.required.wg-name' | i18n }}
                         </ng-container>
                         <ng-container *ngIf="control.hasError('duplicateName')">
-                          Tên nhóm worker đã tồn tại
+                          {{ 'cluster.validate.duplicate.wg-name' | i18n }}
                         </ng-container>
                         <ng-container *ngIf="control.hasError('maxlength')">
-                          Tên nhóm worker tối đa 16 ký tự
+                          {{ 'cluster.validate.length.wg-name' | i18n }}
                         </ng-container>
                         <ng-container *ngIf="control.hasError('pattern')">
-                          Tên nhóm worker chỉ chứa các ký tự và số viết thường hoặc dấu gạch nối
+                          {{ 'cluster.validate.pattern.wg-name' | i18n }}
                         </ng-container>
                       </ng-template>
 
                     </nz-form-item>
 
                     <nz-form-item>
-                      <nz-form-label nzFor="configType">Cấu hình (<span class="required-color">*</span>)</nz-form-label>
+                      <nz-form-label nzFor="configType">{{ 'app.config' | i18n }} (<span class="required-color">*</span>)</nz-form-label>
                       <nz-form-control [nzErrorTip]="errorConfigError">
-                        <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType"
+                        <nz-select nzShowSearch [nzPlaceHolder]="'app.cluster.select-config' | i18n" formControlName="configType"
                           id="configType" (ngModelChange)="onSelectConfigType($event, i); onChangeConfigType($event, i)"
                           [nzDisabled]="isUsingPackConfig" nzSize="large">
                           <nz-option *ngFor="let item of listOfWorkerType"
@@ -261,7 +260,7 @@
                       </nz-form-control>
                       <ng-template #errorConfigError let-control>
                         <ng-container *ngIf="control.hasError('invalid')">
-                          Không giảm cấu hình so với hiện tại
+                          {{ 'cluster.validate.invalid.config' | i18n }}
                         </ng-container>
                       </ng-template>
                     </nz-form-item>
@@ -270,36 +269,35 @@
                       <nz-form-control>
                         <!-- not enable on this phase -->
                         <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAdvancedConfig(i)"
-                          class="mr-3" [nzDisabled]="true"></nz-switch><label>Bật Auto Scaling worker</label>
+                          class="mr-3" [nzDisabled]="true"></nz-switch><label>{{ 'app.cluster.enable-auto-scale' | i18n }}</label>
                       </nz-form-control>
-                      <small>Hỗ trợ tự động số lượng worker. Số lượng worker thuộc worker tối thiểu - số lượng worker
-                        tối đa</small>
+                      <small>{{ 'app.cluster.auto-scale-description' | i18n }}</small>
                     </nz-form-item>
 
                     <ng-container *ngIf="isAutoScaleAtIndex(i)">
                       <nz-form-item>
-                        <nz-form-label nzFor="nodes">Số node tối thiểu (<span
+                        <nz-form-label nzFor="nodes">{{ 'app.cluster.minimum-node' | i18n }} (<span
                             class="required-color">*</span>)</nz-form-label>
                         <nz-form-control [nzErrorTip]="minimumNodeErrorTpl">
-                          <input type="text" nz-input placeholder="Nhập số node tối thiểu" formControlName="minimumNode"
+                          <input type="text" nz-input [placeholder]="'cluster.placeholder.minimum-node' | i18n" formControlName="minimumNode"
                             (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" nzSize="large" />
                         </nz-form-control>
                         <ng-template #minimumNodeErrorTpl let-control>
                           <ng-container *ngIf="control.hasError('required')">
-                            Số node tối thiểu không để trống
+                            {{ 'cluster.required.minimum-node' | i18n }}
                           </ng-container>
                           <ng-container *ngIf="control.hasError('invalid')">
-                            Số node tối thiểu không lớn hơn số node tối đa
+                            {{ 'cluster.invalid.minimum-node' | i18n }}
                           </ng-container>
                           <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                            Số node tối thiểu trong khoảng 1-10
+                            {{ 'cluster.length.minimum-node' | i18n }}
                           </ng-container>
                         </ng-template>
                       </nz-form-item>
                     </ng-container>
 
                     <nz-form-item>
-                      <nz-form-label nzFor="volumeType">Loại ổ cứng</nz-form-label>
+                      <nz-form-label nzFor="volumeType">{{ 'app.hard.drive.type' | i18n }}</nz-form-label>
                       <nz-form-control>
                         <nz-radio-group formControlName="volumeType" (ngModelChange)="onSelectVolumeType($event, i); onCalculatePrice();"
                           [nzDisabled]="isUsingPackConfig">
@@ -315,61 +313,61 @@
 
                   <div nz-col [nzSpan]="12">
                     <nz-form-item>
-                      <nz-form-label nzFor="nodes">Số node (<span class="required-color">*</span>)</nz-form-label>
+                      <nz-form-label nzFor="nodes">{{ 'app.cluster.node-number' | i18n }} (<span class="required-color">*</span>)</nz-form-label>
                       <nz-form-control [nzErrorTip]="nodeNumberErrorTpl">
-                        <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber"
+                        <input type="text" nz-input [placeholder]="'cluster.placeholder.node-number' | i18n" formControlName="nodeNumber"
                           (ngModelChange)="onChangeNodeNumber($event, i); onCalculatePrice();"
                           (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" nzSize="large"
                           [ngClass]="{'default-pack': isUsingPackConfig==true}" />
                       </nz-form-control>
                       <ng-template #nodeNumberErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">
-                          Số node không để trống
+                          {{ 'cluster.validate.required.node-number' | i18n }}
                         </ng-container>
                         <ng-container *ngIf="control.hasError('invalid')">
-                          Số node không nhỏ hơn số đã sử dụng
+                          {{ 'cluster.validate.invalid.node-number' | i18n }}
                         </ng-container>
                         <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                          Số node trong khoảng từ 1-10
+                          {{ 'cluster.validate.length.node-number' | i18n }}
                         </ng-container>
                       </ng-template>
                     </nz-form-item>
 
                     <nz-form-item>
-                      <nz-form-label nzFor="volume">Ổ cứng (GB) (<span class="required-color">*</span>)</nz-form-label>
+                      <nz-form-label nzFor="volume">{{ 'app.cluster.storage' | i18n }} (<span class="required-color">*</span>)</nz-form-label>
                       <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
-                        <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng" formControlName="volumeStorage"
+                        <input type="text" nz-input [placeHolder]="'cluster.placeholder.storage' | i18n" formControlName="volumeStorage"
                           (ngModelChange)="onChangeVolumeWorker($event, i); onCalculatePrice();" id="volume"
                           (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" nzSize="large"
                           [ngClass]="{'default-pack': isUsingPackConfig==true}" />
                       </nz-form-control>
                       <ng-template #volumeStorageErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">
-                          Dung lượng ổ cứng không để trống
+                          {{ 'cluster.validate.required.storage' | i18n }}
                         </ng-container>
                         <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                          Dung lượng trong khoảng từ 20-1000 (GB)
+                          {{ 'cluster.validate.length.storage' | i18n }}
                         </ng-container>
                         <ng-container *ngIf="control.hasError('invalid')">
-                          Ổ cứng không nhỏ hơn số đang sử dụng
+                          {{ 'cluster.validate.invalid.storage' | i18n }}
                         </ng-container>
                       </ng-template>
                     </nz-form-item>
 
                     <ng-container *ngIf="isAutoScaleAtIndex(i)">
                       <nz-form-item>
-                        <nz-form-label nzFor="nodes">Số node tối đa (<span
+                        <nz-form-label nzFor="nodes">{{ 'app.cluster.maximum-node' | i18n }} (<span
                             class="required-color">*</span>)</nz-form-label>
                         <nz-form-control [nzErrorTip]="maximumNodeErrorTpl">
-                          <input type="text" nz-input placeholder="Nhập số node tối đa" formControlName="maximumNode"
+                          <input type="text" nz-input [placeholder]="'cluster.placeholder.maximum-node' | i18n" formControlName="maximumNode"
                             (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" nzSize="large" />
                         </nz-form-control>
                         <ng-template #maximumNodeErrorTpl let-control>
                           <ng-container *ngIf="control.hasError('required')">
-                            Số node tối đa không để trống
+                            {{ 'cluster.validate.required.maximum-node' | i18n }}
                           </ng-container>
                           <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                            Số node tối đa trong khoảng từ 1-10
+                            {{ 'cluster.validate.length.maximum-node' | i18n }}
                           </ng-container>
                         </ng-template>
                       </nz-form-item>
@@ -377,9 +375,9 @@
 
                     <div>
                       <!-- remove btn -->
-                      <ng-container *ngIf="listFormWorker.length > 1 && !isUsingPackConfig">
-                        <button nz-button nzType="text" nzTooltipTitle="Xóa nhóm worker" nzTooltipPlacement="top"
-                          nz-tooltip class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i)">
+                      <ng-container *ngIf="listFormWorker.length > 1 && !isUsingPackConfig && control.get('id').value == null">
+                        <button nz-button nzType="text" [nzTooltipTitle]="'app.cluster.delete-wg' | i18n" nzTooltipPlacement="top"
+                          nz-tooltip class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i); onCalculatePrice();">
                           <span nz-icon nzType="delete"></span>
                         </button>
                       </ng-container>
@@ -397,14 +395,14 @@
                     <path d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z" />
                   </svg>
                 </span>
-                Thêm worker group
+                {{ 'app.cluster.add-wg' | i18n }}
               </button>
             </ng-container>
           </form>
         </nz-tab>
 
         <ng-template #titleCustomizePack>
-          <span>Cấu hình tùy chọn</span>
+          <span>{{ 'app.cluster.customize-pack' | i18n }}</span>
         </ng-template>
       </nz-tabset>
     </nz-card>
@@ -413,7 +411,7 @@
       <nz-table [nzTemplateMode]="true">
         <tbody>
           <tr>
-            <td class="w-30 borderless"><label class="weight-600">Cấu hình hiện tại</label></td>
+            <td class="w-30 borderless"><label class="weight-600">{{ 'app.current.config' | i18n }}</label></td>
             <td class="borderless">
               <ng-container *ngIf="currentPackItem; else customCurrentConfigTpl">
                 {{currentPackDescription}}
@@ -424,24 +422,27 @@
             </td>
           </tr>
           <tr>
-            <td class="w-30 borderless"><label class="weight-600">Cấu hình nâng cấp</label></td>
+            <td class="w-30 borderless"><label class="weight-600">{{ 'app.cluster.upgrade-config' | i18n }}</label></td>
             <td class="borderless">
               <ng-container *ngIf="chooseItem; else customUpgradeConfigTpl">
                 {{upgradePackDescription}}
               </ng-container>
               <ng-template #customUpgradeConfigTpl>
                 <ng-container *ngFor="let control of listFormWorker.controls">
-                  {{control.get('workerGroupName').value ? control.get('workerGroupName').value : ''}}
-                  / {{control.get('cpu').value ? control.get('cpu').value : ''}}vCPU
-                  / {{control.get('ram').value ? control.get('ram').value : ''}}GB
-                  / {{control.get('volumeStorage').value ? control.get('volumeStorage').value : ''}}GB
-                  {{control.get('volumeTypeName').value ? control.get('volumeTypeName').value : ''}}
+                  <div *ngIf="control.get('workerGroupName').value && control.get('cpu').value
+                    && control.get('ram').value && control.get('volumeStorage').value; else noneConfigTpl">
+                    {{control.get('workerGroupName').value ? control.get('workerGroupName').value : ''}}
+                    / {{control.get('cpu').value ? control.get('cpu').value : ''}}vCPU
+                    / {{control.get('ram').value ? control.get('ram').value : ''}}GB
+                    / {{control.get('volumeStorage').value ? control.get('volumeStorage').value : ''}}GB
+                    {{control.get('volumeTypeName').value ? control.get('volumeTypeName').value : ''}}
+                  </div>
                 </ng-container>
               </ng-template>
             </td>
           </tr>
           <tr>
-            <td class="w-30 borderless"><label class="weight-600">Ngày nâng cấp</label></td>
+            <td class="w-30 borderless"><label class="weight-600">{{ 'app.cluster.upgrade-date' | i18n }}</label></td>
             <td class="borderless">{{currentDate | date: 'dd/MM/yyyy'}}</td>
           </tr>
         </tbody>
@@ -453,17 +454,17 @@
   <div nz-col [nzSpan]="8" class="gutter-row">
     <nz-affix [nzOffsetTop]="72">
       <nz-card class="border-card price-card">
-        <h3 class="mb-3">Chi phí ước tính</h3>
+        <h3 class="mb-3">{{ 'app.estimated.cost' | i18n }}</h3>
 
 
         <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
-            <div class="ml-3"><label class="weight-600">Chi phí nâng cấp</label></div>
+            <div class="ml-3"><label class="weight-600">{{ 'app.service.upgrade-cost' | i18n }}</label></div>
           </div>
 
           <div nz-col [nzSpan]="12">
-            <div class="price-style price-color mr-3">{{(upgradeCost ? upgradeCost : 0) | number: '1.0-0'}} VNĐ</div>
-            <div class="price-style unit-color mr-3">VNĐ/tháng</div>
+            <div class="price-style price-color mr-3">{{(upgradeCost ? upgradeCost : 0) | number: '1.0-0'}} VND</div>
+            <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
           </div>
         </div>
 
@@ -471,7 +472,9 @@
 
         <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
-            <div class="ml-3 mb-3"><label class="weight-600">Tên dịch vụ</label></div>
+            <div class="ml-3 mb-3"><label class="weight-600">
+              {{ 'app.dashboard.service.near.expire.service.name' | i18n }}</label>
+            </div>
           </div>
 
           <div nz-col [nzSpan]="12">
@@ -481,7 +484,7 @@
 
         <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
-            <div class="ml-3 mb-3"><label class="weight-600">Phiên bản</label></div>
+            <div class="ml-3 mb-3"><label class="weight-600">{{ 'app.text.version' | i18n }}</label></div>
           </div>
 
           <div nz-col [nzSpan]="12">
@@ -493,7 +496,7 @@
           <ng-container *ngIf="isChangeInfo == true">
             <ng-container *ngIf="chooseItem; else customPackSummaryTpl">
               <div nz-col [nzSpan]="12">
-                <div class="ml-3 mb-3"><label class="weight-600">Gói dịch vụ: <b>{{chooseItem.packName}}</b></label></div>
+                <div class="ml-3 mb-3"><label class="weight-600">{{ 'app.text.package' | i18n }}: <b>{{chooseItem.packName}}</b></label></div>
               </div>
 
               <div nz-col [nzSpan]="12">
@@ -504,17 +507,21 @@
             </ng-container>
             <ng-template #customPackSummaryTpl>
               <div nz-col [nzSpan]="12">
-                <div class="ml-3 mb-3"><label class="weight-600">Thông tin nhóm worker</label></div>
+                <div class="ml-3 mb-3"><label class="weight-600">{{ 'app.cluster.wg-info' | i18n }}</label></div>
               </div>
 
               <div nz-col [nzSpan]="12">
                 <ng-container *ngFor="let control of listFormWorker.controls">
                   <div class="mr-3 mb-3 summary-info">
-                    {{control.get('workerGroupName').value ? control.get('workerGroupName').value : ''}}
-                    / {{control.get('cpu').value ? control.get('cpu').value : ''}}vCPU
-                    / {{control.get('ram').value ? control.get('ram').value : ''}}GB
-                    / {{control.get('volumeStorage').value ? control.get('volumeStorage').value : ''}}GB
-                    {{control.get('volumeTypeName').value ? control.get('volumeTypeName').value : ''}}
+                    <ng-container *ngIf="control.get('workerGroupName').value && control.get('cpu').value
+                      && control.get('ram').value && control.get('volumeStorage').value; else noneConfigTpl">
+                      {{control.get('workerGroupName').value}}
+                      / {{control.get('cpu').value}}vCPU
+                      / {{control.get('ram').value}}GB
+                      / {{control.get('volumeStorage').value}}GB
+                    {{control.get('volumeTypeName').value}}
+                    </ng-container>
+                    <ng-template #noneConfigTpl></ng-template>
                   </div>
                 </ng-container>
               </div>
@@ -526,23 +533,23 @@
 
         <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
-            <div class="ml-3"><label class="weight-600">Chi phí còn lại</label></div>
+            <div class="ml-3"><label class="weight-600">{{ 'app.cluster.remain-cost' | i18n }}</label></div>
           </div>
 
           <div nz-col [nzSpan]="12">
-            <div class="price-style price-color mr-3">{{(remainCost ? remainCost : 0) | number: '1.0-0'}} VNĐ</div>
-            <div class="price-style unit-color mr-3">VNĐ/tháng</div>
+            <div class="price-style price-color mr-3">{{(remainCost ? remainCost : 0) | number: '1.0-0'}} VND</div>
+            <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
           </div>
         </div>
 
         <div nz-row [nzGutter]="8" class="mt-5 price-panel">
           <div nz-col [nzSpan]="12">
-            <div class="mt-3 ml-3"><label class="weight-600">Tổng cần thanh toán</label></div>
-            <div class="mt-1 ml-3 mb-3 unit-color"><i>(Đã bao gồm 10% VAT)</i></div>
+            <div class="mt-3 ml-3"><label class="weight-600">{{ 'app.cluster.total-cost' | i18n }}</label></div>
+            <div class="mt-1 ml-3 mb-3 unit-color"><i>({{ 'app.payment-detail.vat' | i18n }})</i></div>
           </div>
           <div nz-col [nzSpan]="12">
-            <div class="price-style total-color mt-3 mr-3">{{(totalCost && totalCost > 0 ? totalCost : 0) | number: '1.0-0'}} VNĐ</div>
-            <div class="price-style unit-color mr-3">VNĐ/tháng</div>
+            <div class="price-style total-color mt-3 mr-3">{{(totalCost && totalCost > 0 ? totalCost : 0) | number: '1.0-0'}} VND</div>
+            <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
           </div>
         </div>
 
@@ -551,13 +558,13 @@
             <button nz-button nzType="default" nzBlock class="border-button" (click)="handleShowModalCancelUpgrade()"
               [disabled]="isSubmitting">
               <span nz-icon nzType="close" nzTheme="outline"></span>
-              Hủy
+              {{ 'app.button.cancel' | i18n }}
             </button>
           </div>
 
           <div nz-col [nzSpan]="12">
-            <button nz-button nzType="primary" nzBlock class="border-button" (click)="submitUpgrade()"
-              [disabled]="isSubmitting || upgradeForm.invalid || (chooseItem == null && isUsingPackConfig)">
+            <button nz-button nzType="primary" nzBlock class="border-button" (click)="onValidateInfo()"
+              [disabled]="isSubmitting || upgradeForm.invalid || (chooseItem == null && isUsingPackConfig) || detailCluster?.serviceStatus != 2">
               <ng-container *ngIf="isSubmitting; else paymentIconTpl">
                 <span nz-icon [nzType]="'loading'"></span>
               </ng-container>
@@ -573,7 +580,7 @@
                   </svg>
                 </span>
               </ng-template>
-              <span>Nâng cấp</span>
+              <span>{{ 'app.text.upgrade' | i18n }}</span>
             </button>
             <!-- <button nz-button (click)="callme()">call me</button> -->
           </div>
@@ -586,26 +593,26 @@
 <!-- modal cancel upgrade -->
 <nz-modal [(nzVisible)]="isShowModalCancelUpgrade" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
   (nzOnCancel)="handleCancelModal()">
-  <ng-template #modalTitle>Đang tiến hành thanh toán</ng-template>
+  <ng-template #modalTitle>{{ 'app.cluster.title-cancel' | i18n }}</ng-template>
 
   <ng-template #modalContent>
     <nz-alert
       nzType="warning"
       [nzDescription]="cancelWarning" nzShowIcon></nz-alert>
     <ng-template #cancelWarning>
-      <div class="warning-description">Thanh toán của bạn đang được thực hiện, nếu bạn thoát khỏi trang này, giao dịch sẽ bị hủy bỏ.</div>
-      <div class="delete-color warning-description mt-1">Bạn có chắc chắn muốn thoát khỏi trang này?</div>
+      <div class="warning-description">{{ 'app.cluster.cancel-desciption-1' | i18n }}</div>
+      <div class="delete-color warning-description mt-1">{{ 'app.cluster.cancel-desciption-2' | i18n }}</div>
     </ng-template>
   </ng-template>
 
   <ng-template #modalFooter>
     <button nz-button nzType="default" (click)="handleCancelModal()" [disabled]="isSubmitDelete">
       <span nz-icon nzType="close" nzTheme="outline"></span>
-      Hủy
+      {{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="back2list()">
       <span nz-icon nzType="check" nzTheme="outline"></span>
-      Xác nhận
+      {{ 'app.button.confirm' | i18n }}
     </button>
   </ng-template>
 </nz-modal>

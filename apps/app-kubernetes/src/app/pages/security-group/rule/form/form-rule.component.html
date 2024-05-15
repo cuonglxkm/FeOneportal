@@ -4,11 +4,11 @@
       <nz-form-item>
         <nz-form-label nzFor="ruleType">
           <div class="name-rule">
-            <span>Chọn Rule</span>
+            <span>{{ 'app.cluster.select-rule' | i18n }}</span>
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
           </div>
         </nz-form-label>
-        <nz-form-control nzErrorTip="Không được để trống!">
+        <nz-form-control [nzErrorTip]="'cluster.validate.required' | i18n">
           <nz-select
             id="rule"
             nzSize="large"
@@ -23,7 +23,7 @@
       <nz-form-item *ngIf="ruleValue === 'other-IPv4'">
         <nz-form-label nzFor="protocol">
           <div class="name-rule">
-            <span>Nhập Protocol</span>
+            <span>{{ 'app.cluster.input-protocol' | i18n }}</span>
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
           </div>
         </nz-form-label>
@@ -32,7 +32,7 @@
                            formControlName="protocol" id="protocol" class="input-custom" />
           <ng-template #protocolErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required') ||  control.hasError('invalidIntegerInRange') || control.hasError('pattern') || control.hasError('invalidNumber')">
-              Vui lòng nhập số nguyên nằm trong khoảng -1 đến 255
+              {{ 'cluster.validate.length.rule-1' | i18n }}
             </ng-container>
           </ng-template>
         </nz-form-control>
@@ -48,7 +48,8 @@
           <nz-input-number style="margin-left: 0; width: 100%;"  [nzStep]="1" formControlName="code" id="code" class="input-custom" />
           <ng-template #codeErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required') || control.hasError('invalidIntegerInRange') || control.hasError('pattern')">
-              Vui lòng nhập số nguyên trong khoảng -1 đến 255</ng-container>
+              {{ 'cluster.validate.length.rule-1' | i18n }}
+            </ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -63,7 +64,8 @@
           <nz-input-number style="margin-left: 0; width: 100%;" [nzStep]="1" formControlName="type" id="type" class="input-custom" />
           <ng-template #typeErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required') || control.hasError('invalidIntegerInRange') || control.hasError('pattern') || control.hasError('portMismatch') || control.hasError('invalidNumber')">
-              Vui lòng nhập số nguyên trong khoảng -1 đến 255 và Type lớn hơn hoặc bằng Code</ng-container>
+              {{ 'cluster.validate.length.rule-2' | i18n }}
+            </ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -72,16 +74,16 @@
         <nz-form-item>
           <nz-form-label nzFor="portType">
             <div class="name-rule">
-              <span>Chọn Open Port</span>
+              <span>{{ 'app.cluster.input-open-port' | i18n }}</span>
               (<span style="color: rgba(252, 16, 16, 1);">*</span>)
             </div>
           </nz-form-label>
-          <nz-form-control nzErrorTip="Chọn Open Port">
+          <nz-form-control [nzErrorTip]="'app.cluster.input-open-port' | i18n">
             <nz-select
               id="port_type"
               nzSize="large"
               formControlName="portType"
-              nzPlaceHolder="Chọn Open Port"
+              [nzPlaceHolder]="'app.cluster.input-open-port' | i18n"
               (ngModelChange)="portTypeChange($event)"
             >
               <nz-option nzValue="Port" nzLabel="Port"></nz-option>
@@ -92,7 +94,7 @@
         <nz-form-item *ngIf="portType === 'Port'">
           <nz-form-label nzFor="portRangeMin">
             <div class="name-rule">
-              <span>Nhập Port</span>
+              <span>{{ 'app.cluster.input-port' | i18n }}</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
             </div>
           </nz-form-label>
@@ -109,7 +111,7 @@
               || control.hasError('pattern')
               || control.hasError('outOfRange')
               || control.hasError('invalidNumber')">
-                Vui lòng nhập số nguyên trong khoảng 1 đến 65535
+                {{ 'cluster.validate.from-port' | i18n }}
               </ng-container>
 
             </ng-template>
@@ -130,7 +132,7 @@
                              id="portRangeMin" nzAutoFocus (ngModelChange)="updatePortRangeValidator()" />
             <ng-template #portRangeMinErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required') || control.hasError('invalid') || control.hasError('pattern') || control.hasError('outOfRange')|| control.hasError('invalidNumber') ">
-                Vui lòng nhập số nguyên trong khoảng 1 đến 65535
+                {{ 'cluster.validate.from-port' | i18n }}
               </ng-container>
             </ng-template>
           </nz-form-control>
@@ -149,7 +151,7 @@
                              formControlName="portRangeMax" />
             <ng-template #portRangeMaxErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required') || control.hasError('invalid') || control.hasError('pattern') ||  control.hasError('outOfRange') || control.hasError('portMismatch') || control.hasError('invalidNumber')">
-                Vui lòng nhập số nguyên trong khoảng 1 đến 65535 và phải lớn hơn hoặc bằng From Port
+                {{ 'cluster.validate.to-port' | i18n }}
               </ng-container>
             </ng-template>
           </nz-form-control>
@@ -160,11 +162,11 @@
       <nz-form-item>
         <nz-form-label nzFor="remoteType">
           <div class="name-rule">
-            <span>Chọn Remote</span>
+            <span>{{ 'app.cluster.input-remote' | i18n }}</span>
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
           </div>
         </nz-form-label>
-        <nz-form-control nzErrorTip="Không được để trống!">
+        <nz-form-control [nzErrorTip]="'cluster.validate.required' | i18n">
           <nz-select
             id="remoteType"
             nzSize="large"
@@ -180,7 +182,7 @@
         <nz-form-item>
           <nz-form-label nzFor="remoteIpPrefix">
             <div class="name-rule">
-              <span>Nhập Remote IP</span>
+              <span>{{ 'app.cluster.input-remote-ip' | i18n }}</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
             </div>
           </nz-form-label>
@@ -188,7 +190,7 @@
             <input nz-input class="input-custom" formControlName="remoteIpPrefix" (keydown.enter)="focusOkButton($event)"/>
             <ng-template #remoteIpErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required') || control.hasError('invalidIp') || control.hasError('invalidSubnetMask')">
-                Vui lòng nhập đúng định dạng IP x.x.x.x/x (subnet mask không vượt quá 32, octet không vượt quá 255)
+                {{ 'cluster.validate.ip' | i18n }}
               </ng-container>
             </ng-template>
           </nz-form-control>
@@ -198,15 +200,15 @@
         <nz-form-item>
           <nz-form-label nzFor="securityGroupId">
             <div class="name-rule">
-              <span>Chọn Security Group</span>
+              <span>{{ 'app.choose.security.group' | i18n }}</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
             </div>
           </nz-form-label>
-          <nz-form-control nzErrorTip="Không được để trống!">
+          <nz-form-control [nzErrorTip]="'cluster.validate.required' | i18n">
             <nz-select nzSize="large"
                        id="securityGroupId"
                        formControlName="securityGroupId"
-                       nzPlaceHolder="Chọn Security Group">
+                       [nzPlaceHolder]="'app.choose.security.group' | i18n">
               <nz-option *ngFor="let data of listSecurityGroup"
                          nzValue="{{ data.id }}" nzLabel="{{ data.name }}"></nz-option>
             </nz-select>
@@ -215,15 +217,15 @@
         <nz-form-item>
           <nz-form-label nzFor="etherType">
             <div class="name-rule">
-              <span>Chọn Enter Type</span>
+              <span>{{ 'app.cluster.input-ether-type' | i18n }}</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
             </div>
           </nz-form-label>
-          <nz-form-control nzErrorTip="Chọn Enther Type">
+          <nz-form-control [nzErrorTip]="'cluster.validate.required' | i18n">
             <nz-select nzSize="large"
                        id="etherType"
                        formControlName="etherType"
-                       nzPlaceHolder="Chọn Enther Type">
+                       [nzPlaceHolder]="'app.cluster.input-ether-type' | i18n">
               <nz-option nzValue="ipv4" nzLabel="IPV4"></nz-option>
               <nz-option nzValue="ipv6" nzLabel="IPV6"></nz-option>
             </nz-select>
@@ -237,12 +239,14 @@
   <nz-form-item nzAlign="bottom" nzJustify="center">
     <nz-space nzSize="middle">
       <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-back">
-        <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+        <span nz-icon nzType="close" nzTheme="outline"></span>
+        {{ 'app.button.cancel' | i18n }}
       </button>
       <nz-form-control *nzSpaceItem>
         <button nz-button nzType="primary" [nzLoading]="isLoading"
                 class="button-create" [disabled]="!validateForm.valid" (click)="doCreate()">
-          <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+          <span nz-icon nzType="check" nzTheme="outline"></span>
+          {{ 'app.button.confirm' | i18n }}
         </button>
       </nz-form-control>
     </nz-space>

@@ -18,6 +18,9 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { I18NService } from '@core';
 import * as JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import mime from 'mime';
+
+
 @Component({
   selector: 'one-portal-bucket-detail',
   templateUrl: './bucket-detail.component.html',
@@ -530,6 +533,9 @@ export class BucketDetailComponent implements OnInit {
         this.listOfData = data.paginationObjectList.items;
         this.listOfData.map((item) => {
           item.keyName = item.key.split('/').pop();
+          if (item.objectType == 'object') {
+            item.objectType = mime.getType(item.keyName) || 'object';
+          }
         });
         this.total = data.paginationObjectList.totalItems;
       });
