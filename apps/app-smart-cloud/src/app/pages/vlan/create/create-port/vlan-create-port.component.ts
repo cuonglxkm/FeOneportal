@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -42,7 +52,7 @@ export function portValidator(vlanService: VlanService, cidr: string, networkId:
   templateUrl: './vlan-create-port.component.html',
   styleUrls: ['./vlan-create-port.component.less'],
 })
-export class VlanCreatePortComponent implements OnInit{
+export class VlanCreatePortComponent implements OnInit, AfterViewInit{
   @Input() region: number
   @Input() project: number
   @Input() networkId: number
@@ -75,6 +85,8 @@ export class VlanCreatePortComponent implements OnInit{
 
   nameList: string[] = []
 
+  @ViewChild('portInputName') portInputName!: ElementRef<HTMLInputElement>;
+
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -84,6 +96,18 @@ export class VlanCreatePortComponent implements OnInit{
               private fb: NonNullableFormBuilder,) {
 
   }
+
+  ngAfterViewInit(): void {
+    this.portInputName?.nativeElement.focus();
+  }
+
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.submitForm();
+    }
+  }
+
 
   getSubnetByNetworkId() {
     this.isLoadingSubnet = true
@@ -139,6 +163,9 @@ export class VlanCreatePortComponent implements OnInit{
   showModal(): void {
     this.isVisible = true;
     this.getPortByNetwork()
+    setTimeout(() => {
+      this.portInputName?.nativeElement.focus();
+    }, 1000);
   }
 
 
