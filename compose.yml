@@ -11,11 +11,11 @@ services:
     ports:
       - "4200:80"
     environment:
-      - APP_SMART_CLOUD_URL=https://appsmartcloud.onsmartcloud.com
-      - APP_KUBERNETES_URL=https://appkubernetes.onsmartcloud.com
-      - APP_KAFKA_URL=https://appkafka.onsmartcloud.com
-      - BASE_URL=https://api.onsmartcloud.com
-      - ISSUER=https://identity.onsmartcloud.com
+      - APP_SMART_CLOUD_URL=https://appsmartcloud-dev.onsmartcloud.com
+      - APP_KUBERNETES_URL=https://appkubernetes-dev.onsmartcloud.com
+      - APP_KAFKA_URL=https://appkafka-dev.onsmartcloud.com
+      - BASE_URL=https://api-dev.onsmartcloud.com
+      - ISSUER=https://identity-dev.onsmartcloud.com
       - CLIENT_ID=frontend-client
       - CALLBACK=http://localhost:4200/passport/callback/oneportal
       - LOGOUT_CALLBACK=http://localhost:4200
