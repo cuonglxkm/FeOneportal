@@ -1575,6 +1575,8 @@ export class InstancesCreateComponent implements OnInit {
           this.order.note = 'tạo vm';
           this.order.orderItems = this.orderItem;
 
+          
+
           var returnPath: string = window.location.pathname;
           console.log('instance create', this.instanceCreate);
           this.router.navigate(['/app-smart-cloud/order/cart'], {
