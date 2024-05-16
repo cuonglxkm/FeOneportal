@@ -50,26 +50,26 @@
         <thead>
         <tr>
           <th>{{ 'app.ip.address' | i18n }}</th>
-          <th>{{ 'app.service.creation-date' | i18n }}</th>
-          <th>{{ 'app.service.expiration-date' | i18n }}</th>
           <th>{{ 'app.instances' | i18n }}</th>
           <th>{{ 'app.ip.public.status' | i18n }}</th>
           <th>{{ 'app.task.status' | i18n }}</th>
+          <th>{{ 'app.service.creation-date' | i18n }}</th>
+          <th>{{ 'app.service.expiration-date' | i18n }}</th>
           <th>{{ 'app.text.operation' | i18n }}</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let item of listOfIp">
           <td>{{ item.ipAddress === null || item.ipAddress === '' ? item.iPv6Address : item.ipAddress }}</td>
-          <td>{{item.createDate | date : "dd/MM/YYYY"}}</td>
-          <td>{{item.expiredDate | date : "dd/MM/YYYY"}}</td>
           <!--          <td>{{ item.ipAddress === null || item.ipAddress === '' ? 'IPv6' : 'IPv4' }}</td>-->
           <td>{{ item.attachedVm }}</td>
-          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: #0066B3">{{'app.status.running' | i18n}}</td>
+          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: #0066B0">{{'app.status.running' | i18n}}</td>
           <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>
           <td *ngIf="item.status === 0">-</td>
           <td *ngIf="item.status === 2">IN-USE</td>
           <td *ngIf="item.status === 3">ERROR</td>
+          <td>{{item.createDate | date : "dd/MM/YYYY"}}</td>
+          <td>{{item.expiredDate | date : "dd/MM/YYYY"}}</td>
           <td>
             <div>
               <!----Gắn----->
@@ -85,7 +85,7 @@
                    nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Pulbic" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gia hạn Ip Pulbic', item)"/>
               <!----Xóa---->
-              <img src="assets/imgs/delete.svg" style="height: 20px"
+              <img src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
                    nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Xóa', item)"/>
             </div>
@@ -111,9 +111,9 @@
 <!--Gắn-->
 <nz-modal [(nzVisible)]="isVisibleMounted" nzTitle="{{'app.attach' | i18n}} IP Public" (nzOnCancel)="handleCancel()" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
-    <h4>{{'app.instances' | i18n}}</h4>
+    <div class="text-label">{{'app.instances' | i18n}}</div>
     <nz-select [nzLoading]="loadingAtt" [nzDisabled]="disableAtt" [(ngModel)]="instanceSelected" style="width: 100%"
-               nzPlaceHolder="{{'app.ip.public.select.instance.dropdown' | i18n}}">
+               nzPlaceHolder="{{'app.ip.public.select.instance.dropdown' | i18n}}" nzSize="large">
       <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.id"/>
     </nz-select>
     <div *ngIf="isSelected" style="color: red;">{{'app.ip.public.select.instance' | i18n}}</div>

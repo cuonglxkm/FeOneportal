@@ -1,12 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
-import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VpnSiteToSiteDTO } from 'src/app/shared/models/vpn-site-to-site';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
-import { debounceTime } from 'rxjs';
-import { Router } from '@angular/router';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { IpsecPoliciesComponent } from './ipsec-policies/ipsec-policies.component';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-vpn-site-to-site-manage',
@@ -17,7 +15,7 @@ import { IpsecPoliciesComponent } from './ipsec-policies/ipsec-policies.componen
 export class VpnSiteToSiteManage {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));  
-
+  projectObject: any;
   isBegin: boolean = false;
   isLoading: boolean = false
   response: VpnSiteToSiteDTO
@@ -35,6 +33,7 @@ export class VpnSiteToSiteManage {
   }
 
   projectChanged(project: ProjectModel) {
+    this.projectObject = project;
     this.project = project.id;
     console.log(this.project);
     this.getData(true)
@@ -45,7 +44,9 @@ export class VpnSiteToSiteManage {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-    this.getData(true)
+    if(this.project && !this.projectObject && localStorage.getItem('projects') ){
+      this.projectObject = JSON.parse(localStorage.getItem('projects')).find(x => Number(x.id) == Number(this.project)) ? JSON.parse(localStorage.getItem('projects')).find(x => Number(x.id) == Number(this.project)) : null;
+    }
   }
 
   getData(isBegin) {
@@ -59,14 +60,14 @@ export class VpnSiteToSiteManage {
           
         }
       if (isBegin) {
-        this.isBegin = this.response === null ? true : false;
+        this.isBegin = this.response ? false : true;
       }
     }, error => {
       this.isLoading = false;
       this.response = null;
       console.log(this.response);
       if (isBegin) {
-        this.isBegin = this.response === null ? true : false;
+        this.isBegin = this.response ? false : true;
       }
     })
   }

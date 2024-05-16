@@ -44,6 +44,8 @@ export class CreateVolumeComponent implements OnInit {
     time: FormControl<number>;
     description: FormControl<string>;
     storage: FormControl<number>;
+    checkMulti: FormControl<any>;
+    checkEncrypt: FormControl<any>;
     isEncryption: FormControl<boolean>;
     isMultiAttach: FormControl<boolean>;
   }> = this.fb.group({
@@ -57,6 +59,8 @@ export class CreateVolumeComponent implements OnInit {
     time: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     description: ['', Validators.maxLength(700)],
     storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
+    checkMulti: [''],
+    checkEncrypt: [''],
     isEncryption: [false],
     isMultiAttach: [false]
   });
@@ -84,6 +88,9 @@ export class CreateVolumeComponent implements OnInit {
 
   dataSubjectStorage: Subject<any> = new Subject<any>();
 
+  enableEncrypt: boolean = false;
+  enableMultiAttach: boolean = false;
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private volumeService: VolumeService,
@@ -98,6 +105,11 @@ export class CreateVolumeComponent implements OnInit {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
+      this.enableMultiAttach = value;
+    });
+
+    this.validateForm.get('isEncryption').valueChanges.subscribe((value) => {
+      this.enableEncrypt = value;
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
@@ -158,20 +170,20 @@ export class CreateVolumeComponent implements OnInit {
   isFirstMounting: boolean = false;
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
     this.router.navigate(['/app-smart-cloud/volumes']);
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project.id;
-    this.typeVPC = project.type
+    this.typeVPC = project.type;
 
 
     this.getListSnapshot();
     this.getListInstance();
 
-    // this.getCatalogOffer('MultiAttachment')
-    // this.getCatalogOffer('Encryption')
+    this.getCatalogOffer('MultiAttachment');
+    this.getCatalogOffer('Encryption');
 
     this.getListVolumes();
   }
@@ -223,13 +235,28 @@ export class CreateVolumeComponent implements OnInit {
     }
   }
 
+  onChangeStatusEncrypt(value) {
+    console.log('value change encrypt', value);
+    if(value == true) {
+      this.validateForm.controls.isEncryption.setValue(true)
+      this.validateForm.controls.isMultiAttach.setValue(false)
+    }
+  }
+
+  onChangeStatusMultiAttach(value) {
+    if(value == true) {
+      this.validateForm.controls.isMultiAttach.setValue(true)
+      this.validateForm.controls.isEncryption.setValue(false)
+    }
+  }
+
   //get danh sách máy ảo
   getListInstance() {
     this.instanceService
       .search(1, 9999, this.region, this.project, '', 'KHOITAO', true, this.tokenService.get()?.userId)
       .subscribe((data) => {
         this.listInstances = data.records;
-        this.listInstances = data.records.filter(item => item.taskState === 'ACTIVE');
+        this.listInstances = data.records.filter(item => item.taskState === 'ACTIVE' && item.status === 'KHOITAO');
         console.log('list instance', this.listInstances);
         this.cdr.detectChanges();
       });

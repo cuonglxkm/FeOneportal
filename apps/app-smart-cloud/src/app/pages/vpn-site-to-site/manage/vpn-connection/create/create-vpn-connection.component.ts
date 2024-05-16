@@ -48,6 +48,16 @@ export class CreateVpnConnectionComponent implements OnInit{
   selectedVpnServiceName: any
 
   isLoading: boolean = false
+  isLoadingIpsecPolicy: boolean = false
+  isLoadingIkePolicy: boolean = false
+  isLoadingVpnService: boolean = false
+  isLoadingEndpointGroup: boolean = false
+
+  disableIpsecpolicy: boolean = true
+  disableIkepolicy: boolean = true
+  disableVpnService: boolean = true
+  disableEndpointGroup: boolean = true  
+
   preSharedKeyVisible: boolean = false
 
   FormCreateVpnConnection: FormCreateVpnConnection =
@@ -62,6 +72,11 @@ export class CreateVpnConnectionComponent implements OnInit{
     peerRemoteIp: FormControl<string>
     peerId: FormControl<string>,
     preSharedKey: FormControl<string>,
+    ipsecpolicyId: FormControl<string>,
+    ikepolicyId: FormControl<string>,
+    localEndpointGroup: FormControl<string>,
+    remoteEndpointGroup: FormControl<string>,
+    vpnServiceId: FormControl<string>,
   }> 
 
 
@@ -78,6 +93,7 @@ export class CreateVpnConnectionComponent implements OnInit{
   ) {}
 
   getDataIpsecPolices() {
+    this.isLoadingIpsecPolicy = true
     this.formSearchIpsecPolicy.vpcId = this.project
     this.formSearchIpsecPolicy.regionId = this.region
     this.formSearchIpsecPolicy.name = ""
@@ -86,6 +102,8 @@ export class CreateVpnConnectionComponent implements OnInit{
     this.ipsecPolicyService.getIpsecpolicy(this.formSearchIpsecPolicy)
       .pipe(debounceTime(500))
       .subscribe(data => {     
+      this.isLoadingIpsecPolicy = false
+      this.disableIpsecpolicy = false
       data.records.forEach(ipsecPolicy => {
         this.ipsecPoliciesList.push({label: ipsecPolicy.name, value: ipsecPolicy.id});
       })
@@ -97,6 +115,7 @@ export class CreateVpnConnectionComponent implements OnInit{
   }
 
   getDataIkePolices() {
+    this.isLoadingIkePolicy = true
     this.formSearchIkePolicy.projectId = this.project
     this.formSearchIkePolicy.regionId = this.region
     this.formSearchIkePolicy.searchValue = ""
@@ -104,7 +123,8 @@ export class CreateVpnConnectionComponent implements OnInit{
     this.formSearchIkePolicy.pageSize = 1000
     this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
       .subscribe(data => {
-          
+        this.isLoadingIkePolicy = false    
+        this.disableIkepolicy = false
       data.records.forEach(ikePolicy => {
         this.ikePoliciesList.push({label: ikePolicy.name, value: ikePolicy.cloudId});
       })
@@ -121,6 +141,7 @@ export class CreateVpnConnectionComponent implements OnInit{
   // }
 
   getDataEndPointGroup() {
+    this.isLoadingEndpointGroup = true
     this.formSearchEnpointGroup.vpcId = this.project
     this.formSearchEnpointGroup.regionId = this.region
     this.formSearchEnpointGroup.name = ''
@@ -129,7 +150,8 @@ export class CreateVpnConnectionComponent implements OnInit{
 
     this.endpointGroupService.getListEndpointGroup(this.formSearchEnpointGroup)
       .subscribe(data => {
-          
+        this.isLoadingEndpointGroup = false   
+        this.disableEndpointGroup = false 
       data.records.forEach(endPointGroup => {
         if (endPointGroup.type === 'subnet') {
           this.localEndpointGroupList.push({ label: endPointGroup.name, value: endPointGroup.id });
@@ -149,16 +171,21 @@ export class CreateVpnConnectionComponent implements OnInit{
   }
 
   getDataVpnService() {
+    this.isLoadingVpnService = true
     this.formSearchVpnService.projectId = this.project
     this.formSearchVpnService.regionId = this.region
     this.formSearchVpnService.name = ''
     this.formSearchVpnService.pageSize = 1000
     this.formSearchVpnService.currentPage = 1
-
     this.vpnServiceService.getVpnService(this.formSearchVpnService)
       .subscribe(data => {
-          
-        data.records.forEach(vpnService => {
+        this.isLoadingVpnService = false  
+        this.disableVpnService = false 
+        const vpnServiceList =  data.records.filter(vpnService => {
+          return vpnService.status !== 'PENDING_CREATE'
+        });
+        
+        vpnServiceList.forEach(vpnService => {
           this.vpnServiceList.push({label: vpnService.name, value: vpnService.id});
         })
       if (this.vpnServiceList.length > 0) {
@@ -179,6 +206,11 @@ export class CreateVpnConnectionComponent implements OnInit{
       peerRemoteIp: ['', [Validators.required, Validators.pattern(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)]],
       peerId: ['', [Validators.required, Validators.pattern(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)]],
       preSharedKey: ['', [Validators.required]],
+      ipsecpolicyId: ['', [Validators.required]],
+      ikepolicyId: ['', [Validators.required]],
+      localEndpointGroup: ['', [Validators.required]],
+      remoteEndpointGroup: ['', [Validators.required]],
+      vpnServiceId: ['', [Validators.required]],
     });
     this.getDataIpsecPolices()
     this.getDataIkePolices()

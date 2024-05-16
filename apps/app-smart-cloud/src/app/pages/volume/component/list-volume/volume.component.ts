@@ -7,6 +7,8 @@ import { BaseResponse, NotificationService, ProjectModel, RegionModel } from '..
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'app-volume',
@@ -27,10 +29,10 @@ export class VolumeComponent implements OnInit {
   value: string;
 
   options = [
-    { label: 'Tất cả trạng thái', value: null },
-    { label: 'Đang hoạt động', value: 'KHOITAO' },
-    { label: 'Lỗi', value: 'ERROR' },
-    { label: 'Tạm ngừng', value: 'SUSPENDED' }
+    { label: this.i18n.fanyi('app.status.all'), value: null },
+    { label: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
+    { label: this.i18n.fanyi('app.status.error'), value: 'ERROR' },
+    { label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED' }
   ];
 
   pageSize: number = 10;
@@ -61,7 +63,8 @@ export class VolumeComponent implements OnInit {
               private fb: NonNullableFormBuilder,
               private cdr: ChangeDetectorRef,
               private notificationService: NotificationService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -130,6 +133,8 @@ export class VolumeComponent implements OnInit {
       }, error => {
         this.isLoading = false;
         this.response = null;
+        console.log(error);
+        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
       });
   }
 
@@ -137,16 +142,6 @@ export class VolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volume/create']);
   }
 
-  // navigateToCreateBackupVolume(id: number, startDate: Date, endDate: Date, nameVolume: string) {
-  //   this.router.navigate(['/app-smart-cloud/backup-volume/create'], {
-  //     queryParams: {
-  //       idVolume: id,
-  //       startDate: startDate,
-  //       endDate: endDate,
-  //       nameVolume: nameVolume
-  //     }
-  //   });
-  // }
 
   navigateToCreateVolumeVPC() {
     this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
@@ -207,8 +202,7 @@ export class VolumeComponent implements OnInit {
     if (!this.region && !this.project) {
       this.router.navigate(['/exception/500']);
     }
-    // this.getListVm()
-    // this.getListVolume(true)
+
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
     }

@@ -1,14 +1,21 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'Khởi tạo User'">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users']">{{"app.breadcrumb.account"|i18n}}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users']">IAM</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item> {{ 'app.breadcrumb.createUser' | i18n }} </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
 </page-header>
 
@@ -35,15 +42,12 @@
               minlength="1"
               (change)="userCreate.userName = userCreate.userName.trim()"
             />
-            <span class="nameField"
-              >{{ 'app.create-user.tooltip.nameUser' | i18n }}</span
-            >
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >Vui lòng nhập tên User
+                >{{ 'validation.info.required' | i18n }}
               </ng-container>
               <ng-container *ngIf="control.hasError('pattern')"
-                >Tên người dùng không hợp lệ
+                >{{ 'app.create-user.tooltip.nameUser' | i18n }}
               </ng-container>
             </ng-template>
           </nz-form-control>
@@ -68,10 +72,10 @@
             />
             <ng-template #emailErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >Vui lòng nhập email của User
+                >{{ 'validation.info.required' | i18n }}
               </ng-container>
               <ng-container *ngIf="control.hasError('email')"
-                >Email không hợp lệ
+                >{{ 'validation.email.wrong-format' | i18n }}
               </ng-container>
             </ng-template>
           </nz-form-control>

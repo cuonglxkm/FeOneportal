@@ -88,6 +88,7 @@
           <thead>
           <tr>
             <th nzLeft>{{ 'volume.table.title.name.volume' | i18n }}</th>
+            <th nzBreakWord>{{'volume.table.title.type.volume' | i18n}}</th>
             <th nzBreakWord>{{ 'volume.table.title.storage' | i18n }} (GB)</th>
             <th nzBreakWord>{{ 'volume.table.title.iops' | i18n }}</th>
             <th nzBreakWord>{{ 'volume.table.title.status.volume' | i18n }}</th>
@@ -99,6 +100,10 @@
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
             <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + data.id">{{data.name}}</a></td>
+            <td nzBreakWord>
+              <span *ngIf="data.volumeType == 'hdd'">HDD</span>
+              <span *ngIf="data.volumeType == 'ssd'">SSD</span>
+            </td>
             <td nzBreakWord nzAlign="right">{{data.sizeInGB}}</td>
             <td nzBreakWord nzAlign="right">
               <div *ngIf="data.iops == null">200</div>
@@ -132,14 +137,14 @@
             </td>
             <td nzBreakWord>
               <div>
-                <one-portal-attach-volume *ngIf="(!data.isMultiAttach && data.attachedInstances.length <= 0) && data.serviceStatus != 'ERROR'"
+                <one-portal-attach-volume *ngIf="data.serviceStatus != 'ERROR'"
                                            [region]="region"
                                            [project]="project"
                                            [volumeId]="data.id"
                                            [multiple]="data.isMultiAttach"
                                            [instanceInVolume]="data.attachedInstances"
                                            (onOk)="handleOkAttachVm()" />
-                <one-portal-detach-volume *ngIf="(!data.isMultiAttach && data.attachedInstances.length > 0) && data.serviceStatus != 'ERROR'"
+                <one-portal-detach-volume *ngIf="data.serviceStatus != 'ERROR'"
                                           [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
@@ -276,10 +281,13 @@
             <tbody>
             <tr *ngFor="let i of fixedTable2.data">
               <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + i.id">{{i.name}}</a></td>
-              <td nzBreakWord>{{i.volumeType}}</td>
-              <td nzBreakWord>{{i.sizeInGB}}</td>
               <td nzBreakWord>
-                <div *ngIf="i.iops == null">200</div>
+                <span *ngIf="i.volumeType == 'hdd'">HDD</span>
+                <span *ngIf="i.volumeType == 'ssd'">SSD</span>
+              </td>
+              <td nzBreakWord nzAlign="right">{{i.sizeInGB}}</td>
+              <td nzBreakWord nzAlign="right">
+                <div *ngIf="i.iops == null">300</div>
                 <div *ngIf="i.iops != null">{{i.iops}}</div>
               </td>
               <td nzBreakWord>
@@ -303,35 +311,40 @@
               </td>
               <td nzBreakWord>{{ i.serviceStatus }}</td>
               <td nzBreakWord>
-                <div *ngIf="i.instanceName == null">-</div>
-                <div *ngIf="i.instanceName != null">{{i.instanceName}}</div>
+                <div *ngIf="i.attachedInstances.length <= 0">-</div>
+                <div *ngIf="i.attachedInstances.length > 0">
+                  <span *ngFor="let a of i.attachedInstances">{{a.instanceName}}</span>
+                </div>
               </td>
               <td>
                 <div>
-                  <one-portal-attach-volume *ngIf="!i.isMultiAttach && i.attachedInstances.length > 0"
-                                            [region]="region"
+                  <one-portal-attach-volume [region]="region"
                                             [project]="project"
                                             [volumeId]="i.id"
                                             [multiple]="i.isMultiAttach"
                                             [instanceInVolume]="i.attachedInstances"
                                             (onOk)="handleOkAttachVm()" />
-                  <one-portal-detach-volume *ngIf="!i.isMultiAttach && i.attachedInstances.length <= 0"
-                                            [region]="region"
+                  <one-portal-detach-volume [region]="region"
                                             [project]="project"
                                             [volumeId]="i.id"
                                             [isMultiple]="i.isMultiAttach"
                                             [instanceInVolume]="i.attachedInstances"
                                             (onOk)="handleOkDetachVm()"/>
-                  <span *ngIf="i.serviceStatus != 'ERROR'" style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="calendar"
-                        nzTheme="outline" nz-popover
-                        [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
-                        nzPopoverPlacement="bottom" (click)="navigateToCreateBackup(i.id, i.creationDate, i.expirationDate, i.name)"></span>
+                  <img *ngIf="i.serviceStatus != 'ERROR'"
+                       style="padding-right: 10px; margin-left: 3px; cursor: pointer;"
+                       src="assets/imgs/calendar-tick.svg" alt=""
+                       nz-popover
+                       [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
+                       nzPopoverPlacement="bottom" (click)="navigateToCreateBackup(i.id, i.creationDate, i.expirationDate, i.name)"/>
                   <one-portal-delete-volume [region]="region"
                                             [project]="project"
                                             [volumeId]="i.id"
+                                            [volumeName]="i.name"
                                             (onOk)="handleOkDelete()"/>
-                  <span *ngIf="i.serviceStatus != 'ERROR'" style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
-                        [nzDropdownMenu]="opMenu"></span>
+                  <img *ngIf="i.serviceStatus != 'ERROR'"
+                       nz-dropdown
+                       [nzDropdownMenu]="opMenu"
+                       src="assets/imgs/more1.svg" alt="" style="cursor: pointer; margin-left: 5px;"/>
                   <nz-dropdown-menu #opMenu="nzDropdownMenu">
                     <ul nz-menu>
                       <li nz-menu-item (click)="navigateToCreateScheduleBackup(i.id)">{{'volume.menu.create.schedule.backup' | i18n}}</li>
@@ -363,7 +376,7 @@
                 <span class="text-intro-desc">{{'volume.intro.subtitle' | i18n}}</span>
               </nz-col>
             </nz-row>
-            <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
+            <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreateVolumeVPC()" nzSize="large">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
               {{'volume.button.create' | i18n}}
             </button>

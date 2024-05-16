@@ -52,13 +52,13 @@ export class DeleteIpFloatingComponent{
           if(data) {
             this.isVisible = false
             this.isLoading =  false
-            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.ip.floating17'))
+            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('ip.floating.nofitacation.remove.success'))
             this.onOk.emit(data)
           }
         }, error => {
           this.isVisible = false
           this.isLoading =  false
-          this.notification.success(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.ip.floating18'))
+          this.notification.success(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('ip.floating.nofitacation.remove.fail'))
         })
       }
     }

@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Quản lý File System Snapshot'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.file.system.snapshot.manage' | i18n">
     <ng-template #breadcrumb>
       <nz-breadcrumb>
         <nz-breadcrumb-item>
@@ -8,7 +8,7 @@
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
         <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-        <nz-breadcrumb-item>Quản lý File System Snapshot</nz-breadcrumb-item>
+        <nz-breadcrumb-item>{{ 'app.file.system.snapshot.manage' | i18n }}</nz-breadcrumb-item>
       </nz-breadcrumb>
     </ng-template>
     <ng-template #action>
@@ -24,7 +24,7 @@
   <nz-content>
     <nz-card>
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span class="text-card-header">Quản lý File System Snapshot</span>
+        <span class="text-card-header">{{ 'app.file.system.snapshot.manage' | i18n }}</span>
       <nz-row style="gap: 16px">
         <nz-col>
           <nz-input-group [nzPrefix]="prefixIconSearch"
@@ -37,13 +37,13 @@
                    (input)="onInputChange($event.target['value'])"/>
           </nz-input-group>
           <ng-template #prefixIconSearch>
-            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"/>
           </ng-template>
         </nz-col>
         <nz-col>
             <button [routerLink]="['/app-smart-cloud/file-system-snapshot/create']" nz-button nzType="primary" nzSize="large">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
-                <span class="button-text-primary">Tạo mới File System Snapshot</span>
+                <span class="button-text-primary">{{ 'app.file.system.snapshot.create' | i18n }}</span>
               </button>
         </nz-col>
       </nz-row>
@@ -61,12 +61,12 @@
         <thead>
         <tr>
           <th>STT</th>
-          <th>Tên Snapshot</th>
-          <th>Dung lượng (GB)</th>
+          <th>{{ 'app.snapshot.name' | i18n }}</th>
+          <th>{{ 'app.capacity' | i18n }} (GB)</th>
           <th>{{ 'app.task.status' | i18n }}</th>
-          <th>Tên File System</th>
-          <th>Ngày cấp dịch vụ</th>
-          <th nzAlign='center'>Thao tác</th>
+          <th>{{ 'app.file.system.name' | i18n }}</th>
+          <th>{{ 'app.service.start.date' | i18n }}</th>
+          <th nzAlign='center'>{{ 'app.text.operation' | i18n }}</th>
         </tr>
         </thead>
         <tbody>

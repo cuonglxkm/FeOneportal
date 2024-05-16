@@ -2,6 +2,8 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Outp
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../../shared/services/vlan.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-delete-subnet',
@@ -25,6 +27,7 @@ export class DeleteSubnetComponent implements AfterViewInit {
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private vlanService: VlanService) {
   }
 
@@ -66,12 +69,12 @@ export class DeleteSubnetComponent implements AfterViewInit {
       this.vlanService.deleteSubnet(this.id).subscribe(item => {
         this.isVisibleDeleteSubnet = false;
         this.isLoadingDeleteSubnet = false;
-        this.notification.success('Thành công', 'Xoá subnet thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note53'));
         this.onOk.emit(item)
       }, error => {
         this.isVisibleDeleteSubnet = false;
         this.isLoadingDeleteSubnet = false;
-        this.notification.error('Thất bại', 'Xoá subnet thất bại. ', error.error.detail);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note54'), error.error.detail);
       });
 
     } else {

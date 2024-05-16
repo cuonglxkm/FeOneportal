@@ -51,7 +51,7 @@
         <img src="assets/imgs/dots.svg" alt="" />
         <nz-dropdown-menu #opMenu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item (click)="updateObjectStorage()">
+            <li nz-menu-item (click)="resizeObjectStorage()">
               {{ 'app.button.resize' | i18n }}
             </li>
             <li nz-menu-item (click)="deleteObjectStorage()">
@@ -63,13 +63,20 @@
     </div>
   </nz-row>
   <div style="margin-bottom: 10px" class="text-label">
-    {{ 'app.used.capacity' | i18n }}:
+    {{ 'app.capacity' | i18n }}:
+    <span class="text-value">{{ objectStorage.quota }} GB</span>
   </div>
   <div style="margin-bottom: 10px" class="text-label">
     {{ 'app.service.creation-date' | i18n }}:
+    <span class="text-value">{{
+      objectStorage.createdDate | date : 'dd/MM/yyyy'
+    }}</span>
   </div>
   <div style="margin-bottom: 10px" class="text-label">
     {{ 'app.service.expiration-date' | i18n }}:
+    <span class="text-value">{{
+      objectStorage.expiredDate | date : 'dd/MM/yyyy'
+    }}</span>
   </div>
 </nz-card>
 <nz-card *ngIf="hasOS" style="border-radius: 4px" [nzBordered]="false">
@@ -130,7 +137,7 @@
     style="margin-top: 10px"
     #rowSelectionTable
     nzShowSizeChanger
-    [nzScroll]="{ x: '100%', y: '250px' }"
+    [nzScroll]="{ y: '250px' }"
     [nzFrontPagination]="false"
     [nzData]="listBucket"
     (nzPageSizeChange)="search()"
@@ -138,13 +145,13 @@
   >
     <thead>
       <tr>
-        <th nzLeft>{{ 'app.bucket.name' | i18n }}</th>
-        <th>URL</th>
-        <th>{{ 'app.access.rights' | i18n }}</th>
-        <th>Versioning</th>
-        <th>{{ 'app.service.creation-date' | i18n }}</th>
-        <th>{{ 'app.text.status' | i18n }}</th>
-        <th nzRight>{{ 'app.text.operation' | i18n }}</th>
+        <th nzWidth="150px" nzLeft>{{ 'app.bucket.name' | i18n }}</th>
+        <th nzWidth="150px">URL</th>
+        <th nzWidth="150px">{{ 'app.access.rights' | i18n }}</th>
+        <th nzWidth="150px">Versioning</th>
+        <th nzWidth="150px">{{ 'app.service.creation-date' | i18n }}</th>
+        <th nzWidth="150px">{{ 'app.text.status' | i18n }}</th>
+        <th nzWidth="150px" nzRight>{{ 'app.text.operation' | i18n }}</th>
       </tr>
     </thead>
     <tbody>

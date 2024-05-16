@@ -57,7 +57,7 @@
               <nz-option *ngFor="let item of listNameParent" [nzValue]="[item]" nzLabel="{{ item }}"></nz-option>
             </nz-select>
             <ng-template #parentNameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item> -->

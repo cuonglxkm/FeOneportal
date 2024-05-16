@@ -299,7 +299,7 @@ export class DashboardComponent implements OnInit {
           data: this.healthCheckData.health
         },
         {
-          name: "UnHealth",
+          name: "Health",
           data: this.healthCheckData.unHealth
         },
         // Trường hợp không lấy được data prometheus về DB portal
@@ -318,7 +318,8 @@ export class DashboardComponent implements OnInit {
           show: false
         }
       },
-      colors: ['#06BC62', '#F74132'],
+      // colors: ['#06BC62', '#F74132'],
+      colors: ['#06BC62'], // only health
       dataLabels: {
         enabled: false
       },

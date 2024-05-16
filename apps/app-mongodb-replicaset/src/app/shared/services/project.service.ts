@@ -22,7 +22,7 @@ export class ProjectService extends BaseService {
 
   getByRegion(regionId: number) {
     return this.http.get<ProjectModel[]>
-    (this.baseUrl + this.ENDPOINT.provisions  + `/projects?regionId=${regionId}`, {
+    (this.apiGwUrl + this.ENDPOINT.provisions  + `/projects?regionId=${regionId}`, {
       headers: this.getHeaders()
     });
   }

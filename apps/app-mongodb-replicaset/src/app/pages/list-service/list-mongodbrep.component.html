@@ -1,0 +1,188 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]=" !isShowIntroductionPage ? 'Danh sách dịch vụ MongoDB Replicaset' : ''">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-mongodb-replicaset']">VNPT DocumentDB for MongoDB</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item *ngIf="!isShowIntroductionPage">Danh sách dịch vụ</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+
+  <!-- action -->
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<nz-content *ngIf="!isShowIntroductionPage; else introducePageTpl">
+  <nz-card>
+    <!-- filter -->
+    <div class="filter-div" nz-row>
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="4" [nzXl]="4">
+        <nz-select nzAllowClear [(ngModel)]="statusFilter" (ngModelChange)="changeStatusFilter($event)"
+          [nzPlaceHolder]="'Trạng thái dịch vụ'" class="w-100" nzSize="large">
+          <nz-option *ngFor="let item of listServiceStatus" [nzValue]="item.id"
+            [nzLabel]="item.status_name"></nz-option>
+        </nz-select>
+      </div>
+
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="6" class="search-filter">
+        <nz-input-group nzSearch nzSize="large" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
+          <input [(ngModel)]="keywordFilter" (keyup.enter)="changeKeywordFilter()" type="text" nz-input
+            placeholder="Tìm kiếm tên dịch vụ" />
+        </nz-input-group>
+        <ng-template #prefixButton>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+        </ng-template>
+      </div>
+
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="6" style="padding-left: 10px;">
+
+        <button nz-button nzType="default" class="btn-sync" (click)="searchServices()">
+          <img class="img" src="assets/imgs/refresh.svg" alt="" />
+        </button>
+        <!-- <button nz-button nzType="default" class="btn-sync" (click)="searchServices()">
+          <span nz-icon nzType="sync" nzTheme="outline" class="icon-general"></span>
+        </button> -->
+      </div>
+
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="8" style="text-align: right;">
+        <button nz-button nzType="primary" routerLink="create" class="btn-create">
+          <span nz-icon nzType="plus" nzTheme="outline" style="font-size: 20px; vertical-align: middle;">
+          </span>
+          Tạo mới dịch vụ
+        </button>
+      </div>
+    </div>
+
+    <!-- table -->
+    <nz-table #tableData [nzData]="services" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
+      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzPageSizeChange)="changeSize($event)"
+      (nzPageIndexChange)="changePage($event)" [nzScroll]="{ x: '1100px' }" [nzLoading]="loading">
+      <thead>
+        <tr>
+          <th nzWidth="5%" nzAlign="center">STT</th>
+          <th nzWidth="13%">Tên dịch vụ</th>
+          <th nzWidth="12%">Trạng thái</th>
+          <th nzWidth="10%">Phiên bản</th>
+          <th nzWidth="7%">Node</th>
+          <th nzWidth="15%">Thông tin kết nối</th>
+          <th nzWidth="20%">Gói dịch vụ</th>
+          <th nzWidth="15%">Thời gian tạo</th>
+          <th nzWidth="12%" nzAlign="center">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of tableData.data; let i = index">
+          <td nzAlign="center">{{ i + 1 }}</td>
+          <td> <a [routerLink]="[item.service_code]" >{{ item.service_name }}</a></td>
+          <td>
+              <span [ngStyle]="{color: item.status | status2Color}">{{item.status_name}}</span>
+          </td>
+          <td>{{ item.version }}</td>
+          <td>3</td>
+          <td nzEllipsis [nz-tooltip]="item.connection_string">
+                <span style="cursor: pointer;">{{ item.connection_string }}</span> <br>
+          </td>
+          <td>
+            {{item.service_pack}}
+          </td>
+          <td>{{ item.created_date | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+          <td nzAlign="center">
+            <img src="assets/imgs/edit-kafka.svg" alt="" style="cursor: pointer; margin-right: 16px;" [routerLink]="'edit/' + item.service_code"
+              nz-tooltip="Chỉnh sửa" class="img-edit" />
+            <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; margin-right: 16px" [routerLink]="'upgrade/' + item.service_code"
+              nz-tooltip="Nâng cấp" />
+            <img (click)="deleteForm(item)" src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" nz-tooltip="Xóa"  />
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <!-- Modal Detele -->
+    <nz-modal
+      [(nzVisible)]="isVisibleDelete"
+      nzTitle="Xóa dịch vụ MongoDB Replicaset"
+      (nzOnCancel)="handleCancelDelete()"
+      nzKeyboard="false"
+      nzMaskClosable="false">
+      <div *nzModalContent>
+        <ng-template #deleteSer>
+          Điều này là không thể hoàn tác. Hệ thống sẽ xóa hoàn toàn dịch vụ [<b>{{currentMongo.service_name}}</b>] của quý khách và tất cả các tài nguyên liên quan. Tất cả các node sẽ bị xoá và không thể khôi phục. Nếu quý khách chắc chắn vui lòng nhập <b>{{currentMongo.service_name}}</b> để xác nhận xóa dịch vụ.
+        </ng-template>
+        <nz-alert
+          nzType="warning"
+          [nzDescription]="deleteSer"
+          nzShowIcon
+        ></nz-alert>
+        <div style="justify-content: center;display: flex;">
+          <div nz-col nzSpan="24" style="min-height: 65px; margin-top: 15px;">
+            <nz-input-group nzSize="large" [nzSuffix]="prefixTemplate" [ngClass]="{ 'err-service': isErrorCheckDelete }">
+              <input  nzSize="large" type="text" style="border-radius: 8px;"
+              nz-input [(ngModel)]="serviceNameDelete" (ngModelChange)="checkServiceNameDel()" placeholder="Nhập tên dịch vụ" />
+            </nz-input-group>
+            <div class="err-msg">{{msgError}}</div>
+            <ng-template #prefixTemplate >
+              <span nz-icon *ngIf="isErrorCheckDelete" style="font-size: 20px;" nzType="exclamation-circle" nzTheme="twotone" [nzTwotoneColor]="'#ff4d4f'"></span>
+              <span nz-icon *ngIf="!isErrorCheckDelete && !isInitModal" style="font-size: 20px;" nzType="check-circle" nzTheme="twotone" [nzTwotoneColor]="'#52c41a'"></span>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div *nzModalFooter>
+        <button nz-button (click)="handleCancelDelete()" style="margin-right: 10px;">
+            <img
+                style="padding-right: 10px; margin-top: -4px"
+                src="assets/imgs/cancel.svg"
+                alt=""
+            />Hủy
+        </button>
+        <button nz-button nzType="primary" (click)="handleOkDelete()" [disabled]="isErrorCheckDelete || isInitModal">
+            <img
+                style="padding-right: 10px; margin-top: -4px"
+                src="assets/imgs/confirm.svg"
+                alt=""
+            />Xác nhận
+        </button>
+      </div>
+    </nz-modal>
+  </nz-card>
+</nz-content>
+<ng-template #introducePageTpl>
+  <nz-content>
+    <nz-card>
+      <div class="intro">
+        <div>
+          <img width="415px" height="188px" src="../../../assets/imgs/mongoreplicaset.jpg" alt="" />
+        </div>
+
+        <h3 class="description-title">VNPT DocumentDB for MongoDB</h3>
+
+        <div class="mt-3 description-content">
+          <span>
+            Dịch vụ DocumentDB for MongoDB cung cấp tính năng replication bảo đảm
+          khả năng dự phòng và nâng cao tính khả dụng của mongoDB. Với nhiều bản
+          sao chép trên nhiều database server khác nhau, replication nâng cao
+          mức độ chịu lỗi chống lại việc mất dữ liệu trên single database.
+          </span>
+        </div>
+
+        <div class="mleft-16 mtop-15">
+          <button nz-button nzType="primary" routerLink="create" class="border-button">
+            Khởi tạo ngay
+          </button>
+        </div>
+      </div>
+    </nz-card>
+  </nz-content>
+</ng-template>

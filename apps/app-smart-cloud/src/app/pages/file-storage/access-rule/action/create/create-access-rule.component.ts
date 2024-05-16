@@ -6,6 +6,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormCreateAccessRule } from '../../../../../shared/models/access-rule.model';
 import { AccessRuleService } from '../../../../../shared/services/access-rule.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-access-rule',
@@ -36,7 +38,8 @@ export class CreateAccessRuleComponent {
               private notification: NzNotificationService,
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
-              private accessRuleService: AccessRuleService) {
+              private accessRuleService: AccessRuleService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   showModalCreate() {
@@ -66,12 +69,12 @@ export class CreateAccessRuleComponent {
       this.accessRuleService.createAccessRule(formCreate).subscribe(data => {
         this.isVisible = false;
         this.isLoading = false;
-        this.notification.success('Thành công', 'Tạo mới access rule thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.access.to.create.success'));
         this.onOk.emit();
       }, error => {
         this.isVisible = false;
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Tạo mới access rule thất bại');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.access.to.create.fail') + error.error.detail);
       });
     }
 

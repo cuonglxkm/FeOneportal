@@ -29,7 +29,7 @@ export class EditBackupPackageComponent implements OnInit{
   validateForm: FormGroup<{
     storage: FormControl<number>
   }> = this.fb.group({
-    storage: [1, [Validators.required]]
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]]
   })
 
   isLoading: boolean = false

@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { debounceTime, finalize } from 'rxjs/operators';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
@@ -27,6 +27,7 @@ import { VlanService } from 'src/app/shared/services/vlan.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'one-portal-router-list',
@@ -39,25 +40,47 @@ export class RouterListComponent implements OnInit {
   dataList: RouterModel[] = [];
   isTrigger: boolean = false;
   currentPage = 1;
-  pageSize = 10;
+  pageSize = 3;
   total = 1;
-  loading = true;
-  filterGender = [
-    { text: 'male', value: 'male' },
-    { text: 'female', value: 'female' },
-  ];
+  loading = false;
   searchGenderList: string[] = [];
   filterStatus = [
     { text: 'Tất cả trạng thái', value: '' },
-    { text: 'Đang khởi tạo', value: 'DANGKHOITAO' },
-    { text: 'Khởi tạo', value: 'KHOITAO' },
-    { text: 'Tạm ngưng', value: 'TAMNGUNG' },
+    { text: 'Kích hoạt', value: 'Kích hoạt' },
+    { text: 'Chưa kích hoạt', value: 'Chưa kích hoạt' },
   ];
 
-  listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
-  listSubnet: [{ id: ''; text: 'Chọn Subnet' }];
-  listIPAddress: [{ id: ''; text: 'Chọn địa chỉ IP' }];
-  listIPAddressOnVLAN: [{ id: ''; text: 'Chọn địa chỉ IP' }];
+  form: FormGroup<{
+    name: FormControl<string>
+    network: FormControl<string>
+  }> = this.fb.group({
+    name: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
+      ],
+    ],
+    network: [''],
+  });
+
+  formEdit: FormGroup<{
+    name: FormControl<string>,
+  }> = this.fb.group({
+    name: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
+      ],
+    ],
+  });
+
+  formDelete: FormGroup<{
+    name: FormControl<string>
+  }> = this.fb.group({
+    name: ['', [Validators.required, this.nameRouterValidator.bind(this)]]
+  });
 
   cloudId: string;
   region: number;
@@ -68,22 +91,26 @@ export class RouterListComponent implements OnInit {
   isVisibleGoKhoiVLAN: boolean = false;
   formListRouter: FormSearchRouter = new FormSearchRouter()
   isLoadingCreateRouter: boolean = false
-
+  isLoadingDeleteRouter: boolean = false
+  isLoadingEditRouter: boolean = false
+  routerName: string = ''
+  searchStatus: string = ''
+  isCheckBegin: boolean = false;
+  value: string
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: RouterService,
     private cdr: ChangeDetectorRef,
-    private router: Router,
     private notification: NzNotificationService,
-    private vlanService: VlanService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private fb: NonNullableFormBuilder
   ) {}
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-    this.getDataList()
+    this.formEdit.controls.name.setValue(this.routerUpdate.routerName)
   }
 
   selectedChecked(e: any): void {
@@ -93,87 +120,56 @@ export class RouterListComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     // Handle the region change event
-    this.activeCreate = false;
     this.loading = true;
     this.region = region.regionId;
     console.log(this.tokenService.get()?.userId);
   }
 
   onProjectChange(project: ProjectModel) {
-    this.activeCreate = false;
     this.loading = true;
     this.projectId = project.id;
-    this.getDataList();
+    this.getDataList(true);
   }
 
-  // doSearch() {
-  //   if (this.region != undefined && this.region != null) {
-  //     this.loading = true;
-  //     this.dataService
-  //       .getListRouter(this.region, this.pageSize, this.currentPage)
-  //       .pipe(
-  //         finalize(() => {
-  //           this.loading = false;
-  //           this.cdr.detectChanges();
-  //         })
-  //       )
-  //       .subscribe({
-  //         next: (next) => {
-  //           this.dataList = next.records;
-  //           this.total = next.totalCount;
-  //         },
-  //         error: (e) => {
-  //           this.notification.error(
-  //             e.statusText,
-  //             'Lấy danh sách Router không thành công'
-  //           );
-  //         },
-  //       });
-  //   }
-  // }
+  doSearch(value: string) {
+    this.routerName = value
+    this.getDataList(false)
+  }
 
-  getDataList() {
-      this.formListRouter.currentPage = this.currentPage
+  onChange(value: string) {
+    this.searchStatus = value
+    this.getDataList(false)
+  }
+
+  getDataList(isBegin) {
+    this.formListRouter.currentPage = this.currentPage
       this.formListRouter.pageSize = this.pageSize
-      this.formListRouter.routerName = ''
-      this.formListRouter.status = ''
+      this.formListRouter.routerName = this.routerName
+      this.formListRouter.status = this.searchStatus
       this.formListRouter.regionId = this.region
       this.formListRouter.vpcId = this.projectId
       this.loading = true;
+
       this.dataService
-        .getListRouter(this.formListRouter)
-        .pipe(
-          finalize(() => {
-            this.loading = false;
-            this.cdr.detectChanges();
-          })
-        )
-        .subscribe({
-          next: (data) => {
-            if (data != null && data.records && data.records.length > 0) {
-              this.activeCreate = false;
-              this.dataList = data.records;
-              this.total = data.totalCount;
-            } else {
-              this.activeCreate = true;
-            }
-            this.cdr.detectChanges();
-          },
-          error: (e) => {
-            this.dataList = [];
-            this.activeCreate = true;
-            this.notification.error(
-              e.statusText,
-              this.i18n.fanyi('app.router.note9')
-            );
-          },
-        });
+      .getListRouter(this.formListRouter)
+      .pipe(debounceTime(500))
+      .subscribe(data => {
+        this.loading = false
+        this.dataList = data.records;
+        this.total = data.totalCount;  
+        if (isBegin) {
+          this.isCheckBegin = this.dataList.length < 1 || this.dataList === null ? true : false;
+          console.log(this.isCheckBegin);
+          
+        }
+        this.cdr.detectChanges();
+    }, error => {
+      this.loading = false
+        this.dataList = null
+      })
   }
 
-  reloadTable() {
-    this.dataList = [];
-    this.getDataList();
-  }
+  
 
   getStatus(value: string): string {
     const foundItem = this.filterStatus.find((item) => item.value === value);
@@ -206,6 +202,9 @@ export class RouterListComponent implements OnInit {
 
   handleCancelCreate() {
     this.isVisibleCreate = false;
+    this.routerCreate.networkId = ''
+    this.routerCreate.routerName = ''
+    this.form.reset()
   }
 
   handleOkCreate() {
@@ -219,16 +218,17 @@ export class RouterListComponent implements OnInit {
       next: (data) => {
         this.isLoadingCreateRouter = false
         this.isVisibleCreate = false;
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note10'));
-        this.getDataList();
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.create.sucess'));
+        this.form.reset()
+        this.getDataList(true);
       },
       error: (error) => {
         this.isLoadingCreateRouter = false
         this.cdr.detectChanges()
         if(error.status === 500){
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note11'))
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.alert.over.router.used'))
         }else{
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note12'))
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.nofitacation.create.fail'))
         }
       },
     });
@@ -238,7 +238,7 @@ export class RouterListComponent implements OnInit {
   isVisibleEdit = false;
   modalEdit(dataRouter: RouterModel) {
     this.isVisibleEdit = true;
-    this.isTrigger = dataRouter.status.toUpperCase() == 'ACTIVE' ? true : false;
+    this.isTrigger = dataRouter.status == 'Kích hoạt' ? true : false;
     this.cloudId = dataRouter.cloudId;
     this.routerUpdate.id = dataRouter.cloudId;
     this.routerUpdate.adminState = dataRouter.adminState;
@@ -247,6 +247,8 @@ export class RouterListComponent implements OnInit {
     this.routerUpdate.routerName = dataRouter.routerName;
     this.routerUpdate.vpcId = dataRouter.vpcId;
     this.routerUpdate.networkId = dataRouter.networkId;
+
+    console.log(this.routerUpdate)
   }
 
   handleCancelEdit() {
@@ -254,25 +256,27 @@ export class RouterListComponent implements OnInit {
   }
 
   handleOkEdit() {
-    this.isVisibleEdit = false;
+    this.isLoadingEditRouter = true
     this.dataService.updateRouter(this.routerUpdate).subscribe({
       next: (data) => {
-        this.notification.success(this.i18n.fanyi('status.success'), this.i18n.fanyi('app.router.note13'));
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.edit.sucess'));
+        this.isLoadingEditRouter = false
+        this.isVisibleEdit = false;
+        this.getDataList(false);
       },
       error: (e) => {
         this.notification.error(
-          e.statusText,
-          this.i18n.fanyi('app.router.note14')
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('router.nofitacation.edit.fail')
         );
+        this.isLoadingEditRouter = false
       },
     });
   }
 
   isVisibleDelete: boolean = false;
-  nameVerify: string;
   nameRouterDelete: string;
   modalDelete(cloudId: string, nameRouter: string) {
-    this.nameVerify = '';
     this.cloudId = cloudId;
     this.nameRouterDelete = nameRouter;
     this.isVisibleDelete = true;
@@ -280,28 +284,36 @@ export class RouterListComponent implements OnInit {
 
   handleCancelDelete() {
     this.isVisibleDelete = false;
+    this.formDelete.reset()
+  }
+
+  nameRouterValidator(control: FormControl): { [key: string]: any } | null {
+    const name = control.value;
+    if (name !== this.nameRouterDelete) {
+      return { 'nameMismatch': true };
+    }
+    return null;
   }
 
   handleOkDelete() {
-    this.isVisibleDelete = false;
-    if (this.nameVerify == this.nameRouterDelete) {
+    this.isLoadingDeleteRouter = true
       this.dataService
         .deleteRouter(this.cloudId, this.region, this.projectId)
         .subscribe({
           next: (data) => {
-            console.log(data);
-            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note15'));
-            this.reloadTable();
+            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.remove.sucess'));
+            this.formDelete.reset()
+            this.isLoadingDeleteRouter = false
+            this.isVisibleDelete = false;
+            this.getDataList(true);
           },
           error: (e) => {
             this.notification.error(
               e.statusText,
-              this.i18n.fanyi('app.router.note16')
+              this.i18n.fanyi('router.nofitacation.remove.fail')
             );
+            this.isLoadingDeleteRouter = false
           },
         });
-    } else {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note16'));
-    }
   }
 }

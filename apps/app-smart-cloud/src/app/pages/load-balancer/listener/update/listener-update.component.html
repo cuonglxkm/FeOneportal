@@ -130,7 +130,7 @@
             <span>{{ 'app.service.description' | i18n }}</span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
-          <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
+          <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" [placeholder]="'app.input.des' | i18n" style="width: 100%"
                     formControlName="description"></textarea>
           </nz-form-control>
         </nz-form-item>
@@ -138,7 +138,7 @@
       <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
         <nz-tabset>
           <nz-tab nzTitle="Pool">
-            <div class="text-card-header" style="margin-bottom: 30px;">Danh sách Pool</div>
+            <div class="text-card-header" style="margin-bottom: 30px;">{{ 'app.pool.list' | i18n }}</div>
             <nz-table [nzData]="listPool" [nzShowPagination]="false" [nzLoading]="loadingPool">
               <thead>
               <tr>
@@ -159,19 +159,19 @@
                 <td>ACTIVE</td>
                 <td>
                   <!----Chỉnh sửa----->
-                  <one-portal-edit-pool-in-lb [region]="region"
-                                      [project]="project"
-                                      [poolId]="data.id"
-                                      [loadBlancerId]="idLB"
-                                      [listenerId]="data.listener_id"
+                  <one-portal-edit-pool-in-lb [region]="regionId"
+                                      [project]="projectId"
+                                      [poolId]="item.id"
+                                      [loadBalancerId]="idLb"
+                                      [listenerId]="item.listener_id"
                                       (onOk)="handleEditOk()" />
                   <!----Xóa---->
-                  <one-portal-delete-pool-in-lb [region]="region"
-                                      [project]="project"
-                                      [poolId]="data.id"
-                                      [loadBlancerId]="idLB"
-                                      [listenerId]="data.listener_id"
-                                      [namePool]="data.name"
+                  <one-portal-delete-pool-in-lb [region]="regionId"
+                                      [project]="projectId"
+                                      [poolId]="item.id"
+                                      [loadBalancerId]="idLb"
+                                      [listenerId]="item.listener_id"
+                                      [namePool]="item.name"
                                       (onOk)="handleDeleteOk()" />
                 </td>
               </tr>
@@ -180,7 +180,7 @@
           </nz-tab>
           <nz-tab nzTitle="L7 Policy">
             <nz-row style="display: flex;justify-content: space-between;margin-bottom: 30px;">
-              <div class="text-card-header">Danh sách L7 Policy</div>
+              <div class="text-card-header">{{ 'app.l7.policy.list' | i18n }}</div>
               <button *ngIf="currentPageData?.length > 0" nz-button nzType="primary" nzSize="large" [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">
                 <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt="" />
                 <span class="button-text-primary">{{ 'app.l7.policy.create.button' | i18n }}</span>
@@ -230,8 +230,8 @@
             <div *ngIf="currentPageData?.length <= 0" style="display: flex;text-align: center;width: 425px;justify-content: center;align-items: center;margin-left: 401px;">
               <nz-alert nzType="warning" [nzMessage]="titleWarning" nzShowIcon>
                 <ng-template #titleWarning>
-                  <span class="text-label" style="color: red;">*Quý khách chưa có L7 Policy nào!</span><br>
-                  <span class="text-label">Quý khách có thể khởi tạo <a [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">L7 Policy</a> tại đây!</span>
+                  <span class="text-label" style="color: red;">*{{ 'app.note.l7.policy.empty' | i18n }}</span><br>
+                  <span class="text-label">{{ 'app.can.create' | i18n }} <a [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">L7 Policy</a> {{ 'app.here' | i18n }}!</span>
                 </ng-template>
               </nz-alert>
             </div>
@@ -242,12 +242,12 @@
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px" [nzLoading]="loadingDetail">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thông tin cấu hình</span>
+          <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
         </div>
         <div class="text-value">Tên Listener</div>
         <div style="margin-top: 10px" class="text-label">{{this.validateForm.controls['listenerName'].value}}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">Giao thức</div>
+        <div class="text-value">{{ 'app.protocol' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">{{protocolListener}}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <div class="text-value">Port</div>
@@ -268,7 +268,7 @@
           <button style="width: 100%;margin-top: 15px;" nz-button nzSize="large" nzType="primary" (click)="updateListener()"
                   [disabled]="validateForm.invalid">
             <span nz-icon nzType="edit" nzTheme="outline"></span>
-            <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Chỉnh sửa</span>
+            <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.text.edit' | i18n }}</span>
           </button>
         </nz-col>
       </nz-card>

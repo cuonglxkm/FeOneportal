@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingService } from '@delon/abc/loading';
-import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { camelizeKeys } from 'humps';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize } from 'rxjs';
+import { EMPTY, catchError, finalize, map } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaCreateReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
@@ -15,7 +15,9 @@ import { Order, OrderItem } from 'src/app/core/models/order.model';
 import { ProjectModel } from 'src/app/core/models/project.model';
 import { RegionModel } from 'src/app/core/models/region.model';
 import { ServicePack } from 'src/app/core/models/service-pack.model';
+import { FormSearchNetwork, FormSearchSubnet, NetWorkModel, Subnet } from 'src/app/core/models/vlan.model';
 import { KafkaService } from 'src/app/services/kafka.service';
+import { VlanService } from 'src/app/services/vlan.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,6 +67,10 @@ export class CreateKafkaComponent implements OnInit {
 
   regionId: number;
   projectId: number;
+  cloudProfileId: string;
+  vlanId: number;
+  listOfVPCNetworks: NetWorkModel[];
+  listOfSubnets: Subnet[];
 
   isVisibleCancle = false;
   listOfferKafka: OfferKafka[] = [];
@@ -75,8 +81,11 @@ export class CreateKafkaComponent implements OnInit {
     private loadingSrv: LoadingService,
     private kafkaService: KafkaService,
     private notification: NzNotificationService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private vlanService: VlanService,
   ) {
+    this.listOfVPCNetworks = [];
+    this.listOfSubnets = [];
   }
 
   ngOnInit(): void {
@@ -104,7 +113,12 @@ export class CreateKafkaComponent implements OnInit {
       minInsyncReplicas: [2],
       offsetTopicReplicationFactor: [3],
       logRetentionHours: [168],
-      logSegmentBytes: [1073741824]
+      logSegmentBytes: [1073741824],
+      vpcNetwork: [null, [Validators.required]],
+      subnet: [null, [Validators.required]],
+      subnetId: [null, [Validators.required]],
+      subnetCloudId: [null, [Validators.required]],
+
     });
 
     this.myform.controls.broker.disable();
@@ -196,6 +210,87 @@ export class CreateKafkaComponent implements OnInit {
       )
   }
 
+  vlanCloudId: string;
+  formSearchSubnet: FormSearchSubnet = new FormSearchSubnet();
+  onSelectedVlan(vlanId: number) {
+    this.vlanId = vlanId;
+    if (this.vlanId) {
+      // this.getSubnetByVlanNetwork();
+      const vlan = this.listOfVPCNetworks.find(item => item.id == vlanId);
+      this.vlanCloudId = vlan.cloudId;
+
+      this.formSearchSubnet.pageSize = 1000;
+      this.formSearchSubnet.pageNumber = 0;
+      this.formSearchSubnet.networkId = this.vlanId;
+      this.formSearchSubnet.region = this.regionId;
+      this.formSearchSubnet.vpcId = this.projectId;
+      this.formSearchSubnet.customerId = this.tokenService.get()?.userId;
+
+      this.vlanService.getListSubnet(this.formSearchSubnet)
+      .subscribe((r) => {
+        if (r && r.records) {
+          this.listOfSubnets = r.records;
+        }
+      })
+
+      // clear subnet
+      this.myform.get('subnet').setValue(null);
+    }
+  }
+
+  formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+  getVlanNetwork(projectId: number) {
+    this.formSearchNetwork.projectId = projectId;
+    this.formSearchNetwork.pageSize = 1000;
+    this.formSearchNetwork.pageNumber = 0;
+    this.formSearchNetwork.region = this.regionId;
+
+    if (projectId && this.regionId) {
+      this.vlanService.getVlanNetworks(this.formSearchNetwork)
+      .subscribe((r) => {
+        if (r && r.records) {
+          this.listOfVPCNetworks = r.records;
+        }
+      });
+    }
+  }
+
+  refreshVPCNetwork() {
+    this.getVlanNetwork(this.projectId);
+  }
+
+  refreshSubnet() {
+    this.getSubnetByVlanNetwork();
+  }
+
+  getSubnetByVlanNetwork() {
+    this.formSearchSubnet.pageSize = 1000;
+    this.formSearchSubnet.pageNumber = 0;
+    this.formSearchSubnet.networkId = this.vlanId;
+    this.formSearchSubnet.region = this.regionId;
+    this.formSearchSubnet.vpcId = this.projectId;
+    this.formSearchSubnet.customerId = this.tokenService.get()?.userId;
+
+    this.vlanService.getListSubnet(this.formSearchSubnet).pipe(
+      map(r => r.records),
+      catchError(response => {
+        console.error("fail to get list subnet: {}", response);
+        return EMPTY;
+      })
+    )
+    .subscribe((data: any) => {
+      this.listOfSubnets = data;
+    });
+  }
+
+  onSelectSubnet(subnetId: number) {
+    const subnet = this.listOfSubnets.find(item => item.id == subnetId);
+    if (subnet != null) {
+      this.myform.get('subnetId').setValue(subnetId);
+      this.myform.get('subnetCloudId').setValue(subnet.subnetCloudId);
+    }
+  }
+
   // catch event region change and reload data
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
@@ -204,6 +299,7 @@ export class CreateKafkaComponent implements OnInit {
 
   onProjectChange(project: ProjectModel) {
     this.projectId = project.id;
+    this.getVlanNetwork(this.projectId);
   }
 
   onSubmitPayment() {

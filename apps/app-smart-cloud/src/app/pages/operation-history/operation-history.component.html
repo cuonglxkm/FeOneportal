@@ -1,0 +1,75 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Lịch sử thao tác'">
+    <ng-template #breadcrumb>
+        <nz-breadcrumb>
+            <nz-breadcrumb-item>
+                <a [routerLink]="['/']">Home</a>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                <a [routerLink]="['/home2']">Home2</a>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>Operation History</nz-breadcrumb-item>
+        </nz-breadcrumb>
+    </ng-template>
+    <ng-template #action>
+        <div class="alain-custom-action text-right">
+            <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+            <project-select-dropdown [regionId]="regionId"
+                (valueChanged)="projectChange($event)"></project-select-dropdown>
+        </div>
+    </ng-template>
+</page-header>
+<nz-card>
+    <ng-container>
+        <h3>Danh sách lịch sử thao tác</h3>
+        <div nz-row nzJustify="start" style="padding:1.5rem 0rem">
+            <div nz-col nzSpan="4" style="display: flex; align-items: center;">
+                <h4 style="padding-right:1rem">Thao tác : </h4>
+                <nz-select ngModel="lucy">
+                    <nz-option nzValue="jack" nzLabel="Chọn tất cả"></nz-option>
+                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                    <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                </nz-select>
+            </div>
+            <div nz-col nzSpan="5" style="display: flex; align-items: center;">
+                <h4 style="padding-right:1rem">Loại dịch vụ: </h4>
+                <nz-select ngModel="chọn tất cả">
+                    <nz-option nzValue="chọn tất cả" nzLabel="Chọn tất cả"></nz-option>
+                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                    <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                </nz-select>
+            </div>
+            <div nz-col nzSpan="8">
+                <se-container style="margin-left: 30px;">
+                    <nz-range-picker formControlName="date" />
+                </se-container>
+            </div>
+        </div>
+        <nz-table #rowSelectionTable nzShowSizeChanger
+        [nzFrontPagination]="false"
+        [nzData]="listOperation"
+        [nzLoading]="loading"
+
+        [nzTotal]="total"
+            [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" (nzPageIndexChange)="getData()"
+            (nzPageSizeChange)="getData()" class="mt-10">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Thao tác</th>
+                    <th>Loại dịch vụ</th>
+                    <th>Tên dịch vụ</th>
+                    <th>Thời gian</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of listOperation">
+                    <td class="text-black">{{item.ipAddress}} </td>
+                    <td class="text-black">{{item.portCloudId}} </td>
+                    <td class="text-black">{{item.customerId}} </td>
+                    <td class="text-black">{{item.iPv6Address}} </td>
+                    <td class="text-black">{{item.serviceStatus}}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </ng-container>
+</nz-card>

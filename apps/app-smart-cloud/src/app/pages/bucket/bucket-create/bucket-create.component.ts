@@ -97,6 +97,10 @@ export class BucketCreateComponent implements OnInit {
   save() {
     this.bucketService.createBucket(this.bucketName, this.type).subscribe({
       next: (data) => {
+        this.notification.success(
+          '',
+          'Tạo mới Bucket thành công'
+        );
         this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
       },
       error: (e) => {

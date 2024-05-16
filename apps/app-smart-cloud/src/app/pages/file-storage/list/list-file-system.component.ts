@@ -70,6 +70,18 @@ export class ListFileSystemComponent implements OnInit {
 
   }
 
+  navigateToResizeFileSystem(typeVpc, id) {
+    //in vpc
+    if(typeVpc == 1) {
+      this.router.navigate(['/app-smart-cloud/file-storage/file-system/resize/' + id]);
+    }
+
+    //no vpc
+    if(typeVpc == 0) {
+      this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + id + '/resize'])
+    }
+  }
+
   onPageSizeChange(value) {
     this.pageSize = value;
     this.getListFileSystem(false);
@@ -86,7 +98,7 @@ export class ListFileSystemComponent implements OnInit {
     formSearch.vpcId = this.project;
     formSearch.regionId = this.region;
     formSearch.name = this.value;
-    formSearch.isCheckState = false;
+    formSearch.isCheckState = true;
     formSearch.pageSize = this.pageSize;
     formSearch.currentPage = this.pageIndex;
 
@@ -117,8 +129,6 @@ export class ListFileSystemComponent implements OnInit {
   getProject() {
     this.projectService.getByProjectId(this.project).subscribe(data => {
       this.projectInfo = data
-
-      console.log('info', this.projectInfo)
     })
   }
 

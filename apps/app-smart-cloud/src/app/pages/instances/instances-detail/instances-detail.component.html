@@ -26,6 +26,7 @@
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="regionId"
+        (valueChanged)="onProjectChange($event)"
         (userChanged)="userChangeProject()"
       ></project-select-dropdown>
     </div>
@@ -36,15 +37,40 @@
         nz-button
         [nzType]="'primary'"
         (click)="activeGSCard()"
-        *ngIf="!activeGS"
+        *ngIf="
+          !activeGS &&
+          instancesModel &&
+          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+        "
       >
         <i nz-icon nzType="eye"></i> <span>{{ 'app.monitor' | i18n }}</span>
       </button>
-      <button nz-button [nzType]="'primary'" (click)="navigateToEdit()">
+      <button
+        *ngIf="
+          instancesModel &&
+          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+        "
+        nz-button
+        [nzType]="'primary'"
+        (click)="navigateToEdit()"
+      >
         <i nz-icon nzType="edit"></i>
         <span>{{ 'app.button.resize' | i18n }}</span>
       </button>
       <one-portal-instances-btn
+        *ngIf="
+          instancesModel &&
+          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+        "
         [instancesId]="id"
         (valueChanged)="onReloadInstanceDetail($event)"
         style="margin-left: 8px"
@@ -274,6 +300,19 @@
           </span>
         </nz-row></nz-col
       >
+    </nz-row>
+    <nz-row *ngIf="instancesModel.keypair">
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label customSpan" style="width: 35%"
+            >{{ 'app.keypair.name' | i18n }}:</span
+          >
+          <span class="text-value-detail customSpan"
+            >{{ instancesModel.keypair || '' }}</span
+          >
+        </nz-row>
+      </nz-col>
+      <nz-col nzSpan="12"> </nz-col>
     </nz-row>
   </div>
 </nz-card>

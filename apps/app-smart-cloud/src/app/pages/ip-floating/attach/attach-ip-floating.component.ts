@@ -75,12 +75,12 @@ export class AttachIpFloatingComponent implements OnInit {
       this.ipFloatingService.action(formAction).subscribe(data => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.ip.floating15'))
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('ip.floating.nofitacation.attach.success'))
         this.onOk.emit(data)
       }, error => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.ip.floating16'))
+        this.notification.error(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('ip.floating.nofitacation.attach.fail'))
       })
     }
 

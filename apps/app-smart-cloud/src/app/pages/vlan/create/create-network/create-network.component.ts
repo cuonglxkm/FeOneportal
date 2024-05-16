@@ -15,6 +15,8 @@ import {
 import { FormCreateNetwork, FormSearchNetwork } from '../../../../shared/models/vlan.model';
 import { AppValidator, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { debounceTime, Subject } from 'rxjs';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -32,82 +34,35 @@ export function ipAddressValidator(): ValidatorFn {
 
 // Hàm kiểm tra xem địa chỉ IP có hợp lệ không
 function isValidIPAddress(ipAddress: string): boolean {
-  // Kiểm tra xem địa chỉ IP có thuộc các dải cho phép không
   if (
-    !ipAddress.startsWith('10.') &&
-    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.24.0.0') &&
-    !(ipAddress.startsWith('192.168.'))
+    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.25.0.0') &&
+    !(ipAddress.startsWith('192.168.')) &&
+    !(ipAddress === '192.168.0.0')
   ) {
+    return false;
+  }
+  if (!ipAddress.match(/^((\d{1,3}\.\d{1,3}\.0\.0\/16)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.0\/24))$/)) {
     return false;
   }
 
   // Kiểm tra định dạng của địa chỉ IP
-  if (!ipAddress.match(/^((\d{1,3}\.\d{1,3}\.0\.0\/16)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.0\/24))$/)) {
+  const ipAndPrefix = ipAddress.split('/');
+  const ipParts = ipAndPrefix[0].split('.');
+  const prefixLength = parseInt(ipAndPrefix[1], 10);
+
+  // Kiểm tra xem địa chỉ IP có đúng dạng không
+  if (ipParts.length !== 4 || isNaN(prefixLength) || prefixLength < 0 || prefixLength > 32) {
     return false;
   }
-  return true;
-}
 
-export function ipAddressListValidator(): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } | null => {
-    // Chuyển đổi các IP thành một mảng
-    const ipAddresses = control?.value?.split(',').map(ip => ip.trim());
-
-    // Kiểm tra mỗi địa chỉ IP trong mảng
-    for (let i = 0; i < ipAddresses?.length; i++) {
-      const currentIP = ipAddresses[i];
-
-      // Kiểm tra định dạng của IP (x.x.x.x)
-      const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
-      if (!ipPattern.test(currentIP)) {
-        return { 'invalidIpAddressFormat': { value: currentIP } };
-      }
-
-      // Kiểm tra xem IP có nằm trong các dải cho phép không
-      if (!isValidIPAddressAllocation(currentIP)) {
-        return { 'invalidIpAddressRange': { value: currentIP } };
-      }
-
-      // Kiểm tra xem IP có lớn hơn IP trước đó không
-      if (i > 0 && !isGreaterIPAddress(ipAddresses[i - 1], currentIP)) {
-        return { 'invalidIpSequence': { value: currentIP } };
-      }
-    }
-
-    return null;
-  };
-}
-
-function isValidIPAddressAllocation(ip: string): boolean {
-  // Kiểm tra xem IP có nằm trong các dải cho phép không
-  const ipSegments = ip.split('.');
-  const firstSegment = parseInt(ipSegments[0], 10);
-  const secondSegment = parseInt(ipSegments[1], 10);
-  const thirdSegment = parseInt(ipSegments[2], 10);
-
-  if ((firstSegment === 10 && secondSegment >= 21 && secondSegment <= 255) ||
-    (firstSegment === 172 && secondSegment >= 16 && secondSegment <= 24) ||
-    (firstSegment === 192 && secondSegment === 168)) {
-    return true;
-  }
-
-  return false;
-}
-
-function isGreaterIPAddress(previousIP: string, currentIP: string): boolean {
-  // So sánh các phần của hai IP để kiểm tra xem IP sau lớn hơn IP trước đó không
-  const previousIPSegments = previousIP.split('.').map(segment => parseInt(segment, 10));
-  const currentIPSegments = currentIP.split('.').map(segment => parseInt(segment, 10));
-
-  for (let i = 0; i < 4; i++) {
-    if (currentIPSegments[i] > previousIPSegments[i]) {
-      return true;
-    } else if (currentIPSegments[i] < previousIPSegments[i]) {
+  // Kiểm tra xem phần prefix có hợp lệ không
+  for (const part of ipParts) {
+    if (parseInt(part, 10) < 0 || parseInt(part, 10) > 255) {
       return false;
     }
   }
 
-  return false;
+  return true;
 }
 
 @Component({
@@ -131,6 +86,8 @@ export class CreateNetworkComponent implements OnInit {
 
   formCreateNetwork: FormCreateNetwork = new FormCreateNetwork();
 
+  isInvalidGateway: boolean = false
+
   validateForm: FormGroup<{
     nameNetwork: FormControl<string>
     nameSubnet: FormControl<string>
@@ -144,7 +101,8 @@ export class CreateNetworkComponent implements OnInit {
       AppValidator.startsWithValidator('vlan_'),
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
-      this.duplicateNameValidator.bind(this)]],
+      this.duplicateNameValidator.bind(this),
+      this.prefixValidator()]],
     nameSubnet: ['', [Validators.required,
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/)]],
@@ -157,11 +115,14 @@ export class CreateNetworkComponent implements OnInit {
   });
 
   pool: string = '';
+  gateway: string = ''
   dataSubjectCidr: Subject<any> = new Subject<any>();
+  dataSubjectGateway: Subject<any> = new Subject<any>();
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private vlanService: VlanService,
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder) {
@@ -169,6 +130,19 @@ export class CreateNetworkComponent implements OnInit {
 
       this.validateForm.get('gateway').reset();
     });
+
+    this.validateForm.get('nameNetwork').valueChanges.subscribe(value => {
+      if (!value.startsWith('vlan_')) {
+        this.validateForm.get('nameNetwork').setValue('vlan_' + value.replace(/^vlan_/i, ''), { emitEvent: false });
+      }
+    });
+  }
+
+  prefixValidator(): Validators {
+    return (control: FormControl): { [key: string]: any } | null => {
+      const isValid = control.value.startsWith('vlan_') && control.value.length > 5;
+      return isValid ? null : { prefixError: true };
+    };
   }
 
   regionChanged(region: RegionModel) {
@@ -201,7 +175,7 @@ export class CreateNetworkComponent implements OnInit {
       this.formCreateNetwork.regionId = this.region;
       this.formCreateNetwork.customerId = this.tokenService.get()?.userId;
       this.formCreateNetwork.subnetName = this.validateForm.controls.nameSubnet.value;
-      this.formCreateNetwork.gatewayIP = this.validateForm.controls.gateway.value;
+      this.formCreateNetwork.gateway = this.validateForm.controls.gateway.value;
       this.formCreateNetwork.dnsNameServer = null;
       // if(this.isInPurchasedSubnet())
       this.formCreateNetwork.allocationPool = this.validateForm.controls.allocationPool.value;
@@ -211,11 +185,11 @@ export class CreateNetworkComponent implements OnInit {
       this.vlanService.createNetwork(this.formCreateNetwork).subscribe(data => {
         this.isLoading = false;
         this.router.navigate(['/app-smart-cloud/vlan/network/list']);
-        this.notification.success('Thành công', 'Thêm mới Network thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note57'));
 
       }, error => {
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Thêm mới Network thất bại. ', error.error.detail);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note58'), error.error.detail);
       });
     } else {
       console.log('value form invalid', this.validateForm.getRawValue());
@@ -248,7 +222,7 @@ export class CreateNetworkComponent implements OnInit {
   }
 
   reset() {
-    this.validateForm.reset()
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
   }
 
   inputCheckPool(value) {
@@ -256,22 +230,45 @@ export class CreateNetworkComponent implements OnInit {
   }
 
   onInputCheckPool() {
-    this.dataSubjectCidr.pipe(debounceTime(500)).subscribe((res) => {
+    this.dataSubjectCidr.pipe(debounceTime(600)).subscribe((res) => {
       this.vlanService.checkAllocationPool(res).subscribe(data => {
         const dataJson = JSON.parse(JSON.stringify(data));
 
-        // Access ipRange value
-        const ipRange = dataJson.ipRange;
+        this.pool = dataJson.ipRange
+        this.gateway = dataJson.gateWay
 
-        // Split the IP range string
-        // const ipAddresses = ipRange.split(',').map(ip => ip.trim());
+        console.log('gateway', this.validateForm.controls.disableGatewayIp.value)
+        if(this.validateForm.controls.disableGatewayIp.value == false) {
+          console.log('here')
+          this.validateForm.controls.gateway.setValue(dataJson.gateWay)
+        }
 
-        this.pool = ipRange
+        this.validateForm.controls.allocationPool.setValue(this.pool)
         console.log('pool data', this.pool)
       })
     })
-
   }
+
+  invalidGateway: string
+
+  onCheckGateway() {
+    this.dataSubjectGateway.pipe(debounceTime(600)).subscribe((res) => {
+      this.vlanService.checkIpAvailable(res, this.validateForm.controls.networkAddress.value, '', this.region).subscribe(data => {
+        this.isInvalidGateway = false
+        const dataJson = JSON.parse(JSON.stringify(data));
+        console.log('gateway data', dataJson)
+      }, error => {
+        console.log('error', error.error)
+        this.isInvalidGateway = true
+        this.invalidGateway = error.error
+      })
+    })
+  }
+
+  inputGateway(value) {
+    this.dataSubjectGateway.next(value);
+  }
+
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -279,5 +276,6 @@ export class CreateNetworkComponent implements OnInit {
     this.project = regionAndProject.projectId;
     this.getListNetwork();
     this.onInputCheckPool();
+    this.onCheckGateway();
   }
 }

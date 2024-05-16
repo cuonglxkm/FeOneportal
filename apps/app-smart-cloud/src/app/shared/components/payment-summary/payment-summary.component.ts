@@ -16,6 +16,8 @@ import { finalize } from 'rxjs';
 import { PaymentSummaryService } from '../../services/payment-summary.service';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 class ServiceInfo {
   name: string;
@@ -60,7 +62,8 @@ export class PaymentSummaryComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private http: HttpClient,
     private loadingSrv: LoadingService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras.state as { data: any; path: string };
@@ -81,98 +84,109 @@ export class PaymentSummaryComponent implements OnInit {
         const specificationObj = JSON.parse(e.specification);
         switch (e.specificationType) {
           case 'instance_create':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Tạo mới';
+            serviceItem.name =
+              this.i18n.fanyi('app.instances') +
+              ` - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'instance_resize':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
-            serviceItem.type = `Điều chỉnh`;
+            serviceItem.name =
+              this.i18n.fanyi('app.instances') +
+              ` - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
             break;
           case 'instance_extend':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Gia hạn';
+            serviceItem.name =
+              this.i18n.fanyi('app.instances') +
+              ` - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'volume_create':
             serviceItem.name = `Volume - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Tạo mới';
+            serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'volume_resize':
             serviceItem.name = `Volume - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Điều chỉnh';
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
             break;
           case 'volume_extend':
             serviceItem.name = `Volume - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Gia hạn';
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'ip_create':
             serviceItem.name = `IP`;
-            serviceItem.type = 'Tạo mới';
+            serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'ip_extend':
             serviceItem.name = `IP`;
-            serviceItem.type = 'Gia hạn';
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'k8s_create':
             this.serviceType = 'k8s';
             serviceItem.name = `k8s - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Tạo mới';
+            serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'k8s_resize':
             this.serviceType = 'k8s';
             serviceItem.name = `k8s - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Nâng cấp';
+            serviceItem.type = this.i18n.fanyi('app.text.upgrade');
             break;
           case 'k8s_extend':
             this.serviceType = 'k8s';
             serviceItem.name = `k8s - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Gia hạn';
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'objectstorage_create':
             serviceItem.name = `Object Storage`;
-            serviceItem.type = 'Tạo mới';
+            serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'objectstorage_resize':
             serviceItem.name = `Object Storage`;
-            serviceItem.type = 'Điều chỉnh';
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
             break;
           case 'objectstorage_extend':
             serviceItem.name = `Object Storage`;
-            serviceItem.type = 'Gia hạn';
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'kafka_create':
             this.serviceType = 'kafka';
             serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Tạo mới';
+            serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'kafka_resize':
             this.serviceType = 'kafka';
             serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Nâng cấp';
+            serviceItem.type = this.i18n.fanyi('app.text.upgrade');
             break;
           case 'kafka_extend':
             this.serviceType = 'kafka';
             serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Gia hạn';
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'vpnsitetosite_create':
             serviceItem.name = `Vpn Site To Site`;
-            serviceItem.type = 'Tạo mới';
+            serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'vpnsitetosite_extend':
             serviceItem.name = `Vpn Site To Site`;
-            serviceItem.type = 'Gia hạn';
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'vpnsitetosite_resize':
             serviceItem.name = `Vpn Site To Site`;
-            serviceItem.type = 'Chỉnh sửa';
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
             break;
           case 'snapshotpackage_create':
             serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Tạo mới';
+            serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'snapshotpackage_resize':
             serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Chỉnh sửa';
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
+            break;
+          case 'mongodb_create':
+            this.serviceType = 'mongodb';
+            serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           default:
             serviceItem.name = '';
@@ -181,7 +195,7 @@ export class PaymentSummaryComponent implements OnInit {
         serviceItem.price = e.price;
         serviceItem.duration = e.serviceDuration;
         serviceItem.amount = e.orderItemQuantity;
-        if (serviceItem.type == 'Điều chỉnh') {
+        if (serviceItem.type == this.i18n.fanyi('app.button.resize')) {
           serviceItem.currency = e.price;
         } else {
           serviceItem.currency = e.price * e.serviceDuration;
@@ -236,7 +250,7 @@ export class PaymentSummaryComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lây danh sách Voucher thất bại'
+            this.i18n.fanyi('app.get.list.voucher.fail')
           );
         },
       });
@@ -303,7 +317,10 @@ export class PaymentSummaryComponent implements OnInit {
           }
         },
         error: (e) => {
-          this.notification.error(e.statusText, 'Tạo order không thành công');
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('app.notify.fail.order.create')
+          );
         },
       });
   }

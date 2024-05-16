@@ -39,8 +39,7 @@
           <div>
             <span>Access To (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
             <img nz-popover
-                 [nzPopoverContent]="'Địa chỉ IP cụ thể (địa chỉ IP của Instance) ' +
-                   'hoặc CIDR được quyền truy cập tới Filesystem này'"
+                 [nzPopoverContent]="'app.file.system.tooltip.access.to'|i18n"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
@@ -62,7 +61,7 @@
           </button>
           <nz-form-control *nzSpaceItem>
             <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new"
-                    [disabled]="!validateForm.valid"><span nz-icon nzType="check" nzTheme="outline"></span>X{{ 'app.button.confirm' | i18n }}
+                    [disabled]="!validateForm.valid"><span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
             </button>
           </nz-form-control>
         </nz-space>

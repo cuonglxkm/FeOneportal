@@ -1,4 +1,10 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { Pool } from '../../../../../shared/models/load-balancer.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,10 +25,10 @@ export class ListPoolLoadBalancerComponent implements OnInit, OnChanges {
   isLoading: boolean = false;
   poolList: Pool[] = [];
 
-  pageSize: number = 5
-  pageIndex: number = 1
+  pageSize: number = 5;
+  pageIndex: number = 1;
 
-  currentPageData: any
+  currentPageData: any;
 
   constructor(
     private loadBalancerService: LoadBalancerService,
@@ -31,37 +37,37 @@ export class ListPoolLoadBalancerComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log("goi lai list pool")
+    console.log('goi lai list pool');
     if (changes.checkCreate) {
       this.getListPool();
     }
   }
 
   onPageSizeChange(value) {
-    this.pageSize = value
-    this.getListPool()
+    this.pageSize = value;
+    this.getListPool();
   }
 
   onPageIndexChange(value) {
-    this.pageIndex = value
-    this.getListPool()
+    this.pageIndex = value;
+    this.getListPool();
   }
 
   getListPool() {
     this.isLoading = true;
-    this.loadBalancerService.getListPoolInLB(this.idLB).subscribe(
-      (data) => {
+    this.loadBalancerService.getListPoolInLB(this.idLB).subscribe({
+      next: (data) => {
         const startIndex = (this.pageIndex - 1) * this.pageSize;
         const endIndex = this.pageIndex * this.pageSize;
         this.poolList = data;
         this.currentPageData = this.poolList.slice(startIndex, endIndex);
         this.isLoading = false;
       },
-      (error) => {
+      error: (error) => {
         this.isLoading = false;
         this.poolList = null;
-      }
-    );
+      },
+    });
   }
 
   detailPool(id: string) {
@@ -76,7 +82,9 @@ export class ListPoolLoadBalancerComponent implements OnInit, OnChanges {
   }
 
   handleDeleteOk() {
-    setTimeout(() => {this.getListPool();}, 1500)
+    setTimeout(() => {
+      this.getListPool();
+    }, 1500);
   }
   ngOnInit() {
     this.getListPool();

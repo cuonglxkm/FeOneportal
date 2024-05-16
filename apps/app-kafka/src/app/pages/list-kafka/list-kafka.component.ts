@@ -1,9 +1,10 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { LoadingService } from '@delon/abc/loading';
 import { camelizeKeys } from 'humps';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription, finalize } from 'rxjs';
-import { AppConstants } from 'src/app/core/constants/app-constant';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { KafkaInfor } from 'src/app/core/models/kafka-infor.model';
 import { ProjectModel } from 'src/app/core/models/project.model';
 import { RegionModel } from 'src/app/core/models/region.model';
@@ -50,6 +51,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     private loadingSrv: LoadingService,
     private notification: NzNotificationService,
     private utilService: UtilService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
     this.keySearch = '';
     this.serviceStatus = -1;
@@ -169,11 +171,11 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
       .subscribe(
         (data) => {
           if (data && data.code == 200) {
-            this.notification.success('Thành công', data.msg);
+            this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
             this.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus)
           }
           else {
-            this.notification.error('Thất bại', data.msg);
+            this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
           }
         }
       );

@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -19,6 +20,8 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { ClipboardService } from 'ngx-clipboard';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-user-detail',
@@ -42,10 +45,9 @@ export class UserDetailComponent implements OnInit {
   createdDate: string = '';
 
   filterStatus = [
-    { text: 'Tất cả các loại', value: '' },
-    { text: 'Khởi tạo', value: 'KHOITAO' },
-    { text: 'Hủy', value: 'HUY' },
-    { text: 'Tạm ngưng', value: 'TAMNGUNG' },
+    { text: this.i18n.fanyi('app.status.all'), value: '' },
+    { text: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
+    { text: this.i18n.fanyi('app.status.suspended'), value: 'TAMNGUNG' },
   ];
 
   changeFilterStatus(e: any): void {
@@ -53,6 +55,7 @@ export class UserDetailComponent implements OnInit {
   }
 
   constructor(
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private service: UserService,
     private router: Router,
     private activatedRoute: ActivatedRoute,

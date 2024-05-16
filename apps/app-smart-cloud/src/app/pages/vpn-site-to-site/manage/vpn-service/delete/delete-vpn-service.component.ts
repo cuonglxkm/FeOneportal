@@ -16,6 +16,7 @@ export class DeleteVpnServiceComponent{
   @Input() project: number
   @Input() vpnServiceId: string
   @Input() vpnServiceName: string
+  @Input() vpnServiceStatus: string
   @Output() onOk = new EventEmitter()
 
   isVisible: boolean = false
@@ -62,7 +63,7 @@ export class DeleteVpnServiceComponent{
     
     if(this.validateForm.valid) {
       if(this.vpnServiceName.includes(this.validateForm.controls.name.value)){
-        this.vpnServiceService.deleteVpnService(this.vpnServiceId,formDelete).subscribe(data => {
+        this.vpnServiceService.deleteVpnService(formDelete).subscribe(data => {
           if(data) {
             this.isVisible = false
             this.isLoading =  false
@@ -84,6 +85,5 @@ export class DeleteVpnServiceComponent{
       }
     }
   }
-
   
 }

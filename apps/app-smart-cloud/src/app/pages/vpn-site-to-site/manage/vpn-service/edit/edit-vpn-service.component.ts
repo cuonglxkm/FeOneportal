@@ -16,6 +16,7 @@ export class EditVpnServiceComponent{
   @Input() project: number
   @Input() vpnServiceId: string
   @Input() vpnServiceName: string
+  @Input() vpnServiceStatus: string
   @Input() vpnRouterName: string
   @Output() onOk = new EventEmitter()
 

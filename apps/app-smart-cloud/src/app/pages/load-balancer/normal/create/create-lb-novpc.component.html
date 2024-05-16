@@ -73,7 +73,7 @@
                            (keyup.enter)="onChangeStatusInternetFacing()">
                       Internet Facing
                       <img nz-popover
-                           [nzPopoverContent]="'Sử dụng địa chỉ IP public. Do đó Load balancer có thể định tuyến các yêu cầu từ khách hàng qua internet'"
+                           [nzPopoverContent]="'app.tooltip.internet.facing' | i18n"
                            nzPopoverPlacement="bottom" style="margin-left: 5px;"
                            src="assets/imgs/pajamas_question.svg" alt="" />
                     </label>
@@ -85,10 +85,14 @@
                            (click)="onChangeStatusInternal()"
                            (keyup.enter)="onChangeStatusInternal()">Internal
                       <img nz-popover
-                           [nzPopoverContent]="'Sử dụng địa chỉ IP private. Do đó Load balancer chỉ có thể định tuyến ' +
-                                               'các yêu cầu từ các máy khách có quyền truy cập vào VPC cho bộ cân bằng tải'"
+                           [nzPopoverContent]="contentTemplateInternal"
                            nzPopoverPlacement="bottom" style="margin-left: 5px;"
                            src="assets/imgs/pajamas_question.svg" alt="" />
+                           <ng-template #contentTemplateInternal>
+                            <span
+                              [innerHTML]="'app.tooltip.internal' | i18n"
+                            ></span>
+                          </ng-template>
                     </label>
                   </nz-col>
                 </nz-row>
@@ -101,15 +105,20 @@
                 <nz-form-label>
                   <span>Subnet</span>
                   <img nz-popover
-                       [nzPopoverContent]="'Là dải IP mạng để phân bổ địa chỉ IP khi sử dụng cân bằng tải'"
+                       [nzPopoverContent]="'app.tooltip.subnet' | i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips>
-                  <nz-select nzSize="large" (ngModelChange)="updateValue($event)" formControlName="subnet"
-                             [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'" nzAllowClear>
-                    <nz-option *ngFor="let index of listSubnets" [nzValue]="index.cloudId"
-                               [nzLabel]="index.name + '(' + index.subnetAddressRequired + ')'"></nz-option>
+                  <nz-select nzSize="large"
+                             [ngModel]="selectedSubnet"
+                             (ngModelChange)="updateValue($event)"
+                             formControlName="subnet"
+                             [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'"
+                             nzAllowClear>
+                    <nz-option *ngFor="let index of mapSubnetArray"
+                               [nzValue]="index.value"
+                               [nzLabel]="index.label"></nz-option>
                   </nz-select>
                 </nz-form-control>
               </nz-form-item>
@@ -119,20 +128,21 @@
                 <nz-form-label>
                   <span>IP Address</span>
                   <img nz-popover
-                       [nzPopoverContent]="'Địa chỉ IP của Khách hàng. Trường hợp Khách hàng không nhập địa chỉ IP, ' +
-                        'hệ thống sẽ tự động cấp địa chỉ IP cho Khách hàng. Trường hợp Khách hàng nhập địa chỉ IP, ' +
-                         'Hệ thống sẽ chọn IP đấy cho load balancer trong trường hợp IP chưa được sử dụng bởi bất kỳ ai'"
+                       [nzPopoverContent]="contentTemplateIpAddress"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
+                  <ng-template #contentTemplateIpAddress>
+                    <span [innerHTML]="'app.tooltip.ip.address' | i18n"></span>
+                  </ng-template>
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
                   <input nz-input class="input-custom" (ngModelChange)="onInput($event)" formControlName="ipAddress"
                          [placeholder]="'Nhập địa chỉ ip'" />
-                  <span *ngIf="!isInput" style="color: #ff4d4f;">Địa chỉ IP phải nằm trong dải Subnet. Trường hợp Khách hàng không nhập địa chỉ IP, hệ thống sẽ tự động cấp địa chỉ IP cho Khách hàng.</span>
+                  <span *ngIf="!isInput" style="color: #ff4d4f;">{{ 'validation.ip.address.no.input' | i18n }}</span>
                   <span *ngIf="isAvailable"
-                        style="color: #ff4d4f;">Địa chỉ IP đã tồn tại vui lòng chọn địa chỉ khác</span>
+                        style="color: #ff4d4f;">{{ 'validation.ip.address.exist' | i18n }}</span>
                   <ng-template #ipAddressErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập đúng định dạng IP x.x.x.x
+                    <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.ip.address.pattern' | i18n }}
                     </ng-container>
                   </ng-template>
                 </nz-form-control>
@@ -153,22 +163,19 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
-              <span>Gói dịch vụ (<span style="color: red;">*</span>)</span>
+              <span>{{ 'app.text.package' | i18n }} (<span style="color: red;">*</span>)</span>
               <img nz-popover
                    [nzPopoverContent]="titleTooltip"
                    nzPopoverPlacement="right" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
               <ng-template #titleTooltip>
                 <div style="display: block;">
-                  <span><b>Max Connection:</b> Tổng số kết nối tối đa trên 1 giây </span><br>
-                  <span><b>Active Connection:</b> Tổng số kết nối hoạt động tối đa trong 1 giây</span><br>
-                  <span><b>Data transfer:</b> Dữ liệu được chuyển giao dưới dạng các bit và byte trên một phương tiện kỹ thuật số hoặc analog,<br>
-                  và quá trình này cho phép truyền thông kỹ thuật số hoặc analog và chuyển động của nó giữa các thiết bị</span><br>
+                  <span [innerHTML]="'app.tooltip.service.package' | i18n"></span>
                 </div>
               </ng-template>
             </nz-form-label>
             <nz-form-control>
-              <nz-select [nzPlaceHolder]="'Chọn gói dịch vụ'" nzSize="large" formControlName="offer"
+              <nz-select [nzPlaceHolder]="'app.choose.service.package' | i18n" nzSize="large" formControlName="offer"
                          (ngModelChange)="onChangeOffer($event)">
                 <nz-option *ngFor="let index of offerList" [nzLabel]="index.offerName" [nzValue]="index.id"></nz-option>
               </nz-select>
@@ -193,8 +200,7 @@
             <nz-col nzSpan="8">
               <span class="text-label" *ngIf="offerDetail?.characteristicValues?.length <= 0"></span>
               <span class="text-label"
-                    *ngIf="offerDetail?.characteristicValues?.length > 0">{{ offerDetail?.characteristicValues[0]?.charOptionValues }}
-                /s</span>
+                    *ngIf="offerDetail?.characteristicValues?.length > 0">{{ offerDetail?.characteristicValues[0]?.charOptionValues }}/s</span>
             </nz-col>
           </nz-row>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
@@ -210,10 +216,9 @@
           <nz-form-item style="margin-top: 5px; margin-bottom: 5px;">
             <nz-form-label nzFor="time">
               <div class="label">
-                <span>Thời gian sử dụng </span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span> - Tháng</span>
-                <img nz-popover [nzPopoverContent]="'Thời gian khách hàng mua volume để sử dụng, tính theo tháng.'"
+                <span>{{ 'app.service.duration' | i18n }} (<span class="text-red">*</span
+                  >)</span>
+                <img nz-popover [nzPopoverContent]="'app.tooltip.time' | i18n : { name: 'Load Balancer' }"
                      nzPopoverPlacement="bottom" style="margin-left: 5px;"
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
@@ -229,11 +234,11 @@
                                    nzMax="100"
                                    nzStep="1" />
                   <ng-template #dateErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                    <ng-container *ngIf="control.hasError('required')">{{ 'app.more.0.less.100' | i18n }}
                     </ng-container>
-                    <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                    <ng-container *ngIf="control.hasError('max')">{{ 'app.more.0.less.100' | i18n }}
                     </ng-container>
-                    <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                    <ng-container *ngIf="control.hasError('min')">{{ 'app.more.0.less.100' | i18n }}
                     </ng-container>
                   </ng-template>
                 </nz-form-control>
@@ -242,7 +247,7 @@
                 <nz-form-item>
                   <nz-form-label nzFor="now">
                     <div class="label">
-                      <span>Thời gian bắt đầu sử dụng: </span>
+                      <span>{{ 'app.time.start' | i18n }}: </span>
                       <span
                         *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
                     </div>
@@ -252,7 +257,7 @@
             </nz-row>
             <nz-form-label>
               <div class="label" style="color: red;">
-                <span>Ngày hết hạn: </span>
+                <span>{{ 'app.service.expiration-date' | i18n }}: </span>
                 <span
                   *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
               </div>
@@ -266,7 +271,7 @@
               <textarea nz-input class="input-custom" formControlName="description" [placeholder]="'app.input.des' | i18n" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -301,14 +306,14 @@
             <span #selectedValueIpFloating></span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">Gói dịch vụ</div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.text.package' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
             <span #selectedValueOffer></span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-value"> Chi phí 1 tháng </span>
+              <span class="text-value"> {{ 'app.cost.a.month' | i18n }} </span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
@@ -328,8 +333,8 @@
             border-radius: 8px;
           " nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-label">Tổng thanh toán</span><br />
-              <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+              <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
+              <span class="text-note-italicized">({{ 'app.include.vat' | i18n : { vat: '10' } }})</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">0 VND</span>
@@ -343,7 +348,7 @@
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
                       [disabled]="validateForm.invalid">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>

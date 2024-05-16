@@ -3,7 +3,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@ang
 export class AppValidator {
   // @ts-ignore
   static checkContainSpecialCharactorExceptComma(obj) {
-    var regex = /[!`@#$%^&*~()_+\-=\[\]{};':"\\|.<>\/?]+/;
+    var regex = /[!`@#$%^&*~()_+=\[\]{};':"\\|.<>?]+/; // Trừ ký tự ,/-
     return regex.test(obj);
   }
 
@@ -170,6 +170,28 @@ export class AppValidator {
   static ipWithCIDRValidator(control: { value: string }): { [key: string]: boolean } | null { //validate input ip
     const ipAddress = control.value;
     const ipRegex = /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/(3[0-2]|[12]?[0-9])$/;
+
+    // Kiểm tra xem địa chỉ IP có đúng định dạng không
+    if (!ipRegex.test(ipAddress)) {
+      return { invalidIp: true }; // Trả về một object có thuộc tính invalidIp để chỉ ra lỗi
+    }
+
+    // Tách địa chỉ IP và subnet mask
+    const [ip, subnetMask] = ipAddress.split('/');
+
+    // Kiểm tra xem subnet mask có vượt quá 32 không
+    if (parseInt(subnetMask, 10) > 32) {
+      return { invalidSubnetMask: true }; // Trả về một object có thuộc tính invalidSubnetMask để chỉ ra lỗi
+    }
+    console.log('ip', ipAddress)
+    console.log('regex', ipRegex)
+
+    return null; // Trả về nếu địa chỉ IP hợp lệ và subnet mask không vượt quá 32
+  }
+
+  static ipWithCIDRValidator1(control: { value: string }): { [key: string]: boolean } | null { //validate input ip
+    const ipAddress = control.value;
+    const ipRegex = /^((25[0-5]|2[0-4][0-9]|[01]?[1-9][0-9]?)\.){1}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){2}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/(3[0-2]|[12]?[0-9])$/;
 
     // Kiểm tra xem địa chỉ IP có đúng định dạng không
     if (!ipRegex.test(ipAddress)) {
@@ -422,7 +444,7 @@ export function ipAddressValidatorRouter(subnetIP: string): ValidatorFn {
     }
 
     const lastNumber = parseInt(ipAddress.split('.')[3], 10);
-    if (lastNumber < 2 || lastNumber > 254) {
+    if (!lastNumber || lastNumber < 0 || lastNumber > 255) {
       return { 'invalidLastNumber': true };
     }
 

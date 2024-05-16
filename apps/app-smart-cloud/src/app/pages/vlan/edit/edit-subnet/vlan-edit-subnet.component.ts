@@ -14,6 +14,8 @@ import {
   Validators
 } from '@angular/forms';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -153,6 +155,7 @@ export class VlanEditSubnetComponent implements OnInit {
               private notification: NzNotificationService,
               private vlanService: VlanService,
               private route: ActivatedRoute,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder) {
   }
 
@@ -168,6 +171,26 @@ export class VlanEditSubnetComponent implements OnInit {
 
   nameList: string[] = [];
 
+  onChangeClickDisableDhcp(value) {
+    this.validateForm.controls.enableDhcp.setValue(value)
+  }
+
+  onChangeClickGateway(value) {
+    console.log('1')
+    if(value == true) {
+      this.validateForm.controls.disableGatewayIp.setValue(value)
+    } else {
+      console.log('here')
+      this.validateForm.controls.disableGatewayIp.setValue(false)
+      this.vlanService.checkAllocationPool(this.subnet?.subnetAddressRequired).subscribe(data => {
+        const dataJson = JSON.parse(JSON.stringify(data));
+        console.log('gateway', dataJson.gateWay)
+        this.validateForm.controls.gateway.setValue(dataJson.gateWay)
+      })
+    }
+  }
+
+
   getListSubnet() {
     let formSearchSubnet = new FormSearchSubnet();
     formSearchSubnet.region = this.region;
@@ -179,9 +202,9 @@ export class VlanEditSubnetComponent implements OnInit {
     this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
       data?.records?.forEach(item => {
         this.nameList?.push(item.name);
-
-        this.nameList = this.nameList?.filter(item => !(item.includes(this.validateForm.get('nameSubnet').getRawValue())));
       });
+      this.nameList = this.nameList.filter(item => item != this.validateForm.controls.nameSubnet.value)
+      console.log(this.nameList)
     });
   }
 
@@ -199,6 +222,10 @@ export class VlanEditSubnetComponent implements OnInit {
 
   allocationPool: any;
 
+  cancel() {
+    this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
+  }
+
   getSubnetById(idSubnet) {
     this.vlanService.getSubnetById(idSubnet).subscribe(data => {
       this.subnet = data;
@@ -206,9 +233,10 @@ export class VlanEditSubnetComponent implements OnInit {
       this.validateForm.controls.nameSubnet.setValue(this.subnet?.name);
       this.validateForm.controls.gateway.setValue(this.subnet?.gatewayIp);
       this.validateForm.controls.enableDhcp.setValue(this.subnet?.enableDhcp);
-      if (this.subnet.gatewayIp != undefined || this.subnet?.gatewayIp != null) {
+      if (this.subnet.gatewayIp != undefined || this.subnet?.gatewayIp != null || this.subnet?.gatewayIp != '') {
         this.validateForm.controls.disableGatewayIp.setValue(false);
-      } else {
+      }
+      if(this.subnet.gatewayIp == undefined || this.subnet?.gatewayIp == null || this.subnet?.gatewayIp == ''){
         this.validateForm.controls.disableGatewayIp.setValue(true);
       }
       this.allocationPool = this.subnet?.allocationPools.map(item => `${item.start}, ${item.end}`).join('\n');
@@ -220,18 +248,22 @@ export class VlanEditSubnetComponent implements OnInit {
     this.formUpdateSubnet.id = this.idSubnet;
     this.formUpdateSubnet.name = this.validateForm.controls.nameSubnet.value;
     this.formUpdateSubnet.enableDHCP = this.validateForm.controls.enableDhcp.value;
-    this.formUpdateSubnet.getwayIP = this.validateForm.controls.gateway.value;
+    if(this.validateForm.controls.disableGatewayIp.value) {
+      this.formUpdateSubnet.gatewayIP = null
+    } else {
+      this.formUpdateSubnet.gatewayIP = this.validateForm.controls.gateway.value
+    }
     this.formUpdateSubnet.hostRoutes = null;
     console.log('edit', this.formUpdateSubnet);
     this.vlanService.updateSubnet(this.idSubnet, this.formUpdateSubnet).subscribe(data => {
         this.isLoading = false;
-        this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-        this.notification.success('Thành công', 'Chỉnh sửa Subnet thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note40'));
+      this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
 
     }, error => {
       this.isLoading = false;
       this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-      this.notification.error('Thất bại', 'Chỉnh sửa Subnet thất bại. ' + error.error.detail);
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note41') + error.error.detail);
     });
   }
 
@@ -243,7 +275,7 @@ export class VlanEditSubnetComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.getSubnetById(this.idSubnet);
-    this.getListSubnet();
+    setTimeout(() => {this.getListSubnet();}, 500)
   }
 
 }

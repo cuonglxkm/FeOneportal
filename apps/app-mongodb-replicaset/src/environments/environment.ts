@@ -5,8 +5,6 @@
 import { DelonMockModule } from '@delon/mock';
 import { Environment } from '@delon/theme';
 
-import * as MOCKDATA from '@_mock';
-
 export const environment = {
   production: false,
   useHash: true,
@@ -15,18 +13,12 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://api.onsmartcloud.com',
-  sso: {
-    issuer: 'https://identity.onsmartcloud.com',
-    clientId: 'frontend-client',
-    callback: 'http://localhost:4200/passport/callback/oneportal',
-    logout_callback: 'http://localhost:4200',
-    scope: 'openid email roles offline_access',
-  },
-  recaptcha: {
-    siteKey: '6LfueB8cAAAAAD74PxsPKL7-GVr0T7dUoxuBL4iR',
-  },
-  modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
+  baseUrl: "http://localhost:16008",
+  // baseUrl: 'https://idg-api-gw.onsmartcloud.com'
+  // baseUrl: 'https://api.onsmartcloud.com',
+  // modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
+  baseUrlApiGw: 'https://idg-api-gw.onsmartcloud.com',
+  baseUrlWs: "http://localhost:16011",
 } as Environment;
 
 /*

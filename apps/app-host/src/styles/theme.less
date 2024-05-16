@@ -5,6 +5,7 @@
 //@import url('https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap');
 @import '@fontsource/inter';
 @import '@delon/theme/theme-default.less';
+@import '../assets/color.less';
 
 // ==========The following is the custom theme variable area==========
 // The theme paraments can be generated at https://ng-alain.github.io/ng-alain/
@@ -19,6 +20,7 @@
 
 @button-border-medium-radius: 8px;
 
+@breadcrumb-active: #035ded;
 // HEADER
 .alain-default__header-logo-expanded {
   max-width: 90%;
@@ -34,7 +36,7 @@
   margin-left: -24px;
   padding: 12px 24px 0 24px;
   border-bottom: none;
-  background-color: #ebf0f9;
+  background-color: inherit;
 }
 
 // END HEADER
@@ -161,7 +163,7 @@ u {
 }
 
 .ant-select:not(.ant-select-customize-input) .ant-select-selector {
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
@@ -203,14 +205,21 @@ u {
 
 .ant-input-affix-wrapper {
   // Input group
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 //Input
 .ant-input {
-  border-radius: 4px;
+  border-radius: 8px;
+  font-size: 16px;
 }
-
+.ant-select-show-search.ant-select:not(.ant-select-customize-input)
+  .ant-select-selector {
+  cursor: text;
+  border-radius: 8px;
+  height: 40px;
+  font-size: 16px;
+}
 .input-custom {
   display: flex;
   height: 40px;
@@ -237,19 +246,26 @@ u {
   align-items: center;
 }
 
-.ant-select-selector{
+share-users-combobox nz-select-item.ant-select-selection-item,
+project-select-dropdown nz-select-item.ant-select-selection-item {
+  display: block !important;
+  flex: unset;
+}
+
+.ant-select-selector {
   display: flex;
   align-items: center;
+  font-size: @textbox-fontsize;
 }
 
 //END SELECT
 
 //DATE PICKPER
-.ant-picker{
+.ant-picker {
   border-radius: 8px;
 }
 
-.input-date-picker{
+.input-date-picker {
   height: 40px;
 }
 //END DATE PICKPER
@@ -282,7 +298,7 @@ u {
 }
 
 .ant-btn-primary {
-  color: #ffffff;
+  color: @white;
   border-color: @button-primary-color;
   background-color: @button-primary-color;
   border-radius: @button-border-medium-radius;
@@ -292,7 +308,7 @@ u {
 .ant-btn-primary:focus {
   border-color: @button-primary-color-hover;
   background: @button-primary-color-hover;
-  color: #ffffff;
+  color: @white;
 }
 
 // END BUTTON
@@ -350,8 +366,9 @@ body {
 }
 
 .text-card-header {
-  color: #333333;
-  font-size: 20px;
+  // color: #333333;
+  color: @text-subtitle-color;
+  font-size: @subtitle-fontsize;
   font-weight: 600;
   line-height: 28px;
   letter-spacing: 0.10000000149011612px;
@@ -401,8 +418,8 @@ body {
 }
 
 .page-header__title {
-  color: #2b2d3b;
-  font-size: 28px;
+  color: @text-title-color;
+  font-size: @title-fontsize;
   font-weight: 600;
   line-height: 40px;
   letter-spacing: 0.1px;
@@ -481,5 +498,68 @@ body {
 body {
   scrollbar-color: rgba(0, 0, 0, 0.3) #fafafa;
 }
+
+.items-center-icon {
+  display: flex;
+  align-items: center;
+  margin: 0px 10px;
+  cursor: pointer;
+}
 // END MENU
 
+//BREADCRUMB
+.breadcrumb-custom {
+  color: @breadcrumb-active;
+}
+
+//END BREADCRUMB
+
+.ant-tooltip-inner {
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0px 4px 10px 0px #0000001a;
+}
+::ng-deep .ant-tooltip-arrow-content .ant-tooltip-arrow-content::before {
+  background-color: #fff !important;
+}
+.icon-svg{
+display: flex;
+align-items: center;
+}
+.justify-center-icon{
+  justify-content: center;
+}
+.ant-picker-input > input {
+  font-size:@textbox-fontsize; /* Thay đổi kích thước font và sử dụng !important nếu cần thiết */
+}
+.label-fontsize{
+  font-size: @label-fontsize;
+}
+.link_breadcrumb{
+ color: @link-breadcrumb-color !important;
+}
+// .link_breadcrumb:hover{
+//   color:#0066b3  !important
+// }
+.ant-popover-title {
+  min-width: 177px;
+  min-height: 32px;
+  margin: 0;
+  padding: 5px 16px 4px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 600;
+  border-bottom: 1px solid #f0f0f0;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+.icon-padding-right{
+  padding-right: @icon-padding-right;
+}
+.textbox-radius-lg{
+  border-radius: @textbox-radius-lg;
+}
+.items-center-text{
+  display: flex;
+  align-items: center;
+}

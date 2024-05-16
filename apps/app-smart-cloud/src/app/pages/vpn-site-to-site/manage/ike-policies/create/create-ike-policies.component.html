@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Tạo mới IKE Policies'"
+  [title]="'Khởi tạo IKE Policies'"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -16,7 +16,7 @@
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
         >VPN site to site</a
       ></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Tạo mới IKE Policy</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Khởi tạo IKE Policy</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -55,6 +55,7 @@
               required
               placeholder="Nhập tên"
               formControlName="name"
+              class="input-custom"
             />
            
             
@@ -72,6 +73,7 @@
                   [nzPopoverContent]="'Thuật toán xác thực danh tính cho IPsec Policy bao gồm các lựa chọn: sha1, sha256, sha384, sha512 (dựa trên thuật toán băm mã hóa dựa theo số bit) mặc định sha1.'"
                   nzPopoverPlacement="bottom"></span>
             <nz-select
+              class="input-select-custom"
               nzShowSearch
               nzAllowClear
               [(ngModel)]="ikePolicyModel.authorizationAlgorithm"
@@ -98,6 +100,7 @@
                       nzPopoverPlacement="bottom"></span>
                 <nz-select
                   nzShowSearch
+                  class="input-select-custom"
                   nzAllowClear
                   [(ngModel)]="ikePolicyModel.encryptionAlgorithm"
                   [ngModelOptions]="{standalone: true}"
@@ -127,6 +130,7 @@
             </div>
                 <nz-select
                   nzShowSearch
+                  class="input-select-custom"
                   nzAllowClear
                   [(ngModel)]="ikePolicyModel.ikeVersion"
                   [ngModelOptions]="{standalone: true}"
@@ -153,6 +157,7 @@
                   nzPopoverPlacement="bottom"></span>
             <nz-select
               nzShowSearch
+              class="input-select-custom"
               nzAllowClear
               [(ngModel)]="ikePolicyModel.lifetimeUnit"
               [ngModelOptions]="{standalone: true}"
@@ -180,8 +185,8 @@
             <nz-input-number 
             [(ngModel)]="ikePolicyModel.lifetimeValue" 
             style="width: 100%;margin-left: 0px;"
+            class="input-custom"
             [nzMin]="60"
-            av
             [nzStep]="1"
             [ngModelOptions]="{standalone: true}"/>
             
@@ -208,6 +213,7 @@
                   nzPopoverPlacement="bottom"></span>
             <nz-select
               nzShowSearch
+              class="input-select-custom"
               nzAllowClear
               [(ngModel)]="ikePolicyModel.perfectForwardSecrey"
               [ngModelOptions]="{standalone: true}"
@@ -235,6 +241,7 @@
                       nzPopoverPlacement="bottom"></span>
             <nz-select
               nzShowSearch
+              class="input-select-custom"
               nzAllowClear
               [(ngModel)]="ikePolicyModel.ikePhase1NegotiationMode"
               [ngModelOptions]="{standalone: true}"
@@ -255,7 +262,7 @@
   <div nz-col [nzSpan]="7" class="gutter-row">
     <nz-card style="border-radius: 8px;">
       <h2 class="custom-title">Thông số cấu hình</h2>
-      <div style="overflow: auto; height: 300px; margin-bottom: 16px;">
+      <div style="overflow: auto; height: 332px; margin-bottom: 16px;">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
           <span>{{ikePolicyModel.name}}</span>
@@ -295,6 +302,8 @@
       nzType="primary"
       style="border: none; width: 100%; display: flex; align-items: center; gap: 5px; justify-content: center;"
       nzSize="large"
+      [disabled]="!form.valid"
+      [nzLoading]="isLoading"
     >
       <img
         src="assets/imgs/wallet.svg"

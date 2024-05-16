@@ -52,6 +52,7 @@
                 "text": "IAM",
                 "group": true,
                 "link": "/app-smart-cloud/iam/dashboard",
+                "icon": "anticon-dashboard",
                 "children": [
                   {
                     "text": "Dashboard",
@@ -86,6 +87,12 @@
                 "action": "actionlogs:List"
               }
             ]
+          },
+          {
+            "text": "Project",
+            "icon": "anticon-profile",
+            "link": "/app-smart-cloud/project",
+            "action": "project:List"
           },
           {
             "text": "Infrastructure Services",
@@ -165,39 +172,34 @@
                   },
                   {
                     "text": "IP Floating",
+                    "icon": "anticon-exception",
                     "link": "/app-smart-cloud/networks/ip-floating/list",
                     "action": "ipfloating:List"
                   },
                   {
                     "text": "IP WAN",
+                    "icon": "anticon-exception",
                     "link": "/app-smart-cloud/networks/ip-wan/list",
                     "action": "ipwan:List"
                   },
                   {
                     "text": "LAN Network (VLAN)",
+                    "icon": "anticon-exception",
                     "link": "/app-smart-cloud/vlan/network/list",
                     "action": "vlan:List"
                   },
                   {
                     "text": "Router",
+                    "icon": "anticon-exception",
                     "link": "/app-smart-cloud/network/router",
                     "action": "router:List"
                   },
                   {
-                    "text": "Direct Connect",
-                    "link": "/app-smart-cloud/object"
-                  },
-                  {
                     "text": "Network Topology",
-                    "link": "/app-smart-cloud/object"
+                    "icon": "anticon-exception",
+                    "link": "/app-smart-cloud/network-topo"
                   }
                 ]
-              },
-              {
-                "text": "VPC",
-                "icon": "anticon-profile",
-                "link": "/app-smart-cloud/vpc",
-                "action": "vpc:List"
               },
               {
                 "text": "Load balancer SDN",

@@ -1,22 +1,22 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Thêm Policies'"
+  [title]="'app.user-detail.addPolicies' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+        ><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item
       >
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users/detail/' + userName]"
-          >Chi tiết User</a
+          >{{ 'app.users.detail' | i18n }}</a
         >
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Thêm Policies </nz-breadcrumb-item>
+      <nz-breadcrumb-item> {{ 'app.user-detail.addPolicies' | i18n }} </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -56,7 +56,7 @@
         src="assets/imgs/arrow-left-2.svg"
         alt=""
       />
-      <span>Quay lại</span>
+      <span>{{ 'app.button.back' | i18n }}</span>
     </button>
     <button nz-button nzType="primary" (click)="addPolicies()">
       <img
@@ -64,7 +64,7 @@
         src="assets/imgs/add-circle.svg"
         alt=""
       />
-      <span>Thêm policies</span>
+      <span>{{ 'app.user-detail.addPolicies' | i18n }}</span>
     </button>
   </div>
 </div>
