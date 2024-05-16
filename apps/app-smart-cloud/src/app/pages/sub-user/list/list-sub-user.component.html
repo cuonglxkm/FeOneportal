@@ -102,7 +102,7 @@
           <th>{{ 'app.text.operation' | i18n }}</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody (click)="handleCloseExpand($event)">
         <ng-container *ngFor="let data of fixTable.data; index as i">
           <tr>
             <td>{{ i + 1 }}</td>
@@ -114,7 +114,7 @@
                 </nz-col>
                 <nz-col>
                   <div class="d-flex gap-2 align-items-center">
-                    <div *ngIf="data.keys.length > 0" class="accesskey-number" (click)="handleExpandAccessKey(i)">
+                    <div *ngIf="data.keys.length > 0" class="accesskey-number" (click)="handleExpandAccessKey(i, $event)">
                       <span>+{{ data.keys.length }}</span>
                       <span style="font-size: 12px;" nz-icon nzType="down" nzTheme="outline"></span>
                       <ng-container *ngIf="isExpand === i">
