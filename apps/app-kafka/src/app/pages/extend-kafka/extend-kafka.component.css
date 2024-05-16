@@ -92,3 +92,7 @@ h3 {
 .red-color {
     color: #ea3829;
 }
+
+.border-none {
+    border: none;
+}

@@ -43,6 +43,13 @@
                                         </ng-container>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td class="config-label">{{ 'app.text.package-type' | i18n }}:</td>
+                                    <td>
+                                        <ng-container *ngIf="itemDetail.offerName; else custom">{{ itemDetail.offerName }}</ng-container>
+                                        <ng-template #custom> {{'app.service.custom' | i18n}}</ng-template>
+                                    </td>
+                                </tr>
                             </tbody>
                         </nz-table>
                     </div>
@@ -54,11 +61,16 @@
                                     <td>{{itemDetail.version}}</td>
                                 </tr>
                                 <tr>
-                                    <td class="config-label">{{'app.configuration.package' | i18n}}:</td>
-                                    <td>
-                                        <ng-container *ngIf="itemDetail.offerName; else custom">{{ itemDetail.offerName }}</ng-container>
-                                        <ng-template #custom> {{'app.service.custom' | i18n}}</ng-template>
+                                    <td class="config-label">Cấu hình gói:</td>
+                                    <td nzEllipsis [nz-tooltip]="packageConfig" nzTooltipPlacement="bottom">
+                                        <span style="cursor: pointer;">3 Broker/ {{itemDetail.cpu}} vCPU/ {{itemDetail.ram}} GB RAM/ {{itemDetail.storage}} GB Storage</span>
                                     </td>
+                                    <ng-template #packageConfig>
+                                        <div style="text-align: center;">
+                                            <span>3 Broker</span> <br>
+                                            <span>{{itemDetail.cpu}} vCPU/ {{itemDetail.ram}} GB RAM/ {{itemDetail.storage}} GB Storage</span>
+                                        </div>
+                                    </ng-template>
                                 </tr>
                             </tbody>
                         </nz-table>
@@ -87,12 +99,12 @@
                         <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']" style="width: 98%; float: right;">
                             <tbody>
                                 <tr>
-                                    <td>&nbsp;</td>
-                                    <td>&nbsp;</td>
+                                    <td class="config-label border-none">Security Protocol:</td>
+                                    <td class="border-none">infoConnection.securityProtocol</td>
                                 </tr>
-                                <tr>
-                                    <td class="config-label">Security Protocol:</td>
-                                    <td>{{infoConnection.securityProtocol}}</td>
+                                <tr style="background-color: #ffffff !important;">
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
                                 </tr>
                             </tbody>
                         </nz-table>
@@ -102,7 +114,7 @@
 
             <nz-card class="border-card">
                 <h3>Thông tin Network</h3>
-                <div class="table-info" id="table-network" nz-row>
+                <div class="table-info" nz-row>
                     <div nz-col [nzSpan]="12">
                         <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']" style="width: 98%;">
                             <tbody>
