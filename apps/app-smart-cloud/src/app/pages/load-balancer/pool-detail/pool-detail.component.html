@@ -264,7 +264,7 @@
               <td>{{ item.port }}</td>
               <td>{{ item.weight }}</td>
               <td>{{ item.operatingStatus }}</td>
-              <td>{{ item.provisioning_status }}</td>
+              <td>{{ item.provisioningStatus }}</td>
               <td>
                 <img
                   src="assets/imgs/edit-2.svg"
@@ -616,8 +616,7 @@
             class="input-custom"
             nz-input
             formControlName="ipPrivate"
-            [(ngModel)]="memberForm.ipAddress"
-            [disabled]="true"
+            [ngModel]="memberForm.ipAddress"
           />
         </nz-form-control>
       </nz-form-item>
