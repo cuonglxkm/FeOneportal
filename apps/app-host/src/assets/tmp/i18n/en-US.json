@@ -569,6 +569,15 @@
   "app.note.versioning": "Note: Storing multiple versions may increase storage capacity on the Bucket",
   "app.set.bucket.policy": "Set Bucket Policy",
   "app.create.bucket.policy": "Create new Bucket Policy",
+  "app.create.bucket.policy.success": "Create new Bucket Policy successfully",
+  "app.create.bucket.policy.fail": "Create new Bucket Policy failed",
+  "app.update.bucket.policy.success": "Update new Bucket Policy successfully",
+  "app.update.bucket.policy.fail": "Update new Bucket Policy failed",
+  "app.delete.bucket.policy.success": "Delete new Bucket Policy successfully",
+  "app.delete.bucket.policy.fail": "Delete new Bucket Policy failed",
+  "app.get.bucket.policy.fail": "Get list Bucket Policy failed",
+  "app.detail.bucket.policy.fail": "Get detail Bucket Policy failed",
+  "app.get.subuser.fail": "Get list Subuser failed",
   "app.bucket.policy.intro": "Bucket Policy is a set of access policy options available to grant permissions (Allow / Deny) for Simple Storage resources, using JSON-based access policy language",
   "app.bucket.policy.intro.next": "You can add additional constraints or specific conditions to the Bucket Policy with the Add Condition operation",
   "app.set.bucket.cors": "Set Bucket CORS",
@@ -1758,6 +1767,7 @@
   "router.nofitacation.create.fail1": "Failed to create a new Router.",
   "router.nofitacation.interface.remove.success": "Successfully deleted the Router Interface.",
   "router.nofitacation.interface.remove.fail": "Failed to delete the Router Interface.",
+  "router.nofitacation.interface.remove.fail1": "Please do not delete the Router Interface because you are using the File Storage service",
   "router.nofitacation.static.remove.success": "Successfully deleted the Static Route",
   "wan.label.ip.wan.management": "WAN connection IP management",
   "wan.alert.ip.wan": "WAN connection IP range",
@@ -2164,7 +2174,7 @@
   "volume.alert.message.confirm.detach": "Are you sure you want to detach the Volume from the virtual machine?",
   "volume.alert.resize.storage": "When increasing the capacity of the Volume, the new cost will be calculated from the adjustment date until the expiration date.",
   "app.breadcrumb.list.backup.volume": "Backup Volume management",
-  "app.backup.volume.info": "Backup Volume information",
+  "app.backup.volume.info": "Backup Information",
   "app.backup.volume.detail": "Backup Volume details",
 
 
@@ -2363,5 +2373,12 @@
   "keypair.title.empty": "Field cannot be left blank",
   "keypair.public.key.press": "Enter the public key",
   "policy.not1": "Permissions are defined in the Policy",
-  "policy.not2": "The permissions defined in this policy specify the allowed actions that the authenticated user/system is permitted to perform."
+  "policy.not2": "The permissions defined in this policy specify the allowed actions that the authenticated user/system is permitted to perform.",
+
+  "app.backup.volume.title.intro": "Backup Volume - Backup, security",
+  "app.backup.volume.intro.description": "A solution to support backing up and cloning part or all of an enterprise server system to cloud computing infrastructure, ensuring redundancy for operations when the main system encounters errors or unexpected incidents.",
+  "app.backup.volume.button.create": "Initialize Backup Volume",
+
+
+  "": ""
 }

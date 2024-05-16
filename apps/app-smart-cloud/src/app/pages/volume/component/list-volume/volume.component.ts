@@ -160,6 +160,7 @@ export class VolumeComponent implements OnInit {
     }, 1500);
   }
 
+  //delete
   handleOkDelete() {
     this.getListVolume(true);
   }
@@ -173,10 +174,8 @@ export class VolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
   }
 
-  navigateToCreateBackup(id, createdDate, endDate, name) {
-    this.router.navigate(['/app-smart-cloud/backup-volume/create'], {
-      queryParams: { idVolume: id, startDate: createdDate, endDate: endDate, nameVolume: name }
-    });
+  navigateToCreateBackup(idVolume) {
+    this.router.navigate(['/app-smart-cloud/backup-volume/create', {volumeId: idVolume}]);
 
   }
 

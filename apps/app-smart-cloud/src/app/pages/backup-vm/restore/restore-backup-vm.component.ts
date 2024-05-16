@@ -131,6 +131,7 @@ export class RestoreBackupVmComponent implements OnInit {
 
   selectedSSHKeyName: string;
   password: string = '';
+
   initPassword(): void {
     console.log('here')
     this.activeBlockPassword = true;

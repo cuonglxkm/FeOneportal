@@ -110,6 +110,13 @@ export class RenewVolumeComponent implements OnInit {
     });
   }
 
+  convertString(str: string): string {
+    const parts = str.trim().split('\n');
+    if (parts.length === 1) {
+      return str;
+    }
+    return parts.join(', ');
+  }
 
   extendsDto = new ExtendVolumeDTO();
 
