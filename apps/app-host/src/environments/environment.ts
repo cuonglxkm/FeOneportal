@@ -15,9 +15,9 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://api.onsmartcloud.com',
+  baseUrl: 'https://api-dev.onsmartcloud.com',
   sso: {
-    issuer: 'https://identity.onsmartcloud.com',
+    issuer: 'https://identity-dev.onsmartcloud.com',
     clientId: 'frontend-client',
     callback: 'http://localhost:4200/passport/callback/oneportal',
     logout_callback: 'http://localhost:4200',

@@ -188,6 +188,11 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
+          case 'mongodb_extend':
+            this.serviceType = 'mongodb';
+            serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
+            break;
           default:
             serviceItem.name = '';
             break;

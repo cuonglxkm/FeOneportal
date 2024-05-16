@@ -383,7 +383,8 @@ export class InstancesComponent implements OnInit {
           '',
           this.i18n.fanyi('app.notify.attach.vlan.success')
         );
-        this.reloadTable();
+        this.getDataList();
+        this.getDataList();
       },
       error: (e) => {
         this.notification.error(
@@ -429,7 +430,8 @@ export class InstancesComponent implements OnInit {
           '',
           this.i18n.fanyi('app.notify.detach.vlan.success')
         );
-        this.reloadTable();
+        this.getDataList();
+        this.getDataList();
       },
       error: (e) => {
         this.notification.error(

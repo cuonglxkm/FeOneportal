@@ -1,105 +1,74 @@
-<nz-card style="border-radius: 4px" [nzBordered]="false">
-  <span class="titlecard-custom">{{ 'app.create-user.selectPermission' | i18n }}</span>
+<nz-card style="border-radius: 8px" [nzBordered]="false">
+  <span class="titlecard-custom ">{{ 'app.create-user.selectPermission' | i18n }}</span>
   <nz-radio-group style="width: 100%; display: inline-flex">
     <nz-row [nzGutter]="24" style="margin-top: 10px">
       <nz-col [nzLg]="8" [nzMd]="8" [nzSm]="24" [nzXl]="8" [nzXs]="24">
-        <nz-card
-          style="border-radius: 4px"
-          [ngStyle]="{
+        <nz-card style="border-radius: 4px" [ngStyle]="{
             border: activeBlockAddUsertoGroup
               ? '1px solid #0066B3'
               : '1px solid #DADADA',
+              boxShadow: activeBlockAddUsertoGroup ? '0px 4px 25px 0px #00000026' : 'none',
             height: cardHeight
-          }"
-        >
-          <nz-card-meta
-            [nzAvatar]="nzAvatarselected1"
-            [nzTitle]="nzTitleselected1"
-            [nzDescription]="nzDescriptionselected1"
-          >
+          }">
+          <nz-card-meta [nzAvatar]="nzAvatarselected1" [nzTitle]="nzTitleselected1"
+            [nzDescription]="nzDescriptionselected1">
             <ng-template #nzAvatarselected1>
-              <input
-                style="cursor: pointer"
-                type="radio"
-                [checked]="activeBlockAddUsertoGroup"
-                (click)="initAddUsertoGroup()"
-              />
+              <input style="cursor: pointer" type="radio" [checked]="activeBlockAddUsertoGroup"
+                (click)="initAddUsertoGroup()" />
             </ng-template>
             <ng-template #nzTitleselected1>
               <b>{{ 'app.create-user.addUserToGroup.title' | i18n }}</b>
             </ng-template>
             <ng-template #nzDescriptionselected1>
-              <ellipsis class="text-custom"
-                >{{ 'app.create-user.addUserToGroup.des' | i18n }}</ellipsis
-              >
+              <ellipsis class="text-custom">{{ 'app.create-user.addUserToGroup.des' | i18n }}</ellipsis>
             </ng-template>
           </nz-card-meta>
         </nz-card>
       </nz-col>
       <nz-col [nzLg]="8" [nzMd]="8" [nzSm]="24" [nzXl]="8" [nzXs]="24">
-        <nz-card
-          style="border-radius: 4px"
-          [ngStyle]="{
+        <nz-card style="border-radius: 4px" [ngStyle]="{
             border: activeBlockCopyPolicies
               ? '1px solid #0066B3'
               : '1px solid #DADADA',
+              boxShadow: activeBlockCopyPolicies ? '0px 4px 25px 0px #00000026' : 'none',
             height: cardHeight
-          }"
-        >
-          <nz-card-meta
-            [nzAvatar]="nzAvatarselected2"
-            [nzTitle]="nzTitleselected2"
-            [nzDescription]="nzDescriptionselected2"
-          >
+          }">
+          <nz-card-meta [nzAvatar]="nzAvatarselected2" [nzTitle]="nzTitleselected2"
+            [nzDescription]="nzDescriptionselected2">
             <ng-template #nzAvatarselected2>
-              <input
-                style="cursor: pointer"
-                type="radio"
-                [checked]="activeBlockCopyPolicies"
-                (click)="initCopyPolicies()"
-              />
+              <input style="cursor: pointer" type="radio" [checked]="activeBlockCopyPolicies"
+                (click)="initCopyPolicies()" />
             </ng-template>
             <ng-template #nzTitleselected2>
               <b>{{ 'app.create-user.copyPolicies.title' | i18n }}</b>
             </ng-template>
             <ng-template #nzDescriptionselected2>
               <ellipsis class="text-custom">
-                {{ 'app.create-user.copyPolicies.des' | i18n }}</ellipsis
-              >
+                {{ 'app.create-user.copyPolicies.des' | i18n }}</ellipsis>
             </ng-template>
           </nz-card-meta>
         </nz-card>
       </nz-col>
       <nz-col [nzLg]="8" [nzMd]="8" [nzSm]="24" [nzXl]="8" [nzXs]="24">
-        <nz-card
-          style="border-radius: 4px"
-          [ngStyle]="{
+        <nz-card style="border-radius: 4px" [ngStyle]="{
             border: activeBlockAttachPolicies
               ? '1px solid #0066B3'
               : '1px solid #DADADA',
+              boxShadow: activeBlockAttachPolicies ? '0px 4px 25px 0px #00000026' : 'none',
             height: cardHeight,
-          }"
-        >
-          <nz-card-meta
-            [nzAvatar]="nzAvatarselected3"
-            [nzTitle]="nzTitleselected3"
-            [nzDescription]="nzDescriptionselected3"
-          >
+          }">
+          <nz-card-meta [nzAvatar]="nzAvatarselected3" [nzTitle]="nzTitleselected3"
+            [nzDescription]="nzDescriptionselected3">
             <ng-template #nzAvatarselected3>
-              <input
-                style="cursor: pointer"
-                type="radio"
-                [checked]="activeBlockAttachPolicies"
-                (click)="initAttachPolicies()"
-              />
+              <input style="cursor: pointer" type="radio" [checked]="activeBlockAttachPolicies"
+                (click)="initAttachPolicies()" />
             </ng-template>
             <ng-template #nzTitleselected3>
               <b>{{ 'app.create-user.attachPolicies.title' | i18n }}</b>
             </ng-template>
             <ng-template #nzDescriptionselected3>
               <ellipsis class="text-custom">
-                {{ 'app.create-user.attachPolicies.des' | i18n }}</ellipsis
-              >
+                {{ 'app.create-user.attachPolicies.des' | i18n }}</ellipsis>
             </ng-template>
           </nz-card-meta>
         </nz-card>
@@ -108,99 +77,38 @@
   </nz-radio-group>
 </nz-card>
 
-<nz-card
-  *ngIf="activeBlockAddUsertoGroup"
-  [nzBordered]="false"
-  style="border-radius: 4px"
->
-  <div
-    style="margin-bottom: 20px"
-    nz-row
-    [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }"
-  >
-    <div
-      nz-col
-      [nzLg]="8"
-      [nzMd]="8"
-      [nzSm]="24"
-      [nzXl]="8"
-      [nzXs]="24"
-      [nzXXl]="8"
-    >
+<nz-card *ngIf="activeBlockAddUsertoGroup" [nzBordered]="false" style="border-radius: 8px">
+  <div style="margin-bottom: 20px" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+    <div nz-col [nzLg]="8" [nzMd]="8" [nzSm]="24" [nzXl]="8" [nzXs]="24" [nzXXl]="8">
       <span class="text-card-header">{{ 'app.create-user.groupInformation' | i18n }}</span>
     </div>
-    <div
-      class="text-right p-0 m-b-0"
-      nz-col
-      [nzLg]="16"
-      [nzMd]="16"
-      [nzSm]="24"
-      [nzXl]="16"
-      [nzXs]="24"
-      [nzXXl]="16"
-    >
-      <nz-input-group
-        style="margin-right: 8px; width: 38%; border-radius: 8px"
-        [nzPrefix]="prefixIconSearch"
-        nzSize="large"
-      >
-        <input
-          name="name"
-          nz-input
-          [placeholder]="'app.users.search' | i18n"
-          [(ngModel)]="searchParam"
-        />
+    <div class="text-right p-0 m-b-0 d-flex" nz-col [nzLg]="16" [nzMd]="16" [nzSm]="24" [nzXl]="16" [nzXs]="24" [nzXXl]="16" style="justify-content: end;">
+      <nz-input-group style="margin-right: 8px; width: 38%; border-radius: 8px" [nzPrefix]="prefixIconSearch"
+        nzSize="large">
+        <input name="name" nz-input [placeholder]="'app.users.search' | i18n" [(ngModel)]="searchParam" />
       </nz-input-group>
       <ng-template #prefixIconSearch>
-        <img
-          src="assets/imgs/search.svg"
-          alt=""
-          style="cursor: pointer"
-          [nz-tooltip]="'app.button.search' | i18n"
-          (click)="getGroup()"
-        />
+        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"
+          (click)="getGroup()" />
       </ng-template>
-      <button
-        style="border: none; border-radius: 8px"
-        nz-button
-        (click)="reloadGroupTable()"
-      >
+      <button style="border: none; border-radius: 8px" nz-button (click)="reloadGroupTable()">
         <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
       </button>
-      <button nz-button nzType="primary" (click)="navigateToCreateGroup()">
-        <img
-          style="padding-right: 10px; margin-top: -4px"
-          src="assets/imgs/add-circle.svg"
-          alt=""
-        />
-        <span> {{ 'app.users.button.create' | i18n }}</span>
+      <button nz-button nzType="primary" (click)="navigateToCreateGroup()" class="btn-add">
+        <one-portal-svg-icon [icon]="'icon_add'" class="icon-svg icon-padding-right"></one-portal-svg-icon>
+        <!-- <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" /> -->
+        <span> {{ 'app.users.button.addnew' | i18n }}</span>
       </button>
     </div>
   </div>
-  <nz-table
-    #rowSelectionTable
-    nzShowSizeChanger
-    [nzScroll]="{ x: '100%', y: '250px' }"
-    [nzFrontPagination]="false"
-    [nzData]="listOfGroups"
-    (nzCurrentPageDataChange)="onCurrentPageDataChangeGroup($event)"
-    [nzLoading]="loading"
-    [nzTotal]="totalGroup"
-    [(nzPageIndex)]="pageIndex"
-    [(nzPageSize)]="pageSize"
-    (nzPageIndexChange)="getGroup()"
-    (nzPageSizeChange)="getGroup()"
-  >
+  <nz-table #rowSelectionTable nzShowSizeChanger [nzScroll]="{ x: '100%', y: '250px' }" [nzFrontPagination]="false"
+    [nzData]="listOfGroups" (nzCurrentPageDataChange)="onCurrentPageDataChangeGroup($event)" [nzLoading]="loading"
+    [nzTotal]="totalGroup" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" (nzPageIndexChange)="getGroup()"
+    (nzPageSizeChange)="getGroup()">
     <thead>
       <tr>
-        <th
-          [nzChecked]="checkedGroup"
-          [nzIndeterminate]="indeterminateGroup"
-          nzLabel="Select all group"
-          [nzWidth]="'50px'"
-          (nzCheckedChange)="onAllCheckedGroup($event)"
-          nzLeft
-        ></th>
+        <th [nzChecked]="checkedGroup" [nzIndeterminate]="indeterminateGroup" nzLabel="Select all group"
+          [nzWidth]="'50px'" (nzCheckedChange)="onAllCheckedGroup($event)" nzLeft></th>
         <th>{{ 'app.create-user.nameGroup' | i18n }}</th>
         <th>{{ 'app.create-user.numberOfUser' | i18n }}</th>
         <th>{{ 'app.create-user.attachedPolicies' | i18n }}</th>
@@ -209,38 +117,21 @@
     </thead>
     <tbody>
       <tr *ngFor="let item of listOfGroups; let i = index">
-        <td
-          [nzChecked]="mapOfCheckedGroup.has(item.name)"
-          (nzCheckedChange)="onItemCheckedGroup(item, $event)"
-          nzLeft
-        ></td>
+        <td [nzChecked]="mapOfCheckedGroup.has(item.name)" (nzCheckedChange)="onItemCheckedGroup(item, $event)" nzLeft>
+        </td>
         <td nzLeft>
-          <a
-            nz-tooltip
-            nzTooltipTitle="Xem chi tiết"
-            nzTooltipPlacement="bottom"
-            [routerLink]="'/app-smart-cloud/iam/user-group/' + item.name"
-            >{{ item.name }}</a
-          >
+          <a nz-tooltip [nzTooltipTitle]="'app.view.detail'|i18n" nzTooltipPlacement="bottom"
+            [routerLink]="'/app-smart-cloud/iam/user-group/' + item.name">{{ item.name }}</a>
         </td>
         <td class="fieldColor">{{ item.numberOfUser }}</td>
         <td *ngIf="item.policies == null || item.policies.length == 0">None</td>
-        <td
-          class="fieldColor"
-          *ngIf="item.policies != null && item.policies.length == 1"
-        >
+        <td class="fieldColor" *ngIf="item.policies != null && item.policies.length == 1">
           {{ item.policies[0] }}
         </td>
-        <td
-          class="fieldColor"
-          *ngIf="item.policies != null && item.policies.length == 2"
-        >
+        <td class="fieldColor" *ngIf="item.policies != null && item.policies.length == 2">
           {{ item.policies[0] }}, {{ item.policies[1] }}
         </td>
-        <td
-          class="fieldColor"
-          *ngIf="item.policies != null && item.policies.length > 2"
-        >
+        <td class="fieldColor" *ngIf="item.policies != null && item.policies.length > 2">
           {{ item.policies[0] }}, {{ item.policies[1] }}
           <span class="nameField">
             and {{ item.policies.length - 2 }} policies
@@ -252,91 +143,33 @@
   </nz-table>
 </nz-card>
 
-<nz-card
-  *ngIf="activeBlockCopyPolicies"
-  [nzBordered]="false"
-  style="border-radius: 4px"
->
-  <div
-    style="margin-bottom: 20px"
-    nz-row
-    [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }"
-  >
-    <div
-      nz-col
-      [nzLg]="12"
-      [nzMd]="12"
-      [nzSm]="24"
-      [nzXl]="12"
-      [nzXs]="24"
-      [nzXXl]="12"
-    >
+<nz-card *ngIf="activeBlockCopyPolicies" [nzBordered]="false" style="border-radius: 8px">
+  <div style="margin-bottom: 20px" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+    <div nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
       <span class="text-card-header">{{ 'app.create-user.userInformation' | i18n }}</span>
     </div>
-    <div
-      class="text-right p-0 m-b-0"
-      nz-col
-      [nzLg]="12"
-      [nzMd]="12"
-      [nzSm]="24"
-      [nzXl]="12"
-      [nzXs]="24"
-      [nzXXl]="12"
-    >
-      <nz-input-group
-        style="margin-right: 8px; width: 50%; border-radius: 8px"
-        [nzPrefix]="prefixIconSearch"
-        nzSize="large"
-      >
-        <input
-          name="name"
-          nz-input
-          [placeholder]="'app.users.search' | i18n "
-          [(ngModel)]="searchParam"
-        />
+    <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
+      <nz-input-group style="margin-right: 8px; width: 50%; border-radius: 8px" [nzPrefix]="prefixIconSearch"
+        nzSize="large">
+        <input name="name" nz-input [placeholder]="'app.users.search' | i18n " [(ngModel)]="searchParam" />
       </nz-input-group>
       <ng-template #prefixIconSearch>
-        <img
-          src="assets/imgs/search.svg"
-          alt=""
-          style="cursor: pointer"
-          [nz-tooltip]="'app.button.search' | i18n"
-          (click)="getCopyUserPlicies()"
-        />
+        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"
+          (click)="getCopyUserPlicies()" />
       </ng-template>
-      <button
-        style="border: none; border-radius: 8px"
-        nz-button
-        (click)="reloadUserTable()"
-      >
+      <button style="border: none; border-radius: 8px" nz-button (click)="reloadUserTable()">
         <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
       </button>
     </div>
   </div>
-  <nz-table
-    #rowSelectionTable
-    nzShowSizeChanger
-    [nzScroll]="{ x: '100%', y: '250px' }"
-    [nzFrontPagination]="false"
-    [nzData]="listOfUsers"
-    (nzCurrentPageDataChange)="onCurrentPageDataChangeUser($event)"
-    [nzLoading]="loading"
-    [nzTotal]="totalUser"
-    [(nzPageIndex)]="pageIndex"
-    [(nzPageSize)]="pageSize"
-    (nzPageIndexChange)="getCopyUserPlicies()"
-    (nzPageSizeChange)="getCopyUserPlicies()"
-  >
+  <nz-table #rowSelectionTable nzShowSizeChanger [nzScroll]="{ x: '100%', y: '250px' }" [nzFrontPagination]="false"
+    [nzData]="listOfUsers" (nzCurrentPageDataChange)="onCurrentPageDataChangeUser($event)" [nzLoading]="loading"
+    [nzTotal]="totalUser" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize"
+    (nzPageIndexChange)="getCopyUserPlicies()" (nzPageSizeChange)="getCopyUserPlicies()">
     <thead>
       <tr>
-        <th
-          [nzChecked]="checkedUser"
-          [nzIndeterminate]="indeterminateUser"
-          nzLabel="Select all user"
-          [nzWidth]="'50px'"
-          (nzCheckedChange)="onAllCheckedUser($event)"
-          nzLeft
-        ></th>
+        <th [nzChecked]="checkedUser" [nzIndeterminate]="indeterminateUser" nzLabel="Select all user" [nzWidth]="'50px'"
+          (nzCheckedChange)="onAllCheckedUser($event)" nzLeft></th>
         <th>{{ 'app.create-user.nameUser' | i18n }}</th>
         <th>Groups</th>
         <th>{{ 'app.create-user.attachedPolicies' | i18n }}</th>
@@ -345,19 +178,11 @@
     </thead>
     <tbody>
       <tr *ngFor="let item of listOfUsers; let i = index">
-        <td
-          [nzChecked]="mapOfCheckedUser.has(item.userName)"
-          (nzCheckedChange)="onItemCheckedUser(item, $event)"
-          nzLeft
-        ></td>
+        <td [nzChecked]="mapOfCheckedUser.has(item.userName)" (nzCheckedChange)="onItemCheckedUser(item, $event)"
+          nzLeft></td>
         <td nzLeft>
-          <a
-            nz-tooltip
-            nzTooltipTitle="Xem chi tiết"
-            nzTooltipPlacement="bottom"
-            [routerLink]="'/app-smart-cloud/users/detail/' + item.userName"
-            >{{ item.userName }}</a
-          >
+          <a nz-tooltip nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom"
+            [routerLink]="'/app-smart-cloud/users/detail/' + item.userName">{{ item.userName }}</a>
         </td>
         <td *ngIf="item.userGroups.length == 0">None</td>
         <td class="fieldColor" *ngIf="item.userGroups.length == 1">
@@ -391,101 +216,40 @@
   </nz-table>
 </nz-card>
 
-<nz-card
-  *ngIf="activeBlockAttachPolicies"
-  [nzBordered]="false"
-  style="border-radius: 4px"
->
+<nz-card *ngIf="activeBlockAttachPolicies" [nzBordered]="false" style="border-radius: 8px">
   <form nz-form>
-    <div
-      style="margin-bottom: 20px"
-      nz-row
-      [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }"
-    >
-      <div
-        nz-col
-        [nzLg]="8"
-        [nzMd]="8"
-        [nzSm]="24"
-        [nzXl]="8"
-        [nzXs]="24"
-        [nzXXl]="8"
-      >
+    <div style="margin-bottom: 20px" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+      <div nz-col [nzLg]="8" [nzMd]="8" [nzSm]="24" [nzXl]="8" [nzXs]="24" [nzXXl]="8">
         <span class="text-card-header">{{ 'app.create-user.permissionPoliciesInformation' | i18n }}</span>
       </div>
-      <div
-        class="text-right p-0 m-b-0"
-        nz-col
-        [nzLg]="16"
-        [nzMd]="16"
-        [nzSm]="24"
-        [nzXl]="16"
-        [nzXs]="24"
-        [nzXXl]="16"
-      >
-        <nz-input-group
-          style="margin-right: 8px; width: 38%; border-radius: 8px"
-          [nzPrefix]="prefixIconSearch"
-          nzSize="large"
-        >
-          <input
-            name="name"
-            nz-input
-            [placeholder]="'app.users.search' | i18n "
-            [(ngModel)]="searchParam"
-          />
+      <div class="text-right p-0 m-b-0 d-flex" nz-col [nzLg]="16" [nzMd]="16" [nzSm]="24" [nzXl]="16" [nzXs]="24" [nzXXl]="16" style="justify-content: end;">
+        <nz-input-group style="margin-right: 8px; width: 38%; border-radius: 8px" [nzPrefix]="prefixIconSearch"
+          nzSize="large">
+          <input name="name" nz-input [placeholder]="'app.users.search' | i18n " [(ngModel)]="searchParam" />
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <img
-            src="assets/imgs/search.svg"
-            alt=""
-            style="cursor: pointer"
-            [nz-tooltip]="'app.button.search' | i18n"
-            (click)="getPermissionPolicies()"
-          />
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"
+            (click)="getPermissionPolicies()" />
         </ng-template>
-        <button
-          style="border: none; border-radius: 8px"
-          nz-button
-          (click)="reloadPolicyTable()"
-        >
+        <button style="border: none; border-radius: 8px" nz-button (click)="reloadPolicyTable()">
           <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
         </button>
-        <button nz-button nzType="primary" (click)="navigateToCreatePolicy()">
-          <img
-            style="padding-right: 10px; margin-top: -4px"
-            src="assets/imgs/add-circle.svg"
-            alt=""
-          />
-          <span>{{ 'app.label.create' | i18n }}</span>
+        <button nz-button nzType="primary" (click)="navigateToCreatePolicy()" class="btn-add">
+          <one-portal-svg-icon [icon]="'icon_add'" class="icon-svg icon-padding-right"></one-portal-svg-icon>
+          <!-- <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" /> -->
+          <span>{{ 'app.users.button.addnew' | i18n }}</span>
         </button>
       </div>
     </div>
   </form>
-  <nz-table
-    #rowSelectionTable
-    nzShowSizeChanger
-    [nzScroll]="{ x: '100%', y: '250px' }"
-    [nzFrontPagination]="false"
-    [nzData]="listOfPolicies"
-    (nzCurrentPageDataChange)="onCurrentPageDataChangePolicy($event)"
-    [nzLoading]="loading"
-    [nzTotal]="totalPolicy"
-    [(nzPageIndex)]="pageIndex"
-    [(nzPageSize)]="pageSize"
-    (nzPageIndexChange)="getPermissionPolicies()"
-    (nzPageSizeChange)="getPermissionPolicies()"
-  >
+  <nz-table #rowSelectionTable nzShowSizeChanger [nzScroll]="{ x: '100%', y: '250px' }" [nzFrontPagination]="false"
+    [nzData]="listOfPolicies" (nzCurrentPageDataChange)="onCurrentPageDataChangePolicy($event)" [nzLoading]="loading"
+    [nzTotal]="totalPolicy" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize"
+    (nzPageIndexChange)="getPermissionPolicies()" (nzPageSizeChange)="getPermissionPolicies()">
     <thead>
       <tr>
-        <th
-          [nzChecked]="checkedPolicy"
-          [nzIndeterminate]="indeterminatePolicy"
-          nzLabel="Select all Policy"
-          [nzWidth]="'50px'"
-          (nzCheckedChange)="onAllCheckedPolicy($event)"
-          nzLeft
-        ></th>
+        <th [nzChecked]="checkedPolicy" [nzIndeterminate]="indeterminatePolicy" nzLabel="Select all Policy"
+          [nzWidth]="'50px'" (nzCheckedChange)="onAllCheckedPolicy($event)" nzLeft></th>
         <th>{{ 'app.create-user.namePolicy' | i18n }}</th>
         <th>{{ 'app.create-user.type' | i18n }}</th>
         <th>{{ 'app.create-user.attachedEntities' | i18n }}</th>
@@ -494,38 +258,21 @@
     <tbody>
       <ng-container *ngFor="let item of listOfPolicies; let i = index">
         <tr>
-          <td
-            [nzChecked]="setOfCheckedPolicy.has(item.name)"
-            (nzCheckedChange)="onItemCheckedPolicy(item.name, $event)"
-            nzLeft
-          ></td>
-          <td
-            [nzExpand]="expandSet.has(item.name)"
-            (nzExpandChange)="onExpandChange(item.name, $event)"
-          >
-            <a
-              nz-tooltip
-              nzTooltipTitle="Xem chi tiết"
-              nzTooltipPlacement="bottom"
-              [routerLink]="'/app-smart-cloud/policy/detail/' + item.name"
-              >{{ item.name }}</a
-            >
+          <td [nzChecked]="setOfCheckedPolicy.has(item.name)" (nzCheckedChange)="onItemCheckedPolicy(item.name, $event)"
+            nzLeft></td>
+          <td [nzExpand]="expandSet.has(item.name)" (nzExpandChange)="onExpandChange(item.name, $event)">
+            <a nz-tooltip nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom"
+              [routerLink]="'/app-smart-cloud/policy/detail/' + item.name">{{ item.name }}</a>
           </td>
           <td>{{ item.type }}</td>
           <td class="fieldColor">{{ item.attachedEntities }}</td>
         </tr>
         <tr [nzExpand]="expandSet.has(item.name)">
           <div class="json-viewer-bg">
-            <button
-              (click)="copyText(item)"
-              style="z-index: 1; position: absolute; right: 20px; top: 21px"
-            >
+            <button (click)="copyText(item)" style="z-index: 1; position: absolute; right: 20px; top: 21px">
               <span nz-icon nzType="copy" nzTheme="outline"></span> Copy JSON
             </button>
-            <ngx-json-viewer
-              [json]="item"
-              style="position: relative"
-            ></ngx-json-viewer>
+            <ngx-json-viewer [json]="item" style="position: relative"></ngx-json-viewer>
           </div>
         </tr>
       </ng-container>

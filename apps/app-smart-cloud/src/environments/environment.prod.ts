@@ -8,6 +8,6 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://api.onsmartcloud.com',
+  baseUrl: 'https://api-dev.onsmartcloud.com',
   unitOfMeasureVpn: 'vpns2s',
 } as Environment;

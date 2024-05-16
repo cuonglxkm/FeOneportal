@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Khởi tạo User'">
+<page-header [breadcrumb]="breadcrumb" [title]="'app.user.initialize'|i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>
@@ -13,7 +13,7 @@
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> {{ 'app.breadcrumb.createUser' | i18n }} </nz-breadcrumb-item>
+      <nz-breadcrumb-item> {{"app.user.initialize"|i18n}} </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
@@ -32,7 +32,7 @@
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input
-              class="input-custom"
+              class="input-custom textbox-radius-lg"
               nz-input
               formControlName="name"
               [(ngModel)]="userCreate.userName"
@@ -60,7 +60,7 @@
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="emailErrorTpl">
             <input
-              class="input-custom"
+              class="input-custom textbox-radius-lg"
               nz-input
               formControlName="email"
               [(ngModel)]="userCreate.email"
@@ -122,7 +122,7 @@
 
 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
   <div
-    class="text-right p-0 m-b-0"
+    class="text-right p-0 m-b-0 d-flex"
     nz-col
     [nzLg]="24"
     [nzMd]="24"
@@ -130,6 +130,7 @@
     [nzXl]="24"
     [nzXs]="24"
     [nzXXl]="24"
+    style="justify-content: end;"
   >
     <button nz-button (click)="navigateToList()">
       <img
@@ -143,13 +144,14 @@
       nz-button
       nzType="primary"
       [disabled]="!form.valid"
-      (click)="showModal()"
+      (click)="showModal()" class="btn-add"
     >
-      <img
+      <!-- <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/add-circle.svg"
         alt=""
-      />
+      /> -->
+      <one-portal-svg-icon [icon]="'icon_add'" class="icon-svg icon-padding-right"></one-portal-svg-icon>
       <span>{{ 'app.button.addUser' | i18n }}</span>
     </button>
   </div>
