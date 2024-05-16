@@ -2057,6 +2057,7 @@
   "volume.unit-price": "Đơn giá",
   "volume.date": "Ngày",
   "volume.input.storage.required": "Vui lòng nhập số nguyên dương",
+  "volume.input.storage.not-enough": "Dung lượng cofn lại k",
   "volume.input.time": "Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100",
   "volume.alert.message.delete": "Nếu Volume có các bản Snapshot thì các bản Snapshot đó cũng sẽ bị xóa theo Volume.",
   "volume.input.required.storage": "Vui lòng nhập dung lượng",

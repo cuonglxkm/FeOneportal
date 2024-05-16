@@ -62,6 +62,8 @@ export class ResizeVolumeVpcComponent implements OnInit {
 
   sizeInCloudProject: SizeInCloudProject = new SizeInCloudProject();
 
+  remaining: number;
+
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
@@ -77,6 +79,15 @@ export class ResizeVolumeVpcComponent implements OnInit {
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error').toUpperCase());
     this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend').toUpperCase());
 
+  }
+
+  checkQuota(control) {
+    const value = control.value;
+    if (this.remaining <= value) {
+      return { notEnough: true };
+    } else {
+      return null;
+    }
   }
 
   duplicateNameValidator(control) {
@@ -202,11 +213,10 @@ export class ResizeVolumeVpcComponent implements OnInit {
     this.volumeService.editSizeVolume(request).subscribe(data => {
         if (data.code == 200) {
           this.isLoadingConfirm = false;
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.resize.success'));
+          this.router.navigate(['/app-smart-cloud/volumes']);
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu điều chỉnh dung lượng thành công.');
           console.log(data);
-          setTimeout(() => {
-            this.router.navigate(['/app-smart-cloud/volumes']);
-          }, 2500);
+
         } else if (data.code == 310) {
           this.isLoadingConfirm = false;
           // this.router.navigate([data.data]);
@@ -217,7 +227,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
         }
       }, error => {
         this.isLoadingConfirm = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('') + error.error.detail);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
       }
     );
   }
@@ -239,8 +249,14 @@ export class ResizeVolumeVpcComponent implements OnInit {
     if (this.volumeId != undefined || this.volumeId != null) {
       console.log('id', this.volumeId);
       this.getVolumeById(this.volumeId);
+      this.isLoading = true;
       this.projectService.getByProjectId(this.project).subscribe(data => {
+        this.isLoading = false;
         this.sizeInCloudProject = data;
+        this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
+      }, error => {
+        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
+        this.isLoading = false;
       });
     }
   }

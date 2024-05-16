@@ -1,8 +1,8 @@
 #!/usr/bin/env groovy
 def agentLabel = env.BRANCH_NAME == 'release' ? "it-si-cloud-linux2" : "it-si-cloud-linux1"
 pipeline {
-    agent { 
-        label agentLabel 
+    agent {
+        label agentLabel
     }
     environment {
         PACKAGE_NAME = "oneportal-frontend_${env.GIT_BRANCH.replaceAll("/","_")}_${env.GIT_COMMIT.substring(0, 5)}"
