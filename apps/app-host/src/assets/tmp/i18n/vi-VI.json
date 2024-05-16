@@ -51,9 +51,6 @@
   "form.account.validate.phone":"Số điện thoại không hợp lệ!",
   "form.account.validate.address":"Tỉnh/Thành phố",
 
-
-
-
   "app.account.validation": "Vui lòng nhập đầy đủ thông tin",
   "app.account.form.success": "Cập nhật tài khoản thành công!",
   "app.account.form.fail": "Cập nhật tài khoản không thành công!",
@@ -184,6 +181,7 @@
   "app.usage": "Sử dụng",
   "app.name": "Tên",
   "app.snapshot.create": "Tạo Snapshot",
+  "app.guide.formula": "Hướng dẫn công thức",
 
   "app.ip.type": "Loại IP",
   "app.ip.address": "Địa chỉ IP",
