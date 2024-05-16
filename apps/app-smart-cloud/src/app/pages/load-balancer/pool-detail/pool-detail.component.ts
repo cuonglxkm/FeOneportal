@@ -123,6 +123,7 @@ export class PoolDetailComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.loadingHealth = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe({

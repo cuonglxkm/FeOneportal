@@ -19,7 +19,6 @@ import { MatchControl } from '@delon/util/form';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { environment } from '@env/environment';
 import { AppValidator } from '../../../../../../../libs/common-utils/src';
 
@@ -200,7 +199,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
           });
         },
         error: (error) => {
-          this.notification.error(error.error.detail, '');
+          this.notification.error(error.error.validationErrors.Password[0], '');
         },
       });
   }
