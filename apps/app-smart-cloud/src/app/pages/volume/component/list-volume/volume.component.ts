@@ -69,14 +69,14 @@ export class VolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    this.getListVolume(true);
+    setTimeout(() => {this.getListVolume(true);}, 2500)
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project?.type;
     this.isLoading = true;
-    this.getListVolume(true);
+    setTimeout(() => {this.getListVolume(true);}, 2500)
   }
 
 
@@ -218,6 +218,8 @@ export class VolumeComponent implements OnInit {
           record.serviceStatus = data.serviceStatus;
 
           this.response.records[foundIndex] = record;
+
+          this.getListVolume(false)
           this.cdr.detectChanges();
         }
       }
