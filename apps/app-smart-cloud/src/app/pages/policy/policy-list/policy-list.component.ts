@@ -36,15 +36,16 @@ export class PolicyListComponent {
   public optionJsonEditor: JsonEditorOptions;
 
   listPolicyType =[
-    {label: this.i18n.fanyi("app.policies.allTypePolicy"),value :"0"},
-    {label:"Portal managed",value :"1"},
-    {label:"Customer managed",value :"2"}
+    {label: this.i18n.fanyi("app.policies.allTypePolicy"),value :""},
+    {label:"Portal managed",value :"Portal managed"},
+    {label:"Customer managed",value :"Customer managed"}
   ];
 
   listAction =[
     {label:this.i18n.fanyi("app.policies.attach"),value :"0"},
     {label:this.i18n.fanyi("app.policies.detach"),value :"1"},
   ];
+  disableDelete = true;
 
   constructor(private service: PolicyService,private router: Router,
               private clipboardService: ClipboardService,
@@ -64,7 +65,7 @@ export class PolicyListComponent {
   loadData() {
     this.loading = true;
     this.service.searchPolicy(this.searchValue,this.index, this.size,
-      this.tokenService.get()?.userId, this.tokenService.get()?.token)
+      this.tokenService.get()?.userId, this.tokenService.get()?.token, this.selectedStatus)
       .pipe(finalize(() => {this.loading = false;}))
       .subscribe(
       (data)=>{
@@ -89,6 +90,7 @@ export class PolicyListComponent {
       .subscribe(
       () =>{
         this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.policy.delete.noti.success"))
+        this.search();
       },
       error => {
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.policy.delete.noti.fail"))
@@ -183,4 +185,7 @@ export class PolicyListComponent {
     }
   }
 
+  checkDelete() {
+    this.disableDelete = this.nameDelete == this.radioValue ? false : true;
+  }
 }

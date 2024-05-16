@@ -110,9 +110,7 @@ export class FileSystemService extends BaseService {
   }
 
   deleteFileSystem(formDelete: FormDeleteFileSystem) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/shares/${formDelete.id}`, {
-      body: formDelete
-    }).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/shares/${formDelete.id}?regionId=${formDelete.regionId}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

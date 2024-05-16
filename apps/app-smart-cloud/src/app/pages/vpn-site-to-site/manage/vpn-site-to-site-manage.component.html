@@ -82,7 +82,7 @@
     </div>
     <div style="margin-bottom: 15px" class="text-label">
       Router VPN site to site: 
-      <a class="text-bold" target="_blank" nz-tooltip nzTooltipTitle="{{'app.view.detail' | i18n}}" nzTooltipPlacement="bottom" [routerLink]="['/app-smart-cloud/network/router/detail/' + response?.routerId]">
+      <a class="text-bold" target="_blank" nz-tooltip nzTooltipTitle="{{'app.view.detail' | i18n}}" nzTooltipPlacement="bottom" [routerLink]="['/app-smart-cloud/network/router/detail/' + response?.routerName + '/' + response?.routerId]">
         {{ response?.routerName }}
         </a>
     </div>

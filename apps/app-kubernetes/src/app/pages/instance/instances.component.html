@@ -4,40 +4,96 @@
     <div class="flex-style mb-5">
       <div class="w-40">
         <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
-          <input type="text" nz-input placeholder="Tìm kiếm theo tên node/worker group" [(ngModel)]="keySearch"
+          <input type="text" nz-input [placeholder]="'app.cluster.filter-node-worker' | i18n" [(ngModel)]="keySearch"
             (ngModelChange)="this.changeKeySearch.next($event)" />
         </nz-input-group>
         <ng-template #prefixButton>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" />
         </ng-template>
       </div>
 
-      <button nz-button nzType="text" nzTooltipTitle="Đông bộ" nzTooltipPlacement="top" nz-tooltip
-        (click)="syncInstances()" class="borderless">
+      <button nz-button nzType="text" [nzTooltipTitle]="'app.cluster.sync' | i18n" nzTooltipPlacement="top" nz-tooltip
+        (click)="syncInstances()" class="borderless" [disabled]="isLoadingInstance">
         <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
       </button>
     </div>
 
     <!-- table -->
     <nz-table #instanceTable [nzData]="listOfInstances" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
-      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoadingInstance">
       <thead>
         <tr>
-          <th class="align-center header-table">STT</th>
-          <th class="align-center header-table">Tên node</th>
-          <th class="align-center header-table">Tên nhóm worker</th>
-          <th class="align-center header-table">Trạng thái</th>
-          <th class="align-center header-table">IP Private</th>
-          <th class="align-center header-table">vCpu</th>
-          <th class="align-center header-table">Ram</th>
-          <th class="align-center header-table">Storage (GB)</th>
-          <th class="align-center header-table">Thao tác</th>
+          <th class="header-table">{{ 'app.order.ordinalNumber' | i18n }}</th>
+          <th class="header-table">{{ 'app.cluster.node' | i18n }}</th>
+          <th class="header-table">{{ 'app.cluster.worker-group-name' | i18n }}</th>
+          <th class="header-table">{{ 'app.text.status' | i18n }}</th>
+          <th class="header-table">IP Private</th>
+          <th class="header-table">vCPU</th>
+          <th class="header-table">RAM (GB)</th>
+          <th class="header-table">Storage (GB)</th>
+          <th class="header-table">{{ 'app.hard.drive.type' | i18n }}</th>
+          <th class="header-table">{{ 'app.text.operation' | i18n }}</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of instanceTable.data; let i = index;">
+          <td class="right-align">{{ i + 1 }}</td>
+          <td>{{ item.instanceName }}</td>
+          <td>{{ item.workerGroupName }}</td>
+          <td>
+            <ng-container *ngIf="item.status | statusCode2Label as status">
+              <span [ngStyle]="{color: status.color}">{{ status.status | i18n }}</span>
+            </ng-container>
+          </td>
+          <td>{{ item.privateIP }}</td>
+          <td class="right-align">{{ item.vcpus }}</td>
+          <td class="right-align">{{ item.ram | convertUnit : 'GB'}}</td>
+          <td class="right-align">{{ item.volumeSize }}</td>
+          <td>{{ item.volumeType }}</td>
+          <td>
+            <div class="flex">
+              <nz-switch nz-switch [nzCheckedChildren]="'app.start' | i18n" [nzUnCheckedChildren]="'app.off' | i18n"
+                [nz-tooltip]="item.action ? ('app.cluster.off-node' | i18n) : ('app.cluster.start-node' | i18n)" [nzControl]="true"
+                [ngModel]="item.isActive" (click)="showModalAction(item)" class="mt-1"
+                [nzDisabled]="item.isProgressing || isServiceInProgressing"></nz-switch>
+
+              <button nz-button nzType="text" nz-tooltip="Reboot" (click)="showModalAction(item, 'REBOOT-SOFT')"
+                class="borderless" [disabled]="item.isActive == false || isServiceInProgressing">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M14.8901 5.07999C14.0201 4.81999 13.0601 4.64999 12.0001 4.64999C7.21008 4.64999 3.33008 8.52999 3.33008 13.32C3.33008 18.12 7.21008 22 12.0001 22C16.7901 22 20.6701 18.12 20.6701 13.33C20.6701 11.55 20.1301 9.88999 19.2101 8.50999" stroke="#3A3A3A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M16.1302 5.32L13.2402 2" stroke="#3A3A3A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M16.1298 5.32001L12.7598 7.78001" stroke="#3A3A3A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </td>
         </tr>
       </tbody>
     </nz-table>
   </nz-card>
 </nz-content>
+
+<!-- modal -->
+<nz-modal [(nzVisible)]="isVisibleModal" (nzOnCancel)="handleCancelModalAction()">
+  <div *nzModalTitle>
+    <span class="text-modal-title">{{titleModal | i18n : {name: selectedInstance.instanceName} }}</span>
+  </div>
+  <div *nzModalContent style="display: flex; flex-direction: column;">
+    <span class="text-label">{{contentModal | i18n : {name: selectedInstance.instanceName} }}</span>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancelModalAction()" class="border-button" [disabled]="isSubmiting">
+      <span nz-icon nzType="close" nzTheme="outline"></span>
+      {{ 'app.cluster.cancel' | i18n }}
+    </button>
+    <button nz-button nzType="primary" (click)="handleActionInstance(selectedInstance, action)" [disabled]="isSubmiting" class="border-button">
+      <ng-container *ngIf="isSubmiting; else beforeSubmitTpl">
+        <span nz-icon [nzType]="'loading'"></span>
+      </ng-container>
+      <ng-template #beforeSubmitTpl>
+        <span nz-icon nzType="check" nzTheme="outline"></span>
+      </ng-template>
+      {{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
+</nz-modal>

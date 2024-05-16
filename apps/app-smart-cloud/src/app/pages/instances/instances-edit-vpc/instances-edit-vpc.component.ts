@@ -14,16 +14,18 @@ import {
   SecurityGroupModel,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
-import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { LoadingService } from '@delon/abc/loading';
-import { RegionModel } from '../../../../../../../libs/common-utils/src';
-import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 import { getCurrentRegionAndProject } from '@shared';
+import {
+  RegionModel,
+  ProjectModel,
+} from '../../../../../../../libs/common-utils/src';
+import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -33,14 +35,12 @@ import { getCurrentRegionAndProject } from '@shared';
   animations: [slider],
 })
 export class InstancesEditVpcComponent implements OnInit {
-  loading = true;
-
   instancesModel: InstancesModel;
   id: number;
   userId: number;
   userEmail: string;
   cloudId: string;
-  regionId: number;
+  region: number;
   projectId: number;
   listSecurityGroupModel: SecurityGroupModel[] = [];
   listSecurityGroup: SecurityGroupModel[] = [];
@@ -64,48 +64,55 @@ export class InstancesEditVpcComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    public message: NzMessageService,
     private notification: NzNotificationService
   ) {}
 
+  checkPermission: boolean = false;
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
     this.userEmail = this.tokenService.get()?.email;
+    this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     let regionAndProject = getCurrentRegionAndProject();
-    this.regionId = regionAndProject.regionId;
+    this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getCurrentInfoInstance(this.id);
     this.getInfoVPC();
-    this.activatedRoute.paramMap.subscribe((param) => {
-      if (param.get('id') != null) {
-        this.id = parseInt(param.get('id'));
-        this.dataService.getById(this.id, true).subscribe((data: any) => {
-          this.instancesModel = data;
-          this.loading = false;
-          this.cloudId = this.instancesModel.cloudId;
-          this.regionId = this.instancesModel.regionId;
-          this.getListIpPublic();
-          this.dataService
-            .getAllSecurityGroupByInstance(
-              this.cloudId,
-              this.regionId,
-              this.instancesModel.customerId,
-              this.instancesModel.projectId
-            )
-            .subscribe((datasg: any) => {
-              this.listSecurityGroupModel = datasg;
-              this.cdr.detectChanges();
-            });
-          this.cdr.detectChanges();
-        });
-      }
+  }
+
+  getCurrentInfoInstance(instanceId: number): void {
+    this.dataService.getById(instanceId, true).subscribe({
+      next: (data: any) => {
+        this.instancesModel = data;
+        this.cloudId = this.instancesModel.cloudId;
+        this.region = this.instancesModel.regionId;
+        this.getListIpPublic();
+        this.dataService
+          .getAllSecurityGroupByInstance(
+            this.cloudId,
+            this.region,
+            this.instancesModel.customerId,
+            this.instancesModel.projectId
+          )
+          .subscribe((datasg: any) => {
+            this.listSecurityGroupModel = datasg;
+            this.cdr.detectChanges();
+          });
+        this.cdr.detectChanges();
+      },
+      error: (e) => {
+        this.checkPermission = false;
+        this.notification.error(e.error.detail, '');
+        this.returnPage();
+      },
     });
   }
 
-  infoVPC: TotalVpcResource = new TotalVpcResource();
+  infoVPC: TotalVpcResource;
   remainingRAM: number = 0;
   remainingVolume: number = 0;
   purchasedVolume: number = 0;
@@ -135,7 +142,7 @@ export class InstancesEditVpcComponent implements OnInit {
       error: (e) => {
         this.notification.error(
           e.statusText,
-          'Lấy thông tin VPC không thành công'
+          this.i18n.fanyi('app.notify.get.vpc.info.fail')
         );
       },
     });
@@ -145,7 +152,7 @@ export class InstancesEditVpcComponent implements OnInit {
   listIPLanStr = '';
   getListIpPublic() {
     this.dataService
-      .getPortByInstance(this.id, this.regionId)
+      .getPortByInstance(this.id, this.region)
       .subscribe((dataNetwork: any) => {
         //list IP public
         let listOfPublicNetwork: Network[] = dataNetwork.filter(
@@ -183,7 +190,7 @@ export class InstancesEditVpcComponent implements OnInit {
     this.instanceResize.addBtqt = 0;
     this.instanceResize.addBttn = 0;
     this.instanceResize.serviceInstanceId = this.instancesModel.id;
-    this.instanceResize.regionId = this.regionId;
+    this.instanceResize.regionId = this.region;
     this.instanceResize.serviceName = this.instancesModel.name;
     this.instanceResize.customerId = this.userId;
     this.instanceResize.projectId = this.projectId;
@@ -208,13 +215,13 @@ export class InstancesEditVpcComponent implements OnInit {
 
     this.dataService.create(this.order).subscribe({
       next: (data: any) => {
-        this.notification.success('', 'Cập nhật máy ảo hành công');
+        this.notification.success('', this.i18n.fanyi('app.notify.update.instances.success'));
         this.router.navigate(['/app-smart-cloud/instances']);
       },
       error: (e) => {
         this.notification.error(
           e.statusText,
-          'Cập nhật máy ảo không thành công'
+          this.i18n.fanyi('app.notify.update.instances.fail')
         );
       },
     });
@@ -233,7 +240,7 @@ export class InstancesEditVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  userChangeProject() {
+  onProjectChange(project: ProjectModel) {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 

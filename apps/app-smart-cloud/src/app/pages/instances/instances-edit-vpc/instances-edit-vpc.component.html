@@ -13,9 +13,7 @@
           'app.instances' | i18n
         }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item
-        >{{ 'app.instances.edit' | i18n }}
-      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.instances.edit' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -48,6 +46,7 @@
           instancesModel.taskState.toUpperCase() != 'REBOOTING'
         "
         [instancesId]="id"
+        [isProjectVPC]="true"
         (valueChanged)="onReloadInstanceDetail()"
         style="margin-left: 8px"
       >
@@ -61,7 +60,6 @@
       <nz-card
         style="border-radius: 8px; width: 100%"
         [nzBordered]="false"
-        [nzLoading]="loading"
         *ngIf="instancesModel"
       >
         <div style="margin-bottom: 20px">
@@ -260,13 +258,12 @@
       <nz-card
         style="border-radius: 8px; width: 100%"
         [nzBordered]="false"
-        [nzLoading]="loading"
         *ngIf="instancesModel"
       >
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
         </div>
-        <div style="margin-bottom: 20px">
+        <div style="margin-bottom: 20px" *ngIf="infoVPC">
           <span class="text-label"
             >{{ 'app.remain.configuration.in.vpc' | i18n }}:
             {{ remainingVCPU }}/{{ infoVPC.cloudProject.quotavCpu }} vCPU,
@@ -297,7 +294,7 @@
         <nz-row style="margin-bottom: 20px" nzGutter="24">
           <nz-col nzLg="8" nzMd="8" nzSm="24">
             <span class="text-label"
-              >Dung lượng tăng thêm (<span class="text-red">*</span>) - GB</span
+              >{{ 'app.increase.capacity' | i18n }} (<span class="text-red">*</span>) - GB</span
             >
             <nz-row style="margin-top: 10px">
               <nz-col nzSpan="18">
@@ -323,7 +320,7 @@
           </nz-col>
           <nz-col nzLg="8" nzMd="8" nzSm="24">
             <span class="text-label"
-              >RAM tăng thêm (<span class="text-red">*</span>) - GB</span
+              >{{ 'app.increase.ram' | i18n }} (<span class="text-red">*</span>) - GB</span
             >
             <nz-row style="margin-top: 10px">
               <nz-col nzSpan="18">
@@ -349,7 +346,7 @@
           </nz-col>
           <nz-col nzLg="8" nzMd="8" nzSm="24">
             <span class="text-label"
-              >CPU tăng thêm (<span class="text-red">*</span>) - vCPU</span
+              >{{ 'app.increase.cpu' | i18n }} (<span class="text-red">*</span>) - vCPU</span
             >
             <nz-row style="margin-top: 10px">
               <nz-col nzSpan="18">
@@ -378,7 +375,7 @@
     </nz-row>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
-    <div style="width: 100%">
+    <div style="width: 100%" *ngIf="instancesModel">
       <nz-affix [nzOffsetTop]="48">
         <nz-card style="border-radius: 8px; width: 100%">
           <div style="margin-bottom: 20px">

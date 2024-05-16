@@ -1,4 +1,8 @@
-<li nz-menu-item (click)="showModal()">{{'app.delete'|i18n}}</li>
+<img src="assets/imgs/delete.svg" alt=""
+     style="cursor: pointer; width: 28px; height: 28px; margin-left: 5px;"
+     nz-popover
+     [nzPopoverContent]="'app.delete' | i18n"
+     nzPopoverPlacement="bottom" (click)="showModal()"/>
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>

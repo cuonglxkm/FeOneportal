@@ -1,17 +1,11 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Danh sách Backup VM'">
+             [title]="'app.backup.vm.list'|i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Home</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Dịch vụ</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a [routerLink]="'/app-smart-cloud/backup-vm'">
-          Backup VM
-        </a></nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="['/']">{{ 'app.breadcrumb.home'|i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 
@@ -20,6 +14,7 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
@@ -29,37 +24,40 @@
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase="false">
       <nz-card>
-        <nz-row nzJustify="space-between">
+        <nz-row nzGutter="24" nzJustify="space-between">
           <nz-col nzSpan="16">
             <nz-select [(ngModel)]="selectedValue"
                        nzSize="large"
                        style="margin-right: 15px; width: 170px;"
                        (ngModelChange)="onChange($event)"
-                       nzPlaceHolder="Tất cả trạng thái"
-                       nzTooltipTitle="Tìm kiếm theo trạng thi"
+                       [nzPlaceHolder]="'app.status.all'|i18n"
+                       [nzTooltipTitle]="'tooltip.title.filter.status'|i18n"
                        nzTooltipPlacement="bottom"
                        nz-tooltip>
               <nz-option *ngFor="let item of status" [nzValue]="item.value"
                          [nzLabel]="item.label"></nz-option>
             </nz-select>
-            <nz-input-group
-              style="width: 300px;"
-              [nzPrefix]="prefixIconSearch"
-              nzSize="large">
-              <input
-                name="name"
-                nz-input
-                placeholder="Tìm kiếm tên ..."
-                [(ngModel)]="value"
-                (input)="onInputChange($event.target['value'])" />
+            <nz-input-group style="width: 300px;" [nzPrefix]="prefixIconSearch" nzSize="large">
+              <input name="name"
+                     nz-input
+                     [placeholder]="'app.service.search-text'|i18n"
+                     [(ngModel)]="value"
+                     (input)="onInputChange($event.target['value'])" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img
-                src="assets/imgs/search.svg"
-                alt=""
-                style="cursor: pointer"
-                nz-tooltip="Tìm kiếm" />
+              <img src="assets/imgs/search.svg"
+                   alt=""
+                   style="cursor: pointer"
+                   nz-popover
+                   [nzPopoverContent]="'app.service.search-text'|i18n"
+                   [nzPopoverPlacement]="'bottom'" />
             </ng-template>
+          </nz-col>
+          <nz-col>
+            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateBackup()">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+              <span class="button-text-primary">{{ 'app.backup.vm.create.button'|i18n }}</span>
+            </button>
           </nz-col>
         </nz-row>
         <nz-table #fixedTable
@@ -72,84 +70,71 @@
                   [nzPageSize]="collection?.pageSize"
                   [nzPageIndex]="collection?.currentPage"
                   [nzLoading]="isLoading"
-                  (nzQueryParams)="onQueryParamsChange($event)"
-        >
+                  (nzPageSizeChange)="onPageSizeChange($event)"
+                  (nzPageIndexChange)="onPageIndexChange($event)">
           <thead>
           <tr>
-            <th nzAlign="center" nzLeft>Tên</th>
-            <th nzAlign="center" nzBreakWord>VM gốc</th>
-            <th nzAlign="center" nzBreakWord>Dung lượng</th>
-            <th nzAlign="center" nzBreakWord>Gói backup</th>
-            <th nzAlign="center" nzBreakWord>Thời gian tạo</th>
-            <th nzAlign="center" nzBreakWord>Hết hạn</th>
-            <th nzAlign="center" nzBreakWord>Trạng thái</th>
-            <th nzAlign="center" nzBreakWord [nzWidth]="'100px'">Trạng thái tác vụ</th>
-            <th nzAlign="center" nzBreakWord>Thao tác</th>
+            <th nzLeft>{{ 'app.table.backup.vm.name'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.table.backup.vm.vm.original'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.table.backup.vm.storage'|i18n }}</th>
+            <th nzBreakWord *ngIf="typeVPC==0">{{ 'app.table.backup.vm.backup.package'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.table.backup.vm.create.date'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.table.backup.vm.expire.date'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.table.backup.vm.status'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.table.backup.vm.task.status'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.table.backup.vm.action'|i18n }}</th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
-            <td nzAlign="center" nzLeft><a (click)="navigateToDetail(data.id)" nzTooltipTitle="Xem chi tết"
-                                           nzTooltipPlacement="bottom" nz-tooltip>{{ data.name }}</a></td>
-            <td nzAlign="center" nzBreakWord> {{ data.instanceName }}</td>
-            <td nzAlign="center" nzBreakWord>{{ data.size }} GB</td>
-            <td nzAlign="center" nzBreakWord>{{ data.backupPackageName }}</td>
-            <td nzAlign="center" nzBreakWord>{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
-            <td nzAlign="center" nzBreakWord>{{ data.expirationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
-            <td nzAlign="center" nzBreakWord>
+            <td nzLeft><a [routerLink]="'/app-smart-cloud/backup-vm/detail-backup-vm/' + data.id">{{ data.name }}</a>
+            </td>
+            <td nzBreakWord> {{ data.instanceName }}</td>
+            <td nzBreakWord nzAlign="right">{{ data.size }} GB</td>
+            <td nzBreakWord *ngIf="typeVPC==0">{{ data.backupPackageName }}</td>
+            <td nzBreakWord>{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
+            <td nzBreakWord>{{ data.expirationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
+            <td nzBreakWord>
               <div class="status" [ngSwitch]="data.status">
-                                          <span class="available" *ngSwitchCase="'AVAILABLE'">
-                                            Hoạt động
-                                          </span>
-                <span class="suspended" *ngSwitchCase="'SUSPENDED'">
-                                            Tạm dừng
-                                          </span>
-                <span class="available" *ngSwitchCase="'CREATING'">
-                                            Đang khởi tạo
-                                          </span>
-                <span class="suspended" *ngSwitchCase="'DELETING'">
-                                            Đang xóa
-                                          </span>
+                <span class="available" *ngSwitchCase="'AVAILABLE'">{{ 'app.status.running'|i18n }}</span>
+                <span class="suspended" *ngSwitchCase="'SUSPENDED'">{{ 'app.status.suspend'|i18n }}</span>
+                <span class="available" *ngSwitchCase="'CREATING'">{{ 'app.status.init'|i18n }}</span>
+                <span class="suspended" *ngSwitchCase="'DELETING'">{{ 'app.status.deleting'|i18n }}</span>
+                <span class="error" *ngSwitchCase="'ERROR'">{{ 'app.status.error'|i18n }}</span>
               </div>
             </td>
-            <td nzAlign="center" nzBreakWord>
-                                        <span *ngIf="data.serviceStatus === 'KHOITAO'">
-                                          -
-                                        </span>
+            <td nzBreakWord>
+              <span *ngIf="data.serviceStatus === 'KHOITAO'">-</span>
               <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>
             </td>
-            <td nzAlign="center" nzBreakWord>
-              <div [ngSwitch]="data.status">
-                <div *ngSwitchCase="'AVAILABLE'">
-                  <button nz-button
-                          [nzType]="'primary'"
-                          nz-dropdown
-                          [nzDropdownMenu]="opMenu">
-                    <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
-                  </button>
-                  <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                    <ul nz-menu>
-                      <li nz-menu-item (click)="navigateToRestore(data.id)">Restore</li>
-                      <li nz-menu-item (click)="showModalDelete(data.id)">Xóa</li>
-                      <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
-                                                   [isLoading]="isLoading"
-                                                   (onCancel)="handleCancelDelete()"
-                                                   (onOk)="handleOkDelete()" />
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
-                <div *ngSwitchCase="'SUSPENDED'">
-                  <button nz-button
-                          nzType="primary"
-                          nzDanger
-                          (click)="showModalDelete(data.id)">Xóa
-                  </button>
-                  <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
-                                               [isLoading]="isLoading"
-                                               (onCancel)="handleCancelDelete()"
+            <td nzBreakWord>
+<!--              <div [ngSwitch]="data.status">-->
+                <div *ngIf="data.status.includes('AVAILABLE')">
+                  <img src="assets/imgs/rotate-right.svg" alt=""
+                       style="cursor: pointer;"
+                       (click)="navigateToRestore(data.id)"
+                       nz-popover nzPopoverPlacement="bottom"
+                       [nzPopoverContent]="'Restore'" />
+                  <one-portal-delete-backup-vm [region]="region"
+                                               [project]="project"
+                                               [idBackup]="data.id"
+                                               [backupName]="data.name"
                                                (onOk)="handleOkDelete()" />
                 </div>
-              </div>
+                <div *ngIf="data.status.includes('SUSPENDED')">
+                  <one-portal-delete-backup-vm [region]="region"
+                                               [project]="project"
+                                               [idBackup]="data.id"
+                                               [backupName]="data.name"
+                                               (onOk)="handleOkDelete()" />
+                </div>
+                <div *ngIf="data.status.includes('AVAILABLE') && data.serviceStatus.includes('ERROR')">
+                  <one-portal-delete-backup-vm [region]="region"
+                                               [project]="project"
+                                               [idBackup]="data.id"
+                                               [backupName]="data.name"
+                                               (onOk)="handleOkDelete()" />
+                </div>
             </td>
           </tr>
           </tbody>
@@ -166,19 +151,18 @@
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-title" style="color: #0066b3">Backup VM - Sao lưu, bảo mật</span>
+              <span class="text-intro-title" style="color: #0066b3">{{ 'app.backup.vm.title'|i18n }}</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">Giải pháp sao lưu VM nâng cao, phần mềm giúp giảm chi phí chụp nhanh và tiết kiệm thời gian của bạn bằng
-                              cách tạo các bản sao VM giống hệt nhau trực tiếp từ các bản sao lưu VM hiện có.</span>
+              <span class="text-intro-desc">{{ 'app.backup.vm.intro.desc'|i18n }}</span>
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'"
-                  [routerLink]="'/app-smart-cloud/schedule/backup/create'" nzSize="large">
+                  (click)="navigateToCreateBackup()"  nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            Khởi tạo ngay
+            {{ 'app.backup.vm.button.create'|i18n }}
           </button>
         </result>
       </nz-card>

@@ -25,7 +25,8 @@
         <nz-form-control nzDisableAutoTips [nzErrorTip]="idSubnetErrorTpl" style="margin-top:10px;">
           <nz-select formControlName="idSubnet" nzSize="large"
                      nzPlaceHolder="Chọn dải">
-            <nz-option *ngFor="let item of listSubnet" [nzValue]="item.id" nzLabel="{{ item.subnetAddressRequired }}"></nz-option>
+            <nz-option *ngFor="let item of listSubnet" [nzValue]="item.id"
+                       nzLabel="{{ item.subnetAddressRequired }}"></nz-option>
           </nz-select>
           <ng-template #idSubnetErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
@@ -42,33 +43,36 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input nz-input class="input-custom" formControlName="namePort" [maxLength]="50"/>
+          <input #portInputName nz-input class="input-custom" formControlName="namePort" [maxLength]="50" />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Tên Port không được để trống</ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">Tên Port tối đa 50 ký tự</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Tên Port không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng việt (trừ _)</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Tên Port không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng
+              việt (trừ _)
+            </ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">Tên Port đã tồn tại, vui lòng nhập tên khác
+            </ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>IP Address (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+            <span>IP Address</span>
 
-            <img nz-popover [nzPopoverContent]="'IP Address'"
+            <img nz-popover
+                 [nzPopoverContent]="'Nếu người dùng không nhập IP Address, hệ thống sẽ sinh ngẫu nhiên 1 IP Address thuộc địa chỉ Subnet đã chọn'"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
-          <input nz-input class="input-custom" formControlName="ipAddress" (ngModelChange)="inputPort($event)"/>
-          <span *ngIf="isInvalidGateway" style="color: #FF4D4F;">IP không thuộc Allocation Pool </span>
+          <input nz-input class="input-custom" formControlName="ipAddress" (ngModelChange)="inputPort($event)" (keydown.enter)="focusOkButton($event)"/>
+                    <span *ngIf="invalidGateway" style="color: #FF4D4F;">{{ invalidGateway }}</span>
           <ng-template #ipAddressErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">IP Address không được để trống</ng-container>
-            <ng-container *ngIf="control.hasError('invalidIp')">IP Address không hợp lệ</ng-container>
-            <ng-container *ngIf="control.hasError('invalidSubnet')"> IP Address không nằm trong dải subnet {{ subnetAddress }}</ng-container>
-            <ng-container *ngIf="control.hasError('invalidLastBit')">Bit cuối không hợp lệ</ng-container>
-            <ng-container *ngIf="control.hasError('ipAddressExists')">IP đã tồn tại, vui lòng nhập địa chỉ IP khác</ng-container>
+<!--            <ng-container *ngIf="control.hasError('required')">IP Address không được để trống</ng-container>-->
+<!--            <ng-container *ngIf="control.hasError('invalidIp') || control.hasError('invalidSubnet')">IP Address không nằm trong dải subnet</ng-container>-->
+<!--            <ng-container *ngIf="invalidGateway">{{ invalidGateway }}</ng-container>-->
 
           </ng-template>
         </nz-form-control>
@@ -81,7 +85,7 @@
     </button>
     <button nz-button nzType="primary"
             (click)="submitForm()"
-            [nzLoading]="isLoading" [disabled]="(!validateForm.valid) || isInvalidGateway"
+            [nzLoading]="isLoading" [disabled]="(!validateForm.valid) || (invalidGateway != '')"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>

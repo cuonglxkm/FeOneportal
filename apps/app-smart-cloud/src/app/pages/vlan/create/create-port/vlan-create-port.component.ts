@@ -1,9 +1,26 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../../shared/services/vlan.service';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder, ValidationErrors,
+  Validators
+} from '@angular/forms';
 import { FormCreatePort, FormSearchSubnet, Subnet } from '../../../../shared/models/vlan.model';
 import { getCurrentRegionAndProject } from '@shared';
 import {
@@ -13,14 +30,29 @@ import {
 } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, map, Observable, of, Subject } from 'rxjs';
+import { catchError } from 'rxjs/internal/operators/catchError';
 
+export function portValidator(vlanService: VlanService, cidr: string, networkId: string, regionId: number): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    if (!control.value) {
+      return of(null);
+    }
+    return vlanService.checkIpAvailable(control.value, cidr, networkId, regionId).pipe(
+      map(data => {
+        // Data processing based on API response
+        return data.available ? null : { portTaken: true };
+      }),
+      catchError(() => of({ apiError: true }))
+    );
+  };
+}
 @Component({
   selector: 'one-portal-vlan-create-port',
   templateUrl: './vlan-create-port.component.html',
   styleUrls: ['./vlan-create-port.component.less'],
 })
-export class VlanCreatePortComponent implements OnInit{
+export class VlanCreatePortComponent implements OnInit, AfterViewInit{
   @Input() region: number
   @Input() project: number
   @Input() networkId: number
@@ -51,6 +83,10 @@ export class VlanCreatePortComponent implements OnInit{
   isInvalidGateway: boolean = false
   dataSubjectGateway: Subject<any> = new Subject<any>();
 
+  nameList: string[] = []
+
+  @ViewChild('portInputName') portInputName!: ElementRef<HTMLInputElement>;
+
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -61,20 +97,18 @@ export class VlanCreatePortComponent implements OnInit{
 
   }
 
-  getPortByNetworId() {
-    this.vlanService.getPortByNetwork(this.networkCloudId, this.region, 9999, 1, null).subscribe(data => {
-      console.log('port', data.records)
-      // data?.records.forEach(item => {
-      //   if(this.ipPort.length <= 0) {
-      //     this.ipPort = [item.fixedIPs.toString()]
-      //   } else {
-      //     this.ipPort?.push(item.fixedIPs.toString())
-      //   }
-      //
-      //   // console.log(this.ipPort)
-      // })
-    })
+  ngAfterViewInit(): void {
+    this.portInputName?.nativeElement.focus();
   }
+
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.submitForm();
+    }
+  }
+
+
   getSubnetByNetworkId() {
     this.isLoadingSubnet = true
     let formSearchSubnet = new FormSearchSubnet()
@@ -84,8 +118,6 @@ export class VlanCreatePortComponent implements OnInit{
     formSearchSubnet.pageSize = 9999
     formSearchSubnet.pageNumber = 1
     formSearchSubnet.name = null
-
-
 
     this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
       // console.log('data-subnet', data)
@@ -99,17 +131,27 @@ export class VlanCreatePortComponent implements OnInit{
 
   onCheckPort() {
     this.dataSubjectGateway.pipe(debounceTime(600)).subscribe((res) => {
-      this.vlanService.getSubnetById(this.validateForm.controls.idSubnet.value).subscribe(item => {
-        this.vlanService.checkIpAvailable(res, item.subnetAddressRequired, this.networkCloudId, this.region).subscribe(data => {
-          this.isInvalidGateway = false
-          const dataJson = JSON.parse(JSON.stringify(data));
-          console.log('gateway data', dataJson)
-        }, error => {
-          console.log('error', error.error)
-          this.isInvalidGateway = true
-          this.invalidGateway = error.error
+      if(res == null || res == '') {
+        this.invalidGateway = ''
+      } else {
+        this.vlanService.getSubnetById(this.validateForm.controls.idSubnet.value).subscribe(item => {
+          this.vlanService.checkIpAvailable(res, item.subnetAddressRequired, this.networkCloudId, this.region).subscribe(data => {
+            this.isInvalidGateway = false
+            this.invalidGateway = ''
+            const dataJson = JSON.parse(JSON.stringify(data));
+            console.log('gateway data', dataJson)
+          }, error => {
+            if(error.status == '400') {
+              console.log('error', error.error)
+              this.isInvalidGateway = true
+              this.invalidGateway = error.error
+            } else {
+              this.invalidGateway = 'Ip address không hợp lệ'
+            }
+          })
         })
-      })
+      }
+
 
     })
   }
@@ -120,10 +162,10 @@ export class VlanCreatePortComponent implements OnInit{
 
   showModal(): void {
     this.isVisible = true;
-
     this.getPortByNetwork()
-
-    console.log('port', this.ipPort)
+    setTimeout(() => {
+      this.portInputName?.nativeElement.focus();
+    }, 1000);
   }
 
 
@@ -136,6 +178,7 @@ export class VlanCreatePortComponent implements OnInit{
   }
 
   submitForm(): void {
+
     if (this.validateForm.valid) {
       console.log('form', this.validateForm.getRawValue())
       let formCreatePort = new FormCreatePort()
@@ -144,6 +187,7 @@ export class VlanCreatePortComponent implements OnInit{
       formCreatePort.regionId = this.region
       formCreatePort.subnetId = this.validateForm.controls.idSubnet.value
       formCreatePort.ipAddress = this.validateForm.controls.ipAddress.value
+
       this.isLoading = true
       this.vlanService.createPort(formCreatePort).subscribe(data => {
           this.isLoading = false
@@ -172,11 +216,33 @@ export class VlanCreatePortComponent implements OnInit{
       data?.records?.forEach(item => {
         this.ipPort?.push(item.fixedIPs.toString())
       })
+      data.records?.forEach(item => {
+        this.nameList?.push(item?.name)
+      })
     })
   }
 
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
 
   ngOnInit() {
+    this.validateForm = this.fb.group({
+      idSubnet: [0, [Validators.required]],
+      namePort: ['', [Validators.required,
+        Validators.maxLength(50),
+        Validators.pattern(/^[a-zA-Z0-9_]*$/),
+        this.duplicateNameValidator.bind(this)
+      ]],
+      ipAddress: [null as string, [ipAddressValidator(this.subnetAddress), ipAddressExistsValidator(this.ipPort)]]
+    });
+
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
@@ -184,13 +250,11 @@ export class VlanCreatePortComponent implements OnInit{
     this.onCheckPort()
 
 
+    if(this.validateForm.controls.ipAddress.value == null) {
+      this.invalidGateway = ''
+    }
 
 
-    this.validateForm = this.fb.group({
-      idSubnet: [0, [Validators.required]],
-      namePort: ['', [Validators.required,  Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9_]*$/)]],
-      ipAddress: ['', [Validators.required, ipAddressValidator(this.subnetAddress), ipAddressExistsValidator(this.ipPort)]]
-    });
 
   }
 

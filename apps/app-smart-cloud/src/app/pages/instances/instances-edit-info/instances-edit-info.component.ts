@@ -258,14 +258,14 @@ export class InstancesEditInfoComponent implements OnInit {
               next: (data: any) => {
                 this.notification.success(
                   '',
-                  'Thay đổi hệ điều hành thành công'
+                  this.i18n.fanyi('app.notify.change.os.success')
                 );
                 this.returnPage();
               },
               error: (e) => {
                 this.notification.error(
                   e.statusText,
-                  'Thay đổi hệ điều hành không thành công'
+                  this.i18n.fanyi('app.notify.change.os.fail')
                 );
               },
             });

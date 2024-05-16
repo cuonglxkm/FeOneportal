@@ -25,6 +25,7 @@ import { ModalResetPassComponent } from './modal-resetpass.component';
     </div>
     <nz-dropdown-menu #userMenu="nzDropdownMenu">
       <div nz-menu class="width-md">
+      
         <div nz-menu-item routerLink="/profile">
           <img src="assets/imgs/account-icon.svg" alt="" />
           {{ 'menu.account.center' | i18n }}

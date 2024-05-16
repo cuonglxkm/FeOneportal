@@ -1,16 +1,16 @@
 <div class="tree">
-  <div *ngIf="data != undefined && data.length > 0">
+  <div *ngIf="treeFolder != undefined && treeFolder.length > 0">
     <div *ngFor="let item of data">
       <div [style.padding-left]="item.bucketName == undefined ? '30px' : '0px'">
         <div class="tree-item">
-          <nz-row (click)="toFolder(item)" class="tree-row">
-            <img *ngIf="item.bucketName != undefined" style="margin-left: 10px;margin-right:10px;" src="assets/imgs/box.svg" alt=""/>
-            <img *ngIf="item.bucketName == undefined" style="margin-left: 10px;margin-right:10px;" src="assets/imgs/folder-new.svg" alt=""/>
-            <div *ngIf="item.bucketName != undefined" style="font-weight: bold"> {{item.bucketName}} </div>
-            <div *ngIf="item.bucketName == undefined"> {{item.folderName}} </div>
+          <nz-row (click)="toFolder(item)" class="tree-row" [ngStyle]="{'background-color': folderActive ? '#E2E2E9' : ''}">
+            <img *ngIf="item.bucketName != undefined" style="margin-left: 10px;margin-right:10px; cursor: pointer;" src="assets/imgs/box.svg" alt=""/>
+            <img *ngIf="item.bucketName == undefined" style="margin-left: 10px;margin-right:10px; cursor: pointer;" src="assets/imgs/folder-new.svg" alt=""/>
+            <div *ngIf="item.bucketName != undefined" style="font-weight: bold; cursor: pointer;"> {{item.bucketName}} </div>
+            <div *ngIf="item.bucketName == undefined" style="cursor: pointer;"> {{item.folderName}} </div>
           </nz-row>
         </div>
-        <one-portal-tree-folder [data]="getChildren(item.id, item.bucketName)" [dataCheck]="getDataCheck(item.bucketName)" (folderChange)="getDataFromChild($event)"></one-portal-tree-folder>
+        <!-- <one-portal-tree-folder [data]="getChildren(item.id, item.bucketName)" [dataCheck]="getDataCheck(item.bucketName)" (folderChange)="getDataFromChild($event)"></one-portal-tree-folder> -->
       </div>
     </div>
   </div>

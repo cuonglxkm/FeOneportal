@@ -27,6 +27,14 @@ export class VlanService extends BaseService {
     super();
   }
 
+  private reloadSubject = new BehaviorSubject<boolean>(false);
+
+  reloadObservable = this.reloadSubject.asObservable();
+
+  triggerReload() {
+    this.reloadSubject.next(true);
+  }
+
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'text',
@@ -215,8 +223,8 @@ export class VlanService extends BaseService {
   }
 
   updateSubnet(idSubnet: number, formUpdateSubnet: FormUpdateSubnet) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`,
-      Object.assign(formUpdateSubnet)).pipe(catchError((error: HttpErrorResponse) => {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, Object.assign(formUpdateSubnet))
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {

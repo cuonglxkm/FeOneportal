@@ -64,7 +64,10 @@
           {{ item.user }}
         </td>
         <td>{{ item.permission }}</td>
-        <td>{{ item.action }}</td>
+        <td title="{{ item.action }}" style="overflow: hidden;
+        font-weight: normal;
+        white-space: nowrap;
+        text-overflow: ellipsis;" >{{ item.action }}</td>
         <td>
           <a (click)="modalJson(item.sid)">{{ 'app.view.detail' | i18n }}</a>
         </td>
@@ -72,14 +75,14 @@
           <img
             src="assets/imgs/edit-2.svg"
             alt=""
-            (click)="modalUpdate(data.sid)"
+            (click)="modalUpdate(item.sid)"
             style="cursor: pointer; margin-right: 16px"
             [nz-tooltip]="'app.text.edit' | i18n"
           />
           <img
             src="assets/imgs/trash.svg"
             alt=""
-            (click)="modalDelete(data.sid)"
+            (click)="modalDelete(item.sid)"
             style="cursor: pointer; margin-right: 16px"
             [nz-tooltip]="'app.text.delete' | i18n"
           />
@@ -365,10 +368,12 @@
   [nzTitle]="('app.text.edit' | i18n) + 'Bucket Policy'"
   (nzOnCancel)="handleCancelUpdate()"
 >
+<form nz-form [formGroup]="formEdit">
   <ng-container *nzModalContent>
     <nz-radio-group
       style="width: 100%; margin-bottom: 16px"
       [(ngModel)]="isUserOther"
+      formControlName="isUserOther"
     >
       <div style="display: flex">
         <div style="flex: 1">
@@ -389,11 +394,12 @@
       [nzPlaceHolder]="'-- ' + ('app.choose.user' | i18n) + ' --'"
       [nzShowSearch]="true"
       nzSize="large"
+      formControlName="emailUser"
     >
       <nz-option
-        *ngFor="let p of listUser"
-        [nzValue]="p.cloudId"
-        [nzLabel]="p.name"
+        *ngFor="let p of listSubuser"
+        [nzValue]="p.subUserId"
+        [nzLabel]="p.subUserId"
       />
     </nz-select>
     <div *ngIf="userVnpt" style="margin-bottom: 16px" class="text-label">
@@ -407,6 +413,7 @@
       [nzPlaceHolder]="'-- ' + ('app.choose.permission' | i18n) + ' --'"
       [nzShowSearch]="true"
       nzSize="large"
+      formControlName="permission"
     >
       <nz-option
         *ngFor="let p of listPermission"
@@ -428,6 +435,9 @@
       [(ngModel)]="bucketPolicyUpdate.action"
       [nzShowSearch]="true"
       nzSize="large"
+      formControlName="listActionPermission"
+      [nzMaxTagCount]="1"
+      [nzMaxTagPlaceholder]="tagPlaceHolder"
     >
       <nz-option-group nzLabel="SUGGESTED COMBO">
         <nz-option
@@ -609,6 +619,7 @@
         </nz-option>
       </nz-option-group>
     </nz-select>
+    <ng-template #tagPlaceHolder let-selectedList>and {{ selectedList.length }} more selected</ng-template>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelUpdate()">
@@ -626,6 +637,7 @@
       />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
+</form>
 </nz-modal>
 
 <nz-modal

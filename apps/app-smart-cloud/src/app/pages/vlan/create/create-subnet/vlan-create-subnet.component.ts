@@ -13,7 +13,7 @@ import {
 } from '@angular/forms';
 import { FormCreateSubnet, FormSearchSubnet } from '../../../../shared/models/vlan.model';
 import { getCurrentRegionAndProject } from '@shared';
-import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
@@ -166,6 +166,7 @@ export class VlanCreateSubnetComponent implements OnInit {
   idNetwork: number;
 
   pool: string = '';
+  gateway: string = ''
   dataSubjectCidr: Subject<any> = new Subject<any>();
 
   isInvalidGateway: boolean = false
@@ -242,7 +243,11 @@ export class VlanCreateSubnetComponent implements OnInit {
     this.formCreateSubnet.vlanId = this.idNetwork;
     this.formCreateSubnet.region = this.region;
     this.formCreateSubnet.networktAddress = this.validateForm.controls.subnetAddressRequired.value;
-    this.formCreateSubnet.gatewayIP = this.validateForm.controls.gateway.value;
+    if(this.validateForm.controls.disableGatewayIp.value) {
+      this.formCreateSubnet.gatewayIP = null
+    } else {
+      this.formCreateSubnet.gatewayIP = this.validateForm.controls.gateway.value
+    }
     this.formCreateSubnet.allocationPool = this.validateForm.controls.allocationPool.value;
     this.formCreateSubnet.dnsNameServer = null;
     this.formCreateSubnet.enableDHCP = this.validateForm.controls.enableDhcp.value;
@@ -256,9 +261,15 @@ export class VlanCreateSubnetComponent implements OnInit {
       this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note61'))
 
     }, error => {
-      this.isLoading = false;
-      this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note62') + error.error.detail);
+      if(error.status == '500') {
+        this.isLoading = false;
+        this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.statusText);
+      } else {
+        this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note62'));
+
+      }
     });
   }
 
@@ -271,13 +282,17 @@ export class VlanCreateSubnetComponent implements OnInit {
       this.vlanService.checkAllocationPool(res).subscribe(data => {
         const dataJson = JSON.parse(JSON.stringify(data));
 
+        this.pool = dataJson.ipRange
+        this.gateway = dataJson.gateWay
         // Access ipRange value
-        const ipRange = dataJson.ipRange;
-
         // Split the IP range string
         // const ipAddresses = ipRange.split(',').map(ip => ip.trim());
 
-        this.pool = ipRange
+        if(!this.validateForm.controls.disableGatewayIp.value) {
+          this.validateForm.controls.allocationPool.setValue(this.gateway)
+        }
+
+        this.validateForm.controls.allocationPool.setValue(this.pool)
         console.log('pool data', this.pool)
       })
     })
@@ -302,6 +317,10 @@ export class VlanCreateSubnetComponent implements OnInit {
 
   inputGateway(value) {
     this.dataSubjectGateway.next(value);
+  }
+
+  cancel() {
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
   }
 
   ngOnInit() {

@@ -193,7 +193,7 @@ export class InstancesExtendComponent implements OnInit {
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.instancesModel.projectId;
     console.log('dataPayment extend', dataPayment);
-    this.service.getTotalAmount(dataPayment).subscribe((result) => {
+    this.service.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
       this.totalincludesVAT = Number.parseFloat(

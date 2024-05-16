@@ -14,6 +14,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 export function urlValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -73,6 +75,7 @@ export class CreateL7PolicyComponent implements OnInit {
               private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private loadBalancerService: LoadBalancerService,
               private notification: NzNotificationService) {
   }
@@ -135,6 +138,7 @@ export class CreateL7PolicyComponent implements OnInit {
     this.loadBalancerService.getListPoolInLB(this.idLoadBalancer).subscribe(data => {
       this.listPool = data
       this.listPool = this.listPool.filter(item => item.protocol.includes("HTTP"))
+      this.listPool = this.listPool.filter(item => item.listener_id.includes(this.idListener) || item.listener_id == null)
     })
   }
 
@@ -158,11 +162,11 @@ export class CreateL7PolicyComponent implements OnInit {
     this.loadBalancerService.createL7Policy(formCreateL7Policy).subscribe(data => {
       this.isLoading = false
       this.router.navigate(['/app-smart-cloud/load-balancer/detail/'+this.idLoadBalancer])
-      this.notification.success('Thành công', 'Tạo mới L7 Policy thành công')
+      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.l7.policy.success'))
     }, error =>  {
       this.isLoading = false
       // this.router.navigate(['/app-smart-cloud/load-balancer/detail/'+this.idLoadBalancer])
-      this.notification.error('Thất bại', 'Tạo mới L7 Policy thất bại')
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.create.l7.policy.fail'))
     })
   }
 

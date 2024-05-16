@@ -21,7 +21,9 @@ export class DeleteVlanComponent implements AfterViewInit {
   isLoadingDelete: boolean = false;
 
   value: string;
+
   isInput: boolean = false;
+  isInputNull: boolean = false;
   @ViewChild('vlanNetworkInputName') vlanNetworkInputName!: ElementRef<HTMLInputElement>;
 
   constructor(private vlanService: VlanService,
@@ -62,6 +64,7 @@ export class DeleteVlanComponent implements AfterViewInit {
   handleOkDelete() {
     this.isLoadingDelete = true
     if (this.value == this.nameNetwork) {
+      this.isInputNull = false
       this.isInput = false
       this.vlanService.deleteNetwork(this.id).subscribe(data => {
         this.isLoadingDelete = false
@@ -77,8 +80,17 @@ export class DeleteVlanComponent implements AfterViewInit {
         this.onOk.emit()
       })
     } else {
-      this.isInput = true
-      this.isLoadingDelete = false
+      if(this.value == undefined) {
+        this.isInput = false
+        this.isInputNull = true
+        this.isLoadingDelete = false
+      } else {
+        this.isInputNull = false
+        this.isInput = true
+        this.isLoadingDelete = false
+      }
+
+
     }
   }
 }

@@ -1,6 +1,6 @@
 <nz-content>
   <nz-card class="border-card">
-    <h3>Cấu hình security group {{detailCluster?.clusterName}}</h3>
+    <h3>{{ 'app.cluster.sg-title' | i18n }} {{detailCluster?.clusterName}}</h3>
 
     <nz-table [nzTemplateMode]="true">
       <tbody>
@@ -8,8 +8,8 @@
           <td class="w-20">ID:</td>
           <td>
             <ng-container *ngIf="selectedSG; else loadingSGIdTpl">
-              {{selectedSG.id}}
-              <button nz-button nzType="text" (click)="handleCopyIDGroup()" class="action-icon borderless"
+              <span class="weight-600">{{selectedSG.id}}</span>
+              <!-- <button nz-button nzType="text" (click)="handleCopyIDGroup()" class="action-icon borderless"
                 nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip>
                 <span nz-icon>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -17,7 +17,7 @@
                     <path d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z" stroke="#0066B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </span>
-              </button>
+              </button> -->
             </ng-container>
             <ng-template #loadingSGIdTpl>
               <span nz-icon [nzType]="'loading'"></span>
@@ -25,8 +25,8 @@
           </td>
         </tr>
         <tr>
-          <td class="w-20">Tên</td>
-          <td>
+          <td class="w-20">{{ 'app.cluster.sg-name' | i18n }}</td>
+          <td class="weight-600">
             <ng-container *ngIf="detailCluster && detailCluster.securityGroupName; else loadingSGNameTpl">
               {{detailCluster.securityGroupName}}
             </ng-container>
@@ -36,7 +36,7 @@
           </td>
         </tr>
         <tr>
-          <td class="w-20">Ngày tạo:</td>
+          <td class="w-20">{{ 'app.text.created-date' | i18n }}:</td>
           <td>{{detailCluster?.createdDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
         </tr>
       </tbody>
@@ -45,14 +45,14 @@
     <div class="mt-5">
       <nz-tabset>
         <nz-tab [nzTitle]="inboundTitleTpl">
-          <one-portal-inbound [listOfInbound]="listOfInbound"></one-portal-inbound>
+          <one-portal-inbound [listOfInbound]="listOfInbound" (deletedInbound)="saveLogSG($event)"></one-portal-inbound>
         </nz-tab>
         <ng-template #inboundTitleTpl>
           <label>Inbound</label>
         </ng-template>
 
         <nz-tab [nzTitle]="outboundTitleTpl">
-          <one-portal-outbound [listOfOutbound]="listOfOutbound"></one-portal-outbound>
+          <one-portal-outbound [listOfOutbound]="listOfOutbound" (deletedOutbound)="saveLogSG($event)"></one-portal-outbound>
         </nz-tab>
         <ng-template #outboundTitleTpl>
           <label>Outbound</label>

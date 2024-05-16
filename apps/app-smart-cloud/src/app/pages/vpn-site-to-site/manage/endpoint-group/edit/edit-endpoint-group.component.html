@@ -1,14 +1,12 @@
-<span
-  style="color: #0066b3; margin-right: 10px; cursor: pointer"
-  nz-icon
-  nzType="edit"
-  nzTheme="outline"
+<img
+style="cursor: pointer; margin-right: 16px"
+src="assets/imgs/edit-2.svg"
   nz-popover
   [nzPopoverContent]="'Sửa'"
   nzPopoverPlacement="bottom"
   (click)="showModal()"
->
-</span>
+/>
+
 <nz-modal
   [(nzVisible)]="isVisible"
   nzCentered

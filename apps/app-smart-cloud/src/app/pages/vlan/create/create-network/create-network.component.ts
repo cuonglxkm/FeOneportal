@@ -101,7 +101,8 @@ export class CreateNetworkComponent implements OnInit {
       AppValidator.startsWithValidator('vlan_'),
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
-      this.duplicateNameValidator.bind(this)]],
+      this.duplicateNameValidator.bind(this),
+      this.prefixValidator()]],
     nameSubnet: ['', [Validators.required,
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/)]],
@@ -114,6 +115,7 @@ export class CreateNetworkComponent implements OnInit {
   });
 
   pool: string = '';
+  gateway: string = ''
   dataSubjectCidr: Subject<any> = new Subject<any>();
   dataSubjectGateway: Subject<any> = new Subject<any>();
 
@@ -128,6 +130,19 @@ export class CreateNetworkComponent implements OnInit {
 
       this.validateForm.get('gateway').reset();
     });
+
+    this.validateForm.get('nameNetwork').valueChanges.subscribe(value => {
+      if (!value.startsWith('vlan_')) {
+        this.validateForm.get('nameNetwork').setValue('vlan_' + value.replace(/^vlan_/i, ''), { emitEvent: false });
+      }
+    });
+  }
+
+  prefixValidator(): Validators {
+    return (control: FormControl): { [key: string]: any } | null => {
+      const isValid = control.value.startsWith('vlan_') && control.value.length > 5;
+      return isValid ? null : { prefixError: true };
+    };
   }
 
   regionChanged(region: RegionModel) {
@@ -160,7 +175,7 @@ export class CreateNetworkComponent implements OnInit {
       this.formCreateNetwork.regionId = this.region;
       this.formCreateNetwork.customerId = this.tokenService.get()?.userId;
       this.formCreateNetwork.subnetName = this.validateForm.controls.nameSubnet.value;
-      this.formCreateNetwork.gatewayIP = this.validateForm.controls.gateway.value;
+      this.formCreateNetwork.gateway = this.validateForm.controls.gateway.value;
       this.formCreateNetwork.dnsNameServer = null;
       // if(this.isInPurchasedSubnet())
       this.formCreateNetwork.allocationPool = this.validateForm.controls.allocationPool.value;
@@ -174,7 +189,8 @@ export class CreateNetworkComponent implements OnInit {
 
       }, error => {
         this.isLoading = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note58'), error.error.detail);
+        this.router.navigate(['/app-smart-cloud/vlan/network/list']);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note58') + 'Dải IP ' + this.validateForm.controls.networkAddress.value +' đã tồn tại trong 1 dải Subnet. Vui lòng chọn dải khác');
       });
     } else {
       console.log('value form invalid', this.validateForm.getRawValue());
@@ -207,7 +223,7 @@ export class CreateNetworkComponent implements OnInit {
   }
 
   reset() {
-    this.validateForm.reset()
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
   }
 
   inputCheckPool(value) {
@@ -219,13 +235,15 @@ export class CreateNetworkComponent implements OnInit {
       this.vlanService.checkAllocationPool(res).subscribe(data => {
         const dataJson = JSON.parse(JSON.stringify(data));
 
-        // Access ipRange value
-        const ipRange = dataJson.ipRange;
+        this.pool = dataJson.ipRange
+        this.gateway = dataJson.gateWay
 
-        // Split the IP range string
-        // const ipAddresses = ipRange.split(',').map(ip => ip.trim());
+        console.log('gateway', this.validateForm.controls.disableGatewayIp.value)
+        if(this.validateForm.controls.disableGatewayIp.value == false) {
+          console.log('here')
+          this.validateForm.controls.gateway.setValue(dataJson.gateWay)
+        }
 
-        this.pool = ipRange
         this.validateForm.controls.allocationPool.setValue(this.pool)
         console.log('pool data', this.pool)
       })

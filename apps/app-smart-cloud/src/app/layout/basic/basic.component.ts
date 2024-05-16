@@ -58,6 +58,10 @@ import { environment } from '@env/environment';
       <layout-default-header-item direction="right">
         <header-user />
       </layout-default-header-item>
+
+      <!-- <layout-default-header-item direction="right" hidden="mobile">
+        <header-icon />
+      </layout-default-header-item> -->
       <ng-template #asideUserTpl>
 <!--        <div nz-dropdown nzTrigger="click" [nzDropdownMenu]="userMenu" class="alain-default__aside-user">-->
 <!--          <nz-avatar class="alain-default__aside-user-avatar" [nzSrc]="user.avatar" />-->

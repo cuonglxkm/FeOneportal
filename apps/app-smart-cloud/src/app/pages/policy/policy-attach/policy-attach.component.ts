@@ -127,14 +127,15 @@ export class PolicyAttachComponent implements OnInit {
 
   }
   private doAttachPolicy(requestData: any , policyName: string){
-    let request = new AttachOrDetachRequest();
-    request.policyName = policyName;
-    request.action = 'attach'
-    request.items = requestData;
+    let request = {
+      policyName : policyName,
+      action : 'attach',
+      items : requestData,
+    }
     console.log(request);
     this.policiService.attachOrDetach(request).subscribe(data => {
         this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.attach-policy.noti.success"));
-        this.searchEntities();
+        this.router.navigate(['/app-smart-cloud/policy']);
       },
       error => {
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.attach-policy.noti.fail"));

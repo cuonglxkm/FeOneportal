@@ -13,8 +13,10 @@ import { ListenerService } from '../../../../shared/services/listener.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { InstancesService } from '../../../instances/instances.service';
-import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
-
+import { RegionModel, ProjectModel, AppValidator } from '../../../../../../../../libs/common-utils/src';
+import { finalize } from 'rxjs/operators';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
@@ -59,8 +61,9 @@ export class ListenerCreateComponent implements OnInit{
   step: number = 0;
   dataListener: any;
   lbId : any;
-  lstInstance = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: 0, Weight: 0, Backup: false,}];
-  lstInstanceUse = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: 0, Weight: 0, Backup: false,}];
+  order = 0;
+  lstInstance = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: 0, Weight: 0, Backup: false, order: 0 }];
+  lstInstanceUse = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: 0, Weight: 0, Backup: false, order: 0}];
   validateForm: FormGroup<{
     listenerName: FormControl<string>
     port: FormControl<number>
@@ -82,27 +85,27 @@ export class ListenerCreateComponent implements OnInit{
     listenerName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
     port: [80, Validators.required],
     member: [50000],
-    connection: [500],
+    connection: [5000],
     timeout: [50000],
-    allowCIRR: ['0.0.0.0/0', [Validators.required, ipAddressValidator()]],
+    allowCIRR: ['0.0.0.0/0', [Validators.required,AppValidator.ipWithCIDRValidator]],
     description: [''],
 
     poolName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
     healthName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
-    maxRetries: [0],
-    maxRetriesDown: [0],
-    delay: [0],
-    timeoutHealth: [0],
-    path: ['',[Validators.required]],
-    sucessCode: ['',[Validators.required, Validators.pattern(/^[0-9_]*$/)]]
+    maxRetries: [3],
+    maxRetriesDown: [3],
+    delay: [5],
+    timeoutHealth: [5],
+    path: ['/',[Validators.required]],
+    sucessCode: ['200',[Validators.required, Validators.pattern(/^[0-9_]*$/)]]
   });
   protocolListener = 'HTTP';
   checkedSession: any;
   sessionFix = 'HTTP';
   listAlgorithm = [
-    { value: 'ROUND_ROBIN', name: 'Round robin' },
-    { value: 'LEAST_CONNECTIONS', name: 'Least connections' },
-    { value: 'SOURCE_IP', name: 'source ip' }
+    { value: 'ROUND_ROBIN', name: 'ROUND ROBIN' },
+    { value: 'LEAST_CONNECTIONS', name: 'LEAST CONNECTIONS' },
+    { value: 'SOURCE_IP', name: 'SOURCE IP' }
   ];
 
   listCheckMethod = [
@@ -119,6 +122,8 @@ export class ListenerCreateComponent implements OnInit{
   selectedAlgorithm = 'ROUND_ROBIN';
   selectedCheckMethod = 'HTTP';
   selectedHttpMethod = 'GET';
+  loading= false;
+  private disableMember = false;
 
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
@@ -126,6 +131,7 @@ export class ListenerCreateComponent implements OnInit{
               private instancesService: InstancesService,
               private activatedRoute: ActivatedRoute,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
@@ -135,10 +141,12 @@ export class ListenerCreateComponent implements OnInit{
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.loadVm();
+    this.loadSSlCert();
   }
 
   nextStep() {
     this.step += 1;
+    this.sessionFix = this.protocolListener == 'TCP' ? 'TCP' : 'HTTP';
   }
 
   priviousStep() {
@@ -150,6 +158,7 @@ export class ListenerCreateComponent implements OnInit{
   }
 
   createListener(): boolean {
+    this.loading = true;
     let member = this.lstInstanceUse.map((item) => ({
       Name: item.Name,
       IpAddress: item.IpAddress,
@@ -165,7 +174,7 @@ export class ListenerCreateComponent implements OnInit{
         memberConnectTimeout: this.validateForm.controls['connection'].value,
         memberDataTimeout: this.validateForm.controls['member'].value,
         port: this.validateForm.controls['port'].value,
-        sslCert: null,
+        sslCert: this.protocolListener == 'TERMINATED_HTTPS' ? this.certId : null,
         allowedCIDR: this.validateForm.controls['allowCIRR'].value,
         description: this.validateForm.controls['description'].value,
       },
@@ -177,14 +186,14 @@ export class ListenerCreateComponent implements OnInit{
       },
       healthMonitors : {
         name: this.validateForm.controls['healthName'].value,
-        httpMethod: this.selectedHttpMethod,
+        httpMethod: this.selectedCheckMethod == 'HTTP' ? this.selectedHttpMethod : '',
         type: this.selectedCheckMethod,
-        delay: this.dataListener?.id,
+        delay: this.validateForm.controls['delay'].value,
         maxRetries: this.validateForm.controls['maxRetries'].value,
         timeout: this.validateForm.controls['timeoutHealth'].value,
         // adminStateUp: true,
-        expectedCodes: this.validateForm.controls['sucessCode'].value,
-        urlPath: this.validateForm.controls['path'].value,
+        expectedCodes: this.selectedCheckMethod == 'HTTP' ? this.validateForm.controls['sucessCode'].value : '',
+        urlPath: this.selectedCheckMethod == 'HTTP' ? this.validateForm.controls['path'].value : '',
         maxRetriesDown: this.validateForm.controls['maxRetriesDown'].value,
 
       },
@@ -196,14 +205,19 @@ export class ListenerCreateComponent implements OnInit{
       lbId: this.lbId,
     };
 
-    this.service.createListener(data).subscribe(
+    this.service.createListener(data)
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.lbId]);
+      }))
+      .subscribe(
       data => {
-        this.notification.success('Thành công', 'Tạo mới listener thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.listener.success'));
         this.dataListener = data;
         return true;
       },
       error => {
-        this.notification.error(' Thất bại', 'Tạo mới listener thất bại');
+        this.notification.error(' Thất bại', this.i18n.fanyi('app.notification.create.listener.fail'));
         return false;
       }
     );
@@ -225,70 +239,106 @@ export class ListenerCreateComponent implements OnInit{
       data => {
         for (let item of data.records) {
           const rs = this.splitByIpAddress(item);
-          for (let item of  rs) {
-            this.lstInstance.push(item)
+          if (rs != null) {
+            for (let item of  rs) {
+              this.lstInstance.push(item)
+            }
           }
         }
-        console.log(this.lstInstance);
       }
     )
   }
 
-  removeInstance(item: any, action: number) {
-    console.log(item+ "itemID");
+  removeInstance(IpAddress: any,order: any, action: number) {
     if (action == 0) {
       //xoa
-      const index = this.lstInstanceUse.findIndex(e => e.id = item);
+      const index = this.lstInstanceUse.findIndex(e => e.order == order);
       if(index != -1) {
-        const data = this.lstInstanceUse[index];
-        this.lstInstance.push(data);
+        // const data = this.lstInstanceUse[index];
+        // this.lstInstance.push(data);
         this.lstInstanceUse.splice(index, 1);
       }
     } else {
       //them
-      const index = this.lstInstance.findIndex(e => e.id = item);
-      console.log(index + "itemID");
+      const index = this.lstInstance.findIndex(e => e.IpAddress == IpAddress);
       if(index >= 0) {
-        const data = this.lstInstance[index];
+        const data = {...this.lstInstance[index]};
+        data.order = Object.assign({}, this.order++);
         this.lstInstanceUse.push(data);
-        this.lstInstance.splice(index, 1);
+        // this.lstInstance.splice(index, 1);
       }
     }
   }
 
   splitByIpAddress(instance: any): [any] {
     // const { name, des } = obj;
-    const desArray = instance.ipPrivate.split(', ');
-    if (desArray.length > 1) {
-      return desArray.map((item) => ({
-        Name: instance.name,
-        status: instance.status,
-        id: instance.id,
-        IpAddress: item,
-        Port: 0,
-        Weight: 0,
-        Backup: false,
-        }));
+    if (instance.ipPrivate == undefined || instance.ipPrivate == null || instance.ipPrivate == '') {
+      return null;
     } else {
-      return [{
-        Name: instance.name,
-        status: instance.status,
-        id: instance.id,
-        IpAddress: instance.ipPrivate,
-        Port: 0,
-        Weight: 0,
-        Backup: false,
-      }]
+      const desArray = instance.ipPrivate.split(', ');
+      if (desArray.length > 1) {
+        return desArray.map((item) => ({
+          Name: instance.name,
+          status: instance.status,
+          id: instance.id,
+          IpAddress: item,
+          Port: null,
+          Weight: null,
+          Backup: false,
+        }));
+      } else {
+        return [{
+          Name: instance.name,
+          status: instance.status,
+          id: instance.id,
+          IpAddress: instance.ipPrivate,
+          Port: null,
+          Weight: null,
+          Backup: false,
+        }]
+      }
     }
+
   }
 
   protected readonly focus = focus;
-
+  activeDropdownSSL = false;
+  listCert: any = null;
+  certId: any;
   changeProtocolListener(event: any) {
     if (event == 'TERMINATED_HTTPS') {
       this.validateForm.controls['port'].setValue(443);
     } else {
       this.validateForm.controls['port'].setValue(80);
     }
+  }
+
+  private loadSSlCert() {
+    this.service.loadSSlCert(this.tokenService.get()?.userId,this.regionId,this.projectId).subscribe(
+      data => {
+        this.listCert = data;
+      }
+    )
+  }
+
+  checkPossiblePress(event: KeyboardEvent) {
+    const key = event.key;
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
+      event.preventDefault();
+    }
+  }
+
+  checkDuplicatePortWeight() {
+    for (let i=0; i<this.lstInstanceUse.length-1; i++) {
+      const model = this.lstInstanceUse[i];
+      for (let j= i+1; j<this.lstInstanceUse.length; j++) {
+        const check = this.lstInstanceUse[j];
+        if (model.IpAddress == check.IpAddress && model.Port == check.Port && model.Weight == check.Weight) {
+          this.disableMember = true
+          return;
+        }
+      }
+    }
+    this.disableMember = false;
   }
 }

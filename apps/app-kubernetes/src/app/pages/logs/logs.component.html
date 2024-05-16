@@ -3,22 +3,22 @@
     <!-- filter -->
     <div class="flex-style marbot-5 mbot-24">
       <div class="mt-1">
-        <h3>Nhật ký thao tác</h3>
+        <h3>{{ 'app.cluster.log' | i18n }}</h3>
       </div>
 
       <div class="mleft-16 w-20">
         <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
-          <input type="text" nz-input placeholder="Tên người dùng" [(ngModel)]="userAction"
+          <input type="text" nz-input [placeholder]="'app.cluster.username' | i18n" [(ngModel)]="userAction"
             (ngModelChange)="this.changeUserKeySearch.next($event)" />
         </nz-input-group>
         <ng-template #prefixButton>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" />
         </ng-template>
       </div>
 
       <div class="mleft-16 w-20">
-        <nz-select nzSize="default" nzAllowClear [(ngModel)]="resourceType" (ngModelChange)="onChangeResourceType(); searchLogs()"
-          [nzPlaceHolder]="'Loại resource'" class="w-100" nzSize="large">
+        <nz-select nzSize="default" nzAllowClear [(ngModel)]="resourceType" (ngModelChange)="onChangeResourceType($event); searchLogs()"
+          [nzPlaceHolder]="'app.cluster.resource-type' | i18n" class="w-100" nzSize="large">
           <nz-option *ngFor="let rt of listOfResourceType" [nzLabel]="rt.name"
             [nzValue]="rt.value"></nz-option>
         </nz-select>
@@ -26,7 +26,7 @@
 
       <div class="mleft-16 w-20">
         <nz-select nzSize="default" nzAllowClear [(ngModel)]="resource" (ngModelChange)="searchLogs()"
-          [nzPlaceHolder]="'Chọn nhóm worker'" class="w-100" nzSize="large" [nzDisabled]="isDisableWorkerFilter">
+          [nzPlaceHolder]="'app.cluster.select-wg' | i18n" class="w-100" nzSize="large" [nzDisabled]="isDisableWorkerFilter">
           <nz-option *ngFor="let item of listOfWorkerGroupName" [nzLabel]="item"
             [nzValue]="item"></nz-option>
         </nz-select>
@@ -38,32 +38,32 @@
           [(ngModel)]="date"
           (ngModelChange)="onChangeDate($event); searchLogs();"
           [nzSize]="'large'"
-          [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']"
+          [nzPlaceHolder]="['app.cluster.start-date' | i18n, 'app.cluster.end-date' | i18n]"
         ></nz-range-picker>
       </div>
     </div>
 
     <div class="mb-1">
-      <small class="delete-color"><i>Hệ thống chỉ lưu nhật ký trong 30 ngày gần đây</i></small>
+      <small class="delete-color"><i>{{ 'app.cluster.log-description' | i18n }}</i></small>
     </div>
 
     <!-- table -->
     <nz-table #logTable [nzData]="listOfLogs" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
-      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoading">
       <thead>
         <tr>
-          <th class="header-table">Tên người dùng</th>
-          <th class="header-table">Loại resource</th>
-          <th class="header-table">Tên resource</th>
-          <th class="header-table">Thao tác</th>
-          <th class="header-table">Nội dung</th>
-          <th class="header-table">Thời gian thực hiện</th>
+          <th class="header-table">{{ 'app.cluster.username' | i18n }}</th>
+          <th class="header-table">{{ 'app.cluster.resource-type' | i18n }}</th>
+          <th class="header-table">{{ 'app.cluster.resource-name' | i18n }}</th>
+          <th class="header-table">{{ 'app.text.operation' | i18n }}</th>
+          <th class="header-table">{{ 'app.cluster.content' | i18n }}</th>
+          <th class="header-table">{{ 'app.cluster.action-time' | i18n }}</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of logTable.data; let i = index;">
           <td>{{ item.userAction }}</td>
-          <td>{{ item.resourceType }}</td>
+          <td id="type">{{ item.resourceType }}</td>
           <td>{{ item.resource }}</td>
           <td>{{ item.operation | action2label }}</td>
           <td>
@@ -72,7 +72,7 @@
             </ng-container>
             <ng-template #truncateValueTpl>
               <div nz-popover
-                nzPopoverTitle="Nội dung"
+                [nzPopoverTitle]="'app.cluster.content' | i18n"
                 [nzPopoverContent]="contentTpl"
                 nzPopoverPlacement="bottom">
                 {{item.note | truncateLabel}}

@@ -1,0 +1,156 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" title="{{ 'project.note31' | i18n }}">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">{{ 'project.note1' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'project.note31' | i18n }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<!---------------FORM-------------->
+<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{ 'project.note24' | i18n }}</span>
+          <div nz-row>
+            <div style="font-weight: bold;margin-right: 20px">{{ 'project.note30' | i18n }}:</div>
+            <div>{{ data?.type == 'VPC' ? ('project.note4' | i18n) : ('project.note5' | i18n)}}</div>
+          </div>
+        </div>
+        <div nz-row>
+          <div style="margin-right: 20px">{{ 'project.note19' | i18n }}:</div>
+          <div style="font-weight: bold;">{{ data?.displayName }}</div>
+        </div>
+        <div *ngIf="data?.type == 'VPC'" nz-row>
+          <div style="margin-right: 20px">{{ 'project.note25' | i18n }}:</div>
+          <div style="font-weight: bold;">{{ data?.loadBalancerPackageName }}</div>
+        </div>
+        <div  nz-row>
+          <div style="margin-right: 20px">{{ 'project.note26' | i18n }}:</div>
+          <div style="font-weight: bold;">{{ data?.vpnSiteToSiteOfferName }}</div>
+        </div>
+        <div nz-row>
+          <div style="margin-right: 20px">{{ 'app.service.description' | i18n }}:</div>
+          <div style="font-weight: bold;">{{ data?.description }}</div>
+        </div>
+      </nz-card>
+      <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{ 'project.note27' | i18n }}</span>
+        </div>
+        <nz-row style="margin-bottom: 21px;text-align: center">
+          <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentBackup nzType="circle" [nzWidth]="140" [nzStrokeWidth]="13"></nz-progress><h3 style="margin-top: 14px;">CPU</h3></div>
+          <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentRam nzType="circle" [nzWidth]="140" [nzStrokeWidth]="13"></nz-progress><h3 style="margin-top: 14px;">RAM (GB)</h3></div>
+          <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentHHD nzType="circle" [nzWidth]="140" [nzStrokeWidth]="13"></nz-progress><h3 style="margin-top: 14px;">HHD (GB)</h3></div>
+          <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentSSD nzType="circle" [nzWidth]="140" [nzStrokeWidth]="13"></nz-progress><h3 style="margin-top: 14px;">SSD (GB)</h3></div>
+          <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentIPFloating nzType="circle" [nzWidth]="140" [nzStrokeWidth]="13"></nz-progress><h3 style="margin-top: 14px;">IP FLOATING</h3></div>
+          <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentBackup nzType="circle" [nzWidth]="140" [nzStrokeWidth]="13"></nz-progress><h3 style="margin-top: 14px;">BACKUP (GB)</h3></div>
+        </nz-row>
+        <nz-table [nzData]="listOfData" [nzFrontPagination]="false" [nzLoading]="loading">
+          <thead>
+          <tr>
+            <th>{{ 'project.note28' | i18n }}</th>
+            <th>{{ 'project.note29' | i18n }}</th>
+            <th>{{ 'volume.used' | i18n }}</th>
+            <th>{{ 'volume.remaining' | i18n }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of listOfData">
+            <td>{{item?.name}}</td>
+            <td>{{item?.total}}</td>
+            <td>{{item?.used}}</td>
+            <td>{{item?.remain}}</td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-card>
+      <nz-card class="text-label" nzTitle="" style="border-radius: 8px;" [nzLoading]="loading">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{'app.extension.info' | i18n}}</span>
+        </div>
+        <nz-row style="margin-bottom: 15px">
+          <div nz-col nzSpan="5">{{'app.service.start.date' | i18n}}:</div>
+          <div nz-col nzSpan="19" style="font-weight: bold;">{{ today | date : 'dd/MM/yyyy' }}</div>
+        </nz-row>
+        <nz-row style="margin-bottom: 15px">
+          <div nz-col nzSpan="5">{{'app.expected.expiry.date' | i18n}}:</div>
+          <div nz-col nzSpan="19" style="font-weight: bold;">{{ expiredDate | date : 'dd/MM/yyyy' }}</div>
+        </nz-row>
+        <nz-form-item style="margin-bottom: 5px">
+          <nz-form-label
+          >{{'time.used' | i18n}} (<span class="text-red">*</span>) -
+            {{'volume.month' | i18n}}
+          </nz-form-label
+          >
+          <nz-form-control>
+            <nz-row>
+              <nz-input-number style="width: 100%; margin-left: -1px; margin-bottom: 5px;" [nzMin]="1" [nzMax]="100" [nzStep]="1"
+                               formControlName="numOfMonth" (ngModelChange)="onChangeTime()"
+                               nzSize="large"></nz-input-number>
+            </nz-row>
+          </nz-form-control>
+
+          <div class="text-custom-time" style="color: red;">
+            {{'app.service.expiration-date' | i18n}}: {{ expiredDateOld | date : 'dd/MM/yyyy' }}
+          </div>
+        </nz-form-item>
+      </nz-card>
+    </nz-col>
+
+    <!---------------CARD-THÀNH TIỀN-------------->
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px;" [nzLoading]="loadingCalculate">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
+        </div>
+        <nz-row style="margin-bottom: 10px" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-value">{{'app.service.cost' | i18n}} {{ this.form.controls['numOfMonth'].value || 0 }} {{'app.month' | i18n}}</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalAmount || 0 }}
+              VND
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          " nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
+            <span class="text-note-italicized">({{'app.payment-detail.vat' | i18n}})</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment || 0 }} VND</span>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col style="width: 100%">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="extendVpc()">
+              <span nz-icon nzType="wallet" nzTheme="outline"></span>
+              <span>{{'app.dashboard.service.near.expire.extend' | i18n}}</span>
+            </button>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</form>
+
+
+
+
+

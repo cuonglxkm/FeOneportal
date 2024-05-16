@@ -261,7 +261,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lấy thông tin VPC không thành công'
+            this.i18n.fanyi('app.notify.get.vpc.info.fail')
           );
         },
       });
@@ -408,7 +408,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.region,
         9999,
         1,
-        false
+        true
       )
       .subscribe((data: any) => {
         const currentDateTime = new Date().toISOString();
@@ -465,7 +465,9 @@ export class InstancesCreateVpcComponent implements OnInit {
         .subscribe({
           next: (data) => {
             data.forEach((e: Port) => {
-              this.listPort.push(e);
+              if (e.attachedDeviceId == '') {
+                this.listPort.push(e);
+              }
             });
           },
           error: (e) => {
@@ -519,7 +521,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
           ),
         ],
       })

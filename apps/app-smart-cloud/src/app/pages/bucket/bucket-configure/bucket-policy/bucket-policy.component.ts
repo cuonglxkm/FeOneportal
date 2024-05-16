@@ -6,6 +6,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -39,7 +40,8 @@ export class BucketPolicyComponent implements OnInit {
     private bucketService: BucketService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private fb: NonNullableFormBuilder
   ) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = 'text';
@@ -48,6 +50,18 @@ export class BucketPolicyComponent implements OnInit {
   ngOnInit(): void {
     this.searchBucketPolicy();
   }
+
+  formEdit: FormGroup<{
+    isUserOther: FormControl<string>
+    emailUser: FormControl<string>
+    permission: FormControl<string>
+    listActionPermission: FormControl<string[]>
+  }> = this.fb.group({
+    isUserOther: ['',Validators.required],
+    emailUser: ['',Validators.required],
+    permission: ['',Validators.required],
+    listActionPermission: [[] as string[],Validators.required],
+  });
 
   searchBucketPolicy() {
     this.loading = true;
@@ -67,6 +81,8 @@ export class BucketPolicyComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.listBucketPolicy = data.records;
+          console.log(this.listBucketPolicy);
+          
           this.total = data.totalCount;
         },
         error: (e) => {
@@ -119,7 +135,7 @@ export class BucketPolicyComponent implements OnInit {
 
   handleOkCreate() {
     this.isVisibleCreate = false;
-    this.bucketPolicyUpdate.actions.forEach((e) => {
+    this.listActionPermission.forEach((e) => {
       if (e == 'selectAll') {
         this.setActionPermission.add('CreateBucket');
         this.setActionPermission.add('DeleteBucketPolicy');
@@ -210,6 +226,9 @@ export class BucketPolicyComponent implements OnInit {
         this.setActionPermission.add(e);
       }
     });
+
+    console.log(this.setActionPermission);
+    
     this.bucketService
       .createBucketPolicy(
         this.bucketName,
@@ -232,12 +251,18 @@ export class BucketPolicyComponent implements OnInit {
   isVisibleUpdate = false;
   bucketPolicyUpdate: bucketPolicyDetail = new bucketPolicyDetail();
   modalUpdate(sid: string) {
-    this.isVisibleCreate = true;
+    this.isVisibleUpdate = true;
     this.getListSubuser();
-    this.setActionPermission.clear();
     this.bucketService.getBucketPolicyDetail(sid, this.bucketName).subscribe({
       next: (data) => {
+        console.log(data);
+        
         this.bucketPolicyUpdate = data;
+
+        this.formEdit.controls.emailUser.setValue(data.subuser);
+        this.formEdit.controls.permission.setValue(data.permission);
+        const actions = data.actions.map(item => item.split(':')[1])
+        this.formEdit.controls.listActionPermission.setValue(actions);
       },
       error: (e) => {
         this.notification.error(
@@ -253,8 +278,11 @@ export class BucketPolicyComponent implements OnInit {
   }
 
   handleOkUpdate() {
+
     this.isVisibleUpdate = false;
-    this.listActionPermission.forEach((e) => {
+    console.log(this.formEdit.controls.listActionPermission.value);
+    
+    this.formEdit.controls.listActionPermission.value.forEach((e) => {
       if (e == 'selectAll') {
         this.setActionPermission.add('CreateBucket');
         this.setActionPermission.add('DeleteBucketPolicy');
@@ -349,8 +377,8 @@ export class BucketPolicyComponent implements OnInit {
       .updateBucketPolicy(
         this.bucketName,
         this.bucketPolicyUpdate.sid,
-        this.bucketPolicyUpdate.permission,
-        this.bucketPolicyUpdate.subuser,
+        this.formEdit.controls.permission.value,
+        this.formEdit.controls.emailUser.value,
         this.isUserOther,
         Array.from(this.setActionPermission)
       )
@@ -379,15 +407,19 @@ export class BucketPolicyComponent implements OnInit {
     this.isVisibleDelete = false;
   }
 
-  handleOkDelete() {
-    this.isVisibleDelete = false;
+  handleOkDelete() {   
     this.bucketService
       .deleteBucketPolicy(this.bucketName, this.bucketPolicyId)
       .subscribe({
         next: (data) => {
           console.log(data);
-          this.notification.success('', 'Xóa Bucket Policy thành công');
-          this.searchBucketPolicy();
+          if (data == 'Thao tác thành công') {
+            this.notification.success('', 'Xóa Bucket Policy thành công');
+            this.isVisibleDelete = false;
+            this.searchBucketPolicy();
+          } else {
+            this.notification.error('', 'Xóa Bucket Policy không thành công');
+          }
         },
         error: (error) => {
           console.log(error.error);

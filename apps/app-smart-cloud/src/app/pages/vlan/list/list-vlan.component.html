@@ -33,15 +33,16 @@
                  nz-input
                  placeholder="{{ 'volume.tooltip.title.filter.img' | i18n }}"
                  [(ngModel)]="value"
-                 (input)="onInputChange($event.target['value'])"/>
+                 (input)="onInputChange($event.target['value'])" />
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}"/>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"
+               nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
         </ng-template>
       </nz-col>
       <nz-col nzSpan="8" style="flex:none;">
         <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateNetwork()">
-          <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+          <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
           <span class="button-text-primary">{{ 'app.vlan.note4' | i18n }}</span>
         </button>
       </nz-col>
@@ -67,19 +68,24 @@
       </thead>
       <tbody>
       <tr *ngFor="let data of fixtable.data">
-        <td><a [routerLink]="'/app-smart-cloud/vlan/network/detail/' + data.id">{{data.name}}</a></td>
-        <td>{{data.subnetAddressRequired}}</td>
-        <td>{{data.status}}</td>
+        <td><a [routerLink]="'/app-smart-cloud/vlan/network/detail/' + data.id">{{ data.name }}</a></td>
+        <td>
+          <span *ngFor="let address of data.subnetAddressRequired.split(', '); let last = last">
+                 {{ address }}<br *ngIf="!last">
+          </span>
+        </td>
+        <td *ngIf="data.status == 'KHOITAO'" style="color: #008D47;">{{ 'app.status.running'|i18n }}</td>
         <td>
           <div *ngIf="data.name.includes('pri_network')">
             <img nz-popover src="assets/imgs/edit-2.svg" alt=""
                  nzPopoverPlacement="bottom"
                  style="cursor: pointer; margin-right: 16px; opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
-                 [nzPopoverContent]="'Chỉnh sửa'" disabled="true"/>
-            <img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
+                 [nzPopoverContent]="'app.text.edit'|i18n" disabled="true" />
+            <img src="assets/imgs/delete.svg"
+                 style="height: 28px;width: 28px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
                  nz-popover
-                 [nzPopoverContent]="'Xóa'"
-                 nzPopoverPlacement="bottom" disabled="true"/>
+                 [nzPopoverContent]="'app.text.delete'|i18n"
+                 nzPopoverPlacement="bottom" disabled="true" />
           </div>
           <div *ngIf="!data.name.includes('pri_network')">
             <one-portal-vlan-edit [region]="region"

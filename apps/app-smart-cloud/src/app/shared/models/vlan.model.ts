@@ -99,7 +99,7 @@ export class FormCreateNetwork {
   customerId: number
   subnetName: string
   networktAddress: string
-  gatewayIP: string
+  gateway: string
   dnsNameServer: string
   allocationPool: string
   enableDHCP: boolean
@@ -122,7 +122,7 @@ export class FormCreateSubnet {
 export class FormUpdateSubnet {
   id: number
   name: string
-  getwayIP: string
+  gatewayIP: string
   enableDHCP: boolean
   hostRoutes: string
 }

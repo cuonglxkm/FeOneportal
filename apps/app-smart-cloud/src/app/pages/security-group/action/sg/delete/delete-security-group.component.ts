@@ -4,6 +4,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { SecurityGroupService } from '../../../../../shared/services/security-group.service';
 import { FormDeleteSG } from '../../../../../shared/models/security-group';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-delete-security-group',
@@ -29,6 +31,7 @@ export class DeleteSecurityGroupComponent implements AfterViewInit{
 
   constructor(
     private securityGroupService: SecurityGroupService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService) {}
 
@@ -75,7 +78,7 @@ export class DeleteSecurityGroupComponent implements AfterViewInit{
           this.isLoading = false;
           this.isVisible = false;
           this.isInput = false
-          this.notification.success('Thành công', `Xóa Security Group thành công`);
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('sg.notification.remove.success'));
           this.onOk.emit();
           this.value = null
         }, error => {
@@ -83,7 +86,7 @@ export class DeleteSecurityGroupComponent implements AfterViewInit{
           this.isVisible = false;
           this.isLoading = false;
           this.value = null
-          this.notification.error('Thất bại', `Xóa Security Group thất bại, ` + error.error.detail);
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('sg.notification.remove.fail') + error.error.detail);
         })
     } else {
       this.isInput = true

@@ -15,7 +15,7 @@ export class DeleteOutboundComponent {
   @Input() region: number;
   @Input() project: number;
   @Output() onCancel = new EventEmitter<void>();
-  @Output() onOk = new EventEmitter<void>();
+  @Output() onOk = new EventEmitter();
 
   isVisible: boolean = false;
   isLoading: boolean = false;
@@ -48,7 +48,7 @@ export class DeleteOutboundComponent {
         this.isLoading = false;
         this.isVisible = false;
         this.notification.success('Thành công', 'Xóa Outbound ' + this.nameRule + ' thành công');
-        this.onOk.emit();
+        this.onOk.emit(this.idOutbound);
       },
       error: (error) => {
         this.isLoading = false;

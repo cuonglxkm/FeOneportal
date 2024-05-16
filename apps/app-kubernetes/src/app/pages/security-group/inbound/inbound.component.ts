@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { finalize } from 'rxjs';
 import SecurityGroupRule, { SecurityGroupData } from '../../../model/security-group.model';
@@ -6,6 +6,7 @@ import { SecurityGroupService } from '../../../services/security-group.service';
 import { ShareService } from '../../../services/share.service';
 import Pagination from '../../../shared/models/pagination';
 import { RuleSearchCondition } from '../../../shared/models/security-group-rule';
+import { KubernetesConstant } from '../../../constants/kubernetes.constant';
 
 @Component({
   selector: 'one-portal-inbound',
@@ -13,6 +14,8 @@ import { RuleSearchCondition } from '../../../shared/models/security-group-rule'
   styleUrls: ['./inbound.component.css'],
 })
 export class InboundComponent implements OnInit {
+
+  @Output() deletedInbound = new EventEmitter<SecurityGroupRule>();
 
   listOfInbound: SecurityGroupRule[];
   pageIndex: number;
@@ -25,6 +28,8 @@ export class InboundComponent implements OnInit {
   regionId: number;
   projectId: number;
   securityGroupId: string;
+
+  readonly LOCK_RULE = KubernetesConstant.LOCK_RULE;
 
   constructor(
     private sgService: SecurityGroupService,
@@ -85,7 +90,10 @@ export class InboundComponent implements OnInit {
       }});
   }
 
-  handleOkDeleteInbound() {
+  handleOkDeleteInbound(idInbound: string) {
     this.getRuleInbound();
+
+    const inbound = this.listOfInbound.find(item => item.id == idInbound);
+    this.deletedInbound.emit(inbound);
   }
 }

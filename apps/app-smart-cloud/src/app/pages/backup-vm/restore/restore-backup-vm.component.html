@@ -1,31 +1,519 @@
-<one-portal-header
-        title="Backup VM"
-        [path]="['Home', 'Dịch vụ', 'Backup VM']"
-        [regionId]="region"
-        (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
-/>
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'app.backup.vm.restore'|i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home'|i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.backup.vm.restore'|i18n }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
 <nz-content>
-    <form nz-form [formGroup]="validateForm" nzLayout="vertical">
-        <!--    <nz-card>-->
-        <nz-card>
-            <div class="title"><h4><b>Restore Backup VM</b></h4></div>
-            <nz-row>
-                <nz-radio-group [(ngModel)]="selectedValueRadio" (ngModelChange)="onChangeStatus()"
-                                formControlName="radio">
-                    <label nz-radio nzValue="O" class="label">Restore vào máy ảo hiện tại </label>
-                    <label nz-radio nzValue="N" class="label">Restore vào máy ảo mới </label>
-                </nz-radio-group>
-            </nz-row>
+  <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="16">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">{{ 'app.backup.vm.ìnformation'|i18n }}</span>
+          <nz-row nzGutter="24" style="margin-top: 25px;">
+            <nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label>
+                  <span>{{ 'app.table.backup.vm.name'|i18n }}</span>
+                </nz-form-label>
+                <nz-form-control>
+                  <input nz-input class="input-custom" [value]="backupVmModel?.name" [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>
+                  <span>{{ 'app.instances.OS'|i18n }}</span>
+                </nz-form-label>
+                <nz-form-control>
+                  <input nz-input class="input-custom" [value]="backupVmModel?.systemInfoBackups[0].osName"
+                         [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label>
+                  <span>{{ 'app.info.backup.vm.vm.root'|i18n }}</span>
+                </nz-form-label>
+                <nz-form-control>
+                  <input nz-input class="input-custom" [value]="backupVmModel?.instanceName" [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>
+                  <span>{{ 'app.backup.package.storage'|i18n }}</span>
+                </nz-form-label>
+                <nz-form-control>
+                  <nz-input-group [nzAddOnAfter]="'GB'" style="width: 100%;">
+                    <input nz-input class="input-custom" [value]="backupPackage?.sizeInGB" [disabled]="true" />
+                  </nz-input-group>
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+          </nz-row>
         </nz-card>
-    </form>
-    <div *ngIf="selectedValueRadio === 'N'">
-        <one-portal-new-virtual-machine [region]="region"
-                                        [project]="project"
-                                        [backupVmId]="backupVmId"/>
-    </div>
-    <div *ngIf="selectedValueRadio === 'O'">
-        <one-portal-current-virtual-machine [region]="region"
-                                            [project]="project"
-                                            [backupVmId]="backupVmId"/>
-    </div>
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">{{ 'app.info.backup.vm.restore.information'|i18n }}</span>
+          <nz-radio-group [(ngModel)]="selectedOption"
+                          [ngModelOptions]="{standalone: true}"
+                          (ngModelChange)="onSelectionChange()" style="margin-top: 25px; display: grid;">
+            <label nz-radio nzValue="current">
+              {{ 'app.backup.vm.restore.current'|i18n }}</label>
+            <label nz-radio nzValue="new" style="margin-top: 10px;">
+              {{ 'app.backup.vm.restore.new'|i18n }}</label>
+          </nz-radio-group>
+          <div *ngIf="selectedOption == 'current'" formGroupName="formCurrent">
+            <nz-row nzGutter="24" style="margin-top: 20px;">
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{ 'app.backup.vm.restore.instance.name'|i18n }}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input nz-input class="input-custom" [value]="backupVmModel?.instanceName" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{ 'app.backup.vm.restore.storage.os'|i18n }}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <nz-input-group [nzAddOnAfter]="'GB'" style="width: 100%;">
+                      <input nz-input class="input-custom" [value]="backupVmModel?.systemInfoBackups[0].osName"
+                             [disabled]="true" />
+                    </nz-input-group>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>
+                    <span *ngIf="typeVpc == 0" style="color: #FF0000">{{ 'app.service.expiration-date'|i18n }}
+                      : {{ backupPackage?.expirationDate | date: 'dd/MM/yyyy' }}</span>
+                    <span *ngIf="typeVpc == 1" style="color: #FF0000">{{ 'app.service.expiration-date'|i18n }}
+                      : {{ projectDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>
+                  </nz-form-label>
+                </nz-form-item>
+              </nz-col>
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>Security Group</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input nz-input class="input-custom" [value]="nameSecurityGroupTextUnique" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{ 'app.info.backup.vm.external.volume'|i18n }}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input nz-input class="input-custom" [value]="nameVolumeBackupAttachNameUnique" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+          </div>
+          <div *ngIf="selectedOption == 'new'" formGroupName="formNew">
+            <div *ngIf="typeVpc == 0">
+              <nz-row nzGutter="24" style="margin-top: 25px;">
+                <nz-col nzSpan="12">
+                  <nz-form-item>
+                    <nz-form-label>
+                      <span>{{ 'app.instances.name'|i18n }} (<span style="color: #FF0000;">*</span>)</span>
+                      <img style="margin-left: 10px" nz-popover
+                           [nzPopoverPlacement]="'bottom'"
+                           [nzPopoverContent]="'app.tooltip.instance.name' | i18n"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                      <input appAutofocus class="input-custom" nz-input formControlName="instanceName"
+                             [placeholder]="'app.input.name' | i18n"
+                             [maxlength]="50" />
+                      <ng-template #nameErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
+                        </ng-container>
+                        <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}
+                        </ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-label>
+                      <span>{{ 'app.choose.ip.public' | i18n }} (<span style="color: #FF0000">*</span>)</span>
+                      <img style="margin-left: 10px"
+                           nz-popover
+                           [nzPopoverContent]="contentTemplateIPPublic"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
+                      <ng-template #contentTemplateIPPublic>
+                        <span [innerHTML]="'app.tooltip.instance.ip.public' | i18n"></span>
+                        <a
+                          [routerLink]="['/app-smart-cloud/networks/ip-floating/list']">{{ 'app.ip.floating' | i18n }}</a>
+                      </ng-template>
+                    </nz-form-label>
+                    <nz-form-control>
+                      <nz-form-control>
+                        <nz-select
+                          [nzPlaceHolder]="'menu.dashboard.v1' | i18n"
+                          [nzShowSearch]="true"
+                          formControlName="ipPublic"
+                          nzSize="large">
+                          <nz-option [nzLabel]="'menu.dashboard.v1' | i18n"
+                                     [nzValue]="0" />
+                          <nz-option *ngFor="let i of listIPPublic"
+                                     [nzLabel]="i.ipAddress || i.networkId"
+                                     [nzValue]="i.id" />
+                        </nz-select>
+                      </nz-form-control>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item *ngIf="!hidePort">
+                    <nz-form-label>
+                      <span>{{ 'app.choose.port' | i18n }} (<span class="text-red">*</span>)</span>
+                    </nz-form-label>
+                    <nz-form-control>
+                      <nz-select [nzShowSearch]="true"
+                                 [(ngModel)]="port"
+                                 [ngModelOptions]="{ standalone: true }"
+                                 nzSize="large">
+                        <nz-option *ngFor="let i of listPort"
+                                   [nzLabel]="i.fixedIPs[0]"
+                                   [nzValue]="i.id" />
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+                <nz-col nzSpan="12">
+                  <nz-form-item>
+                    <nz-form-label>
+                      <span>{{ 'app.choose.security.group' | i18n }}</span>
+                      <img style="margin-left: 10px" nz-popover
+                           [nzPopoverPlacement]="'bottom'"
+                           [nzPopoverContent]="'app.choose.security.group' | i18n"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
+                    </nz-form-label>
+                    <nz-form-control>
+                      <nz-select nzMode="multiple"
+                                 nzSize="large"
+                                 formControlName="securityGroupIds"
+                                 [nzPlaceHolder]="'app.choose.security.group' | i18n">
+                        <nz-option *ngFor="let index of backupVmModel?.securityGroupBackups"
+                                   [nzValue]="index.id">{{ index.sgName }}
+                        </nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-label>
+                      <span>{{ 'app.choose.vlan.instance' | i18n }} (<span style="color: #FF0000">*</span>)</span>
+                    </nz-form-label>
+                    <nz-form-control>
+                      <nz-select
+                        [nzShowSearch]="true"
+                        formControlName="vlan"
+                        (ngModelChange)="getListPort()"
+                        nzSize="large">
+                        <nz-option [nzLabel]="'Không sử dụng'" [nzValue]="''" />
+                        <nz-option
+                          *ngFor="let i of listVlanNetwork"
+                          [nzLabel]="i.name"
+                          [nzValue]="i.cloudId"
+                        />
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+              </nz-row>
+              <nz-tabset nzCentered
+                         nzSize="large"
+                         (keydown)="handleKeyboardEvent($event)">
+                <nz-tab [nzTitle]="'app.backup.config.vm.new' | i18n">
+                  <div class="ant-table">
+                    <table>
+                      <thead class="ant-table-thead">
+                      <tr>
+                        <th>{{ 'app.resource' | i18n }}</th>
+                        <th>{{ 'app.amount' | i18n }}</th>
+                        <th>{{ 'app.money.price' | i18n }}</th>
+                      </tr>
+                      </thead>
+                      <tbody class="ant-table-tbody">
+                      <tr>
+                        <td style="width: 50%">
+                          <nz-form-label style="margin-left: -12px">{{ 'app.capacity' | i18n }} (<span
+                            class="text-red">*</span>) - GB
+                          </nz-form-label>
+                          <nz-slider
+                            [nzMin]="0"
+                            [nzMax]="1000"
+                            [(ngModel)]="configCustom.capacity"
+                            [ngModelOptions]="{ standalone: true }"
+                            (ngModelChange)="changeCapacity($event)"></nz-slider>
+                        </td>
+                        <td>
+                          <nz-input-number [(ngModel)]="configCustom.capacity"
+                                           (keydown)="onKeyDown($event)"
+                                           (ngModelChange)="changeCapacity($event)"
+                                           [ngModelOptions]="{ standalone: true }"
+                                           [nzMin]="0"
+                                           [nzMax]="1000"
+                                           [nzStep]="1"
+                                           nzSize="large"></nz-input-number>
+                        </td>
+                        <td nzAlign="right">
+                          <label class="text-custom-price">{{ volumeIntoMoney | number }} VND </label><br />
+                          <label class="text-custom-price">{{ volumeUnitPrice | number }} VND</label>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <nz-form-label style="margin-left: -12px">RAM (<span class="text-red">*</span>) - GB
+                          </nz-form-label>
+                          <nz-slider [nzMin]="0"
+                                     [nzMax]="62"
+                                     [(ngModel)]="configCustom.ram"
+                                     (ngModelChange)="changeRam($event)"
+                                     [ngModelOptions]="{ standalone: true }"></nz-slider>
+                        </td>
+                        <td>
+                          <nz-input-number [(ngModel)]="configCustom.ram"
+                                           (keydown)="onKeyDown($event)"
+                                           (ngModelChange)="changeRam($event)"
+                                           [ngModelOptions]="{ standalone: true }"
+                                           [nzMin]="0"
+                                           [nzMax]="62"
+                                           [nzStep]="1"
+                                           nzSize="large"></nz-input-number>
+                        </td>
+                        <td nzAlign="right">
+                          <label class="text-custom-price">{{ ramIntoMoney | number }} VND </label><br />
+                          <label class="text-custom-price">{{ ramUnitPrice | number }} VND</label>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <nz-form-label style="margin-left: -12px">CPU (<span class="text-red">*</span>) - vCPU
+                          </nz-form-label>
+                          <nz-slider [nzMin]="0"
+                                     [nzMax]="62"
+                                     [(ngModel)]="configCustom.vCPU"
+                                     (ngModelChange)="changeVCPU($event)"
+                                     [ngModelOptions]="{ standalone: true }"></nz-slider>
+                        </td>
+                        <td>
+                          <nz-input-number [(ngModel)]="configCustom.vCPU"
+                                           (keydown)="onKeyDown($event)"
+                                           (ngModelChange)="changeVCPU($event)"
+                                           [ngModelOptions]="{ standalone: true }"
+                                           [nzMin]="0"
+                                           [nzMax]="62"
+                                           [nzStep]="1"
+                                           nzSize="large"></nz-input-number>
+                        </td>
+                        <td nzAlign="right">
+                          <label class="text-custom-price">{{ cpuIntoMoney | number }} VND </label><br />
+                          <label class="text-custom-price">{{ cpuUnitPrice | number }} VND</label>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </nz-tab>
+              </nz-tabset>
+              <nz-form-item style="padding-top: 20px;">
+                <nz-form-label>
+                 <span>{{ 'app.access.method.instance' | i18n }} (<span style="color: #FF0000">*</span>)
+                   <img style="margin-left: 10px"
+                        [nz-tooltip]="'app.tooltip.access.method.instance' | i18n"
+                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
+                </nz-form-label>
+                <nz-radio-group>
+                  <nz-row nzGutter="16">
+                    <nz-col nzXs="24" nzMd="12" nzLg="12">
+                      <nz-card style="border-radius: 4px"
+                               [ngStyle]="{border: activeBlockPassword ? '1px solid #0066B3' : '1px solid #DADADA'}">
+                        <nz-card-meta [nzAvatar]="nzAvatarselectedPasswordOrSSHkey1"
+                                      [nzTitle]="nzTitleselectedPasswordOrSSHkey1"
+                                      [nzDescription]="nzDescriptionselectedPasswordOrSSHkey1">
+                          <ng-template #nzAvatarselectedPasswordOrSSHkey1>
+                            <label [tabIndex]="0"
+                                   nz-radio
+                                   [ngModel]="activeBlockPassword"
+                                   [ngModelOptions]="{ standalone: true }"
+                                   (click)="initPassword()"
+                                   (keyup.enter)="initPassword()"></label>
+                          </ng-template>
+                          <ng-template #nzTitleselectedPasswordOrSSHkey1>
+                            <b>{{ 'app.password' | i18n }} </b>
+                          </ng-template>
+                          <ng-template #nzDescriptionselectedPasswordOrSSHkey1>
+                            <ellipsis class="text-custom">
+                              {{ 'app.password.intro.text' | i18n }}
+                            </ellipsis>
+                          </ng-template>
+                        </nz-card-meta>
+                      </nz-card>
+                    </nz-col>
+                    <nz-col nzXs="24" nzMd="12" nzLg="12">
+                      <nz-card style="border-radius: 4px"
+                               [ngStyle]="{border: activeBlockSSHKey ? '1px solid #0066B3' : '1px solid #DADADA'}">
+                        <nz-card-meta [nzAvatar]="nzAvatarselectedPasswordOrSSHkey2"
+                                      [nzTitle]="nzTitleselectedPasswordOrSSHkey2"
+                                      [nzDescription]="nzDescriptionselectedPasswordOrSSHkey2">
+                          <ng-template #nzAvatarselectedPasswordOrSSHkey2>
+                            <label [tabIndex]="0"
+                                   nz-radio
+                                   [ngModel]="activeBlockSSHKey"
+                                   [ngModelOptions]="{ standalone: true }"
+                                   (click)="initSSHkey()"
+                                   (keyup.enter)="initSSHkey()"
+                                   [disabled]="disableKeypair"></label>
+                          </ng-template>
+                          <ng-template #nzTitleselectedPasswordOrSSHkey2>
+                            <b>Keypair</b>
+                          </ng-template>
+                          <ng-template #nzDescriptionselectedPasswordOrSSHkey2>
+                            <ellipsis class="text-custom">{{ 'app.keypair.intro.text' | i18n }}</ellipsis>
+                          </ng-template>
+                        </nz-card-meta>
+                      </nz-card>
+                    </nz-col>
+                  </nz-row>
+                </nz-radio-group>
+                <div *ngIf="activeBlockPassword" style="width: 100%">
+                  <nz-col nzSpan="24">
+                    <nz-form-item>
+                      <nz-form-label nzFor="name">
+                        {{ 'app.label.instance.password' | i18n }} (<span style="color: #FF0000;">*</span>)
+                      </nz-form-label>
+                      <nz-form-control [nzErrorTip]="passwordErrorTpl">
+                        <nz-input-group [nzSuffix]="suffixTemplate" style="width: 100%">
+                          <input class="input-custom"
+                                 [type]="passwordVisible ? 'text' : 'password'"
+                                 nz-input
+                                 [placeholder]="'app.input.password' | i18n"
+                                 formControlName="password" />
+                        </nz-input-group>
+                        <ng-template #suffixTemplate>
+                          <img style="margin-top: -4px"
+                               [src]=" passwordVisible ? 'assets/imgs/eye-close.svg' : 'assets/imgs/eye1.svg'"
+                               alt="" (click)="passwordVisible = !passwordVisible" />
+                        </ng-template>
+                      </nz-form-control>
+                      <ng-template #passwordErrorTpl let-control>
+                        <ng-container
+                          *ngIf="control.hasError('required')">{{ 'validation.instance.password.required' | i18n }}
+                        </ng-container>
+                        <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.password.pattern' | i18n }}
+                        </ng-container>
+                      </ng-template>
+                    </nz-form-item>
+                  </nz-col>
+
+                  <nz-col nzSpan="24">
+                    <nz-alert
+                      nzType="warning"
+                      [nzDescription]="nzDescriptionWarning06"
+                      nzShowIcon
+                    ></nz-alert>
+                    <ng-template #nzDescriptionWarning06>
+                      <div>
+                        {{ 'app.alert.password' | i18n }}
+                      </div>
+                    </ng-template>
+                  </nz-col>
+                </div>
+                <div *ngIf="activeBlockSSHKey" style="width: 100%">
+                  <nz-col nzSpan="24">
+                    <nz-form-item>
+                      <nz-form-label>
+                        {{ 'app.choose.keypair' | i18n }} (<span class="text-red">*</span>)
+                      </nz-form-label>
+                      <nz-form-control [nzErrorTip]="keypairErrorTpl">
+                        <nz-select *ngIf="activeBlockSSHKey"
+                                   [nzPlaceHolder]="'-- ' + ('app.choose.keypair' | i18n) + ' --'"
+                                   [nzShowSearch]="true"
+                                   formControlName="passOrKeyFormControl"
+                                   [(ngModel)]="selectedSSHKeyName"
+                                   nzSize="large">
+                          <nz-option *ngFor="let i of listSSHKey"
+                                     [nzLabel]="i.displayName"
+                                     [nzValue]="i.displayName" />
+                        </nz-select>
+                      </nz-form-control>
+                      <ng-template #keypairErrorTpl let-control>
+                        <ng-container
+                          *ngIf="control.hasError('required')">{{ 'validation.choose.required' | i18n : { name: 'keypair' } }}
+                        </ng-container>
+                      </ng-template>
+                    </nz-form-item>
+                  </nz-col>
+                  <nz-form-label style="margin-bottom: 20px">{{ 'app.instances.keypair.label' | i18n }}&nbsp;
+                    <a [routerLink]="['/app-smart-cloud/keypair']">{{ 'app.label.create' | i18n }}</a>
+                  </nz-form-label>
+                  <nz-col nzSpan="24">
+                    <nz-alert nzType="warning"
+                              [nzDescription]="nzDescriptionWarning07"
+                              nzShowIcon></nz-alert>
+                    <ng-template #nzDescriptionWarning07>
+                      <div>{{ 'app.alert.keypair' | i18n }}
+                        <a href="https://docs.smartcloud.vn/index.php/knowledge-base/su-dung-keypair/"
+                           target="_blank">{{ 'app.here' | i18n }}</a>
+                        <br />{{ 'app.alert.keypair.next' | i18n }}
+                      </div>
+                    </ng-template>
+                  </nz-col>
+                </div>
+              </nz-form-item>
+            </div>
+          </div>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">{{ 'app.config.parameters'|i18n }}</span>
+          <div *ngIf="selectedOption == 'current'" style="margin-top: 25px;">
+            <div style="margin-top: 10px" class="text-value">{{ 'app.instances.name'|i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">{{ backupVmModel?.instanceName }}</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div style="margin-top: 10px" class="text-value">{{ 'app.instances.OS'|i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">{{ backupVmModel?.systemInfoBackups[0].osName }}</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div style="margin-top: 10px" class="text-value">{{ 'app.info.backup.vm.external.volume'|i18n }}</div>
+            <!--            <div style="margin-top: 10px" class="text-label" *ngFor="let data of volumeAttachSelected">{{data?.name}} - {{data?.sizeInGB}} GB</div>-->
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-row>
+              <nz-col style="width: 100%">
+                <button style="width: 100%" nz-button nzSize="large" nzType="primary" [nzLoading]="isLoadingCurrent"
+                        [disabled]="validateForm.get('formCurrent').invalid" (click)="submitFormCurrent()">
+                  <img src="assets/imgs/restore2.svg" style="margin-right: 5px; padding-bottom: 5px;" alt="" />
+                  <span [style.color]="validateForm.get('formCurrent').invalid ? 'gray' : 'white'">Khôi phục</span>
+                </button>
+              </nz-col>
+            </nz-row>
+          </div>
+          <div *ngIf="selectedOption == 'new'" style="margin-top: 25px;">
+
+          </div>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+  </form>
+
 </nz-content>

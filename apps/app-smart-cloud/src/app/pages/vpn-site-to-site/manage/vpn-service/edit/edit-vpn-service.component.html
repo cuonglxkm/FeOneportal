@@ -1,15 +1,17 @@
-<span
-  style="margin-right: 10px; cursor: pointer"
-  [style.color]="vpnServiceStatus !== 'PENDING_CREATE' && '#0066b3'"
-  nz-icon
-  nzType="edit"
-  nzTheme="outline"
+<img
+  style="cursor: pointer; margin-right: 16px"
+  src="assets/imgs/edit-2.svg"
+  [ngStyle]="{
+    filter: vpnServiceStatus === 'PENDING_CREATE'
+      ? 'grayscale(100%)'
+      : ''
+  }"
+  [class.disabled]="vpnServiceStatus === 'PENDING_CREATE'"
   nz-popover
   [nzPopoverContent]="'Sửa'"
   nzPopoverPlacement="bottom"
-  [class.disabled]="vpnServiceStatus === 'PENDING_CREATE'"
   (click)="showModal()"
-></span>
+/>
 <nz-modal
   [(nzVisible)]="isVisible"
   nzCentered

@@ -60,11 +60,19 @@ export class ListenerService extends BaseService{
     return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + this.listenerUrl, data, this.httpOptions);
   }
 
-  getPool(id: string, region: any) {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/pool/listpool' + '?listenerId=' + id + '&regionId=' + region + '&pageSize=99999&currentPage=1');
+  getPool(id: string, region: any, vpcId: number) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/listpool?regionId=${region}&vpcId=${vpcId}&listenerId=${id}&pageSize=9999&currentPage=1`);
   }
 
   getL7Policy(id: string, regionId: any, projectId: any) {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/l7policy' + '?listenerId=' + id + '&regionId=' + regionId + '&vpcId='+projectId);
+  }
+
+  deleteListner(listenerId: any, idLB: any) {
+    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + "/loadbalancer/listener/" + listenerId + "?lbId=" + idLB);
+  }
+
+  loadSSlCert(userId: any, regionId: any, projectId) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/ssl' + '?customerId=' + userId + '&region=' + regionId + '&vpcId='+projectId);
   }
 }

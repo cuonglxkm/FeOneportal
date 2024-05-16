@@ -11,7 +11,7 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://idg-api-gw.onsmartcloud.com',
-  baseUrlApiGw: 'https://idg-api-gw.onsmartcloud.com',
-  baseUrlWs: 'https://idg-api-gw.onsmartcloud.com',
+  baseUrl: 'https://idg-api-gw-dev.onsmartcloud.com',
+  baseUrlApiGw: 'https://idg-api-gw-dev.onsmartcloud.com',
+  baseUrlWs: 'https://idg-api-gw-dev.onsmartcloud.com',
 } as Environment;

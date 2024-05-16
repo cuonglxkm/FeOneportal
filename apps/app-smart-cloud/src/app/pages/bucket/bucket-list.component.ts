@@ -53,6 +53,7 @@ export class BucketListComponent implements OnInit {
 
   hasOS: boolean = undefined;
   hasObjectStorage() {
+    this.hasOS = undefined;
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
       .getObjectStorage()
@@ -147,12 +148,12 @@ export class BucketListComponent implements OnInit {
   }
 
   handleOkDeleteBucket() {
-    this.isVisibleDeleteBucket = false;
     if (this.codeVerify == this.bucketDeleteName) {
       this.bucketService.deleteBucket(this.bucketDeleteName).subscribe({
         next: (data) => {
           if (data == 'Thao tác thành công') {
             this.notification.success('', 'Xóa Bucket thành công');
+            this.isVisibleDeleteBucket = false;
             this.search();
           } else {
             this.notification.error('', 'Xóa Bucket không thành công');

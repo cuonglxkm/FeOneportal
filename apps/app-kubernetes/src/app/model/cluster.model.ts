@@ -3,6 +3,7 @@ export class KubernetesCluster {
   id: number;
   serviceOrderCode: string;
   orderCode: string;
+  orderId: number;
   clusterName: string;
   regionId: number;
   namespace: string;
@@ -15,6 +16,7 @@ export class KubernetesCluster {
   networkType: string;
   apiEndpoint: string;
   cidr: string;
+  serviceCidr: string;
   subnet: string;
   vpcNetworkId: number;
   volumeCloudType: string;
@@ -24,12 +26,14 @@ export class KubernetesCluster {
   totalNode: number;
   createdDate: Date;
   workerGroup: WorkerGroupModel[];
+  offerId: number;
   isProcessing: boolean;
 
   constructor(obj) {
     this.id = obj.id;
     this.serviceOrderCode = obj.service_order_code;
     this.orderCode = obj.order_code;
+    this.orderId = obj.order_id;
     this.clusterName = obj.service_name;
     this.regionId = obj.region_id;
     this.namespace = obj.namespace;
@@ -41,6 +45,7 @@ export class KubernetesCluster {
     this.upgradeVersion = obj.upgrade_versions_available;
     this.networkType = obj.network_type;
     this.cidr = obj.cidr;
+    this.serviceCidr = obj.service_cidr;
     this.subnet = obj.subnet;
     this.securityGroupName = obj.security_group_name;
     this.vpcNetworkId = obj.vpc_network_id;
@@ -50,6 +55,7 @@ export class KubernetesCluster {
     this.description = obj.description;
     this.totalNode = obj.total_node;
     this.createdDate = obj.created_date;
+    this.offerId = obj.offer_id;
     this.isProcessing = false;
 
     // get worker groups
@@ -142,6 +148,7 @@ export class NetworkingModel {
   subnetId: string;
   networkCloudId: string;
   subnetCloudId: string;
+  serviceCidr: string;
 
   constructor(obj) {
     if (obj) {
@@ -152,6 +159,7 @@ export class NetworkingModel {
       this.subnetId = obj.subnetId;
       this.networkCloudId = obj.networkCloudId;
       this.subnetCloudId = obj.subnetCloudId;
+      this.serviceCidr = obj.serviceCidr;
     }
   }
 
@@ -170,15 +178,15 @@ export class UpgradeVersionClusterDto {
 export class UpgradeWorkerGroupDto {
 
   ServiceOrderCode: string;
-  ClusterName: string;
   // VolumeCloudSize: number;
   // VolumeCloudType: string;
+
   WorkerGroup: WorkerGroupReqDto[];
+  JsonData: string;
 
   constructor(obj: any) {
     if (obj) {
       this.ServiceOrderCode = obj.serviceOrderCode;
-      this.ClusterName = obj.clusterName;
 
       this.WorkerGroup = [];
       let wgs = obj.workerGroup;
@@ -186,6 +194,11 @@ export class UpgradeWorkerGroupDto {
         const wg = new WorkerGroupReqDto(wgs[i]);
         this.WorkerGroup.push(wg);
       }
+
+      this.JsonData = JSON.stringify({
+        ServiceOrderCode: this.ServiceOrderCode,
+        WorkerGroup: this.WorkerGroup
+      });
     }
   }
 }

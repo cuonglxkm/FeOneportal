@@ -46,6 +46,7 @@
           instancesModel.taskState.toUpperCase() != 'REBOOTING'
         "
         [instancesId]="id"
+        [isProjectVPC]="false"
         (valueChanged)="onReloadInstanceDetail()"
         style="margin-left: 8px"
       >
@@ -60,7 +61,6 @@
       <nz-card
         style="border-radius: 8px; width: 100%"
         [nzBordered]="false"
-        [nzLoading]="loading"
         *ngIf="instancesModel"
       >
         <div style="margin-bottom: 20px">
@@ -238,9 +238,9 @@
                 <span class="text-label customSpan" style="width: 35%"
                   >{{ 'app.keypair.name' | i18n }}:</span
                 >
-                <span class="text-value-detail customSpan"
-                  >{{ instancesModel.keypair || '' }}</span
-                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.keypair || ''
+                }}</span>
               </nz-row>
             </nz-col>
             <nz-col nzSpan="12"> </nz-col>
@@ -259,7 +259,11 @@
         [isDetail]="false"
       ></one-portal-network-detail>
       <form style="width: 100%" nz-form [nzLayout]="'vertical'">
-        <nz-card style="border-radius: 8px" [nzBordered]="false">
+        <nz-card
+          style="border-radius: 8px"
+          [nzBordered]="false"
+          *ngIf="instancesModel"
+        >
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
           </div>
@@ -268,7 +272,11 @@
               >{{ 'app.current.config' | i18n }}: {{ instancesModel.cpu }} vCPU,
               {{ instancesModel.ram }}GB RAM, {{ instancesModel.storage }}GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
-              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span
+              ><span *ngIf="instancesModel.gpuCount != 0"
+                >, {{ instancesModel.gpuCount }} GPU (Nvidia
+                {{ instancesModel.gpuType }})</span
+              >
             </span>
           </div>
           <div style="margin-bottom: 20px">
@@ -276,7 +284,14 @@
               >{{ 'app.adjust.config' | i18n }}: {{ instanceResize.cpu }} vCPU,
               {{ instanceResize.ram }}GB RAM, {{ instanceResize.storage }}GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
-              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span
+              ><span
+                *ngIf="
+                  instanceResize.gpuCount != 0 && instanceResize.gpuType != null
+                "
+                >, {{ instanceResize.gpuCount }} GPU (Nvidia
+                {{ instanceResize.gpuType | uppercase }})</span
+              >
             </span>
           </div>
           <nz-tabset
@@ -285,7 +300,7 @@
             (keydown)="handleKeyboardEvent($event)"
           >
             <nz-tab
-              *ngIf="isConfigPackage"
+              *ngIf="isConfigPackageAtInitial && instancesModel.gpuCount == 0"
               [nzTitle]="'app.Preconfigured.Package' | i18n"
               (nzClick)="onClickConfigPackage()"
             >
@@ -373,6 +388,7 @@
               </ngu-carousel>
             </nz-tab>
             <nz-tab
+              *ngIf="!isConfigGpuAtInitial && instancesModel.gpuCount == 0"
               [nzTitle]="'app.custom.configuration' | i18n"
               (nzClick)="onClickCustomConfig()"
             >
@@ -497,7 +513,11 @@
                 </table>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'app.gpu.configuration' | i18n">
+            <nz-tab
+              *ngIf="instancesModel.volumeType != 0"
+              [nzTitle]="'app.gpu.configuration' | i18n"
+              (nzClick)="onClickGpuConfig()"
+            >
               <div class="ant-table">
                 <table>
                   <thead class="ant-table-thead">
@@ -644,10 +664,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ volumeIntoMoney | number }} VND </label
+                          {{ gpuIntoMoney | number }} VND </label
                         ><br />
                         <label class="text-custom-price">
-                          {{ volumeUnitPrice | number }} VND
+                          {{ gpuUnitPrice | number }} VND
                         </label>
                       </td>
                     </tr>
@@ -660,28 +680,24 @@
                     >*</span
                   >)</nz-form-label
                 >
-                <nz-form-control [nzErrorTip]="gpuErrorTpl">
+                <nz-form-control>
                   <nz-select
                     [nzPlaceHolder]="
                       '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
                     "
                     [nzShowSearch]="true"
                     [ngModelOptions]="{ standalone: true }"
-                    [(ngModel)]="configGPU.GPUType"
+                    [(ngModel)]="configGPU.gpuOfferId"
+                    (ngModelChange)="changeGpuType()"
                     nzSize="large"
                   >
                     <nz-option
                       *ngFor="let i of listGPUType"
-                      [nzLabel]="i.displayName"
-                      [nzValue]="i.displayName"
+                      [nzLabel]="i.offerName"
+                      [nzValue]="i.id"
                     />
                   </nz-select>
                 </nz-form-control>
-                <ng-template #gpuErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng chọn GPU Type
-                  </ng-container>
-                </ng-template>
               </nz-form-item>
             </nz-tab>
           </nz-tabset>
@@ -693,7 +709,7 @@
     </nz-row>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
-    <div style="width: 100%">
+    <div style="width: 100%" *ngIf="instancesModel">
       <nz-affix [nzOffsetTop]="48">
         <nz-card style="border-radius: 8px">
           <div style="margin-bottom: 20px">
@@ -735,6 +751,16 @@
               *ngIf="instancesModel.volumeType == 0"
               >HDD</span
             ><span *ngIf="instancesModel.volumeType == 1">SSD</span>)
+          </div>
+          <div
+            *ngIf="
+              instanceResize.gpuCount != 0 && instanceResize.gpuType != null
+            "
+            style="margin-top: 10px"
+            class="text-label"
+          >
+            {{ instanceResize.gpuCount }} GPU (Nvidia
+            {{ instanceResize.gpuType | uppercase }})
           </div>
           <nz-row
             style="

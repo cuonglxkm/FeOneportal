@@ -81,6 +81,7 @@ export class PaymentDetailComponent implements OnInit {
   getOrderDetail() {
     this.orderService.getOrderBycode(this.orderNumber).subscribe((data: any) => {
       this.data = data;
+      console.log("Huyen", this.data)
     });
   }
 

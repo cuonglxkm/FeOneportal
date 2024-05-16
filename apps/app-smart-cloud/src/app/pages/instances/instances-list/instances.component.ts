@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { concatMap, finalize, takeWhile } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import {
   InstanceAction,
@@ -20,12 +20,17 @@ import {
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
-import { NotificationService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import {
+  NotificationService,
+  ProjectModel,
+  RegionModel,
+} from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, from } from 'rxjs';
 import {
   FormSearchNetwork,
   NetWorkModel,
+  Port,
 } from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { I18NService } from '@core';
@@ -66,6 +71,8 @@ export class InstancesComponent implements OnInit {
   activeCreate: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
+
+  typeVpc: number;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -165,7 +172,9 @@ export class InstancesComponent implements OnInit {
     this.activeCreate = false;
     this.loading = true;
     this.projectId = project.id;
+    this.typeVpc = project?.type;
     this.getDataList();
+    this.getListNetwork();
   }
 
   doSearch() {
@@ -196,7 +205,7 @@ export class InstancesComponent implements OnInit {
           error: (e) => {
             this.notification.error(
               e.statusText,
-              'Lấy danh sách máy ảo không thành công'
+              this.i18n.fanyi('app.notify.get.list.instance')
             );
           },
         });
@@ -239,7 +248,7 @@ export class InstancesComponent implements OnInit {
             this.activeCreate = true;
             this.notification.error(
               e.statusText,
-              'Lấy danh sách máy ảo không thành công'
+              this.i18n.fanyi('app.notify.get.list.instance')
             );
           },
         });
@@ -262,6 +271,7 @@ export class InstancesComponent implements OnInit {
   }
 
   listVlanNetwork: NetWorkModel[] = [];
+  vlanCloudId: string;
   getListNetwork(): void {
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
     formSearchNetwork.region = this.region;
@@ -273,20 +283,46 @@ export class InstancesComponent implements OnInit {
       .getVlanNetworks(formSearchNetwork)
       .subscribe((data: any) => {
         this.listVlanNetwork = data.records;
+        this.vlanCloudId = this.listVlanNetwork[0].cloudId;
+        this.getListPort(this.vlanCloudId);
+        this.getVlanSubnets(this.vlanCloudId);
         this.cdr.detectChanges();
       });
   }
 
+  listPort: Port[] = [];
+  portLoading: boolean;
+  getListPort(networkCloudId: string) {
+    this.portLoading = true;
+    this.listPort = [];
+    this.dataService
+      .getListAllPortByNetwork(networkCloudId, this.region)
+      .subscribe({
+        next: (data) => {
+          this.listPort = data.filter((e) => e.attachedDeviceId == '');
+          this.portLoading = false;
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('app.notify.get.list.port')
+          );
+        },
+      });
+  }
+
   changeVlanNetwork(networkCloudId: string) {
-    this.listSubnet = [];
-    this.instanceAction.subnetId = null;
     this.instanceAction.ipAddress = null;
     this.getVlanSubnets(networkCloudId);
+    this.getListPort(networkCloudId);
   }
 
   listSubnet: VlanSubnet[] = [];
+  listSubnetStr: string = '';
   loadingSubnet: boolean = false;
   getVlanSubnets(networkCloudId: string): void {
+    this.listSubnet = [];
+    this.listSubnetStr = '';
     this.loadingSubnet = true;
     this.dataService
       .getVlanSubnets(9999, 0, this.region, networkCloudId)
@@ -299,21 +335,39 @@ export class InstancesComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.listSubnet = data.records;
+          this.listSubnetStr = this.listSubnet
+            .map((item) => `${item.name} (${item.subnetAddressRequired})`)
+            .join(', ');
         },
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lấy danh sách Subnet không thành công'
+            this.i18n.fanyi('router.nofitacation.subnet.fail')
           );
         },
       });
   }
 
   instanceAction: InstanceAction = new InstanceAction();
+  isChoosePort: boolean = true;
+  formGanVlan = new FormGroup({
+    ipAddress: new FormControl('', {
+      validators: [
+        Validators.pattern(
+          /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})){3}$/
+        ),
+      ],
+    }),
+  });
   showHandleGanVLAN(id: number) {
+    this.isChoosePort = true;
     this.instanceAction = new InstanceAction();
+    this.instanceAction.networkId = this.vlanCloudId;
+    this.getListPort(this.vlanCloudId);
+    this.getVlanSubnets(this.vlanCloudId);
     this.instanceAction.id = id;
     this.instanceAction.command = 'attachinterface';
+    this.instanceAction.customerId = this.userId;
     this.isVisibleGanVLAN = true;
   }
 
@@ -325,21 +379,24 @@ export class InstancesComponent implements OnInit {
     this.isVisibleGanVLAN = false;
     this.dataService.postAction(this.instanceAction).subscribe({
       next: (data: any) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Gắn VLAN thành công');
-          this.reloadTable();
-        } else {
-          this.notification.error('', 'Gắn VLAN không thành công');
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.attach.vlan.success')
+        );
+        this.getDataList();
+        this.getDataList();
       },
       error: (e) => {
-        this.notification.error(e.statusText, 'Gắn VLAN không thành công');
+        this.notification.error(
+          e.statusText,
+          this.i18n.fanyi('app.notify.attach.vlan.fail')
+        );
       },
     });
   }
 
   listOfPrivateNetwork: Network[];
-  getListIpPublic(id: number) {
+  getListIpPrivate(id: number) {
     this.dataService
       .getPortByInstance(id, this.region)
       .subscribe((dataNetwork: any) => {
@@ -347,6 +404,7 @@ export class InstancesComponent implements OnInit {
         this.listOfPrivateNetwork = dataNetwork.filter(
           (e: Network) => e.isExternal == false
         );
+        this.isVisibleGoKhoiVLAN = true;
         this.cdr.detectChanges();
       });
   }
@@ -355,6 +413,8 @@ export class InstancesComponent implements OnInit {
     this.instanceAction = new InstanceAction();
     this.instanceAction.id = id;
     this.instanceAction.command = 'detachinterface';
+    this.instanceAction.customerId = this.userId;
+    this.getListIpPrivate(id);
     this.isVisibleGoKhoiVLAN = true;
   }
 
@@ -366,22 +426,20 @@ export class InstancesComponent implements OnInit {
     this.isVisibleGoKhoiVLAN = false;
     this.dataService.postAction(this.instanceAction).subscribe({
       next: (data: any) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Gỡ khỏi VLAN thành công');
-          this.reloadTable();
-        } else {
-          this.notification.error('', 'Gỡ khỏi VLAN không thành công');
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.detach.vlan.success')
+        );
+        this.getDataList();
+        this.getDataList();
       },
       error: (e) => {
-        this.notification.error(e.statusText, 'Gỡ khỏi VLAN không thành công');
+        this.notification.error(
+          e.statusText,
+          this.i18n.fanyi('app.notify.detach.vlan.fail')
+        );
       },
     });
-  }
-
-  isExpand = false;
-  clickIPAddress(): void {
-    this.isExpand = !this.isExpand;
   }
 
   isVisibleShutdown: boolean = false;
@@ -398,19 +456,18 @@ export class InstancesComponent implements OnInit {
     };
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Yêu cầu tắt máy ảo đã được gửi đi');
-          setTimeout(() => {
-            this.reloadTable();
-          }, 1500);
-        } else {
-          this.notification.error('', 'Yêu cầu tắt máy ảo thất bại');
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.request.shutdown.instances.success')
+        );
+        setTimeout(() => {
+          this.reloadTable();
+        }, 1500);
       },
       error: (e) => {
         this.notification.error(
           e.statusText,
-          'Yêu cầu tắt máy ảo không thực hiện được'
+          this.i18n.fanyi('app.notify.request.shutdown.instances.fail')
         );
       },
     });
@@ -432,17 +489,19 @@ export class InstancesComponent implements OnInit {
     };
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Yêu cầu bật máy ảo đã được gửi đi');
-          setTimeout(() => {
-            this.reloadTable();
-          }, 1500);
-        } else {
-          this.notification.error('', 'Yêu cầu bật máy ảo thất bại');
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.request.start.instances.success')
+        );
+        setTimeout(() => {
+          this.reloadTable();
+        }, 1500);
       },
       error: (e) => {
-        this.notification.error(e.statusText, 'Yêu cầu bật máy ảo thất bại');
+        this.notification.error(
+          e.statusText,
+          this.i18n.fanyi('app.notify.request.start.instances.fail')
+        );
       },
     });
   }
@@ -463,20 +522,19 @@ export class InstancesComponent implements OnInit {
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success(
-            '',
-            'Yêu cầu khởi động lại máy ảo đã được gửi đi'
-          );
-          setTimeout(() => {
-            this.reloadTable();
-          }, 1500);
-        } else {
-          ('Yêu cầu khởi động lại máy ảo thất bại');
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.request.reboot.instances.success')
+        );
+        setTimeout(() => {
+          this.reloadTable();
+        }, 1500);
       },
       error: (e) => {
-        this.notification.error('', 'Yêu cầu khởi động lại máy ảo thất bại');
+        this.notification.error(
+          '',
+          this.i18n.fanyi('app.notify.request.reboot.instances.fail')
+        );
       },
     });
   }
@@ -497,17 +555,19 @@ export class InstancesComponent implements OnInit {
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success('', 'RESCUE máy ảo thành công');
-          setTimeout(() => {
-            this.reloadTable();
-          }, 1500);
-        } else {
-          this.notification.error('', 'RESCUE máy ảo không thành công');
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.rescue.instances.success')
+        );
+        setTimeout(() => {
+          this.reloadTable();
+        }, 1500);
       },
       error: (e) => {
-        this.notification.error(e.statusText, 'RESCUE máy ảo không thành công');
+        this.notification.error(
+          e.statusText,
+          this.i18n.fanyi('app.notify.rescue.instances.fail')
+        );
       },
     });
   }
@@ -528,19 +588,18 @@ export class InstancesComponent implements OnInit {
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success('', 'UNRESCUE máy ảo thành công');
-          setTimeout(() => {
-            this.reloadTable();
-          }, 1500);
-        } else {
-          this.notification.error('', 'UNRESCUE máy ảo không thành công');
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.unrescue.instances.success')
+        );
+        setTimeout(() => {
+          this.reloadTable();
+        }, 1500);
       },
       error: (e) => {
         this.notification.error(
           e.statusText,
-          'UNRESCUE máy ảo không thành công'
+          this.i18n.fanyi('app.notify.unrescue.instances.fail')
         );
       },
     });
@@ -584,7 +643,7 @@ export class InstancesComponent implements OnInit {
           this.isVisibleEdit = true;
           this.notification.error(
             e.statusText,
-            'Lấy SecurityGroup của máy ảo không thành công'
+            this.i18n.fanyi('app.notify.get.sg.of.instance.fail')
           );
           this.cdr.detectChanges();
         },
@@ -634,13 +693,16 @@ export class InstancesComponent implements OnInit {
     this.updateInstances.securityGroups = this.selectedSecurityGroup.join(',');
     this.dataService.update(this.updateInstances).subscribe({
       next: (next) => {
-        this.notification.success('', 'Chỉnh sửa máy ảo thành công');
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.edit.instances.success')
+        );
         this.reloadTable();
       },
       error: (e) => {
         this.notification.error(
           e.statusText,
-          'Chỉnh sửa máy ảo không thành công'
+          this.i18n.fanyi('app.notify.edit.instances.fail')
         );
       },
     });
@@ -689,9 +751,19 @@ export class InstancesComponent implements OnInit {
   navigateToCreateBackup(id: number) {
     console.log('data ', id);
     // this.dataService.setSelectedObjectId(id)
-    this.router.navigate([
-      '/app-smart-cloud/instance/' + id + '/create-backup-vm',
-    ]);
+    if (this.typeVpc == 1) {
+      this.router.navigate([
+        '/app-smart-cloud/backup-vm/create/vpc',
+        { instanceId: id },
+      ]);
+    }
+
+    if (this.typeVpc == 0) {
+      this.router.navigate([
+        '/app-smart-cloud/backup-vm/create/no-vpc',
+        { instanceId: id },
+      ]);
+    }
   }
 
   createBackupSchedule(id: number) {
@@ -699,5 +771,22 @@ export class InstancesComponent implements OnInit {
       '/app-smart-cloud/schedule/backup/create',
       { instanceId: id },
     ]);
+  }
+
+  instancesModel: InstancesModel = new InstancesModel();
+  detailConfigPackage(id: number) {
+    this.instancesModel = new InstancesModel();
+    this.dataService.getById(id, true).subscribe({
+      next: (data: any) => {
+        this.instancesModel = data;
+        this.cdr.detectChanges();
+      },
+      error: (e) => {
+        this.notification.error(
+          '',
+          this.i18n.fanyi('app.notify.get.service.package.fail')
+        );
+      },
+    });
   }
 }

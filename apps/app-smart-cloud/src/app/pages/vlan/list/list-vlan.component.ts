@@ -100,6 +100,7 @@ export class ListVlanComponent implements OnInit{
     }, error => {
         this.response = null
         this.isLoading = false
+        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
       })
   }
 

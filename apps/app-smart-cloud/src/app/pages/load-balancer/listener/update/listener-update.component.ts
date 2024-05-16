@@ -1,4 +1,4 @@
-import { Component, Inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListenerService } from '../../../../shared/services/listener.service';
@@ -9,7 +9,9 @@ import { da } from 'date-fns/locale';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { L7Policy } from '../../../../shared/models/load-balancer.model';
 import { finalize } from 'rxjs/operators';
-import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel, AppValidator } from '../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-listener-update',
@@ -20,7 +22,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
   idListener: any;
-  idLb: any;
+  idLb: number;
   listPool: any;
   listL7: L7Policy[];
   validateForm: FormGroup<{
@@ -40,7 +42,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
     member: [1],
     connection: [1],
     timeout: [1],
-    allowCIRR: ['', [Validators.required, ipAddressValidator()]],
+    allowCIRR: ['', [Validators.required, AppValidator.ipWithCIDRValidator]],
     description: [''],
 
     poolName: [0]
@@ -61,19 +63,23 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   loadingDetail = true;
   loadingL7 = true;
   loadingPool = true;
+  data: any;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
               private notification: NzNotificationService,
               private activatedRoute: ActivatedRoute,
+              private cdr: ChangeDetectorRef,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private loadBalancerService: LoadBalancerService) {
   }
 
   ngOnInit(): void {
-    this.getData();
+    this.idLb = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('lbId'));
     this.idListener = this.activatedRoute.snapshot.paramMap.get('id');
-    this.idLb = this.activatedRoute.snapshot.paramMap.get('lbId');
+    this.getData();
+    this.cdr.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -94,7 +100,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
 
   updateListener() {
     const data = {
-      id: this.activatedRoute.snapshot.paramMap.get('id'),
+      id: this.data.listenerId,
       lbId: this.activatedRoute.snapshot.paramMap.get('lbId'),
       idleTimeOutConnection: this.validateForm.controls['connection'].value,
       allowedCIDR: this.validateForm.controls['allowCIRR'].value,
@@ -106,11 +112,11 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
     };
     this.service.updateListener(data).subscribe(
       data => {
-        this.notification.success('Thành công', 'Cập nhật thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.update.listener.success'))
         this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.activatedRoute.snapshot.paramMap.get('lbId')]);
       },
       error => {
-        this.notification.error('Thất bại', 'Cập nhật thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.update.listener.fail'))
       }
     );
   }
@@ -130,6 +136,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       }))
       .subscribe(
       data => {
+        this.data = data;
         this.validateForm.controls['listenerName'].setValue(data.name);
         this.validateForm.controls['port'].setValue(data.port);
         this.validateForm.controls['timeout'].setValue(data.timeoutClientData);
@@ -161,12 +168,14 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   }
 
   private getPool(id: string) {
-    this.service.getPool(id, this.regionId)
+    this.loadingPool = true;
+    this.service.getPool(id, this.regionId, this.projectId)
       .pipe(finalize(()=>{
         this.loadingPool = false;
       })).subscribe(
       data => {
         this.listPool = data.records;
+        this.loadingPool = false;
       }
     )
   }

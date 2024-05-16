@@ -56,7 +56,7 @@
               <span *ngIf="volumeInfo?.status === 'SUSPENDED'" class="text-label"><b>{{ volumeStatus?.get(volumeInfo?.status) }}</b></span>
             </nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleAttachInstance">
-              <span *ngIf="volumeInfo?.attachedInstances?.length > 0" class="text-label"><b>{{ listVMs }}</b></span>
+              <span *ngIf="volumeInfo?.attachedInstances?.length > 0" class="text-label"><b>{{ convertString(listVMs) }}</b></span>
               <span *ngIf="volumeInfo?.attachedInstances?.length <= 0" class="text-label"><b>{{ 'volume.notification.no.instance'|i18n }}</b></span>
             </nz-descriptions-item>
 <!--            <nz-descriptions-item [nzTitle]="titleVolumeType">-->
@@ -114,7 +114,7 @@
               <nz-col nzSpan="12">
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
                   <input nz-input class="input-custom"
-                         [value]="getMonthDifference(volumeInfo?.expirationDate, volumeInfo?.createDate) + ' ' +this.i18n.fanyi('volume.month')"
+                         [value]="getMonthDifference(volumeInfo?.expirationDate, volumeInfo?.creationDate) + ' ' +this.i18n.fanyi('volume.month')"
                          [disabled]="true" />
                   <ng-template #dateErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min')">{{'volume.input.time'|i18n}}</ng-container>
@@ -125,8 +125,8 @@
                 <nz-form-item>
                   <nz-form-label nzFor="now">
                     <div class="label">
-                      <span>{{'app.service.start.date'|i18n}}: </span>
-                      <span>{{ volumeInfo?.createDate | date: 'dd/MM/yyyy' }}</span>
+                      <span>{{'app.service.creation-date'|i18n}}: </span>
+                      <span>{{ volumeInfo?.creationDate | date: 'dd/MM/yyyy' }}</span>
                     </div>
                   </nz-form-label>
                 </nz-form-item>
@@ -150,7 +150,7 @@
           <nz-form-item style="margin-top: 10px; margin-bottom: 10px;">
             <nz-form-label nzFor="storage">
               <div class="label">
-                <span>{{'app.additional.capacity'|i18n}}</span>
+                <span>{{'app.increase.capacity'|i18n}}</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
                 <img nz-popover [nzPopoverContent]="'volume.tooltip.resize.storage'|i18n"
                      nzPopoverPlacement="bottom"
