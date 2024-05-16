@@ -542,6 +542,22 @@
           </div>
         </div>
 
+        <nz-divider class="divider-style"></nz-divider>
+
+        <div nz-row [nzGutter]="8">
+          <div nz-col [nzSpan]="12">
+            <div class="ml-3"><label class="weight-600">{{ 'app.cluster.vat-cost-2' | i18n : {vat: '10'} }}</label>
+            </div>
+          </div>
+
+          <div nz-col [nzSpan]="12">
+            <div class="price-style price-color mr-3">{{(vatCost ? vatCost : 0) | number: '1.0-0'}} VND</div>
+            <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
+          </div>
+        </div>
+
+        <nz-divider class="divider-style"></nz-divider>
+
         <div nz-row [nzGutter]="8" class="mt-5 price-panel">
           <div nz-col [nzSpan]="12">
             <div class="mt-3 ml-3"><label class="weight-600">{{ 'app.cluster.total-cost' | i18n }}</label></div>

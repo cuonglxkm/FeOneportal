@@ -27,6 +27,7 @@ export class ExtensionComponent implements OnInit {
   totalCost: number;
   vatCost: number;
   costByMonth: number;
+  costAMonth: number;
   extendMonth: number;
   expiryDate: number;
 
@@ -93,7 +94,7 @@ export class ExtensionComponent implements OnInit {
       // init pack info
       if (this.detailCluster.offerId != 0) {
         this.currentPack = this.listOfServicePack.find(pack => pack.offerId = this.detailCluster.offerId);
-        console.log({abc: this.currentPack});
+        // console.log({abc: this.currentPack});
       }
 
       // init calculate cost
@@ -209,6 +210,7 @@ export class ExtensionComponent implements OnInit {
     let offerId = this.detailCluster.offerId;
 
     if (offerId != 0) {
+      this.costAMonth = this.currentPack.price;
       this.costByMonth = this.currentPack.price * this.extendMonth;
     } else {
       let wgs = this.detailCluster.workerGroup;
@@ -231,7 +233,8 @@ export class ExtensionComponent implements OnInit {
         totalStorage += nodeNumber * storage;
       }
 
-      this.costByMonth = (totalRam * this.priceOfRam + totalCpu * this.priceOfCpu + totalStorage * this.priceOfSsd) * this.extendMonth;
+      this.costAMonth = totalRam * this.priceOfRam + totalCpu * this.priceOfCpu + totalStorage * this.priceOfSsd;
+      this.costByMonth = this.costAMonth * this.extendMonth;
     }
 
     this.vatCost = this.costByMonth * 0.1;
@@ -246,13 +249,14 @@ export class ExtensionComponent implements OnInit {
     order.orderItems = [];
 
     let orderItem = new OrderItem();
-    orderItem.price = this.costByMonth;
+    orderItem.price = this.costAMonth;
     orderItem.serviceDuration = this.extendMonth;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_EXTEND_TYPE;
 
     let req = {
       serviceName: this.detailCluster.clusterName,
+      newExpireDate: new Date(this.expiryDate).toISOString().substring(0, 19),
       jsonData: JSON.stringify({
         ServiceOrderCode: this.serviceOrderCode,
         ExtendMonth: this.extendMonth,

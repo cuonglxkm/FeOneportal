@@ -8,31 +8,33 @@ export class Action2Label implements PipeTransform {
   transform(action: string): string {
     switch(action) {
       case 'UPDATE_REQUEST':
-        return 'Yêu cầu nâng cấp';
+        return 'cluster.log.upgrade-request';
       case 'UPDATE':
       case 'UPDATE_ERROR':
-        return 'Cập nhật nâng cấp';
+        return 'cluster.log.update';
       case 'CREATION_REQUEST':
-        return 'Yêu cầu khởi tạo';
+        return 'cluster.log.creation-request';
       case 'CREATE':
       case 'CREATE_ERROR':
-        return 'Cập nhật khởi tạo';
+        return 'cluster.log.creation';
       case 'DELETION_REQUEST':
-        return 'Yêu cầu xóa';
+        return 'cluster.log.deletion-request';
       case 'DELETE':
       case 'DELETE_ERROR':
-        return 'Cập nhật xóa';
+        return 'cluster.log.deletion';
       case 'CREATE_INBOUND':
-        return 'Tạo mới Rule Inbound';
+        return 'cluster.log.create-inbound';
       case 'CREATE_OUTBOUND':
-        return 'Tạo mới Rule Outbound';
+        return 'cluster.log.delete-inboud';
       case 'DELETE_INBOUND':
-        return 'Xóa Rule Inbound';
+        return 'cluster.log.create-outbound';
       case 'DELETE_OUTBOUND':
-        return 'Xóa Rule Outbound';
+        return 'cluster.log.delete-outbound';
+      case 'EXTEND_SERVICE':
+        return 'cluster.log.extend';
 
       default:
-        return 'Không xác định';
+        return 'cluster.log.unknow';
     }
 
   }

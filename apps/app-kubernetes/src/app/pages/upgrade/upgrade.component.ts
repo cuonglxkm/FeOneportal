@@ -494,12 +494,14 @@ export class UpgradeComponent implements OnInit {
   upgradeCost: number;
   currentRegisteredCost: number;
   totalCost: number;
+  vatCost: number;
   costPerDay: number;
   onCalculatePrice() {
     this.upgradeCost = this.getUpgradeCost();
     this.remainCost = this.getRemainCost();
 
     this.totalCost = this.upgradeCost - this.remainCost;
+    this.vatCost = this.upgradeCost * 0.1;
   }
 
   newTotalCpu: number;

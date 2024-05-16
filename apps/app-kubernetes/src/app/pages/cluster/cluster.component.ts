@@ -56,6 +56,7 @@ export class ClusterComponent implements OnInit {
 
   expiryDate: number;
   isChangeInfo: boolean;
+  vatPercent: number = 0.1;
 
   public DEFAULT_CIDR = KubernetesConstant.DEFAULT_CIDR;
   public DEFAULT_SERVICE_CIDR = KubernetesConstant.DEFAULT_SERVICE_CIDR;
@@ -129,6 +130,7 @@ export class ClusterComponent implements OnInit {
       // volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
       // volumeCloudType: ['hdd', [Validators.required]],
       usageTime: [1, [Validators.required, Validators.min(1), Validators.max(100)]],
+      expireDate: [null, [Validators.required]]
     });
 
     // display expiry time
@@ -336,6 +338,7 @@ export class ClusterComponent implements OnInit {
   totalRam: number;
   totalCpu: number;
   totalStorage: number;
+  vatCost: number;
   onCalculatePrice() {
     this.totalPrice = 0;
     this.workerPrice = 0;
@@ -360,8 +363,12 @@ export class ClusterComponent implements OnInit {
       this.totalStorage += nodeNumber * storage;
     }
 
-    this.workerPrice = this.priceOfCpu * this.totalCpu + this.priceOfRam * this.totalRam + this.priceOfSsd * this.totalStorage;
-    this.totalPrice = this.workerPrice + this.volumePrice;
+    const usageTime = this.myform.get('usageTime').value;
+    if (!usageTime) return;
+
+    this.workerPrice = usageTime * (this.priceOfCpu * this.totalCpu + this.priceOfRam * this.totalRam + this.priceOfSsd * this.totalStorage);
+    this.vatCost = (this.workerPrice + this.volumePrice) * this.vatPercent;
+    this.totalPrice = this.workerPrice + this.volumePrice + this.vatCost;
   }
 
   // catch event region change and reload data
@@ -488,6 +495,7 @@ export class ClusterComponent implements OnInit {
       let d = new Date();
       d.setDate(d.getDate() + Number(event) * 30);
       this.expiryDate = d.getTime();
+      this.myform.get('expireDate').setValue(new Date(this.expiryDate).toISOString().substring(0, 19));
     }
   }
 
@@ -565,8 +573,9 @@ export class ClusterComponent implements OnInit {
     // get price
     const itemPack = this.listOfServicePack.find(pack => pack.packId == item.packId);
     this.workerPrice = itemPack.price;
-    // this.volumePrice = itemPack.volume;
-    this.totalPrice = itemPack.price;
+    this.volumePrice = 0;
+    this.vatCost = (this.workerPrice + this.volumePrice) * this.vatPercent;
+    this.totalPrice = this.workerPrice + this.volumePrice + this.vatCost;
     this.offerId = itemPack.offerId;
   }
 
@@ -843,7 +852,7 @@ export class ClusterComponent implements OnInit {
     data.orderItems = [];
 
     const orderItem: OrderItem = new OrderItem();
-    orderItem.price = this.totalPrice;
+    orderItem.price = this.workerPrice + this.volumePrice;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
     orderItem.specification = JSON.stringify(cluster);

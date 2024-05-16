@@ -120,11 +120,11 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
       });
   }
 
-  onEditCluster() {
-    this.isEditMode = true;
-    this.getListWorkerType(this.regionId, this.cloudProfileId);
-    this.getListVolumeType(this.regionId, this.cloudProfileId);
-  }
+  // onEditCluster() {
+  //   this.isEditMode = true;
+  //   this.getListWorkerType(this.regionId, this.cloudProfileId);
+  //   this.getListVolumeType(this.regionId, this.cloudProfileId);
+  // }
 
   // websocket
   private openWs() {
