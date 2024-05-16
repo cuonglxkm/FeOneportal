@@ -379,6 +379,11 @@ export class InstancesEditComponent implements OnInit {
           this.isConfigPackageAtInitial = false;
           this.isConfigGpuAtInitial = true;
           this.isGpuConfig = true;
+          this.configGPU.gpuOfferId = this.listGPUType.filter(
+            (e) =>
+              e.characteristicValues[0].charOptionValues[0] ==
+              this.instancesModel.gpuType
+          )[0].id;
         }
         this.cdr.detectChanges();
         this.selectedElementFlavor = this.instancesModel.flavorId;

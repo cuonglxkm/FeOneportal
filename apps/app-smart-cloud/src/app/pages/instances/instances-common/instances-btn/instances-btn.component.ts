@@ -26,6 +26,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 })
 export class InstancesBtnComponent implements OnInit, OnChanges {
   @Input() instancesId: any;
+  @Input() isProjectVPC: boolean;
   @Output() valueChanged = new EventEmitter();
 
   instancesModel: InstancesModel;
