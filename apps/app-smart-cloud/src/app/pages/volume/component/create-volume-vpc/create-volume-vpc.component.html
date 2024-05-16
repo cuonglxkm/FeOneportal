@@ -195,10 +195,18 @@
           <nz-form-item>
             <nz-form-label>
               <span>{{ 'volume.table.title.iops' |i18n }}</span>
-              <img nz-popover [nzPopoverContent]="'volume.tooltip.iops'|i18n"
+              <img nz-popover [nzPopoverContent]="tooltip"
                    nzPopoverPlacement="bottom" style="margin-left: 5px; margin-right: 10px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
               <span>{{ iops }}</span>
+              <ng-template #tooltip>
+                <ul>
+                  <li>HDD IOPS cố định là 300</li>
+                  <li>SSD IOPS tịnh tiến theo dung lượng Volume được tính theo công thức IOPS = Dung lượng * 10. <br>
+                    Tuy nhiên IOPS có giá trị Min = 400 nên là đối với các Volume <= 40 GB thì IOPS luôn là 400, <br>
+                    từ 41GB trở lên thì theo công thức IOPS = Dung lượng * 10</li>
+                </ul>
+              </ng-template>
             </nz-form-label>
           </nz-form-item>
           <nz-form-item style="margin-bottom: 0;">

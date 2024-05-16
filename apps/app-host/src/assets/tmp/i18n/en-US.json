@@ -2163,7 +2163,7 @@
   "volume.alert.message.confirm.detach": "Are you sure you want to detach the Volume from the virtual machine?",
   "volume.alert.resize.storage": "When increasing the capacity of the Volume, the new cost will be calculated from the adjustment date until the expiration date.",
   "app.breadcrumb.list.backup.volume": "Backup Volume management",
-  "app.backup.volume.info": "Backup Volume information",
+  "app.backup.volume.info": "Backup Information",
   "app.backup.volume.detail": "Backup Volume details",
 
 
@@ -2362,5 +2362,12 @@
   "keypair.title.empty": "Field cannot be left blank",
   "keypair.public.key.press": "Enter the public key",
   "policy.not1": "Permissions are defined in the Policy",
-  "policy.not2": "The permissions defined in this policy specify the allowed actions that the authenticated user/system is permitted to perform."
+  "policy.not2": "The permissions defined in this policy specify the allowed actions that the authenticated user/system is permitted to perform.",
+
+  "app.backup.volume.title.intro": "Backup Volume - Backup, security",
+  "app.backup.volume.intro.description": "A solution to support backing up and cloning part or all of an enterprise server system to cloud computing infrastructure, ensuring redundancy for operations when the main system encounters errors or unexpected incidents.",
+  "app.backup.volume.button.create": "Initialize Backup Volume",
+
+
+  "": ""
 }
