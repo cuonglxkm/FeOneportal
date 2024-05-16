@@ -45,6 +45,7 @@ export class PolicyListComponent {
     {label:this.i18n.fanyi("app.policies.attach"),value :"0"},
     {label:this.i18n.fanyi("app.policies.detach"),value :"1"},
   ];
+  disableDelete = true;
 
   constructor(private service: PolicyService,private router: Router,
               private clipboardService: ClipboardService,
@@ -89,6 +90,7 @@ export class PolicyListComponent {
       .subscribe(
       () =>{
         this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.policy.delete.noti.success"))
+        this.search();
       },
       error => {
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.policy.delete.noti.fail"))
@@ -183,4 +185,7 @@ export class PolicyListComponent {
     }
   }
 
+  checkDelete() {
+    this.disableDelete = this.nameDelete == this.radioValue ? false : true;
+  }
 }
