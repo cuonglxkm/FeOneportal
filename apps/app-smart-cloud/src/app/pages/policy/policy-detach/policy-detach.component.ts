@@ -111,14 +111,14 @@ export class PolicyDetachComponent implements OnInit {
 
   private doDetachPolicy(requestData: any, policyName: string) {
 
-    let request = new AttachOrDetachRequest();
-    request.policyName = policyName;
-    request.action = 'detach'
-    request.items = requestData;
-    console.log(request);
+    let request = {
+      policyName : policyName,
+      action : 'attach',
+      items : requestData,
+    }
     this.policiService.attachOrDetach(request).subscribe(data => {
         this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.detach-policy.noti.success"));
-        this.searchEntities();
+        this.router.navigate(['/app-smart-cloud/policy']);
       },
       error => {
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.detach-policy.noti.fail"));

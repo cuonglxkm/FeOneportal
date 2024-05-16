@@ -57,19 +57,12 @@
               <span *ngIf="volumeInfo?.status === 'SUSPENDED'" class="text-label"><b>{{ volumeStatus?.get(volumeInfo?.status) }}</b></span>
             </nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleAttachInstance">
-              <span *ngIf="volumeInfo?.attachedInstances?.length > 0" class="text-label"><b>{{ listVMs }}</b></span>
+              <span *ngIf="volumeInfo?.attachedInstances?.length > 0" class="text-label"><b>{{ convertString(listVMs) }}</b></span>
               <span *ngIf="volumeInfo?.attachedInstances?.length <= 0" class="text-label"><b>{{ 'volume.notification.no.instance'|i18n }}</b></span>
             </nz-descriptions-item>
             <!--        <nz-descriptions-item [nzTitle]="titleVolumeType">-->
             <!--          <b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>-->
           </nz-descriptions>
-          <div style="margin-top: 15px;">
-            <nz-descriptions>
-              <nz-descriptions-item [nzTitle]="titleDescription">
-                <span class="text-label"><b>{{ volumeInfo?.description }}</b></span>
-              </nz-descriptions-item>
-            </nz-descriptions>
-          </div>
           <ng-template #titleDescription>
             <span class="text-label">{{'volume.table.title.description'|i18n}}:</span>
           </ng-template>
@@ -91,14 +84,21 @@
           <ng-template #titleAttachInstance>
             <span class="text-label">{{'volume.table.title.attach.instance'|i18n}}:</span>
           </ng-template>
-          <div style="margin-top: 15px;">
+          <div>
             <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled>{{'volume.info.type.encrypt'|i18n}}</label>
           </div>
           <div style="margin-top: 15px;">
             <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled>{{'volume.info.type.multiAttach'|i18n}}</label>
           </div>
+          <div style="margin-top: 15px;">
+            <nz-descriptions>
+              <nz-descriptions-item [nzTitle]="titleDescription">
+                <span class="text-label"><b>{{ volumeInfo?.description }}</b></span>
+              </nz-descriptions-item>
+            </nz-descriptions>
+          </div>
         </nz-card>
-        <nz-card>
+        <nz-card [nzLoading]="isLoading">
           <span class="text-card-header">{{'app.adjust.info'|i18n}}</span>
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
@@ -117,7 +117,7 @@
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>{{'volume.remaining'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb - sizeInCloudProject?.cloudProject?.quotaHddInGb }}GB</span>
+                <span>{{'volume.remaining'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb - sizeInCloudProject?.cloudProjectResourceUsed?.hdd }}GB</span>
               </div>
             </nz-form-label>
           </nz-form-item>
@@ -138,6 +138,7 @@
               <ng-template #storageErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.storage.vpc.required'|i18n }}</ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">{{'volume.input.storage.required'|i18n}}</ng-container>
+                <ng-container *ngIf="control.hasError('notEnough')">Dung lượng còn lại không đủ để tạo Volume. Vui lòng mua bổ sung dung lượng để quá trình không bị gián đoạn</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -160,7 +161,7 @@
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'volume.storage.volume' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.storage.value }} GB</div>
+          <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.storage.value + volumeInfo?.sizeInGB }} GB</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'volume.table.title.iops' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">{{ volumeInfo?.iops }}</div>
@@ -168,7 +169,9 @@
           <nz-row>
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmResize()"
-                      [disabled]="validateForm.invalid">
+                      [disabled]="validateForm.invalid ||
+                      sizeInCloudProject == null ||
+                      (remaining == 0)" [nzLoading]="isLoading">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{'app.button.resize'|i18n}}</span>
               </button>

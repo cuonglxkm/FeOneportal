@@ -1,31 +1,53 @@
-::ng-deep .ant-alert-with-description .ant-alert-message{
-    font-weight: 700;
+@import '../../../assets/color.less';
+::ng-deep .ant-alert-with-description .ant-alert-message {
+  font-weight: 700;
 }
 
-::ng-deep .ant-alert-with-description{
-    align-items: center;
+::ng-deep .ant-alert-with-description {
+  align-items: center;
 }
 
-.otp-text{
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 20px;
-    width: 30%;
+.otp-text {
+  font-size: @label-fontsize;
+  font-weight: 700;
+  line-height: 20px;
+  width: 30%;
 }
 
-.fa-text{
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 20px;
+.fa-text {
+  font-size: @label-fontsize;
+  font-weight: 400;
+  line-height: 20px;
 }
 
-.support{
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 20px;
-    font-style: italic;
+.create-text {
+  color: @blue-text;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.recreate-text {
+  color: @blue-text;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.support {
+  font-size: @label-fontsize;
+  font-weight: 400;
+  line-height: 20px;
+  font-style: italic;
 }
 
 ::ng-deep .ant-input {
-    border-radius: 4px;
+  border-radius: 4px;
+}
+
+::ng-deep .security-content .ant-alert-description{
+  font-size: @label-fontsize;
+}
+
+.btn-bg{
+  background-color: #0074CC;
 }

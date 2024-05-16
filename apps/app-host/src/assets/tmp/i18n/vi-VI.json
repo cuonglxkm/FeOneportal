@@ -51,9 +51,6 @@
   "form.account.validate.phone":"Số điện thoại không hợp lệ!",
   "form.account.validate.address":"Tỉnh/Thành phố",
 
-
-
-
   "app.account.validation": "Vui lòng nhập đầy đủ thông tin",
   "app.account.form.success": "Cập nhật tài khoản thành công!",
   "app.account.form.fail": "Cập nhật tài khoản không thành công!",
@@ -116,8 +113,8 @@
   "app.estimated.storage": "Chi phí tăng dung lượng",
   "app.cost.a.month": "Chi phí 1 tháng",
   "app.setting": "Cài đặt",
-  "app.view.detail": "xem chi tiết",
-  "app.view.json.detail": "xem chi tiết JSON",
+  "app.view.detail": "Xem chi tiết",
+  "app.view.json.detail": "Xem chi tiết JSON",
   "app.total.payment": "Tổng thanh toán",
   "app.include.vat": "Đã bao gồm {{vat}}% VAT",
   "app.ssd.capacity": "Dung lượng SSD",
@@ -184,6 +181,7 @@
   "app.usage": "Sử dụng",
   "app.name": "Tên",
   "app.snapshot.create": "Tạo Snapshot",
+  "app.guide.formula": "Hướng dẫn công thức",
 
   "app.ip.type": "Loại IP",
   "app.ip.address": "Địa chỉ IP",
@@ -228,7 +226,7 @@
   "app.choose.operation.permission": "Chọn thao tác quyền",
   "app.all.access.permission": "Tất cả quyền truy cập",
   "app.no.access.permission": "Không có quyền truy cập",
-  "app.delete.policy": "Xóa Policy",
+  "app.delete.policy": "Xác nhận xóa Policy",
   "app.delete.cors": "Xóa CORS",
   "app.filter.by.tag": "Lọc theo Tag",
   "app.enable.filter": "Bật bộ lọc",
@@ -455,6 +453,15 @@
   "app.note.versioning": "Lưu ý: Lưu trữ nhiều phiên bản khác nhau sẽ có thể gây ra tăng dung lượng lưu trữ dữ liệu trên Bucket",
   "app.set.bucket.policy": "Thiết lập Bucket Policy",
   "app.create.bucket.policy": "Tạo mới Bucket Policy",
+  "app.create.bucket.policy.success": "Tạo mới Bucket Policy thành công",
+  "app.create.bucket.policy.fail": "Tạo mới Bucket Policy thất bại",
+  "app.update.bucket.policy.success": "Chỉnh sửa Bucket Policy thành công",
+  "app.update.bucket.policy.fail": "Chỉnh sửa Bucket Policy thất bại",
+  "app.delete.bucket.policy.success": "Xóa Bucket Policy thành công",
+  "app.delete.bucket.policy.fail": "Xóa Bucket Policy thất bại",
+  "app.get.bucket.policy.fail": "Lấy danh sách Bucket Policy không thành công",
+  "app.detail.bucket.policy.fail": "Lấy chi tiết Bucket Policy không thành công",
+  "app.get.subuser.fail": "Lấy danh sách Subuser không thành công",
   "app.bucket.policy.intro": "Bucket Policy là các tùy chọn chính sách truy cập có sẵn giúp cấp quyền (Allow / Deny) cho các tài nguyên Simple Storage, sử dung ngôn ngữ chính sách truy cập dạng JSON - based",
   "app.bucket.policy.intro.next": "Có thể thêm các điều kiện giới hạn hoặc điều kiện chi tiết thêm cho Bucket Policy với thao tác Thêm Condition",
   "app.set.bucket.cors": "Thiết lập Bucket CORS",
@@ -1132,9 +1139,12 @@
   "app.breadcrumb.security": "Bảo mật",
   "app.security.title": "Tính năng xác thực hai yếu tố",
   "app.security.alert.title": "Để tăng cường bảo mật, chúng tôi khuyến nghị cấu hình Xác thực 2 yếu tố để giúp bảo vệ tài khoản của Quý khách.",
-  "app.security.alert.des": "Tính năng xác thực hai yếu tố (2FA) là một biện pháp bảo mật mạnh mẽ được sử dụng để bảo vệ tài khoản trực tuyến. Thay vì chỉ sử dụng một phương tiện xác thực như mật khẩu, 2FA yêu cầu người dùng cung cấp thêm một yếu tố xác thực khác (OTP qua email) để chứng minh họ là chủ sở hữu của tài khoản. Điều này làm tăng cường đáng kể độ an toàn và bảo mật cho tài khoản, bởi vì người khác cần phải có cả hai yếu tố này để có thể truy cập trái phép.",
+  "app.security.alert.des": "Tính năng xác thực hai yếu tố (2FA) là một biện pháp bảo mật mạnh mẽ được sử dụng để bảo vệ tài khoản trực tuyến. Thay vì chỉ sử dụng một phương tiện xác thực như mật khẩu, 2FA yêu cầu người dùng cung cấp thêm một yếu tố xác thực khác (OTP qua email) hoặc qua Google Authentiactor để chứng minh họ là chủ sở hữu của tài khoản. Điều này làm tăng cường đáng kể độ an toàn và bảo mật cho tài khoản, bởi vì người khác cần phải có cả hai yếu tố này để có thể truy cập trái phép.",
   "app.security.input.title": "Mã OTP xác nhận sẽ được gửi về Email.",
-  "app.security.switch.title": "Bật tính năng xác thực hai yếu tố",
+  "app.security.switch.title": "Gửi OTP tới Email",
+  "app.security.create.authentiactor": "Quý khách có thể sử dụng ứng dụng Google Authenticator bằng cách:",
+  "app.security.authentiactor": "Ứng dụng Google Authenticator",
+  "app.security.recreate": "Tạo QR Code mới",
   "app.security.note": "Hoặc đọc thêm về chính sách quyền riêng tư của chúng tôi",
   "app.security.note1": "tại đây",
   "app.security.noti.sucess": "SĐăng nhập với xác thực hai yếu tố đã được bật",
@@ -1608,7 +1618,7 @@
   "router.nofitacation.create.sucess": "Tạo mới Router thành công",
   "router.alert.over.router.used": "Vượt quá quota Router, đã sử dụng 5/5 Router, cần cấp thêm 1 Router",
   "router.alert.exist.router": "Router không tồn tại",
-  "router.alert.wrong.format": "Nhập sai định dạng Router. Vui lòng kiểm tra lại!",
+  "router.alert.wrong.format": "Nhập sai định dạng IP, vui lòng kiểm tra lại!",
   "router.nofitacation.create.fail": "Tạo mới Router không thành công",
   "router.nofitacation.edit.sucess": "Chỉnh sửa Router thành công",
   "router.nofitacation.edit.fail": "Chỉnh sửa Router không thành công",
@@ -1648,6 +1658,7 @@
   "router.nofitacation.create.fail1": "Tạo mới Route không thành công",
   "router.nofitacation.interface.remove.success": "Xóa Router Interface thành công",
   "router.nofitacation.interface.remove.fail": "Xóa Router Interface không thành công",
+  "router.nofitacation.interface.remove.fail1": "Vui lòng không xóa Router Interface vì quý khách đang sử dụng dịch vụ File Storage",
   "router.nofitacation.static.remove.success": "Xóa Static Route thành công",
   "wan.label.ip.wan.management": "Quản lý IP kết nối WAN",
   "wan.alert.ip.wan": "Dải IP kết nối WAN",
@@ -2049,6 +2060,7 @@
   "volume.unit-price": "Đơn giá",
   "volume.date": "Ngày",
   "volume.input.storage.required": "Vui lòng nhập số nguyên dương",
+  "volume.input.storage.not-enough": "Dung lượng cofn lại k",
   "volume.input.time": "Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100",
   "volume.alert.message.delete": "Nếu Volume có các bản Snapshot thì các bản Snapshot đó cũng sẽ bị xóa theo Volume.",
   "volume.input.required.storage": "Vui lòng nhập dung lượng",
@@ -2057,7 +2069,7 @@
   "volume.alert.message.confirm.detach": "Quý khách có chắc chắn muốn gỡ Volume khỏi máy ảo không?",
   "volume.alert.resize.storage": "Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn.",
   "app.breadcrumb.list.backup.volume": "Danh sách Backup Volume",
-  "app.backup.volume.info": "Thông tin Backup Volume",
+  "app.backup.volume.info": "Thông tin Backup",
   "app.backup.volume.detail": "Chi tiết Backup Volume",
 
 
@@ -2254,5 +2266,12 @@
   "keypair.title.key.press": "Nhập KEY có sẵn",
   "keypair.title.note3": "Chức năng được dùng khi quý khách đã có sẵn cặp SSH key. Vui lòng nhập Public Key để tạo vào tài khoản",
   "keypair.title.empty": "Trường dữ liệu không thể bỏ trống",
-  "keypair.public.key.press": "Nhập public key"
+  "keypair.public.key.press": "Nhập public key",
+
+  "app.backup.volume.title.intro": "Backup Volume - Sao lưu, bảo mật",
+  "app.backup.volume.intro.description": "Giải pháp hỗ trợ sao lưu, nhân bản một phần hoặc toàn bộ hệ thống máy chủ doanh nghiệp lên hạ tầng điện toán đám mây, đảm bảo dự phòng cho việc vận hành khi hệ thống chính gặp lỗi hoặc những sự cố không mong muốn.",
+  "app.backup.volume.button.create": "Khởi tạo Backup Volume",
+
+  "policy.not1": "Permissions được định nghĩa trong Policy",
+  "policy.not2": "Các permissions được định nghĩa trong policy này chỉ định các hành động được phép thực hiện mà người dùng/hệ thống đã xác định"
 }

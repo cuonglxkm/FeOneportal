@@ -91,7 +91,11 @@ export class InstancesDetailComponent implements OnInit {
           },
           error: (e) => {
             this.checkPermission = false;
-            this.notification.error(e.error.detail, '');
+            if (e.error.status == 404) {
+              this.notification.error(e.error.status, '');
+            } else {
+              this.notification.error(e.error.detail, '');
+            }
             this.returnPage();
           },
         });

@@ -97,7 +97,7 @@ export class RenewVolumeComponent implements OnInit {
       console.log('old', this.volumeInfo?.expirationDate);
       if (data.attachedInstances != null) {
         this.volumeInfo.attachedInstances?.forEach(item => {
-          this.listVMs += item.instanceName.toString()
+          this.listVMs += item.instanceName+'\n'
         })
         this.getTotalAmount()
       }
@@ -110,6 +110,13 @@ export class RenewVolumeComponent implements OnInit {
     });
   }
 
+  convertString(str: string): string {
+    const parts = str.trim().split('\n');
+    if (parts.length === 1) {
+      return str;
+    }
+    return parts.join(', ');
+  }
 
   extendsDto = new ExtendVolumeDTO();
 

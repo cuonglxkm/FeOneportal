@@ -46,6 +46,7 @@
           instancesModel.taskState.toUpperCase() != 'REBOOTING'
         "
         [instancesId]="id"
+        [isProjectVPC]="false"
         (valueChanged)="onReloadInstanceDetail()"
         style="margin-left: 8px"
       >
@@ -643,7 +644,7 @@
                         >
                         <nz-slider
                           [nzMin]="0"
-                          [nzMax]="1000"
+                          [nzMax]="8 - instancesModel.gpuCount"
                           [(ngModel)]="configGPU.GPU"
                           (ngModelChange)="changeGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
@@ -656,7 +657,7 @@
                           (ngModelChange)="changeGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
-                          [nzMax]="1000"
+                          [nzMax]="8 - instancesModel.gpuCount"
                           [nzStep]="1"
                           nzSize="large"
                         ></nz-input-number>
@@ -705,6 +706,17 @@
           </div>
         </nz-card>
       </form>
+      <nz-card style="border-radius: 8px">
+        <span class="text-card-header">{{ 'app.guide.formula' | i18n }}</span>
+        <div style="margin-top: 25px">
+          <img src="assets/imgs/congthuc1.png" alt="" />
+          <img
+            src="assets/imgs/congthuc2.png"
+            alt=""
+            style="margin-top: 15px"
+          />
+        </div>
+      </nz-card>
     </nz-row>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">

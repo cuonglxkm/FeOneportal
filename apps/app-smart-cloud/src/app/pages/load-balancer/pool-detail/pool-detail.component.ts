@@ -123,6 +123,7 @@ export class PoolDetailComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.loadingHealth = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe({
@@ -305,6 +306,7 @@ export class PoolDetailComponent implements OnInit {
               e.statusText,
               this.i18n.fanyi('app.notification.edit.health.fail')
             );
+            this.getListHealth();
           },
         });
     }
@@ -487,7 +489,7 @@ export class PoolDetailComponent implements OnInit {
       this.memberForm.subnetId = this.loadBalancer.subnetId;
       this.memberForm.customerId = this.tokenService.get()?.userId;
       this.memberForm.regionId = this.regionId;
-      this.memberForm.vpcId = this.projectId;    
+      this.memberForm.vpcId = this.projectId;
       this.titleModalMember = this.i18n.fanyi('app.member.create');
     } else {
       this.isCreate = false;
@@ -498,12 +500,18 @@ export class PoolDetailComponent implements OnInit {
             Validators.pattern(/^[a-zA-Z0-9]*$/),
           ],
         }),
-        ipPrivate: new FormControl('', {
-          validators: [],
-        }),
-        port: new FormControl({ value: '', disabled: true }, {
-          validators: [],
-        }),
+        ipPrivate: new FormControl(
+          { value: '', disabled: true },
+          {
+            validators: [],
+          }
+        ),
+        port: new FormControl(
+          { value: '', disabled: true },
+          {
+            validators: [],
+          }
+        ),
         weight: new FormControl('', {
           validators: [Validators.required],
         }),
@@ -579,6 +587,10 @@ export class PoolDetailComponent implements OnInit {
               e.statusText,
               this.i18n.fanyi('app.notification.edit.member.fail')
             );
+            setTimeout(() => {
+              this.getListMember();
+              this.getListMember();
+            }, 1000);
           },
         });
     }

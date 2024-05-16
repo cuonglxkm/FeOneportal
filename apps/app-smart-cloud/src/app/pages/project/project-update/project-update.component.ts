@@ -298,7 +298,7 @@ export class ProjectUpdateComponent implements OnInit{
       .subscribe(
         data => {
           this.data = data;
-          this.form.controls['name'].setValue(data.cloudProjectName);
+          this.form.controls['name'].setValue(data.displayName);
           this.form.controls['description'].setValue(data.description);
           this.today = this.data.createDate;
           this.expiredDate = this.data.expireDate;

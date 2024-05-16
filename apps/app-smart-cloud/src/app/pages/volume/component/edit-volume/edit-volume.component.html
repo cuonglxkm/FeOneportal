@@ -56,7 +56,7 @@
               <span *ngIf="volumeInfo?.status === 'SUSPENDED'" class="text-label"><b>{{ volumeStatus?.get(volumeInfo?.status) }}</b></span>
             </nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleAttachInstance">
-              <span *ngIf="volumeInfo?.attachedInstances?.length > 0" class="text-label"><b>{{ listVMs }}</b></span>
+              <span *ngIf="volumeInfo?.attachedInstances?.length > 0" class="text-label"><b>{{ convertString(listVMs) }}</b></span>
               <span *ngIf="volumeInfo?.attachedInstances?.length <= 0" class="text-label"><b>{{ 'volume.notification.no.instance'|i18n }}</b></span>
             </nz-descriptions-item>
 <!--            <nz-descriptions-item [nzTitle]="titleVolumeType">-->
