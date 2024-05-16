@@ -24,21 +24,21 @@ spec:
               protocol: TCP
           env:
             - name: APP_SMART_CLOUD_URL
-              value: https://appsmartcloud-dev.onsmartcloud.com
+              value: https://appsmartcloud.onsmartcloud.com
             - name: APP_KUBERNETES_URL
-              value: https://appk8s-dev.onsmartcloud.com
+              value: https://appk8s.onsmartcloud.com
             - name: APP_KAFKA_URL
-              value: https://appkafka-dev.onsmartcloud.com
+              value: https://appkafka.onsmartcloud.com
             - name: APP_MONGODB_REPLICASET_URL
-              value: https://appmongodb-dev.onsmartcloud.com
+              value: https://appmongodb.onsmartcloud.com
             - name: BASE_URL
-              value: https://api-dev.onsmartcloud.com
+              value: https://api.onsmartcloud.com
             - name: ISSUER
-              value: https://identity-dev.onsmartcloud.com
+              value: https://identity.onsmartcloud.com
             - name: CALLBACK
-              value: https://oneportal-dev.onsmartcloud.com/passport/callback/oneportal
+              value: https://oneportal.onsmartcloud.com/passport/callback/oneportal
             - name: LOGOUT_CALLBACK
-              value: https://oneportal-dev.onsmartcloud.com
+              value: https://oneportal.onsmartcloud.com
             - name: SCOPE
               value: openid profile email offline_access
           resources:

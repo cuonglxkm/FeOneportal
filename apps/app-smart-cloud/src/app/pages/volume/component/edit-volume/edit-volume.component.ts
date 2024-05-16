@@ -216,7 +216,7 @@ export class EditVolumeComponent implements OnInit {
         console.log('volumesInfo', this.volumeInfo.attachedInstances);
         if (data?.attachedInstances != null) {
           this.volumeInfo?.attachedInstances?.forEach(item => {
-            this.listVMs += item.instanceName.toString();
+            this.listVMs += item.instanceName + '\n';
           });
         }
         this.getTotalAmount();
@@ -238,6 +238,13 @@ export class EditVolumeComponent implements OnInit {
     // this.notification.warning('', 'Không thể thay đổi loại Volume.')
   }
 
+  convertString(str: string): string {
+    const parts = str.trim().split('\n');
+    if (parts.length === 1) {
+      return str;
+    }
+    return parts.join(', ');
+  }
   volumeEdit: EditSizeMemoryVolumeDTO = new EditSizeMemoryVolumeDTO();
 
   volumeInit() {

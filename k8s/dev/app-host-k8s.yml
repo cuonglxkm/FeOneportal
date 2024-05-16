@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: app-host
-          image: repo.onsmartcloud.com/cloudportal/app-host
+          image: repo.onsmartcloud.com/cloudportal-dev/app-host
           ports:
             - containerPort: 80
               protocol: TCP

@@ -2055,7 +2055,7 @@
   "volume.alert.message.confirm.detach": "Quý khách có chắc chắn muốn gỡ Volume khỏi máy ảo không?",
   "volume.alert.resize.storage": "Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn.",
   "app.breadcrumb.list.backup.volume": "Danh sách Backup Volume",
-  "app.backup.volume.info": "Thông tin Backup Volume",
+  "app.backup.volume.info": "Thông tin Backup",
   "app.backup.volume.detail": "Chi tiết Backup Volume",
 
 
@@ -2252,5 +2252,12 @@
   "keypair.title.key.press": "Nhập KEY có sẵn",
   "keypair.title.note3": "Chức năng được dùng khi quý khách đã có sẵn cặp SSH key. Vui lòng nhập Public Key để tạo vào tài khoản",
   "keypair.title.empty": "Trường dữ liệu không thể bỏ trống",
-  "keypair.public.key.press": "Nhập public key"
+  "keypair.public.key.press": "Nhập public key",
+
+  "app.backup.volume.title.intro": "Backup Volume - Sao lưu, bảo mật",
+  "app.backup.volume.intro.description": "Giải pháp hỗ trợ sao lưu, nhân bản một phần hoặc toàn bộ hệ thống máy chủ doanh nghiệp lên hạ tầng điện toán đám mây, đảm bảo dự phòng cho việc vận hành khi hệ thống chính gặp lỗi hoặc những sự cố không mong muốn.",
+  "app.backup.volume.button.create": "Khởi tạo Backup Volume",
+
+  "policy.not1": "Permissions được định nghĩa trong Policy",
+  "policy.not2": "Các permissions được định nghĩa trong policy này chỉ định các hành động được phép thực hiện mà người dùng/hệ thống đã xác định"
 }
