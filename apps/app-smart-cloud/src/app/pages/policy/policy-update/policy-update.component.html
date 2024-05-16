@@ -1,9 +1,25 @@
-<one-portal-header
-  [title]="'app.breadcrumb.edit-policy' | i18n"
-  [path]="['app.breadcrumb.home' | i18n, 'IAM', 'Policies', 'app.breadcrumb.edit-policy' | i18n ]"
-  [regionId]="region"
-  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
-/>
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.breadcrumb.edit-policy' | i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/policy']">Polices</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/policy']">{{'app.breadcrumb.edit-policy' | i18n}}</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="region" (valueChanged)="projectChanged($event)" (userChanged)="projectChanged($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
 <nz-spin nzTip="Loading..." [nzSpinning]="isLoadding">
   <nz-content>
     <nz-card>
