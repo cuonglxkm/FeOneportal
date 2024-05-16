@@ -1,0 +1,16 @@
+<nz-select
+  [nzDisabled]="isDisable"
+  (ngModelChange)="valueDataChange($event)"
+  [nzSuffixIcon]="suffixIcon"
+  [title]="tooltip"
+  [(ngModel)]="userSelected"
+  name="shareUser"
+  [nzPlaceHolder]="placeHolder"
+  [nzShowSearch]="true"
+>
+  <nz-option
+    *ngFor="let i of datas; let idx = index"
+    [nzLabel]="i.email"
+    [nzValue]="i"
+  />
+</nz-select>
