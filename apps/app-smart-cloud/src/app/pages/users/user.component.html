@@ -18,7 +18,7 @@
 
 <nz-card style="border-radius: 4px">
   <div style="margin-bottom: 20px" nz-row [nzGutter]="24">
-    <div class="text-right p-0 m-b-0" nz-col nzSpan="24">
+    <div class="text-right p-0 m-b-0 d-flex " style="justify-content: end;" nz-col nzSpan="24">
       <nz-input-group
         style="margin-right: 8px; width: 25%"
         [nzPrefix]="prefixIconSearch"
@@ -48,12 +48,8 @@
         <img style="margin-top: -4px;filter: invert(25%) sepia(84%) saturate(3672%) hue-rotate(351deg) brightness(100%) contrast(84%);" src="assets/imgs/trash.svg" />
       </button>
       
-      <button nz-button nzType="primary" (click)="navigateToCreate()">
-        <img
-          style="padding-right: 10px; margin-top: -4px"
-          src="assets/imgs/add-circle.svg"
-          alt=""
-        />
+      <button nz-button nzType="primary" (click)="navigateToCreate()" class="btn-add">
+        <one-portal-svg-icon [icon]="'icon_add'" class="icon-svg icon-padding-right"></one-portal-svg-icon>
         <span>{{"app.users.button.create.user" | i18n}}</span>
       </button>
     </div>

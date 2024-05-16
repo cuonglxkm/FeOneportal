@@ -989,7 +989,7 @@ export class BucketDetailComponent implements OnInit {
           const xhr = new XMLHttpRequest();
           xhr.open(
             'POST',
-            'https://api.onsmartcloud.com/provisions/object-storage/CompleteMultipartUpload',
+            'https://api-dev.onsmartcloud.com/provisions/object-storage/CompleteMultipartUpload',
             true
           );
           xhr.setRequestHeader(
@@ -1046,7 +1046,7 @@ export class BucketDetailComponent implements OnInit {
             partNumber: index.toString(),
             uploadId: upload_id,
             expiryTime: addDays(new Date(), 1),
-            urlOrigin: 'https://oneportal.onsmartcloud.com',
+            urlOrigin: 'https://oneportal-dev.onsmartcloud.com',
           };
 
           this.service.getSignedUrl(data).subscribe(
@@ -1126,7 +1126,7 @@ export class BucketDetailComponent implements OnInit {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
           expiryTime: addDays(this.date, 1),
-          urlOrigin: 'https://oneportal.onsmartcloud.com',
+          urlOrigin: 'https://oneportal-dev.onsmartcloud.com',
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
