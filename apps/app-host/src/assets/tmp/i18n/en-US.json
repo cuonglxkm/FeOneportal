@@ -2360,5 +2360,7 @@
   "keypair.title.key.press": "Enter the available KEY",
   "keypair.title.note3": "This function is used when you already have an existing SSH key pair. Please enter the Public Key to create in your account.",
   "keypair.title.empty": "Field cannot be left blank",
-  "keypair.public.key.press": "Enter the public key"
+  "keypair.public.key.press": "Enter the public key",
+  "policy.not1": "Permissions are defined in the Policy",
+  "policy.not2": "The permissions defined in this policy specify the allowed actions that the authenticated user/system is permitted to perform."
 }

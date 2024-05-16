@@ -1,22 +1,46 @@
-<one-portal-header
-  [title]="'app.breadcrumb.attach-policy' | i18n"
-  [path]="['app.breadcrumb.home' | i18n , 'IAM', 'Policies', 'app.breadcrumb.attach-policy' | i18n ]"
-  [regionId]="region"
-  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
-/>
-
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.breadcrumb.attach-policy' | i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/policy']">Polices</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/policy']">{{ 'app.breadcrumb.attach-policy' | i18n }}</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="region" (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
 
 <nz-content class="content">
-
-  <nz-card class="content-header" [nzTitle]="'app.breadcrumb.attach-policy.title' | i18n">
-    <p style="opacity: 0.5;">{{'app.breadcrumb.attach-policy.des' | i18n}}</p>
+  <nz-card class="content-header" [nzTitle]="cardInfo">
+    <ng-template #cardInfo>
+      <div class="text-card-header">{{ 'app.breadcrumb.attach-policy.title' | i18n }}</div>
+    </ng-template>
+    <div class="text-label" style="opacity: 0.5;">{{ 'app.breadcrumb.attach-policy.des' | i18n }}</div>
   </nz-card>
 
-  <nz-card class="content-body" [nzTitle]="'app.breadcrumb.attach-policy.iamEntities' | i18n">
-    <p style="opacity: 0.5;">{{'app.breadcrumb.attach-policy.iamEntities.des' | i18n}}</p>
+  <nz-card class="content-body" [nzTitle]="cardInfo">
+    <ng-template #cardInfo>
+      <div class="text-card-header">{{ 'app.breadcrumb.attach-policy.iamEntities' | i18n }}</div>
+    </ng-template>
+    <div class="text-label"
+         style="opacity: 0.5;margin-bottom: 10px">{{ 'app.breadcrumb.attach-policy.iamEntities.des' | i18n }}
+    </div>
     <div style="display: flex; justify-content: space-between;">
       <div class="text-left">
-        <nz-form-label [nzFor]="'volumeStatus'"><b>{{'app.breadcrumb.attach-policy.iamEntities.type' | i18n}}</b></nz-form-label>
+        <nz-form-label [nzFor]="'volumeStatus'"><b>{{ 'app.breadcrumb.attach-policy.iamEntities.type' | i18n }}</b>
+        </nz-form-label>
         <nz-select nzSize="large"
                    [nzPlaceHolder]="'app.group-detail.allTypes' | i18n"
                    [nzOptions]="optionsEntities"
@@ -27,20 +51,23 @@
         </nz-select>
       </div>
       <div class="text-right">
-        <nz-input-group style="margin-left: 15px;margin-right: 8px; width: 250px; margin-bottom: 10px"
-                        [nzSuffix]="suffixIconSearch" nzSize="large">
-          <input #searchBox [(ngModel)]="entitiesNameSearch" type="text" nz-input [placeholder]="'app.users.search' | i18n"/>
+        <nz-input-group style="margin-right: 8px; width: 70%;margin-left: 10px;" [nzPrefix]="suffixIconSearch"
+                        nzSize="large">
+          <input name="name" nz-input [placeholder]="'app.users.search' | i18n " [(ngModel)]="entitiesNameSearch"
+                 (keydown.enter)="searchEntities()" />
         </nz-input-group>
         <ng-template #suffixIconSearch>
           <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"
-               (click)="searchEntities()"/>
+               (click)="searchEntities()" />
         </ng-template>
-        <button class="button-custom" nz-button style="color: var(--Primary-1, #0066b3)" (click)="reload()" nzSize="large">
-          <img style="margin-top: -4px;" src="assets/imgs/refresh.svg" alt=""/>
+
+        <button class="button-custom" nz-button style="color: var(--Primary-1, #0066b3)" (click)="reload()"
+                nzSize="large">
+          <img style="margin-top: -4px;" src="assets/imgs/refresh.svg" alt="" />
         </button>
       </div>
     </div>
-    <p><i style="opacity: 0.5;">{{'app.breadcrumb.attach-policy.iamEntities.option' | i18n}}</i></p>
+    <i class="text-label">{{ 'app.breadcrumb.attach-policy.iamEntities.option' | i18n }}</i>
     <nz-table
       class="table-data"
       #rowSelectionTable
@@ -61,8 +88,8 @@
           [nzIndeterminate]="indeterminate"
           (nzCheckedChange)="onAllChecked($event)"
         ></th>
-        <th>{{'app.breadcrumb.attach-policy.iamEntities.name' | i18n}}</th>
-        <th>{{'app.breadcrumb.attach-policy.iamEntities.type' | i18n}}</th>
+        <th>{{ 'app.breadcrumb.attach-policy.iamEntities.name' | i18n }}</th>
+        <th>{{ 'app.breadcrumb.attach-policy.iamEntities.type' | i18n }}</th>
       </tr>
       </thead>
       <tbody>
@@ -76,25 +103,22 @@
       </tr>
       </tbody>
     </nz-table>
-
-    <div class="text-right">
-
-      <button (click)="goBack()" nzSize="large" nz-button nzType="primary" style="
+  </nz-card>
+  <div class="text-right">
+    <button (click)="goBack()" nzSize="large" nz-button nzType="primary" style="
             border-color: #0066B3;
             background-color: white;
           ">
-        <img style="padding-right: 10px;" src="assets/imgs/arrow-left-2.svg" alt=""/>
-        <span class="button-text-primary" style="color:#0066B3">{{'app.button.back' | i18n}}</span>
-      </button>
-      <button [disabled]="setOfCheckedId.size === 0" nzSize="large" (click)="attachPolicy()" nz-button nzType="primary"
-              style="
+      <img style="padding-right: 10px;" src="assets/imgs/arrow-left-2.svg" alt="" />
+      <span class="button-text-primary" style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
+    </button>
+    <button [disabled]="setOfCheckedId.size === 0" nzSize="large" (click)="attachPolicy()" nz-button nzType="primary"
+            style="
             border: none;
-          "><img style="margin-top: -4px; margin-right: 10px;" src="assets/imgs/attach.png" alt=""/>{{'app.button.attach-policy' | i18n}}
-      </button>
-
-    </div>
-
-  </nz-card>
+          "><img style="margin-top: -4px; margin-right: 10px;" src="assets/imgs/attach.png"
+                 alt="" />{{ 'app.button.attach-policy' | i18n }}
+    </button>
+  </div>
 
 </nz-content>
 

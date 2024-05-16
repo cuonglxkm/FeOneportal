@@ -2252,5 +2252,7 @@
   "keypair.title.key.press": "Nhập KEY có sẵn",
   "keypair.title.note3": "Chức năng được dùng khi quý khách đã có sẵn cặp SSH key. Vui lòng nhập Public Key để tạo vào tài khoản",
   "keypair.title.empty": "Trường dữ liệu không thể bỏ trống",
-  "keypair.public.key.press": "Nhập public key"
+  "keypair.public.key.press": "Nhập public key",
+  "policy.not1": "Permissions được định nghĩa trong Policy",
+  "policy.not2": "Các permissions được định nghĩa trong policy này chỉ định các hành động được phép thực hiện mà người dùng/hệ thống đã xác định"
 }
