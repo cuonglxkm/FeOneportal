@@ -19,11 +19,14 @@ export class SecurityComponent implements OnInit {
   project = JSON.parse(localStorage.getItem('projectId'));
 
   toggleSwitch: boolean = false
+  toggleSwitchGoogleAuthenticator: boolean = false
   isLoading: boolean = false
   isVisibleUpdate: boolean = false
-
+  isVisibleUpdateGoogleAuthenticator: boolean = false
+  isVisibleReCreateGoogleAuthenticator: boolean = false
   email:string = ''
   authenticatorKey:string = ''
+  isActiveGoogleAuthenticator: boolean = false
 
   form: FormGroup<{
     otp: FormControl<string>;
@@ -104,5 +107,25 @@ export class SecurityComponent implements OnInit {
 
   handleUpdate(){
     
+  }
+
+  handleRecreateGoogleAuthen(){
+    this.isVisibleReCreateGoogleAuthenticator = true
+  }
+
+  handleCancelRecreateGoogleAuthenticator(){
+    this.isVisibleReCreateGoogleAuthenticator = false
+  }
+
+  handleChangeSwitchGoogleAuthenticator(event){
+
+  }  
+
+  handleOpenGoogleAuthen(){
+    this.isVisibleUpdateGoogleAuthenticator = true
+  }
+
+  handleCancelGoogleAuthenticator(){
+    this.isVisibleUpdateGoogleAuthenticator = false
   }
 }
