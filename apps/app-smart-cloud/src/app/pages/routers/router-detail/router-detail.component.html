@@ -216,11 +216,13 @@
       placeholder="{{'router.label.ip.interface.example' | i18n}}"
       formControlName="ipAddress"
       #ipAdress
+      id="ipAddress"
     />
+      <!-- <span *ngIf="isInvalidipAddress" style="color: #FF4D4F;">{{ invalidipAddress }}</span> -->
       <ng-template #ipErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">{{'router.validate.ip.empty' | i18n}}</ng-container>
-        <!-- <ng-container *ngIf="control.hasError('invalidSubnetIP')">{{'router.validate.ip.fail' | i18n}}</ng-container>
-        <ng-container *ngIf="control.hasError('invalidLastNumber')">{{'router.validate.ip.fail' | i18n}}</ng-container> -->
+        <ng-container *ngIf="control.hasError('invalidSubnetIP')">{{'router.validate.ip.fail' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('invalidLastNumber')">{{'router.validate.ip.fail' | i18n}}</ng-container>
       </ng-template>
     </nz-form-control>
     </nz-form-item>

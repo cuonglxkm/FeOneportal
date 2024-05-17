@@ -2,12 +2,20 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
@@ -32,6 +40,9 @@ export class BucketPolicyComponent implements OnInit {
   pageNumber: number = 1;
   total: number;
   loading: boolean = true;
+  isLoadingCreate: boolean = false;
+  isLoadingUpdate: boolean = false;
+  isLoadingDelete: boolean = false;
   listPermission = [{ name: 'Allow' }, { name: 'Deny' }];
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   public optionJsonEditor: JsonEditorOptions;
@@ -41,7 +52,8 @@ export class BucketPolicyComponent implements OnInit {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
-    private fb: NonNullableFormBuilder
+    private fb: NonNullableFormBuilder,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = 'text';
@@ -52,15 +64,15 @@ export class BucketPolicyComponent implements OnInit {
   }
 
   formEdit: FormGroup<{
-    isUserOther: FormControl<string>
-    emailUser: FormControl<string>
-    permission: FormControl<string>
-    listActionPermission: FormControl<string[]>
+    isUserOther: FormControl<boolean>;
+    emailUser: FormControl<string>;
+    permission: FormControl<string>;
+    listActionPermission: FormControl<string[]>;
   }> = this.fb.group({
-    isUserOther: ['',Validators.required],
-    emailUser: ['',Validators.required],
-    permission: ['',Validators.required],
-    listActionPermission: [[] as string[],Validators.required],
+    isUserOther: [false, Validators.required],
+    emailUser: ['', Validators.required],
+    permission: ['', Validators.required],
+    listActionPermission: [[] as string[], Validators.required],
   });
 
   searchBucketPolicy() {
@@ -82,14 +94,14 @@ export class BucketPolicyComponent implements OnInit {
         next: (data) => {
           this.listBucketPolicy = data.records;
           console.log(this.listBucketPolicy);
-          
+
           this.total = data.totalCount;
         },
         error: (e) => {
           this.listBucketPolicy = [];
           this.notification.error(
-            e.statusText,
-            'Lấy danh sách Bucket Policy không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.detail.bucket.policy.fail')
           );
         },
       });
@@ -109,8 +121,8 @@ export class BucketPolicyComponent implements OnInit {
         error: (e) => {
           this.listSubuser = [];
           this.notification.error(
-            e.statusText,
-            'Lấy danh sách Subuser không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.get.subuser.fail')
           );
         },
       });
@@ -119,7 +131,7 @@ export class BucketPolicyComponent implements OnInit {
   isVisibleCreate = false;
   permission: string;
   emailUser: string;
-  isUserOther: boolean = true;
+  isUserOther: boolean = false;
   listActionPermission: string[] = [];
   setActionPermission: Set<string> = new Set<string>();
   listActionPermissionCustom: string[] = [];
@@ -131,10 +143,15 @@ export class BucketPolicyComponent implements OnInit {
 
   handleCancelCreate() {
     this.isVisibleCreate = false;
+    this.isUserOther = false;
+    this.permission = '';
+    this.emailUser = '';
+    this.listActionPermission = [];
   }
 
   handleOkCreate() {
-    this.isVisibleCreate = false;
+    this.isLoadingCreate = true;
+
     this.listActionPermission.forEach((e) => {
       if (e == 'selectAll') {
         this.setActionPermission.add('CreateBucket');
@@ -228,7 +245,7 @@ export class BucketPolicyComponent implements OnInit {
     });
 
     console.log(this.setActionPermission);
-    
+
     this.bucketService
       .createBucketPolicy(
         this.bucketName,
@@ -239,11 +256,25 @@ export class BucketPolicyComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.notification.success('', 'Tạo mới Bucket Policy thành công');
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.create.bucket.policy.success')
+          );
+          this.isVisibleCreate = false;
+          this.isLoadingCreate = false;
+          this.isUserOther = false;
+          this.permission = '';
+          this.emailUser = '';
+          this.listActionPermission = [];
           this.searchBucketPolicy();
         },
         error: (e) => {
-          this.notification.error('', 'Tạo mới Bucket Policy không thành công');
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.create.bucket.policy.fail')
+          );
+          this.isVisibleCreate = false;
+          this.isLoadingCreate = false;
         },
       });
   }
@@ -256,18 +287,20 @@ export class BucketPolicyComponent implements OnInit {
     this.bucketService.getBucketPolicyDetail(sid, this.bucketName).subscribe({
       next: (data) => {
         console.log(data);
-        
-        this.bucketPolicyUpdate = data;
 
+        this.bucketPolicyUpdate = data;
         this.formEdit.controls.emailUser.setValue(data.subuser);
         this.formEdit.controls.permission.setValue(data.permission);
-        const actions = data.actions.map(item => item.split(':')[1])
+        const actions = data.actions.map((item) => item.split(':')[1]);
         this.formEdit.controls.listActionPermission.setValue(actions);
+
+        const typeUser = data.typeUser === 'SubUser' ? false : true;
+        this.formEdit.controls.isUserOther.setValue(typeUser);
       },
       error: (e) => {
         this.notification.error(
-          e.statusText,
-          'Lấy chi tiết Bucket Policy không thành công'
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.detail.bucket.policy.fail')
         );
       },
     });
@@ -278,10 +311,7 @@ export class BucketPolicyComponent implements OnInit {
   }
 
   handleOkUpdate() {
-
-    this.isVisibleUpdate = false;
-    console.log(this.formEdit.controls.listActionPermission.value);
-    
+    this.isLoadingUpdate = true;
     this.formEdit.controls.listActionPermission.value.forEach((e) => {
       if (e == 'selectAll') {
         this.setActionPermission.add('CreateBucket');
@@ -384,14 +414,21 @@ export class BucketPolicyComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.notification.success('', 'Chỉnh sửa Bucket Policy thành công');
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.update.bucket.policy.success')
+          );
+          this.isVisibleUpdate = false;
+          this.isLoadingUpdate = false;
           this.searchBucketPolicy();
         },
         error: (e) => {
           this.notification.error(
-            '',
-            'Chỉnh sửa Bucket Policy không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.update.bucket.policy.fail')
           );
+          this.isVisibleUpdate = false;
+          this.isLoadingUpdate = false;
         },
       });
   }
@@ -407,23 +444,38 @@ export class BucketPolicyComponent implements OnInit {
     this.isVisibleDelete = false;
   }
 
-  handleOkDelete() {   
+  handleOkDelete() {
+    this.isLoadingDelete = true;
     this.bucketService
       .deleteBucketPolicy(this.bucketName, this.bucketPolicyId)
       .subscribe({
         next: (data) => {
           console.log(data);
           if (data == 'Thao tác thành công') {
-            this.notification.success('', 'Xóa Bucket Policy thành công');
+            this.notification.success(
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.delete.bucket.policy.success')
+            );
             this.isVisibleDelete = false;
+            this.isLoadingDelete = false;
             this.searchBucketPolicy();
           } else {
-            this.notification.error('', 'Xóa Bucket Policy không thành công');
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.delete.bucket.policy.fail')
+            );
+            this.isVisibleDelete = false;
+            this.isLoadingDelete = false;
           }
         },
         error: (error) => {
           console.log(error.error);
-          this.notification.error('', 'Xóa Bucket Policy không thành công');
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.delete.bucket.policy.fail')
+          );
+          this.isVisibleDelete = false;
+          this.isLoadingDelete = false;
         },
       });
   }
@@ -434,6 +486,8 @@ export class BucketPolicyComponent implements OnInit {
     this.isVisibleJson = true;
     this.bucketService.getBucketPolicyDetail(sid, this.bucketName).subscribe({
       next: (data) => {
+        console.log(data);
+
         this.bucketPolicyDetail = data;
       },
       error: (e) => {
