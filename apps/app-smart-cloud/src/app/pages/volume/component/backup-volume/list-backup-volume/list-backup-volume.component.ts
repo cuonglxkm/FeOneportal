@@ -96,7 +96,12 @@ export class ListBackupVolumeComponent implements OnInit{
   }
 
   navigateToCreate(){
-    this.router.navigate(['/app-smart-cloud/backup-volume/create'])
+    if(this.typeVpc == 1) {
+      this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc']);
+    }
+    if(this.typeVpc == 0) {
+      this.router.navigate(['/app-smart-cloud/backup-volume/create/normal']);
+    }
   }
 
   ngOnInit() {

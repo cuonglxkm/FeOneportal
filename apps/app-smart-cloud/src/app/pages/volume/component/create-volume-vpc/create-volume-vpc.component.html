@@ -189,6 +189,7 @@
                 </ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">{{ 'volume.input.storage.required'|i18n }}
                 </ng-container>
+                <ng-container *ngIf="control.hasError('notEnough')">Dung lượng không đủ để tạo Volume. Vui lòng mua bổ sung dung lượng để quá trình không bị gián đoạn</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -324,7 +325,9 @@
           <nz-row>
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmCreate()"
-                      [disabled]="validateForm.invalid">
+                      [disabled]="validateForm.invalid ||
+                                  sizeInCloudProject == null ||
+                                  (remaining == 0) || (validateForm.controls.storage.value > remaining)">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
               </button>
