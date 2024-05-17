@@ -3,12 +3,18 @@ import { Router } from '@angular/router';
 import { VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { BaseResponse, NotificationService, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import {
+  BaseResponse,
+  NotificationService,
+  ProjectModel,
+  RegionModel
+} from '../../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-volume',
@@ -22,14 +28,14 @@ export class VolumeComponent implements OnInit {
 
   isLoading: boolean = false;
 
-  selectedValue: string = '';
+  selectedValue: string;
   customerId: number;
 
 
   value: string;
 
   options = [
-    { label: this.i18n.fanyi('app.status.all'), value: null },
+    { label: this.i18n.fanyi('app.status.all'), value: '' },
     { label: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
     { label: this.i18n.fanyi('app.status.error'), value: 'ERROR' },
     { label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED' }
@@ -57,6 +63,7 @@ export class VolumeComponent implements OnInit {
 
   isBegin: boolean = false;
 
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private volumeService: VolumeService,
@@ -69,26 +76,53 @@ export class VolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    setTimeout(() => {this.getListVolume(true);}, 2500)
+    setTimeout(() => {
+      this.getListVolume(true);
+    }, 2500);
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project?.type;
     this.isLoading = true;
-    setTimeout(() => {this.getListVolume(true);}, 2500)
+    setTimeout(() => {
+      this.getListVolume(true);
+    }, 2500);
   }
 
 
   onChange(value) {
     console.log('selected', value);
+
     this.selectedValue = value;
     this.getListVolume(false);
   }
 
   onInputChange(value) {
-    this.value = value;
-    this.getListVolume(false);
+    this.value = value.trim();
+    setTimeout(() => {
+      this.getListVolume(false);
+    }, 500);
+  }
+
+  get trimmedValue(): string {
+    return this.value;
+  }
+
+  set trimmedValue(value: string) {
+    this.value = value.trim();
+  }
+
+  focusOnSearch(event: KeyboardEvent): void {
+    event.preventDefault(); // Ngăn chặn hành vi mặc định của Enter nếu cần thiết
+    this.trimmedValue = this.trimmedValue.trim(); // Trim khoảng trắng đầu và cuối
+    this.performSearch();
+  }
+
+  performSearch(): void {
+    // Thực hiện tìm kiếm với giá trị đã được trim
+    console.log('Searching for:', this.trimmedValue);
+    // Thực hiện các hành động tìm kiếm khác
   }
 
   onPageSizeChange(value) {
@@ -109,6 +143,7 @@ export class VolumeComponent implements OnInit {
 
     this.volumeService.getVolumes(this.customerId, this.project,
       this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
+      .pipe(debounceTime(500))
       .subscribe(data => {
         if (data) {
           this.isLoading = false;
@@ -134,7 +169,7 @@ export class VolumeComponent implements OnInit {
         this.isLoading = false;
         this.response = null;
         console.log(error);
-        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
+        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
       });
   }
 
@@ -175,11 +210,11 @@ export class VolumeComponent implements OnInit {
   }
 
   navigateToCreateBackup(idVolume) {
-    if(this.typeVPC == 1) {
-      this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc', {volumeId: idVolume}]);
+    if (this.typeVPC == 1) {
+      this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc', { volumeId: idVolume }]);
     }
-    if(this.typeVPC == 0) {
-      this.router.navigate(['/app-smart-cloud/backup-volume/create/normal', {volumeId: idVolume}]);
+    if (this.typeVPC == 0) {
+      this.router.navigate(['/app-smart-cloud/backup-volume/create/normal', { volumeId: idVolume }]);
     }
 
 
@@ -200,6 +235,7 @@ export class VolumeComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     console.log('project', this.project);
+    this.selectedValue = this.options[0].value;
     this.customerId = this.tokenService.get()?.userId;
     this.volumeService.model.subscribe(data => {
       console.log(data);
@@ -225,7 +261,7 @@ export class VolumeComponent implements OnInit {
 
           this.response.records[foundIndex] = record;
 
-          this.getListVolume(false)
+          this.getListVolume(false);
           this.cdr.detectChanges();
         }
       }

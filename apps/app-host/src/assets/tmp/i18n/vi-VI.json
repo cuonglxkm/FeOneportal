@@ -1565,7 +1565,7 @@
   "app.status.low-renew": "Chậm gia hạn",
   "app.status.deleting": "Đang xóa",
   "app.status.init-failed": "Khởi tạo lỗi",
-  "app.status.suspend": "Tạm dừng",
+  "app.status.suspend": "Tạm ngưng",
   "app.status.error": "Lỗi",
 
   "validation.service.name-required": "Tên dịch vụ không được để trống",
@@ -2007,7 +2007,7 @@
   "volume.detach": "Gỡ Volume",
 
   "volume.placeholder.filter.status": "Tất cả trạng thái",
-  "volume.placeholder.filter.name": "Tìm kiếm tên...",
+  "volume.placeholder.filter.name": "Tìm kiếm theo tên volume",
   "volume.tooltip.title.filter.status": "Tìm kiếm theo trạng thái",
   "volume.tooltip.title.filter.img": "Tìm kiếm",
   "volume.tooltip.content.create.backup": "Tạo Backup",
