@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 import { Port } from '../../../../shared/models/vlan.model';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   templateUrl: './detail-port.component.html',
   styleUrls: ['./detail-port.component.less']
 })
-export class DetailPortComponent implements OnInit, OnDestroy {
+export class DetailPortComponent implements OnInit, OnDestroy, OnChanges {
   @Input() region: number;
   @Input() project: number;
   @Input() idNetwork: number;
@@ -39,6 +39,7 @@ export class DetailPortComponent implements OnInit, OnDestroy {
       if (reload) {
         setTimeout(() => {
           this.getVlanByNetworkId();
+          this.getPortByNetwork(this.networkCloudId);
         }, 500);
       }
     });
@@ -50,8 +51,9 @@ export class DetailPortComponent implements OnInit, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log('here');
-    if (changes.checkDelete) {
+    if (changes.checkDelete && changes.checkDelete.currentValue !== changes.checkDelete.previousValue) {
       setTimeout(() => {
+        this.getPortByNetwork(this.networkCloudId);
         this.getVlanByNetworkId();
       }, 2000);
     }
@@ -124,6 +126,7 @@ export class DetailPortComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     setTimeout(() => {
+      this.getPortByNetwork(this.networkCloudId);
       this.getVlanByNetworkId();
     }, 2000);
   }

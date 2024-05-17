@@ -73,17 +73,17 @@ export class DetailSubnetComponent implements OnInit, OnChanges {
       this.isLoading = false;
     }, error => {
       this.responseSubnet = null;
-      this.isLoading = false;
       this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
+      this.isLoading = false;
     });
-
-
   }
 
   getVlanByNetworkId() {
+    this.isLoading = true
     this.vlanService.getVlanByNetworkId(this.idNetwork).subscribe(data => {
       this.networkName = data.name;
       this.networkCloudId = data.cloudId
+      this.isLoading = false
     });
   }
 
@@ -99,18 +99,26 @@ export class DetailSubnetComponent implements OnInit, OnChanges {
     setTimeout(() => {
       this.vlanService.triggerReload();
       this.getSubnetByNetwork();
+      this.getPortByNetwork();
       this.getVlanByNetworkId();
-    }, 2000)
+    }, 500)
     // setTimeout(() => {this.getSubnetByNetwork();}, 2000)
     // window.location.reload()
   }
 
   networkCloudId: string = ''
+  listPort: any
+  getPortByNetwork() {
+    this.vlanService.getPortByNetwork(this.networkCloudId, this.region, 9999, 1, null).subscribe(data => {
+      console.log('get all port', data.records)
+      this.listPort = data
+    })
+  }
 
 
   ngOnInit() {
-    setTimeout(() => {this.getVlanByNetworkId();}, 2000)
+    this.getVlanByNetworkId()
 
-    setTimeout(() => {this.getSubnetByNetwork();}, 2000)
+   this.getSubnetByNetwork();
   }
 }

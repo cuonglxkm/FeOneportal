@@ -4,6 +4,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'one-portal-vlan-detail',
@@ -18,6 +19,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
 
   networkName: string;
 
+  isLoading: boolean = false;
   constructor(private router: Router,
               private route: ActivatedRoute,
               private vlanService: VlanService,
@@ -44,13 +46,18 @@ export class VlanDetailComponent implements OnInit, OnChanges {
   }
 
   getVlanByNetworkId() {
-    this.vlanService.getVlanByNetworkId(this.idNetwork).subscribe(data => {
+    this.isLoading = true
+    this.vlanService.getVlanByNetworkId(this.idNetwork).pipe(
+      debounceTime(500)
+    ).subscribe(data => {
       this.networkName = data.name
+      this.isLoading = false
     },error => {
       if(error.status == '404') {
         this.notification.error('', 'Network không tồn tại!')
         this.router.navigate(['/app-smart-cloud/vlan/network/list'])
       }
+      this.isLoading = false
     })
   }
   ngOnInit() {

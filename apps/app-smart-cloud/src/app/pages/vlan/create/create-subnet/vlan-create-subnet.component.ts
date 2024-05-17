@@ -267,7 +267,7 @@ export class VlanCreateSubnetComponent implements OnInit {
         this.notification.error(this.i18n.fanyi('app.status.fail'), error.statusText);
       } else {
         this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note62'));
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note62') + 'Dải IP đã tồn tại, vui lòng nhập dải khác');
 
       }
     });
