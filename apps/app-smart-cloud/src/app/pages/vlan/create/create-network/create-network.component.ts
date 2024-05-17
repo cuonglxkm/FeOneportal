@@ -131,11 +131,30 @@ export class CreateNetworkComponent implements OnInit {
       this.validateForm.get('gateway').reset();
     });
 
+    const nameNetworkInput = document.querySelector('input[formControlName="nameNetwork"]');
+    if (nameNetworkInput) {
+      nameNetworkInput.addEventListener('keydown', (event: KeyboardEvent) => {
+        const currentValue = this.validateForm.get('nameNetwork').value;
+        const cursorPosition = (event.target as HTMLInputElement).selectionStart;
+
+        // Ngăn việc xóa các ký tự trong 'vlan_'
+        if (event.key === 'Backspace' && cursorPosition <= 5) {
+          event.preventDefault();
+        } else if (event.key === 'Delete' && cursorPosition < 5) {
+          event.preventDefault();
+        }
+      });
+    }
+
     this.validateForm.get('nameNetwork').valueChanges.subscribe(value => {
-      if (!value.startsWith('vlan_')) {
-        this.validateForm.get('nameNetwork').setValue('vlan_' + value.replace(/^vlan_/i, ''), { emitEvent: false });
+      if (value !== null && value !== undefined && value !== '') {
+        if (!value.startsWith('vlan_')) {
+          // Nếu giá trị không bắt đầu bằng 'vlan_', đặt lại giá trị 'vlan_'
+          this.validateForm.get('nameNetwork').setValue('vlan_', { emitEvent: false });
+        }
       }
-    });
+    })
+
   }
 
   prefixValidator(): Validators {
@@ -175,7 +194,7 @@ export class CreateNetworkComponent implements OnInit {
       this.formCreateNetwork.regionId = this.region;
       this.formCreateNetwork.customerId = this.tokenService.get()?.userId;
       this.formCreateNetwork.subnetName = this.validateForm.controls.nameSubnet.value;
-      this.formCreateNetwork.gateway = this.validateForm.controls.gateway.value;
+      this.formCreateNetwork.gatewayIP = this.validateForm.controls.gateway.value;
       this.formCreateNetwork.dnsNameServer = null;
       // if(this.isInPurchasedSubnet())
       this.formCreateNetwork.allocationPool = this.validateForm.controls.allocationPool.value;
@@ -272,6 +291,7 @@ export class CreateNetworkComponent implements OnInit {
 
 
   ngOnInit() {
+
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
