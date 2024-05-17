@@ -23,7 +23,7 @@ import { FileSystemDetail } from 'src/app/shared/models/file-system.model';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
 
 @Component({
-  selector: 'one-portal-extend-file-system-snapshot',
+  selector: 'one-portal-edit-file-system-snapshot',
   templateUrl: './edit-file-system-snapshot.component.html',
   styleUrls: ['./edit-file-system-snapshot.component.less'],
 })
