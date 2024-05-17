@@ -79,7 +79,7 @@ export class EditKafkaComponent implements OnInit {
 
   updateDataForm() {
     this.myform.controls.serviceName.setValue(this.itemDetail.serviceName);
-    this.myform.controls.version.setValue(this.itemDetail.version);
+    // this.myform.controls.version.setValue(this.itemDetail.version);
     this.myform.controls.description.setValue(this.itemDetail.description);
     this.myform.controls.serviceName.disable();
   }
@@ -90,7 +90,10 @@ export class EditKafkaComponent implements OnInit {
         res => {
           if (res && res.code == 200) {
             this.listOfKafkaVersion = camelizeKeys(res.data) as KafkaVersion[];
-            this.currentVersion = this.listOfKafkaVersion.filter((e) => e.helmVersion == this.itemDetail.version)[0];
+            this.currentVersion = this.listOfKafkaVersion.filter((e) => e.apacheKafkaVersion == this.itemDetail.version)[0];
+            if (this.currentVersion) {
+              this.myform.controls.version.setValue(this.currentVersion.helmVersion);
+            }
           }
         }
       )

@@ -1281,7 +1281,7 @@
   "kafka.upgrade.ram-min": "Giá trị RAM tối thiểu 1 GB",
   "kafka.upgrade.ram-max": "Giá trị RAM tối đa 64 GB",
   "kafka.upgrade.cpu-min": "Giá trị CPU tối thiểu 1 vCPU",
-  "kafka.upgrade.cpu-max": "Giá trị CPU tối đa 16 vCPU",
+  "kafka.upgrade.cpu-max": "Giá trị CPU tối đa 32 vCPU",
   "kafka.upgrade.storage-min": "Giá trị Storage tối thiểu 1 GB",
   "kafka.upgrade.storage-max": "Giá trị Storage tối đa 2000 GB",
 

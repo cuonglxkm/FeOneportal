@@ -1394,7 +1394,7 @@
   "kafka.upgrade.ram-min": "The minimum RAM value is 1 GB",
   "kafka.upgrade.ram-max": "The maximum RAM value is 64 GB",
   "kafka.upgrade.cpu-min": "The minimum CPU value is 1 vCPU",
-  "kafka.upgrade.cpu-max": "The maximum CPU value is 16 vCPU",
+  "kafka.upgrade.cpu-max": "The maximum CPU value is 32 vCPU",
   "kafka.upgrade.storage-min": "The minimum Storage value is 1 GB",
   "kafka.upgrade.storage-max": "The maximum Storage value is 2000 GB",
 
