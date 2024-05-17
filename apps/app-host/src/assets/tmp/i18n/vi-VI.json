@@ -51,9 +51,6 @@
   "form.account.validate.phone":"Số điện thoại không hợp lệ!",
   "form.account.validate.address":"Tỉnh/Thành phố",
 
-
-
-
   "app.account.validation": "Vui lòng nhập đầy đủ thông tin",
   "app.account.form.success": "Cập nhật tài khoản thành công!",
   "app.account.form.fail": "Cập nhật tài khoản không thành công!",
@@ -184,6 +181,7 @@
   "app.usage": "Sử dụng",
   "app.name": "Tên",
   "app.snapshot.create": "Tạo Snapshot",
+  "app.guide.formula": "Hướng dẫn công thức",
 
   "app.ip.type": "Loại IP",
   "app.ip.address": "Địa chỉ IP",
@@ -908,12 +906,15 @@
   "app.order.createDate": "Ngày tạo",
   "app.button.createNew": "Tạo mới",
 
+
   "app.users.listUser": "Danh sách Users",
   "app.users.detail": "Chi tiết User",
   "app.users.search": "Tìm kiếm theo tên",
   "app.users.button.create": "Tạo mới",
   "app.users.nameUser": "Tên User",
   "app.users.groups": "Groups",
+  "app.users.listgroup":"Danh sách Groups",
+  "app.users.create.group":"Tạo mới Group",
   "app.users.group": "Group",
   "app.users.createDate": "Thời gian tạo",
   "app.users.button.create.user":"Tạo mới User",
@@ -996,10 +997,11 @@
   "app.user-group.groupParent": "Group cha",
 
   "app.user-group.deleteOne.title": "Xóa User Groups",
-  "app.user-group.deleteOne.des": "Bạn đang thực hiện xoá Groups",
-  "app.user-group.deleteOne.des2": "Việc thực hiện xoá Groups sẽ khiến tất cả người dùng trong nhóm này bị mất quyền (Permission của nhóm). Hành động này không thể được hoàn tác",
+  "app.user-group.deleteOne.des": "Bạn đang thực hiện xoá Group",
+  "app.user-group.deleteOne.des2": "Việc thực hiện xoá Group sẽ khiến tất cả người dùng trong nhóm này bị mất quyền (Permission của nhóm). Hành động này không thể được hoàn tác",
   "app.user-group.deleteOne.confirm": "Để thực hiện xoá Group, vui lòng nhập tên Group để xác nhận.",
   "app.user-group.deleteOne.delete": "Xóa User Group",
+  "app.user-group.deleteOne":"Xoá Group",
 
   "app.user-group.deleteOne.success": "thành công",
   "app.user-group.deleteOne.fail": "thất bại",
@@ -1015,18 +1017,19 @@
   "app.user-group.deleteMany.fail": "Xóa User Group thất bại.",
   "app.user-group.deleteMany.fail2": "Không thể xóa User Group.",
 
-  "app.breadcrumb.create-user-groups": "Khởi tạo User Group",
+  "app.breadcrumb.create-user-groups": "Khởi tạo Group",
   "app.create-user-groups.info":"Thông tin của Group",
   "app.create-user-groups.nameGroup": "Tên Group",
   "app.create-user-groups.nameGroup.alert": "Tối đa 128 ký tự. Sử dụng các ký tự chữ và số và '+=,.@-_'.",
   "app.create-user-groups.addUser": "Thêm User vào Group",
   "app.create-user-groups.optional": "Không bắt buộc",
-  "app.create-user-groups.name": "Tên",
+  "app.create-user-groups.name": "Tên User",
   "app.create-user-groups.policiesConfig": "Thiết lập Policies",
-  "app.create-user-groups.modal.title": "Xác nhận tạo User Groups",
+  "app.create-user-groups.modal.title": "Xác nhận tạo Group",
   "app.create-user-groups.modal.des": "Để thực hiện tạo mới Group, vui lòng chọn “Đồng ý” để xác nhận.",
   "app.create-user-groups.modal.alert": "Bạn đang thực hiện tạo Group",
   "app.create-user-groups.placeholder":"Nhập tên của Group để định nghĩa Group",
+  "app.create-user-groups.createNew":"Tạo mới Group",
   "app.button.agree": "Đồng ý",
   "app.user-group.noti.success": "New group created successfully",
   "app.user-group.noti.fail": "New group created failed",

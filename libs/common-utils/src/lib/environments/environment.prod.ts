@@ -9,5 +9,4 @@ export const environment = {
     refreshTokenType: 'auth-refresh'
   },
   baseUrl: 'https://api.onsmartcloud.com',
-  unitOfMeasureVpn: 'vpns2s',
 } as Environment;

@@ -1,3 +1,4 @@
+@import '../../../../../assets/size.less';
 nz-content {
   padding-top: 0;
   padding-bottom: 24px;
@@ -21,3 +22,21 @@ nz-content {
   background: #999999;
 }
 
+::ng-deep .ant-card-head-title{
+  font-size: @subtitle-fontsize ;
+  color: #333;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: .1px;
+
+
+}
+::ng-deep .ant-tabs-tab-btn{
+  font-size: @label-fontsize;
+}
+.subtitle-fontsize{
+  font-size: @subtitle-fontsize;
+}
+.activeDelete{
+  color: #EA3829;
+}

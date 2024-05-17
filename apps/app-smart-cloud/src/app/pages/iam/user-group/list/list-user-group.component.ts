@@ -81,14 +81,19 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     const listOfEnabledData = this.listOfCurrentPageData;
     this.checked = listOfEnabledData.every(({name}) => this.setOfCheckedId.has(name));
     this.indeterminate = listOfEnabledData.some(({name}) => this.setOfCheckedId.has(name)) && !this.checked;
+    
+    
   }
 
   updateCheckedSet(name: string, checked: boolean): void {
     if (checked) {
       this.setOfCheckedId.add(name);
+      
+     
     } else {
       this.setOfCheckedId.delete(name);
     }
+    console.log("checked",  this.setOfCheckedId.size)
   }
 
   onItemChecked(name: string, checked: boolean): void {
@@ -103,15 +108,19 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
   }
 
   showModalDelete() {
-    this.deleteList = this.collection.records.filter(data => this.setOfCheckedId.has(data.name))
-    console.log('delete', this.deleteList)
+    this.deleteList = this.collection.records.filter(data => 
+      this.setOfCheckedId.has(data.name)
+      // console.log("this.setOfCheckedId.has(data.name)", data)
+    )
+    console.log('delete', this.deleteList.length)
   }
 
   handleOkDelete() {
     console.log('value')
     this.deleteList = []
     this.getData()
-
+    var element = document.getElementById("activeDelete");
+    element.classList.remove("activeDelete");
   }
 
   handleCancelDelete() {
