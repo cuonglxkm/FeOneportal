@@ -4,7 +4,7 @@
       <nz-col nzSpan="12">
         <nz-form-item>
           <nz-form-label>
-            <span>Tên lịch Backup</span>
+            <span>{{'schedule.backup.label.name' | i18n}}</span>
             <span style="color: rgba(252, 16, 16, 1);">*</span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -13,20 +13,16 @@
                      formControlName="name"
                      style="width: 100%;"/>
             <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">Tên gồm 255 ký tự viết liền không dấu
-                cách
-              </ng-container>
-              <ng-container *ngIf="control.hasError('invalidCharacters')"> Tên không chứa ký tự đặc biệt
-                ngoại trừ dấu “_”
-              </ng-container>
-              <ng-container *ngIf="control.hasError('duplicateName')"> Tên không được trùng với tên lịch đã có</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'validation.info.required' | i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">{{'schedule.backup.validate1' | i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('invalidCharacters')">{{'schedule.backup.validate2' | i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('duplicateName')">{{'schedule.backup.validate3' | i18n}}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>
-            <span>Số bản lưu trữ Backup</span>
+            <span>{{'schedule.backup.number.save' | i18n}}</span>
             <span style="color: rgba(252, 16, 16, 1);">*</span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="maxBackupTpl">
@@ -36,19 +32,19 @@
                              nzMin="1"
                              nzStep="1"/>
             <ng-template #maxBackupTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Tên lịch Backup không được để trống</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'schedule.backup.name.empty' | i18n}}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>
-            <span>Gói Backup</span>
+            <span>{{'app.backup.volume.backup.package' | i18n}}</span>
             <span style="color: rgba(252, 16, 16, 1);">*</span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="backupPackageErrorTpl">
             <nz-select [nzLoading]="isLoadingPackage"
                        formControlName="backupPackage"
-                       [nzPlaceHolder]="'Gói backup'"
+                       nzPlaceHolder="{{'app.backup.volume.backup.package' | i18n}}"
                        nzSize="large"
                        style="border-radius: 8px;">
               <nz-option *ngFor="let index of backupPackages"
@@ -56,14 +52,14 @@
                          [nzValue]="index.id"></nz-option>
             </nz-select>
             <ng-template #backupPackageErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Tên lịch Backup không được để trống</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'schedule.backup.name.empty' | i18n}}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label nzFor="description">
             <div class="label">
-              <span>Mô tả</span>
+              <span>{{'app.service.description' | i18n}}</span>
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
@@ -72,8 +68,8 @@
                       id="description"
                       [nzAutosize]="{ minRows: 6, maxRows: 6 }"></textarea>
             <ng-template #descriptionErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-              <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 500 kí tự</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'validation.info.required' | i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('maxlength')">{{'schedule.backup.validate4' | i18n}}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -82,14 +78,14 @@
         <nz-form-item>
           <nz-form-label nzFor="instanceId">
             <div class="label">
-              <span>Chọn máy ảo</span>
+              <span>{{'volume.modal.attach.title' | i18n}}</span>
               <span style="color: rgba(252, 16, 16, 1);">*</span>
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="instanceErrorTpl">
             <nz-select *ngIf="instanceId != null" formControlName="instanceId"
                        [nzSize]="'large'"
-                       [nzPlaceHolder]="'Chọn máy ảo'"
+                       nzPlaceHolder="{{'volume.modal.attach.title' | i18n}}"
                        [nzShowSearch]="false"
                        [nzLoading]="isLoadingInstance"
                        (ngModelChange)="selectInstanceChange($event)">
@@ -97,7 +93,7 @@
             </nz-select>
             <nz-select *ngIf="instanceId == null" formControlName="instanceId"
                        [nzSize]="'large'"
-                       [nzPlaceHolder]="'Chọn máy ảo'"
+                       nzPlaceHolder="{{'volume.modal.attach.title' | i18n}}"
                        [nzShowSearch]="false"
                        [nzLoading]="isLoadingInstance"
                        (ngModelChange)="selectInstanceChange($event)">
@@ -106,14 +102,14 @@
                          [nzValue]="i.id"></nz-option>
             </nz-select>
             <ng-template #instanceErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'validation.info.required' | i18n}}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label nzFor="backupMode">
             <div class="label">
-              <span>Chế độ Backup</span>
+              <span>{{'schedule.backup.mode' | i18n}}</span>
               <span style="color: rgba(252, 16, 16, 1);">*</span>
             </div>
           </nz-form-label>
@@ -121,7 +117,7 @@
             <nz-select
               formControlName="backupMode" id="backupMode"
               nzSize="large"
-              [nzPlaceHolder]="'Chế độ Backup'"
+              nzPlaceHolder="{{'schedule.backup.mode' | i18n}}"
               [nzShowSearch]="false"
               (ngModelChange)="modeChange($event)">
               <nz-option *ngFor="let i of mode"
@@ -129,23 +125,23 @@
                          [nzValue]="i.value"/>
             </nz-select>
             <ng-template #backupModeErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'validation.info.required' | i18n}}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>
-            <span>Thời gian thực hiện</span>
+            <span>{{'app.cluster.action-time' | i18n}}</span>
             <span style="color: rgba(252, 16, 16, 1);">*</span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
             <nz-time-picker formControlName=times
                             id="times"
                             nzSize="large"
-                            [nzPlaceHolder]="'Chọn thời gian'"
+                            nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
                             style="width: 100%; border-radius: 8px;"></nz-time-picker>
             <ng-template #timeErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'validation.info.required' | i18n}}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -153,7 +149,7 @@
           <nz-form-item>
             <nz-form-label nzFor="months">
               <div class="label">
-                <span>Số tháng thực hiện</span>
+                <span>{{'app.number.of.month.executed' | i18n}}</span>
                 <span style="color: rgba(252, 16, 16, 1);">*</span>
               </div>
             </nz-form-label>
@@ -166,16 +162,16 @@
                 nzMax="24"
                 nzStep="1"/>
               <ng-template #monthsErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 24</ng-container>
-                <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 24</ng-container>
-                <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 24</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{'schedule.backup.0.to.24' | i18n}}</ng-container>
+                <ng-container *ngIf="control.hasError('max')">{{'schedule.backup.0.to.24' | i18n}}</ng-container>
+                <ng-container *ngIf="control.hasError('min')">{{'schedule.backup.0.to.24' | i18n}}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label nzFor="date">
               <div class="label">
-                <span>Ngày thực hiện</span>
+                <span>{{'app.execution.date' | i18n}}</span>
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
@@ -189,9 +185,9 @@
                 nzMax="31"
                 nzStep="1"/>
               <ng-template #dateErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 31</ng-container>
-                <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 31</ng-container>
-                <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 31</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{'schedule.backup.0.to.31' | i18n}}</ng-container>
+                <ng-container *ngIf="control.hasError('max')">{{'schedule.backup.0.to.31' | i18n}}</ng-container>
+                <ng-container *ngIf="control.hasError('min')">{{'schedule.backup.0.to.31' | i18n}}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -200,14 +196,14 @@
           <nz-form-item>
             <nz-form-label nzFor="numberOfWeek">
               <div class="label">
-                <span>Số tuần thực hiện</span>
+                <span>{{'app.number.of.week.executed' | i18n}}</span>
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-select
                 formControlName="numberOfWeek" id="numberOfWeek"
-                [nzPlaceHolder]="'Số tuần thực hiện'"
+                nzPlaceHolder="{{'app.number.of.week.executed' | i18n}}"
                 [nzShowSearch]="false"
                 nzSize="large"
                 [(ngModel)]="numberOfWeekChangeSelected"
@@ -222,14 +218,14 @@
           <nz-form-item>
             <nz-form-label nzFor="daysOfWeek">
               <div class="label">
-                <span>Chọn thứ</span>
+                <span>{{'schedule.backup.day.select' | i18n}}</span>
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="daysOfWeekErrorTpl">
               <nz-select
                 formControlName="daysOfWeek" id="daysOfWeek"
-                [nzPlaceHolder]="'Chọn thứ'"
+                nzPlaceHolder="{{'schedule.backup.day.select' | i18n}}"
                 nzSize="large"
                 [nzShowSearch]="false">
                 <nz-option
@@ -238,7 +234,7 @@
                   [nzValue]="i.value"/>
               </nz-select>
               <ng-template #daysOfWeekErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập ngày</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{'schedule.backup.press.date' | i18n}}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -247,7 +243,7 @@
           <nz-form-item>
             <nz-form-label nzFor="daysOfWeekMultiple">
               <div class="label">
-                <span>Chọn thứ</span>
+                <span>{{'schedule.backup.day.select' | i18n}}</span>
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
@@ -256,7 +252,7 @@
                 formControlName="daysOfWeekMultiple" id="daysOfWeekMultiple"
                 nzMode="multiple"
                 nzSize="large"
-                [nzPlaceHolder]="'Chọn thứ'"
+                nzPlaceHolder="{{'schedule.backup.day.select' | i18n}}"
                 [nzShowSearch]="false">
                 <nz-option
                   *ngFor="let i of daysOfWeek"
@@ -264,7 +260,7 @@
                   [nzValue]="i.value"/>
               </nz-select>
               <ng-template #daysOfWeekErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập ngày</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{'schedule.backup.press.date' | i18n}}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -272,13 +268,13 @@
         <nz-form-item>
           <nz-form-label nzFor="listAttachedVolume">
             <div class="label">
-              <span>Chọn Volume gắn ngoài cần backup</span>
+              <span>{{'schedule.backup.select.volume.backup' | i18n}}</span>
             </div>
           </nz-form-label>
           <nz-form-control>
             <nz-select id="volumeToBackupIds"
                        formControlName="volumeToBackupIds"
-                       [nzPlaceHolder]="'Volume gắn ngoài'"
+                       nzPlaceHolder="{{'app.info.backup.vm.external.volume' | i18n}}"
                        nzMode="multiple"
                        nzSize="large"
                        [nzShowSearch]="false">
@@ -291,12 +287,12 @@
     <nz-form-item nzAlign="bottom" nzJustify="end" style="margin-top: 30px">
       <nz-space nzSize="middle">
         <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-back">
-          <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+          <span nz-icon nzType="close" nzTheme="outline"></span>{{'app.button.cancel' | i18n}}
         </button>
         <nz-form-control *nzSpaceItem>
           <button nz-button [nzLoading]="isLoading" nzType="primary"
                   class="button-create" [disabled]="!validateForm.valid">
-            <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+            <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm' | i18n}}
           </button>
         </nz-form-control>
       </nz-space>

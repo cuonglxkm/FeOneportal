@@ -6,10 +6,10 @@ import {
   FormSearchScheduleBackup
 } from '../../../shared/models/schedule.model';
 import { ScheduleService } from '../../../shared/services/schedule.service';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-list-schedule-backup',
@@ -24,10 +24,10 @@ export class ListScheduleBackupComponent implements OnInit {
   value?: string;
 
   status = [
-    { label: 'Tất cả', value: 'all' },
-    { label: 'Hoạt động', value: 'ACTIVE' },
-    { label: 'Gián đoạn', value: 'DISABLED' },
-    { label: 'Tạm dừng', value: 'PAUSED' }
+    { label: this.i18n.fanyi("app.order.status.All"), value: 'all' },
+    { label: this.i18n.fanyi("app.activity"), value: 'ACTIVE' },
+    { label: this.i18n.fanyi("app.status.not.done"), value: 'DISABLED' },
+    { label: this.i18n.fanyi("app.status.suspend"), value: 'PAUSED' }
   ];
 
   listBackupSchedule: BackupSchedule[] = [];
@@ -48,6 +48,7 @@ export class ListScheduleBackupComponent implements OnInit {
   isBegin: boolean = false;
 
   constructor(private router: Router,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private backupScheduleService: ScheduleService) {
   }
 

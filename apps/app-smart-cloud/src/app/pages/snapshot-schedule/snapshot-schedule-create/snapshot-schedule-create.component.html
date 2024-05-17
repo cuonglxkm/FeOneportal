@@ -46,7 +46,7 @@
   <div nz-row [nzGutter]="16">
     <div nz-col [nzSpan]="18" class="gutter-row">
   <nz-card [nzBordered]="false" style="border-radius: 8px">
-    
+
     <div style="margin-bottom: 20px" class="text-card-header">
       Thông tin lịch Snapshot
     </div>
@@ -84,7 +84,7 @@
             <nz-form-item>
               <nz-form-control nzErrorTip="Volumn không được để trống">
               <nz-form-label
-                >Chọn Volume (<span class="text-red">*</span>)</nz-form-label
+                >{{'schedule.backup.volume.select' | i18n}} (<span class="text-red">*</span>)</nz-form-label
               >
               <nz-select
                 nzSize="default"

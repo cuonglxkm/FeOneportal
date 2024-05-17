@@ -52,8 +52,8 @@
                 <span>{{ 'app.protocol' | i18n }} (<span style="color: red;">*</span>) </span>
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-radio-group [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}" nzSize="large">
-                  <label nz-radio nzValue="HTTP">TERMINATED_HTTPS</label>
+                <nz-radio-group [disabled]="true" [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}" nzSize="large">
+                  <label nz-radio nzValue="HTTP">HTTP</label>
                   <label nz-radio nzValue="TCP">TCP</label>
                   <label nz-radio nzValue="TERMINATED_HTTPS">TERMINATED_HTTPS</label>
                 </nz-radio-group>
