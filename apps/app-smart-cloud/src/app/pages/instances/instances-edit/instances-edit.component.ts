@@ -789,12 +789,8 @@ export class InstancesEditComponent implements OnInit {
       this.instanceResize.cpu = this.configGPU.CPU + this.instancesModel.cpu;
       this.instanceResize.storage =
         this.configGPU.storage + this.instancesModel.storage;
-      if (this.instancesModel.gpuCount != null) {
-        this.instanceResize.gpuCount =
-          this.configGPU.GPU + this.instancesModel.gpuCount;
-      } else {
-        this.instanceResize.gpuCount = this.configGPU.GPU;
-      }
+      this.instanceResize.gpuCount =
+        this.configGPU.GPU + this.instancesModel.gpuCount;
       if (this.configGPU.gpuOfferId) {
         this.instanceResize.gpuType = this.listGPUType.filter(
           (e) => e.id == this.configGPU.gpuOfferId

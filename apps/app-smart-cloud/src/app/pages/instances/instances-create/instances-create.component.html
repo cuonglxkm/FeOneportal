@@ -954,7 +954,10 @@
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 >
-                  <nz-option [nzLabel]="'app.do.not.use'" [nzValue]="''" />
+                  <nz-option
+                    [nzLabel]="'app.do.not.use' | i18n"
+                    [nzValue]="''"
+                  />
                   <nz-option
                     *ngFor="let i of listVlanNetwork"
                     [nzLabel]="i.name"
