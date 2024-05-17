@@ -31,7 +31,7 @@
             alt=""
           /></nz-form-label>
           <nz-form-control>
-            <input nz-input placeholder="{{ 'project.note33' | i18n }}" style="width: 100%"
+            <input class="input-custom" nz-input placeholder="{{ 'project.note33' | i18n }}" style="width: 100%"
                    formControlName="name">
           </nz-form-control>
         </nz-form-item>
@@ -56,7 +56,6 @@
                       border: activeNoneVpc
                     ? '1px solid #0066B3'
                     : '1px solid #DADADA',
-                    height: cardHeight,
                   }">
                   <nz-row nzGutter="16">
                     <nz-col nzSpan="20">
@@ -93,7 +92,7 @@
                       border: activeVpc
                     ? '1px solid #0066B3'
                     : '1px solid #DADADA',
-                    height: cardHeight,
+                    
                   }">
                   <nz-row nzGutter="16">
                     <nz-col nzSpan="20">

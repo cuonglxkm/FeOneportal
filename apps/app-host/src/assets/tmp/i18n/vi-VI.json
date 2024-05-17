@@ -1896,6 +1896,8 @@
   "project.note3": "Tạo dự án",
   "project.note4": "Dự án VPC",
   "project.note5": "Dự án thường",
+  "project.status.enable": "Đang hoạt động",
+  "project.status.delete": "Đã lập lịch xóa tự động",
   "project.default": "Dự án mặc định",
   "project.note6": "Khách hàng có thể khởi tạo một dự án thường hoặc dự án VPC -cung cấp trọn gói hạ tầng tính toán, lưu trữ và network cho phép Khách hàng tự thiết lập trung tâm dữ liệu ảo hóa trên VNPT Cloud.",
   "project.note7": "Hoặc đọc thêm về quản lý dự án",
