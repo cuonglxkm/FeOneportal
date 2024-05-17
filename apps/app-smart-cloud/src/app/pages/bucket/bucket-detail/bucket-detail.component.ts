@@ -19,6 +19,10 @@ import { I18NService } from '@core';
 import * as JSZip from 'jszip';
 import mime from 'mime';
 import { forkJoin, of } from 'rxjs';
+import { BaseService } from 'src/app/shared/services/base.service';
+
+
+
 
 
 @Component({
@@ -26,7 +30,7 @@ import { forkJoin, of } from 'rxjs';
   templateUrl: './bucket-detail.component.html',
   styleUrls: ['./bucket-detail.component.less'],
 })
-export class BucketDetailComponent implements OnInit {
+export class BucketDetailComponent extends BaseService implements OnInit {
   listOfData: ObjectObjectStorageModel[];
   listOfDataVersioning: ObjectObjectStorageModel[];
   dataAction: ObjectObjectStorageModel;
@@ -134,7 +138,9 @@ export class BucketDetailComponent implements OnInit {
     private notification: NzNotificationService,
     private clipboard: Clipboard,
     private modalService: NzModalService
-  ) {}
+  ) {
+    super()
+  }
 
   ngOnInit(): void {
     this.loadBucket();
@@ -990,7 +996,7 @@ export class BucketDetailComponent implements OnInit {
           const xhr = new XMLHttpRequest();
           xhr.open(
             'POST',
-            'https://api-dev.onsmartcloud.com/provisions/object-storage/CompleteMultipartUpload',
+            this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CompleteMultipartUpload',
             true
           );
           xhr.setRequestHeader(
@@ -1047,7 +1053,7 @@ export class BucketDetailComponent implements OnInit {
             partNumber: index.toString(),
             uploadId: upload_id,
             expiryTime: addDays(new Date(), 1),
-            urlOrigin: 'https://oneportal-dev.onsmartcloud.com',
+            urlOrigin: 'https://oneportal.onsmartcloud.com',
           };
 
           this.service.getSignedUrl(data).subscribe(
@@ -1127,7 +1133,7 @@ export class BucketDetailComponent implements OnInit {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
           expiryTime: addDays(this.date, 1),
-          urlOrigin: 'https://oneportal-dev.onsmartcloud.com',
+          urlOrigin: 'https://oneportal.onsmartcloud.com',
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
