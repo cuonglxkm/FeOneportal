@@ -70,7 +70,7 @@
         <nz-form-item>
           <nz-form-label [nzSpan]="24">{{ 'app.cluster.description' | i18n }}</nz-form-label>
           <nz-form-control [nzErrorTip]="descriptionErrorTpl">
-            <textarea formControlName="description" nz-input rows="3" [placeholder]="'cluster.placeholder.description' | i18n" nzSize="large"></textarea>
+            <textarea formControlName="description" nz-input rows="5" [placeholder]="'cluster.placeholder.description' | i18n" nzSize="large"></textarea>
           </nz-form-control>
           <ng-template #descriptionErrorTpl let-control>
             <ng-container *ngIf="control.hasError('maxlength')">

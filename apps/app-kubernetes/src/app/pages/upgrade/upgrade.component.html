@@ -1,4 +1,5 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Nâng cấp dịch vụ: ' + detailCluster?.clusterName">
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+  [title]="('app.cluster.upgrade-service' | i18n) + ': ' + detailCluster?.clusterName">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>

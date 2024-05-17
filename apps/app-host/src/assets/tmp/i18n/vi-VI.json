@@ -1446,7 +1446,7 @@
   "app.cluster.sg-name": "Tên",
   "app.cluster.new-inbound": "Thêm mới Inbound",
   "app.cluster.new-outbound": "Thêm mới Outbound",
-  "": "Xóa Inbound",
+  "app.cluster.delete-inbound": "Xóa Inbound",
   "app.cluster.delete-outbound": "Xóa Outbound",
   "app.cluster.lock-rule": "Không thể xóa rule này",
   "app.cluster.confirm.delete-inbound": "Bạn có chắc chắn muốn xóa Inbound không?",
@@ -1466,6 +1466,7 @@
   "app.cluster.vat-cost-1": "Đã bao gồm {{vat}}% VAT",
   "app.cluster.vat-cost-2": "Chi phí VAT ({{vat}}%)",
   "app.cost.month": "Chi phí {{month}} tháng",
+  "app.cluster.edit": "Chỉnh sửa dịch vụ",
 
   "cluster.validate.required": "Không được để trống!",
   "cluster.placeholder.cluster-name": "Nhập tên cluster",
