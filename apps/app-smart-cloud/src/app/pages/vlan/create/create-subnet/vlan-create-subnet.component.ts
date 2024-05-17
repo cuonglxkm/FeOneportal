@@ -289,7 +289,7 @@ export class VlanCreateSubnetComponent implements OnInit {
         // const ipAddresses = ipRange.split(',').map(ip => ip.trim());
 
         if(!this.validateForm.controls.disableGatewayIp.value) {
-          this.validateForm.controls.allocationPool.setValue(this.gateway)
+          this.validateForm.controls.gateway.setValue(this.gateway)
         }
 
         this.validateForm.controls.allocationPool.setValue(this.pool)
