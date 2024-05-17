@@ -697,11 +697,8 @@
   (nzOnCancel)="handleCancelShowModalUpgrade()">
   <div *nzModalContent>
     <ng-container *ngIf="detailCluster.upgradeVersion?.length > 0; else noAvailableVersionTpl">
-      <nz-alert nzType="warning" [nzDescription]="upgradeWarning" nzShowIcon></nz-alert>
-      <ng-template #upgradeWarning>
-        <p class="description-info">{{ 'app.cluster.upgrade-version-description-1' | i18n }}</p>
-        <p class="description-info">{{ 'app.cluster.upgrade-version-description-2' | i18n }}</p>
-      </ng-template>
+      <p class="description-info">{{ 'app.cluster.upgrade-version-description-1' | i18n }}</p>
+      <!-- <p class="description-info">{{ 'app.cluster.upgrade-version-description-2' | i18n }}</p> -->
       <div class="mt-3">
         <nz-select [nzPlaceHolder]="'app.cluster.select-version' | i18n" [(ngModel)]="upgradeVersionCluster"
           class="w-100" nzSize="large">
@@ -728,13 +725,12 @@
         ></nz-alert>
 
         <ng-template #msgTpl>
-          <span class="description-info">Quý khách lưu ý</span>:
+          <span class="description-info">{{ 'app.version.note-title' | i18n }}</span>:
         </ng-template>
         <ng-template #desTpl>
-          <div>Việc thay đổi controlplane có thể khiến dịch vụ gặp gián đoạn tạm thời khiến bạn không thể sửa cluster config.</div>
-          <div>Việc cập nhật này không ảnh hưởng đến hoạt động của worker node, nơi nhận workload.
-            Hoạt động này sẽ bắt đầu ngay lập tức và không thể quay trở lại phiên bản cũ.</div>
-          <div>Hãy đọc cẩn thận <a href="https://kubernetes.io/releases/" target="_blank">K8S release note</a></div>
+          <div>{{ 'app.cluster.warning-upgrade-1' | i18n }}</div>
+          <div>{{ 'app.cluster.warning-upgrade-2' | i18n }}</div>
+          <div>{{ 'app.cluster.warning-upgrade-3' | i18n }} <a href="https://kubernetes.io/releases/" target="_blank">K8S release note</a></div>
         </ng-template>
         <ng-template #customIconTemplate>
           <span nz-icon>

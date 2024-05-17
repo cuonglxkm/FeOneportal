@@ -1368,6 +1368,9 @@
   "app.cluster.cancel-desciption-1": "Thanh toán của bạn đang được thực hiện, nếu bạn thoát khỏi trang này, giao dịch sẽ bị hủy bỏ.",
   "app.cluster.cancel-desciption-2": "Bạn có chắc chắn muốn thoát khỏi trang này?",
   "app.cluster.upgrade-note": "Khách hàng chỉ có thể nâng cấp cấu hình lên cao hơn mức hiện tại đang sử dụng.",
+  "app.cluster.warning-upgrade-1": "Việc thay đổi controlplane có thể khiến dịch vụ gặp gián đoạn tạm thời và không thể sửa cluster config.",
+  "app.cluster.warning-upgrade-2": "Để đảm bảo an toàn, xin hãy thực hiện backup dữ liệu. Hoạt động này sẽ bắt đầu ngay lập tức và không thể quay trở lại phiên bản cũ.",
+  "app.cluster.warning-upgrade-3": "Vui lòng đọc thêm thông tin tại",
 
   "cluster.status.not-yet-extend": "Chưa gia hạn",
   "cluster.status.running": "Đang hoạt động",
@@ -1469,6 +1472,7 @@
   "app.cluster.edit": "Chỉnh sửa dịch vụ",
   "app.version.current": "Đang dùng",
   "app.version.arrangement": "Điều khoản dịch vụ",
+  "app.version.note-title": "Quý khách lưu ý",
 
   "cluster.validate.required": "Không được để trống!",
   "cluster.placeholder.cluster-name": "Nhập tên cluster",

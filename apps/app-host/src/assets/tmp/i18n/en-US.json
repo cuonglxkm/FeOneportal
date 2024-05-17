@@ -1477,6 +1477,9 @@
   "app.cluster.cancel-desciption-1": "Your payment is being processed. If you leave this page, the transaction will be canceled.",
   "app.cluster.cancel-desciption-2": "Are you sure you want to leave this page?",
   "app.cluster.upgrade-note": "Customers can only upgrade configurations to higher levels than the current usage level.",
+  "app.cluster.warning-upgrade-1": "Changing the control plane may cause temporary service disruptions and prevent cluster configuration changes.",
+  "app.cluster.warning-upgrade-2": "To ensure data safety, please perform a data backup. This operation will start immediately and it will not be possible to revert to previous versions.",
+  "app.cluster.warning-upgrade-3": "Please read more information at",
 
   "cluster.status.not-yet-extend": "Not Extended",
   "cluster.status.running": "Running",
@@ -1578,6 +1581,7 @@
   "app.cluster.edit": "Edit service",
   "app.version.current": "Current",
   "app.version.arrangement": "Terms of Service",
+  "app.version.note-title": "Please note",
 
   "cluster.validate.required": "Cannot be left empty!",
   "cluster.placeholder.cluster-name": "Enter cluster name",
