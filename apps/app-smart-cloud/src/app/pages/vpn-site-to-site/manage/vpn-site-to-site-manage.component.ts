@@ -18,7 +18,7 @@ export class VpnSiteToSiteManage {
   projectObject: any;
   isBegin: boolean = false;
   isLoading: boolean = false
-  response: VpnSiteToSiteDTO
+  response: any
   isVisibleDelete: boolean = false;
 
   constructor(
@@ -35,7 +35,6 @@ export class VpnSiteToSiteManage {
   projectChanged(project: ProjectModel) {
     this.projectObject = project;
     this.project = project.id;
-    console.log(this.project);
     this.getData(true)
   }
   
@@ -55,7 +54,7 @@ export class VpnSiteToSiteManage {
       .subscribe(data => {
         if(data){
           this.isLoading = false
-          this.response = data
+          this.response = data.body
           console.log(this.response);
           
         }
@@ -65,7 +64,7 @@ export class VpnSiteToSiteManage {
     }, error => {
       this.isLoading = false;
       this.response = null;
-      console.log(this.response);
+      console.log(error);
       if (isBegin) {
         this.isBegin = this.response ? false : true;
       }
