@@ -187,7 +187,7 @@ export class ClusterComponent implements OnInit {
 
           // select latest version of kubernetes
           const len = this.listOfK8sVersion?.length;
-          const latestVersion: K8sVersionModel = this.listOfK8sVersion?.[len - 1];
+          const latestVersion: K8sVersionModel = this.listOfK8sVersion?.[0];
           this.myform.get('kubernetesVersion').setValue(latestVersion?.k8sVersion);
         } else {
           this.notificationService.error("Thất bại", r.message);

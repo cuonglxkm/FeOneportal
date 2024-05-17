@@ -1,6 +1,7 @@
 <ng-container *ngIf="detailCluster; else loadingTpl">
   <button nz-button nzType="primary" class="mb-3" [routerLink]="'/app-kubernetes/edit/' + serviceOrderCode">
-    <span nz-icon nzType="edit" nzTheme="outline"></span>
+    <img src="assets/imgs/edit-1.svg" class="icon-action" (click)="onDestroy()"
+      [nz-tooltip]="'app.text.edit' | i18n" [routerLink]="'/app-kubernetes/edit/' + serviceOrderCode" />
     {{ 'app.text.edit' | i18n }}
   </button>
   <button nz-button nzType="primary" class="mb-3"
@@ -145,7 +146,7 @@
 
                       <ng-container *ngIf="detailCluster.apiEndpoint">
                         <button nz-button nzType="text" (click)="handleCopyAPIEndpoint()" class="action-icon borderless"
-                          nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip>
+                          [nzTooltipTitle]="'app.cluster.copy' | i18n" nzTooltipPlacement="top" nz-tooltip>
                           <span nz-icon>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                               xmlns="http://www.w3.org/2000/svg">
@@ -701,12 +702,52 @@
         <p class="description-info">{{ 'app.cluster.upgrade-version-description-1' | i18n }}</p>
         <p class="description-info">{{ 'app.cluster.upgrade-version-description-2' | i18n }}</p>
       </ng-template>
-      <div class="mt-5">
+      <div class="mt-3">
         <nz-select [nzPlaceHolder]="'app.cluster.select-version' | i18n" [(ngModel)]="upgradeVersionCluster"
           class="w-100" nzSize="large">
-          <nz-option *ngFor="let item of listOfK8sVersion" [nzLabel]="item.k8sVersion" [nzValue]="item.k8sVersion"
-            [nzDisabled]="item.k8sVersion | checkUpgradeVersion : detailCluster.upgradeVersion"></nz-option>
+          <ng-container *ngFor="let item of listOfK8sVersion">
+            <ng-container *ngIf="item.k8sVersion != currentVersion; else currentVersionTpl">
+              <nz-option [nzLabel]="item.k8sVersion" [nzValue]="item.k8sVersion"
+                [nzDisabled]="item.k8sVersion | checkUpgradeVersion : detailCluster.upgradeVersion"></nz-option>
+            </ng-container>
+            <ng-template #currentVersionTpl>
+              <nz-option [nzLabel]="item.k8sVersion + ' (' +('app.version.current' | i18n) + ')'" [nzValue]="item.k8sVersion"
+                [nzDisabled]="item.k8sVersion | checkUpgradeVersion : detailCluster.upgradeVersion"></nz-option>
+            </ng-template>
+          </ng-container>
         </nz-select>
+      </div>
+
+      <div class="mt-3">
+        <nz-alert
+          nzType="warning"
+          [nzMessage]="msgTpl"
+          [nzDescription]="desTpl"
+          [nzIcon]="customIconTemplate"
+          nzShowIcon
+        ></nz-alert>
+
+        <ng-template #msgTpl>
+          <span class="description-info">Quý khách lưu ý</span>:
+        </ng-template>
+        <ng-template #desTpl>
+          <div>Việc thay đổi controlplane có thể khiến dịch vụ gặp gián đoạn tạm thời khiến bạn không thể sửa cluster config.</div>
+          <div>Việc cập nhật này không ảnh hưởng đến hoạt động của worker node, nơi nhận workload.
+            Hoạt động này sẽ bắt đầu ngay lập tức và không thể quay trở lại phiên bản cũ.</div>
+          <div>Hãy đọc cẩn thận <a href="https://kubernetes.io/releases/" target="_blank">K8S release note</a></div>
+        </ng-template>
+        <ng-template #customIconTemplate>
+          <span nz-icon>
+            <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.5 6.5L18.8612 19.25H4.13878L11.5 6.5Z" fill="white"/>
+              <path d="M21.76 16.42L15.36 4.9C14.5 3.35 13.31 2.5 12 2.5C10.69 2.5 9.49998 3.35 8.63998 4.9L2.23998 16.42C1.42998 17.89 1.33998 19.3 1.98998 20.41C2.63998 21.52 3.91998 22.13 5.59998 22.13H18.4C20.08 22.13 21.36 21.52 22.01 20.41C22.66 19.3 22.57 17.88 21.76 16.42ZM11.25 9.5C11.25 9.09 11.59 8.75 12 8.75C12.41 8.75 12.75 9.09 12.75 9.5V14.5C12.75 14.91 12.41 15.25 12 15.25C11.59 15.25 11.25 14.91 11.25 14.5V9.5ZM12.71 18.21C12.66 18.25 12.61 18.29 12.56 18.33C12.5 18.37 12.44 18.4 12.38 18.42C12.32 18.45 12.26 18.47 12.19 18.48C12.13 18.49 12.06 18.5 12 18.5C11.94 18.5 11.87 18.49 11.8 18.48C11.74 18.47 11.68 18.45 11.62 18.42C11.56 18.4 11.5 18.37 11.44 18.33C11.39 18.29 11.34 18.25 11.29 18.21C11.11 18.02 11 17.76 11 17.5C11 17.24 11.11 16.98 11.29 16.79C11.34 16.75 11.39 16.71 11.44 16.67C11.5 16.63 11.56 16.6 11.62 16.58C11.68 16.55 11.74 16.53 11.8 16.52C11.93 16.49 12.07 16.49 12.19 16.52C12.26 16.53 12.32 16.55 12.38 16.58C12.44 16.6 12.5 16.63 12.56 16.67C12.61 16.71 12.66 16.75 12.71 16.79C12.89 16.98 13 17.24 13 17.5C13 17.76 12.89 18.02 12.71 18.21Z" fill="#EA3829"/>
+            </svg>
+          </span>
+        </ng-template>
+      </div>
+
+      <div class="mt-3">
+        <label nz-checkbox [(ngModel)]="isAgreeArrangement">{{ 'app.payment.agree.to' | i18n }} <a href="">{{ 'app.version.arrangement' | i18n }}</a></label>
       </div>
     </ng-container>
     <ng-template #noAvailableVersionTpl>
@@ -714,6 +755,7 @@
         <b>{{detailCluster.currentVersion}}</b> {{ 'app.cluster.none-upgrade-description-2' | i18n }}</span>
     </ng-template>
   </div>
+
   <div *nzModalFooter>
     <ng-container *ngIf="detailCluster.upgradeVersion?.length > 0; else noAvailableVersionFooterTpl">
       <button nz-button nzType="default" (click)="handleCancelShowModalUpgrade()">
@@ -721,7 +763,7 @@
         {{ 'app.cluster.cancel' | i18n }}
       </button>
       <button nz-button nzType="primary" (click)="handleUpgadeVersionCluster()" [nzLoading]="isUpgradingVersion"
-        [disabled]="upgradeVersionCluster == null || upgradeVersionCluster == undefined">
+        [disabled]="upgradeVersionCluster == null || upgradeVersionCluster == undefined || !isAgreeArrangement">
         <span nz-icon nzType="check" nzTheme="outline"></span>
         {{ 'app.button.confirm' | i18n }}
       </button>
@@ -766,7 +808,7 @@
       <label>Cluster {{detailCluster.clusterName}} Kubenetes Config</label>
       <div class="modal-btn">
         <button nz-button nzType="text" class="borderless" (click)="handleCopyKubeConfig()" style="height: fit-content;"
-          nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip>
+          [nzTooltipTitle]="'app.cluster.copy' | i18n" nzTooltipPlacement="top" nz-tooltip>
           <span nz-icon>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path

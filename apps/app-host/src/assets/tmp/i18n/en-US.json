@@ -1576,6 +1576,8 @@
   "app.cluster.vat-cost-2": "VAT Cost ({{vat}}%)",
   "app.cost.month": "Cost {{month}} month(s)",
   "app.cluster.edit": "Edit service",
+  "app.version.current": "Current",
+  "app.version.arrangement": "Terms of Service",
 
   "cluster.validate.required": "Cannot be left empty!",
   "cluster.placeholder.cluster-name": "Enter cluster name",

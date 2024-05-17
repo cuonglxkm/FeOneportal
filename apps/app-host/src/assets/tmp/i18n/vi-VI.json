@@ -1467,6 +1467,8 @@
   "app.cluster.vat-cost-2": "Chi phí VAT ({{vat}}%)",
   "app.cost.month": "Chi phí {{month}} tháng",
   "app.cluster.edit": "Chỉnh sửa dịch vụ",
+  "app.version.current": "Đang dùng",
+  "app.version.arrangement": "Điều khoản dịch vụ",
 
   "cluster.validate.required": "Không được để trống!",
   "cluster.placeholder.cluster-name": "Nhập tên cluster",
