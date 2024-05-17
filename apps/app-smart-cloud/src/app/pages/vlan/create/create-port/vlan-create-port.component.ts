@@ -57,7 +57,7 @@ export class VlanCreatePortComponent implements OnInit, AfterViewInit, OnChanges
   @Input() project: number;
   @Input() networkId: number;
   @Input() networkCloudId: string;
-  @Input() listPort: Port[];
+  @Input() listSubnet: Subnet[]
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
 
@@ -71,7 +71,7 @@ export class VlanCreatePortComponent implements OnInit, AfterViewInit, OnChanges
     ipAddress: FormControl<string>
   }>;
 
-  listSubnet: Subnet[] = [];
+  // listSubnet: Subnet[] = [];
   subnetAddress: string;
 
   subnetSelected: any;
@@ -117,23 +117,23 @@ export class VlanCreatePortComponent implements OnInit, AfterViewInit, OnChanges
   }
 
 
-  getSubnetByNetworkId() {
-    this.isLoadingSubnet = true;
-    let formSearchSubnet = new FormSearchSubnet();
-    formSearchSubnet.networkId = this.networkId;
-    formSearchSubnet.customerId = this.tokenService.get()?.userId;
-    formSearchSubnet.region = this.region;
-    formSearchSubnet.pageSize = 9999;
-    formSearchSubnet.pageNumber = 1;
-    formSearchSubnet.name = null;
-
-    this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
-      // console.log('data-subnet', data)
-      this.listSubnet = data.records;
-
-      this.isLoadingSubnet = false;
-    });
-  }
+  // getSubnetByNetworkId() {
+  //   this.isLoadingSubnet = true;
+  //   let formSearchSubnet = new FormSearchSubnet();
+  //   formSearchSubnet.networkId = this.networkId;
+  //   formSearchSubnet.customerId = this.tokenService.get()?.userId;
+  //   formSearchSubnet.region = this.region;
+  //   formSearchSubnet.pageSize = 9999;
+  //   formSearchSubnet.pageNumber = 1;
+  //   formSearchSubnet.name = null;
+  //
+  //   this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
+  //     // console.log('data-subnet', data)
+  //     this.listSubnet = data.records;
+  //
+  //     this.isLoadingSubnet = false;
+  //   });
+  // }
 
   invalidGateway: string;
 
@@ -213,18 +213,25 @@ export class VlanCreatePortComponent implements OnInit, AfterViewInit, OnChanges
     }
 
   }
-
-  isIpInList(ip: string, ipList: string[]): boolean {
-    return ipList.includes(ip);
-  }
-
   getPortByNetwork() {
-    this.listPort?.forEach(item => {
-      this.ipPort?.push(item.fixedIPs.toString())
-    })
-    this.listPort?.forEach(item => {
-      this.nameList?.push(item?.name)
-    })
+    this.isLoading = true;
+    console.log('networkcloud', this.networkCloudId)
+    this.vlanService.getPortByNetwork(this.networkCloudId, this.region, 9999, 1, '')
+      .pipe(debounceTime(500))
+      .subscribe(data => {
+        console.log('port', data);
+        this.isLoading = false;
+        data?.records?.forEach(item => {
+          this.ipPort?.push(item.fixedIPs.toString())
+        })
+        data.records?.forEach(item => {
+          this.nameList?.push(item?.name)
+        })
+
+      }, error => {
+        this.isLoading = false;
+        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
+      });
   }
 
   duplicateNameValidator(control) {
@@ -251,7 +258,7 @@ export class VlanCreatePortComponent implements OnInit, AfterViewInit, OnChanges
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-    this.getSubnetByNetworkId();
+    // this.getSubnetByNetworkId();
     this.onCheckPort();
 
 
