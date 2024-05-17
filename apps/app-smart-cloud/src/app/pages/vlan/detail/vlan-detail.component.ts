@@ -80,6 +80,9 @@ export class VlanDetailComponent implements OnInit, OnChanges {
       if(error.status == '404') {
         this.notification.error('', 'Network không tồn tại!')
         this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+      } else {
+        this.notification.error(error.statusText, 'Không lấy được dữ liệu!')
+        this.router.navigate(['/app-smart-cloud/vlan/network/list'])
       }
       this.isLoading = false
     })
@@ -200,7 +203,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
     this.project = regionAndProject.projectId
 
     console.log('project', this.project)
-    this.getVlanByNetworkId()
+    // this.getVlanByNetworkId()
   }
 
 }

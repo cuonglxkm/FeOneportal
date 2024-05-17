@@ -7,6 +7,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { debounceTime } from 'rxjs';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { add } from 'date-fns';
 
 @Component({
   selector: 'one-portal-list-vlan',
@@ -121,4 +122,6 @@ export class ListVlanComponent implements OnInit{
     })
     // this.getListVlanNetwork()
   }
+
+  protected readonly add = add;
 }
