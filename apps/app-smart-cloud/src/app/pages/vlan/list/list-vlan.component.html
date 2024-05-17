@@ -71,7 +71,7 @@
         <td><a [routerLink]="'/app-smart-cloud/vlan/network/detail/' + data.id">{{ data.name }}</a></td>
         <td>
           <span *ngFor="let address of data.subnets; let last = last">
-                 {{ address.name }} - {{ address.subnetAddressRequired }}<br *ngIf="!last">
+                 {{ address.name }} - {{ address.networkAddress }}<br *ngIf="!last">
           </span>
         </td>
         <td *ngIf="data.status == 'KHOITAO'" style="color: #008D47;">{{ 'app.status.running'|i18n }}</td>
