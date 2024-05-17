@@ -633,6 +633,7 @@
   "app.alert.delete.policy": "Are you sure you want to delete the Policy?",
   "app.alert.delete.cors": "Are you sure you want to delete the CORS configuration?",
   "app.alert.delete.sub.user": "To delete the {{name}} SubUser, please enter the SubUser name to confirm",
+  "app.alert.bucket.oversize": "Tổng file nén không được vượt quá 100MB",
 
   "app.notification.object.storage.fail": "Failed to retrieve Object Storage",
   "app.notification.create.s3.key.success": "Successfully created S3 key",
@@ -1743,7 +1744,7 @@
   "router.label.ip.interface": "IP address",
   "router.label.ip.interface.example": "Example: 10.0.0.0 (cannot be duplicated)",
   "router.detail": "Router detail",
-  "router.validate.ip.empty": "IP address cannot be empty.",
+  "router.validate.ip.empty": "Please enter IP address.",
   "router.validate.cidr.empty": "Destination CIDR cannot be empty.",
   "router.validate.nextHop.empty": "NextHop cannot be empty.",
   "router.validate.nextHop.pattern": "Invalid NextHop format",
