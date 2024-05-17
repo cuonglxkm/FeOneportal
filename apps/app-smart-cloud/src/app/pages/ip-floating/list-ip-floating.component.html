@@ -34,7 +34,7 @@
           <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{'app.button.search' | i18n}}"/>
         </ng-template>
       </nz-col>
-      <nz-col nzSpan="8" style="flex:none;">
+      <nz-col nzSpan="8" style="flex:none;" *ngIf="projectType == 0">
         <one-portal-create-ip-floating [region]="region" [project]="project" [projectType]="projectType" (onOk)="handleOkCreateIpFloating()" />
       </nz-col>
     </nz-row>
@@ -69,34 +69,23 @@
         <td>{{data.typeIP}}</td>
         <td>
           <div>
-            <one-portal-attach-ip-floating [region]="region"
+            <one-portal-attach-ip-floating *ngIf="data.status != 2" [region]="region"
                                            [project]="project"
                                            [idIpFloating]="data.id"
                                            (onOk)="handleOkAttachIpFloating()"/>
 
-            <one-portal-detach-ip-floating [region]="region"
+            <one-portal-detach-ip-floating *ngIf="data.status == 2" [region]="region"
                                            [project]="project"
                                            [idIpFloating]="data.id"
                                            (onOk)="handleOkDetachIpFloating()" />
             <img *ngIf="projectType == 0" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                  nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Floating" nzTooltipPlacement="bottom"
                  [routerLink]="['/app-smart-cloud/networks/ip-floating-normal/' + data.id + '/extend']"/>
-            <div *ngIf="data.typeIP.includes('IP WAN')">
-              <div *ngIf="data.ipAddress != null || data.ipAddress != ''">
-                <one-portal-delete-ip-floating [region]="region"
-                                               [project]="project"
-                                               [idIpFloating]="data.id"
-                                               [ip]="data.ipAddress"
-                                               (onOk)="handleOkDeleteIpFloating()" />
-              </div>
-              <div *ngIf="data.ipAddress == null || data.ipAddress == ''">
-                <one-portal-delete-ip-floating [region]="region"
-                                               [project]="project"
-                                               [idIpFloating]="data.id"
-                                               [ip]="data.iPv6Address"
-                                               (onOk)="handleOkDeleteIpFloating()" />
-              </div>
-            </div>
+            <one-portal-delete-ip-floating *ngIf="data.typeIP == WanFloating || projectType == 0" [region]="region"
+                 [project]="project"
+                 [idIpFloating]="data.id"
+                 [ip]="data.ipAddress"
+                 (onOk)="handleOkDeleteIpFloating()" />
           </div>
         </td>
       </tr>

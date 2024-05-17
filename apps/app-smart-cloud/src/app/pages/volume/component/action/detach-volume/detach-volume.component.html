@@ -26,7 +26,7 @@
         <nz-option *ngFor="let item of listInstanceInVolume" [nzLabel]="item.instanceName"
                    [nzValue]="item.instanceId"></nz-option>
       </nz-select>
-      <div *ngIf="isSelected">{{ 'volume.notification.input.select.vm' | i18n }}</div>
+      <div *ngIf="isSelected" style="color: #EB1414">{{ 'volume.notification.input.select.vm' | i18n }}</div>
     </div>
     <div *ngIf="!isMultiple || (isMultiple && instanceInVolume?.length == 1)">
       <div>

@@ -82,7 +82,6 @@ export class InstancesEditComponent implements OnInit {
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
   configGPU: ConfigGPU = new ConfigGPU();
-  isConfigPackage: boolean = true;
   cardHeight: string = '160px';
 
   public carouselTileConfig: NguCarouselConfig = {
@@ -361,6 +360,8 @@ export class InstancesEditComponent implements OnInit {
 
   checkPermission: boolean = false;
   listSecurityGroupModel: SecurityGroupModel[] = [];
+  isConfigPackageAtInitial: boolean = true;
+  isConfigGpuAtInitial: boolean = false;
   getCurrentInfoInstance(instanceId: number): void {
     this.dataService.getById(instanceId, true).subscribe({
       next: (data: any) => {
@@ -371,8 +372,21 @@ export class InstancesEditComponent implements OnInit {
           this.instancesModel.flavorId == 0 ||
           this.instancesModel.flavorId == null
         ) {
-          this.isConfigPackage = false;
+          this.isConfigPackageAtInitial = false;
           this.isCustomconfig = true;
+        }
+        if (
+          this.instancesModel.gpuCount != null &&
+          this.instancesModel.gpuType != null
+        ) {
+          this.isConfigPackageAtInitial = false;
+          this.isConfigGpuAtInitial = true;
+          this.isGpuConfig = true;
+          this.configGPU.gpuOfferId = this.listGPUType.filter(
+            (e) =>
+              e.characteristicValues[0].charOptionValues[0] ==
+              this.instancesModel.gpuType
+          )[0].id;
         }
         this.cdr.detectChanges();
         this.selectedElementFlavor = this.instancesModel.flavorId;
@@ -775,8 +789,12 @@ export class InstancesEditComponent implements OnInit {
       this.instanceResize.cpu = this.configGPU.CPU + this.instancesModel.cpu;
       this.instanceResize.storage =
         this.configGPU.storage + this.instancesModel.storage;
-      this.instanceResize.gpuCount =
-        this.configGPU.GPU + this.instancesModel.gpuCount;
+      if (this.instancesModel.gpuCount != null) {
+        this.instanceResize.gpuCount =
+          this.configGPU.GPU + this.instancesModel.gpuCount;
+      } else {
+        this.instanceResize.gpuCount = this.configGPU.GPU;
+      }
       if (this.configGPU.gpuOfferId) {
         this.instanceResize.gpuType = this.listGPUType.filter(
           (e) => e.id == this.configGPU.gpuOfferId
@@ -803,8 +821,6 @@ export class InstancesEditComponent implements OnInit {
         }
       });
     }
-    this.instanceResize.gpuCount =
-      this.instancesModel.gpuCount + this.configGPU.GPU;
     this.instanceResize.addBtqt = 0;
     this.instanceResize.addBttn = 0;
     // this.instanceResize.typeName =
@@ -827,6 +843,18 @@ export class InstancesEditComponent implements OnInit {
       this.notification.error(
         '',
         this.i18n.fanyi('app.notify.optional.configuration.invalid')
+      );
+      return;
+    }
+    if (
+      this.isGpuConfig == true &&
+      (this.configGPU.GPU == 0 || this.configGPU.gpuOfferId == 0) &&
+      (this.instancesModel.gpuCount == null ||
+        this.instancesModel.gpuCount == 0)
+    ) {
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.gpu.configuration.invalid')
       );
       return;
     }

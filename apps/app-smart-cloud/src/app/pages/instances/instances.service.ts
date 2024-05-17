@@ -32,11 +32,10 @@ export class InstancesService extends BaseService {
   }
 
   //	Mã hành động : shutdown, resume, suspend, rescue, unrescue,attachinterface,detachinterface, start, restart
-  postAction(data: any) {
+  postAction(data: any): Observable<any> {
     return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + '/instances/action',
       data,
-      { responseType: 'text' }
     );
   }
 

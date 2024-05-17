@@ -10,20 +10,27 @@ import { DisabledTimeFn } from 'ng-zorro-antd/date-picker';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import { NzUploadFile } from 'ng-zorro-antd/upload/interface';
-import { finalize } from 'rxjs/operators';
+import { catchError, finalize, map } from 'rxjs/operators';
 import { ObjectObjectStorageModel } from '../../../shared/models/object-storage.model';
 import { BucketService } from '../../../shared/services/bucket.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { I18NService } from '@core';
 import * as JSZip from 'jszip';
-import { saveAs } from 'file-saver';
+import mime from 'mime';
+import { forkJoin, of } from 'rxjs';
+import { BaseService } from 'src/app/shared/services/base.service';
+
+
+
+
+
 @Component({
   selector: 'one-portal-bucket-detail',
   templateUrl: './bucket-detail.component.html',
   styleUrls: ['./bucket-detail.component.less'],
 })
-export class BucketDetailComponent implements OnInit {
+export class BucketDetailComponent extends BaseService implements OnInit {
   listOfData: ObjectObjectStorageModel[];
   listOfDataVersioning: ObjectObjectStorageModel[];
   dataAction: ObjectObjectStorageModel;
@@ -64,7 +71,7 @@ export class BucketDetailComponent implements OnInit {
   uploadFailed: boolean = false;
 
   lstFileUpdate: NzUploadFile[] = [];
-
+  isLoadingDeleteObjects: boolean = false;
   listOfFilter: any;
   colReal = ['Tên', 'Thời gian chỉnh sửa', 'Dung lượng'];
   conditionNameReal = ['Bằng', 'Bao gồm', 'Bắt đầu', 'Kêt thức'];
@@ -109,21 +116,9 @@ export class BucketDetailComponent implements OnInit {
   percent = 0;
   keyName: string;
   isLoadingGetLink: boolean = false;
-  range(start: number, end: number): number[] {
-    const result: number[] = [];
-    for (let i = start; i < end; i++) {
-      result.push(i);
-    }
-    return result;
-  }
-
+  isVisibleDeleteObject: boolean = false;
   disabledDate = (current: Date): boolean =>
     differenceInCalendarDays(current, this.today) < 0;
-  // disabledDateTime: DisabledTimeFn = () => ({
-  //   nzDisabledHours: () => this.range(0, 24).splice(4, 20),
-  //   nzDisabledMinutes: () => this.range(30, 60),
-  //   nzDisabledSeconds: () => [55, 56],
-  // });
   activePrivate = true;
   filterName: string;
   filterCondition: string;
@@ -143,7 +138,9 @@ export class BucketDetailComponent implements OnInit {
     private notification: NzNotificationService,
     private clipboard: Clipboard,
     private modalService: NzModalService
-  ) {}
+  ) {
+    super()
+  }
 
   ngOnInit(): void {
     this.loadBucket();
@@ -542,6 +539,9 @@ export class BucketDetailComponent implements OnInit {
         this.listOfData = data.paginationObjectList.items;
         this.listOfData.map((item) => {
           item.keyName = item.key.split('/').pop();
+          if (item.objectType == 'object') {
+            item.objectType = mime.getType(item.keyName) || 'object';
+          }
         });
         this.total = data.paginationObjectList.totalItems;
       });
@@ -996,7 +996,7 @@ export class BucketDetailComponent implements OnInit {
           const xhr = new XMLHttpRequest();
           xhr.open(
             'POST',
-            'https://api.onsmartcloud.com/provisions/object-storage/CompleteMultipartUpload',
+            this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CompleteMultipartUpload',
             true
           );
           xhr.setRequestHeader(
@@ -1190,38 +1190,94 @@ export class BucketDetailComponent implements OnInit {
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); 
     var yyyy = today.getFullYear();
-
-    let date = mm + '_' + dd + '_' + yyyy;
-    console.log(this.setOfCheckedId);
-    
-    let zipFile: JSZip = new JSZip();
-    this.setOfCheckedId.forEach((item: any) => {
-      if(item.objectType === 'folder'){
-        return
-      }else{
-        this.service.downloadFile(this.bucket.bucketName, item.key, '').subscribe(
-          (fileData: any) => {
-            // Assuming fileData contains the file name and content
-            const fileName = item.key; // Adjust this based on your response structure
-            const fileContent = fileData.body; // Adjust this based on your response structure
   
-            // Add the file to the zip
-            zipFile.file(fileName, fileContent);
-          },
-          (error) => {
-            console.error(`Error downloading file: ${error}`);
-          }
+    let date = mm + '_' + dd + '_' + yyyy;
+    
+    let zipFile = new JSZip();
+    let downloadObservables = [];
+  
+    this.setOfCheckedId.forEach((item: any) => {
+      if(item.objectType === 'folder') {
+        return;
+      } else {
+        downloadObservables.push(
+          this.service.downloadFile(this.bucket.bucketName, item.key, '').pipe(
+            map((fileData: any) => {
+              const fileName = item.key; 
+              const fileContent = fileData.body; 
+  
+              console.log(fileData.body);
+  
+              if(fileData.body !== undefined) {
+                zipFile.file(fileName, fileContent);
+              }
+            }),
+            catchError((error) => {
+              console.error(`Error downloading file: ${error}`);
+              return of(null);
+            })
+          )
         );
       }
     });
-    zipFile.generateAsync({ type: 'blob' }).then((content) => {
-      let anchor = document.createElement('a');
-      let objectUrl = window.URL.createObjectURL(content);
-
-      anchor.href = objectUrl;
-      anchor.download = `${this.bucket.bucketName}_${date}`;
-      anchor.click();
-      window.URL.revokeObjectURL(objectUrl);
+  
+    forkJoin(downloadObservables).subscribe(() => {
+      zipFile.generateAsync({ type: 'blob' }).then((content) => {
+        if(content.size > 104857600) {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.alert.bucket.oversize')
+          );
+        }else{
+          let anchor = document.createElement('a');
+          let objectUrl = window.URL.createObjectURL(content);
+    
+          anchor.href = objectUrl;
+          anchor.download = `${this.bucket.bucketName}_${date}`;
+          anchor.click();
+          window.URL.revokeObjectURL(objectUrl);
+        }
+      });
     });
+  }
+
+  showModalDeleteObject(){
+    this.isVisibleDeleteObject = true;
+  }
+
+  handleCancelDeleteObject(){
+    this.isVisibleDeleteObject = false;
+  }
+
+  handledeleteObjects(){
+    this.isLoadingDeleteObjects = true
+    let data = {
+      bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+      customerId: this.tokenService.get()?.userId,
+      regionId: 0,
+      selectedItems: [...this.setOfCheckedId],
+    }
+
+    this.service.deleteObject(data).subscribe(
+      (data) => {
+        this.isVisibleDeleteObject = false;
+        this.isLoadingDeleteObjects = false
+        this.notification.success(
+          this.i18n.fanyi('app.status.success'),
+          'Xóa object thành công'
+        );
+        this.setOfCheckedId.clear();
+        this.countObjectSelected = 0
+        this.loadData()
+      },
+      (error) => {
+        this.isLoadingDeleteObjects = false
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          'Xóa object thất bại'
+        );
+      }
+    );
+    
   }
 }

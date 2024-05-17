@@ -10,7 +10,7 @@
         <div class="code-box-title text-value">Inbound</div>
         <one-portal-create-inbound
           nz-tooltip
-          nzTooltipTitle="Thêm mới Inbound"
+          nzTooltipTitle="{{ 'app.cluster.new-inbound' | i18n }}"
           nzTooltipPlacement="bottom"
           [disabled]="!securityGroupId"
           [condition]="{
@@ -47,7 +47,7 @@
               nzAlign="center"
               class="text-th"
               style="width: 216px"
-              nzBreakWord>Thao tác
+              nzBreakWord>{{ 'app.table.backup.vm.action'|i18n }}
             </th>
           </tr>
           </thead>
@@ -59,7 +59,7 @@
             <td nzAlign="center" nzBreakWord>{{ data.remoteIpPrefix }}</td>
             <td nzAlign="center" nzBreakWord>
               <one-portal-delete-inbound nz-tooltip
-                                         nzTooltipTitle="Xóa Inbound"
+                                         nzTooltipTitle="{{ 'app.cluster.delete-inbound' | i18n }}"
                                          nzTooltipPlacement="bottom"
                                          [idInbound]="data.id"
                                          [nameRule]="data.remoteIp"

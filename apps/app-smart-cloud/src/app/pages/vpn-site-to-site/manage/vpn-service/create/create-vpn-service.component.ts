@@ -56,7 +56,7 @@ export class CreateVpnServiceComponent implements OnInit{
     this.vpnSiteToSiteService.getVpnSiteToSite(this.project)
       .subscribe(data => {
         if(data){
-          this.response = data  
+          this.response = data.body  
         }
     }, error => {
       this.response = null;

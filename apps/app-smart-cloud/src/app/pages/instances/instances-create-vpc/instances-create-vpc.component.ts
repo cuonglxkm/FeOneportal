@@ -111,6 +111,7 @@ export class InstancesCreateVpcComponent implements OnInit {
   remainingRAM: number = 0;
   remainingVolume: number = 0;
   remainingVCPU: number = 0;
+  remainingGpu: number = 0;
 
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
@@ -126,6 +127,29 @@ export class InstancesCreateVpcComponent implements OnInit {
     ) {
       // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
       event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault(); // Ngăn chặn hành vi mặc định của các phím mũi tên
+
+      const tabs = document.querySelectorAll('.ant-tabs-tab'); // Lấy danh sách các tab
+      const activeTab = document.querySelector('.ant-tabs-tab-active'); // Lấy tab đang active
+
+      // Tìm index của tab đang active
+      let activeTabIndex = Array.prototype.indexOf.call(tabs, activeTab);
+
+      if (event.key === 'ArrowLeft') {
+        activeTabIndex -= 1; // Di chuyển tới tab trước đó
+      } else if (event.key === 'ArrowRight') {
+        activeTabIndex += 1; // Di chuyển tới tab tiếp theo
+      }
+
+      // Kiểm tra xem tab có hợp lệ không
+      if (activeTabIndex >= 0 && activeTabIndex < tabs.length) {
+        (tabs[activeTabIndex] as HTMLElement).click(); // Kích hoạt tab mới
+      }
     }
   }
 
@@ -383,6 +407,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.remainingVolume =
       this.infoVPC.cloudProject.quotaHddInGb -
       this.infoVPC.cloudProjectResourceUsed.hdd;
+    this.instanceCreate.volumeSize = 0;
     this.cdr.detectChanges();
   }
   initSSD(): void {
@@ -391,7 +416,38 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.remainingVolume =
       this.infoVPC.cloudProject.quotaSSDInGb -
       this.infoVPC.cloudProjectResourceUsed.ssd;
+    this.instanceCreate.volumeSize = 0;
     this.cdr.detectChanges();
+  }
+  //#endregion
+
+  //#region  cấu hình
+  isCustomconfig = true;
+  isGpuConfig = false;
+  listGPUType: OfferItem[] = [];
+
+  onClickCustomConfig() {
+    this.isCustomconfig = true;
+    this.isGpuConfig = false;
+    this.resetData();
+    this.disableHDD = false;
+  }
+
+  disableHDD: boolean = false;
+  onClickGpuConfig() {
+    this.isCustomconfig = false;
+    this.isGpuConfig = true;
+    this.resetData();
+    this.activeBlockHDD = false;
+    this.activeBlockSSD = true;
+    this.disableHDD = true;
+  }
+
+  resetData() {
+    this.instanceCreate.cpu = 0;
+    this.instanceCreate.volumeSize = 0;
+    this.instanceCreate.ram = 0;
+    this.instanceCreate.gpuCount = 0;
   }
   //#endregion
 
@@ -433,49 +489,46 @@ export class InstancesCreateVpcComponent implements OnInit {
       .getVlanNetworks(formSearchNetwork)
       .subscribe((data: any) => {
         this.listVlanNetwork = data.records;
+        this.vlanNetwork = this.listVlanNetwork[0].cloudId;
+        this.getListPort();
         this.cdr.detectChanges();
       });
   }
 
   listPort: Port[] = [];
   port: string = '';
-  hidePort: boolean = true;
   getListPort() {
-    if (this.vlanNetwork == '') {
-      this.hidePort = true;
-      this.port = '';
-    } else {
-      this.hidePort = false;
-      this.listPort = [
-        {
-          id: '',
-          name: '',
-          fixedIPs: ['Ngẫu nhiên'],
-          macAddress: null,
-          attachedDevice: null,
-          status: null,
-          adminStateUp: null,
-          instanceName: null,
-          subnetId: null,
-          attachedDeviceId: null,
-        },
-      ];
-      this.dataService
-        .getListAllPortByNetwork(this.vlanNetwork, this.region)
-        .subscribe({
-          next: (data) => {
-            data.forEach((e: Port) => {
+    this.listPort = [
+      {
+        id: '',
+        name: '',
+        fixedIPs: [this.i18n.fanyi('app.random')],
+        macAddress: null,
+        attachedDevice: null,
+        status: null,
+        adminStateUp: null,
+        instanceName: null,
+        subnetId: null,
+        attachedDeviceId: null,
+      },
+    ];
+    this.dataService
+      .getListAllPortByNetwork(this.vlanNetwork, this.region)
+      .subscribe({
+        next: (data) => {
+          data.forEach((e: Port) => {
+            if (e.attachedDeviceId == '') {
               this.listPort.push(e);
-            });
-          },
-          error: (e) => {
-            this.notification.error(
-              e.statusText,
-              this.i18n.fanyi('app.notify.get.list.port')
-            );
-          },
-        });
-    }
+            }
+          });
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('app.notify.get.list.port')
+          );
+        },
+      });
   }
 
   getAllSecurityGroup() {
@@ -564,12 +617,13 @@ export class InstancesCreateVpcComponent implements OnInit {
   isValid: boolean = false;
   checkValidConfig() {
     if (
-      !this.instanceCreate.volumeSize ||
-      this.instanceCreate.volumeSize == 0 ||
-      !this.instanceCreate.ram ||
-      this.instanceCreate.ram == 0 ||
-      !this.instanceCreate.cpu ||
-      this.instanceCreate.cpu == 0
+      this.isCustomconfig &&
+      (!this.instanceCreate.volumeSize ||
+        this.instanceCreate.volumeSize == 0 ||
+        !this.instanceCreate.ram ||
+        this.instanceCreate.ram == 0 ||
+        !this.instanceCreate.cpu ||
+        this.instanceCreate.cpu == 0)
     ) {
       this.isValid = false;
     } else {

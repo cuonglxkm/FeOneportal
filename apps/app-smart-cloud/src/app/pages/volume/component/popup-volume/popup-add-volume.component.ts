@@ -8,9 +8,9 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 @Component({
   selector: 'app-popup-content',
   template: `
-    <nz-form-label>Chọn máy ảo</nz-form-label>
+    <nz-form-label>{{'volume.modal.attach.title' | i18n}}</nz-form-label>
     <nz-select nzSize="default"
-               [nzPlaceHolder]="'-Chọn máy ảo-'"
+               nzPlaceHolder="{{'volume.modal.attach.title' | i18n}}"
                [(ngModel)]="selectedItem"
                nzShowSearch
                style="width: 300px;"

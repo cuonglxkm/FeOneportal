@@ -16,9 +16,6 @@
 <nz-card class="text-label">
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase=false>
-      <div style="margin-bottom: 20px">
-        <span class="text-card-header">{{ 'project.note2' | i18n }}</span>
-      </div>
       <div style="margin-bottom: 20px;" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
         <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24"
              [nzXXl]="12">
@@ -30,7 +27,7 @@
             <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
                             nzSize="large">
               <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input
-                     placeholder="{{ 'volume.tooltip.title.filter.img' | i18n}}" />
+                     placeholder="{{ 'app.users.search' | i18n}}" />
             </nz-input-group>
             <ng-template #suffixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n}}"
@@ -62,13 +59,22 @@
         </thead>
         <tbody>
         <tr *ngFor="let item of listOfData">
-          <td (click)="viewDetail(item.id)" style="color: #0D67B0">{{ item.displayName }}</td>
+          <td>
+            <a
+            nz-tooltip
+            [nzTooltipTitle]="'app.view.detail' | i18n"
+            nzTooltipPlacement="bottom"
+            [routerLink]="
+              '/app-smart-cloud/project/detail/' + item.id
+            "
+            >{{ item.displayName }}</a>
+          </td>
           <td *ngIf="item.type != 'VPC'">-</td>
           <td *ngIf="item.type != 'VPC'">-</td>
           <td *ngIf="item.type == 'VPC'">{{ item.createDate | date : "dd/MM/YYYY" }}</td>
           <td *ngIf="item.type == 'VPC'">{{ item.expireDate | date : "dd/MM/YYYY" }}</td>
-          <td >{{ item.resourceStatus }}</td>
-          <td >{{ item.type == 'VPC' ? ('project.note4' | i18n) : ('project.note5' | i18n)}}</td>
+          <td [ngStyle]="{'color': item.resourceStatus === 'ENABLE' ? '#008D47' : '#EA3829'}">{{ item.resourceStatus === 'ENABLE' ? ('project.status.enable' | i18n) : ('project.status.delete' | i18n) }}</td>
+          <td >{{ item.type == 'VPC' ? ('project.note4' | i18n) : (item.type == 'Default' ? ('project.default' | i18n) :('project.note5' | i18n))}}</td>
           <!--          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: forestgreen">Đang hoạt động</td>-->
           <!--          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>-->
           <!--          <td *ngIf="item.status === 0">-</td>-->
@@ -85,7 +91,7 @@
                     (click)="edit(item)"
               ></span>
               <!----Xóa---->
-              <span style="color: #0066B3"
+              <span style="color: #0066B3" *ngIf="item.type != 'Default'"
                     nz-tooltip
                     nzTooltipTitle="{{ 'app.delete' | i18n }}" nzTooltipPlacement="bottom"
                     nz-icon nzType="delete" nzTheme="outline"
@@ -167,12 +173,12 @@
   <!--Chỉnh normal-->
   <nz-modal [(nzVisible)]="isVisibleEditNormal" nzTitle="{{ 'project.note18' | i18n }}" [nzStyle]="modalStyle">
     <ng-container *nzModalContent>
-      <div class="text-label" style="margin-bottom: 10px;">
+      <div class="text-label" style="margin-bottom: 10px">
         {{ 'project.note19' | i18n }}(<span class="text-red">*</span>)<img style="margin-left: 5px;" nz-tooltip="{{ 'project.note16' | i18n }}" src="assets/imgs/pajamas_question.svg" alt="" />
-        <input nz-input placeholder="{{ 'project.note17' | i18n }}" style="width: 100%"
+        <input class="input-custom" nz-input placeholder="{{ 'project.note17' | i18n }}" style="width: 100%"
                formControlName="name">
       </div>
-      <div class="text-label">
+      <div class="text-label mt-5">
         {{ 'volume.table.title.description' | i18n }}
         <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="{{ 'volume.tooltip.input.description' | i18n }}" style="width: 100%"
                   formControlName="description"></textarea>

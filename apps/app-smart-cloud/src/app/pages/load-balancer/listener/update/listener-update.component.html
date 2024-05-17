@@ -52,8 +52,8 @@
                 <span>{{ 'app.protocol' | i18n }} (<span style="color: red;">*</span>) </span>
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-radio-group [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}" nzSize="large">
-                  <label nz-radio nzValue="HTTP">TERMINATED_HTTPS</label>
+                <nz-radio-group [disabled]="true" [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}" nzSize="large">
+                  <label nz-radio nzValue="HTTP">HTTP</label>
                   <label nz-radio nzValue="TCP">TCP</label>
                   <label nz-radio nzValue="TERMINATED_HTTPS">TERMINATED_HTTPS</label>
                 </nz-radio-group>
@@ -88,7 +88,7 @@
           <nz-col nzSpan="6">
             <nz-form-item>
               <nz-form-label>
-                <span>Member</span>
+                <span>Member timeout (ms)</span>
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
                 <nz-input-number style="margin-left: -2px;width: 90%" formControlName="member" [nzMin]="0" nzSize="large"
@@ -99,7 +99,7 @@
           <nz-col nzSpan="6">
             <nz-form-item>
               <nz-form-label>
-                <span>Connection</span>
+                <span>Member connection timeout (ms)</span>
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
                 <nz-input-number style="margin-left: -2px;width: 90%" formControlName="connection" [nzMin]="0" nzSize="large"
@@ -124,7 +124,28 @@
           </nz-col>
         </nz-row>
 
-
+        <nz-form-item *ngIf="protocolListener == 'TERMINATED_HTTPS'">
+          <nz-form-label>
+            <span>SSL Cert (<span style="color: red;">*</span>) </span>
+            <img style="margin-left: 10px"
+                 nz-tooltip="" alt="" />
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <div *ngIf="listCert == null || listCert.length <= 0">
+              <div class="text-label">Bạn chưa có Cert?</div>
+              <a class="text-label" style="color: #0D67B1" [routerLink]="['/app-smart-cloud/object-storage/bucket']">Click để tạo mới</a>
+            </div>
+            <div *ngIf="listCert != null && listCert.length > 0">
+              <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
+                         style="width: 100%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
+                         nzPlaceHolder="--Chọn SSL Cert--"
+                         [(ngModel)]="certId" [ngModelOptions]="{ standalone: true }">
+                <nz-option *ngFor="let i of listCert" [nzLabel]="i.name"
+                           [nzValue]="i.secret_ref" />
+              </nz-select>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
         <nz-form-item>
           <nz-form-label>
             <span>{{ 'app.service.description' | i18n }}</span>
@@ -152,7 +173,7 @@
               </thead>
               <tbody>
               <tr *ngFor="let item of listPool">
-                <td>{{ item.name }}</td>
+                <td><a (click)="navigateToDetail(item.id)">{{ item.name }}</a></td>
                 <td>{{ item.protocol }}</td>
                 <td>{{ item.algorithm }}</td>
                 <td>ONLINE</td>

@@ -270,7 +270,7 @@
                   data.taskState.toUpperCase() != 'REBOOT_STARTED'
                 "
                 nz-menu-item
-                (click)="showHandleGoKhoiVLAN()"
+                (click)="showHandleGoKhoiVLAN(data.id)"
               >
                 {{ 'app.detach.from.vlan' | i18n }}
               </li>
@@ -409,99 +409,116 @@
   (nzOnCancel)="handleCancelGanVLAN()"
 >
   <ng-container *nzModalContent>
-    <nz-alert
-      *ngIf="!isChoosePort"
-      style="margin-bottom: 16px"
-      nzType="warning"
-      [nzDescription]="customTemplateDescriptionGanVLAN"
-      nzShowIcon
-    ></nz-alert>
-    <ng-template #customTemplateDescriptionGanVLAN>
-      <div>
-        {{ 'app.alert.attach.to.vlan' | i18n }}
-      </div>
-    </ng-template>
-    <span class="text-label">{{ 'app.list.vlan' | i18n }}</span>
-    <nz-form-control style="margin-top: 5px; margin-bottom: 16px">
-      <nz-select
-        [nzPlaceHolder]="'app.choose.vlan' | i18n"
-        [nzShowSearch]="true"
-        [(ngModel)]="instanceAction.networkId"
-        (ngModelChange)="changeVlanNetwork($event)"
+    <form nz-form [formGroup]="formGanVlan" [nzLayout]="'vertical'">
+      <nz-alert
+        *ngIf="!isChoosePort"
+        style="margin-bottom: 16px"
+        nzType="warning"
+        [nzDescription]="customTemplateDescriptionGanVLAN"
+        nzShowIcon
+      ></nz-alert>
+      <ng-template #customTemplateDescriptionGanVLAN>
+        <div>
+          {{ 'app.alert.attach.to.vlan' | i18n }}
+        </div>
+      </ng-template>
+      <nz-form-item>
+        <nz-form-label class="text-label">{{
+          'app.list.vlan' | i18n
+        }}</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            [nzPlaceHolder]="'app.choose.vlan' | i18n"
+            [nzShowSearch]="true"
+            [(ngModel)]="instanceAction.networkId"
+            (ngModelChange)="changeVlanNetwork($event)"
+            [ngModelOptions]="{ standalone: true }"
+            nzSize="large"
+          >
+            <nz-option
+              *ngFor="let i of listVlanNetwork"
+              [nzLabel]="i.name"
+              [nzValue]="i.cloudId"
+            />
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <span class="text-label">{{
+        'app.choose.attachment.method' | i18n
+      }}</span>
+      <nz-radio-group
+        style="width: 100%; margin-bottom: 16px; margin-top: 10px"
+        [(ngModel)]="isChoosePort"
         [ngModelOptions]="{ standalone: true }"
-        nzSize="large"
       >
-        <nz-option
-          *ngFor="let i of listVlanNetwork"
-          [nzLabel]="i.name"
-          [nzValue]="i.cloudId"
-        />
-      </nz-select>
-    </nz-form-control>
-    <span class="text-label">{{ 'app.choose.attachment.method' | i18n }}</span>
-    <nz-radio-group
-      style="width: 100%; margin-bottom: 16px; margin-top: 10px"
-      [(ngModel)]="isChoosePort"
-    >
-      <div style="display: flex">
-        <div style="flex: 1">
-          <label class="text-label" nz-radio [nzValue]="true">{{
+        <div style="display: flex">
+          <div style="flex: 1">
+            <label class="text-label" nz-radio [nzValue]="true">{{
+              'app.choose.port' | i18n
+            }}</label>
+          </div>
+          <div style="flex: 1">
+            <label class="text-label" nz-radio [nzValue]="false">{{
+              'app.choose.subnet' | i18n
+            }}</label>
+          </div>
+        </div>
+      </nz-radio-group>
+      <div *ngIf="isChoosePort">
+        <nz-form-item>
+          <nz-form-label class="text-label">{{
             'app.choose.port' | i18n
-          }}</label>
-        </div>
-        <div style="flex: 1">
-          <label class="text-label" nz-radio [nzValue]="false">{{
-            'app.choose.subnet' | i18n
-          }}</label>
-        </div>
+          }}</nz-form-label>
+          <nz-spin [nzSpinning]="portLoading"
+            ><div
+              *ngIf="listPort.length == 0"
+              class="text-label"
+              style="color: #ea3829"
+            >
+              {{ 'app.note.create.port' | i18n }}
+            </div>
+            <nz-form-control *ngIf="listPort.length != 0">
+              <nz-select
+                [nzShowSearch]="true"
+                [(ngModel)]="instanceAction.portId"
+                [ngModelOptions]="{ standalone: true }"
+                nzSize="large"
+              >
+                <nz-option
+                  *ngFor="let i of listPort"
+                  [nzLabel]="i.fixedIPs[0]"
+                  [nzValue]="i.id"
+                />
+              </nz-select> </nz-form-control
+          ></nz-spin>
+        </nz-form-item>
       </div>
-    </nz-radio-group>
-    <div *ngIf="isChoosePort">
-      <span class="text-label">{{ 'app.choose.port' | i18n }}</span>
-      <nz-form-control>
-        <nz-select
-          [nzShowSearch]="true"
-          [(ngModel)]="port"
-          [ngModelOptions]="{ standalone: true }"
-          nzSize="large"
-        >
-          <nz-option
-            *ngFor="let i of listPort"
-            [nzLabel]="i.fixedIPs[0]"
-            [nzValue]="i.id"
-          />
-        </nz-select>
-      </nz-form-control>
-    </div>
-    <div *ngIf="!isChoosePort">
-      <span class="text-label">{{ 'app.list.subnet' | i18n }}</span>
-      <nz-form-control style="margin-bottom: 10px; margin-top: 5px">
-        <nz-select
-          [nzLoading]="loadingSubnet"
-          [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'"
-          [nzShowSearch]="true"
-          [(ngModel)]="instanceAction.subnetId"
-          [ngModelOptions]="{ standalone: true }"
-          nzSize="large"
-        >
-          <nz-option
-            *ngFor="let i of listSubnet"
-            [nzLabel]="i.name"
-            [nzValue]="i.subnetCloudId"
-          />
-        </nz-select>
-      </nz-form-control>
-      <span class="text-label">{{ 'app.ip.address' | i18n }}</span>
-      <nz-form-control style="margin-bottom: 10px; margin-top: 5px">
-        <input
-          class="input-custom"
-          nz-input
-          [placeholder]="'app.input.ip.address' | i18n"
-          [(ngModel)]="instanceAction.ipAddress"
-          [ngModelOptions]="{ standalone: true }"
-        />
-      </nz-form-control>
-    </div>
+      <div *ngIf="!isChoosePort">
+        <nz-form-item>
+          <span class="text-label">{{ 'app.list.subnet' | i18n }}</span>
+          <div *ngIf="listSubnetStr != ''" class="text-label custom-div">
+            {{ listSubnetStr }}
+          </div>
+          <nz-form-label class="text-label">{{
+            'app.ip.address' | i18n
+          }}</nz-form-label>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
+            <input
+              class="input-custom"
+              nz-input
+              [placeholder]="'app.input.ip.address' | i18n"
+              formControlName="ipAddress"
+              [(ngModel)]="instanceAction.ipAddress"
+            />
+          </nz-form-control>
+          <ng-template #ipAddressErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('pattern')">{{
+              'validation.ip.address.pattern' | i18n
+            }}</ng-container>
+          </ng-template>
+        </nz-form-item>
+      </div>
+    </form>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelGanVLAN()">
@@ -524,7 +541,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleGoKhoiVLAN"
-  nzTitle="Gỡ khỏi VLAN"
+  [nzTitle]="'app.detach.from.vlan' | i18n"
   (nzOnCancel)="handleCancelGoKhoiVLAN()"
 >
   <ng-container *nzModalContent>

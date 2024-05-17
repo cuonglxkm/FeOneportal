@@ -40,7 +40,8 @@ export class RouterListComponent implements OnInit {
   dataList: RouterModel[] = [];
   isTrigger: boolean = false;
   currentPage = 1;
-  pageSize = 10;
+  pageSize = 3;
+  pageSizeFixed = 3
   total = 1;
   loading = false;
   searchGenderList: string[] = [];
@@ -58,20 +59,20 @@ export class RouterListComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
       ],
     ],
     network: [''],
   });
 
   formEdit: FormGroup<{
-    name: FormControl<string>
+    name: FormControl<string>,
   }> = this.fb.group({
     name: [
       '',
       [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
       ],
     ],
   });
@@ -131,6 +132,10 @@ export class RouterListComponent implements OnInit {
     this.getDataList(true);
   }
 
+  onPageSizeChange(event) {
+    this.getDataList(false);
+  }
+
   doSearch(value: string) {
     this.routerName = value
     this.getDataList(false)
@@ -142,7 +147,6 @@ export class RouterListComponent implements OnInit {
   }
 
   getDataList(isBegin) {
-    debugger
     this.formListRouter.currentPage = this.currentPage
       this.formListRouter.pageSize = this.pageSize
       this.formListRouter.routerName = this.routerName
@@ -157,10 +161,11 @@ export class RouterListComponent implements OnInit {
       .subscribe(data => {
         this.loading = false
         this.dataList = data.records;
-        this.total = data.totalCount;
-        console.log(this.dataList);   
+        this.total = data.totalCount;  
         if (isBegin) {
           this.isCheckBegin = this.dataList.length < 1 || this.dataList === null ? true : false;
+          console.log(this.isCheckBegin);
+          
         }
         this.cdr.detectChanges();
     }, error => {
@@ -204,6 +209,7 @@ export class RouterListComponent implements OnInit {
     this.isVisibleCreate = false;
     this.routerCreate.networkId = ''
     this.routerCreate.routerName = ''
+    this.form.reset()
   }
 
   handleOkCreate() {
@@ -218,7 +224,8 @@ export class RouterListComponent implements OnInit {
         this.isLoadingCreateRouter = false
         this.isVisibleCreate = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.create.sucess'));
-        this.getDataList(false);
+        this.form.reset()
+        this.getDataList(true);
       },
       error: (error) => {
         this.isLoadingCreateRouter = false
@@ -236,7 +243,7 @@ export class RouterListComponent implements OnInit {
   isVisibleEdit = false;
   modalEdit(dataRouter: RouterModel) {
     this.isVisibleEdit = true;
-    this.isTrigger = dataRouter.status.toUpperCase() == 'ACTIVE' ? true : false;
+    this.isTrigger = dataRouter.status == 'Kích hoạt' ? true : false;
     this.cloudId = dataRouter.cloudId;
     this.routerUpdate.id = dataRouter.cloudId;
     this.routerUpdate.adminState = dataRouter.adminState;
@@ -245,6 +252,8 @@ export class RouterListComponent implements OnInit {
     this.routerUpdate.routerName = dataRouter.routerName;
     this.routerUpdate.vpcId = dataRouter.vpcId;
     this.routerUpdate.networkId = dataRouter.networkId;
+
+    console.log(this.routerUpdate)
   }
 
   handleCancelEdit() {
@@ -280,6 +289,7 @@ export class RouterListComponent implements OnInit {
 
   handleCancelDelete() {
     this.isVisibleDelete = false;
+    this.formDelete.reset()
   }
 
   nameRouterValidator(control: FormControl): { [key: string]: any } | null {
@@ -297,9 +307,10 @@ export class RouterListComponent implements OnInit {
         .subscribe({
           next: (data) => {
             this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('router.nofitacation.remove.sucess'));
+            this.formDelete.reset()
             this.isLoadingDeleteRouter = false
             this.isVisibleDelete = false;
-            this.getDataList(false);
+            this.getDataList(true);
           },
           error: (e) => {
             this.notification.error(

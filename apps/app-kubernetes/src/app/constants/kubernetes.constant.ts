@@ -10,6 +10,8 @@ export class KubernetesConstant {
 
   public static CLUSTER_UPGRADE_TYPE = 'k8s_resize';
 
+  public static CLUSTER_EXTEND_TYPE = 'k8s_extend';
+
   public static DEFAULT_VOLUME_TYPE = "ceph_ssd";
 
   public static DEFAULT_NETWORK_TYPE = "calico";
@@ -23,6 +25,8 @@ export class KubernetesConstant {
   public static CIDR_CHECK = "100.64.0.0/16";
 
   public static LOCK_RULE = "any";
+
+  public static IPv4 = "IPv4";
 
   // instance
   public static ACTIVE_INSTANCE = 'active';

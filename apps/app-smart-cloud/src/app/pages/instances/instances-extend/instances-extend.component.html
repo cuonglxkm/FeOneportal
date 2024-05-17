@@ -112,28 +112,52 @@
                   >{{ 'app.task.status' | i18n }}:</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'SHUTOFF'"
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'SHUTOFF'"
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'powering-off'"
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-OFF'
+                  "
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'ACTIVE'"
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBUILDING'"
                   class="text-value-detail customSpan"
-                  style="color: #008d47"
-                  >{{ instancesModel.taskState }}</span
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'powering-on'"
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase().includes('RESIZING')
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBOOTING'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'ACTIVE'"
                   class="text-value-detail customSpan"
                   style="color: #008d47"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-ON'
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #008d47"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
               </nz-row>
             </nz-col>

@@ -14,7 +14,7 @@ export class NotificationService {
 
   public async initiateSignalrConnection(isRegisterGlobalMessage = false): Promise<void> {
 
-    let hubUrl = 'https://notification-api.onsmartcloud.com/notify';
+    let hubUrl = 'https://idg-api-gw-dev.onsmartcloud.com/notify';
 
     var tokenModel = this.tokenService.get();
 

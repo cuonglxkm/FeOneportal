@@ -46,6 +46,7 @@
           instancesModel.taskState.toUpperCase() != 'REBOOTING'
         "
         [instancesId]="id"
+        [isProjectVPC]="false"
         (valueChanged)="onReloadInstanceDetail()"
         style="margin-left: 8px"
       >
@@ -126,28 +127,52 @@
                   >{{ 'app.task.status' | i18n }}:</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'SHUTOFF'"
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'SHUTOFF'"
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'powering-off'"
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-OFF'
+                  "
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'ACTIVE'"
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBUILDING'"
                   class="text-value-detail customSpan"
-                  style="color: #008d47"
-                  >{{ instancesModel.taskState }}</span
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'powering-on'"
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase().includes('RESIZING')
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBOOTING'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'ACTIVE'"
                   class="text-value-detail customSpan"
                   style="color: #008d47"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-ON'
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #008d47"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
               </nz-row>
             </nz-col>
@@ -272,7 +297,7 @@
               {{ instancesModel.ram }}GB RAM, {{ instancesModel.storage }}GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
               <span *ngIf="instancesModel.volumeType == 1">SSD</span
-              ><span *ngIf="instancesModel.gpuCount != 0"
+              ><span *ngIf="instancesModel.gpuCount != null"
                 >, {{ instancesModel.gpuCount }} GPU (Nvidia
                 {{ instancesModel.gpuType }})</span
               >
@@ -299,7 +324,7 @@
             (keydown)="handleKeyboardEvent($event)"
           >
             <nz-tab
-              *ngIf="isConfigPackage && instancesModel.gpuCount == 0"
+              *ngIf="isConfigPackageAtInitial && instancesModel.gpuCount == null"
               [nzTitle]="'app.Preconfigured.Package' | i18n"
               (nzClick)="onClickConfigPackage()"
             >
@@ -387,7 +412,7 @@
               </ngu-carousel>
             </nz-tab>
             <nz-tab
-              *ngIf="instancesModel.gpuCount == 0"
+              *ngIf="!isConfigGpuAtInitial && instancesModel.gpuCount == null"
               [nzTitle]="'app.custom.configuration' | i18n"
               (nzClick)="onClickCustomConfig()"
             >
@@ -643,7 +668,7 @@
                         >
                         <nz-slider
                           [nzMin]="0"
-                          [nzMax]="1000"
+                          [nzMax]="8 - instancesModel.gpuCount"
                           [(ngModel)]="configGPU.GPU"
                           (ngModelChange)="changeGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
@@ -656,7 +681,7 @@
                           (ngModelChange)="changeGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
-                          [nzMax]="1000"
+                          [nzMax]="8 - instancesModel.gpuCount"
                           [nzStep]="1"
                           nzSize="large"
                         ></nz-input-number>
@@ -679,7 +704,7 @@
                     >*</span
                   >)</nz-form-label
                 >
-                <nz-form-control [nzErrorTip]="gpuErrorTpl">
+                <nz-form-control>
                   <nz-select
                     [nzPlaceHolder]="
                       '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
@@ -697,11 +722,6 @@
                     />
                   </nz-select>
                 </nz-form-control>
-                <ng-template #gpuErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng chọn GPU Type
-                  </ng-container>
-                </ng-template>
               </nz-form-item>
             </nz-tab>
           </nz-tabset>
@@ -710,6 +730,17 @@
           </div>
         </nz-card>
       </form>
+      <nz-card style="border-radius: 8px">
+        <span class="text-card-header">{{ 'app.guide.formula' | i18n }}</span>
+        <div style="margin-top: 25px">
+          <img src="assets/imgs/congthuc1.png" alt="" />
+          <img
+            src="assets/imgs/congthuc2.png"
+            alt=""
+            style="margin-top: 15px"
+          />
+        </div>
+      </nz-card>
     </nz-row>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">

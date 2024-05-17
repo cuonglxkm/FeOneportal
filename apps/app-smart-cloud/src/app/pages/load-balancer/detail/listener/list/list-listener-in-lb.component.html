@@ -13,10 +13,10 @@
   <thead>
   <tr>
     <th>{{ 'app.listener.name' | i18n }}</th>
-    <th>{{ 'app.protocol' | i18n }}c</th>
+    <th>{{ 'app.protocol' | i18n }}</th>
     <th>Port</th>
-    <th>{{ 'app.text.status' | i18n }}</th>
-    <th>{{ 'app.task.status' | i18n }}</th>
+    <th>{{ 'app.activity.status' | i18n }}</th>
+    <th>{{ 'app.activity.status.producer' | i18n }}</th>
     <th>{{ 'app.activity' | i18n }}</th>
   </tr>
   </thead>
@@ -25,11 +25,11 @@
     <td nzAlign="left"><a [routerLink]="'/app-smart-cloud/load-balancer/'+ idLB +'/listener/detail/' + data.id">{{ data.name }}</a></td>
     <td nzAlign="left">{{ data.protocol }}</td>
     <td nzAlign="right">{{ data.port }}</td>
-    <td nzAlign="left">
-      <span *ngIf="data.status === 'KHOITAO'"
-            style="color: #0066B3" class="text-label"><b>{{ listenerStatus.get(data.status) }}</b></span>
-      <span *ngIf="data.status === 'ERROR'"
-            style="color: #FF3333" class="text-label"><b>{{ listenerStatus.get(data.status) }}</b></span>
+    <td nzAlign="left">{{ data.operatingStatus }}
+<!--      <span *ngIf="data.status === 'KHOITAO'"-->
+<!--            style="color: #0066B3" class="text-label"><b>{{ listenerStatus.get(data.status) }}</b></span>-->
+<!--      <span *ngIf="data.status === 'ERROR'"-->
+<!--            style="color: #FF3333" class="text-label"><b>{{ listenerStatus.get(data.status) }}</b></span>-->
     </td>
     <td nzAlign="left">{{ data.provisioningStatus }}</td>
     <td>
@@ -51,7 +51,7 @@
 <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xác nhận xóa Listener" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
-              nzDescription="Bạn đang thực hiện xóa Pool"
+              nzDescription="Bạn đang thực hiện xóa Listener"
               nzShowIcon style="margin-bottom: 10px;"></nz-alert>
     <div class="text-label" style="margin-bottom: 3px; margin-top: 20px">Đế thực hiện xoá Listener {{itemDelete.name}}, vui lòng nhập tên Listener để xác nhận.</div>
     <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{itemDelete.name}}" [(ngModel)]="nameDelete"

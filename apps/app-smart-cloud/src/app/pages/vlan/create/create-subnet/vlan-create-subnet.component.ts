@@ -243,7 +243,11 @@ export class VlanCreateSubnetComponent implements OnInit {
     this.formCreateSubnet.vlanId = this.idNetwork;
     this.formCreateSubnet.region = this.region;
     this.formCreateSubnet.networktAddress = this.validateForm.controls.subnetAddressRequired.value;
-    this.formCreateSubnet.gatewayIP = this.validateForm.controls.gateway.value;
+    if(this.validateForm.controls.disableGatewayIp.value) {
+      this.formCreateSubnet.gatewayIP = null
+    } else {
+      this.formCreateSubnet.gatewayIP = this.validateForm.controls.gateway.value
+    }
     this.formCreateSubnet.allocationPool = this.validateForm.controls.allocationPool.value;
     this.formCreateSubnet.dnsNameServer = null;
     this.formCreateSubnet.enableDHCP = this.validateForm.controls.enableDhcp.value;
@@ -257,9 +261,15 @@ export class VlanCreateSubnetComponent implements OnInit {
       this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note61'))
 
     }, error => {
-      this.isLoading = false;
-      this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note62') + error.error.detail);
+      if(error.status == '500') {
+        this.isLoading = false;
+        this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.statusText);
+      } else {
+        this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note62') + 'Dải IP đã tồn tại, vui lòng nhập dải khác');
+
+      }
     });
   }
 
@@ -279,7 +289,7 @@ export class VlanCreateSubnetComponent implements OnInit {
         // const ipAddresses = ipRange.split(',').map(ip => ip.trim());
 
         if(!this.validateForm.controls.disableGatewayIp.value) {
-          this.validateForm.controls.allocationPool.setValue(this.gateway)
+          this.validateForm.controls.gateway.setValue(this.gateway)
         }
 
         this.validateForm.controls.allocationPool.setValue(this.pool)

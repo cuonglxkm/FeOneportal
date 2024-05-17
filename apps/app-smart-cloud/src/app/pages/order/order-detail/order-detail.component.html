@@ -1,51 +1,35 @@
-<page-header
-  [breadcrumb]="breadcrumb"
-  [action]="action"
-  [title]="'app.breadcrumb.order-detail' | i18n"
->
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.breadcrumb.order-detail' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{
           'app.breadcrumb.home' | i18n
-        }}</a></nz-breadcrumb-item
-      >
+          }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/order/list']">{{
           'app.breadcrumb.order' | i18n
-        }}</a></nz-breadcrumb-item
-      >
+          }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a>{{ 'app.breadcrumb.order-detail' | i18n }}</a></nz-breadcrumb-item
-      >
+        <a>{{ 'app.breadcrumb.order-detail' | i18n }}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="regionId"
-        (userChanged)="projectChange($event)"
-      ></project-select-dropdown>
+      <!-- <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown> -->
+      <!-- <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)"></project-select-dropdown> -->
     </div>
   </ng-template>
 </page-header>
 <div *ngIf="!(data?.statusCode == 5 && data?.invoiceCode == '')" class="mb-8 order-step">
-  <nz-steps
-    [nzLabelPlacement]="vertical"
-    [nzCurrent]="
+  <nz-steps [nzLabelPlacement]="vertical" [nzCurrent]="
       data?.statusCode === 4
         ? data?.statusCode
         : data?.statusCode === 5
         ? data?.statusCode - 2
         : data?.statusCode - 1
-    "
-    [nzStatus]="data?.statusCode === 5 ? 'error' : 'process'"
-    style="width: 50%; margin: 0 auto"
-  >
+    " [nzStatus]="data?.statusCode === 5 ? 'error' : 'process'" style="width: 50%; margin: 0 auto">
     <nz-step [nzTitle]="'app.order-detail.order' | i18n"></nz-step>
     <nz-step [nzTitle]="'app.order.status.Paid' | i18n"></nz-step>
     <nz-step [nzTitle]="'app.order.status.InProcessing' | i18n"></nz-step>
@@ -60,33 +44,26 @@
           <h3 class="order-title">
             {{ 'app.order-detail.order' | i18n }}: {{ data?.orderCode }}
           </h3>
-          <span
-            *ngIf="
+          <span *ngIf="
               data?.statusCode == 4 ||
               (data?.statusCode == 5 && data?.invoiceCode != '')
-            "
-            [style.background-color]="
+            " [style.background-color]="
               data?.statusCode === 4
                 ? '#008d47'
                 : data?.statusCode === 5
                 ? '#F68511'
                 : ''
-            "
-            style="
+            " style="
               border-radius: 15px;
               color: #fff;
               display: flex;
               align-items: center;
               padding: 0 10px;
-            "
-          >
+            ">
             {{ titleStepFour }}
           </span>
         </div>
-        <div
-          class="d-flex gap-3"
-          *ngIf="data?.statusCode == 5 && data?.invoiceCode == ''"
-        >
+        <div class="d-flex gap-3" *ngIf="data?.statusCode == 5 && data?.invoiceCode == ''">
           <h3 class="order-failed">
             <span style="color: #000">|</span>
             {{ 'app.order-detail.Cancelled' | i18n }}
@@ -181,6 +158,7 @@
         <thead>
           <tr>
             <th>{{ 'app.order-detail.serviceName' | i18n }}</th>
+            <th>{{"app.payment.service.type" |i18n}}</th>
             <th>{{ 'app.order-detail.price' | i18n }}</th>
             <th>{{ 'app.order-detail.remain' | i18n }}</th>
             <th>{{ 'app.order-detail.quantity' | i18n }}</th>
@@ -191,74 +169,32 @@
           <tr *ngFor="let item of data?.orderItems">
             <ng-container *ngIf="data?.statusCode == 4">
               <td [ngSwitch]="serviceName">
-                <a
-                  *ngSwitchCase="'File Storage'"
-                  [routerLink]="[
+                <a *ngSwitchCase="'File Storage'" [routerLink]="[
                     '/app-smart-cloud/file-storage/file-system/list'
-                  ]"
-                  >{{ item?.serviceName }}</a
-                >
-                <a
-                  *ngSwitchCase="'IP'"
-                  [routerLink]="['/app-smart-cloud/ip-public']"
-                  >{{ item?.serviceName }}</a
-                >
-                <a
-                  *ngSwitchCase="'VM'"
-                  [routerLink]="['/app-smart-cloud/instances']"
-                  >{{ item?.serviceName }}</a
-                >
+                  ]">{{ item?.serviceName }}</a>
+                <a *ngSwitchCase="'IP'" [routerLink]="['/app-smart-cloud/ip-public']">{{ item?.serviceName }}</a>
+                <a *ngSwitchCase="'VM'" [routerLink]="['/app-smart-cloud/instances']">{{ item?.serviceName }}</a>
                 <a *ngSwitchCase="'K8s'" [routerLink]="['/app-kubernetes']">{{
                   item?.serviceName
-                }}</a>
+                  }}</a>
                 <a *ngSwitchCase="'Kafka'" [routerLink]="['/app-kafka']">{{
                   item?.serviceName
-                }}</a>
-                <a
-                  *ngSwitchCase="'VPNSiteToSites'"
-                  [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
-                  >{{ item?.serviceName }}</a
-                >
-                <a
-                  *ngSwitchCase="'Volume'"
-                  [routerLink]="['/app-smart-cloud/volumes']"
-                  >{{ item?.serviceName }}</a
-                >
-                <a
-                  *ngSwitchCase="'Loadbalancer SDN'"
-                  [routerLink]="['/app-smart-cloud/load-balancer/list']"
-                  >{{ item?.serviceName }}</a
-                >
-                <a
-                  *ngSwitchCase="'Vpc'"
-                  [routerLink]="['/app-smart-cloud/vpc']"
-                  >{{ item?.serviceName }}</a
-                >
-                <a
-                  *ngSwitchCase="'Backup Packet'"
-                  [routerLink]="['/app-smart-cloud/backup/packages']"
-                  >{{ item?.serviceName }}</a
-                >
-                <a
-                  *ngSwitchCase="'Snapshot package'"
-                  [routerLink]="['/app-smart-cloud/snapshot/packages']"
-                  >{{ item?.serviceName }}</a
-                >
-                <a
-                  *ngSwitchCase="'Object Storage'"
-                  [routerLink]="['/app-smart-cloud/object-storage/bucket']"
-                  >{{ item?.serviceName }}</a
-                >
-                <a
-                  *ngSwitchCase="'Mongodb'"
-                  [routerLink]="['/app-mongodb-replicaset']"
-                  >{{ item?.serviceName }}</a
-                >
-                <a
-                  *ngSwitchCase="'Backup volume'"
-                  [routerLink]="['/app-smart-cloud/backup-volume']"
-                  >{{ item?.serviceName }}</a
-                >
+                  }}</a>
+                <a *ngSwitchCase="'VPNSiteToSites'" [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">{{
+                  item?.serviceName }}</a>
+                <a *ngSwitchCase="'Volume'" [routerLink]="['/app-smart-cloud/volumes']">{{ item?.serviceName }}</a>
+                <a *ngSwitchCase="'Loadbalancer SDN'" [routerLink]="['/app-smart-cloud/load-balancer/list']">{{
+                  item?.serviceName }}</a>
+                <a *ngSwitchCase="'Vpc'" [routerLink]="['/app-smart-cloud/vpc']">{{ item?.serviceName }}</a>
+                <a *ngSwitchCase="'Backup Packet'" [routerLink]="['/app-smart-cloud/backup/packages']">{{
+                  item?.serviceName }}</a>
+                <a *ngSwitchCase="'Snapshot package'" [routerLink]="['/app-smart-cloud/snapshot/packages']">{{
+                  item?.serviceName }}</a>
+                <a *ngSwitchCase="'Object Storage'" [routerLink]="['/app-smart-cloud/object-storage/bucket']">{{
+                  item?.serviceName }}</a>
+                <a *ngSwitchCase="'Mongodb'" [routerLink]="['/app-mongodb-replicaset']">{{ item?.serviceName }}</a>
+                <a *ngSwitchCase="'Backup volume'" [routerLink]="['/app-smart-cloud/backup-volume']">{{
+                  item?.serviceName }}</a>
                 <div *ngSwitchDefault>{{ item?.serviceName }}</div>
               </td>
             </ng-container>
@@ -267,6 +203,9 @@
                 <div>{{ item?.serviceName }}</div>
               </td>
             </ng-container>
+            <td class="text-left">
+              {{ item?.serviceType }}
+            </td>
             <td class="text-right">
               {{ item?.unitPrice?.amount | number : '1.0-0' }}
             </td>
@@ -285,16 +224,14 @@
       <div style="margin-bottom: 20px">
         <span class="text-card-header">{{
           'app.order-detail.paymentInformation' | i18n
-        }}</span>
+          }}</span>
       </div>
       <div>
         <nz-table>
-          <tr style="margin-bottom: 5px">
+          <tr style="margin-bottom: 5px" class="label-fontsize">
             <td>{{ 'app.order-detail.totalAmount' | i18n }}</td>
             <td style="text-align: right">
-              <span class="price"
-                >{{ data?.amount?.amount | number : '1.0-0' }} VND</span
-              >
+              <span class="price">{{ data?.amount?.amount | number : '1.0-0' }} VND</span>
               <span>{{ 'app.order-detail.month' | i18n }}</span>
             </td>
           </tr>
@@ -306,12 +243,10 @@
             <td></td>
             <td></td>
           </tr>
-          <tr style="margin-bottom: 5px">
+          <tr style="margin-bottom: 5px" class="label-fontsize">
             <td>VAT(10%)</td>
             <td style="text-align: right">
-              <span class="price"
-                >{{ data?.vat?.amount | number : '1.0-0' }} VND</span
-              >
+              <span class="price">{{ data?.vat?.amount | number : '1.0-0' }} VND</span>
               <span>{{ 'app.order-detail.month' | i18n }}</span>
             </td>
           </tr>
@@ -323,70 +258,50 @@
             <td></td>
             <td></td>
           </tr>
-          <tr style="background-color: #cce9ff">
+          <tr style="background-color: #cce9ff" class="label-fontsize">
             <td style="padding: 10px; border-radius: 8px 0 0 8px">
               <span style="display: block; font-size: 16px; font-weight: 600">{{
                 'app.order-detail.totalPayment' | i18n
-              }}</span>
+                }}</span>
               <span>({{ 'app.order-detail.vat' | i18n }})</span>
             </td>
-            <td
-              style="
+            <td style="
                 text-align: right;
                 color: #ea3829;
                 font-weight: 600;
                 padding: 10px;
                 border-radius: 0 8px 8px 0;
-              "
-            >
+              " >
               {{ data?.totalAmount?.amount | number : '1.0-0' }} VND
             </td>
           </tr>
         </nz-table>
         <div class="mt-3">
-          <button
-            style="width: 100%"
-            *ngIf="data?.statusCode == 5 && data?.invoiceCode == ''"
-            nz-button
-          >
+          <button style="width: 100%" *ngIf="data?.statusCode == 5 && data?.invoiceCode == ''" nz-button>
             <span nz-icon nzType="shop" nzTheme="outline"></span>
             {{ 'app.order-detail.repurchase' | i18n }}
           </button>
-          <button
-            *ngIf="data?.statusCode < 2"
-            nz-button
-            nzType="primary"
-            style="
+          <button *ngIf="data?.statusCode < 2" nz-button nzType="primary" style="
               width: 100%;
               display: flex;
               align-items: center;
               gap: 5px;
               justify-content: center;
-            "
-          >
+            ">
             <img src="assets/imgs/wallet.svg" />
             {{ 'app.order-detail.pay' | i18n }}
           </button>
-          <button
-            class="mt-3 ml-0"
-            *ngIf="data?.statusCode < 2 && titleStepFour != 'Sự cố'"
-            nz-button
-            style="width: 100%"
-          >
+          <button class="mt-3 ml-0" *ngIf="data?.statusCode < 2 && titleStepFour != 'Sự cố'" nz-button
+            style="width: 100%">
             <span nz-icon nzType="shop" nzTheme="outline"></span>
             {{ 'app.order-detail.cancelOrder' | i18n }}
           </button>
 
-          <button
-            class="mt-3"
-            nz-button
-            style="width: 100%; border: none"
-            [routerLink]="'/app-smart-cloud/order/list'"
+          <button class="mt-3" nz-button style="width: 100%; border: none" [routerLink]="'/app-smart-cloud/order/list'"
             *ngIf="
               (data?.statusCode != 4 && data?.statusCode < 2) ||
               (data?.statusCode === 5 && titleStepFour != 'Sự cố')
-            "
-          >
+            ">
             <span nz-icon nzType="left" nzTheme="outline"></span>
             {{ 'app.order-detail.back' | i18n }}
           </button>

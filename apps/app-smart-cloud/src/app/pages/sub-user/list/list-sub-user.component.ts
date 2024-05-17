@@ -1,8 +1,12 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubUserService } from '../../../shared/services/sub-user.service';
 import { SubUser, SubUserKeys } from '../../../shared/models/sub-user.model';
-import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import {
+  BaseResponse,
+  ProjectModel,
+  RegionModel,
+} from '../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
 import { ClipboardService } from 'ngx-clipboard';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
@@ -19,25 +23,35 @@ export class ListSubUserComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  value: string
+  value: string;
 
-  pageSize: number = 10
-  pageIndex: number = 1
+  pageSize: number = 10;
+  pageIndex: number = 1;
 
-  response: BaseResponse<SubUser[]>
+  response: BaseResponse<SubUser[]>;
 
-  isLoading: boolean = false
+  isLoading: boolean = false;
 
-  isCheckBegin: boolean = false
+  isCheckBegin: boolean = false;
 
-  constructor(private router: Router,
-              private subUserService: SubUserService,
-              private objectSevice: ObjectStorageService,
-              private cdr: ChangeDetectorRef,
-              private loadingSrv: LoadingService,
-              private notification: NzNotificationService,
-              private clipboardService: ClipboardService) {
-    this.rowCount = this.response?.records.reduce((count, data) => count + data.keys.length, 0);
+  listSubuser: any
+
+  isExpand: number | null = null;
+
+  constructor(
+    private router: Router,
+    private subUserService: SubUserService,
+    private objectSevice: ObjectStorageService,
+    private cdr: ChangeDetectorRef,
+    private loadingSrv: LoadingService,
+    private notification: NzNotificationService,
+    private clipboardService: ClipboardService,
+    private renderer: Renderer2
+  ) {
+    this.rowCount = this.response?.records.reduce(
+      (count, data) => count + data.keys.length,
+      0
+    );
   }
 
   hasOS: boolean = undefined;
@@ -65,73 +79,105 @@ export class ListSubUserComponent implements OnInit {
   }
 
   onInputChange(value) {
-    this.value = value
-    this.getListSubUsers(false)
+    this.value = value;
+    this.getListSubUsers(false);
   }
 
   rowCount: number = 0;
 
   // Hàm tính số hàng
-  calculateRowCount() {
-
-  }
+  calculateRowCount() {}
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project?.id
-    this.getListSubUsers(true)
+    this.project = project?.id;
+    this.getListSubUsers(true);
   }
 
-
   onPageSizeChange(value) {
-    this.pageSize = value
+    this.pageSize = value;
 
-    this.getListSubUsers(false)
+    this.getListSubUsers(false);
   }
 
   onPageIndexChange(value) {
-    this.pageIndex = value
+    this.pageIndex = value;
 
-    this.getListSubUsers(false)
+    this.getListSubUsers(false);
   }
 
   navigateToCreateSubUser() {
-    this.router.navigate(['/app-smart-cloud/object-storage/sub-user/create'])
+    this.router.navigate(['/app-smart-cloud/object-storage/sub-user/create']);
   }
 
   getListSubUsers(isBegin) {
-    this.isLoading = true
-    this.subUserService.getListSubUser(this.value, this.pageSize, this.pageIndex).subscribe(data => {
-      this.response = data
-      this.isLoading = false
+    this.isLoading = true;
+    this.subUserService
+      .getListSubUser(this.value, this.pageSize, this.pageIndex)
+      .subscribe(
+        (data) => {
+          this.response = data;
+          this.isLoading = false;
 
-      if (isBegin) {
-        this.isCheckBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
-      }
-    }, error => {
-      this.isLoading = false
-      this.response = null
-    })
+          const transformedData = data.records.map(record => {  
+            const [firstKey, ...remainingKeys] = record.keys;
+            return {
+              ...record,
+              ...firstKey,  
+              keys: remainingKeys  
+            };
+          });
+        
+          this.listSubuser = transformedData
+          
+
+          if (isBegin) {
+            this.isCheckBegin =
+              this.response.records.length < 1 || this.response.records === null
+                ? true
+                : false;
+          }
+        },
+        (error) => {
+          this.isLoading = false;
+          this.response = null;
+        }
+      );
   }
 
   handleOkEdit() {
-    this.getListSubUsers(false)
+    this.getListSubUsers(false);
   }
 
   handleOkDelete() {
-    this.getListSubUsers(false)
+    this.getListSubUsers(false);
   }
 
   copyText(data) {
     this.clipboardService.copyFromContent(data);
   }
+
+  handleExpandAccessKey(index: number, event: MouseEvent){ 
+    event.stopPropagation();
+    this.isExpand = this.isExpand === index ? null : index;
+  }
+
+  handleCloseExpand(event: MouseEvent){
+    this.isExpand = null;
+  }
+
   ngOnInit() {
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
     this.hasObjectStorage();
+    this.renderer.listen('document', 'click', this.handleCloseExpand.bind(this));
+  }
+
+  ngOnDestroy() {
+    this.renderer.listen('document', 'click', this.handleCloseExpand.bind(this));
   }
 }

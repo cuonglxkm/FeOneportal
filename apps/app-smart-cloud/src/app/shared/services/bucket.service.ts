@@ -38,7 +38,7 @@ export class BucketService extends BaseService {
   }
 
   deleteBucket(bucketName: string) {
-    let url_ = `/object-storage/CleanBucket?bucketName=${bucketName}`;
+    let url_ = `/object-storage/Bucket/Delete/?bucketName=${bucketName}`;
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
       headers: this.httpOptions.headers,
       responseType: 'text',
@@ -135,19 +135,19 @@ export class BucketService extends BaseService {
     listAction: string[]
   ): Observable<any> {
     let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&id=${id}&effect=${effect}&childrenUser=${childrenUser}&isUserOther=${isUserOther}`;
-    return this.http.put<any>(
+    return this.http.put(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       listAction,
-      this.httpOptions
+      { headers: this.httpOptions.headers, responseType: 'text' }
     );
   }
 
-  deleteBucketPolicy(bucketName: string, id: string): Observable<any> {
+  deleteBucketPolicy(bucketName: string, id: string) {
     let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&id=${id}`;
-    return this.http.delete<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
-    );
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+    });
   }
 
   getListBucketCORS(bucketName: string): Observable<any> {

@@ -165,7 +165,7 @@
       />
     </div>
     <nz-select
-      style="width: 100%; margin-bottom: 16px; margin-top: 5px"
+      style="width: 100%; margin-top: 5px"
       nzPlaceHolder="{{'app.choose.subnet' | i18n}}"
       [nzShowSearch]="true"
       formControlName="subnetId"
@@ -195,7 +195,7 @@
       placeholder=""
       formControlName="ipAdress"
     /> -->
-    <nz-form-item>
+    <nz-form-item style="margin-top: 10px">
       <nz-form-control [nzErrorTip]="ipErrorTpl">
       <nz-form-label nzFor="name">
         <div>
@@ -215,11 +215,14 @@
       nz-input
       placeholder="{{'router.label.ip.interface.example' | i18n}}"
       formControlName="ipAddress"
+      #ipAdress
+      id="ipAddress"
     />
+      <!-- <span *ngIf="isInvalidipAddress" style="color: #FF4D4F;">{{ invalidipAddress }}</span> -->
       <ng-template #ipErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">{{'router.validate.ip.empty' | i18n}}</ng-container>
-        <!-- <ng-container *ngIf="control.hasError('invalidSubnetIP')">{{'router.validate.ip.fail' | i18n}}</ng-container>
-        <ng-container *ngIf="control.hasError('invalidLastNumber')">{{'router.validate.ip.fail' | i18n}}</ng-container> -->
+        <ng-container *ngIf="control.hasError('invalidSubnetIP')">{{'router.alert.wrong.format' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('invalidLastNumber')">{{'router.alert.wrong.format' | i18n}}</ng-container>
       </ng-template>
     </nz-form-control>
     </nz-form-item>
@@ -232,7 +235,7 @@
         alt=""
       />{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreateInterface()" [nzLoading]="isLoadingRouterInterface">
+    <button nz-button nzType="primary" (click)="handleOkCreateInterface()" [disabled]="formRouterInterface.invalid" [nzLoading]="isLoadingRouterInterface">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
@@ -251,7 +254,7 @@
 >
 <form nz-form [formGroup]="formRouterStatic">
   <ng-container *nzModalContent>  
-    <nz-form-item style="margin-bottom: 0px;">
+    <nz-form-item>
       <nz-form-control [nzErrorTip]="cidrErrorTpl">
       <nz-form-label nzFor="name">
         <div>
@@ -266,7 +269,7 @@
         </div>
       </nz-form-label>
       <input
-      style="margin-bottom: 16px; margin-top: 5px"
+      style="margin-top: 5px"
       class="input-custom"
       nz-input
       placeholder="10.0.0.1/24"
@@ -301,7 +304,6 @@
     />
       <ng-template #nextHopErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">{{'router.validate.nextHop.empty' | i18n}}</ng-container>
-        <ng-container *ngIf="control.hasError('pattern')">{{'router.validate.nextHop.pattern' | i18n}}</ng-container>
       </ng-template>
     </nz-form-control>
     </nz-form-item>

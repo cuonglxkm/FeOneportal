@@ -36,7 +36,7 @@
   margin-left: -24px;
   padding: 12px 24px 0 24px;
   border-bottom: none;
-  background-color: #ebf0f9;
+  background-color: inherit;
 }
 
 // END HEADER
@@ -124,7 +124,7 @@ u {
 
 .ant-alert-warning {
   border-radius: 4px;
-  background-color: #fffbe6;
+  background-color: @note-background-color;
   border: 1px solid #ffe58f;
 }
 
@@ -206,13 +206,11 @@ u {
 .ant-input-affix-wrapper {
   // Input group
   border-radius: 8px;
-  padding: 0px 11px;
 }
 
 //Input
 .ant-input {
   border-radius: 8px;
-  height: 40px;
   font-size: 16px;
 }
 .ant-select-show-search.ant-select:not(.ant-select-customize-input)
@@ -257,6 +255,7 @@ project-select-dropdown nz-select-item.ant-select-selection-item {
 .ant-select-selector {
   display: flex;
   align-items: center;
+  font-size: @textbox-fontsize;
 }
 
 //END SELECT
@@ -523,7 +522,25 @@ body {
 ::ng-deep .ant-tooltip-arrow-content .ant-tooltip-arrow-content::before {
   background-color: #fff !important;
 }
-
+.icon-svg{
+display: flex;
+align-items: center;
+}
+.justify-center-icon{
+  justify-content: center;
+}
+.ant-picker-input > input {
+  font-size:@textbox-fontsize; /* Thay đổi kích thước font và sử dụng !important nếu cần thiết */
+}
+.label-fontsize{
+  font-size: @label-fontsize;
+}
+.link_breadcrumb{
+ color: @link-breadcrumb-color !important;
+}
+// .link_breadcrumb:hover{
+//   color:#0066b3  !important
+// }
 .ant-popover-title {
   min-width: 177px;
   min-height: 32px;
@@ -535,4 +552,20 @@ body {
   display: grid;
   align-items: center;
   justify-content: center;
+}
+.icon-padding-right{
+  padding-right: @icon-padding-right;
+}
+.textbox-radius-lg{
+  border-radius: @textbox-radius-lg;
+}
+.items-center-text{
+  display: flex;
+  align-items: center;
+}
+.custom-input{
+  height: @textbox-height;
+}
+.ant-modal-close-x {
+  color:#DC3545;
 }

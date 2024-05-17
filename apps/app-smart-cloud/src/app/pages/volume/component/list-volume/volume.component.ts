@@ -69,14 +69,14 @@ export class VolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    this.getListVolume(true);
+    setTimeout(() => {this.getListVolume(true);}, 2500)
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project?.type;
     this.isLoading = true;
-    this.getListVolume(true);
+    setTimeout(() => {this.getListVolume(true);}, 2500)
   }
 
 
@@ -133,6 +133,8 @@ export class VolumeComponent implements OnInit {
       }, error => {
         this.isLoading = false;
         this.response = null;
+        console.log(error);
+        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
       });
   }
 
@@ -140,16 +142,6 @@ export class VolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volume/create']);
   }
 
-  // navigateToCreateBackupVolume(id: number, startDate: Date, endDate: Date, nameVolume: string) {
-  //   this.router.navigate(['/app-smart-cloud/backup-volume/create'], {
-  //     queryParams: {
-  //       idVolume: id,
-  //       startDate: startDate,
-  //       endDate: endDate,
-  //       nameVolume: nameVolume
-  //     }
-  //   });
-  // }
 
   navigateToCreateVolumeVPC() {
     this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
@@ -168,6 +160,7 @@ export class VolumeComponent implements OnInit {
     }, 1500);
   }
 
+  //delete
   handleOkDelete() {
     this.getListVolume(true);
   }
@@ -181,10 +174,14 @@ export class VolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
   }
 
-  navigateToCreateBackup(id, createdDate, endDate, name) {
-    this.router.navigate(['/app-smart-cloud/backup-volume/create'], {
-      queryParams: { idVolume: id, startDate: createdDate, endDate: endDate, nameVolume: name }
-    });
+  navigateToCreateBackup(idVolume) {
+    if(this.typeVPC == 1) {
+      this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc', {volumeId: idVolume}]);
+    }
+    if(this.typeVPC == 0) {
+      this.router.navigate(['/app-smart-cloud/backup-volume/create/normal', {volumeId: idVolume}]);
+    }
+
 
   }
 
@@ -210,8 +207,7 @@ export class VolumeComponent implements OnInit {
     if (!this.region && !this.project) {
       this.router.navigate(['/exception/500']);
     }
-    // this.getListVm()
-    // this.getListVolume(true)
+
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
     }
@@ -228,6 +224,8 @@ export class VolumeComponent implements OnInit {
           record.serviceStatus = data.serviceStatus;
 
           this.response.records[foundIndex] = record;
+
+          this.getListVolume(false)
           this.cdr.detectChanges();
         }
       }

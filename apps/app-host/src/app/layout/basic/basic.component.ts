@@ -96,7 +96,7 @@ import { environment } from '@env/environment';
       <footer
         style="display: flex; align-items: center; justify-content: center;"
       >
-        Power by
+        Powered by
         <img style="margin-left: 10px" src="assets/imgs/logo-vnpt.svg" alt="" />
       </footer>
     </layout-default>

@@ -67,9 +67,9 @@ export class EditVolumeComponent implements OnInit {
               private projectService: ProjectService,
               @Inject(ALAIN_I18N_TOKEN) protected i18n: I18NService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running').toUpperCase());
-    this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error').toUpperCase());
-    this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend').toUpperCase());
+    this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
+    this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
+    this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend'));
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
       if (value <= 40) return (this.iops = 400);
@@ -216,7 +216,7 @@ export class EditVolumeComponent implements OnInit {
         console.log('volumesInfo', this.volumeInfo.attachedInstances);
         if (data?.attachedInstances != null) {
           this.volumeInfo?.attachedInstances?.forEach(item => {
-            this.listVMs += item.instanceName.toString();
+            this.listVMs += item.instanceName + '\n';
           });
         }
         this.getTotalAmount();
@@ -238,6 +238,13 @@ export class EditVolumeComponent implements OnInit {
     // this.notification.warning('', 'Không thể thay đổi loại Volume.')
   }
 
+  convertString(str: string): string {
+    const parts = str.trim().split('\n');
+    if (parts.length === 1) {
+      return str;
+    }
+    return parts.join(', ');
+  }
   volumeEdit: EditSizeMemoryVolumeDTO = new EditSizeMemoryVolumeDTO();
 
   volumeInit() {

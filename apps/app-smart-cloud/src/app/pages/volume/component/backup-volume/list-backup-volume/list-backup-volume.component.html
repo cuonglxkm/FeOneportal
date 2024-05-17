@@ -1,170 +1,96 @@
-<page-header [content]="content"
-             [breadcrumb]="breadcrumb"
+<page-header [breadcrumb]="breadcrumb"
              [action]="action" [title]="'app.breadcrumb.list.backup.volume'|i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">{{'app.breadcrumb.home'|i18n}}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service'|i18n}}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.block.storage'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'volume.title.breadcrumb.backup.volume'|i18n}}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.list.backup.volume'|i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" (userChanged)="projectChange($event)"></project-select-dropdown>
-    </div>
-  </ng-template>
-  <ng-template #content>
-    <div *ngIf="!isBegin" nz-row class="mb-md" style="display: flex; flex-direction: column;">
-      <!--    <h2 style="margin-bottom: 30px;">Danh sách Backup volume</h2>-->
-      <div style="display: flex; align-items: center;">
-        <h4 style="display: inline-block; margin-right: 20px;">Trạng thái:</h4>
-        <nz-select nzPlaceHolder="Tất cả trạng thái" [(ngModel)]="selectedStatus"
-                   (nzOpenChange)="search('')" style="width: 150px">
-          <nz-option *ngFor="let s of listStatus" [nzLabel]="s.label" [nzValue]="s.value"></nz-option>
-        </nz-select>
-        <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton" style="margin-left: 25px;">
-          <input #searchBox type="text" nz-input placeholder="Tìm kiến"
-                 style="width: 350px"/>
-          <ng-template #suffixButton>
-            <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
-              <i nz-icon nzType="search"></i>
-              Tim kiếm
-            </button>
-          </ng-template>
-        </nz-input-group>
-      </div>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="region"
+                               (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
-<nz-card>
-  <ng-container [ngSwitch]="isBegin">
-    <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
-      <!--  Bảng-->
-      <nz-table #rowSelectionTable
-                [nzFrontPagination]="false"
-                nzShowPagination
-                nzShowSizeChanger
-                [nzData]="listOfData"
-                [nzTotal]="total"
-                [nzPageSize]="size"
-                (nzPageSizeChange)="onPageSizeChange($event)"
-                (nzPageIndexChange)="onPageIndexChange($event)"
-                [nzLoading]="loading">
-        <thead>
-        <tr>
-          <th>Tên</th>
-          <th>Volume gốc</th>
-          <th>VPC</th>
-          <th>Dung lượng</th>
-          <th>Gói backup</th>
-          <th>Ngày tạo</th>
-          <th>Hết hạn</th>
-          <th>Trạng thái</th>
-          <th>Trạng thái tác vụ</th>
-          <th>Thao tác vụ</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let data of listOfData">
-          <td (click)="detailKey(data)" style="color: royalblue">{{ data.name }}</td>
-          <td (click)="detailKey(data)">{{ data.volumeName }}</td>
-          <td (click)="detailKey(data)">{{ data.vpcName }}</td>
-          <td (click)="detailKey(data)">{{ data.size }}GB</td>
-          <td (click)="detailKey(data)">{{ data.backupPackgeName }}</td>
-          <td (click)="detailKey(data)">{{ data.creationDate | date:'HH:mm:ss - dd/MM/yyyy' }}</td>
-          <td (click)="detailKey(data)">{{ data.expirationDate | date:'dd/MM/yyyy' }}</td>
-          <td (click)="detailKey(data)" [ngStyle]="{'color': getStatusColor(data.status)}">
-            {{ getStatusLabel(data.status) }}</td>
-          <td (click)="detailKey(data)">{{ data.serviceStatus == 'KHOITAO' ? '-' : data.serviceStatus }}</td>
-          <td>
-            <!--            <nz-select [ngModel]="selectedOptionAction"-->
-            <!--                       (ngModelChange)="openDataMounted($event , data)"-->
-            <!--                       nzPlaceHolder="thao tác" nzSize="default" style="width: 90px">-->
-            <!--              <nz-option *ngIf="data.status=='AVAILABLE' && data.status!='CREATING' && data.status!='DELETING'"-->
-            <!--                         nzValue="1" nzLabel="Restore"></nz-option>-->
-            <!--              <nz-option *ngIf="data.status!='CREATING' && data.status!='DELETING'" nzValue="2"-->
-            <!--                         nzLabel="Xóa"></nz-option>-->
-            <!--            </nz-select>-->
-            <button nz-button nz-dropdown [nzDropdownMenu]="menu4">
-              Thao Tác
-              <span nz-icon nzType="down"></span>
-            </button>
-            <nz-dropdown-menu #menu4="nzDropdownMenu">
-              <ul nz-menu>
-                <li *ngIf="data.status=='AVAILABLE' && data.status!='CREATING' && data.status!='DELETING'"
-                    (click)="openDataMounted('1', data)" nz-menu-item style="background-color: dodgerblue">Restore
-                </li>
-                <li *ngIf="data.status!='CREATING' && data.status!='DELETING'"
-                    (click)="openDataMounted('2', data)" nz-menu-item nzDanger>Xóa
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-          </td>
-        </tr>
-        <!--        restore-->
-        <nz-form-control>
-          <form #myForm="ngForm" nz-form [formGroup]="form"  [nzLayout]="'vertical'">
-            <nz-modal [(nzVisible)]="isVisibleRestore" nzTitle="Restore Volume"
-                      (nzOnCancel)="handleCancel(null)" nzOkText="Đồng ý" [nzCancelText]="'Hủy'"
-                      (nzOnOk)="handleRestore(data.id)" [nzOkDisabled]="form.invalid">
-              <ng-container *nzModalContent>
-                <div style="display: inline-block;">
-                  <nz-form-label [nzFor]="'volumeStatus'" style="margin-right: 90px;">Volume</nz-form-label>
-                  <nz-select [nzLoading]="loadingRestore" nzPlaceHolder="-- Chọn volume --" [(ngModel)]="selectedVolume"
-                             style="width: 300px" formControlName="select">
-                    <nz-option *ngFor="let s of listOfVolume" [nzLabel]="s.name" [nzValue]="s.id"></nz-option>
-                  </nz-select>
-                </div>
-              </ng-container>
-            </nz-modal>
-          </form>
-        </nz-form-control>
-        <!--        xóa-->
-        <nz-modal [(nzVisible)]="isVisibleDelete"
-                  (nzOnCancel)="handleCancel(myForm)" nzOkText="Đồng ý" [nzCancelText]="'Hủy'"
-                  (nzOnOk)="handleDelete(data.id)">
-          <ng-container *nzModalTitle>
-            <span class="text-modal-title">Các nhận xóa xóa backup volume này?</span>
-          </ng-container>
-          <ng-container *nzModalContent>
-            <span class="text-label">Quý khách chắc chắn muốn xóa Backup Volume?</span>
-          </ng-container>
-
-        </nz-modal>
-        </tbody>
-      </nz-table>
-    </ng-container>
-    <ng-container *ngSwitchDefault>
-      <nz-card>
+<nz-content>
+  <nz-card>
+    <ng-container [ngSwitch]="isBegin">
+      <ng-container *ngSwitchCase="false">
+        <nz-row nzJustify="space-between">
+          <nz-col nzSpan="16">
+            <nz-select [(ngModel)]="statusSelected"
+                       nzSize="large"
+                       style="margin-right: 10px; width: 170px;"
+                       (ngModelChange)="onChange($event)"
+                       nzPlaceHolder="{{ 'volume.placeholder.filter.status' | i18n }}"
+                       nzTooltipTitle="{{ 'volume.tooltip.title.filter.status' | i18n }}"
+                       nzTooltipPlacement="bottom"
+                       nz-tooltip>
+<!--              <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>-->
+            </nz-select>
+            <nz-input-group>
+<!--              style="width: 300px;"-->
+<!--              [nzPrefix]="prefixIconSearch"-->
+<!--              nzSize="large">-->
+<!--              <input-->
+<!--                name="name"-->
+<!--                nz-input-->
+<!--                [(ngModel)]="value"-->
+<!--                (input)="onInputChange($event.target['value'])"-->
+<!--                placeholder="{{ 'volume.placeholder.filter.name' | i18n }}" />-->
+            </nz-input-group>
+            <ng-template #prefixIconSearch>
+              <img
+                src="assets/imgs/search.svg"
+                alt=""
+                style="cursor: pointer"
+                nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
+            </ng-template>
+          </nz-col>
+          <nz-col nzSpan="8" style="flex:none;">
+<!--            <button-->
+<!--              nz-button-->
+<!--              nzType="primary"-->
+<!--              nzSize="large"-->
+<!--              (click)="navigateToCreateVolume()">-->
+<!--              <img-->
+<!--                style="padding-right: 10px; margin-top: -4px"-->
+<!--                src="assets/imgs/add-circle.svg"-->
+<!--                alt="" />-->
+<!--              <span class="button-text-primary">{{ 'volume.button.create' | i18n }}</span>-->
+<!--            </button>-->
+          </nz-col>
+        </nz-row>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
         <result>
           <nz-row>
             <nz-col class="text-center" style="width: 100%">
-              <img src="assets/imgs/backup-volume.png" alt="">
+              <img src="assets/imgs/backupvm-blank.png" alt="" />
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-title" style="color: #0066b3">Backup Volume - Sao lưu, bảo mật</span>
+              <span class="text-intro-title" style="color: #0066b3">{{ 'app.backup.volume.title.intro' | i18n }}</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">Giải pháp hỗ trợ sao lưu, nhân bản một phần hoặc toàn bộ hệ thống máy chủ
-                  doanh nghiệp lên hạ tầng điện toán đám mây, đảm bảo dự phòng cho việc vận hành khi hệ thống chính gặp
-                  lỗi hoặc những sự cố không mong muốn.</span>
+              <span class="text-intro-desc">{{ 'app.backup.volume.intro.description' | i18n }}</span>
             </nz-col>
           </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'"
-                  routerLink="/app-smart-cloud/schedule/backup/create" nzSize="large">
+          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            Khởi tạo ngay
+            {{ 'app.backup.volume.button.create' | i18n }}
           </button>
         </result>
-      </nz-card>
+      </ng-container>
     </ng-container>
-  </ng-container>
-</nz-card>
+  </nz-card>
+</nz-content>
