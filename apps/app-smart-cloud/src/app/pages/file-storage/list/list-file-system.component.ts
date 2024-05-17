@@ -5,7 +5,9 @@ import { FileSystemModel, FormSearchFileSystem } from '../../../shared/models/fi
 import { FileSystemService } from '../../../shared/services/file-system.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 @Component({
   selector: 'one-portal-list-file-system',
   templateUrl: './list-file-system.component.html',
@@ -35,6 +37,8 @@ export class ListFileSystemComponent implements OnInit {
   constructor(private router: Router,
               private fileSystemService: FileSystemService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private projectService: ProjectService) {
   }
 
@@ -58,16 +62,29 @@ export class ListFileSystemComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/file-storage/'+id+'/extend'])
   }
   navigateToCreateFileSystem(typeVpc) {
-    //in vpc
-    if(typeVpc == 1) {
-      this.router.navigate(['/app-smart-cloud/file-storage/file-system/create']);
-    }
+    this.fileSystemService.checkRouter(this.region, this.project).subscribe((data) => {
+      console.log(data)
+      if(data === true){
+        //in vpc
+        if(typeVpc == 1){
+          this.router.navigate(['/app-smart-cloud/file-storage/file-system/create'])
+        }
 
-    //no vpc
-    if(typeVpc == 0) {
-      this.router.navigate(['/app-smart-cloud/file-storage/file-system/create/normal'])
-    }
-
+        //no vpc
+        if(typeVpc == 0){
+          this.router.navigate(['/app-smart-cloud/file-storage/file-system/create/normal'])
+        }
+      }
+      else{
+        (error) => {
+          if(error.status === 500){
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.checkRouter.file.system'))
+          }else{
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.checkRouter.file.system.noGateway'))
+          }
+        }
+      }
+    })
   }
 
   navigateToResizeFileSystem(typeVpc, id) {
