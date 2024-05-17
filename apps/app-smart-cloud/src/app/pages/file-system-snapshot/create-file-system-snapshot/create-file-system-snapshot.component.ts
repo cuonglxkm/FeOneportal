@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -23,13 +23,14 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
   project = JSON.parse(localStorage.getItem('projectId'));
 
   value: string;
-  pageSize: number = 10;
+  pageSize: number = 9999;
   pageIndex: number = 1;
   response: BaseResponse<FileSystemModel[]>;
   isLoading: boolean = false;
   isCheckBegin: boolean = false;
   customerId: number;
   selectedFileSystemName: string;
+  fileSysId: number;
   
   formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot = new FormCreateFileSystemSnapShot();
 
@@ -69,7 +70,12 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
         this.isLoading = false;
         console.log('data file system', data);
         this.response = data;
-
+        if(this.activatedRoute.snapshot.paramMap.get('fileSystemId')){
+          const fileSystemId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('fileSystemId'));
+          if(this.response.records.find(x => x.id == fileSystemId)) {
+            this.fileSysId = fileSystemId;
+          }
+        }
       }, error => {
         this.isLoading = false;
         this.response = null;
@@ -80,9 +86,9 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
 
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
-    this.getListFileSystem()
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
+    this.getListFileSystem();
   }
 
 
@@ -93,7 +99,8 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
     private fb: NonNullableFormBuilder,
      private fileSystemService: FileSystemService,
      private fileSystemSnapshotService: FileSystemSnapshotService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private activatedRoute: ActivatedRoute
   ) {}
 
 
