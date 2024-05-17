@@ -107,15 +107,15 @@
   <nz-table
     #ajaxTable3
     nzShowSizeChanger
-    [nzFrontPagination]="false"
     [nzData]="dataList"
     [nzLoading]="loading"
     [nzTotal]="total"
     [(nzPageIndex)]="currentPage"
     [(nzPageSize)]="pageSize"
     (nzPageIndexChange)="getDataList()"
-    (nzPageSizeChange)="getDataList()"
-    [nzVirtualItemSize]="54"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzFrontPagination]="false"
+    [nzPageSizeOptions]="[pageSizeFixed, 10, 20, 30, 40, 50]"
   >
     <thead>
       <tr>
