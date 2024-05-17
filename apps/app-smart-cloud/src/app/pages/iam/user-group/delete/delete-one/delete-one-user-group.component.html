@@ -1,4 +1,4 @@
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Xóa User Groups"
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]="'app.user-group.deleteOne'|i18n"
           (nzOnCancel)="handleCancel()" nzCentered>
   <div *nzModalTitle>
     <div class="text-h5"><b>{{ 'app.user-group.deleteOne.title' | i18n }}</b></div>
@@ -7,14 +7,18 @@
     <nz-alert nzShowIcon
               nzType="warning" [nzDescription]="('app.user-group.deleteOne.des' | i18n) + ' ' +  nameGroup[0].name + '. ' + ('app.user-group.deleteOne.des2' | i18n)"></nz-alert>
     <p class="text-p" style="margin-top: 5px"><b>{{ 'app.user-group.deleteOne.confirm' | i18n }}</b></p>
-    <input nz-input [(ngModel)]="value" (ngModelChange)="onInputChange()" type="text"/>
+    <input nz-input [(ngModel)]="value" class="custom-input" (ngModelChange)="onInputChange()" type="text"/>
   </div>
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">{{ 'app.button.cancel' | i18n }}
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />
+      {{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOk()"
             [nzLoading]="isLoading"
-            class="button-ok">{{ 'app.button.confirm' | i18n }}
+            class="button-ok">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />
+            {{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

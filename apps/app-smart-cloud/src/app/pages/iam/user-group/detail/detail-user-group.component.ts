@@ -325,6 +325,8 @@ export class DetailUserGroupComponent {
       this.listOfDataPolicies = []
       this.filteredPolicies = []
       this.getData(this.groupName)
+      var element = document.getElementById("deletePolicy");
+      element.classList.remove("activeDelete");
     }, error => {
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.users.policies.remove.fail"))
     })
@@ -337,6 +339,8 @@ export class DetailUserGroupComponent {
     this.userGroupService.removeUsers(this.groupName, Array.from(this.setOfCheckedIdUser)).subscribe(data => {
       this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.users.users.remove.success"))
       this.getData(this.groupName)
+      var element = document.getElementById("deleteUser");
+    element.classList.remove("activeDelete");
     }, error => {
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.users.users.remove.fail"))
     })

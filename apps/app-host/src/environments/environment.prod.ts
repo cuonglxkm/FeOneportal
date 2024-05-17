@@ -10,12 +10,12 @@ import * as MOCKDATA from "@_mock";
 //     refreshTokenEnabled: true,
 //     refreshTokenType: 'auth-refresh'
 //   },
-//   baseUrl: 'https://api-dev.onsmartcloud.com',
+//   baseUrl: 'https://api.onsmartcloud.com',
 //   sso: {
-//     issuer: 'https://identity-dev.onsmartcloud.com',
+//     issuer: 'https://identity.onsmartcloud.com',
 //     clientId: 'frontend-client',
-//     callback: 'https://oneportal-dev.onsmartcloud.com/passport/callback/oneportal',
-//     logout_callback: 'https://oneportal-dev.onsmartcloud.com',
+//     callback: 'https://oneportal.onsmartcloud.com/passport/callback/oneportal',
+//     logout_callback: 'https://oneportal.onsmartcloud.com',
 //     scope: 'openid email roles',
 //   },
 // } as Environment;
@@ -33,10 +33,10 @@ export const environment = {
   // @ts-ignore
   baseUrl: env['baseUrl'] || 'http://localhosst:5151/api/v1',
   sso: {
-    issuer: env['sso']['issuer'] || 'https://identity-dev.onsmartcloud.com',
+    issuer: env['sso']['issuer'] || 'https://identity.onsmartcloud.com',
     clientId: env['sso']['clientId'] || 'frontend-client',
-    callback: env['sso']['callback'] || 'https://oneportal-dev.onsmartcloud.com/passport/callback/oneportal',
-    logout_callback: env['sso']['logout_callback'] || 'https://oneportal-dev.onsmartcloud.com',
+    callback: env['sso']['callback'] || 'https://oneportal.onsmartcloud.com/passport/callback/oneportal',
+    logout_callback: env['sso']['logout_callback'] || 'https://oneportal.onsmartcloud.com',
     scope: env['sso']['scope'] || 'openid email roles offline_access',
   },
   recaptcha: {
