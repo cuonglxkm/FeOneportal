@@ -148,7 +148,8 @@
           <nz-tabset nzCentered nzSize="large" (nzSelectChange)="changeTab($event)">
             <nz-tab nzTitle="{{ 'config.package' | i18n }}">
               <ngu-carousel #myCarouselFlavor [inputs]="carouselTileConfig" [dataSource]="listOfferFlavors">
-                <ngu-tile *nguCarouselDef="let item; index as i; let ani = animate" [@slider]="ani">
+                <ngu-tile style="width: 300px;" *nguCarouselDef="let item; index as i; let ani = animate" [@slider]="ani">
+                  <ngu-item NguCarouselItem style="width: 250px;display: flex">
                   <div style="cursor: pointer" (click)="onInputFlavors(item.id,item.offerName);"
                        [id]="'flavor_' + item.id">
                     <nz-row>
@@ -157,22 +158,29 @@
                         <div style="position: relative;">
                         <span class="nameFlavor"
                               [class.initialNameFlavor]="selectedElementFlavor === 'flavor_' + item.id">{{ item.offerName }}</span>
-                          <div style="margin-top: -16px">
+                          <div style="margin-top: -7px">
                             <img style="width: 80%"
                                  [src]="selectedElementFlavor === 'flavor_' + item.id? 'assets/imgs/line2.svg': 'assets/imgs/line.svg'"
                                  alt="" />
                           </div>
-                          <span class="priceFlavor">{{ item.price.fixedPrice.amount | number:'1.0-0':'en-US' }}</span>
+                          <div class="d-flex justify-content-center align-items-center gap-2">
+                          <div>
+                            <span class="priceFlavor">{{ item.price.fixedPrice.amount | number:'1.0-0':'en-US' }}</span>
                           <span> {{ "app.payment-detail.month" | i18n }}</span>
-
+                          </div>
+                          <div
+                            style="width: 40px;height: 20px;background-color: red;border-radius: 5px;">
+                            <span style="color: whitesmoke">-30%</span>
+                          </div>
+                        </div>
                           <!--image addition-->
-                          <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
+                          <!-- <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
                             <img src="assets/imgs/mostpop.svg">
                           </div>
                           <div
                             style="width: 40px;height: 20px;background-color: red;border-radius: 5px;z-index: 1;position: absolute; right: 1%; top: 62%;">
                             <span style="color: whitesmoke">-30%</span>
-                          </div>
+                          </div> -->
                         </div>
                       </nz-col>
                     </nz-row>
@@ -187,6 +195,7 @@
                       </nz-col>
                     </nz-row>
                   </div>
+                  </ngu-item>
                 </ngu-tile>
 
                 <ul class="myPoint" NguCarouselPoint>
@@ -320,7 +329,7 @@
                                      (keydown)="checkPossiblePress($event)"
                                      formControlName="numOfMonth" (ngModelChange)="onChangeTime()"
                                      nzSize="large"></nz-input-number>
-                    <div class="text-custom-time" style="display: flex; margin-left: 20px;align-items: center;">
+                    <div class="text-custom-time" style="display: flex; margin-left: 20px;align-items: center">
                       {{ "volume.table.title.create.date" | i18n }}: {{ today | date : 'dd/MM/yyyy' }}
                     </div>
                   </nz-row>
@@ -497,9 +506,9 @@
         <nz-card style="border-radius: 8px">
           <div style="margin-bottom: 20px"><span class="text-card-header">Backup</span></div>
           <div *ngIf="!activeBackup">
-            <button style="height: 32px" nz-button nzType="default" (click)="initBackup()">
-              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg"
-                   alt="" />{{ "app.bonus" | i18n }} Backup
+            <button style="display: flex; padding: 10px; align-items: center;" nz-button nzType="default" (click)="initBackup()">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/plus-circle.svg"
+                   alt="" />{{ "app.bonus" | i18n }} Backup Volume/VM
             </button>
           </div>
           <div *ngIf="activeBackup">
@@ -541,8 +550,8 @@
         <nz-card style="border-radius: 8px">
           <div style="margin-bottom: 20px"><span class="text-card-header">Load Balancer</span></div>
           <div *ngIf="!activeLoadBalancer">
-            <button style="height: 32px" nz-button nzType="default" (click)="initLoadBalancer()">
-              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg"
+            <button style="display: flex; padding: 10px; align-items: center;" nz-button nzType="default" (click)="initLoadBalancer()">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/plus-circle.svg"
                    alt="" />{{ "app.bonus" | i18n }} Load
               Balancer
             </button>
@@ -572,7 +581,7 @@
                                    style="width: 90%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
                                    nzPlaceHolder="--{{'project.note49' | i18n}}--"
                                    [(ngModel)]="loadBalancerId" [ngModelOptions]="{ standalone: true }"
-                                   (ngModelChange)="calculate(null)">
+                                   (ngModelChange)="calculate(event)">
                           <nz-option *ngFor="let i of listLoadbalancer" [nzLabel]="i.offerName"
                                      [nzValue]="i.id" />
                         </nz-select>
@@ -606,8 +615,8 @@
         <nz-card style="border-radius: 8px">
           <div style="margin-bottom: 20px"><span class="text-card-header">File Storage</span></div>
           <div *ngIf="!activeFileStorage">
-            <button style="height: 32px" nz-button nzType="default" (click)="initFileStorage()">
-              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg"
+            <button style="display: flex; padding: 10px; align-items: center;" nz-button nzType="default" (click)="initFileStorage()">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/plus-circle.svg"
                    alt="" />{{ "app.bonus" | i18n }} File Storage
             </button>
           </div>
@@ -665,8 +674,8 @@
         <nz-card style="border-radius: 8px">
           <div style="margin-bottom: 20px"><span class="text-card-header">VPN site to site</span></div>
           <div *ngIf="!activeSiteToSite">
-            <button style="height: 32px" nz-button nzType="default" (click)="initVpnSiteToSite()">
-              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg"
+            <button style="display: flex; padding: 10px; align-items: center;" nz-button nzType="default" (click)="initVpnSiteToSite()">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/plus-circle.svg"
                    alt="" />{{ "app.bonus" | i18n }}
               VPN site to site
             </button>
@@ -783,11 +792,11 @@
                       style="margin: 10px 0"
                       nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
+            <nz-col nzSpan="14">
               <span
                 class="text-value">{{ 'app.service.cost' | i18n }} {{ this.form.controls['numOfMonth'].value || 0 }} {{ 'app.month' | i18n }}</span>
             </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+            <nz-col class="text-right" nzSpan="10">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
               {{ totalAmount }}
               VND
@@ -800,11 +809,11 @@
             padding: 16px 0 16px 0;
             border-radius: 8px;
           " nzGutter="16">
-            <nz-col nzSpan="16">
+            <nz-col nzSpan="14">
               <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
               <span class="text-note-italicized">({{ 'app.payment-detail.vat' | i18n }})</span>
             </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+            <nz-col class="text-right" nzSpan="10">
               <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment }}  VND</span>
             </nz-col>
           </nz-row>
