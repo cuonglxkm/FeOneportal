@@ -17,9 +17,9 @@ export abstract class BaseService {
     iam: '/iam',
     payments: '/payments'
   }
-  protected baseUrl: string;
+  public baseUrl: string;
 
-  protected constructor() {
+  public constructor() {
     this.baseUrl = environment.baseUrl;
   }
 

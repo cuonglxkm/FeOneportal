@@ -43,11 +43,31 @@ export class VlanEditComponent implements AfterViewInit {
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder) {
 
+    const nameNetworkInput = document.querySelector('input[formControlName="nameNetwork"]');
+    if (nameNetworkInput) {
+      nameNetworkInput.addEventListener('keydown', (event: KeyboardEvent) => {
+        const currentValue = this.validateForm.get('nameNetwork').value;
+        const cursorPosition = (event.target as HTMLInputElement).selectionStart;
+
+        // Ngăn việc xóa các ký tự trong 'vlan_'
+        if (event.key === 'Backspace' && cursorPosition <= 5) {
+          event.preventDefault();
+        } else if (event.key === 'Delete' && cursorPosition < 5) {
+          event.preventDefault();
+        }
+      });
+    }
+
     this.validateForm.get('nameNetwork').valueChanges.subscribe(value => {
-      if (!value.startsWith('vlan_')) {
-        this.validateForm.get('nameNetwork').setValue('vlan_' + value.replace(/^vlan_/i, ''), { emitEvent: false });
+      console.log('change value', value)
+      if(value == '') this.validateForm.controls.nameNetwork.setValue('vlan_')
+      if (value !== null && value !== undefined && value !== '') {
+        if (!value.startsWith('vlan_')) {
+          // Nếu giá trị không bắt đầu bằng 'vlan_', đặt lại giá trị 'vlan_'
+          this.validateForm.get('nameNetwork').setValue('vlan_', { emitEvent: false });
+        }
       }
-    });
+    })
   }
 
   duplicateNameValidator(control) {
