@@ -55,6 +55,8 @@ export class TopicMngtComponent implements OnInit {
 
   notiSuccessText = 'Thành công';
   notiFailedText = 'Thất bại';
+  errTopicIsNotCorrect = "Tên Topic chưa đúng";
+  errTopicNotEmpty = "Tên Topic không được để trống";
 
   syncInfo: SyncInfoModel = new SyncInfoModel();
 
@@ -89,6 +91,8 @@ export class TopicMngtComponent implements OnInit {
   changeLangData() {
     this.notiSuccessText = 'Success';
     this.notiFailedText = 'Failed';
+    this.errTopicIsNotCorrect = "Topic name is not correct";
+    this.errTopicNotEmpty = "Topic name cannot be empty";
   }
 
   Cancel() {
@@ -304,10 +308,10 @@ export class TopicMngtComponent implements OnInit {
     this.new= false
     this.err_mess = "";
     if (this.delTopic.length === 0) {
-      this.err_mess = "Tên topic không được để trống";
+      this.err_mess = this.errTopicNotEmpty;
     } else
       if (this.delTopic !== this.deleteInfor.topicName) {
-        this.err_mess = "Tên topic nhập chưa đúng";
+        this.err_mess = this.errTopicIsNotCorrect;
       }
 
 

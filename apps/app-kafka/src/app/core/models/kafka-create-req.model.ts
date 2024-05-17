@@ -22,6 +22,7 @@ export interface KafkaUpdateReq {
     serviceName: string;
     version: string;
     description: string;
+    isUpgradeVersion: number;
 }
 
 export class KafkaUpgradeReq {
@@ -51,7 +52,7 @@ export class KafkaUpgradeReq {
 }
 
 export class KafkaExtend {
-    serviceOrderCode: string;
+    jsonData: string;
     regionId: number;
     serviceName: string;
     customerId: number;
@@ -63,5 +64,55 @@ export class KafkaExtend {
     newExpireDate: string;
     userEmail: string;
     actorEmail: string;
-  }
-  
+}
+
+export class JsonDataExtend {
+    serviceOrderCode: string;
+    newExpireStartDate: string;
+}
+
+export class JsonDataCreate {
+    version: string;
+    description: string;
+    numPartitions: number;
+    defaultReplicationFactor: number;
+    minInsyncReplicas: number;
+    offsetTopicReplicationFactor: number;
+    logRetentionHours: number;
+    logSegmentBytes: number;
+    subnetId: number;
+    subnetCloudId: string;
+    networkId: number;
+}
+
+export class KafkaCreateOrder {
+    serviceName: string;
+    vCpu: number;
+    ram: number;
+    storage: number;
+    broker: number;
+    usageTime: number;
+    offerId: number;
+    offerName: string;
+    jsonData: string;
+    customerId: number;
+    userEmail: string;
+    actorEmail: string;
+    regionId: number;
+    vpcId: number;
+    projectId: number;
+    serviceType: number;
+    actionType: number;
+    serviceInstanceId: number;
+    createDate: string;
+    expireDate: string;
+}
+
+export class RegionResource {
+    regionId: string;
+    vpcId: number;
+    ram: number;
+    cpu: number;
+    storage: number;
+}
+
