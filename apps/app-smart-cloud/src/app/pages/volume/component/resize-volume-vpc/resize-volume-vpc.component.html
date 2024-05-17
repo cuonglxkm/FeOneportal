@@ -138,7 +138,7 @@
               <ng-template #storageErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.storage.vpc.required'|i18n }}</ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">{{'volume.input.storage.required'|i18n}}</ng-container>
-                <ng-container *ngIf="control.hasError('notEnough')">Dung lượng còn lại không đủ để tạo Volume. Vui lòng mua bổ sung dung lượng để quá trình không bị gián đoạn</ng-container>
+                <ng-container *ngIf="control.hasError('notEnough')">Dung lượng không đủ để điều chỉnh Volume. Vui lòng mua bổ sung dung lượng để quá trình không bị gián đoạn</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -170,8 +170,8 @@
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmResize()"
                       [disabled]="validateForm.invalid ||
-                      sizeInCloudProject == null ||
-                      (remaining == 0)" [nzLoading]="isLoading">
+                                  sizeInCloudProject == null ||
+                                  (remaining == 0) || (validateForm.controls.storage.value > remaining)" [nzLoading]="isLoading">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{'app.button.resize'|i18n}}</span>
               </button>

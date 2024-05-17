@@ -175,7 +175,13 @@ export class VolumeComponent implements OnInit {
   }
 
   navigateToCreateBackup(idVolume) {
-    this.router.navigate(['/app-smart-cloud/backup-volume/create', {volumeId: idVolume}]);
+    if(this.typeVPC == 1) {
+      this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc', {volumeId: idVolume}]);
+    }
+    if(this.typeVPC == 0) {
+      this.router.navigate(['/app-smart-cloud/backup-volume/create/normal', {volumeId: idVolume}]);
+    }
+
 
   }
 
