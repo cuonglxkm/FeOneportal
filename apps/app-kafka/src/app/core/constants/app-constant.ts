@@ -46,5 +46,7 @@ export class AppConstants {
 
   public static LOCALE_EN = 'en-US';
   public static LOCALE_VI = 'vi-VI';
+
+  public static SERVICE_SUSPEND = 10;
   
 }

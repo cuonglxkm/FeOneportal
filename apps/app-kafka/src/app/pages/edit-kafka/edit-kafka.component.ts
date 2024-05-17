@@ -12,6 +12,7 @@ import { KafkaUpdateReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
 import { KafkaService } from 'src/app/services/kafka.service';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 
 @Component({
   selector: 'one-portal-extend-kafka',
@@ -28,6 +29,9 @@ export class EditKafkaComponent implements OnInit {
   kafkaUpdateDto: KafkaUpdateReq;
   isVisibleConfirm = false;
   isChangeForm = false;
+  isUpgradeVersion = 0;
+  currentVersion: KafkaVersion;
+  statusSuspend = AppConstants.SERVICE_SUSPEND;
 
   constructor(
     private fb: FormBuilder,
@@ -39,18 +43,15 @@ export class EditKafkaComponent implements OnInit {
     private loadingSrv: LoadingService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
-
-  }
-
-  ngOnInit(): void {
-
     this._activatedRoute.params.subscribe((params) => {
       this.serviceOrderCode = params.id;
       if (this.serviceOrderCode) {
         this.getDetail();
       }
     });
+  }
 
+  ngOnInit(): void {
     this.getListVersion();
     this.initForm();
   }
@@ -80,7 +81,7 @@ export class EditKafkaComponent implements OnInit {
 
   updateDataForm() {
     this.myform.controls.serviceName.setValue(this.itemDetail.serviceName);
-    this.myform.controls.version.setValue(this.itemDetail.version);
+    // this.myform.controls.version.setValue(this.itemDetail.version);
     this.myform.controls.description.setValue(this.itemDetail.description);
     this.myform.controls.serviceName.disable();
   }
@@ -91,6 +92,10 @@ export class EditKafkaComponent implements OnInit {
         res => {
           if (res && res.code == 200) {
             this.listOfKafkaVersion = camelizeKeys(res.data) as KafkaVersion[];
+            this.currentVersion = this.listOfKafkaVersion.filter((e) => e.apacheKafkaVersion == this.itemDetail.version)[0];
+            if (this.currentVersion) {
+              this.myform.controls.version.setValue(this.currentVersion.helmVersion);
+            }
           }
         }
       )
@@ -103,6 +108,7 @@ export class EditKafkaComponent implements OnInit {
   handleConfirmPopup() {
     if (this.myform.controls.version.value != this.itemDetail.version) {
       this.isVisibleConfirm = true;
+      this.isUpgradeVersion = 1;
     } else {
       this.updateKafka();
     }
@@ -126,6 +132,7 @@ export class EditKafkaComponent implements OnInit {
       serviceName: this.myform.get('serviceName').value,
       version: this.myform.get('version').value,
       description: this.myform.get('description').value,
+      isUpgradeVersion: this.isUpgradeVersion
     }
 
     this.loadingSrv.open({ type: "spin", text: "Loading..." });

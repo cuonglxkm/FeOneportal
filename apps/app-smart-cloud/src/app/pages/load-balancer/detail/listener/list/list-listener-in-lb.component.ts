@@ -98,14 +98,15 @@ export class ListListenerInLbComponent implements OnInit{
       .pipe(finalize(() => {
         this.loading = false;
         this.isVisibleDelete = false;
-        this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.idLB]);
       }))
       .subscribe(
       data => {
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.delete.listener.success'))
+        this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.idLB]);
       },
       error => {
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.listener.fail'))
+        this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.idLB]);
       }
     )
   }

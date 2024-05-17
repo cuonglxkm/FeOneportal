@@ -42,7 +42,6 @@ import { DeleteBackupVmComponent } from './backup-vm/delete/delete-backup-vm.com
 import { ActionHistoryComponent } from './action-history/action-history.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
 import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
 import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
 import { UserComponent } from './users/user.component';
@@ -224,6 +223,8 @@ import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { RestoreBackupVolumeComponent } from './volume/component/backup-volume/restore-backup-volume/restore-backup-volume.component';
 import { UpdateBackupVmComponent } from './backup-vm/update/update-backup-vm.component';
+import { CreateBackupVolumeVpcComponent } from './volume/component/backup-volume/create-backup-volume/vpc/create-backup-volume-vpc.component';
+import { CreateBackupVolumeNormalComponent } from './volume/component/backup-volume/create-backup-volume/no-vpc/create-backup-volume-normal.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -255,7 +256,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DeleteBackupVmComponent,
     ActionHistoryComponent,
     DetailBackupVmComponent,
-    CreateBackupVolumeComponent,
     ListBackupVolumeComponent,
     DetailBackupVolumeComponent,
     IamDashboardComponent,
@@ -432,6 +432,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     RestoreBackupVmComponent,
     RestoreBackupVolumeComponent,
     UpdateBackupVmComponent,
+    CreateBackupVolumeVpcComponent,
+    CreateBackupVolumeNormalComponent,
   ],
   imports: [
     CommonModule,

@@ -107,7 +107,7 @@
                      src="assets/imgs/more1.svg" alt="" style="cursor: pointer;"/>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item>{{ 'app.snapshot.create' | i18n }}</li>
+                    <li nz-menu-item [routerLink]="'/app-smart-cloud/file-system-snapshot/create/' + data.id">{{ 'app.snapshot.create' | i18n }}</li>
                     <li nz-menu-item (click)="navigateToResizeFileSystem(typeVpc, data.id)">{{ 'app.capacity.resize' | i18n }}
                     </li>
                     <li nz-menu-item

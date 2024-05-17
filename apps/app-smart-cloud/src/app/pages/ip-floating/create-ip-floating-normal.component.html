@@ -37,16 +37,6 @@
             </nz-input-group>
           </div>
         </div>
-        <div style="margin-top: 20px;" *ngIf="checkIpv6 !== null">
-          <label nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }"
-                 (ngModelChange)="caculator(null)">IPv6</label>
-          <img
-            style="margin-left: 10px"
-            nz-tooltip="{{'app.ip.public.note3' | i18n}}"
-            src="assets/imgs/pajamas_question.svg"
-            alt=""
-          />
-        </div>
         <div nz-row class="mb-md pt-5">
           <div nz-col nzSpan="11">
             <nz-form-label>{{'app.service.used' | i18n}} (<span class="text-red">*</span>) - {{'app.month' | i18n}} <img

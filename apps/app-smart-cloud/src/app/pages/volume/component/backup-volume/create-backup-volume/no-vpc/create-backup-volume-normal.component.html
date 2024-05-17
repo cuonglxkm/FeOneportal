@@ -13,9 +13,15 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)"></project-select-dropdown>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="region"
+                               (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChaged($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
-
+<nz-content>
+  <nz-row>
+    <!--    <nz-->
+  </nz-row>
+</nz-content>

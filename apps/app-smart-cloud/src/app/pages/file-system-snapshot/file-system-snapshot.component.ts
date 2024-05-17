@@ -17,18 +17,18 @@ export class FileSystemSnapshotComponent {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  customerId: number
+  customerId: number;
+  projectType: number;
+  pageSize: number = 10;
+  pageIndex: number = 1;
 
-  pageSize: number = 10
-  pageIndex: number = 1
+  value: string;
 
-  value: string
+  response: BaseResponse<any>;
 
-  response: BaseResponse<any>
+  isLoading: boolean = false;
 
-  isLoading: boolean = false
-
-  isBegin: boolean = false
+  isBegin: boolean = false;
 
   filteredData: any[];
 
@@ -50,7 +50,7 @@ export class FileSystemSnapshotComponent {
 
   projectChange(project: ProjectModel) {
     this.project = project.id;
-    // this.projectType = project.type;
+    this.projectType = project.type;
     this.getData();
   }
 
