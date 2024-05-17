@@ -29,7 +29,7 @@
                        nzLabel="{{ item.subnetAddressRequired }}"></nz-option>
           </nz-select>
           <ng-template #idSubnetErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{'validation.info.required' | i18n}}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>

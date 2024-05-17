@@ -20,7 +20,7 @@
                     <nz-form-control [nzSpan]="18" nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
                         <input nz-input formControlName="ipAddress" id="ipAddress"/>
                         <ng-template #nameErrorTpl let-control>
-                            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+                            <ng-container *ngIf="control.hasError('required')">{{'validation.info.required' | i18n}}</ng-container>
                             <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập đúng định dạng IP</ng-container>
                         </ng-template>
                     </nz-form-control>
