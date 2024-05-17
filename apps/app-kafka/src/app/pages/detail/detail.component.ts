@@ -5,6 +5,7 @@ import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 
 @Component({
   selector: 'one-portal-detail',
@@ -17,6 +18,7 @@ export class DetailComponent implements OnInit {
   itemDetail: KafkaDetail;
   regionId: number;
   projectId: number;
+  statusSuspend = AppConstants.SERVICE_SUSPEND;
 
   constructor(
     private _activatedRoute: ActivatedRoute,

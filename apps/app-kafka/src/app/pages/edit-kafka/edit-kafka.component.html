@@ -1,4 +1,4 @@
-<ng-container *ngIf="itemDetail">
+<ng-container *ngIf="itemDetail && itemDetail.serviceStatus !== statusSuspend">
     <page-header [breadcrumb]="breadcrumb" [title]="('app.kafka.edit-title' | i18n) + ': ' + this.itemDetail.serviceName">
         <ng-template #breadcrumb>
             <nz-breadcrumb>

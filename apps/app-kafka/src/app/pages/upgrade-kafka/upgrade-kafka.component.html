@@ -1,4 +1,4 @@
-<ng-container *ngIf="itemDetail">
+<ng-container *ngIf="itemDetail && itemDetail.serviceStatus !== statusSuspend">
     <page-header [breadcrumb]="breadcrumb" [title]="'kafka.upgrade.title' | i18n" [action]="action">
         <ng-template #breadcrumb>
             <nz-breadcrumb>

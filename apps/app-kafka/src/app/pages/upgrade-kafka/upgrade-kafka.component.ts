@@ -71,6 +71,7 @@ export class UpgradeKafkaComponent implements OnInit {
   currentDate: Date;
   createDate: Date;
   expiryDate: Date;
+  statusSuspend = AppConstants.SERVICE_SUSPEND;
 
   constructor(
     private fb: FormBuilder,

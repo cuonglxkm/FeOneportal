@@ -12,6 +12,7 @@ import { KafkaUpdateReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
 import { KafkaService } from 'src/app/services/kafka.service';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 
 @Component({
   selector: 'one-portal-extend-kafka',
@@ -30,6 +31,7 @@ export class EditKafkaComponent implements OnInit {
   isChangeForm = false;
   isUpgradeVersion = 0;
   currentVersion: KafkaVersion;
+  statusSuspend = AppConstants.SERVICE_SUSPEND;
 
   constructor(
     private fb: FormBuilder,

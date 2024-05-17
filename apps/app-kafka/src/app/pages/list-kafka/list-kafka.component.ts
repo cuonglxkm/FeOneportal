@@ -12,6 +12,7 @@ import { KafkaStatus } from 'src/app/core/models/status.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 import { UtilService } from 'src/app/services/utils.service';
 import { ServiceActiveWebsocketService } from 'src/app/services/websocket-service.service';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 
 @Component({
   selector: 'one-portal-list-kafka',
@@ -41,6 +42,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
   msgError = '';
   serviceNameDelete: string;
   currentKafka: KafkaInfor;
+  statusSuspend = AppConstants.SERVICE_SUSPEND;
 
   // websocket service
   private websocketService: ServiceActiveWebsocketService;
