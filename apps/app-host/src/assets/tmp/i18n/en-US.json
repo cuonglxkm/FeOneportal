@@ -2444,5 +2444,6 @@
   "schedule.backup.action2": "Are you sure you want to restore the backup schedule to its original state?",
   "schedule.backup.health": "Restore",
   "schedule.backup.action3": "Confirm suspend backup schedule",
-  "schedule.backup.action4": "Are you sure you want to suspend the backup schedule?"
+  "schedule.backup.action4": "Are you sure you want to suspend the backup schedule?",
+  "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight"
 }

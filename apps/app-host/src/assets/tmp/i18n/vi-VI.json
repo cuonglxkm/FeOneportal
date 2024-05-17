@@ -2338,5 +2338,6 @@
   "schedule.backup.action2": "Quý khách có chắc chắn muốn khôi phục lại lịch backup về trạng thái ban đầu",
   "schedule.backup.health": "Khôi phục",
   "schedule.backup.action3": "Xác nhận tạm dừng lịch backup",
-  "schedule.backup.action4": "Quý khách có chắc chắn muốn tạm dừng lịch backup"
+  "schedule.backup.action4": "Quý khách có chắc chắn muốn tạm dừng lịch backup",
+  "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight"
 }
