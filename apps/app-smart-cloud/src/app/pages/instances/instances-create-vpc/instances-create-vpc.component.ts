@@ -440,6 +440,9 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.resetData();
     this.activeBlockHDD = false;
     this.activeBlockSSD = true;
+    this.remainingVolume =
+      this.infoVPC.cloudProject.quotaSSDInGb -
+      this.infoVPC.cloudProjectResourceUsed.ssd;
     this.disableHDD = true;
   }
 
