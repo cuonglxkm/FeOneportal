@@ -517,6 +517,7 @@
   "app.alert.delete.policy": "Quý khách muốn thực hiện xóa Policy?",
   "app.alert.delete.cors": "Quý khách muốn thực hiện xóa CORS?",
   "app.alert.delete.sub.user": "Để thực hiện xóa SubUser {{name}}, vui lòng nhập tên SubUser để xác nhận",
+  "app.alert.bucket.oversize": "Tổng file nén không được vượt quá 100MB",
 
   "app.notification.object.storage.fail": "Lấy Object Storage không thành công",
   "app.notification.create.s3.key.success": "Tạo s3 key thành công",
@@ -1630,7 +1631,7 @@
   "router.label.ip.interface": "Địa chỉ IP",
   "router.label.ip.interface.example": "Ví dụ 10.0.0.0 (không được trùng lặp)",
   "router.detail": "Chi tiết Router",
-  "router.validate.ip.empty": "Địa chỉ IP không được để trống",
+  "router.validate.ip.empty": "Vui lòng nhập địa chỉ IP",
   "router.validate.cidr.empty": "Destination CIDR không được để trống",
   "router.validate.nextHop.empty": "NextHop không được để trống",
   "router.validate.nextHop.pattern": "NextHop không đúng định dạng",
