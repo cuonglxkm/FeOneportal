@@ -333,7 +333,7 @@
                 >*</span
               >)</nz-form-label
             >
-            <nz-form-control [nzErrorTip]="gpuErrorTpl">
+            <nz-form-control *ngIf="isCreate" [nzErrorTip]="gpuErrorTpl">
               <nz-select
                 [nzPlaceHolder]="'-- ' + ('app.choose.method' | i18n) + ' --'"
                 [nzShowSearch]="true"
@@ -349,6 +349,15 @@
                   [nzValue]="i.displayName"
                 />
               </nz-select>
+            </nz-form-control>
+            <nz-form-control *ngIf="!isCreate">
+              <input
+                class="input-custom"
+                nz-input
+                formControlName="checkMethod"
+                [ngModel]="healthForm.type"
+                (ngModelChange)="isNotHttp($event)"
+              />
             </nz-form-control>
             <ng-template #gpuErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{

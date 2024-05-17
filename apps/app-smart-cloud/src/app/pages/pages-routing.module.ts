@@ -800,6 +800,15 @@ const routes: Routes = [
 
   },
   {
+    path: 'file-storage/file-system/create/:snapshotId',
+    component: CreateFileSystemComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
+
+  },
+  {
     path: 'file-storage/file-system/list',
     component: ListFileSystemComponent,
     canActivate: [PermissionGuard],
@@ -875,6 +884,14 @@ const routes: Routes = [
   },
   {
     path: 'file-system-snapshot/create',
+    component: CreateFileSystemSnapshotComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:CreateShareSnapshotFileStorage'
+    }
+  },
+  {
+    path: 'file-system-snapshot/create/:fileSystemId',
     component: CreateFileSystemSnapshotComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1124,6 +1141,15 @@ const routes: Routes = [
   },
   {
     path: 'file-storage/file-system/create/normal',
+    component: CreateFileSystemNormalComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
+
+  },
+  {
+    path: 'file-storage/file-system/create/normal/:snapshotId',
     component: CreateFileSystemNormalComponent,
     canActivate: [PermissionGuard],
     data: {

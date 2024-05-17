@@ -63,6 +63,7 @@
               [nzPlaceHolder]="'app.choose.file.system' | i18n"
               formControlName="nameFileSystem"
               (ngModelChange)="updateSelectedFileSystems($event)"
+              [(ngModel)]="fileSysId"
               class="input-select-custom"
             >
               <nz-option
