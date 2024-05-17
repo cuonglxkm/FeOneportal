@@ -378,6 +378,7 @@ export class CreateKafkaComponent implements OnInit {
   checkRegionResource() {
     const regionResource = new RegionResource();
     regionResource.regionId = this.regionId.toString();
+    regionResource.vpcId = this.projectId;
     regionResource.cpu = this.myform.controls['vCpu'].value * 3;
     regionResource.ram = this.myform.controls['ram'].value * 3;
     regionResource.storage = this.myform.controls['storage'].value * 3;

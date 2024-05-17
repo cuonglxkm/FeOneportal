@@ -220,6 +220,7 @@ export class KafkaService extends BaseService {
   checkRegionResource(req: RegionResource): Observable<BaseResponse<null>> {
     const json = {
       'region_id': req.regionId,
+      'vpc_id': req.vpcId,
       'ram': req.ram,
       'cpu': req.cpu,
       'storage': req.storage

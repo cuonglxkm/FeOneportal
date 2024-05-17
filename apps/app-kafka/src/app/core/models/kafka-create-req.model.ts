@@ -110,6 +110,7 @@ export class KafkaCreateOrder {
 
 export class RegionResource {
     regionId: string;
+    vpcId: number;
     ram: number;
     cpu: number;
     storage: number;
