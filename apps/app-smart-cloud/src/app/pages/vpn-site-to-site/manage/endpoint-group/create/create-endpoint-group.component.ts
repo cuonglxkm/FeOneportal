@@ -73,7 +73,7 @@ export class CreateEndpointGroupComponent implements OnInit {
     this.vpnSiteToSiteService.getVpnSiteToSite(this.project)
       .subscribe(data => {
         if(data){   
-          this.routerId = data.routerId      
+          this.routerId = data.body.routerId      
         }
      
     }, error => {

@@ -15,7 +15,7 @@ export class SecurityService extends BaseService {
     }
 
     authenticatorKey() {
-      return this.http.get<any>("https://identity.onsmartcloud.com/account/authenticator")
+      return this.http.get<any>("https://identity-dev.onsmartcloud.com/account/authenticator")
         .pipe(catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');
@@ -29,7 +29,7 @@ export class SecurityService extends BaseService {
 
     enable2fa(form: FormEnable2FA) {
       console.log(form);
-      return this.http.post<Enable2FAResponseModel>("https://identity.onsmartcloud.com/account/enable2fa", Object.assign(form))
+      return this.http.post<Enable2FAResponseModel>("https://identity-dev.onsmartcloud.com/account/enable2fa", Object.assign(form))
         .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -42,7 +42,7 @@ export class SecurityService extends BaseService {
     }
 
     twoFactorProviders() {
-      return this.http.get<any>("https://identity.onsmartcloud.com/account/twofactor-providers")
+      return this.http.get<any>("https://identity-dev.onsmartcloud.com/account/twofactor-providers")
         .pipe(catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');

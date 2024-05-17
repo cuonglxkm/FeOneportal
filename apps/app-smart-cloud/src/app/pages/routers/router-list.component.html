@@ -108,15 +108,15 @@
   <nz-table
     #ajaxTable3
     nzShowSizeChanger
-    [nzFrontPagination]="false"
     [nzData]="dataList"
     [nzLoading]="loading"
     [nzTotal]="total"
     [(nzPageIndex)]="currentPage"
     [(nzPageSize)]="pageSize"
     (nzPageIndexChange)="getDataList()"
-    (nzPageSizeChange)="getDataList()"
-    [nzVirtualItemSize]="54"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzFrontPagination]="false"
+    [nzPageSizeOptions]="[pageSizeFixed, 10, 20, 30, 40, 50]"
   >
     <thead>
       <tr>
@@ -429,9 +429,6 @@
     <ng-template #customTemplateMessageDelete>
       <div>
         {{'router.alert.remove' | i18n}} <b> {{ nameRouterDelete }} </b>
-      </div>
-      <div>
-        {{'router.alert.static.interface.remove' | i18n}}
       </div>
       <div>{{'router.alert.action.not.rollback' | i18n}}</div>
     </ng-template>

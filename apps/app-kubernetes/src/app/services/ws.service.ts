@@ -8,8 +8,8 @@ import { environment } from '@env/environment';
 })
 export class NotificationWsService {
 
-  // private readonly wsUrl: string = `wss://api.onsmartcloud.com/k8s-service/ws-endpoint`;
-  // private readonly wsUrl: string = 'wss://idg-api-gw.onsmartcloud.com/k8s-service/ws-endpoint';
+  // private readonly wsUrl: string = `wss://api-dev.onsmartcloud.com/k8s-service/ws-endpoint`;
+  // private readonly wsUrl: string = 'wss://idg-api-gw-dev.onsmartcloud.com/k8s-service/ws-endpoint';
 
   private client: Client;
 

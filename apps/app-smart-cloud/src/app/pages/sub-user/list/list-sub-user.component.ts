@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubUserService } from '../../../shared/services/sub-user.service';
 import { SubUser, SubUserKeys } from '../../../shared/models/sub-user.model';
@@ -36,7 +36,7 @@ export class ListSubUserComponent implements OnInit {
 
   listSubuser: any
 
-  isExpand: boolean = false
+  isExpand: number | null = null;
 
   constructor(
     private router: Router,
@@ -45,7 +45,8 @@ export class ListSubUserComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private loadingSrv: LoadingService,
     private notification: NzNotificationService,
-    private clipboardService: ClipboardService
+    private clipboardService: ClipboardService,
+    private renderer: Renderer2
   ) {
     this.rowCount = this.response?.records.reduce(
       (count, data) => count + data.keys.length,
@@ -159,12 +160,13 @@ export class ListSubUserComponent implements OnInit {
     this.clipboardService.copyFromContent(data);
   }
 
-  handleExpandAccessKey(index){ 
+  handleExpandAccessKey(index: number, event: MouseEvent){ 
+    event.stopPropagation();
     this.isExpand = this.isExpand === index ? null : index;
   }
 
-  handleCloseExpand(){
-    this.isExpand = false
+  handleCloseExpand(event: MouseEvent){
+    this.isExpand = null;
   }
 
   ngOnInit() {
@@ -172,5 +174,10 @@ export class ListSubUserComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.hasObjectStorage();
+    this.renderer.listen('document', 'click', this.handleCloseExpand.bind(this));
+  }
+
+  ngOnDestroy() {
+    this.renderer.listen('document', 'click', this.handleCloseExpand.bind(this));
   }
 }

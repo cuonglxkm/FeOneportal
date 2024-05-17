@@ -98,19 +98,33 @@
     </ng-container>
     </tbody>
   </nz-table>
-  <nz-modal [(nzVisible)]="isVisibleDelete" [nzTitle]="('app.users.policies.delete' | i18n) + ['name'] + 'Policy'"
-            [nzOkText]="'app.button.agree' | i18n" [nzCancelText]="'app.button.cancel' | i18n"
-            (nzOnCancel)="handleCancel()"
-            (nzOnOk)="deleteHandlePolicy()">
+  <nz-modal [(nzVisible)]="isVisibleDelete" [nzTitle]="('app.users.policies.delete' | i18n) + radioValue + ' Policy'"
+            [nzOkText]="'app.button.agree' | i18n" (nzOnCancel)="handleCancel()">
     <ng-container *nzModalContent>
       <nz-alert nzType="warning" nzShowIcon
-                [nzMessage]="('app.users.deleteUser.titleAll' | i18n) + ' ' + ['name'] + ' ' + ('app.users.policies.delete.alert' | i18n)"></nz-alert>
+                [nzMessage]="('app.users.deleteUser.titleAll' | i18n) + ' ' + radioValue + ' ' + ('app.users.policies.delete.alert' | i18n)"></nz-alert>
       <br>
       <p><b>{{ 'app.users.policies.delete.confirm' | i18n }}</b></p>
 
-      <input nz-input [placeholder]="'app.users.policies.delete.input' | i18n" [(ngModel)]="nameDelete" type="text"/>
+      <input nz-input nzSize="large" [placeholder]="radioValue" [(ngModel)]="nameDelete" (ngModelChange)="checkDelete()" type="text"/>
       <br/>
     </ng-container>
+    <div *nzModalFooter>
+      <button nz-button (click)="handleCancel()" style="margin-right: 10px;">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />{{ 'app.button.cancel' | i18n }}
+      </button>
+      <button nz-button nzType="primary" [disabled]="disableDelete" (click)="deleteHandlePolicy()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/confirm.svg"
+          alt=""
+        />{{ 'app.button.confirm' | i18n }}
+      </button>
+    </div>
   </nz-modal>
 </nz-card>
 

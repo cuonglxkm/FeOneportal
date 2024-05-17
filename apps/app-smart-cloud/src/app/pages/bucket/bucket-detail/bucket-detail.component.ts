@@ -10,7 +10,7 @@ import { DisabledTimeFn } from 'ng-zorro-antd/date-picker';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import { NzUploadFile } from 'ng-zorro-antd/upload/interface';
-import { finalize } from 'rxjs/operators';
+import { catchError, finalize, map } from 'rxjs/operators';
 import { ObjectObjectStorageModel } from '../../../shared/models/object-storage.model';
 import { BucketService } from '../../../shared/services/bucket.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
@@ -18,6 +18,11 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { I18NService } from '@core';
 import * as JSZip from 'jszip';
 import mime from 'mime';
+import { forkJoin, of } from 'rxjs';
+import { BaseService } from 'src/app/shared/services/base.service';
+
+
+
 
 
 @Component({
@@ -25,7 +30,7 @@ import mime from 'mime';
   templateUrl: './bucket-detail.component.html',
   styleUrls: ['./bucket-detail.component.less'],
 })
-export class BucketDetailComponent implements OnInit {
+export class BucketDetailComponent extends BaseService implements OnInit {
   listOfData: ObjectObjectStorageModel[];
   listOfDataVersioning: ObjectObjectStorageModel[];
   dataAction: ObjectObjectStorageModel;
@@ -133,7 +138,9 @@ export class BucketDetailComponent implements OnInit {
     private notification: NzNotificationService,
     private clipboard: Clipboard,
     private modalService: NzModalService
-  ) {}
+  ) {
+    super()
+  }
 
   ngOnInit(): void {
     this.loadBucket();
@@ -989,7 +996,7 @@ export class BucketDetailComponent implements OnInit {
           const xhr = new XMLHttpRequest();
           xhr.open(
             'POST',
-            'https://api.onsmartcloud.com/provisions/object-storage/CompleteMultipartUpload',
+            this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CompleteMultipartUpload',
             true
           );
           xhr.setRequestHeader(
@@ -1183,37 +1190,54 @@ export class BucketDetailComponent implements OnInit {
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); 
     var yyyy = today.getFullYear();
-
+  
     let date = mm + '_' + dd + '_' + yyyy;
     
-    let zipFile: JSZip = new JSZip();
-    this.setOfCheckedId.forEach((item: any) => {
-      if(item.objectType === 'folder'){
-        return
-      }else{
-        this.service.downloadFile(this.bucket.bucketName, item.key, '').subscribe(
-          (fileData: any) => {
-            
-            const fileName = item.key; 
-            const fileContent = fileData.body; 
+    let zipFile = new JSZip();
+    let downloadObservables = [];
   
-            // Add the file to the zip
-            zipFile.file(fileName, fileContent);
-          },
-          (error) => {
-            console.error(`Error downloading file: ${error}`);
-          }
+    this.setOfCheckedId.forEach((item: any) => {
+      if(item.objectType === 'folder') {
+        return;
+      } else {
+        downloadObservables.push(
+          this.service.downloadFile(this.bucket.bucketName, item.key, '').pipe(
+            map((fileData: any) => {
+              const fileName = item.key; 
+              const fileContent = fileData.body; 
+  
+              console.log(fileData.body);
+  
+              if(fileData.body !== undefined) {
+                zipFile.file(fileName, fileContent);
+              }
+            }),
+            catchError((error) => {
+              console.error(`Error downloading file: ${error}`);
+              return of(null);
+            })
+          )
         );
       }
     });
-    zipFile.generateAsync({ type: 'blob' }).then((content) => {
-      let anchor = document.createElement('a');
-      let objectUrl = window.URL.createObjectURL(content);
-
-      anchor.href = objectUrl;
-      anchor.download = `${this.bucket.bucketName}_${date}`;
-      anchor.click();
-      window.URL.revokeObjectURL(objectUrl);
+  
+    forkJoin(downloadObservables).subscribe(() => {
+      zipFile.generateAsync({ type: 'blob' }).then((content) => {
+        if(content.size > 104857600) {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.alert.bucket.oversize')
+          );
+        }else{
+          let anchor = document.createElement('a');
+          let objectUrl = window.URL.createObjectURL(content);
+    
+          anchor.href = objectUrl;
+          anchor.download = `${this.bucket.bucketName}_${date}`;
+          anchor.click();
+          window.URL.revokeObjectURL(objectUrl);
+        }
+      });
     });
   }
 

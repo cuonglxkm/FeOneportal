@@ -123,6 +123,7 @@ export class PoolDetailComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.loadingHealth = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe({
@@ -182,13 +183,39 @@ export class PoolDetailComponent implements OnInit {
 
   isHttpType: boolean;
   isNotHttp(event: string) {
-    this.healthForm.httpMethod = null;
-    this.healthForm.expectedCodes = null;
-    this.healthForm.urlPath = null;
+    if (this.isCreate) {
+      this.healthForm.httpMethod = null;
+      this.healthForm.expectedCodes = null;
+      this.healthForm.urlPath = null;
+    }
     if (event != 'HTTP') {
       this.isHttpType = false;
+      this.form.setControl(
+        'httpMethod',
+        new FormControl('', {
+          validators: [],
+        })
+      );
+      this.form.setControl(
+        'expectedCode',
+        new FormControl('', {
+          validators: [],
+        })
+      );
     } else {
       this.isHttpType = true;
+      this.form.setControl(
+        'httpMethod',
+        new FormControl('', {
+          validators: [Validators.required],
+        })
+      );
+      this.form.setControl(
+        'expectedCode',
+        new FormControl('', {
+          validators: [Validators.required],
+        })
+      );
     }
   }
 
@@ -199,6 +226,35 @@ export class PoolDetailComponent implements OnInit {
   form: FormGroup;
   modalHealth(checkCreate: boolean, data: m_LBSDNHealthMonitor) {
     if (checkCreate) {
+      this.form = new FormGroup({
+        name: new FormControl('', {
+          validators: [
+            Validators.required,
+            Validators.pattern(/^[a-zA-Z0-9]*$/),
+          ],
+        }),
+        checkMethod: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        maxRetriesDown: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        delay: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        maxRetries: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        timeout: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        httpMethod: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        expectedCode: new FormControl('', {
+          validators: [Validators.required],
+        }),
+      });
       this.healthForm = new HealthCreate();
       this.healthForm.type = 'HTTP';
       this.isCreate = true;
@@ -207,37 +263,43 @@ export class PoolDetailComponent implements OnInit {
         this.healthInput.nativeElement.focus();
       }, 300);
     } else {
+      this.form = new FormGroup({
+        name: new FormControl('', {
+          validators: [
+            Validators.required,
+            Validators.pattern(/^[a-zA-Z0-9]*$/),
+          ],
+        }),
+        checkMethod: new FormControl(
+          { value: '', disabled: true },
+          {
+            validators: [Validators.required],
+          }
+        ),
+        maxRetriesDown: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        delay: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        maxRetries: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        timeout: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        httpMethod: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        expectedCode: new FormControl('', {
+          validators: [Validators.required],
+        }),
+      });
       this.healthForm = data;
       this.isCreate = false;
       this.titleModalHealth = this.i18n.fanyi('app.health.monitor.edit');
     }
     this.isVisibleHealth = true;
-    this.form = new FormGroup({
-      name: new FormControl('', {
-        validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/)],
-      }),
-      checkMethod: new FormControl('', {
-        validators: [Validators.required],
-      }),
-      maxRetriesDown: new FormControl('', {
-        validators: [Validators.required],
-      }),
-      delay: new FormControl('', {
-        validators: [Validators.required],
-      }),
-      maxRetries: new FormControl('', {
-        validators: [Validators.required],
-      }),
-      timeout: new FormControl('', {
-        validators: [Validators.required],
-      }),
-      httpMethod: new FormControl('', {
-        validators: [Validators.required],
-      }),
-      expectedCode: new FormControl('', {
-        validators: [Validators.required],
-      }),
-    });
   }
 
   handleOkHealth() {
@@ -305,6 +367,7 @@ export class PoolDetailComponent implements OnInit {
               e.statusText,
               this.i18n.fanyi('app.notification.edit.health.fail')
             );
+            this.getListHealth();
           },
         });
     }
@@ -467,6 +530,7 @@ export class PoolDetailComponent implements OnInit {
   formMember: FormGroup;
   modalMember(checkCreate: boolean, data: MemberOfPool) {
     if (checkCreate) {
+      this.isCreate = true;
       this.formMember = new FormGroup({
         name: new FormControl('', {
           validators: [Validators.required],
@@ -487,9 +551,9 @@ export class PoolDetailComponent implements OnInit {
       this.memberForm.customerId = this.tokenService.get()?.userId;
       this.memberForm.regionId = this.regionId;
       this.memberForm.vpcId = this.projectId;
-      this.isCreate = true;
       this.titleModalMember = this.i18n.fanyi('app.member.create');
     } else {
+      this.isCreate = false;
       this.formMember = new FormGroup({
         name: new FormControl('', {
           validators: [
@@ -497,18 +561,24 @@ export class PoolDetailComponent implements OnInit {
             Validators.pattern(/^[a-zA-Z0-9]*$/),
           ],
         }),
-        ipPrivate: new FormControl('', {
-          validators: [],
-        }),
-        port: new FormControl({ value: '', disabled: true }, {
-          validators: [],
-        }),
+        ipPrivate: new FormControl(
+          { value: '', disabled: true },
+          {
+            validators: [],
+          }
+        ),
+        port: new FormControl(
+          { value: '', disabled: true },
+          {
+            validators: [],
+          }
+        ),
         weight: new FormControl('', {
           validators: [Validators.required],
         }),
       });
       this.memberForm = data;
-      this.isCreate = false;
+      this.memberForm.protocol_port = data.port;
       this.titleModalMember = this.i18n.fanyi('app.member.edit');
     }
     this.isVisibleMember = true;
@@ -532,6 +602,7 @@ export class PoolDetailComponent implements OnInit {
               this.i18n.fanyi('app.notification.create.member.success')
             );
             setTimeout(() => {
+              this.getListMember();
               this.getListMember();
             }, 1000);
           },
@@ -569,6 +640,7 @@ export class PoolDetailComponent implements OnInit {
             );
             setTimeout(() => {
               this.getListMember();
+              this.getListMember();
             }, 1000);
           },
           error: (e) => {
@@ -576,6 +648,10 @@ export class PoolDetailComponent implements OnInit {
               e.statusText,
               this.i18n.fanyi('app.notification.edit.member.fail')
             );
+            setTimeout(() => {
+              this.getListMember();
+              this.getListMember();
+            }, 1000);
           },
         });
     }

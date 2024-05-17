@@ -89,6 +89,15 @@
               [filesystemsnapshotName]="data.name" 
               (onOk)="handleOkDeleteFileSystemSnapShot()"
               />
+              <img nz-dropdown
+                     [nzDropdownMenu]="opMenu"
+                     src="assets/imgs/more1.svg" alt="" style="cursor: pointer;"/>
+                <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li *ngIf="projectType == 1" nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/create/' + data.id">{{ 'app.file.system.create.button' | i18n }}</li>
+                    <li *ngIf="projectType == 0" nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/create/normal/' + data.id">{{ 'app.file.system.create.button' | i18n }}</li>
+                  </ul>
+                </nz-dropdown-menu>
               </div>
           </td>
         </tr>

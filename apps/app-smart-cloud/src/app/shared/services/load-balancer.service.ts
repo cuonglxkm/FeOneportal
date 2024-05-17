@@ -272,7 +272,7 @@ export class LoadBalancerService extends BaseService {
 
   updateHealth(data: any): Observable<any> {
     let url_ = `/loadbalancer/updateHealth`;
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
+    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
   }
 
   deleteHealth(id: string, regionId: number, projectId: number): Observable<boolean> {
@@ -293,7 +293,7 @@ export class LoadBalancerService extends BaseService {
 
   updateMember(data: any): Observable<any> {
     let url_ = `/loadbalancer/member`;
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
+    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
   }
 
   deleteMember(id: string, poolid: string, regionId: number, vpcId: number): Observable<boolean> {

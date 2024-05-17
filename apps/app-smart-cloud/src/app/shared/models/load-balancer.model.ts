@@ -309,6 +309,8 @@ export class MemberOfPool {
   poolId: string;
   backup: boolean;
   subnetId: string;
+  operatingStatus: string;
+  provisioningStatus: string;
 }
 
 export class MemberCreateOfPool {
