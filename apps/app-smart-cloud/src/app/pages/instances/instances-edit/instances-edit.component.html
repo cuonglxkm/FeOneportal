@@ -297,7 +297,7 @@
               {{ instancesModel.ram }}GB RAM, {{ instancesModel.storage }}GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
               <span *ngIf="instancesModel.volumeType == 1">SSD</span
-              ><span *ngIf="instancesModel.gpuCount != 0"
+              ><span *ngIf="instancesModel.gpuCount != null"
                 >, {{ instancesModel.gpuCount }} GPU (Nvidia
                 {{ instancesModel.gpuType }})</span
               >
@@ -324,7 +324,7 @@
             (keydown)="handleKeyboardEvent($event)"
           >
             <nz-tab
-              *ngIf="isConfigPackageAtInitial && instancesModel.gpuCount == 0"
+              *ngIf="isConfigPackageAtInitial && instancesModel.gpuCount == null"
               [nzTitle]="'app.Preconfigured.Package' | i18n"
               (nzClick)="onClickConfigPackage()"
             >
@@ -412,7 +412,7 @@
               </ngu-carousel>
             </nz-tab>
             <nz-tab
-              *ngIf="!isConfigGpuAtInitial && instancesModel.gpuCount == 0"
+              *ngIf="!isConfigGpuAtInitial && instancesModel.gpuCount == null"
               [nzTitle]="'app.custom.configuration' | i18n"
               (nzClick)="onClickCustomConfig()"
             >

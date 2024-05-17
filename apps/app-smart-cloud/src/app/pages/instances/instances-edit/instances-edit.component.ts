@@ -375,7 +375,10 @@ export class InstancesEditComponent implements OnInit {
           this.isConfigPackageAtInitial = false;
           this.isCustomconfig = true;
         }
-        if (this.instancesModel.gpuCount != 0) {
+        if (
+          this.instancesModel.gpuCount != null &&
+          this.instancesModel.gpuType != null
+        ) {
           this.isConfigPackageAtInitial = false;
           this.isConfigGpuAtInitial = true;
           this.isGpuConfig = true;
@@ -786,8 +789,12 @@ export class InstancesEditComponent implements OnInit {
       this.instanceResize.cpu = this.configGPU.CPU + this.instancesModel.cpu;
       this.instanceResize.storage =
         this.configGPU.storage + this.instancesModel.storage;
-      this.instanceResize.gpuCount =
-        this.configGPU.GPU + this.instancesModel.gpuCount;
+      if (this.instancesModel.gpuCount != null) {
+        this.instanceResize.gpuCount =
+          this.configGPU.GPU + this.instancesModel.gpuCount;
+      } else {
+        this.instanceResize.gpuCount = this.configGPU.GPU;
+      }
       if (this.configGPU.gpuOfferId) {
         this.instanceResize.gpuType = this.listGPUType.filter(
           (e) => e.id == this.configGPU.gpuOfferId
@@ -814,8 +821,6 @@ export class InstancesEditComponent implements OnInit {
         }
       });
     }
-    this.instanceResize.gpuCount =
-      this.instancesModel.gpuCount + this.configGPU.GPU;
     this.instanceResize.addBtqt = 0;
     this.instanceResize.addBttn = 0;
     // this.instanceResize.typeName =
@@ -844,7 +849,8 @@ export class InstancesEditComponent implements OnInit {
     if (
       this.isGpuConfig == true &&
       (this.configGPU.GPU == 0 || this.configGPU.gpuOfferId == 0) &&
-      this.instancesModel.gpuCount == 0
+      (this.instancesModel.gpuCount == null ||
+        this.instancesModel.gpuCount == 0)
     ) {
       this.notification.error(
         '',
