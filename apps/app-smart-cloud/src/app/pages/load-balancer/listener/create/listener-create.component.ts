@@ -335,6 +335,7 @@ export class ListenerCreateComponent implements OnInit{
         const check = this.lstInstanceUse[j];
         if (model.IpAddress == check.IpAddress && model.Port == check.Port && model.Weight == check.Weight) {
           this.disableMember = true
+          this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('listner.create.duplicate.port.weight'));
           return;
         }
       }

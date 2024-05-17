@@ -1,9 +1,9 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Lập lịch Backup'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" title="{{'schedule.backup.title.job' | i18n}}">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ</nz-breadcrumb-item>
-      <nz-breadcrumb-item routerLink="/app-smart-cloud/schedule/list">Lập lịch Backup</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.breadcrumb.home' | i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item routerLink="/app-smart-cloud/schedule/list">{{'schedule.backup.title.job' | i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -20,7 +20,7 @@
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
         <!--    <nz-card>-->
         <nz-card>
-            <span class="text-card-header">Tạo lịch Backup</span>
+            <span class="text-card-header">{{'app.create.backup.schedule' | i18n}}</span>
             <nz-row>
                 <nz-radio-group [(ngModel)]="selectedValueRadio" (ngModelChange)="onChangeStatus()"
                                 formControlName="radio">

@@ -1,4 +1,4 @@
-<ng-container *ngIf="itemDetail">
+<ng-container *ngIf="itemDetail && itemDetail.serviceStatus !== statusSuspend">
     <page-header [breadcrumb]="breadcrumb" [action]="action">
         <ng-template #breadcrumb>
             <nz-breadcrumb>
@@ -9,7 +9,7 @@
                     <a [routerLink]="['/app-kafka']">{{ 'app.kafka.list' | i18n }}</a>
                 </nz-breadcrumb-item>
                 <nz-breadcrumb-item>
-                    {{ 'kafka.detail.manage' | i18n }} Kafka: <b>{{serviceOrderCode}}</b>
+                    {{ 'kafka.detail.manage' | i18n }} Kafka: <b>{{itemDetail.serviceName}}</b>
                 </nz-breadcrumb-item>
             </nz-breadcrumb>
         </ng-template>

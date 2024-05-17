@@ -48,13 +48,13 @@ src="assets/imgs/edit-2.svg"
             nz-input
             formControlName="nameEndpointGroup"
             id="nameEndpointGroup"
-            placeholder="Vui lòng nhập thông tin"
+            placeholder="{{'validation.info.required' | i18n}}"
             [maxlength]="50"
             class="input-custom"
           />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập thông tin</ng-container
+              >{{'validation.info.required' | i18n}}</ng-container
             >
             <ng-container *ngIf="control.hasError('pattern')"
               >Name : Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z,
@@ -114,7 +114,7 @@ src="assets/imgs/edit-2.svg"
           nzType="default"
           (click)="handleCancel()"
         >
-          Quay lại
+          {{'app.order-detail.back' | i18n}}
         </button>
         <button
           nz-button
