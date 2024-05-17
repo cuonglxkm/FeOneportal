@@ -353,12 +353,12 @@ export class RouterDetailComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.alert.wrong.format')
           );
-        } else if (error.error.detail.includes('Next hop không được nhập trùng với địa')) {
+        } else if (error.error.detail.includes('NextHop không được nhập trùng với địa')) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.validate.duplicate.nexthop')
           );
-        } else if (error.error.detail.includes('Destination CIDR và Nexthop đã tồn tại')) {
+        } else if (error.error.detail.includes('Destination CIDR và NextHop đã tồn tại')) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.validate.duplicate.cidr')

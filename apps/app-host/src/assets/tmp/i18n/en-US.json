@@ -847,6 +847,8 @@
   "app.file.system.access.to.delete.fail": "Delete access rule fail {{error}}",
   "app.file.system.access.to.delete.file.success": "Delete File System success",
   "app.file.system.access.to.delete.file.fail": "Delete File System success {{error}}",
+  "app.checkRouter.file.system": "Please check the Router and add Interface Router to use the service!", 
+  "app.checkRouter.file.system.noGateway": "Check the Router Interface again! Please add the gateway of the pri_network range",
 
   "app.note.delete.file.system": "To delete the {{name}} File System, please enter the File System name to confirm",
   "app.alert.delete.file.system": "You are currently deleting the File System.<br> To successfully delete the File System, please note that you need to delete all Snapshots associated with that File System",
