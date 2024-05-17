@@ -126,28 +126,52 @@
                   >{{ 'app.task.status' | i18n }}:</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'SHUTOFF'"
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'SHUTOFF'"
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'powering-off'"
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-OFF'
+                  "
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'ACTIVE'"
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBUILDING'"
                   class="text-value-detail customSpan"
-                  style="color: #008d47"
-                  >{{ instancesModel.taskState }}</span
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'powering-on'"
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase().includes('RESIZING')
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBOOTING'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'ACTIVE'"
                   class="text-value-detail customSpan"
                   style="color: #008d47"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-ON'
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #008d47"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
               </nz-row>
             </nz-col>
@@ -294,7 +318,9 @@
         <nz-row style="margin-bottom: 20px" nzGutter="24">
           <nz-col nzLg="8" nzMd="8" nzSm="24">
             <span class="text-label"
-              >{{ 'app.increase.capacity' | i18n }} (<span class="text-red">*</span>) - GB</span
+              >{{ 'app.increase.capacity' | i18n }} (<span class="text-red"
+                >*</span
+              >) - GB</span
             >
             <nz-row style="margin-top: 10px">
               <nz-col nzSpan="18">
@@ -320,7 +346,8 @@
           </nz-col>
           <nz-col nzLg="8" nzMd="8" nzSm="24">
             <span class="text-label"
-              >{{ 'app.increase.ram' | i18n }} (<span class="text-red">*</span>) - GB</span
+              >{{ 'app.increase.ram' | i18n }} (<span class="text-red">*</span>)
+              - GB</span
             >
             <nz-row style="margin-top: 10px">
               <nz-col nzSpan="18">
@@ -346,7 +373,8 @@
           </nz-col>
           <nz-col nzLg="8" nzMd="8" nzSm="24">
             <span class="text-label"
-              >{{ 'app.increase.cpu' | i18n }} (<span class="text-red">*</span>) - vCPU</span
+              >{{ 'app.increase.cpu' | i18n }} (<span class="text-red">*</span>)
+              - vCPU</span
             >
             <nz-row style="margin-top: 10px">
               <nz-col nzSpan="18">

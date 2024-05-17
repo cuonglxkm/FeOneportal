@@ -297,6 +297,8 @@
   "app.info": "Information of",
   "app.list": "List of",
   "app.usage": "Usage",
+  "app.do.not.use": "Do not use",
+  "app.random": "Random",
   "app.name": "Name",
   "app.snapshot.create": "Create Snapshot",
   "app.suspend": "Suspend",
