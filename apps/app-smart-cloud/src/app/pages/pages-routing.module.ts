@@ -870,6 +870,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'file-system-snapshot/create/:fileSystemId',
+    component: CreateFileSystemSnapshotComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:CreateShareSnapshotFileStorage'
+    }
+  },
+  {
     path: 'file-system-snapshot/detail/:id',
     component: FileSystemSnapshotDetailComponent,
     canActivate: [PermissionGuard],
