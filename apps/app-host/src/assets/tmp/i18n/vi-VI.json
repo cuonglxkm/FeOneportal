@@ -728,8 +728,8 @@
   "app.choose.file.system.type": "Chọn loại File System",
   "app.choose.file.system": "Chọn File System",
   "app.choose.file.system.to.perform.snapshot": "Chọn File System để thực hiện Snapshot",
-  "app.checkRouter.file.system": "Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!", 
-  "app.checkRouter.file.system.noGateway": "Kiểm tra lại Router Interface! Vui lòng thêm gateway của dải pri_network", 
+  "app.checkRouter.file.system": "Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!",
+  "app.checkRouter.file.system.noGateway": "Kiểm tra lại Router Interface! Vui lòng thêm gateway của dải pri_network",
 
   "app.file.system.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Instance) hoặc CIDR được quyền truy cập tới Filesystem này",
   "app.file.system.access.to.create.success": "Tạo mới access rule thành công",
@@ -2114,9 +2114,14 @@
   "app.input.backup.volume.package": "Chọn gói backup",
   "app.input.backup.volume.description": "Nhập mô tả",
   "app.input.backup.volume.note": "Tạo Backup Volume",
+  "app.input.backup.volume.select.volume": "Tên Volume",
+
+  "app.input.backup.volume.required.select": "Vui lòng chọn Volume",
 
   "app.backup.volume.name.tooltip": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
   "app.backup.volume.validator.name.required": "Vui lòng nhập tên Backup Volume",
+  "app.backup.volume.validator.name.duplicate": "Tên backup volume đã tồn tại, vui lòng nhập tên khác",
+  "app.backup.volume.validator.name.pattern": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
   "app.backup.volume.validator.backup.package.required": "Vui lòng nhập tên Backup",
   "app.backup.volume.request.create": "Yêu cầu tạo Backup Volume đã được gửi đi.",
 
