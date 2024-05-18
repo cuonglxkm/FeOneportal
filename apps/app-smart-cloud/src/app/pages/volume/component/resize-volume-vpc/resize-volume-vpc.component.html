@@ -103,21 +103,24 @@
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
               <div>
-                <span>{{'volume.total.size.vpc'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb }}GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'hdd'">{{'volume.total.size.vpc'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb }} GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'ssd'">{{'volume.total.size.vpc'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaSSDInGb }} GB</span>
               </div>
             </nz-form-label>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>{{'volume.used'|i18n}}: {{ sizeInCloudProject?.cloudProjectResourceUsed?.hdd }}GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'hdd'">{{'volume.used'|i18n}}: {{ sizeInCloudProject?.cloudProjectResourceUsed?.hdd }} GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'ssd'">{{'volume.used'|i18n}}: {{ sizeInCloudProject?.cloudProjectResourceUsed?.ssd }} GB</span>
               </div>
             </nz-form-label>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>{{'volume.remaining'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb - sizeInCloudProject?.cloudProjectResourceUsed?.hdd }}GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'hdd'">{{'volume.remaining'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb - sizeInCloudProject?.cloudProjectResourceUsed?.hdd }} GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'ssd'">{{'volume.remaining'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaSSDInGb - sizeInCloudProject?.cloudProjectResourceUsed?.ssd }} GB</span>
               </div>
             </nz-form-label>
           </nz-form-item>

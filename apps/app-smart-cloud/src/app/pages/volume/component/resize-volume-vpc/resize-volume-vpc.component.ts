@@ -253,10 +253,11 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.projectService.getByProjectId(this.project).subscribe(data => {
         this.isLoading = false;
         this.sizeInCloudProject = data;
-        if(this.volumeInfo?.volumeType == 'hdd') {
+        console.log(this.volumeInfo?.volumeType)
+        if(this.volumeInfo?.volumeType === 'hdd') {
           this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
         }
-        if(this.volumeInfo?.volumeType == 'ssd') {
+        if(this.volumeInfo?.volumeType === 'ssd') {
           this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
         }
       }, error => {
