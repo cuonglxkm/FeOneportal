@@ -300,7 +300,7 @@ export class InstancesCreateComponent implements OnInit {
         debounceTime(300) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
-        this.dataService.checkExistName(res, this.region).subscribe((data) => {
+        this.dataService.checkExistName(res, this.region, this.projectId).subscribe((data) => {
           if (data == true) {
             this.isExistName = true;
           } else {
