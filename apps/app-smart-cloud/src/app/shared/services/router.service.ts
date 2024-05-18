@@ -190,4 +190,12 @@ export class RouterService extends BaseService {
       this.httpOptions
     );
   }
+
+  networkTopology(regionId: number, projectId: number): Observable<any> {
+    let url_ = `/networktopology?regionId=${regionId}&vpcId=${projectId}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
 }

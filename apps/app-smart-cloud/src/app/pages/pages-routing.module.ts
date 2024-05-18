@@ -141,6 +141,7 @@ import { PermissionGuard } from '../shared/guard/PermissionGuard';
 import { CreateBackupVmNormalComponent } from './backup-vm/create/no-vpc/create-backup-vm-normal.component';
 import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup-vm-vpc.component';
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
+import { NetworkTopologyComponent } from './network-topology/network-topology.component';
 import {
   CreateBackupVolumeVpcComponent
 } from './volume/component/backup-volume/create-backup-volume/vpc/create-backup-volume-vpc.component';
@@ -1174,6 +1175,10 @@ const routes: Routes = [
       permission: 'order:Create'
     }
 
+  },
+  {
+    path: 'network-topology',
+    component: NetworkTopologyComponent,
   }
 ];
 
