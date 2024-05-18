@@ -37,6 +37,7 @@ export class VpcModel {
   contractCode: string;
   loadBalancerPackageName: string;
   vpnSiteToSiteOfferName: string;
+  loadbalancerOfferName:string;
 }
 
 export class TotalVpcResource {

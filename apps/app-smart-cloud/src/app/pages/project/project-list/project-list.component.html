@@ -1,9 +1,10 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" title="{{ 'project.note1' | i18n }}">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">{{ 'project.note1' | i18n }}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -41,7 +42,7 @@
         <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24"
              [nzXXl]="12">
           <button nz-button nzType="primary" (click)="createProject()" nzSize="large">
-            <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt="" />
+            <img style="padding-right: 10px;" src="assets/imgs/add_white.svg" alt="" />
             <span class="button-text-primary">{{ 'project.note3' | i18n }}</span>
           </button>
         </div>

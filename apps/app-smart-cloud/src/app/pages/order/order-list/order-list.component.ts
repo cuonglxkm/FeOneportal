@@ -7,7 +7,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { PopupAddVolumeComponent } from '../../volume/component/popup-volume/popup-add-volume.component';
 import { OrderService } from '../../../shared/services/order.service';
-import {getCurrentRegionAndProject} from "@shared";
+import { getCurrentRegionAndProject } from "@shared";
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
@@ -25,15 +25,26 @@ export class OrderListComponent implements OnInit {
   searchStatus?: number = null;
   searchName?: string;
 
+  // status = [
+  //   { label: this.i18n.fanyi("app.order.status.All"), value: null },
+  //   { label: this.i18n.fanyi("app.order.status.New"), value: 1 },
+  //   { label: this.i18n.fanyi("app.order.status.Paid"), value: 2 },
+  //   { label: this.i18n.fanyi("app.order.status.InProcessing"), value: 3 },
+  //   { label: this.i18n.fanyi("app.order.status.Completed"), value: 4 },
+  //   { label: this.i18n.fanyi("app.order.status.Cancelled"), value: 5 }
+  // ];
   status = [
-    { label: this.i18n.fanyi("app.order.status.All"), value: null },
-    { label: this.i18n.fanyi("app.order.status.New"), value: 1 },
-    { label: this.i18n.fanyi("app.order.status.Paid"), value: 2 },
-    { label: this.i18n.fanyi("app.order.status.InProcessing"), value: 3 },
-    { label: this.i18n.fanyi("app.order.status.Completed"), value: 4 },
-    { label: this.i18n.fanyi("app.order.status.Cancelled"), value: 5 }
-  ];
+    { label: this.i18n.fanyi("app.order.status.orderplaced"), value: 0 },
+    { label: this.i18n.fanyi("app.order.status.cancelled"), value: 1 },
 
+    { label: this.i18n.fanyi("app.order.status.inprocessing"), value: 3 },
+    { label: this.i18n.fanyi("app.order.status.installed"), value: 4 },
+    { label: this.i18n.fanyi("app.order.status.error"), value: 5 },
+    // { label: this.i18n.fanyi("app.order.status.Paid"), value: [3,4,5] },
+    // { label: this.i18n.fanyi("app.order.status.Paid"), value: 3 },
+    // { label: this.i18n.fanyi("app.order.status.Paid"), value: 4 },
+  
+  ];
   orderCode: string;
   fromDate: Date;
   toDate: Date;
@@ -67,17 +78,17 @@ export class OrderListComponent implements OnInit {
   }
 
   private doGetSnapSchedules(pageSize: number,
-                             pageNumber: number,
-                             orderCode: string,
-                             saleDept: string,
-                             saleDeptCode: string,
-                             seller: string,
-                             ticketCode: string,
-                             dSubscriptionNumber: string,
-                             dSubscriptionType: string,
-                             fromDate: Date,
-                             toDate: Date,
-                             status: number) {
+    pageNumber: number,
+    orderCode: string,
+    saleDept: string,
+    saleDeptCode: string,
+    seller: string,
+    ticketCode: string,
+    dSubscriptionNumber: string,
+    dSubscriptionType: string,
+    fromDate: Date,
+    toDate: Date,
+    status: number) {
     this.isLoadingEntities = true;
     this.orderService.getOrders(pageSize, pageNumber, orderCode, saleDept, saleDeptCode, seller, ticketCode, dSubscriptionNumber, dSubscriptionType, fromDate, toDate, status).subscribe(
       data => {
@@ -94,12 +105,12 @@ export class OrderListComponent implements OnInit {
   }
 
   constructor(private router: Router,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private orderService: OrderService,
-              private modalService: NzModalService,
-              private snapshotVolumeService: SnapshotVolumeService,
-              private notification: NzNotificationService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private orderService: OrderService,
+    private modalService: NzModalService,
+    private snapshotVolumeService: SnapshotVolumeService,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   ngOnInit(): void {
@@ -139,16 +150,16 @@ export class OrderListComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
   }
 
-  handleNavigateToContact(){
+  handleNavigateToContact() {
 
   }
 
-  handleCancel(){
+  handleCancel() {
     this.isVisibleError = false
   }
 
 
-  handleOpenError(){
+  handleOpenError() {
     this.isVisibleError = true
   }
 
