@@ -4,6 +4,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { Observable, Subject } from "rxjs";
 import { UpgradeVersionClusterDto, UpgradeWorkerGroupDto } from "../model/cluster.model";
 import { BaseService } from "../shared/services/base.service";
+import { SGLoggingReqDto } from "../model/security-group.model";
 
 @Injectable({
   providedIn: 'root'
@@ -161,6 +162,10 @@ export class ClusterService extends BaseService {
 
   deleteCluster(clusterId: number) {
     return this.http.delete(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/delete-cluster/${clusterId}`, { headers: this.getHeaders() });
+  }
+
+  createLogSG(data: SGLoggingReqDto) {
+    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/create-sg-log`, data, {headers: this.getHeaders()});
   }
 
   getListPack(cloudProfileId: string) {

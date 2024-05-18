@@ -8,6 +8,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ShareService } from '../../services/share.service';
 import { KubernetesCluster } from '../../model/cluster.model';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
+import { ClusterService } from '../../services/cluster.service';
 
 @Component({
   selector: 'security-group',
@@ -31,6 +32,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     private clipboardService: ClipboardService,
     private securityGroupService: SecurityGroupService,
+    private clusterService: ClusterService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notificationService: NzNotificationService,
     private shareService: ShareService
@@ -47,7 +49,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
         sgLogData.securityGroupName = this.detailCluster.securityGroupName;
         sgLogData.serviceOrderCode = this.detailCluster.serviceOrderCode;
 
-        this.securityGroupService.createLogSG(sgLogData)
+        this.clusterService.createLogSG(sgLogData)
         .subscribe((r: any) => {
           console.log({response: r});
         });
@@ -128,7 +130,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
     let note = `Xóa rule (IP Version: ${rule.etherType}, Protocol: ${rule.protocol?.toUpperCase()}, Port Range: ${rule.portRange}, Remote IP: ${rule.remoteIp})`;
     logSG.jsonRule = note;
 
-    this.securityGroupService.createLogSG(logSG)
+    this.clusterService.createLogSG(logSG)
     .subscribe((r: any) => {
       console.log({response: r});
     });
