@@ -8,18 +8,28 @@
     <span class="text-modal-title">{{ 'app.policies.attach' | i18n }} Port</span>
   </div>
   <div *nzModalContent>
-    <nz-form-label>{{ 'wan.label.instance.select' | i18n }}</nz-form-label>
-    <nz-select nzSize="large"
-               [nzLoading]="isLoadingAttach"
-               nzPlaceHolder="--{{ 'wan.label.instance.select' | i18n }}--"
-               [(ngModel)]="instanceSelected"
-               (ngModelChange)="instanceChange($event)"
-               nzShowSearch
-               style="width: 300px;">
-      <nz-option *ngFor="let item of listVm" [nzLabel]="item.name"
-                 [nzValue]="item.cloudId"></nz-option>
-    </nz-select>
-    <div *ngIf="isSelected" style="color: red;">{{ 'volume.notification.input.select.vm' | i18n }}</div>
+    <form nz-form nzLayout="vertical">
+      <nz-form-label>
+        <span>{{ 'wan.label.instance.select' | i18n }} (<span style="color: #EB1414">*</span>)</span>
+        <img nz-popover [nzPopoverContent]="'Chọn máy ảo để gắn Port'"
+             nzPopoverPlacement="bottom" style="margin-left: 5px;"
+             src="assets/imgs/pajamas_question.svg" alt="" />
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select nzSize="large"
+                   [nzLoading]="isLoadingAttach"
+                   nzPlaceHolder="--{{ 'wan.label.instance.select' | i18n }}--"
+                   [(ngModel)]="instanceSelected"
+                   (ngModelChange)="instanceChange($event)"
+                   nzShowSearch
+                   style="width: 300px;">
+          <nz-option *ngFor="let item of listVm" [nzLabel]="item.name"
+                     [nzValue]="item.cloudId"></nz-option>
+        </nz-select>
+      </nz-form-control>
+
+      <div *ngIf="isSelected" style="color: red;">{{ 'volume.notification.input.select.vm' | i18n }}</div>
+    </form>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancelAttach()" class="button-cancel">
