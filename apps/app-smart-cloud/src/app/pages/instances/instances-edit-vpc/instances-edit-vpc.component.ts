@@ -9,6 +9,7 @@ import {
   InstanceResize,
   InstancesModel,
   Network,
+  OfferItem,
   Order,
   OrderItem,
   SecurityGroupModel,
@@ -84,6 +85,7 @@ export class InstancesEditVpcComponent implements OnInit {
     this.getInfoVPC();
   }
 
+  isConfigGpuAtInitial: boolean = false;
   getCurrentInfoInstance(instanceId: number): void {
     this.dataService.getById(instanceId, true).subscribe({
       next: (data: any) => {
@@ -91,6 +93,18 @@ export class InstancesEditVpcComponent implements OnInit {
         this.cloudId = this.instancesModel.cloudId;
         this.region = this.instancesModel.regionId;
         this.getListIpPublic();
+        if (
+          this.instancesModel.gpuCount != null &&
+          this.instancesModel.gpuType != null
+        ) {
+          this.isConfigGpuAtInitial = true;
+          this.isGpuConfig = true;
+          this.gpuTypeOfferId = this.listGPUType.filter(
+            (e) =>
+              e.characteristicValues[0].charOptionValues[0] ==
+              this.instancesModel.gpuType
+          )[0].id;
+        }
         this.dataService
           .getAllSecurityGroupByInstance(
             this.cloudId,
@@ -117,6 +131,8 @@ export class InstancesEditVpcComponent implements OnInit {
   remainingVolume: number = 0;
   purchasedVolume: number = 0;
   remainingVCPU: number = 0;
+  remainingGpu: number = 0;
+  listGPUType: OfferItem[] = [];
   getInfoVPC() {
     this.dataService.getInfoVPC(this.projectId).subscribe({
       next: (data) => {
@@ -177,16 +193,55 @@ export class InstancesEditVpcComponent implements OnInit {
       });
   }
 
+  isCustomconfig = true;
+  isGpuConfig = false;
+  onClickCustomConfig() {
+    this.isCustomconfig = true;
+    this.isGpuConfig = false;
+    this.resetData();
+  }
+
+  onClickGpuConfig() {
+    this.isCustomconfig = false;
+    this.isGpuConfig = true;
+    this.resetData();
+  }
+
+  resetData() {
+    this.vCPU = 0;
+    this.storage = 0;
+    this.ram = 0;
+    this.GPU = 0;
+  }
+
   vCPU: number = 0;
   ram: number = 0;
   storage: number = 0;
+  GPU: number = 0;
+  gpuTypeOfferId: number = 0;
   instanceResize: InstanceResize = new InstanceResize();
   instanceResizeInit() {
     this.instanceResize.description = null;
     this.instanceResize.currentFlavorId = this.instancesModel.flavorId;
-    this.instanceResize.cpu = this.vCPU + this.instancesModel.cpu;
-    this.instanceResize.ram = this.ram + this.instancesModel.ram;
-    this.instanceResize.storage = this.storage + this.instancesModel.storage;
+    if (this.isCustomconfig) {
+      this.instanceResize.cpu = this.vCPU + this.instancesModel.cpu;
+      this.instanceResize.ram = this.ram + this.instancesModel.ram;
+      this.instanceResize.storage = this.storage + this.instancesModel.storage;
+    } else if (this.isGpuConfig) {
+      this.instanceResize.cpu = this.vCPU + this.instancesModel.cpu;
+      this.instanceResize.ram = this.ram + this.instancesModel.ram;
+      this.instanceResize.storage = this.storage + this.instancesModel.storage;
+      this.instanceResize.gpuCount =
+        this.GPU + this.instancesModel.gpuCount;
+      if (this.gpuTypeOfferId) {
+        this.instanceResize.gpuType = this.listGPUType.filter(
+          (e) => e.id == this.gpuTypeOfferId
+        )[0].characteristicValues[0].charOptionValues[0];
+      } else {
+        this.instanceResize.gpuType = this.instancesModel.gpuType;
+      }
+    }
+
     this.instanceResize.addBtqt = 0;
     this.instanceResize.addBttn = 0;
     this.instanceResize.serviceInstanceId = this.instancesModel.id;
@@ -199,6 +254,18 @@ export class InstancesEditVpcComponent implements OnInit {
   order: Order = new Order();
   orderItem: OrderItem[] = [];
   update() {
+    if (
+      this.isGpuConfig == true &&
+      (this.GPU == 0 || this.gpuTypeOfferId == 0) &&
+      (this.instancesModel.gpuCount == null ||
+        this.instancesModel.gpuCount == 0)
+    ) {
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.gpu.configuration.invalid')
+      );
+      return;
+    }
     this.instanceResizeInit();
     let specificationInstance = JSON.stringify(this.instanceResize);
     let orderItemInstanceResize = new OrderItem();
@@ -215,7 +282,10 @@ export class InstancesEditVpcComponent implements OnInit {
 
     this.dataService.create(this.order).subscribe({
       next: (data: any) => {
-        this.notification.success('', this.i18n.fanyi('app.notify.update.instances.success'));
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.update.instances.success')
+        );
         this.router.navigate(['/app-smart-cloud/instances']);
       },
       error: (e) => {
