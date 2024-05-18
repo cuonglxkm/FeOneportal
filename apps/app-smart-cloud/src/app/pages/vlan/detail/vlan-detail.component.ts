@@ -7,6 +7,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime } from 'rxjs';
 import { FormSearchSubnet, Port, Subnet } from '../../../shared/models/vlan.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { trim } from 'lodash';
 
 @Component({
   selector: 'one-portal-vlan-detail',
@@ -90,7 +91,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
 
   //SUBNET
   onInputChangeSubnet(value) {
-    this.valueSubnet = value;
+    this.valueSubnet = trim(value);
     this.getSubnetByNetwork();
   }
 
@@ -109,6 +110,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
   }
 
   navigateToEditSubnet(idSubnet) {
+
     this.router.navigate(['/app-smart-cloud/vlan/' + this.idNetwork + '/network/edit/subnet/' + idSubnet]);
   }
 
@@ -202,7 +204,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
 
-    console.log('project', this.project)
+    this.onPageIndexChangePort(1)
     // this.getVlanByNetworkId()
   }
 
