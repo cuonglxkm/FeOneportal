@@ -119,3 +119,8 @@ img {
   height: 24px;
 }
 
+.icon-action {
+  cursor: pointer;
+  width: fit-content;
+  margin-right: 8px;
+}

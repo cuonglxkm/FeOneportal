@@ -27,10 +27,6 @@
   width: 90%;
 }
 
-.w-100 {
-  width: 100%;
-}
-
 .flex-style {
   display: flex;
 }
@@ -369,23 +365,4 @@ label, span {
 
 .warning-description {
   font-size: 14px;
-}
-
-.border-cell {
-  border-top: 1px solid #f0f0f0;
-}
-
-.box-duration nz-input-number {
-  width: 100%;
-  border-radius: 8px;
-  margin-left: 0px;
-}
-
-.box-duration ::ng-deep .ant-input-number-handler-wrap {
-  margin-right: 3px;
-}
-
-.input-error {
-  font-size: 14px;
-  color: #ea3829;
 }
