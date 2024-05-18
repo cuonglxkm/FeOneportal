@@ -14,7 +14,12 @@ import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { CatalogService } from '../../../../shared/services/catalog.service';
-import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import {
+  ProjectModel,
+  ProjectService,
+  RegionModel,
+  SizeInCloudProject
+} from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -28,6 +33,9 @@ export class CreateVolumeVpcComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
+  isLoading: boolean = false
+
+  remaining: number
 
   isLoadingAction = false;
 
@@ -58,7 +66,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     radio: [''],
     instanceId: [null as number],
     description: ['', Validators.maxLength(700)],
-    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]],
     radioAction: [''],
     isEncryption: [false],
     isMultiAttach: [false]
@@ -103,6 +111,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private catalogService: CatalogService,
     private notification: NzNotificationService,
+    private projectService: ProjectService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
@@ -122,6 +131,15 @@ export class CreateVolumeVpcComponent implements OnInit {
         this.iops = value * 10;
       }
     });
+  }
+
+  checkQuota(control) {
+    const value = control.value;
+    if (this.remaining < value) {
+      return { notEnough: true };
+    } else {
+      return null;
+    }
   }
 
   dataSubjectStorage: Subject<any> = new Subject<any>();
@@ -261,6 +279,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     }
   }
 
+  sizeInCloudProject: SizeInCloudProject = new SizeInCloudProject();
   ngOnInit() {
     if (this.selectedValueHDD) {
       this.iops = 300;
@@ -278,6 +297,29 @@ export class CreateVolumeVpcComponent implements OnInit {
     }
 
     this.volumeCreate.volumeSize = this.validateForm.controls.storage.value;
+
+
+
+    this.projectService.getByProjectId(this.project).subscribe(data => {
+      this.isLoading = false;
+      this.sizeInCloudProject = data;
+      console.log(this.volumeCreate.volumeType)
+      if(this.volumeCreate.volumeType === 'hdd') {
+        this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
+      }
+      if(this.volumeCreate.volumeType === 'ssd') {
+        this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
+      }
+
+
+      this.validateForm.controls.storage.markAsDirty()
+      this.validateForm.controls.storage.updateValueAndValidity()
+
+
+    }, error => {
+      this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
+      this.isLoading = false;
+    });
 
     this.getListInstance();
     this.changeValueInput();

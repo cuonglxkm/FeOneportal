@@ -127,28 +127,52 @@
                   >{{ 'app.task.status' | i18n }}:</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'SHUTOFF'"
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'SHUTOFF'"
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'powering-off'"
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-OFF'
+                  "
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'ACTIVE'"
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBUILDING'"
                   class="text-value-detail customSpan"
-                  style="color: #008d47"
-                  >{{ instancesModel.taskState }}</span
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'powering-on'"
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase().includes('RESIZING')
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBOOTING'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'ACTIVE'"
                   class="text-value-detail customSpan"
                   style="color: #008d47"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-ON'
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #008d47"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
               </nz-row>
             </nz-col>
@@ -273,7 +297,11 @@
               {{ instancesModel.ram }}GB RAM, {{ instancesModel.storage }}GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
               <span *ngIf="instancesModel.volumeType == 1">SSD</span
-              ><span *ngIf="instancesModel.gpuCount != 0"
+              ><span
+                *ngIf="
+                  instancesModel.gpuCount != null &&
+                  instancesModel.gpuType != null
+                "
                 >, {{ instancesModel.gpuCount }} GPU (Nvidia
                 {{ instancesModel.gpuType }})</span
               >
@@ -300,7 +328,11 @@
             (keydown)="handleKeyboardEvent($event)"
           >
             <nz-tab
-              *ngIf="isConfigPackageAtInitial && instancesModel.gpuCount == 0"
+              *ngIf="
+                isConfigPackageAtInitial &&
+                (instancesModel.gpuCount == null ||
+                  instancesModel.gpuCount == 0)
+              "
               [nzTitle]="'app.Preconfigured.Package' | i18n"
               (nzClick)="onClickConfigPackage()"
             >
@@ -388,7 +420,11 @@
               </ngu-carousel>
             </nz-tab>
             <nz-tab
-              *ngIf="!isConfigGpuAtInitial && instancesModel.gpuCount == 0"
+              *ngIf="
+                !isConfigGpuAtInitial &&
+                (instancesModel.gpuCount == null ||
+                  instancesModel.gpuCount == 0)
+              "
               [nzTitle]="'app.custom.configuration' | i18n"
               (nzClick)="onClickCustomConfig()"
             >

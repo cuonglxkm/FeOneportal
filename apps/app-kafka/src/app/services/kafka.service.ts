@@ -2,12 +2,11 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { decamelize } from 'humps';
 import { Observable } from 'rxjs';
-import { AppConstants } from '../core/constants/app-constant';
 import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
 import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
-import { KafkaCreateReq, KafkaUpdateReq, KafkaUpgradeReq } from '../core/models/kafka-create-req.model';
+import { KafkaCreateReq, KafkaUpdateReq, KafkaUpgradeReq, RegionResource } from '../core/models/kafka-create-req.model';
 import { KafkaDetail, KafkaInfor } from '../core/models/kafka-infor.model';
 import { Pagination } from '../core/models/pagination.model';
 import { ServicePack } from '../core/models/service-pack.model';
@@ -55,46 +54,41 @@ export class KafkaService extends BaseService {
   getBrokerConfigOfService(
     serviceOrderCode: string
   ): Observable<BaseResponse<BrokerConfig[]>> {
-    const params = new HttpParams().set('service_order_code', serviceOrderCode);
 
     return this.http.get<BaseResponse<BrokerConfig[]>>(
-      `${this.kafkaUrl}/configs/broker`,
-      {
-        params,
-      }
+      `${this.kafkaUrl}/kafka/${serviceOrderCode}/configs`,
     );
   }
 
-  sendOtpForgotPassword(
+  forgotPassword(
     serviceOrderCode: string,
     username: string
   ): Observable<BaseResponse<string>> {
+
+    const json = {
+      'service_order_code': serviceOrderCode,
+      'username': username
+    };
+
     return this.http.post<BaseResponse<string>>(
-      `${this.kafkaUrl}/otp/sendOtpForgotPass?service_order_code=${serviceOrderCode}&user_forgot=${username}`,
-      null
+      `${this.kafkaUrl}/users/forgot-password`, json
     );
   }
 
-  verifyOtpForgotPassword(
-    keyCheckOtp: string,
+  verifyOtp(
     serviceOrderCode: string,
-    otpValue: string
+    username: string,
+    otp: string
   ): Observable<BaseResponse<string>> {
-    const topic: string = AppConstants.TOPIC_FORGOT_PASS;
-    // fix user_code from local storage
-    const userCode = localStorage.getItem('user_code');
+
+    const json = {
+      'service_order_code': serviceOrderCode,
+      'username': username,
+      'otp': otp
+    }
 
     return this.http.post<BaseResponse<string>>(
-      `http://api.galaxy.vnpt.vn:30383/notification-ws-service/otp/committee-verify`,
-      {
-        keyCheckOtp,
-        otpValue,
-        topic,
-        data: JSON.stringify({
-          service_order_code: serviceOrderCode,
-          user_code: userCode,
-        }),
-      }
+      `${this.kafkaUrl}/users/verify-otp`, json
     );
   }
 
@@ -185,7 +179,8 @@ export class KafkaService extends BaseService {
       'service_order_code': req.serviceOrderCode,
       'service_name': req.serviceName,
       'version': req.version,
-      'description': req.description
+      'description': req.description,
+      'is_upgrade_version': req.isUpgradeVersion
     };
 
     return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/update', json, {headers: this.getHeaders()});
@@ -221,4 +216,27 @@ export class KafkaService extends BaseService {
   getUnitPrice(): Observable<BaseResponse<UnitPrice[]>> {
     return this.http.get<BaseResponse<UnitPrice[]>>(this.kafkaUrl + '/kafka/get-unit-price');
   }
+
+  checkRegionResource(req: RegionResource): Observable<BaseResponse<null>> {
+    const json = {
+      'region_id': req.regionId,
+      'vpc_id': req.vpcId,
+      'ram': req.ram,
+      'cpu': req.cpu,
+      'storage': req.storage
+    };
+
+    return this.http.post<BaseResponse<null>>(this.kafkaUrl + `/kafka/check-resource`, json);
+  }
+
+  checkExistedService(serviceName: string, regionId: number, projectId: number): Observable<BaseResponse<null>> {
+    const json = {
+      'service_name': serviceName,
+      'region_id': regionId,
+      'project_id': projectId
+    };
+
+    return this.http.post<BaseResponse<null>>(`${this.kafkaUrl}/kafka/check-existed`, json);
+  }
+
 }

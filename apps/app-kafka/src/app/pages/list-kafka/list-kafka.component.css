@@ -37,7 +37,8 @@ nz-card {
   width: 100%;
 }
 
-input,
+input, 
+nz-input-group, 
 .border-button,
 ::ng-deep .ant-select-selector {
   border-radius: 8px !important;
@@ -109,4 +110,13 @@ input,
   position: absolute;
   top: 6px;
   right: 7px
+}
+
+.disable-svc {
+  pointer-events: none;
+  color: #8f8f8f;
+}
+
+.disable-btn {
+  pointer-events: none;
 }

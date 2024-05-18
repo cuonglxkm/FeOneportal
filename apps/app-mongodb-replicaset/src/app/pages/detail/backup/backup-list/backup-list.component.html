@@ -11,7 +11,7 @@
           <thead>
             <tr>
               <th nzAlign="center">STT</th>
-              <th>Tên lịch backup</th>
+              <th>{{'schedule.backup.label.name' | i18n}}</th>
               <th>Ngày tạo</th>
               <th>Người tạo</th>
               <th>Lịch kế tiếp</th>
@@ -93,7 +93,7 @@
   nzTitle="<h3><b>Chi tiết lịch backup </b></h3>" (nzOnClose)="closeInfor()">
   <ng-container *nzDrawerContent>
     <nz-descriptions class="size-16" nzBordered [nzColumn]="1">
-      <nz-descriptions-item nzTitle="Tên lịch backup">
+      <nz-descriptions-item nzTitle="{{'schedule.backup.label.name' | i18n}}">
         {{selectedBackup.schedule_name }}
       </nz-descriptions-item>
       <nz-descriptions-item nzTitle="Lịch backup kế tiếp">

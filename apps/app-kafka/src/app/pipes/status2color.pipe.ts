@@ -24,6 +24,10 @@ export class Status2ColorPipe implements PipeTransform {
         return new StatusModel("#EA3829", this.i18n.fanyi('app.status.deleting'));
       case 8: 
         return new StatusModel("#EA3829", this.i18n.fanyi('app.status.init-failed'));
+      case 9:
+        return new StatusModel("#EA3829", "Lỗi");
+      case 10:
+        return new StatusModel("#e67300", "Tạm dừng");
       default:
         return new StatusModel("#4c4f67", "Không xác định");
     }

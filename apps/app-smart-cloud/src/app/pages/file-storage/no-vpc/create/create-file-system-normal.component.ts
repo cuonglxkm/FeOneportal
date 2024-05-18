@@ -5,7 +5,7 @@ import { FormSearchFileSystem, OrderCreateFileSystem } from '../../../../shared/
 import { SnapshotVolumeService } from '../../../../shared/services/snapshot-volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { debounceTime, Subject } from 'rxjs';
@@ -13,6 +13,8 @@ import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
 import { CreateVolumeRequestModel } from '../../../../shared/models/volume.model';
 import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
+import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 
 @Component({
   selector: 'one-portal-create-file-system-normal',
@@ -57,7 +59,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
 
   snapshotList: NzSelectOptionInterface[] = [];
 
-  snapshotSelected: any;
+  snapshotSelected: number;
 
   formCreate: OrderCreateFileSystem = new OrderCreateFileSystem();
 
@@ -77,7 +79,9 @@ export class CreateFileSystemNormalComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private fileSystemService: FileSystemService,
               private router: Router,
-              private instanceService: InstancesService) {
+              private instanceService: InstancesService,
+              private fileSystemSnapshotService: FileSystemSnapshotService,
+              private activatedRoute: ActivatedRoute) {
   }
 
   duplicateNameValidator(control) {
@@ -140,10 +144,24 @@ export class CreateFileSystemNormalComponent implements OnInit {
   }
 
   getListSnapshot() {
-    this.snapshotvlService.getSnapshotVolumes(9999, 1, this.region, this.project, '', '', '').subscribe(data => {
+    let formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot();
+    formSearchFileSystemSnapshot.vpcId = this.project
+    formSearchFileSystemSnapshot.regionId = this.region
+    formSearchFileSystemSnapshot.isCheckState = false
+    formSearchFileSystemSnapshot.pageSize = 9999;
+    formSearchFileSystemSnapshot.currentPage = 1;
+    formSearchFileSystemSnapshot.customerId = this.tokenService.get()?.userId
+    this.fileSystemSnapshotService.getFileSystemSnapshot(formSearchFileSystemSnapshot).subscribe(data => {
       data.records.forEach(snapshot => {
         this.snapshotList.push({ label: snapshot.name, value: snapshot.id });
       });
+      if(this.activatedRoute.snapshot.paramMap.get('snapshotId')){
+        const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('snapshotId'));
+        if(this.snapshotList.find(x => x.value == idSnapshot)) {
+          this.snapshotSelectedChange(true);
+          this.snapshotSelected = idSnapshot;
+        }
+      }
     });
   }
 
@@ -265,6 +283,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
+    console.log('normal');
     this.project = regionAndProject.projectId;
 
     this.getListSnapshot();

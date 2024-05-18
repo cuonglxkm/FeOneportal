@@ -37,7 +37,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
     description: ['', Validators.maxLength(700)],
-    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]],
     radio: ['']
   });
 
@@ -75,15 +75,15 @@ export class ResizeVolumeVpcComponent implements OnInit {
               private projectService: ProjectService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running').toUpperCase());
-    this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error').toUpperCase());
-    this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend').toUpperCase());
+    this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
+    this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
+    this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend'));
 
   }
 
   checkQuota(control) {
     const value = control.value;
-    if (this.remaining <= value) {
+    if (this.remaining < value) {
       return { notEnough: true };
     } else {
       return null;
@@ -253,7 +253,13 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.projectService.getByProjectId(this.project).subscribe(data => {
         this.isLoading = false;
         this.sizeInCloudProject = data;
-        this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
+        console.log(this.volumeInfo?.volumeType)
+        if(this.volumeInfo?.volumeType === 'hdd') {
+          this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
+        }
+        if(this.volumeInfo?.volumeType === 'ssd') {
+          this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
+        }
       }, error => {
         this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
         this.isLoading = false;

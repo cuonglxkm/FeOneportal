@@ -103,21 +103,24 @@
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
               <div>
-                <span>{{'volume.total.size.vpc'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb }}GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'hdd'">{{'volume.total.size.vpc'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb }} GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'ssd'">{{'volume.total.size.vpc'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaSSDInGb }} GB</span>
               </div>
             </nz-form-label>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>{{'volume.used'|i18n}}: {{ sizeInCloudProject?.cloudProjectResourceUsed?.hdd }}GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'hdd'">{{'volume.used'|i18n}}: {{ sizeInCloudProject?.cloudProjectResourceUsed?.hdd }} GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'ssd'">{{'volume.used'|i18n}}: {{ sizeInCloudProject?.cloudProjectResourceUsed?.ssd }} GB</span>
               </div>
             </nz-form-label>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>{{'volume.remaining'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb - sizeInCloudProject?.cloudProjectResourceUsed?.hdd }}GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'hdd'">{{'volume.remaining'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb - sizeInCloudProject?.cloudProjectResourceUsed?.hdd }} GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'ssd'">{{'volume.remaining'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaSSDInGb - sizeInCloudProject?.cloudProjectResourceUsed?.ssd }} GB</span>
               </div>
             </nz-form-label>
           </nz-form-item>
@@ -138,7 +141,7 @@
               <ng-template #storageErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.storage.vpc.required'|i18n }}</ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">{{'volume.input.storage.required'|i18n}}</ng-container>
-                <ng-container *ngIf="control.hasError('notEnough')">Dung lượng còn lại không đủ để tạo Volume. Vui lòng mua bổ sung dung lượng để quá trình không bị gián đoạn</ng-container>
+                <ng-container *ngIf="control.hasError('notEnough')">Dung lượng không đủ để điều chỉnh Volume. Vui lòng mua bổ sung dung lượng để quá trình không bị gián đoạn</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -170,13 +173,13 @@
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmResize()"
                       [disabled]="validateForm.invalid ||
-                      sizeInCloudProject == null ||
-                      (remaining == 0)" [nzLoading]="isLoading">
+                                  sizeInCloudProject == null ||
+                                  (remaining == 0) || (validateForm.controls.storage.value > remaining)" [nzLoading]="isLoading">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{'app.button.resize'|i18n}}</span>
               </button>
               <nz-modal [(nzVisible)]="isVisibleConfirm" nzTabScrollList="true"
-                        (nzOnCancel)="handleCancelResize()" nzCentered>
+                        (nzOnCancel)="handleCancelResize()">
                 <div *nzModalTitle>
                   <span class="text-modal-title">{{'volume.modal.confirm.title.resize-vpc'|i18n}}</span>
                 </div>
