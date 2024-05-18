@@ -224,6 +224,7 @@ import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { RestoreBackupVolumeComponent } from './volume/component/backup-volume/restore-backup-volume/restore-backup-volume.component';
 import { UpdateBackupVmComponent } from './backup-vm/update/update-backup-vm.component';
+import { NetworkTopologyComponent } from './network-topology/network-topology.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -432,6 +433,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     RestoreBackupVmComponent,
     RestoreBackupVolumeComponent,
     UpdateBackupVmComponent,
+    NetworkTopologyComponent,
   ],
   imports: [
     CommonModule,
