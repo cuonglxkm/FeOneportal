@@ -68,7 +68,7 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon> {{ 'app.service.description' | i18n }}</nz-form-label>
           <nz-form-control nzErrorTip="">
             <nz-textarea-count [nzMaxCharacterCount]="500">
-              <textarea formControlName="description" nz-input [placeholder]="'app.service.description' | i18n" 
+              <textarea formControlName="description" nz-input [placeholder]="'app.service.description' | i18n" maxlength="500"
                 [nzAutosize]="{ minRows: 5, maxRows: 12 }" nzSize="large">
               </textarea>
             </nz-textarea-count>
@@ -96,9 +96,11 @@
                       </div>
                     </div>
                     <div class="item-body">
-                      {{item.broker}} Broker - {{item.cpu}} VCPU / <br>
-                      {{item.ram}}GB RAM / <br>
-                      {{item.storage}}GB SDD
+                      <div class="item-broker">{{item.broker}} Broker</div>
+                      <div>
+                        {{item.cpu}} VCPU/ {{item.ram}}GB RAM/ <br>
+                        {{item.storage}}GB Storage/ Broker
+                      </div> 
                     </div>
                   </div>
                 </div>
@@ -122,11 +124,11 @@
 
               <div nz-col [nzSpan]="5" class="config-suffix">
                 <nz-form-item>
-                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU (<span class="text-red">*</span>)</nz-form-label>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU / Broker (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="cpuErrTpl">
                     <nz-input-number-group nzSuffix="vCpu" nzSize="large">
                       <nz-input-number formControlName="vCpu" id="vCpu" autofocus [nzMin]="0"
-                        (ngModelChange)="onChangeCpu($event)">
+                        (ngModelChange)="onChangeCpu($event)" (keydown)="onKeyDown($event)">
                       </nz-input-number>
                     </nz-input-number-group>
                   </nz-form-control>
@@ -146,11 +148,11 @@
 
               <div nz-col [nzSpan]="5" class="config-suffix">
                 <nz-form-item>
-                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>RAM (<span class="text-red">*</span>)</nz-form-label>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>RAM / Broker(<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="ramErrTpl">
                     <nz-input-number-group nzSuffix="GB" nzSize="large">
                       <nz-input-number formControlName="ram" id="ram" autofocus [nzMin]="0"
-                        (ngModelChange)="onChangeRam($event)">
+                        (ngModelChange)="onChangeRam($event)" (keydown)="onKeyDown($event)">
                       </nz-input-number>
                     </nz-input-number-group>
                   </nz-form-control>
@@ -170,11 +172,11 @@
   
               <div nz-col [nzSpan]="5" class="config-suffix">
                 <nz-form-item>
-                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Storage (<span class="text-red">*</span>)</nz-form-label>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Storage / Broker (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="storageErrorTpl">
                     <nz-input-number-group nzSuffix="GB" nzSize="large">
                       <nz-input-number formControlName="storage" id="storage" autofocus [nzMin]="0"
-                        (ngModelChange)="onChangeStorage($event)">
+                        (ngModelChange)="onChangeStorage($event)" (keydown)="onKeyDown($event)">
                       </nz-input-number>
                     </nz-input-number-group>
                   </nz-form-control>
@@ -191,8 +193,6 @@
                   </ng-template>
                 </nz-form-item>
               </div>
-  
-              
             </div>
           </nz-tab>
         </nz-tabset>
@@ -437,11 +437,19 @@
           <div nz-col [nzSpan]="12" class="box-duration">
             <nz-form-item>
               <nz-form-label [nzXs]="24" [nzSm]="24" nzNoColon>{{ 'app.service.duration' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
-              <nz-form-control [nzXs]="24" [nzSm]="24" [nzErrorTip]="'validation.kafka.duration-required' | i18n">
-                <nz-input-number formControlName="usageTime" id="usageTime" autofocus nzSize="large" [nzMin]="0"
+              <nz-form-control [nzXs]="24" [nzSm]="24" [nzErrorTip]="errDuration">
+                <nz-input-number formControlName="usageTime" id="usageTime" autofocus nzSize="large" [nzMin]="0" (keydown)="onKeyDown($event)"
                   [nzPlaceHolder]="'app.service.duration-placeholder' | i18n" (ngModelChange)="onChangeUsageTime()">
                 </nz-input-number>
               </nz-form-control>
+              <ng-template #errDuration let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{'validation.kafka.duration-required' | i18n}}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                  Thời gian sử dụng nằm trong khoảng từ 1 - 100
+                </ng-container>
+              </ng-template>
             </nz-form-item>
           </div>
           <div nz-col [nzSpan]="12">
@@ -462,43 +470,60 @@
   <div nz-col [nzSpan]="8" class="gutter-row">
     <nz-card class="price-card">
       <h3><b>{{ 'app.service.price-title' | i18n }}</b></h3>
+      <!-- chi phí cpu -->
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price"> {{ 'app.kafka.cost-cpu' | i18n }}</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">{{ this.unitPrice.cpu * cpu | number: '1.0-0'}} VND</div>
+          <div class="value-price">{{ this.unitPrice.cpu * cpu * 3 | number: '1.0-0'}} VND</div>
           <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
+
+      <!-- chi phí ram -->
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price"> {{ 'app.kafka.cost-ram' | i18n }} </div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">{{ this.unitPrice.ram * ram | number: '1.0-0'}} VND</div>
+          <div class="value-price">{{ this.unitPrice.ram * ram * 3 | number: '1.0-0'}} VND</div>
           <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
+
+      <!-- chi phí storage -->
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price"> {{ 'app.kafka.cost-storage' | i18n }}</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">{{ this.unitPrice.storage * storage | number: '1.0-0'}} VND</div>
+          <div class="value-price">{{ this.unitPrice.storage * storage * 3 | number: '1.0-0'}} VND</div>
           <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
+
+      <div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="12">
+          <div class="label-price"> Chi phí VAT (10%) </div>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <div class="value-price">{{ (this.unitPrice.cpu * cpu + this.unitPrice.ram * ram + this.unitPrice.storage * storage) * 3 * usageTime * 0.1 | number: '1.0-0'}} VND</div>
+          <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
+        </div>
+      </div>
+      <nz-divider class="divider-style"></nz-divider>
+
       <div nz-row [nzGutter]="8" class="mt-5 price-panel">
         <div nz-col [nzSpan]="12">
           <div class="label-price">{{ 'app.service.price-title' | i18n }}</div>
           <div class="label-quantity"><i>({{ 'app.service.include' | i18n }} 10% VAT)</i></div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price total-price">{{ (this.unitPrice.cpu * cpu + this.unitPrice.ram * ram + this.unitPrice.storage * storage) * usageTime * 1.1 | number: '1.0-0'}} VND</div>
+          <div class="value-price total-price">{{ (this.unitPrice.cpu * cpu + this.unitPrice.ram * ram + this.unitPrice.storage * storage) * 3 * usageTime * 1.1 | number: '1.0-0'}} VND</div>
           <div class="unit-total">{{'app.order-detail.month' | i18n}}</div>
         </div>
       </div>
@@ -512,7 +537,7 @@
         </div>
 
         <div nz-col [nzSpan]="12">
-          <button nz-button nzType="primary" nzBlock class="border-button" (click)="onSubmitPayment()"
+          <button nz-button nzType="primary" nzBlock class="border-button" (click)="checkExistedService()"
             [disabled]="myform.invalid">
             <b>{{ 'app.button.create' | i18n }}</b>
           </button>

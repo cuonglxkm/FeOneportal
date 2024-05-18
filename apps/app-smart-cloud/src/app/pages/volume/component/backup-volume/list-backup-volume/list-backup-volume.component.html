@@ -20,131 +20,77 @@
 </page-header>
 <nz-content>
   <nz-card>
-<!--    <ng-container [ngSwitch]="isBegin">-->
-<!--      <ng-container *ngSwitchCase=false>&lt;!&ndash;  màn khởi tạo&ndash;&gt;-->
-<!--        &lt;!&ndash;  Bảng&ndash;&gt;-->
-<!--        <nz-table #rowSelectionTable-->
-<!--                  [nzFrontPagination]="false"-->
-<!--                  nzShowPagination-->
-<!--                  nzShowSizeChanger-->
-<!--                  [nzData]="listOfData"-->
-<!--                  [nzTotal]="total"-->
-<!--                  [nzPageSize]="size"-->
-<!--                  (nzPageSizeChange)="onPageSizeChange($event)"-->
-<!--                  (nzPageIndexChange)="onPageIndexChange($event)"-->
-<!--                  [nzLoading]="loading">-->
-<!--          <thead>-->
-<!--          <tr>-->
-<!--            <th>Tên</th>-->
-<!--            <th>Volume gốc</th>-->
-<!--            <th>VPC</th>-->
-<!--            <th>Dung lượng</th>-->
-<!--            <th>Gói backup</th>-->
-<!--            <th>Ngày tạo</th>-->
-<!--            <th>Hết hạn</th>-->
-<!--            <th>Trạng thái</th>-->
-<!--            <th>Trạng thái tác vụ</th>-->
-<!--            <th>Thao tác vụ</th>-->
-<!--          </tr>-->
-<!--          </thead>-->
-<!--          <tbody>-->
-<!--          <tr *ngFor="let data of listOfData">-->
-<!--            <td (click)="detailKey(data)" style="color: royalblue">{{ data.name }}</td>-->
-<!--            <td (click)="detailKey(data)">{{ data.volumeName }}</td>-->
-<!--            <td (click)="detailKey(data)">{{ data.vpcName }}</td>-->
-<!--            <td (click)="detailKey(data)">{{ data.size }}GB</td>-->
-<!--            <td (click)="detailKey(data)">{{ data.backupPackageName }}</td>-->
-<!--            <td (click)="detailKey(data)">{{ data.creationDate | date:'HH:mm:ss - dd/MM/yyyy' }}</td>-->
-<!--            <td (click)="detailKey(data)">{{ data.expirationDate | date:'dd/MM/yyyy' }}</td>-->
-<!--            <td (click)="detailKey(data)" [ngStyle]="{'color': getStatusColor(data.status)}">-->
-<!--              {{ getStatusLabel(data.status) }}</td>-->
-<!--            <td (click)="detailKey(data)">{{ data.serviceStatus == 'KHOITAO' ? '-' : data.serviceStatus }}</td>-->
-<!--            <td>-->
-<!--              &lt;!&ndash;            <nz-select [ngModel]="selectedOptionAction"&ndash;&gt;-->
-<!--              &lt;!&ndash;                       (ngModelChange)="openDataMounted($event , data)"&ndash;&gt;-->
-<!--              &lt;!&ndash;                       nzPlaceHolder="thao tác" nzSize="default" style="width: 90px">&ndash;&gt;-->
-<!--              &lt;!&ndash;              <nz-option *ngIf="data.status=='AVAILABLE' && data.status!='CREATING' && data.status!='DELETING'"&ndash;&gt;-->
-<!--              &lt;!&ndash;                         nzValue="1" nzLabel="Restore"></nz-option>&ndash;&gt;-->
-<!--              &lt;!&ndash;              <nz-option *ngIf="data.status!='CREATING' && data.status!='DELETING'" nzValue="2"&ndash;&gt;-->
-<!--              &lt;!&ndash;                         nzLabel="Xóa"></nz-option>&ndash;&gt;-->
-<!--              &lt;!&ndash;            </nz-select>&ndash;&gt;-->
-<!--              <button nz-button nz-dropdown [nzDropdownMenu]="menu4">-->
-<!--                Thao Tác-->
-<!--                <span nz-icon nzType="down"></span>-->
-<!--              </button>-->
-<!--              <nz-dropdown-menu #menu4="nzDropdownMenu">-->
-<!--                <ul nz-menu>-->
-<!--                  <li *ngIf="data.status=='AVAILABLE' && data.status!='CREATING' && data.status!='DELETING'"-->
-<!--                      (click)="openDataMounted('1', data)" nz-menu-item style="background-color: dodgerblue">Restore-->
-<!--                  </li>-->
-<!--                  <li *ngIf="data.status!='CREATING' && data.status!='DELETING'"-->
-<!--                      (click)="openDataMounted('2', data)" nz-menu-item nzDanger>Xóa-->
-<!--                  </li>-->
-<!--                </ul>-->
-<!--              </nz-dropdown-menu>-->
-<!--            </td>-->
-<!--          </tr>-->
-<!--          &lt;!&ndash;        restore&ndash;&gt;-->
-<!--          <nz-form-control>-->
-<!--            <form #myForm="ngForm" nz-form [formGroup]="form"  [nzLayout]="'vertical'">-->
-<!--              <nz-modal [(nzVisible)]="isVisibleRestore" nzTitle="Restore Volume"-->
-<!--                        (nzOnCancel)="handleCancel(null)" nzOkText="Đồng ý" [nzCancelText]="'Hủy'"-->
-<!--                        (nzOnOk)="handleRestore(data.id)" [nzOkDisabled]="form.invalid">-->
-<!--                <ng-container *nzModalContent>-->
-<!--                  <div style="display: inline-block;">-->
-<!--                    <nz-form-label [nzFor]="'volumeStatus'" style="margin-right: 90px;">Volume</nz-form-label>-->
-<!--                    <nz-select [nzLoading]="loadingRestore" nzPlaceHolder="&#45;&#45; Chọn volume &#45;&#45;" [(ngModel)]="selectedVolume"-->
-<!--                               style="width: 300px" formControlName="select">-->
-<!--                      <nz-option *ngFor="let s of listOfVolume" [nzLabel]="s.name" [nzValue]="s.id"></nz-option>-->
-<!--                    </nz-select>-->
-<!--                  </div>-->
-<!--                </ng-container>-->
-<!--              </nz-modal>-->
-<!--            </form>-->
-<!--          </nz-form-control>-->
-<!--          &lt;!&ndash;        xóa&ndash;&gt;-->
-<!--          <nz-modal [(nzVisible)]="isVisibleDelete"-->
-<!--                    (nzOnCancel)="handleCancel(myForm)" nzOkText="Đồng ý" [nzCancelText]="'Hủy'"-->
-<!--                    (nzOnOk)="handleDelete(data.id)">-->
-<!--            <ng-container *nzModalTitle>-->
-<!--              <span class="text-modal-title">Các nhận xóa xóa backup volume này?</span>-->
-<!--            </ng-container>-->
-<!--            <ng-container *nzModalContent>-->
-<!--              <span class="text-label">Quý khách chắc chắn muốn xóa Backup Volume?</span>-->
-<!--            </ng-container>-->
-
-<!--          </nz-modal>-->
-<!--          </tbody>-->
-<!--        </nz-table>-->
-<!--      </ng-container>-->
-<!--      <ng-container *ngSwitchDefault>-->
-<!--        <nz-card>-->
-<!--          <result>-->
-<!--            <nz-row>-->
-<!--              <nz-col class="text-center" style="width: 100%">-->
-<!--                <img src="assets/imgs/backup-volume.png" alt="">-->
-<!--              </nz-col>-->
-<!--            </nz-row>-->
-<!--            <nz-row style="margin-top: 20px">-->
-<!--              <nz-col class="text-center" style="width: 100%">-->
-<!--                <span class="text-intro-title" style="color: #0066b3">Backup Volume - Sao lưu, bảo mật</span>-->
-<!--              </nz-col>-->
-<!--            </nz-row>-->
-<!--            <nz-row style="margin-top: 20px">-->
-<!--              <nz-col class="text-center" style="width: 100%">-->
-<!--                <span class="text-intro-desc">Giải pháp hỗ trợ sao lưu, nhân bản một phần hoặc toàn bộ hệ thống máy chủ-->
-<!--                  doanh nghiệp lên hạ tầng điện toán đám mây, đảm bảo dự phòng cho việc vận hành khi hệ thống chính gặp-->
-<!--                  lỗi hoặc những sự cố không mong muốn.</span>-->
-<!--              </nz-col>-->
-<!--            </nz-row>-->
-<!--            <button style="margin-top: 20px" nz-button [nzType]="'primary'"-->
-<!--                    routerLink="/app-smart-cloud/schedule/backup/create" nzSize="large">-->
-<!--              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />-->
-<!--              Khởi tạo ngay-->
+    <ng-container [ngSwitch]="isBegin">
+      <ng-container *ngSwitchCase="false">
+        <nz-row nzJustify="space-between">
+          <nz-col nzSpan="16">
+            <nz-select [(ngModel)]="statusSelected"
+                       nzSize="large"
+                       style="margin-right: 10px; width: 170px;"
+                       (ngModelChange)="onChange($event)"
+                       nzPlaceHolder="{{ 'volume.placeholder.filter.status' | i18n }}"
+                       nzTooltipTitle="{{ 'volume.tooltip.title.filter.status' | i18n }}"
+                       nzTooltipPlacement="bottom"
+                       nz-tooltip>
+<!--              <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>-->
+            </nz-select>
+            <nz-input-group>
+<!--              style="width: 300px;"-->
+<!--              [nzPrefix]="prefixIconSearch"-->
+<!--              nzSize="large">-->
+<!--              <input-->
+<!--                name="name"-->
+<!--                nz-input-->
+<!--                [(ngModel)]="value"-->
+<!--                (input)="onInputChange($event.target['value'])"-->
+<!--                placeholder="{{ 'volume.placeholder.filter.name' | i18n }}" />-->
+            </nz-input-group>
+            <ng-template #prefixIconSearch>
+              <img
+                src="assets/imgs/search.svg"
+                alt=""
+                style="cursor: pointer"
+                nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
+            </ng-template>
+          </nz-col>
+          <nz-col nzSpan="8" style="flex:none;">
+<!--            <button-->
+<!--              nz-button-->
+<!--              nzType="primary"-->
+<!--              nzSize="large"-->
+<!--              (click)="navigateToCreateVolume()">-->
+<!--              <img-->
+<!--                style="padding-right: 10px; margin-top: -4px"-->
+<!--                src="assets/imgs/add-circle.svg"-->
+<!--                alt="" />-->
+<!--              <span class="button-text-primary">{{ 'volume.button.create' | i18n }}</span>-->
 <!--            </button>-->
-<!--          </result>-->
-<!--        </nz-card>-->
-<!--      </ng-container>-->
-<!--    </ng-container>-->
+          </nz-col>
+        </nz-row>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <result>
+          <nz-row>
+            <nz-col class="text-center" style="width: 100%">
+              <img src="assets/imgs/backupvm-blank.png" alt="" />
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+              <span class="text-intro-title" style="color: #0066b3">{{ 'app.backup.volume.title.intro' | i18n }}</span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+              <span class="text-intro-desc">{{ 'app.backup.volume.intro.description' | i18n }}</span>
+            </nz-col>
+          </nz-row>
+          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+            {{ 'app.backup.volume.button.create' | i18n }}
+          </button>
+        </result>
+      </ng-container>
+    </ng-container>
   </nz-card>
 </nz-content>

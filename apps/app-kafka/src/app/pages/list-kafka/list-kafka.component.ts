@@ -12,6 +12,7 @@ import { KafkaStatus } from 'src/app/core/models/status.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 import { UtilService } from 'src/app/services/utils.service';
 import { ServiceActiveWebsocketService } from 'src/app/services/websocket-service.service';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 
 @Component({
   selector: 'one-portal-list-kafka',
@@ -41,6 +42,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
   msgError = '';
   serviceNameDelete: string;
   currentKafka: KafkaInfor;
+  statusSuspend = AppConstants.SERVICE_SUSPEND;
 
   // websocket service
   private websocketService: ServiceActiveWebsocketService;
@@ -185,10 +187,10 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     this.isInitModal = false;
     if (this.serviceNameDelete.length == 0) {
       this.isErrorCheckDelete = true;
-      this.msgError = 'Vui lòng nhập tên dịch vụ';
+      this.msgError = this.i18n.fanyi('validation.service.name-required');
     } else if (this.serviceNameDelete != this.currentKafka.serviceName) {
       this.isErrorCheckDelete = true;
-      this.msgError = 'Tên dịch vụ nhập chưa đúng';
+      this.msgError = this.i18n.fanyi('validation.service.name-not-correct');
     } else {
       this.isErrorCheckDelete = false;
       this.msgError = '';

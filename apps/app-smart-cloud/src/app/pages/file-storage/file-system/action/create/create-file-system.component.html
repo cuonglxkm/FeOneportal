@@ -91,7 +91,7 @@
               </nz-form-item>
               <nz-form-item>
                 <div style="display: flex;">
-                  <nz-switch formControlName="isSnapshot" (ngModelChange)="snapshotSelectedChange($event)"></nz-switch>
+                  <nz-switch formControlName="isSnapshot" [(ngModel)]="isInitSnapshot" (ngModelChange)="snapshotSelectedChange($event)"></nz-switch>
                   <span style="margin-left: 10px; margin-top: 1px;" class="text-label">{{ 'app.file.system.create.from.snapshot' | i18n }}</span>
                   <!--                  <img style="margin-left: 10px"-->
                   <!--                       nz-popover [nzPopoverContent]="'volume.tooltip.switch.snapshot' | i18n"-->
@@ -113,6 +113,7 @@
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
                   <nz-select formControlName="snapshot"
                              nzSize="large"
+                             [(ngModel)]="snapshotSelected"
                              [nzPlaceHolder]="'-Chọn Snapshot-'"
                              [nzShowSearch]="false">
                     <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"

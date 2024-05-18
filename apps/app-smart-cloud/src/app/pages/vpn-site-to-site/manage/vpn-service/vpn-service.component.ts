@@ -1,15 +1,9 @@
-import { Component, Inject, Input, OnInit, SimpleChanges } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Inject, Input, SimpleChanges } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { getCurrentRegionAndProject } from '@shared';
-import { VolumeService } from 'src/app/shared/services/volume.service';
-import { VolumeDTO } from 'src/app/shared/dto/volume.dto';
 import { debounceTime } from 'rxjs';
-import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
-import { IpsecPolicyDTO } from 'src/app/shared/models/ipsec-policy';
 import { FormSearchVpnService, VpnServiceDTO } from 'src/app/shared/models/vpn-service';
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
+import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-vpn-service',

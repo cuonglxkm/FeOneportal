@@ -51,6 +51,7 @@ export class UpgradeKafkaComponent implements OnInit {
   ram: number;
   cpu: number;
   storage: number;
+  broker = 3;
   initRam: number;
   initCpu: number;
   initStorage: number;
@@ -70,6 +71,7 @@ export class UpgradeKafkaComponent implements OnInit {
   currentDate: Date;
   createDate: Date;
   expiryDate: Date;
+  statusSuspend = AppConstants.SERVICE_SUSPEND;
 
   constructor(
     private fb: FormBuilder,
@@ -130,7 +132,7 @@ export class UpgradeKafkaComponent implements OnInit {
 
   initForm() {
     this.myform = this.fb.group({
-      vCpu: [null, [Validators.required, Validators.pattern("^[0-9]*$"), Validators.min(1), Validators.max(16)]],
+      vCpu: [null, [Validators.required, Validators.pattern("^[0-9]*$"), Validators.min(1), Validators.max(32)]],
       ram: [null, [Validators.required, Validators.pattern("^[0-9]*$"), Validators.min(1), Validators.max(64)]],
       storage: [null, [Validators.required, Validators.min(1), Validators.max(2000), Validators.pattern("^[0-9]*$")]],
       broker: [3, [Validators.required]]
@@ -197,7 +199,7 @@ export class UpgradeKafkaComponent implements OnInit {
           offer.characteristicValues.forEach(item => {
             const characteristic = characteristicMap[item.charName];
             if (characteristic) {
-              offerKafka[characteristic] = Number.parseInt(item.charOptionValues[0]);
+              offerKafka[characteristic] = Number.parseInt(item.charOptionValues[0]) / 3;
             }
           });
           this.listOfferKafka.push(offerKafka);
@@ -209,10 +211,27 @@ export class UpgradeKafkaComponent implements OnInit {
     )
   }
 
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
   onChangeCpu(event: number) {
     this.cpu = event;
     if (event != null) {
-      if (event <= this.initCpu) {
+      if ((event < this.initCpu)) {
         this.myform.controls['vCpu'].setErrors({'invalid': true});
       } else {
         this.setUpgradeAmount();
@@ -223,7 +242,7 @@ export class UpgradeKafkaComponent implements OnInit {
   onChangeRam(event: number) {
     this.ram = event;
     if (event != null) {
-      if (event <= this.initRam) {
+      if ((event < this.initRam)) {
         this.myform.get('ram').setErrors({'invalid': true});
       } else {
         this.setUpgradeAmount();
@@ -234,7 +253,7 @@ export class UpgradeKafkaComponent implements OnInit {
   onChangeStorage(event: number) {
     this.storage = event;
     if (event != null) {
-      if (event <= this.initStorage) {
+      if ((event < this.initStorage)) {
         this.myform.get('storage').setErrors({'invalid': true});
       } else {
         this.setUpgradeAmount();
@@ -243,11 +262,18 @@ export class UpgradeKafkaComponent implements OnInit {
   }
 
   setRemainAmount() {
-    this.remainAmount = (this.initRam * this.unitPrice.ram + this.initCpu * this.unitPrice.cpu + this.initStorage * this.unitPrice.storage) * this.remainMonth;
+    this.remainAmount = (this.initRam * this.unitPrice.ram + this.initCpu * this.unitPrice.cpu + this.initStorage * this.unitPrice.storage) * this.broker * this.remainMonth;
   }
 
   setUpgradeAmount() {
-    this.upgradeAmount = (this.ram * this.unitPrice.ram + this.cpu * this.unitPrice.cpu + this.storage * this.unitPrice.storage) * this.remainMonth;
+    if (this.ram == this.initRam && 
+      this.cpu == this.initCpu && 
+      this.storage == this.initStorage
+    ) {
+      this.upgradeAmount = 0;
+    } else {
+      this.upgradeAmount = (this.ram * this.unitPrice.ram + this.cpu * this.unitPrice.cpu + this.storage * this.unitPrice.storage) * this.broker * this.remainMonth;
+    }
   }
 
   backToList() {

@@ -1,78 +1,47 @@
 <nz-card>
   <nz-row nzJustify="space-between" style="margin-bottom: 16px">
     <nz-col>
-      <div style="font-size: 20px; font-weight: 600">{{ 'app.create-user-groups.addUser' | i18n }} ({{ 'app.create-user-groups.optional' | i18n }}) ({{listOfSelected?.length}}/{{filteredUsers?.length}})</div>
+      <div style="font-size: 20px; font-weight: 600">{{ 'app.create-user-groups.addUser' | i18n }} ({{
+        'app.create-user-groups.optional' | i18n }}) ({{listOfSelected?.length}}/{{filteredUsers?.length}})</div>
     </nz-col>
     <nz-col>
       <nz-space>
-        <nz-input-group
-          *nzSpaceItem
-          style="width: 300px;"
-          [nzPrefix]="prefixIconSearch"
-          nzSize="large"
-          [(ngModel)]="value"
-          (input)="onInputChange($event.target['value'])"
-        >
-          <input
-            name="name"
-            nz-input
-            [placeholder]="'app.users.search' | i18n"
-          />
+        <nz-input-group *nzSpaceItem style="width: 300px;" [nzPrefix]="prefixIconSearch" nzSize="large"
+          [(ngModel)]="value" (input)="onInputChange($event.target['value'])">
+          <input name="name" nz-input [placeholder]="'app.users.search' | i18n" />
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <img
-            src="assets/imgs/search.svg"
-            alt=""
-            style="cursor: pointer"
-            nz-tooltip="Tìm kiếm"
-          />
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text'|i18n" />
         </ng-template>
-        <button
-          *nzSpaceItem
-          style="border: none;"
-          nz-button
-          nzSize="large"
-          nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom"
-          (click)="reload()"
-        >
-          <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt=""/>
+        <button *nzSpaceItem style="border: none;" nz-button nzSize="large" nz-tooltip [nzTooltipTitle]="'app.cluster.refresh'|i18n"
+          nzTooltipPlacement="bottom" (click)="reload()">
+          <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
         </button>
       </nz-space>
     </nz-col>
   </nz-row>
-  <nz-table
-          #rowSelectionTable
-          nzShowSizeChanger
-          [nzFrontPagination]="false"
-          [nzData]="filteredUsers"
-          (nzQueryParams)="onQueryParamsChange($event)"
-          [nzLoading]="loading"
-          [nzTotal]="response?.totalCount"
-          [nzPageSize]="5"
-          [nzPageIndex]="response?.currentPage">
+  <nz-table #rowSelectionTable nzShowSizeChanger [nzFrontPagination]="false" [nzData]="filteredUsers"
+    (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="loading" [nzTotal]="response?.totalCount"
+    [nzPageSize]="5" [nzPageIndex]="response?.currentPage">
     <thead>
-    <tr>
-      <th [nzChecked]="checked"
-          [nzIndeterminate]="indeterminate"
-          nzLabel="Select all"
+      <tr>
+        <th [nzChecked]="checked" [nzIndeterminate]="indeterminate" nzLabel="Select all"
           (nzCheckedChange)="onAllChecked($event)"></th>
-      <th>{{ 'app.create-user-groups.name' | i18n }}</th>
-      <th>Groups</th>
-      <th>{{ 'app.users.createDate' | i18n }}</th>
-    </tr>
+        <th>{{ 'app.create-user-groups.name' | i18n }}</th>
+        <th>Groups</th>
+        <th>{{ 'app.users.createDate' | i18n }}</th>
+      </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let data of rowSelectionTable.data">
-      <td
-        [nzChecked]="setOfCheckedId.has(data?.userName)"
-        (nzCheckedChange)="onItemChecked(data?.userName, $event)"
-      ></td>
-      <td>
-        <a [routerLink]="">{{ data?.userName }}</a>
-      </td>
-      <td>{{ data?.userGroups }}</td>
-      <td>{{ data?.createdDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
-    </tr>
+      <tr *ngFor="let data of rowSelectionTable.data">
+        <td [nzChecked]="setOfCheckedId.has(data?.userName)" (nzCheckedChange)="onItemChecked(data?.userName, $event)">
+        </td>
+        <td>
+          <a [routerLink]="">{{ data?.userName }}</a>
+        </td>
+        <td>{{ data?.userGroups }}</td>
+        <td>{{ data?.createdDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
+      </tr>
     </tbody>
   </nz-table>
 </nz-card>

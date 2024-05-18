@@ -18,7 +18,7 @@ import { RegionModel, ProjectModel } from '../../../../../../libs/common-utils/s
 export class CreateIpFloatingNormalComponent implements OnInit{
   regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
-  checkIpv6: boolean = null;
+  checkIpv6: boolean = false;
   selectedAction: any;
   listIpSubnet: any[];
   listInstance: any[];
@@ -81,10 +81,10 @@ export class CreateIpFloatingNormalComponent implements OnInit{
         if (index != -1) {
           this.getCatalogOffer(data[index].id);
         } else {
-          this.checkIpv6 = null;
+          this.checkIpv6 = false;
         }
       } else {
-        this.checkIpv6 = null;
+        this.checkIpv6 = false;
       }
     })
 
@@ -278,7 +278,7 @@ export class CreateIpFloatingNormalComponent implements OnInit{
       if(data) {
         this.checkIpv6 = false;
       } else {
-        this.checkIpv6 = null;
+        this.checkIpv6 = false;
       }
     })
   }

@@ -57,7 +57,7 @@
 
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >Vui lòng nhập thông tin</ng-container
+                >{{'validation.info.required' | i18n}}</ng-container
               >
               <ng-container *ngIf="control.hasError('pattern')"
                 >Tên gồm 50 ký tự viết liền không dấu và không chứa ký tự đặc
@@ -128,7 +128,7 @@
       src="assets/imgs/arrow-left-2.svg"
       alt=""
     />
-    <span>Quay lại</span>
+    <span>{{'app.order-detail.back' | i18n}}</span>
   </button>
   <button
     *ngIf="isEdit"

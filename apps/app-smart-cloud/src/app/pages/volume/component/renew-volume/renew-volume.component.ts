@@ -56,9 +56,9 @@ export class RenewVolumeComponent implements OnInit {
               private projectService: ProjectService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running').toUpperCase());
-    this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error').toUpperCase());
-    this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend').toUpperCase());
+    this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
+    this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
+    this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend'));
 
     this.validateForm.get('time').valueChanges.subscribe((newValue: any) => {
       this.getTotalAmount();
@@ -97,7 +97,7 @@ export class RenewVolumeComponent implements OnInit {
       console.log('old', this.volumeInfo?.expirationDate);
       if (data.attachedInstances != null) {
         this.volumeInfo.attachedInstances?.forEach(item => {
-          this.listVMs += item.instanceName.toString()
+          this.listVMs += item.instanceName+'\n'
         })
         this.getTotalAmount()
       }
@@ -110,6 +110,13 @@ export class RenewVolumeComponent implements OnInit {
     });
   }
 
+  convertString(str: string): string {
+    const parts = str.trim().split('\n');
+    if (parts.length === 1) {
+      return str;
+    }
+    return parts.join(', ');
+  }
 
   extendsDto = new ExtendVolumeDTO();
 

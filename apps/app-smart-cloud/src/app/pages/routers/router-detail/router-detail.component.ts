@@ -18,7 +18,7 @@ import { STIcon } from '@delon/abc/st';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import {
   RouterInteface,
   RouterIntefaceCreate,
@@ -46,7 +46,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouterDetailComponent implements OnInit {
-  @ViewChild('ipAdress') firstNameRef: ElementRef;
+  @ViewChild('ipAdress') ipAdress: ElementRef;
   routerId: string;
   regionId: number;
   vpcId: number;
@@ -65,13 +65,14 @@ export class RouterDetailComponent implements OnInit {
   isVisibleCreateInterface = false;
   routerInterfaceCreate: RouterIntefaceCreate = new RouterIntefaceCreate();
   nameRouter: string;
+  // dataSubjectIpAddress: Subject<any> = new Subject<any>();
+  // isInvalidipAddress: boolean = false
+  // invalidipAddress: string
+
   formRouterInterface: FormGroup<{
     subnetId: FormControl<string>;
     ipAddress: FormControl<string>;
-  }>  = this.fb.group({
-    subnetId: ['', Validators.required],
-    ipAddress: ['', Validators.required]
-  });;
+  }>;
 
   formRouterStatic: FormGroup<{
     destinationCIDR: FormControl<string>;
@@ -94,7 +95,43 @@ export class RouterDetailComponent implements OnInit {
     private fb: NonNullableFormBuilder,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
+    this.formRouterInterface = this.fb.group({
+      subnetId: ['', Validators.required],
+      ipAddress: ['', {
+        validators: [Validators.required],
+        updateOn: 'blur' 
+      }],
+    });
+
+    this.formRouterInterface
+      .get('subnetId')
+      .valueChanges.subscribe((selectedSubnetId) => {
+        const selectedSubnet = this.listSubnet.find(
+          (subnet) => subnet.id === parseInt(selectedSubnetId)
+        );
+        if (selectedSubnet) {
+          const networkAddress = selectedSubnet.networkAddress;
+          this.formRouterInterface
+            .get('ipAddress')
+            .setValidators([
+              Validators.required,
+              ipAddressValidatorRouter(networkAddress),
+            ]);
+          this.formRouterInterface.get('ipAddress').updateValueAndValidity();
+        }
+      });
+
+      this.formRouterInterface.get('ipAddress').valueChanges
+      .pipe(debounceTime(100))
+      .subscribe(() => {
+        const inputField = document.getElementById('ipAdress');
+        if (inputField) {
+          inputField.blur();
+        }
+      });
+
   }
+
 
   ngOnInit(): void {
     this.routerId = this.activatedRoute.snapshot.paramMap.get('id');
@@ -189,6 +226,10 @@ export class RouterDetailComponent implements OnInit {
       });
   }
 
+  // inputIpAddress(value) {
+  //   this.dataSubjectIpAddress.next(value);
+  // }
+
   modalCreateRouterInterface() {
     this.isVisibleCreateInterface = true;
     this.getListSubnet();
@@ -245,7 +286,7 @@ export class RouterDetailComponent implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.alert.ip.existed')
             );
-            this.firstNameRef.nativeElement.focus()
+            this.ipAdress.nativeElement.focus()
           } else if (
             error.error.detail === 'Địa chỉ IP không hợp lệ với Subnet đã chọn!'
           ) {
@@ -312,12 +353,12 @@ export class RouterDetailComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.alert.wrong.format')
           );
-        } else if (error.error.detail.includes('Next hop không được nhập trùng với địa')) {
+        } else if (error.error.detail.includes('NextHop không được nhập trùng với địa')) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.validate.duplicate.nexthop')
           );
-        } else if (error.error.detail.includes('Destination CIDR và Nexthop đã tồn tại')) {
+        } else if (error.error.detail.includes('Destination CIDR và NextHop đã tồn tại')) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.validate.duplicate.cidr')
@@ -358,10 +399,17 @@ export class RouterDetailComponent implements OnInit {
           this.getRouterInterfaces();
         },
         error: (e) => {
-          this.notification.error(
-            e.statusText,
-            this.i18n.fanyi('router.nofitacation.interface.remove.fail')
-          );
+          if(e.error.detail.includes('Vui lòng không xóa Router Interface vì')){
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('router.nofitacation.interface.remove.fail1')
+            );
+          }else{
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('router.nofitacation.interface.remove.fail')
+            );
+          }
           this.isLoadingDeleteRouterInterface = false;
         },
       });

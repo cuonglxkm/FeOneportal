@@ -1,0 +1,32 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'volume.title.breadcrumb.create.backup.volume' | i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.block.storage' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'volume.title.breadcrumb.backup.volume' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'volume.title.breadcrumb.create.backup.volume' | i18n }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="region"
+                               (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChaged($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header"></span>
+      </nz-card>
+    </nz-col>
+    <nz-col nzSpan="8"></nz-col>
+  </nz-row>
+</nz-content>

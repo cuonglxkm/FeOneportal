@@ -156,7 +156,6 @@
         style="margin-top: 10px"
         #rowSelectionTable
         nzShowSizeChanger
-        [nzScroll]="{ x: '100%', y: '300px' }"
         [nzFrontPagination]="false"
         [nzTotal]="totalHealth"
         [nzData]="listHealth"
@@ -240,7 +239,6 @@
         style="margin-top: 10px"
         #rowSelectionTable
         nzShowSizeChanger
-        [nzScroll]="{ x: '100%', y: '250px' }"
         [nzFrontPagination]="false"
         [nzData]="listMember"
         (nzPageIndexChange)="getListMember()"
@@ -253,7 +251,8 @@
             <th>IP Address</th>
             <th>Port</th>
             <th>Weight</th>
-            <th>{{ 'app.text.status' | i18n }}</th>
+            <th>{{ 'app.activity.status' | i18n }}</th>
+            <th>{{ 'app.provisioning.status' | i18n }}</th>
             <th>{{ 'app.text.operation' | i18n }}</th>
           </tr>
         </thead>
@@ -264,7 +263,8 @@
               <td>{{ item.ipAddress }}</td>
               <td>{{ item.port }}</td>
               <td>{{ item.weight }}</td>
-              <td>{{ item.status }}</td>
+              <td>{{ item.operatingStatus }}</td>
+              <td>{{ item.provisioningStatus }}</td>
               <td>
                 <img
                   src="assets/imgs/edit-2.svg"
@@ -333,7 +333,7 @@
                 >*</span
               >)</nz-form-label
             >
-            <nz-form-control [nzErrorTip]="gpuErrorTpl">
+            <nz-form-control *ngIf="isCreate" [nzErrorTip]="gpuErrorTpl">
               <nz-select
                 [nzPlaceHolder]="'-- ' + ('app.choose.method' | i18n) + ' --'"
                 [nzShowSearch]="true"
@@ -349,6 +349,15 @@
                   [nzValue]="i.displayName"
                 />
               </nz-select>
+            </nz-form-control>
+            <nz-form-control *ngIf="!isCreate">
+              <input
+                class="input-custom"
+                nz-input
+                formControlName="checkMethod"
+                [ngModel]="healthForm.type"
+                (ngModelChange)="isNotHttp($event)"
+              />
             </nz-form-control>
             <ng-template #gpuErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{
@@ -607,7 +616,20 @@
           </nz-select>
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item>
+      <nz-form-item *ngIf="!isCreate">
+        <nz-form-label>
+          {{ 'app.ip.address' | i18n }} (<span class="text-red">*</span>)
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            class="input-custom"
+            nz-input
+            formControlName="ipPrivate"
+            [ngModel]="memberForm.ipAddress"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *ngIf="isCreate">
         <nz-form-label>
           {{ 'app.ip.address' | i18n }} (<span class="text-red">*</span>)
         </nz-form-label>
@@ -617,7 +639,6 @@
             [nzShowSearch]="true"
             formControlName="ipPrivate"
             [(ngModel)]="memberForm.address"
-            [nzDisabled]="!isCreate"
             nzSize="large"
           >
             <nz-option
@@ -635,12 +656,15 @@
               Port (<span class="text-red">*</span>)
             </nz-form-label>
             <nz-form-control>
-              <input
-                class="input-custom"
-                formControlName="port"
-                nz-input
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
                 [(ngModel)]="memberForm.protocol_port"
-              />
+                (keydown)="onKeyDown($event)"
+                formControlName="port"
+                [nzMin]="1"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </div>

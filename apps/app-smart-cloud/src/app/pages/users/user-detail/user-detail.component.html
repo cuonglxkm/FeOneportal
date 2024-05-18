@@ -95,7 +95,7 @@
               </nz-form-control>
             </nz-form-item>
           </div>
-          <div class="text-right p-0 m-b-0" nz-col [nzLg]="16" [nzMd]="12" [nzSm]="24" [nzXl]="16" [nzXs]="24"
+          <div class="text-right p-0 m-b-0 d-flex " nz-col [nzLg]="16" [nzMd]="12" [nzSm]="24" [nzXl]="16" [nzXs]="24" style="justify-content: end;"
             [nzXXl]="12">
             <nz-input-group class="textbox-fontsize"
               style="margin-right: 8px; width: 50%; border-radius: 8px;height: 40px;" [nzPrefix]="prefixIconSearch"
@@ -113,8 +113,8 @@
             <button style="border: none; border-radius: 8px" nz-button (click)="deletePolicies()">
               <img style="margin-top: -4px;filter: invert(25%) sepia(84%) saturate(3672%) hue-rotate(351deg) brightness(100%) contrast(84%);" src="assets/imgs/trash.svg" />
             </button>
-            <button nz-button nzType="primary" (click)="navigateToAddPolicies()">
-              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+            <button nz-button nzType="primary" (click)="navigateToAddPolicies()" class="btn-add">
+              <one-portal-svg-icon [icon]="'icon_add'" class="icon-svg icon-padding-right"></one-portal-svg-icon>
               <span>{{ 'app.user-detail.addPolicies' | i18n }}</span>
             </button>
           </div>
@@ -166,7 +166,7 @@
             <p class="custom-text">{{"app.user.group.join"|i18n}}  <span style="margin-left:5px">({{user.userGroups.length}})</span></p>
            
           </div>
-          <div class="text-right p-0 m-b-0" nz-col [nzLg]="16" [nzMd]="16" [nzSm]="24" [nzXl]="16" [nzXs]="24"
+          <div class="text-right p-0 m-b-0 d-flex" nz-col [nzLg]="16" [nzMd]="16" [nzSm]="24" [nzXl]="16" [nzXs]="24" style="justify-content: end;"
             [nzXXl]="12">
             <nz-input-group style="margin-right: 8px; width: 50%; border-radius: 8px" [nzPrefix]="prefixIconSearch"
               nzSize="large">
@@ -183,8 +183,8 @@
             <button style="border: none; border-radius: 8px" nz-button (click)="deleteGroups()">
               <img style="margin-top: -4px;filter: invert(25%) sepia(84%) saturate(3672%) hue-rotate(351deg) brightness(100%) contrast(84%);" src="assets/imgs/trash.svg" />
             </button>
-            <button nz-button nzType="primary" (click)="navigateToAddToGroups()">
-              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+            <button nz-button nzType="primary" (click)="navigateToAddToGroups()" class="btn-add">
+              <one-portal-svg-icon [icon]="'icon_add'" class="icon-svg icon-padding-right"></one-portal-svg-icon>
               <span>{{ 'app.user-detail.addToGroup' | i18n }}</span>
             </button>
           </div>
