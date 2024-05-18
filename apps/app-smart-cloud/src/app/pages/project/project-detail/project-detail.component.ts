@@ -56,6 +56,7 @@ export class ProjectDetailComponent implements OnInit{
       .subscribe(
       data => {
         this.data = data;
+        console.log("huuu", this.data)
       }
     )
 
