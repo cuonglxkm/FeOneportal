@@ -37,7 +37,7 @@
             [placeholder]="'app.order.search' | i18n" />
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search'|i18n" />
         </ng-template>
       </div>
     </nz-row>
@@ -70,17 +70,15 @@
         <td [ngStyle]="{
           color:
            data.statusCode === 'New'
-              ? '#CFEA29EB'
-              : data.statusCode === 'InProcessing'
               ? '#0066B0'
+              : data.statusCode === 'InProcessing'
+              ? '#008D47'
               : data.statusCode === 'Completed'
-              ? 'green'
-              : data.statusCode === 'Paid'
-              ? '#C4621A' 
+              ? '#008D47'            
               :data.statusCode === 'Cancelled'
               ? 'red'
               :data.statusCode === 'Error'
-              ? 'red'
+              ? '#008D47'
               : ''
         }">
         <!-- <span class="mr-2" style="cursor: pointer;" (click)="handleOpenError()"
@@ -89,15 +87,14 @@
           {{  data.statusCode === 'New'
           ? ("app.order.status.orderplaced" | i18n)
           : data.statusCode === 'InProcessing'
-          ? ("app.order.status.InProcessing" | i18n)
+          ? ("app.order.status.Paid" | i18n)
           : data.statusCode === 'Completed'
-          ? ("app.order.status.Installed" | i18n)
-          : data.statusCode === 'Paid'
+          ? ("app.order.status.Paid" | i18n)
+          : data.statusCode === 'Error'
           ? ("app.order.status.Paid" | i18n)
           :data.statusCode === 'Cancelled'
           ? ("app.order.status.cancelled" | i18n)
-          :data.statusCode === 'Error'
-          ? ("app.order.status.error" | i18n)
+         
           : '' }}</span>
       </td>
         <!-- <td [ngStyle]="{
@@ -132,15 +129,13 @@
         <td [ngStyle]="{
           color:
            data.statusCode === 'New'
-              ? '#CFEA29EB'
+              ? 'gray'
               : data.statusCode === 'InProcessing'
               ? '#0066B0'
               : data.statusCode === 'Completed'
-              ? 'green'
-              : data.statusCode === 'Paid'
-              ? '#C4621A' 
+              ? '#008D47'             
               :data.statusCode === 'Cancelled'
-              ? 'red'
+              ? 'gray'
               :data.statusCode === 'Error'
               ? 'red'
               : ''
@@ -151,15 +146,13 @@
           {{  data.statusCode === 'New'
           ? '-'
           : data.statusCode === 'InProcessing'
-          ? ("app.order.status.InProcessing" | i18n)
+          ? ("app.order.status.inprocessing" | i18n)
           : data.statusCode === 'Completed'
-          ? ("app.order.status.Installed" | i18n)
-          : data.statusCode === 'Paid'
-          ? '-'
-          :data.statusCode === 'Cancelled'
-          ? '-'
-          :data.statusCode === 'Error'
+          ? ("app.order.status.installed" | i18n)
+          : data.statusCode === 'Error'
           ? ("app.order.status.error" | i18n)
+          :data.statusCode === 'Cancelled'
+          ? '-'         
           : '' }}</span>
       </td>
       </tr>
