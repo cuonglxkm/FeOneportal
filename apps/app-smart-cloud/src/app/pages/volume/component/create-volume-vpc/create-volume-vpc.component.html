@@ -332,7 +332,7 @@
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
               </button>
               <nz-modal [(nzVisible)]="isVisibleCreate" nzTabScrollList="true"
-                        (nzOnCancel)="handleCancelCreate()" nzCentered>
+                        (nzOnCancel)="handleCancelCreate()">
                 <div *nzModalTitle>
                   <span class="text-modal-header">{{ 'volume.modal.confirm.title.create'|i18n }}</span>
                 </div>

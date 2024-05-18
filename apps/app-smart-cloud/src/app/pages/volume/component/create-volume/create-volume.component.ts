@@ -364,6 +364,7 @@ export class CreateVolumeComponent implements OnInit {
   navigateToPaymentSummary() {
     // this.getTotalAmount()
     this.volumeInit();
+    console.log('value', this.volumeCreate)
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
     request.customerId = this.volumeCreate.customerId;
     request.createdByUserId = this.volumeCreate.customerId;

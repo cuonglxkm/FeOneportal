@@ -117,7 +117,7 @@ export class AttachIpFloatingComponent implements OnInit {
 
   getPortByNetwork(idNetwork) {
     this.isLoadingPort = true
-    this.vlanService.getVlanByNetworkId(idNetwork).subscribe(data => {
+    this.vlanService.getVlanByNetworkId(idNetwork, this.project).subscribe(data => {
       this.vlanService.getPortByNetwork(data.cloudId, this.region, 9999, 1, null).subscribe(item => {
         this.listPort = item.records
         this.isLoadingPort = false
