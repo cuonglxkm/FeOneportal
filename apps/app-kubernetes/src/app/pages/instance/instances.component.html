@@ -76,10 +76,10 @@
 <!-- modal -->
 <nz-modal [(nzVisible)]="isVisibleModal" (nzOnCancel)="handleCancelModalAction()">
   <div *nzModalTitle>
-    <span class="text-modal-title">{{titleModal | i18n : {name: selectedInstance.instanceName} }}</span>
+    <span class="text-modal-title">{{titleModal | i18n : {name: selectedInstance?.instanceName} }}</span>
   </div>
   <div *nzModalContent style="display: flex; flex-direction: column;">
-    <span class="text-label">{{contentModal | i18n : {name: selectedInstance.instanceName} }}</span>
+    <span class="text-label">{{contentModal | i18n : {name: selectedInstance?.instanceName} }}</span>
   </div>
   <div *nzModalFooter>
     <button nz-button nzType="default" (click)="handleCancelModalAction()" class="border-button" [disabled]="isSubmiting">

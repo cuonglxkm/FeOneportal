@@ -4,11 +4,10 @@
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a [routerLink]="['/app-kubernetes']">Container</a>
+      <nz-breadcrumb-item>{{ 'app.cluster.platform-service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-kubernetes']">{{ 'app.cluster.list' | i18n }}</a>
+        <a [routerLink]="['/app-kubernetes']">VNPT Kubernetes Service</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.cluster.manage-cluster' | i18n }}: <ng-container *ngIf="detailCluster"><b>{{detailCluster?.clusterName}}</b></ng-container>

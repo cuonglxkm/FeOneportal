@@ -149,7 +149,7 @@ export class InstancesComponent implements OnInit, OnChanges {
     }))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
-        this.notificationService.success('Thành công', r.message);
+        this.notificationService.success('', r.message);
         this.searchInstances();
       } else {
         this.notificationService.error('Thất bại', r.message);
