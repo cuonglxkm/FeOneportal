@@ -1018,7 +1018,7 @@
   (nzOnCancel)="handleCancel()"
   (nzOnOk)="editPermission()"
   [nzOkText]="null"
-  nzCancelText="Quay lại"
+  nzCancelText="{{'app.order-detail.back' | i18n}}"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -1158,7 +1158,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-        
+
       />{{'app.button.confirm' | i18n}}
     </button>
   </div>

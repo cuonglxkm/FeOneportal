@@ -37,6 +37,8 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
   isUpgradingVersion: boolean;
   isUpgradingWorker: boolean;
   upgradeVersionCluster: string;
+  currentVersion: string;
+  isAgreeArrangement: boolean;
 
   upgradeForm: FormGroup;
 
@@ -75,6 +77,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
     this.showModalUpgradeVersion = false;
     this.isUpgradingVersion = false;
     this.isEditMode = false;
+    this.isAgreeArrangement = false;
 
     this.listFormWorkerGroupUpgrade = this.fb.array([]);
   }
@@ -114,17 +117,18 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
           this.upgradeForm.get('serviceOrderCode').setValue(this.serviceOrderCode);
           this.initFormWorkerGroup(this.detailCluster.workerGroup);
 
+          this.currentVersion = this.detailCluster.currentVersion;
         } else {
           this.notificationService.error("Thất bại", r.message);
         }
       });
   }
 
-  onEditCluster() {
-    this.isEditMode = true;
-    this.getListWorkerType(this.regionId, this.cloudProfileId);
-    this.getListVolumeType(this.regionId, this.cloudProfileId);
-  }
+  // onEditCluster() {
+  //   this.isEditMode = true;
+  //   this.getListWorkerType(this.regionId, this.cloudProfileId);
+  //   this.getListVolumeType(this.regionId, this.cloudProfileId);
+  // }
 
   // websocket
   private openWs() {

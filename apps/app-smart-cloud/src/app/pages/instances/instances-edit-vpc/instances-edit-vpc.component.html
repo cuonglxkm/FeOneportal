@@ -126,28 +126,52 @@
                   >{{ 'app.task.status' | i18n }}:</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'SHUTOFF'"
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'SHUTOFF'"
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'powering-off'"
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-OFF'
+                  "
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'ACTIVE'"
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBUILDING'"
                   class="text-value-detail customSpan"
-                  style="color: #008d47"
-                  >{{ instancesModel.taskState }}</span
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
-                  *ngIf="instancesModel.taskState == 'powering-on'"
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase().includes('RESIZING')
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBOOTING'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'ACTIVE'"
                   class="text-value-detail customSpan"
                   style="color: #008d47"
-                  >{{ instancesModel.taskState }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-ON'
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #008d47"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
               </nz-row>
             </nz-col>
@@ -255,123 +279,286 @@
         [instancesId]="id"
         [isDetail]="false"
       ></one-portal-network-detail>
-      <nz-card
-        style="border-radius: 8px; width: 100%"
-        [nzBordered]="false"
-        *ngIf="instancesModel"
-      >
-        <div style="margin-bottom: 20px">
-          <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
-        </div>
-        <div style="margin-bottom: 20px" *ngIf="infoVPC">
-          <span class="text-label"
-            >{{ 'app.remain.configuration.in.vpc' | i18n }}:
-            {{ remainingVCPU }}/{{ infoVPC.cloudProject.quotavCpu }} vCPU,
-            {{ remainingRAM }}/{{ infoVPC.cloudProject.quotaRamInGb }} GB RAM,
-            {{ remainingVolume }}/{{ purchasedVolume }} GB
-            <span *ngIf="instancesModel.volumeType == 0">HDD</span>
-            <span *ngIf="instancesModel.volumeType == 1">SSD</span>
-          </span>
-        </div>
-        <div style="margin-bottom: 20px">
-          <span class="text-label"
-            >{{ 'app.current.config' | i18n }}: {{ instancesModel.cpu }} vCPU,
-            {{ instancesModel.ram }} GB RAM, {{ instancesModel.storage }} GB
-            <span *ngIf="instancesModel.volumeType == 0">HDD</span>
-            <span *ngIf="instancesModel.volumeType == 1">SSD</span>
-          </span>
-        </div>
-        <div style="margin-bottom: 20px">
-          <span class="text-label"
-            >{{ 'app.adjust.config' | i18n }}:
-            {{ vCPU + instancesModel.cpu }} vCPU,
-            {{ ram + instancesModel.ram }}GB RAM,
-            {{ storage + instancesModel.storage }}GB
-            <span *ngIf="instancesModel.volumeType == 0">HDD</span>
-            <span *ngIf="instancesModel.volumeType == 1">SSD</span>
-          </span>
-        </div>
-        <nz-row style="margin-bottom: 20px" nzGutter="24">
-          <nz-col nzLg="8" nzMd="8" nzSm="24">
+      <form style="width: 100%" nz-form [nzLayout]="'vertical'">
+        <nz-card
+          style="border-radius: 8px"
+          [nzBordered]="false"
+          *ngIf="instancesModel"
+        >
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
+          </div>
+          <div style="margin-bottom: 20px" *ngIf="infoVPC">
             <span class="text-label"
-              >{{ 'app.increase.capacity' | i18n }} (<span class="text-red">*</span>) - GB</span
-            >
-            <nz-row style="margin-top: 10px">
-              <nz-col nzSpan="18">
-                <nz-slider
-                  [(ngModel)]="storage"
-                  (ngModelChange)="checkChangeConfig()"
-                  [ngModelOptions]="{ standalone: true }"
-                  [nzMin]="0"
-                  [nzMax]="remainingVolume"
-                ></nz-slider>
-              </nz-col>
-              <div nzSpan="6">
-                <nz-input-number
-                  [(ngModel)]="storage"
-                  (ngModelChange)="checkChangeConfig()"
-                  (keydown)="onKeyDown($event)"
-                  [ngModelOptions]="{ standalone: true }"
-                  [nzMin]="0"
-                  [nzMax]="remainingVolume"
-                ></nz-input-number>
-              </div>
-            </nz-row>
-          </nz-col>
-          <nz-col nzLg="8" nzMd="8" nzSm="24">
+              >{{ 'app.remain.configuration.in.vpc' | i18n }}:
+              {{ remainingVCPU }}/{{ infoVPC.cloudProject.quotavCpu }} vCPU,
+              {{ remainingRAM }}/{{ infoVPC.cloudProject.quotaRamInGb }} GB RAM,
+              {{ remainingVolume }}/{{ purchasedVolume }} GB
+              <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+            </span>
+          </div>
+          <div style="margin-bottom: 20px">
             <span class="text-label"
-              >{{ 'app.increase.ram' | i18n }} (<span class="text-red">*</span>) - GB</span
-            >
-            <nz-row style="margin-top: 10px">
-              <nz-col nzSpan="18">
-                <nz-slider
-                  [(ngModel)]="ram"
-                  (ngModelChange)="checkChangeConfig()"
-                  [ngModelOptions]="{ standalone: true }"
-                  [nzMin]="0"
-                  [nzMax]="remainingRAM"
-                ></nz-slider>
-              </nz-col>
-              <div nzSpan="6">
-                <nz-input-number
-                  [(ngModel)]="ram"
-                  (ngModelChange)="checkChangeConfig()"
-                  (keydown)="onKeyDown($event)"
-                  [ngModelOptions]="{ standalone: true }"
-                  [nzMin]="0"
-                  [nzMax]="remainingRAM"
-                ></nz-input-number>
-              </div>
-            </nz-row>
-          </nz-col>
-          <nz-col nzLg="8" nzMd="8" nzSm="24">
+              >{{ 'app.current.config' | i18n }}: {{ instancesModel.cpu }} vCPU,
+              {{ instancesModel.ram }} GB RAM, {{ instancesModel.storage }} GB
+              <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+            </span>
+          </div>
+          <div style="margin-bottom: 20px">
             <span class="text-label"
-              >{{ 'app.increase.cpu' | i18n }} (<span class="text-red">*</span>) - vCPU</span
+              >{{ 'app.adjust.config' | i18n }}:
+              {{ vCPU + instancesModel.cpu }} vCPU,
+              {{ ram + instancesModel.ram }}GB RAM,
+              {{ storage + instancesModel.storage }}GB
+              <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+            </span>
+          </div>
+          <nz-tabset
+            nzCentered
+            nzSize="large"
+            (keydown)="handleKeyboardEvent($event)"
+          >
+            <nz-tab
+              *ngIf="!isConfigGpuAtInitial"
+              [nzTitle]="'app.custom.configuration' | i18n"
+              (nzClick)="onClickCustomConfig()"
             >
-            <nz-row style="margin-top: 10px">
-              <nz-col nzSpan="18">
-                <nz-slider
-                  [(ngModel)]="vCPU"
-                  (ngModelChange)="checkChangeConfig()"
-                  [ngModelOptions]="{ standalone: true }"
-                  [nzMin]="0"
-                  [nzMax]="remainingVCPU"
-                ></nz-slider>
-              </nz-col>
-              <div nzSpan="6">
-                <nz-input-number
-                  [(ngModel)]="vCPU"
-                  (ngModelChange)="checkChangeConfig()"
-                  (keydown)="onKeyDown($event)"
-                  [ngModelOptions]="{ standalone: true }"
-                  [nzMin]="0"
-                  [nzMax]="remainingVCPU"
-                ></nz-input-number>
+              <div class="ant-table">
+                <table>
+                  <thead class="ant-table-thead">
+                    <tr>
+                      <th style="width: 80%">{{ 'app.resource' | i18n }}</th>
+                      <th>{{ 'app.amount' | i18n }}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="ant-table-tbody">
+                    <tr>
+                      <td style="width: 50%">
+                        <nz-form-label style="margin-left: -12px"
+                          >{{ 'app.capacity' | i18n }} (<span class="text-red"
+                            >*</span
+                          >) - GB</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="storage"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVolume"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="storage"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVolume"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >RAM (<span class="text-red">*</span>) -
+                          GB</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="ram"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingRAM"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="ram"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingRAM"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >CPU (<span class="text-red">*</span>) -
+                          vCPU</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="vCPU"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVCPU"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="vCPU"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVCPU"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-            </nz-row>
-          </nz-col>
-        </nz-row>
-      </nz-card>
+            </nz-tab>
+            <nz-tab
+              [nzTitle]="'app.gpu.configuration' | i18n"
+              (nzClick)="onClickGpuConfig()"
+            >
+              <div class="ant-table">
+                <table>
+                  <thead class="ant-table-thead">
+                    <tr>
+                      <th style="width: 80%">{{ 'app.resource' | i18n }}</th>
+                      <th>{{ 'app.amount' | i18n }}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="ant-table-tbody">
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >CPUs (<span class="text-red">*</span>)</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="vCPU"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVCPU"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="vCPU"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVCPU"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >RAM (<span class="text-red">*</span>) -
+                          GB</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="ram"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingRAM"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="ram"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingRAM"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 50%">
+                        <nz-form-label style="margin-left: -12px"
+                          >{{ 'app.ssd.capacity' | i18n }} (<span
+                            class="text-red"
+                            >*</span
+                          >) - GB</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="storage"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVolume"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="storage"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVolume"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 50%">
+                        <nz-form-label style="margin-left: -12px"
+                          >{{ 'app.gpu.number' | i18n }} (<span class="text-red"
+                            >*</span
+                          >)</nz-form-label
+                        >
+                        <nz-slider
+                          [nzMin]="0"
+                          [nzMax]="remainingGpu"
+                          [(ngModel)]="GPU"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [nzMin]="0"
+                          [nzMax]="remainingGpu"
+                          [(ngModel)]="GPU"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
+                <nz-form-label
+                  >{{ 'app.choose.gpu.type' | i18n }} (<span class="text-red"
+                    >*</span
+                  >)</nz-form-label
+                >
+                <nz-form-control>
+                  <nz-select
+                    [nzPlaceHolder]="
+                      '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
+                    "
+                    [nzShowSearch]="true"
+                    [(ngModel)]="gpuTypeOfferId"
+                    [ngModelOptions]="{ standalone: true }"
+                    nzSize="large"
+                  >
+                    <nz-option
+                      *ngFor="let i of listGPUType"
+                      [nzLabel]="i.offerName"
+                      [nzValue]="i.id"
+                    />
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </nz-tab>
+          </nz-tabset>
+        </nz-card>
+      </form>
     </nz-row>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">

@@ -180,6 +180,12 @@ textarea,
   font-weight: bolder;
 }
 
+.item-broker {
+  border-bottom: 1px solid #E2E2E9;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
 .item-price {
   border-top: 1px solid #E2E2E9;
   width: 160px;

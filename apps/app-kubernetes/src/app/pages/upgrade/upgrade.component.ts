@@ -17,6 +17,7 @@ import { K8sVersionModel } from '../../model/k8s-version.model';
 import { VlanService } from '../../services/vlan.service';
 import { finalize, forkJoin } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { UserInfo } from '../../model/user.model';
 
 @Component({
   selector: 'one-portal-upgrade',
@@ -99,6 +100,8 @@ export class UpgradeComponent implements OnInit {
     this.initForm();
 
     this.getListPriceItem();
+
+    this.getUserInfo(this.tokenService.get()?.userId);
   }
 
   initForm() {
@@ -247,6 +250,14 @@ export class UpgradeComponent implements OnInit {
           this.notificationService.error("Thất bại", r.message);
         }
       });
+  }
+
+  userInfo: UserInfo;
+  getUserInfo(userId: number) {
+    this.clusterService.getUserInfo(userId)
+    .subscribe((r: any) => {
+      this.userInfo = r;
+    });
   }
 
   vpcNetwork: string;
@@ -483,12 +494,14 @@ export class UpgradeComponent implements OnInit {
   upgradeCost: number;
   currentRegisteredCost: number;
   totalCost: number;
+  vatCost: number;
   costPerDay: number;
   onCalculatePrice() {
     this.upgradeCost = this.getUpgradeCost();
     this.remainCost = this.getRemainCost();
 
     this.totalCost = this.upgradeCost - this.remainCost;
+    this.vatCost = this.upgradeCost * 0.1;
   }
 
   newTotalCpu: number;
@@ -721,7 +734,14 @@ export class UpgradeComponent implements OnInit {
       const wg = new WorkerGroupReqDto(wgs[i]);
       tmp.push(wg);
     }
-    cluster.jsonData = JSON.stringify({'ServiceOrderCode': this.serviceOrderCode, 'WorkerGroup': tmp});
+    cluster.jsonData = JSON.stringify({
+      ServiceOrderCode: this.serviceOrderCode,
+      WorkerGroup: tmp,
+      Id: this.userInfo.id,
+      UserName: this.userInfo.name,
+      PhoneNumber: this.userInfo.phoneNumber,
+      UserEmail: this.userInfo.email,
+    });
 
     return cluster;
   }

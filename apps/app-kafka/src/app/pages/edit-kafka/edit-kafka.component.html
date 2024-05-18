@@ -1,4 +1,4 @@
-<ng-container *ngIf="itemDetail">
+<ng-container *ngIf="itemDetail && itemDetail.serviceStatus !== statusSuspend">
     <page-header [breadcrumb]="breadcrumb" [title]="('app.kafka.edit-title' | i18n) + ': ' + this.itemDetail.serviceName">
         <ng-template #breadcrumb>
             <nz-breadcrumb>
@@ -51,8 +51,11 @@
                                 <nz-form-control [nzErrorTip]="'validation.service.version-required' | i18n">
                                     <nz-select formControlName="version" (ngModelChange)="changeForm()"
                                         [nzPlaceHolder]="'app.kafka.version-placeholder' | i18n" nzSize="large">
-                                        <nz-option *ngFor="let data of listOfKafkaVersion" [nzValue]="data.helmVersion"
-                                            [nzLabel]="data.apacheKafkaVersion"></nz-option>
+                                        <nz-option *ngFor="let data of listOfKafkaVersion" 
+                                            [nzValue]="data.helmVersion" 
+                                            [nzLabel]="data.apacheKafkaVersion" 
+                                            [nzDisabled]="(data.orderUpgrade - currentVersion.orderUpgrade) !== 1 && (data.orderUpgrade - currentVersion.orderUpgrade) !== 0">
+                                        </nz-option>
                                     </nz-select>
                                 </nz-form-control>
                             </nz-form-item>

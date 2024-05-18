@@ -3,6 +3,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ScheduleService } from '../../../../shared/services/schedule.service';
 import { FormAction } from '../../../../shared/models/schedule.model';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-stop-schedule',
@@ -19,6 +21,7 @@ export class StopScheduleComponent {
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private backupScheduleService: ScheduleService) {
   }
 
@@ -37,7 +40,7 @@ export class StopScheduleComponent {
       // if(data) {
         this.isVisible = false
         this.isLoading = false
-        this.notification.success('Thành công', 'Tạm dừng lịch thành công')
+        this.notification.success(this.i18n.fanyi("app.status.success"),this.i18n.fanyi("schedule.backup.notify.stop.success"))
         this.onOk.emit()
       // } else {
       //   this.isVisible = false
@@ -48,7 +51,7 @@ export class StopScheduleComponent {
     },error => {
       this.isVisible = false
       this.isLoading = false
-      this.notification.error('Thất bại', 'Tạm dừng lịch thất bại')
+      this.notification.error(this.i18n.fanyi("app.status.fail"),this.i18n.fanyi("schedule.backup.notify.stop.fail"))
       this.onOk.emit()
     })
   }

@@ -29,11 +29,7 @@
   </ng-template>
   <div *ngIf="!volumeInfo?.bootable">
     <div *ngIf="typeVPC == 0" style="display: flex">
-      <div style="margin-right: 8px;" *ngIf="!(volumeInfo?.serviceStatus == 'CREATING'
-      || volumeInfo?.serviceStatus == 'ATTACHING'
-      || volumeInfo?.serviceStatus == 'DELETING'
-      || volumeInfo?.serviceStatus == 'ERROR_DELETING'
-      || volumeInfo?.serviceStatus == 'ERROR')">
+      <div style="margin-right: 8px;" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus)">
         <div nz-col nzSpan="4">
           <button class="button-fee"
                   nz-button
@@ -44,11 +40,7 @@
           </button>
         </div>
       </div>
-      <div nz-col nzSpan="4" *ngIf="!(volumeInfo?.serviceStatus == 'CREATING'
-      || volumeInfo?.serviceStatus == 'ATTACHING'
-      || volumeInfo?.serviceStatus == 'DELETING'
-      || volumeInfo?.serviceStatus == 'ERROR_DELETING'
-      || volumeInfo?.serviceStatus == 'ERROR')">
+      <div nz-col nzSpan="4" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus)">
         <button class="button-cancel"
                 nzType="default"
                 (click)="navigateToRenew(volumeInfo.id)"

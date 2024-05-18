@@ -824,7 +824,7 @@
                   >*</span
                 >)</nz-form-label
               >
-              <nz-form-control [nzErrorTip]="gpuErrorTpl">
+              <nz-form-control>
                 <nz-select
                   [nzPlaceHolder]="
                     '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
@@ -842,11 +842,6 @@
                   />
                 </nz-select>
               </nz-form-control>
-              <ng-template #gpuErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')"
-                  >Vui lòng chọn GPU Type</ng-container
-                >
-              </ng-template>
             </nz-form-item>
           </nz-tab>
         </nz-tabset>
@@ -959,7 +954,10 @@
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 >
-                  <nz-option [nzLabel]="'Không sử dụng'" [nzValue]="''" />
+                  <nz-option
+                    [nzLabel]="'app.do.not.use' | i18n"
+                    [nzValue]="''"
+                  />
                   <nz-option
                     *ngFor="let i of listVlanNetwork"
                     [nzLabel]="i.name"

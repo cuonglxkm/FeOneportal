@@ -258,7 +258,9 @@ export class VlanEditSubnetComponent implements OnInit {
     this.vlanService.updateSubnet(this.idSubnet, this.formUpdateSubnet).subscribe(data => {
       this.isLoading = false;
       this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note40'));
-      this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
+      this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]).then(() => {
+        window.location.reload()
+      });
 
     }, error => {
       this.isLoading = false;
