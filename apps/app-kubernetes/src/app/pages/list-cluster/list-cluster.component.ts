@@ -376,6 +376,25 @@ export class ListClusterComponent implements OnInit, OnDestroy {
 
       }
     }
+
+    this.initNotificationWebsocket([
+      { topics: [topicBroadcast, topicSpecificUser], cb: notificationMessageCb }
+    ]);
+  }
+
+  private initNotificationWebsocket(topicCBs: Array<{ topics: string[], cb: messageCallbackType }>) {
+
+    setTimeout(() => {
+      this.websocketService = NotificationWsService.getInstance();
+      this.websocketService.connect(
+        () => {
+          for (const topicCB of topicCBs) {
+            for (const topic of topicCB.topics) {
+              this.websocketService.subscribe(topic, topicCB.cb);
+            }
+          }
+        });
+    }, 1000);
   }
 
   navigateToDocs() {
