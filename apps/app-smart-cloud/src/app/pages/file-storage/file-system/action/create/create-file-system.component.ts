@@ -277,6 +277,7 @@ export class CreateFileSystemComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
 
+    console.log('create');
     this.getListSnapshot();
     this.getListFileSystem();
     this.getStorageBuyVpc();
