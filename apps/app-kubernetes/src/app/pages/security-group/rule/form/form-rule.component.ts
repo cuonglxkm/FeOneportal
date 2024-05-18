@@ -304,7 +304,7 @@ export class FormRuleComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.isLoading = false;
-          this.notification.success('Thành công', 'Tạo mới thành công');
+          this.notification.success('', 'Tạo mới thành công');
           this.onOk.emit(data);
 
           // save log
@@ -321,7 +321,7 @@ export class FormRuleComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          this.notification.error('Thất bại', error.error.detail);
+          this.notification.error('', error.error.detail);
         }
       })
     } else {

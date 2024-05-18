@@ -119,7 +119,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
 
           this.currentVersion = this.detailCluster.currentVersion;
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error("", r.message);
         }
       });
   }
@@ -283,7 +283,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           this.listOfWorkerType = r.data;
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error("", r.message);
         }
       })
   }
@@ -295,7 +295,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           this.listOfVolumeType = r.data;
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error("", r.message);
         }
       });
   }
@@ -396,7 +396,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           this.listOfK8sVersion = r.data;
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error("", r.message);
         }
       });
   }
@@ -492,10 +492,10 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
     .pipe(finalize(() => this.isUpgradingWorker = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
-        this.notificationService.success("Thành công", r.message);
+        this.notificationService.success("", r.message);
         this.back2list();
       } else {
-        this.notificationService.error("Thất bại", r.message);
+        this.notificationService.error("", r.message);
       }
     });
   }
@@ -517,10 +517,10 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         this.showModalUpgradeVersion = false;
       })).subscribe((r: any) => {
         if (r && r.code == 200) {
-          this.notificationService.success("Thành công", r.message);
+          this.notificationService.success("", r.message);
           this.back2list();
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error("", r.message);
         }
       });
   }
