@@ -283,6 +283,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
+    console.log('normal');
     this.project = regionAndProject.projectId;
 
     this.getListSnapshot();
