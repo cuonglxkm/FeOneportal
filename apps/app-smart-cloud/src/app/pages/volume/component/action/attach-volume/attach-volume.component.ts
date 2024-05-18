@@ -76,13 +76,7 @@ export class AttachVolumeComponent implements AfterViewInit{
       true, this.tokenService.get()?.userId).subscribe(data => {
       this.isLoading = false
       this.listVm = data.records
-      this.listVm = this.listVm.filter(item => item.taskState === 'ACTIVE')
-      this.listVm.forEach(item => {
-        const exists = this.instanceInVolume.some(itemAttach => itemAttach.instanceId === item.id)
-        if(!exists) {
-          this.listVmUnique?.push(item)
-        }
-      })
+      this.listVmUnique = this.listVm.filter(item => item.taskState === 'ACTIVE' && !this.instanceInVolume.map((item) => item.instanceId ).includes(item.id))
     })
   }
 

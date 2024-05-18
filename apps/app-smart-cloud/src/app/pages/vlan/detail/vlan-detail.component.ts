@@ -70,7 +70,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
 
   getVlanByNetworkId() {
     this.isLoading = true
-    this.vlanService.getVlanByNetworkId(this.idNetwork)
+    this.vlanService.getVlanByNetworkId(this.idNetwork, this.project)
       .pipe(debounceTime(500)).subscribe(data => {
       this.networkName = data.name
       this.isLoading = false
