@@ -298,10 +298,24 @@ export class CreateVolumeVpcComponent implements OnInit {
 
     this.volumeCreate.volumeSize = this.validateForm.controls.storage.value;
 
+
+
     this.projectService.getByProjectId(this.project).subscribe(data => {
       this.isLoading = false;
       this.sizeInCloudProject = data;
-      this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
+      console.log(this.volumeCreate.volumeType)
+      if(this.volumeCreate.volumeType === 'hdd') {
+        this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
+      }
+      if(this.volumeCreate.volumeType === 'ssd') {
+        this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
+      }
+
+
+      this.validateForm.controls.storage.markAsDirty()
+      this.validateForm.controls.storage.updateValueAndValidity()
+
+
     }, error => {
       this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
       this.isLoading = false;

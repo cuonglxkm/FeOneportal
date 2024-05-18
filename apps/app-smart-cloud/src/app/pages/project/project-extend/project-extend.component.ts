@@ -10,6 +10,7 @@ import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { IpPublicService } from '../../../shared/services/ip-public.service';
+import { setDate } from 'date-fns';
 
 @Component({
   selector: 'one-portal-project-extend',
@@ -52,6 +53,7 @@ export class ProjectExtendComponent implements OnInit{
     this.regionId = regionAndProject.regionId;
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getData(id);
+    this.onChangeTime()
   }
 
   onRegionChange(region: RegionModel) {
@@ -68,7 +70,8 @@ export class ProjectExtendComponent implements OnInit{
           this.data = data;
           this.expiredDate = data.expireDate;
           this.today = data.createDate;
-          this.expiredDateOld = data.expireDate;
+          this.expiredDateOld = data.expireDate ;
+         
         }
       )
 
@@ -140,10 +143,28 @@ export class ProjectExtendComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
   }
 
+  // onChangeTime() {
+  //   const dateNow =new Date(this.expiredDateOld);
+  //   console.log("datenow1", dateNow)
+  //   dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value) * 30);
+  //   console.log("dtaenow2", dateNow)
+  //   this.expiredDate = dateNow;
+  //   this.caculate();
+  // }
+
   onChangeTime() {
-    const dateNow =new Date(this.expiredDateOld);
+    console.log("this.expiredDate", this.expiredDate)
+    const dateNow =new Date(this.expiredDate );
+    console.log("datenow1", dateNow)
+
     dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value) * 30);
-    this.expiredDate = dateNow;
+    const numOfMonth = Number(this.form.controls['numOfMonth'].value) * 30
+    console.log("dtaenow2", dateNow)
+  
+    console.log("Number(this.form.controls['numOfMonth'].value) * 30);", numOfMonth )
+    const getdate = dateNow.getDate()
+    console.log("dateNow.getDate()", getdate)
+    this.expiredDateOld = dateNow;
     this.caculate();
   }
 

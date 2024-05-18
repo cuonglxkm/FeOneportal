@@ -7,6 +7,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime } from 'rxjs';
 import { FormSearchSubnet, Port, Subnet } from '../../../shared/models/vlan.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { trim } from 'lodash';
 
 @Component({
   selector: 'one-portal-vlan-detail',
@@ -69,7 +70,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
 
   getVlanByNetworkId() {
     this.isLoading = true
-    this.vlanService.getVlanByNetworkId(this.idNetwork)
+    this.vlanService.getVlanByNetworkId(this.idNetwork, this.project)
       .pipe(debounceTime(500)).subscribe(data => {
       this.networkName = data.name
       this.isLoading = false
@@ -80,6 +81,9 @@ export class VlanDetailComponent implements OnInit, OnChanges {
       if(error.status == '404') {
         this.notification.error('', 'Network không tồn tại!')
         this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+      } else {
+        this.notification.error(error.statusText, 'Không lấy được dữ liệu!')
+        this.router.navigate(['/app-smart-cloud/vlan/network/list'])
       }
       this.isLoading = false
     })
@@ -87,7 +91,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
 
   //SUBNET
   onInputChangeSubnet(value) {
-    this.valueSubnet = value;
+    this.valueSubnet = trim(value);
     this.getSubnetByNetwork();
   }
 
@@ -106,6 +110,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
   }
 
   navigateToEditSubnet(idSubnet) {
+
     this.router.navigate(['/app-smart-cloud/vlan/' + this.idNetwork + '/network/edit/subnet/' + idSubnet]);
   }
 
@@ -199,8 +204,8 @@ export class VlanDetailComponent implements OnInit, OnChanges {
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
 
-    console.log('project', this.project)
-    this.getVlanByNetworkId()
+    this.onPageIndexChangePort(1)
+    // this.getVlanByNetworkId()
   }
 
 }

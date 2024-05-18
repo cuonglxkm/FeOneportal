@@ -65,7 +65,7 @@
           <td>{{ item.userAction }}</td>
           <td id="type">{{ item.resourceType }}</td>
           <td>{{ item.resource }}</td>
-          <td>{{ item.operation | action2label }}</td>
+          <td>{{ (item.operation | action2label) | i18n }}</td>
           <td>
             <ng-container *ngIf="item.note?.length <= 30; else truncateValueTpl">
               {{ item.note }}

@@ -105,7 +105,7 @@ export class ProjectCreateComponent implements OnInit {
     siteToSite: 0
   };
   form = new FormGroup({
-    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/)] }),
+    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(20)] }),
     description: new FormControl(''),
     ipConnectInternet: new FormControl(''),
     numOfMonth: new FormControl(1, { validators: [Validators.required] })

@@ -84,6 +84,7 @@ export class Subnet {
   vpcId: number
   region: number
   regionText: string
+  networkAddress: string
   subnets: Subnet[]
 }
 

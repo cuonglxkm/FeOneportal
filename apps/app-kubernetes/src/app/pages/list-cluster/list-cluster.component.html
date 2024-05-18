@@ -30,7 +30,7 @@
             <div class="w-25">
               <nz-select nzSize="default" nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="searchCluster()"
                 [nzPlaceHolder]="'app.order.status' | i18n" class="w-100" nzSize="large">
-                <nz-option *ngFor="let status of listOfStatusCluster" [nzLabel]="status.statusName"
+                <nz-option *ngFor="let status of listOfStatusCluster" [nzLabel]="(status.id | status2ColorPipe)?.status | i18n"
                   [nzValue]="status.id"></nz-option>
               </nz-select>
             </div>
@@ -114,11 +114,13 @@
             <td class="right-align">{{ item.totalNode ? item.totalNode : 0 }}</td>
             <td>{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
             <td>
-              <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; width: fit-content; margin-right: 8px;"
+              <img src="assets/imgs/edit-kafka.svg" class="icon-action" (click)="onDestroy()"
+                [nz-tooltip]="'app.text.edit' | i18n" routerLink="edit/{{item.serviceOrderCode}}" />
+              <img src="assets/imgs/upgrade.svg" alt="" class="icon-action"
                 [nz-tooltip]="'app.text.upgrade' | i18n" routerLink="upgrade/{{item.serviceOrderCode}}" />
-              <img src="assets/imgs/download-file.svg" style="cursor: pointer; width: fit-content; margin-right: 8px;" alt=""
+              <img src="assets/imgs/download-file.svg" class="icon-action"
                 [nz-tooltip]="'app.cluster.download-config' | i18n" (click)="handleDownloadKubeConfig(item)" />
-              <img src="assets/imgs/calendar-tick.svg" style="cursor: pointer; width: fit-content; margin-right: 8px;" alt=""
+              <img src="assets/imgs/calendar-tick.svg" class="icon-action"
                 [nz-tooltip]="'app.extend' |  i18n" routerLink="extension/{{item.serviceOrderCode}}" />
 
               <ng-container *ngIf="item.serviceStatus | checkStatus as progressing">

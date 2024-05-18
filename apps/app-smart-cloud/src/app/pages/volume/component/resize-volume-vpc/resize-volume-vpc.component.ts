@@ -253,7 +253,13 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.projectService.getByProjectId(this.project).subscribe(data => {
         this.isLoading = false;
         this.sizeInCloudProject = data;
-        this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
+        console.log(this.volumeInfo?.volumeType)
+        if(this.volumeInfo?.volumeType === 'hdd') {
+          this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
+        }
+        if(this.volumeInfo?.volumeType === 'ssd') {
+          this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
+        }
       }, error => {
         this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
         this.isLoading = false;

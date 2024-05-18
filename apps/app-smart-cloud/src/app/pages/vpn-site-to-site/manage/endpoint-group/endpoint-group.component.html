@@ -26,7 +26,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>VPN Connection</th>
+      <!-- <th>VPN Connection</th> -->
       <th>Type</th>
       <th>Enpoints</th>
       <th nzAlign="center">Actions</th>
@@ -35,12 +35,9 @@
   <tbody>
     <tr *ngFor="let data of fixedTable.data; index as i">
       <td>
-        <a
-          [routerLink]="['/app-smart-cloud/vpn-site-to-site/endpoint-group/' + data.id]"
-          >{{ data.name }}</a
-        >
+        <a [routerLink]="['/app-smart-cloud/vpn-site-to-site/endpoint-group/' + data.id]">{{ data.name }}</a>
       </td>
-      <td>{{ data.type }}</td>
+      <!-- <td>{{ data.type }}</td> -->
       <td>{{ data.type }}</td>
       <td>
         <ng-container *ngFor="let endpoint of data.endpoints; let last = last">
@@ -48,22 +45,14 @@
           <span *ngIf="!last">, </span>
         </ng-container>
       </td>
-      
+
       <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
-          <one-portal-edit-endpoint-group [region]="region"
-          [project]="project"
-          [id]="data.id"
-          [name]="data.name"
-          [type]="data.type"
-          [endpoints]="data.endpoints"
-          (onOk)="handleOkEdit()"></one-portal-edit-endpoint-group>
+          <one-portal-edit-endpoint-group [region]="region" [project]="project" [id]="data.id" [name]="data.name"
+            [type]="data.type" [endpoints]="data.endpoints" (onOk)="handleOkEdit()"></one-portal-edit-endpoint-group>
 
-          <one-portal-delete-endpoint-group [region]="region"
-          [project]="project"
-          [id]="data.id"
-          [name]="data.name"
-          (onOk)="handleOkDelete()"></one-portal-delete-endpoint-group>
+          <one-portal-delete-endpoint-group [region]="region" [project]="project" [id]="data.id" [name]="data.name"
+            (onOk)="handleOkDelete()"></one-portal-delete-endpoint-group>
         </div>
       </td>
     </tr>

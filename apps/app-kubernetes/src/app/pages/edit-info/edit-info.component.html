@@ -1,0 +1,111 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="('app.cluster.edit' | i18n) + ': ' + detailCluster?.clusterName">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-kubernetes']">Container</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-kubernetes']">{{ 'app.cluster.list' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.cluster.upgrade-service' | i18n }}: <b>{{detailCluster?.clusterName || ''}}</b>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+
+  <!-- action -->
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)" [isDetail]="true"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="onProjectChange($event)"
+        [isDetail]="true"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<nz-card class="border-card">
+  <form nz-form [formGroup]="editForm" nzLayout="vertical">
+    <nz-form-item>
+      <nz-form-label>{{ 'app.cluster.name' | i18n }} (<span class="required-color">*</span>)</nz-form-label>
+      <nz-form-control [nzErrorTip]="clusterErrorTpl">
+        <input nz-input type="text" [placeholder]="'cluster.placeholder.cluster-name' | i18n"
+          formControlName="clusterName" nzSize="large" autofocus />
+      </nz-form-control>
+      <ng-template #clusterErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          <div>{{ 'cluster.validate.required.cluster-name' | i18n }}</div>
+        </ng-container>
+        <ng-container *ngIf="control.hasError('minlength')">
+          <div>{{ 'cluster.validate.minlength.cluster-name' | i18n }}</div>
+        </ng-container>
+        <ng-container *ngIf="control.hasError('maxlength')">
+          <div>{{ 'cluster.validate.maxlength.cluster-name' | i18n }}</div>
+        </ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">
+          <div>{{ 'cluster.validate.pattern.cluster-name' | i18n }}</div>
+        </ng-container>
+      </ng-template>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>{{ 'app.cluster.description' | i18n }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="descriptionErrorTpl">
+        <textarea formControlName="description" nz-input rows="5" [placeholder]="'cluster.placeholder.description' | i18n" nzSize="large"></textarea>
+      </nz-form-control>
+      <ng-template #descriptionErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('maxlength')">
+          <div>{{ 'cluster.validate.maxlength.description' | i18n }}</div>
+        </ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">
+          <div>{{ 'cluster.validate.pattern.description' | i18n }}</div>
+        </ng-container>
+      </ng-template>
+    </nz-form-item>
+
+    <div style="position: relative; float: right;">
+      <button nz-button nzType="default" (click)="handleShowModalCancelEdit()" [disabled]="isSubmitting">
+        <span nz-icon nzType="close" nzTheme="outline"></span>
+        {{ 'app.button.cancel' | i18n }}
+      </button>
+      <button nz-button nzType="primary" (click)="onSubbmit()">
+        <ng-container *ngIf="isSubmitting; else normalTpl">
+          <span nz-icon [nzType]="'loading'"></span>
+        </ng-container>
+        <ng-template #normalTpl>
+          <span nz-icon nzType="check" nzTheme="outline"></span>
+        </ng-template>
+        {{ 'app.button.confirm' | i18n }}
+      </button>
+    </div>
+  </form>
+</nz-card>
+
+<!-- modal cancel create -->
+<nz-modal [(nzVisible)]="showModalCancelEdit" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
+  (nzOnCancel)="handleCancelModalEdit()">
+  <ng-template #modalTitle>{{ 'app.cluster.title-cancel' | i18n }}</ng-template>
+
+  <ng-template #modalContent>
+    <nz-alert
+      nzType="warning"
+      [nzDescription]="cancelWarning" nzShowIcon></nz-alert>
+    <ng-template #cancelWarning>
+      <div class="warning-description">{{ 'app.cluster.cancel-desciption-1' | i18n }}</div>
+      <div class="delete-color warning-description mt-1">{{ 'app.cluster.cancel-desciption-2' | i18n }}</div>
+    </ng-template>
+  </ng-template>
+
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="handleCancelModalEdit()">
+      <span nz-icon nzType="close" nzTheme="outline"></span>
+      {{ 'app.cluster.cancel' | i18n }}
+    </button>
+    <button nz-button nzType="primary" (click)="back2list()">
+      <span nz-icon nzType="check" nzTheme="outline"></span>
+      {{ 'app.button.confirm' | i18n }}
+    </button>
+  </ng-template>
+</nz-modal>

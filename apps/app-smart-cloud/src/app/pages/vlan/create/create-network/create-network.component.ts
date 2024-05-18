@@ -209,7 +209,8 @@ export class CreateNetworkComponent implements OnInit {
       }, error => {
         this.isLoading = false;
         this.router.navigate(['/app-smart-cloud/vlan/network/list']);
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note58') + 'Dải IP ' + this.validateForm.controls.networkAddress.value +' đã tồn tại trong 1 dải Subnet. Vui lòng chọn dải khác');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.statusText)
+        // this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note58') + 'Dải IP ' + this.validateForm.controls.networkAddress.value +' đã tồn tại trong 1 dải Subnet. Vui lòng chọn dải khác');
       });
     } else {
       console.log('value form invalid', this.validateForm.getRawValue());

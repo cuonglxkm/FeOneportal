@@ -63,6 +63,7 @@ import { UpgradeComponent } from './upgrade/upgrade.component';
 import { ExtensionComponent } from './extension/extension.component';
 import { CheckUpgradePackPipe } from '../pipes/check-upgrade-pack.pipe';
 import { CanDelRulePipe } from '../pipes/can-del-rule.pipe';
+import { EditInfoComponent } from './edit-info/edit-info.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -102,6 +103,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ExtensionComponent,
     CheckUpgradePackPipe,
     CanDelRulePipe,
+    EditInfoComponent,
   ],
   imports: [
     CommonModule,

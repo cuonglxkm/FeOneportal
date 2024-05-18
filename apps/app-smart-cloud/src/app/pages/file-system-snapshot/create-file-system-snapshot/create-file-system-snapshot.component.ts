@@ -141,7 +141,11 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
           (error) => {
             this.isLoading = false
             if (error.status === 500) {
-              this.notification.error(this.i18n.fanyi('app.status.fail'), 'Chỉ có thể tạo khi trạng thái của file system là Khởi tạo');
+              if(error.error && error.error.detail){
+                this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+              } else {
+                this.notification.error(this.i18n.fanyi('app.status.fail'), 'Chỉ có thể tạo khi trạng thái của file system là Khởi tạo');
+              }
             }else{
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
