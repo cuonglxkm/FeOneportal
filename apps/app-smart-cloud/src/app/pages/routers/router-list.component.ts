@@ -41,6 +41,7 @@ export class RouterListComponent implements OnInit {
   isTrigger: boolean = false;
   currentPage = 1;
   pageSize = 3;
+  pageSizeFixed = 3
   total = 1;
   loading = false;
   searchGenderList: string[] = [];
@@ -129,6 +130,10 @@ export class RouterListComponent implements OnInit {
     this.loading = true;
     this.projectId = project.id;
     this.getDataList(true);
+  }
+
+  onPageSizeChange(event) {
+    this.getDataList(false);
   }
 
   doSearch(value: string) {

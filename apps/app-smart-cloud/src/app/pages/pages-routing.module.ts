@@ -16,9 +16,6 @@ import { SnappshotvlDetailComponent } from './snapshot-volume/snapshotvl-detail/
 import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import {
-  CreateBackupVolumeComponent
-} from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
-import {
   DetailBackupVolumeComponent
 } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
 import {
@@ -144,6 +141,12 @@ import { PermissionGuard } from '../shared/guard/PermissionGuard';
 import { CreateBackupVmNormalComponent } from './backup-vm/create/no-vpc/create-backup-vm-normal.component';
 import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup-vm-vpc.component';
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
+import {
+  CreateBackupVolumeVpcComponent
+} from './volume/component/backup-volume/create-backup-volume/vpc/create-backup-volume-vpc.component';
+import {
+  CreateBackupVolumeNormalComponent
+} from './volume/component/backup-volume/create-backup-volume/no-vpc/create-backup-volume-normal.component';
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
 const routes: Routes = [
@@ -333,8 +336,17 @@ const routes: Routes = [
     }
   },
   {
-    path: 'backup-volume/create',
-    component: CreateBackupVolumeComponent,
+    path: 'backup-volume/create/vpc',
+    component: CreateBackupVolumeVpcComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create'
+    }
+
+  },
+  {
+    path: 'backup-volume/create/normal',
+    component: CreateBackupVolumeNormalComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'order:create'
@@ -870,6 +882,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'file-system-snapshot/create/:fileSystemId',
+    component: CreateFileSystemSnapshotComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:CreateShareSnapshotFileStorage'
+    }
+  },
+  {
     path: 'file-system-snapshot/detail/:id',
     component: FileSystemSnapshotDetailComponent,
     canActivate: [PermissionGuard],
@@ -1113,6 +1133,24 @@ const routes: Routes = [
   {
     path: 'file-storage/file-system/create/normal',
     component: CreateFileSystemNormalComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
+
+  },
+  {
+    path: 'file-storage/file-system/create/normal/:snapshotId',
+    component: CreateFileSystemNormalComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
+
+  },
+  {
+    path: 'file-storage/file-system/create/:snapshotId',
+    component: CreateFileSystemComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'order:Create'

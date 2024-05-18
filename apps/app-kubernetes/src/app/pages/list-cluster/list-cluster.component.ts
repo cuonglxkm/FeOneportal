@@ -200,6 +200,10 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     this.unsubscribeObs(null);
   }
 
+  onDestroy(): void {
+    this.unsubscribeObs(null);
+  }
+
   unsubscribeObs(eventSources: EventSource[]) {
     if (this.subscription) {
       this.subscription.unsubscribe();

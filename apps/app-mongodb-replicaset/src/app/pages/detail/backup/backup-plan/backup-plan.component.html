@@ -19,7 +19,7 @@
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="schedule_name">Tên lịch backup</nz-form-label>
+      <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="schedule_name">{{'schedule.backup.label.name' | i18n}}</nz-form-label>
       <nz-form-control [nzSm]="24" [nzMd]="15"
         nzErrorTip="Tên lịch backup không được để trống dài nhất 50 ký tự, chỉ bao gồm các ký tự chữ cái, chữ số, dấu gạch nối">
         <input nzSize="large" nz-input formControlName="schedule_name" id="schedule_name" />
@@ -65,7 +65,7 @@
       </ng-template>
       <ng-template #backup_days>
         <nz-form-item>
-          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="hours_param">Chọn thời gian</nz-form-label>
+          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="hours_param">{{'schedule.backup.time.select' | i18n}}</nz-form-label>
           <div nz-col [nzSm]="24" [nzMd]="15">
             <div nz-row>
               <div nz-col [nzSm]="12" style="flex: 50%;" [nzLg]="6">
@@ -103,7 +103,7 @@
           </div>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="hours_param">Chọn thời gian</nz-form-label>
+          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="hours_param">{{'schedule.backup.time.select' | i18n}}</nz-form-label>
           <div nz-col [nzSm]="24" [nzMd]="15">
             <div nz-row>
               <div nz-col [nzSm]="12" [nzLg]="6">
@@ -168,7 +168,7 @@
           </div>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="hours_param">Chọn thời gian</nz-form-label>
+          <nz-form-label [nzLabelAlign]="'left'" [nzSm]="24" [nzMd]="9" nzRequired nzFor="hours_param">{{'schedule.backup.time.select' | i18n}}</nz-form-label>
           <div nz-col [nzSm]="24" [nzMd]="15">
             <div nz-row>
               <div nz-col [nzSm]="12" [nzLg]="6">

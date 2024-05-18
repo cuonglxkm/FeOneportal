@@ -64,6 +64,8 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   loadingL7 = true;
   loadingPool = true;
   data: any;
+  listCert: any = null;
+  certId: any;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
@@ -78,6 +80,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.idLb = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('lbId'));
     this.idListener = this.activatedRoute.snapshot.paramMap.get('id');
+    this.loadSSlCert();
     this.getData();
     this.cdr.detectChanges();
   }
@@ -106,7 +109,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       allowedCIDR: this.validateForm.controls['allowCIRR'].value,
       description: this.validateForm.controls['description'].value,
       idleTimeOutMember: this.validateForm.controls['member'].value,
-      sslCert: "",
+      sslCert: this.protocolListener == 'TERMINATED_HTTPS' ? this.certId : '',
       idleTimeOutClient: this.validateForm.controls['timeout'].value,
       name: this.validateForm.controls['listenerName'].value
     };
@@ -144,6 +147,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
         this.validateForm.controls['connection'].setValue(data.timeoutMemberConnect);
         this.validateForm.controls['allowCIRR'].setValue(data.allowedCidrs[0]);
         this.validateForm.controls['description'].setValue(data.description);
+        this.certId = data.certSSL;
         this.protocolListener = data.protocol;
         this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
         this.getListL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
@@ -190,5 +194,20 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
 
   handleDeleteOk() {
     this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
+  }
+
+  navigateToDetail(id) {
+    this.router.navigate([
+      '/app-smart-cloud/load-balancer/pool-detail/' + id,
+      { idLB: this.idLb },
+    ]);
+  }
+
+  private loadSSlCert() {
+    this.service.loadSSlCert(this.tokenService.get()?.userId,this.regionId,this.projectId).subscribe(
+      data => {
+        this.listCert = data;
+      }
+    )
   }
 }

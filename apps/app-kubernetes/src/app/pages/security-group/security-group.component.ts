@@ -1,7 +1,7 @@
-import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ClipboardService } from 'ngx-clipboard';
-import { finalize } from 'rxjs';
+import { Subscription, finalize } from 'rxjs';
 import SecurityGroupRule, { SGLoggingReqDto, SecurityGroup, SecurityGroupData, SecurityGroupSearchCondition } from '../../model/security-group.model';
 import { SecurityGroupService } from '../../services/security-group.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -14,7 +14,7 @@ import { KubernetesConstant } from '../../constants/kubernetes.constant';
   templateUrl: './security-group.component.html',
   styleUrls: ['./security-group.component.css'],
 })
-export class SecurityGroupComponent implements OnInit, OnChanges {
+export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input('regionId') regionId: number;
   @Input('projectId') projectId: number;
@@ -25,6 +25,8 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
   listOfInbound: SecurityGroupRule[];
   listOfOutbound: SecurityGroupRule[];
   selectedSG: SecurityGroup;
+
+  subscription: Subscription;
 
   constructor(
     private clipboardService: ClipboardService,
@@ -40,7 +42,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
     this.listOfInbound = [];
     this.listOfOutbound = [];
 
-    this.shareService.$sgLogReq.subscribe((sgLogData: SGLoggingReqDto) => {
+    this.subscription = this.shareService.$sgLogReq.subscribe((sgLogData: SGLoggingReqDto) => {
       if (sgLogData) {
         sgLogData.securityGroupName = this.detailCluster.securityGroupName;
         sgLogData.serviceOrderCode = this.detailCluster.serviceOrderCode;
@@ -51,6 +53,12 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
         });
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

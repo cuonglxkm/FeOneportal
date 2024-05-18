@@ -3,6 +3,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ScheduleService } from '../../../../shared/services/schedule.service';
 import { FormAction } from '../../../../shared/models/schedule.model';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-replay-schedule',
@@ -19,6 +21,7 @@ export class ReplayScheduleComponent {
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private backupScheduleService: ScheduleService) {
   }
 
@@ -41,12 +44,12 @@ export class ReplayScheduleComponent {
     this.backupScheduleService.action(formAction).subscribe(data => {
       this.isVisible = false;
       this.isLoading = false
-      this.notification.success('Thành công', 'Tiếp tục lịch backup thành công')
+      this.notification.success(this.i18n.fanyi("app.status.success"),this.i18n.fanyi("schedule.backup.notify.continue.success"))
       this.onOk.emit()
     }, error =>  {
       this.isVisible = false;
       this.isLoading = false
-      this.notification.error('Thất bại','Tiếp tục lịch backup thất bại')
+      this.notification.error(this.i18n.fanyi("app.status.fail"),this.i18n.fanyi("schedule.backup.notify.continue.fail"))
       this.onOk.emit()
     })
   }

@@ -5,12 +5,6 @@
   border-radius: 4px;
 }
 
-.search {
-  border-radius: 8px;
-  width: 300px;
-  height: 40px;
-}
-
 .filter {
   display: flex;
   align-items: center;
@@ -137,7 +131,8 @@ nz-table#topic th {
   border-color: #ffffff;
   box-shadow: none;
   position: relative;
-  margin-left: 10px;
+  margin-left: 5px;
+  top: 5px;
 }
 
 #img-refresh {

@@ -518,6 +518,7 @@ export class InstancesCreateComponent implements OnInit {
     this.isCustomconfig = false;
     this.isGpuConfig = true;
     this.resetData();
+    this.configGPU.gpuOfferId = this.listGPUType[0].id;
     this.activeBlockHDD = false;
     this.activeBlockSSD = true;
     this.disableHDD = true;
@@ -596,7 +597,7 @@ export class InstancesCreateComponent implements OnInit {
         {
           id: '',
           name: '',
-          fixedIPs: ['Ngẫu nhiên'],
+          fixedIPs: [this.i18n.fanyi('app.random')],
           macAddress: null,
           attachedDevice: null,
           status: null,
@@ -1574,8 +1575,6 @@ export class InstancesCreateComponent implements OnInit {
           this.order.createdByUserId = this.tokenService.get()?.userId;
           this.order.note = 'tạo vm';
           this.order.orderItems = this.orderItem;
-
-          
 
           var returnPath: string = window.location.pathname;
           console.log('instance create', this.instanceCreate);

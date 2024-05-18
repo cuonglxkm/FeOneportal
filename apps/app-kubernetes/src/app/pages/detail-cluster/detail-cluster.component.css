@@ -104,3 +104,9 @@ textarea,
   position: relative;
   text-align: right;
 }
+
+.icon-action {
+  margin-bottom: 4px;
+  margin-right: 6px;
+  margin-top: 1px;
+}

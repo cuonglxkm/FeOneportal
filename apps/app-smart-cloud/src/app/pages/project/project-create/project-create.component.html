@@ -29,7 +29,8 @@
               nz-tooltip="{{ 'project.note16' | i18n }}" src="assets/imgs/pajamas_question.svg"
               alt="" /></nz-form-label>
           <nz-form-control [nzErrorTip]="nameErrorTpl">
-            <input nz-input placeholder="{{ 'project.note33' | i18n }}" style="width: 100%" formControlName="name" maxlength="20" class="custom-input">
+            <input nz-input placeholder="{{ 'project.note33' | i18n }}" style="width: 100%" formControlName="name"
+              maxlength="20" class="custom-input">
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }} </ng-container>
               <ng-container *ngIf="control.hasError('pattern')">{{'validation.project.required.name'|i18n}}
@@ -58,7 +59,6 @@
                       border: activeNoneVpc
                     ? '1px solid #0066B3'
                     : '1px solid #DADADA',
-                    height: cardHeight,
                   }">
                   <nz-row nzGutter="16">
                     <nz-col nzSpan="20">
@@ -92,7 +92,7 @@
                       border: activeVpc
                     ? '1px solid #0066B3'
                     : '1px solid #DADADA',
-                    height: cardHeight,
+                    
                   }">
                   <nz-row nzGutter="16">
                     <nz-col nzSpan="20">

@@ -84,6 +84,7 @@ export class Subnet {
   vpcId: number
   region: number
   regionText: string
+  networkAddress: string
   subnets: Subnet[]
 }
 
@@ -99,7 +100,7 @@ export class FormCreateNetwork {
   customerId: number
   subnetName: string
   networktAddress: string
-  gateway: string
+  gatewayIP: string
   dnsNameServer: string
   allocationPool: string
   enableDHCP: boolean
