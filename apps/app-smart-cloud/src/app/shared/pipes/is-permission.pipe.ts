@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { PolicyService } from '../../../../../../libs/common-utils/src/lib/services/policy.service';
+import { PolicyService } from '../services/policy.service';
 
 @Pipe({
   name: 'IsPermissionPipe'

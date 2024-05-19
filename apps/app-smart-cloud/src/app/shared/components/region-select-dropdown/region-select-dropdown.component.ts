@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import { RegionModel, RegionService } from '../../../../../../../libs/common-utils/src';
+import { RegionModel, RegionCoreService } from '../../../../../../../libs/common-utils/src';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'region-select-dropdown',
@@ -14,7 +15,7 @@ export class RegionSelectDropdownComponent implements OnInit {
   selectedRegion: RegionModel;
   listRegion: RegionModel[] = []
 
-  constructor(private regionService: RegionService) {
+  constructor(private regionService: RegionCoreService) {
   }
 
   ngOnInit() {
@@ -27,7 +28,7 @@ export class RegionSelectDropdownComponent implements OnInit {
         localStorage.setItem('regionId', JSON.stringify(this.listRegion[0].regionId))
       }
     } else {
-      this.regionService.getAll().subscribe({
+      this.regionService.getAll(environment['baseUrl']).subscribe({
         next :(data) => {
           this.listRegion = data;
           if (this.listRegion.length > 0) {

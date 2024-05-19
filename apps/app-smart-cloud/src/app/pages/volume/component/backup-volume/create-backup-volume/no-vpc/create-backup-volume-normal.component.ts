@@ -5,11 +5,12 @@ import { BackupVmService } from '../../../../../../shared/services/backup-vm.ser
 import { BackupVolumeService } from '../../../../../../shared/services/backup-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { PackageBackupService } from '../../../../../../shared/services/package-backup.service';
-import { ProjectModel, ProjectService, RegionModel } from '../../../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel } from '../../../../../../../../../../libs/common-utils/src';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { getCurrentRegionAndProject } from '@shared';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-create-backup-volume-normal',

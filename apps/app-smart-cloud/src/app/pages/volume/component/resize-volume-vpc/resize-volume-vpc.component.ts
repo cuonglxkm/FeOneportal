@@ -10,12 +10,12 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { InstancesService } from '../../../instances/instances.service';
 import {
   ProjectModel,
-  ProjectService,
   RegionModel,
-  SizeInCloudProject
 } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { SizeInCloudProject } from 'src/app/shared/models/project.model';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-resize-volume-vpc',

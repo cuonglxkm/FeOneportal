@@ -22,13 +22,13 @@ import { VolumeService } from '../../../../shared/services/volume.service';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import {
   ProjectModel,
-  ProjectService,
   RegionModel,
-  SizeInCloudProject
 } from '../../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { SizeInCloudProject } from 'src/app/shared/models/project.model';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-create-backup-vm-vpc',

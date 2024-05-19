@@ -1,7 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {BaseService} from "../../../../../apps/app-smart-cloud/src/app/shared/services/base.service";
 import {Observable, of} from "rxjs";
-import {BaseResponse} from "../..";
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
 import {
   AttachedEntitiesDTO,
@@ -12,7 +10,8 @@ import {
   PolicyModel
 } from "../models/policy.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-
+import { BaseService } from './base.service';
+import { BaseResponse } from '../../../../../../libs/common-utils/src';
 
 @Injectable({
   providedIn: 'root'

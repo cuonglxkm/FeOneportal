@@ -7,7 +7,7 @@ import { BaseService } from './base.service';
 @Injectable({
   providedIn: 'root'
 })
-export class RegionService extends BaseService {
+export class RegionCoreService extends BaseService {
   constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
@@ -19,8 +19,8 @@ export class RegionService extends BaseService {
         'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
 }
-  getAll() {
-    return this.http.get<RegionModel[]>(this.baseUrl + this.ENDPOINT.provisions +  '/regions', {
+  getAll(baseUrl: string) {
+    return this.http.get<RegionModel[]>(baseUrl+ this.ENDPOINT.provisions +  '/regions', {
       headers: this.getHeaders()
   });
   }

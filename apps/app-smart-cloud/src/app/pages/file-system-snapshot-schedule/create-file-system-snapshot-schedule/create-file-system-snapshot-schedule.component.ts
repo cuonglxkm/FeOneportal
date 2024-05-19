@@ -22,9 +22,9 @@ import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import {
   BaseResponse,
   ProjectModel,
-  ProjectService,
   RegionModel
 } from '../../../../../../../libs/common-utils/src';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
