@@ -197,6 +197,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.websocketService.disconnect();
     this.unsubscribeObs(null);
   }
 
@@ -213,8 +214,6 @@ export class ListClusterComponent implements OnInit, OnDestroy {
       eventSources.forEach(source => source.close());
       this.eventSources = [];
     }
-
-    this.websocketService.disconnect();
   }
 
   regionName: string;
