@@ -1430,6 +1430,7 @@
   "cluster.log.create-outbound": "Tạo mới Rule Outbound",
   "cluster.log.delete-outbound": "Xóa Rule Outbound",
   "cluster.log.extend": "Gia hạn dịch vụ",
+  "cluster.log.edit": "Cập nhật thông tin",
   "cluster.log.unknow": "Không xác định",
 
   "app.cluster.manage-cluster": "Quản lý Cluster",
