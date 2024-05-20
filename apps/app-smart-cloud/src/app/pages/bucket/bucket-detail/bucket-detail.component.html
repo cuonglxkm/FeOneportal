@@ -321,6 +321,7 @@
   nzCancelText="Hủy"
   [nzStyle]="modalStyle"
 >
+<form nz-form [formGroup]="formFilter">
   <ng-container *nzModalContent>
     <nz-table [nzData]="dataFilter" nzHideOnSinglePage="true">
       <thead>
@@ -335,9 +336,10 @@
         <tr *ngFor="let item of dataFilter">
           <td style="width: 28%">
             <nz-select
-              [(ngModel)]="filterName"
+              [(ngModel)]="item.name"
               (ngModelChange)="selectCol(item, $event)"
               nzSize="large"
+              formControlName="filterName"
               style="width: 100%"
             >
               <nz-option
@@ -349,11 +351,12 @@
           </td>
           <td style="width: 20%">
             <nz-select
-              *ngIf="filterName == 'Tên'"
-              [(ngModel)]="filterCondition"
+              *ngIf="item.name == 'Tên'"
+              [(ngModel)]="item.condition"
               (ngModelChange)="selectCondition(item.orderNum, 1, $event)"
               nzSize="large"
-              [nzPlaceHolder]="filterCondition"
+              [nzPlaceHolder]="item.condition"
+              formControlName="filterCondition"
               style="width: 100%"
             >
               <nz-option
@@ -363,11 +366,12 @@
               ></nz-option>
             </nz-select>
             <nz-select
-              *ngIf="filterName == 'Thời gian chỉnh sửa'"
-              [(ngModel)]="filterCondition"
+              *ngIf="item.name == 'Thời gian chỉnh sửa'"
+              [(ngModel)]="item.condition"
               (ngModelChange)="selectCondition(item.orderNum, 2, $event)"
               nzSize="large"
-              [nzPlaceHolder]="filterCondition"
+              [nzPlaceHolder]="item.condition"
+              formControlName="filterCondition"
               style="width: 100%"
             >
               <nz-option
@@ -377,11 +381,12 @@
               ></nz-option>
             </nz-select>
             <nz-select
-              *ngIf="filterName == 'Dung lượng'"
-              [(ngModel)]="filterCondition"
+              *ngIf="item.name == 'Dung lượng'"
+              [(ngModel)]="item.condition"
               (ngModelChange)="selectCondition(item.orderNum, 3, $event)"
               nzSize="large"
-              [nzPlaceHolder]="filterCondition"
+              [nzPlaceHolder]="item.condition"
+              formControlName="filterCondition"
               style="width: 100%"
             >
               <nz-option
@@ -394,32 +399,34 @@
           <td style="width: 47%">
             <input
               nzSize="large"
-              *ngIf="filterName == 'Tên'"
+              *ngIf="item.name == 'Tên'"
               nz-input
               placeholder="Basic usage"
-              [(ngModel)]="filterValueName"
+              [(ngModel)]="item.value"
+              formControlName="filterValueName"
               type="text"
               style="width: 100%"
             />
             <nz-date-picker
-              *ngIf="filterName == 'Thời gian chỉnh sửa'"
-              [(ngModel)]="filterValueDate"
+              *ngIf="item.name == 'Thời gian chỉnh sửa'"
+              [(ngModel)]="fitem.value"
               nzSize="large"
+              formControlName="filterValueDate"
               style="width: 100%"
             ></nz-date-picker>
             <nz-input-number
-              *ngIf="filterName == 'Dung lượng'"
-              [(ngModel)]="filterValueSize"
+              *ngIf="item.name == 'Dung lượng'"
+              [(ngModel)]="item.value"
               [nzMin]="0"
-              [nzMax]="62"
               [nzStep]="1"
+              formControlName="filterValueSize"
               nzSize="large"
               style="width: 60%"
             ></nz-input-number>
             <nz-select
-              *ngIf="filterName == 'Dung lượng' && filterCondition == 'Lớn hơn'"
+              *ngIf="item.name == 'Dung lượng' && item.condition == 'Lớn hơn'"
               [(ngModel)]="selectTypeMore"
-              (ngModelChange)="selectType(filterCondition, $event)"
+              (ngModelChange)="selectType(item.condition, $event)"
               nzSize="large"
               [nzPlaceHolder]="item.type"
               style="width: 30%; margin-left: 5%"
@@ -431,9 +438,9 @@
               ></nz-option>
             </nz-select>
             <nz-select
-              *ngIf="filterName == 'Dung lượng' && filterCondition == 'Nhỏ hơn'"
+              *ngIf="item.name == 'Dung lượng' && item.condition == 'Nhỏ hơn'"
               [(ngModel)]="selectTypeLess"
-              (ngModelChange)="selectType(filterCondition, $event)"
+              (ngModelChange)="selectType(item.condition, $event)"
               nzSize="large"
               [nzPlaceHolder]="item.type"
               style="width: 30%; margin-left: 5%"
@@ -474,6 +481,7 @@
       <span class="button-text-primary">Thêm một dòng</span>
     </button>
   </ng-container>
+</form>
 </nz-modal>
 <!--Tạo thư mục-->
 <nz-modal

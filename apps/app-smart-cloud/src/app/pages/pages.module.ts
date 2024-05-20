@@ -227,6 +227,8 @@ import { NetworkTopologyComponent } from './network-topology/network-topology.co
 import { CreateBackupVolumeVpcComponent } from './volume/component/backup-volume/create-backup-volume/vpc/create-backup-volume-vpc.component';
 import { CreateBackupVolumeNormalComponent } from './volume/component/backup-volume/create-backup-volume/no-vpc/create-backup-volume-normal.component';
 import { UpdateBackupVolumeComponent } from './volume/component/backup-volume/update-backup-volume/update-backup-volume.component';
+import { SslCertListComponent } from './ssl-cert/ssl-cert-list.component';
+import { CreateSslCertComponent } from './ssl-cert/create/create-ssl-cert.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -437,6 +439,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NetworkTopologyComponent,
     CreateBackupVolumeVpcComponent,
     CreateBackupVolumeNormalComponent,
+    SslCertListComponent,
+    CreateSslCertComponent,
     UpdateBackupVolumeComponent,
   ],
   imports: [

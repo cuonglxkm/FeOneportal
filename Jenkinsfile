@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
-def agentLabel = env.BRANCH_NAME == 'release' ? "it-si-cloud-linux-2" : "it-si-cloud-linux1"
+def agentLabel = "it-si-cloud-linux1"
 pipeline {
     agent {
         label agentLabel
@@ -20,7 +20,7 @@ pipeline {
                 branch "develop"
             }
             steps {
-                sh 'docker compose --parallel 2 build'
+                sh 'docker compose -f compose-test.yml --parallel 2 build'
             }
         }
 
@@ -38,7 +38,7 @@ pipeline {
                 branch "develop"
             }
             steps {
-                sh 'docker compose push'
+                sh 'docker compose -f compose-test.yml push'
             }
         }
 

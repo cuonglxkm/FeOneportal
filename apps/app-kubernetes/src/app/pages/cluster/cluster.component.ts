@@ -339,6 +339,7 @@ export class ClusterComponent implements OnInit {
   totalCpu: number;
   totalStorage: number;
   vatCost: number;
+  workerCostPerMonth: number;
   onCalculatePrice() {
     this.totalPrice = 0;
     this.workerPrice = 0;
@@ -366,7 +367,9 @@ export class ClusterComponent implements OnInit {
     const usageTime = this.myform.get('usageTime').value;
     if (!usageTime) return;
 
-    this.workerPrice = usageTime * (this.priceOfCpu * this.totalCpu + this.priceOfRam * this.totalRam + this.priceOfSsd * this.totalStorage);
+    this.workerCostPerMonth = this.priceOfCpu * this.totalCpu + this.priceOfRam * this.totalRam + this.priceOfSsd * this.totalStorage;
+    this.workerPrice = usageTime * this.workerCostPerMonth;
+    this.volumePrice = 0;   // fix for now
     this.vatCost = (this.workerPrice + this.volumePrice) * this.vatPercent;
     this.totalPrice = this.workerPrice + this.volumePrice + this.vatCost;
   }
@@ -496,6 +499,7 @@ export class ClusterComponent implements OnInit {
       d.setDate(d.getDate() + Number(event) * 30);
       this.expiryDate = d.getTime();
       this.myform.get('expireDate').setValue(new Date(this.expiryDate).toISOString().substring(0, 19));
+      this.onCalculatePrice();
     }
   }
 
@@ -572,8 +576,13 @@ export class ClusterComponent implements OnInit {
 
     // get price
     const itemPack = this.listOfServicePack.find(pack => pack.packId == item.packId);
-    this.workerPrice = itemPack.price;
+    const usageTime = this.myform.get('usageTime').value;
+    if (!usageTime) return;
+
     this.volumePrice = 0;
+    this.workerCostPerMonth = itemPack.price;
+    this.workerPrice = itemPack.price * Number(usageTime);
+
     this.vatCost = (this.workerPrice + this.volumePrice) * this.vatPercent;
     this.totalPrice = this.workerPrice + this.volumePrice + this.vatCost;
     this.offerId = itemPack.offerId;
@@ -852,7 +861,7 @@ export class ClusterComponent implements OnInit {
     data.orderItems = [];
 
     const orderItem: OrderItem = new OrderItem();
-    orderItem.price = this.workerPrice + this.volumePrice;
+    orderItem.price = this.workerCostPerMonth;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
     orderItem.specification = JSON.stringify(cluster);

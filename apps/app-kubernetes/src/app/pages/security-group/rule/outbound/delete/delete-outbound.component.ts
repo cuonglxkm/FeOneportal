@@ -47,13 +47,13 @@ export class DeleteOutboundComponent {
       next: () => {
         this.isLoading = false;
         this.isVisible = false;
-        this.notification.success('Thành công', 'Xóa Outbound ' + this.nameRule + ' thành công');
+        this.notification.success('', 'Xóa Outbound ' + this.nameRule + ' thành công');
         this.onOk.emit(this.idOutbound);
       },
       error: (error) => {
         this.isLoading = false;
         this.isVisible = false;
-        this.notification.error('Thất bại', 'Xóa Outbound ' + this.nameRule + ' thất bại');
+        this.notification.error('', 'Xóa Outbound ' + this.nameRule + ' thất bại');
       }
     });
   }
