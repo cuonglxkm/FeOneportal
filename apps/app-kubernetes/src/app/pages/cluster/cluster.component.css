@@ -134,6 +134,22 @@ small {
   width: 100%;
 }
 
+.box-duration nz-input-number {
+  width: 100%;
+  border-radius: 8px;
+  margin-left: 0px;
+}
+
+.box-duration ::ng-deep .ant-input-number-handler-wrap {
+  margin-right: 3px;
+}
+
+.tooltip-icon {
+  margin-left: 5px;
+  margin-bottom: 2px;
+  height: 18px;
+}
+
 .remove-btn {
   position: relative;
   float: right;

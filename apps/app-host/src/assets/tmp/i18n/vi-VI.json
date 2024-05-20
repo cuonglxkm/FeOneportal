@@ -1366,6 +1366,7 @@
   "tooltip.kakfa.topic.segment-index": "Kích thước tối đa cho một index file của một segment (theo byte)",
 
   "app.cluster.summary": "VNPT Kubernetes Service là một nền tảng dựa trên Kubernetes đảm bảo hiệu quả cao cho doanh nghiệp bằng cách chạy các ứng dụng được đóng gói container trên đám mây, an toàn bảo mật, ổn định và hiệu năng cao",
+  "app.cluster.platform-service": "Dịch vụ nền tảng",
   "app.cluster.create-service": "Tạo mới Kubernetes",
   "app.cluster.list": "Danh sách cluster",
   "app.cluster.filter": "Tìm kiếm Kubernetes Cluster",
@@ -1402,7 +1403,7 @@
   "app.cluster.cancel-desciption-1": "Thanh toán của bạn đang được thực hiện, nếu bạn thoát khỏi trang này, giao dịch sẽ bị hủy bỏ.",
   "app.cluster.cancel-desciption-2": "Bạn có chắc chắn muốn thoát khỏi trang này?",
   "app.cluster.upgrade-note": "Khách hàng chỉ có thể nâng cấp cấu hình lên cao hơn mức hiện tại đang sử dụng.",
-  "app.cluster.warning-upgrade-1": "Việc thay đổi controlplane có thể khiến dịch vụ gặp gián đoạn tạm thời và không thể sửa cluster config.",
+  "app.cluster.warning-upgrade-1": "Việc thay đổi cấu hình, phiên bản có thể khiến dịch vụ gặp gián đoạn tạm thời và không thể sửa cluster config.",
   "app.cluster.warning-upgrade-2": "Để đảm bảo an toàn, xin hãy thực hiện backup dữ liệu. Hoạt động này sẽ bắt đầu ngay lập tức và không thể quay trở lại phiên bản cũ.",
   "app.cluster.warning-upgrade-3": "Vui lòng đọc thêm thông tin tại",
 
@@ -1418,6 +1419,9 @@
   "cluster.instance.stopped": "Đã dừng",
   "cluster.instance.reboot": "Khởi động lại",
   "cluster.instance.unknow": "Không xác định",
+  "cluster.instance.start-action": "Bật instance",
+  "cluster.instance.stop-action": "Tắt instance",
+  "cluster.instance.reboot-action": "Khởi động lại instance",
 
   "cluster.log.upgrade-request": "Yêu cầu nâng cấp",
   "cluster.log.update": "Cập nhật nâng cấp",
@@ -1430,6 +1434,7 @@
   "cluster.log.create-outbound": "Tạo mới Rule Outbound",
   "cluster.log.delete-outbound": "Xóa Rule Outbound",
   "cluster.log.extend": "Gia hạn dịch vụ",
+  "cluster.log.edit": "Cập nhật thông tin",
   "cluster.log.unknow": "Không xác định",
 
   "app.cluster.manage-cluster": "Quản lý Cluster",

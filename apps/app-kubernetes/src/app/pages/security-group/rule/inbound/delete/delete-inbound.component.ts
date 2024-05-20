@@ -48,13 +48,13 @@ export class DeleteInboundComponent {
       next: () => {
         this.isLoading = false;
         this.isVisible = false;
-        this.notification.success('Thành công', 'Xóa Inbound ' + this.nameRule + ' thành công');
+        this.notification.success('', 'Xóa Inbound ' + this.nameRule + ' thành công');
         this.onOk.emit(this.idInbound);
       },
       error: () => {
         this.isLoading = false;
         this.isVisible = false;
-        this.notification.error('Thất bại', 'Xóa Inbound ' + this.nameRule + ' thất bại');
+        this.notification.error('', 'Xóa Inbound ' + this.nameRule + ' thất bại');
       }
     });
   }

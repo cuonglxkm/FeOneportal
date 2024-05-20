@@ -1475,6 +1475,7 @@
   "tooltip.kakfa.topic.segment-index": "The maximum size for an index file of a segment (in bytes)",
 
   "app.cluster.summary": "VNPT Kubernetes Service is a Kubernetes-based platform ensuring high efficiency for enterprises by running containerized applications in the cloud, securely, stably, and with high performance",
+  "app.cluster.platform-service": "Platform Services",
   "app.cluster.create-service": "Create Kubernetes",
   "app.cluster.list": "List cluster",
   "app.cluster.filter": "Searching for Kubernetes Cluster",
@@ -1511,7 +1512,7 @@
   "app.cluster.cancel-desciption-1": "Your payment is being processed. If you leave this page, the transaction will be canceled.",
   "app.cluster.cancel-desciption-2": "Are you sure you want to leave this page?",
   "app.cluster.upgrade-note": "Customers can only upgrade configurations to higher levels than the current usage level.",
-  "app.cluster.warning-upgrade-1": "Changing the control plane may cause temporary service disruptions and prevent cluster configuration changes.",
+  "app.cluster.warning-upgrade-1": "Changing the configuration or version may cause temporary service disruptions and prevent cluster configuration changes.",
   "app.cluster.warning-upgrade-2": "To ensure data safety, please perform a data backup. This operation will start immediately and it will not be possible to revert to previous versions.",
   "app.cluster.warning-upgrade-3": "Please read more information at",
 
@@ -1527,6 +1528,9 @@
   "cluster.instance.stopped": "Stopped",
   "cluster.instance.reboot": "Rebooting",
   "cluster.instance.unknow": "Unknow",
+  "cluster.instance.start-action": "Start instance",
+  "cluster.instance.stop-action": "Stop instance",
+  "cluster.instance.reboot-action": "Reboot instance",
 
   "cluster.log.upgrade-request": "Upgrade request",
   "cluster.log.update": "Upgrade update",
@@ -1539,6 +1543,7 @@
   "cluster.log.create-outbound": "Create Outbound Rule",
   "cluster.log.delete-outbound": "Delete Outbound Rule",
   "cluster.log.extend": "Renewal service",
+  "cluster.log.edit": "Edit service",
   "cluster.log.unknow": "Unknow",
 
   "app.cluster.manage-cluster": "Cluster Management",
