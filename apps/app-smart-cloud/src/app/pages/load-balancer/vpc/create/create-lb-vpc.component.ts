@@ -1,5 +1,5 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { Subnet } from '../../../../shared/models/vlan.model';
+import { FormSearchSubnet, Subnet } from '../../../../shared/models/vlan.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { OfferDetail, Product } from '../../../../shared/models/catalog.model';
 import {
@@ -171,7 +171,6 @@ export class CreateLbVpcComponent implements OnInit {
       }
       this.getIpBySubnet(selected?.cloudId)
     }
-
   }
 
   selectedIp(value) {
@@ -198,6 +197,7 @@ export class CreateLbVpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
+    this.getListSubnetInternetFacing();
   }
 
   onChangeStatusInternal() {
@@ -210,6 +210,7 @@ export class CreateLbVpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
+    this.getListSubnetInternetFacing();
   }
 
 
@@ -353,15 +354,31 @@ export class CreateLbVpcComponent implements OnInit {
   }
 
   getListSubnetInternetFacing() {
-    this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region).subscribe(data => {
-      this.setDataToMap(data);
-      if (this.mapSubnet instanceof Map) {
-        // Chuyển đổi Map thành mảng các cặp khóa/giá trị
-        for (const [key, value] of this.mapSubnet.entries()) {
-          this.mapSubnetArray?.push({ value: value, label: key });
+    if (this.enableInternal == true) {
+      let formSearchSubnet = new FormSearchSubnet();
+      formSearchSubnet.region = this.region;
+      formSearchSubnet.pageSize = 9999;
+      formSearchSubnet.pageNumber = 1;
+      formSearchSubnet.customerId = this.tokenService.get()?.userId;
+      formSearchSubnet.name = '';
+      this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
+        this.mapSubnet?.clear();
+        // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
+        for (const model of data.records) {
+          this.mapSubnetArray?.push({ value: model.subnetCloudId, label: model.name });
         }
-      }
-    });
+      });
+    } else {
+      this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region).subscribe(data => {
+        this.setDataToMap(data);
+        if (this.mapSubnet instanceof Map) {
+          // Chuyển đổi Map thành mảng các cặp khóa/giá trị
+          for (const [key, value] of this.mapSubnet.entries()) {
+            this.mapSubnetArray?.push({ value: value, label: key });
+          }
+        }
+      });
+    }
   }
 
   ngOnInit() {
