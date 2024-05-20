@@ -36,8 +36,8 @@
         <td>{{item.protocol | protocol2label}}</td>
         <td>{{item.portRange}}</td>
         <td>{{item.remoteIpPrefix}}</td>
-        <td>{{item.remoteGroupId}}</td>
-        <td></td>
+        <td>{{item.remoteGroupName}}</td>
+        <td>{{item.description}}</td>
         <td>
           <ng-container *ngIf="item | canDelRule; else cannotDelRuleTpl">
             <div class="center-align">

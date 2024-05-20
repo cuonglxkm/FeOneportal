@@ -119,7 +119,7 @@ export class ClusterService extends BaseService {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/${serviceOrderCode}/workers-name`, { headers: this.getHeaders() });
   }
 
-  getAllRuleSG(projectId: number, regionId: number) {
+  getAllSG(projectId: number, regionId: number) {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/security_groups?projectId=${projectId}&regionId=${regionId}`, {headers: this.getHeaders()});
   }
 

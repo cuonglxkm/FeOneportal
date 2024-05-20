@@ -601,12 +601,9 @@ export class UpgradeComponent implements OnInit {
   getRemainDay(): number {
     let tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
+    let expiredDate = new Date(this.detailCluster.expiredDate);
 
-    const createdDate = new Date(this.detailCluster.createdDate);
-    const usageTime = this.detailCluster.usageTime;
-    let expiredDate = createdDate.setMonth(createdDate.getMonth() + usageTime);
-
-    let diffTimes = Math.abs(expiredDate - tomorrow.getTime());
+    let diffTimes = Math.abs(expiredDate.getTime() - tomorrow.getTime());
     let diffDays = Math.floor(diffTimes / (1000 * 60 * 60 * 24));
     return diffDays;
   }
@@ -721,7 +718,7 @@ export class UpgradeComponent implements OnInit {
     cluster.currentTotalRam = this.currentTotalRam ? this.currentTotalRam : 0;
     cluster.currentTotalStorage = this.currentTotalStorage ? this.currentTotalStorage : 0;
 
-    cluster.newVcpu = this.newTotalRam ? this.newTotalRam : 0;
+    cluster.newVcpu = this.newTotalCpu ? this.newTotalCpu : 0;
     cluster.newTotalRam = this.newTotalRam ? this.newTotalRam : 0;
     cluster.newTotalStorage = this.newTotalStorage ? this.newTotalStorage : 0;
 

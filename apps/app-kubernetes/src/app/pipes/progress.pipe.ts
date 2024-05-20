@@ -5,10 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ProgressPipe implements PipeTransform {
 
-  transform(clusterName: string, listOfProgress: Array<{cluster: string, progress: any}>): number {
-    let cluster = listOfProgress.find(item => item.cluster == clusterName);
-    console.log({cluster: cluster});
-    if (cluster) return cluster.progress;
+  transform(clusterName: string, namespace: string, mapProgress: Map<{serviceName: string, namespace: string}, number>): number {
+    let keyObj = {serviceName: clusterName, namespace: namespace};
+    return mapProgress.get(keyObj);
   }
 
 }

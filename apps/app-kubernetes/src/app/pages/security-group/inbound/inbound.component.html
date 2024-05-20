@@ -38,7 +38,7 @@
         <td>
           {{item.remoteGroupName}}
         </td>
-        <td></td>
+        <td>{{item.description}}</td>
         <td>
           <ng-container *ngIf="item | canDelRule; else cannotDelRuleTpl">
             <div class="center-align">
