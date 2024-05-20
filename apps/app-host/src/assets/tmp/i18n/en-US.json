@@ -1476,12 +1476,14 @@
 
   "mongodb.db.management": "Database Management",
   "mongodb.db.create": "Create Database",
+  "mongodb.db.create-title": "Create Database",
   "mongodb.db.search": "Search Database",
   "mongodb.db.collection.create": "Create Collection",
   "mongodb.db.collection.name": "Collection Name",
   "mongodb.db.delete": "Drop Database",
   "mongodb.db.collection.delete": "Delete Collection",
   "mongodb.db.collection.detail": "Collection details",
+  "mongodb.db.record": "Record",
 
   "mongodb.db.name": "Database Name",
   "mongodb.db.collection.choose": "Collection Types",
@@ -1502,6 +1504,9 @@
   "mongodb.db.size.validation-5": "The maximum capacity of the collection is a positive integer, must be larger than 0 and less than 2 GB.",
   "mongodb.db.granularity": "Granularity",
   "mongodb.db.smh": "Seconds, Minutes, Hours",
+  "mongodb.db.second": "Seconds",
+  "mongodb.db.minute": "Minutes",
+  "mongodb.db.hour": "Hours",
   "mongodb.db.timefield.tooltip": "The name of the field which contains the date in each time series document. Documents in a time series collection must have a valid BSON date as the value for the timeField",
   "mongodb.db.metafield.tooltip": "The name of the field which contains metadata in each time series document. The metadata in the specified field should be data that is used to label a unique series of documents. The metadata should rarely, if ever, change.",
   "mongodb.db.granularity.tooltip": "Possible values are seconds, minutes, and hours. The granularity should be set to a value that best matches the time between consecutive timestamps. This improves performance by optimizing the way MongoDB stores data in the time series collection.",
@@ -1510,6 +1515,8 @@
   "mongodb.db.timefield.validation-3": "TimeField name contains a maximum of 100 characters, including only 2 special characters ‘-“ “_”",
   "mongodb.db.metafield.validation-1": "MetaField name contains a maximum of 100 characters, including only 2 special characters ‘-“ “_”",
   "mongodb.db.granularity.validation": "Please select granularity",
+  "mongodb.db.detele.validation-1": "Enter database name",
+  "mongodb.db.detele.validation-2": "Database name is not correct",
   
   "mongodb.db.delete.note-1": "To drop database ",
   "mongodb.db.delete.note-2": " re-enter the database name to confirm deletion.",
