@@ -1,24 +1,25 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
+import { BackupVm, BackupVMFormSearch } from '../../../../../shared/models/backup-vm';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { BackupVmService } from '../../../../../shared/services/backup-vm.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
-import { BackupVmService } from '../../../shared/services/backup-vm.service';
-import { BackupVm, BackupVMFormSearch } from '../../../shared/models/backup-vm';
+import { BackupVolume } from '../backup-volume.model';
 
 @Component({
-  selector: 'one-portal-update-backup-vm',
-  templateUrl: './update-backup-vm.component.html',
-  styleUrls: ['./update-backup-vm.component.less']
+  selector: 'one-portal-update-backup-volume',
+  templateUrl: './update-backup-volume.component.html',
+  styleUrls: ['./update-backup-volume.component.less'],
 })
-export class UpdateBackupVmComponent implements AfterViewInit {
+export class UpdateBackupVolumeComponent implements AfterViewInit{
   @Input() region: number;
   @Input() project: number;
-  @Input() idBackupVm: number;
+  @Input() idBackupVolume: number;
   @Input() backupName: string;
-  @Input() backupVmInfo: BackupVm;
+  @Input() backupVolume: BackupVolume;
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
 
@@ -37,7 +38,7 @@ export class UpdateBackupVmComponent implements AfterViewInit {
 
   nameList: string[] = [];
 
-  @ViewChild('backupVmInputName') backupVmInputName!: ElementRef<HTMLInputElement>;
+  @ViewChild('backupVolumeInputName') backupVolumeInputName!: ElementRef<HTMLInputElement>;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -48,7 +49,7 @@ export class UpdateBackupVmComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.backupVmInputName?.nativeElement.focus();
+    this.backupVolumeInputName?.nativeElement.focus();
   }
 
   duplicateNameValidator(control) {
@@ -70,13 +71,13 @@ export class UpdateBackupVmComponent implements AfterViewInit {
 
   showModal() {
     this.isVisible = true;
-    this.validateForm.controls.nameBackup.setValue(this.backupVmInfo?.name)
-    this.validateForm.controls.description.setValue(this.backupVmInfo?.description)
+    this.validateForm.controls.nameBackup.setValue(this.backupVolume?.name)
+    this.validateForm.controls.description.setValue(this.backupVolume?.description)
     // this.getListFileSystem();
     // this.validateForm.controls.nameFileSystem.setValue(this.fileSystem?.name);
     // this.validateForm.controls.description.setValue(this.fileSystem?.description);
     setTimeout(() => {
-      this.backupVmInputName?.nativeElement.focus();
+      this.backupVolumeInputName?.nativeElement.focus();
     }, 1000);
   }
 

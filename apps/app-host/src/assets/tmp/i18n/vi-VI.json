@@ -739,6 +739,8 @@
   "app.file.system.access.to.delete.file.success": "Xóa File System thành công",
   "app.file.system.access.to.delete.file.fail": "Xóa File System thất bại {{error}}",
 
+  "app.file.system.placeholder.search": "Tìm kiếm theo tên",
+
   "app.note.delete.file.system": "Để thực hiện xóa File System {{name}}, vui lòng nhập tên File System để xác nhận",
   "app.alert.delete.file.system": "Bạn đang thực hiện xóa File System<br> Để xóa được File System, quý khách lưu ý cần phải xóa hết các Snapshot của các File System đó",
   "app.tooltip.file.system.name.pattern": "Tên của File System cần tạo, các ký tự chữ thường a-z,<br> chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng,<br> tối thiểu 1 ký tự và tối đa 255 ký tự. Tên các File System không trùng nhau",
@@ -2115,7 +2117,7 @@
   "app.input.backup.volume.description": "Nhập mô tả",
   "app.input.backup.volume.note": "Tạo Backup Volume",
   "app.input.backup.volume.select.volume": "Tên Volume",
-
+  "app.backup.volume.title.modal.update": "Chỉnh sửa thông tin Backup Volume",
   "app.input.backup.volume.required.select": "Vui lòng chọn Volume",
 
   "app.backup.volume.name.tooltip": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
@@ -2124,6 +2126,8 @@
   "app.backup.volume.validator.name.pattern": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
   "app.backup.volume.validator.backup.package.required": "Vui lòng nhập tên Backup",
   "app.backup.volume.request.create": "Yêu cầu tạo Backup Volume đã được gửi đi.",
+
+  "app.backup.volume.notification.create.request.send": "Yêu cầu tạo Backup Volume đã được gửi đi.",
 
   "app.dashboard.subscription.service": "Dịch vụ",
   "app.dashboard.subscription.service.active": "Đang hoạt động",
@@ -2204,6 +2208,7 @@
   "app.backup.vm.restore": "Khôi phục Backup VM",
   "app.backup.vm.ìnformation": "Thông tin Backup VM",
   "app.backup.vm.create.button": "Tạo mới Backup VM",
+  "app.backup.vm.edit": "Chỉnh sửa thông tin Backup VM",
   "app.table.backup.vm.name": "Tên backup",
   "app.table.backup.vm.vm.original": "VM gốc",
   "app.table.backup.vm.storage": "Dung lượng",
@@ -2229,6 +2234,8 @@
   "app.backup.vm.intro.desc": "Giải pháp sao lưu VM nâng cao, phần mềm giúp giảm chi phí chụp nhanh và tiết kiệm thời gian của bạn bằng cách tạo các bản sao VM giống hệt nhau trực tiếp từ các bản sao lưu VM hiện có.",
   "app.backup.vm.storage.remaining": "Dung lượng còn lại gói backup",
   "app.backup.vm.delete.title.modal": "Xác nhận xóa Backup VM",
+  "app.backup.vm.title.modal.update": "Chỉnh sửa thông tin Backup VM",
+  "app.backup.vm.name": "Tên Backup VM",
 
   "app.backup.vm.tooltip.name": "Nhập tên backup tối đa 50 ký tự và chỉ gồm ký tự chữ cái, số và dấu _",
   "app.backup.vm.tooltip.vm": "Chọn máy ảo cần Backup từ danh sách máy ảo của khách hàng thuộc khu vực và dự án mà khách hàng",

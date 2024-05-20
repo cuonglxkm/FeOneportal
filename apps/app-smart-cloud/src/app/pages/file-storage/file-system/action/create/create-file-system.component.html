@@ -99,28 +99,7 @@
                   <!--                       src="assets/imgs/pajamas_question.svg" alt="" />-->
                 </div>
               </nz-form-item>
-              <nz-form-item *ngIf="isInitSnapshot === true">
-                <nz-form-label>
-                  <div>
-                    <span>Snapshot (</span>
-                    <span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <img nz-popover
-                         [nzPopoverContent]="'app.snapshot.file.system' | i18n"
-                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                         src="assets/imgs/pajamas_question.svg" alt="" />
-                  </div>
-                </nz-form-label>
-                <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
-                  <nz-select formControlName="snapshot"
-                             nzSize="large"
-                             [(ngModel)]="snapshotSelected"
-                             [nzPlaceHolder]="'-Chọn Snapshot-'"
-                             [nzShowSearch]="false">
-                    <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
-                               [nzValue]="item.value"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
+
             </nz-col>
             <nz-col nzSpan="12">
               <nz-form-item>
@@ -185,6 +164,28 @@
               </nz-form-item>
             </nz-col>
           </nz-row>
+          <nz-form-item *ngIf="isInitSnapshot === true">
+            <nz-form-label>
+              <div>
+                <span>Snapshot (</span>
+                <span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <img nz-popover
+                     [nzPopoverContent]="'app.snapshot.file.system' | i18n"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
+              <nz-select formControlName="snapshot"
+                         nzSize="large"
+                         [(ngModel)]="snapshotSelected"
+                         [nzPlaceHolder]="'-Chọn Snapshot-'"
+                         [nzShowSearch]="false" style="width: 100%;">
+                <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
+                           [nzValue]="item.value"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
           <nz-form-item>
             <nz-form-label>
               <div>

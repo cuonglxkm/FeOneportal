@@ -101,6 +101,10 @@ export class ListBackupVmComponent implements OnInit {
     setTimeout(() => {this.getListBackupVM(true)}, 1500)
   }
 
+  handleOkUpdate() {
+    setTimeout(() => {this.getListBackupVM(true)}, 1500)
+  }
+
   getListBackupVM(isBegin) {
     this.formSearch = this.getParam();
     this.isLoading = true;
