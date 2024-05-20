@@ -33,6 +33,8 @@ export class BucketDetail {
   redirectAllRequestsTo: string;
   checkRedirectAllRequests: boolean;
   linkS3Website: string;
+  bucketSize: number;
+  bucketItemCount: number;
 }
 
 export class BucketCors {

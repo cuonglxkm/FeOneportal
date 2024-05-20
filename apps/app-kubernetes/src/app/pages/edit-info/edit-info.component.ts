@@ -94,7 +94,10 @@ export class EditInfoComponent implements OnInit {
       .pipe(finalize(() => this.isSubmitting = false))
       .subscribe((r: any) => {
         if (r && r.code == 200) {
+          this.notificationService.success('', r.message);
           this.back2list();
+        } else {
+          this.notificationService.error('', r.message);
         }
       })
     }

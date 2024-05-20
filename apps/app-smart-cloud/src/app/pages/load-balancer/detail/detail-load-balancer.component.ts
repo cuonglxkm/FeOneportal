@@ -7,6 +7,8 @@ import { RegionModel, ProjectModel } from '../../../../../../../libs/common-util
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { CatalogService } from '../../../shared/services/catalog.service';
+import { OfferDetail } from '../../../shared/models/catalog.model';
 
 @Component({
   selector: 'one-portal-detail-load-balancer',
@@ -19,11 +21,13 @@ export class DetailLoadBalancerComponent implements OnInit{
 
   idLoadBalancer: number
   loadBalancer: LoadBalancerModel = new LoadBalancerModel()
+  dataOffer: OfferDetail;
 
   constructor(@Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private loadBalancerService: LoadBalancerService,
+              private catalogService: CatalogService,
               private notification: NzNotificationService) {
   }
 
@@ -42,7 +46,12 @@ export class DetailLoadBalancerComponent implements OnInit{
 
   getLoadBalancerById() {
     this.loadBalancerService.getLoadBalancerById(this.idLoadBalancer, true).subscribe(data => {
-      this.loadBalancer = data
+      this.loadBalancer = data;
+      this.catalogService.getDetailOffer(data.offerId).subscribe(
+        dataOfer => {
+          this.dataOffer = dataOfer
+        }
+      )
     }, error => {
       if(error.status == '404') {
         this.notification.error(

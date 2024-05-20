@@ -61,7 +61,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
-    this.getVlanByNetworkId()
+    // this.getVlanByNetworkId()
   }
 
   userChanged(project: ProjectModel) {
@@ -199,13 +199,24 @@ export class VlanDetailComponent implements OnInit, OnChanges {
     }, 1000);
   }
   ngOnInit() {
+    console.log('render');
     this.idNetwork = Number.parseInt(this.route.snapshot.paramMap.get('id'))
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
 
-    this.onPageIndexChangePort(1)
-    // this.getVlanByNetworkId()
+    // this.onPageIndexChangePort(1)
+    setTimeout(() => {
+      this.getVlanByNetworkId()
+    }, 1000)
+
+    console.log('cloudId', this.networkCloudId)
+    if(this.networkCloudId != '') {
+      setTimeout(() => {
+        this.getPortByNetwork()
+      }, 500)
+    }
+
   }
 
 }

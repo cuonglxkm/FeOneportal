@@ -43,6 +43,18 @@ export class Action2Label implements PipeTransform {
       case 'EXTEND_SERVICE':
         return 'cluster.log.extend';
 
+      case 'EDIT':
+        return 'cluster.log.edit';
+
+      case 'START':
+        return 'cluster.instance.start-action';
+
+      case 'STOP':
+        return 'cluster.instance.stop-action';
+
+      case 'REBOOT':
+        return 'cluster.instance.reboot-action';
+
       default:
         return 'cluster.log.unknow';
     }

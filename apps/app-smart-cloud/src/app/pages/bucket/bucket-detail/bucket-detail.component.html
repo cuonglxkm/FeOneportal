@@ -221,7 +221,7 @@
         <td *ngIf="item.objectType != 'folder'">{{ item.keyName }}</td>
         <td
           *ngIf="item.objectType == 'folder'"
-          style="color: #0074cc"
+          style="color: #0074cc; cursor: pointer"
           (click)="toFolder2(item.key + '/')"
         >
           <img style="padding-right: 5px" src="assets/imgs/folder.svg" alt="" />
@@ -240,7 +240,7 @@
             <!--                  nz-icon nzType="download" nzTheme="outline" (click)="doAction('3',item)"></span>-->
             <img
               src="assets/imgs/download.svg"
-              style="margin-right: 10px; height: 20px"
+              style="margin-right: 10px; height: 20px; cursor: pointer;"
               *ngIf="item.objectType != 'folder'"
               nz-tooltip
               nzTooltipTitle="Tải xuống"
@@ -288,7 +288,7 @@
             <!--                  nz-icon nzType="delete" nzTheme="outline" ></span>-->
             <img
               src="assets/imgs/eye.svg"
-              style="margin-right: 10px; height: 20px"
+              style="margin-right: 10px; height: 20px; cursor: pointer;"
               *ngIf="item.objectType == 'folder'"
               nz-tooltip
               nzTooltipTitle="Xem chi tiết"
@@ -297,7 +297,7 @@
             />
             <img
               src="assets/imgs/delete.svg"
-              style="height: 20px"
+              style="height: 25px; cursor: pointer;"
               *ngIf="item.objectType == 'folder'"
               nz-tooltip
               nzTooltipTitle="Xóa"
@@ -321,6 +321,7 @@
   nzCancelText="Hủy"
   [nzStyle]="modalStyle"
 >
+<form nz-form [formGroup]="formFilter">
   <ng-container *nzModalContent>
     <nz-table [nzData]="dataFilter" nzHideOnSinglePage="true">
       <thead>
@@ -335,9 +336,10 @@
         <tr *ngFor="let item of dataFilter">
           <td style="width: 28%">
             <nz-select
-              [(ngModel)]="filterName"
+              [(ngModel)]="item.name"
               (ngModelChange)="selectCol(item, $event)"
               nzSize="large"
+              formControlName="filterName"
               style="width: 100%"
             >
               <nz-option
@@ -349,11 +351,12 @@
           </td>
           <td style="width: 20%">
             <nz-select
-              *ngIf="filterName == 'Tên'"
-              [(ngModel)]="filterCondition"
+              *ngIf="item.name == 'Tên'"
+              [(ngModel)]="item.condition"
               (ngModelChange)="selectCondition(item.orderNum, 1, $event)"
               nzSize="large"
-              [nzPlaceHolder]="filterCondition"
+              [nzPlaceHolder]="item.condition"
+              formControlName="filterCondition"
               style="width: 100%"
             >
               <nz-option
@@ -363,11 +366,12 @@
               ></nz-option>
             </nz-select>
             <nz-select
-              *ngIf="filterName == 'Thời gian chỉnh sửa'"
-              [(ngModel)]="filterCondition"
+              *ngIf="item.name == 'Thời gian chỉnh sửa'"
+              [(ngModel)]="item.condition"
               (ngModelChange)="selectCondition(item.orderNum, 2, $event)"
               nzSize="large"
-              [nzPlaceHolder]="filterCondition"
+              [nzPlaceHolder]="item.condition"
+              formControlName="filterCondition"
               style="width: 100%"
             >
               <nz-option
@@ -377,11 +381,12 @@
               ></nz-option>
             </nz-select>
             <nz-select
-              *ngIf="filterName == 'Dung lượng'"
-              [(ngModel)]="filterCondition"
+              *ngIf="item.name == 'Dung lượng'"
+              [(ngModel)]="item.condition"
               (ngModelChange)="selectCondition(item.orderNum, 3, $event)"
               nzSize="large"
-              [nzPlaceHolder]="filterCondition"
+              [nzPlaceHolder]="item.condition"
+              formControlName="filterCondition"
               style="width: 100%"
             >
               <nz-option
@@ -394,32 +399,34 @@
           <td style="width: 47%">
             <input
               nzSize="large"
-              *ngIf="filterName == 'Tên'"
+              *ngIf="item.name == 'Tên'"
               nz-input
               placeholder="Basic usage"
-              [(ngModel)]="filterValueName"
+              [(ngModel)]="item.value"
+              formControlName="filterValueName"
               type="text"
               style="width: 100%"
             />
             <nz-date-picker
-              *ngIf="filterName == 'Thời gian chỉnh sửa'"
-              [(ngModel)]="filterValueDate"
+              *ngIf="item.name == 'Thời gian chỉnh sửa'"
+              [(ngModel)]="fitem.value"
               nzSize="large"
+              formControlName="filterValueDate"
               style="width: 100%"
             ></nz-date-picker>
             <nz-input-number
-              *ngIf="filterName == 'Dung lượng'"
-              [(ngModel)]="filterValueSize"
+              *ngIf="item.name == 'Dung lượng'"
+              [(ngModel)]="item.value"
               [nzMin]="0"
-              [nzMax]="62"
               [nzStep]="1"
+              formControlName="filterValueSize"
               nzSize="large"
               style="width: 60%"
             ></nz-input-number>
             <nz-select
-              *ngIf="filterName == 'Dung lượng' && filterCondition == 'Lớn hơn'"
+              *ngIf="item.name == 'Dung lượng' && item.condition == 'Lớn hơn'"
               [(ngModel)]="selectTypeMore"
-              (ngModelChange)="selectType(filterCondition, $event)"
+              (ngModelChange)="selectType(item.condition, $event)"
               nzSize="large"
               [nzPlaceHolder]="item.type"
               style="width: 30%; margin-left: 5%"
@@ -431,9 +438,9 @@
               ></nz-option>
             </nz-select>
             <nz-select
-              *ngIf="filterName == 'Dung lượng' && filterCondition == 'Nhỏ hơn'"
+              *ngIf="item.name == 'Dung lượng' && item.condition == 'Nhỏ hơn'"
               [(ngModel)]="selectTypeLess"
-              (ngModelChange)="selectType(filterCondition, $event)"
+              (ngModelChange)="selectType(item.condition, $event)"
               nzSize="large"
               [nzPlaceHolder]="item.type"
               style="width: 30%; margin-left: 5%"
@@ -474,6 +481,7 @@
       <span class="button-text-primary">Thêm một dòng</span>
     </button>
   </ng-container>
+</form>
 </nz-modal>
 <!--Tạo thư mục-->
 <nz-modal
@@ -506,7 +514,17 @@
           <div style="font-weight: bold">>{{ item.name }}</div>
         </ng-container>
       </div>
-      <div>Tên thư mục (<span class="red-star">*</span>)</div>
+      <div>Tên thư mục (<span class="red-star">*</span>)
+        <img
+        style="padding-right: 10px; margin-top: -4px"
+        nz-tooltip="Tên thư mục chỉ được chứa các ký tự:
+        Ký tự chữ và số: 0-9, a-z, A-Z
+        Ký tự đặc biệt: chấm than (!), gạch nối (-), gạch dưới (_), chấm (.), sao (*), nháy đơn ('), mở ngoặc đơn ((), đóng ngoặc đơn ())
+        Tối thiểu 3 ký tự"
+        src="assets/imgs/pajamas_question.svg"
+        alt=""
+      />
+      </div>
       <input
         nzSize="large"
         nz-input
@@ -597,43 +615,41 @@
               </div>
             </td>
             <td>
-              <span
-                style="color: #0066b3; margin-right: 10px; cursor: pointer"
+              <img
+                style="margin-right: 10px; cursor: pointer"
                 nz-tooltip
-                nzTooltipTitle="tải lên"
-                nzTooltipPlacement="bottom"
-                nz-icon
-                nzType="upload"
-                nzTheme="outline"
+                nzTooltipTitle="Tải lên"
+                src="assets/imgs/download.svg"
                 (click)="uploadSingleFile(item, i)"
-              ></span>
-              <span
+              />
+              <img
                 *ngIf="!item.isUpload"
-                style="color: #0066b3; cursor: pointer"
+                style="cursor: pointer"
                 nz-tooltip
                 nzTooltipTitle="Xóa"
-                nzTooltipPlacement="bottom"
-                nz-icon
-                nzType="delete"
-                nzTheme="outline"
+                src="assets/imgs/delete.svg"
                 (click)="removeFile(item)"
-              ></span>
-              <span
+              />
+              <img
                 *ngIf="item.isUpload === true"
-                style="color: #0066b3; cursor: pointer"
+                style="cursor: pointer"
                 nz-tooltip
                 nzTooltipTitle="Hủy"
-                nzTooltipPlacement="bottom"
-                nz-icon
-                nzType="delete"
-                nzTheme="outline"
+                src="assets/imgs/delete.svg"
                 (click)="removeFile(item)"
-              ></span>
+              />
             </td>
           </tr></tbody
       ></nz-table>
 
-      <h3 style="font-weight: bold; margin-top: 10px">METADATA</h3>
+      <h3 style="font-weight: bold; margin-top: 10px">METADATA
+        <img
+        style="padding-right: 10px; margin-top: -4px"
+        nz-tooltip="Chú ý: Meta key và value là các giá trị chỉ bao gồm chữ thường và số."
+        src="assets/imgs/pajamas_question.svg"
+        alt=""
+      />
+      </h3>
       <nz-row *ngFor="let item of listOfMetadata" style="margin-top: 10px">
         <input
           style="width: 40%; margin-right: 5%"
@@ -655,7 +671,7 @@
           (click)="removeMetadata(item.metaKey)"
           nzSize="large"
         >
-          <img style="margin-top: -4px" src="assets/imgs/trash.svg" />
+          <img style="margin-top: -4px" src="assets/imgs/delete.svg" />
         </button>
       </nz-row>
       <nz-row style="margin-top: 15px">
@@ -767,11 +783,11 @@
       }}. Mọi object bên trong folder này sẽ bị xóa và không thể khôi phục lại"
       nzShowIcon
     ></nz-alert>
-    <div *ngIf="dataAction.objectType != 'folder'" style="margin-top: 15px">
+    <div *ngIf="dataAction.objectType != 'folder'" class="text-label" style="margin-top: 15px">
       Quý khách có chắc chắn thực thiện xóa File <b>{{ dataAction.keyName }}</b
       >?
     </div>
-    <div *ngIf="dataAction.objectType == 'folder'" style="margin-top: 15px">
+    <div *ngIf="dataAction.objectType == 'folder'" class="text-label" style="margin-top: 15px">
       Quý khách có chắc chắn thực thiện xóa Folder
       <b>{{ dataAction.keyName }}</b
       >?
@@ -1060,7 +1076,7 @@
                 <img
                   *ngIf="item.isLatest != true"
                   src="assets/imgs/refresh.svg"
-                  style="padding-right: 10px; height: 20px"
+                  style="padding-right: 10px; height: 25px"
                   nz-tooltip
                   nzTooltipTitle="Khôi phục"
                   nzTooltipPlacement="bottom"
@@ -1099,7 +1115,7 @@
       nzMessage="Bạn đang thực hiện xóa phiên bản Object"
       nzShowIcon
     ></nz-alert>
-    <div style="margin-top: 15px">
+    <div class="text-label" style="margin-top: 15px">
       Quý khách có chắc chắn thực hiện xóa phiên bản Object này?
     </div>
   </ng-container>

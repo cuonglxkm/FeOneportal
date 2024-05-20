@@ -124,6 +124,10 @@
                                                   [project]="project"
                                                   [internetFacing]="data.internetFacing"
                                                   [ipFloatingAddress]="data.floatingIPAddress"/>
+                <!---Gia Han------>
+              <img *ngIf="typeVPC == 0" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+                   nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
+                   (click)="navigateToExtend(data.id)"/>
                 <span *ngIf="typeVPC == 1">
                   <img nz-popover src="assets/imgs/edit-2.svg"
                        alt=""

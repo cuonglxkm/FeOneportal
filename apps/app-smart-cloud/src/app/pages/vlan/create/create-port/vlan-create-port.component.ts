@@ -116,25 +116,6 @@ export class VlanCreatePortComponent implements OnInit, AfterViewInit, OnChanges
     }
   }
 
-
-  // getSubnetByNetworkId() {
-  //   this.isLoadingSubnet = true;
-  //   let formSearchSubnet = new FormSearchSubnet();
-  //   formSearchSubnet.networkId = this.networkId;
-  //   formSearchSubnet.customerId = this.tokenService.get()?.userId;
-  //   formSearchSubnet.region = this.region;
-  //   formSearchSubnet.pageSize = 9999;
-  //   formSearchSubnet.pageNumber = 1;
-  //   formSearchSubnet.name = null;
-  //
-  //   this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
-  //     // console.log('data-subnet', data)
-  //     this.listSubnet = data.records;
-  //
-  //     this.isLoadingSubnet = false;
-  //   });
-  // }
-
   invalidGateway: string;
 
   onCheckPort() {
@@ -161,8 +142,6 @@ export class VlanCreatePortComponent implements OnInit, AfterViewInit, OnChanges
           });
         });
       }
-
-
     });
   }
 
@@ -177,7 +156,6 @@ export class VlanCreatePortComponent implements OnInit, AfterViewInit, OnChanges
       this.portInputName?.nativeElement.focus();
     }, 1000);
   }
-
 
   handleCancel(): void {
     this.isVisible = false;
@@ -261,12 +239,9 @@ export class VlanCreatePortComponent implements OnInit, AfterViewInit, OnChanges
     // this.getSubnetByNetworkId();
     this.onCheckPort();
 
-
     if (this.validateForm.controls.ipAddress.value == null) {
       this.invalidGateway = '';
     }
-
-
   }
 
 

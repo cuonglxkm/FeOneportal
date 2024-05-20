@@ -19,11 +19,27 @@
   <div style="margin-bottom: 20px" class="text-card-header">
     {{ 'app.bucket.info' | i18n }}
   </div>
-  <div style="margin-bottom: 10px" class="text-label">Bucket:</div>
-  <div style="margin-bottom: 10px" class="text-label">URL:</div>
-  <div style="margin-bottom: 10px" class="text-label">
-    {{ 'app.used.capacity' | i18n }}:
-  </div>
+  <nz-row class="text-label">
+    <div style="margin-bottom: 10px; margin-right: 8px">Bucket:</div>
+    <div style="font-weight: bold">{{ bucketDetail ? bucketDetail.bucketName : '' }}</div>
+  </nz-row>
+  <nz-row class="text-label">
+    <div style="margin-bottom: 10px; margin-right: 8px">URL:</div>
+    <div style="font-weight: bold">
+      {{ bucketDetail ? bucketDetail.linkS3Website : '' }}
+    </div>
+  </nz-row>
+  <nz-row class="text-label">
+    <div style="margin-bottom: 10px; margin-right: 8px">
+      {{ 'app.used.capacity' | i18n }}:
+    </div>
+    <div style="font-weight: bold">
+      {{ bucketDetail ? bucketDetail.bucketSize : '' }} Bytes /
+      {{ bucketDetail ? bucketDetail.bucketItemCount : '' }}
+      objects
+    </div>
+  </nz-row>
+    
   <nz-tabset nzSize="large">
     <nz-tab nzTitle="Access Control List">
       <span class="titlecard-custom">{{
