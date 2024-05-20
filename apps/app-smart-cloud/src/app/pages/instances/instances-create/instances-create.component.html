@@ -1316,7 +1316,7 @@
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
-                  <tr *ngFor="let data of listOfDataBlockStorage">
+                  <tr *ngFor="let data of listOfDataBlockStorage; let i = index">
                     <td>
                       <nz-select
                         [nzPlaceHolder]="'app.choose' | i18n"
@@ -1364,6 +1364,7 @@
                       <label
                         nz-checkbox
                         [(ngModel)]="data.encrypt"
+                        (ngModelChange)="changeEncrypt($event, i)"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'encrypt_' + data.id"
                       ></label>
@@ -1372,6 +1373,7 @@
                       <label
                         nz-checkbox
                         [(ngModel)]="data.multiattach"
+                        (ngModelChange)="changeMultiAttach($event, i)"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'multiattach_' + data.id"
                       ></label>
