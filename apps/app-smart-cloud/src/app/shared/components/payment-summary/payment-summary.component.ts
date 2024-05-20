@@ -197,11 +197,16 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
-            case 'sharesnapshot_create':
-              this.serviceType = this.i18n.fanyi('app.label.create');
-              serviceItem.name = `Filesystem Snapshot - ${specificationObj.serviceName}`;
-              serviceItem.type = this.i18n.fanyi('app.label.create');
-              break;  
+          case 'mongodb_resize':
+            this.serviceType = 'mongodb';
+            serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.text.upgrade');
+            break;
+          case 'sharesnapshot_create':
+            this.serviceType = this.i18n.fanyi('app.label.create');
+            serviceItem.name = `Filesystem Snapshot - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
+            break;  
           default:
             serviceItem.name = '';
             break;
