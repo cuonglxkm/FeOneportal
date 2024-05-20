@@ -76,7 +76,10 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
       this.detailCluster = changes['detailCluster']?.currentValue;
     }
 
-    if (this.projectId && this.regionId) this.getListSG();
+    if (this.projectId && this.regionId) {
+      this.getListSG();
+      // this.getAllRuleSG();
+    }
   }
 
   handleCopyIDGroup() {
@@ -96,11 +99,8 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
       this.listOfSG = data;
 
       data.forEach(item => {
-        let sgname = "shoot--pcnru5cx--k8s-712xbxib";
-        // if(item.name.includes(this.detailCluster.securityGroupName)) {
-        //   this.selectedSG = item;
-        // }
-        if(item.name.includes(sgname)) {
+        // let sgname = "shoot--pcnru5cx--k8s-712xbxib";
+        if(item.name.includes(this.detailCluster.securityGroupName)) {
           this.selectedSG = item;
         }
       })
@@ -121,6 +121,13 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
   }
+
+  // getAllRuleSG() {
+  //   this.clusterService.getAllRuleSG(this.projectId, this.regionId)
+  //   .subscribe((r: any) => {
+  //     console.log(r);
+  //   })
+  // }
 
   saveLogSG(rule: SecurityGroupRule) {
     let logSG = new SGLoggingReqDto();
