@@ -210,10 +210,13 @@ export class VlanDetailComponent implements OnInit, OnChanges {
       this.getVlanByNetworkId()
     }, 1000)
 
-    console.log('')
-    setTimeout(() => {
-      this.getPortByNetwork()
-    }, 500)
+    console.log('cloudId', this.networkCloudId)
+    if(this.networkCloudId != '') {
+      setTimeout(() => {
+        this.getPortByNetwork()
+      }, 500)
+    }
+
   }
 
 }
