@@ -89,6 +89,10 @@ export class CreateSslCertComponent implements OnInit{
     this.formCreateeSslCert.expiration = date;
     return this.formCreateeSslCert;
   }
+
+  onChange(result: Date): void {
+    this.expireDate = result
+  }
   
   handleCreate() {
     this.isLoading = true;
@@ -104,7 +108,7 @@ export class CreateSslCertComponent implements OnInit{
               this.i18n.fanyi('app.status.success'),
               'Tạo mới ssl cert thành công'
             );
-            this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
+            this.router.navigate(['/app-smart-cloud/ssl-cert']);
           },
           (error) => {
             this.isLoading = false

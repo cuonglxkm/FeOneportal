@@ -50,12 +50,6 @@
       <nz-table #fixedTable
                 style="margin-top: 20px;"
                 [nzData]="filteredData"
-                [nzPageSize]="response?.pageSize"
-                (nzPageSizeChange)="onPageSizeChange($event)"
-                [nzPageIndex]="response?.currentPage"
-                (nzPageIndexChange)="onPageIndexChange($event)"
-                [nzTotal]="response?.totalCount"
-                [nzFrontPagination]="false"
                 [nzLoading]="isLoading">
         <thead>
         <tr>
@@ -65,7 +59,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let data of fixedTable.data; index as i">
+        <tr *ngFor="let data of filteredData; index as i">
           <td>{{data.name}}</td>
           <td>{{data.expiration}}</td>
           <td>

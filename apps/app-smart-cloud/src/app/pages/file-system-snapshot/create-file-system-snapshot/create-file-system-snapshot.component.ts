@@ -221,6 +221,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
       this.formCreate.userEmail = this.tokenService.get()?.email;
       this.formCreate.actorEmail = this.tokenService.get()?.email;
       this.formCreate.regionId = this.region;
+      this.formCreate.region = this.region;
       this.formCreate.serviceName = this.form.controls.nameSnapshot.value;
       this.formCreate.serviceType = ServiceType.SHARE_SNAPSHOT;
       this.formCreate.actionType = ServiceActionType.CREATE;
