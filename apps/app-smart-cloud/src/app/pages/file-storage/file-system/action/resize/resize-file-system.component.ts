@@ -9,9 +9,10 @@ import {
 } from '../../../../../shared/models/file-system.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-resize-file-system',

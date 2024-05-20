@@ -1,6 +1,6 @@
 import {Component, Inject, ViewChild} from '@angular/core';
-import {PolicyModel} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
-import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
+import {PolicyModel} from "../../../shared/models/policy.model";
+import {PolicyService} from "../../../shared/services/policy.service";
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {Router} from "@angular/router";
 import {ClipboardService} from "ngx-clipboard";

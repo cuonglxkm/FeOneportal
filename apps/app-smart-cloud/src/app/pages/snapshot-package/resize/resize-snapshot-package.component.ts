@@ -15,7 +15,8 @@ import {getCurrentRegionAndProject} from "@shared";
 import { FormUpdateSnapshotPackageModel, PackageSnapshotModel, SnapshotPackageRequestModel } from 'src/app/shared/models/package-snapshot.model';
 import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
 import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
-import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-resize-snapshot-package',

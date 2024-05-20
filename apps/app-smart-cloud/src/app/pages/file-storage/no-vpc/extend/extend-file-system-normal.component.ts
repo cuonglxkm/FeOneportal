@@ -13,8 +13,9 @@ import {
 import { OrderItem } from '../../../../shared/models/price';
 import { debounceTime, Subject } from 'rxjs';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel, ProjectService, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 
 @Component({

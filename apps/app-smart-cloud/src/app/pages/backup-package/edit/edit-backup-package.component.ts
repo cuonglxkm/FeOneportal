@@ -13,7 +13,8 @@ import {OrderItem} from "../../../shared/models/price";
 import {DataPayment, ItemPayment} from "../../instances/instances.model";
 import {InstancesService} from "../../instances/instances.service";
 import {getCurrentRegionAndProject} from "@shared";
-import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-extend-backup-package',

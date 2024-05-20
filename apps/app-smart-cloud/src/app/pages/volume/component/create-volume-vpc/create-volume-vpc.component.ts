@@ -16,10 +16,10 @@ import { I18NService } from '@core';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import {
   ProjectModel,
-  ProjectService,
   RegionModel,
-  SizeInCloudProject
 } from '../../../../../../../../libs/common-utils/src';
+import { ProjectService } from 'src/app/shared/services/project.service';
+import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
