@@ -848,7 +848,7 @@
   "app.file.system.access.to.delete.fail": "Delete access rule fail {{error}}",
   "app.file.system.access.to.delete.file.success": "Delete File System success",
   "app.file.system.access.to.delete.file.fail": "Delete File System success {{error}}",
-  "app.checkRouter.file.system": "Please check the Router and add Interface Router to use the service!", 
+  "app.checkRouter.file.system": "Please check the Router and add Interface Router to use the service!",
   "app.checkRouter.file.system.noGateway": "Check the Router Interface again! Please add the gateway of the pri_network range",
 
   "app.note.delete.file.system": "To delete the {{name}} File System, please enter the File System name to confirm",
@@ -2219,9 +2219,15 @@
   "app.input.backup.volume.package": "Select backup package",
   "app.input.backup.volume.description": "Enter description",
   "app.input.backup.volume.note": "Create Backup Volume",
+  "app.input.backup.volume.select.volume": "Select volume name",
+  "app.input.backup.volume.required.select": "Please select volume",
 
   "app.backup.volume.name.tooltip": "The backup volume name should not include special characters, spaces, or Vietnamese characters (except _).",
   "app.backup.volume.validator.name.required": "Please enter the name of the Backup Volume",
+  "app.backup.volume.validator.name.duplicate": "The backup volume name already exists, please enter a different name.",
+  "app.backup.volume.validator.name.pattern": "The backup volume name should not include special characters, spaces, or Vietnamese characters (except _).",
+
+
   "app.backup.volume.validator.backup.package.required": "Please enter the name of the Backup",
   "app.backup.volume.request.create": "Backup Volume creation request has been sent.",
 

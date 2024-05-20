@@ -24,9 +24,175 @@
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card style="border-radius: 8px;">
-        <span class="text-card-header"></span>
+        <span class="text-card-header">{{'app.backup.volume.info'|i18n}}</span>
+        <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+          <nz-row nzGutter="24" style="margin-top: 25px;">
+            <nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label>
+                  <span>{{'app.backup.volume.name'|i18n}} (<span style="color: #EA3829">*</span>)</span>
+                  <img nz-popover
+                       [nzPopoverContent]="'app.backup.volume.name.tooltip'|i18n"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="nameBackupError">
+                  <input nz-input class="input-custom"
+                         appAutofocus
+                         formControlName="backupName"
+                         [maxlength]="50"/>
+                  <ng-template #nameBackupError let-control>
+                    <ng-container *ngIf="control.hasError('required')">{{'app.backup.volume.validator.name.required'|i18n}}</ng-container>
+                    <ng-container *ngIf="control.hasError('duplicateName')">{{'app.backup.volume.validator.name.duplicate'|i18n}}</ng-container>
+                    <ng-container *ngIf="control.hasError('pattern')">{{'app.backup.volume.validator.name.pattern'|i18n}}</ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>
+                  <span>{{'app.input.backup.volume.package' |i18n}} (<span style="color: #EA3829">*</span>)</span>
+                  <img nz-popover
+                       [nzPopoverContent]="''|i18n"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips>
+                  <nz-select formControlName="backupPacketId"
+                             nzSize="large"
+                             [nzPlaceHolder]="''|i18n"
+                             [nzShowSearch]="false"
+                             [nzLoading]="isLoadingBackupPackage"
+                             (ngModelChange)="onChangeBackupPackage($event)">
+                    <nz-option *ngFor="let i of backupPackages"
+                               [nzLabel]="i.packageName"
+                               [nzValue]="i.id" />
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-row nzGutter="18">
+                <nz-col nzSpan="10">
+                  <span class="text-label">{{'app.backup.package.storage'|i18n}}</span>
+                </nz-col>
+                <nz-col nzSpan="8">
+                  <span class="text-label"
+                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
+                  <span class="text-label"
+                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize }} GB</span>
+                </nz-col>
+              </nz-row>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              <nz-row nzGutter="18">
+                <nz-col nzSpan="10">
+                  <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
+                </nz-col>
+                <nz-col nzSpan="8">
+                  <span class="text-label"
+                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
+                  <span class="text-label"
+                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.usedSize }} GB</span>
+                </nz-col>
+              </nz-row>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              <nz-row nzGutter="18">
+                <nz-col nzSpan="10">
+                  <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
+                </nz-col>
+                <nz-col nzSpan="8">
+                  <span class="text-label"
+                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
+                  <span class="text-label"
+                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize - backupPackageDetail?.usedSize }} GB</span>
+                </nz-col>
+              </nz-row>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <div *ngIf="volumeIdParam == undefined || volumeIdParam == null">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{'app.input.backup.volume.select.volume'|i18n}} (<span style="color: #EA3829">*</span>)</span>
+                    <img nz-popover
+                         [nzPopoverContent]="''|i18n"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </nz-form-label>
+                  <nz-form-control nzDisableAutoTips [nzErrorTip]="volumeError">
+                    <nz-select (ngModelChange)="onSelectedVolume($event)"
+                               nzSize="large" formControlName="instanceId">
+                      <nz-option *ngFor="let i of listVolumes.records" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
+                    </nz-select>
+                    <ng-template #volumeError let-control>
+                      <ng-container *ngIf="control.hasError('required')">{{'app.input.backup.volume.required.select'|i18n}}</ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <div *ngIf="volumeIdParam != undefined || volumeIdParam != null">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{'app.input.backup.volume.select.volume'|i18n}} (<span style="color: #EA3829">*</span>)</span>
+                    <img nz-popover
+                         [nzPopoverContent]="''|i18n"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input nz-input class="input-custom" [value]="volumeInfo?.name" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <nz-form-item>
+                <nz-form-label>
+                  <span>{{'app.info.backup.vm.description'|i18n}}</span>
+                </nz-form-label>
+                <nz-form-control>
+                  <nz-textarea-count [nzMaxCharacterCount]="255">
+                    <textarea nz-input class="input-custom" [maxlength]="255"
+                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"
+                              formControlName="description"></textarea>
+                  </nz-textarea-count>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>
+                  <span style="color: #FF0000">{{ 'app.service.expiration-date'|i18n }} </span>
+                  <img nz-popover
+                       [nzPopoverContent]="'app.backup.vm.tooltip.expire.date'|i18n"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
+                  <span style="color: #FF0000; margin-left: 10px;">{{ backupPackageDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>
+                </nz-form-label>
+              </nz-form-item>
+            </nz-col>
+          </nz-row>
+        </form>
       </nz-card>
     </nz-col>
-    <nz-col nzSpan="8"></nz-col>
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">{{'app.config.parameters'|i18n}}</span>
+        <div style="margin-top: 10px" class="text-value">{{'app.table.backup.vm.name'|i18n}}</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ validateForm.controls.backupName.value }}
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.table.backup.vm.backup.package'|i18n }}</div>
+        <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.packageName }}</div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div style="margin-top: 10px" class="text-value">{{ 'app.input.backup.volume.select.volume'|i18n }}</div>
+        <div style="margin-top: 10px" class="text-label">{{ volumeInfo?.name }}</div>
+<!--        <div style="margin-top: 10px" class="text-label">{{ 'app.info.backup.vm.storage.flavor'|i18n }} - {{ instance?.storage }} GB</div>-->
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <nz-row>
+          <nz-col style="width: 100%">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createBackupVolumeNormal()" [nzLoading]="isLoading"
+                    [disabled]="validateForm.invalid">
+              <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" alt="" />
+              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+            </button>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-col>
   </nz-row>
 </nz-content>
