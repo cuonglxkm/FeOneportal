@@ -81,11 +81,11 @@ export class PaymentSummaryComponent implements OnInit {
       console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
         console.log(e);
-        
+
         var serviceItem = new ServiceInfo();
         const specificationObj = JSON.parse(e.specification);
         console.log(specificationObj);
-        
+
         switch (e.specificationType) {
           case 'instance_create':
             serviceItem.name =
@@ -197,22 +197,42 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
-            case 'sharesnapshot_create':
-              this.serviceType = this.i18n.fanyi('app.label.create');
-              serviceItem.name = `Filesystem Snapshot - ${specificationObj.serviceName}`;
-              serviceItem.type = this.i18n.fanyi('app.label.create');
-              break;  
+          case 'sharesnapshot_create':
+            serviceItem.name = `FileSystem Snapshot - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
+            break;
+          case 'filestorage_create':
+            serviceItem.name = `FileSystem - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
+            break;
+          case 'filestorage_resize':
+            serviceItem.name = `FileSystem - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.resize');
+            break;
+          case 'filestorage_extend':
+            serviceItem.name = `FileSystem - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
+            break;
+            case 'sharesnapshot_extend':
+              serviceItem.name = `FileSystem Snapshot - ${specificationObj.serviceName}`;
+              serviceItem.type = this.i18n.fanyi('app.button.extend');
+              break;
+              case 'mongodb_resize':
+                this.serviceType = 'mongodb';
+                serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
+                serviceItem.type = this.i18n.fanyi('app.text.upgrade');
+                break;
           default:
             serviceItem.name = '';
             break;
         }
-        serviceItem.price = e.price;
+        serviceItem.price = e.price / e.serviceDuration;
         serviceItem.duration = e.serviceDuration;
         serviceItem.amount = e.orderItemQuantity;
         if (serviceItem.type == this.i18n.fanyi('app.button.resize')) {
           serviceItem.currency = e.price;
         } else {
-          serviceItem.currency = e.price * e.serviceDuration;
+          serviceItem.currency = e.price
         }
         this.listServiceInfo.push(serviceItem);
       });
@@ -330,7 +350,6 @@ export class PaymentSummaryComponent implements OnInit {
             ]);
           }
           console.log(result);
-          
         },
         error: (e) => {
           this.notification.error(

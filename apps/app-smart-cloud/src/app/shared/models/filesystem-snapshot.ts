@@ -33,6 +33,7 @@ export class FormEditFileSystemSnapShot{
 
 export class FormDeleteFileSystemSnapshot{
   id:number;
+  regionId:number;
   customerId: number;
 }
 
@@ -76,4 +77,35 @@ export class OrderCreateFileSystemSnapshot{
     oneSME_SubscriptionId: string
     isSendMail: true
     typeName: string
+}
+
+export class OrderExtendFileSystemSnapshot{
+  regionId: number
+  serviceName: string
+  customerId: number
+  projectId: number
+  vpcId: number
+  typeName: string
+  serviceType: number
+  actionType: number
+  serviceInstanceId: number
+  newExpireDate: Date
+  userEmail: string
+  actorEmail: string
+}
+
+export class ExtendFileSystemSnapshotRequestModel {
+  customerId: number;
+  createdByUserId: number;
+  note: string;
+  couponCode: string;
+  orderItems: [
+    {
+      orderItemQuantity: number
+      specification: string
+      specificationType: string
+      serviceDuration: number
+      price: number
+    }
+  ];
 }

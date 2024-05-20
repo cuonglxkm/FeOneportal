@@ -1,5 +1,5 @@
 <div style="display: flex; justify-content: space-between; align-items: center">
-    <span class="text-card-header">Danh sách  VPN Services</span>
+    <span class="text-card-header">Danh sách  VPN Service</span>
     <nz-row style="gap: 16px">
       <nz-col>
         <nz-input-group
@@ -23,7 +23,7 @@
           />
         </ng-template>
       </nz-col>
-      <nz-col>
+      <nz-col *ngIf="response?.records.length === 0">
         <button
           [routerLink]="[
             '/app-smart-cloud/vpn-site-to-site/vpn-service/create'
@@ -33,7 +33,7 @@
           nzSize="large"
         >
           <i nz-icon nzType="plus"></i>
-          <span class="button-text-primary">Tạo mới VPN Services</span>
+          <span class="button-text-primary">Tạo mới VPN Service</span>
         </button>
       </nz-col>
     </nz-row>

@@ -138,9 +138,11 @@
               </nz-form-label>
               <nz-date-picker
                 class="input-date-picker"
-                nzFormat="yyyy-MM-dd HH:mm:ss"
+                nzFormat="dd/MM/yyyy"
                 style="width: 100%; border-radius: 4px"
                 [(ngModel)]="expireDate"
+                (ngModelChange)="onChange($event)"
+                [ngModelOptions]="{standalone: true}"
               ></nz-date-picker>
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{

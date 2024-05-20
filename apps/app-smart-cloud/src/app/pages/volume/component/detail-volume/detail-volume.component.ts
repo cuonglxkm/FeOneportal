@@ -4,10 +4,11 @@ import { VolumeService } from '../../../../shared/services/volume.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel, RegionModel, SizeInCloudProject } from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 
 @Component({
   selector: 'app-detail-volume',

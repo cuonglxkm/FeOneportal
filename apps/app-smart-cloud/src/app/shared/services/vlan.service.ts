@@ -143,7 +143,7 @@ export class VlanService extends BaseService {
   }
 
   getVlanByNetworkId(idNetwork, projectId: number) {
-    return this.http.get<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}&projectId=${projectId}`).pipe(
+    return this.http.get<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}?projectId=${projectId}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

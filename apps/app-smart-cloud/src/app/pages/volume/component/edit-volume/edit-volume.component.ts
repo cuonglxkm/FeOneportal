@@ -11,9 +11,10 @@ import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
 import { now } from 'lodash';
 import { debounceTime, Subject } from 'rxjs';
-import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'app-extend-volume',

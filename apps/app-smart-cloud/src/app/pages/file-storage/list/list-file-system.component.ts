@@ -3,9 +3,7 @@ import { Router } from '@angular/router';
 import {
   BaseResponse,
   ProjectModel,
-  ProjectService,
   RegionModel,
-  SizeInCloudProject,
 } from '../../../../../../../libs/common-utils/src';
 import {
   FileSystemModel,
@@ -18,6 +16,8 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { error } from 'console';
+import { SizeInCloudProject } from 'src/app/shared/models/project.model';
+import { ProjectService } from 'src/app/shared/services/project.service';
 @Component({
   selector: 'one-portal-list-file-system',
   templateUrl: './list-file-system.component.html',

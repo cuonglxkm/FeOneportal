@@ -30,7 +30,7 @@ export class SslCertListComponent {
 
   isBegin: boolean = false
 
-  filteredData: any[];
+  filteredData: any
 
   formSearchSslSearch: FormSearchSslSearch = new FormSearchSslSearch()
 
@@ -99,7 +99,7 @@ export class SslCertListComponent {
         
       this.isLoading = false
       this.response = data
-      this.filteredData = data.records
+      this.filteredData = data
     })
   }
 

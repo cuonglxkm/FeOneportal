@@ -37,6 +37,8 @@ export class BucketConfigureComponent implements OnInit {
       .getBucketDetail(this.bucketName)
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe((data) => {
+        console.log(data);
+        
         this.bucketDetail = data;
         this.cdr.detectChanges();
       });

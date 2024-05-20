@@ -45,7 +45,7 @@ export class StartupService {
     console.log(defaultLang);
     
     const baseUrl = environment['baseUrl'];
-
+    console.log(baseUrl);
     return zip(
       this.i18n.loadLangData(defaultLang),
       
@@ -78,7 +78,7 @@ export class StartupService {
           this.aclService.setFull(true);
 
           this.menuService.add(appData.menu);
-          this.regionProjectService.getCoreData();
+          this.regionProjectService.getCoreData(baseUrl);
           //this.checkPermissionAction(this.menuService['data']);
           
           // if (checkData) {

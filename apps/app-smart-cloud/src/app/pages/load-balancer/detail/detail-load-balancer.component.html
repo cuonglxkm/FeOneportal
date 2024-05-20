@@ -35,60 +35,72 @@
   <nz-card>
     <span class="text-card-header">{{ 'app.load.balancer.info' | i18n }}</span>
     <form nz-form nzLayout="vertical">
-      <nz-row nzGutter="24" nzJustify="space-between">
-        <nz-col nzSpan="12">
-          <nz-form-item style="margin-top: 20px;">
-            <nz-form-label>
-              <span>{{ 'app.load.balancer.name' | i18n }}</span>
-            </nz-form-label>
-            <nz-form-control>
-              <input nz-input class="input-custom" [value]="loadBalancer.name" [disabled]="true" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label>
-              <span>VIP Address</span>
-            </nz-form-label>
-            <nz-form-control>
-              <input nz-input class="input-custom" [value]="loadBalancer.ipAddress" [disabled]="true" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label>
-              <span>{{ 'app.service.description' | i18n }}</span>
-            </nz-form-label>
-            <nz-form-control>
-              <textarea nz-input class="input-custom" [value]="loadBalancer.description" [nzAutosize]="{ minRows: 3, maxRows: 5 }" [disabled]="true"></textarea>
-            </nz-form-control>
-          </nz-form-item>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <nz-form-item style="margin-top: 20px;">
-            <nz-form-label>
-              <span>Floating IP</span>
-            </nz-form-label>
-            <nz-form-control>
-              <input nz-input class="input-custom" [value]="loadBalancer.floatingIPAddress" [disabled]="true" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label>
-              <span>{{ 'app.service.start.date' | i18n }}</span>
-            </nz-form-label>
-            <nz-form-control>
-              <input nz-input class="input-custom" [value]="loadBalancer.createDate | date: 'dd/MM/yyyy'" [disabled]="true" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label>
-              <span>{{ 'app.service.expiration-date' | i18n }}</span>
-            </nz-form-label>
-            <nz-form-control>
-              <input nz-input class="input-custom" [value]="loadBalancer.expiredDate | date: 'dd/MM/yyyy'" [disabled]="true"/>
-            </nz-form-control>
-          </nz-form-item>
-        </nz-col>
-      </nz-row>
+      <div class="customRow">
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.load.balancer.name' | i18n }}:</span>
+              <span class="text-value-detail customSpan">{{loadBalancer.name}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Gói dịch vụ</span>
+              <span class="text-value-detail customSpan">{{dataOffer?.offerName}}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Floating IP</span>
+              <span class="text-value-detail customSpan">{{loadBalancer.floatingIPAddress}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Max connection</span>
+              <span class="text-value-detail customSpan">{{dataOffer?.characteristicValues[0]?.charOptionValues[0]}}/s</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">VIP Address</span>
+              <span class="text-value-detail customSpan">{{loadBalancer.ipAddress}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Active connection</span>
+              <span class="text-value-detail customSpan">{{dataOffer?.characteristicValues[0]?.charOptionValues[0]}}/s</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.service.start.date' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{loadBalancer.createDate | date: 'dd/MM/yyyy'}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Data transfer</span>
+              <span class="text-value-detail customSpan">Unlimit</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.service.expiration-date' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{loadBalancer.expiredDate | date: 'dd/MM/yyyy'}}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+      </div>
     </form>
   </nz-card>
   <nz-card>

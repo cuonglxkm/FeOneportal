@@ -1,9 +1,7 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {
   ProjectModel,
-  ProjectService,
   RegionModel,
-  SizeInCloudProject
 } from '../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVmService } from '../../../shared/services/backup-vm.service';
@@ -21,6 +19,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FormSearchNetwork, NetWorkModel, Port } from '../../../shared/models/vlan.model';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { debounceTime, Subject } from 'rxjs';
+import { SizeInCloudProject } from 'src/app/shared/models/project.model';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh

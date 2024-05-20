@@ -586,7 +586,7 @@ export class InstancesEditComponent implements OnInit {
           this.cpuIntoMoney = 0;
           this.instanceResize.cpu = this.instancesModel.cpu;
         } else {
-          this.getUnitPrice(0, 0, this.configCustom.vCPU, 0, null);
+          this.getUnitPrice(0, 0, this.configCustom.vCPU, 0, 0);
         }
         this.onChangeConfigCustom();
       });
@@ -607,7 +607,7 @@ export class InstancesEditComponent implements OnInit {
           this.ramIntoMoney = 0;
           this.instanceResize.ram = this.instancesModel.ram;
         } else {
-          this.getUnitPrice(0, this.configCustom.ram, 0, 0, null);
+          this.getUnitPrice(0, this.configCustom.ram, 0, 0, 0);
         }
         this.onChangeConfigCustom();
       });
@@ -628,7 +628,7 @@ export class InstancesEditComponent implements OnInit {
           this.volumeIntoMoney = 0;
           this.instanceResize.storage = this.instancesModel.storage;
         } else {
-          this.getUnitPrice(this.configCustom.capacity, 0, 0, 0, null);
+          this.getUnitPrice(this.configCustom.capacity, 0, 0, 0, 0);
         }
         this.onChangeConfigCustom();
       });
@@ -663,7 +663,7 @@ export class InstancesEditComponent implements OnInit {
           this.instanceResize.cpu = this.instancesModel.cpu;
           this.cdr.detectChanges();
         } else {
-          this.getUnitPrice(0, 0, this.configGPU.CPU, 0, null);
+          this.getUnitPrice(0, 0, this.configGPU.CPU, 0, 0);
         }
         this.onChangeConfigCustom();
       });
@@ -685,7 +685,7 @@ export class InstancesEditComponent implements OnInit {
           this.instanceResize.ram = this.instancesModel.ram;
           this.cdr.detectChanges();
         } else {
-          this.getUnitPrice(0, this.configGPU.ram, 0, 0, null);
+          this.getUnitPrice(0, this.configGPU.ram, 0, 0, 0);
         }
         this.onChangeConfigCustom();
       });
@@ -707,7 +707,7 @@ export class InstancesEditComponent implements OnInit {
           this.instanceResize.storage = this.instancesModel.storage;
           this.cdr.detectChanges();
         } else {
-          this.getUnitPrice(this.configGPU.storage, 0, 0, 0, null);
+          this.getUnitPrice(this.configGPU.storage, 0, 0, 0, 0);
         }
         this.onChangeConfigCustom();
       });
@@ -738,7 +738,7 @@ export class InstancesEditComponent implements OnInit {
               this.configGPU.gpuOfferId
             );
           } else {
-            this.getUnitPrice(0, 0, 0, this.configGPU.GPU, null);
+            this.getUnitPrice(0, 0, 0, this.configGPU.GPU, 0);
           }
         }
         this.onChangeConfigCustom();
@@ -781,6 +781,7 @@ export class InstancesEditComponent implements OnInit {
         this.configCustom.capacity + this.instancesModel.storage;
       this.instanceResize.newOfferId = 0;
       this.instanceResize.newFlavorId = 0;
+      this.instanceResize.newGpuTypeOfferId = 0;
     } else if (this.isGpuConfig) {
       this.instanceResize.newOfferId = 0;
       this.instanceResize.newFlavorId = 0;

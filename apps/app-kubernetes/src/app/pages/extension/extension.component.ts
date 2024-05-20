@@ -275,6 +275,10 @@ export class ExtensionComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: order, path: returnPath}});
   }
 
+  back2list() {
+    this.router.navigate(['/app-kubernetes']);
+  }
+
   showModalCancelExtend() {
     this.isShowModalCancelExtend = true;
   }

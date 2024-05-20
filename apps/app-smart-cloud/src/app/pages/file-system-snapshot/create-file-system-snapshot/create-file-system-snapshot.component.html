@@ -9,9 +9,9 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
-          >{{ 'app.breadcrumb.infrastructure.service' | i18n }}</a
-        >
+        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']">{{
+          'app.breadcrumb.infrastructure.service' | i18n
+        }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item
@@ -19,7 +19,9 @@
           >File System Snapshot</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>{{ 'app.file.system.snapshot.create' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.file.system.snapshot.create' | i18n
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -47,14 +49,16 @@
               <div>
                 <span>{{ 'app.file.system.name' | i18n }}</span>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                <span
-                  nz-icon
-                  nzType="question-circle"
-                  nzTheme="outline"
+                <img
                   nz-popover
-                  [nzPopoverContent]="'Tên của File System.'"
+                  [nzPopoverContent]="
+                    'app.file.system.name.tooltip' | i18n
+                  "
                   nzPopoverPlacement="bottom"
-                ></span>
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
               </div>
             </nz-form-label>
             <nz-select
@@ -80,35 +84,39 @@
               <div>
                 <span>{{ 'app.snapshot.name' | i18n }}</span>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                <span
-                  nz-icon
-                  nzType="question-circle"
-                  nzTheme="outline"
+                <img
                   nz-popover
-                  [nzPopoverContent]="'Tên của Snapshot.'"
+                  [nzPopoverContent]="
+                    'app.file.system.snapshot.name.tooltip' | i18n
+                  "
                   nzPopoverPlacement="bottom"
-                ></span>
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
               </div>
             </nz-form-label>
-              <input
-                nz-input
-                type="text"
-                required
-                [placeholder]="'app.input.name' | i18n"
-                formControlName="nameSnapshot"
-                class="input-custom"
-              />
+            <input
+              nz-input
+              type="text"
+              required
+              [placeholder]="'app.input.name' | i18n"
+              formControlName="nameSnapshot"
+              class="input-custom"
+            />
             <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')"
-                >{{ 'validation.info.required' | i18n }}</ng-container
-              >
-              <ng-container *ngIf="control.hasError('pattern')"
-                >{{ 'validation.file.system.name.patternd' | i18n }}</ng-container
-              >
+              <ng-container *ngIf="control.hasError('required')">{{
+                'validation.snapshot.info.required' | i18n
+              }}</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">{{
+                'validation.snapshot.name.pattern' | i18n
+              }}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24">{{ 'app.service.description' | i18n }}</nz-form-label>
+        <nz-form-label [nzSm]="6" [nzXs]="24">{{
+          'app.service.description' | i18n
+        }}</nz-form-label>
         <textarea
           formControlName="description"
           [placeholder]="'app.input.des' | i18n"
@@ -116,57 +124,78 @@
           nz-input
         ></textarea>
         <ng-container *ngIf="typeVpc === 0">
-        <nz-form-item class="mt-5">
-          <nz-form-label nzFor="time">
-            <div class="label">
-              <span>{{ 'app.service.duration' | i18n }} (<span class="text-red">*</span
-                >)</span>
-              <img nz-popover [nzPopoverContent]="'app.tooltip.time' | i18n : { name: 'File System' }"
-                   nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                   src="assets/imgs/pajamas_question.svg" alt="" />
-            </div>
-          </nz-form-label>
-          <nz-row style="height: 50px;">
-            <nz-col nzSpan="12">
-              <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-                <nz-input-number
-                  style="width:100%; border-radius: 8px; margin-left: 0;"
-                  formControlName="time"
-                  (ngModelChange)="caculator($event)"
-                  class="input-custom"
-                  nzMin="1"
-                  nzMax="100"
-                  nzStep="1" />
-                <ng-template #dateErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">{{ 'app.more.0.less.100' | i18n }}
-                  </ng-container>
-                  <ng-container
-                    *ngIf="control.hasError('max') || control.hasError('min') || control.hasError('min') || control.hasError('pattern')">
-                    {{ 'app.more.0.less.100' | i18n }}
-                  </ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-col>
-            <nz-col style="margin-left: 25px;">
-              <nz-form-item>
-                <nz-form-label nzFor="now">
-                  <div class="label">
-                    <span>Ngày khởi tạo: {{ dateString | date : 'dd/MM/yyyy' }}</span>
-                  </div>
-                </nz-form-label>
-              </nz-form-item>
-            </nz-col>
-          </nz-row>
-          <nz-form-label style="margin-top: 15px;">
-            <div class="label" style="color: red;">
-              <span>{{ 'app.service.expiration-date' | i18n }}: </span>
-              <span style="color: rgba(252, 16, 16, 1)"
-              >{{ expiredDate | date : 'dd/MM/yyyy' }}</span
-            >
-            </div>
-          </nz-form-label>
-        </nz-form-item>
-      </ng-container>
+          <nz-form-item class="mt-5">
+            <nz-form-label nzFor="time">
+              <div class="label">
+                <span
+                  >{{ 'app.service.duration' | i18n }} (<span class="text-red"
+                    >*</span
+                  >)</span
+                >
+                <img
+                  nz-popover
+                  [nzPopoverContent]="
+                    'app.tooltip.time' | i18n : { name: 'File System' }
+                  "
+                  nzPopoverPlacement="bottom"
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
+              </div>
+            </nz-form-label>
+            <nz-row style="height: 50px">
+              <nz-col nzSpan="12">
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+                  <nz-input-number
+                    style="width: 100%; border-radius: 8px; margin-left: 0"
+                    formControlName="time"
+                    (ngModelChange)="caculator($event)"
+                    class="input-custom"
+                    nzMin="1"
+                    nzMax="100"
+                    nzStep="1"
+                  />
+                  <ng-template #dateErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')"
+                      >{{ 'app.more.0.less.100' | i18n }}
+                    </ng-container>
+                    <ng-container
+                      *ngIf="
+                        control.hasError('max') ||
+                        control.hasError('min') ||
+                        control.hasError('min') ||
+                        control.hasError('pattern')
+                      "
+                    >
+                      {{ 'app.more.0.less.100' | i18n }}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-col>
+              <nz-col style="margin-left: 25px">
+                <nz-form-item>
+                  <nz-form-label nzFor="now">
+                    <div class="label">
+                      <span
+                        >Ngày khởi tạo:
+                        {{ dateString | date : 'dd/MM/yyyy' }}</span
+                      >
+                    </div>
+                  </nz-form-label>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+            <nz-form-label style="margin-top: 15px">
+              <div class="label" style="color: red">
+                <span>{{ 'app.service.expiration-date' | i18n }}: </span>
+                <span style="color: rgba(252, 16, 16, 1)">{{
+                  expiredDate | date : 'dd/MM/yyyy'
+                }}</span>
+              </div>
+            </nz-form-label>
+          </nz-form-item>
+        </ng-container>
       </form>
     </nz-card>
   </div>

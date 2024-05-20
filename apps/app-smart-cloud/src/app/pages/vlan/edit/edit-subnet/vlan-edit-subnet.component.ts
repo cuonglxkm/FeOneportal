@@ -203,7 +203,7 @@ export class VlanEditSubnetComponent implements OnInit {
       data?.records?.forEach(item => {
         this.nameList?.push(item.name);
       });
-      this.nameList = this.nameList.filter(item => item != this.validateForm.controls.nameSubnet.value);
+      this.nameList = this.nameList.filter(item => item !== this.validateForm.controls.nameSubnet.value);
       console.log(this.nameList);
     });
   }
@@ -258,9 +258,7 @@ export class VlanEditSubnetComponent implements OnInit {
     this.vlanService.updateSubnet(this.idSubnet, this.formUpdateSubnet).subscribe(data => {
       this.isLoading = false;
       this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note40'));
-      this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]).then(() => {
-        window.location.reload()
-      });
+      this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork])
 
     }, error => {
       this.isLoading = false;
