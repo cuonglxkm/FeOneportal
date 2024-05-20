@@ -2,11 +2,9 @@ import { Component, Inject } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { debounceTime } from 'rxjs';
-import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
-import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
-import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { FormSearchSslSearch } from 'src/app/shared/models/ssl-cert.model';
 import { SSLCertService } from 'src/app/shared/services/ssl-cert.service';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-ssl-cert-list',
@@ -34,9 +32,9 @@ export class SslCertListComponent {
 
   formSearchSslSearch: FormSearchSslSearch = new FormSearchSslSearch()
 
-  constructor(private SSLCertService: SSLCertService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-  }
+  constructor(@Inject(SSLCertService) private SslCertService: SSLCertService,
+            @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+}
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -92,7 +90,7 @@ export class SslCertListComponent {
     this.formSearchSslSearch.vpcId = this.project
     this.formSearchSslSearch.region = this.region
     this.formSearchSslSearch.customerId = this.customerId
-    this.SSLCertService.getSslCert(this.formSearchSslSearch)
+    this.SslCertService.getSslCert(this.formSearchSslSearch)
       .pipe(debounceTime(500))
       .subscribe(data => {
       console.log(data);

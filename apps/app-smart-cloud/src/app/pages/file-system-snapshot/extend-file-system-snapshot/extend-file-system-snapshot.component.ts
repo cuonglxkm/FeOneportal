@@ -8,12 +8,13 @@ import { getCurrentRegionAndProject } from '@shared';
 import { ExtendFileSystem, FileSystemDetail, ResizeFileSystemRequestModel } from 'src/app/shared/models/file-system.model';
 import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
-import { ProjectModel, ProjectService, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { InstancesService } from '../../instances/instances.service';
 import { OrderItem } from 'src/app/shared/models/price';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { ExtendFileSystemSnapshotRequestModel, OrderCreateFileSystemSnapshot, OrderExtendFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 
 @Component({
