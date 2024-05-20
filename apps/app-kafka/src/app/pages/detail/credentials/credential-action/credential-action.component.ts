@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -15,10 +16,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AppConstants } from 'src/app/core/constants/app-constant';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
 import {
   ChangePasswordKafkaCredential,
   CreateKafkaCredentialData,
@@ -69,7 +72,8 @@ export class CreateCredentialComponent implements OnInit, OnDestroy {
     private fb: NonNullableFormBuilder,
     private kafkaCredentialService: KafkaCredentialsService,
     private notification: NzNotificationService,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
     this.oldPasswordVisible = false;
     this.passwordVisible = false;
@@ -177,11 +181,11 @@ export class CreateCredentialComponent implements OnInit, OnDestroy {
           .subscribe((data) => {
             if (data && data.code == 200) {
               this.closeFormEvent.emit();
-              this.notification.success('Thông báo', data.msg, {
+              this.notification.success(this.i18n.fanyi('app.status.success'), data.msg, {
                 nzDuration: 2000,
               });
             } else {
-              this.notification.error('Thất bại', data.msg);
+              this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
             }
           });
         break;
@@ -205,11 +209,11 @@ export class CreateCredentialComponent implements OnInit, OnDestroy {
           .subscribe((data) => {
             if (data && data.code == 200) {
               this.closeFormEvent.emit();
-              this.notification.success('Thông báo', data.msg, {
+              this.notification.success(this.i18n.fanyi('app.status.success'), data.msg, {
                 nzDuration: 2000,
               });
             } else {
-              this.notification.error('Thất bại', data.msg);
+              this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
             }
           });
         break;
@@ -232,11 +236,11 @@ export class CreateCredentialComponent implements OnInit, OnDestroy {
           .subscribe((data) => {
             if (data && data.code == 200) {
               this.closeFormEvent.emit();
-              this.notification.success('Thông báo', data.msg, {
+              this.notification.success(this.i18n.fanyi('app.status.success'), data.msg, {
                 nzDuration: 2000,
               });
             } else {
-              this.notification.error('Thất bại', data.msg);
+              this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
             }
           });
         break;

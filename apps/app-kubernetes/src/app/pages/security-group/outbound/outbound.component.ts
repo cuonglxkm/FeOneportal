@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
-import SecurityGroupRule, { SecurityGroupData } from '../../../model/security-group.model';
+import SecurityGroupRule, { SecurityGroup, SecurityGroupData } from '../../../model/security-group.model';
 import { ShareService } from '../../../services/share.service';
 import { SecurityGroupService } from '../../../services/security-group.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -25,6 +25,7 @@ export class OutboundComponent implements OnInit {
   projectId: number;
   securityGroupId: string;
 
+  listOfSG: SecurityGroup[];
   isLoadingOutbound: boolean;
 
   readonly LOCK_RULE = KubernetesConstant.LOCK_RULE;
@@ -36,6 +37,7 @@ export class OutboundComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.listOfSG = [];
     this.listOfOutbound = [];
     this.pageIndex = 1;
     this.pageSize = 5;
@@ -80,7 +82,17 @@ export class OutboundComponent implements OnInit {
     this.sgService.searchRule(this.condition)
       .pipe(finalize(() => this.isLoadingOutbound = false))
       .subscribe({next: (data: any) => {
-        this.listOfOutbound = data.records;
+        let tmp: SecurityGroupRule[] = data.records;
+
+        // map remoteGroupId => name
+        this.listOfOutbound = tmp.map((rule: SecurityGroupRule) => {
+          let sg = this.listOfSG.find(sg => sg.id == rule.remoteGroupId);
+          return {
+            remoteGroupName: sg?.name,
+            ...rule
+          }
+        });
+
         this.total = data.totalCount;
       }, error: (err) => {
         this.listOfOutbound = [];

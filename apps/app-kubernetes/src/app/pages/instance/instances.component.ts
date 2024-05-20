@@ -105,9 +105,9 @@ export class InstancesComponent implements OnInit, OnChanges {
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.searchInstances();
-        this.notificationService.success("Thành công", 'Đồng bộ instances thành công');
+        this.notificationService.success("", 'Đồng bộ instances thành công');
       } else {
-        this.notificationService.error('Thất bại', r.message);
+        this.notificationService.error('', r.message);
       }
     });
   }
@@ -149,10 +149,10 @@ export class InstancesComponent implements OnInit, OnChanges {
     }))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
-        this.notificationService.success('Thành công', r.message);
+        this.notificationService.success('', r.message);
         this.searchInstances();
       } else {
-        this.notificationService.error('Thất bại', r.message);
+        this.notificationService.error('', r.message);
       }
     });
   }

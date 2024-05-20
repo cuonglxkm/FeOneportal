@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Tạo mới Load Balancer'" xmlns="http://www.w3.org/1999/html">
+             [title]="'app.load.balancer.create' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
@@ -67,7 +67,7 @@
                            (keyup.enter)="onChangeStatusInternetFacing()">
                       Internet Facing
                       <img nz-popover
-                           [nzPopoverContent]="'Sử dụng địa chỉ IP public. Do đó Load balancer có thể định tuyến các yêu cầu từ khách hàng qua internet'"
+                           [nzPopoverContent]="'app.tooltip.internet.facing' | i18n"
                            nzPopoverPlacement="bottom" style="margin-left: 5px;"
                            src="assets/imgs/pajamas_question.svg" alt="" />
                     </label>
@@ -78,11 +78,15 @@
                            [ngModelOptions]="{ standalone: true }"
                            (click)="onChangeStatusInternal()"
                            (keyup.enter)="onChangeStatusInternal()">Internal
-                      <img nz-popover
-                           [nzPopoverContent]="'Sử dụng địa chỉ IP private. Do đó Load balancer chỉ có thể định tuyến ' +
-                                               'các yêu cầu từ các máy khách có quyền truy cập vào VPC cho bộ cân bằng tải'"
+                           <img nz-popover
+                           [nzPopoverContent]="contentTemplateInternal"
                            nzPopoverPlacement="bottom" style="margin-left: 5px;"
                            src="assets/imgs/pajamas_question.svg" alt="" />
+                           <ng-template #contentTemplateInternal>
+                            <span
+                              [innerHTML]="'app.tooltip.internal' | i18n"
+                            ></span>
+                          </ng-template>
                     </label>
                   </nz-col>
                 </nz-row>
@@ -95,7 +99,7 @@
                 <nz-form-label>
                   <span>Subnet</span>
                   <img nz-popover
-                       [nzPopoverContent]="'Là dải IP mạng để phân bổ địa chỉ IP khi sử dụng cân bằng tải'"
+                       [nzPopoverContent]="'app.tooltip.subnet' | i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
@@ -104,7 +108,7 @@
                              [ngModel]="selectedSubnet"
                              (ngModelChange)="updateValue($event)"
                              formControlName="subnet"
-                             [nzPlaceHolder]="'Chọn dải Subnet'"
+                             [nzPlaceHolder]="'-- ' + ('app.choose.subnet.range' | i18n) + ' --'"
                              nzAllowClear>
                     <nz-option *ngFor="let index of mapSubnetArray"
                                [nzValue]="index.value"
@@ -116,7 +120,7 @@
                 <nz-form-label>
                   <span>Subnet</span>
                   <img nz-popover
-                       [nzPopoverContent]="'Là dải IP mạng để phân bổ địa chỉ IP khi sử dụng cân bằng tải'"
+                       [nzPopoverContent]="'app.tooltip.subnet' | i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
@@ -137,7 +141,7 @@
                 <nz-form-label>
                   <span>Subnet</span>
                   <img nz-popover
-                       [nzPopoverContent]="'Là dải IP mạng để phân bổ địa chỉ IP khi sử dụng cân bằng tải'"
+                       [nzPopoverContent]="'app.tooltip.subnet' | i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
@@ -160,17 +164,20 @@
                 <nz-form-label>
                   <span>IP Address</span>
                   <img nz-popover
-                       [nzPopoverContent]="'Địa chỉ IP của Khách hàng. Trường hợp Khách hàng không nhập địa chỉ IP, ' +
-                        'hệ thống sẽ tự động cấp địa chỉ IP cho Khách hàng. Trường hợp Khách hàng nhập địa chỉ IP, ' +
-                         'Hệ thống sẽ chọn IP đấy cho load balancer trong trường hợp IP chưa được sử dụng bởi bất kỳ ai'"
+                       [nzPopoverContent]="contentTemplateIpAddress"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
+                       <ng-template #contentTemplateIpAddress>
+                        <span
+                          [innerHTML]="'app.tooltip.ip.address' | i18n"
+                        ></span>
+                      </ng-template>
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
-                  <input nz-input class="input-custom" (ngModelChange)="onInput($event)" formControlName="ipAddress" [placeholder]="'Nhập địa chỉ ip'" />
-                  <span *ngIf="!isInput" style="color: #ff4d4f;">Địa chỉ IP phải nằm trong dải Subnet. Trường hợp Khách hàng không nhập địa chỉ IP, hệ thống sẽ tự động cấp địa chỉ IP cho Khách hàng.</span>
+                  <input nz-input class="input-custom" (ngModelChange)="onInput($event)" formControlName="ipAddress" [placeholder]="'app.input.ip.address' | i18n" />
+                  <span *ngIf="!isInput" style="color: #ff4d4f;">{{ 'validation.ip.address.no.input' | i18n }}</span>
                   <ng-template #ipAddressErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập đúng định dạng IP x.x.x.x</ng-container>
+                    <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.ip.address.pattern' | i18n }}</ng-container>
                   </ng-template>
                 </nz-form-control>
               </nz-form-item>
@@ -188,17 +195,14 @@
           </nz-form-item>
           <nz-form-item style="margin-bottom: 10px;">
             <nz-form-label>
-              <span>Gói dịch vụ</span>
+              <span>{{ 'app.text.package' | i18n }}</span>
               <img nz-popover
                    [nzPopoverContent]="titleTooltip"
                    nzPopoverPlacement="right" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
               <ng-template #titleTooltip>
                 <div style="display: block;">
-                  <span><b>Max Connection:</b> Tổng số kết nối tối đa trên 1 giây </span><br>
-                  <span><b>Active Connection:</b> Tổng số kết nối hoạt động tối đa trong 1 giây</span><br>
-                  <span><b>Data transfer:</b> Dữ liệu được chuyển giao dưới dạng các bit và byte trên một phương tiện kỹ thuật số hoặc analog,<br>
-                  và quá trình này cho phép truyền thông kỹ thuật số hoặc analog và chuyển động của nó giữa các thiết bị</span><br>
+                  <span [innerHTML]="'app.tooltip.service.package' | i18n"></span>
                 </div>
               </ng-template>
             </nz-form-label>
@@ -234,9 +238,8 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-alert nzType="warning" [nzMessage]="warning" nzShowIcon style="margin-top: 20px; margin-bottom: 20px;">
             <ng-template #warning>
-              <span style="color: red" class="text-label">* Quý khách lưu ý:</span><br>
-              <span class="text-label">- Khi tạo xong Load Balancer, gói dịch vụ của Load Balancer sẽ không thể thay đổi tại đây.<br>
-              - Muốn thay đổi gói dịch vụ của Load Balancer vui lòng vào quản lý VPC để điều chỉnh.</span>
+              <span style="color: red" class="text-label">* {{ 'app.please.note' | i18n }}:</span><br>
+              <span class="text-label" [innerHTML]="'app.alert.create.load.balancer.vpc' | i18n"></span>
             </ng-template>
           </nz-alert>
           <nz-form-item>
@@ -244,10 +247,10 @@
               <span>{{ 'app.service.description' | i18n }}</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input class="input-custom" formControlName="description" [placeholder]="'Nhập nội dung'" [maxLength]="255"
+              <textarea nz-input class="input-custom" formControlName="description" [placeholder]="'volume.tooltip.description' | i18n" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">{{ 'volume.notification.input.description.maxLength' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -282,16 +285,16 @@
             <span #selectedValueIpFloating></span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">Gói dịch vụ</div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.text.package' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
             <span>{{ offerDetail?.offerName }}</span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row>
             <nz-col style="width: 100%">
-              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid" (click)="doCreateLoadBalancerVpc()">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid" (click)="doCreateLoadBalancerVpc()" [nzLoading]="loadingCreate">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;"/>
-                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>

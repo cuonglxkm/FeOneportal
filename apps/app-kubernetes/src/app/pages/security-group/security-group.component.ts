@@ -1,20 +1,21 @@
-import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ClipboardService } from 'ngx-clipboard';
-import { finalize } from 'rxjs';
+import { Subscription, finalize } from 'rxjs';
 import SecurityGroupRule, { SGLoggingReqDto, SecurityGroup, SecurityGroupData, SecurityGroupSearchCondition } from '../../model/security-group.model';
 import { SecurityGroupService } from '../../services/security-group.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ShareService } from '../../services/share.service';
 import { KubernetesCluster } from '../../model/cluster.model';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
+import { ClusterService } from '../../services/cluster.service';
 
 @Component({
   selector: 'security-group',
   templateUrl: './security-group.component.html',
   styleUrls: ['./security-group.component.css'],
 })
-export class SecurityGroupComponent implements OnInit, OnChanges {
+export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input('regionId') regionId: number;
   @Input('projectId') projectId: number;
@@ -26,9 +27,12 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
   listOfOutbound: SecurityGroupRule[];
   selectedSG: SecurityGroup;
 
+  subscription: Subscription;
+
   constructor(
     private clipboardService: ClipboardService,
     private securityGroupService: SecurityGroupService,
+    private clusterService: ClusterService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notificationService: NzNotificationService,
     private shareService: ShareService
@@ -40,17 +44,23 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
     this.listOfInbound = [];
     this.listOfOutbound = [];
 
-    this.shareService.$sgLogReq.subscribe((sgLogData: SGLoggingReqDto) => {
+    this.subscription = this.shareService.$sgLogReq.subscribe((sgLogData: SGLoggingReqDto) => {
       if (sgLogData) {
         sgLogData.securityGroupName = this.detailCluster.securityGroupName;
         sgLogData.serviceOrderCode = this.detailCluster.serviceOrderCode;
 
-        this.securityGroupService.createLogSG(sgLogData)
+        this.clusterService.createLogSG(sgLogData)
         .subscribe((r: any) => {
           console.log({response: r});
         });
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -86,7 +96,11 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
       this.listOfSG = data;
 
       data.forEach(item => {
-        if(item.name.includes(this.detailCluster.securityGroupName)) {
+        let sgname = "shoot--pcnru5cx--k8s-712xbxib";
+        // if(item.name.includes(this.detailCluster.securityGroupName)) {
+        //   this.selectedSG = item;
+        // }
+        if(item.name.includes(sgname)) {
           this.selectedSG = item;
         }
       })
@@ -100,6 +114,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
         sgData.regionId = this.regionId;
         sgData.detailCluster = this.detailCluster;
         sgData.securityGroupId = this.selectedSG?.id;
+        sgData.listOfSG = this.listOfSG;
         this.shareService.emitSGData(sgData);
       } else {
         this.notificationService.error("Thất bại", "Không có thông tin security group");
@@ -120,7 +135,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
     let note = `Xóa rule (IP Version: ${rule.etherType}, Protocol: ${rule.protocol?.toUpperCase()}, Port Range: ${rule.portRange}, Remote IP: ${rule.remoteIp})`;
     logSG.jsonRule = note;
 
-    this.securityGroupService.createLogSG(logSG)
+    this.clusterService.createLogSG(logSG)
     .subscribe((r: any) => {
       console.log({response: r});
     });

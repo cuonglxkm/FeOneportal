@@ -94,7 +94,7 @@ export class LifecycleConfigComponent implements OnInit {
       error: (e) => {
         this.notification.error(
           e.statusText,
-          'Tạo mới Router Interface không thành công'
+          'Tạo mới Bucket Lifecycle không thành công'
         );
       },
     });

@@ -39,7 +39,7 @@ export class OrderListComponent implements OnInit {
   toDate: Date;
 
   date: any;
-  pageSize: number = 5;
+  pageSize: number = 10;
   currentPage: number = 1;
   listOfData: any;
   totalData: number;
@@ -84,6 +84,7 @@ export class OrderListComponent implements OnInit {
         this.totalData = data.totalCount;
         this.listOfData = data.records;
         this.isLoadingEntities = false;
+        console.log("Huyen", data)
       },
       error => {
         this.notification.error('Có lỗi xảy ra', 'Lấy danh sách Đơn hàng thất bại');

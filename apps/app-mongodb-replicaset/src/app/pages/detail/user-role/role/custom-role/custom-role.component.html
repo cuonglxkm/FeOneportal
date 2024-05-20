@@ -1,0 +1,165 @@
+<div>
+
+  <div class="my-2">
+    <ng-container *ngIf="isRoleDuplicate">
+      <nz-alert
+        nzType="error"
+        [nzDescription]="errorRoleDuplicate"
+        nzShowIcon>
+      </nz-alert>
+    </ng-container>
+    <ng-template #errorRoleDuplicate>
+      <span>
+        Quyền tùy chỉnh không thể áp dụng tài nguyên trùng lặp cho cùng một action. Vui lòng chọn database và collection khác nhau với mỗi action.
+      </span>
+    </ng-template>
+  </div>
+
+
+
+  <nz-alert
+    nzType="warning"
+    nzDescription="Đặt tên cho quyền tùy chỉnh của bạn và liên kết các actions của quyền đó với database cùng collection."
+    nzShowIcon
+  ></nz-alert>
+  <nz-divider></nz-divider>
+  <div>
+    <form nz-form [formGroup]="myForm"  nzLayout="vertical">
+      <div nz-col>
+        <nz-form-item>
+          <nz-form-label
+            nzSpan="6"
+            nzFor="createName"
+            nzLabelAlign="left"
+            > <span nz-typography><strong>Tên vai trò</strong> (<span class="text-red">*</span>) </span>
+          </nz-form-label>
+          <nz-form-control nzSpan="24" [nzErrorTip]="createNameError">
+            <input
+              nzSize="large"
+              style="width: 92%"
+              formControlName="createName"
+              nz-input
+              id="createName"
+              placeholder="Nhập tên quyền"
+              (ngModelChange)="cal($event)"
+            />
+          </nz-form-control>
+
+          <ng-template #createNameError let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Tên quyền không được để trống.
+            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">
+              Tên quyền chỉ bao gồm: chữ, số, '_', '-' và tối đa 256 ký tự.
+            </ng-container>
+            <ng-container *ngIf="control.hasError('maxLength')">
+              Tên quyền chỉ bao gồm: chữ, số, '_', '-' và tối đa 256 ký tự.
+            </ng-container>
+          </ng-template>
+        </nz-form-item>
+      </div>
+
+      <div nz-row class="mt-3 mb-2" style="font-size: 16px;">
+        <div nz-col [nzSpan]="11">
+          <span nz-typography
+            ><strong>Danh sách phân quyền </strong>(<span class="text-red">*</span>) 
+          </span>
+        </div>
+
+        <div nz-col [nzSpan]="11">
+          <span nz-typography
+            ><strong>Danh sách database</strong> (<span class="text-red">*</span>) 
+          </span>
+        </div>
+      </div>
+
+      <div
+        formArrayName="bunchOfRole"
+        *ngFor="let role of bunchOfRole?.controls; let i = index"
+      >
+        <div [formGroup]="role">
+          <div nz-row [nzGutter]="[8, 24]">
+            <div nz-col [nzSpan]="11">
+              <nz-form-item>
+                <nz-form-control>
+                  <nz-tree-select
+                    nzSize="large"
+                    formControlName="privileges"
+                    [nzNodes]="bunchOfTreeNodePrivileges[i]"
+                    nzShowSearch
+                    [nzMaxTagCount]="2"
+                    nzCheckable
+                    (ngModelChange)="onChangePrivileges($event, i)"
+                    [nzMultiple]="true"
+                  ></nz-tree-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div nz-col [nzSpan]="11">
+              <nz-form-item>
+                <nz-form-control>
+                  <nz-tree-select
+                    nzSize="large"
+                    formControlName="database"
+                    nzShowSearch
+                    [nzMaxTagCount]="2"
+                    [nzNodes]="bunchOfTreeNodeDatabase[i]"
+                    (ngModelChange)="onChangeDatabase($event, i)"
+                    nzCheckable
+                    [nzMultiple]="true"
+                  ></nz-tree-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div nz-col [nzSpan]="2">
+              <button
+                nz-button
+                (click)="delete(i)"
+                nzType="text"
+                nzShape="circle"
+                nzDanger
+              >
+              <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" nz-tooltip="Xóa database"  />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div style="margin-top: 2%">
+    <button type="button" nz-button nzType="text" (click)="add()">
+      <span nz-icon nzType="plus" nzTheme="outline"></span>
+      Thêm danh sách quyền
+    </button>
+  </div>
+
+  <bottom-bar>
+    <div class="mx-5" nz-col>
+      <div>
+        <button
+          nz-button
+          nzType="primary"
+          type="button"
+          (click)="closeDrawer()"
+          nzGhost
+        ><span nz-icon nzType="close" nzTheme="outline"></span>
+          Hủy
+        </button>
+      </div>
+    </div>
+    <div nz-col>
+      <button
+        nz-button
+        nzType="primary"
+        [disabled]="!myForm.valid"
+        (click)="createRole()"
+      >
+        Xác nhận
+      </button>
+    </div>
+  </bottom-bar>
+</div>

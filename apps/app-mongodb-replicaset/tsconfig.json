@@ -2,12 +2,27 @@
   "compilerOptions": {
     "target": "es2022",
     "useDefineForClassFields": false,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    // "forceConsistentCasingInFileNames": true,
+    // "strict": true,
+    // "noImplicitOverride": true,
+    // "noPropertyAccessFromIndexSignature": true,
+    // "noImplicitReturns": true,
+    // "noFallthroughCasesInSwitch": true,
+//    "baseUrl": "/",
+    "paths": {
+      "@shared": [
+        "apps/app-mongodb-replicaset/src/app/shared/index"
+      ],
+      "@core": [
+        "apps/app-mongodb-replicaset/src/app/core/index"
+      ],
+      "@env/*": [
+        "apps/app-mongodb-replicaset/src/environments/*"
+      ],
+      "@_mock": [
+        "apps/app-mongodb-replicaset/_mock/index"
+      ]
+    }
   },
   "files": [],
   "include": [],

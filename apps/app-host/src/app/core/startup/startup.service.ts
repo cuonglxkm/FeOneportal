@@ -16,7 +16,8 @@ import { environment } from '@env/environment';
 import { ICONS } from '../../../style-icons';
 import { ICONS_AUTO } from '../../../style-icons-auto';
 import { I18NService } from '../i18n/i18n.service';
-import { CoreDataService, PolicyService } from '../../../../../../libs/common-utils/src';
+import { CoreDataService } from '../../../../../../libs/common-utils/src';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 /**
  * Used for application startup

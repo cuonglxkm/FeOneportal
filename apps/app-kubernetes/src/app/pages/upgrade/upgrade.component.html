@@ -1,14 +1,14 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Nâng cấp dịch vụ: ' + detailCluster?.clusterName">
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+  [title]="('app.cluster.upgrade-service' | i18n) + ': ' + detailCluster?.clusterName">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a [routerLink]="['/app-kubernetes']">Container</a>
+      <nz-breadcrumb-item>{{ 'app.cluster.platform-service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-kubernetes']">{{ 'app.cluster.list' | i18n }}</a>
+        <a [routerLink]="['/app-kubernetes']">VNPT Kubernetes Service</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.cluster.upgrade-service' | i18n }}: <b>{{detailCluster?.clusterName || ''}}</b>
@@ -541,6 +541,22 @@
             <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
           </div>
         </div>
+
+        <nz-divider class="divider-style"></nz-divider>
+
+        <div nz-row [nzGutter]="8">
+          <div nz-col [nzSpan]="12">
+            <div class="ml-3"><label class="weight-600">{{ 'app.cluster.vat-cost-2' | i18n : {vat: '10'} }}</label>
+            </div>
+          </div>
+
+          <div nz-col [nzSpan]="12">
+            <div class="price-style price-color mr-3">{{(vatCost ? vatCost : 0) | number: '1.0-0'}} VND</div>
+            <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
+          </div>
+        </div>
+
+        <nz-divider class="divider-style"></nz-divider>
 
         <div nz-row [nzGutter]="8" class="mt-5 price-panel">
           <div nz-col [nzSpan]="12">

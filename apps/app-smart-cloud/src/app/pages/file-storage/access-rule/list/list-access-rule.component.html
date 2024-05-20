@@ -45,7 +45,7 @@
                    (input)="onInputChange($event.target['value'])"/>
           </nz-input-group>
           <ng-template #prefixIconSearch>
-            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"/>
           </ng-template>
           <one-portal-create-access-rule [region]="region" [project]="project" [shareCloudId]="idFileSystem" (onOk)="handleCreateOk()"/>
         </div>
@@ -68,8 +68,8 @@
         <th>Access To</th>
         <th>Access Level</th>
         <th>Status</th>
-        <th>Ngày tạo</th>
-        <th>Thao tác</th>
+        <th>{{ 'app.text.created-date' | i18n }}</th>
+        <th>{{ 'app.text.operation' | i18n }}</th>
       </tr>
       </thead>
       <tbody>
@@ -83,7 +83,8 @@
         <td>{{ data.state }}</td>
         <td>{{ data.created_at }}</td>
         <td>
-          <one-portal-delete-access-rule [region]="region"
+          <one-portal-delete-access-rule *ngIf="data.state != 'denying'"
+                                          [region]="region"
                                          [project]="project"
                                          [shareRuleId]="data.id"
                                          [shareCloudId]="data.shareId"

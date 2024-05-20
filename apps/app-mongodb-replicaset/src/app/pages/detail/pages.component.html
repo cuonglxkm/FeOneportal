@@ -1,0 +1,67 @@
+<ng-container *ngIf="serviceCode" >
+    <page-header [breadcrumb]="breadcrumb" [action]="action">
+        <ng-template #breadcrumb>
+            <nz-breadcrumb>
+                <nz-breadcrumb-item>
+                    <a [routerLink]="['/']">Trang chủ</a>
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    <a [routerLink]="['/app-mongodb-replicaset']">VNPT DocumentDB for MongoDB</a>
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    Quản lý MongoDB: <b>{{ serviceCode }}</b>
+                </nz-breadcrumb-item>
+            </nz-breadcrumb>
+        </ng-template>
+
+      <!-- action -->
+      <ng-template #action >
+        <div class="alain-custom-action text-right">
+          <region-select-dropdown
+            [isDetail]=true
+            (valueChanged)="onRegionChange($event)"
+          ></region-select-dropdown>
+          <project-select-dropdown
+            [isDetail]=true
+            [regionId]="regionId"
+            (valueChanged)="onProjectChange($event)"
+          ></project-select-dropdown>
+        </div>
+      </ng-template>
+
+    </page-header>
+
+    <nz-tabset [nzSelectedIndex]="selectedIndex" (nzSelectedIndexChange)="setTransactionTabIndex($event)" nzSize="large">
+        <nz-tab nzTitle="Thông tin chung">
+            <ng-template nz-tab>
+                <one-portal-overview [serviceCode]="serviceCode"></one-portal-overview>
+            </ng-template>
+        </nz-tab>
+        <nz-tab nzTitle="Quản lý Database">
+            <ng-template nz-tab>
+                <one-portal-mngt-database [serviceCode]="serviceCode"></one-portal-mngt-database>
+            </ng-template>
+        </nz-tab>
+        <nz-tab nzTitle="Quản lý tài khoản">
+            <ng-template nz-tab>
+                <one-portal-user-role [serviceCode]="serviceCode"></one-portal-user-role>
+            </ng-template>
+
+        </nz-tab>
+        <!-- <nz-tab nzTitle="Back up">
+            <ng-template nz-tab>
+                <one-portal-backup [serviceCode]="serviceCode"></one-portal-backup>
+            </ng-template>
+        </nz-tab> -->
+        <nz-tab nzTitle="Ghi nhật ký">
+            <ng-template nz-tab>
+                <one-portal-logging [serviceCode]="serviceCode"></one-portal-logging>
+            </ng-template>
+
+        </nz-tab>
+        <nz-tab nzTitle="Giám sát">
+            Đang cập nhật ...
+        </nz-tab>
+
+    </nz-tabset>
+</ng-container>

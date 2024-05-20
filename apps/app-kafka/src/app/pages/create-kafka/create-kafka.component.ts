@@ -2,20 +2,24 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingService } from '@delon/abc/loading';
-import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { camelizeKeys } from 'humps';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize } from 'rxjs';
+import { EMPTY, catchError, finalize, map } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
-import { KafkaCreateReq } from 'src/app/core/models/kafka-create-req.model';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { JsonDataCreate, KafkaCreateOrder, KafkaCreateReq, RegionResource } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
 import { OfferKafka } from 'src/app/core/models/offer.model';
 import { Order, OrderItem } from 'src/app/core/models/order.model';
 import { ProjectModel } from 'src/app/core/models/project.model';
 import { RegionModel } from 'src/app/core/models/region.model';
 import { ServicePack } from 'src/app/core/models/service-pack.model';
+import { FormSearchNetwork, FormSearchSubnet, NetWorkModel, Subnet } from 'src/app/core/models/vlan.model';
 import { KafkaService } from 'src/app/services/kafka.service';
+import { VlanService } from 'src/app/services/vlan.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,6 +69,10 @@ export class CreateKafkaComponent implements OnInit {
 
   regionId: number;
   projectId: number;
+  cloudProfileId: string;
+  vlanId: number;
+  listOfVPCNetworks: NetWorkModel[];
+  listOfSubnets: Subnet[];
 
   isVisibleCancle = false;
   listOfferKafka: OfferKafka[] = [];
@@ -75,8 +83,12 @@ export class CreateKafkaComponent implements OnInit {
     private loadingSrv: LoadingService,
     private kafkaService: KafkaService,
     private notification: NzNotificationService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private vlanService: VlanService,
   ) {
+    this.listOfVPCNetworks = [];
+    this.listOfSubnets = [];
   }
 
   ngOnInit(): void {
@@ -93,18 +105,23 @@ export class CreateKafkaComponent implements OnInit {
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
       version: [null],
       description: [null, [Validators.maxLength(500)]],
-      vCpu: [null, [Validators.required, Validators.pattern("^[0-9]*$"), Validators.min(1), Validators.max(16)]],
+      vCpu: [null, [Validators.required, Validators.pattern("^[0-9]*$"), Validators.min(1), Validators.max(32)]],
       ram: [null, [Validators.required, Validators.pattern("^[0-9]*$"), Validators.min(1), Validators.max(64)]],
       storage: [null, [Validators.required, Validators.min(1), Validators.max(2000), Validators.pattern("^[0-9]*$")]],
       broker: [3, [Validators.required]],
-      usageTime: [1, [Validators.required]],
+      usageTime: [1, [Validators.required, Validators.min(1), Validators.max(100)]],
       configType: [0, [Validators.required]],
       numPartitions: [3],
       defaultReplicationFactor: [3],
       minInsyncReplicas: [2],
       offsetTopicReplicationFactor: [3],
       logRetentionHours: [168],
-      logSegmentBytes: [1073741824]
+      logSegmentBytes: [1073741824],
+      vpcNetwork: [null, [Validators.required]],
+      subnet: [null, [Validators.required]],
+      subnetId: [null, [Validators.required]],
+      subnetCloudId: [null, [Validators.required]],
+
     });
 
     this.myform.controls.broker.disable();
@@ -161,7 +178,7 @@ export class CreateKafkaComponent implements OnInit {
           offer.characteristicValues.forEach(item => {
             const characteristic = characteristicMap[item.charName];
             if (characteristic) {
-              offerKafka[characteristic] = Number.parseInt(item.charOptionValues[0]);
+              offerKafka[characteristic] = Number.parseInt(item.charOptionValues[0]) / 3;
             }
           });
           this.listOfferKafka.push(offerKafka);
@@ -173,16 +190,33 @@ export class CreateKafkaComponent implements OnInit {
     )
   }
 
-  onChangeCpu(event: number) {
+  onChangeCpu(event) {
     this.cpu = event;  
   }
 
-  onChangeRam(event: number) {
+  onChangeRam(event) {
     this.ram = event;
   }
 
-  onChangeStorage(event: number) {
+  onChangeStorage(event) {
     this.storage = event;
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
   }
 
   getListVersion() {
@@ -196,6 +230,87 @@ export class CreateKafkaComponent implements OnInit {
       )
   }
 
+  vlanCloudId: string;
+  formSearchSubnet: FormSearchSubnet = new FormSearchSubnet();
+  onSelectedVlan(vlanId: number) {
+    this.vlanId = vlanId;
+    if (this.vlanId) {
+      // this.getSubnetByVlanNetwork();
+      const vlan = this.listOfVPCNetworks.find(item => item.id == vlanId);
+      this.vlanCloudId = vlan.cloudId;
+
+      this.formSearchSubnet.pageSize = 1000;
+      this.formSearchSubnet.pageNumber = 0;
+      this.formSearchSubnet.networkId = this.vlanId;
+      this.formSearchSubnet.region = this.regionId;
+      this.formSearchSubnet.vpcId = this.projectId;
+      this.formSearchSubnet.customerId = this.tokenService.get()?.userId;
+
+      this.vlanService.getListSubnet(this.formSearchSubnet)
+      .subscribe((r) => {
+        if (r && r.records) {
+          this.listOfSubnets = r.records;
+        }
+      })
+
+      // clear subnet
+      this.myform.get('subnet').setValue(null);
+    }
+  }
+
+  formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+  getVlanNetwork(projectId: number) {
+    this.formSearchNetwork.projectId = projectId;
+    this.formSearchNetwork.pageSize = 1000;
+    this.formSearchNetwork.pageNumber = 0;
+    this.formSearchNetwork.region = this.regionId;
+
+    if (projectId && this.regionId) {
+      this.vlanService.getVlanNetworks(this.formSearchNetwork)
+      .subscribe((r) => {
+        if (r && r.records) {
+          this.listOfVPCNetworks = r.records;
+        }
+      });
+    }
+  }
+
+  refreshVPCNetwork() {
+    this.getVlanNetwork(this.projectId);
+  }
+
+  refreshSubnet() {
+    this.getSubnetByVlanNetwork();
+  }
+
+  getSubnetByVlanNetwork() {
+    this.formSearchSubnet.pageSize = 1000;
+    this.formSearchSubnet.pageNumber = 0;
+    this.formSearchSubnet.networkId = this.vlanId;
+    this.formSearchSubnet.region = this.regionId;
+    this.formSearchSubnet.vpcId = this.projectId;
+    this.formSearchSubnet.customerId = this.tokenService.get()?.userId;
+
+    this.vlanService.getListSubnet(this.formSearchSubnet).pipe(
+      map(r => r.records),
+      catchError(response => {
+        console.error("fail to get list subnet: {}", response);
+        return EMPTY;
+      })
+    )
+    .subscribe((data: any) => {
+      this.listOfSubnets = data;
+    });
+  }
+
+  onSelectSubnet(subnetId: number) {
+    const subnet = this.listOfSubnets.find(item => item.id == subnetId);
+    if (subnet != null) {
+      this.myform.get('subnetId').setValue(subnetId);
+      this.myform.get('subnetCloudId').setValue(subnet.subnetCloudId);
+    }
+  }
+
   // catch event region change and reload data
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
@@ -204,27 +319,52 @@ export class CreateKafkaComponent implements OnInit {
 
   onProjectChange(project: ProjectModel) {
     this.projectId = project.id;
+    this.getVlanNetwork(this.projectId);
   }
 
   onSubmitPayment() {
 
-    const kafka = this.myform.getRawValue();
+    const jsonData = new JsonDataCreate();
+    const kafkaSpec = new KafkaCreateOrder();
+
     const data: Order = new Order();
     const userId = this.tokenService.get()?.userId;
     data.customerId = userId;
     data.createdByUserId = userId;
     data.orderItems = [];
-    kafka.offerId = this.chooseitem != null ? this.chooseitem.id : 0;
-    kafka.regionId = this.regionId;
-    kafka.projectId = this.projectId;
-    kafka.vpcId = this.projectId;
-    kafka.offerName = this.chooseitem != null ? this.chooseitem.offerName : '';
+
+    jsonData.version = this.myform.controls['version'].value;
+    jsonData.description = this.myform.controls['description'].value;
+    jsonData.numPartitions = this.myform.controls['numPartitions'].value;
+    jsonData.defaultReplicationFactor = this.myform.controls['defaultReplicationFactor'].value;
+    jsonData.minInsyncReplicas = this.myform.controls['minInsyncReplicas'].value;
+    jsonData.offsetTopicReplicationFactor = this.myform.controls['offsetTopicReplicationFactor'].value;
+    jsonData.logRetentionHours = this.myform.controls['logRetentionHours'].value;
+    jsonData.logSegmentBytes = this.myform.controls['logSegmentBytes'].value;
+    jsonData.subnetId = this.myform.controls['subnetId'].value;
+    jsonData.subnetCloudId = this.myform.controls['subnetCloudId'].value;
+    jsonData.networkId = this.vlanId;
+
+    kafkaSpec.serviceName = this.myform.controls['serviceName'].value;
+    kafkaSpec.vCpu = this.myform.controls['vCpu'].value;
+    kafkaSpec.ram = this.myform.controls['ram'].value;
+    kafkaSpec.storage = this.myform.controls['storage'].value;
+    kafkaSpec.broker = this.myform.controls['broker'].value;
+    kafkaSpec.usageTime = this.myform.controls['usageTime'].value;
+    kafkaSpec.offerId = this.chooseitem != null ? this.chooseitem.id : 0;
+    kafkaSpec.offerName = this.chooseitem != null ? this.chooseitem.offerName : '';
+    kafkaSpec.jsonData = JSON.stringify(jsonData);
+    kafkaSpec.regionId = this.regionId;
+    kafkaSpec.projectId = this.projectId;
+    kafkaSpec.vpcId = this.projectId;
+    kafkaSpec.createDate = this.createDate.toISOString().substring(0, 19);
+    kafkaSpec.expireDate = this.expiryDate.toISOString().substring(0, 19);
 
     const orderItem: OrderItem = new OrderItem();
     orderItem.price = (this.unitPrice.cpu * this.cpu + this.unitPrice.ram * this.ram + this.unitPrice.storage * this.storage) * this.usageTime;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = AppConstants.KAKFA_CREATE_TYPE;
-    orderItem.specification = JSON.stringify(kafka);
+    orderItem.specification = JSON.stringify(kafkaSpec);
     orderItem.serviceDuration = this.usageTime;
 
     data.orderItems = [...data.orderItems, orderItem];
@@ -233,6 +373,36 @@ export class CreateKafkaComponent implements OnInit {
 
     this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
     // this.createKafkaService();
+  }
+
+  checkRegionResource() {
+    const regionResource = new RegionResource();
+    regionResource.regionId = this.regionId.toString();
+    regionResource.vpcId = this.projectId;
+    regionResource.cpu = this.myform.controls['vCpu'].value * 3;
+    regionResource.ram = this.myform.controls['ram'].value * 3;
+    regionResource.storage = this.myform.controls['storage'].value * 3;
+
+    this.kafkaService.checkRegionResource(regionResource)
+    .subscribe((data) => {
+      if (data && data.code == 200) {
+        this.onSubmitPayment();
+      } else {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
+      }
+    })
+  }
+
+  checkExistedService() {
+    const serviceName = this.myform.controls['serviceName'].value;
+    this.kafkaService.checkExistedService(serviceName, this.regionId, this.projectId)
+    .subscribe((data) => {
+      if (data && data.code == 200) {
+        this.checkRegionResource();
+      } else {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Dịch vụ đã tồn tại');
+      }
+    })
   }
 
   createKafkaService() {
@@ -282,7 +452,9 @@ export class CreateKafkaComponent implements OnInit {
       if (minInsync.value > replicationFactor.value) {
         replicationFactor.setErrors({'invalidvalue': true})
       } else {
-        minInsync.setErrors(null);
+        if (minInsync.hasError('invalidvalue')) {
+          minInsync.setErrors(null);
+        }
       }
     }
   }
@@ -294,7 +466,9 @@ export class CreateKafkaComponent implements OnInit {
       if (minInsync.value > replicationFactor.value) {
         minInsync.setErrors({'invalidvalue': true})
       } else {
-        replicationFactor.setErrors(null);
+        if (replicationFactor.hasError('invalidvalue')) {
+          replicationFactor.setErrors(null);
+        }
       }
     }
   }
@@ -386,9 +560,11 @@ export class CreateKafkaComponent implements OnInit {
   }
 
   setExpiryDate() {
-    const d = new Date();
-    d.setMonth(this.createDate.getMonth() + this.usageTime);
-    this.expiryDate = new Date(d.getTime());
+    // const d = new Date();
+    // d.setMonth(this.createDate.getMonth() + this.usageTime);
+    // this.expiryDate = new Date(d.getTime());
+    
+    this.expiryDate = new Date(this.createDate.getTime() + (this.usageTime * 30 * 24 * 60 * 60 * 1000));
   }
 
 }

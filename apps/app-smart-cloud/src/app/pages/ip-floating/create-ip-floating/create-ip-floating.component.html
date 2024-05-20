@@ -1,7 +1,7 @@
 <button nz-button nzType="primary" nzSize="large" (click)="showModalCreateIpFloating()">
   <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
-  <span *ngIf="projectType === 1" class="button-text-primary">{{'app.ip.floating21' | i18n}}</span>
-  <span *ngIf="projectType === 0" class="button-text-primary">{{'app.ip.floating22' | i18n}}</span>
+  <span *ngIf="projectType === 1" class="button-text-primary">{{'ip.floating.label.add' | i18n}}</span>
+  <span *ngIf="projectType === 0" class="button-text-primary">{{'ip.floating.label.create' | i18n}}</span>
 </button>
 <nz-modal [(nzVisible)]="isVisible"
           nzCentered
@@ -41,7 +41,7 @@
       </nz-form-item>
       <nz-form-item nzAlign="bottom" nzJustify="center">
         <nz-space nzSize="middle">
-          <button *nzSpaceItem nz-button nzType="default" (click)="handleCancel()" class="button-back">Quay lại</button>
+          <button *nzSpaceItem nz-button nzType="default" (click)="handleCancel()" class="button-back">{{'app.order-detail.back' | i18n}}</button>
           <nz-form-control *nzSpaceItem>
             <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new" [disabled]="!validateForm.valid">Tạo mới</button>
           </nz-form-control>

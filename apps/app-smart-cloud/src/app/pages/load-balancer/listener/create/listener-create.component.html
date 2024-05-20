@@ -3,16 +3,16 @@
     <nz-breadcrumb>
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{
-          'app.breadcrumb.home' | i18n
-        }}</a>
+            'app.breadcrumb.home' | i18n
+          }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/load-balancer/list']">Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="[]">{{
-          'app.listener.create' | i18n
-        }}</a>
+            'app.listener.create' | i18n
+          }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -20,7 +20,8 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="onRegionChange($event)" isDetail="true"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)" isDetail="true"></project-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)"
+                               isDetail="true"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -54,7 +55,7 @@
       <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.listener.info' | i18n }}</div>
       <nz-form-item>
         <nz-form-label>
-          <span>{{ 'app.load.balancer.name' | i18n }} (<span style="color: red;">*</span>) </span>
+          <span>{{ 'app.listener.name' | i18n }} (<span style="color: red;">*</span>) </span>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input nz-input
@@ -63,11 +64,8 @@
                  [placeholder]="'app.input.name' | i18n " [maxLength]="50" />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}
-            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
-            <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n : { name: 'Listener' } }}
-            </ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -77,9 +75,13 @@
           <nz-form-item>
             <nz-form-label>
               <span>{{ 'app.protocol' | i18n }} (<span style="color: red;">*</span>) </span>
+              <img style="margin-left: 10px"
+                   nz-tooltip="Giao thức được Listener phục vụ. Nếu lựa chọn giao thức bảo mật TERMINATED_HTTPS (HTTPS) thì người dùng cần cai đặt chứng chỉ SSL để sử dụng."
+                   src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
-              <nz-radio-group [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}" nzSize="large">
+              <nz-radio-group [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}"
+                              (ngModelChange)="changeProtocolListener($event)" nzSize="large">
                 <label nz-radio nzValue="HTTP">HTTP</label>
                 <label nz-radio nzValue="TCP">TCP</label>
                 <label nz-radio nzValue="TERMINATED_HTTPS">TERMINATED_HTTPS</label>
@@ -91,10 +93,13 @@
           <nz-form-item>
             <nz-form-label>
               <span>Port (<span style="color: red;">*</span>) </span>
+              <img style="margin-left: 10px"
+                   nz-tooltip="Port được Listeners phục vụ. Port là số nguyên bất kì từ 1-65535. Một số port phổ biến cho các giao thức tương ứng có thể xem xét để lựa chọn như 80 (HTTP, TCP), 443 (HTTPs)"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
-              <nz-input-number formControlName="port" [nzMin]="0" [nzStep]="1" nzSize="large"
-                               style="margin-left: -2px;"></nz-input-number>
+              <nz-input-number formControlName="port" [nzMin]="1" [nzMax]="65535" [nzStep]="1" nzSize="large"
+                               style="margin-left: -2px;" (keydown)="checkPossiblePress($event)"></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </nz-col>
@@ -105,32 +110,42 @@
           <nz-form-item>
             <nz-form-label>
               <span>Client timeout (ms)</span>
+              <img style="margin-left: 10px"
+                   nz-tooltip="Thời gian (tính bằng mili giây để client phản hồi ít nhất một bản tin về cho Listener. Sau thời gian này, listener sẽ đóng kết nối hiện có. Giá trị mặc định là 50000"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-input-number style="margin-left: -2px;width: 90%" formControlName="timeout" [nzMin]="0" nzSize="large"
-                               [nzStep]="1"></nz-input-number>
+                               [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </nz-col>
         <nz-col nzSpan="6">
           <nz-form-item>
             <nz-form-label>
-              <span>Member</span>
+              <span>Member timeout (ms)</span>
+              <img style="margin-left: 10px"
+                   nz-tooltip="Thời gian tính bằng mili giây Backend server (member) phải phản hồi ít nhất một bản tin về cho listener. Sau thời gian này listener sẽ đóng kết nối hiện có giữa member và listener. Mặc định là 50000"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-input-number style="margin-left: -2px;width: 90%" formControlName="member" [nzMin]="0" nzSize="large"
-                               [nzStep]="1"></nz-input-number>
+                               [nzStep]="1"(keydown)="checkPossiblePress($event)"></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </nz-col>
         <nz-col nzSpan="6">
           <nz-form-item>
             <nz-form-label>
-              <span>Connection</span>
+              <span>Member connection timeout (ms)</span>
+              <img style="margin-left: 10px"
+                   nz-tooltip="Thời gian(ms) Listener chờ Backend server(member) phản hồi cho 1 gói tin. Sau thời gian này listener sẽ drop bản tin đã bị timeout đó. Giá trị mặc định là 5000."
+                   src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
-              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="connection" [nzMin]="0" nzSize="large"
-                               [nzStep]="1"></nz-input-number>
+              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="connection" [nzMin]="0"
+                               nzSize="large"
+                               [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </nz-col>
@@ -138,26 +153,54 @@
           <nz-form-item>
             <nz-form-label>
               <span>Allowed CIDRs (<span style="color: red;">*</span>) </span>
+              <img style="margin-left: 10px"
+                   nz-tooltip="Cấu hình Block IP dạng CIDRs mà Listener chấp nhận xử lý. Có thể sử dụng để loại bỏ các request từ các nguồn không mong muốn"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <input nz-input
                      class="input-custom"
                      formControlName="allowCIRR"
-                     [placeholder]="" [maxLength]="50" />
+                     [placeholder]="'0.0.0.0/0'" [maxLength]="50" />
               <!--              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="" [nzMin]="0"-->
               <!--                               [nzStep]="1"></nz-input-number>-->
             </nz-form-control>
           </nz-form-item>
         </nz-col>
       </nz-row>
+      <nz-form-item *ngIf="protocolListener == 'TERMINATED_HTTPS'">
+        <nz-form-label>
+          <span>SSL Cert (<span style="color: red;">*</span>) </span>
+          <img style="margin-left: 10px"
+               nz-tooltip="" alt="" />
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips>
+          <div *ngIf="listCert == null || listCert.length <= 0">
+            <div class="text-label">Bạn chưa có Cert?</div>
+            <a class="text-label" style="color: #0D67B1" [routerLink]="['/app-smart-cloud/object-storage/bucket']">Click để tạo mới</a>
+          </div>
+          <div *ngIf="listCert != null && listCert.length > 0">
+            <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
+                       style="width: 100%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
+                       nzPlaceHolder="--Chọn SSL Cert--"
+                       [(ngModel)]="certId" [ngModelOptions]="{ standalone: true }">
+              <nz-option *ngFor="let i of listCert" [nzLabel]="i.name"
+                         [nzValue]="i.secret_ref" />
+            </nz-select>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-row>
 
+      </nz-row>
 
       <nz-form-item>
         <nz-form-label>
-          <span>{{'app.service.description' | i18n}}</span>
+          <span>{{ 'app.service.description' | i18n }}</span>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-          <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" [placeholder]="'app.input.des' | i18n" style="width: 100%"
+          <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" [placeholder]="'app.input.des' | i18n"
+                    style="width: 100%"
                     formControlName="description"></textarea>
         </nz-form-control>
       </nz-form-item>
@@ -165,10 +208,14 @@
       <div class="text-right"
            style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">
         <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"
-                style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
+                style="border-color: #0066B3;background-color: white;"><span
+          style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
         </button>
-        <button [disabled]="checkDisable() == true" nzSize="large" (click)="nextStep()" nz-button nzType="primary"
-                style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
+        <button
+          [disabled]="validateForm.controls['port'].invalid || validateForm.controls['allowCIRR'].invalid || validateForm.controls['listenerName'].invalid
+|| (protocolListener == 'TERMINATED_HTTPS' && (certId == null || certId == ''))"
+          nzSize="large" (click)="nextStep()" nz-button nzType="primary"
+          style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
         </button>
       </div>
     </nz-card>
@@ -181,17 +228,26 @@
           <nz-form-label>
             <span>{{ 'app.pool.name' | i18n }} (<span style="color: red;">*</span>) </span>
           </nz-form-label>
-          <nz-form-control nzDisableAutoTips>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input nz-input
                    class="input-custom"
                    formControlName="poolName"
                    [placeholder]="'validation.pool.name.pattern' | i18n"
                    [maxLength]="50" />
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}</ng-container>
+              <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>
             <span>{{ 'app.algorithm' | i18n }} (<span style="color: red;">*</span>) </span>
+            <img style="margin-left: 10px" nz-tooltip="Roud Robin: Là thuật toán lựa chọn các máy chủ theo trình tự. Load Blancer sẽ đi từ máy chủ đầu tiên đến cuối cùng và bắt đầu lại khi máy chủ thực hiện đến máy chủ cuối cùng.
+ Least Connection:  Các request sẽ được chuyển vào server có ít kết nối nhất trong hệ thống. Thuật toán này được coi như thuật toán động, do nó đếm số kết nối đang hoạt động của server
+ Source IP: Thuật toán này kết hợp địa chỉ IP nguồn và đích của client và server để tạo ra hash key duy nhất, key này được sử dụng để phân bổ client đến một server cụ thể, và nó có thể được tạo lại nếu session bị timeout hay ngắt kết nối do một lý do nào đó. Khi đó request của client vẫn được chuyển đến cùng một server mà nó đã sử dụng trước đố, để đảm bảo người dùng kết nối đến cùng server."
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <nz-select [(ngModel)]="selectedAlgorithm" nzSize="large" style="width: 100%"
@@ -203,10 +259,16 @@
         <nz-row>
           <nz-col nzSpan="10">
             <span class="text-label">Sticky Session (<span style="color: red;">*</span>) </span>
+            <img style="margin-left: 10px; margin-right: 10px;"
+                 nz-tooltip="Là phương pháp phân luồng của bản tin gửi về member. Các bản tin được đánh dấu chung 1 session sẽ được gửi chung về server. Nó liên quan tới phương pháp đánh dấu session"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
             <label nz-checkbox [(ngModel)]="checkedSession" [ngModelOptions]="{standalone: true}"></label>
           </nz-col>
           <nz-col nzSpan="14">
             <span class="text-label">{{ 'app.pool.session.method' | i18n }}</span>
+            <img style="margin-left: 10px; margin-right: 10px;"
+                 nz-tooltip="Phương pháp này để Load Balancer xác định gói tin nào thuộc Session nào. HTTT_COOKIE: Dựa vào cookies của gói tin HTTP"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
             <input nz-input style="width: 30%" disabled="true"
                    [ngModel]="sessionFix" [ngModelOptions]="{standalone: true}" />
           </nz-col>
@@ -219,12 +281,15 @@
           <nz-form-label>
             <span>{{ 'app.health.monitor.name' | i18n }} (<span style="color: red;">*</span>) </span>
           </nz-form-label>
-          <nz-form-control nzDisableAutoTips>
-            <input nz-input
-                   class="input-custom"
-                   formControlName="healthName"
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+            <input nz-input class="input-custom" formControlName="healthName"
                    [placeholder]="'validation.health.monitor.name.pattern' | i18n"
-                   [maxLength]="50" />
+                   [maxLength]="50"/>
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}</ng-container>
+              <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
 
@@ -233,6 +298,9 @@
             <nz-form-item>
               <nz-form-label>
                 <span>{{ 'app.health.monitor.method' | i18n }} (<span style="color: red;">*</span>) </span>
+                <img style="margin-left: 10px"
+                     nz-tooltip="Là phương pháp health check monitor sử dụng để đánh giá tình trạng hoạt động của member."
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
                 <nz-select [(ngModel)]="selectedCheckMethod" nzSize="large" style="width: 90%"
@@ -242,10 +310,13 @@
               </nz-form-control>
             </nz-form-item>
           </nz-col>
-          <nz-col nzSpan="12">
+          <nz-col *ngIf="selectedCheckMethod == 'HTTP'" nzSpan="12">
             <nz-form-item>
               <nz-form-label>
                 <span>HTTP Method (<span style="color: red;">*</span>) </span>
+                <img style="margin-left: 10px"
+                     nz-tooltip="Phương thức HTTP được sử dụng để thực hiện kiểm tra tình trạng của server"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
                 <nz-select [(ngModel)]="selectedHttpMethod" nzSize="large" style="width: 90%"
@@ -260,22 +331,30 @@
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label>
-                <span>Max Retries</span>
+                <span>Max Retries (sec)</span>
+                <img style="margin-left: 10px"
+                     nz-tooltip="Số lỗi kế nối được phép trước khi đánh dấu server là không hoạt động. Phải la một số từ 1 đến 10"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetries" [nzMin]="0" nzSize="large"
-                                 [nzStep]="1"></nz-input-number>
+                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetries" [nzMin]="0"
+                                 nzSize="large"
+                                 [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label>
-                <span>Max Retries Down</span>
+                <span>Max Retries Down (sec)</span>
+                <img style="margin-left: 10px"
+                     nz-tooltip="Số kết nối được phép lỗi tối thiểu trước khi xác định là server xảy ra lỗi. Phải là một số từ 1 đến 10. Giá trị mặc định là 3"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetriesDown" [nzMin]="0" nzSize="large"
-                                 [nzStep]="1"></nz-input-number>
+                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetriesDown" [nzMin]="0"
+                                 nzSize="large"
+                                 [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
@@ -284,55 +363,71 @@
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label>
-                <span>Delay</span>
+                <span>Delay (sec)</span>
+                <img style="margin-left: 10px"
+                     nz-tooltip="Khoảng thời gian giữa các lần kiểm tra tình trạng của mỗi server và phải lớn hơn bằng thời gian Timeout"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
                 <nz-input-number style="margin-left: -2px;width: 90%" formControlName="delay" [nzMin]="0" nzSize="large"
-                                 [nzStep]="1"></nz-input-number>
+                                 [nzStep]="1"(keydown)="checkPossiblePress($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label>
-                <span>Timeout</span>
+                <span>Timeout (sec)</span>
+                <img style="margin-left: 10px"
+                     nz-tooltip="Thời gian sau khi kiểm tra trạng thái của mỗi server. Giá trị phải lớn hơn hoặc bằng 0 và nhỏ hơn hoặc bằng thời gian Delay"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="timeoutHealth" [nzMin]="0" nzSize="large"
-                                 [nzStep]="1"></nz-input-number>
+                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="timeoutHealth" [nzMin]="0"
+                                 nzSize="large"
+                                 [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
         </nz-row>
-        <nz-form-item>
+        <nz-form-item *ngIf="selectedCheckMethod == 'HTTP'">
           <nz-form-label>
             <span>Path (<span style="color: red;">*</span>) </span>
+            <img style="margin-left: 10px"
+                 nz-tooltip="Đường dẫn chỉ định để kiểm tra tình trạng server trong trường hợp phương pháp kiểm tra là HTTP"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <input nz-input
                    class="input-custom"
                    formControlName="path"
-                   [placeholder]="'Nhập path'" [maxLength]="50" />
+                   [placeholder]="'Nhập path'" [maxLength]="50"/>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item>
+        <nz-form-item *ngIf="selectedCheckMethod == 'HTTP'">
           <nz-form-label>
             <span>Success code (<span style="color: red;">*</span>) </span>
+            <img style="margin-left: 10px"
+                 nz-tooltip="Mã trạng thái HTTP/HTTPS dự kiến sẽ nhận được từ việc kiểm tra tình trạng thành công"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <input nz-input
                    class="input-custom"
                    formControlName="sucessCode"
-                   [placeholder]="'Nhập sucessCode'" [maxLength]="50" />
+                   [placeholder]="'Nhập sucessCode'" [maxLength]="50" (keydown)="checkPossiblePress($event)"/>
           </nz-form-control>
         </nz-form-item>
         <div class="text-right"
              style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">
           <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"
-                  style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">Quay lại</span>
+                  style="border-color: #0066B3;background-color: white;"><span
+            style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
           </button>
-          <button [disabled]="checkDisable() == true" nzSize="large" (click)="nextStep()" nz-button nzType="primary"
-                  style="border: none;margin-left: 30px;">Tiếp tục
+          <button [disabled]="validateForm.controls['poolName'].invalid || validateForm.controls['healthName'].invalid
+          || (selectedCheckMethod == 'HTTP' && (validateForm.controls['path'].invalid || validateForm.controls['sucessCode'].invalid))" nzSize="large"
+                  (click)="nextStep()" nz-button nzType="primary"
+                  style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
           </button>
         </div>
       </nz-card>
@@ -340,64 +435,68 @@
 
     <!--CARD POOL NUMBER-->
     <nz-card *ngIf="step == 2">
-      <div class="text-label" style="font-weight: bold;margin-bottom: 10px;">{{ 'app.chosen.instance.as.member' | i18n }}</div>
+      <div class="text-label"
+           style="font-weight: bold;margin-bottom: 10px;">{{ 'app.chosen.instance.as.member' | i18n }}
+      </div>
       <nz-table [nzData]="lstInstanceUse" [nzShowPagination]="false">
         <thead>
         <tr>
           <th>{{ 'app.vm.name' | i18n }}</th>
-          <th>IP Adress</th>
+          <th>IP Address</th>
           <th>Port</th>
           <th>Weight</th>
           <th>Backup</th>
           <th>{{ 'app.activity' | i18n }}</th>
-          <th  width="10%">{{ 'app.text.operation' | i18n }}</th>
+          <th width="10%">{{ 'app.text.operation' | i18n }}</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let item of lstInstanceUse">
-          <td>{{ item.name }}</td>
-          <td>{{ item.ipPrivate }}</td>
+          <td>{{ item.Name }}</td>
+          <td>{{ item.IpAddress }}</td>
           <td>
-            <nz-input-number [ngModel]="item.port" [nzMin]="0" [nzStep]="1" nzSize="large"
-                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}"></nz-input-number>
+            <nz-input-number [(ngModel)]="item.Port" [nzMin]="1" [nzMax]="65535" [nzStep]="1" nzSize="large"
+                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}" (keydown)="checkPossiblePress($event)" (ngModelChange)="checkDuplicatePortWeight()"></nz-input-number>
           </td>
           <td>
-            <nz-input-number [ngModel]="item.weight" [nzMin]="0" [nzStep]="1" nzSize="large"
-                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}"></nz-input-number>
+            <nz-input-number [(ngModel)]="item.Weight" [nzMin]="0" [nzMax]="256" [nzStep]="1" nzSize="large"
+                             style="margin-left: -2px;" [ngModelOptions]="{standalone: true}" (keydown)="checkPossiblePress($event)" (ngModelChange)="checkDuplicatePortWeight()"></nz-input-number>
           </td>
           <td>
-            <label nz-checkbox [(ngModel)]="item.backup" [ngModelOptions]="{standalone: true}"></label>
+            <label nz-checkbox [(ngModel)]="item.Backup" [ngModelOptions]="{standalone: true}"></label>
           </td>
-          <td>{{ item.status == 'KHOITAO' && item.taskState == 'ACTIVE' ? 'Online' : 'Offline'}}</td>
+          <td>{{ item.status == 'KHOITAO' && item.taskState == 'ACTIVE' ? 'Online' : 'Offline' }}</td>
           <td>
             <span style="color: #0066B3"
                   nz-tooltip
                   nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
                   nz-icon nzType="delete" nzTheme="outline"
-                  (click)="removeInstance(item.id,0)"></span>
+                  (click)="removeInstance(item.IpAddress, item.order,0)"></span>
           </td>
         </tr>
         </tbody>
       </nz-table>
-      <div class="text-label" style="margin-top: 30px;font-weight: bold;margin-bottom: 10px;">{{ 'app.instance.for.choosing' | i18n }}</div>
-      <nz-table [nzData]="lstInstance" [nzShowPagination]="false">
+      <div class="text-label"
+           style="margin-top: 30px;font-weight: bold;margin-bottom: 10px;">{{ 'app.instance.for.choosing' | i18n }}
+      </div>
+      <nz-table [nzData]="lstInstance" [nzShowPagination]="false"m   >
         <thead>
         <tr>
           <th>{{ 'app.vm.name' | i18n }}</th>
-          <th>IP Adress</th>
+          <th>IP Address</th>
           <th width="10%">{{ 'app.text.operation' | i18n }}</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let item of lstInstance">
-          <td>{{ item.name }}</td>
-          <td>{{ item.ipPrivate }}</td>
+          <td>{{ item.Name }}</td>
+          <td>{{ item.IpAddress }}</td>
           <td>
             <span style="color: #0066B3"
                   nz-tooltip
-                  nzTooltipTitle="Thêm" nzTooltipPlacement="bottom"
+                  [nzTooltipTitle]="'menu.more' | i18n" nzTooltipPlacement="bottom"
                   nz-icon nzType="plus" nzTheme="outline"
-                  (click)="removeInstance(item.id,1)"></span>
+                  (click)="removeInstance(item.IpAddress, item.order,1)"></span>
           </td>
         </tr>
         </tbody>
@@ -405,10 +504,11 @@
       <div class="text-right"
            style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">
         <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"
-                style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">Quay lại</span>
+                style="border-color: #0066B3;background-color: white;"><span
+          style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
         </button>
-        <button [disabled]="checkDisable() == true" nzSize="large" (click)="nextStep()" nz-button nzType="primary"
-                style="border: none;margin-left: 30px;">Tiếp tục
+        <button nzSize="large" (click)="nextStep()" nz-button nzType="primary" [disabled]="disableMember"
+                style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
         </button>
       </div>
     </nz-card>
@@ -417,61 +517,88 @@
     <div *ngIf="step == 3">
       <nz-row nzGutter="24" class="card-container">
         <nz-col nzSpan="8">
-          <nz-card style="height: 200px;">
+          <nz-card style="height: 230px;">
             <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.listener.info' | i18n }}</div>
             <nz-row>
-              <nz-col nzSpan="9" class="text-label">aaa</nz-col>
-              <nz-col nzSpan="15" class="text-label">aaa</nz-col>
+              <nz-col nzSpan="9" class="text-label">Tên Listeners</nz-col>
+              <nz-col nzSpan="15" class="text-label">{{ validateForm.controls['listenerName'].value }}</nz-col>
             </nz-row>
             <nz-row>
-              <nz-col nzSpan="9" class="text-label">aaa</nz-col>
-              <nz-col nzSpan="15" class="text-label">aaa</nz-col>
+              <nz-col nzSpan="9" class="text-label">Giao thức</nz-col>
+              <nz-col nzSpan="15" class="text-label">{{ protocolListener }}</nz-col>
             </nz-row>
           </nz-card>
         </nz-col>
         <nz-col nzSpan="8">
-          <nz-card style="height: 200px;">
+          <nz-card style="height: 230px;">
             <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.health.monitor.info' | i18n }}</div>
             <nz-row>
-              <nz-col nzSpan="9" class="text-label">aaa</nz-col>
-              <nz-col nzSpan="15" class="text-label">aaa</nz-col>
+              <nz-col nzSpan="9" class="text-label">Type</nz-col>
+              <nz-col nzSpan="15" class="text-label">{{ selectedHttpMethod }}</nz-col>
             </nz-row>
             <nz-row>
-              <nz-col nzSpan="9" class="text-label">aaa</nz-col>
-              <nz-col nzSpan="15" class="text-label">aaa</nz-col>
+              <nz-col nzSpan="9" class="text-label">Max retries</nz-col>
+              <nz-col nzSpan="15" class="text-label">{{ validateForm.controls['maxRetries'].value }}</nz-col>
             </nz-row>
             <nz-row>
-              <nz-col nzSpan="9" class="text-label">aaa</nz-col>
-              <nz-col nzSpan="15" class="text-label">aaa</nz-col>
+              <nz-col nzSpan="9" class="text-label">Max retries down</nz-col>
+              <nz-col nzSpan="15" class="text-label">{{ validateForm.controls['maxRetriesDown'].value }}</nz-col>
             </nz-row>
             <nz-row>
-              <nz-col nzSpan="9" class="text-label">aaa</nz-col>
-              <nz-col nzSpan="15" class="text-label">aaa</nz-col>
+              <nz-col nzSpan="9" class="text-label">Timeout</nz-col>
+              <nz-col nzSpan="15" class="text-label">{{ validateForm.controls['timeoutHealth'].value }}</nz-col>
+            </nz-row>
+            <nz-row>
+              <nz-col nzSpan="9" class="text-label">Delay</nz-col>
+              <nz-col nzSpan="15" class="text-label">{{ validateForm.controls['delay'].value }}</nz-col>
             </nz-row>
           </nz-card>
         </nz-col>
         <nz-col nzSpan="8">
-          <nz-card style="height: 200px;">
+          <nz-card style="height: 230px;">
             <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.pool.info' | i18n }}</div>
             <nz-row>
-              <nz-col nzSpan="9" class="text-label">aaa</nz-col>
-              <nz-col nzSpan="15" class="text-label">aaa</nz-col>
+              <nz-col nzSpan="9" class="text-label">Tên pool</nz-col>
+              <nz-col nzSpan="15" class="text-label">{{ validateForm.controls['poolName'].value }}</nz-col>
             </nz-row>
             <nz-row>
-              <nz-col nzSpan="9" class="text-label">aaa</nz-col>
-              <nz-col nzSpan="15" class="text-label">aaa</nz-col>
+              <nz-col nzSpan="9" class="text-label">Thuật toán</nz-col>
+              <nz-col nzSpan="15" class="text-label">{{ selectedAlgorithm }}</nz-col>
             </nz-row>
           </nz-card>
         </nz-col>
       </nz-row>
       <nz-card>
         <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.pool.member.info' | i18n }}</div>
-        <div class="text-right"
+        <nz-table [nzData]="lstInstanceUse" [nzShowPagination]="false">
+          <thead>
+          <tr>
+            <th>{{ 'app.vm.name' | i18n }}</th>
+            <th>IP Address</th>
+            <th>Port</th>
+            <th>Weight</th>
+            <th>Backup</th>
+            <th>{{ 'app.activity' | i18n }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of lstInstanceUse">
+            <td>{{ item.Name }}</td>
+            <td>{{ item.IpAddress }}</td>
+            <td>{{ item.Port }}</td>
+            <td>{{ item.Weight }}</td>
+            <td>{{ item.Backup }}</td>
+            <td>{{ item.status == 'KHOITAO' && item.taskState == 'ACTIVE' ? 'Online' : 'Offline' }}</td>
+          </tr>
+          </tbody>
+        </nz-table>
+        <div class="text-right "
              style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">
           <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"
-                  style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
+                  style="border-color: #0066B3;background-color: white;"><span
+            style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
           </button>
-          <button [disabled]="checkDisable() == true" nzSize="large" (click)="createListener()" nz-button
+          <button nzSize="large" (click)="createListener()" nz-button [nzLoading]="loading"
                   nzType="primary" style="border: none;margin-left: 30px;">{{ 'app.complete' | i18n }}
           </button>
         </div>

@@ -8,7 +8,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { finalize } from 'rxjs/operators';
 import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
-import { L7Policy, Pool } from '../../../../shared/models/load-balancer.model';
+import { L7Policy } from '../../../../shared/models/load-balancer.model';
 
 @Component({
   selector: 'one-portal-listener-detail',
@@ -55,10 +55,10 @@ export class ListenerDetailComponent implements OnInit {
   loadingPool = true;
   isLoading: boolean = false;
 
-  pageSize: number = 5
-  pageIndex: number = 1
+  pageSize: number = 5;
+  pageIndex: number = 1;
 
-  currentPageData: L7Policy[]
+  currentPageData: L7Policy[];
 
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
@@ -106,42 +106,59 @@ export class ListenerDetailComponent implements OnInit {
   }
 
   private getListL7Policy(id: string) {
-    this.isLoading = true
+    this.isLoading = true;
     this.loadBalancerService.getListL7Policy(this.regionId, this.projectId, id).subscribe(
       data => {
-        this.isLoading = false
+        this.isLoading = false;
         this.listL7 = data;
         const startIndex = (this.pageIndex - 1) * this.pageSize;
         const endIndex = this.pageIndex * this.pageSize;
 
         this.currentPageData = this.listL7.slice(startIndex, endIndex);
       }, error => {
-        this.isLoading = false
-        this.listL7 = null
-      })
-  }
-
-  onPageSizeChange(value) {
-    this.pageSize = value
-    this.getListL7Policy(this.idListener)
-  }
-
-  onPageIndexChange(value) {
-    this.pageIndex = value
-    this.getListL7Policy(this.idListener)
-  }
-
-  handleDeleteL7PolicyOk() {
-    setTimeout(() => {this.getListL7Policy(this.idListener)}, 2500)
-  }
-
-  private getPool(id: string) {
-    this.service.getPool(id, this.regionId).pipe(finalize(() => {
-        this.loadingPool = false;
-      })).subscribe(data => {
-        this.listPool = data.records;
+        this.isLoading = false;
+        this.listL7 = null;
       });
   }
 
+  onPageSizeChange(value) {
+    this.pageSize = value;
+    this.getListL7Policy(this.idListener);
+  }
+
+  onPageIndexChange(value) {
+    this.pageIndex = value;
+    this.getListL7Policy(this.idListener);
+  }
+
+  handleDeleteL7PolicyOk() {
+    setTimeout(() => {
+      this.getListL7Policy(this.idListener);
+    }, 2500);
+  }
+
+  private getPool(id: string) {
+    this.service.getPool(id, this.regionId, this.projectId).pipe(finalize(() => {
+      this.loadingPool = false;
+    })).subscribe(data => {
+      this.listPool = data.records;
+    });
+  }
+
+  handleEditOk() {
+    this.getData();
+  }
+
+  handleDeleteOk() {
+    this.getData();
+  }
+
   description: any;
+
+  navigateToDetail(id: any) {
+    this.router.navigate([
+      '/app-smart-cloud/load-balancer/pool-detail/' + id,
+      { idLB: this.idLb },
+    ]);
+  }
 }

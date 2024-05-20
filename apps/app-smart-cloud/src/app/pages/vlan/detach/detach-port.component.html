@@ -1,24 +1,24 @@
 <img src="assets/imgs/cancel.svg" style="height: 20px; cursor: pointer;"
      nz-popover
-     [nzPopoverContent]="'Gỡ'"
+     nzPopoverContent="{{ 'app.detach' | i18n }}"
      nzPopoverPlacement="bottom" disabled="true" (click)="showModalDetachPort()"/>
-<nz-modal [(nzVisible)]="isVisibleDetach" nzTitle="Gỡ Port"
+<nz-modal [(nzVisible)]="isVisibleDetach" nzTitle="{{ 'app.detach' | i18n }} Port"
           (nzOnCancel)="handleCancelDetachPort()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Gỡ Port</span>
+    <span class="text-modal-title">{{ 'app.detach' | i18n }} Port</span>
   </div>
   <div *nzModalContent>
-    <span>Quý khách có chắc chắn muốn gỡ Port khỏi máy ảo?</span>
+    <span class="text-label">{{ 'app.vlan.note70' | i18n }}</span>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancelDetachPort()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary"
             (click)="handleOkDetachPort()"
             [nzLoading]="isLoadingDetach"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

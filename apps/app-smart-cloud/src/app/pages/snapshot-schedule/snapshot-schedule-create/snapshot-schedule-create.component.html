@@ -46,7 +46,7 @@
   <div nz-row [nzGutter]="16">
     <div nz-col [nzSpan]="18" class="gutter-row">
   <nz-card [nzBordered]="false" style="border-radius: 8px">
-    
+
     <div style="margin-bottom: 20px" class="text-card-header">
       Thông tin lịch Snapshot
     </div>
@@ -54,7 +54,7 @@
       <nz-spin [nzSpinning]="isLoading" nzSize="large">
         <nz-form-item>
           <nz-form-label nzFor="name"
-            >Tên lịch Snapshot (<span class="text-red">*</span>)</nz-form-label
+            >{{ 'app.snapshot.schedule.name' | i18n }} (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input
@@ -84,7 +84,7 @@
             <nz-form-item>
               <nz-form-control nzErrorTip="Volumn không được để trống">
               <nz-form-label
-                >Chọn Volume (<span class="text-red">*</span>)</nz-form-label
+                >{{'schedule.backup.volume.select' | i18n}} (<span class="text-red">*</span>)</nz-form-label
               >
               <nz-select
                 nzSize="default"
@@ -107,7 +107,7 @@
 
           <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
             <nz-form-item>
-              <nz-form-label>Chế độ Snapshot</nz-form-label>
+              <nz-form-label>{{ 'app.snapshot.mode' | i18n }}</nz-form-label>
               <input
                 nz-input
                 disabled="true"
@@ -123,7 +123,7 @@
           <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
             <nz-form-item
               ><nz-form-label
-                >Chọn thời điểm thực hiện Snapshot (<span class="text-red">*</span
+                >{{ 'app.choose.perform.snapshot.time' | i18n }} (<span class="text-red">*</span
                 >)</nz-form-label
               >
               <nz-time-picker
@@ -152,7 +152,7 @@
           <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
             <nz-form-item
               ><nz-form-label
-                >Chọn ngày (<span class="text-red">*</span>)</nz-form-label
+                >{{ 'app.choose.day' | i18n }} (<span class="text-red">*</span>)</nz-form-label
               >
               <nz-select
                 nzSize="default"
@@ -173,7 +173,7 @@
           </nz-col>
           <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
             <nz-form-item
-              ><nz-form-label>Số bản Snapshot lưu trữ</nz-form-label>
+              ><nz-form-label>{{ 'app.number.of.snapshot.copy' | i18n }}</nz-form-label>
               <input
                 nz-input
                 disabled="true"
@@ -229,30 +229,30 @@
     <nz-card style="border-radius: 8px; border: 1px solid #B2DEFF">
       <h2 class="custom-title">Thông số cấu hình</h2>
       <div style="margin-bottom: 12px">
-        <h3 class="custom-subtitle">Tên lịch Snapshot</h3>
+        <h3 class="custom-subtitle">{{ 'app.snapshot.schedule.name' | i18n }}</h3>
         <span>{{form.value.name}}</span>
       </div>
       <div style="margin-bottom: 20px">
-        <h3 class="custom-subtitle">Thời điểm thực hiện Snapshot</h3>
+        <h3 class="custom-subtitle">{{ 'app.perform.snapshot.time' | i18n }}</h3>
         <span>{{ time | date : 'mediumTime' }}</span>
       </div>
       <div style="margin-bottom: 20px">
-        <h3 class="custom-subtitle">Chế độ Snapshot</h3>
+        <h3 class="custom-subtitle">{{ 'app.snapshot.mode' | i18n }}</h3>
         <span>
              Theo tuần
         </span>
       </div>
       <ng-container>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Số tuần thực hiện</h3>
+          <h3 class="custom-subtitle">{{ 'app.number.of.week.executed' | i18n }}</h3>
           <span>1 tuần</span>
         </div>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Ngày thực hiện</h3>
+          <h3 class="custom-subtitle">{{ 'app.execution.date' | i18n }}</h3>
           <span>{{ getDayLabel(form.value.selectedDate) }}</span>
         </div>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Số bản Snapshot lưu trữ</h3>
+          <h3 class="custom-subtitle">{{ 'app.number.of.snapshot.copy' | i18n }}</h3>
           <span>1</span>
         </div>
       </ng-container>

@@ -1,0 +1,116 @@
+<nz-content>
+  <nz-card>
+    <div class="mt-3">
+      <app-backup-list-header [parent-component]="'backup-list'"
+        (command)="handleCommand($event)"></app-backup-list-header>
+
+      <div class="mt-5">
+        <nz-table [nzData]="backupList" [nzFrontPagination]="false" nzShowSizeChanger [nzTotal]="total"
+          [nzPageIndex]="pageIndex" [nzPageSize]="pageSize" (nzPageIndexChange)="changePageIndex($event)"
+          (nzPageSizeChange)="changePageSize($event)">
+          <thead>
+            <tr>
+              <th nzAlign="center">STT</th>
+              <th>{{'schedule.backup.label.name' | i18n}}</th>
+              <th>Ngày tạo</th>
+              <th>Người tạo</th>
+              <th>Lịch kế tiếp</th>
+              <th nzAlign="center">Loại</th>
+              <th nzAlign="center">Trạng thái</th>
+              <th nzAlign="center">Tùy chọn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let backup of backupList; let i=index">
+              <td nzAlign="center">{{i + 1}}</td>
+              <td>{{backup.schedule_name}}</td>
+              <td>{{backup.created_date | date : 'HH:mm dd/MM/yyyy'}}</td>
+              <td>{{backup.created_name}}</td>
+              <td>{{backup.next_run_time | date : 'HH:mm dd/MM/yyyy'}}</td>
+              <td nzAlign="center">{{backup.type == '0' ? "Tự động" : "Thủ công"}}</td>
+              <td nzAlign="center">
+                <ng-container *ngIf="backup.status == 'Đang hoạt động', else status">
+                  <span nz-icon style="color: #009B4E;" nz-tooltip="Đang hoạt động">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3.25 10L9.75 17.5L20.75 6.5" stroke="#009B4E" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </ng-container>
+                <ng-template #status>
+                  <span nz-icon style="color: #EA3829;" nz-tooltip="Ngừng hoạt động">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 18L19 5" stroke="#EA3829" stroke-miterlimit="10" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                      <path d="M6 5L19 18" stroke="#EA3829" stroke-miterlimit="10" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+
+                  </span>
+                </ng-template>
+
+              </td>
+              <td nzAlign="center">
+                <div style="display: flex;vertical-align: middle;justify-content: center;">
+                  <span class="mg-right" nz-tooltip="Xem chi tiết"
+                    (click)="setSelectedBackup(backup); viewBackupDetail()">
+                    <img class="img" src="assets/imgs/info.svg" alt="" />
+                  </span>
+
+                  <span class="mg-right" *ngIf="backup.type == '0'" (click)="setSelectedBackup(backup); editBackup()"
+                    [nz-tooltip]="'Cập nhật'" nz-icon>
+                    <img class="img" src="assets/imgs/edit-2.svg" alt="" />
+                  </span>
+
+                  <ng-container *ngIf="backup.type == 'Tự động'">
+                    <button nz-button nzType="text" nz-tooltip
+                      nzTooltipTitle="{{backup.status_flag ? 'Tắt lịch' : 'Bật lịch'}}">
+                      <nz-switch (click)="setSelectedBackup(backup); confirmUpdateBackupStatus()"
+                        [(ngModel)]="backup.status_flag" [nzControl]="true" nzSize="default"></nz-switch>
+                    </button>
+                  </ng-container>
+
+                  <span class="mg-right" (click)="setSelectedBackup(backup); requestDelBackupSchedule()"
+                    [nz-tooltip]="'Xóa'" nz-icon>
+                    <img class="img" src="assets/imgs/trash.svg" alt="" />
+                  </span>
+
+                  <nz-switch nzSize="default" nz-tooltip
+                    (click)="setSelectedBackup(backup); confirmUpdateBackupStatus()"
+                    [nzTooltipTitle]="backup.status == 'Đang hoạt động' ? 'Ngừng kích hoạt' :'Kích hoạt'"
+                    [nzControl]="true" [ngModel]="backup.status == 'Đang hoạt động' ? true : false">
+                  </nz-switch>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+  </nz-card>
+</nz-content>
+<nz-drawer [nzVisible]="visibleInfor" [nzWidth]="'500px'" nzPlacement="right"
+  nzTitle="<h3><b>Chi tiết lịch backup </b></h3>" (nzOnClose)="closeInfor()">
+  <ng-container *nzDrawerContent>
+    <nz-descriptions class="size-16" nzBordered [nzColumn]="1">
+      <nz-descriptions-item nzTitle="{{'schedule.backup.label.name' | i18n}}">
+        {{selectedBackup.schedule_name }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Lịch backup kế tiếp">
+        {{selectedBackup.next_run_time | date : 'HH:mm dd/MM/yyyy'}}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Trạng thái">
+        {{selectedBackup.status }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Người tạo">
+        {{selectedBackup.created_name }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Số bản ghi giữ lại">
+        {{selectedBackup.backup_size}}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Thời hạn backup (h)">
+        {{selectedBackup.end_time | date : 'HH:mm dd/MM/yyyy'}}
+      </nz-descriptions-item>
+    </nz-descriptions>
+  </ng-container>
+</nz-drawer>

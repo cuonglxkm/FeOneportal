@@ -1,3 +1,4 @@
+@import '../../../../../assets/color.less';
 .body-form {
     border-radius: 8px;
     .left-content{
@@ -9,27 +10,28 @@
         margin: 12px 0;
     }
     .tr-selected{
-        background: #CCE9FF;
+        background: @blue-background;
         td {
             background: none !important;
-            color: #0066B3 !important;
+            color: @blue-text !important;
         }
     }
     .right-form {
         border-radius: 8px;
+        border: 1px solid @blue-border;
         .right-title {
             margin-bottom: 20px;
         }
 
         .right-form-content-month {
             margin-bottom: 10px;
-            border-top: 2px solid #f0f0f0;
+            border-top: 2px solid @white;
             padding-top: 10px;
         }
 
         .right-form-content-total {
             margin-bottom: 20px;
-            background-color: #cce9ff;
+            background-color: @blue-background;
             padding: 16px 0 16px 0;
             border-radius: 8px;
         }
@@ -39,23 +41,36 @@
 
 
 .vat-money {
-    color: #ea3829;
+    color: @red-money;
 }
 
 .month-money{
-    color: #0066b3;
+    color: @blue-text;
 }
 
 .disable-class {
     cursor: default;
-    background-color: #f0f0f3;
-    color: #989bb3;
+    background-color: @grey-background;
+    color: @grey-text;
     td {
         background: none !important;
-        color: #989bb3 !important;
+        color: @grey-text !important;
     }
 }
 
 .title-pading-left{
     padding-left: 0 !important;
+}
+
+.red-text {
+    color: @red-text;
+}
+
+.input-number-element {
+    margin-left: 0;
+}
+
+.ant-btn-primary[disabled] {
+    border-color: @reuse-tab-border-color;
+    background: @grey-3;
 }

@@ -1,0 +1,93 @@
+.filters {
+  display: inline-flex;
+  gap: 12px;
+  justify-content: flex-end;
+
+}
+::ng-deep .ng-affix {
+  justify-content: inline-flex;
+  position: fixed;
+}
+.w-10 {
+  width: 10%;
+}
+
+.w-100 {
+  width: 100%;
+  margin: 0 100px 0 0; 
+}
+.w-80{
+  width: 80%;
+  margin: 0 100px 0 0;  
+}
+.w-90{
+  width: 90%;
+  margin: 0 100px 0 0; 
+}
+
+nz-table#access-logs th {
+  background-color: #e2eefc;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+}
+
+.search-icon {
+  color: #989bb3;
+  display: flex;
+  font-size: 20px;
+  padding: 0.833px;
+  justify-content: center;
+  align-items: center;
+}
+
+.filters nz-input-group,
+::ng-deep .filters .ant-select-selector,
+.filters nz-range-picker {
+  border-radius: 8px !important;
+}
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  opacity: 0;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn2top {
+  height: fit-content;
+}
+
+.description-end {
+  text-align: center;
+  color: grey;
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.spin-style {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.show-scrollTop {
+  opacity: 1;
+  transition: all 0.2s ease-in-out;
+}
+
+.affix-bar {
+  background-color: #e2eefc;
+  padding: 16px;
+}
+
+.affix-header {
+  padding: 0px;
+}
+
+.affix-filter {
+  background-color: #fff;
+  padding: 16px 0;
+}

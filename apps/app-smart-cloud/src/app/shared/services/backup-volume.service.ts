@@ -40,6 +40,20 @@ export class BackupVolumeService extends BaseService {
     });
   }
 
+  //getAll
+  getListBackupVolume(regionId: number, projectId: number, status: string, volumeBackupName: string, pageSize: number, currentPage: number) {
+    let param = new HttpParams()
+    if(regionId != undefined || regionId != null) param = param.append('regionId', regionId)
+    if(projectId != undefined || projectId != null) param = param.append('projectId', projectId)
+    if(status != undefined || status != null) param = param.append('status', status)
+    if(volumeBackupName != undefined || volumeBackupName != null) param = param.append('volumeBackupName', volumeBackupName)
+    if(pageSize != undefined || pageSize != null) param = param.append('pageSize', pageSize)
+    if(currentPage != undefined || currentPage != null) param = param.append('currentPage', currentPage)
+    return this.http.get<BaseResponse<BackupVolume[]>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes', {
+      params: param
+    })
+  }
+
   //delete
   deleteVolume(id: any, userId: any) {
     return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions +

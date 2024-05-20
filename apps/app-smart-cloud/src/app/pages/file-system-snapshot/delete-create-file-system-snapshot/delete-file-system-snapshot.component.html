@@ -17,14 +17,14 @@
   (nzOnCancel)="handleCancel()"
 >
   <ng-template #modalTitle>
-    <span class="text-modal-title">Xác nhận xóa Snapshot + tên snapshot</span>
+    <span class="text-modal-title">{{ 'app.title.snapshot.delete' | i18n : { name: filesystemsnapshotName } }}</span>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form [formGroup]="validateForm" nzLayout="vertical" (ngSubmit)="handleOk()">
       <nz-form-item>
         <nz-alert
           nzType="warning"
-          nzDescription="Việc thực hiện xóa Snapshot sẽ xóa các Object bên trong Snapshot."
+          [nzDescription]="'app.alert.delete.snapshot' | i18n"
           nzShowIcon
           style="margin-bottom: 10px"
         >
@@ -32,8 +32,7 @@
         <nz-form-label>
           <div>
             <span
-              >Đế thực hiện xoá Snapshot ({{filesystemsnapshotName}}), vui lòng nhập
-              tên Snapshot để xác nhận.</span
+              >{{ 'app.node.delete.snapshot' | i18n : { name: filesystemsnapshotName } }}</span
             >
           </div>
         </nz-form-label>
@@ -42,7 +41,7 @@
             nz-input
             class="input-custom"
             formControlName="name"
-            [placeholder]="'Nhập tên FileSystem Snapshot'"
+            [placeholder]="'app.input.name' | i18n"
           />
         </nz-form-control>
       </nz-form-item>
@@ -55,7 +54,7 @@
             (click)="handleCancel()"
             class="button-back"
           >
-            Huỷ
+            {{ 'app.button.cancel' | i18n }}
           </button>
           <nz-form-control *nzSpaceItem>
             <button
@@ -65,7 +64,7 @@
               class="button-new"
               [disabled]="validateForm.invalid"
             >
-              Xác nhận
+              {{ 'app.button.confirm' | i18n }}
             </button>
           </nz-form-control>
         </nz-space>

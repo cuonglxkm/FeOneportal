@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { BaseService } from './base.service';
-import { BehaviorSubject, catchError, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, throwError, Observable } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import {
@@ -17,6 +17,14 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class FileSystemService extends BaseService {
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      user_root_id: this.tokenService.get()?.userId,
+      Authorization: 'Bearer ' + this.tokenService.get()?.token,
+    }),
+  };
+
   public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
 
   constructor(private http: HttpClient,
@@ -110,9 +118,7 @@ export class FileSystemService extends BaseService {
   }
 
   deleteFileSystem(formDelete: FormDeleteFileSystem) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/shares/${formDelete.id}`, {
-      body: formDelete
-    }).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/shares/${formDelete.id}?regionId=${formDelete.regionId}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -142,5 +148,15 @@ export class FileSystemService extends BaseService {
       }))
   }
 
+  checkRouter(
+    regionId: number,
+    vpcId: number
+  ): Observable<any> {
+    let url_ = `/file-storage/shares/check_router?regionId=${regionId}&vpcId=${vpcId}`;
 
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
 }

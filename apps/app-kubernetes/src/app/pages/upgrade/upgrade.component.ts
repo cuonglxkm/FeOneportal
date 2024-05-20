@@ -17,6 +17,7 @@ import { K8sVersionModel } from '../../model/k8s-version.model';
 import { VlanService } from '../../services/vlan.service';
 import { finalize, forkJoin } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { UserInfo } from '../../model/user.model';
 
 @Component({
   selector: 'one-portal-upgrade',
@@ -99,6 +100,8 @@ export class UpgradeComponent implements OnInit {
     this.initForm();
 
     this.getListPriceItem();
+
+    this.getUserInfo(this.tokenService.get()?.userId);
   }
 
   initForm() {
@@ -247,6 +250,14 @@ export class UpgradeComponent implements OnInit {
           this.notificationService.error("Thất bại", r.message);
         }
       });
+  }
+
+  userInfo: UserInfo;
+  getUserInfo(userId: number) {
+    this.clusterService.getUserInfo(userId)
+    .subscribe((r: any) => {
+      this.userInfo = r;
+    });
   }
 
   vpcNetwork: string;
@@ -480,25 +491,29 @@ export class UpgradeComponent implements OnInit {
   }
 
   remainCost: number;
+  newConfigCost: number;
   upgradeCost: number;
   currentRegisteredCost: number;
   totalCost: number;
+  vatCost: number;
   costPerDay: number;
   onCalculatePrice() {
-    this.upgradeCost = this.getUpgradeCost();
+    this.newConfigCost = this.getNewConfigCost();
     this.remainCost = this.getRemainCost();
 
-    this.totalCost = this.upgradeCost - this.remainCost;
+    this.upgradeCost = this.newConfigCost - this.remainCost;
+    this.vatCost = this.upgradeCost * 0.1;
+    this.totalCost = this.upgradeCost + this.vatCost;
   }
 
   newTotalCpu: number;
   newTotalRam: number;
   newTotalStorage: number;
-  getUpgradeCost(): number {
+  getNewConfigCost(): number {
     this.newTotalCpu = 0;
     this.newTotalRam = 0;
     this.newTotalStorage = 0;
-    this.upgradeCost = 0;
+    this.newConfigCost = 0;
 
     if (this.chooseItem) {
       // using pack
@@ -602,7 +617,8 @@ export class UpgradeComponent implements OnInit {
     }
 
     this.totalCost = 0;
-    this.upgradeCost = 0;
+    this.vatCost = 0;
+    this.newConfigCost = 0;
   }
 
   // validate duplicate worker group name
@@ -683,7 +699,7 @@ export class UpgradeComponent implements OnInit {
     order.orderItems = [];
 
     let orderItem = new OrderItem();
-    orderItem.price = this.totalCost;
+    orderItem.price = this.upgradeCost;
     orderItem.serviceDuration = this.detailCluster.usageTime;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_UPGRADE_TYPE;
@@ -721,7 +737,14 @@ export class UpgradeComponent implements OnInit {
       const wg = new WorkerGroupReqDto(wgs[i]);
       tmp.push(wg);
     }
-    cluster.jsonData = JSON.stringify({'ServiceOrderCode': this.serviceOrderCode, 'WorkerGroup': tmp});
+    cluster.jsonData = JSON.stringify({
+      ServiceOrderCode: this.serviceOrderCode,
+      WorkerGroup: tmp,
+      Id: this.userInfo.id,
+      UserName: this.userInfo.name,
+      PhoneNumber: this.userInfo.phoneNumber,
+      UserEmail: this.userInfo.email,
+    });
 
     return cluster;
   }

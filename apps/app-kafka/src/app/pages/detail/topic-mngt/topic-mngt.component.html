@@ -44,7 +44,9 @@
                 </div>
             </div>
             <div class="async">{{'kafka.cg.sync-time' | i18n}}:
-                <span class="time-async">{{syncInfo.topic}}</span>
+                <ng-container *ngIf="syncInfo">
+                    <span class="time-async">{{syncInfo.topic}}</span>
+                </ng-container>
             </div>
             
             <nz-table id="topic" [nzScroll]="{x:'1100px'}" [nzData]="listTopic" [nzLoading]="loading" #basicTable nzShowPagination nzShowSizeChanger class="tbl-acl" [nzTotal]="total" 
@@ -131,7 +133,7 @@
                     <input  nzSize="large" type="text" style="border-radius: 8px;"
                     nz-input [(ngModel)]="delTopic" (ngModelChange)="checkName()" [placeholder]="'kakfa.topic.name-placeholder' | i18n" />
                     </nz-input-group>
-                    <!-- <div class="error-del">{{err_mess}}</div> -->
+                    <div class="error-del">{{err_mess}}</div>
                     <ng-template #prefixTemplate >
                         <span nz-icon *ngIf="err_mess!==''" style="font-size: 20px;" nzType="exclamation-circle" nzTheme="twotone" [nzTwotoneColor]="'#ff4d4f'"></span>
                         <span nz-icon *ngIf="err_mess==='' && !new" style="font-size: 20px;" nzType="check-circle" nzTheme="twotone" [nzTwotoneColor]="'#52c41a'"></span>
@@ -177,7 +179,7 @@
             <nz-form-item>
                 <nz-form-label [nzSm]="8" [nzXs]="24" nzNoColon>Key</nz-form-label>
                 <nz-form-control [nzSm]="24" [nzXs]="24">
-                    <input nzSize="large" type="text" nz-input formControlName="key" [placeholder]="'kafka.topic.test-producer-key-pld' | i18n" />
+                    <input nzSize="large" maxlength="255" type="text" nz-input formControlName="key" [placeholder]="'kafka.topic.test-producer-key-pld' | i18n" />
                 </nz-form-control>
             </nz-form-item>
 

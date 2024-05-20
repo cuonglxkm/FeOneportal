@@ -222,7 +222,7 @@ export class DashboardComponent implements OnInit {
 
   getDataInstant(resource: string, serviceOrderCode: string) {
     this.dashBoardService.getDataInstant(resource, serviceOrderCode)
-      .pipe(takeUntil(this.unsubscribe$))
+      // .pipe(takeUntil(this.unsubscribe$))
       .subscribe(
         (res) => {
           if (res.code && res.code == 200) {
@@ -235,7 +235,7 @@ export class DashboardComponent implements OnInit {
 
   checkClusterIsHealth(serviceOrderCode: string) {
     this.dashBoardService.getCheckHealthCluster(serviceOrderCode)
-      .pipe(takeUntil(this.unsubscribe$))
+      // .pipe(takeUntil(this.unsubscribe$))
       .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.isHealth = res.data.status;
@@ -277,7 +277,7 @@ export class DashboardComponent implements OnInit {
 
   getCheckHealthChart(serviceOrderCode: string, fromTime: number, toTime: number) {
     this.dashBoardService.getCheckHealthChart(serviceOrderCode, fromTime, toTime)
-      .pipe(takeUntil(this.unsubscribe$))
+      // .pipe(takeUntil(this.unsubscribe$))
       .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.healthCheckData = res.data;
@@ -299,7 +299,7 @@ export class DashboardComponent implements OnInit {
           data: this.healthCheckData.health
         },
         {
-          name: "UnHealth",
+          name: "Health",
           data: this.healthCheckData.unHealth
         },
         // Trường hợp không lấy được data prometheus về DB portal
@@ -318,7 +318,8 @@ export class DashboardComponent implements OnInit {
           show: false
         }
       },
-      colors: ['#06BC62', '#F74132'],
+      // colors: ['#06BC62', '#F74132'],
+      colors: ['#06BC62'], // only health
       dataLabels: {
         enabled: false
       },

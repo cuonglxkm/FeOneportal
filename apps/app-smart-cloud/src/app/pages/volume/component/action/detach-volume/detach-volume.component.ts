@@ -41,6 +41,9 @@ export class DetachVolumeComponent {
 
   onChange(value) {
     this.instanceInVolumeSelected = value;
+    if(value != undefined || value != null) {
+      this.isSelected = false
+    }
   }
 
   showModal() {
@@ -75,17 +78,29 @@ export class DetachVolumeComponent {
   }
 
   doDetach() {
-    this.isLoading = true;
-    if (this.isMultiple) {
-      if(this.instanceInVolumeSelected == undefined) {
+    this.isLoading = true
+    if(this.isMultiple) {
+      if(this.instanceInVolume.length > 1) {
         this.isSelected = true
         this.isLoading = false
       } else {
+        this.isSelected = false
+      }
+      if(this.instanceInVolumeSelected != undefined || this.instanceInVolumeSelected != null) {
+        this.isSelected = false
+      }
+      if(this.isSelected == false) {
         this.isLoading = true
         let addVolumetoVmRequest = new AddVolumetoVmModel();
         addVolumetoVmRequest.volumeId = this.volumeId;
-        console.log('attach', this.listInstanceInVolume);
-        addVolumetoVmRequest.instanceId = Number.parseInt(this.instanceInVolumeSelected);
+        console.log('detach', this.listInstanceInVolume);
+        if(this.instancesService == undefined || this.instanceInVolumeSelected == null || this.instanceInVolume.length == 1) {
+          console.log('multi here');
+          addVolumetoVmRequest.instanceId = this.instanceInVolume[0].instanceId
+        }
+        if(this.instanceInVolumeSelected != undefined || this.instanceInVolumeSelected != null || this.instanceInVolume.length > 1) {
+          addVolumetoVmRequest.instanceId = Number.parseInt(this.instanceInVolumeSelected);
+        }
         addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
 
         this.volumeService.detachVolumeToVm(addVolumetoVmRequest).subscribe(data => {
@@ -113,8 +128,8 @@ export class DetachVolumeComponent {
           }, 1500);
         });
       }
-
     } else {
+      console.log('not multiple')
       this.isSelected = false
 
       let addVolumetoVmRequest = new AddVolumetoVmModel();
@@ -142,7 +157,5 @@ export class DetachVolumeComponent {
         this.onOk.emit(error);
       });
     }
-
-
   }
 }

@@ -77,11 +77,11 @@
     <ng-container *ngIf="mode==createNumber">
         <nz-form-item nzSpan="13" style="display: inline; font-size: 16px;" >
             <b>{{ 'kafka.topic.advanced-settings' | i18n }}</b>
-            <nz-switch class="ml-2" [(ngModel)]="openSet" [ngModelOptions]="{standalone: true}"
+            <nz-switch class="ml-2" [(ngModel)]="isSettingAdvanced" [ngModelOptions]="{standalone: true}"
                 (ngModelChange)="changeSwitch()"> </nz-switch>
         </nz-form-item>
     </ng-container>
-    <ng-container *ngIf="openSet">
+    <ng-container *ngIf="isSettingAdvanced">
         <div nz-row style="margin-top: 20px;">
             <div nz-col nzSpan="12">
 
@@ -566,7 +566,7 @@
                 (click)="createTopic()"><img
                 style="padding-right: 10px; margin-top: -4px"
                 src="assets/imgs/confirm.svg"
-                alt=""/>{{ 'app.button.create' | i18n }}</button>
+                alt=""/>{{ 'app.service.create' | i18n }}</button>
         </ng-container>
         <ng-container *ngIf="mode==updateNumber">
             <button class="btn-accept" nz-button nzType="primary" [disabled]="(validateForm && validateForm.invalid)"

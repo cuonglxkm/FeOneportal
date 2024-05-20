@@ -54,10 +54,11 @@ export class UserProfileComponent implements OnInit {
     contract_code: new FormControl({ value: '', disabled: true }),
     province: new FormControl('', { validators: [Validators.required] }),
     address: new FormControl('', {
-      validators: [
-        Validators.required,
-        AppValidator.cannotContainSpecialCharactorExceptComma,
-      ],
+      // validators: [
+      //   Validators.required,
+      //   AppValidator.cannotContainSpecialCharactorExceptComma,
+      //   noAllWhitespace(),
+      // ],
     }),
     old_password: new FormControl('', { validators: [] }),
     new_password: new FormControl({ value: '', disabled: true }),
@@ -132,14 +133,13 @@ export class UserProfileComponent implements OnInit {
     let updatedUser = {
       id: this.userModel.id,
       email: this.form.controls['email'].value!,
-      firstName: this.form.controls['name'].value!,
-      lastName: this.form.controls['surname'].value!,
+      firstName: this.form.controls['name'].value!.trim(),
+      lastName: this.form.controls['surname'].value!.trim(),
       phoneNumber: this.form.controls['phone'].value!,
       province: this.form.controls['province'].value!,
-      address: this.form.controls['address'].value!,
+      address: this.form.controls['address'].value!.trim(),
       birthDay: this.userModel.birthday,
     };
-
     if (
       updatedUser.firstName == ' ' ||
       updatedUser.lastName == ' ' ||
@@ -148,7 +148,7 @@ export class UserProfileComponent implements OnInit {
       updatedUser.province == ' '
     ) {
       this.notification.error(
-        this.i18n.fanyi('app.status.success'),
+        this.i18n.fanyi('app.status.fail'),
         this.i18n.fanyi('app.account.validation')
       );
       return;
@@ -161,8 +161,9 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: (res) => {
           console.log(res);
+          this.loadUserProfile();
           this.notification.success(
-            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.account.form.success')
           );
         },
@@ -201,6 +202,72 @@ export class UserProfileComponent implements OnInit {
   onNewPassChange(data: any) {}
 
   onRetypePassChange(data: any) {}
+
+  provinceList: string[] = [
+    'Hà Nội',
+    'Thành phố Hồ Chí Minh',
+    'An Giang',
+    'Bà Rịa - Vũng Tàu',
+    'Bắc Giang',
+    'Bắc Kạn',
+    'Bạc Liêu',
+    'Bắc Ninh',
+    'Bến Tre',
+    'Bình Định',
+    'Bình Dương',
+    'Bình Phước',
+    'Bình Thuận',
+    'Cà Mau',
+    'Cao Bằng',
+    'Cần Thơ',
+    'Đà Nẵng',
+    'Đắk Lắk',
+    'Đắk Nông',
+    'Điện Biên',
+    'Đồng Nai',
+    'Đồng Tháp',
+    'Gia Lai',
+    'Hà Giang',
+    'Hà Nam',
+    'Hà Tĩnh',
+    'Hải Dương',
+    'Hải Phòng',
+    'Hậu Giang',
+    'Hòa Bình',
+    'Hưng Yên',
+    'Khánh Hòa',
+    'Kiên Giang',
+    'Kon Tum',
+    'Lai Châu',
+    'Lâm Đồng',
+    'Lạng Sơn',
+    'Lào Cai',
+    'Long An',
+    'Nam Định',
+    'Nghệ An',
+    'Ninh Bình',
+    'Ninh Thuận',
+    'Phú Thọ',
+    'Phú Yên',
+    'Quảng Bình',
+    'Quảng Nam',
+    'Quảng Ngãi',
+    'Quảng Ninh',
+    'Quảng Trị',
+    'Sóc Trăng',
+    'Sơn La',
+    'Tây Ninh',
+    'Thái Bình',
+    'Thái Nguyên',
+    'Thanh Hóa',
+    'Thừa Thiên Huế',
+    'Tiền Giang',
+    'Trà Vinh',
+    'Tuyên Quang',
+    'Vĩnh Long',
+    'Vĩnh Phúc',
+    'Yên Bái',
+  ];
 }
 
 export function noAllWhitespace(): ValidatorFn {

@@ -71,7 +71,7 @@
           <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
           <nz-form-item>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-              <nz-input-number
+              <nz-input-number class="input-number-element"
               [(ngModel)]="numberMonth"
                 style="width:100%;"
                 (ngModelChange)="caculator($event)"
@@ -92,7 +92,7 @@
         </div>
       </div>
       <div nz-col>
-        <p>Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}</p>
+        <p class="red-text">Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}</p>
       </div>
     </nz-card>
   </nz-col>

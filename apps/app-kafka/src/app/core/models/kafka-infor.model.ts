@@ -33,6 +33,8 @@ export interface KafkaDetail {
     projectId: string;
     offerId: number;
     offerName: string;
+    subnetCloudId: string;
+    networkId: number;
     
 }
 

@@ -26,6 +26,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 })
 export class InstancesBtnComponent implements OnInit, OnChanges {
   @Input() instancesId: any;
+  @Input() isProjectVPC: boolean;
   @Output() valueChanged = new EventEmitter();
 
   instancesModel: InstancesModel;
@@ -91,11 +92,17 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
         .subscribe({
           next: (data: any) => {
             this.valueChanged.emit('DELETE');
-            this.notification.success('', 'Xóa máy ảo thành công');
+            this.notification.success(
+              '',
+              this.i18n.fanyi('app.notify.delete.instances.success')
+            );
           },
           error: (e) => {
             this.isVisibleDelete = false;
-            this.notification.error(e.statusText, 'Xóa máy ảo thất bại');
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.notify.delete.instances.fail')
+            );
           },
         });
     } else if (this.inputConfirm == '') {
@@ -164,12 +171,15 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       .changePassword(this.instancesId, this.resetPassword)
       .subscribe({
         next: (data: any) => {
-          this.notification.success('', 'Đổi mật khẩu máy ảo thành công');
+          this.notification.success(
+            '',
+            this.i18n.fanyi('app.notify.reset.pass.instances.success')
+          );
         },
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Đổi mật khẩu máy ảo không thành công'
+            this.i18n.fanyi('app.notify.reset.pass.instances.fail')
           );
         },
       });
@@ -177,29 +187,35 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
 
   generateRandomPassword(): string {
     const length = 12; // Độ dài tối thiểu 12 ký tự
-    const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
-    const numericChars = "0123456789";
-    const specialChars = "!@#$%^&*()_+-=[]{}|;'\"\\:,.<>?`~/"
-  
+    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+    const numericChars = '0123456789';
+    const specialChars = '!@#$%^&*()_+-=[]{}|;\'"\\:,.<>?`~/';
+
     let password = '';
-  
+
     // Chọn ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt
-    password += uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
-    password += lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
+    password +=
+      uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
+    password +=
+      lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
     password += numericChars[Math.floor(Math.random() * numericChars.length)];
     password += specialChars[Math.floor(Math.random() * specialChars.length)];
-  
+
     // Tạo các ký tự còn lại
     const remainingChars = length - 4; // 4 là số lượng ký tự đã được chọn ở trên
-    const allChars = uppercaseChars + lowercaseChars + numericChars + specialChars;
+    const allChars =
+      uppercaseChars + lowercaseChars + numericChars + specialChars;
     for (let i = 0; i < remainingChars; i++) {
       password += allChars[Math.floor(Math.random() * allChars.length)];
     }
-  
+
     // Trộn ngẫu nhiên chuỗi mật khẩu
-    password = password.split('').sort(() => Math.random() - 0.5).join('');
-  
+    password = password
+      .split('')
+      .sort(() => Math.random() - 0.5)
+      .join('');
+
     return password;
   }
 
@@ -212,6 +228,8 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     } else {
       this.resetPassword = '';
       this.resetPasswordRepeat = '';
+      this.passwordVisible = false;
+      this.passwordRepeatVisible = false;
     }
   }
 
@@ -237,15 +255,17 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     };
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Bật máy ảo thành công');
-          this.valueChanged.emit(data);
-        } else {
-          this.notification.error('', 'Bật máy ảo không thành công');
-        }
+        this.notification.success(
+          '',
+          this.i18n.fanyi('app.notify.request.start.instances.success')
+        );
+        this.valueChanged.emit(data);
       },
       error: (e) => {
-        this.notification.error(e.statusText, 'Bật máy ảo không thành công');
+        this.notification.error(
+          e.statusText,
+          this.i18n.fanyi('app.notify.request.start.instances.fail')
+        );
       },
     });
   }
@@ -273,11 +293,17 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       )
       .subscribe({
         next: (data) => {
-          this.notification.success('', 'Tắt máy ảo thành công');
+          this.notification.success(
+            '',
+            this.i18n.fanyi('app.notify.request.shutdown.instances.success')
+          );
           this.valueChanged.emit(data);
         },
         error: (e) => {
-          this.notification.error(e.statusText, 'Tắt máy ảo không thành công');
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('app.notify.request.shutdown.instances.fail')
+          );
         },
       });
   }
@@ -305,13 +331,16 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       )
       .subscribe({
         next: (data) => {
-          this.notification.success('', 'Khởi động lại máy ảo thành công');
+          this.notification.success(
+            '',
+            this.i18n.fanyi('app.notify.request.reboot.instances.success')
+          );
           this.valueChanged.emit('REBOOT');
         },
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Khởi động lại máy ảo không thành công'
+            this.i18n.fanyi('app.notify.request.reboot.instances.fail')
           );
         },
       });

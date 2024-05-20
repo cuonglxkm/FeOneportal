@@ -38,7 +38,7 @@
   </div>
   <nz-spin [nzSpinning]="isLoading" nzSize="large">
     <nz-form-item>
-      <nz-form-label>Tên lịch Snapshot</nz-form-label>
+      <nz-form-label>{{ 'app.snapshot.schedule.name' | i18n }}</nz-form-label>
       <input
         nz-input
         [(ngModel)]="scheduleName"
@@ -56,7 +56,7 @@
       </nz-col>
       <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
         <nz-form-item
-          ><nz-form-label>Chế độ Snapshot</nz-form-label>
+          ><nz-form-label>{{ 'app.snapshot.mode' | i18n }}</nz-form-label>
           <input nz-input placeholder="Theo tuần" disabled="true" type="text" />
         </nz-form-item>
       </nz-col>
@@ -64,7 +64,7 @@
     <nz-row nzGutter="24">
       <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
         <nz-form-item>
-          <nz-form-label>Thời điểm thực hiện Snapshot</nz-form-label>
+          <nz-form-label>{{ 'app.perform.snapshot.time' | i18n }}</nz-form-label>
           <input
             nz-input
             [(ngModel)]="scheduleStartTime"
@@ -94,7 +94,7 @@
       </nz-col>
       <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
         <nz-form-item>
-          <nz-form-label>Số bản Snapshot lưu trữ</nz-form-label>
+          <nz-form-label>{{ 'app.number.of.snapshot.copy' | i18n }}</nz-form-label>
           <input nz-input placeholder="1" disabled="true" type="text"
         /></nz-form-item>
       </nz-col>
@@ -123,6 +123,6 @@
       src="assets/imgs/arrow-left-2.svg"
       alt=""
     />
-    <span>Quay lại</span>
+    <span>{{'app.order-detail.back' | i18n}}</span>
   </button>
 </div>

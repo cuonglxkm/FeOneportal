@@ -1,14 +1,14 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Danh sách Network'" xmlns="http://www.w3.org/1999/html">
+             [title]="('app.vlan.note1' |i18n)" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
         VLAN
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/vlan/network/list">Danh sách Network</a>
+        <a routerLink="/app-smart-cloud/vlan/network/list">{{ 'app.vlan.note1' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -31,24 +31,25 @@
                         style="width: 300px;">
           <input name="name"
                  nz-input
-                 placeholder="Tìm kiếm"
+                 placeholder="{{ 'volume.tooltip.title.filter.img' | i18n }}"
                  [(ngModel)]="value"
-                 (input)="onInputChange($event.target['value'])"/>
+                 (input)="onInputChange($event.target['value'])" />
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"
+               nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
         </ng-template>
       </nz-col>
       <nz-col nzSpan="8" style="flex:none;">
         <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateNetwork()">
-          <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
-          <span class="button-text-primary">Tạo mới Network</span>
+          <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+          <span class="button-text-primary">{{ 'app.vlan.note4' | i18n }}</span>
         </button>
       </nz-col>
     </nz-row>
     <nz-table #fixtable
               style="margin-top: 15px;"
-              nzShowPagination
+              nzShowSizeChanger
               [nzData]="response?.records"
               [nzPageSize]="response?.pageSize"
               (nzPageSizeChange)="onPageSizeChange($event)"
@@ -59,27 +60,32 @@
               [nzLoading]="isLoading">
       <thead>
       <tr>
-        <th>Tên Network</th>
-        <th>Địa chỉ Subnet</th>
-        <th>Trạng thái</th>
-        <th>Thao tác</th>
+        <th>{{ 'app.vlan.note3' | i18n }}</th>
+        <th>{{ 'app.vlan.note2' | i18n }}</th>
+        <th>{{ 'app.payment.status' | i18n }}</th>
+        <th>{{ 'app.action-history.operation' | i18n }}</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let data of fixtable.data">
-        <td><a [routerLink]="'/app-smart-cloud/vlan/network/detail/' + data.id">{{data.name}}</a></td>
-        <td>{{data.subnetAddressRequired}}</td>
-        <td>{{data.status}}</td>
+        <td><a [routerLink]="'/app-smart-cloud/vlan/network/detail/' + data.id">{{ data.name }}</a></td>
+        <td>
+          <span *ngFor="let address of data.subnets; let last = last">
+                 {{ address.name }} - {{ address.networkAddress }}<br *ngIf="!last">
+          </span>
+        </td>
+        <td *ngIf="data.status == 'KHOITAO'" style="color: #008D47;">{{ 'app.status.running'|i18n }}</td>
         <td>
           <div *ngIf="data.name.includes('pri_network')">
             <img nz-popover src="assets/imgs/edit-2.svg" alt=""
                  nzPopoverPlacement="bottom"
                  style="cursor: pointer; margin-right: 16px; opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
-                 [nzPopoverContent]="'Chỉnh sửa'" disabled="true"/>
-            <img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
+                 [nzPopoverContent]="'app.text.edit'|i18n" disabled="true" />
+            <img src="assets/imgs/delete.svg"
+                 style="height: 28px;width: 28px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
                  nz-popover
-                 [nzPopoverContent]="'Xóa'"
-                 nzPopoverPlacement="bottom" disabled="true"/>
+                 [nzPopoverContent]="'app.text.delete'|i18n"
+                 nzPopoverPlacement="bottom" disabled="true" />
           </div>
           <div *ngIf="!data.name.includes('pri_network')">
             <one-portal-vlan-edit [region]="region"

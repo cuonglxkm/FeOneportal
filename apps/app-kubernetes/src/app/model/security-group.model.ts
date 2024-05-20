@@ -44,6 +44,7 @@ export class SecurityGroupData {
   projectId: number;
   detailCluster: KubernetesCluster;
   securityGroupId: string;
+  listOfSG: SecurityGroup[];
   listOfInbound: SecurityGroupRule[];
   listOfOutbound: SecurityGroupRule[];
 }

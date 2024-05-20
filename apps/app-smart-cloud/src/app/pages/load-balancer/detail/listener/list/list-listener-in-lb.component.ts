@@ -5,6 +5,11 @@ import { m_LBSDNListener } from '../../../../../shared/models/load-balancer.mode
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ListenerService } from '../../../../../shared/services/listener.service';
+import { da } from 'date-fns/locale';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'one-portal-list-listener-in-lb',
@@ -18,13 +23,17 @@ export class ListListenerInLbComponent implements OnInit{
   project = JSON.parse(localStorage.getItem('projectId'));
 
   listListeners: m_LBSDNListener[] = []
-
   isLoading: boolean = false
   listenerStatus: Map<String, string>;
-
+  isVisibleDelete = false;
   pageSize: number = 5
+  loading = false;
   pageIndex: number = 1
+  disableDelete= true;
   constructor(private loadBalancerService: LoadBalancerService,
+              private listenerService: ListenerService,
+              public notification: NzNotificationService,
+              private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.listenerStatus = new Map<String, string>();
     this.listenerStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
@@ -32,6 +41,13 @@ export class ListListenerInLbComponent implements OnInit{
   }
 
   currentPageData: any
+  modalStyle = {
+    'padding': '20px',
+    'border-radius': '10px',
+    'width': '600px'
+  };
+  itemDelete: any;
+  nameDelete = '';
 
   onPageSizeChange(value) {
     this.pageSize = value
@@ -67,4 +83,36 @@ export class ListListenerInLbComponent implements OnInit{
     this.getListListenerInLB()
   }
 
+  confirmNameDelete(event: any) {
+    this.nameDelete = '';
+    if (event == this.itemDelete.name) {
+      this.disableDelete = false;
+    } else {
+      this.disableDelete = true;
+    }
+  }
+
+  openDelete() {
+    this.loading = true;
+    this.listenerService.deleteListner(this.itemDelete.listenerId,this.idLB)
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.isVisibleDelete = false;
+      }))
+      .subscribe(
+      data => {
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.delete.listener.success'))
+        this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.idLB]);
+      },
+      error => {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.listener.fail'))
+        this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.idLB]);
+      }
+    )
+  }
+
+  activeModalDelete(data: any) {
+    this.itemDelete = data;
+    this.isVisibleDelete = true
+  }
 }

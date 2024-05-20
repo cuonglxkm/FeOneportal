@@ -31,7 +31,6 @@ export class RegionSelectDropdownComponent implements OnInit {
           this.valueChanged.emit(this.listRegion[0])
           localStorage.setItem('region', JSON.stringify(this.listRegion[0]))
         }
-
       }
     }, error => {
       this.listRegion = []

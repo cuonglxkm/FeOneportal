@@ -11,8 +11,12 @@ import {
 } from '../../../../../shared/models/file-system.model';
 import { FileSystemService } from '../../../../../shared/services/file-system.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
+import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 
 @Component({
   selector: 'one-portal-create-file-system',
@@ -55,7 +59,7 @@ export class CreateFileSystemComponent implements OnInit {
 
   snapshotList: NzSelectOptionInterface[] = [];
 
-  snapshotSelected: any;
+  snapshotSelected: number;
 
   formCreate: OrderCreateFileSystem = new OrderCreateFileSystem();
 
@@ -68,10 +72,13 @@ export class CreateFileSystemComponent implements OnInit {
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fileSystemService: FileSystemService,
               private notification: NzNotificationService,
               private router: Router,
-              private projectService: ProjectService) {
+              private projectService: ProjectService,
+              private fileSystemSnapshotService: FileSystemSnapshotService,
+              private activatedRoute: ActivatedRoute) {
   }
 
   duplicateNameValidator(control) {
@@ -108,10 +115,24 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   getListSnapshot() {
-    this.snapshotvlService.getSnapshotVolumes(9999, 1, this.region, this.project, '', '', '').subscribe(data => {
+    let formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot();
+    formSearchFileSystemSnapshot.vpcId = this.project
+    formSearchFileSystemSnapshot.regionId = this.region
+    formSearchFileSystemSnapshot.isCheckState = false
+    formSearchFileSystemSnapshot.pageSize = 9999;
+    formSearchFileSystemSnapshot.currentPage = 1;
+    formSearchFileSystemSnapshot.customerId = this.tokenService.get()?.userId
+    this.fileSystemSnapshotService.getFileSystemSnapshot(formSearchFileSystemSnapshot).subscribe(data => {
       data.records.forEach(snapshot => {
         this.snapshotList.push({ label: snapshot.name, value: snapshot.id });
       });
+      if(this.activatedRoute.snapshot.paramMap.get('snapshotId')){
+        const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('snapshotId'));
+        if(this.snapshotList.find(x => x.value == idSnapshot)) {
+          this.snapshotSelectedChange(true);
+          this.snapshotSelected = idSnapshot;
+        }
+      }
     });
   }
 
@@ -222,16 +243,16 @@ export class CreateFileSystemComponent implements OnInit {
       if (data != null) {
         if (data.code == 200) {
           this.isLoading = false;
-          this.notification.success('Thành công', 'Yêu cầu tạo File Storage thành công.');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu tạo File Storage thành công.');
           this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
         }
       } else {
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Yêu cầu tạo File Storage thất bại.');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File Storage thất bại.');
       }
     }, error => {
       this.isLoading = false;
-      this.notification.error('Thất bại', 'Yêu cầu tạo File Storage thất bại.');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File Storage thất bại.');
     });
 
   }

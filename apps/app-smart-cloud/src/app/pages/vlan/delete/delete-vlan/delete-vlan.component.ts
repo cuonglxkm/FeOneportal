@@ -1,6 +1,8 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-delete-vlan',
@@ -19,10 +21,13 @@ export class DeleteVlanComponent implements AfterViewInit {
   isLoadingDelete: boolean = false;
 
   value: string;
+
   isInput: boolean = false;
+  isInputNull: boolean = false;
   @ViewChild('vlanNetworkInputName') vlanNetworkInputName!: ElementRef<HTMLInputElement>;
 
   constructor(private vlanService: VlanService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService) {
   }
 
@@ -59,23 +64,33 @@ export class DeleteVlanComponent implements AfterViewInit {
   handleOkDelete() {
     this.isLoadingDelete = true
     if (this.value == this.nameNetwork) {
+      this.isInputNull = false
       this.isInput = false
       this.vlanService.deleteNetwork(this.id).subscribe(data => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
-        this.notification.success('Thành công', 'Xoá Network thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note55'));
         this.value = null
         this.onOk.emit(data)
       }, error => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
-        this.notification.error('Thất bại', 'Xoá Network thất bại. ', error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note56'), error.error.detail)
         this.value = null
         this.onOk.emit()
       })
     } else {
-      this.isInput = true
-      this.isLoadingDelete = false
+      if(this.value == undefined) {
+        this.isInput = false
+        this.isInputNull = true
+        this.isLoadingDelete = false
+      } else {
+        this.isInputNull = false
+        this.isInput = true
+        this.isLoadingDelete = false
+      }
+
+
     }
   }
 }

@@ -3,6 +3,8 @@ import { SecurityGroupRuleService } from '../../../../../../shared/services/secu
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormDeleteRule } from '../../../../../../shared/models/security-group-rule';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-delete-inbound',
@@ -22,6 +24,7 @@ export class DeleteInboundComponent {
 
   constructor(private securityGroupRuleService: SecurityGroupRuleService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
   showModal() {
@@ -44,12 +47,12 @@ export class DeleteInboundComponent {
     this.securityGroupRuleService.deleteRule(formDeleteRule).subscribe(data => {
       this.isLoading = false
       this.isVisible = false
-      this.notification.success('Thành công', 'Xóa Inbound ' + this.nameRule +' thành công');
+      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.cluster.delete-inbound') + ' ' + this.nameRule +' '+this.i18n.fanyi('app.status.success'));
       this.onOk.emit();
     }, error => {
       this.isLoading = false
       this.isVisible = false
-      this.notification.error('Thất bại', 'Xóa Inbound ' + this.nameRule +' thất bại');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.cluster.delete-inbound') + ' ' + this.nameRule +' '+this.i18n.fanyi('app.status.success'));
     })
   }
 }

@@ -18,7 +18,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
   providedIn: 'root'
 })
 export class PolicyService extends BaseService {
-  
+
   private urlIAM = this.baseUrl + this.ENDPOINT.iam + '/policies';
 
   constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
@@ -36,8 +36,8 @@ export class PolicyService extends BaseService {
   // searchPolicy(): Observable<BaseResponse<PolicyModel[]>> {
   //   return this.http.get<BaseResponse<PolicyModel[]>>("/policy");
   // }
-  searchPolicy(policyName: any, size: any, page: any, userId: any, token: any): Observable<BaseResponse<PolicyModel[]>> {
-    return this.http.get<BaseResponse<PolicyModel[]>>(this.urlIAM + "?policyName=" + policyName + "&pageSize=" + page + "&currentPage=" + size, { headers: this.getHeaders() } );
+  searchPolicy(policyName: any, size: any, page: any, userId: any, token: any, status: any): Observable<BaseResponse<PolicyModel[]>> {
+    return this.http.get<BaseResponse<PolicyModel[]>>(this.urlIAM + "?policyName=" + policyName + "&pageSize=" + page + "&currentPage=" + size + "&policyType=" + status, { headers: this.getHeaders() } );
   }
 
   searchPolicyPermisstion(): Observable<BaseResponse<PermissionPolicyModel[]>> {
@@ -192,7 +192,7 @@ export class PolicyService extends BaseService {
 
   getUserPermissions(): Observable<any> {
     localStorage.removeItem('PermissionOPA')
-    debugger;
+    //debugger;
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/user', { headers: this.getHeaders() } );
   }
 

@@ -9,10 +9,10 @@
       <nz-breadcrumb-item [routerLink]="'/'">{{
         'app.breadcrumb.home' | i18n
       }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">{{
+      <nz-breadcrumb-item>{{
         'app.breadcrumb.infrastructure.service' | i18n
       }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">Object Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Object Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item
         [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'"
         >Subuser</nz-breadcrumb-item
@@ -22,9 +22,13 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
-                               [regionId]="region"></project-select-dropdown>
+      <region-select-dropdown
+        (valueChanged)="regionChanged($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        (valueChanged)="projectChanged($event)"
+        [regionId]="region"
+      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -80,7 +84,7 @@
       #fixTable
       style="margin-top: 24px"
       nzShowPagination
-      [nzData]="response?.records"
+      [nzData]="listSubuser"
       [nzPageSize]="response?.pageSize"
       (nzPageSizeChange)="onPageSizeChange($event)"
       [nzPageIndex]="response?.currentPage"
@@ -98,18 +102,39 @@
           <th>{{ 'app.text.operation' | i18n }}</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody (click)="handleCloseExpand($event)">
         <ng-container *ngFor="let data of fixTable.data; index as i">
-          <tr *ngFor="let key of data.keys; index as k">
-            <td *ngIf="k === 0">{{ i + 1 }}</td>
-            <td *ngIf="k !== 0">{{ '' }}</td>
-            <td>{{ key.userId }}</td>
+          <tr>
+            <td>{{ i + 1 }}</td>
+            <td>{{ data.userId }}</td>
             <td>
               <nz-row nzJustify="space-between">
-                <nz-col>{{ key.accessKey }}</nz-col>
                 <nz-col>
-                    <img src="assets/imgs/icon_copy1.svg" alt="" style="cursor: pointer"
-                         nz-tooltip="Copy" (click)="copyText(key.accessKey)" />
+                  <div>{{ data.accessKey }}</div>
+                </nz-col>
+                <nz-col>
+                  <div class="d-flex gap-2 align-items-center">
+                    <div *ngIf="data.keys.length > 0" class="accesskey-number" (click)="handleExpandAccessKey(i, $event)">
+                      <span>+{{ data.keys.length }}</span>
+                      <span style="font-size: 12px;" nz-icon nzType="down" nzTheme="outline"></span>
+                      <ng-container *ngIf="isExpand === i">
+                      <div class="accesskey-expand">
+                        <div class="accesskey-flex" *ngFor="let expandedKey of data.keys">
+                        <div>{{expandedKey.accessKey}}</div>
+                        <img src="assets/imgs/icon_copy1.svg" alt="" style="cursor: pointer"
+                             nz-tooltip="Copy" (click)="copyText(expandedKey.accessKey)" />
+                        </div>
+                      </div>
+                    </ng-container>
+                    </div>
+                    <img
+                      src="assets/imgs/icon_copy1.svg"
+                      alt=""
+                      style="cursor: pointer"
+                      nz-tooltip="Copy"
+                      (click)="copyText(key.accessKey)"
+                    />
+                  </div>
                 </nz-col>
               </nz-row>
             </td>

@@ -1,9 +1,30 @@
+export class ObjectStorage {
+  customerId: number;
+  createdDate: string;
+  expiredDate: string;
+  customerEmail: string;
+  customerName: string;
+  id: number;
+  regionText: any;
+  regionId: number;
+  userName: string;
+  status: string;
+  quota: number;
+  saleDept: any;
+  contactPersonName: any;
+  dSubScriptionType: any;
+  dSubScriptionNumber: any;
+  saler2: any;
+  note: any;
+  oneSMESubId: any;
+  statusDisplay: string;
+}
 export class ObjectStorageCreate {
   quota: number;
   customerId: number;
   userEmail: any;
   actorEmail: any;
-  vpcId: any;
+  projectId: any;
   regionId: number;
   serviceName: any;
   serviceType: number;
@@ -35,7 +56,7 @@ export class ObjectStorageExtend {
   regionId: number;
   serviceName: any;
   customerId: number;
-  vpcId: any;
+  projectId: any;
   typeName: string;
   serviceType: number;
   actionType: number;
@@ -54,84 +75,84 @@ export class ObjectStorageResize {
   regionId: number;
   serviceName: any;
   customerId: number;
-  vpcId: any;
+  projectId: any;
   typeName: string;
   userEmail: any;
   actorEmail: any;
 }
 
 export class UserInfoObjectStorage {
-  tenant: string
-  user_id: string
-  display_name: string
-  email: string
-  suspended: number
-  max_buckets: number
-  subusers: Subusers[]
-  keys: Key[]
-  swift_keys: SwiftKeys[]
-  caps: string[]
-  op_mask: string
-  system: string
-  admin: string
-  default_placement: string
-  default_storage_class: string
-  placement_tags: string[]
-  bucket_quota: BucketQuota
-  user_quota: UserQuota
-  temp_url_keys: string[]
-  type: string
-  mfa_ids: string[]
+  tenant: string;
+  user_id: string;
+  display_name: string;
+  email: string;
+  suspended: number;
+  max_buckets: number;
+  subusers: Subusers[];
+  keys: Key[];
+  swift_keys: SwiftKeys[];
+  caps: string[];
+  op_mask: string;
+  system: string;
+  admin: string;
+  default_placement: string;
+  default_storage_class: string;
+  placement_tags: string[];
+  bucket_quota: BucketQuota;
+  user_quota: UserQuota;
+  temp_url_keys: string[];
+  type: string;
+  mfa_ids: string[];
 }
 
 export class Key {
-  user: string
-  access_key: string
-  secret_key: string
+  user: string;
+  access_key: string;
+  secret_key: string;
 }
 
 export class SwiftKeys {
-  user: string
-  secret_key: string
+  user: string;
+  secret_key: string;
 }
 
 export class BucketQuota {
-  enabled: boolean
-  check_on_raw: boolean
-  max_size: number
-  max_size_kb: number
-  max_objects: number
+  enabled: boolean;
+  check_on_raw: boolean;
+  max_size: number;
+  max_size_kb: number;
+  max_objects: number;
 }
 
 export class UserQuota {
-  enabled: boolean
-  check_on_raw: boolean
-  max_size: number
-  max_size_kb: number
-  max_objects: number
+  enabled: boolean;
+  check_on_raw: boolean;
+  max_size: number;
+  max_size_kb: number;
+  max_objects: number;
 }
 
 export class Subusers {
-  id: string
-  permissions: string
+  id: string;
+  permissions: string;
 }
 
 export class SummaryObjectStorage {
-  entries: Entry[]
-  summary: Summary[]
+  entries: Entry[];
+  summary: Summary[];
 }
 
 export class Entry {
-  user: string
-  buckets: Bucket[]
+  user: string;
+  buckets: Bucket[];
 }
 
 export class Bucket {
-  bucket: string
-  time: Date
-  epoch: number
-  owner: string
-  categories: Category[]
+  bucket: string;
+  time: Date;
+  epoch: number;
+  owner: string;
+  categories: Category[];
 }
 
 // export class Summary {
@@ -141,11 +162,11 @@ export class Bucket {
 // }
 //
 export class Category {
-  category: string
-  bytes_sent: number
-  bytes_received: number
-  ops: number
-  successful_ops: number
+  category: string;
+  bytes_sent: number;
+  bytes_received: number;
+  ops: number;
+  successful_ops: number;
 }
 //
 // export class Total {
@@ -165,12 +186,12 @@ export class Category {
 // }
 
 export class Summary {
-  title: string
-  unit: string
-  startDate: number
-  endDate: number
-  step: number
-  datas: any
+  title: string;
+  unit: string;
+  startDate: number;
+  endDate: number;
+  step: number;
+  datas: any;
 }
 
 export class ObjectObjectStorageModel {
@@ -190,7 +211,5 @@ export class ObjectObjectStorageModel {
   isDeleteMarker: boolean;
   checked: boolean = false;
   indeterminate: boolean = false;
-  keyName: string
+  keyName: string;
 }
-
-

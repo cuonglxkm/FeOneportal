@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="('app.detail' | i18n) + ' Router'"
+  [title]="('app.detail1' | i18n) + ' Router: ' + nameRouter"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -9,9 +9,17 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/network/router']">{{'kafka.detail.manage' | i18n}} Router</a>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> {{'app.detail' | i18n}} Router </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Network </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/network/router']">
+          Router</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/network/router']">
+          {{ 'router.detail' | i18n }}</a>
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -23,6 +31,7 @@
     <project-select-dropdown
       [regionId]="regionId"
       (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
     ></project-select-dropdown>
     </div>
   </ng-template>
@@ -55,7 +64,7 @@
         [nzData]="listOfRouterInteface"
         (nzPageIndexChange)="getRouterInterfaces()"
         (nzPageSizeChange)="getRouterInterfaces()"
-        [nzLoading]="loading"
+        [nzLoading]="isLoadingListRouterInterface"
       >
         <thead>
           <tr>
@@ -68,12 +77,12 @@
           <ng-container *ngFor="let item of listOfRouterInteface">
             <tr>
               <td>
-                <a>{{ item.subnetCIDR }}</a>
+                {{ item.subnetName }}
               </td>
               <td>{{ item.ipAddress }}</td>
               <td>
                 <img
-                  src="assets/imgs/trash.svg"
+                  src="assets/imgs/delete.svg"
                   alt=""
                   (click)="modalDeleteInterface(item.subnetCloud)"
                   style="cursor: pointer; margin-right: 16px"
@@ -85,7 +94,7 @@
         </tbody>
       </nz-table>
     </nz-tab>
-    <nz-tab nzTitle="Static Router">
+    <nz-tab nzTitle="Static Route">
       <div class="text-right">
         <button
           nz-button
@@ -110,12 +119,12 @@
         [nzData]="listOfRouterStatic"
         (nzPageIndexChange)="getRouterStatic()"
         (nzPageSizeChange)="getRouterStatic()"
-        [nzLoading]="loading"
+        [nzLoading]="isLoadingListRouterStatic"
       >
         <thead>
           <tr>
-            <th>CIDR</th>
-            <th>Next Hop</th>
+            <th>Destination CIDR</th>
+            <th>NextHop</th>
             <th>{{'app.text.operation' | i18n}}</th>
           </tr>
         </thead>
@@ -125,7 +134,7 @@
             <td>{{ item.nextHop }}</td>
             <td>
               <img
-                src="assets/imgs/trash.svg"
+                src="assets/imgs/delete.svg"
                 alt=""
                 (click)="modalDeleteStatic(item)"
                 style="cursor: pointer; margin-right: 16px"
@@ -138,35 +147,25 @@
     </nz-tab>
   </nz-tabset>
 </nz-card>
-<div class="text-right">
-  <button nz-button (click)="navigateToList()">
-    <img
-      style="padding-right: 10px; margin-top: -4px"
-      src="assets/imgs/arrow-left-2.svg"
-      alt=""
-    />
-    <span>{{'app.order-detail.back' | i18n}}</span>
-  </button>
-</div>
 
 <nz-modal
   [(nzVisible)]="isVisibleCreateInterface"
-  nzTitle="{{'app.router.note18' | i18n}}"
+  nzTitle="{{'router.label.interface.create' | i18n}}"
   (nzOnCancel)="handleCancelCreateInterface()"
 >
 <form nz-form [formGroup]="formRouterInterface">
   <ng-container *nzModalContent>
     <div class="text-label">
-      app.choose.subnet (<span class="text-red">*</span>)
+      {{'app.choose.subnet' | i18n}} (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="{{'app.router.note17' | i18n}}"
-        src="assets/imgs/message-question.svg"
+        src="assets/imgs/pajamas_question.svg"
         alt=""
       />
     </div>
     <nz-select
-      style="width: 100%; margin-bottom: 16px; margin-top: 5px"
+      style="width: 100%; margin-top: 5px"
       nzPlaceHolder="{{'app.choose.subnet' | i18n}}"
       [nzShowSearch]="true"
       formControlName="subnetId"
@@ -185,7 +184,7 @@
       <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="message-question"
-        src="assets/imgs/message-question.svg"
+        src="assets/imgs/pajamas_question.svg"
         alt=""
       />
     </div>
@@ -196,16 +195,16 @@
       placeholder=""
       formControlName="ipAdress"
     /> -->
-    <nz-form-item>
+    <nz-form-item style="margin-top: 10px">
       <nz-form-control [nzErrorTip]="ipErrorTpl">
       <nz-form-label nzFor="name">
         <div>
-          <span>{{'app.router.note20' | i18n}}</span>
+          <span>{{'router.label.ip.interface' | i18n}}</span>
           (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
           <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="{{'app.router.note19' | i18n}}"
-        src="assets/imgs/message-question.svg"
+        src="assets/imgs/pajamas_question.svg"
         alt=""
       />
         </div>
@@ -214,13 +213,16 @@
       style="margin-top: 5px"
       class="input-custom"
       nz-input
-      placeholder=""
+      placeholder="{{'router.label.ip.interface.example' | i18n}}"
       formControlName="ipAddress"
+      #ipAdress
+      id="ipAddress"
     />
+      <!-- <span *ngIf="isInvalidipAddress" style="color: #FF4D4F;">{{ invalidipAddress }}</span> -->
       <ng-template #ipErrorTpl let-control>
-        <ng-container *ngIf="control.hasError('required')">{{'app.router.note21' | i18n}}</ng-container>
-        <ng-container *ngIf="control.hasError('invalidSubnetIP')">{{'app.router.note22' | i18n}}</ng-container>
-        <ng-container *ngIf="control.hasError('invalidLastNumber')">{{'app.router.note22' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('required')">{{'router.validate.ip.empty' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('invalidSubnetIP')">{{'router.alert.wrong.format' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('invalidLastNumber')">{{'router.alert.wrong.format' | i18n}}</ng-container>
       </ng-template>
     </nz-form-control>
     </nz-form-item>
@@ -233,7 +235,7 @@
         alt=""
       />{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreateInterface()" [nzLoading]="isLoadingRouterInterface">
+    <button nz-button nzType="primary" (click)="handleOkCreateInterface()" [disabled]="formRouterInterface.invalid" [nzLoading]="isLoadingRouterInterface">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
@@ -247,43 +249,64 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleCreateStatic"
-  nzTitle="Tạo mới Static Router"
+  nzTitle="Tạo mới Static Route"
   (nzOnCancel)="handleCancelCreateStatic()"
 >
 <form nz-form [formGroup]="formRouterStatic">
-  <ng-container *nzModalContent>
-    <div class="text-label">
-      {{'app.router.note23' | i18n}} (<span class="text-red">*</span>)
-      <img
+  <ng-container *nzModalContent>  
+    <nz-form-item>
+      <nz-form-control [nzErrorTip]="cidrErrorTpl">
+      <nz-form-label nzFor="name">
+        <div>
+          <span>{{'router.label.cidr' | i18n}}</span>
+          (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+          <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="{{'app.router.note24' | i18n}}"
-        src="assets/imgs/message-question.svg"
+        src="assets/imgs/pajamas_question.svg"
         alt=""
       />
-    </div>
-    <input
-      style="margin-bottom: 16px; margin-top: 5px"
-      class="input-custom"
-      nz-input
-      placeholder=""
-      formControlName="destinationCIDR"
-    />
-    <div class="text-label">
-      Next Hop (<span class="text-red">*</span>)
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="{{'app.router.note25' | i18n}}"
-        src="assets/imgs/message-question.svg"
-        alt=""
-      />
-    </div>
-    <input
+        </div>
+      </nz-form-label>
+      <input
       style="margin-top: 5px"
       class="input-custom"
       nz-input
-      placeholder=""
+      placeholder="10.0.0.1/24"
+      formControlName="destinationCIDR"
+    />
+      <ng-template #cidrErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">{{'router.validate.cidr.empty' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">{{'router.validate.cidr.pattern' | i18n}}</ng-container>
+      </ng-template>
+    </nz-form-control>
+    </nz-form-item>
+    <nz-form-item style="margin-bottom: 0px;">
+      <nz-form-control [nzErrorTip]="nextHopErrorTpl">
+      <nz-form-label nzFor="name">
+        <div>
+          <span>NextHop</span>
+          (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+          <img
+          style="padding-right: 10px; margin-top: -4px"
+          nz-tooltip="{{'app.router.note25' | i18n}}"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
+        </div>
+      </nz-form-label>
+      <input
+      style="margin-top: 5px"
+      class="input-custom"
+      nz-input
+      placeholder="192.168.0.145"
       formControlName="nextHop"
     />
+      <ng-template #nextHopErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">{{'router.validate.nextHop.empty' | i18n}}</ng-container>
+      </ng-template>
+    </nz-form-control>
+    </nz-form-item>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelCreateStatic()">
@@ -293,12 +316,13 @@
         alt=""
       />{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreateStatic()" [nzLoading]="isLoadingRouterStatic">
+    <button nz-button nzType="primary" (click)="handleOkCreateStatic()" [disabled]="formRouterStatic.invalid" [nzLoading]="isLoadingRouterStatic">
       <img
+        *ngIf="isLoadingRouterStatic === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-
+        
       />{{'app.button.confirm' | i18n}}
     </button>
   </div>
@@ -307,7 +331,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleDeleteInterface"
-  nzTitle="{{'app.router.note26' | i18n}}"
+  nzTitle="{{'router.label.interface.remove' | i18n}}"
   (nzOnCancel)="handleCancelDeleteInterface()"
 >
   <div *nzModalContent>
@@ -317,8 +341,8 @@
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
-      <div>{{'app.router.note27' | i18n}}</div>
-      <div>{{'app.router.note28' | i18n}}</div>
+      <div>{{'router.alert.interface.remove' | i18n}}</div>
+      <div>{{'router.confirm.interface.remove' | i18n}}</div>
     </ng-template>
   </div>
   <div *nzModalFooter>
@@ -329,8 +353,9 @@
         alt=""
       />{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkDeleteInterface()">
+    <button nz-button nzType="primary" (click)="handleOkDeleteInterface()" [nzLoading]="isLoadingDeleteRouterInterface">
       <img
+      *ngIf="isLoadingDeleteRouterInterface === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
@@ -341,7 +366,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleDeleteStatic"
-  nzTitle="Xóa Static Router"
+  nzTitle="Xóa Static Route"
   (nzOnCancel)="handleCancelDeleteStatic()"
 >
   <div *nzModalContent>
@@ -351,8 +376,8 @@
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
-      <div>{{'app.router.note29' | i18n}}</div>
-      <div>{{'app.router.note28' | i18n}}</div>
+      <div>{{'router.alert.static.remove' | i18n}}</div>
+      <div>{{'router.confirm.interface.remove' | i18n}}</div>
     </ng-template>
   </div>
   <div *nzModalFooter>
@@ -363,8 +388,9 @@
         alt=""
       />{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkDeleteStatic()">
+    <button nz-button nzType="primary" (click)="handleOkDeleteStatic()" [nzLoading]="isLoadingDeleteRouterStatic">
       <img
+        *ngIf="isLoadingDeleteRouterStatic === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""

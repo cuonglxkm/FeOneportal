@@ -50,10 +50,10 @@
         [nzXs]="24"
         [nzXXl]="12"
       >
-        <button nz-button nzType="primary" (click)="extendVpn()" *ngIf="('order:Create' | IsPermissionPipe)">
+        <button nz-button nzType="primary" (click)="extendVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && projectObject.type == 0)">
           <img
             style="padding-right: 10px; margin-top: -4px"
-            src="assets/imgs/redo.svg"
+            src="assets/imgs/calendar-tick2.svg"
             alt=""
           />
           Gia hạn
@@ -67,7 +67,7 @@
           <img src="assets/imgs/dots.svg" alt="" />
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe)">Điều chỉnh</li>
+              <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && projectObject.type == 0)">Điều chỉnh</li>
               <li nz-menu-item (click)="modalDelete()" *ngIf="('VpnSiteToSites:Delete' | IsPermissionPipe)">Xóa</li>
             </ul>
           </nz-dropdown-menu>
@@ -79,6 +79,12 @@
     </div>
     <div style="margin-bottom: 15px" class="text-label">
       Bandwidth: <span class="text-bold">{{response?.bandwidth}}</span>
+    </div>
+    <div style="margin-bottom: 15px" class="text-label">
+      Router VPN site to site: 
+      <a class="text-bold" target="_blank" nz-tooltip nzTooltipTitle="{{'app.view.detail' | i18n}}" nzTooltipPlacement="bottom" [routerLink]="['/app-smart-cloud/network/router/detail/' + response?.routerName + '/' + response?.routerId]">
+        {{ response?.routerName }}
+        </a>
     </div>
     <div style="margin-bottom: 15px" class="text-label">
       Ngày khởi tạo: <span class="text-bold">{{response?.createdDate | date: 'dd/MM/YYYY'}}</span>
@@ -165,7 +171,7 @@ xmlns="http://www.w3.org/1999/html"
     <div class="text-subtitle" style="text-align: center;">VPN site to site cung cấp một kênh kết nối an toàn giữ các vị trí vật lý hoặc mạng máy tính khác nhau. <br /> Cho phép các vị trí đia lý khác nhau truy cập vào tài nguyên nội bộ</div>
   </nz-row>
   <nz-row nzJustify="center" class="pb-15">
-    <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" (click)="createVpn()">Tạo mới VPN site to site</button>
+    <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && projectObject.type == 0)" (click)="createVpn()">Tạo mới VPN site to site</button>
   </nz-row>
 </nz-card>
 </nz-content>

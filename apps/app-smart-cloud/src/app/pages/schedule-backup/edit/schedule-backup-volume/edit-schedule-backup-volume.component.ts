@@ -7,6 +7,8 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {DatePipe} from "@angular/common";
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-extend-schedule-backup-volume',
@@ -18,24 +20,24 @@ export class EditScheduleBackupVolumeComponent {
   project = JSON.parse(localStorage.getItem('projectId'));
   modeType: any = '4'
   mode = [
-    {label: 'Hàng ngày', value: '1'},
-    {label: 'Theo thứ', value: '2'},
-    {label: 'Theo tuần', value: '3'},
-    {label: 'Theo tháng', value: '4'}
+    {label: this.i18n.fanyi("schedule.backup.label.each.day"), value: '1'},
+    {label: this.i18n.fanyi("schedule.backup.label.each.number.day"), value: '2'},
+    {label: this.i18n.fanyi("schedule.backup.label.each.week"), value: '3'},
+    {label: this.i18n.fanyi("schedule.backup.label.each.month"), value: '4'}
   ]
   numberOfWeek = [
-    {label: '1 Tuần', value: '1'},
-    {label: '2 Tuần', value: '2'},
-    {label: '3 Tuần', value: '3'}
+    {label: '1 ' + this.i18n.fanyi("app.Week"), value: '1'},
+    {label: '2 ' + this.i18n.fanyi("app.Week"), value: '2'},
+    {label: '3 ' + this.i18n.fanyi("app.Week"), value: '3'}
   ]
   daysOfWeek = [
-    {label: 'Thứ 2', value: '1'},
-    {label: 'Thứ 3', value: '2'},
-    {label: 'Thứ 4', value: '3'},
-    {label: 'Thứ 5', value: '4'},
-    {label: 'Thứ 6', value: '5'},
-    {label: 'Thứ 7', value: '6'},
-    {label: 'Chủ nhật', value: '7'}
+    {label: this.i18n.fanyi("schedule.backup.monday"), value: '1'},
+    {label: this.i18n.fanyi("schedule.backup.tuesday"), value: '2'},
+    {label: this.i18n.fanyi("schedule.backup.wednesday"), value: '3'},
+    {label: this.i18n.fanyi("schedule.backup.thursday"), value: '4'},
+    {label: this.i18n.fanyi("schedule.backup.friday"), value: '5'},
+    {label: this.i18n.fanyi("schedule.backup.saturday"), value: '6'},
+    {label: this.i18n.fanyi("schedule.backup.sunday"), value: '7'}
   ]
   isLoading: boolean = false
   numberOfWeekChangeSelected: string
@@ -80,6 +82,7 @@ export class EditScheduleBackupVolumeComponent {
               private scheduleService: ScheduleService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               public datepipe: DatePipe) {
 
   }
@@ -237,10 +240,10 @@ export class EditScheduleBackupVolumeComponent {
       console.log(this.validateForm.getRawValue())
       this.formEdit = this.getData()
       this.scheduleService.edit(this.formEdit).subscribe(data => {
-        this.notification.success('Thành công', 'Chỉnh sửa lịch backup volume thành công')
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("schedule.backup.notify.edit.volume.success"))
         this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
       }, error => {
-        this.notification.error('Thất bai','Chỉnh sửa lịch backup volume thất bại')
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("schedule.backup.notify.edit.volume.fail"))
       })
     } else {
       console.log(this.validateForm.controls);

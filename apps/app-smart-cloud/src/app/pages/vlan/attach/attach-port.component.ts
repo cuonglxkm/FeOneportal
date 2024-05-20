@@ -5,6 +5,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { ActivatedRoute } from '@angular/router';
 import { InstancesService } from '../../instances/instances.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-attach-port',
@@ -28,6 +30,7 @@ export class AttachPortComponent {
   isSelected: boolean = false
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private vlanService: VlanService,
               private instancesService: InstancesService) {
   }
@@ -66,7 +69,7 @@ export class AttachPortComponent {
         console.log('attach', data)
         this.isVisibleAttach = false
         this.isLoadingAttach = false
-        this.notification.success('Thành công', 'Gắn port vào máy ảo thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note63'))
         setTimeout(() => {
           this.onOk.emit(data)
         }, 1500);
@@ -74,7 +77,7 @@ export class AttachPortComponent {
         this.isVisibleAttach = false
         this.isLoadingAttach = false
         this.instanceSelected = null
-        this.notification.error('Thất bại', 'Gắn port vào máy ảo thất bại. ', error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note64') + error.error.detail)
       })
     }
 
@@ -87,6 +90,7 @@ export class AttachPortComponent {
       this.isLoading = false
       this.listVm = data.records
       console.log('listvm', this.listVm)
+      this.listVm = this.listVm.filter(item => item.taskState === 'ACTIVE' && item.status === 'KHOITAO')
     })
   }
 }

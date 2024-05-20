@@ -5,10 +5,10 @@
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>Cluster
+      <nz-breadcrumb-item>{{ 'app.cluster.platform-service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-kubernetes']">{{ 'app.cluster.list' | i18n }}</a>
+        <a [routerLink]="['/app-kubernetes']">VNPT Kubernetes Service</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.cluster.create-cluster' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -70,7 +70,7 @@
         <nz-form-item>
           <nz-form-label [nzSpan]="24">{{ 'app.cluster.description' | i18n }}</nz-form-label>
           <nz-form-control [nzErrorTip]="descriptionErrorTpl">
-            <textarea formControlName="description" nz-input rows="3" [placeholder]="'cluster.placeholder.description' | i18n" nzSize="large"></textarea>
+            <textarea formControlName="description" nz-input rows="5" [placeholder]="'cluster.placeholder.description' | i18n" nzSize="large"></textarea>
           </nz-form-control>
           <ng-template #descriptionErrorTpl let-control>
             <ng-container *ngIf="control.hasError('maxlength')">
@@ -499,13 +499,17 @@
       <!-- usage time -->
       <nz-card class="border-card">
         <div nz-row [nzGutter]="16">
-          <div nz-col [nzSpan]="12">
+          <div nz-col [nzSpan]="12" class="box-duration">
             <nz-form-item>
-              <nz-form-label nzFor="usageTime">{{ 'app.cluster.usage-time' | i18n }} (<span class="required-color">*</span>)</nz-form-label>
+              <nz-form-label nzFor="usageTime">
+                {{ 'app.cluster.usage-time' | i18n }} (<span class="required-color">*</span>)
+                <img class="tooltip-icon" [nzTooltipTitle]="'app.extend.tooltip' | i18n"
+                  nzTooltipPlacement="rightTop" nz-tooltip src="assets/imgs/pajamas_question.svg" />
+              </nz-form-label>
               <nz-form-control [nzErrorTip]="usageTimeErrorTpl">
-                <input type="text" nz-input [placeholder]="'cluster.placeholder.usage-time' | i18n" id="usageTime"
+                <nz-input-number nz-input [placeholder]="'cluster.placeholder.usage-time' | i18n" id="usageTime"
                   formControlName="usageTime" (ngModelChange)="onSelectUsageTime($event)"
-                  (keypress)="onInputUsage($event)" nzSize="large" />
+                  (keypress)="onInputUsage($event)" nzSize="large"></nz-input-number>
               </nz-form-control>
               <ng-template #usageTimeErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -546,6 +550,19 @@
 
             <div nz-col [nzSpan]="12">
               <div class="price-style price-color mr-3">{{(workerPrice ? workerPrice: 0) | number: '1.0-0'}} VND</div>
+              <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
+            </div>
+          </div>
+
+          <nz-divider class="divider-style"></nz-divider>
+
+          <div nz-row [nzGutter]="8">
+            <div nz-col [nzSpan]="12">
+              <div class="ml-3"><label class="weight-600">{{ 'app.cluster.vat-cost-2' | i18n : {vat: '10'} }}</label></div>
+            </div>
+
+            <div nz-col [nzSpan]="12">
+              <div class="price-style price-color mr-3">{{(vatCost ? vatCost: 0) | number: '1.0-0'}} VND</div>
               <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
             </div>
           </div>

@@ -54,7 +54,7 @@
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <nz-radio-group [disabled]="true" [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}" nzSize="large">
-              <label nz-radio nzValue="HTTP">TERMINATED_HTTPS</label>
+              <label nz-radio nzValue="HTTP">HTTP</label>
               <label nz-radio nzValue="TCP">TCP</label>
               <label nz-radio nzValue="TERMINATED_HTTPS">TERMINATED_HTTPS</label>
             </nz-radio-group>
@@ -89,7 +89,7 @@
       <nz-col nzSpan="6">
         <nz-form-item>
           <nz-form-label>
-            <span>Member</span>
+            <span>Member timeout (ms)</span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <nz-input-number [nzDisabled]="true" style="margin-left: -2px;width: 90%" formControlName="member" [nzMin]="0" nzSize="large"
@@ -100,7 +100,7 @@
       <nz-col nzSpan="6">
         <nz-form-item>
           <nz-form-label>
-            <span>Connection</span>
+            <span>Member connection timeout (ms)</span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <nz-input-number [nzDisabled]="true" style="margin-left: -2px;width: 90%" formControlName="connection" [nzMin]="0" nzSize="large"
@@ -153,35 +153,35 @@
           </thead>
           <tbody>
           <tr *ngFor="let item of listPool">
-            <td>{{ item.name }}</td>
+            <td ><a (click)="navigateToDetail(item.id)">{{ item.name }}</a></td>
             <td>{{ item.protocol }}</td>
             <td>{{ item.algorithm }}</td>
             <td>ONLINE</td>
             <td>ACTIVE</td>
             <td>
               <!----Chỉnh sửa----->
-              <one-portal-edit-pool-in-lb [region]="region"
-                                  [project]="project"
-                                  [poolId]="data.id"
-                                  [loadBlancerId]="idLB"
+              <one-portal-edit-pool-in-lb [region]="regionId"
+                                  [project]="projectId"
+                                  [poolId]="item.id"
+                                  [loadBalancerId]="idLb"
                                   [listenerId]="idListener"
                                   (onOk)="handleEditOk()" />
               <!----Xóa---->
-              <one-portal-delete-pool-in-lb [region]="region"
-                                    [project]="project"
-                                    [poolId]="data.id"
-                                    [loadBlancerId]="idLB"
+              <one-portal-delete-pool-in-lb [region]="regionId"
+                                    [project]="projectId"
+                                    [poolId]="item.id"
+                                    [loadBalancerId]="idLb"
                                     [listenerId]="idListener"
-                                    [namePool]="data.name"
+                                    [namePool]="item.name"
                                     (onOk)="handleDeleteOk()" />
             </td>
           </tr>
           </tbody>
         </nz-table>
       </nz-tab>
-      <nz-tab nzTitle="L7 Policy">
+      <nz-tab nzTitle="L7 Policy" *ngIf="protocolListener!='TCP'">
         <nz-row style="display: flex;justify-content: space-between;margin-bottom: 30px;">
-          <div class="text-card-header">Danh sách L7 Policy</div>
+          <div class="text-card-header">{{ 'app.l7.policy.list' | i18n }}</div>
           <button *ngIf="currentPageData?.length > 0"  nz-button nzType="primary" nzSize="large" [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">
             <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt="" />
             <span class="button-text-primary">{{ 'app.l7.policy.create.button' | i18n }}</span>
@@ -231,8 +231,8 @@
         <div *ngIf="currentPageData?.length <= 0" style="display: flex;text-align: center;width: 425px;justify-content: center;align-items: center;margin-left: 401px;">
           <nz-alert nzType="warning" [nzMessage]="titleWarning" nzShowIcon>
             <ng-template #titleWarning>
-                <span class="text-label" style="color: red;">*Quý khách chưa có L7 Policy nào!</span><br>
-                <span class="text-label">Quý khách có thể khởi tạo <a [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">L7 Policy</a> tại đây!</span>
+                <span class="text-label" style="color: red;">*{{ 'app.note.l7.policy.empty' | i18n }}</span><br>
+                <span class="text-label">{{ 'app.can.create' | i18n }} <a [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">L7 Policy</a> {{ 'app.here' | i18n }}!</span>
             </ng-template>
           </nz-alert>
         </div>

@@ -20,6 +20,8 @@ import { ShareService } from '../../services/share.service';
 import { VlanService } from '../../services/vlan.service';
 import { ProjectModel } from '../../shared/models/project.model';
 import { RegionModel } from '../../shared/models/region.model';
+import { User } from '../../shared/models/user.model';
+import { UserInfo } from '../../model/user.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,6 +56,7 @@ export class ClusterComponent implements OnInit {
 
   expiryDate: number;
   isChangeInfo: boolean;
+  vatPercent: number = 0.1;
 
   public DEFAULT_CIDR = KubernetesConstant.DEFAULT_CIDR;
   public DEFAULT_SERVICE_CIDR = KubernetesConstant.DEFAULT_SERVICE_CIDR;
@@ -127,11 +130,13 @@ export class ClusterComponent implements OnInit {
       // volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
       // volumeCloudType: ['hdd', [Validators.required]],
       usageTime: [1, [Validators.required, Validators.min(1), Validators.max(100)]],
+      expireDate: [null, [Validators.required]]
     });
 
     // display expiry time
     const usageTimeInit = this.myform.get('usageTime').value;
     this.onSelectUsageTime(usageTimeInit);
+    this.getUserInfo(this.tokenService.get()?.userId);
   }
 
   addWorkerGroup(e?: MouseEvent): void {
@@ -182,7 +187,7 @@ export class ClusterComponent implements OnInit {
 
           // select latest version of kubernetes
           const len = this.listOfK8sVersion?.length;
-          const latestVersion: K8sVersionModel = this.listOfK8sVersion?.[len - 1];
+          const latestVersion: K8sVersionModel = this.listOfK8sVersion?.[0];
           this.myform.get('kubernetesVersion').setValue(latestVersion?.k8sVersion);
         } else {
           this.notificationService.error("Thất bại", r.message);
@@ -267,6 +272,14 @@ export class ClusterComponent implements OnInit {
     });
   }
 
+  userInfo: UserInfo;
+  getUserInfo(userId: number) {
+    this.clusterService.getUserInfo(userId)
+    .subscribe((r: any) => {
+      this.userInfo = r;
+    });
+  }
+
   getListPack(cloudProifileId: string) {
     this.clusterService.getListPack(cloudProifileId)
     .subscribe((r: any) => {
@@ -325,6 +338,8 @@ export class ClusterComponent implements OnInit {
   totalRam: number;
   totalCpu: number;
   totalStorage: number;
+  vatCost: number;
+  workerCostPerMonth: number;
   onCalculatePrice() {
     this.totalPrice = 0;
     this.workerPrice = 0;
@@ -349,8 +364,14 @@ export class ClusterComponent implements OnInit {
       this.totalStorage += nodeNumber * storage;
     }
 
-    this.workerPrice = this.priceOfCpu * this.totalCpu + this.priceOfRam * this.totalRam + this.priceOfSsd * this.totalStorage;
-    this.totalPrice = this.workerPrice + this.volumePrice;
+    const usageTime = this.myform.get('usageTime').value;
+    if (!usageTime) return;
+
+    this.workerCostPerMonth = this.priceOfCpu * this.totalCpu + this.priceOfRam * this.totalRam + this.priceOfSsd * this.totalStorage;
+    this.workerPrice = usageTime * this.workerCostPerMonth;
+    this.volumePrice = 0;   // fix for now
+    this.vatCost = (this.workerPrice + this.volumePrice) * this.vatPercent;
+    this.totalPrice = this.workerPrice + this.volumePrice + this.vatCost;
   }
 
   // catch event region change and reload data
@@ -475,8 +496,10 @@ export class ClusterComponent implements OnInit {
   onSelectUsageTime(event: any) {
     if (event) {
       let d = new Date();
-      d.setMonth(d.getMonth() + Number(event));
+      d.setDate(d.getDate() + Number(event) * 30);
       this.expiryDate = d.getTime();
+      this.myform.get('expireDate').setValue(new Date(this.expiryDate).toISOString().substring(0, 19));
+      this.onCalculatePrice();
     }
   }
 
@@ -553,9 +576,15 @@ export class ClusterComponent implements OnInit {
 
     // get price
     const itemPack = this.listOfServicePack.find(pack => pack.packId == item.packId);
-    this.workerPrice = itemPack.price;
-    // this.volumePrice = itemPack.volume;
-    this.totalPrice = itemPack.price;
+    const usageTime = this.myform.get('usageTime').value;
+    if (!usageTime) return;
+
+    this.volumePrice = 0;
+    this.workerCostPerMonth = itemPack.price;
+    this.workerPrice = itemPack.price * Number(usageTime);
+
+    this.vatCost = (this.workerPrice + this.volumePrice) * this.vatPercent;
+    this.totalPrice = this.workerPrice + this.volumePrice + this.vatCost;
     this.offerId = itemPack.offerId;
   }
 
@@ -798,6 +827,12 @@ export class ClusterComponent implements OnInit {
     cluster.totalCpu = this.totalCpu;
     cluster.totalStorage = this.totalStorage;
     cluster.serviceName = cluster.clusterName;
+    cluster.jsonData = JSON.stringify({
+      Id: this.userInfo.id,
+      UserName: this.userInfo.name,
+      PhoneNumber: this.userInfo.phoneNumber,
+      UserEmail: this.userInfo.email
+    });
 
     // this.onSubmitOrder(cluster);
 
@@ -826,7 +861,7 @@ export class ClusterComponent implements OnInit {
     data.orderItems = [];
 
     const orderItem: OrderItem = new OrderItem();
-    orderItem.price = this.totalPrice;
+    orderItem.price = this.workerCostPerMonth;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
     orderItem.specification = JSON.stringify(cluster);

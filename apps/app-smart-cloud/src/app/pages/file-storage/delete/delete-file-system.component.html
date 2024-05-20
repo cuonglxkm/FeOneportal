@@ -1,25 +1,33 @@
-<li nz-menu-item (click)="showModal()">Xoá</li>
+<img src="assets/imgs/delete.svg" alt=""
+     style="cursor: pointer; width: 28px; height: 28px; margin-left: 5px;"
+     nz-popover
+     [nzPopoverContent]="'app.delete' | i18n"
+     nzPopoverPlacement="bottom" (click)="showModal()"/>
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Xác nhận xóa File System {{ fileSystemName }}</span>
+    <span class="text-modal-title">{{ 'app.file.system.delete' | i18n: {name: fileSystemName} }}</span>
   </div>
   <div *nzModalContent>
     <nz-alert nzBanner
               nzShowIcon
-              [nzMessage]="'Bạn đang thực hiện xóa File System\n' +
-'Để xóa được File System, quý khách lưu ý cần phải xóa hết các Snapshot của các File System đó'">
+              [nzDescription]="contentTemplate">
     </nz-alert>
+    <ng-template #contentTemplate>
+      <span
+        [innerHTML]="'app.alert.delete.file.system' | i18n"
+      ></span>
+    </ng-template>
     <div>
-      <span class="text-label">Đế thực hiện xoá File System {{ fileSystemName }}, vui lòng nhập tên File System để xác nhận.</span>
+      <span class="text-label" [innerHTML]="'app.note.delete.file.system' | i18n: {name: fileSystemName}"></span>
       <input nz-input #fileSystemInputName
              style="margin-top: 10px;"
              class="input-custom"
              [ngModel]="value"
              (keydown.enter)="focusOkButton($event)"
              (ngModelChange)="onInput($event)"
-             [placeholder]="'Nhập tên File System'"/>
-      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên File System</span>
+             [placeholder]="'app.input.name' | i18n"/>
+      <span *ngIf="isInput" style="color: red;">{{ 'validation.correct.file.system.name' | i18n }}</span>
     </div>
 
   </div>

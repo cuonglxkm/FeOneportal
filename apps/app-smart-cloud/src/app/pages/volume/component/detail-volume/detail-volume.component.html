@@ -6,15 +6,15 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        {{ 'app.breadcrumb.infrastructure.service' | i18n}}
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        {{ 'app.breadcrumb.block.storage' | i18n}}
+        {{ 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title.breadcrumb.list' | i18n}}</a>
+        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title.breadcrumb.list' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{ 'volume.title.detail' | i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'volume.title.detail' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -29,36 +29,47 @@
   </ng-template>
   <div *ngIf="!volumeInfo?.bootable">
     <div *ngIf="typeVPC == 0" style="display: flex">
-      <div style="margin-right: 8px;">
+      <div style="margin-right: 8px;" *ngIf="!(volumeInfo?.serviceStatus == 'CREATING'
+      || volumeInfo?.serviceStatus == 'ATTACHING'
+      || volumeInfo?.serviceStatus == 'DELETING'
+      || volumeInfo?.serviceStatus == 'ERROR_DELETING'
+      || volumeInfo?.serviceStatus == 'ERROR')">
         <div nz-col nzSpan="4">
-          <button class="button-cancel"
-                  nzType="primary"
-                  (click)="navigateToRenew(volumeInfo.id)"
-                  nz-button>
-            <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
-            <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
+          <button class="button-fee"
+                  nz-button
+                  nzType="primary" (click)="navigateEditVolume(volumeInfo.id)">
+            <img src="assets/imgs/edit-1.svg" alt=""
+                 style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
+            <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
           </button>
-
-
         </div>
       </div>
-      <div nz-col nzSpan="4">
-        <button class="button-fee"
-                nz-button
-                nzType="default" (click)="navigateEditVolume(volumeInfo.id)">
-          <img src="assets/imgs/edit-2.svg" alt=""
-               style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
-          <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
+      <div nz-col nzSpan="4" *ngIf="!(volumeInfo?.serviceStatus == 'CREATING'
+      || volumeInfo?.serviceStatus == 'ATTACHING'
+      || volumeInfo?.serviceStatus == 'DELETING'
+      || volumeInfo?.serviceStatus == 'ERROR_DELETING'
+      || volumeInfo?.serviceStatus == 'ERROR')">
+        <button class="button-cancel"
+                nzType="default"
+                (click)="navigateToRenew(volumeInfo.id)"
+                nz-button>
+          <img src="assets/imgs/calendar-tick.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
+          <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
         </button>
       </div>
     </div>
     <div *ngIf="typeVPC == 1" style="display: flex">
-      <div nz-col nzSpan="4">
-        <button class="button-cancel"
-                (click)="navigateToResizeVPC(volumeInfo.id)"
-                nz-button nzType="primary">
-          <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
-          <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
+      <div nz-col nzSpan="4" *ngIf="!(volumeInfo?.serviceStatus == 'CREATING'
+      || volumeInfo?.serviceStatus == 'ATTACHING'
+      || volumeInfo?.serviceStatus == 'DELETING'
+      || volumeInfo?.serviceStatus == 'ERROR_DELETING'
+      || volumeInfo?.serviceStatus == 'ERROR')">
+        <button class="button-fee"
+                nz-button
+                nzType="primary" (click)="navigateToResizeVPC(volumeInfo.id)">
+          <img src="assets/imgs/edit-1.svg" alt=""
+               style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
+          <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
         </button>
       </div>
     </div>
@@ -72,28 +83,33 @@
         <span class="text-label"><b>{{ volumeInfo?.name }}</b></span>
       </nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleType">
-          <span *ngIf="volumeInfo?.volumeType === 'hdd'" class="text-label"><b>{{'volume.hdd'|i18n}}</b></span>
-          <span *ngIf="volumeInfo?.volumeType === 'ssd'" class="text-label"><b>{{'volume.ssd'|i18n}}</b></span>
+        <span *ngIf="volumeInfo?.volumeType === 'hdd'" class="text-label"><b>{{ 'volume.hdd'|i18n }}</b></span>
+        <span *ngIf="volumeInfo?.volumeType === 'ssd'" class="text-label"><b>{{ 'volume.ssd'|i18n }}</b></span>
       </nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleStorage">
         <span class="text-label"><b>{{ volumeInfo?.sizeInGB }} GB</b></span>
       </nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleIOPS" >
+      <nz-descriptions-item [nzTitle]="titleIOPS">
         <span class="text-label">
           <b>{{ volumeInfo?.iops }}</b>
         </span>
       </nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleStatus" class="text-label">
-        <span *ngIf="volumeInfo.status === 'KHOITAO'"
-              style="color: #0066B3" class="text-label"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
-        <span *ngIf="volumeInfo.status === 'ERROR'"
-              style="color: #FF3333" class="text-label"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
-        <span *ngIf="volumeInfo.status === 'SUSPENDED'"
-              style="color: #FF7C33" class="text-label" ><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
+        <span *ngIf="volumeInfo?.status === 'KHOITAO'"
+              style="color: #008D47" class="text-label"><b>{{ volumeStatus.get(volumeInfo?.status) }}</b></span>
+        <span *ngIf="volumeInfo?.status === 'ERROR'"
+              style="color: #EA3829" class="text-label"><b>{{ volumeStatus.get(volumeInfo?.status) }}</b></span>
+        <span *ngIf="volumeInfo?.status === 'SUSPENDED'"
+              style="color: #FFBB63" class="text-label"><b>{{ volumeStatus.get(volumeInfo?.status) }}</b></span>
       </nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleAttachInstance">
-        <span *ngIf="listVMs.length > 0" style="color: #0074CC;" class="text-label"><b>{{ listVMs }}</b></span>
-        <span *ngIf="listVMs.length <= 0" style="color: #0074CC;" class="text-label"><b>{{'volume.notification.no.instance'|i18n}}</b></span>
+        <span *ngIf="listVMs != ''">
+          <b>
+            <span>{{ convertString(listVMs) }}</span>
+          </b>
+        </span>
+        <span *ngIf="listVMs == ''" style="color: #0074CC;" class="text-label">
+          <b>{{ 'volume.notification.no.instance'|i18n }}</b></span>
       </nz-descriptions-item>
 
     </nz-descriptions>
@@ -101,26 +117,28 @@
       <span class="text-label">{{ 'volume.table.title.name.volume' | i18n }}:</span>
     </ng-template>
     <ng-template #titleType>
-      <span class="text-label">{{ 'volume.table.title.type.volume' | i18n}}:</span>
+      <span class="text-label">{{ 'volume.table.title.type.volume' | i18n }}:</span>
     </ng-template>
     <ng-template #titleStorage>
-      <span class="text-label">{{ 'volume.table.title.storage' | i18n}}:</span>
+      <span class="text-label">{{ 'volume.table.title.storage' | i18n }}:</span>
     </ng-template>
     <ng-template #titleIOPS>
-      <span class="text-label">{{ 'volume.table.title.iops' | i18n}}:</span>
+      <span class="text-label">{{ 'volume.table.title.iops' | i18n }}:</span>
     </ng-template>
     <ng-template #titleStatus>
-      <span class="text-label">{{ 'volume.table.title.status.volume' | i18n}}:</span>
+      <span class="text-label">{{ 'volume.table.title.status.volume' | i18n }}:</span>
     </ng-template>
     <ng-template #titleAttachInstance>
-      <span class="text-label">{{'app.attach.to.vm'|i18n}}:</span>
+      <span class="text-label">{{ 'app.attach.to.vm'|i18n }}:</span>
     </ng-template>
     <div style="display: flex; margin-bottom: 15px;">
       <div style="margin-top: 15px;">
-        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled >{{'volume.info.type.encrypt'|i18n}}</label>
+        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isEncryption"
+               nzDisabled>{{ 'volume.info.type.encrypt'|i18n }}</label>
       </div>
       <div style="margin-top: 15px; margin-left: 15px;">
-        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled >{{'volume.info.type.multiAttach'|i18n}}</label>
+        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach"
+               nzDisabled>{{ 'volume.info.type.multiAttach'|i18n }}</label>
       </div>
     </div>
     <ng-template #titleDescription>
@@ -132,16 +150,18 @@
       </nz-descriptions-item>
     </nz-descriptions>
     <nz-descriptions [nzColumn]="2" *ngIf="typeVPC == 0">
-      <nz-descriptions-item [nzTitle]="titleCreateDate" >
+      <nz-descriptions-item [nzTitle]="titleCreateDate">
         <span class="text-label"><b>{{ volumeInfo?.creationDate | date:'dd/MM/yyyy' }}</b></span></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleExpireDate" class="text-label">
-        <span style="color: rgba(235, 20, 20, 0.85)" class="text-label"><b>{{ volumeInfo?.expirationDate | date:'dd/MM/yyyy' }}</b></span>
+        <span style="color: rgba(235, 20, 20, 0.85)"
+              class="text-label"><b>{{ volumeInfo?.expirationDate | date:'dd/MM/yyyy' }}</b></span>
       </nz-descriptions-item>
       <ng-template #titleCreateDate>
         <span class="text-label">{{ 'volume.table.title.create.date' | i18n }}:</span>
       </ng-template>
       <ng-template #titleExpireDate>
-        <span style="color: rgba(235, 20, 20, 0.85)" class="text-label">{{ 'volume.table.title.expire.date' | i18n }}:</span>
+        <span style="color: rgba(235, 20, 20, 0.85)" class="text-label">{{ 'volume.table.title.expire.date' | i18n }}
+          :</span>
       </ng-template>
 
     </nz-descriptions>

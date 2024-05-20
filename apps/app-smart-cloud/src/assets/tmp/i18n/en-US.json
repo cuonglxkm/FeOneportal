@@ -1,4 +1,5 @@
 {
+  "menu.search": "search",
   "menu.search.placeholder": "Search for people, file, photos... (Press F1 to focus)",
   "menu.fullscreen": "Fullscreen",
   "menu.fullscreen.exit": "Exit Fullscreen",

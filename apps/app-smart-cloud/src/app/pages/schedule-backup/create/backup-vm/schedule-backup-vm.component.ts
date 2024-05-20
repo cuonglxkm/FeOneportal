@@ -11,6 +11,8 @@ import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 import { InstancesService } from '../../../instances/instances.service';
 import { InstancesModel } from '../../../instances/instances.model';
 import { DatePipe } from '@angular/common';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-schedule-backup-vm',
@@ -63,26 +65,25 @@ export class ScheduleBackupVmComponent implements OnInit {
   times = new Date();
 
   mode = [
-    { label: 'Hàng ngày', value: '1' },
-    { label: 'Theo thứ', value: '2' },
-    { label: 'Theo tuần', value: '3' },
-    { label: 'Theo tháng', value: '4' }
-  ];
-
-  daysOfWeek = [
-    { label: 'Thứ 2', value: '1' },
-    { label: 'Thứ 3', value: '2' },
-    { label: 'Thứ 4', value: '3' },
-    { label: 'Thứ 5', value: '4' },
-    { label: 'Thứ 6', value: '5' },
-    { label: 'Thứ 7', value: '6' },
-    { label: 'Chủ nhật', value: '7' }
-  ];
+    {label: this.i18n.fanyi("schedule.backup.label.each.day"), value: '1'},
+    {label: this.i18n.fanyi("schedule.backup.label.each.number.day"), value: '2'},
+    {label: this.i18n.fanyi("schedule.backup.label.each.week"), value: '3'},
+    {label: this.i18n.fanyi("schedule.backup.label.each.month"), value: '4'}
+  ]
   numberOfWeek = [
-    { label: '1 Tuần', value: '1' },
-    { label: '2 Tuần', value: '2' },
-    { label: '3 Tuần', value: '3' }
-  ];
+    {label: '1 ' + this.i18n.fanyi("app.Week"), value: '1'},
+    {label: '2 ' + this.i18n.fanyi("app.Week"), value: '2'},
+    {label: '3 ' + this.i18n.fanyi("app.Week"), value: '3'}
+  ]
+  daysOfWeek = [
+    {label: this.i18n.fanyi("schedule.backup.monday"), value: '1'},
+    {label: this.i18n.fanyi("schedule.backup.tuesday"), value: '2'},
+    {label: this.i18n.fanyi("schedule.backup.wednesday"), value: '3'},
+    {label: this.i18n.fanyi("schedule.backup.thursday"), value: '4'},
+    {label: this.i18n.fanyi("schedule.backup.friday"), value: '5'},
+    {label: this.i18n.fanyi("schedule.backup.saturday"), value: '6'},
+    {label: this.i18n.fanyi("schedule.backup.sunday"), value: '7'}
+  ]
 
   volumeAttachments: VolumeAttachment[] = [];
   lstBackupSchedules: BackupSchedule[];
@@ -112,6 +113,7 @@ export class ScheduleBackupVmComponent implements OnInit {
               private backupVmService: BackupVmService,
               private backupScheduleService: ScheduleService,
               private instanceService: InstancesService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private datepipe: DatePipe) {
   }
 
@@ -169,12 +171,12 @@ export class ScheduleBackupVmComponent implements OnInit {
       this.formCreateSchedule = this.getData();
       this.formCreateSchedule.runtime = this.datepipe.transform(this.validateForm.controls.times.value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
       this.backupScheduleService.create(this.formCreateSchedule).subscribe(data => {
-        this.notification.success('Thành công', 'Tạo mới lịch backup vm thành công');
+        this.notification.success(this.i18n.fanyi("app.status.success") ,this.i18n.fanyi("schedule.backup.notify.create.success"));
         this.nameList = [];
         this.getListScheduleBackup();
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
-        this.notification.error('Thất bại', 'Tạo mới lịch backup vm thất bại');
+        this.notification.error(this.i18n.fanyi("app.status.fail") ,this.i18n.fanyi("schedule.backup.notify.create.fail"));
       });
     } else {
       console.log(this.validateForm.controls);

@@ -3,7 +3,7 @@ def imageTag
 def appName
 
 pipeline {
-    
+
     agent { label 'worker-6-agent||jenkins-oneportal' }
 
     environment {

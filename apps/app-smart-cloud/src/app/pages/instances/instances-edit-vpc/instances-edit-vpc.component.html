@@ -13,9 +13,7 @@
           'app.instances' | i18n
         }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item
-        >{{ 'app.instances.edit' | i18n }}
-      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.instances.edit' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -30,234 +28,590 @@
       ></project-select-dropdown>
     </div>
   </ng-template>
-  <nz-row style="margin-top: 20px">
-    <div class="non-pointer" style="width: 100%">
-      <one-portal-instances-btn [instancesId]="id"> </one-portal-instances-btn>
+  <nz-row>
+    <div style="width: 100%" class="non-pointer">
+      <button nz-button nzType="primary" (click)="navigateToCreate()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/add-circle.svg"
+          alt=""
+        />{{ 'app.button.instance.create' | i18n }}
+      </button>
+      <one-portal-instances-btn
+        *ngIf="
+          instancesModel &&
+          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+        "
+        [instancesId]="id"
+        [isProjectVPC]="true"
+        (valueChanged)="onReloadInstanceDetail()"
+        style="margin-left: 8px"
+      >
+      </one-portal-instances-btn>
     </div>
   </nz-row>
 </page-header>
-
-<nz-card
-  style="border-radius: 8px"
-  [nzBordered]="false"
-  [nzLoading]="loading"
-  *ngIf="instancesModel"
->
-  <div style="margin-bottom: 20px">
-    <span class="text-card-header">{{ 'app.instances.info' | i18n }}</span>
-  </div>
-  <nz-row class="customRow">
-    <div nz-col nzSpan="12">
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan" style="width: 40%"
-          >{{ 'app.instances.name' | i18n }}:</span
-        >
-        <span class="text-value-detail customSpan">{{
-          instancesModel.name || ''
-        }}</span>
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan" style="width: 40%"
-          >{{ 'app.configuration.package' | i18n }}:</span
-        >
-        <span class="text-value-detail customSpan">{{
-          instancesModel.flavorName | slice : 3
-        }}</span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan" style="width: 40%"
-          >Trạng thái:</span
-        >
-        <span
-          *ngIf="instancesModel.status == 'KHOITAO'"
-          class="text-value-detail customSpan"
-          style="color: #008d47"
-          >KHỞI TẠO</span
-        >
-        <span
-          *ngIf="instancesModel.status == 'ACTIVE'"
-          class="text-value-detail customSpan"
-          style="color: #008d47"
-          >ACTIVE</span
-        >
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan" style="width: 40%"
-          >Thời gian khởi tạo:</span
-        >
-        <span class="text-value-detail customSpan">{{
-          instancesModel.createdDate | date : 'dd/MM/yyyy'
-        }}</span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan" style="width: 40%"
-          >{{ 'app.domestic.bandwidth' | i18n }}:</span
-        >
-        <span class="text-value-detail customSpan"
-          >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
-        >
-      </nz-row>
-    </div>
-    <div nz-col nzSpan="12">
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan1" style="width: 40%"
-          >{{ 'app.instances.OS' | i18n }}:</span
-        >
-        <span class="text-value-detail customSpan1"
-          >{{ instancesModel.imageName }}
-          <a
-            class="text-blue"
-            (click)="navigateToChangeImage()"
-            style="margin-left: 15px"
-          >
-            <img src="assets/imgs/undo.png" alt="" /><span
-              style="margin-left: 15px"
-              >Thay đổi</span
-            ></a
-          ></span
-        >
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan1" style="width: 40%"
-          >{{ 'app.alert.access.security' | i18n }}:</span
-        >
-        <span
-          class="text-value-detail customSpan1"
-          *ngFor="let item of listSecurityGroupModel; let first = first"
-          >{{ !first ? ', ' : '' }}{{ item.name }}
-        </span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan1" style="width: 40%"
-          >{{ 'app.ip.public' | i18n }}:</span
-        >
-        <span class="text-value-detail customSpan1">{{ listIPPublicStr }}</span>
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan1" style="width: 40%">{{ 'app.ip.lan' | i18n }}:</span>
-        <span class="text-value-detail customSpan1">{{ listIPLanStr }}</span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan1" style="width: 40%"
-          >{{ 'app.international.bandwidth' | i18n }}:</span
-        >
-        <span class="text-value-detail customSpan1"
-          >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
-        >
-      </nz-row>
-    </div>
-  </nz-row>
-</nz-card>
-<one-portal-blockstorage-detail
-  [instancesId]="id"
-  [isDetail]="true"
-></one-portal-blockstorage-detail>
-<one-portal-network-detail
-  [instancesId]="id"
-  [isDetail]="false"
-></one-portal-network-detail>
-<nz-card
-  style="border-radius: 8px"
-  [nzBordered]="false"
-  [nzLoading]="loading"
-  *ngIf="instancesModel"
->
-  <div style="margin-bottom: 20px">
-    <span class="text-card-header">Thông tin điều chỉnh</span>
-  </div>
-  <nz-row style="margin-bottom: 20px" nzGutter="24">
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label">Dung lượng Volume Root đã dùng:</span>
-    </nz-col>
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label">RAM đã dùng:</span>
-    </nz-col>
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label">VCPU đã dùng:</span>
-    </nz-col>
-  </nz-row>
-  <nz-row style="margin-bottom: 20px" nzGutter="24">
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label"
-        >Dung lượng Volume Root tăng thêm (<span class="text-red">*</span>) -
-        GB</span
+<div nz-row [nzGutter]="24">
+  <div nz-col [nzSpan]="16" style="display: flex">
+    <nz-row>
+      <nz-card
+        style="border-radius: 8px; width: 100%"
+        [nzBordered]="false"
+        *ngIf="instancesModel"
       >
-      <nz-row style="margin-top: 10px">
-        <nz-col nzSpan="18">
-          <nz-slider [nzMin]="1" [nzMax]="500"></nz-slider>
-        </nz-col>
-        <div nzSpan="6">
-          <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{
+            'app.instances.info' | i18n
+          }}</span>
         </div>
-      </nz-row>
-    </nz-col>
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label"
-        >RAM tăng thêm (<span class="text-red">*</span>) - GB</span
-      >
-      <nz-row style="margin-top: 10px">
-        <nz-col nzSpan="18">
-          <nz-slider [nzMin]="1" [nzMax]="20"></nz-slider>
-        </nz-col>
-        <div nzSpan="6">
-          <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
+        <div class="customRow">
+          <nz-row>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.instances.name' | i18n }}:</span
+                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.name || ''
+                }}</span>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.instances.OS' | i18n }}:</span
+                >
+                <span class="text-value-detail"
+                  >{{ instancesModel.imageName }}
+                  <img
+                    style="cursor: pointer; margin-left: 10px"
+                    [nz-tooltip]="'app.change' | i18n"
+                    src="assets/imgs/refresh.svg"
+                    alt=""
+                    (click)="navigateToChangeImage()"
+                /></span> </nz-row
+            ></nz-col>
+          </nz-row>
+          <nz-row style="background-color: #e2e2e9">
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.configuration.package' | i18n }}:</span
+                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.flavorName | slice : 3
+                }}</span>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.alert.access.security' | i18n }}:</span
+                >
+                <span
+                  class="text-value-detail"
+                  *ngFor="let item of listSecurityGroupModel; let first = first"
+                  >{{ !first ? ', ' : '' }}{{ item.name }}
+                </span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.task.status' | i18n }}:</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'SHUTOFF'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-OFF'
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBUILDING'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase().includes('RESIZING')
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBOOTING'"
+                  class="text-value-detail customSpan"
+                  style="color: #ea3829"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="instancesModel.taskState.toUpperCase() == 'ACTIVE'"
+                  class="text-value-detail customSpan"
+                  style="color: #008d47"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+                <span
+                  *ngIf="
+                    instancesModel.taskState.toUpperCase() == 'POWERING-ON'
+                  "
+                  class="text-value-detail customSpan"
+                  style="color: #008d47"
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
+                >
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.ip.public' | i18n }}:</span
+                >
+                <span class="text-value-detail">{{ listIPPublicStr }}</span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row style="background-color: #e2e2e9">
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.hard.drive.type' | i18n }}:</span
+                >
+                <span
+                  *ngIf="instancesModel.volumeType == 0"
+                  class="text-value-detail customSpan"
+                  >HDD</span
+                >
+                <span
+                  *ngIf="instancesModel.volumeType == 1"
+                  class="text-value-detail customSpan"
+                  >SSD</span
+                >
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.ip.lan' | i18n }}:</span
+                >
+                <span class="text-value-detail">{{ listIPLanStr }}</span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.domestic.bandwidth' | i18n }}:</span
+                >
+                <span class="text-value-detail customSpan"
+                  >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
+                >
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.international.bandwidth' | i18n }}:</span
+                >
+                <span class="text-value-detail"
+                  >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
+                >
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row style="background-color: #e2e2e9">
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.service.creation-date' | i18n }}:</span
+                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.createdDate | date : 'dd/MM/yyyy'
+                }}</span>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.service.expiration-date' | i18n }}:</span
+                >
+                <span class="text-value-detail"
+                  >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
+                </span>
+              </nz-row></nz-col
+            >
+          </nz-row>
+          <nz-row *ngIf="instancesModel.keypair">
+            <nz-col nzSpan="12">
+              <nz-row style="padding: 12px 0 12px 0">
+                <span class="text-label customSpan" style="width: 35%"
+                  >{{ 'app.keypair.name' | i18n }}:</span
+                >
+                <span class="text-value-detail customSpan">{{
+                  instancesModel.keypair || ''
+                }}</span>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="12"> </nz-col>
+          </nz-row>
         </div>
-      </nz-row>
-    </nz-col>
-    <nz-col nzLg="8" nzMd="8" nzSm="24">
-      <span class="text-label"
-        >CPU tăng thêm (<span class="text-red">*</span>) - vCPU</span
-      >
-      <nz-row style="margin-top: 10px">
-        <nz-col nzSpan="18">
-          <nz-slider [nzMin]="1" [nzMax]="20"></nz-slider>
-        </nz-col>
-        <div nzSpan="6">
-          <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
-        </div>
-      </nz-row>
-    </nz-col>
-  </nz-row>
-  <span class="text-label">Chọn Security Group gắn thêm</span>
-  <nz-row>
-    <nz-col nzSpan="24">
-      <nz-form-item>
-        <nz-form-control>
-          <nz-select
-            nzMode="multiple"
-            nzPlaceHolder="Chọn Security Group"
-            [ngModelOptions]="{ standalone: true }"
-            [(ngModel)]="selectedSecurityGroup"
-            [nzServerSearch]="true"
+      </nz-card>
+      <one-portal-blockstorage-detail
+        [instancesId]="id"
+        [isDetail]="true"
+      ></one-portal-blockstorage-detail>
+      <one-portal-network-detail
+        style="width: 100%"
+        [instancesId]="id"
+        [isDetail]="false"
+      ></one-portal-network-detail>
+      <form style="width: 100%" nz-form [nzLayout]="'vertical'">
+        <nz-card
+          style="border-radius: 8px"
+          [nzBordered]="false"
+          *ngIf="instancesModel"
+        >
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
+          </div>
+          <div style="margin-bottom: 20px" *ngIf="infoVPC">
+            <span class="text-label"
+              >{{ 'app.remain.configuration.in.vpc' | i18n }}:
+              {{ remainingVCPU }}/{{ infoVPC.cloudProject.quotavCpu }} vCPU,
+              {{ remainingRAM }}/{{ infoVPC.cloudProject.quotaRamInGb }} GB RAM,
+              {{ remainingVolume }}/{{ purchasedVolume }} GB
+              <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+            </span>
+          </div>
+          <div style="margin-bottom: 20px">
+            <span class="text-label"
+              >{{ 'app.current.config' | i18n }}: {{ instancesModel.cpu }} vCPU,
+              {{ instancesModel.ram }} GB RAM, {{ instancesModel.storage }} GB
+              <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+            </span>
+          </div>
+          <div style="margin-bottom: 20px">
+            <span class="text-label"
+              >{{ 'app.adjust.config' | i18n }}:
+              {{ vCPU + instancesModel.cpu }} vCPU,
+              {{ ram + instancesModel.ram }}GB RAM,
+              {{ storage + instancesModel.storage }}GB
+              <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+            </span>
+          </div>
+          <nz-tabset
+            nzCentered
             nzSize="large"
+            (keydown)="handleKeyboardEvent($event)"
           >
-            <nz-option
-              *ngFor="let i of listSecurityGroup"
-              [nzLabel]="i.name"
-              [nzValue]="i.name"
-            />
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-    </nz-col>
-  </nz-row>
-</nz-card>
-
-<nz-row>
-  <nz-col style="width: 100%" class="text-right">
-    <button nz-button (click)="cancel()">
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/cancel.svg"
-        alt=""
-      />{{ 'app.button.cancel' | i18n }}
-    </button>
-    <button nz-button nzSize="large" nzType="primary" (click)="update()">
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/confirm.svg"
-        alt=""
-      />Cập nhật
-    </button>
-  </nz-col>
-</nz-row>
+            <nz-tab
+              *ngIf="!isConfigGpuAtInitial"
+              [nzTitle]="'app.custom.configuration' | i18n"
+              (nzClick)="onClickCustomConfig()"
+            >
+              <div class="ant-table">
+                <table>
+                  <thead class="ant-table-thead">
+                    <tr>
+                      <th style="width: 80%">{{ 'app.resource' | i18n }}</th>
+                      <th>{{ 'app.amount' | i18n }}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="ant-table-tbody">
+                    <tr>
+                      <td style="width: 50%">
+                        <nz-form-label style="margin-left: -12px"
+                          >{{ 'app.capacity' | i18n }} (<span class="text-red"
+                            >*</span
+                          >) - GB</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="storage"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVolume"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="storage"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVolume"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >RAM (<span class="text-red">*</span>) -
+                          GB</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="ram"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingRAM"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="ram"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingRAM"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >CPU (<span class="text-red">*</span>) -
+                          vCPU</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="vCPU"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVCPU"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="vCPU"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVCPU"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </nz-tab>
+            <nz-tab
+              [nzTitle]="'app.gpu.configuration' | i18n"
+              (nzClick)="onClickGpuConfig()"
+            >
+              <div class="ant-table">
+                <table>
+                  <thead class="ant-table-thead">
+                    <tr>
+                      <th style="width: 80%">{{ 'app.resource' | i18n }}</th>
+                      <th>{{ 'app.amount' | i18n }}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="ant-table-tbody">
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >CPUs (<span class="text-red">*</span>)</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="vCPU"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVCPU"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="vCPU"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVCPU"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >RAM (<span class="text-red">*</span>) -
+                          GB</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="ram"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingRAM"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="ram"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingRAM"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 50%">
+                        <nz-form-label style="margin-left: -12px"
+                          >{{ 'app.ssd.capacity' | i18n }} (<span
+                            class="text-red"
+                            >*</span
+                          >) - GB</nz-form-label
+                        >
+                        <nz-slider
+                          [(ngModel)]="storage"
+                          (ngModelChange)="checkChangeConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVolume"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="storage"
+                          (ngModelChange)="checkChangeConfig()"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="remainingVolume"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 50%">
+                        <nz-form-label style="margin-left: -12px"
+                          >{{ 'app.gpu.number' | i18n }} (<span class="text-red"
+                            >*</span
+                          >)</nz-form-label
+                        >
+                        <nz-slider
+                          [nzMin]="0"
+                          [nzMax]="remainingGpu"
+                          [(ngModel)]="GPU"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [nzMin]="0"
+                          [nzMax]="remainingGpu"
+                          [(ngModel)]="GPU"
+                          (keydown)="onKeyDown($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-input-number>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
+                <nz-form-label
+                  >{{ 'app.choose.gpu.type' | i18n }} (<span class="text-red"
+                    >*</span
+                  >)</nz-form-label
+                >
+                <nz-form-control>
+                  <nz-select
+                    [nzPlaceHolder]="
+                      '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
+                    "
+                    [nzShowSearch]="true"
+                    [(ngModel)]="gpuTypeOfferId"
+                    [ngModelOptions]="{ standalone: true }"
+                    nzSize="large"
+                  >
+                    <nz-option
+                      *ngFor="let i of listGPUType"
+                      [nzLabel]="i.offerName"
+                      [nzValue]="i.id"
+                    />
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </nz-tab>
+          </nz-tabset>
+        </nz-card>
+      </form>
+    </nz-row>
+  </div>
+  <div nz-col [nzSpan]="8" style="display: flex">
+    <div style="width: 100%" *ngIf="instancesModel">
+      <nz-affix [nzOffsetTop]="48">
+        <nz-card style="border-radius: 8px; width: 100%">
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{
+              'app.estimated.cost' | i18n
+            }}</span>
+          </div>
+          <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ instancesModel.name }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ instancesModel.imageName }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{ 'app.text.package' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ vCPU + instancesModel.cpu }} CPUs
+          </div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ ram + instancesModel.ram }} GB RAM
+          </div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ storage + instancesModel.storage }} GB Root Disk (<span
+              *ngIf="instancesModel.volumeType == 0"
+              >HDD</span
+            >
+            <span *ngIf="instancesModel.volumeType == 1">SSD</span>)
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row>
+            <nz-col style="width: 100%">
+              <button
+                style="width: 100%"
+                nz-button
+                nzSize="large"
+                nzType="primary"
+                (click)="update()"
+                [disabled]="!isChange"
+              >
+                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <span>{{ 'app.button.resize' | i18n }}</span>
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-affix>
+    </div>
+  </div>
+</div>

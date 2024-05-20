@@ -5,16 +5,26 @@ import {
   Inject,
   OnInit,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { addDays } from 'date-fns';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, finalize } from 'rxjs';
 import {
+  ObjectStorage,
   ObjectStorageCreate,
   ObjectStorageResize,
 } from 'src/app/shared/models/object-storage.model';
-import { DataPayment, ItemPayment, Order, OrderItem } from '../../instances/instances.model';
+import {
+  DataPayment,
+  ItemPayment,
+  Order,
+  OrderItem,
+} from '../../instances/instances.model';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
+import { LoadingService } from '@delon/abc/loading';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -23,32 +33,60 @@ import { ObjectStorageService } from 'src/app/shared/services/object-storage.ser
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ObjectStorageEditComponent implements OnInit {
+  id: any;
   today: Date = new Date();
-  numberMonth: number = 1;
-  objectStorageCreate: ObjectStorageCreate = new ObjectStorageCreate();
+  addQuota: number = 0;
   objectStorageResize: ObjectStorageResize = new ObjectStorageResize();
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private service: ObjectStorageService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private activatedRoute: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
+    private loadingSrv: LoadingService,
+    private notification: NzNotificationService
   ) {}
 
   ngOnInit(): void {
+    this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.getObjectStorage();
     this.getTotalAmount();
   }
 
+  objectStorage: ObjectStorage = new ObjectStorage();
+  getObjectStorage() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.service
+      .getObjectStorage()
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          this.objectStorage = data;
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error(
+            e.error.detail,
+            this.i18n.fanyi('app.notification.object.storage.fail')
+          );
+        },
+      });
+  }
+
   initObjectStorageResize() {
-    this.objectStorageResize.newQuota = 0;
+    this.objectStorageResize.newQuota =
+      this.addQuota + this.objectStorage.quota;
     this.objectStorageResize.customerId = this.tokenService.get()?.userId;
     this.objectStorageResize.userEmail = this.tokenService.get()?.email;
     this.objectStorageResize.actorEmail = this.tokenService.get()?.email;
-    this.objectStorageResize.vpcId = 0;
+    this.objectStorageResize.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.UserObjectStorageExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     this.objectStorageResize.regionId = 0;
     this.objectStorageResize.serviceType = 13;
-    this.objectStorageResize.actionType = 0;
-    this.objectStorageResize.serviceInstanceId = 0;
+    this.objectStorageResize.actionType = 4;
+    this.objectStorageResize.serviceInstanceId = this.id;
     this.objectStorageResize.newOfferId = 0;
   }
 
@@ -68,10 +106,9 @@ export class ObjectStorageEditComponent implements OnInit {
         let itemPayment: ItemPayment = new ItemPayment();
         itemPayment.orderItemQuantity = 1;
         itemPayment.specificationString = JSON.stringify(
-          this.objectStorageCreate
+          this.objectStorageResize
         );
         itemPayment.specificationType = 'objectstorage_resize';
-        itemPayment.serviceDuration = this.numberMonth;
         itemPayment.sortItem = 0;
         let dataPayment: DataPayment = new DataPayment();
         dataPayment.orderItems = [itemPayment];
@@ -96,7 +133,6 @@ export class ObjectStorageEditComponent implements OnInit {
     orderItemOS.specification = specification;
     orderItemOS.specificationType = 'objectstorage_resize';
     orderItemOS.price = this.totalAmount;
-    orderItemOS.serviceDuration = this.numberMonth;
     this.orderItem.push(orderItemOS);
 
     this.order.customerId = this.tokenService.get()?.userId;

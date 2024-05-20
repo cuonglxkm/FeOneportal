@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Đặt lịch File System Snapshot'"
+  [title]="'app.file.system.snapshot.schedule' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -19,7 +19,7 @@
           >File System Snapshot Schedule</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>Tạo mới lịch File System Snapshot</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.file.system.snapshot.schedule.create' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -44,16 +44,16 @@
   <div nz-row [nzGutter]="16">
     <div nz-col [nzSpan]="18" class="gutter-row">
       <nz-card style="border-radius: 8px;">
-        <h2 class="custom-title">Thông tin đặt lịch File System Snapshot</h2>
+        <h2 class="custom-title">{{ 'app.file.system.snapshot.schedule.info' | i18n }}</h2>
         <nz-form-item>
           <nz-form-label nzFor="name">
             <div>
-              <span>Tên lịch Snapshot</span>
+              <span>{{ 'app.snapshot.schedule.name' | i18n }}</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
               <span nz-icon nzType="question-circle"
                     nzTheme="outline"
                     nz-popover
-                    [nzPopoverContent]="'Tên của lịch Snapshot muốn tạo, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
+                    [nzPopoverContent]="'app.tooltip.file.system.snapshot.schedule.name' | i18n"
                     nzPopoverPlacement="bottom"></span>
             </div>
           </nz-form-label>
@@ -63,32 +63,32 @@
             type="text"
             required
             id="nameSnapshot"
-            placeholder="Nhập tên lịch Snapshot"
+            [placeholder]="'app.input.name' | i18n"
             formControlName="name"
             class="input-custom"
           />
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Tên lịch snapshot không được để trống</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Tên lịch snapshot chứa chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.file.system.name.pattern' | i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label nzFor="name">
             <div>
-              <span>Áp dụng cho File System</span>
+              <span>{{ 'app.to.file.system' | i18n }}</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
               <span nz-icon nzType="question-circle"
                     nzTheme="outline"
                     nz-popover
-                    [nzPopoverContent]="'Chọn File System để thực hiện Snapshot.'"
+                    [nzPopoverContent]="'app.choose.file.system.to.perform.snapshot' | i18n"
                     nzPopoverPlacement="bottom"></span>
             </div>
           </nz-form-label>
-          <nz-form-control nzErrorTip="File System không đuợc để trống!">
+          <nz-form-control [nzErrorTip]="'validation.file.system.empty' | i18n">
           <nz-select
             nzMode="multiple"
-            nzPlaceHolder="Chọn File System"
+            [nzPlaceHolder]="'app.choose.file.system' | i18n"
             formControlName="listOfFileSystem"
             (ngModelChange)="updateSelectedFileSystems($event)"
             class="input-select-custom"
@@ -105,12 +105,12 @@
         <nz-form-item>
           <nz-form-label nzFor="name">
             <div>
-              <span>Áp dụng cho File System</span>
+              <span>{{ 'app.to.file.system' | i18n }}</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
               <span nz-icon nzType="question-circle"
                     nzTheme="outline"
                     nz-popover
-                    [nzPopoverContent]="'Chọn File System để thực hiện Snapshot.'"
+                    [nzPopoverContent]="'app.choose.file.system.to.perform.snapshot' | i18n"
                     nzPopoverPlacement="bottom"></span>
             </div>
           </nz-form-label>
@@ -119,12 +119,12 @@
         <nz-form-item>
           <nz-form-label nzFor="name">
             <div>
-              <span>Chọn thời điểm thực hiện Snapshot</span>
+              <span>{{ 'app.choose.perform.snapshot.time' | i18n }}</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
               <span nz-icon nzType="question-circle"
                     nzTheme="outline"
                     nz-popover
-                    [nzPopoverContent]="'Thời gian chạy chính sách, tính theo giờ UTC + 00: 00.'"
+                    [nzPopoverContent]="'app.tooltip.perform.snapshot' | i18n"
                     nzPopoverPlacement="bottom"></span>
             </div>
           </nz-form-label>
@@ -142,12 +142,12 @@
         <nz-form-item>
           <nz-form-label nzFor="name">
             <div>
-              <span>Chế độ Snapshot</span>
+              <span>{{ 'app.snapshot.mode' | i18n }}</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
               <span nz-icon nzType="question-circle"
                     nzTheme="outline"
                     nz-popover
-                    [nzPopoverContent]="'Chọn tần suất để thực hiện snapshot policy. Nếu theo tuần thì chọn số tuần và chọn ngày trong tuần. Nếu theo tháng thì chọn số tháng và ngày trong tháng.'"
+                    [nzPopoverContent]="'app.tooltip.snapshot.mode' | i18n"
                     nzPopoverPlacement="bottom"></span>
             </div>
           </nz-form-label>
@@ -171,15 +171,15 @@
         </nz-form-item>
         <ng-container *ngIf="snapshotMode === '1'">
           <nz-form-item>
-            <nz-form-control nzErrorTip="Số bản Snapshot không đuợc để trống!">
+            <nz-form-control [nzErrorTip]="'validation.number.of.snapshot.required' | i18n">
             <nz-form-label nzFor="name">
               <div>
-                <span>Số bản Snapshot lưu trữ</span>
+                <span>{{ 'app.number.of.snapshot.copy' | i18n }}</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <span nz-icon nzType="question-circle"
                       nzTheme="outline"
                       nz-popover
-                      [nzPopoverContent]="'Khi 1 bản snapshot được tạo ra, hệ thống sẽ tự động xóa bản snapshot cũ nhất để đảm bảo số bản snapshot tối đa được lưu trữ không vượt quá số lượng được cài đặt. Số lượng này chỉ tác động đến các snapshot được cài đặt theo từng lịch, không tác động đến các bản snapshot được tạo đơn lẻ hoặc nằm trong lịch khác.'"
+                      [nzPopoverContent]="'app.tooltip.number.of.snapshot.copy' | i18n"
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
@@ -200,12 +200,12 @@
             >
               <nz-form-label nzFor="name">
                 <div>
-                  <span>Chọn số tuần</span>
+                  <span>{{ 'app.choose.week.number' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                   <span nz-icon nzType="question-circle"
                         nzTheme="outline"
                         nz-popover
-                        [nzPopoverContent]="'Chọn số tuần / lần thực hiện Snapshot.'"
+                        [nzPopoverContent]="'app.tooltip.choose.week.number' | i18n"
                         nzPopoverPlacement="bottom"></span>
                 </div>
               </nz-form-label>
@@ -213,7 +213,7 @@
               <nz-select
                 formControlName="intervalWeek"
                 id="numberOfWeek"
-                [nzPlaceHolder]="'Số tuần thực hiện'"
+                [nzPlaceHolder]="'app.number.of.week.executed' | i18n"
                 [nzShowSearch]="false"
                 [(ngModel)]="numberOfWeekSelected"
                 class="input-select-custom"
@@ -229,20 +229,20 @@
             <nz-form-item style="flex-basis: calc(50% - 8px)">
               <nz-form-label nzFor="name">
                 <div>
-                  <span>Chọn ngày</span>
+                  <span>{{ 'app.choose.day' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                   <span nz-icon nzType="question-circle"
                         nzTheme="outline"
                         nz-popover
-                        [nzPopoverContent]="'Ngày thực hiện snapshot trong tuần.'"
+                        [nzPopoverContent]="'app.tooltip.choose.day' | i18n"
                         nzPopoverPlacement="bottom"></span>
                 </div>
               </nz-form-label>
-              <nz-form-control nzErrorTip="Số ngày không đuợc để trống!">
+              <nz-form-control [nzErrorTip]="'validation.number.of.day.required' | i18n">
               <nz-select
                 formControlName="dayOfWeek"
                 id="daysOfWeek"
-                [nzPlaceHolder]="'Chọn ngày'"
+                [nzPlaceHolder]="'app.choose.day' | i18n"
                 [(ngModel)]="daysOfWeekSelected"
                 [nzShowSearch]="false"
                 class="input-select-custom"
@@ -259,16 +259,16 @@
           <nz-form-item>
             <nz-form-label nzFor="name">
               <div>
-                <span>Số bản Snapshot lưu trữ</span>
+                <span>{{ 'app.number.of.snapshot.copy' | i18n }}</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <span nz-icon nzType="question-circle"
                       nzTheme="outline"
                       nz-popover
-                      [nzPopoverContent]="'Khi 1 bản snapshot được tạo ra, hệ thống sẽ tự động xóa bản snapshot cũ nhất để đảm bảo số bản snapshot tối đa được lưu trữ không vượt quá số lượng được cài đặt. Số lượng này chỉ tác động đến các snapshot được cài đặt theo từng lịch, không tác động đến các bản snapshot được tạo đơn lẻ hoặc nằm trong lịch khác.'"
+                      [nzPopoverContent]="'app.tooltip.number.of.snapshot.copy' | i18n"
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
-            <nz-form-control nzErrorTip="Số bản Snapshot không đuợc để trống!">
+            <nz-form-control [nzErrorTip]="'validation.number.of.snapshot.required' | i18n">
             <input
               formControlName="maxSnapshot"
               nz-input
@@ -286,21 +286,21 @@
             >
               <nz-form-label nzFor="name">
                 <div>
-                  <span>Chọn ngày trong tuần</span>
+                  <span>{{ 'app.choose.day.of.week' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                   <span nz-icon nzType="question-circle"
                         nzTheme="outline"
                         nz-popover
-                        [nzPopoverContent]="'Bấm Ctrl để chọn nhiều, giữ Ctrl để bỏ chọn.'"
+                        [nzPopoverContent]="'app.tooltip.choose.of.week' | i18n"
                         nzPopoverPlacement="bottom"></span>
                 </div>
               </nz-form-label>
-              <nz-form-control nzErrorTip="Số ngày không đuợc để trống!">
+              <nz-form-control [nzErrorTip]="'validation.number.of.day.required' | i18n">
               <nz-select
                 formControlName="daysOfWeek"
                 id="daysOfWeekMultiple"
                 nzMode="multiple"
-                [nzPlaceHolder]="'Chọn thứ'"
+                [nzPlaceHolder]="'app.choose.day.of.week' | i18n"
                 [nzShowSearch]="false"
                 class="input-select-custom"
               >
@@ -315,16 +315,16 @@
             <nz-form-item style="flex-basis: calc(50% - 8px)">
               <nz-form-label nzFor="name">
                 <div>
-                  <span>Số bản Snapshot lưu trữ</span>
+                  <span>{{ 'app.number.of.snapshot.copy' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                   <span nz-icon nzType="question-circle"
                         nzTheme="outline"
                         nz-popover
-                        [nzPopoverContent]="'Khi 1 bản snapshot được tạo ra, hệ thống sẽ tự động xóa bản snapshot cũ nhất để đảm bảo số bản snapshot tối đa được lưu trữ không vượt quá số lượng được cài đặt. Số lượng này chỉ tác động đến các snapshot được cài đặt theo từng lịch, không tác động đến các bản snapshot được tạo đơn lẻ hoặc nằm trong lịch khác.'"
+                        [nzPopoverContent]="'app.tooltip.number.of.snapshot.copy' | i18n"
                         nzPopoverPlacement="bottom"></span>
                 </div>
               </nz-form-label>
-              <nz-form-control nzErrorTip="Số bản Snapshot không đuợc để trống!">
+              <nz-form-control [nzErrorTip]="'validation.number.of.snapshot.required' | i18n">
               <input
                 formControlName="maxSnapshot"
                 nz-input
@@ -343,16 +343,16 @@
             >
               <nz-form-label nzFor="name">
                 <div>
-                  <span>Chọn số tháng</span>
+                  <span>{{ 'app.choose.month.number' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                   <span nz-icon nzType="question-circle"
                         nzTheme="outline"
                         nz-popover
-                        [nzPopoverContent]="'Số tháng / lần thực hiện Snapshot.'"
+                        [nzPopoverContent]="'app.tooltip.choose.month.number' | i18n"
                         nzPopoverPlacement="bottom"></span>
                 </div>
               </nz-form-label>
-              <nz-form-control nzErrorTip="Số tháng không đuợc để trống!">
+              <nz-form-control [nzErrorTip]="'validation.number.of.month.required' | i18n">
               <nz-input-number
                 style="width: 100%; border-radius: 8px; margin-left: 0"
                 formControlName="intervalMonth"
@@ -368,16 +368,16 @@
             <nz-form-item style="flex-basis: calc(50% - 8px)">
               <nz-form-label nzFor="name">
                 <div>
-                  <span>Chọn ngày thực hiện Snapshot</span>
+                  <span>{{ 'app.choose.day.perform.snapshot' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                   <span nz-icon nzType="question-circle"
                         nzTheme="outline"
                         nz-popover
-                        [nzPopoverContent]="'Ngày thực hiện Snapshot trong tháng.'"
+                        [nzPopoverContent]="'app.snapshot.execution.day' | i18n"
                         nzPopoverPlacement="bottom"></span>
                 </div>
               </nz-form-label>
-              <nz-form-control nzErrorTip="Số ngày không đuợc để trống!">
+              <nz-form-control [nzErrorTip]="'validation.number.of.day.required' | i18n">
               <nz-input-number
                 style="width: 100%; border-radius: 8px; margin-left: 0"
                 formControlName="dates"
@@ -393,16 +393,16 @@
           <nz-form-item>
             <nz-form-label nzFor="name">
               <div>
-                <span>Số bản Snapshot lưu trữ</span>
+                <span>{{ 'app.number.of.snapshot.copy' | i18n }}</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <span nz-icon nzType="question-circle"
                       nzTheme="outline"
                       nz-popover
-                      [nzPopoverContent]="'Khi 1 bản snapshot được tạo ra, hệ thống sẽ tự động xóa bản snapshot cũ nhất để đảm bảo số bản snapshot tối đa được lưu trữ không vượt quá số lượng được cài đặt. Số lượng này chỉ tác động đến các snapshot được cài đặt theo từng lịch, không tác động đến các bản snapshot được tạo đơn lẻ hoặc nằm trong lịch khác.'"
+                      [nzPopoverContent]="'app.tooltip.number.of.snapshot.copy' | i18n"
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
-            <nz-form-control nzErrorTip="Số bản Snapshot không đuợc để trống!">
+            <nz-form-control [nzErrorTip]="'validation.number.of.snapshot.required' | i18n">
             <input
               formControlName="maxSnapshot"
               nz-input
@@ -413,10 +413,10 @@
           </nz-form-control>
           </nz-form-item>
         </ng-container>
-        <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
+        <nz-form-label [nzSm]="6" [nzXs]="24">{{ 'app.service.description' | i18n }}</nz-form-label>
         <textarea
           formControlName="description"
-          placeholder="Nhập mô tả"
+          [placeholder]="'app.input.des' | i18n"
           rows="4"
           nz-input
         ></textarea>
@@ -426,80 +426,80 @@
       <nz-card style="border-radius: 8px;">
         <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
         <div style="margin-bottom: 12px">
-          <h3 class="custom-subtitle">Tên lịch Snapshot</h3>
+          <h3 class="custom-subtitle">{{ 'app.snapshot.schedule.name' | i18n }}</h3>
           <span>{{FileSystemSnapshotForm.value.name}}</span>
         </div>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Tên File System</h3>     
+          <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>     
             <div style="overflow-wrap: break-word;">{{ selectedFileSystemName }}</div>
         </div>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Thời điểm thực hiện Snapshot</h3>
+          <h3 class="custom-subtitle">{{ 'app.perform.snapshot.time' | i18n }}</h3>
           <span>{{ time | date : 'mediumTime' }}</span>
         </div>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Chế độ Snapshot</h3>
+          <h3 class="custom-subtitle">{{ 'app.snapshot.mode' | i18n }}</h3>
           <span>{{
             snapshotMode === '1'
-              ? 'Hằng ngày'
+              ? ('app.daily' | i18n)
               : snapshotMode === '2'
-              ? 'Theo thứ'
+              ? ('app.by.day.of.week' | i18n)
               : snapshotMode === '3'
-              ? 'Theo tuần'
-              : snapshotMode === '4' && 'Theo tháng'
+              ? ('app.weekly' | i18n)
+              : snapshotMode === '4' && ('app.monthly' | i18n)
           }}</span>
         </div>
         <ng-container *ngIf="snapshotMode === '3'">
           <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Số tuần thực hiện</h3>
+            <h3 class="custom-subtitle">{{ 'app.number.of.week.executed' | i18n }}</h3>
             <span>{{
               numberOfWeekSelected === '1'
-                ? '1 Tuần'
+                ? '1 ' + ('app.Week' | i18n)
                 : numberOfWeekSelected === '2'
-                ? '2 Tuần'
+                ? '2 ' + ('app.Week' | i18n)
                 : numberOfWeekSelected === '3'
-                ? '3 Tuần'
+                ? '3 ' + ('app.Week' | i18n)
                 : ''
             }}</span>
           </div>
           <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Ngày thực hiện</h3>
+            <h3 class="custom-subtitle">{{ 'app.execution.date' | i18n }}</h3>
             <span>{{ getDayLabel(daysOfWeekSelected) }}</span>
           </div>
           <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Số bản Snapshot lưu trữ</h3>
+            <h3 class="custom-subtitle">{{ 'app.number.of.snapshot.copy' | i18n }}</h3>
             <span>{{ snapshotRecord }}</span>
           </div>
         </ng-container>
         <ng-container *ngIf="snapshotMode === '4'">
           <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Số tháng thực hiện</h3>
+            <h3 class="custom-subtitle">{{ 'app.number.of.month.executed' | i18n }}</h3>
             <span>{{ months }}</span>
           </div>
           <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Ngày thực hiện</h3>
+            <h3 class="custom-subtitle">{{ 'app.execution.date' | i18n }}</h3>
             <span>{{ dateDone }}</span>
           </div>
           <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Số bản Snapshot lưu trữ</h3>
+            <h3 class="custom-subtitle">{{ 'app.number.of.snapshot.copy' | i18n }}</h3>
             <span>{{ snapshotRecord }}</span>
           </div>
         </ng-container>
         <ng-container *ngIf="snapshotMode === '1'">
           <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Số bản Snapshot lưu trữ</h3>
+            <h3 class="custom-subtitle">{{ 'app.number.of.snapshot.copy' | i18n }}</h3>
             <span>{{ snapshotRecord }}</span>
           </div>
         </ng-container>
         <ng-container *ngIf="snapshotMode === '2'">
           <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Ngày trong tuần</h3>
+            <h3 class="custom-subtitle">{{ 'app.day.of.week' | i18n }}</h3>
             <span *ngFor="let selectedValue of listOfSelectedDate">
               {{ getDayLabelMulti(selectedValue) }}
             </span>
           </div>
           <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Số bản Snapshot lưu trữ</h3>
+            <h3 class="custom-subtitle">{{ 'app.number.of.snapshot.copy' | i18n }}</h3>
             <span>{{ snapshotRecord }}</span>
           </div>
         </ng-container>
@@ -519,7 +519,7 @@
           [disabled]="FileSystemSnapshotForm.invalid"
         >
           <img src="assets/imgs/wallet.svg" alt="" />
-          <span class="button-text-primary">Khởi tạo</span>
+          <span class="button-text-primary">{{ 'app.button.create' | i18n }}</span>
         </button>
       </nz-card>
     </div>

@@ -1,9 +1,10 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { LoadingService } from '@delon/abc/loading';
 import { camelizeKeys } from 'humps';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription, finalize } from 'rxjs';
-import { AppConstants } from 'src/app/core/constants/app-constant';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { KafkaInfor } from 'src/app/core/models/kafka-infor.model';
 import { ProjectModel } from 'src/app/core/models/project.model';
 import { RegionModel } from 'src/app/core/models/region.model';
@@ -11,6 +12,7 @@ import { KafkaStatus } from 'src/app/core/models/status.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 import { UtilService } from 'src/app/services/utils.service';
 import { ServiceActiveWebsocketService } from 'src/app/services/websocket-service.service';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 
 @Component({
   selector: 'one-portal-list-kafka',
@@ -40,6 +42,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
   msgError = '';
   serviceNameDelete: string;
   currentKafka: KafkaInfor;
+  statusSuspend = AppConstants.SERVICE_SUSPEND;
 
   // websocket service
   private websocketService: ServiceActiveWebsocketService;
@@ -50,6 +53,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     private loadingSrv: LoadingService,
     private notification: NzNotificationService,
     private utilService: UtilService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
     this.keySearch = '';
     this.serviceStatus = -1;
@@ -169,11 +173,11 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
       .subscribe(
         (data) => {
           if (data && data.code == 200) {
-            this.notification.success('Thành công', data.msg);
+            this.notification.success(this.i18n.fanyi('app.status.success'), data.msg);
             this.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus)
           }
           else {
-            this.notification.error('Thất bại', data.msg);
+            this.notification.error(this.i18n.fanyi('app.status.fail'), data.msg);
           }
         }
       );
@@ -183,10 +187,10 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     this.isInitModal = false;
     if (this.serviceNameDelete.length == 0) {
       this.isErrorCheckDelete = true;
-      this.msgError = 'Vui lòng nhập tên dịch vụ';
+      this.msgError = this.i18n.fanyi('validation.service.name-required');
     } else if (this.serviceNameDelete != this.currentKafka.serviceName) {
       this.isErrorCheckDelete = true;
-      this.msgError = 'Tên dịch vụ nhập chưa đúng';
+      this.msgError = this.i18n.fanyi('validation.service.name-not-correct');
     } else {
       this.isErrorCheckDelete = false;
       this.msgError = '';

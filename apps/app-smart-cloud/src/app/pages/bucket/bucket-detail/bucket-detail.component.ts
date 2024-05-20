@@ -1,28 +1,36 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import {
-  HttpClient
-} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { _HttpClient } from '@delon/theme';
+import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
 import { addDays, differenceInCalendarDays, setHours } from 'date-fns';
 import { DisabledTimeFn } from 'ng-zorro-antd/date-picker';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import { NzUploadFile } from 'ng-zorro-antd/upload/interface';
-import { finalize } from 'rxjs/operators';
+import { catchError, finalize, map } from 'rxjs/operators';
 import { ObjectObjectStorageModel } from '../../../shared/models/object-storage.model';
 import { BucketService } from '../../../shared/services/bucket.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { I18NService } from '@core';
+import * as JSZip from 'jszip';
+import mime from 'mime';
+import { forkJoin, of } from 'rxjs';
+import { BaseService } from 'src/app/shared/services/base.service';
+
+
+
+
 
 @Component({
   selector: 'one-portal-bucket-detail',
   templateUrl: './bucket-detail.component.html',
   styleUrls: ['./bucket-detail.component.less'],
 })
-export class BucketDetailComponent implements OnInit {
+export class BucketDetailComponent extends BaseService implements OnInit {
   listOfData: ObjectObjectStorageModel[];
   listOfDataVersioning: ObjectObjectStorageModel[];
   dataAction: ObjectObjectStorageModel;
@@ -52,16 +60,18 @@ export class BucketDetailComponent implements OnInit {
   isVisibleVersioning = false;
   isVisibleDeleteVersion = false;
   isVisibleRestoreVersion = false;
+  isLoadingCopy = false;
+  isUpload = false;
   folderChange: string;
   modalStyle = {
     padding: '20px',
     'border-radius': '10px',
     width: '80%',
   };
-  uploadFailed: boolean = false
+  uploadFailed: boolean = false;
 
   lstFileUpdate: NzUploadFile[] = [];
-
+  isLoadingDeleteObjects: boolean = false;
   listOfFilter: any;
   colReal = ['Tên', 'Thời gian chỉnh sửa', 'Dung lượng'];
   conditionNameReal = ['Bằng', 'Bao gồm', 'Bắt đầu', 'Kêt thức'];
@@ -105,33 +115,32 @@ export class BucketDetailComponent implements OnInit {
   private: any;
   percent = 0;
   keyName: string;
-  range(start: number, end: number): number[] {
-    const result: number[] = [];
-    for (let i = start; i < end; i++) {
-      result.push(i);
-    }
-    return result;
-  }
-
+  isLoadingGetLink: boolean = false;
+  isVisibleDeleteObject: boolean = false;
   disabledDate = (current: Date): boolean =>
-    differenceInCalendarDays(current, this.today) > 0;
-  disabledDateTime: DisabledTimeFn = () => ({
-    nzDisabledHours: () => this.range(0, 24).splice(4, 20),
-    nzDisabledMinutes: () => this.range(30, 60),
-    nzDisabledSeconds: () => [55, 56],
-  });
+    differenceInCalendarDays(current, this.today) < 0;
   activePrivate = true;
-
+  filterName: string;
+  filterCondition: string;
+  filterValueName: string;
+  filterValueSize: string;
+  filterValueDate: string;
+  filterQuery: string = '';
+  selectTypeMore: string = '';
+  selectTypeLess: string = '';
+  listFile = [];
   constructor(
     private service: ObjectObjectStorageService,
     private bucketservice: BucketService,
     private activatedRoute: ActivatedRoute,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private notification: NzNotificationService,
     private clipboard: Clipboard,
-    private http: HttpClient,
-    private https: _HttpClient
-  ) {}
+    private modalService: NzModalService
+  ) {
+    super()
+  }
 
   ngOnInit(): void {
     this.loadBucket();
@@ -150,6 +159,68 @@ export class BucketDetailComponent implements OnInit {
 
   openFilter() {
     this.isVisibleFilter = true;
+  }
+
+  handleOkFilter() {
+    let filterName;
+    switch (this.filterName) {
+      case 'Tên':
+        filterName = 'key';
+        break;
+      case 'Thời gian chỉnh sửa':
+        filterName = 'lastModified';
+        break;
+      case 'Dung lượng':
+        filterName = 'size';
+        break;
+    }
+    let filterCondition;
+    switch (this.filterCondition) {
+      case 'Bằng':
+        filterCondition = '=';
+        break;
+      case 'Bao gồm':
+        filterCondition = '.Contains';
+        break;
+      case 'Bắt đầu':
+        filterCondition = '.StartsWith';
+        break;
+      case 'Kết thúc':
+        filterCondition = '.EndsWith';
+        break;
+      case 'Lớn hơn':
+        filterCondition = '>';
+        break;
+      case 'Nhỏ hơn':
+        filterCondition = '<';
+        break;
+    }
+
+    let filterValueSize;
+
+    switch (this.selectTypeMore) {
+      case 'Bytes':
+        filterValueSize = parseInt(this.filterValueSize) / 1024;
+        break;
+      case 'KB':
+        filterValueSize = this.filterValueSize;
+        break;
+      case 'MB':
+        filterValueSize = parseInt(this.filterValueSize) * 1024;
+        break;
+      case 'GB':
+        filterValueSize = parseInt(this.filterValueSize) * 1024 * 1024;
+        break;
+    }
+    let filterValue =
+      this.filterValueName === 'Tên' && this.filterCondition === 'Bằng'
+        ? `"${this.filterValueName}"`
+        : this.filterValueName === 'Dung lượng'
+        ? `(${this.filterValueSize})`
+        : `("${this.filterValueName}")`;
+    this.filterQuery = filterName + filterCondition + filterValue;
+    this.loadData();
+    this.isVisibleFilter = false;
   }
 
   handleCancel() {
@@ -279,6 +350,8 @@ export class BucketDetailComponent implements OnInit {
 
   addFilter() {
     let filter = Object.assign({}, this.defaultDataFilter);
+    console.log(filter);
+
     filter.orderNum = this.orderNum++;
     this.dataFilter.push(filter);
     if (this.dataFilter.length >= 14) {
@@ -291,7 +364,6 @@ export class BucketDetailComponent implements OnInit {
     item.value = '';
     item.type = '';
   }
-
 
   toFolder1(item: any, isBucket) {
     if (isBucket) {
@@ -325,10 +397,16 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe(
         () => {
-          this.notification.success('Thành công', '`Thêm folder thành công');
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            '`Thêm folder thành công'
+          );
         },
         (error) => {
-          this.notification.error('Thất bại', 'Thêm folder thất bại');
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            'Thêm folder thất bại'
+          );
         }
       );
   }
@@ -352,13 +430,62 @@ export class BucketDetailComponent implements OnInit {
   }
 
   removeFile(item: NzUploadFile) {
-    let index = this.lstFileUpdate.findIndex((file) => file.uid === item.uid);
-    if (index >= 0) {
-      this.lstFileUpdate.splice(index, 1);
+    if (item.isUpload && item.isUpload === true && item.uploadId) {
+      let dataError = {
+        bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+        key: this.currentKey + item.name,
+        uploadId: item.uploadId,
+      };
+      const modal: NzModalRef = this.modalService.create({
+        nzTitle: 'Xóa file',
+        nzContent: 'File đang trong quá trình tải, bạn muốn xóa file chứ?',
+        nzFooter: [
+          {
+            label: 'Hủy',
+            type: 'default',
+            onClick: () => modal.destroy(),
+          },
+          {
+            label: 'Xác nhận',
+            type: 'primary',
+            onClick: () => {
+              this.service.abortmultipart(dataError).subscribe(
+                (data) => {
+                  let index = this.lstFileUpdate.findIndex(
+                    (file) => file.uid === item.uid
+                  );
+                  if (index >= 0) {
+                    this.lstFileUpdate.splice(index, 1);
+                  }
+                  this.notification.success(
+                    'Thành công',
+                    'Xóa file thành công'
+                  );
+                },
+                (error) => {
+                  console.log(error);
+                }
+              );
+              modal.destroy();
+            },
+          },
+        ],
+      });
+    } else {
+      let index = this.lstFileUpdate.findIndex((file) => file.uid === item.uid);
+      if (index >= 0) {
+        this.lstFileUpdate.splice(index, 1);
+      }
+      this.notification.success(
+        this.i18n.fanyi('app.status.success'),
+        'Xóa file thành công'
+      );
     }
   }
 
   updateCheckedSet(checked: boolean, key: string): void {
+    console.log(key);
+    
     if (checked) {
       this.setOfCheckedId.add(key);
     } else {
@@ -393,7 +520,7 @@ export class BucketDetailComponent implements OnInit {
       .getData(
         this.activatedRoute.snapshot.paramMap.get('name'),
         this.currentKey + this.folderNameLike,
-        '',
+        this.filterQuery,
         this.tokenService.get()?.userId,
         '',
         this.size,
@@ -412,6 +539,9 @@ export class BucketDetailComponent implements OnInit {
         this.listOfData = data.paginationObjectList.items;
         this.listOfData.map((item) => {
           item.keyName = item.key.split('/').pop();
+          if (item.objectType == 'object') {
+            item.objectType = mime.getType(item.keyName) || 'object';
+          }
         });
         this.total = data.paginationObjectList.totalItems;
       });
@@ -456,10 +586,16 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe(
         () => {
-          this.notification.success('Thành công', '`Xóa thành công');
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            'Xóa thành công'
+          );
         },
         (error) => {
-          this.notification.error('Thất bại', 'Xóa thất bại');
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            'Xóa thất bại'
+          );
         }
       );
   }
@@ -505,7 +641,10 @@ export class BucketDetailComponent implements OnInit {
     }
   }
 
+  activeRow: any;
   toFolder(event: any) {
+    console.log(event);
+    this.activeRow = event;
     if (event.folderKey != undefined) {
       this.folderChange = event.folderKey;
     } else {
@@ -513,11 +652,17 @@ export class BucketDetailComponent implements OnInit {
     }
   }
 
+  isActive(item: any): boolean {
+    return this.activeRow === item;
+  }
+
   downloadFile(versionId: any) {
     this.service
       .downloadFile(this.dataAction.bucketName, this.dataAction.key, versionId)
       .subscribe(
         (data) => {
+          console.log(data);
+
           let anchor = document.createElement('a');
           let objectUrl = window.URL.createObjectURL(data['body']);
 
@@ -543,19 +688,22 @@ export class BucketDetailComponent implements OnInit {
     };
     this.service.GetBucketTreeData(data).subscribe((data) => {
       this.treeFolder = data;
+      console.log(this.treeFolder);
     });
   }
 
   copyFolder() {
-    this.isVisibleCopy = false;
+    this.isLoadingCopy = true;
     let destinationKey = '';
     let destinationBucket = '';
     if (this.folderChange.includes('/')) {
       const separatorIndex = this.folderChange.indexOf('/');
       destinationBucket = this.folderChange.substring(0, separatorIndex);
-      destinationKey = this.folderChange.substring(separatorIndex + 1);
+      destinationKey =
+        this.folderChange.substring(separatorIndex + 1) + this.dataAction.key;
     } else {
       destinationBucket = this.folderChange;
+      destinationKey = this.dataAction.key;
     }
     const data = {
       sourceKey: this.dataAction.key,
@@ -568,15 +716,23 @@ export class BucketDetailComponent implements OnInit {
       .copyProject(data)
       .pipe(
         finalize(() => {
+          this.isLoadingCopy = false;
           this.loadData();
         })
       )
       .subscribe(
         () => {
-          this.notification.success('Thành công', '`Sao chép thành công');
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            'Sao chép thành công'
+          );
+          this.isVisibleCopy = false;
         },
         (error) => {
-          this.notification.error('Thất bại', 'Sao chép thất bại');
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            'Sao chép thất bại'
+          );
         }
       );
   }
@@ -604,10 +760,16 @@ export class BucketDetailComponent implements OnInit {
         )
         .subscribe(
           () => {
-            this.notification.success('Thành công', 'Phân quyền thành công');
+            this.notification.success(
+              this.i18n.fanyi('app.status.success'),
+              'Phân quyền thành công'
+            );
           },
           (error) => {
-            this.notification.error('Thất bại', 'Phân quyền thất bại');
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'Phân quyền thất bại'
+            );
           }
         );
     }
@@ -615,16 +777,23 @@ export class BucketDetailComponent implements OnInit {
 
   handleShare() {
     this.clipboard.copy(this.linkShare);
+    this.notification.success(
+      this.i18n.fanyi('app.status.success'),
+      'Sao chép liên kết thành công'
+    );
+    this.isVisibleShare = false;
   }
 
-  getLinkShare() {
+  getLinkShare(event) {
+    this.isLoadingGetLink = true;
     let data = {
       bucketName: this.dataAction.bucketName,
       key: this.dataAction.key,
-      validTo: this.dateShare,
+      validTo: event,
       isDownload: true,
     };
     this.service.getLinkShare(data).subscribe((data) => {
+      this.isLoadingGetLink = false;
       this.linkShare = data.publicURL;
     });
   }
@@ -666,10 +835,16 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe(
         () => {
-          this.notification.success('Thành công', '`Xóa phiên bản thành công');
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            '`Xóa phiên bản thành công'
+          );
         },
         (error) => {
-          this.notification.error('Thất bại', 'Xóa phiên bản thất bại');
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            'Xóa phiên bản thất bại'
+          );
         }
       );
   }
@@ -691,10 +866,16 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe(
         () => {
-          this.notification.success('Thành công', '`Khôi phục bản thành công');
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            '`Khôi phục bản thành công'
+          );
         },
         (error) => {
-          this.notification.error('Thất bại', 'Khôi phục phiên bản thất bại');
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            'Khôi phục phiên bản thất bại'
+          );
         }
       );
   }
@@ -732,30 +913,36 @@ export class BucketDetailComponent implements OnInit {
   uploadAllFile() {
     const filesToUpload = this.lstFileUpdate.filter((item) => !item.uploaded);
 
-    const uploadNextFile = (index) => {
-      if (index < filesToUpload.length) {
-        const item = filesToUpload[index];
-        item.percent = 0;
-        this.uploadSingleFile(item).then(() => {
-          item.uploaded = true;
-          uploadNextFile(index + 1);
-        });
-      }
-    };
+    console.log(filesToUpload);
 
-    uploadNextFile(0);
+    if (filesToUpload.length == 0) {
+      this.notification.warning('Cảnh báo', 'Tất cả các file đã được upload');
+    } else {
+      const uploadNextFile = (index) => {
+        if (index < filesToUpload.length) {
+          const item = filesToUpload[index];
+          item.percent = 0;
+          this.uploadSingleFile(item).then(() => {
+            uploadNextFile(index + 1);
+          });
+        }
+      };
+
+      uploadNextFile(0);
+    }
   }
 
   uploadSingleFile(item) {
     if (item.uploaded) {
+      this.notification.warning('Cảnh báo', 'File đã được upload');
       return Promise.resolve();
     }
     var chunkCounter = 0;
     const chunkSize = 10000000; // 10MB
-    console.log(item);
 
     if (item.size > 10000000) {
       return new Promise<void>((resolve, reject) => {
+        item.isUpload = true;
         let start;
 
         var uploadPartsArray = [];
@@ -775,11 +962,11 @@ export class BucketDetailComponent implements OnInit {
 
         console.log(params);
 
-
         this.service.createMultiPartUpload(params).subscribe(
           (data) => {
             console.log(data);
             upload_id = data.data;
+            item.uploadId = data.data;
             createChunk(start);
           },
           (error) => {
@@ -809,7 +996,7 @@ export class BucketDetailComponent implements OnInit {
           const xhr = new XMLHttpRequest();
           xhr.open(
             'POST',
-            'https://api.onsmartcloud.com/provisions/object-storage/CompleteMultipartUpload',
+            this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CompleteMultipartUpload',
             true
           );
           xhr.setRequestHeader(
@@ -832,17 +1019,27 @@ export class BucketDetailComponent implements OnInit {
           };
           xhr.onload = () => {
             if (xhr.status === 200) {
-              this.notification.success('Thành công', 'Upload thành công');
+              item.uploaded = true;
+              this.notification.success(
+                this.i18n.fanyi('app.status.success'),
+                'Upload thành công'
+              );
               this.loadData();
               resolve();
             } else {
-              this.notification.error('Thất bại', 'Upload thất bại');
+              this.notification.error(
+                this.i18n.fanyi('app.status.fail'),
+                'Upload thất bại'
+              );
               reject();
             }
           };
 
           xhr.onerror = () => {
-            this.notification.error('Thất bại', 'Upload thất bại');
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'Upload thất bại'
+            );
             reject();
           };
 
@@ -887,7 +1084,6 @@ export class BucketDetailComponent implements OnInit {
 
                 //next chunk starts at + chunkSize from start
                 start += chunkSize;
-                console.log(start);
 
                 //if start is smaller than file size - we have more to still upload
                 if (start < item.size) {
@@ -898,9 +1094,12 @@ export class BucketDetailComponent implements OnInit {
                 }
               };
               xhr.onerror = () => {
-                this.notification.error('Thất bại', 'Upload thất bại');
-                this.uploadFailed = true
-                item.percentage = 100
+                this.notification.error(
+                  this.i18n.fanyi('app.status.fail'),
+                  'Upload thất bại'
+                );
+                this.uploadFailed = true;
+                item.percentage = 100;
                 let dataError = {
                   bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
                   key: this.currentKey + item.name,
@@ -914,18 +1113,22 @@ export class BucketDetailComponent implements OnInit {
                     console.log(error);
                   }
                 );
-                reject()
+                reject();
               };
               xhr.send(blob);
             },
             (error) => {
-              this.notification.error('Thất bại', 'Upload thất bại');
+              this.notification.error(
+                this.i18n.fanyi('app.status.fail'),
+                'Upload thất bại'
+              );
             }
           );
         };
       });
     } else {
       return new Promise<void>((resolve, reject) => {
+        item.isUpload = true;
         let data = {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
@@ -945,18 +1148,28 @@ export class BucketDetailComponent implements OnInit {
               }
             };
             xhr.onload = () => {
-              this.notification.success('Thành công', 'Upload thành công');
+              item.isUpload = true;
+              this.notification.success(
+                this.i18n.fanyi('app.status.success'),
+                'Upload thành công'
+              );
               this.loadData();
               resolve();
             };
             xhr.onerror = () => {
-              this.notification.error('Thất bại', 'Upload thất bại');
+              this.notification.error(
+                this.i18n.fanyi('app.status.fail'),
+                'Upload thất bại'
+              );
               reject();
             };
             xhr.send(item.originFileObj);
           },
           (error) => {
-            this.notification.error('Thất bại', 'Upload thất bại');
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'Upload thất bại'
+            );
             reject();
           }
         );
@@ -966,11 +1179,105 @@ export class BucketDetailComponent implements OnInit {
 
   handleCancelUploadFile() {
     this.lstFileUpdate = [];
-    this.listOfMetadata = []
-    this.radioValue = 'public-read'
+    this.listOfMetadata = [];
+    this.radioValue = 'public-read';
     this.isVisibleUploadFile = false;
     this.emptyFileUpload = true;
   }
 
-  uploadFile() {}
+  downloadZipFile() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+    var yyyy = today.getFullYear();
+  
+    let date = mm + '_' + dd + '_' + yyyy;
+    
+    let zipFile = new JSZip();
+    let downloadObservables = [];
+  
+    this.setOfCheckedId.forEach((item: any) => {
+      if(item.objectType === 'folder') {
+        return;
+      } else {
+        downloadObservables.push(
+          this.service.downloadFile(this.bucket.bucketName, item.key, '').pipe(
+            map((fileData: any) => {
+              const fileName = item.key; 
+              const fileContent = fileData.body; 
+  
+              console.log(fileData.body);
+  
+              if(fileData.body !== undefined) {
+                zipFile.file(fileName, fileContent);
+              }
+            }),
+            catchError((error) => {
+              console.error(`Error downloading file: ${error}`);
+              return of(null);
+            })
+          )
+        );
+      }
+    });
+  
+    forkJoin(downloadObservables).subscribe(() => {
+      zipFile.generateAsync({ type: 'blob' }).then((content) => {
+        if(content.size > 104857600) {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.alert.bucket.oversize')
+          );
+        }else{
+          let anchor = document.createElement('a');
+          let objectUrl = window.URL.createObjectURL(content);
+    
+          anchor.href = objectUrl;
+          anchor.download = `${this.bucket.bucketName}_${date}`;
+          anchor.click();
+          window.URL.revokeObjectURL(objectUrl);
+        }
+      });
+    });
+  }
+
+  showModalDeleteObject(){
+    this.isVisibleDeleteObject = true;
+  }
+
+  handleCancelDeleteObject(){
+    this.isVisibleDeleteObject = false;
+  }
+
+  handledeleteObjects(){
+    this.isLoadingDeleteObjects = true
+    let data = {
+      bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+      customerId: this.tokenService.get()?.userId,
+      regionId: 0,
+      selectedItems: [...this.setOfCheckedId],
+    }
+
+    this.service.deleteObject(data).subscribe(
+      (data) => {
+        this.isVisibleDeleteObject = false;
+        this.isLoadingDeleteObjects = false
+        this.notification.success(
+          this.i18n.fanyi('app.status.success'),
+          'Xóa object thành công'
+        );
+        this.setOfCheckedId.clear();
+        this.countObjectSelected = 0
+        this.loadData()
+      },
+      (error) => {
+        this.isLoadingDeleteObjects = false
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          'Xóa object thất bại'
+        );
+      }
+    );
+    
+  }
 }

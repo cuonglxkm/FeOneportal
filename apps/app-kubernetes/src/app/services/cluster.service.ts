@@ -4,6 +4,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { Observable, Subject } from "rxjs";
 import { UpgradeVersionClusterDto, UpgradeWorkerGroupDto } from "../model/cluster.model";
 import { BaseService } from "../shared/services/base.service";
+import { SGLoggingReqDto } from "../model/security-group.model";
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,14 @@ export class ClusterService extends BaseService {
   validateUpgradeCluster(data: any) {
     return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/validate-upgrade-cluster`, data,
       { headers: this.getHeaders() });
+  }
+
+  editClusterInfo(data: any) {
+    return this.http.put(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/edit-cluster`, data, {headers: this.getHeaders()});
+  }
+
+  getUserInfo(userId: number) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.users}/${userId}`, {headers: this.getHeaders()});
   }
 
   getDetailCluster(serviceOrderCode: string) {
@@ -153,6 +162,10 @@ export class ClusterService extends BaseService {
 
   deleteCluster(clusterId: number) {
     return this.http.delete(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/delete-cluster/${clusterId}`, { headers: this.getHeaders() });
+  }
+
+  createLogSG(data: SGLoggingReqDto) {
+    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/create-sg-log`, data, {headers: this.getHeaders()});
   }
 
   getListPack(cloudProfileId: string) {

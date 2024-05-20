@@ -788,7 +788,7 @@
                       >
                       <nz-slider
                         [nzMin]="0"
-                        [nzMax]="1000"
+                        [nzMax]="8"
                         [(ngModel)]="configGPU.GPU"
                         (ngModelChange)="changeGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
@@ -801,17 +801,17 @@
                         (ngModelChange)="changeGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
-                        [nzMax]="1000"
+                        [nzMax]="8"
                         [nzStep]="1"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ volumeIntoMoney | number }} VND </label
+                        {{ gpuIntoMoney | number }} VND </label
                       ><br />
                       <label class="text-custom-price">
-                        {{ volumeUnitPrice | number }} VND
+                        {{ gpuUnitPrice | number }} VND
                       </label>
                     </td>
                   </tr>
@@ -824,14 +824,15 @@
                   >*</span
                 >)</nz-form-label
               >
-              <nz-form-control [nzErrorTip]="gpuErrorTpl">
+              <nz-form-control>
                 <nz-select
                   [nzPlaceHolder]="
                     '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
                   "
                   [nzShowSearch]="true"
-                  [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="configGPU.gpuOfferId"
+                  (ngModelChange)="changeGpuType()"
+                  [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 >
                   <nz-option
@@ -841,11 +842,6 @@
                   />
                 </nz-select>
               </nz-form-control>
-              <ng-template #gpuErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')"
-                  >Vui lòng chọn GPU Type</ng-container
-                >
-              </ng-template>
             </nz-form-item>
           </nz-tab>
         </nz-tabset>
@@ -921,7 +917,7 @@
           </nz-col>
         </nz-row>
         <nz-row>
-          <nz-form-item style="width: 100%;">
+          <nz-form-item style="width: 100%">
             <div>
               <nz-alert
                 nzType="warning"
@@ -958,7 +954,10 @@
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 >
-                  <nz-option [nzLabel]="'Không sử dụng'" [nzValue]="''" />
+                  <nz-option
+                    [nzLabel]="'app.do.not.use' | i18n"
+                    [nzValue]="''"
+                  />
                   <nz-option
                     *ngFor="let i of listVlanNetwork"
                     [nzLabel]="i.name"
@@ -1026,8 +1025,7 @@
               >
             </div>
           </nz-col>
-          <nz-col nzLg="12" nzMd="12" nzSm="24">
-          </nz-col>
+          <nz-col nzLg="12" nzMd="12" nzSm="24"> </nz-col>
         </nz-row>
         <nz-row>
           <nz-form-label nzFor="name"
@@ -1533,7 +1531,7 @@
                         [ngModelOptions]="{ standalone: true }"
                         [(ngModel)]="data.ip"
                         [id]="'ip_' + data.id"
-                        (ngModelChange)="onInputIPv6($$event, data.id)"
+                        (ngModelChange)="onInputIPv6($event, data.id)"
                         nzSize="large"
                       >
                         <nz-option
@@ -1630,6 +1628,13 @@
               instanceCreate.volumeType | uppercase
             }}</span
             >)
+          </div>
+          <div
+            *ngIf="instanceCreate.gpuCount"
+            style="margin-top: 10px"
+            class="text-label"
+          >
+            {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.setting' | i18n }}</div>

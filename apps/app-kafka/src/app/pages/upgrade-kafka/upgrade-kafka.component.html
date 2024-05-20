@@ -1,4 +1,4 @@
-<ng-container *ngIf="itemDetail">
+<ng-container *ngIf="itemDetail && itemDetail.serviceStatus !== statusSuspend">
     <page-header [breadcrumb]="breadcrumb" [title]="'kafka.upgrade.title' | i18n" [action]="action">
         <ng-template #breadcrumb>
             <nz-breadcrumb>
@@ -45,20 +45,17 @@
                 </div>
                 <div nz-row>
                     <div nz-col [nzSpan]="4">
-                        {{'app.kafka.broker' | i18n}}: 3
+                        <ul>
+                            <li>{{'app.kafka.broker' | i18n}}: 3</li>
+                            <li>RAM: {{itemDetail.ram}} GB</li>
+                        </ul>
                     </div>
                     <div nz-col [nzSpan]="6"></div>
                     <div>
-                        CPU: {{itemDetail.cpu}} VCPU
-                    </div>
-                </div>
-                <div nz-row>
-                    <div nz-col [nzSpan]="4">
-                        RAM: {{itemDetail.ram}} GB
-                    </div>
-                    <div nz-col [nzSpan]="6"></div>
-                    <div>
-                        Storage: {{itemDetail.storage}} GB
+                        <ul>
+                            <li>CPU: {{itemDetail.cpu}} VCPU</li>
+                            <li>Storage: {{itemDetail.storage}} GB</li>
+                        </ul>
                     </div>
                 </div>
             </nz-card>
@@ -123,7 +120,7 @@
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU (<span class="text-red">*</span>)</nz-form-label>
                                         <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="cpuErrTpl">
                                             <nz-input-number-group nzSuffix="vCpu" nzSize="large">
-                                                <nz-input-number formControlName="vCpu" id="vCpu" autofocus
+                                                <nz-input-number formControlName="vCpu" id="vCpu" autofocus (keydown)="onKeyDown($event)" [nzMin]="0"
                                                     (ngModelChange)="onChangeCpu($event)">
                                                 </nz-input-number>
                                             </nz-input-number-group>
@@ -150,7 +147,7 @@
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>RAM (<span class="text-red">*</span>)</nz-form-label>
                                         <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="ramErrTpl">
                                             <nz-input-number-group nzSuffix="GB" nzSize="large">
-                                                <nz-input-number formControlName="ram" id="ram" autofocus
+                                                <nz-input-number formControlName="ram" id="ram" autofocus (keydown)="onKeyDown($event)" [nzMin]="0"
                                                   (ngModelChange)="onChangeRam($event)">
                                                 </nz-input-number>
                                               </nz-input-number-group>
@@ -177,7 +174,7 @@
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Storage (<span class="text-red">*</span>)</nz-form-label>
                                         <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="storageErrorTpl">
                                             <nz-input-number-group nzSuffix="GB" nzSize="large">
-                                                <nz-input-number formControlName="storage" id="storage" autofocus
+                                                <nz-input-number formControlName="storage" id="storage" autofocus (keydown)="onKeyDown($event)" [nzMin]="0"
                                                   (ngModelChange)="onChangeStorage($event)">
                                                 </nz-input-number>
                                             </nz-input-number-group>
@@ -211,6 +208,7 @@
         <div nz-col [nzSpan]="8">
             <nz-card class="price-card">
                 <h3><b>{{'app.service.price-title' | i18n}}</b></h3>
+                <!-- Chi phí nâng cấp trong khoảng thời gian còn lại -->
                 <div nz-row [nzGutter]="8">
                     <div nz-col [nzSpan]="12">
                         <div class="label-price">{{'app.service.upgrade-cost' | i18n}}</div>
@@ -220,12 +218,25 @@
                     </div>
                 </div>
                 <nz-divider class="divider-style"></nz-divider>
+
+                <!-- Chi phí còn lại chưa dùng -->
                 <div nz-row [nzGutter]="8">
                     <div nz-col [nzSpan]="12">
                         <div class="label-price" style="margin-bottom: 10px;">{{'app.service.upgrade-remain-amount' | i18n}}</div>
                     </div>
                     <div nz-col [nzSpan]="12">
                         <div class="value-price" >- {{ remainAmount | number: '1.0-0'}} VND</div>
+                    </div>
+                </div>
+                <nz-divider class="divider-style"></nz-divider>
+
+                <!-- Chi phí VAT -->
+                <div nz-row [nzGutter]="8">
+                    <div nz-col [nzSpan]="12">
+                        <div class="label-price" style="margin-bottom: 10px;">Chi phí VAT (10%)</div>
+                    </div>
+                    <div nz-col [nzSpan]="12">
+                        <div class="value-price" >{{upgradeAmount === 0 ? 0 : (upgradeAmount - remainAmount) * 0.1 | number: '1.0-0'}} VND</div>
                     </div>
                 </div>
                 <nz-divider class="divider-style"></nz-divider>
@@ -249,7 +260,7 @@
                     </div>
 
                     <div nz-col [nzSpan]="12">
-                        <button nz-button nzType="primary" nzBlock [disabled]="myform.invalid || upgradeAmount === 0"
+                        <button nz-button nzType="primary" nzBlock [disabled]="myform.invalid || (upgradeAmount - remainAmount) <= 0"
                             (click)="onSubmitPayment()">
                             <img style="padding-right: 10px; margin-top: -4px; height: 20px;"
                                 src="assets/imgs/upgrade-white.svg" alt="" />

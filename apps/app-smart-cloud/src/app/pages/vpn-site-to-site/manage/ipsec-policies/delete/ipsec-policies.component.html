@@ -1,13 +1,11 @@
-<span
-  style="color: #0066b3; margin-right: 10px; cursor: pointer"
-  nz-icon
-  nzType="delete"
-  nzTheme="outline"
+<img
+src="assets/imgs/delete.svg"
+style="cursor: pointer; width: 28px; height: 28px"
   nz-popover
   [nzPopoverContent]="'Xóa'"
   nzPopoverPlacement="bottom"
   (click)="showModal()"
-></span>
+/>
 <nz-modal
   [(nzVisible)]="isVisible"
   nzCentered
@@ -32,7 +30,7 @@
         <nz-form-label>
           <div>
             <span
-              >Đế thực hiện xoá IPsec Policies + ({{nameIpsecPolicy}}), vui lòng nhập tên IPsec Policies để xác nhận.</span
+              >Đế thực hiện xoá IPsec Policies <b>{{nameIpsecPolicy}}</b>, vui lòng nhập tên IPsec Policies để xác nhận.</span
             >
           </div>
         </nz-form-label>

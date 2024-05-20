@@ -180,6 +180,12 @@ textarea,
   font-weight: bolder;
 }
 
+.item-broker {
+  border-bottom: 1px solid #E2E2E9;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
 .item-price {
   border-top: 1px solid #E2E2E9;
   width: 160px;
@@ -300,4 +306,26 @@ nz-input-number-group {
   padding: 0 4px;
   border-radius: 8px;
   width: 100%;
+}
+
+.box-duration nz-input-number {
+  width: 100%;
+  border-radius: 8px;
+  margin-left: 0px;
+}
+
+.box-duration ::ng-deep .ant-input-number-handler-wrap {
+  margin-right: 3px;
+} 
+
+.w-85 {
+  width: 85%;
+}
+
+.borderless {
+  border: none;
+}
+
+.small-description {
+  position: relative;
 }
