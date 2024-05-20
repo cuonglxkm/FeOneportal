@@ -522,8 +522,6 @@ export class DataPayment {
   projectId: number;
 }
 
-
-
 export class ItemPayment {
   orderItemQuantity: number;
   specificationString: string;
@@ -581,4 +579,11 @@ export class VlanSubnet {
   region: any;
   regionText: any;
   subnets: any;
+}
+
+export class CheckIPAddressModel {
+  ipAddress: string;
+  listCIDR: string[];
+  networkId: string;
+  regionId: number;
 }

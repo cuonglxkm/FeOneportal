@@ -300,14 +300,16 @@ export class InstancesCreateComponent implements OnInit {
         debounceTime(300) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
-        this.dataService.checkExistName(res, this.region).subscribe((data) => {
-          if (data == true) {
-            this.isExistName = true;
-          } else {
-            this.isExistName = false;
-          }
-          this.cdr.detectChanges();
-        });
+        this.dataService
+          .checkExistName(res, this.region, this.projectId)
+          .subscribe((data) => {
+            if (data == true) {
+              this.isExistName = true;
+            } else {
+              this.isExistName = false;
+            }
+            this.cdr.detectChanges();
+          });
       });
   }
 
@@ -1156,6 +1158,19 @@ export class InstancesCreateComponent implements OnInit {
     });
     this.cdr.detectChanges();
   }
+
+  changeEncrypt(event: boolean, index: number) {
+    if (event == true) {
+      this.listOfDataBlockStorage[index].multiattach = false;
+    }
+  }
+
+  changeMultiAttach(event: boolean, index: number) {
+    if (event == true) {
+      this.listOfDataBlockStorage[index].encrypt = false;
+    }
+  }
+
   //#endregion
   //#region Network
   activeIPv4: boolean = false;

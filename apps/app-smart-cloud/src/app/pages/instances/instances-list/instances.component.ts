@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { concatMap, finalize, takeWhile } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import {
+  CheckIPAddressModel,
   InstanceAction,
   InstancesModel,
   Network,
@@ -157,6 +158,7 @@ export class InstancesComponent implements OnInit {
       }
     });
     this.checkExistName();
+    this.onCheckIPAddress();
   }
 
   onRegionChange(region: RegionModel) {
@@ -350,15 +352,6 @@ export class InstancesComponent implements OnInit {
 
   instanceAction: InstanceAction = new InstanceAction();
   isChoosePort: boolean = true;
-  formGanVlan = new FormGroup({
-    ipAddress: new FormControl('', {
-      validators: [
-        Validators.pattern(
-          /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})){3}$/
-        ),
-      ],
-    }),
-  });
   showHandleGanVLAN(id: number) {
     this.isChoosePort = true;
     this.instanceAction = new InstanceAction();
@@ -392,6 +385,60 @@ export class InstancesComponent implements OnInit {
           this.i18n.fanyi('app.notify.attach.vlan.fail')
         );
       },
+    });
+  }
+
+  changeAttachType() {
+    this.instanceAction.portId = null;
+    this.instanceAction.ipAddress = null;
+  }
+
+  isInvalidIPAddress: boolean = false;
+  invalidIPAddress: string;
+  checkIPAddressModel: CheckIPAddressModel = new CheckIPAddressModel();
+  dataSubjectGateway: Subject<any> = new Subject<any>();
+  inputIPAddress(value) {
+    this.dataSubjectGateway.next(value);
+  }
+
+  onCheckIPAddress() {
+    this.dataSubjectGateway.pipe(debounceTime(500)).subscribe((res) => {
+      if (res == null || res == '') {
+        this.invalidIPAddress = '';
+      } else {
+        this.checkIPAddressModel.ipAddress = res;
+        this.checkIPAddressModel.listCIDR = this.listVlanNetwork
+          .filter((e) => e.cloudId == this.instanceAction.networkId)[0]
+          .subnetAddressRequired.split(', ');
+        this.checkIPAddressModel.networkId = this.instanceAction.networkId;
+        this.checkIPAddressModel.regionId = this.region;
+        this.dataService
+          .checkIpAvailableToListSubnet(this.checkIPAddressModel)
+          .subscribe({
+            next: (data) => {
+              this.isInvalidIPAddress = false;
+              this.invalidIPAddress = '';
+            },
+            error: (error) => {
+              this.isInvalidIPAddress = true;
+              if (error.status == '400') {
+                console.log('error', error.error);
+                if (error.error.includes('Ip khong thuoc Allocation Pool!'))
+                  this.invalidIPAddress = this.i18n.fanyi(
+                    'validation.ip.address.not.of.pool'
+                  );
+                if (error.error.includes('Port khong co san!'))
+                  this.invalidIPAddress = this.i18n.fanyi(
+                    'validation.ip.address.exist'
+                  );
+              } else {
+                this.invalidIPAddress = this.i18n.fanyi(
+                  'validation.ip.address.pattern'
+                );
+              }
+            },
+          });
+      }
     });
   }
 
@@ -675,7 +722,7 @@ export class InstancesComponent implements OnInit {
           this.cdr.detectChanges();
         } else {
           this.dataService
-            .checkExistName(res, this.region)
+            .checkExistName(res, this.region, this.projectId)
             .subscribe((data) => {
               if (data == true) {
                 this.isExistName = true;
