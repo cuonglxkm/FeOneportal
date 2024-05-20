@@ -20,7 +20,7 @@ pipeline {
                 branch "develop"
             }
             steps {
-                sh 'docker compose --parallel 2 build'
+                sh 'docker compose -f compose-test.yml --parallel 2 build'
             }
         }
 
@@ -38,7 +38,7 @@ pipeline {
                 branch "develop"
             }
             steps {
-                sh 'docker compose push'
+                sh 'docker compose -f compose-test.yml push'
             }
         }
 
