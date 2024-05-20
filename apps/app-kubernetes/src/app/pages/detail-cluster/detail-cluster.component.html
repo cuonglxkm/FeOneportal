@@ -95,7 +95,7 @@
                       {{detailCluster.currentVersion}}
                       <button nz-button nzType="text" (click)="handleShowModalUpgradeVersion()"
                         class="action-icon borderless" [nzTooltipTitle]="'app.text.upgrade' | i18n"
-                        nzTooltipPlacement="top" nz-tooltip>
+                        nzTooltipPlacement="top" nz-tooltip [disabled]="detailCluster?.serviceStatus != 2">
                         <span nz-icon>
                           <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -234,8 +234,7 @@
               <tr>
                 <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
                     [label]="'app.text.creation-time' | i18n"></row-data></td>
-                <td class="w-50"><row-data
-                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
+                <td class="w-50"><row-data [value]="detailCluster.expiredDate| date: 'dd/MM/yyyy'"
                     [label]="'app.service.expiration-date' | i18n" [type]="'danger'"></row-data></td>
               </tr>
 

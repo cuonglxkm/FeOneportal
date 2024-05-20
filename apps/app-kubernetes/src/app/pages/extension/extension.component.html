@@ -191,7 +191,7 @@
         <div nz-col [nzSpan]="12">
           <div nz-row [nzGutter]="16" class="delete-icon">
             <div nz-col [nzSpan]="8"><label>{{ 'app.service.expiration-date' | i18n }}</label></div>
-            <div nz-col [nzSpan]="16"><label class="weight-600">{{expiryDate | date: 'dd/MM/yyyy'}}</label></div>
+            <div nz-col [nzSpan]="16"><label class="weight-600">{{detailCluster?.expiredDate | date: 'dd/MM/yyyy'}}</label></div>
           </div>
         </div>
       </div>

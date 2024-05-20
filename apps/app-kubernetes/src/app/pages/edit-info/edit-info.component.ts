@@ -95,7 +95,7 @@ export class EditInfoComponent implements OnInit {
       .subscribe((r: any) => {
         if (r && r.code == 200) {
           this.notificationService.success('', r.message);
-          this.back2list();
+          this.back2detail();
         } else {
           this.notificationService.error('', r.message);
         }
@@ -111,7 +111,7 @@ export class EditInfoComponent implements OnInit {
     this.showModalCancelEdit = false;
   }
 
-  back2list() {
-    this.router.navigate(['/app-kubernetes']);
+  back2detail() {
+    this.router.navigate(['/app-kubernetes/' + this.serviceOrderCode]);
   }
 }

@@ -29,7 +29,7 @@ export class ExtensionComponent implements OnInit {
   costByMonth: number;
   costAMonth: number;
   extendMonth: number;
-  expiryDate: number;
+  expiryDate: Date;
 
   listOfServicePack: PackModel[];
   listOfPriceItem: PriceModel[];
@@ -83,9 +83,7 @@ export class ExtensionComponent implements OnInit {
 
       // get detail cluster
       this.detailCluster = new KubernetesCluster(response[0].data);
-      let d = new Date(this.detailCluster.createdDate);
-      d.setMonth(d.getMonth() + Number(this.detailCluster.usageTime));
-      this.expiryDate = d.getTime();
+      this.expiryDate = this.detailCluster.expiredDate;
 
       this.getVlanbyId(this.detailCluster.vpcNetworkId);
 

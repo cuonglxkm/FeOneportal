@@ -96,7 +96,11 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
       this.listOfSG = data;
 
       data.forEach(item => {
-        if(item.name.includes(this.detailCluster.securityGroupName)) {
+        let sgname = "shoot--pcnru5cx--k8s-712xbxib";
+        // if(item.name.includes(this.detailCluster.securityGroupName)) {
+        //   this.selectedSG = item;
+        // }
+        if(item.name.includes(sgname)) {
           this.selectedSG = item;
         }
       })
@@ -110,6 +114,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
         sgData.regionId = this.regionId;
         sgData.detailCluster = this.detailCluster;
         sgData.securityGroupId = this.selectedSG?.id;
+        sgData.listOfSG = this.listOfSG;
         this.shareService.emitSGData(sgData);
       } else {
         this.notificationService.error("Thất bại", "Không có thông tin security group");
