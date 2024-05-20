@@ -7,9 +7,10 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {getCurrentRegionAndProject} from "@shared";
-import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-list-backup-vm',

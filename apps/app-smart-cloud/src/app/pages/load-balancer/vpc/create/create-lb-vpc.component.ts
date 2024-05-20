@@ -15,10 +15,11 @@ import { CatalogService } from '../../../../shared/services/catalog.service';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { finalize } from 'rxjs';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-create-lb-vpc',
