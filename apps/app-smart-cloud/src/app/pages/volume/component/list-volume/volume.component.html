@@ -49,7 +49,7 @@
                 name="name"
                 nz-input
                 [(ngModel)]="value"
-                (input)="onInputChange($event.target['value'])"
+                (keydown.enter)="onEnter()"
                 placeholder="{{ 'volume.placeholder.filter.name' | i18n }}" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
@@ -242,7 +242,7 @@
                 name="name"
                 nz-input
                 [(ngModel)]="value"
-                (input)="onInputChange($event.target['value'])"
+                (keydown.enter)="onEnter()"
                 placeholder="{{'volume.placeholder.filter.name' | i18n}}" />
             </nz-input-group>
             <ng-template #prefixIconSearch>

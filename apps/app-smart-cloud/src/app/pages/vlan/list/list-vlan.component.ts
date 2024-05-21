@@ -59,9 +59,8 @@ export class ListVlanComponent implements OnInit{
     this.getListVlanNetwork(true)
   }
 
-  onInputChange(value) {
-    this.value = value
-
+  onInputChange() {
+    this.value = this.value.trim();
     this.getListVlanNetwork(false)
   }
 

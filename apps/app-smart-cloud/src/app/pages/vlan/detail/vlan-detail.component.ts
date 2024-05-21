@@ -8,6 +8,8 @@ import { debounceTime } from 'rxjs';
 import { FormSearchSubnet, Port, Subnet } from '../../../shared/models/vlan.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { trim } from 'lodash';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-vlan-detail',
@@ -43,7 +45,8 @@ export class VlanDetailComponent implements OnInit, OnChanges {
               private route: ActivatedRoute,
               private vlanService: VlanService,
               private notification: NzNotificationService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -78,20 +81,15 @@ export class VlanDetailComponent implements OnInit, OnChanges {
       this.getSubnetByNetwork()
       this.getPortByNetwork()
     },error => {
-      if(error.status == '404') {
-        this.notification.error('', 'Network không tồn tại!')
-        this.router.navigate(['/app-smart-cloud/vlan/network/list'])
-      } else {
-        this.notification.error(error.statusText, 'Không lấy được dữ liệu!')
-        this.router.navigate(['/app-smart-cloud/vlan/network/list'])
-      }
       this.isLoading = false
+      this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message)
     })
   }
 
   //SUBNET
-  onInputChangeSubnet(value) {
-    this.valueSubnet = trim(value);
+  onInputChangeSubnet() {
+    this.valueSubnet = this.valueSubnet.trim();
     this.getSubnetByNetwork();
   }
 
@@ -153,8 +151,9 @@ export class VlanDetailComponent implements OnInit, OnChanges {
     this.getPortByNetwork();
   }
 
-  onInputChangePort(value) {
-    this.valuePort = value;
+  onInputChangePort() {
+    this.valuePort = this.valuePort.trim();
+    this.getPortByNetwork()
   }
 
   getPortByNetwork() {

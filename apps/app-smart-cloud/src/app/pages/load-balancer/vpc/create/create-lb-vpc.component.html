@@ -116,27 +116,27 @@
                   </nz-select>
                 </nz-form-control>
               </nz-form-item>
-              <nz-form-item *ngIf="enableInternal">
-                <nz-form-label>
-                  <span>Subnet</span>
-                  <img nz-popover
-                       [nzPopoverContent]="'app.tooltip.subnet' | i18n"
-                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                       src="assets/imgs/pajamas_question.svg" alt="" />
-                </nz-form-label>
-                <nz-form-control nzDisableAutoTips>
-                  <nz-select nzSize="large"
-                             [ngModel]="selectedSubnet"
-                             (ngModelChange)="updateValue($event)"
-                             formControlName="subnet"
-                             [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'"
-                             nzAllowClear>
-                    <nz-option *ngFor="let index of mapSubnetArray"
-                               [nzValue]="index.value"
-                               [nzLabel]="index.label"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
+<!--              <nz-form-item *ngIf="enableInternal">-->
+<!--                <nz-form-label>-->
+<!--                  <span>Subnet</span>-->
+<!--                  <img nz-popover-->
+<!--                       [nzPopoverContent]="'app.tooltip.subnet' | i18n"-->
+<!--                       nzPopoverPlacement="bottom" style="margin-left: 5px;"-->
+<!--                       src="assets/imgs/pajamas_question.svg" alt="" />-->
+<!--                </nz-form-label>-->
+<!--                <nz-form-control nzDisableAutoTips>-->
+<!--                  <nz-select nzSize="large"-->
+<!--                             [ngModel]="selectedSubnet"-->
+<!--                             (ngModelChange)="updateValue($event)"-->
+<!--                             formControlName="subnet"-->
+<!--                             [nzPlaceHolder]="'&#45;&#45; ' + ('app.choose.subnet' | i18n) + ' &#45;&#45;'"-->
+<!--                             nzAllowClear>-->
+<!--                    <nz-option *ngFor="let index of mapSubnetArray"-->
+<!--                               [nzValue]="index.value"-->
+<!--                               [nzLabel]="index.label"></nz-option>-->
+<!--                  </nz-select>-->
+<!--                </nz-form-control>-->
+<!--              </nz-form-item>-->
               <nz-form-item *ngIf="enableInternal">
                 <nz-form-label>
                   <span>Subnet</span>

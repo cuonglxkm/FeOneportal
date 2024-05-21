@@ -852,6 +852,7 @@
   "app.checkRouter.file.system.noGateway": "Check the Router Interface again! Please add the gateway of the pri_network range",
 
   "app.file.system.placeholder.search": "Search by name",
+  "app.file.system.error.pattern.storage": "Please enter a positive integer.",
 
   "app.note.delete.file.system": "To delete the {{name}} File System, please enter the File System name to confirm",
   "app.alert.delete.file.system": "You are currently deleting the File System.<br> To successfully delete the File System, please note that you need to delete all Snapshots associated with that File System",
@@ -1512,7 +1513,7 @@
   "mongodb.db.timefield.validation-3": "TimeField name contains a maximum of 100 characters, including only 2 special characters ‘-“ “_”",
   "mongodb.db.metafield.validation-1": "MetaField name contains a maximum of 100 characters, including only 2 special characters ‘-“ “_”",
   "mongodb.db.granularity.validation": "Please select granularity",
-  
+
   "mongodb.db.delete.note-1": "To drop database ",
   "mongodb.db.delete.note-2": " re-enter the database name to confirm deletion.",
   "mongodb.db.delete.placeholder": "Re-enter database name",
