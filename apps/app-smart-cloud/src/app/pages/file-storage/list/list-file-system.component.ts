@@ -54,8 +54,8 @@ export class ListFileSystemComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private notificationService: NotificationService) {}
 
-  onInputChange(value) {
-    this.value = value;
+  onEnter() {
+    this.value = this.value.trim();
     this.getListFileSystem(false);
   }
 
