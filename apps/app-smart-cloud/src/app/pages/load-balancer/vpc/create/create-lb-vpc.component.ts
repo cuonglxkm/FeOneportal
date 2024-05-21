@@ -123,7 +123,10 @@ export class CreateLbVpcComponent implements OnInit {
   onInput(value: string) {
     const getSubnet = this.listSubnets?.find(option => option.cloudId === this.validateForm.get('subnet').value);
 
-    const result = this.isIpInSubnet(value, getSubnet.subnetAddressRequired);
+    let result = undefined;
+    if (getSubnet != undefined) {
+      result = this.isIpInSubnet(value, getSubnet?.subnetAddressRequired);
+    }
 
     // console.log('result', result);
     // console.log('value', value)
@@ -222,10 +225,14 @@ export class CreateLbVpcComponent implements OnInit {
   searchProduct() {
     this.projectService.getProjectVpc(this.project).subscribe(data => {
       this.productId = data?.cloudProject?.offerIdLBSDN;
-      this.catalogService.getDetailOffer(this.productId).subscribe(data2 => {
+      this.catalogService.getDetailOffer(this.productId).subscribe(
+        data2 => {
         this.offerDetail = data2;
         this.flavorId = this.offerDetail?.characteristicValues[1].charOptionValues[0];
-      });
+      },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'),'Loading Falvor')
+        });
 
     });
   }
