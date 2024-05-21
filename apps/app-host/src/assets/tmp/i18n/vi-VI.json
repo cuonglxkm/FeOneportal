@@ -273,7 +273,7 @@
   "app.input.prefix": "Nhập tiền tố",
   "app.input.key": "Nhập Key",
   "app.input.value": "Nhập Value",
-  "app.input.des": "Nhập Mô tả",
+  "app.input.des": "Nhập mô tả",
 
   "app.button.cancel": "Hủy",
   "app.button.update": "Cập nhật",
@@ -714,7 +714,7 @@
   "app.access.to.remove.confirm": "Quý khách có chắc chắn thực hiện xóa Access Rule không?",
 
   "app.file.system.delete": "Xóa File System {{name}}",
-  "app.file.system.manage": "Quản lý File System",
+  "app.file.system.manage": "Danh sách File System",
   "app.file.system.info": "Thông tin File System",
   "app.file.system.info.edit": "Chỉnh sửa thông tin File System",
   "app.file.system.type": "Loại File System",
@@ -727,7 +727,7 @@
   "app.file.system.create": "Khởi tạo File System",
   "app.file.system.create.button": "Tạo mới File System",
   "app.file.system.resize": "Điều chỉnh File System",
-  "app.file.system.create.confirm": "Xác nhận tạo mới File System",
+  "app.file.system.create.confirm": "Xác nhận khởi tạo File System",
   "app.file.system.create.from.snapshot": "Khởi tạo từ Snapshot",
   "app.file.system.capacity": "Dung lượng File System của quý khách",
   "app.file.system.capacity.vpc": "Dung lượng File System đã mua của dịch vụ VPC",
@@ -740,8 +740,8 @@
   "validation.snapshot.info.required": "Vui lòng nhập tên File System Snapshot",
   "validation.snapshot.name.pattern": "Tên Snapshot chỉ được phép dùng các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.",
 
-  "app.checkRouter.file.system": "Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!", 
-  "app.checkRouter.file.system.noGateway": "Kiểm tra lại Router Interface! Vui lòng thêm gateway của dải pri_network", 
+  "app.checkRouter.file.system": "Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!",
+  "app.checkRouter.file.system.noGateway": "Kiểm tra lại Router Interface! Vui lòng thêm gateway của dải pri_network",
 
   "app.file.system.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Instance) hoặc CIDR được quyền truy cập tới Filesystem này",
   "app.file.system.access.to.create.success": "Tạo mới access rule thành công",

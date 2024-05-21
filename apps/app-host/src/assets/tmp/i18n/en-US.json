@@ -827,7 +827,7 @@
   "app.access.to.remove.confirm": "Are you sure you want to delete the Access Rule?",
 
   "app.file.system.delete": "Delete the {{name}} File System",
-  "app.file.system.manage": "File System Management",
+  "app.file.system.manage": "List File System",
   "app.file.system.info": "File System information",
   "app.file.system.info.edit": "Edit File System information",
   "app.file.system.type": "File System type",

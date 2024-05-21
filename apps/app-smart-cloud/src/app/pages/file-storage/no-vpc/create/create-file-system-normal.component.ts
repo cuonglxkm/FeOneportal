@@ -41,7 +41,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
       this.duplicateNameValidator.bind(this)]],
     protocol: ['NFS', [Validators.required]],
     type: [1, [Validators.required]],
-    storage: [1, [Validators.required,Validators.pattern(/^[0-9]*$/)]],
+    storage: [0, [Validators.required,Validators.pattern(/^[0-9]*$/)]],
     checked: [false],
     description: [''],
     snapshot: [null as number, []],
