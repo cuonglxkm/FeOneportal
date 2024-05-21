@@ -139,10 +139,10 @@ export class ProjectListComponent implements OnInit {
       .subscribe(
         {
           next: post => {
-            this.notification.success('Thành công', 'Xóa thành công VPC');
+            this.notification.success('Thành công', 'Xóa dự án thành công');
           },
           error: e => {
-            this.notification.error('Thất bại', 'Xóa thất bại VPC');
+            this.notification.error('Thất bại', 'Xóa dự án thất bại');
           }
         }
       );
