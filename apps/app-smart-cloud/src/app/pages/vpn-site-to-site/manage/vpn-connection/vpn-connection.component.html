@@ -41,7 +41,7 @@
 <nz-table
   #fixedTable
   style="margin-top: 20px"
-  [nzData]="response?.records"
+  [nzData]="response"
   [nzPageSize]="response?.pageSize"
   (nzPageSizeChange)="onPageSizeChange($event)"
   [nzPageIndex]="response?.currentPage"
@@ -53,6 +53,8 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>Local</th>
+      <th>Remote</th>
       <th>VPN Service</th>
       <th>IKE Policy</th>
       <th>IPsec Policy</th>
@@ -69,6 +71,26 @@
           ]"
           >{{ data.name }}</a
         >
+      </td>
+      <td>
+        <div style="transform: translateX(13px);">{{ data.localGateway }}</div>
+        <!-- <div class="network-border" *ngFor="let data of data.localNetwork">
+          {{ data }}
+        </div> -->
+        <ul *ngIf="data.localNetwork.length > 0" nz-menu [nzMode]="'vertical'" class="custom-menu" [nzSelectable]="false">
+        <li nz-submenu [nzTitle]="data.firstNetWork" class="custom-menu-item">
+          <ul class="custom-icon" *ngFor="let data of data.localNetwork">
+            <li nz-menu-item>{{data}}</li>
+          </ul>
+        </li>
+        </ul>
+        <div *ngIf="data.localNetwork.length === 0" class="custom-menu-firstNetWork">{{data.firstNetWork}}</div>
+      </td>
+      <td>
+        <div style="transform: translateX(13px);">{{ data.remoteGateway }}</div>
+        <div class="network-border" *ngFor="let data of data.remoteNetwork">
+          {{ data }}
+        </div>
       </td>
       <td>
         {{ data.vpnService }}

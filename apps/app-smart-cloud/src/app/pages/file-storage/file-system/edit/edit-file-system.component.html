@@ -26,11 +26,14 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input #fileSystemInputName nz-input
+          <input #fileSystemInputName
+                 nz-input
+                 appTrim
                  class="input-custom"
                  formControlName="nameFileSystem"
                  (keydown.enter)="focusOkButton($event)"
-                 [placeholder]="'app.input.name' | i18n" [maxLength]="50"/>
+                 [placeholder]="'app.input.name' | i18n"
+                 [maxLength]="50" [minlength]="1"/>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.file.system.name.pattern' | i18n }}</ng-container>

@@ -23,6 +23,8 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
 
   fileSystem: FileSystemDetail = new FileSystemDetail();
 
+  typeVPC: number
+
   constructor(private fileSystemSnapshotService: FileSystemSnapshotService,
               private router: Router,
               private fileSystemService: FileSystemService,
@@ -35,6 +37,7 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id
+    this.typeVPC = project?.type;
   }
 
   userChanged(project: ProjectModel){
@@ -60,6 +63,10 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
     }, error => {
       this.fileSystem = null
     })
+  }
+
+  navigateToExtend(){
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot/extend/' + this.fileSystemSnapshotId])
   }
 
   ngOnInit() {

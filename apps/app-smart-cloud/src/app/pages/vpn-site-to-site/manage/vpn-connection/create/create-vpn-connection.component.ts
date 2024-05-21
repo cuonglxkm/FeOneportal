@@ -153,10 +153,17 @@ export class CreateVpnConnectionComponent implements OnInit{
         this.isLoadingEndpointGroup = false   
         this.disableEndpointGroup = false 
       data.records.forEach(endPointGroup => {
+        const subnet = endPointGroup.endpoints.map((item, index, array) => {
+          if (index === array.length - 1) {
+            return `${item}`;
+        } else {
+            return `${item} `;
+        }
+        })
         if (endPointGroup.type === 'subnet') {
-          this.localEndpointGroupList.push({ label: endPointGroup.name, value: endPointGroup.id });
+          this.localEndpointGroupList.push({ label: `${endPointGroup.name} (${subnet})`, value: endPointGroup.id });
         } else if (endPointGroup.type === 'cidr') {
-          this.remoteEndpointGroupList.push({ label: endPointGroup.name, value: endPointGroup.id });
+          this.remoteEndpointGroupList.push({ label: `${endPointGroup.name} (${subnet})`, value: endPointGroup.id });
         }
       })
       if (this.localEndpointGroupList.length > 0) {

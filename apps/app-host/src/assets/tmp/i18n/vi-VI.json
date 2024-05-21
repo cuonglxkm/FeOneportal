@@ -63,6 +63,7 @@
   "app.minute": "phút",
   "app.hour": "giờ",
   "app.day": "ngày",
+  "app.days": "ngày",
   "app.week": "tuần",
   "app.Week": "Tuần",
   "app.month": "tháng",
@@ -185,7 +186,11 @@
   "app.random": "Ngẫu nhiên",
   "app.name": "Tên",
   "app.snapshot.create": "Tạo Snapshot",
+  "app.remaining.days": "Số ngày còn lại",
   "app.guide.formula": "Hướng dẫn công thức",
+  "app.note.guide.formula": "Khi điều chỉnh dịch vụ, chi phí được tính:",
+  "app.note.guide.formula.numerator": "Giá theo tháng gói B - Giá theo tháng gói A",
+  "app.example.guide.formula": "Ví dụ: Người dùng mua gói cấu hình SMC01 có giá 1.000.000 VND/tháng với thời gian sử dụng là 1 tháng từ ngày 01/04/2024 - 30/04/2024. Người dùng thực hiện điều chỉnh gói cấu hình khác với giá 1.500.000 VND/tháng vào ngày 15/04/2024. Như vậy người dùng đã sử dụng gói dịch vụ cũ 15 ngày và điều chỉnh gói cấu hình mới có thời gian sử dụng là 15 ngày. Vậy chi phí nâng gói cấu hình khi điều chỉnh dịch vụ của khách hàng cần thanh toán:",
 
   "app.ip.type": "Loại IP",
   "app.ip.address": "Địa chỉ IP",
@@ -268,7 +273,7 @@
   "app.input.prefix": "Nhập tiền tố",
   "app.input.key": "Nhập Key",
   "app.input.value": "Nhập Value",
-  "app.input.des": "Nhập Mô tả",
+  "app.input.des": "Nhập mô tả",
 
   "app.button.cancel": "Hủy",
   "app.button.update": "Cập nhật",
@@ -481,6 +486,8 @@
   "app.lifeCycle.edit": "Chỉnh sửa Lifecycle",
   "app.lifeCycle.config.intro": "Bucket Lifecycle cho phép bạn khả năng quản lý tuổi thọ và sự tự động hóa của các đối tượng (objects) trong các bucket.",
   "app.lifeCycle.config.intro.next": "Với Bucket Lifecycle, bạn có thể định nghĩa các quy tắc tự động cho các đối tượng trong bucket của mình, bao gồm cả việc xóa các đối tượng đã hết hạn hoặc không còn cần thiết để giảm chi phí lưu trữ. Việc sử dụng Bucket Lifecycle cũng giúp giảm tải công việc quản trị và tăng tính khả dụng của các đối tượng trong bucket.",
+  "app.bucket.detail": "Chi tiết Bucket",
+
   "app.delete.file.current.version": "Thời hạn xóa file (Version hiện tại)",
   "app.delete.file.non.current.version": "Thời hạn xóa file (Không phải version hiện tại)",
   "app.delete.multi.upload": "Thời gian xóa Multipart upload không hoàn thành",
@@ -707,18 +714,20 @@
   "app.access.to.remove.confirm": "Quý khách có chắc chắn thực hiện xóa Access Rule không?",
 
   "app.file.system.delete": "Xóa File System {{name}}",
-  "app.file.system.manage": "Quản lý File System",
+  "app.file.system.manage": "Danh sách File System",
   "app.file.system.info": "Thông tin File System",
   "app.file.system.info.edit": "Chỉnh sửa thông tin File System",
   "app.file.system.type": "Loại File System",
   "app.file.system.name": "Tên File System",
+  "app.file.system.name.tooltip": "Tên của File System",
+  "app.file.system.snapshot.name.tooltip": "Tên của File System Snapshot",
   "app.file.system.list": "Danh sách File System",
   "app.file.system.detail": "Chi tiết File System",
   "app.file.system.extend": "Gia hạn File System",
   "app.file.system.create": "Khởi tạo File System",
   "app.file.system.create.button": "Tạo mới File System",
   "app.file.system.resize": "Điều chỉnh File System",
-  "app.file.system.create.confirm": "Xác nhận tạo mới File System",
+  "app.file.system.create.confirm": "Xác nhận khởi tạo File System",
   "app.file.system.create.from.snapshot": "Khởi tạo từ Snapshot",
   "app.file.system.capacity": "Dung lượng File System của quý khách",
   "app.file.system.capacity.vpc": "Dung lượng File System đã mua của dịch vụ VPC",
@@ -728,8 +737,11 @@
   "app.choose.file.system.type": "Chọn loại File System",
   "app.choose.file.system": "Chọn File System",
   "app.choose.file.system.to.perform.snapshot": "Chọn File System để thực hiện Snapshot",
-  "app.checkRouter.file.system": "Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!", 
-  "app.checkRouter.file.system.noGateway": "Kiểm tra lại Router Interface! Vui lòng thêm gateway của dải pri_network", 
+  "validation.snapshot.info.required": "Vui lòng nhập tên File System Snapshot",
+  "validation.snapshot.name.pattern": "Tên Snapshot chỉ được phép dùng các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.",
+
+  "app.checkRouter.file.system": "Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!",
+  "app.checkRouter.file.system.noGateway": "Kiểm tra lại Router Interface! Vui lòng thêm gateway của dải pri_network",
 
   "app.file.system.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Instance) hoặc CIDR được quyền truy cập tới Filesystem này",
   "app.file.system.access.to.create.success": "Tạo mới access rule thành công",
@@ -738,6 +750,9 @@
   "app.file.system.access.to.delete.fail": "Xóa access rule thất bại {{error}}",
   "app.file.system.access.to.delete.file.success": "Xóa File System thành công",
   "app.file.system.access.to.delete.file.fail": "Xóa File System thất bại {{error}}",
+
+  "app.file.system.placeholder.search": "Tìm kiếm theo tên",
+  "app.file.system.error.pattern.storage": "Vui lòng nhập số nguyên dương",
 
   "app.note.delete.file.system": "Để thực hiện xóa File System {{name}}, vui lòng nhập tên File System để xác nhận",
   "app.alert.delete.file.system": "Bạn đang thực hiện xóa File System<br> Để xóa được File System, quý khách lưu ý cần phải xóa hết các Snapshot của các File System đó",
@@ -767,7 +782,7 @@
   "app.snapshot.execution.day": "Ngày thực hiện Snapshot trong tháng",
 
   "validation.correct.file.system.name": "Vui lòng nhập đúng tên File System",
-  "validation.file.system.name.pattern": "không được chứa dấu tiếng việt và ký tự đặc biệt(trừ _, -, và có thể có khoảng trắng)",
+  "validation.file.system.name.pattern": "Không được chứa dấu tiếng việt và ký tự đặc biệt(trừ _, -, và có thể có khoảng trắng)",
   "validation.file.system.type.required": "Vui lòng chọn loại File System",
   "validation.file.system.description.maxlength": "Cho phép nhập tối đa 700 ký tự",
   "validation.file.system.capacity.required": "vui lòng nhập dung lượng của File System. Dung lượng của File System là số nguyên dương",
@@ -778,6 +793,7 @@
 
   "app.file.system.snapshot.delete": "Xóa File System Snapshot {{name}}",
   "app.file.system.snapshot.manage": "Quản lý File System Snapshot",
+  "app.file.system.snapshot.list": "Danh sách File System Snapshot",
   "app.file.system.snapshot.info": "Thông tin File System Snapshot",
   "app.file.system.snapshot.create": "Tạo mới File System Snapshot",
   "app.file.system.snapshot.edit": "Chỉnh sửa File System Snapshot",
@@ -1173,6 +1189,12 @@
   "app.routers.active": "Kích hoạt",
   "app.routers.inactive": "Chưa kích hoạt",
 
+  "app.title.sslcert.delete": "Xác nhận xóa SSL Cert {{name}}",
+  "app.alert.sslcert.delete": "Bạn đang thực hiện xóa SSL Cert",
+  "app.des.sslcert.delete": "Đế thực hiện xoá SSL Cert , vui lòng nhập tên SSL Cert để xác nhận.",
+  "app.notify.sslcert.delete.success": "Xoá Ssl Cert thành công",
+  "app.notify.sslcert.delete.fail": "Xoá Ssl Cert thất bại",
+
   "app.kafka.intro-text": "VNPT Message Streaming for Kafka là nền tảng phân phối dữ liệu cho các hệ thống qua đám mây. Kafka cung cấp khả năng xử lý nhanh, ổn định, chịu lỗi cao cho các hệ thống dạng Pub/Sub.",
   "app.kafka.init": "Khởi tạo Kafka Cluster",
   "app.kafka.list": "Danh sách Kafka",
@@ -1532,8 +1554,9 @@
   "mongodb.db.collection.tooltip-1": "Dung lượng của tất cả index đã được nén (mặc định bởi WiredTiger) trong collection",
   "mongodb.db.collection.tooltip-2": "Tổng dung lượng không nén trong bộ nhớ của tất cả document trong collection. Logical Data Size không bao gồm dung lượng của index và có thể lớn hơn Storage Size nếu dữ liệu được nén (mặc định bởi WiredTiger). Logical Data Size giảm khi xóa document hoặc dung lượng document giảm xuống",
   "mongodb.db.collection.tooltip-3": "Tổng dung lượng đã nén trong disk space của tất cả document trong collection. Storage Size không bao gồm dung lượng của index và có thể bé hơn Logical Data Size nếu dữ liệu được nén (mặc định bởi WiredTiger). Storage Size không giảm khi xóa document hoặc dung lượng document giảm xuống",
-  
+
   "app.cluster.summary": "VNPT Kubernetes Service là một nền tảng dựa trên Kubernetes đảm bảo hiệu quả cao cho doanh nghiệp bằng cách chạy các ứng dụng được đóng gói container trên đám mây, an toàn bảo mật, ổn định và hiệu năng cao",
+  "app.cluster.platform-service": "Dịch vụ nền tảng",
   "app.cluster.create-service": "Tạo mới Kubernetes",
   "app.cluster.list": "Danh sách cluster",
   "app.cluster.filter": "Tìm kiếm Kubernetes Cluster",
@@ -1570,7 +1593,7 @@
   "app.cluster.cancel-desciption-1": "Thanh toán của bạn đang được thực hiện, nếu bạn thoát khỏi trang này, giao dịch sẽ bị hủy bỏ.",
   "app.cluster.cancel-desciption-2": "Bạn có chắc chắn muốn thoát khỏi trang này?",
   "app.cluster.upgrade-note": "Khách hàng chỉ có thể nâng cấp cấu hình lên cao hơn mức hiện tại đang sử dụng.",
-  "app.cluster.warning-upgrade-1": "Việc thay đổi controlplane có thể khiến dịch vụ gặp gián đoạn tạm thời và không thể sửa cluster config.",
+  "app.cluster.warning-upgrade-1": "Việc thay đổi cấu hình, phiên bản có thể khiến dịch vụ gặp gián đoạn tạm thời và không thể sửa cluster config.",
   "app.cluster.warning-upgrade-2": "Để đảm bảo an toàn, xin hãy thực hiện backup dữ liệu. Hoạt động này sẽ bắt đầu ngay lập tức và không thể quay trở lại phiên bản cũ.",
   "app.cluster.warning-upgrade-3": "Vui lòng đọc thêm thông tin tại",
 
@@ -1586,6 +1609,9 @@
   "cluster.instance.stopped": "Đã dừng",
   "cluster.instance.reboot": "Khởi động lại",
   "cluster.instance.unknow": "Không xác định",
+  "cluster.instance.start-action": "Bật instance",
+  "cluster.instance.stop-action": "Tắt instance",
+  "cluster.instance.reboot-action": "Khởi động lại instance",
 
   "cluster.log.upgrade-request": "Yêu cầu nâng cấp",
   "cluster.log.update": "Cập nhật nâng cấp",
@@ -1598,6 +1624,7 @@
   "cluster.log.create-outbound": "Tạo mới Rule Outbound",
   "cluster.log.delete-outbound": "Xóa Rule Outbound",
   "cluster.log.extend": "Gia hạn dịch vụ",
+  "cluster.log.edit": "Cập nhật thông tin",
   "cluster.log.unknow": "Không xác định",
 
   "app.cluster.manage-cluster": "Quản lý Cluster",
@@ -2283,11 +2310,18 @@
   "app.input.backup.volume.package": "Chọn gói backup",
   "app.input.backup.volume.description": "Nhập mô tả",
   "app.input.backup.volume.note": "Tạo Backup Volume",
+  "app.input.backup.volume.select.volume": "Tên Volume",
+  "app.backup.volume.title.modal.update": "Chỉnh sửa thông tin Backup Volume",
+  "app.input.backup.volume.required.select": "Vui lòng chọn Volume",
 
   "app.backup.volume.name.tooltip": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
   "app.backup.volume.validator.name.required": "Vui lòng nhập tên Backup Volume",
+  "app.backup.volume.validator.name.duplicate": "Tên backup volume đã tồn tại, vui lòng nhập tên khác",
+  "app.backup.volume.validator.name.pattern": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
   "app.backup.volume.validator.backup.package.required": "Vui lòng nhập tên Backup",
   "app.backup.volume.request.create": "Yêu cầu tạo Backup Volume đã được gửi đi.",
+
+  "app.backup.volume.notification.create.request.send": "Yêu cầu tạo Backup Volume đã được gửi đi.",
 
   "app.dashboard.subscription.service": "Dịch vụ",
   "app.dashboard.subscription.service.active": "Đang hoạt động",
@@ -2368,6 +2402,7 @@
   "app.backup.vm.restore": "Khôi phục Backup VM",
   "app.backup.vm.ìnformation": "Thông tin Backup VM",
   "app.backup.vm.create.button": "Tạo mới Backup VM",
+  "app.backup.vm.edit": "Chỉnh sửa thông tin Backup VM",
   "app.table.backup.vm.name": "Tên backup",
   "app.table.backup.vm.vm.original": "VM gốc",
   "app.table.backup.vm.storage": "Dung lượng",
@@ -2393,6 +2428,8 @@
   "app.backup.vm.intro.desc": "Giải pháp sao lưu VM nâng cao, phần mềm giúp giảm chi phí chụp nhanh và tiết kiệm thời gian của bạn bằng cách tạo các bản sao VM giống hệt nhau trực tiếp từ các bản sao lưu VM hiện có.",
   "app.backup.vm.storage.remaining": "Dung lượng còn lại gói backup",
   "app.backup.vm.delete.title.modal": "Xác nhận xóa Backup VM",
+  "app.backup.vm.title.modal.update": "Chỉnh sửa thông tin Backup VM",
+  "app.backup.vm.name": "Tên Backup VM",
 
   "app.backup.vm.tooltip.name": "Nhập tên backup tối đa 50 ký tự và chỉ gồm ký tự chữ cái, số và dấu _",
   "app.backup.vm.tooltip.vm": "Chọn máy ảo cần Backup từ danh sách máy ảo của khách hàng thuộc khu vực và dự án mà khách hàng",

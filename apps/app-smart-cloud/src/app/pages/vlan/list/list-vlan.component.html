@@ -33,7 +33,7 @@
                  nz-input
                  placeholder="{{ 'volume.tooltip.title.filter.img' | i18n }}"
                  [(ngModel)]="value"
-                 (input)="onInputChange($event.target['value'])" />
+                 (keydown.enter)="onInputChange()" />
         </nz-input-group>
         <ng-template #prefixIconSearch>
           <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"

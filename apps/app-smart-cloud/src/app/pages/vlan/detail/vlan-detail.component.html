@@ -33,7 +33,7 @@
               <input name="name"
                      nz-input placeholder="{{ 'volume.tooltip.title.filter.img' | i18n }}"
                      [(ngModel)]="valueSubnet"
-                     (input)="onInputChangeSubnet($event.target['value'])" />
+                     (keydown.enter)="onInputChangeSubnet()" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
@@ -96,7 +96,7 @@
               <input name="name"
                      nz-input placeholder="{{ 'volume.tooltip.title.filter.img' | i18n }}"
                      [(ngModel)]="valuePort"
-                     (input)="onInputChangePort($event.target['value'])" />
+                     (keydown.enter)="onInputChangePort()" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"

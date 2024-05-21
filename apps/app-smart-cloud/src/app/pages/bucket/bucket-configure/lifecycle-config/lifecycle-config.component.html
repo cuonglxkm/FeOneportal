@@ -41,22 +41,22 @@
   style="margin-top: 10px"
   #rowSelectionTable
   nzShowSizeChanger
-  [nzScroll]="{ x: '100%', y: '250px' }"
   [nzFrontPagination]="false"
   [nzData]="listLifecycle"
   (nzPageIndexChange)="searchLifeCycle()"
   (nzPageSizeChange)="searchLifeCycle()"
+  nzTableLayout="fixed"
   [nzLoading]="loading"
 >
   <thead>
     <tr>
-      <th>{{ 'app.text.status' | i18n }}</th>
-      <th>{{ 'app.prefix' | i18n }}</th>
-      <th>{{ 'app.filter' | i18n }} (Key:Value)</th>
-      <th>{{ 'app.delete.file.current.version' | i18n }}</th>
-      <th>{{ 'app.delete.file.non.current.version' | i18n }}</th>
-      <th>{{ 'app.delete.multi.upload' | i18n }}</th>
-      <th>{{ 'app.text.operation' | i18n }}</th>
+      <th nzTableLayout="fixed">{{ 'app.text.status' | i18n }}</th>
+      <th nzTableLayout="fixed">{{ 'app.prefix' | i18n }}</th>
+      <th nzTableLayout="fixed">{{ 'app.filter' | i18n }} (Key:Value)</th>
+      <th nzTableLayout="fixed">{{ 'app.delete.file.current.version' | i18n }}</th>
+      <th nzTableLayout="fixed">{{ 'app.delete.file.non.current.version' | i18n }}</th>
+      <th nzTableLayout="fixed">{{ 'app.delete.multi.upload' | i18n }}</th>
+      <th nzTableLayout="fixed">{{ 'app.text.operation' | i18n }}</th>
     </tr>
   </thead>
   <tbody>
@@ -79,7 +79,7 @@
             [nz-tooltip]="'app.text.edit' | i18n"
           />
           <img
-            src="assets/imgs/trash.svg"
+            src="assets/imgs/delete.svg"
             alt=""
             (click)="modalDelete(item)"
             style="cursor: pointer; margin-right: 16px"
@@ -107,11 +107,11 @@
     <div style="margin-top: 16px" class="text-label">
       {{ 'app.prefix' | i18n }}
       <img
-        style="padding-right: 10px; margin-top: -4px"
-        [nz-tooltip]="'app.lifeCycle.tooltip.prefix' | i18n"
-        src="assets/imgs/message-question.svg"
-        alt=""
-      />
+      style="padding-right: 10px; margin-top: -4px"
+      [nz-tooltip]="'app.lifeCycle.tooltip.prefix' | i18n"
+      src="assets/imgs/pajamas_question.svg"
+      alt=""
+    />
     </div>
     <input
       style="margin-bottom: 16px; margin-top: 5px"

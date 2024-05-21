@@ -213,12 +213,42 @@
             </nz-form-label>
           </nz-form-item>
         </nz-card>
-        <nz-card style="border-radius: 8px;">
+        <nz-card style="border-radius: 8px; width: 100%">
           <span class="text-card-header">{{ 'app.guide.formula' | i18n }}</span>
-          <div style="margin-top: 25px;">
-            <img src="assets/imgs/congthuc1.png" alt="" />
-            <img src="assets/imgs/congthuc2.png" alt="" style="margin-top: 15px;" />
+          <nz-row class="text-label" style="margin-top: 20px">
+            <nz-col style="margin-top: 10px">
+              <span>{{ 'app.note.guide.formula' | i18n }}</span>
+            </nz-col>
+            <nz-col style="padding-left: 5px">
+              <div>
+                <span class="fraction">
+                  <span class="numerator">{{
+                    'app.note.guide.formula.numerator' | i18n
+                  }}</span>
+                  <span class="denominator">30 {{ 'app.days' | i18n }}</span>
+                </span>
+              </div>
+            </nz-col>
+            <nz-col style="margin-top: 10px; padding-left: 10px">
+              <span>x {{ 'app.remaining.days' | i18n }}</span>
+            </nz-col>
+          </nz-row>
+          <div style="margin-top: 10px" class="text-label">
+            {{ 'app.example.guide.formula' | i18n }}
           </div>
+          <nz-row class="text-label">
+            <nz-col class="text-right" style="padding-left: 5px" nzSpan="12">
+              <div>
+                <span class="fraction">
+                  <span class="numerator">1.500.000 - 1.000.000</span>
+                  <span class="denominator">30 {{ 'app.days' | i18n }}</span>
+                </span>
+              </div>
+            </nz-col>
+            <nz-col style="margin-top: 10px; padding-left: 10px" nzSpan="12">
+              <span>x 15 {{ 'app.days' | i18n }} = 250.000 VND</span>
+            </nz-col>
+          </nz-row>
         </nz-card>
       </nz-col>
       <nz-col nzSpan="8">

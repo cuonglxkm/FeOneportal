@@ -136,8 +136,7 @@
                                class="input-custom"
                                style="width: 100%; margin-left: 0;"
                                nzAutoFocus
-                               [nzMin]="volumeInfo?.sizeInGB"
-                               [nzStep]="1"/>
+                               [nzMin]="1"/>
               <ng-template #storageErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.storage.vpc.required'|i18n }}</ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">{{'volume.input.storage.required'|i18n}}</ng-container>

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { SnapshotVolumeService } from '../../../../../shared/services/snapshot-volume.service';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
@@ -24,7 +24,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
   templateUrl: './create-file-system.component.html',
   styleUrls: ['./create-file-system.component.less']
 })
-export class CreateFileSystemComponent implements OnInit {
+export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestroy {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -43,7 +43,7 @@ export class CreateFileSystemComponent implements OnInit {
       this.duplicateNameValidator.bind(this)]],
     protocol: ['NFS', [Validators.required]],
     type: [1, [Validators.required]],
-    storage: [1, [Validators.required]],
+    storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     checked: [false],
     description: [''],
     snapshot: [null as number, []],
@@ -52,7 +52,8 @@ export class CreateFileSystemComponent implements OnInit {
 
   optionProtocols = [
     { value: 'NFS', label: 'NFS' },
-    { value: 'CIFS', label: 'CIFS' }
+    { value: 'CIFS', label: 'CIFS' },
+    { value: 'SMB', label: 'SMB'}
   ];
 
   isVisibleConfirm: boolean = false;
@@ -79,7 +80,19 @@ export class CreateFileSystemComponent implements OnInit {
               private router: Router,
               private projectService: ProjectService,
               private fileSystemSnapshotService: FileSystemSnapshotService,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private renderer: Renderer2) {
+  }
+
+  @ViewChild('confirmButton') confirmButton: ElementRef;
+
+  ngAfterViewInit() {
+    this.addKeydownListener();
+  }
+
+  private addKeydownListener(): void {
+    // Đăng ký sự kiện keydown trên document
+    this.keydownListener = this.renderer.listen('document', 'keydown', this.onKeyDown.bind(this));
   }
 
   duplicateNameValidator(control) {
@@ -153,11 +166,33 @@ export class CreateFileSystemComponent implements OnInit {
     });
   }
 
+  onModalOpen(): void {
+    // Tự động focus vào nút xác nhận sau khi modal mở
+    setTimeout(() => {
+      if (this.confirmButton) {
+        this.confirmButton.nativeElement.focus();
+      }
+    }, 0);
+  }
+  // onKeyDown(event: KeyboardEvent): void {
+  //   console.log('Key pressed:', event.key);
+  //   if (event.key === 'enter') {
+  //     // Ngăn chặn hành động mặc định của Enter
+  //     event.preventDefault();
+  //     console.log('here')
+  //     // Kích hoạt nút OK
+  //     if (this.confirmButton && this.confirmButton.nativeElement) {
+  //       this.confirmButton.nativeElement.click();
+  //     }
+  //   }
+  // }
+
+
   initFileSystem() {
     this.formCreate.projectId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
     this.formCreate.size = this.validateForm.controls.storage.value;
-    this.formCreate.name = this.validateForm.controls.name.value;
+    this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();
     this.formCreate.description = this.validateForm.controls.description.value;
     this.formCreate.displayName = this.validateForm.controls.name.value;
     this.formCreate.displayDescription = this.validateForm.controls.description.value;
@@ -257,26 +292,60 @@ export class CreateFileSystemComponent implements OnInit {
     });
 
   }
-
+  private keydownListener: () => void;
   showModalConfirm() {
     this.isVisibleConfirm = true;
     this.initFileSystem();
+    setTimeout(() => {
+      if (this.confirmButton && this.confirmButton.nativeElement) {
+        this.confirmButton.nativeElement.focus();
+      }
+      // Đăng ký sự kiện keydown trên document khi modal mở
+      this.keydownListener = this.renderer.listen('document', 'keydown', this.onKeyDown.bind(this));
+    }, 0);
   }
 
   handleCancel() {
     this.isVisibleConfirm = false;
     this.isLoading = false;
+    this.removeKeydownListener();
   }
 
   handleOk() {
     this.isLoading = true;
     this.submitForm();
+    this.removeKeydownListener();
   }
 
+  onKeyDown(event: KeyboardEvent): void {
+    console.log('Key pressed:', event.key);
+    if (event.key === 'Enter') { // Kiểm tra phím Enter
+      // Ngăn chặn hành động mặc định của Enter
+      event.preventDefault();
+
+      // Kích hoạt nút OK
+      if (this.confirmButton && this.confirmButton.nativeElement) {
+        this.confirmButton.nativeElement.click();
+      }
+    }
+  }
+
+  private removeKeydownListener(): void {
+    // Hủy đăng ký sự kiện keydown khi modal đóng
+    if (this.keydownListener) {
+      this.keydownListener();
+    }
+  }
+  ngOnDestroy(): void {
+    // Đảm bảo hủy đăng ký sự kiện khi component bị phá hủy
+    this.removeKeydownListener();
+  }
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
+    this.validateForm.controls.type.setValue(1)
 
     console.log('create');
     this.getListSnapshot();

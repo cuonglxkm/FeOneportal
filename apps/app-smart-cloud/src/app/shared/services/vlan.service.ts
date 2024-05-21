@@ -128,6 +128,9 @@ export class VlanService extends BaseService {
     if (formSearchSubnet.networkId != undefined || formSearchSubnet.networkId != null) {
       params = params.append('networkId', formSearchSubnet.networkId)
     }
+    if (formSearchSubnet.vpcId != undefined || formSearchSubnet.vpcId != null) {
+      params = params.append('vpcId', formSearchSubnet.vpcId)
+    }
     return this.http.get<BaseResponse<Subnet[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {
       params: params
     }).pipe(
@@ -143,7 +146,7 @@ export class VlanService extends BaseService {
   }
 
   getVlanByNetworkId(idNetwork, projectId: number) {
-    return this.http.get<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}&projectId=${projectId}`).pipe(
+    return this.http.get<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}?projectId=${projectId}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

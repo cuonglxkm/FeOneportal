@@ -42,10 +42,10 @@
       </div>
       <div nz-col nzSpan="4" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus)">
         <button class="button-cancel"
-                nzType="default"
+                nzType="primary"
                 (click)="navigateToRenew(volumeInfo.id)"
                 nz-button>
-          <img src="assets/imgs/calendar-tick.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
+          <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
           <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
         </button>
       </div>

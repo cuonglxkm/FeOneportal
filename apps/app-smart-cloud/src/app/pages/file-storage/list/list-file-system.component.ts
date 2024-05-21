@@ -1,9 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  BaseResponse,
+  BaseResponse, NotificationService,
   ProjectModel,
-  RegionModel,
+  RegionModel
 } from '../../../../../../../libs/common-utils/src';
 import {
   FileSystemModel,
@@ -50,11 +50,12 @@ export class ListFileSystemComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    private projectService: ProjectService
-  ) {}
+    private projectService: ProjectService,
+    private cdr: ChangeDetectorRef,
+    private notificationService: NotificationService) {}
 
-  onInputChange(value) {
-    this.value = value;
+  onEnter() {
+    this.value = this.value.trim();
     this.getListFileSystem(false);
   }
 
@@ -192,6 +193,30 @@ export class ListFileSystemComponent implements OnInit {
     this.customerId = this.tokenService.get()?.userId;
     this.fileSystemService.model.subscribe((data) => {
       console.log(data);
+    });
+    if (!this.region && !this.project) {
+      this.router.navigate(['/exception/500']);
+    }
+
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+
+    this.notificationService.connection.on('UpdateVolume', (data) => {
+      if (data) {
+        let volumeId = data.serviceId;
+
+        var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+        if (foundIndex > -1) {
+          var record = this.response.records[foundIndex];
+
+          record.status = data.status;
+          record.taskState = data.serviceStatus;
+
+          this.response.records[foundIndex] = record;
+          this.cdr.detectChanges();
+        }
+      }
     });
   }
 }
