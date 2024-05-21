@@ -181,6 +181,7 @@
   "app.minute": "minutes",
   "app.hour": "hour",
   "app.day": "day",
+  "app.days": "days",
   "app.Week": "Week",
   "app.week": "week",
   "app.month": "month",
@@ -317,7 +318,11 @@
   "app.application.period": "Application period",
   "app.reason": "The reason",
   "app.choose.attachment.method": "Choose attachment method",
+  "app.remaining.days": "Remaining days",
   "app.guide.formula": "Guide formula",
+  "app.note.guide.formula": "When adjusting the service, the cost is calculated as follows:",
+  "app.note.guide.formula.numerator": "Monthly price of package B - Monthly price of package A",
+  "app.example.guide.formula": "Example: A user purchases the SMC01 configuration package for 1,000,000 VND/month with a usage period from April 1, 2024, to April 30, 2024. On April 15, 2024, the user adjusts to a different configuration package priced at 1,500,000 VND/month. The user has used the old service package for 15 days and switches to the new configuration package for the remaining 15 days. Therefore, the cost for upgrading the configuration package when adjusting the service that the user needs to pay is:",
 
   "app.ip.type": "IP Type",
   "app.ip.address": "IP Address",
@@ -596,6 +601,8 @@
   "app.lifeCycle.edit": "Edit Lifecycle",
   "app.lifeCycle.config.intro": "Bucket Lifecycle allows you to manage the lifespan and automation of objects within buckets.",
   "app.lifeCycle.config.intro.next": "With Bucket Lifecycle, you can define automatic rules for objects in your bucket, including deleting objects that have expired or are no longer needed to reduce storage costs. Using Bucket Lifecycle also helps reduce administrative workload and increase the availability of objects in the bucket.",
+  "app.bucket.detail": "Bucket Detail",
+
   "app.delete.file.current.version": "File deletion time (Current Version)",
   "app.delete.file.non.current.version": "File deletion time (Non-Current Version)",
   "app.delete.multi.upload": "Incomplete Multipart Upload deletion time",
@@ -1290,6 +1297,12 @@
 
   "app.routers.active": "ACTIVE",
   "app.routers.inactive": "INACTIVE",
+
+  "app.title.sslcert.delete": "Confirm deletion of SSL Cert {{name}}",
+  "app.alert.sslcert.delete": "You are performing SSL Cert deletion",
+  "app.des.sslcert.delete": "To delete SSL Cert, please enter the SSL Cert name to confirm.",
+  "app.notify.sslcert.delete.success": "Delete Ssl Cert successfully",
+  "app.notify.sslcert.delete.fail": "Delete Ssl Cert failed",
 
   "app.kafka.intro-text": "VNPT Message Streaming for Kafka is a data distribution platform for cloud-based systems. Kafka provides fast, stable, and fault-tolerant processing capabilities for Pub/Sub systems.",
   "app.kafka.init": "Initialize Kafka Cluster",
