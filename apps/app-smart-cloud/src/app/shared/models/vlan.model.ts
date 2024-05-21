@@ -56,6 +56,7 @@ export class FormSearchSubnet {
   name: string
   customerId: number
   networkId: number
+  vpcId: number;
 }
 
 

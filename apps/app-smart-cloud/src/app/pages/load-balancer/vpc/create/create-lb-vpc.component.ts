@@ -49,9 +49,9 @@ export class CreateLbVpcComponent implements OnInit {
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
       this.duplicateNameValidator.bind(this), Validators.maxLength(50)]],
     radio: [''],
-    subnet: [''],
+    subnet: ['', Validators.required],
     ipAddress: ['', Validators.pattern(/^(\d{1,3}\.){3}\d{1,3}$/)],
-    ipFloating: [0],
+    ipFloating: [0, Validators.required],
     offer: [1, Validators.required],
     description: ['', Validators.maxLength(255)],
     time: [1, Validators.required]
@@ -197,7 +197,6 @@ export class CreateLbVpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
-    this.getListSubnetInternetFacing();
   }
 
   onChangeStatusInternal() {
@@ -210,7 +209,6 @@ export class CreateLbVpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
-    this.getListSubnetInternetFacing();
   }
 
 
@@ -354,31 +352,41 @@ export class CreateLbVpcComponent implements OnInit {
   }
 
   getListSubnetInternetFacing() {
-    if (this.enableInternal == true) {
-      let formSearchSubnet = new FormSearchSubnet();
-      formSearchSubnet.region = this.region;
-      formSearchSubnet.pageSize = 9999;
-      formSearchSubnet.pageNumber = 1;
-      formSearchSubnet.customerId = this.tokenService.get()?.userId;
-      formSearchSubnet.name = '';
-      this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
-        this.mapSubnet?.clear();
-        // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
-        for (const model of data.records) {
-          this.mapSubnetArray?.push({ value: model.subnetCloudId, label: model.name });
+    this.mapSubnetArray = [];
+    this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region).subscribe(data => {
+      this.setDataToMap(data);
+      if (this.mapSubnet instanceof Map) {
+        // Chuyển đổi Map thành mảng các cặp khóa/giá trị
+        for (const [key, value] of this.mapSubnet.entries()) {
+          this.mapSubnetArray?.push({ value: value, label: key });
         }
-      });
-    } else {
-      this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region).subscribe(data => {
-        this.setDataToMap(data);
-        if (this.mapSubnet instanceof Map) {
-          // Chuyển đổi Map thành mảng các cặp khóa/giá trị
-          for (const [key, value] of this.mapSubnet.entries()) {
-            this.mapSubnetArray?.push({ value: value, label: key });
-          }
-        }
-      });
-    }
+      }
+    });
+    // if (this.enableInternal == true) {
+    //   let formSearchSubnet = new FormSearchSubnet();
+    //   formSearchSubnet.region = this.region;
+    //   formSearchSubnet.pageSize = 9999;
+    //   formSearchSubnet.pageNumber = 1;
+    //   formSearchSubnet.customerId = this.tokenService.get()?.userId;
+    //   formSearchSubnet.name = '';
+    //   this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
+    //     this.mapSubnet?.clear();
+    //     // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
+    //     for (const model of data.records) {
+    //       this.mapSubnetArray?.push({ value: model.subnetCloudId, label: model.name });
+    //     }
+    //   });
+    // } else {
+    //   this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region).subscribe(data => {
+    //     this.setDataToMap(data);
+    //     if (this.mapSubnet instanceof Map) {
+    //       // Chuyển đổi Map thành mảng các cặp khóa/giá trị
+    //       for (const [key, value] of this.mapSubnet.entries()) {
+    //         this.mapSubnetArray?.push({ value: value, label: key });
+    //       }
+    //     }
+    //   });
+    // }
   }
 
   ngOnInit() {
@@ -389,7 +397,7 @@ export class CreateLbVpcComponent implements OnInit {
     this.validateForm.controls.radio.setValue('floatingIp');
     this.getListVlanSubnet();
     this.searchProduct();
-    // this.getIpBySubnet();
+    // this.getIpBySubnet()a;
     this.getListLoadBalancer();
     this.getListSubnetInternetFacing();
   }

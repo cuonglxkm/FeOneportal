@@ -8,7 +8,7 @@ import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { head } from 'lodash';
 import { FormCreateFileSystemSnapShot, FormDeleteFileSystemSnapshot, FormEditFileSystemSnapShot, FormSearchFileSystemSnapshot } from '../models/filesystem-snapshot';
 import { Router } from '@angular/router';
-import { FormCreateSslCert, FormSearchSslSearch } from '../models/ssl-cert.model';
+import { FormCreateSslCert, FormDeleteSslCert, FormSearchSslSearch } from '../models/ssl-cert.model';
 
 @Injectable({
   providedIn: 'root',
@@ -43,7 +43,7 @@ export class SSLCertService extends BaseService {
     if (formSearch.vpcId != undefined || formSearch.vpcId != null) {
       params = params.append('vpcId', formSearch.vpcId)
     }
-    return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/ssl', {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/ssl', {
       headers: this.getHeaders(),
       params: params
     })
@@ -54,8 +54,8 @@ export class SSLCertService extends BaseService {
         Object.assign(formCreate), {headers: this.getHeaders()})
   }
 
-  deleteFileSystemSnapshot(formDelete: FormDeleteFileSystemSnapshot) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/sharesnapshot/${formDelete.id}?customerId=${formDelete.customerId}`).pipe(
+  delete(formDelete: FormDeleteSslCert) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/ssl?uuid=${formDelete.uuid}&regionId=${formDelete.regionId}&projectId=${formDelete.projectId}`,{observe: 'response'}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

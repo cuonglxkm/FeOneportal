@@ -181,6 +181,7 @@
   "app.minute": "minutes",
   "app.hour": "hour",
   "app.day": "day",
+  "app.days": "days",
   "app.Week": "Week",
   "app.week": "week",
   "app.month": "month",
@@ -317,7 +318,11 @@
   "app.application.period": "Application period",
   "app.reason": "The reason",
   "app.choose.attachment.method": "Choose attachment method",
+  "app.remaining.days": "Remaining days",
   "app.guide.formula": "Guide formula",
+  "app.note.guide.formula": "When adjusting the service, the cost is calculated as follows:",
+  "app.note.guide.formula.numerator": "Monthly price of package B - Monthly price of package A",
+  "app.example.guide.formula": "Example: A user purchases the SMC01 configuration package for 1,000,000 VND/month with a usage period from April 1, 2024, to April 30, 2024. On April 15, 2024, the user adjusts to a different configuration package priced at 1,500,000 VND/month. The user has used the old service package for 15 days and switches to the new configuration package for the remaining 15 days. Therefore, the cost for upgrading the configuration package when adjusting the service that the user needs to pay is:",
 
   "app.ip.type": "IP Type",
   "app.ip.address": "IP Address",
@@ -596,6 +601,8 @@
   "app.lifeCycle.edit": "Edit Lifecycle",
   "app.lifeCycle.config.intro": "Bucket Lifecycle allows you to manage the lifespan and automation of objects within buckets.",
   "app.lifeCycle.config.intro.next": "With Bucket Lifecycle, you can define automatic rules for objects in your bucket, including deleting objects that have expired or are no longer needed to reduce storage costs. Using Bucket Lifecycle also helps reduce administrative workload and increase the availability of objects in the bucket.",
+  "app.bucket.detail": "Bucket Detail",
+
   "app.delete.file.current.version": "File deletion time (Current Version)",
   "app.delete.file.non.current.version": "File deletion time (Non-Current Version)",
   "app.delete.multi.upload": "Incomplete Multipart Upload deletion time",
@@ -855,6 +862,9 @@
   "app.file.system.access.to.delete.file.fail": "Delete File System success {{error}}",
   "app.checkRouter.file.system": "Please check the Router and add Interface Router to use the service!",
   "app.checkRouter.file.system.noGateway": "Check the Router Interface again! Please add the gateway of the pri_network range",
+
+  "app.file.system.placeholder.search": "Search by name",
+  "app.file.system.error.pattern.storage": "Please enter a positive integer.",
 
   "app.note.delete.file.system": "To delete the {{name}} File System, please enter the File System name to confirm",
   "app.alert.delete.file.system": "You are currently deleting the File System.<br> To successfully delete the File System, please note that you need to delete all Snapshots associated with that File System",
@@ -1288,6 +1298,12 @@
   "app.routers.active": "ACTIVE",
   "app.routers.inactive": "INACTIVE",
 
+  "app.title.sslcert.delete": "Confirm deletion of SSL Cert {{name}}",
+  "app.alert.sslcert.delete": "You are performing SSL Cert deletion",
+  "app.des.sslcert.delete": "To delete SSL Cert, please enter the SSL Cert name to confirm.",
+  "app.notify.sslcert.delete.success": "Delete Ssl Cert successfully",
+  "app.notify.sslcert.delete.fail": "Delete Ssl Cert failed",
+
   "app.kafka.intro-text": "VNPT Message Streaming for Kafka is a data distribution platform for cloud-based systems. Kafka provides fast, stable, and fault-tolerant processing capabilities for Pub/Sub systems.",
   "app.kafka.init": "Initialize Kafka Cluster",
   "app.kafka.list": "Kafka list",
@@ -1516,7 +1532,7 @@
   "mongodb.db.timefield.validation-3": "TimeField name contains a maximum of 100 characters, including only 2 special characters ‘-“ “_”",
   "mongodb.db.metafield.validation-1": "MetaField name contains a maximum of 100 characters, including only 2 special characters ‘-“ “_”",
   "mongodb.db.granularity.validation": "Please select granularity",
-  
+
   "mongodb.db.delete.note-1": "To drop database ",
   "mongodb.db.delete.note-2": " re-enter the database name to confirm deletion.",
   "mongodb.db.delete.placeholder": "Re-enter database name",
@@ -2285,6 +2301,7 @@
   "app.input.backup.volume.note": "Create Backup Volume",
   "app.input.backup.volume.select.volume": "Select volume name",
   "app.input.backup.volume.required.select": "Please select volume",
+  "app.backup.volume.title.modal.update": "Edit Backup Volume information",
 
   "app.backup.volume.name.tooltip": "The backup volume name should not include special characters, spaces, or Vietnamese characters (except _).",
   "app.backup.volume.validator.name.required": "Please enter the name of the Backup Volume",
@@ -2294,6 +2311,7 @@
 
   "app.backup.volume.validator.backup.package.required": "Please enter the name of the Backup",
   "app.backup.volume.request.create": "Backup Volume creation request has been sent.",
+  "app.backup.volume.notification.create.request.send": "Backup Volume creation request has been sent.",
 
   "app.dashboard.subscription.service": "Service",
   "app.dashboard.subscription.service.active": "Service Active",
@@ -2399,6 +2417,8 @@
   "app.backup.vm.button.create" : "Initialize Backup VM",
   "app.backup.vm.storage.remaining": "The remaining capacity of the backup package",
   "app.backup.vm.delete.title.modal": "Determine the deletion of Backup VM",
+  "app.backup.vm.title.modal.update": "Edit Backup VM information",
+  "app.backup.vm.name": "Backup VM name",
 
   "app.backup.vm.tooltip.name": "Enter a backup name with a maximum of 50 characters, consisting only of letters, numbers, and underscores.",
   "app.backup.vm.tooltip.vm": "Select the virtual machine to backup from the customer's virtual machine list within the specified region and project.",
