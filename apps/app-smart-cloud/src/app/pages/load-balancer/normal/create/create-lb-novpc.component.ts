@@ -48,9 +48,9 @@ export class CreateLbNovpcComponent implements OnInit {
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
       this.duplicateNameValidator.bind(this), Validators.maxLength(50)]],
     radio: [''],
-    subnet: [''],
+    subnet: ['', Validators.required],
     ipAddress: ['', Validators.pattern(/^(\d{1,3}\.){3}\d{1,3}$/)],
-    ipFloating: [0],
+    ipFloating: [-1, [Validators.required,Validators.pattern(/^[0-9]+$/)]],
     offer: [1, Validators.required],
     description: ['', Validators.maxLength(255)],
     time: [1, Validators.required]
@@ -381,9 +381,11 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   getListSubnetInternetFacing() {
+    this.mapSubnetArray = [];
     if (this.enableInternal == true) {
       let formSearchSubnet = new FormSearchSubnet();
       formSearchSubnet.region = this.region;
+      formSearchSubnet.vpcId = this.project;
       formSearchSubnet.pageSize = 9999;
       formSearchSubnet.pageNumber = 1;
       formSearchSubnet.customerId = this.tokenService.get()?.userId;
@@ -392,7 +394,7 @@ export class CreateLbNovpcComponent implements OnInit {
         this.mapSubnet?.clear();
         // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
         for (const model of data.records) {
-          this.mapSubnetArray?.push({ value: model.subnetCloudId, label: model.name });
+          this.mapSubnetArray?.push({ value: model.subnetCloudId, label: model.name + '(' + model.subnetAddressRequired + ')' });
         }
       });
     } else {
