@@ -11,7 +11,9 @@
           >Bucket</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item><a>Chi tiết Bucket</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.bucket.detail' | i18n
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 </page-header>
@@ -19,7 +21,7 @@
 <!--THÔNG TIN BUCKET-->
 <nz-card class="text-label" nzTitle="" style="border-radius: 8px">
   <div style="margin-bottom: 20px">
-    <span class="text-card-header">Thông tin Bucket</span>
+    <span class="text-card-header">{{ 'app.bucket.info' | i18n }}</span>
   </div>
   <nz-row>
     <div style="margin-bottom: 10px; margin-right: 8px">Bucket:</div>
@@ -33,7 +35,7 @@
   </nz-row>
   <nz-row>
     <div style="margin-bottom: 10px; margin-right: 8px">
-      Dung lượng đã sử dụng:
+      {{ 'app.storage.usage' | i18n }}:
     </div>
     <div style="font-weight: bold">
       {{ bucket ? bucket.bucketSize : '' }} Bytes /
@@ -48,7 +50,7 @@
     </div>
   </nz-row>
   <nz-row>
-    <div style="margin-right: 8px">Quyền truy cập:</div>
+    <div style="margin-right: 8px">{{ 'app.access.rights' | i18n }}:</div>
     <div style="font-weight: bold">{{ bucket ? bucket.aclType : '' }}</div>
   </nz-row>
 </nz-card>
