@@ -3,10 +3,10 @@
      (click)="showModal()"
      style="cursor: pointer; margin-left: 5px; margin-top: 2px;"
      [nzPopoverContent]="'app.text.edit' | i18n" />
-<nz-modal [(nzVisible)]="isVisible" [nzTitle]="'app.backup.vm.title.modal.update' | i18n"
+<nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMark="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">{{ 'app.backup.vm.title.modal.update' | i18n }}</span>
+    <span class="text-modal-title">{{ 'app.backup.volume.title.modal.update' | i18n }}</span>
   </div>
   <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">

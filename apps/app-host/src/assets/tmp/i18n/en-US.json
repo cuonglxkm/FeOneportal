@@ -856,6 +856,9 @@
   "app.checkRouter.file.system": "Please check the Router and add Interface Router to use the service!",
   "app.checkRouter.file.system.noGateway": "Check the Router Interface again! Please add the gateway of the pri_network range",
 
+  "app.file.system.placeholder.search": "Search by name",
+  "app.file.system.error.pattern.storage": "Please enter a positive integer.",
+
   "app.note.delete.file.system": "To delete the {{name}} File System, please enter the File System name to confirm",
   "app.alert.delete.file.system": "You are currently deleting the File System.<br> To successfully delete the File System, please note that you need to delete all Snapshots associated with that File System",
   "app.tooltip.file.system.name.pattern": "The name of the File System to be created should consist of lowercase letters (a-z),<br> uppercase letters (A-Z), numbers (0-9), hyphens (-), and underscores (_), with possible spaces,<br> containing at least 1 character and up to 255 characters. File System names must be unique",
@@ -1516,7 +1519,7 @@
   "mongodb.db.timefield.validation-3": "TimeField name contains a maximum of 100 characters, including only 2 special characters ‘-“ “_”",
   "mongodb.db.metafield.validation-1": "MetaField name contains a maximum of 100 characters, including only 2 special characters ‘-“ “_”",
   "mongodb.db.granularity.validation": "Please select granularity",
-  
+
   "mongodb.db.delete.note-1": "To drop database ",
   "mongodb.db.delete.note-2": " re-enter the database name to confirm deletion.",
   "mongodb.db.delete.placeholder": "Re-enter database name",
@@ -2285,6 +2288,7 @@
   "app.input.backup.volume.note": "Create Backup Volume",
   "app.input.backup.volume.select.volume": "Select volume name",
   "app.input.backup.volume.required.select": "Please select volume",
+  "app.backup.volume.title.modal.update": "Edit Backup Volume information",
 
   "app.backup.volume.name.tooltip": "The backup volume name should not include special characters, spaces, or Vietnamese characters (except _).",
   "app.backup.volume.validator.name.required": "Please enter the name of the Backup Volume",
@@ -2294,6 +2298,7 @@
 
   "app.backup.volume.validator.backup.package.required": "Please enter the name of the Backup",
   "app.backup.volume.request.create": "Backup Volume creation request has been sent.",
+  "app.backup.volume.notification.create.request.send": "Backup Volume creation request has been sent.",
 
   "app.dashboard.subscription.service": "Service",
   "app.dashboard.subscription.service.active": "Service Active",
@@ -2399,6 +2404,8 @@
   "app.backup.vm.button.create" : "Initialize Backup VM",
   "app.backup.vm.storage.remaining": "The remaining capacity of the backup package",
   "app.backup.vm.delete.title.modal": "Determine the deletion of Backup VM",
+  "app.backup.vm.title.modal.update": "Edit Backup VM information",
+  "app.backup.vm.name": "Backup VM name",
 
   "app.backup.vm.tooltip.name": "Enter a backup name with a maximum of 50 characters, consisting only of letters, numbers, and underscores.",
   "app.backup.vm.tooltip.vm": "Select the virtual machine to backup from the customer's virtual machine list within the specified region and project.",

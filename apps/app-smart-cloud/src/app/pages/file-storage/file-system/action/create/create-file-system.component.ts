@@ -43,7 +43,7 @@ export class CreateFileSystemComponent implements OnInit {
       this.duplicateNameValidator.bind(this)]],
     protocol: ['NFS', [Validators.required]],
     type: [1, [Validators.required]],
-    storage: [1, [Validators.required]],
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     checked: [false],
     description: [''],
     snapshot: [null as number, []],
@@ -52,7 +52,8 @@ export class CreateFileSystemComponent implements OnInit {
 
   optionProtocols = [
     { value: 'NFS', label: 'NFS' },
-    { value: 'CIFS', label: 'CIFS' }
+    { value: 'CIFS', label: 'CIFS' },
+    { value: 'SMB', label: 'SMB'}
   ];
 
   isVisibleConfirm: boolean = false;
@@ -157,7 +158,7 @@ export class CreateFileSystemComponent implements OnInit {
     this.formCreate.projectId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
     this.formCreate.size = this.validateForm.controls.storage.value;
-    this.formCreate.name = this.validateForm.controls.name.value;
+    this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();
     this.formCreate.description = this.validateForm.controls.description.value;
     this.formCreate.displayName = this.validateForm.controls.name.value;
     this.formCreate.displayDescription = this.validateForm.controls.description.value;
@@ -277,6 +278,8 @@ export class CreateFileSystemComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
+    this.validateForm.controls.type.setValue(1)
 
     console.log('create');
     this.getListSnapshot();
