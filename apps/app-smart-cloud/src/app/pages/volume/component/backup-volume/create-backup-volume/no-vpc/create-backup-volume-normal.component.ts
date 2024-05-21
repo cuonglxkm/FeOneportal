@@ -19,6 +19,8 @@ import { PackageBackupModel } from '../../../../../../shared/models/package-back
 import { VolumeService } from '../../../../../../shared/services/volume.service';
 import { VolumeDTO } from '../../../../../../shared/dto/volume.dto';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { CreateBackupVolumeOrderData, FormCreateBackupVolume } from '../../backup-volume.model';
+import { CreateBackupVmOrderData } from '../../../../../../shared/models/backup-vm';
 
 @Component({
   selector: 'one-portal-create-backup-volume-normal',
@@ -119,15 +121,75 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
   getListVolumes() {
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, '', '').subscribe(data => {
       this.listVolumes = data;
-      this.validateForm.controls.volumeId.setValue(this.listVolumes[0].id)
+      this.validateForm.controls.volumeId.setValue(this.listVolumes[0]?.id)
     })
   }
 
   onSelectedVolume(value) {
-    console.log('selected', value);
+    if(value) {
+      console.log('selected', value);
+      this.getDataByVolumeId(value)
+    }
   }
 
   createBackupVolumeNormal() {
+    let formCreateBackupVolume = new FormCreateBackupVolume()
+    formCreateBackupVolume.volumeId = this.validateForm.controls.volumeId.value
+    formCreateBackupVolume.description = this.validateForm.controls.description.value
+    formCreateBackupVolume.backupPackageId = this.validateForm.controls.backupPacketId.value
+    formCreateBackupVolume.customerId = this.tokenService.get()?.userId
+    formCreateBackupVolume.userEmail = this.tokenService.get()?.email
+    formCreateBackupVolume.actorEmail = this.tokenService.get()?.email
+    formCreateBackupVolume.projectId = this.project
+    formCreateBackupVolume.vpcId = this.project
+    formCreateBackupVolume.regionId = this.region
+    formCreateBackupVolume.serviceName = this.validateForm.controls.backupName.value
+    formCreateBackupVolume.serviceType = 8
+    formCreateBackupVolume.actionType = 0
+    formCreateBackupVolume.serviceInstanceId = 0
+    formCreateBackupVolume.offerId = 0
+    formCreateBackupVolume.createDateInContract = null
+    formCreateBackupVolume.saleDept =  null
+    formCreateBackupVolume.saleDeptCode = null
+    formCreateBackupVolume.contactPersonEmail = null
+    formCreateBackupVolume.contactPersonPhone = null
+    formCreateBackupVolume.contactPersonName = null
+    formCreateBackupVolume.am = null
+    formCreateBackupVolume.amManager = null
+    formCreateBackupVolume.note = null
+    formCreateBackupVolume.isTrial = false
+    formCreateBackupVolume.couponCode = null
+    formCreateBackupVolume.dhsxkd_SubscriptionId = null
+    formCreateBackupVolume.dSubscriptionNumber = null
+    formCreateBackupVolume.dSubscriptionType = null
+    formCreateBackupVolume.oneSMEAddonId = null
+    formCreateBackupVolume.oneSME_SubscriptionId = null
+    formCreateBackupVolume.isSendMail = true
+    formCreateBackupVolume.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeBackupCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+
+    console.log(formCreateBackupVolume);
+
+    let createBackupVolumeOrderData = new CreateBackupVolumeOrderData();
+    createBackupVolumeOrderData.customerId = this.tokenService.get()?.userId;
+    createBackupVolumeOrderData.createdByUserId = this.tokenService.get()?.userId;
+    createBackupVolumeOrderData.note = this.i18n.fanyi('app.input.backup.volume.note');
+    createBackupVolumeOrderData.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(formCreateBackupVolume),
+        specificationType: 'volumebackup_create',
+        price: 0,
+        serviceDuration: 1
+      }
+    ];
+    console.log(createBackupVolumeOrderData);
+
+    this.backupVolumeService.createBackupVolume(createBackupVolumeOrderData).subscribe(data => {
+      this.isLoading = false;
+      console.log('data create', data);
+      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.volume.notification.create.request.send'));
+      this.router.navigate(['/app-smart-cloud/backup-volume']);
+    });
 
   }
   ngOnInit(): void {
@@ -136,13 +198,13 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined || this.activatedRoute.snapshot.paramMap.get('volumeId') != null) {
+      console.log('here')
       this.volumeIdParam = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId'));
       this.validateForm.controls.volumeId.setValue(this.volumeIdParam);
       this.getDataByVolumeId(this.volumeIdParam)
     } else {
       this.volumeIdParam = null;
       this.getListVolumes()
-
     }
     this.getBackupPackage()
   }

@@ -6,7 +6,7 @@
       <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.block.storage' | i18n }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{ 'volume.title.breadcrumb.backup.volume' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-volume'">{{ 'volume.title.breadcrumb.backup.volume' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'volume.title.breadcrumb.create.backup.volume' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -118,8 +118,8 @@
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="volumeError">
                     <nz-select (ngModelChange)="onSelectedVolume($event)"
-                               nzSize="large" formControlName="instanceId">
-                      <nz-option *ngFor="let i of listVolumes.records" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
+                               nzSize="large" formControlName="volumeId">
+                      <nz-option *ngFor="let i of listVolumes?.records" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
                     </nz-select>
                     <ng-template #volumeError let-control>
                       <ng-container *ngIf="control.hasError('required')">{{'app.input.backup.volume.required.select'|i18n}}</ng-container>
