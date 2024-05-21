@@ -21,6 +21,7 @@ export enum ServiceType {
     VPNSiteToSites = 20,
     Kafka = 21,
     SNAPSHOT_PACKET = 22,
+    SHARE_SNAPSHOT = 24,
     OTHER = 100
 }
 

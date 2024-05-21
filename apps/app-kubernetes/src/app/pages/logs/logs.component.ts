@@ -32,8 +32,9 @@ export class LogsComponent implements OnInit {
   listOfLogs: LogModel[];
   listOfResourceType = [
     {name: 'Cluster', value: 'cluster'},
-    {name: 'Nhóm worker', value: 'worker'},
+    {name: 'Worker Group', value: 'worker'},
     {name: 'Rule', value: 'rule'},
+    {name: 'Instance', value: 'instance'}
   ];
   listOfWorkerGroupName: string[];
 

@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {PolicyService} from "../../../../../../../../../libs/common-utils/src/lib/services/policy.service";
-import {PolicyModel} from "../../../../../../../../../libs/common-utils/src/lib/models/policy.model";
+import {PolicyService} from "../../../../../shared/services/policy.service";
+import {PolicyModel} from "../../../../../shared/models/policy.model";
 import {FormSearchPolicy, FormUserGroup, UserGroupModel} from "../../../../../shared/models/user-group.model";
 import {UserGroupService} from "../../../../../shared/services/user-group.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";

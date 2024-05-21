@@ -95,6 +95,11 @@
           "action": "project:List"
         },
         {
+          "text": "SSL Cert",
+          "icon": "anticon-profile",
+          "link": "/app-smart-cloud/ssl-cert"
+        },
+        {
           "text": "Dịch vụ hạ tầng",
           "icon": "anticon-cloud",
           "children": [

@@ -12,11 +12,12 @@ import {
 import { FileSystemService } from '../../../../../shared/services/file-system.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-create-file-system',
@@ -42,7 +43,7 @@ export class CreateFileSystemComponent implements OnInit {
       this.duplicateNameValidator.bind(this)]],
     protocol: ['NFS', [Validators.required]],
     type: [1, [Validators.required]],
-    storage: [1, [Validators.required]],
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     checked: [false],
     description: [''],
     snapshot: [null as number, []],
@@ -51,7 +52,8 @@ export class CreateFileSystemComponent implements OnInit {
 
   optionProtocols = [
     { value: 'NFS', label: 'NFS' },
-    { value: 'CIFS', label: 'CIFS' }
+    { value: 'CIFS', label: 'CIFS' },
+    { value: 'SMB', label: 'SMB'}
   ];
 
   isVisibleConfirm: boolean = false;
@@ -156,7 +158,7 @@ export class CreateFileSystemComponent implements OnInit {
     this.formCreate.projectId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
     this.formCreate.size = this.validateForm.controls.storage.value;
-    this.formCreate.name = this.validateForm.controls.name.value;
+    this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();
     this.formCreate.description = this.validateForm.controls.description.value;
     this.formCreate.displayName = this.validateForm.controls.name.value;
     this.formCreate.displayDescription = this.validateForm.controls.description.value;
@@ -276,6 +278,8 @@ export class CreateFileSystemComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
+    this.validateForm.controls.type.setValue(1)
 
     console.log('create');
     this.getListSnapshot();

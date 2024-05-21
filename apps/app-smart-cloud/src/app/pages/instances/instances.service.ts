@@ -35,7 +35,7 @@ export class InstancesService extends BaseService {
   postAction(data: any): Observable<any> {
     return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + '/instances/action',
-      data,
+      data
     );
   }
 
@@ -315,8 +315,8 @@ export class InstancesService extends BaseService {
     );
   }
 
-  checkExistName(name: string, regionId: number): Observable<boolean> {
-    let url_ = `/instances/exist-instancename?name=${name}&regionId=${regionId}`;
+  checkExistName(name: string, regionId: number, projectId: number): Observable<boolean> {
+    let url_ = `/instances/exist-instancename?name=${name}&regionId=${regionId}&projectId=${projectId}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<boolean>(
       this.baseUrl + this.ENDPOINT.provisions + url_
@@ -337,10 +337,22 @@ export class InstancesService extends BaseService {
     );
   }
 
-  checkflavorforimage(imageId : number, storage : number, ram  : number, cpu : number): Observable<any> {
+  checkflavorforimage(
+    imageId: number,
+    storage: number,
+    ram: number,
+    cpu: number
+  ): Observable<any> {
     let url_ = `/instances/checkflavorforimage?imageId=${imageId}&storage=${storage}&ram=${ram}&cpu=${cpu}`;
-    return this.http.get<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+  }
+
+  checkIpAvailableToListSubnet(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl +
+        this.ENDPOINT.provisions +
+        '/vlans/CheckIpAvailableToListSubnet',
+      data
     );
   }
 }

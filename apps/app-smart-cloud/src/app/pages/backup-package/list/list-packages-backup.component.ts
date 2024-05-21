@@ -4,9 +4,10 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {FormUpdate, PackageBackupModel, ServiceInPackage} from "../../../shared/models/package-backup.model";
-import {BaseResponse, ProjectModel, ProjectService, RegionModel} from "../../../../../../../libs/common-utils/src";
+import {BaseResponse, ProjectModel, RegionModel} from "../../../../../../../libs/common-utils/src";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {getCurrentRegionAndProject} from "@shared";
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-list-packages-backup',

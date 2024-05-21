@@ -44,7 +44,7 @@ export class CreateScheduleBackupComponent implements OnInit {
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project;
+    this.project = project.id;
   }
 
   goBack() {

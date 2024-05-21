@@ -5,7 +5,8 @@ import {ModalHelper} from "@delon/theme";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {DomSanitizer} from "@angular/platform-browser";
-import { ProjectModel, ProjectService } from '../../../../../../../libs/common-utils/src';
+import { ProjectService } from '../../services/project.service';
+import { ProjectModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'project-select-dropdown',

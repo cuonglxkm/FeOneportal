@@ -226,6 +226,13 @@ import { UpdateBackupVmComponent } from './backup-vm/update/update-backup-vm.com
 import { NetworkTopologyComponent } from './network-topology/network-topology.component';
 import { CreateBackupVolumeVpcComponent } from './volume/component/backup-volume/create-backup-volume/vpc/create-backup-volume-vpc.component';
 import { CreateBackupVolumeNormalComponent } from './volume/component/backup-volume/create-backup-volume/no-vpc/create-backup-volume-normal.component';
+import { UpdateBackupVolumeComponent } from './volume/component/backup-volume/update-backup-volume/update-backup-volume.component';
+import { SslCertListComponent } from './ssl-cert/ssl-cert-list.component';
+import { CreateSslCertComponent } from './ssl-cert/create/create-ssl-cert.component';
+import { ExtendFileSystemSnapshotComponent } from './file-system-snapshot/extend-file-system-snapshot/extend-file-system-snapshot.component';
+import { DeleteSslCertComponent } from './ssl-cert/delete/delete-ssl-cert.component';
+
+import { TrimDirective } from './file-storage/TrimDirective';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -436,6 +443,11 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NetworkTopologyComponent,
     CreateBackupVolumeVpcComponent,
     CreateBackupVolumeNormalComponent,
+    SslCertListComponent,
+    CreateSslCertComponent,
+    UpdateBackupVolumeComponent,
+    CreateSslCertComponent,
+    ExtendFileSystemSnapshotComponent
   ],
   imports: [
     CommonModule,
@@ -464,6 +476,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AutofocusDirective,
     // ChartModule,
     HttpClientModule,
-  ],
+    TrimDirective
+  ]
 })
 export class PagesModule {}

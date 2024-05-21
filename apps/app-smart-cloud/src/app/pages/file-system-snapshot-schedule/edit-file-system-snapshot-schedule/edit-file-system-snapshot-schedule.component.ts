@@ -10,7 +10,8 @@ import { FileSystemModel, FormSearchFileSystem } from 'src/app/shared/models/fil
 import { FileSystemSnapshotScheduleDetail, FormEditFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
 import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
-import { BaseResponse, ProjectModel, ProjectService, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 interface SelectedFileSystem {
   id: number;

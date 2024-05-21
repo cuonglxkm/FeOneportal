@@ -55,7 +55,7 @@ export class KubernetesConstant {
 
   public static CLUTERNAME_PATTERN = '^[a-zA-Z0-9_-]*$';
 
-  public static WORKERNAME_PATTERN = '^[a-z0-9-_]*$';
+  public static WORKERNAME_PATTERN = '^[a-z0-9-]*$';
 
   // sg constant
   public static INBOUND_RULE = "ingress";

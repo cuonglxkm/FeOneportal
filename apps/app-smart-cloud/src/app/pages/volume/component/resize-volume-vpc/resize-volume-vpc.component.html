@@ -103,21 +103,24 @@
           <nz-form-item style="margin-top: 20px;">
             <nz-form-label>
               <div>
-                <span>{{'volume.total.size.vpc'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb }}GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'hdd'">{{'volume.total.size.vpc'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb }} GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'ssd'">{{'volume.total.size.vpc'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaSSDInGb }} GB</span>
               </div>
             </nz-form-label>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>{{'volume.used'|i18n}}: {{ sizeInCloudProject?.cloudProjectResourceUsed?.hdd }}GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'hdd'">{{'volume.used'|i18n}}: {{ sizeInCloudProject?.cloudProjectResourceUsed?.hdd }} GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'ssd'">{{'volume.used'|i18n}}: {{ sizeInCloudProject?.cloudProjectResourceUsed?.ssd }} GB</span>
               </div>
             </nz-form-label>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span>{{'volume.remaining'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb - sizeInCloudProject?.cloudProjectResourceUsed?.hdd }}GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'hdd'">{{'volume.remaining'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb - sizeInCloudProject?.cloudProjectResourceUsed?.hdd }} GB</span>
+                <span *ngIf="volumeInfo?.volumeType === 'ssd'">{{'volume.remaining'|i18n}}: {{ sizeInCloudProject?.cloudProject?.quotaSSDInGb - sizeInCloudProject?.cloudProjectResourceUsed?.ssd }} GB</span>
               </div>
             </nz-form-label>
           </nz-form-item>
@@ -133,8 +136,7 @@
                                class="input-custom"
                                style="width: 100%; margin-left: 0;"
                                nzAutoFocus
-                               [nzMin]="volumeInfo?.sizeInGB"
-                               [nzStep]="1"/>
+                               [nzMin]="1"/>
               <ng-template #storageErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.storage.vpc.required'|i18n }}</ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">{{'volume.input.storage.required'|i18n}}</ng-container>
@@ -176,7 +178,7 @@
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{'app.button.resize'|i18n}}</span>
               </button>
               <nz-modal [(nzVisible)]="isVisibleConfirm" nzTabScrollList="true"
-                        (nzOnCancel)="handleCancelResize()" nzCentered>
+                        (nzOnCancel)="handleCancelResize()">
                 <div *nzModalTitle>
                   <span class="text-modal-title">{{'volume.modal.confirm.title.resize-vpc'|i18n}}</span>
                 </div>

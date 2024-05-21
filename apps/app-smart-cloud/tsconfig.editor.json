@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src/**/*.ts", "../../libs/common-utils/src/lib/services/policy.service.ts", "../../libs/common-utils/src/lib/models/policy.model.ts"],
+  "include": ["src/**/*.ts"],
   "compilerOptions": {
     "types": []
   }

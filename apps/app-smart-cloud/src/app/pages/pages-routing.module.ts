@@ -148,6 +148,10 @@ import {
 import {
   CreateBackupVolumeNormalComponent
 } from './volume/component/backup-volume/create-backup-volume/no-vpc/create-backup-volume-normal.component';
+import { SslCertListComponent } from './ssl-cert/ssl-cert-list.component';
+import { CreateSslCertComponent } from './ssl-cert/create/create-ssl-cert.component';
+import { ExtendFileSystemSnapshotComponent } from './file-system-snapshot/extend-file-system-snapshot/extend-file-system-snapshot.component';
+
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
 const routes: Routes = [
@@ -899,6 +903,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'file-system-snapshot/extend/:id',
+    component: ExtendFileSystemSnapshotComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:GetShareSnapshotFileStorage'
+    }
+  },
+  {
     path: 'file-system-snapshot-schedule/list',
     component: FileSystemSnapshotScheduleComponent,
     canActivate: [PermissionGuard],
@@ -1167,6 +1179,7 @@ const routes: Routes = [
     }
 
   },
+
   {
     path: 'file-storage/file-system/:idFileSystem/resize',
     component: ResizeFileSystemNormalComponent,
@@ -1177,9 +1190,19 @@ const routes: Routes = [
 
   },
   {
+
     path: 'network-topology',
     component: NetworkTopologyComponent,
-  }
+  },
+  {
+    path: 'ssl-cert',
+    component: SslCertListComponent,
+  },
+  {
+    path: 'ssl-cert/create',
+    component: CreateSslCertComponent,
+  },
+
 ];
 
 @NgModule({

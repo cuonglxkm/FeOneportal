@@ -1,13 +1,8 @@
-<span
-  style="color: #0066b3; margin-right: 10px; cursor: pointer"
-  nz-icon
-  nzType="delete"
-  nzTheme="outline"
-  nz-popover
-  [nzPopoverContent]="'app.delete' | i18n"
-  nzPopoverPlacement="bottom"
+<li
+  style="color: #EA3829; margin-right: 10px; cursor: pointer"
+  nz-menu-item
   (click)="showModal()"
-></span>
+>Xóa</li>
 <nz-modal
   [(nzVisible)]="isVisible"
   nzCentered
@@ -22,13 +17,6 @@
   <ng-template #modalContent>
     <form nz-form [formGroup]="validateForm" nzLayout="vertical" (ngSubmit)="handleOk()">
       <nz-form-item>
-        <nz-alert
-          nzType="warning"
-          [nzDescription]="'app.alert.delete.snapshot' | i18n"
-          nzShowIcon
-          style="margin-bottom: 10px"
-        >
-        </nz-alert>
         <nz-form-label>
           <div>
             <span

@@ -65,7 +65,23 @@ export class VpnConnection {
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
-      this.response = data
+      const transformedData = data.records.map(record => {  
+        const [firstNetWork, ...remainingNetWorks] = record.localNetwork;
+        console.log(firstNetWork);
+        console.log(record.localNetwork);
+        
+        return {
+          ...record,
+          firstNetWork,  
+          localNetwork: remainingNetWorks  
+        };
+      });
+
+    
+      this.response = transformedData
+
+      console.log(this.response);
+      
     })
   }
 
