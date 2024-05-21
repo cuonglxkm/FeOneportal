@@ -59,6 +59,7 @@ export class DeleteFileSystemSnapshotComponent{
     let formDelete = new FormDeleteFileSystemSnapshot()
     formDelete.id = this.filesystemsnapshotId
     formDelete.customerId = this.tokenService.get()?.userId;
+    formDelete.regionId = this.region
     console.log(formDelete);
     
     if(this.validateForm.valid) {

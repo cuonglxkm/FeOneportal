@@ -1,4 +1,4 @@
-<form nz-form [formGroup]="validateForm" nzLayout="vertical">
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzLayout="vertical">
   <nz-card>
     <nz-row nzGutter="24" nzJustify="space-between">
       <nz-col nzSpan="12">

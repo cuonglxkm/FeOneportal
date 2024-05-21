@@ -229,6 +229,8 @@ import { CreateBackupVolumeNormalComponent } from './volume/component/backup-vol
 import { UpdateBackupVolumeComponent } from './volume/component/backup-volume/update-backup-volume/update-backup-volume.component';
 import { SslCertListComponent } from './ssl-cert/ssl-cert-list.component';
 import { CreateSslCertComponent } from './ssl-cert/create/create-ssl-cert.component';
+import { ExtendFileSystemSnapshotComponent } from './file-system-snapshot/extend-file-system-snapshot/extend-file-system-snapshot.component';
+
 import { TrimDirective } from './file-storage/TrimDirective';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
@@ -443,6 +445,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     SslCertListComponent,
     CreateSslCertComponent,
     UpdateBackupVolumeComponent,
+    CreateSslCertComponent,
+    ExtendFileSystemSnapshotComponent
   ],
   imports: [
     CommonModule,

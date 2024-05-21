@@ -825,6 +825,8 @@
   "app.file.system.info.edit": "Edit File System information",
   "app.file.system.type": "File System type",
   "app.file.system.name": "File System name",
+  "app.file.system.name.tooltip": "File System name",
+  "app.file.system.snapshot.name.tooltip": "File System Snapshot name",
   "app.file.system.list": "File System list",
   "app.file.system.detail": "File System detail",
   "app.file.system.extend": "Extend File System",
@@ -841,6 +843,9 @@
   "app.choose.file.system.type": "Choose the File System type",
   "app.choose.file.system": "Choose File System",
   "app.choose.file.system.to.perform.snapshot": "Choose File System to perform Snapshot",
+  "validation.snapshot.info.required": "Please enter name File System Snapshot",
+  "validation.snapshot.name.pattern": "Snapshot name is only allowed to use lowercase characters a-z, uppercase A-Z, numbers 0-9, hyphens (-) and underscores (_), can have spaces, minimum 1 character and maximum 255 characters.",
+
   "app.file.system.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR range allowed to access this filesystem",
   "app.file.system.access.to.create.success": "Create access rule success",
   "app.file.system.access.to.create.fail": "Create access rule fail. {{error}}",
@@ -893,6 +898,7 @@
 
   "app.file.system.snapshot.delete": "Delete the {{name}} File System Snapshot ",
   "app.file.system.snapshot.manage": "Manage File System Snapshot",
+  "app.file.system.snapshot.list": "List of File System Snapshot",
   "app.file.system.snapshot.info": "File System Snapshot information",
   "app.file.system.snapshot.create": "Create new File System Snapshot",
   "app.file.system.snapshot.edit": "Edit File System Snapshot",
