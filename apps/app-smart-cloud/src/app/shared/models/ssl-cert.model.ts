@@ -14,3 +14,9 @@ export class FormSearchSslSearch {
     privateKey: string
     passphrase: string
   }
+
+  export class FormDeleteSslCert{
+    uuid: string
+    regionId: number
+    projectId: number
+  }

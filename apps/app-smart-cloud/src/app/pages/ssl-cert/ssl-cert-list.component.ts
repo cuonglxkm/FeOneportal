@@ -28,11 +28,11 @@ export class SslCertListComponent {
 
   isBegin: boolean = false
 
-  filteredData: any
+  filteredData: []
 
   formSearchSslSearch: FormSearchSslSearch = new FormSearchSslSearch()
 
-  constructor(@Inject(SSLCertService) private SslCertService: SSLCertService,
+  constructor(private SslCertService: SSLCertService,
             @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
 }
 
@@ -98,15 +98,12 @@ export class SslCertListComponent {
       this.isLoading = false
       this.response = data
       this.filteredData = data
+      
     })
   }
 
-  handleOkDeleteFileSystemSnapShot() {
+  handleOkDeleteSslCert(){
     this.getData()
   }
 
-  handleOkEditFileSystemSnapShot(){
-    this.getData()
-  }
- 
 }

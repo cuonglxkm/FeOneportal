@@ -486,6 +486,8 @@
   "app.lifeCycle.edit": "Chỉnh sửa Lifecycle",
   "app.lifeCycle.config.intro": "Bucket Lifecycle cho phép bạn khả năng quản lý tuổi thọ và sự tự động hóa của các đối tượng (objects) trong các bucket.",
   "app.lifeCycle.config.intro.next": "Với Bucket Lifecycle, bạn có thể định nghĩa các quy tắc tự động cho các đối tượng trong bucket của mình, bao gồm cả việc xóa các đối tượng đã hết hạn hoặc không còn cần thiết để giảm chi phí lưu trữ. Việc sử dụng Bucket Lifecycle cũng giúp giảm tải công việc quản trị và tăng tính khả dụng của các đối tượng trong bucket.",
+  "app.bucket.detail": "Chi tiết Bucket",
+
   "app.delete.file.current.version": "Thời hạn xóa file (Version hiện tại)",
   "app.delete.file.non.current.version": "Thời hạn xóa file (Không phải version hiện tại)",
   "app.delete.multi.upload": "Thời gian xóa Multipart upload không hoàn thành",
@@ -1186,6 +1188,12 @@
 
   "app.routers.active": "Kích hoạt",
   "app.routers.inactive": "Chưa kích hoạt",
+
+  "app.title.sslcert.delete": "Xác nhận xóa SSL Cert {{name}}",
+  "app.alert.sslcert.delete": "Bạn đang thực hiện xóa SSL Cert",
+  "app.des.sslcert.delete": "Đế thực hiện xoá SSL Cert , vui lòng nhập tên SSL Cert để xác nhận.",
+  "app.notify.sslcert.delete.success": "Xoá Ssl Cert thành công",
+  "app.notify.sslcert.delete.fail": "Xoá Ssl Cert thất bại",
 
   "app.kafka.intro-text": "VNPT Message Streaming for Kafka là nền tảng phân phối dữ liệu cho các hệ thống qua đám mây. Kafka cung cấp khả năng xử lý nhanh, ổn định, chịu lỗi cao cho các hệ thống dạng Pub/Sub.",
   "app.kafka.init": "Khởi tạo Kafka Cluster",

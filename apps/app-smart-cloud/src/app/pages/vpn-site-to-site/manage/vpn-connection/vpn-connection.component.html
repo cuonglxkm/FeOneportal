@@ -41,7 +41,7 @@
 <nz-table
   #fixedTable
   style="margin-top: 20px"
-  [nzData]="response?.records"
+  [nzData]="response"
   [nzPageSize]="response?.pageSize"
   (nzPageSizeChange)="onPageSizeChange($event)"
   [nzPageIndex]="response?.currentPage"
@@ -72,14 +72,22 @@
           >{{ data.name }}</a
         >
       </td>
-      <td nzAlign="center">
-        {{ data.localGateway }}
-        <div class="network-border" *ngFor="let data of data.localNetwork">
+      <td>
+        <div style="transform: translateX(13px);">{{ data.localGateway }}</div>
+        <!-- <div class="network-border" *ngFor="let data of data.localNetwork">
           {{ data }}
-        </div>
+        </div> -->
+        <ul *ngIf="data.localNetwork.length > 0" nz-menu [nzMode]="'vertical'" class="custom-menu" [nzSelectable]="false">
+        <li nz-submenu [nzTitle]="data.firstNetWork" class="custom-menu-item">
+          <ul class="custom-icon" *ngFor="let data of data.localNetwork">
+            <li nz-menu-item>{{data}}</li>
+          </ul>
+        </li>
+        </ul>
+        <div *ngIf="data.localNetwork.length === 0" class="custom-menu-firstNetWork">{{data.firstNetWork}}</div>
       </td>
-      <td nzAlign="center">
-        {{ data.remoteGateway }}
+      <td>
+        <div style="transform: translateX(13px);">{{ data.remoteGateway }}</div>
         <div class="network-border" *ngFor="let data of data.remoteNetwork">
           {{ data }}
         </div>

@@ -230,6 +230,7 @@ import { UpdateBackupVolumeComponent } from './volume/component/backup-volume/up
 import { SslCertListComponent } from './ssl-cert/ssl-cert-list.component';
 import { CreateSslCertComponent } from './ssl-cert/create/create-ssl-cert.component';
 import { ExtendFileSystemSnapshotComponent } from './file-system-snapshot/extend-file-system-snapshot/extend-file-system-snapshot.component';
+import { DeleteSslCertComponent } from './ssl-cert/delete/delete-ssl-cert.component';
 
 import { TrimDirective } from './file-storage/TrimDirective';
 
