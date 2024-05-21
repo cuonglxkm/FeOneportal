@@ -397,7 +397,7 @@ export class CreateLbVpcComponent implements OnInit {
     this.validateForm.controls.radio.setValue('floatingIp');
     this.getListVlanSubnet();
     this.searchProduct();
-    // this.getIpBySubnet();
+    // this.getIpBySubnet()a;
     this.getListLoadBalancer();
     this.getListSubnetInternetFacing();
   }
