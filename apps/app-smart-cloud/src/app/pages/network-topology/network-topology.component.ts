@@ -1,11 +1,11 @@
-import { Component, Inject } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RouterService } from 'src/app/shared/services/router.service';
 import { forEach } from 'lodash';
 import { NetworkTopologyNode } from 'src/app/shared/models/network-topology,model';
 import { Subject } from 'rxjs';
-// import { Network, DataSet, Data, Edge } from 'vis';
+import { Network, DataSet, Data, Edge } from 'vis';
 
 @Component({
   selector: 'one-portal-network-topology',
@@ -23,22 +23,25 @@ export class NetworkTopologyComponent {
 
   isBegin: boolean = false;
 
-  data: NetworkTopologyNode[];
+  // data: NetworkTopologyNode[];
 
-  // private data: Data;
+  private data: Data;
 
-  // private nodes: DataSet<Node>;
+  private nodes: DataSet<Node>;
 
-  // private edges: DataSet<Edge>;
+  private edges: DataSet<Edge>;
 
-  // private selectedData: Subject<Data>;
+  private selectedData: Subject<Data>;
 
-  // private network: Network;
+  private network: Network;
 
-  private nodeNo: number = 6;
+  private nodeNo: number = 0;
+
+  @ViewChild('treeContainer', { static: true }) treeContainer: ElementRef;
 
   constructor(private routerService: RouterService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+  @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+    this.selectedData = new Subject<Data>();
   }
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
@@ -57,6 +60,7 @@ export class NetworkTopologyComponent {
     this.routerService.networkTopology(this.region, this.project).pipe().subscribe(data => {
       this.isLoading = false;
       if(data && data.length > 0){
+        this.nodeNo = data.length;
         data.forEach(item => {
           switch (item.nameNode) {
             case "VM":
