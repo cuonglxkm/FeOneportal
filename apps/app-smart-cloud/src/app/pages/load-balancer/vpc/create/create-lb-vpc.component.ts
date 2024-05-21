@@ -197,7 +197,6 @@ export class CreateLbVpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
-    this.getListSubnetInternetFacing();
   }
 
   onChangeStatusInternal() {
@@ -210,7 +209,6 @@ export class CreateLbVpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
-    this.getListSubnetInternetFacing();
   }
 
 
