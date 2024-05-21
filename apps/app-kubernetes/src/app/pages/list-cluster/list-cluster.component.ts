@@ -164,32 +164,32 @@ export class ListClusterComponent implements OnInit, OnDestroy {
           // console.log({combine: data});
           this.listOfProgress = data;
 
-          let progressFromLocal: string = localStorage.getItem('mapProgress');
+          // let progressFromLocal: string = localStorage.getItem('mapProgress');
 
-          if (progressFromLocal) {
-            this.mapProgress = new Map(JSON.parse(progressFromLocal));
-          } else {
-            this.mapProgress = new Map<{serviceName: string, namespace: string}, number>();
-          }
+          // if (progressFromLocal) {
+          //   this.mapProgress = new Map(JSON.parse(progressFromLocal));
+          // } else {
+          //   this.mapProgress = new Map<{serviceName: string, namespace: string}, number>();
+          // }
 
-          for (let i = 0; i < this.listOfProgress.length; i++) {
-            let currentProgress = this.listOfProgress[i];
-            const cluster = this.listOfClusters[i];
-            let keyObj = {serviceName: cluster.clusterName, namespace: cluster.namespace};
+          // for (let i = 0; i < this.listOfProgress.length; i++) {
+          //   let currentProgress = this.listOfProgress[i];
+          //   const cluster = this.listOfClusters[i];
+          //   let keyObj = {serviceName: cluster.clusterName, namespace: cluster.namespace};
 
-            if (currentProgress == 100) {
-              this.mapProgress.delete(keyObj);
-            } else {
-              let previousValue = this.mapProgress.get(keyObj);
-              if (currentProgress <= previousValue) {
-                this.mapProgress.set(keyObj, progress);
-              } else {
-                this.mapProgress.set(keyObj, previousValue);
-              }
-            }
-          }
+          //   if (currentProgress == 100) {
+          //     this.mapProgress.delete(keyObj);
+          //   } else {
+          //     let previousValue = this.mapProgress.get(keyObj);
+          //     if (currentProgress <= previousValue) {
+          //       this.mapProgress.set(keyObj, progress);
+          //     } else {
+          //       this.mapProgress.set(keyObj, previousValue);
+          //     }
+          //   }
+          // }
 
-          localStorage.setItem('mapProgress', JSON.stringify(Array.from(this.mapProgress.entries())));
+          // localStorage.setItem('mapProgress', JSON.stringify(Array.from(this.mapProgress.entries())));
 
           this.ref.detectChanges();
         });
