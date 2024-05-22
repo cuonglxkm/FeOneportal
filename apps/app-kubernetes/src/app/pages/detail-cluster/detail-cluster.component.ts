@@ -551,8 +551,8 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         {{value}}
       </ng-container>
       <ng-template #truncateValueTpl>
-        <div [nzTooltipTitle]="contentTpl"
-          nzTooltipPlacement="bottom" nz-tooltip>
+        <div [nzPopoverContent]="contentTpl"
+          nzPopoverPlacement="bottom" nz-popover>
           {{value | truncateLabel}}
         </div>
 

@@ -463,7 +463,7 @@
           </div>
 
           <div nz-col [nzSpan]="12">
-            <div class="price-style price-color mr-3">{{(upgradeCost ? upgradeCost : 0) | number: '1.0-0'}} VND</div>
+            <div class="price-style price-color mr-3">{{(newConfigCost ? newConfigCost : 0) | number: '1.0-0'}} VND</div>
             <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
           </div>
         </div>
@@ -478,7 +478,19 @@
           </div>
 
           <div nz-col [nzSpan]="12">
-            <div class="price-style mr-3 mb-3">{{detailCluster?.clusterName}}</div>
+            <div class="price-style mr-3 mb-3">
+              <ng-container *ngIf="detailCluster?.clusterName.length <= 15; else truncateTpl">
+                {{ detailCluster?.clusterName }}
+              </ng-container>
+              <ng-template #truncateTpl>
+                <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="clusterNameTpl">
+                  {{ detailCluster?.clusterName | truncateLabel : 15 }}
+                </span>
+                <ng-template #clusterNameTpl>
+                  {{ detailCluster?.clusterName }}
+                </ng-template>
+              </ng-template>
+            </div>
           </div>
         </div>
 

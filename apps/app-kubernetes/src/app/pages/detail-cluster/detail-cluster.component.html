@@ -56,10 +56,12 @@
           <nz-table [nzTemplateMode]="true" nzBordered>
             <tbody>
               <tr>
-                <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
+                <td class="w-50"><row-data [value]="detailCluster.clusterName" [label]="'app.cluster.name' | i18n"></row-data></td>
+                <!-- <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                   <div nz-row>
-                    <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">{{ 'app.cluster.name' | i18n
-                      }}</div>
+                    <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">
+                      {{ 'app.cluster.name' | i18n }}
+                    </div>
                     <div nz-col [nzSpan]="16" class="description-info">
                       <ng-container *ngIf="!isEditMode; else editClusterNameTpl">
                         {{detailCluster.clusterName}}
@@ -85,7 +87,7 @@
                       </ng-template>
                     </div>
                   </div>
-                </td>
+                </td> -->
                 <td class="w-50">
                   <div nz-row>
                     <div nz-col [nzSpan]="8">
@@ -179,7 +181,19 @@
                     <div nz-col [nzSpan]="8">{{ 'app.config' | i18n }}</div>
                     <div nz-col [nzSpan]="16">
                       <span class="description-info">
-                        <a (click)="handleViewKubeConfig()">{{detailCluster.clusterName}}.Kubeconfig</a>
+                        <a (click)="handleViewKubeConfig()">
+                          <ng-container *ngIf="detailCluster.clusterName.length <= 30; else truncateKubeconfigTpl">
+                            {{detailCluster.clusterName}}.Kubeconfig
+                          </ng-container>
+                          <ng-template #truncateKubeconfigTpl>
+                            <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="kubeconfigNameTpl">
+                              {{(detailCluster.clusterName + '.Kubeconfig') | truncateLabel}}
+                            </span>
+                            <ng-template #kubeconfigNameTpl>
+                              {{(detailCluster.clusterName + '.Kubeconfig')}}
+                            </ng-template>
+                          </ng-template>
+                        </a>
                       </span>
                       <button nz-button nzType="text" (click)="handleDownloadKubeConfig()"
                         class="action-icon borderless" [nzTooltipTitle]="'app.cluster.download-config' | i18n"
@@ -638,7 +652,17 @@
                     <div nz-col [nzSpan]="8">SSH Key</div>
                     <div nz-col [nzSpan]="16">
                       <span class="description-info">
-                        k8s-{{detailCluster.clusterName}}-ssh_keypair
+                        <ng-container *ngIf="detailCluster.clusterName.length <= 30; else truncateSSHKeyTpl">
+                          {{'k8s-' + detailCluster.clusterName + '-ssh_keypair'}}
+                        </ng-container>
+                        <ng-template #truncateSSHKeyTpl>
+                          <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="sshkeyNameTpl">
+                            {{('k8s-' + detailCluster.clusterName + '-ssh_keypair') | truncateLabel}}
+                          </span>
+                          <ng-template #sshkeyNameTpl>
+                            {{'k8s-' + detailCluster.clusterName + '-ssh_keypair'}}
+                          </ng-template>
+                        </ng-template>
                       </span>
                       <button nz-button nzType="text" (click)="handleDownloadSSHkey()" class="action-icon borderless"
                         [nzTooltipTitle]="'app.cluster.download-ssh-key' | i18n" nzTooltipPlacement="top" nz-tooltip>

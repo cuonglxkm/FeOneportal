@@ -50,6 +50,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     7, // Đang xóa
     6, // Đang nâng cấp
   ];
+  mapProgress: Map<any, any>;
 
   baseUrl = environment['baseUrl'];
 
@@ -162,8 +163,35 @@ export class ListClusterComponent implements OnInit, OnDestroy {
         this.subscription = combineLatest(progress).subscribe(data => {
           // console.log({combine: data});
           this.listOfProgress = data;
+
+          // let progressFromLocal: string = localStorage.getItem('mapProgress');
+
+          // if (progressFromLocal) {
+          //   this.mapProgress = new Map(JSON.parse(progressFromLocal));
+          // } else {
+          //   this.mapProgress = new Map<{serviceName: string, namespace: string}, number>();
+          // }
+
+          // for (let i = 0; i < this.listOfProgress.length; i++) {
+          //   let currentProgress = this.listOfProgress[i];
+          //   const cluster = this.listOfClusters[i];
+          //   let keyObj = {serviceName: cluster.clusterName, namespace: cluster.namespace};
+
+          //   if (currentProgress == 100) {
+          //     this.mapProgress.delete(keyObj);
+          //   } else {
+          //     let previousValue = this.mapProgress.get(keyObj);
+          //     if (currentProgress <= previousValue) {
+          //       this.mapProgress.set(keyObj, progress);
+          //     } else {
+          //       this.mapProgress.set(keyObj, previousValue);
+          //     }
+          //   }
+          // }
+
+          // localStorage.setItem('mapProgress', JSON.stringify(Array.from(this.mapProgress.entries())));
+
           this.ref.detectChanges();
-          console.log({ progress: this.listOfProgress });
         });
       }
     });
@@ -199,6 +227,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.websocketService.disconnect();
     this.unsubscribeObs(null);
+    localStorage.removeItem('mapProgress');
   }
 
   onDestroy(): void {

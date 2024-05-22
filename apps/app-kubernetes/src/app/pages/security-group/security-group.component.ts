@@ -9,6 +9,7 @@ import { ShareService } from '../../services/share.service';
 import { KubernetesCluster } from '../../model/cluster.model';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { ClusterService } from '../../services/cluster.service';
+import { camelizeKeys } from 'humps';
 
 @Component({
   selector: 'security-group',
@@ -76,7 +77,10 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
       this.detailCluster = changes['detailCluster']?.currentValue;
     }
 
-    if (this.projectId && this.regionId) this.getListSG();
+    if (this.projectId && this.regionId) {
+      this.getListSG();
+      // this.getAllRuleSG();
+    }
   }
 
   handleCopyIDGroup() {
@@ -90,24 +94,20 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
     conditionSearch.projectId = this.projectId;
     conditionSearch.regionId = this.regionId;
 
-    this.securityGroupService.searchSecurityGroup(conditionSearch)
+    this.clusterService.getAllSG(this.projectId, this.regionId)
     .pipe(finalize(() => this.isLoadingSG = false))
-    .subscribe(data => {
-      this.listOfSG = data;
+    .subscribe((data: any) => {
+      this.listOfSG = camelizeKeys(data.data) as SecurityGroup[];
 
-      data.forEach(item => {
-        let sgname = "shoot--pcnru5cx--k8s-712xbxib";
-        // if(item.name.includes(this.detailCluster.securityGroupName)) {
-        //   this.selectedSG = item;
-        // }
-        if(item.name.includes(sgname)) {
+      this.listOfSG.forEach(item => {
+        if(item.name.includes(this.detailCluster.securityGroupName)) {
           this.selectedSG = item;
         }
       })
 
       if (this.selectedSG) {
-        this.listOfInbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'ingress');
-        this.listOfOutbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'egress');
+        this.listOfInbound = this.selectedSG?.securityGroupRules.filter(value => value.direction === 'ingress');
+        this.listOfOutbound = this.selectedSG?.securityGroupRules.filter(value => value.direction === 'egress');
 
         let sgData = new SecurityGroupData();
         sgData.projectId = this.projectId;
@@ -117,10 +117,19 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
         sgData.listOfSG = this.listOfSG;
         this.shareService.emitSGData(sgData);
       } else {
-        this.notificationService.error("Thất bại", "Không có thông tin security group");
+        this.notificationService.error("", "Không có thông tin security group");
       }
     });
   }
+
+  // listOfRules: SecurityGroupRule[];
+  // getAllRuleSG() {
+  //   this.clusterService.getAllRuleSG(this.projectId, this.regionId)
+  //   .subscribe((r: any) => {
+  //     console.log(r);
+  //     this.listOfRules = r.data;
+  //   })
+  // }
 
   saveLogSG(rule: SecurityGroupRule) {
     let logSG = new SGLoggingReqDto();

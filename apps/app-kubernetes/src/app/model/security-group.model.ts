@@ -15,6 +15,7 @@ export interface SecurityGroup {
   name?: string;
   description?: string;
   rulesInfo?: SecurityGroupRule[];
+  securityGroupRules?: SecurityGroupRule[];
 }
 
 export default interface SecurityGroupRule {
@@ -29,6 +30,7 @@ export default interface SecurityGroupRule {
   securityGroupId?: string,
   portRange?: string,
   remoteIp?: string,
+  description: string;
 }
 
 export class CreateSGReqDto {
