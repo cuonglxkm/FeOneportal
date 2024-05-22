@@ -239,6 +239,28 @@ export class ExtensionComponent implements OnInit {
     this.totalCost = this.costByMonth + this.vatCost;
   }
 
+  onCalculateResource() {
+    const wgs = this.detailCluster.workerGroup;
+    let totalCpu = 0, totalRam = 0, totalStorage = 0;
+    for (let i = 0; i < wgs.length; i++) {
+      const cpu = wgs[i].cpu ? wgs[i].cpu : 0;
+      const ram = wgs[i].ram ? wgs[i].ram : 0;
+      const storage = +wgs[i].volumeSize ? +wgs[i].volumeSize : 0;
+      const autoScale = wgs[i].autoScaling;
+      let nodeNumber: number;
+      if (autoScale) {
+        // TODO: ...
+      } else {
+        nodeNumber = wgs[i].minimumNode ? wgs[i].minimumNode : 0;
+      }
+
+      totalCpu += nodeNumber * cpu;
+      totalRam += nodeNumber * ram;
+      totalStorage += nodeNumber * storage;
+    }
+    return {totalRam, totalCpu, totalStorage};
+  }
+
   onExtendService() {
     let order = new Order();
     const userId = this.tokenService.get()?.userId;
@@ -252,9 +274,15 @@ export class ExtensionComponent implements OnInit {
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_EXTEND_TYPE;
 
+    const resource = this.onCalculateResource();
     let req = {
       serviceName: this.detailCluster.clusterName,
       newExpireDate: new Date(this.expiryDate).toISOString().substring(0, 19),
+      serviceType: KubernetesConstant.K8S_TYPE_ID,
+      offerId: this.detailCluster.offerId,
+      totalRam: resource.totalRam,
+      totalCpu: resource.totalCpu,
+      totalStorage: resource.totalStorage,
       jsonData: JSON.stringify({
         ServiceOrderCode: this.serviceOrderCode,
         ExtendMonth: this.extendMonth,

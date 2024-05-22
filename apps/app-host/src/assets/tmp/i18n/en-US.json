@@ -1519,6 +1519,7 @@
   "cluster.status.initializing": "Initializing",
   "cluster.status.upgrading": "Upgrading",
   "cluster.status.deleting": "Deleting",
+  "cluster.status.restoring": "Restoring",
   "cluster.status.failed": "Initialization failed",
   "cluster.status.unknow": "Unknow",
 

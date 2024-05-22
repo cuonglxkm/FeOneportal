@@ -479,12 +479,12 @@
 
           <div nz-col [nzSpan]="12">
             <div class="price-style mr-3 mb-3">
-              <ng-container *ngIf="detailCluster?.clusterName.length <= 15; else truncateTpl">
+              <ng-container *ngIf="detailCluster?.clusterName.length <= 18; else truncateTpl">
                 {{ detailCluster?.clusterName }}
               </ng-container>
               <ng-template #truncateTpl>
                 <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="clusterNameTpl">
-                  {{ detailCluster?.clusterName | truncateLabel : 15 }}
+                  {{ detailCluster?.clusterName | truncateLabel : 18 }}
                 </span>
                 <ng-template #clusterNameTpl>
                   {{ detailCluster?.clusterName }}
