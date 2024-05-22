@@ -153,7 +153,7 @@
 
               <ng-container *ngIf="item.serviceStatus | checkStatus as progressing">
                 <button nz-button nzType="text" [nzTooltipTitle]="'app.cluster.delete-cluster' | i18n" nzTooltipPlacement="top" nz-tooltip
-                  (click)="showModalConfirmDeleteCluster(item)" class="borderless marleft-0 action-btn" [disabled]="progressing == 2 || item.serviceStatus == 3">
+                  (click)="showModalConfirmDeleteCluster(item)" class="borderless marleft-0 action-btn" [disabled]="progressing == 2">
                   <img src="assets/imgs/trash1.svg" alt="" class="icon-action" />
                 </button>
               </ng-container>

@@ -1403,12 +1403,13 @@
   "app.cluster.warning-upgrade-2": "Để đảm bảo an toàn, xin hãy thực hiện backup dữ liệu. Hoạt động này sẽ bắt đầu ngay lập tức và không thể quay trở lại phiên bản cũ.",
   "app.cluster.warning-upgrade-3": "Vui lòng đọc thêm thông tin tại",
 
-  "cluster.status.not-yet-extend": "",
+  "cluster.status.not-yet-extend": "Tạm ngưng",
   "cluster.status.running": "Đang hoạt động",
   "cluster.status.initializing": "Đang khởi tạo",
   "cluster.status.upgrading": "Đang nâng cấp",
   "cluster.status.deleting": "Đang xóa",
   "cluster.status.failed": "Khởi tạo thất bại",
+  "cluster.status.restoring": "Đang khôi phục",
   "cluster.status.unknow": "Không xác định",
 
   "cluster.instance.running": "Đang chạy",
