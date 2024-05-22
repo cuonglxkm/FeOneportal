@@ -1359,6 +1359,24 @@
   "kafka.upgrade.storage-max": "Giá trị Storage tối đa 2000 GB",
 
   "kafka.extend.title": "Gia hạn dịch vụ Kafka",
+  "kafka.extend.month.min": "Nhập số tháng tối thiểu là 1",
+  "kafka.extend.month.max": "Nhập số tháng tối đa là 100",
+
+  "min.insync.replicas": "Xác định số lượng tối thiểu các replica của 1 partition mà producer cần đợi xác nhận từ trước khi coi message là đã được ghi an toàn",
+  "message.max.bytes": "Quy định dung lượng tối đa cho 1 message được gửi đến hoặc từ Kafka; là số nguyên dương, đơn vị là byte",
+  "log.retention.hours": "Cấu hình đặc tả thời gian giữ lại (retention) cho các log của partition trong Kafka; cấu hình này xác định bao lâu dữ liệu log sẽ được giữ lại trước khi bị xóa",
+  "log.segment.bytes": "Cấu hình quy định kích thước tối đa của mỗi segment trong log của 1 partition; log trong Kafka được chia thành các segment để quản lý và xóa dữ liệu hiệu quả",
+  "auto.create.topics.enable": "Cấu hình quy định xem có cho phép tự động tạo các topic mới hay không khi producer gửi tin nhắn đến 1 topic chưa tồn tại",
+  "default.replication.factor": "Cấu hình quy định số lượng replica mặc định cho một topic khi topic đó được tạo",
+  "offsets.topic.replication.factor": "Cấu hình quy định số lượng replica mặc định cho topic '__consumer_offsets'; topic này lưu trữ thông tin về offset của consumer, giúp theo dõi vị trí đọc của mỗi consumer trong mỗi partition",
+  "log.retention.bytes": "Cấu hình quy định dung lượng tối đa mà 1 partition có thể sử dụng trước khi các message cũ bắt đầu bị xóa để giữ cho dung lượng không gian lưu trữ ổn định, đơn vị byte",
+  "num.partitions": "Cấu hình quy định số lượng partition (phân vùng) mà một topic có thể có khi nó được tạo. Mỗi partition là một phần của topic và chứa một phần của dữ liệu. Partition giúp Kafka phân phối và xử lý dữ liệu một cách hiệu quả",
+  "compression.type": "Cấu hình quy định loại nén dữ liệu được sử dụng khi producer gửi messages đến Kafka. Các giá trị thông thường cho compression.type bao gồm \"none\" (không nén), \"gzip\", \"snappy\", và \"lz4\". Mỗi giá trị này đại diện cho một thuật toán nén khác nhau",
+
+  "kafka.topic.choose": "Chọn danh sách topic",
+  "kafka.metric.choose": "Chọn danh sách metrics",
+  "kafka.metric.validation": "Vui lòng chọn Metric",
+  "kafka.interval": "Chọn interval",
 
   "tooltip.kakfa.topic.max-message-bytes": "Kích thước tối đa của 1 message",
   "tooltip.kakfa.topic.cleanup-policy": "Chính sách dọn dẹp",
@@ -1776,6 +1794,7 @@
   "app.text.package": "Gói dịch vụ",
   "app.text.package-type": "Loại gói",
   "app.text.package-config": "Cấu hình gói dịch vụ",
+  "app.text.package-config-2": "Cấu hình gói",
   "app.text.creation-time": "Ngày khởi tạo",
   "app.text.created-date": "Ngày tạo",
   "app.text.operation": "Thao tác",
