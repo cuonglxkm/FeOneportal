@@ -1,19 +1,16 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
              [title]="'app.file.system.create' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item
-        [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{ 'app.file.system.list' | i18n }}
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item
-        [routerLink]="'/app-smart-cloud/file-storage/file-system/create'">{{ 'app.file.system.create' | i18n }}
-      </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{ 'app.file.system.list' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/create'">{{ 'app.file.system.create' | i18n }}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -139,7 +136,7 @@
                     <span>{{ 'app.capacity' | i18n }} (GB) </span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                     <img nz-popover
-                         [nzPopoverContent]="'app.tooltip.capacity' | i18n"
+                         [nzPopoverContent]="'Chỉ nhập ký tự số, bước nhảy là 10 GB' | i18n"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </div>
@@ -150,8 +147,14 @@
                                    class="input-custom"
                                    [nzMin]="0" [nzStep]="10"></nz-input-number>
                   <ng-template #storageErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
-                    <ng-container *ngIf="control.hasError('pattern')">{{ 'app.file.system.error.pattern.storage' | i18n }}</ng-container>
+                    <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
+                    </ng-container>
+                    <ng-container
+                      *ngIf="control.hasError('pattern')">{{ 'app.file.system.error.pattern.storage' | i18n }}
+                    </ng-container>
+                    <ng-container
+                      *ngIf="control.hasError('notEnough')">{{ 'app.file.system.not.enough.quota' | i18n }}
+                    </ng-container>
                   </ng-template>
                 </nz-form-control>
               </nz-form-item>
@@ -222,7 +225,8 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input formControlName="description" id="description" [placeholder]="'Nhập nội dung'" [maxLength]="255"
+              <textarea nz-input formControlName="description" id="description" [placeholder]="'Nhập nội dung'"
+                        [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
                 <ng-container
@@ -264,7 +268,7 @@
                         (nzOnOk)="handleOk()"
                         (keydown)="onKeyDown($event)"
                         nzMask="false"
-              [nzKeyboard]="false">
+                        [nzKeyboard]="false">
                 <div *nzModalTitle>
                   <span class="text-modal-title">{{ 'app.file.system.create.confirm' | i18n }}</span>
                 </div>
@@ -272,7 +276,7 @@
                   <span class="text-value">Quý khách chắn chắn muốn thực hiện khởi tạo File System không?</span>
                   <ul>
                     <li class="text-value">Tên File System: {{ validateForm.controls.name.value }}</li>
-                    <li class="text-value" >Dung lượng: {{ validateForm.controls.storage.value }} GB</li>
+                    <li class="text-value">Dung lượng: {{ validateForm.controls.storage.value }} GB</li>
                   </ul>
 
                 </div>
