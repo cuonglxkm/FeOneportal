@@ -43,7 +43,7 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
       this.duplicateNameValidator.bind(this)]],
     protocol: ['NFS', [Validators.required]],
     type: [1, [Validators.required]],
-    storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
+    storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]],
     checked: [false],
     description: [''],
     snapshot: [null as number, []],
@@ -102,6 +102,15 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
       return { duplicateName: true }; // Duplicate name found
     } else {
       return null; // Name is unique
+    }
+  }
+
+  checkQuota(control) {
+    const value = control.value;
+    if (this.storageBuyVpc < value) {
+      return { notEnough: true };
+    } else {
+      return null;
     }
   }
 

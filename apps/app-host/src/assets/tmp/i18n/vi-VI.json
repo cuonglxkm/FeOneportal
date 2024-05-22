@@ -749,10 +749,11 @@
   "app.file.system.access.to.delete.success": "Xóa access rule thành công",
   "app.file.system.access.to.delete.fail": "Xóa access rule thất bại {{error}}",
   "app.file.system.access.to.delete.file.success": "Xóa File System thành công",
-  "app.file.system.access.to.delete.file.fail": "Xóa File System thất bại {{error}}",
+  "app.file.system.access.to.delete.file.fail": "Xóa File System thất bại",
 
   "app.file.system.placeholder.search": "Tìm kiếm theo tên",
   "app.file.system.error.pattern.storage": "Vui lòng nhập số nguyên dương",
+  "app.file.system.not.enough.quota": "Dung lượng vượt quá dung lượng hiện có, xin vui lòng thử lại",
 
   "app.note.delete.file.system": "Để thực hiện xóa File System {{name}}, vui lòng nhập tên File System để xác nhận",
   "app.alert.delete.file.system": "Bạn đang thực hiện xóa File System<br> Để xóa được File System, quý khách lưu ý cần phải xóa hết các Snapshot của các File System đó",
