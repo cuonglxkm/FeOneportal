@@ -48,6 +48,8 @@ export class UpgradeComponent implements OnInit {
   isUsingPackConfig: boolean;
   isShowModalCancelUpgrade: boolean;
   isChangeInfo: boolean;
+  isShowModalConfirmUpgrade: boolean;
+  isAgreeArrangement: boolean;
 
   upgradeForm: FormGroup;
   listFormWorker: FormArray;
@@ -85,6 +87,8 @@ export class UpgradeComponent implements OnInit {
     this.isUsingPackConfig = true;
     this.isShowModalCancelUpgrade = false;
     this.isChangeInfo = false;
+    this.isShowModalConfirmUpgrade = false;
+    this.isAgreeArrangement = false;
     this.selectedTabIndex = 0;
     this.listOfK8sVersion = [];
     this.listOfVolumeType = [];
@@ -754,8 +758,14 @@ export class UpgradeComponent implements OnInit {
     this.isShowModalCancelUpgrade = true;
   }
 
+  handleShowModalConfirmUpgrade() {
+    this.isShowModalConfirmUpgrade = true;
+  }
+
   handleCancelModal() {
     this.isShowModalCancelUpgrade = false;
+    this.isShowModalConfirmUpgrade = false;
+    this.isAgreeArrangement = false;
   }
 
   back2list() {
