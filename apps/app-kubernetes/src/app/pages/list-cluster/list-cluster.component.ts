@@ -50,7 +50,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     7, // Đang xóa
     6, // Đang nâng cấp
   ];
-  mapProgress: Map<any, any>;
+  mapProgress: Map<string, number>;
 
   baseUrl = environment['baseUrl'];
 
@@ -143,10 +143,12 @@ export class ListClusterComponent implements OnInit, OnDestroy {
               switch (cluster.serviceStatus) {
                 case 1: // initialing
                 case 6: // upgrading
-                  progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.CREATE_ACTION);
+                  progressObs = this.viewProgressCluster(cluster.regionId, cluster.namespace,
+                    cluster.serviceOrderCode, KubernetesConstant.CREATE_ACTION);
                   break;
                 case 7: // deleting
-                  progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.DELETE_ACTION);
+                  progressObs = this.viewProgressCluster(cluster.regionId, cluster.namespace,
+                    cluster.serviceOrderCode, KubernetesConstant.DELETE_ACTION);
                   break;
                 default:
                   progressObs = new Observable(_ => _.complete()).pipe(defaultIfEmpty(0));
@@ -164,32 +166,32 @@ export class ListClusterComponent implements OnInit, OnDestroy {
           // console.log({combine: data});
           this.listOfProgress = data;
 
-          // let progressFromLocal: string = localStorage.getItem('mapProgress');
+          let progressFromLocal: string = localStorage.getItem('mapProgress');
 
-          // if (progressFromLocal) {
-          //   this.mapProgress = new Map(JSON.parse(progressFromLocal));
-          // } else {
-          //   this.mapProgress = new Map<{serviceName: string, namespace: string}, number>();
-          // }
+          if (progressFromLocal) {
+            this.mapProgress = new Map(JSON.parse(progressFromLocal));
+          } else {
+            this.mapProgress = new Map<string, number>();
+          }
 
-          // for (let i = 0; i < this.listOfProgress.length; i++) {
-          //   let currentProgress = this.listOfProgress[i];
-          //   const cluster = this.listOfClusters[i];
-          //   let keyObj = {serviceName: cluster.clusterName, namespace: cluster.namespace};
+          for (let i = 0; i < this.listOfProgress.length; i++) {
+            let currentProgress = this.listOfProgress[i];
+            const cluster = this.listOfClusters[i];
+            let keyObj = cluster.namespace + ';' + cluster.clusterName;
 
-          //   if (currentProgress == 100) {
-          //     this.mapProgress.delete(keyObj);
-          //   } else {
-          //     let previousValue = this.mapProgress.get(keyObj);
-          //     if (currentProgress <= previousValue) {
-          //       this.mapProgress.set(keyObj, progress);
-          //     } else {
-          //       this.mapProgress.set(keyObj, previousValue);
-          //     }
-          //   }
-          // }
+            if (currentProgress == 100) {
+              this.mapProgress.delete(keyObj);
+            } else {
+              let previousValue = this.mapProgress.get(keyObj);
+              if (currentProgress <= previousValue) {
+                this.mapProgress.set(keyObj, previousValue);
+              } else {
+                this.mapProgress.set(keyObj, currentProgress);
+              }
+            }
+          }
 
-          // localStorage.setItem('mapProgress', JSON.stringify(Array.from(this.mapProgress.entries())));
+          localStorage.setItem('mapProgress', JSON.stringify(Array.from(this.mapProgress.entries())));
 
           this.ref.detectChanges();
         });
@@ -197,9 +199,9 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     });
   }
 
-  viewProgressCluster(namespace: string, clusterName: string, action: string) {
+  viewProgressCluster(regionId: number, namespace: string, serviceOrderCode: string, action: string) {
     return new Observable(observable => {
-      let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${namespace}/${clusterName}/${action}`);
+      let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${regionId}/${namespace}/${serviceOrderCode}/${action}`);
       this.eventSources.push(source);
       source.onmessage = event => {
         this.zone.run(() => {
