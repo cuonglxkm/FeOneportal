@@ -1468,6 +1468,25 @@
   "kafka.upgrade.storage-max": "The maximum Storage value is 2000 GB",
 
   "kafka.extend.title": "Extend Kafka service",
+  "kafka.extend.month.min": "The minimum number of months is 1",
+  "kafka.extend.month.max": "The maximum number of months is 100",
+
+  "min.insync.replicas": "Specify the minimum number of replicas of a partition that a producer needs to wait for acknowledgment from before considering the message to be safely written.",
+  "message.max.bytes": "Specify the maximum size for a message sent to or from Kafka; it is a positive integer, measured in bytes.",
+  "log.retention.hours": "Configure the retention time specification for partition logs in Kafka; this setting determines how long log data will be retained before being deleted.",
+  "log.segment.bytes": "Configure the maximum size of each segment in a partition log; logs in Kafka are divided into segments for efficient data management and deletion.",
+  "auto.create.topics.enable": "Configure whether to allow automatic creation of new topics when a producer sends a message to a topic that does not exist.",
+  "default.replication.factor": "Configure the default number of replicas for a topic when the topic is created.",
+  "offsets.topic.replication.factor": "Configure the default number of replicas for the '__consumer_offsets' topic; this topic stores information about the offset of consumers, helping to track the read position of each consumer in each partition.",
+  "log.retention.bytes": "Configure the maximum size that a partition can use before old messages start to be deleted to maintain stable storage space, measured in bytes.",
+  "num.partitions": "Configure the number of partitions that a topic can have when it is created. Each partition is a part of the topic and contains a portion of the data. Partitions help Kafka distribute and process data efficiently.",
+  "compression.type": "Configure the type of data compression used when a producer sends messages to Kafka. Common values for compression.type include none, gzip, snappy, and lz4. Each value represents a different compression algorithm.",
+
+  "kafka.topic.choose": "Select topic list",
+  "kafka.metric.choose": "Select metrics list",
+  "kafka.metric.validation": "Please select a metric",
+  "kafka.interval": "Choose interval",
+
 
   "tooltip.kakfa.topic.max-message-bytes": "The maximum size of one message",
   "tooltip.kakfa.topic.cleanup-policy": "Cleanup Policy",
@@ -1885,6 +1904,7 @@
   "app.text.package": "Service package",
   "app.text.package-type": "Package Name",
   "app.text.package-config": "Package Config",
+  "app.text.package-config-2": "Package Config",
   "app.text.creation-time": "Initialization date",
   "app.text.created-date": "Created date",
   "app.text.operation": "Actions",
