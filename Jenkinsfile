@@ -3,14 +3,14 @@ def imageTag
 def appName
 
 pipeline {
-
+    
     agent { label 'worker-6-agent||jenkins-oneportal' }
 
     environment {
         registry = "registry.onsmartcloud.com"
         registryCredential = "cloud-harbor-id"
         k8sCredential = "k8s-oneportal-stag"
-        ENV = "stag"
+        ENV = "dev"
     }
     stages {
 
@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                     appName = env.BRANCH_NAME.tokenize("/").last()
-                    imageTag = "${registry}/idg/${ENV}-${appName}:${env.BUILD_NUMBER}"
+                    imageTag = "${registry}/idg/${appName}-${ENV}:${env.BUILD_NUMBER}"
                 }
             }
         }
