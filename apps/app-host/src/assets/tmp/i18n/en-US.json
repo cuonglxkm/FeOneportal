@@ -403,6 +403,16 @@
   "app.button.add.ipv4": "Add IPv4",
   "app.button.choose.version": "Choose Version",
 
+  "service.status.init": "Initializing",
+  "service.status.active": "Active",
+  "service.status.resizing": "Adjusting",
+  "service.status.extending": "Extending",
+  "service.status.expired": "Expired",
+  "service.status.violation": "Violation of terms",
+  "service.status.deleting": "Deleting",
+  "service.status.error": "Error",
+  "service.status.unknown": "Unknown ",
+
   "app.breadcrumb.home": "Home",
   "app.breadcrumb.infrastructure.service": "Infrastructure service",
 

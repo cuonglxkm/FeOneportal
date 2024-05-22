@@ -35,6 +35,16 @@
   "validation.choose.required": "Vui lòng chọn {{name}}",
   "validation.project.required.name":"Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt, tối đa 20 ký tự, có thể có dấu _ (kí tự đặc biệt: @, #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc, hình tròn, hình vuông, hình chữ nhật...)",
 
+  "service.status.init": "Đang khởi tạo",
+  "service.status.active": "Đang hoạt động",
+  "service.status.resizing": "Đang điều chỉnh",
+  "service.status.extending": "Đang gia hạn",
+  "service.status.expired": "Chậm gia hạn",
+  "service.status.violation": "Vi phạm điều khoản",
+  "service.status.deleting": "Đang xóa",
+  "service.status.error": "Lỗi",
+  "service.status.unknown": "Không xác định",
+
   "form.clear.local.storage": "Làm sạch Local Storage",
   "form.account.information": "Thông tin tài khoản",
   "form.account.update.information":"Cập nhật thông tin tài khoản",

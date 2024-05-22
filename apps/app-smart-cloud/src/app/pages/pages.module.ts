@@ -233,6 +233,7 @@ import { ExtendFileSystemSnapshotComponent } from './file-system-snapshot/extend
 import { DeleteSslCertComponent } from './ssl-cert/delete/delete-ssl-cert.component';
 
 import { TrimDirective } from './file-storage/TrimDirective';
+import { ServiceStatusPipe } from '../shared/pipes/status.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -448,7 +449,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     UpdateBackupVolumeComponent,
     CreateSslCertComponent,
     ExtendFileSystemSnapshotComponent,
-    DeleteSslCertComponent
+    DeleteSslCertComponent,
+    ServiceStatusPipe
   ],
   imports: [
     CommonModule,
