@@ -2234,7 +2234,7 @@
   "project.note47": "Với các ứng dụng cần bảo vệ dữ liệu và duy trì hiệu suất hệ thống, nên sử dụng Backup - sao lưu định kỹ để đảm bảo an toàn và khả năng khôi phục nhanh chóng khi cần thiết",
   "project.note48": "Load Balancer giúp nhân phối tải hiệu quả, nâng cao khả năng chịu tải của hệ thống và tăng trải nghiệm người dùng",
   "project.note49": "Chọn gói Load Balancer",
-  "project.note50": "Tạo dự án thành công",
+  "project.action.creating": "Yêu cầu tạo dự án đã được gửi đi",
   "project.note51": "Tạo dự án thất bại",
   "project.create":"Khởi tạo dự án",
   "status.enable":"Cho phép",
