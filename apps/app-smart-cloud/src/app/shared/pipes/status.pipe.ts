@@ -4,7 +4,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { StatusModel } from '../models/status.model';
 
 @Pipe({
-  name: 'serviceStatusPipe'
+  name: 'ServiceStatusPipe'
 })
 export class ServiceStatusPipe implements PipeTransform {
   constructor(
@@ -17,6 +17,8 @@ export class ServiceStatusPipe implements PipeTransform {
         return new StatusModel("#0066b0", this.i18n.fanyi('service.status.init'));
       case "KHOITAO":
       case "AVAILABLE":
+      case "ENABLE":
+      case "ACTIVE":
         return new StatusModel("#008d47", this.i18n.fanyi('service.status.active'));
       case "EXTENDING": 
         return new StatusModel("#0066B0 ", this.i18n.fanyi('service.status.resizing'));
