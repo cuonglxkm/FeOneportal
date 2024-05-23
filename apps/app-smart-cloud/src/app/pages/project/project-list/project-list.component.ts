@@ -7,7 +7,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VpcService } from '../../../shared/services/vpc.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { NotificationService, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { IpPublicService } from '../../../shared/services/ip-public.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -57,7 +57,9 @@ export class ProjectListComponent implements OnInit {
               private vpcService: VpcService,
               private ipService: IpPublicService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              private notificationService: NotificationService
+            ) {
 
   }
 
@@ -65,6 +67,21 @@ export class ProjectListComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.getData(true);
+
+    this.notificationService.connection.on('UpdateProject', (data) => {
+      if (data) {
+
+        switch (data.actionType) {
+          case "CREATING":
+            this.getData(false);
+          break;
+          case "CREATED":
+            this.getData(false);
+          break;
+        }
+      }
+    });
+
   }
 
   onRegionChange(region: RegionModel) {
@@ -139,6 +156,12 @@ export class ProjectListComponent implements OnInit {
       .subscribe(
         {
           next: post => {
+            var listProject = JSON.parse(localStorage.getItem('projects'));
+            if (listProject.length > 0) {
+              listProject = listProject.filter(x => x.id != this.itemDelete.id);
+              localStorage.setItem('projects', JSON.stringify(listProject));
+            }
+
             this.notification.success('Thành công', 'Xóa dự án thành công');
           },
           error: e => {

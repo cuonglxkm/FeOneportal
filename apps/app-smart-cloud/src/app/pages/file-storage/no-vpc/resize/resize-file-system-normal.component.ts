@@ -33,7 +33,7 @@ export class ResizeFileSystemNormalComponent implements OnInit{
     storage: FormControl<number>
   }> = this.fb.group({
     snapshot: [false],
-    storage: [1, [Validators.required]]
+    storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/)]]
   });
 
   storage: number;
@@ -79,7 +79,7 @@ export class ResizeFileSystemNormalComponent implements OnInit{
       this.fileSystem = data;
       this.isLoading = false;
       this.storage = this.fileSystem.size;
-      // this.validateForm.controls.storage.setValue(this.fileSystem?.size);
+      this.validateForm.controls.storage.setValue(this.fileSystem?.size);
       this.validateForm.controls.snapshot.setValue(this.fileSystem?.isSnapshot)
       this.getTotalAmount()
     }, error => {
@@ -163,6 +163,9 @@ export class ResizeFileSystemNormalComponent implements OnInit{
     const diffDays = Math.round(Math.abs((expiredDate.getTime() - createdDate.getTime()) / oneDay)); // Số ngày chênh lệch
     const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
     return diffMonths;
+  }
+  navigateToDetail() {
+    this.router.navigate(['/app-smart-cloud/file-storage/file-system/detail/' + this.idFileSystem])
   }
 
   dateEdit: Date

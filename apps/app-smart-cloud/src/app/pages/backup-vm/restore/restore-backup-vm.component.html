@@ -1,7 +1,7 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
              [title]="'app.backup.vm.restore'|i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home'|i18n }}</a>
       </nz-breadcrumb-item>
@@ -9,6 +9,7 @@
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.backup.vm.restore'|i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
 
   <ng-template #action>

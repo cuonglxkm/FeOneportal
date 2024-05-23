@@ -1,15 +1,16 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
              [title]="'app.file.system.detail' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">Danh sách File System</nz-breadcrumb-item>
       <nz-breadcrumb-item
-        [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/{{ fileSystemId }}'">{{ fileSystemName }}
+        [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/{{ fileSystemId }}'">{{'app.file.system.detail' | i18n}}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -61,6 +62,10 @@
             <nz-form-item>
               <nz-form-label>
                 <span>ID</span>
+                <img nz-popover
+                     [nzPopoverContent]="'ID của File System đã chọn'"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control>
                 <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.shareCloudId }}"
@@ -70,6 +75,10 @@
             <nz-form-item>
               <nz-form-label>
                 <span>{{ 'app.file.system.type' | i18n }}</span>
+                <img nz-popover
+                     [nzPopoverContent]="'Loại của File System đã chọn'"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control>
                 <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.type }}"
@@ -79,18 +88,13 @@
             <nz-form-item>
               <nz-form-label>
                 <span>{{ 'app.text.status' | i18n }}</span>
+                <img nz-popover
+                     [nzPopoverContent]="'Trạng thái của FIle System đã chọn'"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control>
                 <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.status?.toUpperCase() }}"
-                       [disabled]="true" />
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label>
-                <span>{{ 'app.capacity' | i18n }}</span>
-              </nz-form-label>
-              <nz-form-control>
-                <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.size }}"
                        [disabled]="true" />
               </nz-form-control>
             </nz-form-item>
@@ -99,6 +103,10 @@
             <nz-form-item>
               <nz-form-label>
                 <span>{{ 'app.file.system.name' | i18n }}</span>
+                <img nz-popover
+                     [nzPopoverContent]="'Tên của File System'"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control>
                 <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.name}}"
@@ -108,6 +116,10 @@
             <nz-form-item>
               <nz-form-label>
                 <span>{{ 'app.protocol' | i18n }}</span>
+                <img nz-popover
+                     [nzPopoverContent]="'Giao thức của File System đã chọn'"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control>
                 <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.shareProto }}"
@@ -117,6 +129,10 @@
             <nz-form-item>
               <nz-form-label>
                 <span>Mount target address</span>
+                <img nz-popover
+                     [nzPopoverContent]="'Hiển thị mount path để client mount được thông qua NFS hoặc CIFS'"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control>
                 <div class="input-container">
@@ -130,6 +146,19 @@
             </nz-form-item>
           </nz-col>
         </nz-row>
+        <nz-form-item>
+          <nz-form-label>
+            <span>{{ 'app.capacity' | i18n }} - GB</span>
+            <img nz-popover
+                 [nzPopoverContent]="'Dung lượng của File System đã chọn'"
+                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
+          </nz-form-label>
+          <nz-form-control>
+            <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.size }}"
+                   [disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
         <nz-form-item>
           <nz-form-label>
             <span>{{ 'app.service.description' | i18n }}</span>
