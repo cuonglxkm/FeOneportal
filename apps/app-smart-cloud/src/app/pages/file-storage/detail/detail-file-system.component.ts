@@ -54,7 +54,7 @@ export class DetailFileSystemComponent implements OnInit {
     }, error => {
       console.log('error', error);
       this.isLoading = false;
-      if(error.error.detail.includes('The resource could not be found.')){
+      if(error.error?.detail.includes('The resource could not be found.')){
         this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
         this.notification.error('Thất bại', 'File System không tồn tại');
       } else {
@@ -73,10 +73,10 @@ export class DetailFileSystemComponent implements OnInit {
   //vpc = 1, no vpc = 0
   navigateToResize(typeVpc) {
     if (typeVpc == 1) {
-      this.router.navigate(['/app-smart-cloud/file-storage/file-system/resize/' + this.fileSystemId]);
+      this.router.navigate(['/app-smart-cloud/file-storage/file-system/resize/vpc/' + this.fileSystemId ]);
     }
     if (typeVpc == 0) {
-      this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + this.fileSystemId + '/resize']);
+      this.router.navigate(['/app-smart-cloud/file-storage/file-system/resize/normal/' + this.fileSystemId]);
 
     }
   }
@@ -86,7 +86,8 @@ export class DetailFileSystemComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.fileSystemId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+    this.fileSystemId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
+    console.log('id file system', this.fileSystemId)
     setTimeout(() => {
       this.getFileSystemById(this.fileSystemId);
     }, 2500);

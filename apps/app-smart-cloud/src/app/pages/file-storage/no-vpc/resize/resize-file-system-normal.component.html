@@ -1,13 +1,15 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
              [title]="'app.file.system.resize' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
        <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/'+idFileSystem ">{{ 'app.file.system.detail' | i18n }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/'+idFileSystem +'/resize'">{{ 'app.file.system.resize' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{'app.file.system.manage'|i18n}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a (click)="navigateToDetail()">{{'app.file.system.detail' | i18n}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/'+idFileSystem +'/resize'">{{ 'app.file.system.resize' | i18n }}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -100,7 +102,7 @@
                   <div>
                     <span>{{ 'app.capacity' | i18n }} (GB) (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
                     <img nz-popover
-                         [nzPopoverContent]="'Tối thiểu là 1'"
+                         [nzPopoverContent]="'Chỉ nhập ký tự số, bước nhảy là 10 GB'"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </div>
@@ -151,7 +153,7 @@
                 <nz-form-item>
                   <nz-form-label nzFor="now">
                     <div class="label">
-                      <span>{{ 'app.service.start.date' | i18n }}: </span>
+                      <span>{{ 'app.service.creation-date' | i18n }}: </span>
                       <span>{{ fileSystem?.createdDate | date: 'dd/MM/yyyy' }}</span>
                     </div>
                   </nz-form-label>
@@ -160,8 +162,8 @@
             </nz-row>
             <nz-form-label>
               <div class="label">
-                <span>{{ 'app.service.expiration-date' | i18n }}: </span>
-                <span>{{ fileSystem?.expireDate | date: 'dd/MM/yyyy' }}</span>
+                <span style="color: #E41818;">{{ 'app.service.expiration-date' | i18n }}: </span>
+                <span style="color: #E41818;">{{ fileSystem?.expireDate | date: 'dd/MM/yyyy' }}</span>
               </div>
             </nz-form-label>
           </nz-form-item>
@@ -176,8 +178,7 @@
           <nz-form-item style="margin-top:25px; margin-bottom: 10px;" >
             <nz-form-label nzFor="storage">
               <div class="label">
-                <span>{{ 'app.increase.capacity' | i18n }}</span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
+                <span>{{ 'app.increase.capacity' | i18n }} - GB (<span style="color: rgba(252, 16, 16, 1); ">*</span>) </span>
                 <img nz-popover [nzPopoverContent]="'volume.tooltip.resize.storage' | i18n"
                      nzPopoverPlacement="bottom"
                      src="assets/imgs/pajamas_question.svg" alt="" />
@@ -188,24 +189,27 @@
                                style="width: 100%; margin-left: 0;"
                                nzAutoFocus
                                class="input-custom"
-                               [nzMin]="1"
+                               [nzMin]="fileSystem?.size"
                                (ngModelChange)="changeValueStorage($event)"
-                               [nzStep]="1" />
+                               [nzStep]="10" />
               <ng-template #storageErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required') || control.hasError('pattern')">{{ 'validation.file.system.capacity.required' | i18n }}</ng-container>
+<!--                <ng-container-->
+<!--                  *ngIf="control.hasError('pattern')">{{ 'app.file.system.error.pattern.storage' | i18n }}-->
+<!--                </ng-container>-->
               </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item style="margin-bottom: 0;">
-            <nz-form-label>
-              <div>
-                {{ 'volume.unit-price' | i18n }}: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }}/GB/{{ 'volume.date' | i18n }}</span>
-                <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                   0 VND/GB/{{ 'volume.date' | i18n }}
-                </span>
-              </div>
-            </nz-form-label>
+<!--            <nz-form-label>-->
+<!--              <div>-->
+<!--                {{ 'volume.unit-price' | i18n }}: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">-->
+<!--                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }}/GB/{{ 'volume.date' | i18n }}</span>-->
+<!--                <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">-->
+<!--                   0 VND/GB/{{ 'volume.date' | i18n }}-->
+<!--                </span>-->
+<!--              </div>-->
+<!--            </nz-form-label>-->
           </nz-form-item>
           <nz-form-item style="margin-bottom: 0;">
             <nz-form-label>
