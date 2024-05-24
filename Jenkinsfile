@@ -53,7 +53,7 @@ pipeline {
                 script {
                     env.APP_NAME = appName
                     env.IMAGE_TAG = imageTag
-                    withCredentials([file(credentialsId: k8sCredential , variable: 'KUBECONFIG')]) {
+                    withCredentials([file(credentialsId: k8sCred , variable: 'KUBECONFIG')]) {
                         dir("apps/${appName}/deploy") {
                             sh 'for f in *.yaml; do envsubst < $f | kubectl --insecure-skip-tls-verify apply -f - ; done '
                         }
