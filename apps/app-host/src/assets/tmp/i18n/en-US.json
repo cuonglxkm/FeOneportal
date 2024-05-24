@@ -1671,7 +1671,7 @@
   "mongodb.vpc.description-1": "Choose a VPC for your service.",
   "mongodb.create.cancel.title": "Confirm cancellation of MongoDB Replicaset creation",
   "mongodb.create.cancle.content": "Are you sure you want to stop creating the new service ?",
-  
+
   "mongodb.user": "User",
   "mongodb.role": "Custom Role",
   "mongodb.user.alert": "Custom roles display in yellow, built-in roles display in blue.",
@@ -1697,7 +1697,7 @@
   "mongodb.pw.new.validation-5": "The new password and confirm do not match. Please try again!",
   "mongodb.pw.new.placeholder-2": "Re-enter the new password",
 
-  
+
   "mongodb.user.create.description": "Create database users to grant users access to databases and collections in your cluster. Granular access control can be configured with built-in roles or custom roles.",
   "mongodb.user.update.description": "Update database users to grant users access to databases and collections in your cluster. Granular access control can be configured with built-in roles or custom roles.",
   "mongodb.user.authen": "User Authentication",
@@ -1800,7 +1800,7 @@
   "mongodb.db.granularity.validation": "Please select granularity",
   "mongodb.db.detele.validation-1": "Enter database name",
   "mongodb.db.detele.validation-2": "Database name is not correct",
-  
+
   "mongodb.db.delete.note-1": "To drop database ",
   "mongodb.db.delete.note-2": " re-enter the database name to confirm deletion.",
   "mongodb.db.delete.placeholder": "Re-enter database name",
@@ -2850,7 +2850,7 @@
   "schedule.backup.day.select": "Select day",
   "schedule.backup.press.date": "Please enter date",
   "schedule.backup.select.volume.backup": "Select external volume to backup",
-  "schedule.backup.label.name": "{{'schedule.backup.select.volume.backup' | i18n}}",
+  "schedule.backup.label.name": "Schedule backup name",
   "schedule.backup.confirm.remove": "Confirm delete backup schedule",
   "schedule.backup.alert.remove": "Are you sure you want to delete the backup schedule?",
   "schedule.backup.volume.select": "Select volume",

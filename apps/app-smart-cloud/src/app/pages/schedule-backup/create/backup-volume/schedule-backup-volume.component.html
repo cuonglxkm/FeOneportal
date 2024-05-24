@@ -10,7 +10,7 @@
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-            <input nz-input class="input-custom" formControlName="name" id="name"/>
+            <input style="border-radius: 8px;" nz-input class="input-custom" formControlName="name" id="name"/>
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{'validation.info.required' | i18n}}</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">{{'schedule.backup.validate1' | i18n}}</ng-container>
@@ -28,7 +28,7 @@
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input nz-input class="input-custom" type="number" formControlName="maxBackup" id="maxBackup" min="1" step="1"
-                   style="width: 100%"/>
+                   style="width: 100%;border-radius: 8px;"/>
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{'validation.info.required' | i18n}}</ng-container>
             </ng-template>
@@ -64,7 +64,7 @@
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-            <textarea nz-input formControlName="description" id="description"
+            <textarea style="border-radius: 8px;" nz-input formControlName="description" id="description"
                       [nzAutosize]="{ minRows: 6, maxRows: 6 }"></textarea>
             <ng-template #descriptionErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{'validation.info.required' | i18n}}</ng-container>
