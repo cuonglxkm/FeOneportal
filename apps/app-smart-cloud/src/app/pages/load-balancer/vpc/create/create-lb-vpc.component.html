@@ -3,12 +3,12 @@
              [title]="'app.load.balancer.create' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Load Balancer
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/load-balancer/create">{{ 'app.load.balancer.create' | i18n }}</a>
@@ -95,51 +95,30 @@
           </nz-form-item>
           <nz-row nzGutter="24" nzJustify="space-between">
             <nz-col nzSpan="12">
-              <nz-form-item *ngIf="enableInternetFacing">
+<!--              <nz-form-item *ngIf="enableInternetFacing">-->
+<!--                <nz-form-label>-->
+<!--                  <span>Subnet</span>-->
+<!--                  <img nz-popover-->
+<!--                       [nzPopoverContent]="'app.tooltip.subnet' | i18n"-->
+<!--                       nzPopoverPlacement="bottom" style="margin-left: 5px;"-->
+<!--                       src="assets/imgs/pajamas_question.svg" alt="" />-->
+<!--                </nz-form-label>-->
+<!--                <nz-form-control nzDisableAutoTips>-->
+<!--                  <nz-select nzSize="large"-->
+<!--                             [ngModel]="selectedSubnet"-->
+<!--                             (ngModelChange)="updateValue($event)"-->
+<!--                             formControlName="subnet"-->
+<!--                             [nzPlaceHolder]="'&#45;&#45; ' + ('app.choose.subnet.range' | i18n) + ' &#45;&#45;'"-->
+<!--                             nzAllowClear>-->
+<!--                    <nz-option *ngFor="let index of mapSubnetArray"-->
+<!--                               [nzValue]="index.value"-->
+<!--                               [nzLabel]="index.label"></nz-option>-->
+<!--                  </nz-select>-->
+<!--                </nz-form-control>-->
+<!--              </nz-form-item>-->
+              <nz-form-item>
                 <nz-form-label>
-                  <span>Subnet</span>
-                  <img nz-popover
-                       [nzPopoverContent]="'app.tooltip.subnet' | i18n"
-                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                       src="assets/imgs/pajamas_question.svg" alt="" />
-                </nz-form-label>
-                <nz-form-control nzDisableAutoTips>
-                  <nz-select nzSize="large"
-                             [ngModel]="selectedSubnet"
-                             (ngModelChange)="updateValue($event)"
-                             formControlName="subnet"
-                             [nzPlaceHolder]="'-- ' + ('app.choose.subnet.range' | i18n) + ' --'"
-                             nzAllowClear>
-                    <nz-option *ngFor="let index of mapSubnetArray"
-                               [nzValue]="index.value"
-                               [nzLabel]="index.label"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
-              <nz-form-item *ngIf="enableInternal">
-                <nz-form-label>
-                  <span>Subnet</span>
-                  <img nz-popover
-                       [nzPopoverContent]="'app.tooltip.subnet' | i18n"
-                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                       src="assets/imgs/pajamas_question.svg" alt="" />
-                </nz-form-label>
-                <nz-form-control nzDisableAutoTips>
-                  <nz-select nzSize="large"
-                             [ngModel]="selectedSubnet"
-                             (ngModelChange)="updateValue($event)"
-                             formControlName="subnet"
-                             [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'"
-                             nzAllowClear>
-                    <nz-option *ngFor="let index of mapSubnetArray"
-                               [nzValue]="index.value"
-                               [nzLabel]="index.label"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
-              <nz-form-item *ngIf="enableInternal">
-                <nz-form-label>
-                  <span>Subnet</span>
+                  <span>Subnet (<span style="color: red;">*</span>)</span>
                   <img nz-popover
                        [nzPopoverContent]="'app.tooltip.subnet' | i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -152,12 +131,33 @@
                              formControlName="subnet"
                              [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'"
                              nzAllowClear>
-                    <nz-option *ngFor="let index of listSubnets"
-                               [nzValue]="index.cloudId"
-                               [nzLabel]="index.name + '(' + index.subnetAddressRequired + ')'"></nz-option>
+                    <nz-option *ngFor="let index of mapSubnetArray"
+                               [nzValue]="index.value"
+                               [nzLabel]="index.label"></nz-option>
                   </nz-select>
                 </nz-form-control>
               </nz-form-item>
+<!--              <nz-form-item *ngIf="enableInternal">-->
+<!--                <nz-form-label>-->
+<!--                  <span>Subnet</span>-->
+<!--                  <img nz-popover-->
+<!--                       [nzPopoverContent]="'app.tooltip.subnet' | i18n"-->
+<!--                       nzPopoverPlacement="bottom" style="margin-left: 5px;"-->
+<!--                       src="assets/imgs/pajamas_question.svg" alt="" />-->
+<!--                </nz-form-label>-->
+<!--                <nz-form-control nzDisableAutoTips>-->
+<!--                  <nz-select nzSize="large"-->
+<!--                             [ngModel]="selectedSubnet"-->
+<!--                             (ngModelChange)="updateValue($event)"-->
+<!--                             formControlName="subnet"-->
+<!--                             [nzPlaceHolder]="'&#45;&#45; ' + ('app.choose.subnet' | i18n) + ' &#45;&#45;'"-->
+<!--                             nzAllowClear>-->
+<!--                    <nz-option *ngFor="let index of listSubnets"-->
+<!--                               [nzValue]="index.cloudId"-->
+<!--                               [nzLabel]="index.name + '(' + index.subnetAddressRequired + ')'"></nz-option>-->
+<!--                  </nz-select>-->
+<!--                </nz-form-control>-->
+<!--              </nz-form-item>-->
             </nz-col>
             <nz-col nzSpan="12">
               <nz-form-item>
@@ -174,7 +174,7 @@
                       </ng-template>
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
-                  <input nz-input class="input-custom" (ngModelChange)="onInput($event)" formControlName="ipAddress" [placeholder]="'app.input.ip.address' | i18n" />
+                  <input [disabled]="true" nz-input class="input-custom" (ngModelChange)="onInput($event)" formControlName="ipAddress" [placeholder]="'app.input.ip.address' | i18n" />
                   <span *ngIf="!isInput" style="color: #ff4d4f;">{{ 'validation.ip.address.no.input' | i18n }}</span>
                   <ng-template #ipAddressErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.ip.address.pattern' | i18n }}</ng-container>
@@ -280,7 +280,7 @@
           <div style="margin-top: 10px" class="text-value">IP Address</div>
           <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.ipAddress.value }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value" *ngIf="enableInternetFacing">IP Public</div>
+          <div style="margin-top: 10px" class="text-value" *ngIf="enableInternetFacing">IP Floating</div>
           <div style="margin-top: 10px" class="text-label"  *ngIf="enableInternetFacing" >
             <span #selectedValueIpFloating></span>
           </div>
@@ -292,9 +292,9 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row>
             <nz-col style="width: 100%">
-              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid" (click)="doCreateLoadBalancerVpc()" [nzLoading]="loadingCreate">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid || invalidIpAddress == true" (click)="doCreateLoadBalancerVpc()" [nzLoading]="loadingCreate">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;"/>
-                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+                <span [style.color]="validateForm.invalid || invalidIpAddress == true ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>

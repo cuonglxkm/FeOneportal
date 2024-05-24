@@ -7,7 +7,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {getCurrentRegionAndProject} from "@shared";
-import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel, NotificationService } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
@@ -66,7 +66,8 @@ export class ListBackupVmComponent implements OnInit {
               private router: Router,
               private notification: NzNotificationService,
               private projectService: ProjectService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private notificationService: NotificationService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -98,6 +99,10 @@ export class ListBackupVmComponent implements OnInit {
   }
 
   handleOkDelete() {
+    setTimeout(() => {this.getListBackupVM(true)}, 1500)
+  }
+
+  handleOkUpdate() {
     setTimeout(() => {this.getListBackupVM(true)}, 1500)
   }
 
@@ -176,6 +181,20 @@ export class ListBackupVmComponent implements OnInit {
     // }
 
     setTimeout(() => {this.getListBackupVM(true)}, 1500)
+
+    this.notificationService.connection.on('UpdateInstanceBackup', (data) => {
+      
+      if (data) {
+          switch (data.actionType) {
+            case "CREATING":
+              this.getListBackupVM(false);
+            break;
+            case "CREATED":
+              this.getListBackupVM(false);
+            break;
+          }
+      }
+    });
   }
 
   getParam(): BackupVMFormSearch {

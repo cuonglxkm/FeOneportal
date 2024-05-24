@@ -4,6 +4,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { FormUpdateSubUser } from '../../../../shared/models/sub-user.model';
 import { SubUserService } from '../../../../shared/services/sub-user.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-edit-sub-user',
@@ -30,7 +32,8 @@ export class EditSubUserComponent {
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
-              private subUserService: SubUserService) {
+              private subUserService: SubUserService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   showModal() {
@@ -59,16 +62,16 @@ export class EditSubUserComponent {
     this.subUserService.updateSubUser(formUpdate).subscribe(data => {
       if(data) {
         this.isLoading = false
-        this.notification.success('Thành công', 'Cập nhật thông tin Sub-User thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.edit.subuser.success'))
         this.onOk.emit()
       } else {
         this.isLoading = false
-        this.notification.error('Thất bại', 'Cập nhật thông tin Sub-User thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.edit.subuser.fail'))
         this.onOk.emit()
       }
     }, error => {
       this.isLoading = false
-      this.notification.error('Thất bại', 'Cập nhật thông tin Sub-User thất bại')
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.edit.subuser.fail'))
     })
   }
 }

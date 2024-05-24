@@ -108,22 +108,23 @@
             </td>
             <td nzBreakWord>{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
             <td nzBreakWord>{{ data.expiredDate | date: 'dd/MM/yyyy' }}</td>
-            <td nzBreakWord></td>
+            <td nzBreakWord>{{ data.offerName }}</td>
             <td nzBreakWord>
-              <span *ngIf="data.provisioningStatus === 'ERROR'">
-                <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
-                                                 [nameLoadBalancer]="data.name" [region]="region" [project]="project"
-                                                 (onOk)="handleDeleteOk()" />
-              </span>
+<!--              <span *ngIf="data.provisioningStatus === 'ERROR'">-->
+<!--                <one-portal-delete-load-balancer [idLoadBalancer]="data.id"-->
+<!--                                                 [nameLoadBalancer]="data.name" [region]="region" [project]="project"-->
+<!--                                                 (onOk)="handleDeleteOk()" />-->
+<!--              </span>-->
               <span *ngIf="data.provisioningStatus !== 'ERROR'">
                 <one-portal-attach-ip-floating-lb [region]="region"
                                                   [project]="project"
-                                                  [internetFacing]="data.internetFacing"
+                                                  [IsFloatingIP]="data.isFloatingIP"
                                                   [ipFloatingAddress]="data.floatingIPAddress"/>
                 <one-portal-detach-ip-floating-lb [region]="region"
                                                   [project]="project"
-                                                  [internetFacing]="data.internetFacing"
+                                                  [IsFloatingIP]="data.isFloatingIP"
                                                   [ipFloatingAddress]="data.floatingIPAddress"/>
+                </span>
                 <!---Gia Han------>
               <img *ngIf="typeVPC == 0" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                    nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
@@ -136,12 +137,9 @@
                        style="cursor: pointer; margin-right: 10px"
                        [nzPopoverContent]="'app.text.edit' | i18n" />
                 </span>
-                <span *ngIf="typeVPC == 0">
-
-                </span>
-                <img *ngIf="typeVPC == 0" style="padding-right: 10px; cursor: pointer;"
-                     src="assets/imgs/calendar-tick.svg"
-                     nz-popover [nzPopoverContent]="'app.load.balancer.extend' | i18n" nzPopoverPlacement="bottom" />
+<!--                <img *ngIf="typeVPC == 0" style="padding-right: 10px; cursor: pointer;"-->
+<!--                     src="assets/imgs/calendar-tick.svg"-->
+<!--                     nz-popover [nzPopoverContent]="'app.load.balancer.extend' | i18n" nzPopoverPlacement="bottom" />-->
                 <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
                                                  [nameLoadBalancer]="data.name" [region]="region" [project]="project"
                                                  (onOk)="handleDeleteOk()" />
@@ -151,7 +149,7 @@
                     <li nz-menu-item (click)="navigateToCreateListener(data.id)">{{ 'app.listener.create' | i18n}}</li>
                   </ul>
                 </nz-dropdown-menu>
-              </span>
+
             </td>
           </tr>
           </tbody>

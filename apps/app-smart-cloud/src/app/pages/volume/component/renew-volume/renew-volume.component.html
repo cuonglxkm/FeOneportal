@@ -2,7 +2,7 @@
              [action]="action"
              [title]="'volume.breadcrumb.extend'|i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -20,7 +20,7 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'volume.breadcrumb.extend'|i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
-
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -117,12 +117,12 @@
         <nz-row nzJustify="space-between" style="margin-top: 15px;">
           <nz-col>
             <nz-form-label>
-              <span>{{ 'app.service.start.date'|i18n }}: {{volumeInfo?.creationDate | date: 'dd/MM/yyyy'}} </span>
+              <span style="color: #EA3829">{{ 'app.service.creation-date'|i18n }}: {{volumeInfo?.creationDate | date: 'dd/MM/yyyy'}} </span>
             </nz-form-label>
           </nz-col>
           <nz-col nzSpan="12">
             <nz-form-label>
-              <span>{{ 'app.service.expiration-date'|i18n }}:  {{volumeInfo?.expirationDate | date: 'dd/MM/yyyy'}}</span>
+              <span style="color: #EA3829">{{ 'app.service.expiration-date'|i18n }}:  {{volumeInfo?.expirationDate | date: 'dd/MM/yyyy'}}</span>
             </nz-form-label>
           </nz-col>
         </nz-row>

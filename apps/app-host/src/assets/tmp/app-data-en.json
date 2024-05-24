@@ -89,15 +89,10 @@
             ]
           },
           {
-            "text": "Project",
+            "text": "Project Management",
             "icon": "anticon-profile",
             "link": "/app-smart-cloud/project",
             "action": "project:List"
-          },
-          {
-            "text": "SSL Cert",
-            "icon": "anticon-profile",
-            "link": "/app-smart-cloud/ssl-cert"
           },
           {
             "text": "Infrastructure Services",
@@ -207,12 +202,6 @@
                 ]
               },
               {
-                "text": "Load balancer SDN",
-                "link": "/app-smart-cloud/load-balancer/list",
-                "icon": "anticon-cluster",
-                "action": "loadbalancer:List"
-              },
-              {
                 "text": "Keypair",
                 "icon": "anticon-mail",
                 "link": "/app-smart-cloud/keypair",
@@ -223,6 +212,23 @@
                 "icon": "anticon-profile",
                 "link": "/app-smart-cloud/security-group/list",
                 "action": "securitygroup:List"
+              },
+              {
+                "text": "Load Balancer",
+                "icon": "anticon-cloud",
+                "children": [
+                  {
+                    "text": "Load Balancer SDN",
+                    "link": "/app-smart-cloud/load-balancer/list",
+                    "icon": "anticon-cluster",
+                    "action": "loadbalancer:List"
+                  },
+                  {
+                    "text": "SSL Cert",
+                    "icon": "anticon-profile",
+                    "link": "/app-smart-cloud/ssl-cert"
+                  }
+                ]
               },
               {
                 "key": "Object Storage",

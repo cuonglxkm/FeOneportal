@@ -3,9 +3,7 @@
              [title]="'app.load.balancer.create' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>{{
-        'app.breadcrumb.home' | i18n
-      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{
           'app.breadcrumb.infrastructure.service' | i18n
@@ -101,9 +99,9 @@
           </nz-form-item>
           <nz-row nzGutter="24" nzJustify="space-between">
             <nz-col nzSpan="12">
-              <nz-form-item>
+              <nz-form-item *ngIf="enableInternetFacing">
                 <nz-form-label>
-                  <span>Subnet</span>
+                  <span>Subnet (<span style="color: red;">*</span>)</span>
                   <img nz-popover
                        [nzPopoverContent]="'app.tooltip.subnet' | i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -119,6 +117,27 @@
                     <nz-option *ngFor="let index of mapSubnetArray"
                                [nzValue]="index.value"
                                [nzLabel]="index.label"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item *ngIf="enableInternal">
+                <nz-form-label>
+                  <span>Subnet</span>
+                  <img nz-popover
+                       [nzPopoverContent]="'app.tooltip.subnet' | i18n"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips>
+                  <nz-select nzSize="large"
+                             [ngModel]="selectedSubnet"
+                             (ngModelChange)="updateValue($event)"
+                             formControlName="subnet"
+                             [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'"
+                             nzAllowClear>
+                    <nz-option *ngFor="let index of listSubnets"
+                               [nzValue]="index.cloudId"
+                               [nzLabel]="index.name + '(' + index.subnetAddressRequired + ')'"></nz-option>
                   </nz-select>
                 </nz-form-control>
               </nz-form-item>
@@ -187,9 +206,9 @@
             </nz-col>
             <nz-col nzSpan="8">
               <span class="text-label" *ngIf="offerDetail?.characteristicValues?.length <= 0"></span>
-              <span class="text-label"
-                    *ngIf="offerDetail?.characteristicValues?.length > 0">{{ offerDetail?.characteristicValues[0]?.charOptionValues }}
-                /s</span>
+              <div *ngFor="let model of offerDetail?.characteristicValues;">
+                <span class="text-label" *ngIf="model.charName == 'MaxConnection'">{{ model.charOptionValues[0] }}/s</span>
+              </div>
             </nz-col>
           </nz-row>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
@@ -301,7 +320,7 @@
           <div style="margin-top: 10px" class="text-value">IP Address</div>
           <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.ipAddress.value }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value" *ngIf="enableInternetFacing">IP Public</div>
+          <div style="margin-top: 10px" class="text-value" *ngIf="enableInternetFacing">IP Floating</div>
           <div style="margin-top: 10px" class="text-label" *ngIf="enableInternetFacing">
             <span #selectedValueIpFloating></span>
           </div>
@@ -346,9 +365,9 @@
           <nz-row>
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
-                      [disabled]="validateForm.invalid">
+                      [disabled]="validateForm.invalid || invalidIpAddress == true">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+                <span [style.color]="validateForm.invalid || invalidIpAddress == true? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>

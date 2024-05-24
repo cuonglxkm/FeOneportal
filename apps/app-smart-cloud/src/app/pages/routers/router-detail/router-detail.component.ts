@@ -301,7 +301,7 @@ export class RouterDetailComponent implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.alert.wrong.format')
             );
-          } else {
+          }else {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.nofitacation.create.fail')
@@ -348,7 +348,7 @@ export class RouterDetailComponent implements OnInit {
       error: (error) => {
         this.isLoadingRouterStatic = false;
         this.cdr.detectChanges();
-        if (error.error.detail.includes('Nhập sai định dạng')) {
+        if (error.error.detail.includes('Nhập sai định dạng IP')) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.alert.wrong.format')
@@ -357,6 +357,12 @@ export class RouterDetailComponent implements OnInit {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.validate.duplicate.nexthop')
+          );
+        } 
+        else if (error.error.detail.includes('Nhập sai định dạng Router')) {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('router.alert.router.wrong.format')
           );
         } else if (error.error.detail.includes('Destination CIDR và NextHop đã tồn tại')) {
           this.notification.error(

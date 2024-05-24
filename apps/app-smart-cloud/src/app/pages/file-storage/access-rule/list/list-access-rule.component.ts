@@ -4,6 +4,8 @@ import { getCurrentRegionAndProject } from '@shared';
 import { AccessRuleService } from '../../../../shared/services/access-rule.service';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { AccessRule } from '../../../../shared/models/access-rule.model';
+import { FileSystemService } from '../../../../shared/services/file-system.service';
+import { FileSystemDetail, FileSystemModel } from '../../../../shared/models/file-system.model';
 
 @Component({
   selector: 'one-portal-list-access-rule',
@@ -16,7 +18,7 @@ export class ListAccessRuleComponent implements OnInit{
 
   value: string
 
-  accessType: any
+  accessType: any = 1
 
   idFileSystem: any
 
@@ -30,15 +32,19 @@ export class ListAccessRuleComponent implements OnInit{
   isLoading: boolean = false
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
-              private accessRuleService: AccessRuleService) {
+              private accessRuleService: AccessRuleService,
+              private fileSystemService: FileSystemService) {
   }
 
   onInputChange(value) {
-    this.value = value
+    this.value = value.trim()
+    this.getListAccessRule(false)
   }
+
 
   onAccessTypeSelect(value) {
     this.accessType = value
+    this.getListAccessRule(false)
   }
 
   regionChanged(region: RegionModel) {
@@ -66,7 +72,17 @@ export class ListAccessRuleComponent implements OnInit{
   getListAccessRule(isBegin) {
     this.isLoading = true
     console.log('id cloud', this.idFileSystem)
-    this.accessRuleService.getListAccessRule(this.idFileSystem, this.project, this.region, this.pageSize, this.pageIndex)
+    let level = '';
+    if(this.accessType == 1) {
+      level = null
+    }
+    if(this.accessType == 2) {
+      level = 'ro'
+    }
+    if(this.accessType == 3) {
+      level = 'rw'
+    }
+    this.accessRuleService.getListAccessRule(this.idFileSystem, this.project, this.region, this.pageSize, this.pageIndex, this.value, level)
       .subscribe(data=> {
       this.response = data
       this.isLoading = false
@@ -79,6 +95,14 @@ export class ListAccessRuleComponent implements OnInit{
       })
   }
 
+  fileSystem: FileSystemDetail = new FileSystemDetail()
+
+  getFileSystemById() {
+    this.fileSystemService.getFileSystemById(this.id, this.region, this.project).subscribe(data => {
+      this.fileSystem = data
+    })
+  }
+
   handleCreateOk() {
     this.getListAccessRule(false)
   }
@@ -87,13 +111,17 @@ export class ListAccessRuleComponent implements OnInit{
     setTimeout(() => {this.getListAccessRule(true)}, 1500)
   }
 
+  id: number
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId
 
     this.idFileSystem = this.activatedRoute.snapshot.paramMap.get('idFileSystem')
+    this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('fileSystem'))
     console.log('id', this.idFileSystem)
+    this.getFileSystemById()
     this.getListAccessRule(true)
   }
 }

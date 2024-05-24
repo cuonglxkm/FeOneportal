@@ -21,7 +21,7 @@ export class ListScheduleBackupComponent implements OnInit {
   project = JSON.parse(localStorage.getItem('projectId'));
 
   selectedValue?: string = null;
-  value?: string;
+  value?: string = null;
 
   status = [
     { label: this.i18n.fanyi("app.order.status.All"), value: 'all' },
@@ -105,6 +105,7 @@ export class ListScheduleBackupComponent implements OnInit {
     formSearch.pageIndex = this.pageIndex
     formSearch.pageSize = this.pageSize
 
+    debugger;
     this.backupScheduleService.search(formSearch).subscribe(data => {
       console.log(data);
       this.response = data;

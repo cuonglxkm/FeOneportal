@@ -86,9 +86,9 @@ export class FileSystemService extends BaseService {
       }))
   }
 
-  getFileSystemById(id: number, region: number){
+  getFileSystemById(id: number, region: number, project: number){
     return this.http.get<FileSystemDetail>(this.baseUrl + this.ENDPOINT.provisions +
-      `/file-storage/shares/${id}?regionId=${region}`).pipe(
+      `/file-storage/shares/${id}?regionId=${region}&projectId=${project}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -118,7 +118,7 @@ export class FileSystemService extends BaseService {
   }
 
   deleteFileSystem(formDelete: FormDeleteFileSystem) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/shares/${formDelete.id}?regionId=${formDelete.regionId}`).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/shares/${formDelete.id}?regionId=${formDelete.regionId}&projectId=${formDelete.project}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

@@ -177,7 +177,7 @@
         <nz-form-control nzDisableAutoTips>
           <div *ngIf="listCert == null || listCert.length <= 0">
             <div class="text-label">Bạn chưa có Cert?</div>
-            <a class="text-label" style="color: #0D67B1" [routerLink]="['/app-smart-cloud/object-storage/bucket']">Click để tạo mới</a>
+            <a class="text-label" style="color: #0D67B1" [routerLink]="['/app-smart-cloud/ssl-cert/create']">Click để tạo mới</a>
           </div>
           <div *ngIf="listCert != null && listCert.length > 0">
             <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"

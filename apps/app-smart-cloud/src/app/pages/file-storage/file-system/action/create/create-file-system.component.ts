@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { SnapshotVolumeService } from '../../../../../shared/services/snapshot-volume.service';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
@@ -43,7 +43,7 @@ export class CreateFileSystemComponent implements OnInit {
       this.duplicateNameValidator.bind(this)]],
     protocol: ['NFS', [Validators.required]],
     type: [1, [Validators.required]],
-    storage: [1, [Validators.required]],
+    storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]],
     checked: [false],
     description: [''],
     snapshot: [null as number, []],
@@ -52,7 +52,8 @@ export class CreateFileSystemComponent implements OnInit {
 
   optionProtocols = [
     { value: 'NFS', label: 'NFS' },
-    { value: 'CIFS', label: 'CIFS' }
+    { value: 'CIFS', label: 'CIFS' },
+    { value: 'SMB', label: 'SMB'}
   ];
 
   isVisibleConfirm: boolean = false;
@@ -67,6 +68,7 @@ export class CreateFileSystemComponent implements OnInit {
   nameList: string[] = [];
 
   storageBuyVpc: number;
+  storageRemaining: number;
 
   isInitSnapshot = false;
 
@@ -79,7 +81,8 @@ export class CreateFileSystemComponent implements OnInit {
               private router: Router,
               private projectService: ProjectService,
               private fileSystemSnapshotService: FileSystemSnapshotService,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private renderer: Renderer2) {
   }
 
   duplicateNameValidator(control) {
@@ -89,6 +92,15 @@ export class CreateFileSystemComponent implements OnInit {
       return { duplicateName: true }; // Duplicate name found
     } else {
       return null; // Name is unique
+    }
+  }
+
+  checkQuota(control) {
+    const value = control.value;
+    if (this.storageRemaining < value) {
+      return { notEnough: true };
+    } else {
+      return null;
     }
   }
 
@@ -157,7 +169,7 @@ export class CreateFileSystemComponent implements OnInit {
     this.formCreate.projectId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
     this.formCreate.size = this.validateForm.controls.storage.value;
-    this.formCreate.name = this.validateForm.controls.name.value;
+    this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();
     this.formCreate.description = this.validateForm.controls.description.value;
     this.formCreate.displayName = this.validateForm.controls.name.value;
     this.formCreate.displayDescription = this.validateForm.controls.description.value;
@@ -219,7 +231,10 @@ export class CreateFileSystemComponent implements OnInit {
 
   getStorageBuyVpc() {
     this.projectService.getProjectVpc(this.project).subscribe(data => {
-      this.storageBuyVpc = data.cloudProject.quotaShareInGb
+      this.storageBuyVpc = data.cloudProject?.quotaShareInGb
+      this.storageRemaining = data.cloudProjectResourceUsed?.quotaShareInGb - this.storageBuyVpc
+
+      console.log('share remaining', this.storageRemaining)
     })
   }
 
@@ -260,9 +275,7 @@ export class CreateFileSystemComponent implements OnInit {
 
   showModalConfirm() {
     this.isVisibleConfirm = true;
-    this.initFileSystem();
   }
-
   handleCancel() {
     this.isVisibleConfirm = false;
     this.isLoading = false;
@@ -277,6 +290,8 @@ export class CreateFileSystemComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
+    this.validateForm.controls.type.setValue(1)
 
     console.log('create');
     this.getListSnapshot();

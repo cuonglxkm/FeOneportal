@@ -47,33 +47,41 @@
         </nz-col>
       </nz-row>
       </div>
-      <nz-table #fixedTable
-                style="margin-top: 20px;"
-                [nzData]="filteredData"
-                [nzLoading]="isLoading">
-        <thead>
-        <tr>
-          <th>Tên SSL Cert</th>
-          <th>Ngày hết hạn</th>
-          <th nzAlign='center'>{{ 'app.text.operation' | i18n }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let data of filteredData; index as i">
-          <td>{{data.name}}</td>
-          <td>{{data.expiration}}</td>
-          <td>
-              <one-portal-delete-file-system-snapshot 
-              [region]="region"
-              [project]="project" [filesystemsnapshotId]="data.id" 
-              [filesystemsnapshotName]="data.name" 
-              (onOk)="handleOkDeleteFileSystemSnapShot()"
-              />
-              
-          </td>
-        </tr>
-        </tbody>
-      </nz-table>
+      <nz-table
+      #fixedTable
+      style="margin-top: 20px"
+      [nzData]="filteredData"
+      [nzPageSize]="response?.pageSize"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzPageIndex]="response?.currentPage"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzTotal]="response?.totalCount"
+      [nzFrontPagination]="false"
+      [nzLoading]="isLoading"
+    >
+    <thead>
+      <tr>
+        <th>Tên SSL Cert</th>
+        <th>Ngày hết hạn</th>
+        <th nzAlign='center'>{{ 'app.text.operation' | i18n }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of filteredData; index as i">
+        <td>{{data.name}}</td>
+        <td>{{data.expiration | date: 'dd/MM/yyyy'}}</td>
+        <td>
+            <one-portal-delete-ssl-cert
+            [region]="region"
+            [project]="project" [sslCertId]="data.secret_ref" 
+            [sslCertName]="data.name" 
+            (onOk)="handleOkDeleteSslCert()"
+            />
+            
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
     </nz-card>
   </nz-content>
   

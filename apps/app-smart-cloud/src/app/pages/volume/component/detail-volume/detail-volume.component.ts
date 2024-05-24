@@ -91,11 +91,11 @@ export class DetailVolumeComponent implements OnInit {
           // this.convertedListVMs = this.listVMs.replace(/ /g, ', ');
         }
       }, error => {
-        if (error.statusText.includes('Not Found')) {
+        if (error.error.message === 'Not Found') {
           this.router.navigate(['/app-smart-cloud/volumes']);
-          this.notification.error('', this.i18n.fanyi('volume.notification.access.denied'));
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.access.denied'));
         } else {
-          this.notification.error('', this.i18n.fanyi(error.error.detail));
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.message));
         }
         this.isLoading = false;
       }

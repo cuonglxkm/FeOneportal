@@ -38,9 +38,11 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
   customerId: number;
   selectedFileSystemName: string;
   fileSysId: number;
+  fileSysSize: number;
   typeVpc:number
   dateString = new Date();
   expiredDate: Date = addDays(this.dateString, 30);
+  isLoadingCreateFSS: boolean = false;
 
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
@@ -55,7 +57,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
     time: FormControl<number>
   }> = this.fb.group({
     nameFileSystem: [null as number, [Validators.required]],
-    nameSnapshot: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
+    nameSnapshot: ['', [Validators.required, Validators.pattern(/^(?! *$)[a-zA-Z0-9-_ ]{1,255}$/)]],
     description: [''],
     time: [1]
   });
@@ -71,6 +73,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
         this.selectedFileSystemName = selectedOption.name;
       }
       this.fileSysId = selectedOption.id
+      this.fileSysSize = selectedOption.size
       this.getTotalAmount()
   }
 
@@ -268,7 +271,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
       });
   }
 
-  navigateToPayment() {
+  handleCreateFSS() {
     this.fileSystemSnapshotInit();
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
     request.customerId = this.formCreate.customerId;
@@ -280,26 +283,48 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
         specification: JSON.stringify(this.formCreate),
         specificationType: 'sharesnapshot_create',
         price: this.typeVpc === 0 ? this.orderItem?.totalAmount.amount : 0,
-        serviceDuration: this.form.controls.time.value
+        serviceDuration: this.typeVpc === 0 ? 1 : this.form.controls.time.value
       }
     ];
-    var returnPath: string = '/app-smart-cloud/file-system-snapshot/create';
-    console.log('request', request);
-    console.log('service name', this.formCreate.serviceName);
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: request, path: returnPath }
-    });
+    if(this.typeVpc === 0){
+      var returnPath: string = '/app-smart-cloud/file-system-snapshot/create';
+      console.log('request', request);
+      console.log('service name', this.formCreate.serviceName);
+      this.router.navigate(['/app-smart-cloud/order/cart'], {
+        state: { data: request, path: returnPath }
+      });
+    }else{
+      this.isLoadingCreateFSS = true;
+      this.instanceService.create(request).subscribe(data => {
+        if (data != null) {
+          if (data.code == 200) {
+            this.isLoadingCreateFSS = false;
+            this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu tạo File Storage Snapshot thành công.');
+            this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
+          }
+        } else {
+          this.isLoadingCreateFSS = false;
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File Storage Snapshot thất bại.');
+        }
+      }, error => {
+        this.isLoadingCreateFSS = false;
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File Storage Snapshot thất bại.');
+      });
+    }
   }
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
   }
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
-    this.typeVpc = project?.type;
-
-    console.log(project);
+    this.typeVpc = project?.type;  
     
+  }
+
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
   }
 }

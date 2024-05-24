@@ -813,7 +813,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'file-storage/file-system/detail/:id',
+    path: 'file-storage/file-system/detail/:idFileSystem',
     component: DetailFileSystemComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -821,7 +821,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'file-storage/file-system/resize/:id',
+    path: 'file-storage/file-system/resize/vpc/:idFileSystem',
     component: ResizeFileSystemComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1181,7 +1181,7 @@ const routes: Routes = [
   },
 
   {
-    path: 'file-storage/file-system/:idFileSystem/resize',
+    path: 'file-storage/file-system/resize/normal/:idFileSystem',
     component: ResizeFileSystemNormalComponent,
     canActivate: [PermissionGuard],
     data: {
