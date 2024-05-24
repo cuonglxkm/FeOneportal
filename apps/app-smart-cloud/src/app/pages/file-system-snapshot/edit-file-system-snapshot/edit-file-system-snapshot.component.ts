@@ -47,7 +47,7 @@ export class EditFileSystemSnapshotComponent {
     name: FormControl<string>;
     description: FormControl<string>;
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^(?! *$)[a-zA-Z0-9-_ ]{1,255}/)]],
+    name: ['', [Validators.required, Validators.pattern(/^(?! *$)[a-zA-Z0-9-_ ]{1,255}$/)]],
     description: [''],
   });
 

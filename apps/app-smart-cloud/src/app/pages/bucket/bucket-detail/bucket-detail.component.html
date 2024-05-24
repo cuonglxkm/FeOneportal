@@ -115,7 +115,7 @@
       [nzXXl]="15"
     >
       <p style="display: inline-block; margin-right: 20px">
-        Đã chọn {{ countObjectSelected }} Objects.
+        {{ 'app.bucket.detail.select' | i18n : {countObjectSelected: countObjectSelected} }}
       </p>
       <img
         *ngIf="setOfCheckedId.size > 0"
@@ -136,7 +136,7 @@
           src="assets/imgs/download-vector.png"
           alt=""
         />
-        <span class="button-text-primary">Tải zip</span>
+        <span class="button-text-primary">{{ 'app.bucket.detail.downloadZip' | i18n }}</span>
       </button>
       <button
         nz-button
@@ -145,7 +145,7 @@
         nzSize="large"
       >
         <img style="padding-right: 10px" src="assets/imgs/folder.png" alt="" />
-        <span class="button-text-primary">Tạo thư mục</span>
+        <span class="button-text-primary">{{ 'app.bucket.detail.createFolder' | i18n }}</span>
       </button>
       <button
         nz-button
@@ -159,7 +159,7 @@
           src="assets/imgs/document-upload.png"
           alt=""
         />
-        <span class="button-text-primary">Tải file lên</span>
+        <span class="button-text-primary">{{ 'app.bucket.detail.upload' | i18n }}</span>
       </button>
     </div>
   </div>
@@ -263,20 +263,20 @@
             <nz-dropdown-menu #menu="nzDropdownMenu">
               <ul nz-menu>
                 <li nz-menu-item (click)="doAction('7', item)">
-                  Phiên bản ({{ item.versionsCount }})
+                  {{ 'app.bucket.detail.version' | i18n }} ({{ item.versionsCount }})
                 </li>
-                <li nz-menu-item (click)="doAction('2', item)">Sao chép</li>
-                <li nz-menu-item (click)="doAction('6', item)">Chia sẻ</li>
+                <li nz-menu-item (click)="doAction('2', item)">{{ 'app.bucket.detail.copy' | i18n }}</li>
+                <li nz-menu-item (click)="doAction('6', item)">{{ 'app.bucket.detail.share' | i18n }}</li>
                 <li nz-menu-item (click)="doAction('1', item)">
-                  Quản lý phân quyền
+                  {{ 'app.bucket.detail.authorize' | i18n }}
                 </li>
-                <li nz-menu-item (click)="doAction('4', item)">Chi tiết</li>
+                <li nz-menu-item (click)="doAction('4', item)">{{ 'app.bucket.detail.detail' | i18n }}</li>
                 <li
                   nz-menu-item
                   (click)="doAction('5', item)"
                   style="color: red"
                 >
-                  Xóa
+                {{ 'app.delete' | i18n }}
                 </li>
               </ul>
             </nz-dropdown-menu>
@@ -320,7 +320,7 @@
   (nzOnCancel)="handleCancel()"
   (nzOnOk)="handleOkFilter()"
   [nzOkText]="'app.button.confirm' | i18n"
-  [nzCancelText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
 <form nz-form [formGroup]="formFilter">
@@ -492,7 +492,7 @@
   (nzOnCancel)="isVisibleCreateFolder = false"
   (nzOnOk)="createFolder()"
   [nzOkText]="'app.button.confirm' | i18n"
-  [nzCancelText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -541,7 +541,7 @@
   (nzOnCancel)="handleCancelUploadFile()"
   (nzOnOk)="uploadAllFile()"
   [nzOkText]="'app.bucket.detail.uploadFile.all' | i18n"
-  [nzCancelText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -764,7 +764,7 @@
   (nzOnCancel)="handleCancel()"
   (nzOnOk)="deleteFolder()"
   [nzOkText]="'app.button.confirm' | i18n"
-  [nzCancelText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -892,10 +892,10 @@
 <nz-modal
   [(nzVisible)]="isVisibleShare"
   [nzTitle]="'app.bucket.detail.copy.shareFile' | i18n "
-  (nzOnCancel)="handleCancel()"
+  (nzOnCancel)="handleCancelShareFile()"
   (nzOnOk)="handleShare()"
   [nzOkText]="'app.bucket.detail.copy.shareFile.link' | i18n "
-  [nzCancelText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -935,7 +935,7 @@
   (nzOnCancel)="this.isVisiblePermission = false"
   (nzOnOk)="editPermission()"
   [nzOkText]="'app.button.confirm' | i18n"
-  [nzCancelText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -1103,7 +1103,7 @@
   (nzOnCancel)="isVisibleDeleteVersion = false"
   (nzOnOk)="deleteFolderVersion()"
   [nzOkText]="'app.button.confirm' | i18n"
-  [nzCancelText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -1125,7 +1125,7 @@
   (nzOnCancel)="isVisibleRestoreVersion = false"
   (nzOnOk)="restoreObjectVersion()"
   [nzOkText]="'app.button.confirm' | i18n"
-  [nzCancelText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>

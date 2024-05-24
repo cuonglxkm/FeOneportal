@@ -266,8 +266,12 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.isVisibleCopy = false;
     this.isVisibleDetail = false;
     this.isVisibleDelete = false;
-    this.isVisibleShare = false;
     this.isVisibleVersioning = false;
+  }
+
+  handleCancelShareFile(){
+    this.isVisibleShare = false;
+    this.linkShare = ''
   }
 
   selectCol(item: any, event: any) {
