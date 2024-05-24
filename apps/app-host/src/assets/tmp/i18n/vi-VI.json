@@ -2629,7 +2629,7 @@
   "schedule.backup.day.select": "Chọn thứ",
   "schedule.backup.press.date": "Vui lòng nhập ngày",
   "schedule.backup.select.volume.backup": "Chọn Volume gắn ngoài cần backup",
-  "schedule.backup.label.name": "{{'schedule.backup.select.volume.backup' | i18n}}",
+  "schedule.backup.label.name": "Tên lịch backup",
   "schedule.backup.confirm.remove": "Xác nhận xóa lịch backup",
   "schedule.backup.alert.remove": "Quý khách có chắc chắn muốn xóa lịch backup",
   "schedule.backup.volume.select": "Chọn volume",
