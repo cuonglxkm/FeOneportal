@@ -66,17 +66,13 @@ export class FileSystemSnapshotComponent {
   }
 
   onInputChange(value: string): void {
-    if (!value || value.trim() === "") { 
+    if (!value) { 
       this.filteredData = this.response.records; 
     } else {
       this.filteredData = this.response.records.filter(item => 
-        item.name.toLowerCase().includes(value.toLowerCase())
+        item.name.toLowerCase().includes(value.toLowerCase().trim())
       ); 
-    }
-    console.log(value);
-    
-    console.log(this.filteredData);
-    
+    } 
   }
 
 

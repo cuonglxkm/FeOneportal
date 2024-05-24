@@ -115,7 +115,7 @@
       [nzXXl]="15"
     >
       <p style="display: inline-block; margin-right: 20px">
-        Đã chọn {{ countObjectSelected }} Objects.
+        {{ 'app.bucket.detail.select' | i18n : {countObjectSelected: countObjectSelected} }}
       </p>
       <img
         *ngIf="setOfCheckedId.size > 0"
@@ -136,7 +136,7 @@
           src="assets/imgs/download-vector.png"
           alt=""
         />
-        <span class="button-text-primary">Tải zip</span>
+        <span class="button-text-primary">{{ 'app.bucket.detail.downloadZip' | i18n }}</span>
       </button>
       <button
         nz-button
@@ -145,7 +145,7 @@
         nzSize="large"
       >
         <img style="padding-right: 10px" src="assets/imgs/folder.png" alt="" />
-        <span class="button-text-primary">Tạo thư mục</span>
+        <span class="button-text-primary">{{ 'app.bucket.detail.createFolder' | i18n }}</span>
       </button>
       <button
         nz-button
@@ -159,7 +159,7 @@
           src="assets/imgs/document-upload.png"
           alt=""
         />
-        <span class="button-text-primary">Tải file lên</span>
+        <span class="button-text-primary">{{ 'app.bucket.detail.upload' | i18n }}</span>
       </button>
     </div>
   </div>
@@ -207,10 +207,10 @@
           (nzCheckedChange)="onAllChecked($event)"
         ></th>
         <th>{{ 'app.name' | i18n }}</th>
-        <th>Kích thước</th>
-        <th>Loại</th>
-        <th>Thời gian chỉnh sửa</th>
-        <th>Quyền truy cập</th>
+        <th>{{ 'app.bucket.detail.size' | i18n }}</th>
+        <th>{{ 'app.bucket.detail.type' | i18n }}</th>
+        <th>{{ 'app.bucket.detail.updateTime' | i18n }}</th>
+        <th>{{ 'app.access.rights' | i18n }}</th>
         <th>{{ 'app.text.operation' | i18n }}</th>
       </tr>
     </thead>
@@ -245,7 +245,7 @@
               style="margin-right: 10px; height: 20px; cursor: pointer;"
               *ngIf="item.objectType != 'folder'"
               nz-tooltip
-              nzTooltipTitle="Tải xuống"
+              [nzTooltipTitle]="'app.payment.download' | i18n "
               nzTooltipPlacement="bottom"
               (click)="doAction('3', item)"
             />
@@ -263,20 +263,20 @@
             <nz-dropdown-menu #menu="nzDropdownMenu">
               <ul nz-menu>
                 <li nz-menu-item (click)="doAction('7', item)">
-                  Phiên bản ({{ item.versionsCount }})
+                  {{ 'app.bucket.detail.version' | i18n }} ({{ item.versionsCount }})
                 </li>
-                <li nz-menu-item (click)="doAction('2', item)">Sao chép</li>
-                <li nz-menu-item (click)="doAction('6', item)">Chia sẻ</li>
+                <li nz-menu-item (click)="doAction('2', item)">{{ 'app.bucket.detail.copy' | i18n }}</li>
+                <li nz-menu-item (click)="doAction('6', item)">{{ 'app.bucket.detail.share' | i18n }}</li>
                 <li nz-menu-item (click)="doAction('1', item)">
-                  Quản lý phân quyền
+                  {{ 'app.bucket.detail.authorize' | i18n }}
                 </li>
-                <li nz-menu-item (click)="doAction('4', item)">Chi tiết</li>
+                <li nz-menu-item (click)="doAction('4', item)">{{ 'app.bucket.detail.detail' | i18n }}</li>
                 <li
                   nz-menu-item
                   (click)="doAction('5', item)"
                   style="color: red"
                 >
-                  Xóa
+                {{ 'app.delete' | i18n }}
                 </li>
               </ul>
             </nz-dropdown-menu>
@@ -286,14 +286,14 @@
             <!--                  nz-icon nzType="" nzTheme="outline" (click)="doAction('4',item)"></span>-->
             <!--            <span style="color: #0066B3" -->
             <!--                  nz-tooltip-->
-            <!--                  nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"-->
+            <!--                  [nzTooltipTitle]="'app.delete' | i18n" nzTooltipPlacement="bottom"-->
             <!--                  nz-icon nzType="delete" nzTheme="outline" ></span>-->
             <img
               src="assets/imgs/eye.svg"
               style="margin-right: 10px; height: 20px; cursor: pointer;"
               *ngIf="item.objectType == 'folder'"
               nz-tooltip
-              nzTooltipTitle="Xem chi tiết"
+              [nzTooltipTitle]="'app.view.detail' | i18n"
               nzTooltipPlacement="bottom"
               (click)="doAction('4', item)"
             />
@@ -302,7 +302,7 @@
               style="height: 25px; cursor: pointer;"
               *ngIf="item.objectType == 'folder'"
               nz-tooltip
-              nzTooltipTitle="Xóa"
+              [nzTooltipTitle]="'app.delete' | i18n"
               nzTooltipPlacement="bottom"
               (click)="doAction('5', item)"
             />
@@ -319,8 +319,8 @@
   nzTitle="Lọc danh sách Object"
   (nzOnCancel)="handleCancel()"
   (nzOnOk)="handleOkFilter()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
+  [nzOkText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
 <form nz-form [formGroup]="formFilter">
@@ -488,16 +488,16 @@
 <!--Tạo thư mục-->
 <nz-modal
   [(nzVisible)]="isVisibleCreateFolder"
-  nzTitle="Tạo thư mục"
+  [nzTitle]="'app.bucket.detail.createFolder' | i18n"
   (nzOnCancel)="isVisibleCreateFolder = false"
   (nzOnOk)="createFolder()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
+  [nzOkText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
     <div class="text-label">
-      <div>Đường dẫn</div>
+      <div>{{ 'app.bucket.detail.url' | i18n }}</div>
       <div
         style="
           border: 1px solid #e2e2e9;
@@ -516,13 +516,10 @@
           <div style="font-weight: bold">>{{ item.name }}</div>
         </ng-container>
       </div>
-      <div>Tên thư mục (<span class="red-star">*</span>)
+      <div>{{ 'app.bucket.detail.createFolder.name' | i18n }} (<span class="red-star">*</span>)
         <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="Tên thư mục chỉ được chứa các ký tự:
-        Ký tự chữ và số: 0-9, a-z, A-Z
-        Ký tự đặc biệt: chấm than (!), gạch nối (-), gạch dưới (_), chấm (.), sao (*), nháy đơn ('), mở ngoặc đơn ((), đóng ngoặc đơn ())
-        Tối thiểu 3 ký tự"
+        [nz-tooltip]="'app.bucket.detail.createFolder.name.tooltip' | i18n"
         src="assets/imgs/pajamas_question.svg"
         alt=""
       />
@@ -540,11 +537,11 @@
 <!--Tải file lên-->
 <nz-modal
   [(nzVisible)]="isVisibleUploadFile"
-  nzTitle="Tải File lên"
+  [nzTitle]="'app.bucket.detail.uploadFile' | i18n"
   (nzOnCancel)="handleCancelUploadFile()"
   (nzOnOk)="uploadAllFile()"
-  nzOkText="Tải lên tất cả"
-  nzCancelText="Hủy"
+  [nzOkText]="'app.bucket.detail.uploadFile.all' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -572,12 +569,12 @@
           alt=""
         />
         <p style="margin-top: 12px">
-          Kéo thả vào đây hoặc: <strong> Chọn tải file lên</strong>
+          {{ 'app.bucket.detail.uploadFile.drag' | i18n }}: <strong> {{ 'app.bucket.detail.uploadFile.chooseFile' | i18n }}</strong>
         </p>
       </nz-upload>
     </div>
     <div *ngIf="!emptyFileUpload">
-      <p class="text-label">Lựa chọn phân quyền đọc</p>
+      <p class="text-label">{{ 'app.bucket.detail.uploadFile.chooseRight' | i18n }}</p>
       <nz-radio-group [(ngModel)]="radioValue">
         <label nz-radio nzValue="public-read" class="text-label">Public</label>
         <label nz-radio nzValue="private" class="text-label">Private</label>
@@ -590,8 +587,8 @@
         <thead>
           <tr>
             <th>{{ 'app.name' | i18n }}</th>
-            <th>Kiểu File</th>
-            <th>Kích thước</th>
+            <th>{{ 'app.bucket.detail.uploadFile.type' | i18n }}</th>
+            <th>{{ 'app.bucket.detail.size' | i18n }}</th>
             <th>{{ 'app.text.operation' | i18n }}</th>
           </tr>
         </thead>
@@ -620,7 +617,7 @@
               <img
                 style="margin-right: 10px; cursor: pointer"
                 nz-tooltip
-                nzTooltipTitle="Tải lên"
+                [nzTooltipTitle]="'app.bucket.detail.uploadFile.upload' | i18n "
                 src="assets/imgs/download.svg"
                 (click)="uploadSingleFile(item, i)"
               />
@@ -628,7 +625,7 @@
                 *ngIf="!item.isUpload"
                 style="cursor: pointer"
                 nz-tooltip
-                nzTooltipTitle="Xóa"
+                [nzTooltipTitle]="'app.delete' | i18n"
                 src="assets/imgs/delete.svg"
                 (click)="removeFile(item)"
               />
@@ -636,7 +633,7 @@
                 *ngIf="item.isUpload === true"
                 style="cursor: pointer"
                 nz-tooltip
-                nzTooltipTitle="Hủy"
+                nz[TooltipTitle]="'app.button.confirm' | i18n"
                 src="assets/imgs/delete.svg"
                 (click)="removeFile(item)"
               />
@@ -647,7 +644,7 @@
       <h3 style="font-weight: bold; margin-top: 10px">METADATA
         <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="Chú ý: Meta key và value là các giá trị chỉ bao gồm chữ thường và số."
+        [nz-tooltip]="'app.bucket.detail.uploadFile.metaData' | i18n "
         src="assets/imgs/pajamas_question.svg"
         alt=""
       />
@@ -657,14 +654,14 @@
           style="width: 40%; margin-right: 5%"
           nzSize="large"
           nz-input
-          placeholder="Nhập Key"
+          [placeholder]="'app.bucket.detail.uploadFile.key' | i18n "
           [(ngModel)]="item.metaKey"
         />
         <input
           style="width: 40%; margin-right: 5%"
           nzSize="large"
           nz-input
-          placeholder="Nhập Value"
+          [placeholder]="'app.bucket.detail.uploadFile.value' | i18n "
           [(ngModel)]="item.metaValue"
         />
         <button
@@ -689,7 +686,7 @@
             src="assets/imgs/add-circle.svg"
             alt=""
           />
-          <span class="button-text-primary">Tạo metadata</span>
+          <span class="button-text-primary">{{ 'app.bucket.detail.uploadFile.metaData.create' | i18n }}</span>
         </button>
         <nz-upload
           (nzChange)="handleChange($event)"
@@ -702,7 +699,7 @@
               src="assets/imgs/folder.png"
               alt=""
             />
-            <span class="button-text-primary">Thêm File</span>
+            <span class="button-text-primary">{{ 'app.bucket.detail.uploadFile.metaData.addFile' | i18n }}</span>
           </button>
         </nz-upload>
       </nz-row>
@@ -713,7 +710,7 @@
 <!--Chi tiết-->
 <nz-modal
   [(nzVisible)]="isVisibleDetail"
-  nzTitle="Chi tiết Object: {{ dataAction != undefined ? dataAction.key : '' }}"
+  [nzTitle]="'app.bucket.detail.uploadFile.metaData.objectDetail' | i18n: dataAction != undefined ? dataAction.key : '' "
   (nzOnCancel)="handleCancel()"
   (nzOnOk)="handleCancel()"
   [nzOkText]="null"
@@ -737,7 +734,7 @@
         style="width: 15%"
         style="text-align: right"
       >
-        <span class="button-text-primary">Sao chép</span>
+        <span class="button-text-primary">{{ 'app.copy' | i18n }}</span>
       </button>
     </nz-row>
     <hr *ngIf="dataAction.objectType != 'folder'" />
@@ -766,15 +763,15 @@
   }}?"
   (nzOnCancel)="handleCancel()"
   (nzOnOk)="deleteFolder()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
+  [nzOkText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
     <nz-alert
       *ngIf="dataAction.objectType != 'folder'"
       nzType="warning"
-      nzMessage="Bạn đang thực hiện xóa File  {{ dataAction.keyName }}"
+      [nzMessage]="'app.delete.file' | i18n: dataAction.keyName"
       nzShowIcon
     ></nz-alert>
     <nz-alert
@@ -786,11 +783,11 @@
       nzShowIcon
     ></nz-alert>
     <div *ngIf="dataAction.objectType != 'folder'" class="text-label" style="margin-top: 15px">
-      Quý khách có chắc chắn thực thiện xóa File <b>{{ dataAction.keyName }}</b
+      {{ 'app.delete.file.confirm' | i18n }} <b>{{ dataAction.keyName }}</b
       >?
     </div>
     <div *ngIf="dataAction.objectType == 'folder'" class="text-label" style="margin-top: 15px">
-      Quý khách có chắc chắn thực thiện xóa Folder
+      {{ 'app.delete.folder.confirm' | i18n }}
       <b>{{ dataAction.keyName }}</b
       >?
     </div>
@@ -800,13 +797,13 @@
 <!--Sao chép-->
 <nz-modal
   [(nzVisible)]="isVisibleCopy"
-  nzTitle="Sao chép"
+  [nzTitle]="'app.copy' | i18n"
   (nzOnCancel)="handleCancel()"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
     <div class="text-label">
-      <div>Chọn thư mục</div>
+      <div>{{ 'app.bucket.detail.copy.chooseFolder' | i18n }}</div>
       <div class="tree">
         <div *ngIf="treeFolder != undefined && treeFolder.length > 0">
           <div *ngFor="let item of treeFolder">
@@ -894,15 +891,15 @@
 <!--Chia sẻ-->
 <nz-modal
   [(nzVisible)]="isVisibleShare"
-  nzTitle="Chia sẻ File"
-  (nzOnCancel)="handleCancel()"
+  [nzTitle]="'app.bucket.detail.copy.shareFile' | i18n "
+  (nzOnCancel)="handleCancelShareFile()"
   (nzOnOk)="handleShare()"
-  nzOkText="Sao chép liên kết"
-  nzCancelText="Hủy"
+  [nzOkText]="'app.bucket.detail.copy.shareFile.link' | i18n "
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
-    <div class="text-label">Hiệu lực đến</div>
+    <div class="text-label">{{ 'app.bucket.detail.copy.shareFile.expire' | i18n }}</div>
     <nz-date-picker
       class="input-date-picker"
       nzFormat="yyyy-MM-dd HH:mm:ss"
@@ -911,7 +908,7 @@
       (ngModelChange)="getLinkShare($event)"
       style="width: 100%; border-radius: 4px"
     ></nz-date-picker>
-    <div class="text-label" style="margin-top: 15px">Đường dẫn chia sẻ</div>
+    <div class="text-label" style="margin-top: 15px">{{ 'app.bucket.detail.copy.shareFile.sharelink' | i18n }}</div>
     <input
       class="input-custom"
       nz-input
@@ -934,11 +931,11 @@
 <!--Phân quyền-->
 <nz-modal
   [(nzVisible)]="isVisiblePermission"
-  nzTitle="Quản lý phân quyền"
+  [nzTitle]="'app.bucket.detail.copy.authorize' | i18n "
   (nzOnCancel)="this.isVisiblePermission = false"
   (nzOnOk)="editPermission()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
+  [nzOkText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -975,7 +972,7 @@
                   </ng-template>
                   <ng-template #nzDescriptionselectedHDDorSSD1>
                     <ellipsis class="text-custom">
-                      Chỉ những người có quyền mới được truy cập
+                      {{ 'app.bucket.detail.copy.authorize.des' | i18n }}
                     </ellipsis>
                   </ng-template>
                 </nz-card-meta>
@@ -1013,9 +1010,7 @@
                   </ng-template>
                   <ng-template #nzDescriptionselectedHDDorSSD2>
                     <ellipsis class="text-custom"
-                      >Tất cả mọi người đều có thể truy cập thông tin của
-                      file.Lưu ý, Bucket public nhưng nếu object private thì
-                      cũng không truy cập được từ bên ngoài
+                      >{{ 'app.bucket.detail.copy.authorize.des1' | i18n }}
                     </ellipsis>
                   </ng-template>
                 </nz-card-meta>
@@ -1032,7 +1027,7 @@
 <nz-modal
   *ngIf="dataAction != undefined"
   [(nzVisible)]="isVisibleVersioning"
-  nzTitle="Danh sách phiên bản của object: {{ dataAction.key }}"
+  [nzTitle]="'app.bucket.detail.version.list' | i18n:  dataAction.key"
   (nzOnCancel)="handleCancel()"
   (nzOnOk)="editPermission()"
   [nzOkText]="null"
@@ -1048,10 +1043,10 @@
     >
       <thead>
         <tr>
-          <th>Phiên bản</th>
-          <th>Thời gian chỉnh sửa</th>
-          <th>Kích thước</th>
-          <th>Id phiển bản</th>
+          <th>{{ 'app.bucket.detail.version.version' | i18n }}</th>
+          <th>{{ 'app.bucket.detail.updateTime' | i18n }}</th>
+          <th>{{ 'app.bucket.detail.size' | i18n }}</th>
+          <th>{{ 'app.bucket.detail.version.versionId' | i18n }}</th>
           <th>{{ 'app.text.operation' | i18n }}</th>
         </tr>
       </thead>
@@ -1060,7 +1055,7 @@
           <tr>
             <td>
               {{ item.key }}
-              <div *ngIf="item.isLatest == true">(Hiện tại)</div>
+              <div *ngIf="item.isLatest == true">({{ 'app.present' | i18n }})</div>
             </td>
             <td>{{ item.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
             <td>{{ (item.size / 1024).toFixed(2) }} KB</td>
@@ -1071,7 +1066,7 @@
                   src="assets/imgs/download.svg"
                   style="padding-right: 10px; height: 20px"
                   nz-tooltip
-                  nzTooltipTitle="Tải xuống"
+                  [nzTooltipTitle]="'app.payment.download' | i18n"
                   nzTooltipPlacement="bottom"
                   (click)="doActionVersion('1', item)"
                 />
@@ -1080,7 +1075,7 @@
                   src="assets/imgs/refresh.svg"
                   style="padding-right: 10px; height: 25px"
                   nz-tooltip
-                  nzTooltipTitle="Khôi phục"
+                  nzTooltipTitle="'app.restore' | i18n"
                   nzTooltipPlacement="bottom"
                   (click)="doActionVersion('2', item)"
                 />
@@ -1088,7 +1083,7 @@
                   src="assets/imgs/delete.svg"
                   style="height: 20px"
                   nz-tooltip
-                  nzTooltipTitle="Xóa"
+                  [nzTooltipTitle]="'app.delete' | i18n"
                   nzTooltipPlacement="bottom"
                   (click)="doActionVersion('3', item)"
                 />
@@ -1104,21 +1099,21 @@
 <!--Xóa Phiên bản-->
 <nz-modal
   [(nzVisible)]="isVisibleDeleteVersion"
-  nzTitle="Xác nhận xóa phiên bản Object?"
+  [nzTitle]="'app.bucket.detail.version.delete' | i18n "
   (nzOnCancel)="isVisibleDeleteVersion = false"
   (nzOnOk)="deleteFolderVersion()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
+  [nzOkText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      nzMessage="Bạn đang thực hiện xóa phiên bản Object"
+      [nzMessage]="'app.bucket.detail.version.delete.alert' | i18n "
       nzShowIcon
     ></nz-alert>
     <div class="text-label" style="margin-top: 15px">
-      Quý khách có chắc chắn thực hiện xóa phiên bản Object này?
+      {{ 'app.bucket.detail.version.delete.confirm' | i18n }}
     </div>
   </ng-container>
 </nz-modal>
@@ -1126,21 +1121,21 @@
 <!--Khôi phục Phiên bản-->
 <nz-modal
   [(nzVisible)]="isVisibleRestoreVersion"
-  nzTitle="Xác nhận khôi phục phiên bản Object?"
+  [nzTitle]="'app.bucket.detail.version.restore' | i18n"
   (nzOnCancel)="isVisibleRestoreVersion = false"
   (nzOnOk)="restoreObjectVersion()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
+  [nzOkText]="'app.button.confirm' | i18n"
+  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      nzMessage="Bạn đang thực hiện khôi phục phiên bản Object"
+      [nzMessage]="'app.bucket.detail.version.restore.alert' | i18n"
       nzShowIcon
     ></nz-alert>
     <div style="margin-top: 15px">
-      Quý khách có chắc chắn thực hiện khôi phục phiên bản Object này?
+      {{ 'app.bucket.detail.version.restore.confirm' | i18n }}
     </div>
   </ng-container>
 </nz-modal>
@@ -1148,18 +1143,18 @@
 <!--Xóa-->
 <nz-modal
   [(nzVisible)]="isVisibleDeleteObject"
-  nzTitle="Xác nhận xóa Objects?"
+  [nzTitle]="'app.bucket.detail.delete.objects' | i18n"
   (nzOnCancel)="handleCancelDeleteObject()"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      nzMessage="Bạn đang thực hiện xóa Objects."
+      [nzMessage]="'app.bucket.detail.delete.objects.alert' | i18n"
       nzShowIcon
     ></nz-alert>
     <div style="margin-top: 15px; font-size: 16px;">
-      Quý khách có chắc chắn thực hiện xóa các Objects?
+      {{ 'app.bucket.detail.delete.objects.confirm' | i18n }}
     </div>
   </ng-container>
   <div *nzModalFooter>

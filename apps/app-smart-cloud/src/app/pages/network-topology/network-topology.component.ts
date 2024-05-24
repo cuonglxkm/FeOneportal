@@ -114,6 +114,7 @@ export class NetworkTopologyComponent {
         let network = this.network;
         let renderer = this.renderer;
         this.network.on('click', function(properties) {
+          console.log('works');
           treeContainer.nativeElement.querySelector(`.vis-network .card`)?.hide();
           var clickedNodes = [];
           if (properties.nodes) {
@@ -138,7 +139,7 @@ export class NetworkTopologyComponent {
               string += "</div>";
               treeContainer.nativeElement.querySelector('#topo' + ids)?.remove();
               let element = treeContainer.nativeElement.querySelector(".vis-network");
-              element.append("<div class='row form-group' id='topo" + ids + "' style='left: " + (corner.x + 15) + "px;top: " + (corner.y + 15) + "px; position: absolute !important; width: 200px; height: auto; -webkit-box-shadow: 0px 1px 6px #777;box-shadow: 0px 1px 6px #777;border-radius: 20px;color: #333;min-width: 200px;line-height: 1.2;font-size: 11px;'>" +
+              element.innerHTML += "<div class='row form-group' id='topo" + ids + "' style='left: " + (corner.x + 15) + "px;top: " + (corner.y + 15) + "px; position: absolute !important; width: 200px; height: auto; -webkit-box-shadow: 0px 1px 6px #777;box-shadow: 0px 1px 6px #777;border-radius: 20px;color: #333;min-width: 200px;line-height: 1.2;font-size: 11px;'>" +
                 "<div class='card' style='padding: 8px;background: #fff !important; left: " + (corner.x + 15) + ";top: " + (corner.y + 15) + "; position: absolute;box-shadow: 0px 1px 6px #777;z-index: 600;border-radius: 5px; color: #333; min-width: 200px;line-height: 1.2;font-size: 11px;'>" +
                 "<a style='cursor: pointer; ' onclick='Remove(\"" + ids + "\")'><span style='float: right; margin: 5px;font-size: 16px;display: block; position: absolute; font-weight: bold; right: 6px; top: 0px; cursor: pointer; padding: 3px; color: #aaa;'>&#10005;</span></a>" +
                 "<div class=card-body' style='padding-top: 5px;font-size: 15px;'>" +
@@ -146,7 +147,7 @@ export class NetworkTopologyComponent {
                 "<div style='padding-bottom: 12px;'><span style='padding-right: 8px;'>Tên:</span> <span style='padding-right: 5px; white-space: nowrap; padding-bottom: 3px;'>" + clickedNodes[0].name + "</span></div>"
                 +
                 "<div style='padding-bottom: 12px;'><span style='padding-right: 8px;'>Trạng thái:</span> <span style='padding-right: 5px; white-space: nowrap;padding-bottom: 3px;'>" + clickedNodes[0].status + "</span></div>"
-                + string + "</div>" + "</div>");
+                + string + "</div>" + "</div>";
               // renderer.appendChild(element.parentNode, "<div class='row form-group' id='topo" + ids + "' style='left: " + (corner.x + 15) + "px;top: " + (corner.y + 15) + "px; position: absolute !important; width: 200px; height: auto; -webkit-box-shadow: 0px 1px 6px #777;box-shadow: 0px 1px 6px #777;border-radius: 20px;color: #333;min-width: 200px;line-height: 1.2;font-size: 11px;'>" +
               //   "<div class='card' style='padding: 8px;background: #fff !important; left: " + (corner.x + 15) + ";top: " + (corner.y + 15) + "; position: absolute;box-shadow: 0px 1px 6px #777;z-index: 600;border-radius: 5px; color: #333; min-width: 200px;line-height: 1.2;font-size: 11px;'>" +
               //   "<a style='cursor: pointer; ' onclick='Remove(\"" + ids + "\")'><span style='float: right; margin: 5px;font-size: 16px;display: block; position: absolute; font-weight: bold; right: 6px; top: 0px; cursor: pointer; padding: 3px; color: #aaa;'>&#10005;</span></a>" +

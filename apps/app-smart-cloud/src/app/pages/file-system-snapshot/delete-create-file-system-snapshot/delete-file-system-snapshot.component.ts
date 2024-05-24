@@ -52,6 +52,7 @@ export class DeleteFileSystemSnapshotComponent{
   handleCancel(){
     this.isVisible = false
     this.isLoading =  false
+    this.validateForm.reset()
   }
 
   handleOk() {
@@ -69,6 +70,7 @@ export class DeleteFileSystemSnapshotComponent{
             this.isVisible = false
             this.isLoading =  false
             this.notification.success(this.i18n.fanyi('app.status.success'), 'Xoá FileSystem Snapshot thành công')
+            this.validateForm.reset()
             this.onOk.emit(data)
           }
         }, error => {
