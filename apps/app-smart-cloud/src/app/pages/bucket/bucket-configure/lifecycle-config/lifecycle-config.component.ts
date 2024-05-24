@@ -2,9 +2,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnInit,
 } from '@angular/core';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
 import {
@@ -35,7 +38,8 @@ export class LifecycleConfigComponent implements OnInit {
   constructor(
     private bucketService: BucketService,
     private notification: NzNotificationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -59,8 +63,8 @@ export class LifecycleConfigComponent implements OnInit {
         error: (e) => {
           this.listLifecycle = [];
           this.notification.error(
-            e.statusText,
-            'Lấy danh sách Bucket Lifecycle không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.lifeCycle.get.fail')
           );
         },
       });
@@ -89,12 +93,12 @@ export class LifecycleConfigComponent implements OnInit {
     this.bucketService.createBucketLifecycle(this.lifecycleCreate).subscribe({
       next: (data) => {
         this.searchLifeCycle();
-        this.notification.success('', 'Tạo mới Bucket Lifecycle thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.lifeCycle.create.success'));
       },
       error: (e) => {
         this.notification.error(
-          e.statusText,
-          'Tạo mới Bucket Lifecycle không thành công'
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.lifeCycle.create.fail')
         );
       },
     });
@@ -128,13 +132,13 @@ export class LifecycleConfigComponent implements OnInit {
 
     this.bucketService.deleteBucketLifecycle(this.lifecycleDelete).subscribe({
       next: (data) => {
-        this.notification.success('', 'Xóa Lifecycle thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.lifeCycle.delete.success'));
         this.searchLifeCycle();
       },
       error: (error) => {
         this.notification.error(
-          error.statusText,
-          'Xóa Router không thành công'
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.lifeCycle.delete.fail')
         );
       },
     });
@@ -174,12 +178,12 @@ export class LifecycleConfigComponent implements OnInit {
     this.bucketService.updateBucketLifecycle(this.lifecycleUpdate).subscribe({
       next: (data) => {
         this.searchLifeCycle();
-        this.notification.success('', 'Chỉnh sửa Bucket Lifecycle thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.lifeCycle.edit.success'));
       },
       error: (e) => {
         this.notification.error(
-          e.statusText,
-          'Chỉnh sửa Router Interface không thành công'
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.lifeCycle.edit.fail')
         );
       },
     });

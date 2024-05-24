@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { FormCreateSubUser } from '../../../../shared/models/sub-user.model';
@@ -8,6 +8,8 @@ import { UserInfoObjectStorage } from '../../../../shared/models/object-storage.
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-sub-user',
@@ -43,7 +45,8 @@ export class CreateSubUserComponent implements OnInit{
               private fb: NonNullableFormBuilder,
               private objectStorageService: ObjectStorageService,
               private subUserService: SubUserService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   duplicateNameValidator(control) {
@@ -100,10 +103,10 @@ export class CreateSubUserComponent implements OnInit{
         formCreate.access = this.validateForm.controls.access.value
       }
       this.subUserService.createSubUser(formCreate).subscribe(data => {
-        this.notification.success('Thành công', 'Tạo mới Sub-User thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.create.subuser.success'))
         this.router.navigate(['/app-smart-cloud/object-storage/sub-user/list'])
       }, error => {
-        this.notification.error('Thất bại','Tạo mới Sub-User thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.create.subuser.fail'))
       })
     }
   }

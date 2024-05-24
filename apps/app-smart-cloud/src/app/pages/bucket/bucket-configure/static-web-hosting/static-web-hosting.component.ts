@@ -2,10 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
@@ -32,7 +35,8 @@ export class StaticWebHostingComponent implements OnInit {
     private clipboardService: ClipboardService,
     private message: NzMessageService,
     private notification: NzNotificationService,
-    private router: Router
+    private router: Router,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -66,14 +70,14 @@ export class StaticWebHostingComponent implements OnInit {
           next: (data) => {
             this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
             this.notification.success(
-              '',
-              'Chỉnh sửa Static Web Hosting thành công'
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.static.web.hosting.create.success')
             );
           },
           error: (e) => {
             this.notification.error(
-              e.statusText,
-              'Chỉnh sửa Static Web Hosting không thành công'
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.static.web.hosting.create.fail')
             );
           },
         });
@@ -84,14 +88,14 @@ export class StaticWebHostingComponent implements OnInit {
           next: (data) => {
             this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
             this.notification.success(
-              '',
-              'Chỉnh sửa Static Web Hosting thành công'
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.static.web.hosting.create.success')
             );
           },
           error: (e) => {
             this.notification.error(
-              e.statusText,
-              'Chỉnh sửa Static Web Hosting không thành công'
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.static.web.hosting.create.fail')
             );
           },
         });

@@ -22,6 +22,7 @@ import { PaymentSummaryComponent } from './components/payment-summary/payment-su
 import { IsPermissionPipe } from './pipes/is-permission.pipe';
 import { ShareUsersComboboxComponent } from './components/share-users-combobox/share-users-combobox.component';
 import { SvgIconComponent } from './components/svg-icon/svg-icon.component';
+import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -46,7 +47,8 @@ const COMPONENTS: Array<Type<any>> = [
   PaymentSuccessComponent,
   PaymentFailedComponent,
   ShareUsersComboboxComponent,
-  SvgIconComponent
+  SvgIconComponent,
+  BreadcrumbComponent
 ];
 const DIRECTIVES: Array<Type<any>> = [];
 

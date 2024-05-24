@@ -6,7 +6,9 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
+import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { id } from 'date-fns/locale';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
@@ -44,7 +46,8 @@ export class BucketCorsComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private bucketService: BucketService,
     private notification: NzNotificationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -67,8 +70,8 @@ export class BucketCorsComponent implements OnInit {
         error: (e) => {
           this.listBucketCors = [];
           this.notification.error(
-            e.statusText,
-            'Lấy danh sách Bucket CORS không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.get.bucket.cors.fail')
           );
         },
       });
@@ -121,12 +124,12 @@ export class BucketCorsComponent implements OnInit {
     this.bucketService.createBucketCORS(this.bucketCorsCreate).subscribe({
       next: (data) => {
         this.searchBucketCors();
-        this.notification.success('', 'Tạo mới Bucket CORS thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.create.bucket.cors.success'));
       },
       error: (e) => {
         this.notification.error(
-          e.statusText,
-          'Tạo mới Bucket CORS không thành công'
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.create.bucket.cors.fail')
         );
       },
     });
@@ -161,13 +164,13 @@ export class BucketCorsComponent implements OnInit {
 
     this.bucketService.deleteBucketCORS(this.bucketCorsDelete).subscribe({
       next: (data) => {
-        this.notification.success('', 'Xóa Bucket CORS thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.delete.bucket.cors.success'));
         this.searchBucketCors();
       },
       error: (e) => {
         this.notification.error(
-          e.statusText,
-          'Xóa Bucket CORS không thành công'
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.delete.bucket.cors.fail')
         );
       },
     });
@@ -238,12 +241,12 @@ export class BucketCorsComponent implements OnInit {
     this.bucketService.updateBucketCORS(this.bucketCorsUpdate).subscribe({
       next: (data) => {
         this.searchBucketCors();
-        this.notification.success('', 'Cập nhật Bucket CORS thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.update.bucket.cors.success'));
       },
       error: (e) => {
         this.notification.error(
-          e.statusText,
-          'Cập nhật Bucket CORS không thành công'
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.update.bucket.cors.fail')
         );
       },
     });

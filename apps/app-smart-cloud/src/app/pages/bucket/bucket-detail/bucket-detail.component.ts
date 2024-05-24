@@ -22,6 +22,7 @@ import { forkJoin, of } from 'rxjs';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { cloneDeep } from 'lodash';
 
+
 @Component({
   selector: 'one-portal-bucket-detail',
   templateUrl: './bucket-detail.component.html',
@@ -440,13 +441,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         () => {
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
-            '`Thêm folder thành công'
+            this.i18n.fanyi('app.bucket.detail.createFolder.name.success')
           );
         },
         (error) => {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            'Thêm folder thất bại'
+            this.i18n.fanyi('app.bucket.detail.createFolder.name.fail')
           );
         }
       );
@@ -478,16 +479,16 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         uploadId: item.uploadId,
       };
       const modal: NzModalRef = this.modalService.create({
-        nzTitle: 'Xóa file',
-        nzContent: 'File đang trong quá trình tải, bạn muốn xóa file chứ?',
+        nzTitle: this.i18n.fanyi('app.bucket.detail.deleteFile'),
+        nzContent: this.i18n.fanyi('app.bucket.detail.deleteFile.alert'),
         nzFooter: [
           {
-            label: 'Hủy',
+            label: this.i18n.fanyi('app.button.cancel'),
             type: 'default',
             onClick: () => modal.destroy(),
           },
           {
-            label: 'Xác nhận',
+            label: this.i18n.fanyi('app.button.confirm'),
             type: 'primary',
             onClick: () => {
               this.service.abortmultipart(dataError).subscribe(
@@ -499,8 +500,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                     this.lstFileUpdate.splice(index, 1);
                   }
                   this.notification.success(
-                    'Thành công',
-                    'Xóa file thành công'
+                    this.i18n.fanyi('app.status.success'),
+                    this.i18n.fanyi('app.bucket.detail.deleteFile.success')
                   );
                 },
                 (error) => {
@@ -519,14 +520,12 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       }
       this.notification.success(
         this.i18n.fanyi('app.status.success'),
-        'Xóa file thành công'
+        this.i18n.fanyi('app.bucket.detail.deleteFile.success')
       );
     }
   }
 
-  updateCheckedSet(checked: boolean, key: string): void {
-    console.log(key);
-
+  updateCheckedSet(checked: boolean, key: any): void {
     if (checked) {
       this.setOfCheckedId.add(key);
     } else {
@@ -549,9 +548,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   onAllChecked(isAddAll: boolean): void {
-    for (let item of this.listOfData) {
-      this.updateCheckedSet(isAddAll, item.key);
-    }
+    this.listOfData.forEach(item => this.updateCheckedSet(isAddAll, item));
     this.refreshCheckedStatus();
   }
 
@@ -629,13 +626,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         () => {
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
-            'Xóa thành công'
+            this.i18n.fanyi('app.bucket.detail.deleteObject.success')
           );
         },
         (error) => {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            'Xóa thất bại'
+            this.i18n.fanyi('app.bucket.detail.deleteObject.fail')
           );
         }
       );
@@ -765,14 +762,14 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         () => {
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
-            'Sao chép thành công'
+            this.i18n.fanyi('app.bucket.detail.copy.success')
           );
           this.isVisibleCopy = false;
         },
         (error) => {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            'Sao chép thất bại'
+            this.i18n.fanyi('app.bucket.detail.copy.fail')
           );
         }
       );
@@ -803,13 +800,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           () => {
             this.notification.success(
               this.i18n.fanyi('app.status.success'),
-              'Phân quyền thành công'
+              this.i18n.fanyi('app.bucket.detail.authorize.success')
             );
           },
           (error) => {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              'Phân quyền thất bại'
+              this.i18n.fanyi('app.bucket.detail.authorize.fail')
             );
           }
         );
@@ -820,7 +817,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.clipboard.copy(this.linkShare);
     this.notification.success(
       this.i18n.fanyi('app.status.success'),
-      'Sao chép liên kết thành công'
+      this.i18n.fanyi('app.bucket.detail.sharelink.success')
     );
     this.isVisibleShare = false;
   }
@@ -878,13 +875,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         () => {
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
-            '`Xóa phiên bản thành công'
+            this.i18n.fanyi('app.bucket.detail.deleteVerision.success')
           );
         },
         (error) => {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            'Xóa phiên bản thất bại'
+            this.i18n.fanyi('app.bucket.detail.deleteVerision.fail')
           );
         }
       );
@@ -909,13 +906,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         () => {
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
-            '`Khôi phục bản thành công'
+            this.i18n.fanyi('app.bucket.detail.restoreVerision.success')
           );
         },
         (error) => {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            'Khôi phục phiên bản thất bại'
+            this.i18n.fanyi('app.bucket.detail.restoreVerision.fail')
           );
         }
       );
@@ -957,7 +954,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     console.log(filesToUpload);
 
     if (filesToUpload.length == 0) {
-      this.notification.warning('Cảnh báo', 'Tất cả các file đã được upload');
+      this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.bucket.detail.uploadFile.warning'));
     } else {
       const uploadNextFile = (index) => {
         if (index < filesToUpload.length) {
@@ -975,7 +972,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   uploadSingleFile(item) {
     if (item.uploaded) {
-      this.notification.warning('Cảnh báo', 'File đã được upload');
+      this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.bucket.detail.uploadFile.warning1'));
       return Promise.resolve();
     }
     var chunkCounter = 0;
@@ -1065,14 +1062,14 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               item.uploaded = true;
               this.notification.success(
                 this.i18n.fanyi('app.status.success'),
-                'Upload thành công'
+                this.i18n.fanyi('app.bucket.detail.updateFile.success')
               );
               this.loadData();
               resolve();
             } else {
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
-                'Upload thất bại'
+                this.i18n.fanyi('app.bucket.detail.updateFile.fail')
               );
               reject();
             }
@@ -1081,7 +1078,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           xhr.onerror = () => {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              'Upload thất bại'
+              this.i18n.fanyi('app.bucket.detail.updateFile.fail')
             );
             reject();
           };
@@ -1139,7 +1136,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               xhr.onerror = () => {
                 this.notification.error(
                   this.i18n.fanyi('app.status.fail'),
-                  'Upload thất bại'
+                  this.i18n.fanyi('app.bucket.detail.updateFile.fail')
                 );
                 this.uploadFailed = true;
                 item.percentage = 100;
@@ -1163,7 +1160,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             (error) => {
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
-                'Upload thất bại'
+                this.i18n.fanyi('app.bucket.detail.updateFile.fail')
               );
             }
           );
@@ -1194,7 +1191,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               item.isUpload = true;
               this.notification.success(
                 this.i18n.fanyi('app.status.success'),
-                'Upload thành công'
+                this.i18n.fanyi('app.bucket.detail.updateFile.success')
               );
               this.loadData();
               resolve();
@@ -1202,7 +1199,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             xhr.onerror = () => {
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
-                'Upload thất bại'
+                this.i18n.fanyi('app.bucket.detail.updateFile.fail')
               );
               reject();
             };
@@ -1211,7 +1208,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           (error) => {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              'Upload thất bại'
+              this.i18n.fanyi('app.bucket.detail.updateFile.fail')
             );
             reject();
           }
@@ -1307,7 +1304,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         this.isLoadingDeleteObjects = false;
         this.notification.success(
           this.i18n.fanyi('app.status.success'),
-          'Xóa object thành công'
+          this.i18n.fanyi('app.bucket.detail.deleteObject.success')
         );
         this.setOfCheckedId.clear();
         this.countObjectSelected = 0;
@@ -1317,7 +1314,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         this.isLoadingDeleteObjects = false;
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
-          'Xóa object thất bại'
+          this.i18n.fanyi('app.bucket.detail.deleteObject.fail')
         );
       }
     );

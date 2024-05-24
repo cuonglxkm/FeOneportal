@@ -2,10 +2,14 @@
              title="Gia hạn File System Snapshot">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']"
+        >{{ 'app.breadcrumb.home' | i18n }}</a
+      ></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/'+idFileSystem ">File System Snapshot
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/file-system-snapshot/list']"
+        >File System Snapshot</a
+      >
       </nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/'+ idFileSystem +'/extend'">Gia hạn File System Snapshot
       </nz-breadcrumb-item>
@@ -66,7 +70,7 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input class="input-custom" [value]="fileSystem.description" [maxLength]="255"
+              <textarea nz-input class="input-custom" [value]="fileSystemSnapshotDetail.description" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"  [disabled]="true"></textarea>
               <ng-template #descriptionErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
@@ -79,12 +83,12 @@
           <nz-row nzJustify="space-between" style="margin-top: 15px;">
             <nz-col>
               <nz-form-label>
-                <span>Ngày khởi tạo: {{fileSystemSnapshotDetail?.createTime | date: 'dd/MM/yyyy'}} </span>
+                <span style="color: #ea3829">Ngày khởi tạo: {{fileSystemSnapshotDetail?.createTime | date: 'dd/MM/yyyy'}} </span>
               </nz-form-label>
             </nz-col>
             <nz-col nzSpan="12">
               <nz-form-label>
-                <span>{{ 'app.service.expiration-date' | i18n }}:  {{fileSystemSnapshotDetail?.expireDate | date: 'dd/MM/yyyy'}}</span>
+                <span style="color: #ea3829">{{ 'app.service.expiration-date' | i18n }}:  {{fileSystemSnapshotDetail?.expireDate | date: 'dd/MM/yyyy'}}</span>
               </nz-form-label>
             </nz-col>
           </nz-row>
@@ -126,7 +130,7 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div style="margin-top: 10px" class="text-value">{{ 'app.capacity' | i18n }} File System</div>
           <div style="margin-top: 10px" class="text-label">
-            <span class="text-label">{{ fileSystem?.size }} GB</span>
+            <span class="text-label">{{ fileSystemSnapshotDetail?.sizeInGB }} GB</span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">

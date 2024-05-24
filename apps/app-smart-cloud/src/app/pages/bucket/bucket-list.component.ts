@@ -45,9 +45,7 @@ export class BucketListComponent implements OnInit {
     private loadingSrv: LoadingService
   ) {}
 
-  isViLanguage: boolean;
   ngOnInit(): void {
-    this.isViLanguage = this.i18n.currentLang == 'vi-VI' ? true : false;
     this.hasObjectStorage();
   }
 
@@ -71,8 +69,8 @@ export class BucketListComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            e.statusText,
-            'Lấy Object Strorage không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.getObject.fail')
           );
         },
       });
@@ -96,8 +94,8 @@ export class BucketListComponent implements OnInit {
         error: (e) => {
           this.listBucket = [];
           this.notification.error(
-            e.statusText,
-            'Lấy danh sách Bucket không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.getBucket.fail')
           );
         },
       });
@@ -140,7 +138,7 @@ export class BucketListComponent implements OnInit {
     this.isVisibleDeleteBucket = true;
     this.codeVerify = '';
     this.bucketDeleteName = bucketName;
-    this.titleModalDeleteBucket = 'Xóa Bucket ' + bucketName;
+    this.titleModalDeleteBucket = this.i18n.fanyi('app.bucket.delete.bucket') + ' ' + bucketName;
   }
 
   handleCancelDeleteBucket() {
@@ -152,22 +150,22 @@ export class BucketListComponent implements OnInit {
       this.bucketService.deleteBucket(this.bucketDeleteName).subscribe({
         next: (data) => {
           if (data == 'Thao tác thành công') {
-            this.notification.success('', 'Xóa Bucket thành công');
+            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.bucket.delete.bucket.success'));
             this.isVisibleDeleteBucket = false;
             this.search();
           } else {
-            this.notification.error('', 'Xóa Bucket không thành công');
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.bucket.delete.bucket.fail'));
           }
         },
         error: (error) => {
           this.notification.error(
-            error.statusText,
-            'Xóa Bucket không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.delete.bucket.fail')
           );
         },
       });
     } else {
-      this.notification.error('Tên không khớp', 'Xóa Bucket không thành công');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.bucket.delete.bucket.fail1'));
     }
   }
 
@@ -182,7 +180,7 @@ export class BucketListComponent implements OnInit {
 
   handleOkDeleteOS() {
     this.isVisibleDeleteOS = false;
-    this.notification.success('', 'Xóa Router thành công');
+    this.notification.success(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.nofitacation.remove.sucess'));
 
     // this.dataService
     //   .deleteRouter(this.cloudId, this.region, this.projectId)

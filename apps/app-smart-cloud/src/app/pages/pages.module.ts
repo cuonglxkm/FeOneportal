@@ -447,7 +447,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateSslCertComponent,
     UpdateBackupVolumeComponent,
     CreateSslCertComponent,
-    ExtendFileSystemSnapshotComponent
+    ExtendFileSystemSnapshotComponent,
+    DeleteSslCertComponent
   ],
   imports: [
     CommonModule,
