@@ -79,6 +79,7 @@
   "app.Week": "Tuần",
   "app.month": "tháng",
   "app.months": "tháng",
+  "app.Months": "Tháng",
   "app.Month": "Tháng",
   "app.password": "Mật khẩu",
   "app.password.new": "Mật khẩu mới",
@@ -126,6 +127,8 @@
   "app.estimated.cost": "Chi phí ước tính",
   "app.estimated.storage": "Chi phí tăng dung lượng",
   "app.cost.a.month": "Chi phí 1 tháng",
+  "app.cost.vat": "Chi phí VAT (10%)",
+  "app.cost.n.month": "Chi phí {{numberMonth}} tháng",
   "app.setting": "Cài đặt",
   "app.view.detail": "Xem chi tiết",
   "app.view.json.detail": "Xem chi tiết JSON",
@@ -317,6 +320,8 @@
   "app.instances.keypair.label": "Lựa chọn keypair có sẵn hoặc",
   "app.instances.status": "Trạng thái máy ảo",
   "app.instances.reset.password": "Đổi mật khẩu máy ảo",
+  "app.instances.intro": "Máy chủ ảo<br />Dễ dàng khởi tạo và triển khai dịch vụ",
+  "app.instances.intro.desc": "Dịch vụ cung cấp hệ thống máy chủ ảo an toàn, tin cậy được thiết kế tập trung cho khả năng mở rộng dễ dàng.<br />Người dùng có thể dễ dàng tạo, cấu hình compute instance với số lượng thao tác đơn giản nhất.",
 
   "app.attach.to.vlan": "Gắn vào VLAN",
   "app.detach.from.vlan": "Gỡ khỏi VLAN",
@@ -343,7 +348,7 @@
   "app.alert.delete.instance.warn": "Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và",
   "app.alert.delete.instance.warn.next": "KHÔNG THỂ KHÔI PHỤC LẠI",
   "app.alert.reset.instance.password": "Nếu HĐH là Linux, hệ thống sẽ đặt lại mật khẩu cho tài khoản root. Nếu HĐH là Windows, hệ thống sẽ đặt lại mật khẩu cho tài khoản Administrator",
-
+  
   "app.tooltip.instance.name": "Tên máy ảo không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)",
   "app.tooltip.instances.from.snapshot": "Quý khách có thể tạo máy ảo từ một bản snapshot có sẵn để phục hồi máy ảo về trạng thái khi thực hiện tạo bản snapshot đó",
   "app.tooltip.instance.OS": "Hệ điều hành sử dụng để khởi tạo máy ảo",
@@ -407,6 +412,11 @@
   "app.notify.unrescue.instances.success": "UNRESCUE máy ảo thành công",
   "app.notify.unrescue.instances.fail": "UNRESCUE máy ảo không thành công",
   "app.notify.get.service.package.fail": "Lấy thông tin gói cấu hình không thành công",
+  "app.notify.amount.capacity": "Số lượng phải chia hết cho 10",
+  "app.notify.amount.capacity1": "Số lượng dung lượng phải chia hết cho 10",
+  "app.notify.amount.capacity.add": "Vượt quá quota dung lượng, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
+  "app.notify.amount.ram.add": "Vượt quá quota RAM, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
+  "app.notify.amount.cpu.add": "Vượt quá quota CPU, đã sử dụng {{num1}}/{{num2}} vCPU, cần cấp thêm {{num3}} vCPU",
 
   "app.choose.snapshot": "chọn Snapshot",
   "app.choose.volume.type": "Chọn loại Volume",

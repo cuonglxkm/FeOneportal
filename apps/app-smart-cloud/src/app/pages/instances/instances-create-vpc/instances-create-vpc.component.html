@@ -4,7 +4,7 @@
   [title]="'app.instances.create' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -17,6 +17,9 @@
         'app.instances.create' | i18n
       }}</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -385,18 +388,24 @@
                       >
                       <nz-slider
                         [nzMin]="0"
-                        [nzMax]="remainingVolume"
+                        [nzMax]="1000"
+                        [nzStep]="10"
                         [(ngModel)]="instanceCreate.volumeSize"
-                        (ngModelChange)="checkValidConfig()"
+                        (ngModelChange)="
+                          checkValidConfig(); changeCapacity($event)
+                        "
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [nzMin]="0"
-                        [nzMax]="remainingVolume"
+                        [nzMax]="1000"
+                        [nzStep]="10"
                         [(ngModel)]="instanceCreate.volumeSize"
-                        (ngModelChange)="checkValidConfig()"
+                        (ngModelChange)="
+                          checkValidConfig(); changeCapacity($event)
+                        "
                         (keydown)="onKeyDown($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-input-number>
@@ -410,18 +419,18 @@
                       >
                       <nz-slider
                         [nzMin]="0"
-                        [nzMax]="remainingRAM"
+                        [nzMax]="62"
                         [(ngModel)]="instanceCreate.ram"
-                        (ngModelChange)="checkValidConfig()"
+                        (ngModelChange)="checkValidConfig(); changeRam($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [nzMin]="0"
-                        [nzMax]="remainingRAM"
+                        [nzMax]="62"
                         [(ngModel)]="instanceCreate.ram"
-                        (ngModelChange)="checkValidConfig()"
+                        (ngModelChange)="checkValidConfig(); changeRam($event)"
                         (keydown)="onKeyDown($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-input-number>
@@ -435,18 +444,18 @@
                       >
                       <nz-slider
                         [nzMin]="0"
-                        [nzMax]="remainingVCPU"
+                        [nzMax]="62"
                         [(ngModel)]="instanceCreate.cpu"
-                        (ngModelChange)="checkValidConfig()"
+                        (ngModelChange)="checkValidConfig(); changeVCPU($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [nzMin]="0"
-                        [nzMax]="remainingVCPU"
+                        [nzMax]="62"
                         [(ngModel)]="instanceCreate.cpu"
-                        (ngModelChange)="checkValidConfig()"
+                        (ngModelChange)="checkValidConfig(); changeVCPU($event)"
                         (keydown)="onKeyDown($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-input-number>
@@ -1009,12 +1018,26 @@
                 nzSize="large"
                 nzType="primary"
                 (click)="showModalCreate()"
-                [disabled]="form.invalid || isExistName || !isValid"
+                [disabled]="
+                  form.invalid ||
+                  isExistName ||
+                  !isValid ||
+                  !isValidCapacity ||
+                  !isValidRam ||
+                  !isValidVCPU
+                "
               >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
                 <span
                   [style.color]="
-                    form.invalid || isExistName || !isValid ? 'gray' : 'white'
+                    form.invalid ||
+                    isExistName ||
+                    !isValid ||
+                    !isValidCapacity ||
+                    !isValidRam ||
+                    !isValidVCPU
+                      ? 'gray'
+                      : 'white'
                   "
                   >{{ 'app.button.create' | i18n }}</span
                 >
