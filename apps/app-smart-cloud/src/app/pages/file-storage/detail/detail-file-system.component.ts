@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FileSystemService } from '../../../shared/services/file-system.service';
 import { FileSystemDetail } from '../../../shared/models/file-system.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClipboardService } from 'ngx-clipboard';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-detail-file-system',
@@ -29,7 +31,8 @@ export class DetailFileSystemComponent implements OnInit {
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private clipboardService: ClipboardService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -47,23 +50,28 @@ export class DetailFileSystemComponent implements OnInit {
 
   getFileSystemById(id) {
     this.isLoading = true;
-    this.fileSystemService.getFileSystemById(id, this.region).subscribe(data => {
+    this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
       this.fileSystem = data;
       this.isLoading = false;
       this.fileSystemName = data.name;
     }, error => {
       console.log('error', error);
       this.isLoading = false;
-      if(error.error?.detail.includes('The resource could not be found.')){
         this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
-        this.notification.error('Thất bại', 'File System không tồn tại');
-      } else {
-        this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
-        this.notification.error('Thất bại', error.error.message);
-      }
-
-
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'File System không tồn tại');
     });
+  }
+
+  getMonthDifference(expiredDateStr: string, createdDateStr: string): number {
+    // Chuyển đổi chuỗi thành đối tượng Date
+    const expiredDate = new Date(expiredDateStr);
+    const createdDate = new Date(createdDateStr);
+
+    // Tính số tháng giữa hai ngày
+    const oneDay = 24 * 60 * 60 * 1000; // Số mili giây trong một ngày
+    const diffDays = Math.round(Math.abs((expiredDate.getTime() - createdDate.getTime()) / oneDay)); // Số ngày chênh lệch
+    const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
+    return diffMonths;
   }
 
   copyText(data) {
