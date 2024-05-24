@@ -236,6 +236,9 @@ export class InstancesCreateVpcComponent implements OnInit {
         );
       });
     this.checkExistName();
+    this.onChangeCapacity();
+    this.onChangeVCPU();
+    this.onChangeRam();
     this.cdr.detectChanges();
   }
 
@@ -252,14 +255,16 @@ export class InstancesCreateVpcComponent implements OnInit {
         debounceTime(300) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
-        this.dataService.checkExistName(res, this.region, this.projectId).subscribe((data) => {
-          if (data == true) {
-            this.isExistName = true;
-          } else {
-            this.isExistName = false;
-          }
-          this.cdr.detectChanges();
-        });
+        this.dataService
+          .checkExistName(res, this.region, this.projectId)
+          .subscribe((data) => {
+            if (data == true) {
+              this.isExistName = true;
+            } else {
+              this.isExistName = false;
+            }
+            this.cdr.detectChanges();
+          });
       });
   }
 
@@ -451,6 +456,104 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.instanceCreate.volumeSize = 0;
     this.instanceCreate.ram = 0;
     this.instanceCreate.gpuCount = 0;
+  }
+
+  isValidCapacity: boolean = false;
+  dataSubjectCapacity: Subject<any> = new Subject<any>();
+  changeCapacity(value: number) {
+    this.dataSubjectCapacity.next(value);
+  }
+  onChangeCapacity() {
+    this.dataSubjectCapacity
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.instanceCreate.volumeSize % 10 > 0) {
+          this.isValidCapacity = false;
+          this.notification.error(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity')
+          );
+        } else if (this.instanceCreate.volumeSize > this.remainingVolume) {
+          this.isValidCapacity = false;
+          if (this.activeBlockHDD) {
+            this.notification.error(
+              '',
+              this.i18n.fanyi('app.notify.amount.capacity.add', {
+                num1: this.infoVPC.cloudProjectResourceUsed.hdd,
+                num2: this.infoVPC.cloudProject.quotaHddInGb,
+                num3: this.instanceCreate.volumeSize - this.remainingVolume,
+              })
+            );
+          } else {
+            this.notification.error(
+              '',
+              this.i18n.fanyi('app.notify.amount.capacity.add', {
+                num1: this.infoVPC.cloudProjectResourceUsed.ssd,
+                num2: this.infoVPC.cloudProject.quotaSSDInGb,
+                num3: this.instanceCreate.volumeSize - this.remainingVolume,
+              })
+            );
+          }
+        } else {
+          this.isValidCapacity = true;
+        }
+      });
+  }
+
+  isValidVCPU: boolean = false;
+  dataSubjectVCPU: Subject<any> = new Subject<any>();
+  changeVCPU(value: number) {
+    this.dataSubjectVCPU.next(value);
+  }
+  onChangeVCPU() {
+    this.dataSubjectVCPU
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.instanceCreate.cpu > this.remainingVCPU) {
+          this.isValidVCPU = false;
+          this.notification.error(
+            '',
+            this.i18n.fanyi('app.notify.amount.cpu.add', {
+              num1: this.infoVPC.cloudProjectResourceUsed.cpu,
+              num2: this.infoVPC.cloudProject.quotavCpu,
+              num3: this.instanceCreate.cpu - this.remainingVCPU,
+            })
+          );
+        } else {
+          this.isValidVCPU = true;
+        }
+      });
+  }
+
+  isValidRam: boolean = false;
+  dataSubjectRam: Subject<any> = new Subject<any>();
+  changeRam(value: number) {
+    this.dataSubjectRam.next(value);
+  }
+  onChangeRam() {
+    this.dataSubjectRam
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.instanceCreate.ram > this.remainingRAM) {
+          this.isValidRam = false;
+          this.notification.error(
+            '',
+            this.i18n.fanyi('app.notify.amount.ram.add', {
+              num1: this.infoVPC.cloudProjectResourceUsed.ram,
+              num2: this.infoVPC.cloudProject.quotaRamInGb,
+              num3: this.instanceCreate.ram - this.remainingRAM,
+            })
+          );
+        } else {
+          this.isValidRam = true;
+        }
+      });
   }
   //#endregion
 

@@ -152,6 +152,7 @@ export class InstancesExtendComponent implements OnInit {
         if (res == 0) {
           this.isDisable = true;
           this.totalAmount = 0;
+          this.totalVAT = 0;
           this.totalincludesVAT = 0;
           this.newExpiredDate = '';
         } else {
@@ -179,6 +180,7 @@ export class InstancesExtendComponent implements OnInit {
   }
 
   totalAmount: number = 0;
+  totalVAT: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
     this.isDisable = true;
@@ -196,6 +198,7 @@ export class InstancesExtendComponent implements OnInit {
     this.service.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalVAT =Number.parseFloat(result.data.totalVAT.amount);
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );
