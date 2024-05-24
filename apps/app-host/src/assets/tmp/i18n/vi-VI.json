@@ -832,14 +832,15 @@
   "app.button.access.rule.create": "Tạo mới Access Rule",
   "app.button.access.rule.add": "Thêm Access Rule",
 
-  "validation.access.to": "Access To không được để trống",
-  "validation.access.to.pattern": "Access To có dạng x.x.x.x",
+  "validation.access.to": "Access To không được để trống.",
+  "validation.access.to.pattern": " Access To có dạng x.x.x.x.",
+  "validation.access.to.duplicate": " Địa chỉ Access To đã tồn tại.",
 
   "app.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Instance)<br> hoặc CIDR được quyền truy cập tới Filesystem này",
   "app.alert.delete.access.to": "Bạn đang thực hiện xóa Access Rule",
-  "app.access.to.remove.confirm": "Quý khách có chắc chắn thực hiện xóa Access Rule không?",
+  "app.access.to.remove.confirm": "Quý khách có chắc chắn muốn thực hiện xóa Access Rule không?",
 
-  "app.file.system.delete": "Xóa File System {{name}}",
+  "app.file.system.delete": "Xác nhận xóa File System {{name}}",
   "app.file.system.manage": "Danh sách File System",
   "app.file.system.info": "Thông tin File System",
   "app.file.system.info.edit": "Chỉnh sửa thông tin File System",
@@ -872,11 +873,11 @@
   "app.checkRouter.file.system": "Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!",
   "app.checkRouter.file.system.noGateway": "Kiểm tra lại Router Interface! Vui lòng thêm gateway của dải pri_network",
 
-  "app.file.system.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Instance) hoặc CIDR được quyền truy cập tới Filesystem này",
+  "app.file.system.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Máy ảo) hoặc CIDR được quyền truy cập tới File System này",
   "app.file.system.access.to.create.success": "Tạo mới access rule thành công",
-  "app.file.system.access.to.create.fail": "Tạo mới access rule thất bại {{error}}",
+  "app.file.system.access.to.create.fail": "Tạo mới access rule thất bại",
   "app.file.system.access.to.delete.success": "Xóa access rule thành công",
-  "app.file.system.access.to.delete.fail": "Xóa access rule thất bại {{error}}",
+  "app.file.system.access.to.delete.fail": "Xóa access rule thất bại",
   "app.file.system.access.to.delete.file.success": "Xóa File System thành công",
   "app.file.system.access.to.delete.file.fail": "Xóa File System thất bại",
 
@@ -886,10 +887,10 @@
 
   "app.note.delete.file.system": "Để thực hiện xóa File System {{name}}, vui lòng nhập tên File System để xác nhận",
   "app.alert.delete.file.system": "Bạn đang thực hiện xóa File System<br> Để xóa được File System, quý khách lưu ý cần phải xóa hết các Snapshot của các File System đó",
-  "app.tooltip.file.system.name.pattern": "Tên của File System cần tạo, các ký tự chữ thường a-z,<br> chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng,<br> tối thiểu 1 ký tự và tối đa 255 ký tự. Tên các File System không trùng nhau",
+  "app.tooltip.file.system.name.pattern": "Tên của File System cần tạo, các ký tự chữ thường a-z,<br> chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng,<br> tối thiểu 1 ký tự và tối đa 50 ký tự. Tên các File System không trùng nhau",
   "app.tooltip.file.system.name.protocol": "Giao thức NFS (Network File System) là một giao thức mạng được sử dụng<br> để chia sẻ tập tin và thư mục qua mạng giữa các hệ thống máy tính khác nhau.<br> Nó cho phép một máy tính (được gọi là máy chủ NFS) chia sẻ tài nguyên file hệ thống của<br> nó với các máy tính khác (được gọi là máy khách NFS) trong mạng",
-  "app.tooltip.capacity": "Tối thiểu là 1",
-  "app.tooltip.file.system.type": "mặc định là generic_share_type",
+  "app.tooltip.capacity": "Dung lượng của File System, vui lòng nhập số chia hết cho 10",
+  "app.tooltip.file.system.type": "Loại của File System",
   "app.file.system.confirm.alert": "Bạn đang thực hiện tạo mới File System {{name}}",
   "app.alert.create.file.system": "Quý khách có chắc chắn thực hiện tạo File System không?",
   "app.snapshot.name": "Tên Snapshot",

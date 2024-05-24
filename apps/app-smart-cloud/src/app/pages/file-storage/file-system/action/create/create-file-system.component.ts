@@ -24,7 +24,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
   templateUrl: './create-file-system.component.html',
   styleUrls: ['./create-file-system.component.less']
 })
-export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CreateFileSystemComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -68,6 +68,7 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
   nameList: string[] = [];
 
   storageBuyVpc: number;
+  storageRemaining: number;
 
   isInitSnapshot = false;
 
@@ -84,17 +85,6 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
               private renderer: Renderer2) {
   }
 
-  @ViewChild('confirmButton') confirmButton: ElementRef;
-
-  ngAfterViewInit() {
-    this.addKeydownListener();
-  }
-
-  private addKeydownListener(): void {
-    // Đăng ký sự kiện keydown trên document
-    this.keydownListener = this.renderer.listen('document', 'keydown', this.onKeyDown.bind(this));
-  }
-
   duplicateNameValidator(control) {
     const value = control.value;
     // Check if the input name is already in the list
@@ -107,7 +97,7 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
 
   checkQuota(control) {
     const value = control.value;
-    if (this.storageBuyVpc < value) {
+    if (this.storageRemaining < value) {
       return { notEnough: true };
     } else {
       return null;
@@ -175,28 +165,6 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
     });
   }
 
-  onModalOpen(): void {
-    // Tự động focus vào nút xác nhận sau khi modal mở
-    setTimeout(() => {
-      if (this.confirmButton) {
-        this.confirmButton.nativeElement.focus();
-      }
-    }, 0);
-  }
-  // onKeyDown(event: KeyboardEvent): void {
-  //   console.log('Key pressed:', event.key);
-  //   if (event.key === 'enter') {
-  //     // Ngăn chặn hành động mặc định của Enter
-  //     event.preventDefault();
-  //     console.log('here')
-  //     // Kích hoạt nút OK
-  //     if (this.confirmButton && this.confirmButton.nativeElement) {
-  //       this.confirmButton.nativeElement.click();
-  //     }
-  //   }
-  // }
-
-
   initFileSystem() {
     this.formCreate.projectId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
@@ -263,7 +231,10 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
 
   getStorageBuyVpc() {
     this.projectService.getProjectVpc(this.project).subscribe(data => {
-      this.storageBuyVpc = data.cloudProject.quotaShareInGb
+      this.storageBuyVpc = data.cloudProject?.quotaShareInGb
+      this.storageRemaining = data.cloudProjectResourceUsed?.quotaShareInGb - this.storageBuyVpc
+
+      console.log('share remaining', this.storageRemaining)
     })
   }
 
@@ -301,54 +272,20 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
     });
 
   }
-  private keydownListener: () => void;
+
   showModalConfirm() {
     this.isVisibleConfirm = true;
-    this.initFileSystem();
-    setTimeout(() => {
-      if (this.confirmButton && this.confirmButton.nativeElement) {
-        this.confirmButton.nativeElement.focus();
-      }
-      // Đăng ký sự kiện keydown trên document khi modal mở
-      this.keydownListener = this.renderer.listen('document', 'keydown', this.onKeyDown.bind(this));
-    }, 0);
   }
-
   handleCancel() {
     this.isVisibleConfirm = false;
     this.isLoading = false;
-    this.removeKeydownListener();
   }
 
   handleOk() {
     this.isLoading = true;
     this.submitForm();
-    this.removeKeydownListener();
   }
 
-  onKeyDown(event: KeyboardEvent): void {
-    console.log('Key pressed:', event.key);
-    if (event.key === 'Enter') { // Kiểm tra phím Enter
-      // Ngăn chặn hành động mặc định của Enter
-      event.preventDefault();
-
-      // Kích hoạt nút OK
-      if (this.confirmButton && this.confirmButton.nativeElement) {
-        this.confirmButton.nativeElement.click();
-      }
-    }
-  }
-
-  private removeKeydownListener(): void {
-    // Hủy đăng ký sự kiện keydown khi modal đóng
-    if (this.keydownListener) {
-      this.keydownListener();
-    }
-  }
-  ngOnDestroy(): void {
-    // Đảm bảo hủy đăng ký sự kiện khi component bị phá hủy
-    this.removeKeydownListener();
-  }
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;

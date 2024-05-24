@@ -18,11 +18,14 @@
           <div>
             <span>Access Level (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
             <img nz-popover
-                 [nzPopoverContent]="'Mức độ cho phép truy cập vào tài nguyên.\n'+
-                                      'Read-only (chỉ đọc)\n'+
-                                      'Read-write (đọc và ghi)'"
+                 [nzPopoverContent]="popoverAccessLevel"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
+            <ng-template #popoverAccessLevel>
+              <span>Mức độ cho phép truy cập vào tài nguyên<br>
+                                      <b>Read-only:</b> Chỉ đọc<br>
+                                      <b>Read-write:</b> Đọc và ghi</span>
+            </ng-template>
           </div>
         </nz-form-label>
         <nz-form-control>
@@ -46,12 +49,18 @@
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="accessToErrorTpl">
           <nz-input-group>
-            <input nz-input class="input-custom" formControlName="accessTo" />
+            <input #accessToInput
+                   nz-input
+                   class="input-custom"
+                   formControlName="accessTo"
+                   [placeholder]="'Nhập Access To'"
+                   (keydown.enter)="focusOkButton($event)"/>
           </nz-input-group>
         </nz-form-control>
         <ng-template #accessToErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">{{ 'validation.access.to' | i18n }}</ng-container>
-          <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.access.to.pattern' | i18n }}</ng-container>
+          <ng-container *ngIf="control.hasError('invalidIp')">{{ 'validation.access.to.pattern' | i18n }}</ng-container>
+          <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.access.to.duplicate' | i18n }}</ng-container>
         </ng-template>
       </nz-form-item>
       <nz-form-item nzAlign="bottom" nzJustify="center">

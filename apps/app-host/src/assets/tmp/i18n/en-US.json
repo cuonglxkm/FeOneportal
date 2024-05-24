@@ -945,12 +945,13 @@
 
   "validation.access.to": "Access To cannot be left blank",
   "validation.access.to.pattern": "Access To should be in the format x.x.x.x",
+  "validation.access.to.duplicate": "Access To đã tồn tại",
 
   "app.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR is granted access to this Filesystem",
   "app.alert.delete.access.to": "You are currently deleting an Access Rule",
   "app.access.to.remove.confirm": "Are you sure you want to delete the Access Rule?",
 
-  "app.file.system.delete": "Delete the {{name}} File System",
+  "app.file.system.delete": "Confirm delete the {{name}} File System",
   "app.file.system.manage": "List File System",
   "app.file.system.info": "File System information",
   "app.file.system.info.edit": "Edit File System information",
@@ -982,9 +983,9 @@
 
   "app.file.system.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR range allowed to access this filesystem",
   "app.file.system.access.to.create.success": "Create access rule success",
-  "app.file.system.access.to.create.fail": "Create access rule fail. {{error}}",
+  "app.file.system.access.to.create.fail": "Create access rule fail",
   "app.file.system.access.to.delete.success": "Delete access rule success",
-  "app.file.system.access.to.delete.fail": "Delete access rule fail {{error}}",
+  "app.file.system.access.to.delete.fail": "Delete access rule fail",
   "app.file.system.access.to.delete.file.success": "Delete File System success",
   "app.file.system.access.to.delete.file.fail": "Delete File System success",
   "app.checkRouter.file.system": "Please check the Router and add Interface Router to use the service!",
@@ -996,10 +997,10 @@
 
   "app.note.delete.file.system": "To delete the {{name}} File System, please enter the File System name to confirm",
   "app.alert.delete.file.system": "You are currently deleting the File System.<br> To successfully delete the File System, please note that you need to delete all Snapshots associated with that File System",
-  "app.tooltip.file.system.name.pattern": "The name of the File System to be created should consist of lowercase letters (a-z),<br> uppercase letters (A-Z), numbers (0-9), hyphens (-), and underscores (_), with possible spaces,<br> containing at least 1 character and up to 255 characters. File System names must be unique",
+  "app.tooltip.file.system.name.pattern": "The name of the File System to be created should consist of lowercase letters (a-z),<br> uppercase letters (A-Z), numbers (0-9), hyphens (-), and underscores (_), with possible spaces,<br> containing at least 1 character and up to 50 characters. File System names must be unique",
   "app.tooltip.file.system.name.protocol": "The Network File System (NFS) protocol is a network protocol used to share files and directories over a network among different computer systems. It allows a computer (referred to as an NFS server) to share its filesystem resources with other computers (referred to as NFS clients) on the network",
-  "app.tooltip.capacity": "At least 1",
-  "app.tooltip.file.system.type": "The default is 'generic_share_type",
+  "app.tooltip.capacity": "File System Capacity, please enter a number divisible by 10.",
+  "app.tooltip.file.system.type": "Type of File System",
   "app.file.system.confirm.alert": "You are currently creating a new File System {{name}}",
   "app.alert.create.file.system": "Are you sure you want to create the File System?",
   "app.snapshot.name": "Snapshot name",

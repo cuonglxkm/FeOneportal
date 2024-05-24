@@ -20,7 +20,7 @@ export class AccessRuleService extends BaseService {
     super();
   }
 
-  getListAccessRule(cloudId: string, vpcId: number, regionId: number, pageSize: number, currentPage: number) {
+  getListAccessRule(cloudId: string, vpcId: number, regionId: number, pageSize: number, currentPage: number, accessTo: string, accessLevel: string) {
     let params = new HttpParams()
     if(cloudId != undefined || cloudId != null) {
       params = params.append('shareCloudId', cloudId)
@@ -36,6 +36,12 @@ export class AccessRuleService extends BaseService {
     }
     if(currentPage != undefined || currentPage != null) {
       params = params.append('currentPage', currentPage)
+    }
+    if(accessTo != undefined || accessTo != null) {
+      params = params.append('accessTo', accessTo)
+    }
+    if(accessLevel != undefined || accessLevel != null) {
+      params = params.append('accessLevel', accessLevel)
     }
     return this.http.get<BaseResponse<AccessRule[]>>(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/share_rule/paging', {
       params: params

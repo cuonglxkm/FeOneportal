@@ -94,8 +94,8 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
   }
 
   getFileSystemById(id) {
-    this.fileSystemService.getFileSystemById(id, this.region).subscribe(data => {
-      this.fileSystem = data     
+    this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
+      this.fileSystem = data
     }, error => {
       this.fileSystem = null
     })
