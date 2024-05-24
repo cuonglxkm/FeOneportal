@@ -1,9 +1,12 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="('app.create' | i18n) + ' IP Public'">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Networks</nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">IP Public</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.create' | i18n}} IP Public</nz-breadcrumb-item>
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -21,37 +24,48 @@
         <span class="text-card-header">{{'app.ip.public.info' | i18n}}</span>
         <div nz-row class="mb-md pt-5">
           <div nz-col nzSpan="11">
-            <nz-form-label nzFor="name">{{'app.ip.range' | i18n}} <span class="text-red">*</span>
-              <img
-                style="margin-left: 10px"
-                nz-tooltip="{{'app.ip.public.note' | i18n}}"
-                src="assets/imgs/pajamas_question.svg"
-                alt=""
-              />
-            </nz-form-label>
-            <nz-input-group nzCompact>
-              <nz-select nzSize="large" [nzLoading]="loadingIp" [nzDisabled]="disableIp"
-                         style="width: 100%;border-radius: 10px;" nzPlaceHolder="{{'app.ip.public.select.ip.dropdown' | i18n}}"
-                         formControlName="ipSubnet" (nzOpenChange)="caculator(null)">
-                <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.displayName+'|||'+i.networkId" />
-              </nz-select>
-            </nz-input-group>
+<!--            <nz-form-label nzFor="name">{{'app.ip.range' | i18n}} <span class="text-red">*</span>-->
+<!--              <img-->
+<!--                style="margin-left: 10px"-->
+<!--                nz-tooltip="{{'app.ip.public.note' | i18n}}"-->
+<!--                src="assets/imgs/pajamas_question.svg"-->
+<!--                alt=""-->
+<!--              />-->
+<!--            </nz-form-label>-->
+<!--            <nz-input-group nzCompact>-->
+<!--              <nz-select nzSize="large" [nzLoading]="loadingIp" [nzDisabled]="disableIp"-->
+<!--                         style="width: 100%;" nzPlaceHolder="{{'app.ip.public.select.ip.dropdown' | i18n}}"-->
+<!--                         formControlName="ipSubnet" (nzOpenChange)="caculator(null)">-->
+<!--                <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.displayName+'|||'+i.networkId" />-->
+<!--              </nz-select>-->
+<!--            </nz-input-group>-->
+            <nz-form-item>
+              <nz-form-label>
+                {{ 'app.ip.range' | i18n }} (<span class="text-red">*</span>)
+              <img style="margin-left: 10px" nz-popover nz-tooltip="{{'app.ip.public.note' | i18n}}" src="assets/imgs/pajamas_question.svg" alt="" />
+              </nz-form-label>
+              <nz-form-control>
+                <nz-select [nzLoading]="loadingIp" [nzDisabled]="disableIp" formControlName="ipSubnet" (nzOpenChange)="caculator(null)"
+                           nzSize="large" style="width: 100%;" nzPlaceHolder="{{'app.ip.public.select.ip.dropdown' | i18n}}">
+                  <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.displayName+'|||'+i.networkId" />
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
           </div>
           <div nz-col nzSpan="12" style="margin-left: 15px">
-            <nz-form-label>{{'app.instances' | i18n}}
-              <img
-                style="margin-left: 10px"
-                nz-tooltip="{{'app.ip.public.note2' | i18n}}"
-                src="assets/imgs/pajamas_question.svg"
-                alt=""
-              /></nz-form-label>
-            <nz-input-group nzCompact>
-              <nz-select [nzLoading]="loadingInstanse" nzSize="large" [nzDisabled]="disableInstanse"
-                         [nzAllowClear]="true" formControlName="instanceSelected" style="width: 96%"
-                         nzPlaceHolder="{{'app.ip.public.select.instance.dropdown' | i18n}}" (ngModelChange)="caculator(null)">
-                <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.name+'|||'+i.id" />
-              </nz-select>
-            </nz-input-group>
+            <nz-form-item>
+              <nz-form-label>
+                {{ 'app.instances' | i18n }}
+                <img style="margin-left: 10px" nz-popover nz-tooltip="{{'app.ip.public.note2' | i18n}}" src="assets/imgs/pajamas_question.svg" alt="" />
+              </nz-form-label>
+              <nz-form-control>
+                <nz-select [nzLoading]="loadingInstanse" nzSize="large" [nzDisabled]="disableInstanse"
+                           [nzAllowClear]="true" formControlName="instanceSelected" style="width: 96%"
+                           nzPlaceHolder="{{'app.ip.public.select.instance.dropdown' | i18n}}" (ngModelChange)="caculator(null)">
+                  <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.name+'|||'+i.id" />
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
           </div>
         </div>
         <div style="margin-top: 20px;" *ngIf="checkIpv6 !== null">
@@ -66,7 +80,7 @@
         </div>
         <div nz-row class="mb-md pt-5">
           <div nz-col nzSpan="11">
-            <nz-form-label>{{'app.service.used' | i18n}} (<span class="text-red">*</span>) - {{'app.month' | i18n}} <img
+            <nz-form-label>{{'app.service.duration' | i18n}} (<span class="text-red">*</span>) <img
               style="margin-left: 10px"
               nz-tooltip="{{'app.ip.public.note4' | i18n}}"
               src="assets/imgs/pajamas_question.svg"
@@ -100,7 +114,7 @@
 
 
     <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px" [nzLoading]="loadingCalculate">
+      <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF" [nzLoading]="loadingCalculate">
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
         </div>

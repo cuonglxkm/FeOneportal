@@ -30,8 +30,7 @@ import { FileSystemService } from 'src/app/shared/services/file-system.service';
 export class EditFileSystemSnapshotComponent {
   @Input() filesystemsnapshotId: number;
   @Input() data: any;
-  @Input() region;
-  number;
+  @Input() region: number;
   @Input() project: number;
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
@@ -48,8 +47,8 @@ export class EditFileSystemSnapshotComponent {
     name: FormControl<string>;
     description: FormControl<string>;
   }> = this.fb.group({
-    name: ['', [Validators.required]],
-    description: ['', [Validators.maxLength(500)]],
+    name: ['', [Validators.required, Validators.pattern(/^(?! *$)[a-zA-Z0-9-_ ]{1,255}$/)]],
+    description: [''],
   });
 
   constructor(
@@ -94,9 +93,8 @@ export class EditFileSystemSnapshotComponent {
           (data) => {
             this.notification.success(
               'Thành công',
-              'Cập nhật FileSystem Snapshot thành công'
+              'Cập nhật File System Snapshot thành công'
             );
-            this.validateForm.reset();
             this.isVisible = false;
             this.isLoading = false;
             this.onOk.emit(data);
@@ -105,7 +103,7 @@ export class EditFileSystemSnapshotComponent {
             this.isLoading = false;
             this.notification.error(
               'Thất bại',
-              'Cập nhật FileSystem Snapshot thất bại'
+              'Cập nhật File System Snapshot thất bại'
             );
           }
         );

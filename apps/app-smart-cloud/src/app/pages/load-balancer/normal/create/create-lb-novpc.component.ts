@@ -14,10 +14,13 @@ import {
   IPBySubnet
 } from '../../../../shared/models/load-balancer.model';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { OrderItem } from '../../../../shared/models/price';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-create-lb-novpc',
@@ -66,7 +69,6 @@ export class CreateLbNovpcComponent implements OnInit {
   flavorId: string;
 
   selectedSubnet: string;
-  selectedSubnetValue: string;
 
   isInput: boolean = true;
 
@@ -75,12 +77,16 @@ export class CreateLbNovpcComponent implements OnInit {
   @ViewChild('selectedValueSpan') selectedValueSpan: ElementRef;
   @ViewChild('selectedValueOffer') selectedValueOffer: ElementRef;
   @ViewChild('selectedValueIpFloating') selectedValueIpFloating?: ElementRef;
-
+  invalidIpAddress = true;
+  private validateIpaddress = new Subject<string>();
+  private readonly debounceTimeMs = 2000;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private vlanService: VlanService,
               private catalogService: CatalogService,
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private loadBalancerService: LoadBalancerService) {
   }
 
@@ -144,6 +150,8 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   onChangeStatusInternetFacing() {
+    this.validateForm.controls['subnet'].setValue('');
+    this.validateForm.controls['ipAddress'].setValue('');
     this.enableInternetFacing = true;
     this.enableInternal = false;
     if (this.enableInternetFacing) {
@@ -157,6 +165,8 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   onChangeStatusInternal() {
+    this.validateForm.controls['subnet'].setValue('');
+    this.validateForm.controls['ipAddress'].setValue('');
     this.enableInternetFacing = false;
     this.enableInternal = true;
     if (this.enableInternetFacing) {
@@ -214,29 +224,7 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   onInput(value) {
-    const getSubnet = this.listSubnets?.find(option => option.cloudId === this.validateForm.get('subnet').value);
-    const result = this.isIpInSubnet(value, getSubnet.subnetAddressRequired);
-    if (value == undefined || value.trim().length === 0) {
-      console.log('1');
-      this.isInput = true;
-    } else {
-      if (result) {
-        console.log('3');
-        this.isInput = true;
-      } else {
-        console.log('4');
-        this.isInput = false;
-      }
-      this.loadBalancerService.checkIpAddress(getSubnet.subnetCloudId, value, this.region, this.project)
-        .subscribe(data => {
-          this.isAvailable = data;
-        }, error => {
-          this.isAvailable = false;
-        });
-
-    }
-
-
+    this.validateIpaddress.next(value);
   }
 
   getIpBySubnet(subnetId) {
@@ -422,8 +410,25 @@ export class CreateLbNovpcComponent implements OnInit {
     this.getListLoadBalancer();
 
     this.getListSubnetInternetFacing();
+    this.validateForm.controls['ipAddress'].disable();
+    this.validateIpaddress.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
+      this.onInputReal(searchValue);
+    });
   }
 
 
+  private onInputReal(value: any) {
+    if (!this.validateForm.controls['ipAddress'].invalid) {
+      const getSubnet = this.listSubnets?.find(option => option.cloudId === this.validateForm.get('subnet').value);
+      const result = this.isIpInSubnet(value, getSubnet.subnetAddressRequired);
+      this.vlanService.checkIpAvailable(value, getSubnet.subnetAddressRequired, getSubnet.cloudId, this.region).subscribe(data => {
+          this.invalidIpAddress = false;
+        },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'),error.error)
+          this.invalidIpAddress = true;
+        })
+    }
+  }
 }
 

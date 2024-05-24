@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { VpcModel } from '../../../shared/models/vpc.model';
 import { finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -58,7 +58,8 @@ export class ProjectListComponent implements OnInit {
               private ipService: IpPublicService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService,
-              private notificationService: NotificationService
+              private notificationService: NotificationService,
+              private cdr: ChangeDetectorRef
             ) {
 
   }
@@ -73,10 +74,23 @@ export class ProjectListComponent implements OnInit {
 
         switch (data.actionType) {
           case "CREATING":
-            this.getData(false);
+            this.getData(true);
           break;
           case "CREATED":
-            this.getData(false);
+            let projectId = data.serviceId;
+            var foundIndex = this.listOfData.findIndex(x => x.id == projectId);
+            if (foundIndex > -1) {
+              var record = this.listOfData[foundIndex];
+              record.serviceStatus = data.serviceStatus;
+              record.createDate = data.creationDate;
+              record.expireDate = data.expirationDate;
+              this.listOfData[foundIndex] = record;
+              this.cdr.detectChanges();
+            }
+            else
+            {
+              this.getData(true);
+            }
           break;
         }
       }

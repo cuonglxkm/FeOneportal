@@ -2,10 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { I18NService } from '@core';
 import { LoadingService } from '@delon/abc/loading';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
 import { BucketDetail } from 'src/app/shared/models/bucket.model';
@@ -27,7 +30,8 @@ export class BucketConfigureComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -51,14 +55,14 @@ export class BucketConfigureComponent implements OnInit {
         next: (data) => {
           this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
           this.notification.success(
-            '',
-            'Điều chỉnh Access Control List thành công'
+            this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.bucket.access.list.resize.success')
           );
         },
         error: (e) => {
           this.notification.error(
-            e.statusText,
-            'Điều chỉnh Access Control List không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.access.list.resize.fail')
           );
         },
       });
@@ -74,8 +78,8 @@ export class BucketConfigureComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            e.statusText,
-            'Điều chỉnh Versioning không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.version.resize.fail')
           );
         },
       });

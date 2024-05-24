@@ -2,7 +2,7 @@
              [action]="action"
              title="{{'schedule.backup.title.list' | i18n}}" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>{{'app.breadcrumb.home' | i18n}}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{'app.breadcrumb.infrastructure.service' | i18n}}
@@ -13,6 +13,7 @@
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/schedule/backup/list">{{'schedule.backup.title.job' | i18n}}</a>
       </nz-breadcrumb-item>
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>

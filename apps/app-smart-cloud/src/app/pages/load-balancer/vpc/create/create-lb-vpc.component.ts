@@ -18,7 +18,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
@@ -34,6 +34,7 @@ export class CreateLbVpcComponent implements OnInit {
   enableInternetFacing: boolean = true;
   enableInternal: boolean = false;
   listSubnets: Subnet[] = [];
+  invalidIpAddress = true;
 
   validateForm: FormGroup<{
     name: FormControl<string>
@@ -72,6 +73,8 @@ export class CreateLbVpcComponent implements OnInit {
 
   ipFloating: IPBySubnet[] = [];
 
+  private validateIpaddress = new Subject<string>();
+  private readonly debounceTimeMs = 2000;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -121,25 +124,7 @@ export class CreateLbVpcComponent implements OnInit {
   }
 
   onInput(value: string) {
-    const getSubnet = this.listSubnets?.find(option => option.cloudId === this.validateForm.get('subnet').value);
-
-    let result = undefined;
-    if (getSubnet != undefined) {
-      result = this.isIpInSubnet(value, getSubnet?.subnetAddressRequired);
-    }
-
-    // console.log('result', result);
-    // console.log('value', value)
-
-    if (value == undefined || value.trim().length === 0) {
-      this.isInput = true;
-    } else {
-      if (result) {
-        this.isInput = true;
-      } else {
-        this.isInput = false;
-      }
-    }
+    this.validateIpaddress.next(value);
   }
 
   regionChanged(region: RegionModel) {
@@ -167,6 +152,9 @@ export class CreateLbVpcComponent implements OnInit {
 
   updateValue(value): void {
     // this.validateForm.controls.subnet.setValue(value);
+    if (!this.validateForm.controls['subnet'].invalid) {
+      this.validateForm.controls['ipAddress'].enable();
+    }
     if (this.listSubnets) {
       const selected = this.listSubnets?.find(option => option.cloudId === value);
       if(selected){
@@ -191,6 +179,8 @@ export class CreateLbVpcComponent implements OnInit {
   }
 
   onChangeStatusInternetFacing() {
+    this.validateForm.controls['subnet'].setValue('');
+    this.validateForm.controls['ipAddress'].setValue('');
     this.enableInternetFacing = true;
     this.enableInternal = false;
     if (this.enableInternetFacing) {
@@ -200,9 +190,12 @@ export class CreateLbVpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
+    this.getListSubnetInternetFacing();
   }
 
   onChangeStatusInternal() {
+    this.validateForm.controls['subnet'].setValue('');
+    this.validateForm.controls['ipAddress'].setValue('');
     this.enableInternetFacing = false;
     this.enableInternal = true;
     if (this.enableInternetFacing) {
@@ -212,6 +205,7 @@ export class CreateLbVpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
+    this.getListSubnetInternetFacing();
   }
 
 
@@ -360,40 +354,32 @@ export class CreateLbVpcComponent implements OnInit {
 
   getListSubnetInternetFacing() {
     this.mapSubnetArray = [];
-    this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region).subscribe(data => {
-      this.setDataToMap(data);
-      if (this.mapSubnet instanceof Map) {
-        // Chuyển đổi Map thành mảng các cặp khóa/giá trị
-        for (const [key, value] of this.mapSubnet.entries()) {
-          this.mapSubnetArray?.push({ value: value, label: key });
+    this.validateForm.controls['ipAddress'].disable();
+    if (this.enableInternal == true) {
+      let formSearchSubnet = new FormSearchSubnet();
+      formSearchSubnet.region = this.region;
+      formSearchSubnet.pageSize = 9999;
+      formSearchSubnet.pageNumber = 1;
+      formSearchSubnet.customerId = this.tokenService.get()?.userId;
+      formSearchSubnet.name = '';
+      this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
+        this.mapSubnet?.clear();
+        // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
+        for (const model of data.records) {
+          this.mapSubnetArray?.push({ value: model.subnetCloudId, label: model.name + '(' + model.subnetAddressRequired + ')'});
         }
-      }
-    });
-    // if (this.enableInternal == true) {
-    //   let formSearchSubnet = new FormSearchSubnet();
-    //   formSearchSubnet.region = this.region;
-    //   formSearchSubnet.pageSize = 9999;
-    //   formSearchSubnet.pageNumber = 1;
-    //   formSearchSubnet.customerId = this.tokenService.get()?.userId;
-    //   formSearchSubnet.name = '';
-    //   this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
-    //     this.mapSubnet?.clear();
-    //     // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
-    //     for (const model of data.records) {
-    //       this.mapSubnetArray?.push({ value: model.subnetCloudId, label: model.name });
-    //     }
-    //   });
-    // } else {
-    //   this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region).subscribe(data => {
-    //     this.setDataToMap(data);
-    //     if (this.mapSubnet instanceof Map) {
-    //       // Chuyển đổi Map thành mảng các cặp khóa/giá trị
-    //       for (const [key, value] of this.mapSubnet.entries()) {
-    //         this.mapSubnetArray?.push({ value: value, label: key });
-    //       }
-    //     }
-    //   });
-    // }
+      });
+    } else {
+      this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region).subscribe(data => {
+        this.setDataToMap(data);
+        if (this.mapSubnet instanceof Map) {
+          // Chuyển đổi Map thành mảng các cặp khóa/giá trị
+          for (const [key, value] of this.mapSubnet.entries()) {
+            this.mapSubnetArray?.push({ value: value, label: key });
+          }
+        }
+      });
+    }
   }
 
   ngOnInit() {
@@ -407,5 +393,23 @@ export class CreateLbVpcComponent implements OnInit {
     // this.getIpBySubnet()a;
     this.getListLoadBalancer();
     this.getListSubnetInternetFacing();
+    this.validateIpaddress.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
+      this.onInputReal(searchValue);
+    });
+  }
+
+  private onInputReal(searchValue: any) {
+    if (!this.validateForm.controls['ipAddress'].invalid && !this.validateForm.controls['subnet'].invalid) {
+      const getSubnet = this.listSubnets?.find(option => option.cloudId === this.validateForm.get('subnet').value);
+      const result = this.isIpInSubnet(searchValue, getSubnet.subnetAddressRequired);
+      this.vlanService.checkIpAvailable(searchValue, getSubnet.subnetAddressRequired, getSubnet.cloudId, this.region).subscribe(
+        data => {
+          this.invalidIpAddress = false;
+        },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'),error.error)
+          this.invalidIpAddress = true;
+        })
+    }
   }
 }
