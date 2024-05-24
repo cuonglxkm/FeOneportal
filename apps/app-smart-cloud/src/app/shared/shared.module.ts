@@ -23,6 +23,7 @@ import { IsPermissionPipe } from './pipes/is-permission.pipe';
 import { ShareUsersComboboxComponent } from './components/share-users-combobox/share-users-combobox.component';
 import { SvgIconComponent } from './components/svg-icon/svg-icon.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import { ServiceStatusPipe } from './pipes/status.pipe';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -75,7 +76,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     ...DIRECTIVES,
     PaymentSummaryComponent,
     IsPermissionPipe,
-    
+    ServiceStatusPipe
   ],
   exports: [
     CommonModule,
@@ -92,7 +93,8 @@ const DIRECTIVES: Array<Type<any>> = [];
     // your components
     ...COMPONENTS,
     ...DIRECTIVES,
-    IsPermissionPipe
+    IsPermissionPipe,
+    ServiceStatusPipe
   ],
   providers: [{ provide: NZ_ICONS, useValue: icons }],
 })

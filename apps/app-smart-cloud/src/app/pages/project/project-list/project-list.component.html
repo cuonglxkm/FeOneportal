@@ -74,12 +74,10 @@
           <td *ngIf="item.type != 'VPC'">-</td>
           <td *ngIf="item.type == 'VPC'">{{ item.createDate | date : "dd/MM/YYYY" }}</td>
           <td *ngIf="item.type == 'VPC'">{{ item.expireDate | date : "dd/MM/YYYY" }}</td>
-          <td [ngStyle]="{'color': item.resourceStatus === 'ENABLE' ? '#008D47' : '#EA3829'}">{{ item.resourceStatus === 'ENABLE' ? ('project.status.enable' | i18n) : ('project.status.delete' | i18n) }}</td>
+          <ng-container *ngIf="item.resourceStatus | ServiceStatusPipe as statusModel">
+            <td [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
+          </ng-container>
           <td >{{ item.type == 'VPC' ? ('project.note4' | i18n) : (item.type == 'Default' ? ('project.default' | i18n) :('project.note5' | i18n))}}</td>
-          <!--          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: forestgreen">Đang hoạt động</td>-->
-          <!--          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>-->
-          <!--          <td *ngIf="item.status === 0">-</td>-->
-          <!--          <td *ngIf="item.status === 2">IN-USE</td>-->
           <td>
             <div>
               <!----Chỉnh sửa----->

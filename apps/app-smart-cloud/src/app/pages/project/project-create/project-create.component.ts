@@ -385,7 +385,7 @@ export class ProjectCreateComponent implements OnInit {
     if (this.vpcType == '0') {
       this.ipService.createIpPublic(request).subscribe(
         data => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.note50'));
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
           this.router.navigate(['/app-smart-cloud/project']);
         },
         error => {

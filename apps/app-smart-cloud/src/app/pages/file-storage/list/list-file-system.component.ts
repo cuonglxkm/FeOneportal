@@ -54,8 +54,8 @@ export class ListFileSystemComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private notificationService: NotificationService) {}
 
-  onInputChange(value) {
-    this.value = value;
+  onEnter() {
+    this.value = this.value.trim();
     this.getListFileSystem(false);
   }
 
@@ -104,6 +104,8 @@ export class ListFileSystemComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.checkRouter.file.system.noGateway')
           );
+        } else {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
         }
       },
     });
@@ -113,14 +115,14 @@ export class ListFileSystemComponent implements OnInit {
     //in vpc
     if (typeVpc == 1) {
       this.router.navigate([
-        '/app-smart-cloud/file-storage/file-system/resize/' + id,
+        '/app-smart-cloud/file-storage/file-system/resize/vpc/' + id,
       ]);
     }
 
     //no vpc
     if (typeVpc == 0) {
       this.router.navigate([
-        '/app-smart-cloud/file-storage/file-system/' + id + '/resize',
+        '/app-smart-cloud/file-storage/file-system/resize/normal/' + id,
       ]);
     }
   }
@@ -173,12 +175,14 @@ export class ListFileSystemComponent implements OnInit {
   }
 
   handleOkDelete() {
-    this.getListFileSystem(false);
+    this.getListFileSystem(true);
   }
 
   getProject() {
     this.projectService.getByProjectId(this.project).subscribe((data) => {
       this.projectInfo = data;
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message)
     });
   }
 

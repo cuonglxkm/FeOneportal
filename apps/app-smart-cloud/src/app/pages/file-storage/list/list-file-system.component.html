@@ -1,15 +1,15 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
              [title]="'app.file.system.manage' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
        <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System
-      </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{'app.file.system.manage'|i18n}}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -35,7 +35,7 @@
                      [nz-tooltip]="'app.button.search' | i18n"
                      [placeholder]="'app.file.system.placeholder.search'|i18n"
                      [(ngModel)]="value"
-                     (input)="onInputChange($event.target['value'])" />
+                     (keydown.enter)="onEnter()" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" />
@@ -67,11 +67,11 @@
           <tr>
             <th>STT</th>
             <th>{{ 'app.name' | i18n }}</th>
-            <th>{{ 'app.file.system.type' | i18n }}</th>
-            <th>{{ 'app.protocol' | i18n }}</th>
-            <th>{{ 'app.capacity' | i18n }}</th>
             <th>{{ 'app.text.status' | i18n }}</th>
             <th>{{ 'app.task.status' | i18n }}</th>
+            <th>{{ 'app.file.system.type' | i18n }}</th>
+            <th>{{ 'app.protocol' | i18n }}</th>
+            <th>{{ 'app.capacity' | i18n }} (GB)</th>
             <th>{{ 'app.text.operation' | i18n }}</th>
           </tr>
           </thead>
@@ -79,21 +79,21 @@
           <tr *ngFor="let data of fixTable.data; index as i">
             <td>{{ i + 1 }}</td>
             <td><a [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
-            <td>{{ data.type }}</td>
-            <td>{{ data.protocol }}</td>
-            <td>{{ data.size }} GB</td>
             <td *ngIf="data.statusDisplay.includes('Đang hoạt động')" style="color: #008D47;">{{ data.statusDisplay }}</td>
             <td *ngIf="!data.statusDisplay.includes('Đang hoạt động')" style="color: #EA3829;">{{ data.statusDisplay }}</td>
             <td>{{ data.taskState.toUpperCase() }}</td>
+            <td>{{ data.type }}</td>
+            <td>{{ data.protocol }}</td>
+            <td nzAlign="right">{{ data.size }}</td>
             <td>
-              <div *ngIf="data.taskState.toUpperCase() === 'ERROR'">
+              <div *ngIf="('ERROR' === data.taskState) || (data.taskState.includes('Không tìm thấy tài nguyên'))">
                 <one-portal-delete-file-system [region]="region"
                                                [project]="project"
                                                [fileSystemId]="data.id"
                                                [fileSystemName]="data.name"
                                                (onOk)="handleOkDelete()" />
               </div>
-              <div *ngIf="!(['CREATING', 'ERROR'].includes(data.taskState.toUpperCase()))">
+              <div *ngIf="(data.taskState === 'available')">
                 <one-portal-edit-file-system [region]="region"
                                              [project]="project"
                                              [fileSystem]="data"

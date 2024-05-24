@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { VpcModel } from '../../../shared/models/vpc.model';
 import { finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -7,7 +7,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VpcService } from '../../../shared/services/vpc.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { NotificationService, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { IpPublicService } from '../../../shared/services/ip-public.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -57,7 +57,10 @@ export class ProjectListComponent implements OnInit {
               private vpcService: VpcService,
               private ipService: IpPublicService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              private notificationService: NotificationService,
+              private cdr: ChangeDetectorRef
+            ) {
 
   }
 
@@ -65,6 +68,34 @@ export class ProjectListComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.getData(true);
+
+    this.notificationService.connection.on('UpdateProject', (data) => {
+      if (data) {
+
+        switch (data.actionType) {
+          case "CREATING":
+            this.getData(true);
+          break;
+          case "CREATED":
+            let projectId = data.serviceId;
+            var foundIndex = this.listOfData.findIndex(x => x.id == projectId);
+            if (foundIndex > -1) {
+              var record = this.listOfData[foundIndex];
+              record.serviceStatus = data.serviceStatus;
+              record.createDate = data.creationDate;
+              record.expireDate = data.expirationDate;
+              this.listOfData[foundIndex] = record;
+              this.cdr.detectChanges();
+            }
+            else
+            {
+              this.getData(true);
+            }
+          break;
+        }
+      }
+    });
+
   }
 
   onRegionChange(region: RegionModel) {
@@ -139,10 +170,16 @@ export class ProjectListComponent implements OnInit {
       .subscribe(
         {
           next: post => {
-            this.notification.success('Thành công', 'Xóa thành công VPC');
+            var listProject = JSON.parse(localStorage.getItem('projects'));
+            if (listProject.length > 0) {
+              listProject = listProject.filter(x => x.id != this.itemDelete.id);
+              localStorage.setItem('projects', JSON.stringify(listProject));
+            }
+
+            this.notification.success('Thành công', 'Xóa dự án thành công');
           },
           error: e => {
-            this.notification.error('Thất bại', 'Xóa thất bại VPC');
+            this.notification.error('Thất bại', 'Xóa dự án thất bại');
           }
         }
       );
