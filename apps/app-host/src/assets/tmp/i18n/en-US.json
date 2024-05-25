@@ -1154,6 +1154,8 @@
   "app.order.status.Success": "Success",
   "app.order.status.Trouble": "Trouble",
   "app.order.status.Installed": "Installed",
+  "app.order.status.installed": "Installed successfully",
+  "app.order.status.error":"Installation encountered a problem",
   "app.order.fail.notify": "Your order could not be completed",
 
   "app.breadcrumb.order-detail": "Order Detail",
@@ -2473,6 +2475,8 @@
   "project.action.creating": "The project creation request has been sent",
   "project.note51": "Create project fail",
   "project.create":"Create Project",
+  "app.project.price": "Total Amount",
+
   "status.enable": "Enable",
   "status.disable": "Disable",
   "status.deleted": "Deleted",
