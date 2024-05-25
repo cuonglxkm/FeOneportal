@@ -16,6 +16,7 @@ export class DeleteAccessRuleComponent {
   @Input() project: number;
   @Input() shareRuleId: string;
   @Input() shareCloudId: string;
+  @Input() accessTo: string;
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
 
@@ -43,7 +44,7 @@ export class DeleteAccessRuleComponent {
 
   handleOk() {
     this.isLoading = true;
-    this.accessRuleService.deleteAccessRule(this.shareRuleId, this.region, this.project, this.shareCloudId).subscribe(data => {
+    this.accessRuleService.deleteAccessRule(this.shareRuleId, this.region, this.project, this.shareCloudId, this.accessTo).subscribe(data => {
 
       this.isVisible = false;
       this.isLoading = false;
