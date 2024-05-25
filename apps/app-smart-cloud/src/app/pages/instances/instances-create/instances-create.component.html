@@ -4,7 +4,7 @@
   [title]="'app.instances.create' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -17,6 +17,9 @@
         'app.instances.create' | i18n
       }}</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -558,6 +561,7 @@
                       <nz-slider
                         [nzMin]="0"
                         [nzMax]="1000"
+                        [nzStep]="10"
                         [(ngModel)]="configCustom.capacity"
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
@@ -571,7 +575,7 @@
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="1000"
-                        [nzStep]="1"
+                        [nzStep]="10"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
@@ -1235,52 +1239,6 @@
             </nz-col>
           </div>
         </nz-row>
-
-        <nz-row style="margin-top: 20px; margin-bottom: -25px" nzGutter="16">
-          <nz-col nzSpan="24">
-            <nz-form-item style="margin-bottom: 5px">
-              <nz-form-label
-                >{{ 'app.service.duration' | i18n }} (<span class="text-red"
-                  >*</span
-                >)<img
-                  style="margin-left: 10px"
-                  [nz-tooltip]="'app.tooltip.usage.time' | i18n"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
-              /></nz-form-label>
-              <nz-form-control>
-                <nz-row>
-                  <nz-input-number
-                    style="width: 50%; margin-left: -1px"
-                    [nzMin]="1"
-                    [nzMax]="100"
-                    [nzStep]="1"
-                    [(ngModel)]="numberMonth"
-                    (keydown)="onKeyDown($event)"
-                    (ngModelChange)="changeTime($event)"
-                    [ngModelOptions]="{ standalone: true }"
-                    nzSize="large"
-                  ></nz-input-number>
-                  <div
-                    class="text-label"
-                    style="
-                      display: flex;
-                      margin-left: 20px;
-                      align-items: center;
-                    "
-                  >
-                    {{ 'app.service.start-date' | i18n }}:
-                    {{ today | date : 'dd/MM/yyyy' }}
-                  </div>
-                </nz-row>
-              </nz-form-control>
-            </nz-form-item>
-          </nz-col>
-        </nz-row>
-        <div style="color: #eb1414; margin-top: 20px" class="text-label">
-          {{ 'app.service.expiration-date' | i18n }}:
-          {{ expiredDate | date : 'dd/MM/yyyy' }}
-        </div>
       </nz-card>
 
       <nz-card style="border-radius: 8px">
@@ -1316,7 +1274,9 @@
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
-                  <tr *ngFor="let data of listOfDataBlockStorage; let i = index">
+                  <tr
+                    *ngFor="let data of listOfDataBlockStorage; let i = index"
+                  >
                     <td>
                       <nz-select
                         [nzPlaceHolder]="'app.choose' | i18n"
@@ -1587,6 +1547,48 @@
           nzShowIcon
         ></nz-alert>
       </nz-card>
+      <nz-card>
+        <nz-row nzGutter="16">
+          <nz-col nzSpan="24">
+            <nz-form-item style="margin-bottom: 5px">
+              <nz-form-label
+                >{{ 'app.service.used' | i18n }} (<span class="text-red">*</span
+                >) - {{ 'app.Months' | i18n
+                }}<img
+                  style="margin-left: 10px"
+                  [nz-tooltip]="'app.tooltip.usage.time' | i18n"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+              /></nz-form-label>
+              <nz-form-control>
+                <nz-row>
+                  <nz-input-number
+                    style="width: 50%; margin-left: -1px"
+                    [nzMin]="1"
+                    [nzMax]="100"
+                    [nzStep]="1"
+                    [(ngModel)]="numberMonth"
+                    (keydown)="onKeyDown($event)"
+                    (ngModelChange)="changeTime($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                    nzSize="large"
+                  ></nz-input-number>
+                  <div style="margin-left: 20px">
+                    <span>
+                      {{ 'app.service.creation-date' | i18n }}:
+                      {{ today | date : 'dd/MM/yyyy' }} </span
+                    ><br />
+                    <span style="color: #eb1414">
+                      {{ 'app.service.expiration-date' | i18n }}:
+                      {{ expiredDate | date : 'dd/MM/yyyy' }}
+                    </span>
+                  </div>
+                </nz-row>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+      </nz-card>
     </form>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
@@ -1671,17 +1673,35 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-value"> {{ 'app.monthly.price' | i18n }} </span>
+              <span *ngIf="numberMonth == 1" class="text-value">
+                {{ 'app.cost.a.month' | i18n }}
+              </span>
+              <span *ngIf="numberMonth > 1" class="text-value">
+                {{ 'app.cost.n.month' | i18n : { numberMonth: numberMonth } }}
+              </span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
                 {{
-                  (totalAmount +
+                  totalAmount +
                     totalAmountVolume +
                     totalAmountIPv4 +
-                    totalAmountIPv6) /
-                    numberMonth | number : '1.0-0'
+                    totalAmountIPv6 | number
                 }}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">
+                {{ 'app.cost.vat' | i18n }}
+              </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalVAT + totalVATVolume + totalVATIPv4 + totalVATIPv6 | number }}
                 VND
               </span>
             </nz-col>
@@ -1706,9 +1726,9 @@
               <span class="text-value" style="color: #ea3829" nzAlign="right">
                 {{
                   totalincludesVAT +
-                    totalAmountVolumeVAT +
-                    totalAmountIPv4VAT +
-                    totalAmountIPv6VAT | number : '1.0-0'
+                    totalPaymentVolume +
+                    totalPaymentIPv4 +
+                    totalPaymentIPv6 | number : '1.0-0'
                 }}
                 VND
               </span>
@@ -1726,9 +1746,9 @@
                   form.invalid ||
                   isExistName ||
                   totalincludesVAT +
-                    totalAmountVolumeVAT +
-                    totalAmountIPv4VAT +
-                    totalAmountIPv6VAT ==
+                    totalPaymentVolume +
+                    totalPaymentIPv4 +
+                    totalPaymentIPv6 ==
                     0
                 "
               >
@@ -1738,9 +1758,9 @@
                     form.invalid ||
                     isExistName ||
                     totalincludesVAT +
-                      totalAmountVolumeVAT +
-                      totalAmountIPv4VAT +
-                      totalAmountIPv6VAT ==
+                      totalPaymentVolume +
+                      totalPaymentIPv4 +
+                      totalPaymentIPv6 ==
                       0
                       ? 'gray'
                       : 'white'

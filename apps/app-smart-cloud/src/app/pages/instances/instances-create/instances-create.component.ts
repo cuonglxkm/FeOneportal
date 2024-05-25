@@ -74,6 +74,7 @@ class BlockStorage {
   encrypt?: boolean = false;
   multiattach?: boolean = false;
   price?: number = 0;
+  VAT?: number = 0;
   priceAndVAT?: number = 0;
 }
 class Network {
@@ -81,6 +82,7 @@ class Network {
   ip?: string = '';
   amount?: number = 0;
   price?: number = 0;
+  VAT?: number = 0;
   priceAndVAT?: number = 0;
 }
 @Component({
@@ -91,6 +93,7 @@ class Network {
   animations: [slider],
 })
 export class InstancesCreateComponent implements OnInit {
+  largeSeparator: string = '<span class="separator large">»</span>';
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
@@ -462,6 +465,7 @@ export class InstancesCreateComponent implements OnInit {
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
     this.totalAmount = 0;
+    this.totalVAT = 0;
     this.totalincludesVAT = 0;
     this.getUnitPrice(1, 0, 0, 0, null);
     if (
@@ -481,6 +485,7 @@ export class InstancesCreateComponent implements OnInit {
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
     this.totalAmount = 0;
+    this.totalVAT = 0;
     this.totalincludesVAT = 0;
     this.getUnitPrice(1, 0, 0, 0, null);
     if (
@@ -540,6 +545,7 @@ export class InstancesCreateComponent implements OnInit {
     this.gpuUnitPrice = 0;
     this.gpuIntoMoney = 0;
     this.totalAmount = 0;
+    this.totalVAT = 0;
     this.totalincludesVAT = 0;
   }
   //#endregion
@@ -811,6 +817,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getTotalAmount();
         } else if (this.configCustom.vCPU == 0) {
           this.totalAmount = 0;
+          this.totalVAT = 0;
           this.totalincludesVAT = 0;
         }
       });
@@ -836,6 +843,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getTotalAmount();
         } else if (this.configCustom.ram == 0) {
           this.totalAmount = 0;
+          this.totalVAT = 0;
           this.totalincludesVAT = 0;
         }
       });
@@ -851,6 +859,12 @@ export class InstancesCreateComponent implements OnInit {
         debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
+        if (this.configCustom.capacity % 10 > 0) {
+          this.notification.error(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity')
+          );
+        }
         this.getUnitPrice(1, 0, 0, 0, null);
         if (
           this.configCustom.vCPU != 0 &&
@@ -861,6 +875,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getTotalAmount();
         } else if (this.configCustom.capacity == 0) {
           this.totalAmount = 0;
+          this.totalVAT = 0;
           this.totalincludesVAT = 0;
         }
       });
@@ -902,6 +917,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getTotalAmount();
         } else if (this.configGPU.CPU == 0) {
           this.totalAmount = 0;
+          this.totalVAT = 0;
           this.totalincludesVAT = 0;
         }
       });
@@ -929,6 +945,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getTotalAmount();
         } else if (this.configGPU.ram == 0) {
           this.totalAmount = 0;
+          this.totalVAT = 0;
           this.totalincludesVAT = 0;
         }
       });
@@ -956,6 +973,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getTotalAmount();
         } else if (this.configGPU.storage == 0) {
           this.totalAmount = 0;
+          this.totalVAT = 0;
           this.totalincludesVAT = 0;
         }
       });
@@ -985,6 +1003,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getTotalAmount();
         } else if (this.configGPU.GPU == 0) {
           this.totalAmount = 0;
+          this.totalVAT = 0;
           this.totalincludesVAT = 0;
         }
       });
@@ -1083,24 +1102,30 @@ export class InstancesCreateComponent implements OnInit {
         }
 
         this.totalAmountVolume = 0;
-        this.totalAmountVolumeVAT = 0;
+        this.totalVATVolume = 0;
+        this.totalPaymentVolume = 0;
         this.listOfDataBlockStorage.forEach((bs) => {
           this.totalAmountVolume += bs.price * this.numberMonth;
-          this.totalAmountVolumeVAT += bs.priceAndVAT * this.numberMonth;
+          this.totalVATVolume += bs.VAT * this.numberMonth;
+          this.totalPaymentVolume += bs.priceAndVAT * this.numberMonth;
         });
 
         this.totalAmountIPv4 = 0;
-        this.totalAmountIPv4VAT = 0;
+        this.totalVATIPv4 = 0;
+        this.totalPaymentIPv4 = 0;
         this.listOfDataIPv4.forEach((item) => {
           this.totalAmountIPv4 += item.price * this.numberMonth;
-          this.totalAmountIPv4VAT += item.priceAndVAT * this.numberMonth;
+          this.totalVATIPv4 += item.VAT * this.numberMonth;
+          this.totalPaymentIPv4 += item.priceAndVAT * this.numberMonth;
         });
 
         this.totalAmountIPv6 = 0;
-        this.totalAmountIPv6VAT = 0;
+        this.totalVATIPv6 = 0;
+        this.totalPaymentIPv6 = 0;
         this.listOfDataIPv6.forEach((item) => {
           this.totalAmountIPv6 += item.price * this.numberMonth;
-          this.totalAmountIPv6VAT += item.priceAndVAT * this.numberMonth;
+          this.totalVATIPv6 += item.VAT * this.numberMonth;
+          this.totalPaymentIPv6 += item.priceAndVAT * this.numberMonth;
         });
         this.cdr.detectChanges();
       });
@@ -1493,6 +1518,13 @@ export class InstancesCreateComponent implements OnInit {
       );
       return;
     }
+    if (this.isCustomconfig == true && this.configCustom.capacity % 10 > 0) {
+      this.notification.error(
+        '',
+        this.i18n.fanyi('app.notify.amount.capacity1')
+      );
+      return;
+    }
     if (
       this.isGpuConfig == true &&
       (this.configGPU.CPU == 0 ||
@@ -1618,6 +1650,7 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   totalAmount: number = 0;
+  totalVAT: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
     this.instanceInit();
@@ -1633,6 +1666,7 @@ export class InstancesCreateComponent implements OnInit {
     this.dataService.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );
@@ -1641,7 +1675,8 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   totalAmountVolume = 0;
-  totalAmountVolumeVAT = 0;
+  totalVATVolume = 0;
+  totalPaymentVolume = 0;
   dataBSSubject: Subject<any> = new Subject<any>();
   changeTotalAmountBlockStorage(id: number, value: any) {
     this.dataBSSubject.next({
@@ -1660,7 +1695,8 @@ export class InstancesCreateComponent implements OnInit {
         id = res.id;
         value = res.value;
         this.totalAmountVolume = 0;
-        this.totalAmountVolumeVAT = 0;
+        this.totalVATVolume = 0;
+        this.totalPaymentVolume = 0;
         let index = this.listOfDataBlockStorage.findIndex(
           (obj) => obj.id == id
         );
@@ -1688,13 +1724,17 @@ export class InstancesCreateComponent implements OnInit {
               changeBlockStorage.price =
                 Number.parseFloat(result.data.totalAmount.amount) /
                 this.numberMonth;
+              changeBlockStorage.VAT =
+                Number.parseFloat(result.data.totalVAT.amount) /
+                this.numberMonth;
               changeBlockStorage.priceAndVAT =
                 Number.parseFloat(result.data.totalPayment.amount) /
                 this.numberMonth;
               this.listOfDataBlockStorage[index] = changeBlockStorage;
               this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
                 this.totalAmountVolume += e.price * this.numberMonth;
-                this.totalAmountVolumeVAT += e.priceAndVAT * this.numberMonth;
+                this.totalVATVolume += e.VAT * this.numberMonth;
+                this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
               });
               this.cdr.detectChanges();
             });
@@ -1703,7 +1743,8 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   totalAmountIPv4 = 0;
-  totalAmountIPv4VAT = 0;
+  totalVATIPv4 = 0;
+  totalPaymentIPv4 = 0;
   dataSubjectIpv4: Subject<any> = new Subject<any>();
   changeTotalAmountIPv4(value: number) {
     this.dataSubjectIpv4.next(value);
@@ -1715,7 +1756,8 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.totalAmountIPv4 = 0;
-        this.totalAmountIPv4VAT = 0;
+        this.totalVATIPv4 = 0;
+        this.totalPaymentIPv4 = 0;
         this.listOfDataIPv4.forEach((e: Network) => {
           if (e.ip != '') {
             this.ipInit(e, false);
@@ -1743,10 +1785,16 @@ export class InstancesCreateComponent implements OnInit {
                   this.totalAmountIPv4 += Number.parseFloat(
                     result.data.totalAmount.amount
                   );
+                  e.VAT =
+                    Number.parseFloat(result.data.totalVAT.amount) /
+                    this.numberMonth;
+                  this.totalVATIPv4 += Number.parseFloat(
+                    result.data.totalVAT.amount
+                  );
                   e.priceAndVAT =
                     Number.parseFloat(result.data.totalPayment.amount) /
                     this.numberMonth;
-                  this.totalAmountIPv4VAT += Number.parseFloat(
+                  this.totalPaymentIPv4 += Number.parseFloat(
                     result.data.totalPayment.amount
                   );
                   this.cdr.detectChanges();
@@ -1758,7 +1806,8 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   totalAmountIPv6 = 0;
-  totalAmountIPv6VAT = 0;
+  totalVATIPv6 = 0;
+  totalPaymentIPv6 = 0;
   dataSubjectIpv6: Subject<any> = new Subject<any>();
   changeTotalAmountIPv6(value: number) {
     this.dataSubjectIpv6.next(value);
@@ -1770,7 +1819,8 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.totalAmountIPv6 = 0;
-        this.totalAmountIPv6VAT = 0;
+        this.totalVATIPv6 = 0;
+        this.totalPaymentIPv6 = 0;
         this.listOfDataIPv6.forEach((e: Network) => {
           if (e.ip != '') {
             this.ipInit(e, true);
@@ -1798,10 +1848,16 @@ export class InstancesCreateComponent implements OnInit {
                   this.totalAmountIPv6 += Number.parseFloat(
                     result.data.totalAmount.amount
                   );
+                  e.VAT =
+                    Number.parseFloat(result.data.totalVAT.amount) /
+                    this.numberMonth;
+                  this.totalVATIPv6 += Number.parseFloat(
+                    result.data.totalVAT.amount
+                  );
                   e.priceAndVAT =
                     Number.parseFloat(result.data.totalPayment.amount) /
                     this.numberMonth;
-                  this.totalAmountIPv6VAT += Number.parseFloat(
+                  this.totalPaymentIPv6 += Number.parseFloat(
                     result.data.totalPayment.amount
                   );
                   this.cdr.detectChanges();
