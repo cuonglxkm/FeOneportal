@@ -1,11 +1,23 @@
+@import '../../../../assets/size.less';
+
 .text-custom-price {
-  font-size: 16px;
+  font-size: @label-fontsize;
   line-height: 24px;
   letter-spacing: 0.10000000149011612px;
-  color: red;
+  margin-bottom:0px;
+
+  color:  @text-price-color;
   text-align: right
 }
-
+.text-price-unit{
+  font-size: @label-fontsize;
+  color:  @text-price-color;
+  opacity: 50%;
+  text-align: right;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  margin-bottom:0px;
+}
 .text-custom-time {
   font-family: Inter;
   font-size: 16px;
@@ -32,8 +44,9 @@
     border-radius: 4px;
     background-color: #fff;
     border: none;
-    margin-bottom:-20px;
-    margin-left: -22px;
+
+    // margin-bottom:-20px;
+    // margin-left: -22px;
   }
 }
 
@@ -131,7 +144,7 @@
 }
 
 .centered {
-  display: flex;
+  // display: flex;
   align-items: center;
   justify-content: flex-end;
 }
@@ -151,4 +164,55 @@
   font-style: normal;
   font-weight: 400;
   line-height: 140%; /* 19.6px */
+}
+.text-label{
+  // margin-bottom:10px;
+}
+.input-network{
+  margin-top:40px;
+}
+::ng-deep .netword-card.ng-star-inserted{
+  margin-bottom:30px
+}
+::ng-deep .preconfigured-package .ngucarousel-items{
+  justify-content: center;
+}
+.bonus-services{
+  border:1px dashed;
+  padding:20px;
+  border-radius: 8px;
+  border-color: #1b36bfc1;
+  margin:30px 0px;
+}
+::ng-deep .ant-alert-with-description {
+  align-items: flex-start;
+  padding: 20px 0px !important;
+}
+::ng-deep .ant-alert {
+  padding:0px;
+}
+.title-bonus-services{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.icon-trash{
+  color:red;
+  cursor: pointer;
+}
+.btn-view-service{
+  padding:0.5rem 1rem;
+  border-radius: 8px;
+  border: 0;
+  background: #cce9ff;
+  font-size: 16px;
+  cursor: pointer;
+}
+::ng-deep .custom-label label{
+  font-weight: 700 !important;
+  color: #333333;
+}
+::ng-deep  .ant-select-selector{
+  border-radius:@textbox-radius-lg !important;
 }

@@ -102,6 +102,7 @@
   "app.amount": "Số lượng",
   "app.resource": "Tài nguyên",
   "app.money.price": "Thành tiền/Đơn giá",
+
   "app.encrypt": "Mã hóa",
   "app.monthly.price": "Giá theo tháng",
   "app.ip.range": "Dải IP",
@@ -2368,6 +2369,7 @@
   "project.action.creating": "Yêu cầu tạo dự án đã được gửi đi",
   "project.note51": "Tạo dự án thất bại",
   "project.create":"Khởi tạo dự án",
+  "app.project.price": "Thành tiền",
   "status.enable":"Cho phép",
   "status.disable":"Không cho phép",
   "status.deleted":"Đã xóa",
