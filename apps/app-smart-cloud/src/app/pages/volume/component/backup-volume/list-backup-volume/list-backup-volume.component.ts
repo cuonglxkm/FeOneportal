@@ -13,6 +13,8 @@ import {
   RegionModel
 } from '../../../../../../../../../libs/common-utils/src';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-list-backup-volume',
@@ -26,7 +28,7 @@ export class ListBackupVolumeComponent implements OnInit{
   typeVpc: number;
   isLoading: boolean = false;
 
-  statusSelected: any;
+  statusSelected = 'all';
 
   inputName: string;
 
@@ -35,6 +37,12 @@ export class ListBackupVolumeComponent implements OnInit{
 
   response: BaseResponse<BackupVolume[]>;
   isBegin: boolean = false
+
+  status = [
+    {label: this.i18n.fanyi('app.status.all'), value: 'all'},
+    {label: this.i18n.fanyi('app.status.running'), value: 'available'},
+    {label: this.i18n.fanyi('app.status.suspend'), value: 'suspended'}
+  ]
 
   //child component
   // @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
@@ -45,7 +53,8 @@ export class ListBackupVolumeComponent implements OnInit{
               private router: Router,
               private notification: NzNotificationService,
               private cdr: ChangeDetectorRef,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -83,7 +92,13 @@ export class ListBackupVolumeComponent implements OnInit{
   }
 
   getListBackupVolumes(isBegin) {
-    this.backupVolumeService.getListBackupVolume(this.region, this.project, this.statusSelected, this.inputName, this.pageSize, this.pageIndex).subscribe(data => {
+    let valueSearch = '';
+    if(this.statusSelected == 'all') {
+      valueSearch = null
+    }
+    if(this.statusSelected == 'available' ) valueSearch = 'available'
+    if(this.statusSelected == 'suspended') valueSearch = 'suspended'
+    this.backupVolumeService.getListBackupVolume(this.region, this.project, valueSearch, this.inputName, this.pageSize, this.pageIndex).subscribe(data => {
       this.response = data;
 
       if (isBegin) {
