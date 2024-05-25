@@ -2,12 +2,14 @@
              [action]="action" [title]="'app.breadcrumb.list.backup.volume'|i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
-      <nz-breadcrumb-item [routerLink]="'/'">{{'app.breadcrumb.home'|i18n}}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home'|i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'volume.title.breadcrumb.backup.volume'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'volume.title.breadcrumb.backup.volume'|i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -33,18 +35,14 @@
                        nzTooltipTitle="{{ 'volume.tooltip.title.filter.status' | i18n }}"
                        nzTooltipPlacement="bottom"
                        nz-tooltip>
-<!--              <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>-->
+              <!--              <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>-->
             </nz-select>
-            <nz-input-group>
-<!--              style="width: 300px;"-->
-<!--              [nzPrefix]="prefixIconSearch"-->
-<!--              nzSize="large">-->
-<!--              <input-->
-<!--                name="name"-->
-<!--                nz-input-->
-<!--                [(ngModel)]="value"-->
-<!--                (input)="onInputChange($event.target['value'])"-->
-<!--                placeholder="{{ 'volume.placeholder.filter.name' | i18n }}" />-->
+            <nz-input-group style="width: 300px;" [nzPrefix]="prefixIconSearch" nzSize="large">
+              <input name="name"
+                     nz-input
+                     [(ngModel)]="inputName"
+                     (input)="onInputChange($event.target['value'])"
+                     placeholder="{{ 'volume.placeholder.filter.name' | i18n }}" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img
@@ -55,19 +53,59 @@
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
-<!--            <button-->
-<!--              nz-button-->
-<!--              nzType="primary"-->
-<!--              nzSize="large"-->
-<!--              (click)="navigateToCreateVolume()">-->
-<!--              <img-->
-<!--                style="padding-right: 10px; margin-top: -4px"-->
-<!--                src="assets/imgs/add-circle.svg"-->
-<!--                alt="" />-->
-<!--              <span class="button-text-primary">{{ 'volume.button.create' | i18n }}</span>-->
-<!--            </button>-->
+            <!--            <button-->
+            <!--              nz-button-->
+            <!--              nzType="primary"-->
+            <!--              nzSize="large"-->
+            <!--              (click)="navigateToCreateVolume()">-->
+            <!--              <img-->
+            <!--                style="padding-right: 10px; margin-top: -4px"-->
+            <!--                src="assets/imgs/add-circle.svg"-->
+            <!--                alt="" />-->
+            <!--              <span class="button-text-primary">{{ 'volume.button.create' | i18n }}</span>-->
+            <!--            </button>-->
           </nz-col>
         </nz-row>
+        <nz-table #fixedTable
+                  style="margin-top: 20px;"
+                  [nzScroll]="{ x: '100%', y: '55vh' }"
+                  [nzData]="response?.records"
+                  nzShowSizeChanger
+                  [nzFrontPagination]="false"
+                  [nzTotal]="response?.totalCount"
+                  [nzPageSize]="response?.pageSize"
+                  [nzPageIndex]="response?.currentPage"
+                  [nzLoading]="isLoading"
+                  (nzPageSizeChange)="onPageSizeChange($event)"
+                  (nzPageIndexChange)="onPageIndexChange($event)">
+
+          <thead>
+          <tr>
+            <th>Tên</th>
+            <th>Volume gốc</th>
+            <th>Dung lượng Backup</th>
+            <th>Gói backup</th>
+            <th>Thời gian tạo</th>
+            <th>Hết hạn</th>
+            <th>Trạng thái</th>
+<!--            <th>Trạng thái tác vụ</th>-->
+            <th>Thao tác</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of fixedTable.data">
+            <td><a>{{data.name}}</a></td>
+            <td>{{data.volumeName}}</td>
+            <td>{{data.size}}</td>
+            <td>{{data.backupPackageName}}</td>
+            <td>{{data.creationDate | date: 'dd/MM/yyyy'}}</td>
+            <td>{{data.expirationDate | date: 'dd/MM/yyyy'}}</td>
+            <td>{{data.status}}</td>
+            <td></td>
+          </tr>
+          </tbody>
+        </nz-table>
+
       </ng-container>
       <ng-container *ngSwitchDefault>
         <result>

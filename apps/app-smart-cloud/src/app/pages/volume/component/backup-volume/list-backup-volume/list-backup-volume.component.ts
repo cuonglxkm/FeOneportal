@@ -35,6 +35,7 @@ export class ListBackupVolumeComponent implements OnInit{
 
   response: BaseResponse<BackupVolume[]>;
   isBegin: boolean = false
+
   //child component
   // @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
   // private detailComponent: ComponentRef<DetailBackupVolumeComponent>;
@@ -49,14 +50,14 @@ export class ListBackupVolumeComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    this.getListBackupVolumes(true)
+    // this.getListBackupVolumes(true)
     // this.getListVolume(true);
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
-    this.getListBackupVolumes(true)
+    setTimeout(() => {this.getListBackupVolumes(true)}, 1500)
     // this.getListVolume(true);
   }
 
@@ -67,7 +68,7 @@ export class ListBackupVolumeComponent implements OnInit{
   }
 
   onInputChange(value) {
-    this.inputName = value;
+    this.inputName = value.trim();
     this.getListBackupVolumes(false);
   }
 

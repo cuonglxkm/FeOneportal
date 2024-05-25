@@ -87,7 +87,7 @@ export class VolumeComponent implements OnInit {
     this.isLoading = true;
     setTimeout(() => {
       this.getListVolume(true);
-    }, 500);
+    }, 2000);
   }
 
 
