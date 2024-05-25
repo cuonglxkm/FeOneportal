@@ -252,7 +252,7 @@ export class EditVolumeComponent implements OnInit {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id;
     this.volumeEdit.newDescription = this.validateForm.controls.description.value;
     this.volumeEdit.regionId = this.volumeInfo?.regionId;
-    this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB;
+    this.volumeEdit.newSize = this.validateForm.controls.storage.value;
     this.volumeEdit.iops = this.iops;
     // editVolumeDto.newOfferId = 0;
     this.volumeEdit.serviceName = this.validateForm.controls.name.value;

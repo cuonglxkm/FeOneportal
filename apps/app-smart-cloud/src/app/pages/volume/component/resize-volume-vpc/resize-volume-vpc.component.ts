@@ -179,7 +179,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   volumeInit() {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id;
     this.volumeEdit.regionId = this.volumeInfo?.regionId;
-    this.volumeEdit.newSize = this.validateForm.controls.storage.value;
+    this.volumeEdit.newSize = this.validateForm.controls.storage.value ;
     this.volumeEdit.iops = 200;
     // editVolumeDto.newOfferId = 0;
     this.volumeEdit.serviceName = this.volumeInfo?.name;
