@@ -35,7 +35,7 @@ export function ipAddressValidator(): ValidatorFn {
 function isValidIPAddress(ipAddress: string): boolean {
   // Kiểm tra xem địa chỉ IP có thuộc các dải cho phép không
   if (
-    !ipAddress.startsWith('10.') &&
+    !(ipAddress.startsWith('10.') && ipAddress >= '10.10.0.0' && ipAddress <= '10.100.0.0') &&
     !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.24.0.0') &&
     !(ipAddress.startsWith('192.168.'))
   ) {
