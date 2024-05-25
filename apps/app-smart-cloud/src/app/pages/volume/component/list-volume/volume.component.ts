@@ -227,21 +227,31 @@ export class VolumeComponent implements OnInit {
       this.notificationService.initiateSignalrConnection();
     }
 
-    this.notificationService.connection.on('UpdateVolume', (data) => {
-      if (data) {
-        let volumeId = data.serviceId;
-
-        var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
-        if (foundIndex > -1) {
-          var record = this.response.records[foundIndex];
-
-          record.status = data.status;
-          record.serviceStatus = data.serviceStatus;
-
-          this.response.records[foundIndex] = record;
-
-          this.getListVolume(false);
-          this.cdr.detectChanges();
+    this.notificationService.connection.on('UpdateVolume', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case "CREATING":
+          case "RESIZED":
+          case "CREATED":
+          case "DELETED":
+            this.getListVolume(true);
+          break;
+          //case "CREATED":
+            // let volumeId = message.serviceId;
+            // var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+            // if (foundIndex > -1) {
+            //   var record = this.response.records[foundIndex];
+            //   record.serviceStatus = message.data?.serviceStatus;
+            //   record.createDate = message.data?.creationDate;
+            //   record.expirationDate = message.data?.expirationDate;
+            //   this.response.records[foundIndex] = record;
+            //   this.cdr.detectChanges();
+            // }
+            // else
+            // {
+              this.getListVolume(true);
+            //}
+          //break;
         }
       }
     });
