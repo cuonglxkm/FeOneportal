@@ -2119,7 +2119,7 @@
   "ip.floating.nofitacation.detach.success": "Gỡ Ip Floating thành công",
   "ip.floating.nofitacation.detach.fail": "Gỡ Ip Floating thất bại",
   "ip.floating.label.attach": "Gắn IP Floating",
-  "ip.floating.alert.remove.ip.address": "Bạn đang thực hiện xóa IP Floating + địa chỉ IP Floating.",
+  "ip.floating.alert.remove.ip.address": "Bạn đang thực hiện xóa IP Floating ",
   "ip.floating.alert.remove": "Để thực hiện xoá IP Floating, vui lòng nhập chính xác IP để xác nhận.",
   "ip.floating.label.press": "nhập IP",
   "ip.floating.label.attaching": "Bạn đang thực hiện gắn IP Floating",

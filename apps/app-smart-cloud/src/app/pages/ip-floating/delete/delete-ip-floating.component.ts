@@ -5,6 +5,7 @@ import { IpFloatingService } from '../../../shared/services/ip-floating.service'
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { IpPublicService } from 'src/app/shared/services/ip-public.service';
 
 @Component({
   selector: 'one-portal-delete-ip-floating',
@@ -31,6 +32,7 @@ export class DeleteIpFloatingComponent{
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private ipFloatingService: IpFloatingService,
+              private ipPublicService: IpPublicService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder) {
   }
@@ -48,7 +50,7 @@ export class DeleteIpFloatingComponent{
     this.isLoading = true
     if(this.validateForm.valid) {
       if(this.ip.includes(this.validateForm.controls.ip.value)){
-        this.ipFloatingService.deleteIp(this.idIpFloating).subscribe(data => {
+        this.ipPublicService.remove(this.idIpFloating).subscribe(data => {
           if(data) {
             this.isVisible = false
             this.isLoading =  false
