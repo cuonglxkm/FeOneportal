@@ -75,7 +75,12 @@ export class DeleteVlanComponent implements AfterViewInit {
       }, error => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note56'), error.error.detail)
+        if(error.error.message.includes('could not be found')) {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Network không tồn tại!')
+        } else {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note56'))
+        }
+
         this.value = null
         this.onOk.emit()
       })

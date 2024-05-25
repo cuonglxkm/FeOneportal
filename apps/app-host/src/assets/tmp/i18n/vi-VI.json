@@ -349,7 +349,7 @@
   "app.alert.delete.instance.warn": "Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và",
   "app.alert.delete.instance.warn.next": "KHÔNG THỂ KHÔI PHỤC LẠI",
   "app.alert.reset.instance.password": "Nếu HĐH là Linux, hệ thống sẽ đặt lại mật khẩu cho tài khoản root. Nếu HĐH là Windows, hệ thống sẽ đặt lại mật khẩu cho tài khoản Administrator",
-  
+
   "app.tooltip.instance.name": "Tên máy ảo không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)",
   "app.tooltip.instances.from.snapshot": "Quý khách có thể tạo máy ảo từ một bản snapshot có sẵn để phục hồi máy ảo về trạng thái khi thực hiện tạo bản snapshot đó",
   "app.tooltip.instance.OS": "Hệ điều hành sử dụng để khởi tạo máy ảo",
@@ -2247,7 +2247,7 @@
   "app.vlan.note14": "IP Version",
   "app.vlan.note15": "Địa chỉ không được phép để trống",
   "app.vlan.note16": "DHCP là cơ chế cấp phát động địa chỉ IP cho subnet đó. Tức là khi tạo Port mà không chỉ định IP nào thì DHCP sẽ tự gán vào Port vừa tạo 1 IP Ưu điểm: Không cần quản lý địa chỉ IP, hệ thống sẽ tự động cấp phát địa chỉ IP Nhược điểm: DHCP nó sẽ dùng ngay 03 IP cho DHCP server. điều này dẫn tới việc nếu subnet chỉ có 8 IP chẳng hạn, sẽ chỉ dùng dc có 5 IP",
-  "app.vlan.note17": "Vui lòng chọn các dải trong khoảng: “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24",
+  "app.vlan.note17": "Vui lòng chọn các dải trong khoảng: “10.10.0.0 - 10.100.0.0, 172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24",
   "app.vlan.note18": "Subnet được add Router interface thì sẽ không Disable Gateway IP và ngược lại Subnet không có gateway thì không add Router interface",
   "app.vlan.note19": "Nếu không nhập thì hệ thống sẽ tự động lấy địa chỉ IP đầu tiên trong dải mạng để làm gateway, ví dụ: 10.21.0.1\n- Nếu để trống thì hệ thống sẽ tự động lấy địa chỉ IP đầu tiên trong dải mạng để làm gateway",
   "app.vlan.note20": "Nhập Gateway",
@@ -2260,7 +2260,7 @@
   "app.vlan.note27": "Hiện tại chỉ cùng cấp IPv4",
   "app.vlan.note28": "Subnet phải là dải con của network x.x.0.0/16 (CIDR của network được chọn)",
   "app.vlan.note29": "Địa chỉ không được phép để trống",
-  "app.vlan.note30": "Vui lòng chọn các dải trong khoảng: “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24",
+  "app.vlan.note30": "Vui lòng chọn các dải trong khoảng: “10.10.0.0 - 10.100.0.0, 172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24",
   "app.vlan.note31": "Subnet được add Router interface thì sẽ không Disable Gateway IP và ngược lại Subnet không có gateway thì không add Routerinterface",
   "app.vlan.note32": "DHCP là cơ chế cấp phát động địa chỉ IP cho subnet đó. Tức là khi tạo Port mà không chỉ định IP nào thì DHCP sẽ tự gán vào Port vừa tạo 1 IP Ưu điểm: Không cần quản lý địa chỉ IP, hệ thống sẽ tự động cấp phát địa chỉ IP Nhược điểm: DHCP nó sẽ dùng ngay 03 IP cho DHCP server. điều này dẫn tới việc nếu subnet chỉ có 8 IP chẳng hạn, sẽ chỉ dùng dc có 5 IP",
   "app.vlan.note33": "Disable GatewayIP",
