@@ -13,9 +13,9 @@
     <span class="text-modal-title">{{'ip.floating.label.attach' | i18n}}</span>
   </ng-template>
   <ng-template #modalContent>
-    <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
+    <form [formGroup]="validateForm"  nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
       <nz-alert nzType="warning"
-                nzDescription="{{'ip.floating.alert.remove.ip.address' | i18n}}"
+                nzDescription="{{('ip.floating.alert.remove.ip.address' | i18n) + ip}}"
                 nzShowIcon
                 style="margin-bottom: 24px;">
       </nz-alert>
@@ -28,7 +28,7 @@
         <nz-form-control>
           <input nz-input
                  class="input-custom"
-                 formControlName="name"
+                 formControlName="ip"
                  placeholder="{{'ip.floating.label.press' | i18n}}" />
         </nz-form-control>
       </nz-form-item>
