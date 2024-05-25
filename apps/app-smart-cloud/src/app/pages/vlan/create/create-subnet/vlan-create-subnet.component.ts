@@ -37,6 +37,7 @@ export function ipAddressValidator(): ValidatorFn {
 function isValidIPAddress(ipAddress: string): boolean {
   if (
     !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.25.0.0') &&
+    !(ipAddress.startsWith('10.') && ipAddress >= '10.10.0.0' && ipAddress <= '10.100.0.0') &&
     !(ipAddress.startsWith('192.168.')) &&
     !(ipAddress === '192.168.0.0')
   ) {
