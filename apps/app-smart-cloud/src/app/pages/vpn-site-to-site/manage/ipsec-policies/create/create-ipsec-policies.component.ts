@@ -64,7 +64,7 @@ export class CreateIpsecPoliciesComponent implements OnInit{
     name: FormControl<string>;
     lifeTimeValue: FormControl<number>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/)]],
     lifeTimeValue: [3600, [Validators.required, Validators.min(60)]]
   });
 

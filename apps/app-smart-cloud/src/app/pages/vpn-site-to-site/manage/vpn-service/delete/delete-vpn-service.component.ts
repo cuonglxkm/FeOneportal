@@ -50,6 +50,7 @@ export class DeleteVpnServiceComponent{
   handleCancel(){
     this.isVisible = false
     this.isLoading =  false
+    this.validateForm.reset()
   }
 
   handleOk() {
@@ -68,6 +69,7 @@ export class DeleteVpnServiceComponent{
             this.isVisible = false
             this.isLoading =  false
             this.notification.success('Thành công', 'Xoá Vpn Service thành công')
+            this.validateForm.reset()
             this.onOk.emit(data)
           }
         }, error => {

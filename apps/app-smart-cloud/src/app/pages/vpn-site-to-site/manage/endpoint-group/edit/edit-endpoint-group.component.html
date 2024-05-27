@@ -34,7 +34,7 @@ src="assets/imgs/edit-2.svg"
             nzTheme="outline"
             nz-popover
             [nzPopoverContent]="
-              'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'
+              'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
             "
             nzPopoverPlacement="bottom"
           ></span>
@@ -49,6 +49,7 @@ src="assets/imgs/edit-2.svg"
             formControlName="nameEndpointGroup"
             id="nameEndpointGroup"
             placeholder="{{'validation.info.required' | i18n}}"
+            appTrim
             [maxlength]="50"
             class="input-custom"
           />
@@ -57,9 +58,9 @@ src="assets/imgs/edit-2.svg"
               >{{'validation.info.required' | i18n}}</ng-container
             >
             <ng-container *ngIf="control.hasError('pattern')"
-              >Name : Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z,
+              >Tên của Endpoint bao gồm các ký tự chữ thường a-z, chữ hoa A-Z,
               số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng
-              trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.</ng-container
+              trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.</ng-container
             >
           </ng-template>
         </nz-form-control>
@@ -114,7 +115,11 @@ src="assets/imgs/edit-2.svg"
           nzType="default"
           (click)="handleCancel()"
         >
-          {{'app.order-detail.back' | i18n}}
+        <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
         </button>
         <button
           nz-button
@@ -124,7 +129,13 @@ src="assets/imgs/edit-2.svg"
           [nzLoading]="isLoading"
           class="button-ok"
         >
-          <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+            <img
+            *ngIf="isLoading === false"
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/confirm.svg"
+            alt=""
+          />
+          {{ 'app.button.confirm' | i18n }}
         </button>
       </div>
     </form>

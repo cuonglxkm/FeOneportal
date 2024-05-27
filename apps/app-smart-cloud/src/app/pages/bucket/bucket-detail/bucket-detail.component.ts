@@ -1,7 +1,12 @@
 import { Clipboard } from '@angular/cdk/clipboard';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -21,7 +26,6 @@ import mime from 'mime';
 import { forkJoin, of } from 'rxjs';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { cloneDeep } from 'lodash';
-
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -108,15 +112,14 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   linkShare = '';
   today = new Date();
   timeDefaultValue = setHours(new Date(), 0);
-  dateShare: any;
+  dateShare=  new Date();
   versionId: string;
   private: any;
   percent = 0;
   keyName: string;
   isLoadingGetLink: boolean = false;
   isVisibleDeleteObject: boolean = false;
-  disabledDate = (current: Date): boolean =>
-    differenceInCalendarDays(current, this.today) < 0;
+
   activePrivate = true;
   filterName: string;
   filterCondition: string;
@@ -129,17 +132,17 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   listFile = [];
 
   formFilter: FormGroup<{
-    filterName: FormControl<string>
-    filterCondition: FormControl<string>
-    filterValueName: FormControl<string>
-    filterValueDate: FormControl<string>
-    filterValueSize: FormControl<number>
+    filterName: FormControl<string>;
+    filterCondition: FormControl<string>;
+    filterValueName: FormControl<string>;
+    filterValueDate: FormControl<string>;
+    filterValueSize: FormControl<number>;
   }> = this.fb.group({
     filterName: [''],
     filterCondition: [''],
     filterValueName: [''],
     filterValueDate: [''],
-    filterValueSize: [0]
+    filterValueSize: [0],
   });
   constructor(
     private service: ObjectObjectStorageService,
@@ -155,6 +158,36 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     super();
   }
 
+  range(start: number, end: number): number[] {
+    const result: number[] = [];
+    for (let i = start; i < end; i++) {
+      result.push(i);
+    }
+    return result;
+  }
+
+  disabledDate = (current: Date): boolean =>
+    differenceInCalendarDays(current, this.today) < 0;
+  disabledDateTime: DisabledTimeFn = () => {
+    const selectedDate = new Date(this.dateShare);
+    const currentHour = this.today.getHours();
+    const currentMinute = this.today.getMinutes();
+    const currentSecond = this.today.getSeconds();
+    console.log(selectedDate);
+    
+    return {
+      nzDisabledHours: () => this.range(0, currentHour),
+      nzDisabledMinutes: () =>
+        selectedDate.getHours() === currentHour
+          ? this.range(0, currentMinute)
+          : [],
+      nzDisabledSeconds: () =>
+        selectedDate.getHours() === currentHour &&
+        selectedDate.getMinutes() === currentMinute
+          ? this.range(0, currentSecond)
+          : [],
+    };
+  };
   ngOnInit(): void {
     this.loadBucket();
     this.loadData();
@@ -217,13 +250,16 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           filterValueSize = this.formFilter.controls.filterValueSize.value;
           break;
         case 'KB':
-          filterValueSize = this.formFilter.controls.filterValueSize.value * 1024;
+          filterValueSize =
+            this.formFilter.controls.filterValueSize.value * 1024;
           break;
         case 'MB':
-          filterValueSize = this.formFilter.controls.filterValueSize.value * 1024 * 1024;
+          filterValueSize =
+            this.formFilter.controls.filterValueSize.value * 1024 * 1024;
           break;
         case 'GB':
-          filterValueSize = this.formFilter.controls.filterValueSize.value * 1024 * 1024 * 1024;
+          filterValueSize =
+            this.formFilter.controls.filterValueSize.value * 1024 * 1024 * 1024;
           break;
       }
     } else {
@@ -247,7 +283,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     const month = this.filterValueDate.getMonth();
     const day = this.filterValueDate.getDate();
     let filterValue =
-    this.formFilter.controls.filterName.value === 'Tên' && this.formFilter.controls.filterCondition.value === 'Bằng'
+      this.formFilter.controls.filterName.value === 'Tên' &&
+      this.formFilter.controls.filterCondition.value === 'Bằng'
         ? `"${this.formFilter.controls.filterName.value}"`
         : this.formFilter.controls.filterName.value === 'Dung lượng'
         ? `${filterValueSize}`
@@ -269,14 +306,15 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.isVisibleVersioning = false;
   }
 
-  handleCancelShareFile(){
+  handleCancelShareFile() {
     this.isVisibleShare = false;
-    this.linkShare = ''
+    this.dateShare = new Date();
+    this.linkShare = '';
   }
 
   selectCol(item: any, event: any) {
     console.log(event);
-    
+
     const filteredItems = this.dataFilter.filter((item) => item.name == event);
     if (event == 'Tên') {
       if (filteredItems.length >= 4) {
@@ -398,7 +436,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
     filter.orderNum = this.orderNum++;
     console.log(this.dataFilter);
-    
+
     this.dataFilter.push(filter);
     if (this.dataFilter.length >= 14) {
       this.isVisibleAddFilte = false;
@@ -552,7 +590,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   onAllChecked(isAddAll: boolean): void {
-    this.listOfData.forEach(item => this.updateCheckedSet(isAddAll, item));
+    this.listOfData.forEach((item) => this.updateCheckedSet(isAddAll, item));
     this.refreshCheckedStatus();
   }
 
@@ -958,7 +996,10 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     console.log(filesToUpload);
 
     if (filesToUpload.length == 0) {
-      this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.bucket.detail.uploadFile.warning'));
+      this.notification.warning(
+        this.i18n.fanyi('app.status.warning'),
+        this.i18n.fanyi('app.bucket.detail.uploadFile.warning')
+      );
     } else {
       const uploadNextFile = (index) => {
         if (index < filesToUpload.length) {
@@ -976,7 +1017,10 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   uploadSingleFile(item) {
     if (item.uploaded) {
-      this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.bucket.detail.uploadFile.warning1'));
+      this.notification.warning(
+        this.i18n.fanyi('app.status.warning'),
+        this.i18n.fanyi('app.bucket.detail.uploadFile.warning1')
+      );
       return Promise.resolve();
     }
     var chunkCounter = 0;
@@ -1066,14 +1110,14 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               item.uploaded = true;
               this.notification.success(
                 this.i18n.fanyi('app.status.success'),
-                this.i18n.fanyi('app.bucket.detail.updateFile.success')
+                this.i18n.fanyi('app.bucket.detail.uploadFile.success')
               );
               this.loadData();
               resolve();
             } else {
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
-                this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+                this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
               );
               reject();
             }
@@ -1082,7 +1126,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           xhr.onerror = () => {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+              this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
             );
             reject();
           };
@@ -1140,7 +1184,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               xhr.onerror = () => {
                 this.notification.error(
                   this.i18n.fanyi('app.status.fail'),
-                  this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+                  this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
                 );
                 this.uploadFailed = true;
                 item.percentage = 100;
@@ -1164,7 +1208,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             (error) => {
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
-                this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+                this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
               );
             }
           );
@@ -1195,7 +1239,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               item.isUpload = true;
               this.notification.success(
                 this.i18n.fanyi('app.status.success'),
-                this.i18n.fanyi('app.bucket.detail.updateFile.success')
+                this.i18n.fanyi('app.bucket.detail.uploadFile.success')
               );
               this.loadData();
               resolve();
@@ -1203,7 +1247,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             xhr.onerror = () => {
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
-                this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+                this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
               );
               reject();
             };
@@ -1212,7 +1256,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           (error) => {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+              this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
             );
             reject();
           }
