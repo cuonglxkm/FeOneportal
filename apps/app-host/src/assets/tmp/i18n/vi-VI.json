@@ -29,7 +29,7 @@
   "validation.lastName.required": "Vui lòng nhập họ",
   "validation.phone-number.required": "Vui lòng nhập số điện thoại",
   "validation.province.required": "Vui lòng chọn tỉnh/thành phố",
-  "validation.info.required": "Vui lòng nhập thông tin",
+  "validation.info.required": "Vui lòng nhập thông tin.",
   "validation.name.pattern": "Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ_)",
   "validation.exist.name": "Tên {{name}} này đã được sử dụng, vui lòng chọn tên khác",
   "validation.choose.required": "Vui lòng chọn {{name}}",
@@ -893,7 +893,7 @@
   "app.file.system.access.to.delete.file.fail": "Xóa File System thất bại",
 
   "app.file.system.placeholder.search": "Tìm kiếm theo tên",
-  "app.file.system.error.pattern.storage": "Vui lòng nhập số nguyên dương",
+  "app.file.system.error.pattern.storage": "Vui lòng nhập số nguyên dương.",
   "app.file.system.not.enough.quota": "Dung lượng vượt quá dung lượng hiện có, xin vui lòng thử lại",
 
   "app.note.delete.file.system": "Để thực hiện xóa File System {{name}}, vui lòng nhập tên File System để xác nhận",
