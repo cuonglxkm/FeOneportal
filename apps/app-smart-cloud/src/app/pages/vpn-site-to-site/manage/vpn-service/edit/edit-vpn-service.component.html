@@ -36,7 +36,7 @@
                 <span nz-icon nzType="question-circle"
                       nzTheme="outline"
                       nz-popover
-                      [nzPopoverContent]="'Tên của VPN Service, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
+                      [nzPopoverContent]="'Tên của VPN Service, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'"
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
@@ -44,6 +44,8 @@
             nz-input
             type="text"
             required
+            appTrim
+            [maxlength]="50"
             placeholder="Nhập tên"
             formControlName="name"
             class="input-custom"
@@ -84,7 +86,11 @@
               (click)="handleCancel()"
               class="button-back"
             >
-              Huỷ
+            <img
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/cancel.svg"
+            alt=""
+          />{{ 'app.button.cancel' | i18n }}
             </button>
             <nz-form-control *nzSpaceItem>
               <button
@@ -95,7 +101,13 @@
                 (click)="handleOk()"
                 [disabled]="validateForm.invalid"
               >
-                Xác nhận
+              <img
+              *ngIf="isLoading === false"
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/confirm.svg"
+              alt=""
+            />
+            {{ 'app.button.confirm' | i18n }}
               </button>
             </nz-form-control>
           </nz-space>

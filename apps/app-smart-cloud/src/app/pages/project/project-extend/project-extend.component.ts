@@ -37,6 +37,7 @@ export class ProjectExtendComponent implements OnInit{
   today: any;
   expiredDate: any;
   expiredDateOld: any;
+  
   loading = true;
   total: any;
 
@@ -53,6 +54,7 @@ export class ProjectExtendComponent implements OnInit{
     this.regionId = regionAndProject.regionId;
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getData(id);
+    
     this.onChangeTime()
   }
 
@@ -70,8 +72,10 @@ export class ProjectExtendComponent implements OnInit{
           this.data = data;
           this.expiredDate = data.expireDate;
           this.today = data.createDate;
-          this.expiredDateOld = data.expireDate ;
-         
+          const expiredDateOld = new Date(this.expiredDate);
+          expiredDateOld.setDate(expiredDateOld.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
+          this.expiredDateOld = expiredDateOld;
+
         }
       )
 
@@ -153,19 +157,16 @@ export class ProjectExtendComponent implements OnInit{
   // }
 
   onChangeTime() {
-    console.log("this.expiredDate", this.expiredDate)
+    // this.expiredDateOld =
+    console.log("expiredDateOld", this.expiredDateOld)
     const dateNow =new Date(this.expiredDate );
-    console.log("datenow1", dateNow)
-
-    dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value) * 30);
-    const numOfMonth = Number(this.form.controls['numOfMonth'].value) * 30
-    console.log("dtaenow2", dateNow)
-  
-    console.log("Number(this.form.controls['numOfMonth'].value) * 30);", numOfMonth )
-    const getdate = dateNow.getDate()
-    console.log("dateNow.getDate()", getdate)
-    this.expiredDateOld = dateNow;
+   
+     dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value) * 30);
+    console.log("hunnn", dateNow)
+    this.expiredDateOld  = dateNow;
     this.caculate();
+
+
   }
 
   private caculate() {

@@ -233,6 +233,7 @@ import { ExtendFileSystemSnapshotComponent } from './file-system-snapshot/extend
 import { DeleteSslCertComponent } from './ssl-cert/delete/delete-ssl-cert.component';
 
 import { TrimDirective } from './file-storage/TrimDirective';
+import { DeleteBackupVolumeComponent } from './volume/component/backup-volume/delete-backup-volume/delete-backup-volume.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -448,7 +449,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     UpdateBackupVolumeComponent,
     CreateSslCertComponent,
     ExtendFileSystemSnapshotComponent,
-    DeleteSslCertComponent
+    DeleteSslCertComponent,
+    DeleteBackupVolumeComponent,
   ],
   imports: [
     CommonModule,
@@ -477,7 +479,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AutofocusDirective,
     // ChartModule,
     HttpClientModule,
-    TrimDirective
-  ]
+    TrimDirective,
+  ],
 })
 export class PagesModule {}

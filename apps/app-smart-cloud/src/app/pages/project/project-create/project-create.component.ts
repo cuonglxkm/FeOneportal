@@ -16,6 +16,8 @@ import { debounceTime, Subject } from 'rxjs';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
+
+
 @Component({
   selector: 'one-portal-project-create',
   templateUrl: './project-create.component.html',
@@ -35,6 +37,7 @@ export class ProjectCreateComponent implements OnInit {
     // interval: { timing: 1500 },
     animation: 'lazy'
   };
+  messageToggleView: string;
 
   listOfferFlavors: OfferItem[] = [];
   listLoadbalancer: OfferDetail[] = [];
@@ -58,24 +61,40 @@ export class ProjectCreateComponent implements OnInit {
   numberFileSystem: any = 0;
   numberFileScnapsshot: any = 0;
   numberSecurityGroup: any = 0;
-  vCPU = 1;
-  ram = 1;
+  vCPU = 0;
+  ram = 0;
   hhd = 0;
+
   ssd = 0;
   nwNormal = 0;
   routerNormal = 0;
   sgNormal = 0;
 
 
+  activeBonusService = true;
+  activeIP = false;
+  trashIP = false;
+
   activeBackup = false;
+  trashBackup = false;
   activeSiteToSite = false;
+  trashVpnSiteToSite = false;
+
   activeLoadBalancer = false;
+  trashLoadBalancer = false;
+
   activeFileStorage = false;
+  trashFileStorage = false;
+
   disableIpConnectInternet = false;
   loadingIpConnectInternet = false;
-  ipConnectInternet = '';
+  ipConnectInternet = 'Không sử dụng';
   loadBalancerId = '';
   siteToSiteId = '';
+
+  trashVpnGpu = false;
+  activeVpnGpu = false
+
   total: any;
   totalAmount = 0;
   totalPayment = 0;
@@ -96,13 +115,26 @@ export class ProjectCreateComponent implements OnInit {
     ramPerUnit: 0,
     hhdPerUnit: 0,
     ssdPerUnit: 0,
+
     IpFloating: 0,
+    IpFloatingUnit: 0,
+
     IpPublic: 0,
+    IpPublicUnit: 0,
     IpV6: 0,
+    IpV6Unit: 0,
     backup: 0,
+    backupUnit: 0,
     loadBalancer: 0,
+    loadBalancerUnit: 0,
     fileStorage: 0,
-    siteToSite: 0
+    fileStorageUnit: 0,
+
+    filestorageSnapshot: 0,
+    filestorageSnapshotUnit: 0,
+
+    siteToSite: 0,
+    siteToSiteUnit: 0
   };
   form = new FormGroup({
     name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(20)] }),
@@ -112,17 +144,22 @@ export class ProjectCreateComponent implements OnInit {
     //tab 1
     // ipType: new FormControl('', { validators: [] }),
   });
+  // private inputChangeSubject: Subject<number> = new Subject<number>();
+  private inputChangeSubject = new Subject<{ value: number, name: string }>();
 
   private searchSubject = new Subject<string>();
   private readonly debounceTimeMs = 500;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private instancesService: InstancesService,
-              private cdr: ChangeDetectorRef,
-              private router: Router,
-              private notification: NzNotificationService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private ipService: IpPublicService) {
+    private instancesService: InstancesService,
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private ipService: IpPublicService) {
+    this.inputChangeSubject.pipe(
+      debounceTime(800)
+    ).subscribe(data => this.checkNumberInput(data.value, data.name));
   }
 
   ngOnInit() {
@@ -137,6 +174,8 @@ export class ProjectCreateComponent implements OnInit {
       this.calculateReal();
     });
     this.onChangeTime();
+
+    this.messageToggleView = "Ẩn dịch vụ bổ sung"
   }
 
   calculateReal() {
@@ -149,10 +188,20 @@ export class ProjectCreateComponent implements OnInit {
         ip = lstIp[0];
       }
       let numOfMonth = this.form.controls['numOfMonth'].value;
-      let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : 1;
-      let IPFloating = this.selectIndexTab == 1 && this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
-      let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
-      if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
+      // let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : 1;
+      // let IPFloating = this.selectIndexTab == 1 && this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
+      // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
+      // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
+
+      let IPPublicNum = this.numberIpPublic;
+      let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != 'Không sử dụng' ? this.numberIpFloating : 0;
+      // let IPFloating =  this.numberIpFloating;
+      let IPV6 = this.numberIpv6;
+      // if (( this.offerFlavor != undefined) || ( this.vCPU != 0 && this.ram != 0)) {
+      // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
+        console.log("offerFlavor", this.offerFlavor)
+        if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || this.vCPU != 0 || this.ram != 0)) {
+        console.log("lstIp",lstIp)
         if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
           let listString = lstIp[1].split(' ');
           if (listString.length == 3) {
@@ -161,38 +210,41 @@ export class ProjectCreateComponent implements OnInit {
         }
 
         this.loadingCalculate = true;
-        const requestBody =
-          {
-            quotavCpu: this.vCPU,
-            quotaRamInGb: this.ram,
-            quotaHddInGb: this.hhd,
-            quotaSSDInGb: this.ssd,
-            quotaBackupVolumeInGb: this.numberBackup,
-            quotaSecurityGroupCount: this.numberSecurityGroup,
-            projectType: this.vpcType,
-            // quotaKeypairCount: 0,// NON
-            // quotaVolumeSnapshotCount: 0,//NON
-            quotaIpPublicCount: IPPublicNum,
-            quotaIpFloatingCount: IPFloating,
-            quotaNetworkCount: this.numberNetwork,
-            quotaRouterCount: this.numberRouter,
-            quotaLoadBalancerSDNCount: this.numberLoadBalancer,
-            loadBalancerOfferId: this.loadBalancerId,
-            vpnSiteToSiteOfferId: this.siteToSiteId,
-            quotaShareInGb: this.numberFileSystem,
-            QuotaShareSnapshotInGb: this.numberFileScnapsshot,
-            publicNetworkId: ip,
-            publicNetworkAddress: ipName,
-            quotaIPv6Count: IPV6,
-            typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
-            serviceType: 12,
-            serviceInstanceId: 0,
-            customerId: this.tokenService.get()?.userId,
-            offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
-            actionType: 0,
-            regionId: this.regionId,
-            serviceName: this.form.controls['name'].value
-          };
+        const requestBody = {
+          quotavCpu: this.vCPU,
+          quotaRamInGb: this.ram,
+          quotaHddInGb: this.hhd,
+
+
+          quotaSSDInGb: this.ssd,
+          quotaBackupVolumeInGb: this.numberBackup,
+          quotaSecurityGroupCount: this.numberSecurityGroup,
+          projectType: this.vpcType,
+          // quotaKeypairCount: 0,// NON
+          // quotaVolumeSnapshotCount: 0,//NON
+          quotaIpPublicCount: IPPublicNum,
+          quotaIpFloatingCount: IPFloating,
+          quotaNetworkCount: this.numberNetwork,
+          quotaRouterCount: this.numberRouter,
+          quotaLoadBalancerSDNCount: this.numberLoadBalancer,
+          loadBalancerOfferId: this.loadBalancerId,
+          vpnSiteToSiteOfferId: this.siteToSiteId,
+          quotaShareInGb: this.numberFileSystem,
+          QuotaShareSnapshotInGb: this.numberFileScnapsshot,
+          publicNetworkId: ip,
+          publicNetworkAddress: ipName,
+          quotaIPv6Count: IPV6,
+          typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
+          serviceType: 12,
+          serviceInstanceId: 0,
+          customerId: this.tokenService.get()?.userId,
+          offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
+
+          actionType: 0,
+          regionId: this.regionId,
+          serviceName: this.form.controls['name'].value
+        };
+        console.log("requestBody", requestBody)
         const request = {
           orderItems: [
             {
@@ -229,10 +281,58 @@ export class ProjectCreateComponent implements OnInit {
     } else {
       this.activeVpc = true;
       this.activeNoneVpc = false;
+      console.log("number", number)
+
     }
     this.searchSubject.next('');
+
   }
 
+  // onInputChange(value: number): void {
+  //   console.log("object value", value)
+  //   this.inputChangeSubject.next(value);
+  // }
+  // checkNumberInput(value:number): void {
+  // const numericValue = Number(value);
+  // if(isNaN(numericValue)|| numericValue%10 !==0){
+  //   this.hhd=0;
+  //   this.price.hhd =0;
+  //   this.price.hhdPerUnit =0
+  // }
+  // this.calculate(null);
+  // }
+  onInputChange(value: number, name: string): void {
+    console.log("object value", value)
+    this.inputChangeSubject.next({ value, name });
+  }
+  checkNumberInput(value: number, name: string): void {
+    const numericValue = Number(value);
+    if (isNaN(numericValue) || numericValue % 10 !== 0) {
+      if (name === 'hhd') {
+        this.hhd = 0;
+        this.price.hhd = 0;
+        this.price.hhdPerUnit = 0;
+      } else if (name === 'ssd') {
+        this.ssd = 0;
+        this.price.ssd = 0;
+        this.price.ssdPerUnit = 0
+      }
+      else if (name === 'backup') {
+        this.numberBackup = 0;
+        this.price.backup = 0;
+        this.price.backupUnit = 0;
+      } else if (name === 'fileSystem') {
+        this.numberFileSystem = 0;
+        this.price.fileStorage = 0;
+        this.price.fileStorageUnit = 0;
+      } else if (name === 'fileSnapshot') {
+        this.numberFileScnapsshot = 0;
+        this.price.filestorageSnapshot = 0;
+        this.price.filestorageSnapshotUnit = 0;
+      }
+    }
+    this.calculate(null);
+  }
   selectPackge = '';
   vpcType = '0';
   styleOk = {
@@ -312,9 +412,15 @@ export class ProjectCreateComponent implements OnInit {
         ip = lstIp[0];
       }
       let numOfMonth = this.form.controls['numOfMonth'].value;
-      let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : 1;
-      let IPFloating = this.selectIndexTab == 1 && this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
-      let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
+      // let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : 1;
+      // let IPFloating = this.selectIndexTab == 1 && this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
+      // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
+
+      let IPPublicNum = this.numberIpPublic;
+      let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != 'Không sử dụng' ? this.numberIpFloating : 0;
+      // let IPFloating = this.numberIpFloating;
+      let IPV6 = this.numberIpv6;
+
       const expiredDate = new Date();
       expiredDate.setDate(expiredDate.getDate() + Number(numOfMonth) * 30);
       requestBody = {
@@ -324,8 +430,6 @@ export class ProjectCreateComponent implements OnInit {
         quotaSSDInGb: this.ssd,
         quotaBackupVolumeInGb: this.numberBackup,
         quotaSecurityGroupCount: this.numberSecurityGroup,
-        // quotaKeypairCount: null,// NON
-        // quotaVolumeSnapshotCount: null,//NON
         quotaIpPublicCount: IPPublicNum,
         quotaIpFloatingCount: IPFloating,
         quotaIpv6Count: IPV6,
@@ -397,19 +501,84 @@ export class ProjectCreateComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
     }
   }
+  toggleBonusService() {
+    if (this.activeBonusService == true) {
+      this.activeBonusService = false
+      this.messageToggleView = "Xem dịch vụ bổ sung"
+    }
+    else {
+      this.activeBonusService = true
+      this.messageToggleView = "Ẩn dịch vụ bổ sung"
+    }
+  }
+  initIP() {
+    this.activeIP = true;
+    this.trashIP = true;
+  }
+  deleteIP() {
+    this.activeIP = false;
+    this.trashIP = false;
+    this.price.IpPublic = 0;
+    this.price.IpPublicUnit = 0;
+    this.price.IpV6 = 0;
+    this.price.IpV6Unit = 0;
+    this.price.IpFloating = 0;
+    this.price.IpFloatingUnit = 0;
+
+    this.numberIpFloating = 0;
+    this.numberIpPublic = 0;
+    this.numberIpv6 = 0;
+  }
 
   initBackup() {
     this.activeBackup = true;
+    this.trashBackup = true;
   }
+  deleteBackup() {
+    this.activeBackup = false;
+    this.trashBackup = false;
+    this.price.backup = 0;
+    this.price.backupUnit = 0;
+    this.numberBackup = 0;
+  }
+
 
   initLoadBalancer() {
     this.activeLoadBalancer = true;
+    this.trashLoadBalancer = true;
   }
+  deleteLoadBalancer() {
+    this.activeLoadBalancer = false;
+    this.trashLoadBalancer = false;
+    this.numberLoadBalancer = 0;
+    this.price.loadBalancer = 0;
+    this.price.loadBalancerUnit = 0;
+  }
+
 
   initFileStorage() {
     this.activeFileStorage = true;
+    this.trashFileStorage = true;
   }
+  deleteFileStorage() {
+    this.activeFileStorage = false;
+    this.trashFileStorage = false;
+    this.price.fileStorage = 0;
+    this.price.fileStorageUnit = 0;
+    this.price.filestorageSnapshot = 0;
+    this.price.filestorageSnapshotUnit = 0;
+    this.numberFileSystem = 0
+    this.numberFileScnapsshot = 0
 
+  }
+  initVpnGpu() {
+    this.activeVpnGpu = true;
+    this.trashVpnGpu = true;
+  }
+  deleteVpnGpu() {
+    this.activeVpnGpu = false;
+    this.trashVpnGpu = false;
+  }
   openIpSubnet() {
     this.calculate(-1);
   }
@@ -418,6 +587,7 @@ export class ProjectCreateComponent implements OnInit {
     this.totalAmount = 0;
     this.totalPayment = 0;
     this.selectIndexTab = event.index;
+    console.log("this.selectIndexTab", this.selectIndexTab)
     this.calculateReal();
   }
 
@@ -464,31 +634,63 @@ export class ProjectCreateComponent implements OnInit {
 
   initVpnSiteToSite() {
     this.activeSiteToSite = true;
+    this.trashVpnSiteToSite = true;
+  }
+  deleteVpnSiteToSite() {
+    this.activeSiteToSite = false;
+    this.trashVpnSiteToSite = false;
+    this.price.siteToSite = 0;
+    this.price.siteToSiteUnit = 0;
+    this.siteToSiteId = '';
   }
 
   private getPriceEachComponent(data: any) {
     console.log(data.orderItemPrices);
-    let fileStorage = 0;
+    // let fileStorage = 0;
     for (let item of data.orderItemPrices[0]?.details) {
       if (item.typeName == 'ippublic') {
-        this.price.IpPublic = item.unitPrice.amount.toLocaleString();
+        this.price.IpPublic = item.totalAmount.amount.toLocaleString();
+        console.log("IpPublic", this.price.IpPublic)
+        this.price.IpPublicUnit = item.unitPrice.amount.toLocaleString();
+        console.log("IpPublic", this.price.IpPublicUnit)
+        // this.price.IpPublic = item.unitPrice.amount.toLocaleString();
+
       } else if (item.typeName == 'ipfloating') {
-        this.price.IpFloating = item.unitPrice.amount.toLocaleString();
+        this.price.IpFloating = item.totalAmount.amount.toLocaleString();
+        this.price.IpFloatingUnit = item.unitPrice.amount.toLocaleString();
+        // this.price.IpFloating = item.unitPrice.amount.toLocaleString();
       } else if (item.typeName == 'ipv6') {
-        this.price.IpV6 = item.unitPrice.amount.toLocaleString();
+        this.price.IpV6 = item.totalAmount.amount.toLocaleString();
+        this.price.IpV6Unit = item.unitPrice.amount.toLocaleString();
+        // this.price.IpV6 = item.unitPrice.amount.toLocaleString();
       } else if (item.typeName == 'backup') {
-        this.price.backup = item.unitPrice.amount.toLocaleString();
+        this.price.backup = item.totalAmount.amount.toLocaleString();
+        console.log("backup", this.price.backup)
+        this.price.backupUnit = item.unitPrice.amount.toLocaleString();
+        console.log("backup Unit", this.price.backupUnit)
       } else if (item.typeName == 'filestorage') {
-        fileStorage += item.unitPrice.amount;
+        this.price.fileStorage = item.totalAmount.amount.toLocaleString();
+        // console.log("fileStorage",this.price.fileStorage )
+        this.price.fileStorageUnit = item.unitPrice.amount.toLocaleString();
+        console.log("fileStorageUnit", this.price.fileStorageUnit)
+        // fileStorage += item.unitPrice.amount;
       } else if (item.typeName == 'filestorage-snapshot') {
-        fileStorage += item.unitPrice.amount;
+        this.price.filestorageSnapshot = item.totalAmount.amount.toLocaleString();
+        this.price.filestorageSnapshotUnit = item.unitPrice.amount.toLocaleString();
+        // fileStorage += item.unitPrice.amount;
       } else if (item.typeName == 'loadbalancer') {
-        this.price.loadBalancer = item.unitPrice.amount.toLocaleString();
+        this.price.loadBalancer = item.totalAmount.amount.toLocaleString();
+        this.price.loadBalancerUnit = item.unitPrice.amount.toLocaleString();
+        // this.price.loadBalancer = item.unitPrice.amount.toLocaleString();
       } else if (item.typeName == 'vpn-site-to-site') {
-        this.price.siteToSite = item.unitPrice.amount.toLocaleString();
+        this.price.siteToSite = item.totalAmount.amount.toLocaleString();
+        this.price.siteToSiteUnit = item.unitPrice.amount.toLocaleString();
+        // this.price.siteToSite = item.unitPrice.amount.toLocaleString();
       } else if (item.typeName == 'vcpu') {
+
         this.price.vcpu = item.totalAmount.amount.toLocaleString();
         this.price.vcpuPerUnit = item.unitPrice.amount.toLocaleString();
+        console.log("vcpu", this.price.vcpu)
       } else if (item.typeName == 'ram') {
         this.price.ram = item.totalAmount.amount.toLocaleString();
         this.price.ramPerUnit = item.unitPrice.amount.toLocaleString();
@@ -500,7 +702,7 @@ export class ProjectCreateComponent implements OnInit {
         this.price.hhdPerUnit = item.unitPrice.amount.toLocaleString();
       }
     }
-    this.price.fileStorage = fileStorage;
+    // this.price.fileStorage = fileStorage;
   }
 
   checkPossiblePress(event: KeyboardEvent) {
@@ -510,12 +712,14 @@ export class ProjectCreateComponent implements OnInit {
     }
   }
 
+
   private loadInforProjectNormal() {
     this.instancesService.getListOffers(this.regionId, 'vpc').subscribe(
       data => {
         for (let item of data[0].characteristicValues) {
           if (item.charName == 'network') {
             this.nwNormal = item.charOptionValues[2];
+
           } else if (item.charName == 'router') {
             this.routerNormal = item.charOptionValues[2];
           } else if (item.charName == 'securitygroup') {
@@ -536,11 +740,25 @@ export class ProjectCreateComponent implements OnInit {
     this.price.ssd = 0;
     this.price.ssdPerUnit = 0;
     this.price.backup = 0;
+    this.price.backupUnit = 0;
     this.price.loadBalancer = 0;
+    this.price.loadBalancerUnit = 0;
     this.price.fileStorage = 0;
+    this.price.fileStorageUnit = 0;
+    this.price.filestorageSnapshot = 0;
+    this.price.filestorageSnapshotUnit = 0;
     this.price.siteToSite = 0;
+    this.price.siteToSiteUnit = 0;
     this.price.IpFloating = 0;
+    this.price.IpFloatingUnit = 0;
     this.price.IpPublic = 0;
+    this.price.IpPublicUnit = 0;
     this.price.IpV6 = 0;
+    this.price.IpV6Unit = 0;
   }
+
+  // 
+
+
+
 }

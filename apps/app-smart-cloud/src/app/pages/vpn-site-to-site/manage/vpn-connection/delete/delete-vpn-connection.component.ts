@@ -48,6 +48,7 @@ export class DeleteVpnConnectionComponent{
   handleCancel(){
     this.isVisible = false
     this.isLoading =  false
+    this.validateForm.reset()
   }
 
   handleOk() {
@@ -65,6 +66,7 @@ export class DeleteVpnConnectionComponent{
             this.isVisible = false
             this.isLoading =  false
             this.notification.success('Thành công', 'Xoá vpn connection thành công')
+            this.validateForm.reset()
             this.onOk.emit(data)
           }
         }, error => {

@@ -102,6 +102,7 @@
   "app.amount": "Số lượng",
   "app.resource": "Tài nguyên",
   "app.money.price": "Thành tiền/Đơn giá",
+
   "app.encrypt": "Mã hóa",
   "app.monthly.price": "Giá theo tháng",
   "app.ip.range": "Dải IP",
@@ -348,7 +349,7 @@
   "app.alert.delete.instance.warn": "Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và",
   "app.alert.delete.instance.warn.next": "KHÔNG THỂ KHÔI PHỤC LẠI",
   "app.alert.reset.instance.password": "Nếu HĐH là Linux, hệ thống sẽ đặt lại mật khẩu cho tài khoản root. Nếu HĐH là Windows, hệ thống sẽ đặt lại mật khẩu cho tài khoản Administrator",
-  
+
   "app.tooltip.instance.name": "Tên máy ảo không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)",
   "app.tooltip.instances.from.snapshot": "Quý khách có thể tạo máy ảo từ một bản snapshot có sẵn để phục hồi máy ảo về trạng thái khi thực hiện tạo bản snapshot đó",
   "app.tooltip.instance.OS": "Hệ điều hành sử dụng để khởi tạo máy ảo",
@@ -2118,7 +2119,7 @@
   "ip.floating.nofitacation.detach.success": "Gỡ Ip Floating thành công",
   "ip.floating.nofitacation.detach.fail": "Gỡ Ip Floating thất bại",
   "ip.floating.label.attach": "Gắn IP Floating",
-  "ip.floating.alert.remove.ip.address": "Bạn đang thực hiện xóa IP Floating + địa chỉ IP Floating.",
+  "ip.floating.alert.remove.ip.address": "Bạn đang thực hiện xóa IP Floating ",
   "ip.floating.alert.remove": "Để thực hiện xoá IP Floating, vui lòng nhập chính xác IP để xác nhận.",
   "ip.floating.label.press": "nhập IP",
   "ip.floating.label.attaching": "Bạn đang thực hiện gắn IP Floating",
@@ -2246,7 +2247,7 @@
   "app.vlan.note14": "IP Version",
   "app.vlan.note15": "Địa chỉ không được phép để trống",
   "app.vlan.note16": "DHCP là cơ chế cấp phát động địa chỉ IP cho subnet đó. Tức là khi tạo Port mà không chỉ định IP nào thì DHCP sẽ tự gán vào Port vừa tạo 1 IP Ưu điểm: Không cần quản lý địa chỉ IP, hệ thống sẽ tự động cấp phát địa chỉ IP Nhược điểm: DHCP nó sẽ dùng ngay 03 IP cho DHCP server. điều này dẫn tới việc nếu subnet chỉ có 8 IP chẳng hạn, sẽ chỉ dùng dc có 5 IP",
-  "app.vlan.note17": "Vui lòng chọn các dải trong khoảng: “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24",
+  "app.vlan.note17": "Vui lòng chọn các dải trong khoảng: “10.10.0.0 - 10.100.0.0, 172.16.0.0 - 172.31.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24",
   "app.vlan.note18": "Subnet được add Router interface thì sẽ không Disable Gateway IP và ngược lại Subnet không có gateway thì không add Router interface",
   "app.vlan.note19": "Nếu không nhập thì hệ thống sẽ tự động lấy địa chỉ IP đầu tiên trong dải mạng để làm gateway, ví dụ: 10.21.0.1\n- Nếu để trống thì hệ thống sẽ tự động lấy địa chỉ IP đầu tiên trong dải mạng để làm gateway",
   "app.vlan.note20": "Nhập Gateway",
@@ -2259,7 +2260,7 @@
   "app.vlan.note27": "Hiện tại chỉ cùng cấp IPv4",
   "app.vlan.note28": "Subnet phải là dải con của network x.x.0.0/16 (CIDR của network được chọn)",
   "app.vlan.note29": "Địa chỉ không được phép để trống",
-  "app.vlan.note30": "Vui lòng chọn các dải trong khoảng: “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24",
+  "app.vlan.note30": "Vui lòng chọn các dải trong khoảng: “10.10.0.0 - 10.100.0.0, 172.16.0.0 - 172.31.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24",
   "app.vlan.note31": "Subnet được add Router interface thì sẽ không Disable Gateway IP và ngược lại Subnet không có gateway thì không add Routerinterface",
   "app.vlan.note32": "DHCP là cơ chế cấp phát động địa chỉ IP cho subnet đó. Tức là khi tạo Port mà không chỉ định IP nào thì DHCP sẽ tự gán vào Port vừa tạo 1 IP Ưu điểm: Không cần quản lý địa chỉ IP, hệ thống sẽ tự động cấp phát địa chỉ IP Nhược điểm: DHCP nó sẽ dùng ngay 03 IP cho DHCP server. điều này dẫn tới việc nếu subnet chỉ có 8 IP chẳng hạn, sẽ chỉ dùng dc có 5 IP",
   "app.vlan.note33": "Disable GatewayIP",
@@ -2368,6 +2369,7 @@
   "project.action.creating": "Yêu cầu tạo dự án đã được gửi đi",
   "project.note51": "Tạo dự án thất bại",
   "project.create":"Khởi tạo dự án",
+  "app.project.price": "Thành tiền",
   "status.enable":"Cho phép",
   "status.disable":"Không cho phép",
   "status.deleted":"Đã xóa",
@@ -2495,10 +2497,11 @@
   "volume.tooltip.iops": "IOPS tỷ lệ thuận với dung lượng volume. 1GB dung lượng tương đương với 10 IOPS. IOPS càng cao, tốc độ đọc ghi càng nhanh.",
   "volume.alert.message.confirm.detach": "Quý khách có chắc chắn muốn gỡ Volume khỏi máy ảo không?",
   "volume.alert.resize.storage": "Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn.",
+
   "app.breadcrumb.list.backup.volume": "Danh sách Backup Volume",
   "app.backup.volume.info": "Thông tin Backup",
   "app.backup.volume.detail": "Chi tiết Backup Volume",
-
+  "app.backup.volume.btn.create": "Tạo mới Backup volume",
 
   "app.backup.volume.name": "Tên Backup",
   "app.backup.volume.backup.package": "Gói Backup",
@@ -2509,7 +2512,10 @@
   "app.input.backup.volume.select.volume": "Tên Volume",
   "app.backup.volume.title.modal.update": "Chỉnh sửa thông tin Backup Volume",
   "app.input.backup.volume.required.select": "Vui lòng chọn Volume",
+  "app.backup.volume.root": "Volume gốc",
 
+  "app.backup.volume.search.tooltip": "Tìm kiếm theo tên",
+  "app.backup.volume.search.status.tooltip": "Tìm kiếm theo trạng thái",
   "app.backup.volume.name.tooltip": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
   "app.backup.volume.validator.name.required": "Vui lòng nhập tên Backup Volume",
   "app.backup.volume.validator.name.duplicate": "Tên backup volume đã tồn tại, vui lòng nhập tên khác",
