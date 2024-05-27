@@ -4,7 +4,8 @@ import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import {
   BackupVolume,
-  CreateBackupVolumeOrderData
+  CreateBackupVolumeOrderData,
+  FormUpdateBackupVolume
 } from '../../pages/volume/component/backup-volume/backup-volume.model';
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -97,6 +98,20 @@ export class BackupVolumeService extends BaseService {
   //detail
   detail(id) {
     return this.http.get<BackupVolume>(this.baseUrl + this.ENDPOINT.provisions + `/backups/volumes/${id}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
+  }
+
+  //update
+  updateBackupVolume(formUpdate: FormUpdateBackupVolume) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes', Object.assign(formUpdate))
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
