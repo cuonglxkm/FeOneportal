@@ -2499,10 +2499,10 @@
   "volume.alert.resize.storage": "Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn.",
 
   "app.breadcrumb.list.backup.volume": "Danh sách Backup Volume",
-  "app.backup.volume.info": "Thông tin Backup",
+  "app.backup.volume.info": "Thông tin Backup Volume",
   "app.backup.volume.detail": "Chi tiết Backup Volume",
   "app.backup.volume.btn.create": "Tạo mới Backup volume",
-
+  "app.backup.volume.modal.delete.title": "Xác nhận xóa Backup Volume",
   "app.backup.volume.name": "Tên Backup",
   "app.backup.volume.backup.package": "Gói Backup",
   "app.backup.volume.description": "Mô tả",
@@ -2522,8 +2522,9 @@
   "app.backup.volume.validator.name.pattern": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
   "app.backup.volume.validator.backup.package.required": "Vui lòng nhập tên Backup",
   "app.backup.volume.request.create": "Yêu cầu tạo Backup Volume đã được gửi đi.",
-
   "app.backup.volume.notification.create.request.send": "Yêu cầu tạo Backup Volume đã được gửi đi.",
+  "app.backup.volume.alert.delete": "Bạn đang thực hiện xóa Backup Volume",
+  "app.backup.volume.confirm.delete": "Đế thực hiện xoá Backup Volume {{name}}, vui lòng nhập tên Backup để xác nhận.",
 
   "app.dashboard.subscription.service": "Dịch vụ",
   "app.dashboard.subscription.service.active": "Đang hoạt động",

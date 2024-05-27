@@ -2602,9 +2602,10 @@
   "volume.alert.message.confirm.detach": "Are you sure you want to detach the Volume from the virtual machine?",
   "volume.alert.resize.storage": "When increasing the capacity of the Volume, the new cost will be calculated from the adjustment date until the expiration date.",
   "app.breadcrumb.list.backup.volume": "Backup Volume management",
-  "app.backup.volume.info": "Backup Information",
+  "app.backup.volume.info": "Backup Volume Information",
   "app.backup.volume.detail": "Backup Volume details",
   "app.backup.volume.btn.create": "Create new Backup volume",
+  "app.backup.volume.modal.delete.title": "Confirm deletion of Backup Volume",
 
   "app.backup.volume.name": "Backup name",
   "app.backup.volume.backup.package": "Backup package",
@@ -2624,6 +2625,8 @@
   "app.backup.volume.validator.name.required": "Please enter the name of the Backup Volume",
   "app.backup.volume.validator.name.duplicate": "The backup volume name already exists, please enter a different name.",
   "app.backup.volume.validator.name.pattern": "The backup volume name should not include special characters, spaces, or Vietnamese characters (except _).",
+  "app.backup.volume.alert.delete": "You are deleting the Backup Volume",
+  "app.backup.volume.confirm.delete": "To proceed with deleting Backup Volume {{name}}, please enter the name of the Backup to confirm.",
 
 
   "app.backup.volume.validator.backup.package.required": "Please enter the name of the Backup",
