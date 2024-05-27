@@ -9,9 +9,7 @@
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a>
-          Dịch vụ hạ tầng</a
-        >
+          Dịch vụ hạ tầng    
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
         >VPN site to site</a
@@ -23,12 +21,13 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -42,7 +41,20 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired>Name</nz-form-label>
+            <nz-form-label nzFor="name" >
+              Name
+              (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+              <img
+                nz-popover
+                [nzPopoverContent]="
+                  'Tên của VPN Service, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'
+                "
+                nzPopoverPlacement="bottom"
+                style="margin-left: 5px"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+              />
+            </nz-form-label>
             <input
               class="h-40"
               nz-input
@@ -56,7 +68,20 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzRequired >Router</nz-form-label>
+            <nz-form-label  >
+              Router
+              (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+              <img
+                nz-popover
+                [nzPopoverContent]="
+                  'Router được tạo mặc định cho dịch vụ.'
+                "
+                nzPopoverPlacement="bottom"
+                style="margin-left: 5px"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+              />
+            </nz-form-label>
             <input
               class="h-40"
               nz-input
@@ -70,7 +95,20 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired>Status</nz-form-label>
+            <nz-form-label nzFor="name" >
+              Status
+              (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+              <img
+                nz-popover
+                [nzPopoverContent]="
+                  'Trạng thái của VPN Service'
+                "
+                nzPopoverPlacement="bottom"
+                style="margin-left: 5px"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+              />
+            </nz-form-label>
             <input
             class="h-40"
             nz-input
@@ -85,7 +123,20 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >IP VPN Gateway</nz-form-label>
+            <nz-form-label nzFor="name"  >
+              IP VPN Gateway
+              (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+              <img
+                nz-popover
+                [nzPopoverContent]="
+                  ''
+                "
+                nzPopoverPlacement="bottom"
+                style="margin-left: 5px"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+              />
+            </nz-form-label>
             <input
             class="h-40"
             nz-input

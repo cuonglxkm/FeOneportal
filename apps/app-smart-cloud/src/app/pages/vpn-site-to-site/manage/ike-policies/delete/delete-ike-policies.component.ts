@@ -74,7 +74,7 @@ export class DeleteIkePoliciesComponent {
               this.isLoading = false;
               this.notification.success(
                 'Thành công',
-                'Xoá Ike Policy thành công'
+                'Xoá IKE Policy thành công'
               );
               this.validateForm.reset()
               this.onOk.emit(data);
@@ -86,7 +86,7 @@ export class DeleteIkePoliciesComponent {
               this.isLoading = false;
               this.notification.error(
                 'Thất bại',
-                'Ike Policy đang được sử dụng'
+                'IKE Policy đang được sử dụng'
               );
             } else {
               this.isVisible = false;

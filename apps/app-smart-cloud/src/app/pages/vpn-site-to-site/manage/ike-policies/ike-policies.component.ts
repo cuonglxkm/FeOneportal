@@ -41,7 +41,7 @@ export class IkePoliciesComponent {
   }
   
   onInputChange(value) {
-    this.value = value;
+    this.value = value.trim();
     this.getData()
   }
 
