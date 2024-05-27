@@ -190,6 +190,7 @@
                 nzFormat="dd/MM/yyyy"
                 style="width: 100%; border-radius: 4px"
                 [(ngModel)]="expireDate"
+                [nzDisabledDate]="disabledDate"
                 (ngModelChange)="onChange($event)"
                 [ngModelOptions]="{standalone: true}"
               ></nz-date-picker>

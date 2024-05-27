@@ -49,7 +49,7 @@ export class CreateEndpointGroupComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/),
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
       ],
     ],
     endpointsCidr: ['', Validators.required],

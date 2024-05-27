@@ -904,8 +904,10 @@
       class="input-date-picker"
       nzFormat="yyyy-MM-dd HH:mm:ss"
       [nzDisabledDate]="disabledDate"
+      [nzDisabledTime]="disabledDateTime"
       [ngModel]="dateShare"
       (ngModelChange)="getLinkShare($event)"
+      [nzShowTime]="{ nzDefaultOpenValue: timeDefaultValue }"
       style="width: 100%; border-radius: 4px"
     ></nz-date-picker>
     <div class="text-label" style="margin-top: 15px">{{ 'app.bucket.detail.copy.shareFile.sharelink' | i18n }}</div>

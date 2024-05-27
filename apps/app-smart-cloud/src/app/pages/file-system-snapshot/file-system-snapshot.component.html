@@ -112,12 +112,13 @@
             >
           </td>
           <td nzAlign="right">{{ data.size }}</td>
-          <td>{{ data.status }}</td>
+          <td>{{ data.status.toUpperCase() }}</td>
           <td>{{ data.shareName }}</td>
           <td>{{ data.createdDate | date : 'dd/MM/yyyy' }}</td>
           <td>
             <div class="d-flex gap-2 justify-content-center">
               <one-portal-edit-file-system-snapshot
+                *ngIf="data.status === 'available'"
                 [region]="region"
                 [project]="project"
                 [data]="data"
@@ -135,7 +136,7 @@
               <nz-dropdown-menu #opMenu="nzDropdownMenu">
                 <ul nz-menu>
                   <li
-                    *ngIf="projectType == 1"
+                    *ngIf="projectType == 1 && data.status === 'available'"
                     nz-menu-item
                     [routerLink]="
                       '/app-smart-cloud/file-storage/file-system/create/' +
@@ -145,7 +146,7 @@
                     {{ 'app.file.system.create.button' | i18n }}
                   </li>
                   <li
-                    *ngIf="projectType == 0"
+                    *ngIf="projectType == 0 && data.status !== 'mất kết nối'"
                     nz-menu-item
                     [routerLink]="
                       '/app-smart-cloud/file-storage/file-system/create/normal/' +

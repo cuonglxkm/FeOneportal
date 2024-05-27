@@ -1,46 +1,122 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Backup Volume'">
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'app.backup.volume.detail'|i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
-      <nz-breadcrumb-item [routerLink]="'/'">{{'app.breadcrumb.home'|i18n}}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service'|i18n}}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.block.storage'|i18n}}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'volume.title.breadcrumb.backup.volume'|i18n}}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.backup.volume.detail'|i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home'|i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.block.storage'|i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a
+        [routerLink]="'/app-smart-cloud/backup-volume'">{{ 'app.breadcrumb.list.backup.volume'|i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.backup.volume.detail'|i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="region"
+                               (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
-<nz-card style="height: 80%">
-  <span class="text-card-header">{{'app.backup.volume.info'|i18n}}</span>
-  <table style="width: 100%; margin-top: 40px;">
-    <td>
-      <h3 style=" font-weight: normal;">Tên Backup Volume: {{receivedData.name}}</h3>
-      <h3 style=" margin-top: 20px;font-weight: normal;">Tên Volume: {{receivedData.volumeName}}</h3>
-    </td>
-    <td>
-      <h3 style=" font-weight: normal;">Ngày tạo: {{receivedData.creationDate| date:'dd/MM/yyyy'}}</h3>
-      <h3 style=" margin-top: 20px;font-weight: normal;">Dung lượng: {{receivedData.size}}GB</h3>
-    </td>
-    <td>
-      <h3 style="font-weight: normal;">Ngày hết hạn: {{receivedData.expirationDate| date:'dd/MM/yyyy'}}</h3>
-    </td>
-  </table>
-
-  <div nz-row class="mb-md">
-    <div nz-col nzSpan="21">
-    </div>
-    <div nz-col nzSpan="3">
-      <nz-form-item style="margin-top: 100%">
-        <button (click)="backToList()" nz-button style="background-color: darkgray; color: white">{{'app.order-detail.back' | i18n}}</button>
-      </nz-form-item>
-    </div>
-  </div>
-
-</nz-card>
+<nz-spin [nzSpinning]="isLoading">
+  <nz-content>
+    <nz-card style="border-radius: 8px;">
+      <span class="text-card-header">{{ 'app.backup.volume.info'|i18n }}</span>
+      <div class="customRow" style="margin-top: 25px;">
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.backup.volume.name' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{ backupVolume?.name }}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12" *ngIf="typeVpc == 0">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.backup.volume.backup.package' | i18n }}</span>
+              <span class="text-value-detail">{{ backupVolume?.backupPackageName }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan"
+                  style="width: 35%">{{ 'app.input.backup.volume.select.volume' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{ backupVolume?.volumeName }}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage' | i18n }}</span>
+              <span class="text-value-detail">{{ backupPackageDetail?.sizeInGB }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.backup.package.storage' | i18n }}</span>
+              <span class="text-value-detail" style="margin-left: 2%;">{{ backupPackageDetail?.sizeInGB }} GB</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.used' | i18n }}</span>
+              <span class="text-value-detail">{{ backupPackageDetail?.usedSize }} GB</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%; margin-left: 2%;">{{ 'app.service.creation-date' | i18n }}</span>
+              <span class="text-value-detail" style="margin-left: 2%;">{{ backupVolume?.creationDate | date: 'dd/MM/yyyy' }} </span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{'app.backup.package.storage.used'|i18n}}</span>
+              <span class="text-value-detail">{{ backupPackageDetail?.usedSize }} GB </span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan"
+                  style="width: 35%; margin-left: 2%">{{ 'app.service.expiration-date' | i18n }}</span>
+              <span class="text-value-detail" style="margin-left: 2%;">{{ backupVolume?.expirationDate | date: 'dd/MM/yyyy'}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.remaining' |i18n }}</span>
+              <span class="text-value-detail" >{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+<!--        <nz-row style="background-color: #e2e2e9">-->
+<!--          <nz-col nzSpan="12">-->
+<!--            <nz-row style="padding: 12px 0 12px 0">-->
+<!--              <span class="text-label customSpan" style="width: 35%">{{ 'app.service.creation-date' | i18n }}</span>-->
+<!--              <span class="text-value-detail customSpan">{{ backupVm?.creationDate | date : 'dd/MM/yyyy' }}</span>-->
+<!--            </nz-row>-->
+<!--          </nz-col>-->
+<!--          <nz-col nzSpan="12">-->
+<!--            <nz-row style="padding: 12px 0 12px 0">-->
+<!--              <span class="text-label" style="width: 35%; color: #EB1414;">{{ 'app.service.expiration-date' | i18n }}</span>-->
+<!--              <span class="text-value-detail" style="color: #EB1414">{{ backupVm?.expirationDate | date : 'dd/MM/yyyy' }}</span>-->
+<!--            </nz-row>-->
+<!--          </nz-col>-->
+<!--        </nz-row>-->
+      </div>
+    </nz-card>
+  </nz-content>
+</nz-spin>

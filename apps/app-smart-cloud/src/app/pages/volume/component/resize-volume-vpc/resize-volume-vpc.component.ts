@@ -140,7 +140,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
         this.volumeInfo = data;
         this.oldSize = data.sizeInGB;
         this.validateForm.controls.name.setValue(data.name);
-        this.validateForm.controls.storage.setValue(data.sizeInGB);
+        // this.validateForm.controls.storage.setValue(data.sizeInGB);
         this.validateForm.controls.description.setValue(data.description);
         this.selectedValueRadio = data.volumeType;
         this.validateForm.controls.radio.setValue(data.volumeType);

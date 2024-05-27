@@ -10,6 +10,7 @@ import { FileSystemModel } from 'src/app/shared/models/file-system.model';
 import { FormCreateSslCert } from 'src/app/shared/models/ssl-cert.model';
 import { SSLCertService } from 'src/app/shared/services/ssl-cert.service';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { differenceInCalendarDays } from 'date-fns';
 
 
 @Component({
@@ -33,6 +34,10 @@ export class CreateSslCertComponent implements OnInit{
   formCreateeSslCert: FormCreateSslCert = new FormCreateSslCert();
 
   passwordVisible: boolean = false
+
+  today = new Date();
+  disabledDate = (current: Date): boolean =>
+    differenceInCalendarDays(current, this.today) < 0;
 
   expireDate: Date = new Date()
   form: FormGroup<{

@@ -441,7 +441,7 @@ export class LoadBalancerService extends BaseService {
   }
   attachOrDetachIpFloating(ipId: number, idLb: number, regionId: number, vpcId: number, vipPortId: string){
     let param = new HttpParams()
-    if(vipPortId == undefined || vipPortId == null) param.append('vipPortId', vipPortId)
+    if(vipPortId != undefined && vipPortId != null) param.append('vipPortId', vipPortId)
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/floatinglb?ipId=${ipId}&idLb=${idLb}&regionId=${regionId}&vpcId=${vpcId}`, null, {
       params: param
     })
