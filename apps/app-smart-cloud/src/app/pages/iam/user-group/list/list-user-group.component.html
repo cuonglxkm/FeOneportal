@@ -19,28 +19,31 @@
 </page-header>
 <nz-content>
   <nz-card>
-    <nz-row style="margin-bottom: 25px;" nzJustify="end">
-      <nz-space>
-        <nz-input-group *nzSpaceItem style="width: 300px;" [nzPrefix]="prefixIconSearch" nzSize="large" class="custom-input"
-          [(ngModel)]="value" (input)="onInputChange($event.target['value'])">
-          <input name="name" nz-input [placeholder]="'app.users.search' | i18n" />
-        </nz-input-group>
-        <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text'|i18n" />
-        </ng-template>
-        <button *nzSpaceItem style="border: none;" nz-button nzSize="large" (click)="refresh()">
+    <div nz-row [nzGutter]="24" style="margin:20px 0px">
+      <div nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
+        <nz-input-group  style="width: 300px;" [nzPrefix]="prefixIconSearch" nzSize="large" class="custom-input"
+        [(ngModel)]="value" (input)="onInputChange($event.target['value'])">
+        <input name="name" nz-input [placeholder]="'app.users.search' | i18n" />
+      </nz-input-group>
+      <ng-template #prefixIconSearch>
+        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text'|i18n" />
+      </ng-template>
+      </div>
+      <div nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12" class="text-right d-flex" style="align-items: center;justify-content: end;">
+        <button  style="border: none;" nz-button nzSize="large" (click)="refresh()">
           <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
         </button>
-        <button *nzSpaceItem style="border: none;" nz-button nzSize="large" (click)="showModalDelete()" id="activeDelete"  [ngClass]="setOfCheckedId.size>0 ?'activeDelete':''">
-          <one-portal-svg-icon [icon]="'icon_trash'"></one-portal-svg-icon>
-          <!-- <img [ngClass]="setOfCheckedId.size>0 ?'activeDelete':''" style="margin-top: -4px" src="assets/imgs/trash.svg" /> -->
+        <button  style="border: none;" nz-button nzSize="large" (click)="showModalDelete()" id="activeDelete"  [ngClass]="setOfCheckedId.size>0 ?'activeDelete':''">
+          <one-portal-svg-icon [icon]="'icon_trash'" class="icon_svg"></one-portal-svg-icon>
+         
         </button>
-        <button *nzSpaceItem nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
+        <button  nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
           <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add_white.svg" alt="" />
           <span class="button-text-primary">{{"app.users.create.group" | i18n}}</span>
         </button>
-      </nz-space>
-    </nz-row>
+      </div>
+    </div>
+    
     <nz-table #rowSelectionTable nzShowSizeChanger [nzScroll]="{ x: '100%', y: '55vh' }" [nzData]="collection?.records"
       (nzCurrentPageDataChange)="onCurrentPageDataChange($event)" [nzLoading]="loading" [nzFrontPagination]="false"
       [nzTotal]="collection?.totalCount" [nzPageSize]="collection?.pageSize" [nzPageIndex]="collection?.currentPage">
