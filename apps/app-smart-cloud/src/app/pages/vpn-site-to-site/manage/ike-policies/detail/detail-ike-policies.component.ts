@@ -28,16 +28,17 @@ export class DetailIkePoliciesComponent implements OnInit{
               ) {
   }
 
-  regionChanged(region: RegionModel) {
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage'])
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id
+  onProjectChange(project: ProjectModel) {
+    this.project = project?.id;
   }
 
-  userChanged(project: ProjectModel){
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage'])
+  userChangeProject(){
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
   getIkePolicyById(id) {

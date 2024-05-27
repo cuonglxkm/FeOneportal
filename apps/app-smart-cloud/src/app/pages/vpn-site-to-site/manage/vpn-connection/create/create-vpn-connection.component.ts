@@ -265,7 +265,7 @@ export class CreateVpnConnectionComponent implements OnInit{
             this.isLoading = false
             this.notification.success(
               'Thành công',
-              'Tạo mới vpn connection thành công'
+              'Tạo mới VPN Connection thành công'
             );
             this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
           },
@@ -273,7 +273,7 @@ export class CreateVpnConnectionComponent implements OnInit{
             this.isLoading = false
             this.notification.error(
               'Thất bại',
-              'Tạo mới vpn connection thất bại'
+              'Tạo mới VPN Connection thất bại'
             );
             console.log(error);
           }
@@ -283,9 +283,14 @@ export class CreateVpnConnectionComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+  }
+
+  userChangeProject(){
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 }
