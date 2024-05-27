@@ -92,6 +92,7 @@ export class ListBackupVolumeComponent implements OnInit{
   }
 
   getListBackupVolumes(isBegin) {
+    this.isLoading = true
     let valueSearch = '';
     if(this.statusSelected == 'all') {
       valueSearch = null
@@ -99,6 +100,7 @@ export class ListBackupVolumeComponent implements OnInit{
     if(this.statusSelected == 'available' ) valueSearch = 'available'
     if(this.statusSelected == 'suspended') valueSearch = 'suspended'
     this.backupVolumeService.getListBackupVolume(this.region, this.project, valueSearch, this.inputName, this.pageSize, this.pageIndex).subscribe(data => {
+      this.isLoading = false
       this.response = data;
 
       if (isBegin) {
@@ -118,6 +120,10 @@ export class ListBackupVolumeComponent implements OnInit{
     if(this.typeVpc == 0) {
       this.router.navigate(['/app-smart-cloud/backup-volume/create/normal']);
     }
+  }
+
+  handleOkDelete() {
+    setTimeout(() => {this.getListBackupVolumes(true)}, 2000)
   }
 
   ngOnInit() {

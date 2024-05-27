@@ -83,7 +83,7 @@
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
-            <td><a>{{ data.name }}</a></td>
+            <td><a [routerLink]="'/app-smart-cloud/backup-volume/detail/' + data.id">{{ data.name }}</a></td>
             <td>{{ data.volumeName }}</td>
             <td nzAlign="right">{{ data.size }}</td>
             <td>{{ data.backupPackageName }}</td>
@@ -95,11 +95,14 @@
               <span *ngSwitchCase="'ERROR'" class="error">{{ 'app.status.error'|i18n }}</span>
             </td>
             <td [ngSwitch]="data.serviceStatus">
-              <div *ngSwitchCase="'AVAILABLE'">
+              <div *ngSwitchCase="'KHOITAO'">
                 <!------!--->
                 <one-portal-update-backup-volume />
                 <one-portal-restore-backup-volume />
-                <one-portal-delete-backup-volume />
+                <one-portal-delete-backup-volume [region]="region"
+                                                 [project]="project"
+                                                 [idBackup]="data.id"
+                                                 [backupName]="data.name" (onOk)="handleOkDelete()"/>
               </div>
             </td>
           </tr>

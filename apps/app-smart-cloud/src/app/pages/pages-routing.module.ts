@@ -359,7 +359,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'backup-volume/detail',
+    path: 'backup-volume/detail/:id',
     component: DetailBackupVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
