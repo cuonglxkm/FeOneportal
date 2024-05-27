@@ -9,9 +9,7 @@
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
-          >Dịch vụ hạ tầng</a
-        >
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
         ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
@@ -25,12 +23,13 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -71,8 +70,8 @@
                   class="input-custom"
                 />
                 <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Tên ipsec policy không được để trống</ng-container>
-                  <ng-container *ngIf="control.hasError('pattern')">Tên ipsec policy chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+                  <ng-container *ngIf="control.hasError('required')">Tên IPsec Policy không được để trống</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">Tên của IPsec chỉ chứa các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự</ng-container>
                 </ng-template> 
               </nz-form-control>
             </nz-form-item>

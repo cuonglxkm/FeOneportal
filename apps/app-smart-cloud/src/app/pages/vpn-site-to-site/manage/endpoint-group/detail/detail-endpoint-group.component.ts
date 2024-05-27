@@ -30,15 +30,16 @@ export class DetailEndpointGroupComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {}
 
-  oregionChanged(region: RegionModel) {
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
-  projectChanged(project: ProjectModel) {
+  onProjectChange(project: ProjectModel) {
     this.project = project?.id;
   }
 
-  userChanged(project: ProjectModel) {
+  userChangeProject(){
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 

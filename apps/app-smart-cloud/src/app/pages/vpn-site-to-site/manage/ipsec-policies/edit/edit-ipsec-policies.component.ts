@@ -130,10 +130,15 @@ export class EditIpsecPoliciesComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+  }
+
+  userChangeProject(){
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
   getData(): any {
@@ -170,7 +175,7 @@ export class EditIpsecPoliciesComponent implements OnInit {
             this.isLoading = false
             this.notification.success(
               'Thành công',
-              'Cập nhật ipsec policy thành công'
+              'Cập nhật IPsec Policy thành công'
             );
             this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
           },
@@ -178,7 +183,7 @@ export class EditIpsecPoliciesComponent implements OnInit {
             this.isLoading = false
             this.notification.error(
               'Thất bại',
-              'Cập nhật ipsec policy thất bại'
+              'Cập nhật IPsec Policy thất bại'
             );
             console.log(error);
           }

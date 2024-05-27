@@ -126,6 +126,10 @@ export class ListBackupVolumeComponent implements OnInit{
     setTimeout(() => {this.getListBackupVolumes(true)}, 2000)
   }
 
+  handleOkUpdate() {
+    setTimeout(() => {this.getListBackupVolumes(false)}, 2000)
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;

@@ -1,6 +1,6 @@
-<div style="display: flex; justify-content: space-between; align-items: center;">
-  <span class="text-card-header">Danh sách Endpoint Group</span>
-  <nz-row style="gap: 16px">
+<div style="display: flex; flex-direction: column">
+  <span class="text-card-header mb-4">Danh sách Endpoint Group</span>
+  <nz-row class="d-flex justify-content-between">
     <nz-col>
       <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 300px;">
         <input name="name" [(ngModel)]="value" nz-input placeholder="Tìm kiếm theo tên"
@@ -38,7 +38,7 @@
         <a [routerLink]="['/app-smart-cloud/vpn-site-to-site/endpoint-group/' + data.id]">{{ data.name }}</a>
       </td>
       <!-- <td>{{ data.type }}</td> -->
-      <td>{{ data.type }}</td>
+      <td [style.text-transform]="data.type === 'cidr' ? 'uppercase' : 'capitalize'">{{ data.type }}</td>
       <td>
         <ng-container *ngFor="let endpoint of data.endpoints; let last = last">
           {{ endpoint }}
