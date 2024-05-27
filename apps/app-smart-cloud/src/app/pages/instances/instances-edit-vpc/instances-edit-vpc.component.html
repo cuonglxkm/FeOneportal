@@ -347,20 +347,22 @@
                         >
                         <nz-slider
                           [(ngModel)]="storage"
-                          (ngModelChange)="checkChangeConfig()"
+                          (ngModelChange)="checkChangeConfig(); changeCapacity($event)"
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
                           [nzMax]="remainingVolume"
+                          [nzStep]="10"
                         ></nz-slider>
                       </td>
                       <td>
                         <nz-input-number
                           [(ngModel)]="storage"
-                          (ngModelChange)="checkChangeConfig()"
+                          (ngModelChange)="checkChangeConfig(); changeCapacity($event)"
                           (keydown)="onKeyDown($event)"
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
                           [nzMax]="remainingVolume"
+                          [nzStep]="10"
                         ></nz-input-number>
                       </td>
                     </tr>

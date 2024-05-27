@@ -451,6 +451,7 @@
                         <nz-slider
                           [nzMin]="0"
                           [nzMax]="1000"
+                          [nzStep]="10"
                           [(ngModel)]="configCustom.capacity"
                           (ngModelChange)="changeCapacity($event)"
                           [ngModelOptions]="{ standalone: true }"
@@ -464,7 +465,7 @@
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
                           [nzMax]="1000"
-                          [nzStep]="1"
+                          [nzStep]="10"
                           nzSize="large"
                         ></nz-input-number>
                       </td>
@@ -648,6 +649,7 @@
                         <nz-slider
                           [nzMin]="0"
                           [nzMax]="1000"
+                          [nzStep]="10"
                           [(ngModel)]="configGPU.storage"
                           (ngModelChange)="changeStorageOfGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
@@ -661,7 +663,7 @@
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
                           [nzMax]="1000"
-                          [nzStep]="1"
+                          [nzStep]="10"
                           nzSize="large"
                         ></nz-input-number>
                       </td>
