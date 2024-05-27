@@ -37,7 +37,10 @@ export class NetworkTopologyComponent {
 
   private nodeNo: number = 0;
 
-  @ViewChild('treeContainer', { static: true }) treeContainer: ElementRef;
+  noteForcus: any;
+
+  @ViewChild('treeContainer', { static: false }) treeContainer: ElementRef;
+  @ViewChild('formContainer', { static: false }) formContainer: ElementRef;
 
   constructor(private routerService: RouterService,
   private el: ElementRef,
@@ -79,15 +82,18 @@ export class NetworkTopologyComponent {
 								item.image = "icon-router-40";
 								break;
           }
-          nodes.push({
-            id: item.idLink,
-            label: item.name,
-            shape: "image",
-			      size: 26,
-            image: `assets/imgs/${item.image}.png`,
-            status: "ACTIVE",
-            parent: item.parent
-          });
+          if(!nodes.find(x => x.id == item.idLink)){
+            nodes.push({
+              id: item.idLink,
+              label: item.name ? item.name : "",
+              shape: "image",
+              size: 26,
+              image: `assets/imgs/${item.image}.png`,
+              status: "ACTIVE",
+              parent: item.parent,
+              name: item.name ? item.name : ""
+            });
+          }
         });
         this.nodes = new DataSet(nodes);
         let edges = []
@@ -109,25 +115,22 @@ export class NetworkTopologyComponent {
           this.data,
           this.getNetworkOptions()
         );
-        let treeContainer = this.treeContainer;
-        let nodeDatas = this.nodes;
-        let network = this.network;
-        let renderer = this.renderer;
+        const me = this;
         this.network.on('click', function(properties) {
           console.log('works');
-          treeContainer.nativeElement.querySelector(`.vis-network .card`)?.hide();
+          me.treeContainer.nativeElement.querySelector(`.vis-network .card`)?.hide();
           var clickedNodes = [];
           if (properties.nodes) {
             var ids = properties.nodes;
-            clickedNodes = nodeDatas.get(ids);
-            if (ids !== null) {
-              const node = network.getPositions([ids])[ids];
-              const corner = network.canvasToDOM({
+            clickedNodes = me.nodes.get(ids);
+            if (ids !== null && ids.length > 0) {
+              const node = me.network.getPositions([ids])[ids];
+              const corner = me.network.canvasToDOM({
                 x: node.x,
                 y: node.y
               });
               var string = "<div class='card-body'>";
-              nodeDatas.forEach(val => {
+              me.nodes.forEach(val => {
                 if (val.parent == ids) {
                   string += "<div class='row form-group text-center' id='interface" + val.id + "'>" +
                     "<div style='width: 15%'>" + val.id + "</div>" +
@@ -137,26 +140,18 @@ export class NetworkTopologyComponent {
                 }
               });
               string += "</div>";
-              treeContainer.nativeElement.querySelector('#topo' + ids)?.remove();
-              let element = treeContainer.nativeElement.querySelector(".vis-network");
-              element.innerHTML += "<div class='row form-group' id='topo" + ids + "' style='left: " + (corner.x + 15) + "px;top: " + (corner.y + 15) + "px; position: absolute !important; width: 200px; height: auto; -webkit-box-shadow: 0px 1px 6px #777;box-shadow: 0px 1px 6px #777;border-radius: 20px;color: #333;min-width: 200px;line-height: 1.2;font-size: 11px;'>" +
-                "<div class='card' style='padding: 8px;background: #fff !important; left: " + (corner.x + 15) + ";top: " + (corner.y + 15) + "; position: absolute;box-shadow: 0px 1px 6px #777;z-index: 600;border-radius: 5px; color: #333; min-width: 200px;line-height: 1.2;font-size: 11px;'>" +
-                "<a style='cursor: pointer; ' onclick='Remove(\"" + ids + "\")'><span style='float: right; margin: 5px;font-size: 16px;display: block; position: absolute; font-weight: bold; right: 6px; top: 0px; cursor: pointer; padding: 3px; color: #aaa;'>&#10005;</span></a>" +
-                "<div class=card-body' style='padding-top: 5px;font-size: 15px;'>" +
-                "<div class='text-left' style='color: #BBB;border-bottom: 1px solid #BBB; margin-bottom: 10px;'>Thông tin</div>" +
-                "<div style='padding-bottom: 12px;'><span style='padding-right: 8px;'>Tên:</span> <span style='padding-right: 5px; white-space: nowrap; padding-bottom: 3px;'>" + clickedNodes[0].name + "</span></div>"
-                +
-                "<div style='padding-bottom: 12px;'><span style='padding-right: 8px;'>Trạng thái:</span> <span style='padding-right: 5px; white-space: nowrap;padding-bottom: 3px;'>" + clickedNodes[0].status + "</span></div>"
-                + string + "</div>" + "</div>";
-              // renderer.appendChild(element.parentNode, "<div class='row form-group' id='topo" + ids + "' style='left: " + (corner.x + 15) + "px;top: " + (corner.y + 15) + "px; position: absolute !important; width: 200px; height: auto; -webkit-box-shadow: 0px 1px 6px #777;box-shadow: 0px 1px 6px #777;border-radius: 20px;color: #333;min-width: 200px;line-height: 1.2;font-size: 11px;'>" +
-              //   "<div class='card' style='padding: 8px;background: #fff !important; left: " + (corner.x + 15) + ";top: " + (corner.y + 15) + "; position: absolute;box-shadow: 0px 1px 6px #777;z-index: 600;border-radius: 5px; color: #333; min-width: 200px;line-height: 1.2;font-size: 11px;'>" +
-              //   "<a style='cursor: pointer; ' onclick='Remove(\"" + ids + "\")'><span style='float: right; margin: 5px;font-size: 16px;display: block; position: absolute; font-weight: bold; right: 6px; top: 0px; cursor: pointer; padding: 3px; color: #aaa;'>&#10005;</span></a>" +
-              //   "<div class=card-body' style='padding-top: 5px;font-size: 15px;'>" +
-              //   "<div class='text-left' style='color: #BBB;border-bottom: 1px solid #BBB; margin-bottom: 10px;'>Thông tin</div>" +
-              //   "<div style='padding-bottom: 12px;'><span style='padding-right: 8px;'>Tên:</span> <span style='padding-right: 5px; white-space: nowrap; padding-bottom: 3px;'>" + clickedNodes[0].name + "</span></div>"
-              //   +
-              //   "<div style='padding-bottom: 12px;'><span style='padding-right: 8px;'>Trạng thái:</span> <span style='padding-right: 5px; white-space: nowrap;padding-bottom: 3px;'>" + clickedNodes[0].status + "</span></div>"
-              //   + string + "</div>" + "</div>");
+              me.treeContainer.nativeElement.querySelector('#topo' + ids)?.remove();
+              let element = me.treeContainer.nativeElement.querySelector(".vis-network");
+              me.noteForcus = clickedNodes[0];
+              let popupInfo = me.formContainer.nativeElement.querySelector(".infomation-popup");
+              me.renderer.removeClass(popupInfo, 'hide-element');
+              me.renderer.setStyle(popupInfo, 'left', `${corner.x + 15}px`);
+              me.renderer.setStyle(popupInfo, 'top', `${corner.y + 15}px`);
+              me.renderer.setStyle(element, 'pointer-events', `none`);
+
+              me.renderer.setAttribute(popupInfo, 'id', `topo${me.noteForcus.id}`);
+              me.formContainer.nativeElement.querySelector("#node-name-popup").innerHTML = me.noteForcus.name;
+              me.formContainer.nativeElement.querySelector("#node-status-popup").innerHTML = me.noteForcus.status;
             }
       
           }
@@ -219,5 +214,14 @@ export class NetworkTopologyComponent {
         }
       }
     };
+  }
+
+  public RemovePopup() {
+    if(this.noteForcus && this.noteForcus.id){
+      let popupInfo = this.formContainer.nativeElement.querySelector(".infomation-popup");
+      this.renderer.addClass(popupInfo, 'hide-element');
+      this.renderer.removeStyle(this.treeContainer.nativeElement.querySelector(".vis-network"), 'pointer-events');
+    }
+    // this.formContainer.nativeElement.querySelector('#topo' + this.noteForcus.id).remove();
   }
 }
