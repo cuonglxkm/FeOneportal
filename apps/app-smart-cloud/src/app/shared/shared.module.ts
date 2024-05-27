@@ -24,6 +24,7 @@ import { ShareUsersComboboxComponent } from './components/share-users-combobox/s
 import { SvgIconComponent } from './components/svg-icon/svg-icon.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { ServiceStatusPipe } from './pipes/status.pipe';
+import { formatPrice } from './pipes/formatPrice.pipe';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -65,6 +66,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     DelonACLModule,
     DelonFormModule,
     
+    
     ...SHARED_DELON_MODULES,
     ...SHARED_ZORRO_MODULES,
     // third libs
@@ -76,7 +78,9 @@ const DIRECTIVES: Array<Type<any>> = [];
     ...DIRECTIVES,
     PaymentSummaryComponent,
     IsPermissionPipe,
-    ServiceStatusPipe
+    ServiceStatusPipe,
+    formatPrice,
+ 
   ],
   exports: [
     CommonModule,
@@ -94,7 +98,9 @@ const DIRECTIVES: Array<Type<any>> = [];
     ...COMPONENTS,
     ...DIRECTIVES,
     IsPermissionPipe,
-    ServiceStatusPipe
+    ServiceStatusPipe,
+    formatPrice
+  
   ],
   providers: [{ provide: NZ_ICONS, useValue: icons }],
 })

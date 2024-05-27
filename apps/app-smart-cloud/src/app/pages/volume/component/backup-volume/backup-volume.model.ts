@@ -81,3 +81,9 @@ export class CreateBackupVolumeOrderData {
     }
   ]
 }
+
+export class FormUpdateBackupVolume {
+  volumeBackupId: number
+  name: string
+  description: string
+}

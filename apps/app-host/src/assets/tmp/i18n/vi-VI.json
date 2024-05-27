@@ -29,7 +29,7 @@
   "validation.lastName.required": "Vui lòng nhập họ",
   "validation.phone-number.required": "Vui lòng nhập số điện thoại",
   "validation.province.required": "Vui lòng chọn tỉnh/thành phố",
-  "validation.info.required": "Vui lòng nhập thông tin",
+  "validation.info.required": "Vui lòng nhập thông tin.",
   "validation.name.pattern": "Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ_)",
   "validation.exist.name": "Tên {{name}} này đã được sử dụng, vui lòng chọn tên khác",
   "validation.choose.required": "Vui lòng chọn {{name}}",
@@ -893,7 +893,7 @@
   "app.file.system.access.to.delete.file.fail": "Xóa File System thất bại",
 
   "app.file.system.placeholder.search": "Tìm kiếm theo tên",
-  "app.file.system.error.pattern.storage": "Vui lòng nhập số nguyên dương",
+  "app.file.system.error.pattern.storage": "Vui lòng nhập số nguyên dương.",
   "app.file.system.not.enough.quota": "Dung lượng vượt quá dung lượng hiện có, xin vui lòng thử lại",
 
   "app.note.delete.file.system": "Để thực hiện xóa File System {{name}}, vui lòng nhập tên File System để xác nhận",
@@ -2499,10 +2499,10 @@
   "volume.alert.resize.storage": "Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn.",
 
   "app.breadcrumb.list.backup.volume": "Danh sách Backup Volume",
-  "app.backup.volume.info": "Thông tin Backup",
+  "app.backup.volume.info": "Thông tin Backup Volume",
   "app.backup.volume.detail": "Chi tiết Backup Volume",
   "app.backup.volume.btn.create": "Tạo mới Backup volume",
-
+  "app.backup.volume.modal.delete.title": "Xác nhận xóa Backup Volume",
   "app.backup.volume.name": "Tên Backup",
   "app.backup.volume.backup.package": "Gói Backup",
   "app.backup.volume.description": "Mô tả",
@@ -2522,8 +2522,9 @@
   "app.backup.volume.validator.name.pattern": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
   "app.backup.volume.validator.backup.package.required": "Vui lòng nhập tên Backup",
   "app.backup.volume.request.create": "Yêu cầu tạo Backup Volume đã được gửi đi.",
-
   "app.backup.volume.notification.create.request.send": "Yêu cầu tạo Backup Volume đã được gửi đi.",
+  "app.backup.volume.alert.delete": "Bạn đang thực hiện xóa Backup Volume",
+  "app.backup.volume.confirm.delete": "Đế thực hiện xoá Backup Volume {{name}}, vui lòng nhập tên Backup để xác nhận.",
 
   "app.dashboard.subscription.service": "Dịch vụ",
   "app.dashboard.subscription.service.active": "Đang hoạt động",

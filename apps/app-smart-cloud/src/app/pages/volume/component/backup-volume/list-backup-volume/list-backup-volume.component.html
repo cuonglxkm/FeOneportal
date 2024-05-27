@@ -83,7 +83,7 @@
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
-            <td><a>{{ data.name }}</a></td>
+            <td><a [routerLink]="'/app-smart-cloud/backup-volume/detail/' + data.id">{{ data.name }}</a></td>
             <td>{{ data.volumeName }}</td>
             <td nzAlign="right">{{ data.size }}</td>
             <td>{{ data.backupPackageName }}</td>
@@ -94,12 +94,30 @@
               <span *ngSwitchCase="'SUSPENDED'" class="suspended">{{ 'app.status.suspend'|i18n }}</span>
               <span *ngSwitchCase="'ERROR'" class="error">{{ 'app.status.error'|i18n }}</span>
             </td>
-            <td [ngSwitch]="data.serviceStatus">
-              <div *ngSwitchCase="'AVAILABLE'">
-                <!------!--->
-                <one-portal-update-backup-volume />
+            <td>
+              <div *ngIf="data.serviceStatus == 'KHOITAO'">
+                <!--- chỉnh sửa---!--->
+                <one-portal-update-backup-volume [region]="region"
+                                                 [project]="project"
+                                                 [idBackupVolume]="data.id"
+                                                 [backupName]="data.name"
+                                                 [backupVolume]="data"/>
+
+                <!--Restore----!--->
                 <one-portal-restore-backup-volume />
-                <one-portal-delete-backup-volume />
+
+                <!--Xóa----!--->
+                <one-portal-delete-backup-volume [region]="region"
+                                                 [project]="project"
+                                                 [idBackup]="data.id"
+                                                 [backupName]="data.name" (onOk)="handleOkDelete()"/>
+              </div>
+              <div *ngIf="!(data.serviceStatus == 'KHOITAO')">
+              <!--Xóa----!--->
+              <one-portal-delete-backup-volume [region]="region"
+                                               [project]="project"
+                                               [idBackup]="data.id"
+                                               [backupName]="data.name" (onOk)="handleOkDelete()"/>
               </div>
             </td>
           </tr>

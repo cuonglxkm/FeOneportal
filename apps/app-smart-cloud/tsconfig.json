@@ -17,7 +17,8 @@
       "@_mock": [
         "_mock/index"
       ]
-    }
+    },
+    
   },
   "files": [],
   "include": [],
