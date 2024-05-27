@@ -9,8 +9,8 @@ pipeline {
     environment {
         registry = "registry.onsmartcloud.com"
         registryCredential = "cloud-harbor-id"
-        k8sCred = "k8s-dev-cred"
-        ENV = "dev"
+        k8sCredential = "k8s-cred"
+        ENV = "test"
     }
     stages {
 
@@ -53,7 +53,7 @@ pipeline {
                 script {
                     env.APP_NAME = appName
                     env.IMAGE_TAG = imageTag
-                    withCredentials([file(credentialsId: k8sCred , variable: 'KUBECONFIG')]) {
+                    withCredentials([file(credentialsId: k8sCredential , variable: 'KUBECONFIG')]) {
                         dir("apps/${appName}/deploy") {
                             sh 'for f in *.yaml; do envsubst < $f | kubectl --insecure-skip-tls-verify apply -f - ; done '
                         }
