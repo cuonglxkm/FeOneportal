@@ -33,6 +33,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
   pageSize: number = 9999;
   pageIndex: number = 1;
   response: BaseResponse<FileSystemModel[]>;
+  listFileSystems: FileSystemModel[] 
   isLoading: boolean = false;
   isCheckBegin: boolean = false;
   customerId: number;
@@ -83,7 +84,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
     formSearch.vpcId = this.project;
     formSearch.regionId = this.region;
     formSearch.name = this.value;
-    formSearch.isCheckState = false;
+    formSearch.isCheckState = true;
     formSearch.pageSize = this.pageSize;
     formSearch.currentPage = this.pageIndex;
     
@@ -92,6 +93,8 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
       .subscribe(data => {
         this.isLoading = false;
         console.log('data file system', data);
+        const filterData = data.records.filter(x => x.taskState == 'available');
+        this.listFileSystems = filterData;
         this.response = data;
         if(this.activatedRoute.snapshot.paramMap.get('fileSystemId')){
           const fileSystemId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('fileSystemId'));

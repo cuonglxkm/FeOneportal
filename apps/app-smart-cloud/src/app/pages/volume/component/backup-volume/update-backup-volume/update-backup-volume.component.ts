@@ -8,6 +8,7 @@ import { BackupVmService } from '../../../../../shared/services/backup-vm.servic
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
 import { BackupVolume } from '../backup-volume.model';
+import { BackupVolumeService } from '../../../../../shared/services/backup-volume.service';
 
 @Component({
   selector: 'one-portal-update-backup-volume',
@@ -43,7 +44,7 @@ export class UpdateBackupVolumeComponent implements AfterViewInit{
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder,
-              private backupVmService: BackupVmService,
+              private backupVolumeService: BackupVolumeService ,
               private notification: NzNotificationService,
               private router: Router) {
   }
@@ -71,17 +72,17 @@ export class UpdateBackupVolumeComponent implements AfterViewInit{
 
   showModal() {
     this.isVisible = true;
+
+    this.getListBackupVolume()
     this.validateForm.controls.nameBackup.setValue(this.backupVolume?.name)
     this.validateForm.controls.description.setValue(this.backupVolume?.description)
-    // this.getListFileSystem();
-    // this.validateForm.controls.nameFileSystem.setValue(this.fileSystem?.name);
-    // this.validateForm.controls.description.setValue(this.fileSystem?.description);
+
     setTimeout(() => {
       this.backupVolumeInputName?.nativeElement.focus();
     }, 1000);
   }
 
-  getListBackupVM() {
+  getListBackupVolume() {
 
     let formSearch: BackupVMFormSearch = new BackupVMFormSearch()
     formSearch.regionId = this.region
@@ -90,17 +91,17 @@ export class UpdateBackupVolumeComponent implements AfterViewInit{
     formSearch.currentPage = 1
     formSearch.pageSize = 9999
 
-    this.backupVmService.search(formSearch).subscribe(data => {
-      this.isLoading = false
-      data?.records.forEach(item => {
-        this.nameList?.push(item.name)
-        this.nameList = this.nameList.filter(item => item !==  this.validateForm.get('nameBackup').getRawValue())
-      })
-
-    }, error => {
-      this.isLoading = true
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
-    })
+    // this.backupVolumeService.getListBackupVolume(null).subscribe(data => {
+    //   this.isLoading = false
+    //   data?.records.forEach(item => {
+    //     this.nameList?.push(item.name)
+    //     this.nameList = this.nameList.filter(item => item !==  this.validateForm.get('nameBackup').getRawValue())
+    //   })
+    //
+    // }, error => {
+    //   this.isLoading = true
+    //   this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+    // })
 
   }
 

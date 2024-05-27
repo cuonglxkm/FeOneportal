@@ -71,7 +71,7 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     // this.region = region.regionId
-    this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
   }
 
   projectChanged(project: ProjectModel) {
@@ -79,7 +79,7 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
   }
 
   userChanged(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
   }
 
   changeTime(value) {

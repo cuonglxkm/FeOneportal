@@ -54,7 +54,7 @@
                       nzTheme="outline"
                       nz-popover
                       [nzPopoverContent]="
-                        'Tên của VPN Service, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'
+                        'Tên của VPN Service, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
                       "
                       nzPopoverPlacement="bottom"
                     ></span>
@@ -64,6 +64,8 @@
                   nz-input
                   type="text"
                   required
+                  appTrim
+                  [maxlength]="50"
                   placeholder="Nhập tên"
                   formControlName="name"
                   class="input-custom"
@@ -130,7 +132,7 @@
       <div style="overflow: auto; margin-bottom: 16px">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
-          <span>{{ form.value.name }}</span>
+          <span class="text-break">{{ form.value.name }}</span>
         </div>
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Router</h3>
