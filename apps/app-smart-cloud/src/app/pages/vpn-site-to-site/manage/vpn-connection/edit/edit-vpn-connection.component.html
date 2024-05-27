@@ -49,7 +49,7 @@
                 <span nz-icon nzType="question-circle"
                       nzTheme="outline"
                       nz-popover
-                      [nzPopoverContent]="'Name: Tên, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
+                      [nzPopoverContent]="'Name: Tên, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'"
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
@@ -265,6 +265,7 @@
                 [type]="preSharedKeyVisible ? 'text' : 'password'"
                 style="height: 30px;"
                 required
+                appTrim
                 [value]="vpnConnection.preSharedKey"
                 formControlName="preSharedKey"
                 class="input-custom"
@@ -294,7 +295,7 @@
       <div>
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
-          <span>{{vpnConnection.name}}</span>
+          <span class="text-break">{{vpnConnection.name}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IKE Policy</h3>
@@ -326,13 +327,14 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Pre - Shared Key (PSK) string</h3>
-          <span>{{form.value.preSharedKey}}</span>
+          <span class="text-break">{{form.value.preSharedKey}}</span>
         </div>
       </div>
       <button
         (click)="handleEdit()"
         nz-button
-        nzType="primary"
+        nzType="primary" 
+        [nzLoading]="isLoading"
         style="
           border: none;
           width: 100%;
