@@ -52,7 +52,17 @@ export class CreateEndpointGroupComponent implements OnInit {
         Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
       ],
     ],
-    endpointsCidr: ['', Validators.required],
+    endpointsCidr: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(
+          new RegExp(
+            '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24(,\\s*((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24)*$'
+        )
+        ),
+      ],
+    ],
   });
 
   getData(): any {
@@ -135,7 +145,7 @@ export class CreateEndpointGroupComponent implements OnInit {
           this.isLoading = false;
           this.notification.success(
             'Thành công',
-            'Tạo mới endpoint group thành công'
+            'Tạo mới Endpoint Group thành công'
           );
           this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
         },
@@ -143,7 +153,7 @@ export class CreateEndpointGroupComponent implements OnInit {
           this.isLoading = false;
           this.notification.error(
             'Thất bại',
-            'Tạo mới endpoint group thất bại'
+            'Tạo mới Endpoint Group thất bại'
           );
           console.log(error);
         }
@@ -180,10 +190,15 @@ export class CreateEndpointGroupComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+  }
+
+  userChangeProject(){
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
 }

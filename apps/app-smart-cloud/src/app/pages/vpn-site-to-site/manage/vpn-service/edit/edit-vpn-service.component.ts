@@ -26,7 +26,7 @@ export class EditVpnServiceComponent{
   validateForm: FormGroup<{
     name: FormControl<string>
   }> = this.fb.group({
-    name: ['', [Validators.required]]
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/)]]
   });
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -66,7 +66,7 @@ export class EditVpnServiceComponent{
           if(data) {
             this.isVisible = false
             this.isLoading =  false
-            this.notification.success('Thành công', 'Chỉnh sửa Vpn Service thành công')
+            this.notification.success('Thành công', 'Chỉnh sửa VPN Service thành công')
             this.onOk.emit(data)
           }
         }, error => {
@@ -77,7 +77,7 @@ export class EditVpnServiceComponent{
           }else{
             this.isVisible = false
             this.isLoading =  false
-            this.notification.error('Thất bại', 'Chỉnh sửa Vpn Service thất bại')
+            this.notification.error('Thất bại', 'Chỉnh sửa VPN Service thất bại')
           }
 
         })

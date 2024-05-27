@@ -65,14 +65,14 @@ export class DeleteVpnConnectionComponent{
           if(data) {
             this.isVisible = false
             this.isLoading =  false
-            this.notification.success('Thành công', 'Xoá vpn connection thành công')
+            this.notification.success('Thành công', 'Xoá VPN Connection thành công')
             this.validateForm.reset()
             this.onOk.emit(data)
           }
         }, error => {
           this.isVisible = false
           this.isLoading =  false
-          this.notification.error('Thất bại', 'Xoá vpn connection thất bại')
+          this.notification.error('Thất bại', 'Xoá VPN Connection thất bại')
         })
       }
     }

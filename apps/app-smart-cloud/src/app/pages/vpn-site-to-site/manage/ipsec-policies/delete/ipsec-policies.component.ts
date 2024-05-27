@@ -78,7 +78,7 @@ export class DeleteIpsecPoliciesComponent {
               this.isLoading = false;
               this.notification.success(
                 'Thành công',
-                'Xoá Ipsec Policy thành công'
+                'Xoá IPsec Policy thành công'
               );
               this.validateForm.reset();
               this.onOk.emit(data);
@@ -90,12 +90,12 @@ export class DeleteIpsecPoliciesComponent {
               this.isLoading = false;
               this.notification.error(
                 'Thất bại',
-                'Ipsec Policy đang được sử dụng'
+                'IPsec Policy đang được sử dụng'
               );
             } else {
               this.isVisible = false;
               this.isLoading = false;
-              this.notification.error('Thất bại', 'Xoá Ipsec Policy thất bại');
+              this.notification.error('Thất bại', 'Xoá IPsec Policy thất bại');
             }
           }
         );
