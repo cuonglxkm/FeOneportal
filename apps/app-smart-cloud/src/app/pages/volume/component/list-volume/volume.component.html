@@ -110,7 +110,7 @@
               <div *ngIf="data.iops == null">200</div>
               <div *ngIf="data.iops != null">{{ data.iops }}</div>
             </td>
-            <td nzBreakWord nzAlign="left">
+            <!-- <td nzBreakWord nzAlign="left">
               <div class="status" [ngSwitch]="data.status">
                                 <span class="available" *ngSwitchCase="'KHOITAO'">
                                             {{ 'app.status.running' | i18n }}
@@ -131,7 +131,10 @@
                                             {{ 'app.status.deleting' | i18n }}
                                           </span>
               </div>
-            </td>
+            </td> -->
+            <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+              <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
+            </ng-container>
             <td nzBreakWord nzAlign="left">{{ data.serviceStatus }}</td>
             <td nzBreakWord nzAlign="left">
               <div *ngIf="data.attachedInstances == null || data.attachedInstances.length <= 0">-</div>

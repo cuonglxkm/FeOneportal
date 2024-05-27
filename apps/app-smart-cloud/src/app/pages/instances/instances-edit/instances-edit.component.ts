@@ -261,6 +261,7 @@ export class InstancesEditComponent implements OnInit {
     this.gpuUnitPrice = '0';
     this.gpuIntoMoney = 0;
     this.totalAmount = 0;
+    this.totalVAT = 0;
     this.totalincludesVAT = 0;
   }
 
@@ -564,6 +565,7 @@ export class InstancesEditComponent implements OnInit {
         this.configGPU.gpuOfferId == 0)
     ) {
       this.totalAmount = 0;
+      this.totalVAT = 0;
       this.totalincludesVAT = 0;
     } else {
       this.getTotalAmount();
@@ -877,6 +879,7 @@ export class InstancesEditComponent implements OnInit {
   }
 
   totalAmount: number = 0;
+  totalVAT: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
     this.instanceResizeInit();
@@ -891,6 +894,7 @@ export class InstancesEditComponent implements OnInit {
     this.dataService.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );

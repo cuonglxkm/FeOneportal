@@ -35,35 +35,44 @@ export function ipAddressValidator(): ValidatorFn {
 
 // Hàm kiểm tra xem địa chỉ IP có hợp lệ không
 function isValidIPAddress(ipAddress: string): boolean {
-  if (
-    !(ipAddress.startsWith('172.') && ipAddress >= '172.16.0.0' && ipAddress <= '172.25.0.0') &&
-    !(ipAddress.startsWith('192.168.')) &&
-    !(ipAddress === '192.168.0.0')
-  ) {
-    return false;
-  }
-  if (!ipAddress.match(/^((\d{1,3}\.\d{1,3}\.0\.0\/16)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.0\/24))$/)) {
+  // Kiểm tra định dạng chung của địa chỉ IP
+  const ipAndPrefix = ipAddress.split('/');
+  if (ipAndPrefix.length !== 2) {
     return false;
   }
 
-  // Kiểm tra định dạng của địa chỉ IP
-  const ipAndPrefix = ipAddress.split('/');
   const ipParts = ipAndPrefix[0].split('.');
   const prefixLength = parseInt(ipAndPrefix[1], 10);
 
-  // Kiểm tra xem địa chỉ IP có đúng dạng không
-  if (ipParts.length !== 4 || isNaN(prefixLength) || prefixLength < 0 || prefixLength > 32) {
+  if (ipParts.length !== 4 || isNaN(prefixLength)) {
     return false;
   }
 
-  // Kiểm tra xem phần prefix có hợp lệ không
+  // Kiểm tra phần prefix length
+  if ((prefixLength !== 16 && prefixLength !== 24)) {
+    return false;
+  }
+
+  // Kiểm tra xem các phần của IP có nằm trong khoảng từ 0 đến 255 không
   for (const part of ipParts) {
-    if (parseInt(part, 10) < 0 || parseInt(part, 10) > 255) {
+    const partNumber = parseInt(part, 10);
+    if (partNumber < 0 || partNumber > 255) {
       return false;
     }
   }
 
-  return true;
+  // Kiểm tra xem địa chỉ IP có nằm trong các khoảng hợp lệ không
+  const ipNumber = ipParts.map(part => parseInt(part, 10));
+
+  if (
+    (ipNumber[0] === 10 && ipNumber[1] >= 0 && ipNumber[1] <= 100) ||
+    (ipNumber[0] === 172 && ipNumber[1] >= 16 && ipNumber[1] <= 31) ||
+    (ipNumber[0] === 192 && ipNumber[1] === 168 && ipNumber[2] === 0)
+  ) {
+    return true;
+  }
+
+  return false;
 }
 
 export function ipAddressListValidator(): ValidatorFn {

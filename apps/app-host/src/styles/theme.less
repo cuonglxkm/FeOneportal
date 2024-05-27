@@ -6,7 +6,7 @@
 @import '@fontsource/inter';
 @import '@delon/theme/theme-default.less';
 @import '../assets/color.less';
-
+@import '../assets/custom-css.less';
 // ==========The following is the custom theme variable area==========
 // The theme paraments can be generated at https://ng-alain.github.io/ng-alain/
 // @primary-color: #f50;
@@ -228,7 +228,7 @@ u {
 .input-custom {
   display: flex;
   height: 40px;
-  //border-radius: 4px;
+  border-radius: 8px;
   justify-content: space-between;
   align-items: center;
   font-size: 16px;
@@ -241,6 +241,7 @@ u {
 
 .input-select-custom {
   height: 40px;
+
 }
 
 .ant-select:not(.ant-select-customize-input) .ant-select-selector {
@@ -344,7 +345,7 @@ project-select-dropdown nz-select-item.ant-select-selection-item {
 }
 
 .ant-input-number {
-  border-radius: 8px;
+  border-radius: @textbox-radius-lg;
   margin-left: 8px;
 }
 
@@ -603,3 +604,13 @@ align-items: center;
   padding-top: 0.2em;
 }
 // END
+
+.card-border{
+  border: 1px solid #B2DEFF;
+}
+.ant-input-number-lg input {
+  height: 40px;
+}
+// nz-input-number{
+//   border-radius: @textbox-radius-lg
+// }

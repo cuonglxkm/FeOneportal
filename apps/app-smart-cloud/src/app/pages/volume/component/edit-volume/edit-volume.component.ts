@@ -251,12 +251,12 @@ export class EditVolumeComponent implements OnInit {
   volumeInit() {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id;
     this.volumeEdit.newDescription = this.validateForm.controls.description.value;
-    this.volumeEdit.regionId = this.volumeInfo?.regionId;
+    this.volumeEdit.regionId = this.region;
     this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB;
     this.volumeEdit.iops = this.iops;
     // editVolumeDto.newOfferId = 0;
     this.volumeEdit.serviceName = this.validateForm.controls.name.value;
-    this.volumeEdit.projectId = this.volumeInfo.vpcId;
+    this.volumeEdit.projectId = this.project;
     this.volumeEdit.customerId = this.tokenService.get()?.userId;
     this.volumeEdit.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     const userString = localStorage.getItem('user');
@@ -355,23 +355,7 @@ export class EditVolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: request, path: returnPath }
     });
-    // this.isLoading = true
-    // this.volumeService.editSizeVolume(request).subscribe(data => {
-    //     if (data.code == 200) {
-    //       this.isLoading = false
-    //       this.notification.success('Thành công', 'Chỉnh sửa Volume thành công.')
-    //       console.log(data);
-    //       this.router.navigate(['/app-smart-cloud/volumes']);
-    //     } else if (data.code == 310) {
-    //       this.isLoading = false;
-    //       // this.router.navigate([data.data]);
-    //       window.location.href = data.data;
-    //     } else {
-    //       this.isLoading = false
-    //       this.notification.error('Thất bại', 'Chỉnh sửa Volume thất bại.')
-    //     }
-    //   }
-    // );
+
   }
 
 }

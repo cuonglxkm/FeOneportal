@@ -4,12 +4,15 @@
   [title]="'app.instances.list' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.instances' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -369,21 +372,22 @@
         </nz-col>
       </nz-row>
       <nz-row style="margin-top: 20px">
-        <nz-col class="text-center" style="width: 100%"
-          ><span class="text-intro-title" style="color: #0066b3">
-            Máy chủ ảo<br />Dễ dàng khởi tạo và triển khai dịch vụ</span
-          ></nz-col
-        >
+        <nz-col class="text-center" style="width: 100%">
+          <span
+            class="text-intro-title"
+            style="color: #0066b3"
+            [innerHTML]="'app.instances.intro' | i18n"
+          >
+          </span
+        ></nz-col>
       </nz-row>
       <nz-row style="margin-top: 20px">
-        <nz-col class="text-center" style="width: 100%"
-          ><span class="text-intro-desc">
-            Dịch vụ cung cấp hệ thống máy chủ ảo an toàn, tin cậy được thiết kế
-            tập trung cho khả năng mở rộng dễ dàng.<br />
-            Người dùng có thể dễ dàng tạo, cấu hình compute instance với số
-            lượng thao tác đơn giản nhất.</span
-          ></nz-col
-        >
+        <nz-col class="text-center" style="width: 100%">
+          <span
+            class="text-intro-desc"
+            [innerHTML]="'app.instances.intro.desc' | i18n"
+          ></span
+        ></nz-col>
       </nz-row>
       <button
         style="margin-top: 20px"
