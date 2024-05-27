@@ -88,7 +88,7 @@ export class ProjectCreateComponent implements OnInit {
 
   disableIpConnectInternet = false;
   loadingIpConnectInternet = false;
-  ipConnectInternet = 'Không sử dụng';
+  ipConnectInternet = '';
   loadBalancerId = '';
   siteToSiteId = '';
 
@@ -193,14 +193,14 @@ export class ProjectCreateComponent implements OnInit {
       // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
       // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
 
-      let IPPublicNum = this.numberIpPublic;
-      let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != 'Không sử dụng' ? this.numberIpFloating : 0;
+      let IPPublicNum = this.numberIpPublic;      
+      let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
       // let IPFloating =  this.numberIpFloating;
       let IPV6 = this.numberIpv6;
       // if (( this.offerFlavor != undefined) || ( this.vCPU != 0 && this.ram != 0)) {
       // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
         console.log("offerFlavor", this.offerFlavor)
-        if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || this.vCPU != 0 || this.ram != 0)) {
+        if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
         console.log("lstIp",lstIp)
         if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
           let listString = lstIp[1].split(' ');
@@ -239,6 +239,7 @@ export class ProjectCreateComponent implements OnInit {
           serviceInstanceId: 0,
           customerId: this.tokenService.get()?.userId,
           offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
+        
 
           actionType: 0,
           regionId: this.regionId,
@@ -263,8 +264,8 @@ export class ProjectCreateComponent implements OnInit {
           .subscribe(
             data => {
               this.total = data;
-              this.totalAmount = this.total.data.totalAmount.amount.toLocaleString();
-              this.totalPayment = this.total.data.totalPayment.amount.toLocaleString();
+              this.totalAmount = this.total.data.totalAmount.amount
+              this.totalPayment = this.total.data.totalPayment.amount;
               this.getPriceEachComponent(data.data);
             }
           );
@@ -281,7 +282,6 @@ export class ProjectCreateComponent implements OnInit {
     } else {
       this.activeVpc = true;
       this.activeNoneVpc = false;
-      console.log("number", number)
 
     }
     this.searchSubject.next('');
@@ -379,7 +379,9 @@ export class ProjectCreateComponent implements OnInit {
                     e.description = e.description.replace(/SSS/g, ch.charOptionValues[0]);
                   } else if (ch.charName.toUpperCase() == 'IP') {
                     e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + ' IP');
+
                     e.ipNumber = ch.charOptionValues[0];
+                    console.log(" e.ipNumber",  e.ipNumber)
                   }
                 });
               });
@@ -417,7 +419,7 @@ export class ProjectCreateComponent implements OnInit {
       // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
 
       let IPPublicNum = this.numberIpPublic;
-      let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != 'Không sử dụng' ? this.numberIpFloating : 0;
+      let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
       // let IPFloating = this.numberIpFloating;
       let IPV6 = this.numberIpv6;
 
@@ -537,6 +539,8 @@ export class ProjectCreateComponent implements OnInit {
   deleteBackup() {
     this.activeBackup = false;
     this.trashBackup = false;
+    this.totalAmount=this.totalAmount-this.price.backup;
+    this.totalPayment = this.totalPayment -  this.price.backup - (0.1 * this.price.backup);
     this.price.backup = 0;
     this.price.backupUnit = 0;
     this.numberBackup = 0;
@@ -550,9 +554,14 @@ export class ProjectCreateComponent implements OnInit {
   deleteLoadBalancer() {
     this.activeLoadBalancer = false;
     this.trashLoadBalancer = false;
+
+    this.totalAmount=this.totalAmount - this.price.loadBalancer 
+    this.totalPayment = this.totalPayment -  this.price.loadBalancer - (0.1 * this.price.loadBalancer)
+
     this.numberLoadBalancer = 0;
     this.price.loadBalancer = 0;
     this.price.loadBalancerUnit = 0;
+    this.loadBalancerId = '';
   }
 
 
@@ -563,6 +572,11 @@ export class ProjectCreateComponent implements OnInit {
   deleteFileStorage() {
     this.activeFileStorage = false;
     this.trashFileStorage = false;
+
+    this.totalAmount=this.totalAmount -  this.price.fileStorage -this.price.filestorageSnapshot
+    this.totalPayment = this.totalPayment -  this.price.fileStorage -  this.price.filestorageSnapshot - (0.1 * this.price.filestorageSnapshot)- (0.1 * this.price.fileStorage)
+
+
     this.price.fileStorage = 0;
     this.price.fileStorageUnit = 0;
     this.price.filestorageSnapshot = 0;
@@ -649,57 +663,57 @@ export class ProjectCreateComponent implements OnInit {
     // let fileStorage = 0;
     for (let item of data.orderItemPrices[0]?.details) {
       if (item.typeName == 'ippublic') {
-        this.price.IpPublic = item.totalAmount.amount.toLocaleString();
+        this.price.IpPublic = item.totalAmount.amount;
         console.log("IpPublic", this.price.IpPublic)
-        this.price.IpPublicUnit = item.unitPrice.amount.toLocaleString();
+        this.price.IpPublicUnit = item.unitPrice.amount;
         console.log("IpPublic", this.price.IpPublicUnit)
-        // this.price.IpPublic = item.unitPrice.amount.toLocaleString();
+        // this.price.IpPublic = item.unitPrice.amount;
 
       } else if (item.typeName == 'ipfloating') {
-        this.price.IpFloating = item.totalAmount.amount.toLocaleString();
-        this.price.IpFloatingUnit = item.unitPrice.amount.toLocaleString();
-        // this.price.IpFloating = item.unitPrice.amount.toLocaleString();
+        this.price.IpFloating = item.totalAmount.amount;
+        this.price.IpFloatingUnit = item.unitPrice.amount;
+        // this.price.IpFloating = item.unitPrice.amount;
       } else if (item.typeName == 'ipv6') {
-        this.price.IpV6 = item.totalAmount.amount.toLocaleString();
-        this.price.IpV6Unit = item.unitPrice.amount.toLocaleString();
-        // this.price.IpV6 = item.unitPrice.amount.toLocaleString();
+        this.price.IpV6 = item.totalAmount.amount;
+        this.price.IpV6Unit = item.unitPrice.amount;
+        // this.price.IpV6 = item.unitPrice.amount;
       } else if (item.typeName == 'backup') {
-        this.price.backup = item.totalAmount.amount.toLocaleString();
+        this.price.backup = item.totalAmount.amount;
         console.log("backup", this.price.backup)
-        this.price.backupUnit = item.unitPrice.amount.toLocaleString();
+        this.price.backupUnit = item.unitPrice.amount;
         console.log("backup Unit", this.price.backupUnit)
       } else if (item.typeName == 'filestorage') {
-        this.price.fileStorage = item.totalAmount.amount.toLocaleString();
+        this.price.fileStorage = item.totalAmount.amount;
         // console.log("fileStorage",this.price.fileStorage )
-        this.price.fileStorageUnit = item.unitPrice.amount.toLocaleString();
+        this.price.fileStorageUnit = item.unitPrice.amount;
         console.log("fileStorageUnit", this.price.fileStorageUnit)
         // fileStorage += item.unitPrice.amount;
       } else if (item.typeName == 'filestorage-snapshot') {
-        this.price.filestorageSnapshot = item.totalAmount.amount.toLocaleString();
-        this.price.filestorageSnapshotUnit = item.unitPrice.amount.toLocaleString();
+        this.price.filestorageSnapshot = item.totalAmount.amount;
+        this.price.filestorageSnapshotUnit = item.unitPrice.amount;
         // fileStorage += item.unitPrice.amount;
       } else if (item.typeName == 'loadbalancer') {
-        this.price.loadBalancer = item.totalAmount.amount.toLocaleString();
-        this.price.loadBalancerUnit = item.unitPrice.amount.toLocaleString();
-        // this.price.loadBalancer = item.unitPrice.amount.toLocaleString();
+        this.price.loadBalancer = item.totalAmount.amount;
+        this.price.loadBalancerUnit = item.unitPrice.amount;
+        // this.price.loadBalancer = item.unitPrice.amount;
       } else if (item.typeName == 'vpn-site-to-site') {
-        this.price.siteToSite = item.totalAmount.amount.toLocaleString();
-        this.price.siteToSiteUnit = item.unitPrice.amount.toLocaleString();
-        // this.price.siteToSite = item.unitPrice.amount.toLocaleString();
+        this.price.siteToSite = item.totalAmount.amount;
+        this.price.siteToSiteUnit = item.unitPrice.amount;
+        // this.price.siteToSite = item.unitPrice.amount;
       } else if (item.typeName == 'vcpu') {
 
-        this.price.vcpu = item.totalAmount.amount.toLocaleString();
-        this.price.vcpuPerUnit = item.unitPrice.amount.toLocaleString();
+        this.price.vcpu = item.totalAmount.amount;
+        this.price.vcpuPerUnit = item.unitPrice.amount;
         console.log("vcpu", this.price.vcpu)
       } else if (item.typeName == 'ram') {
-        this.price.ram = item.totalAmount.amount.toLocaleString();
-        this.price.ramPerUnit = item.unitPrice.amount.toLocaleString();
+        this.price.ram = item.totalAmount.amount;
+        this.price.ramPerUnit = item.unitPrice.amount;
       } else if (item.typeName == 'ssd') {
-        this.price.ssd = item.totalAmount.amount.toLocaleString();
-        this.price.ssdPerUnit = item.unitPrice.amount.toLocaleString();
+        this.price.ssd = item.totalAmount.amount;
+        this.price.ssdPerUnit = item.unitPrice.amount;
       } else if (item.typeName == 'hdd') {
-        this.price.hhd = item.totalAmount.amount.toLocaleString();
-        this.price.hhdPerUnit = item.unitPrice.amount.toLocaleString();
+        this.price.hhd = item.totalAmount.amount;
+        this.price.hhdPerUnit = item.unitPrice.amount;
       }
     }
     // this.price.fileStorage = fileStorage;

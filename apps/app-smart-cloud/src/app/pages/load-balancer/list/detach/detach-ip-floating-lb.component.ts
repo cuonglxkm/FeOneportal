@@ -1,6 +1,10 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs/operators';
+import { data } from 'vis-network';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-detach-ip-floating-lb',
@@ -10,6 +14,9 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 export class DetachIpFloatingLbComponent implements AfterViewInit{
   @Input() region: number
   @Input() project: number
+  @Input() idLb: number
+  @Input() ipId: number
+  @Input() vipPortIp: string
   @Input() IsFloatingIP: boolean
   @Input() ipFloatingAddress: string
   @Output() onOk = new EventEmitter()
@@ -21,12 +28,20 @@ export class DetachIpFloatingLbComponent implements AfterViewInit{
   value: string
 
   @ViewChild('ipFloatingAddressInput') ipFloatingAddressInput!: ElementRef<HTMLInputElement>;
+  disableDelete = true;
   constructor(private loadBalancerService: LoadBalancerService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService) {
   }
 
   onInput(value) {
-    this.value = value
+    if (this.ipFloatingAddress == value) {
+      this.disableDelete = false;
+      this.isInput = false;
+    } else {
+      this.disableDelete = true;
+      this.isInput = true;
+    }
   }
 
   focusOkButton(event: KeyboardEvent): void {
@@ -49,14 +64,17 @@ export class DetachIpFloatingLbComponent implements AfterViewInit{
 
   handleOk() {
     this.isLoading = true
-    this.isLoading = true
-    if (this.value == this.ipFloatingAddress) {
-      this.isInput = false
-
-    } else {
-      this.isInput = true
-      this.isLoading = false
-    }
+    this.loadBalancerService.attachOrDetachIpFloating(this.ipId, this.idLb, this.region, this.project, null).pipe(finalize(() => {
+      this.isLoading = false;
+      this.isVisible = false;
+      this.onCancel.emit();
+    })).subscribe(
+      data => {
+        this.notification.success(this.i18n.fanyi('app.status.success'), 'detach success')
+      }, error => {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+      }
+    );
   }
 
   ngAfterViewInit() {

@@ -50,21 +50,7 @@
           </nz-form-control>
         </nz-form-item>
       </nz-col>
-      <!-- <nz-row nzJustify="space-between">
-        
-        <nz-col nzSpan="7">
-          <nz-form-item>
-            <nz-form-label>
-              <div>
-                <span>Parent Group</span>
-              </div>
-            </nz-form-label>
-            <nz-form-control>
-              <input style="border-radius: 4px;" nz-input [value]="groupModel?.parent" disabled="true"/>
-            </nz-form-control>
-          </nz-form-item>
-        </nz-col>
-      </nz-row> -->
+     
     </form>
   </nz-card>
   <nz-card [nzTitle]="'app.group-detail.additionalInformation' | i18n">
@@ -76,8 +62,7 @@
       <nz-tab [nzTitle]="user">
         <nz-row nzJustify="space-between" style="margin-bottom: 15px;">
           <nz-col>
-            <div class="subtitle-fontsize"><b>{{ 'app.group-detail.userInGroup' | i18n }}
-                ({{filteredUsers?.length}})</b></div>
+            
           </nz-col>
           <nz-col class="d-flex">
             <nz-input-group style="width: 300px;" [nzPrefix]="prefixIconSearch" nzSize="large" class="custom-input"
@@ -93,7 +78,6 @@
             </button>
             <button style="border: none;" nz-button nzSize="large" (click)="removeUser()" id="deleteUser" [ngClass]="setOfCheckedIdUser.size>0 ?'activeDelete':''">
               <one-portal-svg-icon [icon]="'icon_trash'"></one-portal-svg-icon>
-              <!-- <img style="margin-top: -4px" src="assets/imgs/trash.svg" /> -->
             </button>
             <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateUser()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add_white.svg" alt="" />
