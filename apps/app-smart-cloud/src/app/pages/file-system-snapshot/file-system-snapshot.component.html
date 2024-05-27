@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'app.file.system.snapshot.manage' | i18n"
+  [title]="'app.file.system.snapshot.list' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -12,9 +12,9 @@
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{
-        'app.file.system.snapshot.manage' | i18n
-      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        File System Snapshot
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -33,13 +33,8 @@
 </page-header>
 <nz-content>
   <nz-card>
-    <div
-      style="display: flex; justify-content: space-between; align-items: center"
-    >
-      <span class="text-card-header">{{
-        'app.file.system.snapshot.list' | i18n
-      }}</span>
-      <nz-row style="gap: 16px">
+
+      <nz-row class="d-flex justify-content-between">
         <nz-col>
           <nz-input-group
             [nzPrefix]="prefixIconSearch"
@@ -52,6 +47,7 @@
               [nz-tooltip]="'app.button.search' | i18n"
               [(ngModel)]="value"
               (input)="onInputChange($event.target['value'])"
+              [placeholder]="'app.file.system.placeholder.search' | i18n"
             />
           </nz-input-group>
           <ng-template #prefixIconSearch>
@@ -81,7 +77,6 @@
           </button>
         </nz-col>
       </nz-row>
-    </div>
     <nz-table
       #fixedTable
       style="margin-top: 20px"
@@ -116,13 +111,14 @@
               >{{ data.name }}</a
             >
           </td>
-          <td>{{ data.size }}</td>
-          <td>{{ data.status }}</td>
+          <td nzAlign="right">{{ data.size }}</td>
+          <td>{{ data.status.toUpperCase() }}</td>
           <td>{{ data.shareName }}</td>
           <td>{{ data.createdDate | date : 'dd/MM/yyyy' }}</td>
           <td>
             <div class="d-flex gap-2 justify-content-center">
               <one-portal-edit-file-system-snapshot
+                *ngIf="data.status === 'available'"
                 [region]="region"
                 [project]="project"
                 [data]="data"
@@ -140,7 +136,7 @@
               <nz-dropdown-menu #opMenu="nzDropdownMenu">
                 <ul nz-menu>
                   <li
-                    *ngIf="projectType == 1"
+                    *ngIf="projectType == 1 && data.status === 'available'"
                     nz-menu-item
                     [routerLink]="
                       '/app-smart-cloud/file-storage/file-system/create/' +
@@ -150,7 +146,7 @@
                     {{ 'app.file.system.create.button' | i18n }}
                   </li>
                   <li
-                    *ngIf="projectType == 0"
+                    *ngIf="projectType == 0 && data.status !== 'mất kết nối'"
                     nz-menu-item
                     [routerLink]="
                       '/app-smart-cloud/file-storage/file-system/create/normal/' +

@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Inject,
   OnInit,
   Renderer2,
 } from '@angular/core';
@@ -11,6 +12,8 @@ import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BucketService } from 'src/app/shared/services/bucket.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-bucket-create',
@@ -41,7 +44,8 @@ export class BucketCreateComponent implements OnInit {
     private router: Router,
     private el: ElementRef,
     private renderer: Renderer2,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -98,16 +102,16 @@ export class BucketCreateComponent implements OnInit {
     this.bucketService.createBucket(this.bucketName, this.type).subscribe({
       next: (data) => {
         this.notification.success(
-          '',
-          'Tạo mới Bucket thành công'
+          this.i18n.fanyi('app.status.success'),
+          this.i18n.fanyi('app.button.bucket.create.success')
         );
         this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
       },
       error: (e) => {
         this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
         this.notification.error(
-          e.statusText,
-          'Tạo mới Bucket không thành công'
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.button.bucket.create.fail')
         );
       },
     });

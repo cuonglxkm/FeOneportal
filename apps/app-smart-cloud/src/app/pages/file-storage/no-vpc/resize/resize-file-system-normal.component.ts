@@ -75,7 +75,7 @@ export class ResizeFileSystemNormalComponent implements OnInit{
 
   getFileSystemById(id) {
     this.isLoading = true;
-    this.fileSystemService.getFileSystemById(id, this.region).subscribe(data => {
+    this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
       this.fileSystem = data;
       this.isLoading = false;
       this.storage = this.fileSystem.size;
@@ -144,6 +144,7 @@ export class ResizeFileSystemNormalComponent implements OnInit{
         orderItemQuantity: 1,
         specification: JSON.stringify(this.resizeFileSystem),
         specificationType: 'filestorage_resize',
+        price: this.orderItem?.totalAmount.amount,
         serviceDuration: 1
       }
     ];

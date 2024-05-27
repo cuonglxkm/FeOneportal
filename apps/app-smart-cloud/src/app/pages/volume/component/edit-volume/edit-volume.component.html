@@ -102,13 +102,10 @@
           <nz-form-item>
             <nz-form-label nzFor="time">
               <div class="label">
-                <span>{{'app.service.duration'|i18n}} </span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle" style="margin-left: 5px;"
-                      nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'volume.tooltip.time'|i18n"
-                      nzPopoverPlacement="bottom"></span>
+                <span>{{'app.service.used'|i18n}} (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - {{'app.Month'|i18n}}</span>
+                <img nz-popover [nzPopoverContent]="'volume.tooltip.time'|i18n"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
             </nz-form-label>
             <nz-row style="height: 50px;">
@@ -134,7 +131,7 @@
               </nz-col>
             </nz-row>
             <nz-form-label>
-              <div class="label">
+              <div class="label" style="color: #EA3829">
                 <span>{{'app.service.expiration-date'|i18n}}: </span>
                 <span>{{ volumeInfo?.expirationDate | date: 'dd/MM/yyyy' }}</span>
               </div>

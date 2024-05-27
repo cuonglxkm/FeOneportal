@@ -1,27 +1,25 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  BaseResponse, NotificationService,
+  BaseResponse,
+  NotificationService,
   ProjectModel,
   RegionModel
 } from '../../../../../../../libs/common-utils/src';
-import {
-  FileSystemModel,
-  FormSearchFileSystem,
-} from '../../../shared/models/file-system.model';
+import { FileSystemModel, FormSearchFileSystem } from '../../../shared/models/file-system.model';
 import { FileSystemService } from '../../../shared/services/file-system.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { error } from 'console';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
+
 @Component({
   selector: 'one-portal-list-file-system',
   templateUrl: './list-file-system.component.html',
-  styleUrls: ['./list-file-system.component.less'],
+  styleUrls: ['./list-file-system.component.less']
 })
 export class ListFileSystemComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
@@ -52,7 +50,8 @@ export class ListFileSystemComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private projectService: ProjectService,
     private cdr: ChangeDetectorRef,
-    private notificationService: NotificationService) {}
+    private notificationService: NotificationService) {
+  }
 
   onEnter() {
     this.value = this.value.trim();
@@ -66,8 +65,10 @@ export class ListFileSystemComponent implements OnInit {
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
-    this.getListFileSystem(true);
-    this.getProject();
+    setTimeout(() => {
+      this.getListFileSystem(true);
+      this.getProject();
+    }, 2000);
   }
 
   navigateToExtendFileSystem(id) {
@@ -80,14 +81,14 @@ export class ListFileSystemComponent implements OnInit {
         //in vpc
         if (typeVpc == 1) {
           this.router.navigate([
-            '/app-smart-cloud/file-storage/file-system/create',
+            '/app-smart-cloud/file-storage/file-system/create'
           ]);
         }
 
         //no vpc
         if (typeVpc == 0) {
           this.router.navigate([
-            '/app-smart-cloud/file-storage/file-system/create/normal',
+            '/app-smart-cloud/file-storage/file-system/create/normal'
           ]);
         }
       },
@@ -107,7 +108,7 @@ export class ListFileSystemComponent implements OnInit {
         } else {
           this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
         }
-      },
+      }
     });
   }
 
@@ -115,14 +116,14 @@ export class ListFileSystemComponent implements OnInit {
     //in vpc
     if (typeVpc == 1) {
       this.router.navigate([
-        '/app-smart-cloud/file-storage/file-system/resize/vpc/' + id,
+        '/app-smart-cloud/file-storage/file-system/resize/vpc/' + id
       ]);
     }
 
     //no vpc
     if (typeVpc == 0) {
       this.router.navigate([
-        '/app-smart-cloud/file-storage/file-system/resize/normal/' + id,
+        '/app-smart-cloud/file-storage/file-system/resize/normal/' + id
       ]);
     }
   }
@@ -158,32 +159,32 @@ export class ListFileSystemComponent implements OnInit {
 
           if (isBegin) {
             this.isCheckBegin =
-              this.response.records.length < 1 || this.response.records === null
-                ? true
-                : false;
+              this.response.records.length < 1 || this.response.records === null ? true : false;
           }
         },
-        (error) => {
+        error => {
           this.isLoading = false;
-          this.response = null;
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
         }
       );
   }
 
   handleOkEdit() {
-    this.getListFileSystem(false);
+    setTimeout(() => {this.getListFileSystem(false);}, 1500)
   }
 
   handleOkDelete() {
-    this.getListFileSystem(true);
+    setTimeout(() => {this.getListFileSystem(true);}, 1500)
   }
 
   getProject() {
     this.projectService.getByProjectId(this.project).subscribe((data) => {
       this.projectInfo = data;
-    }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message)
     });
+  }
+
+  navigateToAccessRule(cloudFileSystem: string, id: number) {
+    this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + cloudFileSystem + '/access-rule/list', { fileSystem: id }]);
   }
 
   ngOnInit() {
@@ -191,36 +192,36 @@ export class ListFileSystemComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
 
-    this.getProject();
+    // this.getProject();
 
     console.log('project', this.project);
     this.customerId = this.tokenService.get()?.userId;
     this.fileSystemService.model.subscribe((data) => {
       console.log(data);
     });
-    if (!this.region && !this.project) {
-      this.router.navigate(['/exception/500']);
-    }
-
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
-
-    this.notificationService.connection.on('UpdateVolume', (data) => {
-      if (data) {
-        let volumeId = data.serviceId;
-
-        var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
-        if (foundIndex > -1) {
-          var record = this.response.records[foundIndex];
-
-          record.status = data.status;
-          record.taskState = data.serviceStatus;
-
-          this.response.records[foundIndex] = record;
-          this.cdr.detectChanges();
-        }
-      }
-    });
+    // if (!this.region && !this.project) {
+    //   this.router.navigate(['/exception/500']);
+    // }
+    //
+    // if (this.notificationService.connection == undefined) {
+    //   this.notificationService.initiateSignalrConnection();
+    // }
+    //
+    // this.notificationService.connection.on('UpdateVolume', (data) => {
+    //   if (data) {
+    //     let volumeId = data.serviceId;
+    //
+    //     var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+    //     if (foundIndex > -1) {
+    //       var record = this.response.records[foundIndex];
+    //
+    //       record.status = data.status;
+    //       record.taskState = data.serviceStatus;
+    //
+    //       this.response.records[foundIndex] = record;
+    //       this.cdr.detectChanges();
+    //     }
+    //   }
+    // });
   }
 }

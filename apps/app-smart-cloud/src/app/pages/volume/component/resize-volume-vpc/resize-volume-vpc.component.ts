@@ -140,7 +140,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
         this.volumeInfo = data;
         this.oldSize = data.sizeInGB;
         this.validateForm.controls.name.setValue(data.name);
-        this.validateForm.controls.storage.setValue(data.sizeInGB);
+        // this.validateForm.controls.storage.setValue(data.sizeInGB);
         this.validateForm.controls.description.setValue(data.description);
         this.selectedValueRadio = data.volumeType;
         this.validateForm.controls.radio.setValue(data.volumeType);
@@ -178,12 +178,12 @@ export class ResizeVolumeVpcComponent implements OnInit {
 
   volumeInit() {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id;
-    this.volumeEdit.regionId = this.volumeInfo?.regionId;
-    this.volumeEdit.newSize = this.validateForm.controls.storage.value;
-    this.volumeEdit.iops = 200;
+    this.volumeEdit.regionId = this.region;
+    this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB;
+    this.volumeEdit.iops = this.volumeInfo?.iops;
     // editVolumeDto.newOfferId = 0;
     this.volumeEdit.serviceName = this.volumeInfo?.name;
-    this.volumeEdit.projectId = this.volumeInfo.vpcId;
+    this.volumeEdit.projectId = this.project;
     this.volumeEdit.customerId = this.tokenService.get()?.userId;
     this.volumeEdit.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     const userString = localStorage.getItem('user');
@@ -210,13 +210,13 @@ export class ResizeVolumeVpcComponent implements OnInit {
         serviceDuration: 1
       }
     ];
+    console.log('request', request)
     this.volumeService.editSizeVolume(request).subscribe(data => {
         if (data.code == 200) {
           this.isLoadingConfirm = false;
           this.router.navigate(['/app-smart-cloud/volumes']);
           this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu điều chỉnh dung lượng thành công.');
           console.log(data);
-
         } else if (data.code == 310) {
           this.isLoadingConfirm = false;
           // this.router.navigate([data.data]);

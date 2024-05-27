@@ -1,13 +1,18 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'app.access.rule.manage' | i18n">
+             title="{{'app.access.rule.list'|i18n}}: File System {{ fileSystem?.name }}">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
-      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/'+ idFileSystem + '/access-rule/list'">Access Rule</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a
+        [routerLink]="'/app-smart-cloud/file-storage/file-system/'+ idFileSystem + '/access-rule/list'">Access Rule</a>
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
-    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -22,34 +27,34 @@
 <nz-content>
   <nz-card style="border-radius: 8px;">
     <nz-row nzJustify="space-between">
-      <nz-col nzSpan="6">
-        <span class="text-card-header">{{ 'app.access.rule.list' | i18n }}</span>
+      <nz-col nzSpan="12">
+        <nz-select nzPlaceHolder="Access Level"
+                   style="width: 200px; border-radius: 8px;"
+                   [ngModel]="accessType"
+                   nzSize="large"
+                   (ngModelChange)="onAccessTypeSelect($event)">
+          <nz-option [nzValue]="1" [nzLabel]="'Tất cả'"></nz-option>
+          <nz-option [nzValue]="2" [nzLabel]="'Read-Only'"></nz-option>
+          <nz-option [nzValue]="3" [nzLabel]="'Read-Write'"></nz-option>
+        </nz-select>
+        <nz-input-group [nzPrefix]="prefixIconSearch"
+                        nzSize="large"
+                        style="width: 300px; margin-left: 10px;">
+          <input name="name"
+                 nz-input
+                 placeholder="Tìm kiếm Access To"
+                 [(ngModel)]="value"
+                 (input)="onInputChange($event.target['value'])" />
+        </nz-input-group>
+        <ng-template #prefixIconSearch>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" />
+        </ng-template>
       </nz-col>
-      <nz-col nzSpan="18" style="flex:none;">
-        <div>
-          <span>Access Level: </span>
-          <nz-select nzPlaceHolder="Chọn Access Level"
-                     style="width: 200px; border-radius: 8px;"
-                     [ngModel]="accessType"
-                     nzSize="large"
-                     (ngModelChange)="onAccessTypeSelect($event)">
-            <nz-option [nzValue]="1" [nzLabel]="'Read-Only'"></nz-option>
-            <nz-option [nzValue]="2" [nzLabel]="'Read-Write'"></nz-option>
-          </nz-select>
-          <nz-input-group [nzPrefix]="prefixIconSearch"
-                          nzSize="large"
-                          style="width: 300px; margin-left: 10px;">
-            <input name="name"
-                   nz-input
-                   placeholder="Tìm kiếm Access To"
-                   [(ngModel)]="value"
-                   (input)="onInputChange($event.target['value'])"/>
-          </nz-input-group>
-          <ng-template #prefixIconSearch>
-            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"/>
-          </ng-template>
-          <one-portal-create-access-rule [region]="region" [project]="project" [shareCloudId]="idFileSystem" (onOk)="handleCreateOk()"/>
-        </div>
+      <nz-col nzSpan="12" style="flex:none;">
+        <one-portal-create-access-rule [region]="region"
+                                       [project]="project"
+                                       [shareCloudId]="idFileSystem"
+                                       (onOk)="handleCreateOk()" />
       </nz-col>
     </nz-row>
     <nz-table #fixedTable
@@ -85,11 +90,12 @@
         <td>{{ data.created_at }}</td>
         <td>
           <one-portal-delete-access-rule *ngIf="data.state != 'denying'"
-                                          [region]="region"
+                                         [region]="region"
                                          [project]="project"
                                          [shareRuleId]="data.id"
                                          [shareCloudId]="data.shareId"
-                                         (onOk)="handleDeleteOk()"/>
+                                         [accessTo]="data.access_to"
+                                         (onOk)="handleDeleteOk()" />
         </td>
       </tr>
       </tbody>

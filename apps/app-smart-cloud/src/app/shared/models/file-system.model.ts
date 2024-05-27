@@ -135,6 +135,7 @@ export class CreateFileSystemResponseModel {
 export class FormDeleteFileSystem {
   id: number;
   regionId: number;
+  project: number;
 }
 
 export class ResizeFileSystemRequestModel {
@@ -147,6 +148,7 @@ export class ResizeFileSystemRequestModel {
       orderItemQuantity: number
       specification: string
       specificationType: string
+      price: number
       serviceDuration: number
     }
   ];

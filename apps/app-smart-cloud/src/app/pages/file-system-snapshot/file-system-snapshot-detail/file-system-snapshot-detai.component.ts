@@ -25,13 +25,21 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
 
   typeVPC: number
 
+  breadcrumbItems = [
+    { label: 'Trang chủ', link: '/' },
+    { label: 'Dịch vụ hạ tầng' },
+    { label: 'File Storage' },
+    { label: 'File System Snapshot', link: '/app-smart-cloud/file-system-snapshot/list' },
+    { label: 'Chi tiết File System Snapshot' }
+  ];
+
   constructor(private fileSystemSnapshotService: FileSystemSnapshotService,
               private router: Router,
               private fileSystemService: FileSystemService,
               private activatedRoute: ActivatedRoute) {
   }
 
-  regionChanged(region: RegionModel) {
+  onRegionChange(region: RegionModel) {
     this.router.navigate(['/app-smart-cloud/file-system-snapshot/list'])
   }
 
@@ -40,7 +48,7 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
     this.typeVPC = project?.type;
   }
 
-  userChanged(project: ProjectModel){
+  userChangeProject(project: ProjectModel){
     this.router.navigate(['/app-smart-cloud/file-system-snapshot/list'])
   }
 
@@ -58,8 +66,8 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
   }
 
   getFileSystemById(id) {
-    this.fileSystemService.getFileSystemById(id, this.region).subscribe(data => {
-      this.fileSystem = data     
+    this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
+      this.fileSystem = data
     }, error => {
       this.fileSystem = null
     })

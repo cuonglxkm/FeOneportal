@@ -261,6 +261,7 @@ export class InstancesEditComponent implements OnInit {
     this.gpuUnitPrice = '0';
     this.gpuIntoMoney = 0;
     this.totalAmount = 0;
+    this.totalVAT = 0;
     this.totalincludesVAT = 0;
   }
 
@@ -564,6 +565,7 @@ export class InstancesEditComponent implements OnInit {
         this.configGPU.gpuOfferId == 0)
     ) {
       this.totalAmount = 0;
+      this.totalVAT = 0;
       this.totalincludesVAT = 0;
     } else {
       this.getTotalAmount();
@@ -623,6 +625,12 @@ export class InstancesEditComponent implements OnInit {
         debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
+        if (this.configCustom.capacity % 10 > 0) {
+          this.notification.error(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity')
+          );
+        }
         if (this.configCustom.capacity == 0) {
           this.volumeUnitPrice = '0';
           this.volumeIntoMoney = 0;
@@ -832,14 +840,12 @@ export class InstancesEditComponent implements OnInit {
 
   readyEdit(): void {
     if (
-      this.isCustomconfig == true &&
-      (this.configCustom.vCPU == 0 ||
-        this.configCustom.ram == 0 ||
-        this.configCustom.capacity == 0)
+      this.configGPU.storage % 10 > 0 ||
+      this.configCustom.capacity % 10 > 0
     ) {
       this.notification.error(
         '',
-        this.i18n.fanyi('app.notify.optional.configuration.invalid')
+        this.i18n.fanyi('app.notify.amount.capacity1')
       );
       return;
     }
@@ -877,6 +883,7 @@ export class InstancesEditComponent implements OnInit {
   }
 
   totalAmount: number = 0;
+  totalVAT: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
     this.instanceResizeInit();
@@ -891,6 +898,7 @@ export class InstancesEditComponent implements OnInit {
     this.dataService.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );

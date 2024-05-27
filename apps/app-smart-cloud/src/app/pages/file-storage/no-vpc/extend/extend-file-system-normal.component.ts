@@ -89,7 +89,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
 
   getFileSystemById(id) {
     this.isLoading = true;
-    this.fileSystemService.getFileSystemById(id, this.region).subscribe(data => {
+    this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
       this.fileSystem = data;
       this.isLoading = false;
       this.storage = this.fileSystem.size;
@@ -157,7 +157,8 @@ export class ExtendFileSystemNormalComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.extendFileSystem),
         specificationType: 'filestorage_extend',
-        serviceDuration: 1
+        price: this.orderItem?.totalAmount.amount,
+        serviceDuration: this.validateForm.controls.time.value
       }
     ];
     console.log('request', request);

@@ -76,8 +76,8 @@ export class DashboardObjectStorageComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            e.statusText,
-            'Lấy Object Strorage không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.getObject.fail')
           );
         },
       });

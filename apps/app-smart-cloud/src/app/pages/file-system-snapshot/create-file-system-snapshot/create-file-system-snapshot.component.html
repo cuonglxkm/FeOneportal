@@ -28,12 +28,13 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -71,7 +72,7 @@
               class="input-select-custom"
             >
               <nz-option
-                *ngFor="let data of response?.records"
+                *ngFor="let data of listFileSystems"
                 [nzLabel]="data.name"
                 [nzValue]="data.id"
               ></nz-option>
@@ -100,9 +101,11 @@
               nz-input
               type="text"
               required
-              [placeholder]="'app.input.name' | i18n"
+              appTrim
+              [placeholder]="'app.input.name.snapshot' | i18n"
               formControlName="nameSnapshot"
               class="input-custom"
+              [maxLength]="255"
             />
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{
@@ -114,15 +117,13 @@
             </ng-template>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24">{{
+        <span class="text-label">{{
           'app.service.description' | i18n
-        }}</nz-form-label>
-        <textarea
-          formControlName="description"
-          [placeholder]="'app.input.des' | i18n"
-          rows="4"
-          nz-input
-        ></textarea>
+        }}</span>
+          <nz-textarea-count [nzMaxCharacterCount]="255">
+            <textarea nz-input formControlName="description" id="description" [maxLength]="255"
+                  [placeholder]="'app.input.des' | i18n"  [nzAutosize]="{ minRows: 4, maxRows: 6 }"></textarea>
+          </nz-textarea-count>
         <ng-container *ngIf="typeVpc === 0">
           <nz-form-item class="mt-5">
             <nz-form-label nzFor="time">
@@ -200,7 +201,8 @@
     </nz-card>
   </div>
   <div nz-col [nzSpan]="8" class="gutter-row">
-    <!-- <nz-card style="border-radius: 8px">
+    <ng-container *ngIf="typeVpc === 1">
+      <nz-card class="card-price">
       <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
       <div style="margin-bottom: 12px">
         <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>
@@ -211,7 +213,7 @@
         <span>{{ form.value.nameSnapshot }}</span>
       </div>
       <button
-        (click)="navigateToPayment()"
+        (click)="handleCreateFSS()"
         nz-button
         nzType="primary"
         style="
@@ -224,13 +226,15 @@
         "
         nzSize="large"
         [disabled]="form.invalid"
-        [nzLoading]="isLoading"
+        [nzLoading]="isLoadingCreateFSS"
       >
         <img src="assets/imgs/wallet.svg" alt="" />
         <span class="button-text-primary">{{ 'app.button.create' | i18n }}</span>
       </button>
-    </nz-card> -->
-    <nz-card class="right-form">
+    </nz-card>
+    </ng-container>
+    <ng-container *ngIf="typeVpc === 0"> 
+    <nz-card class="right-form card-price">
       <div class="right-title">
         <span class="text-card-header">Chi phí ước tính</span>
       </div>
@@ -240,11 +244,11 @@
       </div>
       <div style="margin-bottom: 20px">
         <h3 class="custom-subtitle">{{ 'app.snapshot.name' | i18n }}</h3>
-        <span>{{ form.value.nameSnapshot }}</span>
+        <span class="word-break">{{ form.value.nameSnapshot }}</span>
       </div>
       <div style="margin-bottom: 20px">
         <h3 class="custom-subtitle">Dung lượng File System</h3>
-        <span>1 GB</span>
+        <span *ngIf="fileSysSize">{{fileSysSize}} GB</span>
       </div>
       <nz-row class="right-form-content-month" nzGutter="16">
         <nz-col nzSpan="16">
@@ -306,7 +310,7 @@
             nzSize="large"
             nzType="primary"
             [disabled]="!form.valid"
-            (click)="navigateToPayment()"
+            (click)="handleCreateFSS()"
           >
             <span nz-icon nzType="wallet" nzTheme="outline"></span>
             Khởi tạo
@@ -314,6 +318,7 @@
         </nz-col>
       </nz-row>
     </nz-card>
+  </ng-container>
   </div>
 </div>
 <div

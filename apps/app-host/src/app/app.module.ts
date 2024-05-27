@@ -89,7 +89,8 @@ const APPINIT_PROVIDES = [
     useFactory: (notificationService: NotificationService) => () => notificationService.initiateSignalrConnection(true),
     deps: [NotificationService],
     multi: true,
-  }
+  },
+  
 ];
 // #endregion
 

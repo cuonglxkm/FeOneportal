@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Renderer2 } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubUserService } from '../../../shared/services/sub-user.service';
 import { SubUser, SubUserKeys } from '../../../shared/models/sub-user.model';
@@ -13,6 +13,8 @@ import { ObjectStorageService } from 'src/app/shared/services/object-storage.ser
 import { LoadingService } from '@delon/abc/loading';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-list-sub-user',
@@ -46,7 +48,8 @@ export class ListSubUserComponent implements OnInit {
     private loadingSrv: LoadingService,
     private notification: NzNotificationService,
     private clipboardService: ClipboardService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.rowCount = this.response?.records.reduce(
       (count, data) => count + data.keys.length,
@@ -71,8 +74,8 @@ export class ListSubUserComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            e.statusText,
-            'Lấy Object Strorage không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.getObject.fail')
           );
         },
       });

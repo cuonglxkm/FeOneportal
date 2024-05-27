@@ -4,7 +4,7 @@
   [title]="'app.instances.edit' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -15,6 +15,9 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.instances.edit' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -448,6 +451,7 @@
                         <nz-slider
                           [nzMin]="0"
                           [nzMax]="1000"
+                          [nzStep]="10"
                           [(ngModel)]="configCustom.capacity"
                           (ngModelChange)="changeCapacity($event)"
                           [ngModelOptions]="{ standalone: true }"
@@ -461,7 +465,7 @@
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
                           [nzMax]="1000"
-                          [nzStep]="1"
+                          [nzStep]="10"
                           nzSize="large"
                         ></nz-input-number>
                       </td>
@@ -645,6 +649,7 @@
                         <nz-slider
                           [nzMin]="0"
                           [nzMax]="1000"
+                          [nzStep]="10"
                           [(ngModel)]="configGPU.storage"
                           (ngModelChange)="changeStorageOfGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
@@ -658,7 +663,7 @@
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
                           [nzMax]="1000"
-                          [nzStep]="1"
+                          [nzStep]="10"
                           nzSize="large"
                         ></nz-input-number>
                       </td>
@@ -835,6 +840,20 @@
             {{ instanceResize.gpuCount }} GPU (Nvidia
             {{ instanceResize.gpuType | uppercase }})
           </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">
+                {{ 'app.cost.vat' | i18n }}
+              </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalVAT }}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
           <nz-row
             style="
               margin-top: 16px;
