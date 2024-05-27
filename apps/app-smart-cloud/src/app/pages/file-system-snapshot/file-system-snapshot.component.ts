@@ -80,7 +80,7 @@ export class FileSystemSnapshotComponent {
     this.isLoading = true
     this.formSearchFileSystemSnapshot.vpcId = this.project
     this.formSearchFileSystemSnapshot.regionId = this.region
-    this.formSearchFileSystemSnapshot.isCheckState = false
+    this.formSearchFileSystemSnapshot.isCheckState = true
     this.formSearchFileSystemSnapshot.pageSize = this.pageSize
     this.formSearchFileSystemSnapshot.currentPage = this.pageIndex
     this.formSearchFileSystemSnapshot.customerId = this.customerId

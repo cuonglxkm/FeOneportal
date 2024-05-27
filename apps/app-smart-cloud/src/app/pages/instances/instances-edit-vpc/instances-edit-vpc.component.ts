@@ -27,6 +27,7 @@ import {
 import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -46,6 +47,29 @@ export class InstancesEditVpcComponent implements OnInit {
   listSecurityGroupModel: SecurityGroupModel[] = [];
   listSecurityGroup: SecurityGroupModel[] = [];
 
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault(); // Ngăn chặn hành vi mặc định của các phím mũi tên
+
+      const tabs = document.querySelectorAll('.ant-tabs-tab'); // Lấy danh sách các tab
+      const activeTab = document.querySelector('.ant-tabs-tab-active'); // Lấy tab đang active
+
+      // Tìm index của tab đang active
+      let activeTabIndex = Array.prototype.indexOf.call(tabs, activeTab);
+
+      if (event.key === 'ArrowLeft') {
+        activeTabIndex -= 1; // Di chuyển tới tab trước đó
+      } else if (event.key === 'ArrowRight') {
+        activeTabIndex += 1; // Di chuyển tới tab tiếp theo
+      }
+
+      // Kiểm tra xem tab có hợp lệ không
+      if (activeTabIndex >= 0 && activeTabIndex < tabs.length) {
+        (tabs[activeTabIndex] as HTMLElement).click(); // Kích hoạt tab mới
+      }
+    }
+  }
+  
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
     const key = event.key;
@@ -83,6 +107,7 @@ export class InstancesEditVpcComponent implements OnInit {
     this.projectId = regionAndProject.projectId;
     this.getCurrentInfoInstance(this.id);
     this.getInfoVPC();
+    this.onChangeCapacity();
   }
 
   isConfigGpuAtInitial: boolean = false;
@@ -231,8 +256,7 @@ export class InstancesEditVpcComponent implements OnInit {
       this.instanceResize.cpu = this.vCPU + this.instancesModel.cpu;
       this.instanceResize.ram = this.ram + this.instancesModel.ram;
       this.instanceResize.storage = this.storage + this.instancesModel.storage;
-      this.instanceResize.gpuCount =
-        this.GPU + this.instancesModel.gpuCount;
+      this.instanceResize.gpuCount = this.GPU + this.instancesModel.gpuCount;
       if (this.gpuTypeOfferId) {
         this.instanceResize.gpuType = this.listGPUType.filter(
           (e) => e.id == this.gpuTypeOfferId
@@ -299,11 +323,34 @@ export class InstancesEditVpcComponent implements OnInit {
 
   isChange: boolean = false;
   checkChangeConfig() {
-    if (this.storage != 0 || this.ram != 0 || this.vCPU != 0) {
-      this.isChange = true;
-    } else {
+    if (this.storage % 10 > 0) {
       this.isChange = false;
+    } else {
+      if (this.storage != 0 || this.ram != 0 || this.vCPU != 0) {
+        this.isChange = true;
+      } else {
+        this.isChange = false;
+      }
     }
+  }
+
+  dataSubjectCapacity: Subject<any> = new Subject<any>();
+  changeCapacity(value: number) {
+    this.dataSubjectCapacity.next(value);
+  }
+  onChangeCapacity() {
+    this.dataSubjectCapacity
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (res % 10 > 0) {
+          this.notification.error(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity')
+          );
+        }
+      });
   }
 
   onRegionChange(region: RegionModel) {

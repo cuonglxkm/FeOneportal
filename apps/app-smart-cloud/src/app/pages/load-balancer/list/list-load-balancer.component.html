@@ -118,11 +118,13 @@
               <span *ngIf="data.provisioningStatus !== 'ERROR'">
                 <one-portal-attach-ip-floating-lb [region]="region"
                                                   [project]="project"
-                                                  [IsFloatingIP]="data.isFloatingIP"
-                                                  [ipFloatingAddress]="data.floatingIPAddress"/>
+                                                  [data]="data"/>
                 <one-portal-detach-ip-floating-lb [region]="region"
                                                   [project]="project"
                                                   [IsFloatingIP]="data.isFloatingIP"
+                                                  [vipPortIp]="data.vipPortId"
+                                                  [ipId]="data.ipId"
+                                                  [idLb]="data.id"
                                                   [ipFloatingAddress]="data.floatingIPAddress"/>
                 </span>
                 <!---Gia Han------>

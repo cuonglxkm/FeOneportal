@@ -625,6 +625,12 @@ export class InstancesEditComponent implements OnInit {
         debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
+        if (this.configCustom.capacity % 10 > 0) {
+          this.notification.error(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity')
+          );
+        }
         if (this.configCustom.capacity == 0) {
           this.volumeUnitPrice = '0';
           this.volumeIntoMoney = 0;
@@ -834,14 +840,12 @@ export class InstancesEditComponent implements OnInit {
 
   readyEdit(): void {
     if (
-      this.isCustomconfig == true &&
-      (this.configCustom.vCPU == 0 ||
-        this.configCustom.ram == 0 ||
-        this.configCustom.capacity == 0)
+      this.configGPU.storage % 10 > 0 ||
+      this.configCustom.capacity % 10 > 0
     ) {
       this.notification.error(
         '',
-        this.i18n.fanyi('app.notify.optional.configuration.invalid')
+        this.i18n.fanyi('app.notify.amount.capacity1')
       );
       return;
     }

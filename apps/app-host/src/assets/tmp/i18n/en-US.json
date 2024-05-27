@@ -2354,7 +2354,7 @@
   "app.vlan.note14": "IP version",
   "app.vlan.note15": "Address cannot be empty",
   "app.vlan.note16": "DHCP is a dynamic IP address allocation mechanism for that subnet. That means when creating a Port without specifying any IP, DHCP will automatically assign an IP to the created Port. Advantages: No need to manage IP addresses, the system will automatically assign IP addresses. Disadvantages: DHCP will use 03 IPs for the DHCP server. This leads to the situation where if the subnet has only 8 IPs, for example, only 5 IPs will be available.",
-  "app.vlan.note17": "Please select ranges within: '10.10.0.0 - 10.100.0.0, 172.16.0.0 - 172.24.0.0, and 192.168.0.0', and enter the correct address format: x.x.0.0/16, x.x.x.0/24",
+  "app.vlan.note17": "Please select ranges within: '10.10.0.0 - 10.100.0.0, 172.16.0.0 - 172.31.0.0, and 192.168.0.0', and enter the correct address format: x.x.0.0/16, x.x.x.0/24",
   "app.vlan.note18": "If a subnet is added to Router interface, the Gateway IP cannot be disabled, and vice versa, if a subnet does not have a gateway, it cannot be added to Routerinterface",
   "app.vlan.note19": "If not entered, the system will automatically take the first IP address in the network range as the gateway, for example: 10.21.0.1\n- If left blank, the system will automatically take the first IP address in the network range as the gateway",
   "app.vlan.note20": "Enter gateway",
@@ -2367,7 +2367,7 @@
   "app.vlan.note27": "Currently only supports IPv4",
   "app.vlan.note28": "Subnet must be a subnet range of network x.x.0.0/16 (selected network CIDR)",
   "app.vlan.note29": "Address cannot be empty",
-  "app.vlan.note30": "Please select ranges within: '10.10.0.0 - 10.100.0.0, 172.16.0.0 - 172.24.0.0', and '192.168.0.0', and enter the correct address format: x.x.0.0/16, x.x.x.0/24",
+  "app.vlan.note30": "Please select ranges within: '10.10.0.0 - 10.100.0.0, 172.16.0.0 - 172.31.0.0', and '192.168.0.0', and enter the correct address format: x.x.0.0/16, x.x.x.0/24",
   "app.vlan.note31": "If a subnet is added to a router interface, then the Gateway IP will not be disabled, and conversely, if a subnet does not have a gateway, then no router interface is added.",
   "app.vlan.note32": "DHCP is the mechanism for dynamically assigning IP addresses to the subnet. This means that when creating a Port without specifying an IP, DHCP will automatically assign an IP to the newly created Port. Advantages: No need to manage IP addresses manually, as the system will automatically allocate them. Disadvantages: DHCP will use three IPs for the DHCP server, which reduces the available IPs in the subnet. For example, if the subnet has only 8 IPs, only 5 will be available.",
   "app.vlan.note33": "Disable Gateway IP",
@@ -2602,9 +2602,10 @@
   "volume.alert.message.confirm.detach": "Are you sure you want to detach the Volume from the virtual machine?",
   "volume.alert.resize.storage": "When increasing the capacity of the Volume, the new cost will be calculated from the adjustment date until the expiration date.",
   "app.breadcrumb.list.backup.volume": "Backup Volume management",
-  "app.backup.volume.info": "Backup Information",
+  "app.backup.volume.info": "Backup Volume Information",
   "app.backup.volume.detail": "Backup Volume details",
-
+  "app.backup.volume.btn.create": "Create new Backup volume",
+  "app.backup.volume.modal.delete.title": "Confirm deletion of Backup Volume",
 
   "app.backup.volume.name": "Backup name",
   "app.backup.volume.backup.package": "Backup package",
@@ -2615,11 +2616,17 @@
   "app.input.backup.volume.select.volume": "Select volume name",
   "app.input.backup.volume.required.select": "Please select volume",
   "app.backup.volume.title.modal.update": "Edit Backup Volume information",
+  "app.backup.volume.root": "Volume root",
+
+  "app.backup.volume.search.tooltip": "Search by name",
+  "app.backup.volume.search.status.tooltip": "Search by status",
 
   "app.backup.volume.name.tooltip": "The backup volume name should not include special characters, spaces, or Vietnamese characters (except _).",
   "app.backup.volume.validator.name.required": "Please enter the name of the Backup Volume",
   "app.backup.volume.validator.name.duplicate": "The backup volume name already exists, please enter a different name.",
   "app.backup.volume.validator.name.pattern": "The backup volume name should not include special characters, spaces, or Vietnamese characters (except _).",
+  "app.backup.volume.alert.delete": "You are deleting the Backup Volume",
+  "app.backup.volume.confirm.delete": "To proceed with deleting Backup Volume {{name}}, please enter the name of the Backup to confirm.",
 
 
   "app.backup.volume.validator.backup.package.required": "Please enter the name of the Backup",
