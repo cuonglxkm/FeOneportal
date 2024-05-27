@@ -133,6 +133,7 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
   }
 
   createBackupVolumeNormal() {
+    this.isLoading = true
     let formCreateBackupVolume = new FormCreateBackupVolume()
     formCreateBackupVolume.volumeId = this.validateForm.controls.volumeId.value
     formCreateBackupVolume.description = this.validateForm.controls.description.value

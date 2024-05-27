@@ -73,9 +73,9 @@ export class AccessRuleService extends BaseService {
     }))
   }
 
-  deleteAccessRule(idShareRule: string, regionId: number, vpcId: number, shareId: string) {
+  deleteAccessRule(idShareRule: string, regionId: number, vpcId: number, shareId: string, accessTo: string) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions +
-      `/file-storage/share_rule/${idShareRule}?regionId=${regionId}&vpcId=${vpcId}&shareId=${shareId}`)
+      `/file-storage/share_rule/${idShareRule}?regionId=${regionId}&vpcId=${vpcId}&shareId=${shareId}&accessTo=${accessTo}`)
       .pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');

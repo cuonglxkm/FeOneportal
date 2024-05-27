@@ -179,6 +179,7 @@
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{'app.button.resize'|i18n}}</span>
               </button>
               <nz-modal [(nzVisible)]="isVisibleConfirm" nzTabScrollList="true"
+                        [nzAutofocus]="undefined"
                         (nzOnCancel)="handleCancelResize()">
                 <div *nzModalTitle>
                   <span class="text-modal-title">{{'volume.modal.confirm.title.resize-vpc'|i18n}}</span>
@@ -196,6 +197,7 @@
                   </button>
                   <button nz-button nzType="primary"
                           (click)="handleOkResize()"
+                          appAutofocus
                           [nzLoading]="isLoadingConfirm"
                           class="button-ok">
                     <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm'|i18n}}
