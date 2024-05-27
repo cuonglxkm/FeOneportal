@@ -51,7 +51,7 @@
               </nz-form-item>
               <nz-form-item>
                 <nz-form-label>
-                  <span>{{'app.backup.package.storage'|i18n}} (<span style="color: #FF0000;">*</span>)</span>
+                  <span>{{'app.info.backup.vm.total.storage'|i18n}} (<span style="color: #FF0000;">*</span>)</span>
                   <img nz-popover
                        [nzPopoverContent]="'app.backup.vm.tooltip.backup.package'|i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -65,25 +65,13 @@
               </nz-form-item>
               <nz-row nzGutter="18">
                 <nz-col nzSpan="10">
-                  <span class="text-label">{{'app.backup.package.storage'|i18n}}</span>
-                </nz-col>
-                <nz-col nzSpan="8">
-<!--                  <span class="text-label"-->
-<!--                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>-->
-<!--                  <span class="text-label"-->
-<!--                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize }} GB</span>-->
-                </nz-col>
-              </nz-row>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <nz-row nzGutter="18">
-                <nz-col nzSpan="10">
                   <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
                 </nz-col>
                 <nz-col nzSpan="8">
-<!--                  <span class="text-label"-->
-<!--                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>-->
-<!--                  <span class="text-label"-->
-<!--                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.usedSize }} GB</span>-->
+                  <span class="text-label"
+                        *ngIf="projectDetail == undefined || projectDetail == null">0 GB</span>
+                  <span class="text-label"
+                        *ngIf="projectDetail != undefined">{{ projectDetail?.cloudProjectResourceUsed?.backup }} GB</span>
                 </nz-col>
               </nz-row>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
@@ -92,10 +80,11 @@
                   <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
                 </nz-col>
                 <nz-col nzSpan="8">
-<!--                  <span class="text-label"-->
-<!--                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>-->
-<!--                  <span class="text-label"-->
-<!--                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize - backupPackageDetail?.usedSize }} GB</span>-->
+                  <span class="text-label"
+                        *ngIf="projectDetail == undefined || projectDetail == null">0 GB</span>
+                  <span class="text-label"
+                        *ngIf="projectDetail != undefined">{{ projectDetail?.cloudProject?.quotaBackupVolumeInGb - projectDetail?.cloudProjectResourceUsed?.backup }}
+                    GB</span>
                 </nz-col>
               </nz-row>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
@@ -154,7 +143,7 @@
                        [nzPopoverContent]="'app.backup.vm.tooltip.expire.date'|i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" />
-<!--                  <span style="color: #FF0000; margin-left: 10px;">{{ backupPackageDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>-->
+                  <span style="color: #FF0000; margin-left: 10px;">{{ projectDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>
                 </nz-form-label>
               </nz-form-item>
             </nz-col>

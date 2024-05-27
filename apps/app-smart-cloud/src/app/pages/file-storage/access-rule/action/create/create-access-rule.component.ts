@@ -1,6 +1,13 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { NetWorkModel } from '../../../../../shared/models/vlan.model';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -10,6 +17,39 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { AppValidator } from '../../../../../../../../../libs/common-utils/src';
 
+export function ipValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
+    if (!value) {
+      return null; // Don't validate empty values to allow optional fields
+    }
+
+    // Regular expression for IP and IP/Subnet
+    const ipPattern = /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
+    // Regular expression for IP with subnet
+    const subnetPattern = /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}\/([1-9]|[1-2][0-9]|3[0-2])$/;
+
+
+    if (ipPattern.test(value)) {
+      return validateOctets(value) ? null : { invalidIp: true };
+    } else if (subnetPattern.test(value)) {
+      const [ipPart, subnetPart] = value.split('/');
+      return validateOctets(ipPart) && validateSubnet(subnetPart) ? null : { invalidIp: true };
+    }
+
+    return { invalidIp: true };
+  };
+}
+
+function validateOctets(ip: string): boolean {
+  const octets = ip.split('.').map(Number);
+  return octets.every(octet => octet >= 0 && octet <= 255);
+}
+
+function validateSubnet(subnet: string): boolean {
+  const subnetValue = Number(subnet);
+  return subnetValue >= 0 && subnetValue <= 32;
+}
 @Component({
   selector: 'one-portal-create-access-rule',
   templateUrl: './create-access-rule.component.html',
@@ -32,7 +72,7 @@ export class CreateAccessRuleComponent implements AfterViewInit{
     accessLevel: FormControl<string>
   }> = this.fb.group({
     accessTo: ['', [Validators.required,
-      AppValidator.ipWithCIDRValidator,
+      ipValidator(),
         this.duplicateNameValidator.bind(this)]],
     accessLevel: ['ro', [Validators.required]]
   });

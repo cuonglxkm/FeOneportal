@@ -953,8 +953,8 @@
   "app.button.access.rule.create": "Create new Access Rule",
   "app.button.access.rule.add": "Add Access Rule",
 
-  "validation.access.to": "Access To cannot be left blank",
-  "validation.access.to.pattern": "Access To should be in the format x.x.x.x",
+  "validation.access.to": "Access To cannot be left blank.",
+  "validation.access.to.pattern": "Access To should be in the format x.x.x.x or x.x.x.x/x",
   "validation.access.to.duplicate": "Access To đã tồn tại",
 
   "app.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR is granted access to this Filesystem",
