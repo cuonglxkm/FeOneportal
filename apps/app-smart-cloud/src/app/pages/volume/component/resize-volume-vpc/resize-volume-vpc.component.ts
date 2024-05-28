@@ -16,6 +16,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-resize-volume-vpc',
@@ -37,7 +38,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
     description: ['', Validators.maxLength(700)],
-    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]],
+    storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]],
     radio: ['']
   });
 
@@ -64,6 +65,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
 
   remaining: number;
 
+  dataSubjectStorage: Subject<any> = new Subject<any>();
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
@@ -113,6 +115,20 @@ export class ResizeVolumeVpcComponent implements OnInit {
     //
   }
 
+  changeValueStorage(value) {
+    this.dataSubjectStorage.next(value);
+  }
+
+  onChangeValueInput() {
+    this.dataSubjectStorage.pipe(debounceTime(500))
+      .subscribe((res) => {
+        if(res % 10 > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'))
+          this.validateForm.controls.storage.setValue(res - (res % 10))
+        }
+      });
+  }
+
   submitForm() {
     console.log(this.validateForm.getRawValue());
     console.log(this.validateForm.valid);
@@ -120,10 +136,6 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.nameList = [];
       this.doEditSizeVolume();
     }
-  }
-
-  goBack(): void {
-    this.router.navigate(['/app-smart-cloud/volume/detail/' + this.volumeId]);
   }
 
   instance: InstancesModel = new InstancesModel();
@@ -179,8 +191,19 @@ export class ResizeVolumeVpcComponent implements OnInit {
   volumeInit() {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id;
     this.volumeEdit.regionId = this.region;
-    this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB;
-    this.volumeEdit.iops = this.volumeInfo?.iops;
+    if(this.volumeInfo?.sizeInGB != null) {
+      this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB;
+    }
+    if(this.volumeInfo?.volumeType == 'hdd') {
+      this.volumeEdit.iops = 300
+    }
+    if(this.volumeInfo?.volumeType == 'ssd') {
+      if(this.volumeEdit.newSize <= 40) {
+        this.volumeEdit.iops = 400
+      } else {
+        this.volumeEdit.iops = this.volumeEdit?.newSize * 10
+      }
+    }
     // editVolumeDto.newOfferId = 0;
     this.volumeEdit.serviceName = this.volumeInfo?.name;
     this.volumeEdit.projectId = this.project;
@@ -260,6 +283,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
         if(this.volumeInfo?.volumeType === 'ssd') {
           this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
         }
+        this.onChangeValueInput();
       }, error => {
         this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
         this.isLoading = false;

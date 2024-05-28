@@ -133,11 +133,13 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
-              <nz-input-number formControlName="storage" appAutofocus
+              <nz-input-number formControlName="storage"
+                               appAutofocus
                                class="input-custom"
                                style="width: 100%; margin-left: 0;"
                                nzAutoFocus
-                               [nzMin]="1"/>
+                               [nzMin]="0" [nzStep]="10"
+                               (ngModelChange)="changeValueStorage($event)"/>
               <ng-template #storageErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.storage.vpc.required'|i18n }}</ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">{{'volume.input.storage.required'|i18n}}</ng-container>
