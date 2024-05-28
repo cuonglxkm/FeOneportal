@@ -466,16 +466,21 @@ export class InstancesCreateVpcComponent implements OnInit {
   onChangeCapacity() {
     this.dataSubjectCapacity
       .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+        debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
         if (this.instanceCreate.volumeSize % 10 > 0) {
-          this.isValidCapacity = false;
-          this.notification.error(
+          this.notification.warning(
             '',
             this.i18n.fanyi('app.notify.amount.capacity')
           );
-        } else if (this.instanceCreate.volumeSize > this.remainingVolume) {
+          this.instanceCreate.volumeSize =
+            this.instanceCreate.volumeSize -
+            (this.instanceCreate.volumeSize % 10);
+          this.checkValidConfig();
+          this.cdr.detectChanges();
+        }
+        if (this.instanceCreate.volumeSize > this.remainingVolume) {
           this.isValidCapacity = false;
           if (this.activeBlockHDD) {
             this.notification.error(
@@ -496,8 +501,6 @@ export class InstancesCreateVpcComponent implements OnInit {
               })
             );
           }
-        } else {
-          this.isValidCapacity = true;
         }
       });
   }

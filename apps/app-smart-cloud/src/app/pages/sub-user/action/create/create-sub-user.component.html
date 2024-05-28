@@ -2,7 +2,7 @@
              [action]="action"
              [title]="'app.sub.user.create' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Object Storage</nz-breadcrumb-item>
@@ -11,6 +11,9 @@
         [routerLink]="'/app-smart-cloud/object-storage/sub-user/create'">{{ 'app.sub.user.create' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">

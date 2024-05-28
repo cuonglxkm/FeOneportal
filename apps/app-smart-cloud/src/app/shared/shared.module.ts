@@ -25,6 +25,8 @@ import { SvgIconComponent } from './components/svg-icon/svg-icon.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { ServiceStatusPipe } from './pipes/status.pipe';
 import { formatPrice } from './pipes/formatPrice.pipe';
+import { ServiceUsagePeriodComponent } from './components/service-usage-period/service-usage-period.component';
+import { GuideFormulaComponent } from './components/guide-formula/guide-formula.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -43,6 +45,8 @@ const THIRDMODULES: Array<Type<any>> = [];
 const COMPONENTS: Array<Type<any>> = [
   RegionSelectDropdownComponent,
   ProjectSelectDropdownComponent,
+  ServiceUsagePeriodComponent,
+  GuideFormulaComponent,
   FlavorSelectComponent,
   ImageSelectComponent,
   SecurityGroupSelectComponent,
@@ -50,7 +54,7 @@ const COMPONENTS: Array<Type<any>> = [
   PaymentFailedComponent,
   ShareUsersComboboxComponent,
   SvgIconComponent,
-  BreadcrumbComponent
+  BreadcrumbComponent,
 ];
 const DIRECTIVES: Array<Type<any>> = [];
 
@@ -65,7 +69,6 @@ const DIRECTIVES: Array<Type<any>> = [];
     AlainThemeModule.forChild(),
     DelonACLModule,
     DelonFormModule,
-    
     
     ...SHARED_DELON_MODULES,
     ...SHARED_ZORRO_MODULES,
@@ -100,7 +103,6 @@ const DIRECTIVES: Array<Type<any>> = [];
     IsPermissionPipe,
     ServiceStatusPipe,
     formatPrice
-  
   ],
   providers: [{ provide: NZ_ICONS, useValue: icons }],
 })

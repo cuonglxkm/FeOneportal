@@ -306,6 +306,7 @@
   "app.breadcrumb.infrastructure.service": "Dịch vụ hạ tầng",
   "app.breadcrumb.block.storage": "Block Storage",
 
+  "app.instance": "máy ảo",
   "app.instances": "Máy ảo",
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
@@ -357,7 +358,7 @@
   "app.tooltip.instance.ip.public": "Máy ảo tạo ra sẽ có thêm một card mạng<br> tương ứng với địa chỉ IP khách hàng lựa chọn.<br> Trường hợp muốn sử dụng IP Floating, vui lòng<br> truy cập ",
   "app.tooltip.use.lan.network": "Khi sử dụng mạng LAN, máy ảo sẽ được trang bị thêm 01 IP LAN",
   "app.tooltip.access.method.instance": "Có thể sử dụng mật khẩu hoặc keypair để truy cập vào máy ảo",
-  "app.tooltip.usage.time": "Thời gian khách hàng mua máy ảo để sử dụng, tính theo tháng",
+  "app.tooltip.usage.time": "Thời gian khách hàng mua {{name}} để sử dụng, tính theo tháng",
 
   "validation.exist.instance.name": "Tên máy ảo này đã được sử dụng, vui lòng chọn tên khác",
   "validation.instance.password.required": "Vui lòng nhập mật khẩu",
