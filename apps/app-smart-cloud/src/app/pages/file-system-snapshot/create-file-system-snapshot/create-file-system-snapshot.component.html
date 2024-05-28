@@ -105,7 +105,7 @@
               [placeholder]="'app.input.name.snapshot' | i18n"
               formControlName="nameSnapshot"
               class="input-custom"
-              [maxLength]="255"
+              [maxLength]="50"
             />
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{
@@ -210,7 +210,7 @@
       </div>
       <div style="margin-bottom: 20px">
         <h3 class="custom-subtitle">{{ 'app.snapshot.name' | i18n }}</h3>
-        <span>{{ form.value.nameSnapshot }}</span>
+        <span class="word-break">{{ form.value.nameSnapshot }}</span>
       </div>
       <button
         (click)="handleCreateFSS()"
