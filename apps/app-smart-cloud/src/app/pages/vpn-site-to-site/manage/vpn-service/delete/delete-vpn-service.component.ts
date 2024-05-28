@@ -68,7 +68,7 @@ export class DeleteVpnServiceComponent{
           if(data) {
             this.isVisible = false
             this.isLoading =  false
-            this.notification.success('Thành công', 'Xoá Vpn Service thành công')
+            this.notification.success('Thành công', 'Xoá VPN Service thành công')
             this.validateForm.reset()
             this.onOk.emit(data)
           }
@@ -76,11 +76,11 @@ export class DeleteVpnServiceComponent{
           if(error.status === 500){
           this.isVisible = false
           this.isLoading =  false
-          this.notification.error('Thất bại', 'Vpn Service đang được sử dụng')
+          this.notification.error('Thất bại', 'VPN Service đang được sử dụng')
           }else{
             this.isVisible = false
             this.isLoading =  false
-            this.notification.error('Thất bại', 'Xoá Vpn Service thất bại')
+            this.notification.error('Thất bại', 'Xoá VPN Service thất bại')
           }
           
         })

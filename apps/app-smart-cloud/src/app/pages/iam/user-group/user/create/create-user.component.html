@@ -1,13 +1,16 @@
 <page-header [breadcrumb]="breadcrumb"
              [title]="'Thêm Users vào Group'">
     <ng-template #breadcrumb>
-        <nz-breadcrumb [nzSeparator]="separatorTemplate">
-            <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+        <nz-breadcrumb [nzSeparator]="iconTemplate">
+            <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
             <nz-breadcrumb-item>
-                IAM
+                <a [routerLink]="['/app-smart-cloud/user-group']">{{"app.breadcrumb.account"|i18n}}</a>
             </nz-breadcrumb-item>
             <nz-breadcrumb-item>
-                <a [href]="'/app-smart-cloud/iam/user-group'">User Groups</a>
+                <a [routerLink]="['/app-smart-cloud/user-group']">IAM</a>
+              </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                <a [href]="'/app-smart-cloud/users'">User</a>
             </nz-breadcrumb-item>
             <nz-breadcrumb-item>
                 <a [href]="'/app-smart-cloud/iam/user-group/' + nameGroup">{{ nameGroup }}</a>
@@ -16,9 +19,7 @@
                 Add Users
             </nz-breadcrumb-item>
         </nz-breadcrumb>
-    <ng-template #separatorTemplate
-      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
-    </ng-template>
+        <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
     </ng-template>
 </page-header>
 <nz-content>

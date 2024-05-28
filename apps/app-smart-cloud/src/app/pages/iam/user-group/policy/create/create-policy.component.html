@@ -1,13 +1,15 @@
-<page-header [breadcrumb]="breadcrumb"
-             [title]="'Thêm Policies cho Group'">
+<page-header [breadcrumb]="breadcrumb" [title]="'Thêm Policies cho Group'">
   <ng-template #breadcrumb>
-    <nz-breadcrumb [nzSeparator]="separatorTemplate">
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        IAM
+        <a [routerLink]="['/app-smart-cloud/user-group']">{{"app.breadcrumb.account"|i18n}}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [href]="'/app-smart-cloud/iam/user-group'">User Groups</a>
+        <a [routerLink]="['/app-smart-cloud/user-group']">IAM</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [href]="'/app-smart-cloud/iam/user-group'">Groups</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [href]="'/app-smart-cloud/iam/user-group/' + nameGroup">{{ nameGroup }}</a>
@@ -16,224 +18,133 @@
         Add Policies
       </nz-breadcrumb-item>
     </nz-breadcrumb>
-    <ng-template #separatorTemplate
-      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
-    </ng-template>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
-<!--  <ng-template #action>-->
-<!--    <div class="alain-custom-action text-right">-->
-<!--      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
-<!--      <project-select-dropdown (valueChanged)="projectChanged($event)"-->
-<!--                               [regionId]="region"></project-select-dropdown>-->
-<!--    </div>-->
-<!--  </ng-template>-->
+
 </page-header>
 <nz-content>
-<!--  <nz-card>-->
-<!--    <nz-collapse [nzBordered]="false" nzGhost>-->
-<!--      <nz-collapse-panel-->
-<!--        [nzHeader]="'Danh sách Policy trong Group ('  + response?.totalCount + ')'"-->
-<!--        [nzActive]="false">-->
-<!--        <nz-table-->
-<!--          #rowSelectionTable1-->
-<!--          nzShowPagination-->
-<!--          nzShowSizeChanger-->
-<!--          [nzData]="response?.records"-->
-<!--          [nzLoading]="loadingCollapse"-->
-<!--          [nzPageSize]="5">-->
-<!--          <thead>-->
-<!--          <tr>-->
-<!--            <th>Name</th>-->
-<!--            <th>Type</th>-->
-<!--          </tr>-->
-<!--          </thead>-->
-<!--          <tbody *ngFor="let data of rowSelectionTable1.data">-->
-<!--          <tr>-->
-<!--            <td [nzExpand]="expandSet.has(data.name)" (nzExpandChange)="onExpandChange(data.name, $event)">-->
-<!--              <a [routerLink]="'/app-smart-cloud/policy/detail/' + data.name">{{ data.name }}</a>-->
-<!--            </td>-->
-<!--            <td>{{ data.type }}</td>-->
-<!--          </tr>-->
-<!--          <tr [nzExpand]="expandSet.has(data.name)">-->
-<!--            <div *ngIf="data.type ==='Portal managed'">-->
-<!--              <div class="json-viewer-bg">-->
-<!--                <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div *ngIf="data.type === 'Custom Managed'">-->
-<!--              <nz-row nzAlign="middle" nzJustify="space-between">-->
-<!--                <nz-space [nzSize]="24">-->
-<!--                  <div class="json-viewer-bg">-->
-<!--                    <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>-->
-<!--                  </div>-->
-<!--                </nz-space>-->
-<!--                <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">-->
-<!--                  <button nz-button-->
-<!--                          nzSize="default"-->
-<!--                          style="cursor: pointer;"-->
-<!--                          [routerLink]="'/app-smart-cloud/policy/update/' +  data.name"-->
-<!--                          class="button-cancel">Chỉnh sửa-->
-<!--                  </button>-->
-<!--                </nz-row>-->
-<!--              </nz-row>-->
-<!--            </div>-->
-<!--          </tr>-->
-<!--          </tbody>-->
-<!--        </nz-table>-->
-<!--      </nz-collapse-panel>-->
-<!--    </nz-collapse>-->
-<!--  </nz-card>-->
   <nz-card>
     <h3><b>Current Policies ({{response?.totalCount}})</b></h3>
     <nz-table #fixedTable [nzData]="response?.records">
       <thead>
-      <tr>
-        <th>Tên Policy</th>
-        <th>Type</th>
-        <th>Attached entities</th>
-      </tr>
+        <tr>
+          <th>Tên Policy</th>
+          <th>Type</th>
+          <th>Attached entities</th>
+        </tr>
       </thead>
       <tbody *ngFor="let index of fixedTable.data">
-      <tr >
-        <td [nzExpand]="expandSet.has(index.name)" (nzExpandChange)="onExpandChange(index.name, $event)">
-          <a [routerLink]="'/app-smart-cloud/policy/detail/' + index.name">{{ index.name }}</a>
-        </td>
-        <td>{{index.type}}</td>
-      </tr>
-      <tr [nzExpand]="expandSet.has(index.name)">
-        <div *ngIf="index.type ==='Portal managed'">
-          <div class="json-viewer-bg">
-            <ngx-json-viewer [json]="index" style="position: relative;"></ngx-json-viewer>
+        <tr>
+          <td [nzExpand]="expandSet.has(index.name)" (nzExpandChange)="onExpandChange(index.name, $event)">
+            <a [routerLink]="'/app-smart-cloud/policy/detail/' + index.name">{{ index.name }}</a>
+          </td>
+          <td>{{index.type}}</td>
+        </tr>
+        <tr [nzExpand]="expandSet.has(index.name)">
+          <div *ngIf="index.type ==='Portal managed'">
+            <div class="json-viewer-bg">
+              <ngx-json-viewer [json]="index" style="position: relative;"></ngx-json-viewer>
+            </div>
           </div>
-        </div>
-        <div *ngIf="index.type === 'Customer Manager'">
-          <nz-row nzAlign="middle" nzJustify="space-between">
-            <nz-space [nzSize]="24">
-              <div class="json-viewer-bg">
-                <ngx-json-viewer [json]="index" style="position: relative;"></ngx-json-viewer>
-              </div>
-            </nz-space>
-            <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">
-              <button nz-button
-                      nzSize="default"
-                      style="cursor: pointer;"
-                      [routerLink]="'/app-smart-cloud/policy/update/' +  index.name"
-                      class="button-cancel">{{ 'app.text.edit' | i18n }}
-              </button>
+          <div *ngIf="index.type === 'Customer Manager'">
+            <nz-row nzAlign="middle" nzJustify="space-between">
+              <nz-space [nzSize]="24">
+                <div class="json-viewer-bg">
+                  <ngx-json-viewer [json]="index" style="position: relative;"></ngx-json-viewer>
+                </div>
+              </nz-space>
+              <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">
+                <button nz-button nzSize="default" style="cursor: pointer;"
+                  [routerLink]="'/app-smart-cloud/policy/update/' +  index.name" class="button-cancel">{{
+                  'app.text.edit' | i18n }}
+                </button>
+              </nz-row>
             </nz-row>
-          </nz-row>
-        </div>
-      </tr>
+          </div>
+        </tr>
       </tbody>
     </nz-table>
   </nz-card>
   <nz-card nzTitle="Danh sách Policy chưa có trong Group">
-    <nz-row nzJustify="space-between" style="margin-bottom: 16px">
+    <div>
+      <div style="font-size: 20px; font-weight: 600">Những Policies khác không có trong group ({{total -
+        response?.totalCount}})</div>
+    </div>
+    <div class="d-flex justify-content-between my-20" >
+      <div>
+        <nz-input-group style="width: 300px;" [nzPrefix]="prefixIconSearch" nzSize="large"
+            [(ngModel)]="value" (input)="onInputChange($event.target['value'])">
+            <input name="name" nz-input [placeholder]="'app.users.search' | i18n" />
+          </nz-input-group>
+          <ng-template #prefixIconSearch>
+            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+          </ng-template>
+      </div>
+      <button style="border: none;" nz-button nzSize="large" nz-tooltip nzTooltipTitle="Làm mới"
+            nzTooltipPlacement="bottom" (click)="getPolicies()">
+            <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
+          </button>
+    </div>
+    <!-- <nz-row nzJustify="space-between" style="margin-bottom: 16px">
       <nz-col>
-        <div style="font-size: 20px; font-weight: 600">Những Policies khác không có trong group ({{total - response?.totalCount}})</div>
+        
       </nz-col>
       <nz-col>
         <nz-space>
-          <nz-input-group
-            *nzSpaceItem
-            style="width: 300px;"
-            [nzPrefix]="prefixIconSearch"
-            nzSize="large"
-            [(ngModel)]="value"
-            (input)="onInputChange($event.target['value'])"
-          >
-            <input
-              name="name"
-              nz-input
-              [placeholder]="'app.users.search' | i18n"
-            />
-          </nz-input-group>
-          <ng-template #prefixIconSearch>
-            <img
-              src="assets/imgs/search.svg"
-              alt=""
-              style="cursor: pointer"
-              nz-tooltip="Tìm kiếm"
-            />
-          </ng-template>
-          <button
-            *nzSpaceItem
-            style="border: none;"
-            nz-button
-            nzSize="large"
-            nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom"
-            (click)="getPolicies()"
-          >
-            <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt=""/>
-          </button>
+          
+          
         </nz-space>
       </nz-col>
-    </nz-row>
-    <nz-table
-      #rowSelectionTable2
-      nzShowPagination
-      nzShowSizeChanger
-      [nzData]="listPolicies"
-      [nzPageSize]="5"
+    </nz-row> -->
+    <nz-table #rowSelectionTable2 nzShowPagination nzShowSizeChanger [nzData]="listPolicies" [nzPageSize]="5"
       (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
       <thead>
-      <tr>
-        <th
-          [nzChecked]="checked"
-          [nzIndeterminate]="indeterminate"
-          nzLabel="Select all"
-          (nzCheckedChange)="onAllChecked($event)"
-        ></th>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Mô tả</th>
-      </tr>
+        <tr>
+          <th [nzChecked]="checked" [nzIndeterminate]="indeterminate" nzLabel="Select all"
+            (nzCheckedChange)="onAllChecked($event)"></th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Mô tả</th>
+        </tr>
       </thead>
       <tbody *ngFor="let data of rowSelectionTable2.data">
-      <tr>
-        <td
-          [nzChecked]="setOfCheckedId.has(data.name)"
-          (nzCheckedChange)="onItemChecked(data.name, $event)"
-        ></td>
-        <td [nzExpand]="expandSet.has(data.name)" (nzExpandChange)="onExpandChange(data.name, $event)">
-          <a [routerLink]="'/app-smart-cloud/policy/detail/' + data.name">{{ data.name }}</a>
-        </td>
-        <td>{{ data.type }}</td>
-        <td>{{ data.description }}</td>
-      </tr>
-      <tr [nzExpand]="expandSet.has(data.name)">
-        <div *ngIf="data.type ==='Portal managed'">
-          <div class="json-viewer-bg">
-            <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
+        <tr>
+          <td [nzChecked]="setOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data.name, $event)"></td>
+          <td [nzExpand]="expandSet.has(data.name)" (nzExpandChange)="onExpandChange(data.name, $event)">
+            <a [routerLink]="'/app-smart-cloud/policy/detail/' + data.name">{{ data.name }}</a>
+          </td>
+          <td>{{ data.type }}</td>
+          <td>{{ data.description }}</td>
+        </tr>
+        <tr [nzExpand]="expandSet.has(data.name)">
+          <div *ngIf="data.type ==='Portal managed'">
+            <div class="json-viewer-bg">
+              <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
+            </div>
           </div>
-        </div>
-        <div *ngIf="data.type === 'Customer Manager'">
-          <nz-row nzAlign="middle" nzJustify="space-between">
-            <nz-space [nzSize]="24">
-              <div class="json-viewer-bg">
-                <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
-              </div>
-            </nz-space>
-            <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">
-              <button nz-button
-                      nzSize="default"
-                      style="cursor: pointer;"
-                      [routerLink]="'/app-smart-cloud/policy/update/' +  data.name"
-                      class="button-cancel">{{ 'app.text.edit' | i18n }}
-              </button>
+          <div *ngIf="data.type === 'Customer Manager'">
+            <nz-row nzAlign="middle" nzJustify="space-between">
+              <nz-space [nzSize]="24">
+                <div class="json-viewer-bg">
+                  <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
+                </div>
+              </nz-space>
+              <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">
+                <button nz-button nzSize="default" style="cursor: pointer;"
+                  [routerLink]="'/app-smart-cloud/policy/update/' +  data.name" class="button-cancel">{{ 'app.text.edit'
+                  | i18n }}
+                </button>
+              </nz-row>
             </nz-row>
-          </nz-row>
-        </div>
-      </tr>
+          </div>
+        </tr>
       </tbody>
     </nz-table>
     <nz-form-item nzAlign="bottom" nzJustify="end" style="margin-top: 48px">
       <nz-space nzSize="middle">
-        <button nz-button
-                style="color: #0066B3"
-                (click)="goBack()"
-                nzSize="default">
-          <span class="button-text-default"><span nz-icon nzType="left" nzTheme="outline" style="margin-right: 10px;"></span>{{ 'app.button.back' | i18n }}</span>
+        <button nz-button style="color: #0066B3" (click)="goBack()" nzSize="default">
+          <span class="button-text-default"><span nz-icon nzType="left" nzTheme="outline"
+              style="margin-right: 10px;"></span>{{ 'app.button.back' | i18n }}</span>
         </button>
       </nz-space>
       <nz-space nzSize="middle" style="margin-left: 5px">

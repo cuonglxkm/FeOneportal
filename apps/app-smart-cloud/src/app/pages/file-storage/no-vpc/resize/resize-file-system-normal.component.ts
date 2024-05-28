@@ -9,20 +9,22 @@ import {
   ResizeFileSystem,
   ResizeFileSystemRequestModel
 } from '../../../../shared/models/file-system.model';
-import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
 import { debounceTime, Subject } from 'rxjs';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-resize-file-system-normal',
   templateUrl: './resize-file-system-normal.component.html',
-  styleUrls: ['./resize-file-system-normal.component.less'],
+  styleUrls: ['./resize-file-system-normal.component.less']
 })
-export class ResizeFileSystemNormalComponent implements OnInit{
+export class ResizeFileSystemNormalComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -36,15 +38,15 @@ export class ResizeFileSystemNormalComponent implements OnInit{
     storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/)]]
   });
 
-  storage: number;
-  isLoading: boolean = false;
+  storage: number = 0;
+  isLoading: boolean = true;
   fileSystem: FileSystemDetail = new FileSystemDetail();
 
   resizeFileSystem: ResizeFileSystem = new ResizeFileSystem();
 
-  isInitSnapshot: boolean = false
+  isInitSnapshot: boolean = false;
 
-  snapshot: any
+  snapshot: any;
 
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
@@ -57,7 +59,9 @@ export class ResizeFileSystemNormalComponent implements OnInit{
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private projectService: ProjectService,
-              private instanceService: InstancesService,) {
+              private instanceService: InstancesService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+
   }
 
   regionChanged(region: RegionModel) {
@@ -78,10 +82,10 @@ export class ResizeFileSystemNormalComponent implements OnInit{
     this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
       this.fileSystem = data;
       this.isLoading = false;
-      this.storage = this.fileSystem.size;
-      this.validateForm.controls.storage.setValue(this.fileSystem?.size);
-      this.validateForm.controls.snapshot.setValue(this.fileSystem?.isSnapshot)
-      this.getTotalAmount()
+      this.storage = this.fileSystem?.size;
+      // this.validateForm.controls.storage.setValue(this.fileSystem?.size);
+      this.validateForm.controls.snapshot.setValue(this.fileSystem?.isSnapshot);
+      // this.getTotalAmount();
     }, error => {
       this.fileSystem = null;
       this.isLoading = false;
@@ -91,7 +95,11 @@ export class ResizeFileSystemNormalComponent implements OnInit{
 
   initFileSystem() {
     this.resizeFileSystem.customerId = this.tokenService.get()?.userId;
-    this.resizeFileSystem.size = this.validateForm.controls.storage.value + this.fileSystem?.size;
+    if(this.fileSystem?.size != null) {
+      this.resizeFileSystem.size = this.storage + this.fileSystem?.size;
+    } else {
+      this.resizeFileSystem.size = this.storage
+    }
     this.resizeFileSystem.newOfferId = 0;
     this.resizeFileSystem.serviceType = 18;
     this.resizeFileSystem.actionType = 4;
@@ -109,12 +117,17 @@ export class ResizeFileSystemNormalComponent implements OnInit{
   }
 
   onChangeStorage() {
-    this.dataSubjectStorage.pipe(debounceTime(500))
+    this.dataSubjectStorage.pipe(debounceTime(700))
       .subscribe((res) => {
+        if (this.storage % 10 > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
+          this.storage = this.storage - (this.storage % 10);
+        }
         console.log('total amount');
-        this.getTotalAmount()
-      })
+        this.getTotalAmount();
+      });
   }
+
   getTotalAmount() {
     this.initFileSystem();
     let itemPayment: ItemPayment = new ItemPayment();
@@ -149,7 +162,7 @@ export class ResizeFileSystemNormalComponent implements OnInit{
       }
     ];
     console.log('request', request);
-    var returnPath: string = '/app-smart-cloud/file-storage/file-system/' + this.idFileSystem + '/resize';
+    var returnPath: string = '/app-smart-cloud/file-storage/file-system/resize/normal/' + this.idFileSystem;
     console.log('request', request);
     this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
   }
@@ -165,11 +178,13 @@ export class ResizeFileSystemNormalComponent implements OnInit{
     const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
     return diffMonths;
   }
+
   navigateToDetail() {
-    this.router.navigate(['/app-smart-cloud/file-storage/file-system/detail/' + this.idFileSystem])
+    this.router.navigate(['/app-smart-cloud/file-storage/file-system/detail/' + this.idFileSystem]);
   }
 
-  dateEdit: Date
+  dateEdit: Date;
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -179,6 +194,5 @@ export class ResizeFileSystemNormalComponent implements OnInit{
     this.getFileSystemById(this.idFileSystem);
     this.onChangeStorage();
     this.dateEdit = new Date();
-    // this.getTotalAmount()
   }
 }

@@ -73,7 +73,7 @@
             <th>{{'app.backup.volume.name'|i18n}}</th>
             <th>{{'app.backup.volume.root'|i18n}}</th>
             <th>{{'app.info.backup.vm.total.storage'|i18n}} (GB)</th>
-            <th>{{'app.backup.volume.backup.package'|i18n}}</th>
+            <th *ngIf="typeVpc == 0">{{'app.backup.volume.backup.package'|i18n}}</th>
             <th>{{'app.users.createDate'|i18n}}</th>
             <th>{{'app.service.expiration-date'|i18n}}</th>
             <th>{{'app.text.status'|i18n}}</th>
@@ -83,10 +83,10 @@
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
-            <td><a>{{ data.name }}</a></td>
+            <td><a [routerLink]="'/app-smart-cloud/backup-volume/detail/' + data.id">{{ data.name }}</a></td>
             <td>{{ data.volumeName }}</td>
             <td nzAlign="right">{{ data.size }}</td>
-            <td>{{ data.backupPackageName }}</td>
+            <td *ngIf="typeVpc == 0">{{ data.backupPackageName }}</td>
             <td>{{ data.creationDate | date: 'dd/MM/yyyy' }}</td>
             <td>{{ data.expirationDate | date: 'dd/MM/yyyy' }}</td>
             <td [ngSwitch]="data.status" class="status">
@@ -94,12 +94,30 @@
               <span *ngSwitchCase="'SUSPENDED'" class="suspended">{{ 'app.status.suspend'|i18n }}</span>
               <span *ngSwitchCase="'ERROR'" class="error">{{ 'app.status.error'|i18n }}</span>
             </td>
-            <td [ngSwitch]="data.serviceStatus">
-              <div *ngSwitchCase="'AVAILABLE'">
-                <!------!--->
-                <one-portal-update-backup-volume />
+            <td>
+              <div *ngIf="data.serviceStatus == 'KHOITAO'">
+                <!--- chỉnh sửa---!--->
+                <one-portal-update-backup-volume [region]="region"
+                                                 [project]="project"
+                                                 [idBackupVolume]="data.id"
+                                                 [backupName]="data.name"
+                                                 [backupVolume]="data"/>
+
+                <!--Restore----!--->
                 <one-portal-restore-backup-volume />
-                <one-portal-delete-backup-volume />
+
+                <!--Xóa----!--->
+                <one-portal-delete-backup-volume [region]="region"
+                                                 [project]="project"
+                                                 [idBackup]="data.id"
+                                                 [backupName]="data.name" (onOk)="handleOkDelete()"/>
+              </div>
+              <div *ngIf="!(data.serviceStatus == 'KHOITAO')">
+              <!--Xóa----!--->
+              <one-portal-delete-backup-volume [region]="region"
+                                               [project]="project"
+                                               [idBackup]="data.id"
+                                               [backupName]="data.name" (onOk)="handleOkDelete()"/>
               </div>
             </td>
           </tr>

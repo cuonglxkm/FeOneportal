@@ -1,46 +1,81 @@
-import {Component} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {BackupVolume} from "../backup-volume.model";
-import {Router} from "@angular/router";
+import { ActivatedRoute, Router } from '@angular/router';
 import {BackupVolumeService} from "../../../../../shared/services/backup-volume.service";
 import { ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { getCurrentRegionAndProject } from '@shared';
+import { PackageBackupService } from '../../../../../shared/services/package-backup.service';
+import { PackageBackupModel } from '../../../../../shared/models/package-backup.model';
+import { SizeInCloudProject } from '../../../../../shared/models/project.model';
 
 @Component({
   selector: 'one-portal-detail-backup-volume',
   templateUrl: './detail-backup-volume.component.html',
   styleUrls: ['./detail-backup-volume.component.less'],
 })
-export class DetailBackupVolumeComponent {
-  receivedData: BackupVolume;
-  regionId: any;
-  projectId: any;
+export class DetailBackupVolumeComponent implements OnInit{
+  region = JSON.parse(localStorage.getItem('regionId'));
+  project = JSON.parse(localStorage.getItem('projectId'));
+
+  idBackupVolume: number;
+
+  backupVolume: BackupVolume;
+  backupPackageDetail: PackageBackupModel = new PackageBackupModel();
+
+  isLoading: boolean = true;
+  typeVpc: number
 
   constructor(private router: Router,
-              private service: BackupVolumeService,
-              private projectService: ProjectService,) {
+              private backupVolumeService: BackupVolumeService,
+              private activatedRoute: ActivatedRoute,
+              private projectService: ProjectService,
+              private backupPackageService: PackageBackupService) {
+  }
+
+
+
+  regionChanged(region: RegionModel) {
+    this.router.navigate(['/app-smart-cloud/backup-volume'])
+  }
+
+  projectChanged(project: ProjectModel) {
+    this.project = project?.id;
+    this.typeVpc = project?.type
+    // this.getListVolume(true);
+  }
+
+  userChanged(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/backup-volume'])
+  }
+
+  getDetailBackupVolume(id) {
+    this.isLoading = true
+    this.backupVolumeService.detail(id).subscribe(data => {
+      this.backupVolume = data;
+      this.isLoading = false
+      if(this.backupVolume?.backupPackageId != null) {
+        this.backupPackageService.detail(this.backupVolume?.backupPackageId).subscribe(data => {
+          this.backupPackageDetail = data;
+        });
+      }
+
+    })
+  }
+  projectDetail: SizeInCloudProject
+  getInfoProjectVpc(id) {
+    this.projectService.getProjectVpc(id).subscribe(data => {
+      this.projectDetail = data
+    })
   }
 
   ngOnInit() {
-    this.service.sharedData$.subscribe(data => {
-      this.receivedData = data;
-    });
-  }
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
 
-  projectChange(project: ProjectModel) {
-    this.projectId = project.id;
-  }
-
-  onRegionChange(region: RegionModel) {
-    this.regionId = region.regionId;
-    this.projectService.getByRegion(this.regionId).subscribe(data => {
-      if (data.length) {
-        localStorage.setItem("projectId", data[0].id.toString())
-        this.router.navigate(['/app-smart-cloud/backup-volume']);
-      }
-    });
-  }
-
-  backToList() {
-    this.router.navigate(['/app-smart-cloud/backup-volume']);
+    this.idBackupVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'))
+    this.getDetailBackupVolume(this.idBackupVolume)
+    this.getInfoProjectVpc(this.project)
   }
 }

@@ -4,7 +4,8 @@
   [title]="'app.pool.info' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb [nzSeparator]="separatorTemplate">
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>

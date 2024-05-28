@@ -1,0 +1,54 @@
+@import '../../../assets/color.less';
+.hide-element{
+    display: none !important;
+}
+.infomation-popup{
+    position: absolute !important; 
+    width: 200px; height: auto; 
+    -webkit-box-shadow: 0px 1px 6px @box-shadow-grey;
+    box-shadow: 0px 1px 6px @box-shadow-grey;
+    border-radius: 20px;
+    color: @text-subtitle-color;
+    min-width: 200px;
+    line-height: 1.2;
+    font-size: 11px;
+    .card {
+        padding: 8px;
+        background: @white !important;
+        box-shadow: 0px 1px 6px @box-shadow-grey;
+        z-index: 600;border-radius: 5px; 
+        color: @text-subtitle-color; 
+        min-width: 200px;
+        line-height: 1.2;
+        font-size: 11px;
+    }
+    .icon-remove-form{
+        float: right; 
+        margin: 5px;
+        font-size: 16px;
+        display: block; 
+        position: absolute; 
+        font-weight: bold; 
+        right: 6px; 
+        top: 0px; 
+        cursor: pointer; 
+        padding: 3px; 
+        color: #aaa;
+    }
+    .title-form-info{
+        color: @grey-text;
+        border-bottom: 1px solid @grey-text; 
+        margin-bottom: 10px;
+    }
+    .info-item-div{
+        padding-bottom: 12px;
+        .info-item-title{
+            padding-right: 8px;
+        }
+        .info-item-content{
+            padding-right: 5px; 
+            white-space: nowrap; 
+            padding-bottom: 3px;
+        }
+    }
+}

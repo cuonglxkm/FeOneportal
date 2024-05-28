@@ -1,5 +1,47 @@
-<img *ngIf="IsFloatingIP === true && ipFloatingAddress == null" style="padding-right: 10px; cursor: pointer;"
+<img *ngIf="data.isFloatingIP === true && data.floatingIPAddress == null" style="padding-right: 10px; cursor: pointer;"
      src="assets/imgs/add.svg"
      nz-popover
      [nzPopoverContent]="'Gắn Ip Floating'"
-     nzPopoverPlacement="bottom" (click)="showModal()"/>
+     nzPopoverPlacement="bottom" (click)="showModal()" />
+<nz-modal [(nzVisible)]="isVisible"
+          (nzOnCancel)="handleCancel()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Gắn IP Floating</span>
+  </div>
+  <div *nzModalContent>
+    <div style="margin-top: 10px;">
+      <span class="text-label">Subnet</span>
+      <input nz-input
+             style="margin-top: 5px;"
+             class="input-custom"
+             [ngModel]="subnetName"
+             [disabled]="true"/>
+    </div>
+    <div style="margin-top: 10px;margin-bottom: 20px;">
+      <span class="text-label">IP Floating (*)</span>
+      <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
+                 style="width: 100%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
+                 nzPlaceHolder="--Chọn IP Floating--"
+                 [(ngModel)]="ipId" [ngModelOptions]="{ standalone: true }" (ngModelChange)="checkdisabled()">
+        <nz-option *ngFor="let i of response" [nzLabel]="i.ipAddress"
+                   [nzValue]="i.id" />
+      </nz-select>
+    </div>
+    <nz-alert *ngIf="ipId == undefined" nzBanner
+              nzShowIcon
+              [nzMessage]="'Không còn IP Floating nào. Hãy cấp phát IP Floating trước khi thực hiện gắn IP Floating cho Load Balancer'">
+    </nz-alert>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
+            [disabled]="disableAttach"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>

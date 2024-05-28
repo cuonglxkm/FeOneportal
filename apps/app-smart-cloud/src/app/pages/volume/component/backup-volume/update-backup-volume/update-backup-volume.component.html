@@ -13,7 +13,7 @@
       <nz-form-item>
         <nz-form-label nzFor="nameBackup">
           <div style="margin-top: 15px;">
-            <span>{{ 'app.backup.vm.name' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+            <span>{{ 'app.backup.volume.name' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
             <img nz-popover
                  [nzPopoverContent]="'app.backup.vm.tooltip.name' | i18n"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -21,14 +21,14 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input #backupVmInputName nz-input
+          <input #backupVolumeInputName nz-input
                  class="input-custom"
                  formControlName="nameBackup"
                  (keydown.enter)="focusOkButton($event)"
                  [placeholder]="'app.input.name' | i18n" [maxLength]="50"/>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.file.system.name.pattern' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{ 'app.backup.volume.validator.name.pattern' | i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n: {name: 'File System'} }}</ng-container>
           </ng-template>

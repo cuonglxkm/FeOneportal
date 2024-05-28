@@ -34,10 +34,15 @@ export class DetailVpnConnectionComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+  }
+
+  userChangeProject(){
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
   getVpnConnectionById(id) {

@@ -2,7 +2,8 @@
              [action]="action"
              [title]="'app.load.balancer.manage' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb [nzSeparator]="separatorTemplate">
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item>{{
           'app.breadcrumb.home' | i18n
         }}
@@ -119,13 +120,15 @@
 <!--                                                 (onOk)="handleDeleteOk()" />-->
 <!--              </span>-->
               <span *ngIf="data.provisioningStatus !== 'ERROR'">
-                <one-portal-attach-ip-floating-lb [region]="region"
+                <one-portal-attach-ip-floating-lb [region]="region" (onOk)="search(false)"
+                                                  [project]="project"
+                                                  [data]="data"/>
+                <one-portal-detach-ip-floating-lb [region]="region" (onOk)="search(false)"
                                                   [project]="project"
                                                   [IsFloatingIP]="data.isFloatingIP"
-                                                  [ipFloatingAddress]="data.floatingIPAddress"/>
-                <one-portal-detach-ip-floating-lb [region]="region"
-                                                  [project]="project"
-                                                  [IsFloatingIP]="data.isFloatingIP"
+                                                  [vipPortIp]="data.vipPortId"
+                                                  [ipId]="data.ipId"
+                                                  [idLb]="data.id"
                                                   [ipFloatingAddress]="data.floatingIPAddress"/>
                 </span>
                 <!---Gia Han------>

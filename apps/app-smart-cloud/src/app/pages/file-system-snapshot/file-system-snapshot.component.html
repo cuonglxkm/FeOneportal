@@ -91,6 +91,7 @@
       [nzTotal]="response?.totalCount"
       [nzFrontPagination]="false"
       [nzLoading]="isLoading"
+      nzTableLayout="fixed"
     >
       <thead>
         <tr>
@@ -106,7 +107,9 @@
       <tbody>
         <tr *ngFor="let data of fixedTable.data; index as i">
           <td>{{ i + 1 }}</td>
-          <td>
+          <td title="{{ data.name }}" style="overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis; width: 300px;">
             <a
               [routerLink]="
                 '/app-smart-cloud/file-system-snapshot/detail/' + data.id
@@ -128,7 +131,6 @@
                 (onOk)="handleOkEditFileSystemSnapShot()"
                 [filesystemsnapshotId]="data.id"
               />
-
               <img
                 nz-dropdown
                 [nzDropdownMenu]="opMenu"
