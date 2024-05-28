@@ -116,11 +116,11 @@
 
                 <ng-template #ortherStatusTpl>
                   <div class="flex-style">
-                    <!-- <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"
-                      [nzStatus]="item.serviceStatus == 11 ? 'exception' : ''"></nz-progress> -->
-                    <nz-progress [nzPercent]="item.clusterName | progressCluster : item.namespace : mapProgress" nzSize="small"
+                    <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"
+                      [nzStatus]="item.serviceStatus == 11 ? 'exception' : ''"></nz-progress>
+                    <!-- <nz-progress [nzPercent]="item.clusterName | progressCluster : item.namespace : mapProgress" nzSize="small"
                       nzType="circle" [nzWidth]="24" class="mr-2 pb-1"
-                      [nzStatus]="item.serviceStatus == 11 || item.serviceStatus == 3 ? 'exception' : ''"></nz-progress>
+                      [nzStatus]="item.serviceStatus == 11 || item.serviceStatus == 3 ? 'exception' : ''"></nz-progress> -->
                     <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{ status.status | i18n }}</span>
                   </div>
                 </ng-template>
