@@ -198,15 +198,15 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'sharesnapshot_create':
-            serviceItem.name = `FileSystem Snapshot - ${specificationObj.serviceName}`;
+            serviceItem.name = `File System Snapshot - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'filestorage_create':
-            serviceItem.name = `FileSystem - ${specificationObj.serviceName}`;
+            serviceItem.name = `File System - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'filestorage_resize':
-            serviceItem.name = `FileSystem - ${specificationObj.serviceName}`;
+            serviceItem.name = `File System - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.resize');
             break;
           case 'filestorage_extend':
