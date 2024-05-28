@@ -1543,6 +1543,7 @@
   "cluster.log.delete-outbound": "Delete Outbound Rule",
   "cluster.log.extend": "Renewal service",
   "cluster.log.edit": "Edit service",
+  "cluster.log.hibernate": "Suspend service",
   "cluster.log.unknow": "Unknow",
 
   "app.cluster.manage-cluster": "Cluster Management",

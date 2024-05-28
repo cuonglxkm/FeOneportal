@@ -129,7 +129,8 @@ export class ClusterComponent implements OnInit {
       // volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
       // volumeCloudType: ['hdd', [Validators.required]],
       usageTime: [1, [Validators.required, Validators.min(1), Validators.max(100)]],
-      expireDate: [null, [Validators.required]]
+      expireDate: [null, [Validators.required]],
+      createDate: [null, [Validators.required]]
     });
 
     // display expiry time
@@ -495,6 +496,7 @@ export class ClusterComponent implements OnInit {
   onSelectUsageTime(event: any) {
     if (event) {
       let d = new Date();
+      this.myform.get('createDate').setValue(d.toISOString().substring(0,19));
       d.setDate(d.getDate() + Number(event) * 30);
       this.expiryDate = d.getTime();
       this.myform.get('expireDate').setValue(new Date(this.expiryDate).toISOString().substring(0, 19));

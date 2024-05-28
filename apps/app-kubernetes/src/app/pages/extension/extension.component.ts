@@ -279,7 +279,7 @@ export class ExtensionComponent implements OnInit {
       serviceName: this.detailCluster.clusterName,
       newExpireDate: new Date(this.expectedExpirationDate).toISOString().substring(0, 19),
       serviceType: KubernetesConstant.K8S_TYPE_ID,
-      offerId: this.detailCluster.offerId,
+      currentOfferId: this.detailCluster.offerId,
       totalRam: resource.totalRam,
       totalCpu: resource.totalCpu,
       totalStorage: resource.totalStorage,
