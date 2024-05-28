@@ -309,14 +309,14 @@ export class ProjectCreateComponent implements OnInit {
   checkNumberInput(value: number, name: string): void {
     const numericValue = Number(value);
     if (isNaN(numericValue) || numericValue % 10 !== 0 && numericValue<=1000) {
+      this.notification.warning(
+        '',
+        'Vui lòng nhập số chia hết cho 10 ');     
       if(numericValue % 10 < 5){
         switch (name){
           case "hhd":{
             this.hhd =  Math.floor(numericValue / 10) *10;   
-            this.notification.error(
-             '',
-              this.i18n.fanyi('app.notify.amount.capacity')
-            );     
+           
             break;
           }
           case "ssd":{
