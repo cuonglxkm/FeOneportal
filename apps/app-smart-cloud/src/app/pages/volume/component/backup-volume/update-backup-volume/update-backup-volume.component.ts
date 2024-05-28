@@ -121,7 +121,7 @@ export class UpdateBackupVolumeComponent implements AfterViewInit{
     }, error => {
       this.isLoading = false
       this.isVisible = false
-      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Chỉnh sửa Backup Volume thất bại' + error.error.detail)
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Chỉnh sửa Backup Volume thất bại. ' + error.error.detail)
     })
     this.onOk.emit()
   }

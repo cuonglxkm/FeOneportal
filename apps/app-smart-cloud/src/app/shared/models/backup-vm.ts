@@ -183,3 +183,9 @@ export class CreateBackupVmOrderData {
     }
   ]
 }
+
+export class FormUpdateBackupVm {
+  instanceBackupId: number
+  name: string
+  description: string
+}

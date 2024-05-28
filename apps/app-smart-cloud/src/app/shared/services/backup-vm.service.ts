@@ -2,13 +2,13 @@ import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import {
-    BackupPackage,
-    BackupVm,
-    BackupVMFormSearch,
-    CreateBackupVmOrderData,
-    RestoreFormCurrent,
-    VolumeAttachment
-} from "../models/backup-vm";
+  BackupPackage,
+  BackupVm,
+  BackupVMFormSearch,
+  CreateBackupVmOrderData, FormUpdateBackupVm,
+  RestoreFormCurrent,
+  VolumeAttachment
+} from '../models/backup-vm';
 import Pagination from "../models/pagination";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
@@ -161,5 +161,18 @@ export class BackupVmService extends BaseService {
             }
             return throwError(error);
           }))
+    }
+
+    update(formUpdate: FormUpdateBackupVm) {
+      return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/intances', Object.assign(formUpdate))
+        .pipe(catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+        }))
     }
 }
