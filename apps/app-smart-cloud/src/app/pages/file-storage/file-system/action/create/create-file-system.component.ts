@@ -60,6 +60,8 @@ export class CreateFileSystemComponent implements OnInit {
   isVisibleConfirm: boolean = false;
   isLoading: boolean = false;
 
+  storage: number = 0;
+
   snapshotList: NzSelectOptionInterface[] = [];
 
   snapshotSelected: number;
@@ -171,7 +173,7 @@ export class CreateFileSystemComponent implements OnInit {
   initFileSystem() {
     this.formCreate.projectId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
-    this.formCreate.size = this.validateForm.controls.storage.value;
+    this.formCreate.size = this.storage;
     this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();
     this.formCreate.description = this.validateForm.controls.description.value;
     this.formCreate.displayName = this.validateForm.controls.name.value;
@@ -235,7 +237,7 @@ export class CreateFileSystemComponent implements OnInit {
   getStorageBuyVpc() {
     this.projectService.getProjectVpc(this.project).subscribe(data => {
       this.storageBuyVpc = data.cloudProject?.quotaShareInGb
-      this.storageRemaining = data.cloudProjectResourceUsed?.quotaShareInGb - this.storageBuyVpc
+      this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
 
       console.log('share remaining', this.storageRemaining)
     })
@@ -298,7 +300,7 @@ export class CreateFileSystemComponent implements OnInit {
       .subscribe((res) => {
         if (res % 10 > 0) {
           this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
-          this.validateForm.controls.storage.setValue(res)
+          this.storage = res - (res % 10)
         }
       });
   }

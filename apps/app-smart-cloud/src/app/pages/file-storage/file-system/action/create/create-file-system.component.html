@@ -151,6 +151,7 @@
                   <nz-input-number style="width: 100%; margin-left: 0;"
                                    formControlName="storage"
                                    class="input-custom"
+                                   [(ngModel)]="storage"
                                    (ngModelChange)="storageSelectedChange($event)"
                                    [nzMin]="0" [nzStep]="10"></nz-input-number>
                   <ng-template #storageErrorTpl let-control>
