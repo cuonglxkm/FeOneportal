@@ -18,6 +18,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-create-file-system',
@@ -71,6 +72,8 @@ export class CreateFileSystemComponent implements OnInit {
   storageRemaining: number;
 
   isInitSnapshot = false;
+
+  dataSubjectStorage: Subject<any> = new Subject<any>();
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
@@ -286,6 +289,20 @@ export class CreateFileSystemComponent implements OnInit {
     this.submitForm();
   }
 
+  storageSelectedChange(value) {
+    this.dataSubjectStorage.next(value);
+  }
+
+  onChangeStorage() {
+    this.dataSubjectStorage.pipe(debounceTime(500))
+      .subscribe((res) => {
+        if (res % 10 > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
+          this.validateForm.controls.storage.setValue(res)
+        }
+      });
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -297,5 +314,6 @@ export class CreateFileSystemComponent implements OnInit {
     this.getListSnapshot();
     this.getListFileSystem();
     this.getStorageBuyVpc();
+    this.onChangeStorage();
   }
 }

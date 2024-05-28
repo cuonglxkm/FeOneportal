@@ -151,6 +151,7 @@
                   <nz-input-number style="width: 100%; margin-left: 0;"
                                    formControlName="storage"
                                    class="input-custom"
+                                   (ngModelChange)="storageSelectedChange($event)"
                                    [nzMin]="0" [nzStep]="10"></nz-input-number>
                   <ng-template #storageErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
