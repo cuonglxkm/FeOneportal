@@ -89,7 +89,7 @@
         <td>{{ data.state }}</td>
         <td>{{ data.created_at }}</td>
         <td>
-          <one-portal-delete-access-rule *ngIf="data.state != 'denying'"
+          <one-portal-delete-access-rule *ngIf="data.state == 'available'"
                                          [region]="region"
                                          [project]="project"
                                          [shareRuleId]="data.id"

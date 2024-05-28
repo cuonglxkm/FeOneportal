@@ -77,7 +77,7 @@
           <tr>
             <th nzLeft>{{ 'app.table.backup.vm.name'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.vm.original'|i18n }}</th>
-            <th nzBreakWord>{{ 'app.table.backup.vm.storage'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.table.backup.vm.storage'|i18n }} (GB)</th>
             <th nzBreakWord *ngIf="typeVPC==0">{{ 'app.table.backup.vm.backup.package'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.create.date'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.expire.date'|i18n }}</th>
@@ -91,7 +91,7 @@
             <td nzLeft><a [routerLink]="'/app-smart-cloud/backup-vm/detail-backup-vm/' + data.id">{{ data.name }}</a>
             </td>
             <td nzBreakWord> {{ data.instanceName }}</td>
-            <td nzBreakWord nzAlign="right">{{ data.size }} GB</td>
+            <td nzBreakWord nzAlign="right">{{ data.size }}</td>
             <td nzBreakWord *ngIf="typeVPC==0">{{ data.backupPackageName }}</td>
             <td nzBreakWord>{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
             <td nzBreakWord>{{ data.expirationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>

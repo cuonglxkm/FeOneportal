@@ -15,6 +15,9 @@ import { CreateVolumeRequestModel } from '../../../../shared/models/volume.model
 import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-file-system-normal',
@@ -82,7 +85,9 @@ export class CreateFileSystemNormalComponent implements OnInit {
               private router: Router,
               private instanceService: InstancesService,
               private fileSystemSnapshotService: FileSystemSnapshotService,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   duplicateNameValidator(control) {
@@ -131,6 +136,10 @@ export class CreateFileSystemNormalComponent implements OnInit {
   onChangeStorage() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
+        if (res % 10 > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
+          this.validateForm.controls.storage.setValue(res - (res % 10))
+        }
         console.log('total amount');
         this.getTotalAmount();
       });
