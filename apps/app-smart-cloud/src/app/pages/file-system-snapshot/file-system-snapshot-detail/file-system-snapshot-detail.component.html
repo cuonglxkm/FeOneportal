@@ -3,8 +3,8 @@
   [action]="action"
   [title]="'app.file.system.snapshot.detail' | i18n"
 >
-  <ng-template #breadcrumb>
-    <!-- <nz-breadcrumb [nzSeparator]="separatorTemplate">
+<ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -21,9 +21,8 @@
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
-    </ng-template> -->
-    <app-breadcrumb [breadcrumbItems]="breadcrumbItems"></app-breadcrumb>
-  </ng-template>
+    </ng-template>
+    </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>

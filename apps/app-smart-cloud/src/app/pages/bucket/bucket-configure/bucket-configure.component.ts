@@ -23,7 +23,8 @@ import { BucketService } from 'src/app/shared/services/bucket.service';
 export class BucketConfigureComponent implements OnInit {
   bucketName: string;
   bucketDetail: BucketDetail = new BucketDetail();
-
+  isLoading: boolean = false;
+  isLoadingVersion: boolean = false;
   constructor(
     private bucketService: BucketService,
     private router: Router,
@@ -44,43 +45,51 @@ export class BucketConfigureComponent implements OnInit {
         console.log(data);
         
         this.bucketDetail = data;
-        this.cdr.detectChanges();
+        
       });
   }
 
   setBucketACL() {
+    this.isLoading = true
     this.bucketService
       .setBucketACL(this.bucketName, this.bucketDetail.aclType)
       .subscribe({
         next: (data) => {
-          this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+          this.isLoading = false
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.bucket.access.list.resize.success')
           );
+          this.cdr.detectChanges();
         },
         error: (e) => {
+          this.isLoading = false
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.bucket.access.list.resize.fail')
           );
+          this.cdr.detectChanges();
         },
       });
   }
 
   setBucketVersioning() {
+    this.isLoadingVersion = true
     this.bucketService
       .setBucketVersioning(this.bucketName, this.bucketDetail.isVersioning)
       .subscribe({
         next: (data) => {
-          this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+          this.isLoadingVersion = false
           this.notification.success('', 'Điều chỉnh Versioning thành công');
+          this.cdr.detectChanges();
         },
         error: (e) => {
+          this.isLoadingVersion = false
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.bucket.version.resize.fail')
           );
+          this.cdr.detectChanges();
         },
       });
   }
