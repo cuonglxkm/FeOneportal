@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách SSL Cert'">
     <ng-template #breadcrumb>
-      <nz-breadcrumb>
+      <nz-breadcrumb [nzSeparator]="iconTemplate">
         <nz-breadcrumb-item>
           <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
         </nz-breadcrumb-item>
@@ -9,6 +9,7 @@
       </nz-breadcrumb-item>
         <nz-breadcrumb-item>SSL Cert</nz-breadcrumb-item>
       </nz-breadcrumb>
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
     </ng-template>
     <ng-template #action>
       <div class="alain-custom-action text-right">

@@ -231,4 +231,11 @@ export class OrderService extends BaseService {
       data
     );
   }
+
+  validaterOrder(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders + '/validate',
+      data
+    );
+  }
 }

@@ -4,14 +4,15 @@
   [title]="'app.bucket.manage' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item
         ><a [routerLink]="['/']">{{
           'app.breadcrumb.home' | i18n
         }}</a></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item> Bucket </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Bucket</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
 </page-header>
 <nz-card *ngIf="hasOS" style="border-radius: 4px" [nzBordered]="false">
