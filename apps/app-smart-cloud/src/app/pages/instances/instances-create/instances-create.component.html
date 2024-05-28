@@ -1548,54 +1548,16 @@
           nzShowIcon
         ></nz-alert>
       </nz-card>
-      <nz-card>
-        <nz-row nzGutter="16">
-          <nz-col nzSpan="24">
-            <nz-form-item style="margin-bottom: 5px">
-              <nz-form-label
-                >{{ 'app.service.used' | i18n }} (<span class="text-red">*</span
-                >) - {{ 'app.Months' | i18n
-                }}<img
-                  style="margin-left: 10px"
-                  [nz-tooltip]="'app.tooltip.usage.time' | i18n"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
-              /></nz-form-label>
-              <nz-form-control>
-                <nz-row>
-                  <nz-input-number
-                    style="width: 50%; margin-left: -1px"
-                    [nzMin]="1"
-                    [nzMax]="100"
-                    [nzStep]="1"
-                    [(ngModel)]="numberMonth"
-                    (keydown)="onKeyDown($event)"
-                    (ngModelChange)="changeTime($event)"
-                    [ngModelOptions]="{ standalone: true }"
-                    nzSize="large"
-                  ></nz-input-number>
-                  <div style="margin-left: 20px">
-                    <span>
-                      {{ 'app.service.creation-date' | i18n }}:
-                      {{ today | date : 'dd/MM/yyyy' }} </span
-                    ><br />
-                    <span style="color: #eb1414">
-                      {{ 'app.service.expiration-date' | i18n }}:
-                      {{ expiredDate | date : 'dd/MM/yyyy' }}
-                    </span>
-                  </div>
-                </nz-row>
-              </nz-form-control>
-            </nz-form-item>
-          </nz-col>
-        </nz-row>
-      </nz-card>
+      <one-portal-service-usage-period
+        [nameService]="'instance'"
+        (valueChanged)="onChangeTime($event)"
+      ></one-portal-service-usage-period>
     </form>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
     <div style="width: 100%">
-      <nz-affix [nzOffsetTop]="48">
-        <nz-card style="border-radius: 8px; width: 100%">
+      <nz-affix [nzOffsetTop]="72">
+        <nz-card class="card-border" style="border-radius: 8px; width: 100%">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{
               'app.estimated.cost' | i18n
@@ -1702,7 +1664,10 @@
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
-                {{ totalVAT + totalVATVolume + totalVATIPv4 + totalVATIPv6 | number }}
+                {{
+                  totalVAT + totalVATVolume + totalVATIPv4 + totalVATIPv6
+                    | number
+                }}
                 VND
               </span>
             </nz-col>

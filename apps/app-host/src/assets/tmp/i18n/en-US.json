@@ -419,6 +419,7 @@
   "app.breadcrumb.home": "Home",
   "app.breadcrumb.infrastructure.service": "Infrastructure service",
 
+  "app.instance": "instance",
   "app.instances": "Instances",
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",
@@ -470,7 +471,7 @@
   "app.tooltip.instance.ip.public": "The created instance will have an additional network<br> card corresponding to the customer-selected IP address.<br> In the case of wanting to use a IP floating, please access<br> the ",
   "app.tooltip.use.lan.network": "When using LAN network, the instance will be equipped with an additional LAN IP",
   "app.tooltip.access.method.instance": "Customer can use a password or keypair to access the instance",
-  "app.tooltip.usage.time": "The period of time a customer purchases an instance for use, calculated on a monthly basis",
+  "app.tooltip.usage.time": "The period of time a customer purchases {{name}} for use, calculated on a monthly basis",
 
   "validation.exist.instance.name": "This instance name has already been used, please choose another name",
   "validation.instance.password.required": "Please enter the password",
@@ -599,6 +600,7 @@
   "app.button.bucket.create": "Create new Bucket",
   "app.button.bucket.create.success": "Create Bucket successfully",
   "app.button.bucket.create.fail": "Create Bucket failed",
+  "app.bucket.create.exist": "Bucket name is already existed",
   "app.config.bucket": "Configure Bucket",
   "app.config.access.bucket": "Configure Access Permissions for Bucket",
   "app.config.access.bucket.private": "Limit access to only users with AccessKey and SecretKey.",
@@ -1056,6 +1058,7 @@
   "app.file.system.snapshot.schedule.info": "File System Snapshot scheduling information",
   "app.file.system.snapshot.schedule.list": "File System Snapshot schedule list",
   "app.file.system.snapshot.schedule.manage": "Manage File System Snapshot schedule",
+  "app.file.system.snapshot.create.size.fail": "The capacity is not enough to create File System Snapshot. Please add capacity so the process is not interrupted!",
   "app.to.file.system": "Apply to File System",
 
   "app.tooltip.file.system.snapshot.schedule.name": "The name of the Snapshot schedule you want to create, consisting of lowercase letters (a-z), uppercase letters (A-Z), numbers (0-9), hyphens (-), and underscores (_), with possible spaces, containing at least 1 character and up to 255 characters",

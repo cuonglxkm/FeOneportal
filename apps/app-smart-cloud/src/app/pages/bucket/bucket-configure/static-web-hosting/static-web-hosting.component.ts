@@ -28,7 +28,7 @@ export class StaticWebHostingComponent implements OnInit {
   @Input() bucketName: string;
   bucketDetail: BucketDetail = new BucketDetail();
   bucketWebsitecreate: BucketWebsite = new BucketWebsite();
-
+  isLoading: boolean = false;
   constructor(
     private bucketService: BucketService,
     private cdr: ChangeDetectorRef,

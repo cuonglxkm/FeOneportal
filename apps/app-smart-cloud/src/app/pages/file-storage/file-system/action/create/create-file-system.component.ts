@@ -18,6 +18,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-create-file-system',
@@ -59,6 +60,8 @@ export class CreateFileSystemComponent implements OnInit {
   isVisibleConfirm: boolean = false;
   isLoading: boolean = false;
 
+  storage: number = 0;
+
   snapshotList: NzSelectOptionInterface[] = [];
 
   snapshotSelected: number;
@@ -71,6 +74,8 @@ export class CreateFileSystemComponent implements OnInit {
   storageRemaining: number;
 
   isInitSnapshot = false;
+
+  dataSubjectStorage: Subject<any> = new Subject<any>();
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
@@ -168,7 +173,7 @@ export class CreateFileSystemComponent implements OnInit {
   initFileSystem() {
     this.formCreate.projectId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
-    this.formCreate.size = this.validateForm.controls.storage.value;
+    this.formCreate.size = this.storage;
     this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();
     this.formCreate.description = this.validateForm.controls.description.value;
     this.formCreate.displayName = this.validateForm.controls.name.value;
@@ -232,7 +237,7 @@ export class CreateFileSystemComponent implements OnInit {
   getStorageBuyVpc() {
     this.projectService.getProjectVpc(this.project).subscribe(data => {
       this.storageBuyVpc = data.cloudProject?.quotaShareInGb
-      this.storageRemaining = data.cloudProjectResourceUsed?.quotaShareInGb - this.storageBuyVpc
+      this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
 
       console.log('share remaining', this.storageRemaining)
     })
@@ -286,6 +291,20 @@ export class CreateFileSystemComponent implements OnInit {
     this.submitForm();
   }
 
+  storageSelectedChange(value) {
+    this.dataSubjectStorage.next(value);
+  }
+
+  onChangeStorage() {
+    this.dataSubjectStorage.pipe(debounceTime(500))
+      .subscribe((res) => {
+        if (res % 10 > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
+          this.storage = res - (res % 10)
+        }
+      });
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -297,5 +316,6 @@ export class CreateFileSystemComponent implements OnInit {
     this.getListSnapshot();
     this.getListFileSystem();
     this.getStorageBuyVpc();
+    this.onChangeStorage();
   }
 }
