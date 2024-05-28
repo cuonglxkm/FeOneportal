@@ -742,7 +742,7 @@
   "validation.correct.pool.name": "Vui lòng nhập đúng tên Pool",
   "validation.ip.address.no.input": "Địa chỉ IP phải nằm trong dải Subnet. Trường hợp Khách hàng không nhập địa chỉ IP, hệ thống sẽ tự động cấp địa chỉ IP cho Khách hàng",
   "validation.ip.address.exist": "Địa chỉ IP đã tồn tại vui lòng chọn địa chỉ khác",
-  "validation.ip.address.pattern": "Vui lòng nhập đúng định dạng IP x.x.x.x",
+  "validation.ip.address.pattern": "Vui lòng nhập đúng định dạng IP x.x.x.x,x nằm trong khoảng 0-254",
   "validation.ip.address.not.of.pool": "Địa chỉ IP không thuộc Allocation Pool",
   "validation.pool.name.pattern.tooltip": "Tên không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự (trừ _)",
   "validation.choose.method": "Vui lòng chọn phương thức",
