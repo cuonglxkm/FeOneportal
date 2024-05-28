@@ -129,7 +129,6 @@ export class InstancesCreateComponent implements OnInit {
   projectId: number;
   userId: number;
   user: any;
-  today: Date = new Date();
   ipPublicValue: number = 0;
   isUseIPv6: boolean = false;
   isUseLAN: boolean = false;
@@ -283,7 +282,6 @@ export class InstancesCreateComponent implements OnInit {
     this.onChangeCapacity();
     this.onChangeRam();
     this.onChangeVCPU();
-    this.onChangeTime();
     this.onChangeCpuOfGpu();
     this.onChangeRamOfGpu();
     this.onChangeStorageOfGpu();
@@ -854,31 +852,29 @@ export class InstancesCreateComponent implements OnInit {
     this.dataSubjectCapacity.next(value);
   }
   onChangeCapacity() {
-    this.dataSubjectCapacity
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        if (this.configCustom.capacity % 10 > 0) {
-          this.notification.error(
-            '',
-            this.i18n.fanyi('app.notify.amount.capacity')
-          );
-        }
-        this.getUnitPrice(1, 0, 0, 0, null);
-        if (
-          this.configCustom.vCPU != 0 &&
-          this.configCustom.ram != 0 &&
-          this.configCustom.capacity != 0 &&
-          this.hdh != null
-        ) {
-          this.getTotalAmount();
-        } else if (this.configCustom.capacity == 0) {
-          this.totalAmount = 0;
-          this.totalVAT = 0;
-          this.totalincludesVAT = 0;
-        }
-      });
+    this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
+      if (this.configCustom.capacity % 10 > 0) {
+        this.notification.warning(
+          '',
+          this.i18n.fanyi('app.notify.amount.capacity')
+        );
+        this.configCustom.capacity =
+          this.configCustom.capacity - (this.configCustom.capacity % 10);
+      }
+      this.getUnitPrice(1, 0, 0, 0, null);
+      if (
+        this.configCustom.vCPU != 0 &&
+        this.configCustom.ram != 0 &&
+        this.configCustom.capacity != 0 &&
+        this.hdh != null
+      ) {
+        this.getTotalAmount();
+      } else if (this.configCustom.capacity == 0) {
+        this.totalAmount = 0;
+        this.totalVAT = 0;
+        this.totalincludesVAT = 0;
+      }
+    });
   }
   //#endregion
 
@@ -1077,58 +1073,45 @@ export class InstancesCreateComponent implements OnInit {
       });
   }
 
-  expiredDate: Date = addDays(this.today, 30);
-  dataSubjectTime: Subject<any> = new Subject<any>();
-  changeTime(value: number) {
-    this.dataSubjectTime.next(value);
-  }
-  onChangeTime() {
-    this.dataSubjectTime
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        let currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() + this.numberMonth * 30);
-        this.expiredDate = currentDate;
-        if (
-          this.hdh != null &&
-          (this.offerFlavor != null ||
-            (this.configCustom.vCPU != 0 &&
-              this.configCustom.ram != 0 &&
-              this.configCustom.capacity != 0))
-        ) {
-          this.getTotalAmount();
-        }
+  onChangeTime(numberMonth: number) {
+    this.numberMonth = numberMonth;
+    if (
+      this.hdh != null &&
+      (this.offerFlavor != null ||
+        (this.configCustom.vCPU != 0 &&
+          this.configCustom.ram != 0 &&
+          this.configCustom.capacity != 0))
+    ) {
+      this.getTotalAmount();
+    }
 
-        this.totalAmountVolume = 0;
-        this.totalVATVolume = 0;
-        this.totalPaymentVolume = 0;
-        this.listOfDataBlockStorage.forEach((bs) => {
-          this.totalAmountVolume += bs.price * this.numberMonth;
-          this.totalVATVolume += bs.VAT * this.numberMonth;
-          this.totalPaymentVolume += bs.priceAndVAT * this.numberMonth;
-        });
+    this.totalAmountVolume = 0;
+    this.totalVATVolume = 0;
+    this.totalPaymentVolume = 0;
+    this.listOfDataBlockStorage.forEach((bs) => {
+      this.totalAmountVolume += bs.price * this.numberMonth;
+      this.totalVATVolume += bs.VAT * this.numberMonth;
+      this.totalPaymentVolume += bs.priceAndVAT * this.numberMonth;
+    });
 
-        this.totalAmountIPv4 = 0;
-        this.totalVATIPv4 = 0;
-        this.totalPaymentIPv4 = 0;
-        this.listOfDataIPv4.forEach((item) => {
-          this.totalAmountIPv4 += item.price * this.numberMonth;
-          this.totalVATIPv4 += item.VAT * this.numberMonth;
-          this.totalPaymentIPv4 += item.priceAndVAT * this.numberMonth;
-        });
+    this.totalAmountIPv4 = 0;
+    this.totalVATIPv4 = 0;
+    this.totalPaymentIPv4 = 0;
+    this.listOfDataIPv4.forEach((item) => {
+      this.totalAmountIPv4 += item.price * this.numberMonth;
+      this.totalVATIPv4 += item.VAT * this.numberMonth;
+      this.totalPaymentIPv4 += item.priceAndVAT * this.numberMonth;
+    });
 
-        this.totalAmountIPv6 = 0;
-        this.totalVATIPv6 = 0;
-        this.totalPaymentIPv6 = 0;
-        this.listOfDataIPv6.forEach((item) => {
-          this.totalAmountIPv6 += item.price * this.numberMonth;
-          this.totalVATIPv6 += item.VAT * this.numberMonth;
-          this.totalPaymentIPv6 += item.priceAndVAT * this.numberMonth;
-        });
-        this.cdr.detectChanges();
-      });
+    this.totalAmountIPv6 = 0;
+    this.totalVATIPv6 = 0;
+    this.totalPaymentIPv6 = 0;
+    this.listOfDataIPv6.forEach((item) => {
+      this.totalAmountIPv6 += item.price * this.numberMonth;
+      this.totalVATIPv6 += item.VAT * this.numberMonth;
+      this.totalPaymentIPv6 += item.priceAndVAT * this.numberMonth;
+    });
+    this.cdr.detectChanges();
   }
   //#endregion
 
@@ -1515,13 +1498,6 @@ export class InstancesCreateComponent implements OnInit {
       this.notification.error(
         '',
         this.i18n.fanyi('app.notify.optional.configuration.invalid')
-      );
-      return;
-    }
-    if (this.isCustomconfig == true && this.configCustom.capacity % 10 > 0) {
-      this.notification.error(
-        '',
-        this.i18n.fanyi('app.notify.amount.capacity1')
       );
       return;
     }

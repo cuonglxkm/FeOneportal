@@ -4,7 +4,7 @@
   [title]="'Khởi tạo SSL Cert'"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -15,6 +15,9 @@
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ssl-cert']">SSL Cert</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>Khởi tạo SSL Cert</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">

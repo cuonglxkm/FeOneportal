@@ -419,6 +419,7 @@
   "app.breadcrumb.home": "Home",
   "app.breadcrumb.infrastructure.service": "Infrastructure service",
 
+  "app.instance": "instance",
   "app.instances": "Instances",
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",
@@ -470,7 +471,7 @@
   "app.tooltip.instance.ip.public": "The created instance will have an additional network<br> card corresponding to the customer-selected IP address.<br> In the case of wanting to use a IP floating, please access<br> the ",
   "app.tooltip.use.lan.network": "When using LAN network, the instance will be equipped with an additional LAN IP",
   "app.tooltip.access.method.instance": "Customer can use a password or keypair to access the instance",
-  "app.tooltip.usage.time": "The period of time a customer purchases an instance for use, calculated on a monthly basis",
+  "app.tooltip.usage.time": "The period of time a customer purchases {{name}} for use, calculated on a monthly basis",
 
   "validation.exist.instance.name": "This instance name has already been used, please choose another name",
   "validation.instance.password.required": "Please enter the password",

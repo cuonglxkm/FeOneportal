@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'app.payment.service' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -11,6 +11,9 @@
         {{ 'app.payment.service' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
 </page-header>
 <div nz-row nzGutter="16">

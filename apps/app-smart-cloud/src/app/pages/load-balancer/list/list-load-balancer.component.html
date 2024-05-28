@@ -2,7 +2,7 @@
              [action]="action"
              [title]="'app.load.balancer.manage' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>{{
           'app.breadcrumb.home' | i18n
         }}
@@ -16,6 +16,9 @@
         <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">

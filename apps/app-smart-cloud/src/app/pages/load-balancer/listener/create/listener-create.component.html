@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'app.listener.create' | i18n" [action]="action">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{
             'app.breadcrumb.home' | i18n
@@ -15,6 +15,9 @@
           }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
