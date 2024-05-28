@@ -9,6 +9,9 @@
       <nz-breadcrumb-item><a (click)="navigateToDetail()">{{'app.file.system.detail' | i18n}}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/'+idFileSystem +'/resize'">{{ 'app.file.system.resize' | i18n }}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>

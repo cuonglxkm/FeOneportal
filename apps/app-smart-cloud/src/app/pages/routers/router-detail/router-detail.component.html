@@ -4,7 +4,7 @@
   [title]="('app.detail1' | i18n) + ' Router: ' + nameRouter"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -21,6 +21,9 @@
           {{ 'router.detail' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">

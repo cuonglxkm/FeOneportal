@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="title">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
       <nz-breadcrumb-item> Dịch vụ hạ tầng </nz-breadcrumb-item>
       <nz-breadcrumb-item>
@@ -10,6 +10,9 @@
         Tạo gói Snapshot
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">

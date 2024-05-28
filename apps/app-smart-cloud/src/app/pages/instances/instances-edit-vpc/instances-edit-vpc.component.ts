@@ -69,7 +69,7 @@ export class InstancesEditVpcComponent implements OnInit {
       }
     }
   }
-  
+
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
     const key = event.key;
@@ -341,14 +341,15 @@ export class InstancesEditVpcComponent implements OnInit {
   onChangeCapacity() {
     this.dataSubjectCapacity
       .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+        debounceTime(700)
       )
       .subscribe((res) => {
         if (res % 10 > 0) {
-          this.notification.error(
+          this.notification.warning(
             '',
             this.i18n.fanyi('app.notify.amount.capacity')
           );
+          this.storage = this.storage - (this.storage % 10);
         }
       });
   }

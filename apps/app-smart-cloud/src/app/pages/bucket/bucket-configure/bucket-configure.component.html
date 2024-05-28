@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'app.config.bucket' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item
         ><a [routerLink]="['/']">{{
           'app.breadcrumb.home' | i18n
@@ -13,6 +13,9 @@
         {{ 'app.config.bucket' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
 </page-header>
 <nz-card style="border-radius: 4px" [nzBordered]="false">
