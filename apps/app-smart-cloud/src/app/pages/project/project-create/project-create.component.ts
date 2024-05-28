@@ -38,7 +38,7 @@ export class ProjectCreateComponent implements OnInit {
     // interval: { timing: 1500 },
     animation: 'lazy'
   };
-  messageToggleView: string;
+  iconToggle: string;
 
   listOfferFlavors: OfferItem[] = [];
   listLoadbalancer: OfferDetail[] = [];
@@ -99,6 +99,7 @@ export class ProjectCreateComponent implements OnInit {
   total: any;
   totalAmount = 0;
   totalPayment = 0;
+  totalVAT =0;
   listIpConnectInternet: any[];
   selectIndexTab: any = 0;
   listIpType = [
@@ -176,7 +177,7 @@ export class ProjectCreateComponent implements OnInit {
     });
     this.onChangeTime();
 
-    this.messageToggleView = "Ẩn dịch vụ bổ sung"
+    this.iconToggle = "icon_circle_minus"
   }
 
   calculateReal() {
@@ -267,6 +268,7 @@ export class ProjectCreateComponent implements OnInit {
               this.total = data;
               this.totalAmount = this.total.data.totalAmount.amount
               this.totalPayment = this.total.data.totalPayment.amount;
+              this.totalVAT = this.totalPayment - this.totalAmount 
               this.getPriceEachComponent(data.data);
             }
           );
@@ -289,19 +291,6 @@ export class ProjectCreateComponent implements OnInit {
 
   }
 
-  // onInputChange(value: number): void {
-  //   console.log("object value", value)
-  //   this.inputChangeSubject.next(value);
-  // }
-  // checkNumberInput(value:number): void {
-  // const numericValue = Number(value);
-  // if(isNaN(numericValue)|| numericValue%10 !==0){
-  //   this.hhd=0;
-  //   this.price.hhd =0;
-  //   this.price.hhdPerUnit =0
-  // }
-  // this.calculate(null);
-  // }
   onInputChange(value: number, name: string): void {
     console.log("object value", value)
     this.inputChangeSubject.next({ value, name });
@@ -315,16 +304,11 @@ export class ProjectCreateComponent implements OnInit {
       if(numericValue % 10 < 5){
         switch (name){
           case "hhd":{
-            this.hhd =  Math.floor(numericValue / 10) *10;   
-           
+            this.hhd =  Math.floor(numericValue / 10) *10;             
             break;
           }
           case "ssd":{
-            this.ssd  =  Math.floor(numericValue / 10) *10;  
-            this.notification.error(
-              '',
-               this.i18n.fanyi('app.notify.amount.capacity')
-             );          
+            this.ssd  =  Math.floor(numericValue / 10) *10;          
             break;
           }
           case "backup":{
@@ -542,11 +526,11 @@ export class ProjectCreateComponent implements OnInit {
   toggleBonusService() {
     if (this.activeBonusService == true) {
       this.activeBonusService = false
-      this.messageToggleView = "Xem dịch vụ bổ sung"
+      this.iconToggle = "icon_circle_plus"
     }
     else {
       this.activeBonusService = true
-      this.messageToggleView = "Ẩn dịch vụ bổ sung"
+      this.iconToggle = "icon_circle_minus"
     }
   }
   initIP() {
@@ -577,6 +561,7 @@ export class ProjectCreateComponent implements OnInit {
     this.trashBackup = false;
     this.totalAmount=this.totalAmount-this.price.backup;
     this.totalPayment = this.totalPayment -  this.price.backup - (0.1 * this.price.backup);
+    this.totalVAT =  this.totalPayment -this.totalAmount;
     this.price.backup = 0;
     this.price.backupUnit = 0;
     this.numberBackup = 0;
@@ -593,7 +578,7 @@ export class ProjectCreateComponent implements OnInit {
 
     this.totalAmount=this.totalAmount - this.price.loadBalancer 
     this.totalPayment = this.totalPayment -  this.price.loadBalancer - (0.1 * this.price.loadBalancer)
-
+    this.totalVAT =  this.totalPayment -this.totalAmount;
     this.numberLoadBalancer = 0;
     this.price.loadBalancer = 0;
     this.price.loadBalancerUnit = 0;
@@ -611,7 +596,7 @@ export class ProjectCreateComponent implements OnInit {
 
     this.totalAmount=this.totalAmount -  this.price.fileStorage -this.price.filestorageSnapshot
     this.totalPayment = this.totalPayment -  this.price.fileStorage -  this.price.filestorageSnapshot - (0.1 * this.price.filestorageSnapshot)- (0.1 * this.price.fileStorage)
-
+    this.totalVAT =  this.totalPayment -this.totalAmount;
 
     this.price.fileStorage = 0;
     this.price.fileStorageUnit = 0;
@@ -620,6 +605,22 @@ export class ProjectCreateComponent implements OnInit {
     this.numberFileSystem = 0
     this.numberFileScnapsshot = 0
 
+  }
+  initVpnSiteToSite() {
+    this.activeSiteToSite = true;
+    this.trashVpnSiteToSite = true;
+  }
+  deleteVpnSiteToSite() {
+    this.activeSiteToSite = false;
+    this.trashVpnSiteToSite = false;
+
+    this.totalAmount=this.totalAmount -  this.price.siteToSite -this.price.siteToSite
+    this.totalPayment = this.totalPayment -  this.price.fileStorage  - (0.1 * this.price.fileStorage)
+    this.totalVAT =  this.totalPayment -this.totalAmount;
+
+    this.price.siteToSite = 0;
+    this.price.siteToSiteUnit = 0;
+    this.siteToSiteId = '';
   }
   initVpnGpu() {
     this.activeVpnGpu = true;
@@ -682,17 +683,7 @@ export class ProjectCreateComponent implements OnInit {
       );
   }
 
-  initVpnSiteToSite() {
-    this.activeSiteToSite = true;
-    this.trashVpnSiteToSite = true;
-  }
-  deleteVpnSiteToSite() {
-    this.activeSiteToSite = false;
-    this.trashVpnSiteToSite = false;
-    this.price.siteToSite = 0;
-    this.price.siteToSiteUnit = 0;
-    this.siteToSiteId = '';
-  }
+  
 
   private getPriceEachComponent(data: any) {
     console.log(data.orderItemPrices);

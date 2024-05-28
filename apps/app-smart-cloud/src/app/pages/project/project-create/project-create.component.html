@@ -594,7 +594,8 @@
           <div class="d-flex " style="justify-content: space-between; align-items: center;">
             <div style="align-items: center" class="d-flex"><span class="text-card-header">Dịch vụ bổ sung</span></div>
             <div>
-              <button class="btn-view-service" (click)="toggleBonusService()" id="btn-view">{{messageToggleView}}</button>
+              <one-portal-svg-icon (click)="toggleBonusService()" [icon]="iconToggle" class="btn-view-service" ></one-portal-svg-icon>
+              <!-- <button class="btn-view-service" (click)="toggleBonusService()" id="btn-view">{{messageToggleView}}</button> -->
             </div>
           </div>
        
@@ -1451,7 +1452,7 @@
               <div style="margin-top: 10px" class="text-label">VPN site to site::</div>
               <div style="margin-top: 10px" class="text-label">{{ siteToSiteId }}</div>
             </nz-row>
-            <nz-divider *ngIf="numberLoadBalancer != 0 || numberFileSystem != 0 || numberBackup != 0"
+            <nz-divider *ngIf="numberLoadBalancer != 0 || numberFileSystem != 0 || numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0"
               style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <nz-row style="margin-bottom: 10px" nzGutter="16">
               <nz-col nzSpan="16">
@@ -1462,6 +1463,18 @@
               <nz-col class="text-right" nzSpan="8">
                 <span class="text-value" style="color: #0066b3" nzAlign="right">
                   {{ totalAmount | formatPrice}}
+                  VND
+                </span>
+              </nz-col>
+            </nz-row>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
+                <span class="text-value"> Chi phí VAT (10%)</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+                <span class="text-value" style="color: #0066b3" nzAlign="right">
+                  {{ totalVAT | formatPrice}}
                   VND
                 </span>
               </nz-col>
