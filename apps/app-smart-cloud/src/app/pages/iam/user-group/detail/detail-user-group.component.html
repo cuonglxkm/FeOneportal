@@ -60,19 +60,22 @@
       </ng-template>
       <!---Thông tin User -->
       <nz-tab [nzTitle]="user">
-        <nz-row nzJustify="space-between" style="margin-bottom: 15px;">
-          <nz-col>
-            
-          </nz-col>
-          <nz-col class="d-flex">
+        <div>
+          <div class="subtitle-fontsize"><b>{{ 'app.group-detail.userInGroup' | i18n }}
+            ({{filteredUsers?.length}})</b></div>
+        </div>
+        <div class="d-flex justify-content-between my-20">
+          <div>
             <nz-input-group style="width: 300px;" [nzPrefix]="prefixIconSearch" nzSize="large" class="custom-input"
-              (input)="filterUsers($event.target['value'])">
-              <input name="name" nz-input [placeholder]="'app.users.search' | i18n"  />
-            </nz-input-group>
-            <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"
-                [nz-tooltip]="'app.users.search' | i18n" />
-            </ng-template>
+            (input)="filterUsers($event.target['value'])">
+            <input name="name" nz-input [placeholder]="'app.users.search' | i18n"  />
+          </nz-input-group>
+          <ng-template #prefixIconSearch>
+            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"
+              [nz-tooltip]="'app.users.search' | i18n" />
+          </ng-template>
+          </div>
+          <div class="d-flex ">
             <button style="border: none; margin-left: 8px" nz-button nzSize="large" (click)="refreshUsers()">
               <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
             </button>
@@ -83,9 +86,9 @@
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add_white.svg" alt="" />
               <span class="button-text-primary">{{ 'app.users.button.addnew' | i18n }}</span>
             </button>
-          </nz-col>
-        </nz-row>
-
+          </div>
+        </div>
+        
         <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="filteredUsers"
           [nzLoading]="isLoadingUser" (nzQueryParams)="onQueryParamsUserChange($event)"
           (nzCurrentPageDataChange)="onCurrentPageDataChangeUser($event)">
@@ -131,7 +134,7 @@
                 [nz-tooltip]="'app.button.search' | i18n" />
             </ng-template>
           </nz-space>
-          <nz-col>
+          <nz-col class="d-flex">
             <button style="border: none;" nz-button nzSize="large" nz-tooltip
               [nzTooltipTitle]="'app.button.create' | i18n" nzTooltipPlacement="bottom"
               (click)="getPoliciesByGroupName()">
@@ -141,16 +144,9 @@
               [nzTooltipTitle]="'app.group-detail.deletePolicy' | i18n" nzTooltipPlacement="bottom"
               (click)="removePolicy()" id="deletePolicy" [ngClass]="setOfCheckedIdPolicy.size>0 ?'activeDelete':''" >
               <one-portal-svg-icon [icon]="'icon_trash'"></one-portal-svg-icon>
-              <!-- <img style="margin-top: -4px" src="assets/imgs/trash.svg" /> -->
+          
             </button>
-            <!--            <button nz-button-->
-
-            <!--                    nzSize="default" style="cursor: pointer;"-->
-            <!--                    nz-tooltip nzTooltipTitle="Gán thêm Policy cho Group" nzTooltipPlacement="bottom"-->
-            <!--                    (click)="navigateToAttachPolicy()">-->
-            <!--              <span nz-icon nzType="plus" nzTheme="outline"></span>-->
-            <!--              Thêm mới-->
-            <!--            </button>-->
+            
             <button nz-button nzType="primary" nzSize="large" nz-tooltip
               [nzTooltipTitle]="'app.group-detail.tooltip.assignPolicy' | i18n" nzTooltipPlacement="bottom"
               (click)="navigateToAttachPolicy()">
