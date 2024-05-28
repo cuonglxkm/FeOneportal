@@ -47,7 +47,7 @@ export class EndpointGroupComponent {
   }
 
   onInputChange(value) {
-    this.value = value;
+    this.value = value.trim();
     this.getData();
   }
 

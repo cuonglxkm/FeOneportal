@@ -7,7 +7,7 @@ import { I18NService } from '@core';
 import { BackupVmService } from '../../../../../shared/services/backup-vm.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
-import { BackupVolume } from '../backup-volume.model';
+import { BackupVolume, FormUpdateBackupVolume } from '../backup-volume.model';
 import { BackupVolumeService } from '../../../../../shared/services/backup-volume.service';
 
 @Component({
@@ -74,6 +74,7 @@ export class UpdateBackupVolumeComponent implements AfterViewInit{
     this.isVisible = true;
 
     this.getListBackupVolume()
+
     this.validateForm.controls.nameBackup.setValue(this.backupVolume?.name)
     this.validateForm.controls.description.setValue(this.backupVolume?.description)
 
@@ -84,24 +85,17 @@ export class UpdateBackupVolumeComponent implements AfterViewInit{
 
   getListBackupVolume() {
 
-    let formSearch: BackupVMFormSearch = new BackupVMFormSearch()
-    formSearch.regionId = this.region
-    formSearch.projectId = this.project
-    formSearch.customerId = this.tokenService.get()?.userId
-    formSearch.currentPage = 1
-    formSearch.pageSize = 9999
+    this.backupVolumeService.getListBackupVolume(this.region, this.project, null, null, 99999, 1).subscribe(data => {
+      this.isLoading = false
+      data?.records.forEach(item => {
+        this.nameList?.push(item.name)
+        this.nameList = this.nameList.filter(item => item !==  this.validateForm.get('nameBackup').getRawValue())
+      })
 
-    // this.backupVolumeService.getListBackupVolume(null).subscribe(data => {
-    //   this.isLoading = false
-    //   data?.records.forEach(item => {
-    //     this.nameList?.push(item.name)
-    //     this.nameList = this.nameList.filter(item => item !==  this.validateForm.get('nameBackup').getRawValue())
-    //   })
-    //
-    // }, error => {
-    //   this.isLoading = true
-    //   this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
-    // })
+    }, error => {
+      this.isLoading = true
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+    })
 
   }
 
@@ -114,6 +108,21 @@ export class UpdateBackupVolumeComponent implements AfterViewInit{
   }
 
   handleOk() {
+    this.isLoading = true
 
+    let formUpdate = new FormUpdateBackupVolume()
+    formUpdate.volumeBackupId = this.idBackupVolume
+    formUpdate.name = this.validateForm.controls.nameBackup.value
+    formUpdate.description = this.validateForm.controls.description.value
+    this.backupVolumeService.updateBackupVolume(formUpdate).subscribe(data => {
+        this.isLoading = false
+        this.isVisible = false
+      this.notification.success(this.i18n.fanyi('app.status.success'), 'Chỉnh sửa Backup Volume thành công')
+    }, error => {
+      this.isLoading = false
+      this.isVisible = false
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Chỉnh sửa Backup Volume thất bại' + error.error.detail)
+    })
+    this.onOk.emit()
   }
 }

@@ -146,7 +146,7 @@ export class ResizeFileSystemComponent implements OnInit {
     this.idFileSystem = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
     this.projectService.getByProjectId(this.project).subscribe(data => {
       this.quotaShareInGb = data.cloudProject?.quotaShareInGb;
-      this.storageRemaining = data.cloudProjectResourceUsed?.quotaShareInGb - this.quotaShareInGb
+      this.storageRemaining =  data.cloudProject?.quotaShareInGb - data.cloudProjectResourceUsed?.quotaShareInGb
       this.getFileSystemById(this.idFileSystem);
     });
 

@@ -73,12 +73,12 @@ export class EditEndpointGroupComponent{
 
     if(this.validateForm.valid){
       this.endpointGroupService.editEndpoinGroup(formEdit).subscribe(data => {
-        this.notification.success('Thành công', 'Edit Endpoint Group thành công')
+        this.notification.success('Thành công', 'Cập nhật Endpoint Group thành công')
           this.isVisible = false
           this.isLoading =  false
           this.onOk.emit(data)
       }, error => {
-        this.notification.error('Thất bại', 'Edit Endpoint Group thất bại')
+        this.notification.error('Thất bại', 'Cập nhật Endpoint Group thất bại')
         this.isVisible = false
         this.isLoading =  false
       })

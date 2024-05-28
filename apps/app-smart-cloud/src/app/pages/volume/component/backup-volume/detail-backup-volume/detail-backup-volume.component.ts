@@ -7,6 +7,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { PackageBackupService } from '../../../../../shared/services/package-backup.service';
 import { PackageBackupModel } from '../../../../../shared/models/package-backup.model';
+import { SizeInCloudProject } from '../../../../../shared/models/project.model';
 
 @Component({
   selector: 'one-portal-detail-backup-volume',
@@ -61,9 +62,11 @@ export class DetailBackupVolumeComponent implements OnInit{
 
     })
   }
-
-  getBackupPackage(value) {
-
+  projectDetail: SizeInCloudProject
+  getInfoProjectVpc(id) {
+    this.projectService.getProjectVpc(id).subscribe(data => {
+      this.projectDetail = data
+    })
   }
 
   ngOnInit() {
@@ -73,5 +76,6 @@ export class DetailBackupVolumeComponent implements OnInit{
 
     this.idBackupVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'))
     this.getDetailBackupVolume(this.idBackupVolume)
+    this.getInfoProjectVpc(this.project)
   }
 }

@@ -9,9 +9,7 @@
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
-          >Dịch vụ hạ tầng</a
-        >
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
         >VPN site to site</a
@@ -23,12 +21,13 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>

@@ -1,6 +1,7 @@
-<page-header [content]="content" [breadcrumb]="breadcrumb" [action]="action" [title]=" 'app.breadcrumb.create-policy' | i18n ">
+<page-header [content]="content" [breadcrumb]="breadcrumb" [action]="action"
+  [title]=" 'app.breadcrumb.create-policy' | i18n ">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -9,6 +10,7 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item> {{ 'app.breadcrumb.create-policy' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -19,10 +21,16 @@
   </ng-template>
 
   <ng-template #content>
-    <nz-steps [nzCurrent]="currentStep" style="width: 55%; margin: 0 auto;">
-      <nz-step [nzTitle]="'app.create-policy.step1' | i18n" [nzDescription]="'app.create-policy.step1.title' | i18n" style="width:900px"></nz-step>
-      <nz-step [nzTitle]="'app.create-policy.step2' | i18n" [nzDescription]="'app.create-policy.step2.title' | i18n"></nz-step>
+    <nz-steps [nzCurrent]="currentStep" style="width: 55%; margin: 0 auto;" class="step-policy">
+      <nz-step  [nzDescription]="'app.create-policy.step1.title' | i18n"
+        style="width:900px"></nz-step>
+      <nz-step 
+        [nzDescription]="'app.create-policy.step2.title' | i18n"></nz-step>
     </nz-steps>
+
+
+    
+
   </ng-template>
 </page-header>
 
@@ -33,23 +41,18 @@
       <div nz-row class="mb-md">
         <div nz-col nzSpan="18">
           <div class="text-card-header">Policy editor</div>
-          <p style="color: #888;">{{ 'app.create-policy.editor.des' | i18n }}</p>
+          <p style="color: #888;" class="label-fontsize">{{ 'app.create-policy.editor.des' | i18n }}</p>       
           <div style="display: flex;align-items: center">
             <button (click)="visualOption(1)" nz-button nzType="primary" nzSize="large" style="
-            border-color: #0066B3;
-            background-color: {{isVisual ? '#0066B3' : 'white'}};
-            width: 140px;
-            height: 40px;
-          ">
-              <span  style="color: {{isVisual ? 'white' : '#0066B3'}};" >Visual</span>
+            border-color: #0066B3; width: 140px;height: 40px; " [style.background-color]=" isVisual ? '#0066B3' : 'white'">
+              <span [style.color]="isVisual ? 'white' : '#0066B3'">Visual</span>
             </button>
             <button (click)="visualOption(2)" nz-button nzType="primary" nzSize="large" style="
             border-color: #0066B3;
-            background-color: {{isVisual ? 'white' : '#0066B3'}};
-            width: 140px;
-            height: 40px;
-          ">
-              <span style="color: {{isVisual ? '#0066B3' : 'white'}};" >Json</span>
+           
+             width: 140px;
+              height: 40px; " [style.background-color]="  isVisual ? 'white' : '#0066B3'">
+              <span [style.color]="isVisual ? '#0066B3' : 'white'">Json</span>
             </button>
           </div>
         </div>
@@ -63,46 +66,46 @@
         <!--màn visual-->
         <nz-card *ngFor="let serviceItem of serviceArray" style="position: relative;">
           <button (click)="deleteService(serviceItem)" nz-button nzType="default"
-                  style="z-index: 1;position: absolute; right: 30px; top: 30px;">
+            style="z-index: 1;position: absolute; right: 30px; top: 30px;">
             <i nz-icon nzType="delete"></i><span nz-icon nzTheme="outline"></span>
           </button>
           <nz-collapse [nzGhost]="true">
-            <nz-collapse-panel
-              [nzHeader]="serviceItem.serviceName || ('app.create-policy.chooseService' | i18n)"
+            <nz-collapse-panel [nzHeader]="serviceItem.serviceName || ('app.create-policy.chooseService' | i18n)"
               [nzActive]="false">
               <div style=" display: flex; align-items: center; justify-content: space-between;">
-                <p *ngIf="!serviceItem.isVisualTablePermiss" style="color: #888;">{{ 'app.create-policy.isNotVisualTablePermiss' | i18n }}</p>
-                <p *ngIf="serviceItem.isVisualTablePermiss" style="color: #888;">{{ 'app.create-policy.isVisualTablePermiss' | i18n }}</p>
+                <p *ngIf="!serviceItem.isVisualTablePermiss" style="color: #888;">{{
+                  'app.create-policy.isNotVisualTablePermiss' | i18n }}</p>
+                <p *ngIf="serviceItem.isVisualTablePermiss" style="color: #888;">{{
+                  'app.create-policy.isVisualTablePermiss' | i18n }}</p>
                 <!--                              {{JSON.stringify(serviceArray)}}-->
               </div>
               <div *ngIf="serviceItem.serviceName === null">
                 <div class="text-card-header">{{ 'app.create-policy.chooseService' | i18n }}</div>
-                <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'--'+('app.create-policy.chooseService' | i18n)+'--'"
-                           [(ngModel)]="serviceItem.serviceName"
-                           (ngModelChange)="selectService($event, serviceItem)" style="width: 100%">
+                <nz-select nzShowSearch nzAllowClear
+                  [nzPlaceHolder]="'--'+('app.create-policy.chooseService' | i18n)+'--'"
+                  [(ngModel)]="serviceItem.serviceName" (ngModelChange)="selectService($event, serviceItem)"
+                  style="width: 100%">
                   <nz-option *ngFor="let sv of listServiceAvaiable" [nzLabel]="sv" [nzValue]="sv">
                   </nz-option>
                 </nz-select>
               </div>
-              <nz-table *ngIf="serviceItem.isVisualTablePermiss" #rowSelectionTable [nzData]="serviceItem.permissions" [nzFrontPagination]="false" style="margin-top: 20px;">
+              <nz-table *ngIf="serviceItem.isVisualTablePermiss" #rowSelectionTable [nzData]="serviceItem.permissions"
+                [nzFrontPagination]="false" style="margin-top: 20px;">
                 <thead>
-                <tr>
-                  <th
-                    [(nzChecked)]="serviceItem.checked"
-                    [nzIndeterminate]="serviceItem.indeterminate"
-                    (nzCheckedChange)="onAllChecked(serviceItem.serviceName ,$event)"
-                  ></th>
-                  <th>Permission policies</th>
-                  <th>{{'app.service.description' | i18n}}</th>
-                </tr>
+                  <tr>
+                    <th [(nzChecked)]="serviceItem.checked" [nzIndeterminate]="serviceItem.indeterminate"
+                      (nzCheckedChange)="onAllChecked(serviceItem.serviceName ,$event)"></th>
+                    <th>Permission policies</th>
+                    <th>{{'app.service.description' | i18n}}</th>
+                  </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let data of rowSelectionTable.data">
-                  <td [nzChecked]="setOfCheckedId.has(data)"
+                  <tr *ngFor="let data of rowSelectionTable.data">
+                    <td [nzChecked]="setOfCheckedId.has(data)"
                       (nzCheckedChange)="onItemChecked(serviceItem.serviceName ,data, $event)"></td>
-                  <td>{{ data }}</td>
-                  <td>{{ data }}</td>
-                </tr>
+                    <td>{{ data }}</td>
+                    <td>{{ data }}</td>
+                  </tr>
                 </tbody>
               </nz-table>
             </nz-collapse-panel>
@@ -111,23 +114,21 @@
 
         <!--button thêm perrmisstion-->
 
-          <button (click)="addService()" nz-button nzType="primary" nzSize="large" style="
+        <button (click)="addService()" nz-button nzType="primary" nzSize="large" style="
             border: none;
             background-color: #f5f7fa;
 
           ">
-            <img style="padding-right: 10px;" src="assets/imgs/add-square.svg" alt=""/>
-            <span style="color: #0066B3" >{{'app.create-policy.add' | i18n}}</span>
-          </button>
+          <img style="padding-right: 10px;" src="assets/imgs/add-square.svg" alt="" />
+          <span style="color: #0066B3">{{'app.create-policy.add' | i18n}}</span>
+        </button>
       </ng-container>
 
       <!--      json-->
       <ng-container *ngSwitchCase=false>
         <nz-card>
-          <json-editor style="position: relative;"
-                       [options]="optionJsonEditor"
-                       [data]="listOfPermissionSelectedView"
-          ></json-editor>
+          <json-editor style="position: relative;" [options]="optionJsonEditor"
+            [data]="listOfPermissionSelectedView"></json-editor>
           <button (click)="copyText()" style="z-index: 1;position: absolute; right: 30px; top: 28px;">
             <span nz-icon nzType="copy" nzTheme="outline"></span> {{'app.create-policy.copyJson' | i18n}}
           </button>
@@ -144,19 +145,20 @@
         <h2>{{'app.create-policy.copyJson' | i18n}}</h2>
         <hr style="opacity: 0.5px;">
         <h3 style=" font-weight: normal; margin-top: 20px">Tên của policy<span nz-typography nzType="danger"
-                                                                               style="color: red">*</span></h3>
+            style="color: red">*</span></h3>
         <nz-form-item>
           <nz-form-control>
             <input nz-input [placeholder]="'app.create-policy.name.input' | i18n" style="width: 100%"
-                   formControlName="name">
+              formControlName="name">
             <p style="color: #888;">{{'app.user-group.edit.validation' | i18n}}</p>
           </nz-form-control>
         </nz-form-item>
         <h3 style=" font-weight: normal; margin-top: 20px">Mô tả</h3>
         <nz-form-item>
           <nz-form-control>
-          <textarea maxlength="1000" nz-input [nzAutosize]="{ minRows: 3 }" [placeholder]="'app.create-policy.des.input' | i18n" style="width: 100%"
-                    formControlName="description"></textarea>
+            <textarea maxlength="1000" nz-input [nzAutosize]="{ minRows: 3 }"
+              [placeholder]="'app.create-policy.des.input' | i18n" style="width: 100%"
+              formControlName="description"></textarea>
             <p style="color: #888;">{{'app.create-policy.validation' | i18n}}</p>
           </nz-form-control>
         </nz-form-item>
@@ -164,32 +166,30 @@
       <nz-card>
         <h2>{{'app.create-policy.permisstionInfo' | i18n}}</h2>
         <hr style="opacity: 0.5px; margin-bottom: 25px">
-        <nz-input-group style="margin-right: 8px; width: 40%; margin-bottom: 10px" [nzSuffix]="suffixIconSearch" nzSize="large" >
-          <input #searchBox type="text" nz-input [placeholder]="'app.users.search' | i18n" (keyup.enter)="search(searchBox.value, true)"/>
+        <nz-input-group style="margin-right: 8px; width: 40%; margin-bottom: 10px" [nzSuffix]="suffixIconSearch"
+          nzSize="large">
+          <input #searchBox type="text" nz-input [placeholder]="'app.users.search' | i18n"
+            (keyup.enter)="search(searchBox.value, true)" />
         </nz-input-group>
         <ng-template #suffixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" (click)="search(searchBox.value, true)"/>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"
+            (click)="search(searchBox.value, true)" />
         </ng-template>
-        <nz-table #tableListPermissions
-                  nzShowSizeChanger
-                  [nzFrontPagination]="false"
-                  [nzData]="listOfPermissionSelectedViewFinal"
-                  [nzTotal]="listOfPermissionSelectedViewFilter.length"
-                  [nzPageSize]="size"
-                  [nzPageIndex]="index"
-                  (nzPageSizeChange)="onPageSizeChange($event)"
-                  (nzPageIndexChange)="onPageIndexChange($event)">
+        <nz-table #tableListPermissions nzShowSizeChanger [nzFrontPagination]="false"
+          [nzData]="listOfPermissionSelectedViewFinal" [nzTotal]="listOfPermissionSelectedViewFilter.length"
+          [nzPageSize]="size" [nzPageIndex]="index" (nzPageSizeChange)="onPageSizeChange($event)"
+          (nzPageIndexChange)="onPageIndexChange($event)">
           <thead>
-          <tr>
-            <th>Permissions policies</th>
-            <th>{{'app.service.description' | i18n}}</th>
-          </tr>
+            <tr>
+              <th>Permissions policies</th>
+              <th>{{'app.service.description' | i18n}}</th>
+            </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let data of tableListPermissions.data">
-            <td>{{ data }}</td>
-            <td>{{ data }}</td>
-          </tr>
+            <tr *ngFor="let data of tableListPermissions.data">
+              <td>{{ data }}</td>
+              <td>{{ data }}</td>
+            </tr>
           </tbody>
         </nz-table>
       </nz-card>
@@ -197,10 +197,10 @@
         <button *ngIf="currentStep==1" (click)="setStep(0)" nzSize="large" nz-button nzType="primary" style="
             border-color: #0066B3;
             background-color: white;
-          ">  <span style="color:#0066B3" >{{'app.button.back' | i18n}}</span>
+          "> <span style="color:#0066B3">{{'app.button.back' | i18n}}</span>
         </button>
-        <button *ngIf="currentStep==1" [disabled]="form.invalid" nzSize="large" (click)="createPolicy()" nz-button nzType="primary"
-                style="
+        <button *ngIf="currentStep==1" [disabled]="form.invalid" nzSize="large" (click)="createPolicy()" nz-button
+          nzType="primary" style="
             border: none;
           ">{{'app.button.confirm' | i18n}}
         </button>
@@ -215,21 +215,19 @@
             border-color: #0066B3;
             background-color: white;
           ">
-    <img style="padding-right: 10px;" src="assets/imgs/arrow-left-2.svg" alt=""/>
-    <span style="color:#0066B3" >{{'app.button.back' | i18n}}</span>
+    <img style="padding-right: 10px;" src="assets/imgs/arrow-left-2.svg" alt="" />
+    <span style="color:#0066B3">{{'app.button.back' | i18n}}</span>
   </button>
   <button *ngIf="currentStep!=1" (click)="setStep(1)" nzSize="large" nz-button nzType="primary" style="
             border: none;
-          "><span style="color:white" >{{'app.button.continue' | i18n}}</span>
-    <img style="padding-left: 10px;" src="assets/imgs/arrow-right-3.svg" alt=""/>
+          "><span style="color:white">{{'app.button.continue' | i18n}}</span>
+    <img style="padding-left: 10px;" src="assets/imgs/arrow-right-3.svg" alt="" />
   </button>
 </div>
 
 <!--model xác nhận tạo-->
-<nz-modal [(nzVisible)]="isVisibleCreate" [nzTitle]="'app.create-policy.confirm' | i18n"
-          (nzOnCancel)="handleCancel()"
-          (nzOnOk)="handleCreate()"
-          [nzOkText]="'app.button.confirm' | i18n" [nzCancelText]="'app.button.cancel' | i18n">
+<nz-modal [(nzVisible)]="isVisibleCreate" [nzTitle]="'app.create-policy.confirm' | i18n" (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleCreate()" [nzOkText]="'app.button.confirm' | i18n" [nzCancelText]="'app.button.cancel' | i18n">
   <ng-container *nzModalContent>
     <h3 style="font-weight: normal;">{{'app.create-policy.confirm.des' | i18n}}</h3>
   </ng-container>
@@ -237,9 +235,7 @@
 
 <!--Cảnh bảo-->
 <nz-modal [(nzVisible)]="isVisibleNoticeCreate" [nzTitle]="'app.create-policy.alertNextStep' | i18n"
-          (nzOnCancel)="handleCancel()"
-          [nzCancelText]="'app.button.back' | i18n"
-          [nzOkText]="null">
+  (nzOnCancel)="handleCancel()" [nzCancelText]="'app.button.back' | i18n" [nzOkText]="null">
   <ng-container *nzModalContent>
     <div class="mb-5 mt-5 pt-3 pb-3" style="
               border-style: solid;
@@ -248,8 +244,7 @@
               background-color: #d6eeff;
             ">
       <Space>
-                <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill"
-                      style="color: blue"></span>
+        <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill" style="color: blue"></span>
         {{'app.create-policy.alertNextStep.des' | i18n}}
       </Space>
     </div>

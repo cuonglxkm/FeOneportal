@@ -5,7 +5,7 @@
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']">Dịch vụ hạ tầng</a>
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">VPN site to
           site</a></nz-breadcrumb-item>
@@ -15,8 +15,14 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="region" (valueChanged)="onProjectChange($event)"></project-select-dropdown>
+      <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -34,9 +40,16 @@
                   <div>
                     <span>Name</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
-                      [nzPopoverContent]="'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
-                      nzPopoverPlacement="bottom"></span>
+                      <img
+                      nz-popover
+                      [nzPopoverContent]="
+                        'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
                   </div>
                 </nz-form-label>
                 <input nz-input type="text" value="{{endpointGroup?.name}}" [disabled]="true" />
@@ -51,9 +64,16 @@
                   <div>
                     <span>Type</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
-                      [nzPopoverContent]="'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'"
-                      nzPopoverPlacement="bottom"></span>
+                      <img
+                      nz-popover
+                      [nzPopoverContent]="
+                        'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
                   </div>
                 </nz-form-label>
                 <input *ngIf="endpointGroup?.type == 'subnet'" nz-input type="text" [disabled]="true" placeholder="Subnet(for local systems)"/>

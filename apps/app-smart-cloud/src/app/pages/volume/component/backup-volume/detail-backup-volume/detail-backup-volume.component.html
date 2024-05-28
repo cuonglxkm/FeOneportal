@@ -52,70 +52,71 @@
               <span class="text-value-detail customSpan">{{ backupVolume?.volumeName }}</span>
             </nz-row>
           </nz-col>
-          <nz-col nzSpan="12">
+          <nz-col nzSpan="12" *ngIf="typeVpc == 0">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage' | i18n }}</span>
-              <span class="text-value-detail">{{ backupPackageDetail?.sizeInGB }}</span>
+              <span class="text-value-detail">{{ backupPackageDetail?.sizeInGB }} GB</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12" *ngIf="typeVpc == 1">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.info.backup.vm.total.storage' | i18n }}</span>
+              <span class="text-value-detail">{{ projectDetail?.cloudProject?.quotaBackupVolumeInGb }} GB</span>
             </nz-row>
           </nz-col>
         </nz-row>
         <nz-row>
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
-              <span class="text-label customSpan" style="width: 35%">{{ 'app.backup.package.storage' | i18n }}</span>
-              <span class="text-value-detail" style="margin-left: 2%;">{{ backupPackageDetail?.sizeInGB }} GB</span>
+              <span class="text-label"
+                    style="width: 35%; margin-left: 2%;">{{ 'app.service.creation-date' | i18n }}</span>
+              <span class="text-value-detail"
+                    style="margin-left: 2%;">{{ backupVolume?.creationDate | date: 'dd/MM/yyyy' }} </span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
-              <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.used' | i18n }}</span>
-              <span class="text-value-detail">{{ backupPackageDetail?.usedSize }} GB</span>
+              <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.used'|i18n }}</span>
+              <span class="text-value-detail" *ngIf="typeVpc == 0">{{ backupPackageDetail?.usedSize }} GB </span>
+              <span class="text-value-detail" *ngIf="typeVpc == 1">{{ projectDetail?.cloudProjectResourceUsed?.backup }}
+                GB</span>
             </nz-row>
           </nz-col>
         </nz-row>
         <nz-row style="background-color: #e2e2e9">
           <nz-col nzSpan="12">
-            <nz-row style="padding: 12px 0 12px 0">
-              <span class="text-label" style="width: 35%; margin-left: 2%;">{{ 'app.service.creation-date' | i18n }}</span>
-              <span class="text-value-detail" style="margin-left: 2%;">{{ backupVolume?.creationDate | date: 'dd/MM/yyyy' }} </span>
-            </nz-row>
-          </nz-col>
-          <nz-col nzSpan="12">
-            <nz-row style="padding: 12px 0 12px 0">
-              <span class="text-label" style="width: 35%">{{'app.backup.package.storage.used'|i18n}}</span>
-              <span class="text-value-detail">{{ backupPackageDetail?.usedSize }} GB </span>
-            </nz-row>
-          </nz-col>
-        </nz-row>
-        <nz-row>
-          <nz-col nzSpan="12">
-            <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label customSpan"
-                  style="width: 35%; margin-left: 2%">{{ 'app.service.expiration-date' | i18n }}</span>
-              <span class="text-value-detail" style="margin-left: 2%;">{{ backupVolume?.expirationDate | date: 'dd/MM/yyyy'}}</span>
+            <nz-row style="padding: 12px 0 12px 0;">
+              <span class="text-label customSpan"
+                    style="width: 35%; margin-left: 2%; color: #EA3829;">{{ 'app.service.expiration-date' | i18n }}</span>
+              <span class="text-value-detail"
+                    style="margin-left: 2%; color: #EA3829;">{{ backupVolume?.expirationDate | date: 'dd/MM/yyyy' }}</span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.remaining' |i18n }}</span>
-              <span class="text-value-detail" >{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>
+              <span class="text-value-detail"
+                    *ngIf="typeVpc == 0">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>
+              <span class="text-value-detail"
+                    *ngIf="typeVpc == 1">{{ projectDetail?.cloudProject?.quotaBackupVolumeInGb - projectDetail?.cloudProjectResourceUsed?.backup }}
+                GB</span>
             </nz-row>
           </nz-col>
         </nz-row>
-<!--        <nz-row style="background-color: #e2e2e9">-->
-<!--          <nz-col nzSpan="12">-->
-<!--            <nz-row style="padding: 12px 0 12px 0">-->
-<!--              <span class="text-label customSpan" style="width: 35%">{{ 'app.service.creation-date' | i18n }}</span>-->
-<!--              <span class="text-value-detail customSpan">{{ backupVm?.creationDate | date : 'dd/MM/yyyy' }}</span>-->
-<!--            </nz-row>-->
-<!--          </nz-col>-->
-<!--          <nz-col nzSpan="12">-->
-<!--            <nz-row style="padding: 12px 0 12px 0">-->
-<!--              <span class="text-label" style="width: 35%; color: #EB1414;">{{ 'app.service.expiration-date' | i18n }}</span>-->
-<!--              <span class="text-value-detail" style="color: #EB1414">{{ backupVm?.expirationDate | date : 'dd/MM/yyyy' }}</span>-->
-<!--            </nz-row>-->
-<!--          </nz-col>-->
-<!--        </nz-row>-->
+        <!--        <nz-row style="background-color: #e2e2e9">-->
+        <!--          <nz-col nzSpan="12">-->
+        <!--            <nz-row style="padding: 12px 0 12px 0">-->
+        <!--              <span class="text-label customSpan" style="width: 35%">{{ 'app.service.creation-date' | i18n }}</span>-->
+        <!--              <span class="text-value-detail customSpan">{{ backupVm?.creationDate | date : 'dd/MM/yyyy' }}</span>-->
+        <!--            </nz-row>-->
+        <!--          </nz-col>-->
+        <!--          <nz-col nzSpan="12">-->
+        <!--            <nz-row style="padding: 12px 0 12px 0">-->
+        <!--              <span class="text-label" style="width: 35%; color: #EB1414;">{{ 'app.service.expiration-date' | i18n }}</span>-->
+        <!--              <span class="text-value-detail" style="color: #EB1414">{{ backupVm?.expirationDate | date : 'dd/MM/yyyy' }}</span>-->
+        <!--            </nz-row>-->
+        <!--          </nz-col>-->
+        <!--        </nz-row>-->
       </div>
     </nz-card>
   </nz-content>
