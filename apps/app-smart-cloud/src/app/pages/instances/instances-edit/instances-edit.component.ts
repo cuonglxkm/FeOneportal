@@ -622,14 +622,16 @@ export class InstancesEditComponent implements OnInit {
   onChangeCapacity() {
     this.dataSubjectCapacity
       .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+        debounceTime(700)
       )
       .subscribe((res) => {
         if (this.configCustom.capacity % 10 > 0) {
-          this.notification.error(
+          this.notification.warning(
             '',
             this.i18n.fanyi('app.notify.amount.capacity')
           );
+          this.configCustom.capacity =
+            this.configCustom.capacity - (this.configCustom.capacity % 10);
         }
         if (this.configCustom.capacity == 0) {
           this.volumeUnitPrice = '0';
@@ -839,16 +841,6 @@ export class InstancesEditComponent implements OnInit {
   }
 
   readyEdit(): void {
-    if (
-      this.configGPU.storage % 10 > 0 ||
-      this.configCustom.capacity % 10 > 0
-    ) {
-      this.notification.error(
-        '',
-        this.i18n.fanyi('app.notify.amount.capacity1')
-      );
-      return;
-    }
     if (
       this.isGpuConfig == true &&
       (this.configGPU.GPU == 0 || this.configGPU.gpuOfferId == 0) &&

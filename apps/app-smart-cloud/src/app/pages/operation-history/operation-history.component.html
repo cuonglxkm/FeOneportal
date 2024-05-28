@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Lịch sử thao tác'">
     <ng-template #breadcrumb>
-        <nz-breadcrumb>
+        <nz-breadcrumb [nzSeparator]="separatorTemplate">
             <nz-breadcrumb-item>
                 <a [routerLink]="['/']">Home</a>
             </nz-breadcrumb-item>

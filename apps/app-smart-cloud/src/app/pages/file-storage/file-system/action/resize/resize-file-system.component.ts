@@ -13,6 +13,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../../libs/commo
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-resize-file-system',
@@ -31,7 +32,7 @@ export class ResizeFileSystemComponent implements OnInit {
     storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]]
   });
 
-  storage: number;
+  storage: number = 0;
   isLoading: boolean = true;
   fileSystem: FileSystemDetail = new FileSystemDetail();
 
@@ -41,6 +42,8 @@ export class ResizeFileSystemComponent implements OnInit {
   storageRemaining: number;
 
   isVisible: boolean = false
+
+  dataSubjectStorage: Subject<any> = new Subject<any>();
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -78,7 +81,7 @@ export class ResizeFileSystemComponent implements OnInit {
     this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
       this.fileSystem = data;
       this.isLoading = false;
-      this.storage = this.fileSystem.size;
+      this.storage = this.fileSystem?.size;
       this.validateForm.controls.storage.setValue(this.fileSystem.size);
     }, error => {
       this.fileSystem = null;
@@ -89,8 +92,11 @@ export class ResizeFileSystemComponent implements OnInit {
 
   initFileSystem() {
     this.resizeFileSystem.customerId = this.tokenService.get()?.userId;
-
-    this.resizeFileSystem.size = this.validateForm.controls.storage.value;
+    if(this.fileSystem?.size != null) {
+      this.resizeFileSystem.size = this.storage + this.fileSystem?.size;
+    } else {
+      this.resizeFileSystem.size = this.storage
+    }
     this.resizeFileSystem.newOfferId = 0;
     this.resizeFileSystem.serviceType = 18;
     this.resizeFileSystem.actionType = 4;
@@ -142,12 +148,27 @@ export class ResizeFileSystemComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/detail/' + this.idFileSystem])
   }
 
+  storageSelectedChange(value) {
+    this.dataSubjectStorage.next(value);
+  }
+
+  onChangeStorage() {
+    this.dataSubjectStorage.pipe(debounceTime(700))
+      .subscribe((res) => {
+        if (this.storage % 10 > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
+          this.storage = this.storage - (this.storage % 10);
+        }
+      });
+  }
+
   ngOnInit() {
     this.idFileSystem = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
     this.projectService.getByProjectId(this.project).subscribe(data => {
       this.quotaShareInGb = data.cloudProject?.quotaShareInGb;
       this.storageRemaining =  data.cloudProject?.quotaShareInGb - data.cloudProjectResourceUsed?.quotaShareInGb
       this.getFileSystemById(this.idFileSystem);
+      this.onChangeStorage();
     });
 
   }

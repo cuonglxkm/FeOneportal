@@ -147,6 +147,9 @@ export class CreateVolumeVpcComponent implements OnInit {
   changeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
+        if(res % 10 > 0) {
+          this.notification.warning('', this.i18n.fanyi(''))
+        }
         console.log('total amount');
         // this.getTotalAmount()
       });
@@ -474,10 +477,6 @@ export class CreateVolumeVpcComponent implements OnInit {
           this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
         });
     }
-  }
-
-  clear() {
-    this.validateForm.reset();
   }
 
 }

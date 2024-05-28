@@ -306,6 +306,7 @@
   "app.breadcrumb.infrastructure.service": "Dịch vụ hạ tầng",
   "app.breadcrumb.block.storage": "Block Storage",
 
+  "app.instance": "máy ảo",
   "app.instances": "Máy ảo",
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
@@ -357,7 +358,7 @@
   "app.tooltip.instance.ip.public": "Máy ảo tạo ra sẽ có thêm một card mạng<br> tương ứng với địa chỉ IP khách hàng lựa chọn.<br> Trường hợp muốn sử dụng IP Floating, vui lòng<br> truy cập ",
   "app.tooltip.use.lan.network": "Khi sử dụng mạng LAN, máy ảo sẽ được trang bị thêm 01 IP LAN",
   "app.tooltip.access.method.instance": "Có thể sử dụng mật khẩu hoặc keypair để truy cập vào máy ảo",
-  "app.tooltip.usage.time": "Thời gian khách hàng mua máy ảo để sử dụng, tính theo tháng",
+  "app.tooltip.usage.time": "Thời gian khách hàng mua {{name}} để sử dụng, tính theo tháng",
 
   "validation.exist.instance.name": "Tên máy ảo này đã được sử dụng, vui lòng chọn tên khác",
   "validation.instance.password.required": "Vui lòng nhập mật khẩu",
@@ -743,7 +744,7 @@
   "validation.correct.pool.name": "Vui lòng nhập đúng tên Pool",
   "validation.ip.address.no.input": "Địa chỉ IP phải nằm trong dải Subnet. Trường hợp Khách hàng không nhập địa chỉ IP, hệ thống sẽ tự động cấp địa chỉ IP cho Khách hàng",
   "validation.ip.address.exist": "Địa chỉ IP đã tồn tại vui lòng chọn địa chỉ khác",
-  "validation.ip.address.pattern": "Vui lòng nhập đúng định dạng IP x.x.x.x",
+  "validation.ip.address.pattern": "Vui lòng nhập đúng định dạng IP x.x.x.x,x nằm trong khoảng 0-254",
   "validation.ip.address.not.of.pool": "Địa chỉ IP không thuộc Allocation Pool",
   "validation.pool.name.pattern.tooltip": "Tên không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự (trừ _)",
   "validation.choose.method": "Vui lòng chọn phương thức",
@@ -898,7 +899,7 @@
   "app.file.system.not.enough.quota": "Dung lượng vượt quá dung lượng hiện có, xin vui lòng thử lại",
 
   "app.note.delete.file.system": "Để thực hiện xóa File System {{name}}, vui lòng nhập tên File System để xác nhận",
-  "app.alert.delete.file.system": "Bạn đang thực hiện xóa File System<br> Để xóa được File System, quý khách lưu ý cần phải xóa hết các Snapshot của các File System đó",
+  "app.alert.delete.file.system": "Bạn đang thực hiện xoá File System. Quý khách lưu ý khi xoá File System sẽ đồng thời xoá các Snapshot của File System đó.",
   "app.tooltip.file.system.name.pattern": "Tên của File System cần tạo, các ký tự chữ thường a-z,<br> chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng,<br> tối thiểu 1 ký tự và tối đa 50 ký tự. Tên các File System không trùng nhau",
   "app.tooltip.file.system.name.protocol": "Giao thức NFS (Network File System) là một giao thức mạng được sử dụng<br> để chia sẻ tập tin và thư mục qua mạng giữa các hệ thống máy tính khác nhau.<br> Nó cho phép một máy tính (được gọi là máy chủ NFS) chia sẻ tài nguyên file hệ thống của<br> nó với các máy tính khác (được gọi là máy khách NFS) trong mạng",
   "app.tooltip.capacity": "Dung lượng của File System, vui lòng nhập số chia hết cho 10",

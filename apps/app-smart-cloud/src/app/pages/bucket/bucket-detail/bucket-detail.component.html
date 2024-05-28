@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'Quản lý Object'">
   <ng-template #breadcrumb>
-    <nz-breadcrumb [nzSeparator]="iconTemplate">
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item
         ><a [routerLink]="['/']">{{
           'app.breadcrumb.home' | i18n
@@ -15,7 +15,9 @@
         'app.bucket.detail' | i18n
       }}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
 </page-header>
 
