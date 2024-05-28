@@ -221,7 +221,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
     this.formCreate.userEmail = this.tokenService.get()?.email;
     this.formCreate.actorEmail = this.tokenService.get()?.email;
     this.formCreate.regionId = this.region;
-    this.formCreate.serviceName = null;
+    this.formCreate.serviceName = this.validateForm.controls.name.value;
     this.formCreate.serviceType = 18;
     this.formCreate.actionType = 0;
     this.formCreate.serviceInstanceId = 0;

@@ -34,7 +34,9 @@ export class LifecycleConfigComponent implements OnInit {
   inputSearch: string = '';
   listLifecycle: BucketLifecycle[] = [];
   loading: boolean = true;
-
+  isLoadingCreate: boolean = false;
+  isLoadingUpdate: boolean = false;
+  isLoadingDelete: boolean = false;
   constructor(
     private bucketService: BucketService,
     private notification: NzNotificationService,
@@ -81,7 +83,7 @@ export class LifecycleConfigComponent implements OnInit {
   }
 
   handleOkCreate() {
-    this.isVisibleCreate = false;
+    this.isLoadingCreate = true
     this.lifecycleCreate.bucketName = this.bucketName;
     this.listTag.forEach((e) => {
       let lifecycleTagPredicate: LifecycleTagPredicate =
@@ -92,14 +94,19 @@ export class LifecycleConfigComponent implements OnInit {
     });
     this.bucketService.createBucketLifecycle(this.lifecycleCreate).subscribe({
       next: (data) => {
-        this.searchLifeCycle();
+        this.isVisibleCreate = false;
+        this.isLoadingCreate = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.lifeCycle.create.success'));
+        this.searchLifeCycle();
+        this.cdr.detectChanges()
       },
       error: (e) => {
+        this.isLoadingCreate = false;
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
           this.i18n.fanyi('app.lifeCycle.create.fail')
         );
+        this.cdr.detectChanges()
       },
     });
   }
@@ -128,18 +135,22 @@ export class LifecycleConfigComponent implements OnInit {
   }
 
   handleOkDelete() {
-    this.isVisibleDelete = false;
-
+    this.isLoadingDelete = true
     this.bucketService.deleteBucketLifecycle(this.lifecycleDelete).subscribe({
       next: (data) => {
+        this.isVisibleDelete = false;
+        this.isLoadingDelete = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.lifeCycle.delete.success'));
         this.searchLifeCycle();
+        this.cdr.detectChanges()
       },
       error: (error) => {
+        this.isLoadingDelete = false;
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
           this.i18n.fanyi('app.lifeCycle.delete.fail')
         );
+        this.cdr.detectChanges()
       },
     });
   }
@@ -165,7 +176,7 @@ export class LifecycleConfigComponent implements OnInit {
   }
 
   handleOkUpdate() {
-    this.isVisibleUpdate = false;
+    this.isLoadingUpdate = true
     this.lifecycleUpdate.bucketName = this.bucketName;
     this.lifecycleUpdate.lifecycleTagPredicate = [];
     this.listTag.forEach((e) => {
@@ -177,14 +188,19 @@ export class LifecycleConfigComponent implements OnInit {
     });
     this.bucketService.updateBucketLifecycle(this.lifecycleUpdate).subscribe({
       next: (data) => {
+        this.isVisibleUpdate = false;
+        this.isLoadingUpdate = false;
         this.searchLifeCycle();
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.lifeCycle.edit.success'));
+        this.cdr.detectChanges()
       },
       error: (e) => {
+        this.isLoadingUpdate = false;
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
           this.i18n.fanyi('app.lifeCycle.edit.fail')
         );
+        this.cdr.detectChanges()
       },
     });
   }
