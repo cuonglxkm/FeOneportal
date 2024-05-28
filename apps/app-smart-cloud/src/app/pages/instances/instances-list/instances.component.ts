@@ -153,6 +153,59 @@ export class InstancesComponent implements OnInit {
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
               break;
+            case 'REBUILDING':
+            case 'REBUILDED':
+                  var record = this.dataList[foundIndex];
+    
+                  // if (data.status) {
+                  //   record.status = data.status;
+                  // }
+    
+                  if (data.taskState) {
+                    record.taskState = data.taskState;
+                  }
+    
+                  // if (data.flavorName) {
+                  //   record.flavorName = data.flavorName;
+                  // }
+    
+                  this.dataList[foundIndex] = record;
+                  this.cdr.detectChanges();
+                  break;
+                case 'DELETING':
+                  var record = this.dataList[foundIndex];
+    
+                  // if (data.status) {
+                  //   record.status = data.status;
+                  // }
+    
+                  if (data.taskState) {
+                    record.taskState = data.taskState;
+                  }
+    
+                  // if (data.flavorName) {
+                  //   record.flavorName = data.flavorName;
+                  // }
+    
+                  this.dataList[foundIndex] = record;
+                  this.cdr.detectChanges();
+                case 'DELETED':
+                          var record = this.dataList[foundIndex];
+    
+                          // if (data.status) {
+                          //   record.status = data.status;
+                          // }
+            
+                          if (data.taskState) {
+                            record.taskState = data.taskState;
+                          }
+            
+                          // if (data.flavorName) {
+                          //   record.flavorName = data.flavorName;
+                          // }
+            
+                          this.dataList[foundIndex] = record;
+                          this.cdr.detectChanges();
           }
         }
       }
