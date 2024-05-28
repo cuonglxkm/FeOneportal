@@ -18,6 +18,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 
 
+
 @Component({
   selector: 'one-portal-project-create',
   templateUrl: './project-create.component.html',
@@ -307,30 +308,65 @@ export class ProjectCreateComponent implements OnInit {
   }
   checkNumberInput(value: number, name: string): void {
     const numericValue = Number(value);
-    if (isNaN(numericValue) || numericValue % 10 !== 0) {
-      if (name === 'hhd') {
-        this.hhd = 0;
-        this.price.hhd = 0;
-        this.price.hhdPerUnit = 0;
-      } else if (name === 'ssd') {
-        this.ssd = 0;
-        this.price.ssd = 0;
-        this.price.ssdPerUnit = 0
+    if (isNaN(numericValue) || numericValue % 10 !== 0 && numericValue<=1000) {
+      this.notification.warning(
+        '',
+        'Vui lòng nhập số chia hết cho 10 ');     
+      if(numericValue % 10 < 5){
+        switch (name){
+          case "hhd":{
+            this.hhd =  Math.floor(numericValue / 10) *10;   
+           
+            break;
+          }
+          case "ssd":{
+            this.ssd  =  Math.floor(numericValue / 10) *10;  
+            this.notification.error(
+              '',
+               this.i18n.fanyi('app.notify.amount.capacity')
+             );          
+            break;
+          }
+          case "backup":{
+            this.numberBackup =  Math.floor(numericValue / 10) *10;        
+            break;
+          }
+          case "fileSystem":{
+            this.numberFileSystem =  Math.floor(numericValue / 10) *10;        
+            break;
+          }
+          case "fileSnapshot":{
+            this.numberFileScnapsshot =  Math.floor(numericValue / 10) *10;        
+            break;
+          }
+        }
       }
-      else if (name === 'backup') {
-        this.numberBackup = 0;
-        this.price.backup = 0;
-        this.price.backupUnit = 0;
-      } else if (name === 'fileSystem') {
-        this.numberFileSystem = 0;
-        this.price.fileStorage = 0;
-        this.price.fileStorageUnit = 0;
-      } else if (name === 'fileSnapshot') {
-        this.numberFileScnapsshot = 0;
-        this.price.filestorageSnapshot = 0;
-        this.price.filestorageSnapshotUnit = 0;
+      else{
+        switch (name){
+          case "hhd":{
+            this.hhd =  Math.ceil(numericValue / 10) *10;        
+            break;
+          }
+          case "ssd":{
+            this.ssd  =  Math.ceil(numericValue / 10) *10;        
+            break;
+          }
+          case "backup":{
+            this.numberBackup =  Math.ceil(numericValue / 10) *10;        
+            break;
+          }
+          case "fileSystem":{
+            this.numberFileSystem =  Math.ceil(numericValue / 10) *10;        
+            break;
+          }
+          case "fileSnapshot":{
+            this.numberFileScnapsshot =  Math.ceil(numericValue / 10) *10;        
+            break;
+          }
+        }
       }
     }
+   
     this.calculate(null);
   }
   selectPackge = '';
