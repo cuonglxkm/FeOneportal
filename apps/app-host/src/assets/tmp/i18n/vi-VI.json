@@ -2804,5 +2804,16 @@
   "schedule.backup.health": "Khôi phục",
   "schedule.backup.action3": "Xác nhận tạm dừng lịch backup",
   "schedule.backup.action4": "Quý khách có chắc chắn muốn tạm dừng lịch backup",
-  "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight"
+  "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",
+
+
+  "app.manage.site.to.site.title":"Quản lý VPN site to site",
+  "app.manage.site.to.site.title.infomation":"Thông tin VPN site to site",
+  "app.manage.site.to.site.extend":"Gia hạn",
+  "app.manage.site.to.site.Adjust":"Điều chỉnh",
+  "app.manage.site.to.site.delete":"Xóa",
+  "app.manage.site.to.site.name.package":"Tên gói",
+
+
+
 }
