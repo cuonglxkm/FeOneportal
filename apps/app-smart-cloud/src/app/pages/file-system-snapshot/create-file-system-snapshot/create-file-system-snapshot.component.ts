@@ -302,16 +302,16 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
         if (data != null) {
           if (data.code == 200) {
             this.isLoadingCreateFSS = false;
-            this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu tạo File Storage Snapshot thành công.');
+            this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu tạo File System Snapshot thành công.');
             this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
           }
         } else {
           this.isLoadingCreateFSS = false;
-          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File Storage Snapshot thất bại.');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File System Snapshot thất bại.');
         }
       }, error => {
         this.isLoadingCreateFSS = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File Storage Snapshot thất bại.');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File System Snapshot thất bại.');
       });
     }
   }
