@@ -2,7 +2,8 @@
              [action]="action"
              [title]="'app.load.balancer.resize' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}

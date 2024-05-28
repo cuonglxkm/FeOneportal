@@ -2,7 +2,7 @@
              [action]="action"
              [title]="'app.load.balancer.create' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
@@ -13,6 +13,7 @@
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/load-balancer/create">{{ 'app.load.balancer.create' | i18n }}</a>
       </nz-breadcrumb-item>
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -130,6 +131,8 @@
                              (ngModelChange)="updateValue($event)"
                              formControlName="subnet"
                              [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'"
+                             [nzLoading]="loadingSubnet"
+                             [nzDisabled]="disabledSubnet"
                              nzAllowClear>
                     <nz-option *ngFor="let index of mapSubnetArray"
                                [nzValue]="index.value"
@@ -178,6 +181,7 @@
                   <span *ngIf="!isInput" style="color: #ff4d4f;">{{ 'validation.ip.address.no.input' | i18n }}</span>
                   <ng-template #ipAddressErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.ip.address.pattern' | i18n }}</ng-container>
+                    <ng-container *ngIf="control.hasError('failServer')">{{messageFail}}</ng-container>
                   </ng-template>
                 </nz-form-control>
               </nz-form-item>
