@@ -79,8 +79,9 @@
               alt=""
             />{{ 'app.button.cancel' | i18n }}
           </button>
-          <button nz-button nzType="primary" (click)="setBucketACL()">
+          <button nz-button nzType="primary" [nzLoading]="isLoading" (click)="setBucketACL()">
             <img
+              *ngIf="isLoading === false"
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/confirm.svg"
               alt=""
@@ -123,8 +124,9 @@
               alt=""
             />{{ 'app.button.cancel' | i18n }}
           </button>
-          <button nz-button nzType="primary" (click)="setBucketVersioning()">
+          <button nz-button nzType="primary" [nzLoading]="isLoadingVersion" (click)="setBucketVersioning()">
             <img
+              *ngIf="isLoadingVersion === false"
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/confirm.svg"
               alt=""
