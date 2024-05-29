@@ -4,7 +4,7 @@
   [title]="'app.file.system.snapshot.detail' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <!-- <nz-breadcrumb>
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -15,26 +15,37 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/file-system-snapshot/list']"
-        >{{ 'app.file.system.snapshot.manage' | i18n }}</a
+        >File System Snapshot</a
       ></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.file.system.snapshot.detail' | i18n }}</nz-breadcrumb-item>
-    </nz-breadcrumb>
+    </nz-breadcrumb> -->
+    <app-breadcrumb [breadcrumbItems]="breadcrumbItems"></app-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
 
 <nz-content>
+  <div nz-col nzSpan="4" class="mb-4" *ngIf="typeVPC === 0">
+    <button class="button-fee"
+            nzType="primary"
+            nz-button
+            (click)="navigateToExtend()">
+      <img src="assets/imgs/calendar-tick-white.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
+      <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
+    </button>
+  </div>
   <nz-card style="border-radius: 8px">
     <h2 class="custom-title">{{ 'app.file.system.snapshot.info' | i18n }}</h2>
    <form nz-form nzLayout="vertical">
@@ -42,42 +53,64 @@
      <nz-row nzJustify="space-between" nzGutter="24">
        <nz-col nzSpan="12">
          <nz-form-item>
-           <nz-form-label>
-             <span>{{ 'app.snapshot.name' | i18n }}</span>
-           </nz-form-label>
-           <nz-form-control>
-             <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystemSnapshotDetail?.name
-             }}"  [disabled]="true" />
-           </nz-form-control>
+          <nz-form-label>
+            <span>{{ 'app.file.system.name' | i18n }} (<span class="text-red"
+              >*</span>)</span>
+            <img
+            nz-popover
+            [nzPopoverContent]="
+              'app.file.system.snapshot.detail.name.tooltip' | i18n
+            "
+            nzPopoverPlacement="bottom"
+            style="margin-left: 5px"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+          />
+          </nz-form-label>
+          <nz-form-control>
+            <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.name }}"  [disabled]="true" />
+          </nz-form-control>
          </nz-form-item>
         </nz-col>
         <nz-col nzSpan="12">
          <nz-form-item>
            <nz-form-label>
-             <span>{{ 'app.capacity' | i18n }} - GB</span>
+             <span>{{ 'app.capacity' | i18n }} - GB  (<span class="text-red"
+              >*</span>)</span>
+             <img
+             nz-popover
+             [nzPopoverContent]="
+               'app.file.system.snapshot.detail.size.tooltip' | i18n 
+             "
+             nzPopoverPlacement="bottom"
+             style="margin-left: 5px"
+             src="assets/imgs/pajamas_question.svg"
+             alt=""
+           />
            </nz-form-label>
            <nz-form-control>
              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystemSnapshotDetail?.sizeInGB }}" [disabled]="true" />
            </nz-form-control>
          </nz-form-item>
         </nz-col>
-        <nz-col nzSpan="12">
-         <nz-form-item>
-           <nz-form-label>
-             <span>{{ 'app.file.system.name' | i18n }}</span>
-           </nz-form-label>
-           <nz-form-control>
-             <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.name }}"  [disabled]="true" />
-           </nz-form-control>
-          </nz-form-item>
-        </nz-col>
-        <nz-col nzSpan="12">
+        <nz-col nzSpan="24">
           <nz-form-item>
             <nz-form-label>
-              <span>{{ 'app.service.start.date' | i18n }}</span>
+              <span>{{ 'app.snapshot.name' | i18n }} (<span class="text-red"
+                >*</span>)</span>
+              <img
+              nz-popover
+              [nzPopoverContent]="
+                'app.file.system.snapshot.detail.snapshot.tooltip' | i18n 
+              "
+              nzPopoverPlacement="bottom"
+              style="margin-left: 5px"
+              src="assets/imgs/pajamas_question.svg"
+              alt=""
+            />
             </nz-form-label>
             <nz-form-control>
-              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystemSnapshotDetail?.createTime | date: 'dd/MM/yyyy'
+              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystemSnapshotDetail?.name
               }}"  [disabled]="true" />
             </nz-form-control>
           </nz-form-item>
@@ -91,6 +124,22 @@
          <textarea nz-input rows="4" value="{{ fileSystemSnapshotDetail?.description }}" [disabled]="true" ></textarea>
        </nz-form-control>
      </nz-form-item>
+     <nz-descriptions [nzColumn]="2" *ngIf="typeVPC == 0">
+      <nz-descriptions-item [nzTitle]="titleCreateDate">
+        <span class="text-label"><b>{{ fileSystemSnapshotDetail?.createTime | date:'dd/MM/yyyy' }}</b></span></nz-descriptions-item>
+      <nz-descriptions-item [nzTitle]="titleExpireDate" class="text-label">
+        <span style="color: rgba(235, 20, 20, 0.85)"
+              class="text-label"><b>{{ fileSystemSnapshotDetail?.expireDate | date:'dd/MM/yyyy' }}</b></span>
+      </nz-descriptions-item>
+      <ng-template #titleCreateDate>
+        <span class="text-label">{{ 'volume.table.title.create.date' | i18n }}:</span>
+      </ng-template>
+      <ng-template #titleExpireDate>
+        <span style="color: rgba(235, 20, 20, 0.85)" class="text-label">{{ 'volume.table.title.expire.date' | i18n }}
+          :</span>
+      </ng-template>
+
+    </nz-descriptions>
     </nz-spin>
    </form>
   </nz-card>

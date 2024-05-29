@@ -1,0 +1,87 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'SSL Cert'">
+    <ng-template #breadcrumb>
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+        </nz-breadcrumb-item>
+         <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+        <nz-breadcrumb-item>SSL Cert</nz-breadcrumb-item>
+      </nz-breadcrumb>
+    </ng-template>
+    <ng-template #action>
+      <div class="alain-custom-action text-right">
+        <share-users-combobox></share-users-combobox>
+        <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+        <project-select-dropdown [regionId]="region"
+                                 (valueChanged)="projectChange($event)"
+                                 (userChanged)="projectChange($event)"></project-select-dropdown>
+      </div>
+    </ng-template>
+  </page-header>
+  <nz-content>
+    <nz-card>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-card-header">Danh sách SSL Cert</span>
+      <nz-row style="gap: 16px">
+        <nz-col>
+          <nz-input-group [nzPrefix]="prefixIconSearch"
+                          nzSize="large"
+                          style="width: 300px;">
+            <input name="name"
+                   nz-input
+                   [nz-tooltip]="'app.button.search' | i18n"
+                   [(ngModel)]="value"
+                   (input)="onInputChange($event.target['value'])"/>
+          </nz-input-group>
+          <ng-template #prefixIconSearch>
+            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"/>
+          </ng-template>
+        </nz-col>
+        <nz-col>
+            <button [routerLink]="['/app-smart-cloud/ssl-cert/create']" nz-button nzType="primary" nzSize="large">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+                <span class="button-text-primary">Tạo mới SSL Cert</span>
+              </button>
+        </nz-col>
+      </nz-row>
+      </div>
+      <nz-table
+      #fixedTable
+      style="margin-top: 20px"
+      [nzData]="filteredData"
+      [nzPageSize]="response?.pageSize"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzPageIndex]="response?.currentPage"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzTotal]="response?.totalCount"
+      [nzFrontPagination]="false"
+      [nzLoading]="isLoading"
+    >
+    <thead>
+      <tr>
+        <th>Tên SSL Cert</th>
+        <th>Ngày hết hạn</th>
+        <th nzAlign='center'>{{ 'app.text.operation' | i18n }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of filteredData; index as i">
+        <td>{{data.name}}</td>
+        <td>{{data.expiration | date: 'dd/MM/yyyy'}}</td>
+        <td>
+            <one-portal-delete-ssl-cert
+            [region]="region"
+            [project]="project" [sslCertId]="data.secret_ref" 
+            [sslCertName]="data.name" 
+            (onOk)="handleOkDeleteSslCert()"
+            />
+            
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+    </nz-card>
+  </nz-content>
+  

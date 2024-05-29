@@ -1,8 +1,9 @@
 import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import { ProjectModel, SizeInCloudProject } from '../models/project.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseService } from './base.service';
+import { SizeInCloudProject } from '../models/project.model';
+import { ProjectModel } from '../../../../../../libs/common-utils/src';
 
 @Injectable({
   providedIn: 'root'

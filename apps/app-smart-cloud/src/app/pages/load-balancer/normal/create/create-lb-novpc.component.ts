@@ -4,7 +4,7 @@ import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@ang
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { VlanService } from '../../../../shared/services/vlan.service';
-import { Subnet } from '../../../../shared/models/vlan.model';
+import { FormSearchSubnet, Subnet } from '../../../../shared/models/vlan.model';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { OfferDetail, Product } from '../../../../shared/models/catalog.model';
 import {
@@ -14,10 +14,13 @@ import {
   IPBySubnet
 } from '../../../../shared/models/load-balancer.model';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { OrderItem } from '../../../../shared/models/price';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-create-lb-novpc',
@@ -48,9 +51,9 @@ export class CreateLbNovpcComponent implements OnInit {
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
       this.duplicateNameValidator.bind(this), Validators.maxLength(50)]],
     radio: [''],
-    subnet: [''],
+    subnet: ['', Validators.required],
     ipAddress: ['', Validators.pattern(/^(\d{1,3}\.){3}\d{1,3}$/)],
-    ipFloating: [0],
+    ipFloating: [-1, [Validators.required,Validators.pattern(/^[0-9]+$/)]],
     offer: [1, Validators.required],
     description: ['', Validators.maxLength(255)],
     time: [1, Validators.required]
@@ -66,7 +69,6 @@ export class CreateLbNovpcComponent implements OnInit {
   flavorId: string;
 
   selectedSubnet: string;
-  selectedSubnetValue: string;
 
   isInput: boolean = true;
 
@@ -75,12 +77,16 @@ export class CreateLbNovpcComponent implements OnInit {
   @ViewChild('selectedValueSpan') selectedValueSpan: ElementRef;
   @ViewChild('selectedValueOffer') selectedValueOffer: ElementRef;
   @ViewChild('selectedValueIpFloating') selectedValueIpFloating?: ElementRef;
-
+  invalidIpAddress = true;
+  private validateIpaddress = new Subject<string>();
+  private readonly debounceTimeMs = 2000;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private vlanService: VlanService,
               private catalogService: CatalogService,
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private loadBalancerService: LoadBalancerService) {
   }
 
@@ -137,13 +143,15 @@ export class CreateLbNovpcComponent implements OnInit {
       }
       this.getIpBySubnet(selected?.cloudId)
     }
-
+    this.getTotalAmount();
   }
   userChanged(project: ProjectModel) {
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);
   }
 
   onChangeStatusInternetFacing() {
+    this.validateForm.controls['subnet'].setValue('');
+    this.validateForm.controls['ipAddress'].setValue('');
     this.enableInternetFacing = true;
     this.enableInternal = false;
     if (this.enableInternetFacing) {
@@ -153,9 +161,12 @@ export class CreateLbNovpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
+    this.getListSubnetInternetFacing();
   }
 
   onChangeStatusInternal() {
+    this.validateForm.controls['subnet'].setValue('');
+    this.validateForm.controls['ipAddress'].setValue('');
     this.enableInternetFacing = false;
     this.enableInternal = true;
     if (this.enableInternetFacing) {
@@ -165,6 +176,7 @@ export class CreateLbNovpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
+    this.getListSubnetInternetFacing();
   }
 
 
@@ -212,29 +224,7 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   onInput(value) {
-    const getSubnet = this.listSubnets?.find(option => option.cloudId === this.validateForm.get('subnet').value);
-    const result = this.isIpInSubnet(value, getSubnet.subnetAddressRequired);
-    if (value == undefined || value.trim().length === 0) {
-      console.log('1');
-      this.isInput = true;
-    } else {
-      if (result) {
-        console.log('3');
-        this.isInput = true;
-      } else {
-        console.log('4');
-        this.isInput = false;
-      }
-      this.loadBalancerService.checkIpAddress(getSubnet.subnetCloudId, value, this.region, this.project)
-        .subscribe(data => {
-          this.isAvailable = data;
-        }, error => {
-          this.isAvailable = false;
-        });
-
-    }
-
-
+    this.validateIpaddress.next(value);
   }
 
   getIpBySubnet(subnetId) {
@@ -379,15 +369,33 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   getListSubnetInternetFacing() {
-    this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region).subscribe(data => {
-      this.setDataToMap(data);
-      if (this.mapSubnet instanceof Map) {
-        // Chuyển đổi Map thành mảng các cặp khóa/giá trị
-        for (const [key, value] of this.mapSubnet.entries()) {
-          this.mapSubnetArray?.push({ value: value, label: key });
+    this.mapSubnetArray = [];
+    if (this.enableInternal == true) {
+      let formSearchSubnet = new FormSearchSubnet();
+      formSearchSubnet.region = this.region;
+      formSearchSubnet.vpcId = this.project;
+      formSearchSubnet.pageSize = 9999;
+      formSearchSubnet.pageNumber = 1;
+      formSearchSubnet.customerId = this.tokenService.get()?.userId;
+      formSearchSubnet.name = '';
+      this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
+        this.mapSubnet?.clear();
+        // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
+        for (const model of data.records) {
+          this.mapSubnetArray?.push({ value: model.subnetCloudId, label: model.name + '(' + model.subnetAddressRequired + ')' });
         }
-      }
-    });
+      });
+    } else {
+      this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region).subscribe(data => {
+        this.setDataToMap(data);
+        if (this.mapSubnet instanceof Map) {
+          // Chuyển đổi Map thành mảng các cặp khóa/giá trị
+          for (const [key, value] of this.mapSubnet.entries()) {
+            this.mapSubnetArray?.push({ value: value, label: key });
+          }
+        }
+      });
+    }
   }
 
   ngOnInit() {
@@ -402,8 +410,25 @@ export class CreateLbNovpcComponent implements OnInit {
     this.getListLoadBalancer();
 
     this.getListSubnetInternetFacing();
+    this.validateForm.controls['ipAddress'].disable();
+    this.validateIpaddress.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
+      this.onInputReal(searchValue);
+    });
   }
 
 
+  private onInputReal(value: any) {
+    if (!this.validateForm.controls['ipAddress'].invalid) {
+      const getSubnet = this.listSubnets?.find(option => option.cloudId === this.validateForm.get('subnet').value);
+      const result = this.isIpInSubnet(value, getSubnet.subnetAddressRequired);
+      this.vlanService.checkIpAvailable(value, getSubnet.subnetAddressRequired, getSubnet.cloudId, this.region).subscribe(data => {
+          this.invalidIpAddress = false;
+        },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'),error.error)
+          this.invalidIpAddress = true;
+        })
+    }
+  }
 }
 

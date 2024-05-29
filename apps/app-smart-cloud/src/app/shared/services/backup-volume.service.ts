@@ -1,10 +1,15 @@
 import {Inject, Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
-import {BehaviorSubject, Observable} from "rxjs";
-import {BackupVolume} from "../../pages/volume/component/backup-volume/backup-volume.model";
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import {
+  BackupVolume,
+  CreateBackupVolumeOrderData
+} from '../../pages/volume/component/backup-volume/backup-volume.model';
 import {BaseService} from "./base.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import { BackupVm, CreateBackupVmOrderData } from '../models/backup-vm';
+import { catchError } from 'rxjs/internal/operators/catchError';
 
 @Injectable({
   providedIn: 'root'
@@ -66,7 +71,16 @@ export class BackupVolumeService extends BaseService {
   }
 
   //create
-  createBackupVolume(data: any) {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, data , this.httpOptions);
+  createBackupVolume(data: CreateBackupVolumeOrderData) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.orders, Object.assign(data))
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 }

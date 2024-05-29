@@ -1,9 +1,7 @@
-def image
-def imageTag
-def appName
-
+#!/usr/bin/env groovy
+def agentLabel = "it-si-cloud-linux1"
 pipeline {
-    
+
     agent { label 'worker-6-agent||jenkins-oneportal' }
 
     environment {
@@ -13,8 +11,50 @@ pipeline {
         ENV = "dev"
     }
     stages {
+        stage('Show Build environment') {
+            steps {
+                sh 'env'
+                sh 'ip a'
+            }
+        }
 
-        stage("Initializing") {
+        stage('Build images') {
+            when {
+                branch "develop"
+            }
+            steps {
+                sh 'docker compose --parallel 2 build'
+            }
+        }
+
+        stage('Build images test') {
+            when {
+                branch "release"
+            }
+            steps {
+                sh 'docker compose -f compose-test.yml --parallel 2 build'
+            }
+        }
+
+        stage('Push images') {
+            when {
+                branch "develop"
+            }
+            steps {
+                sh 'docker compose push'
+            }
+        }
+
+        stage('Push images test') {
+            when {
+                branch "release"
+            }
+            steps {
+                sh 'docker compose -f compose-test.yml push'
+            }
+        }
+
+        stage('Redeploy k8s') {
             steps {
                 script {
                     appName = env.BRANCH_NAME.tokenize("/").last()

@@ -1,6 +1,6 @@
 <span class="titlecard-custom">{{ 'app.set' | i18n }} Static Web Hosting</span>
 <div style="margin-top: 10px" class="text-label">
-  <span>{{ 'app.static.web.hosting.intro' | i18n }}</span
+  <span >{{ 'app.static.web.hosting.intro' | i18n }}</span
   ><br /><br />
   <span>{{ 'app.static.web.hosting.intro.next' | i18n }}</span>
 </div>
@@ -23,19 +23,19 @@
 </nz-radio-group>
 <nz-row *ngIf="bucketDetail.isWebsite" nzGutter="24"
   ><nz-col nzSpan="12">
-    <div style="margin-top: 16px">
+    <div class="text-label" style="margin-top: 16px">
       {{ 'app.file.static.web.hosting' | i18n }}
     </div>
-    <div style="margin-top: 16px">{{ 'app.example' | i18n }}: index.html</div>
+    <div class="text-label" style="margin-top: 16px">{{ 'app.example' | i18n }}: index.html</div>
   </nz-col>
   <nz-col nzSpan="12">
-    <div style="margin-top: 16px">
+    <div class="text-label" style="margin-top: 16px">
       {{ 'app.file.static.web.hosting.error' | i18n }}
     </div>
-    <div style="margin-top: 16px">{{ 'app.example' | i18n }}: error.html</div>
+    <div class="text-label" style="margin-top: 16px">{{ 'app.example' | i18n }}: error.html</div>
   </nz-col>
 </nz-row>
-<div *ngIf="bucketDetail.isWebsite" style="margin-top: 16px; color: #eb1414">
+<div *ngIf="bucketDetail.isWebsite" class="text-label" style="margin-top: 16px; color: #eb1414">
   {{ 'app.note.static.web.hosting' | i18n }}
 </div>
 <nz-row *ngIf="bucketDetail.isWebsite" nzGutter="24"
@@ -71,14 +71,13 @@
       "
       [disabled]="!bucketDetail.checkRedirectAllRequests"
     />
-    <div style="margin-top: 16px" class="text-label">
+    <div class="text-label" style="margin-top: 16px" class="text-label">
       Endpoint
       <img
-        style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="message-question"
-        src="assets/imgs/message-question.svg"
-        alt=""
-      />
+      style="padding-right: 10px; margin-top: -4px"
+      src="assets/imgs/pajamas_question.svg"
+      alt=""
+    />
     </div>
     <nz-input-group
       style="margin-right: 8px; width: 100%; border-radius: 8px"

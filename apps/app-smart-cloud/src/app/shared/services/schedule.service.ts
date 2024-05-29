@@ -26,7 +26,7 @@ export class ScheduleService extends BaseService {
 
   search(formSearch: FormSearchScheduleBackup) {
     let params = new HttpParams()
-    if(formSearch.scheduleName !== undefined) {
+    if(formSearch.scheduleName !== null) {
       params = params.append('scheduleName', formSearch.scheduleName)
     }
     if(formSearch.regionId !== undefined) {
@@ -45,7 +45,7 @@ export class ScheduleService extends BaseService {
     } else {
       params = params.append('currentPage', 1)
     }
-    if(formSearch.scheduleStatus !== undefined) {
+    if(formSearch.scheduleStatus !== null) {
       params = params.append('scheduleStatus', formSearch.scheduleStatus)
     }
     return this.http.get<BaseResponse<BackupSchedule[]>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules', {

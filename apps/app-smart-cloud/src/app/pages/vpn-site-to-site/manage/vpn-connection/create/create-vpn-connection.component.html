@@ -172,7 +172,7 @@
                 <span nz-icon nzType="question-circle"
                       nzTheme="outline"
                       nz-popover
-                      [nzPopoverContent]="'Local Endpoint Group [bắt buộc] : tương ứng với trường Endpoint group for local subnet trên OpenStack.'"
+                      [nzPopoverContent]="'Local Endpoint Group (System Subnet) : Local subnet của người dùng'"
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
@@ -206,7 +206,7 @@
                 <span nz-icon nzType="question-circle"
                       nzTheme="outline"
                       nz-popover
-                      [nzPopoverContent]="'Peer ID VPN Connections  [bắt buộc]: Khách hàng nhập ID (có thể sử dụng luôn IP VPN Gateway) chung sử dụng cho cả tunnel đầu SmartCloud và đầu VPN tunnel phía Client (mục này bắt buộc điền tuy nhiên không cần thiết nếu đã nhập đúng IP VPN gateway ở 2 đầu tunnel), tương ứng với trường Peer router identity for authentication (Peer ID) trên OpenStack.'"
+                      [nzPopoverContent]="'Peer ID VPN Connection là ID của thiết bị đầu xa đang thực hiện kết nối. Nó có thể là các định dạng theo địa chỉ IP, tên miền, địa chỉ email hoặc distinguished name. Trong khi thiết lập kết thì cần đảm bảo đúng định dạng giữa 2 đầu VPN.'"
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>

@@ -89,7 +89,7 @@
           ]
         },
         {
-          "text": "Dự án",
+          "text": "Quản lý dự án",
           "icon": "anticon-profile",
           "link": "/app-smart-cloud/project",
           "action": "project:List"
@@ -197,7 +197,7 @@
                 {
                   "text": "Network Topology",
                   "icon": "anticon-exception",
-                  "link": "/app-smart-cloud/network-topo"
+                  "link": "/app-smart-cloud/network-topology"
                 }
               ]
             },
@@ -214,10 +214,21 @@
               "action": "securitygroup:List"
             },
             {
-              "text": "Load Balancer SDN",
-              "link": "/app-smart-cloud/load-balancer/list",
-              "icon": "anticon-cluster",
-              "action": "loadbalancer:List"
+              "text": "Load Balancer",
+              "icon": "anticon-cloud",
+              "children": [
+                {
+                  "text": "Load Balancer SDN",
+                  "link": "/app-smart-cloud/load-balancer/list",
+                  "icon": "anticon-cluster",
+                  "action": "loadbalancer:List"
+                },
+                {
+                  "text": "SSL Cert",
+                  "icon": "anticon-profile",
+                  "link": "/app-smart-cloud/ssl-cert"
+                }
+              ]
             },
             {
               "key": "Object Storage",

@@ -1,4 +1,4 @@
-<form nz-form [formGroup]="validateForm" nzLayout="vertical">
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzLayout="vertical">
   <nz-card>
     <nz-row nzGutter="24" nzJustify="space-between">
       <nz-col nzSpan="12">
@@ -11,7 +11,7 @@
               <input nz-input
                      class="input-custom"
                      formControlName="name"
-                     style="width: 100%;"/>
+                     style="width: 100%;border-radius: 8px;"/>
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{'validation.info.required' | i18n}}</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">{{'schedule.backup.validate1' | i18n}}</ng-container>
@@ -64,6 +64,7 @@
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
             <textarea nz-input
+                      style="border-radius: 8px;"
                       formControlName="description"
                       id="description"
                       [nzAutosize]="{ minRows: 6, maxRows: 6 }"></textarea>
@@ -267,9 +268,7 @@
         </div>
         <nz-form-item>
           <nz-form-label nzFor="listAttachedVolume">
-            <div class="label">
-              <span>{{'schedule.backup.select.volume.backup' | i18n}}</span>
-            </div>
+            <div class="label">{{'schedule.backup.select.volume.backup' | i18n}}</div>
           </nz-form-label>
           <nz-form-control>
             <nz-select id="volumeToBackupIds"

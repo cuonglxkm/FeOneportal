@@ -177,7 +177,7 @@
         <nz-form-control nzDisableAutoTips>
           <div *ngIf="listCert == null || listCert.length <= 0">
             <div class="text-label">Bạn chưa có Cert?</div>
-            <a class="text-label" style="color: #0D67B1" [routerLink]="['/app-smart-cloud/object-storage/bucket']">Click để tạo mới</a>
+            <a class="text-label" style="color: #0D67B1" [routerLink]="['/app-smart-cloud/ssl-cert/create']">Click để tạo mới</a>
           </div>
           <div *ngIf="listCert != null && listCert.length > 0">
             <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
@@ -520,7 +520,7 @@
           <nz-card style="height: 230px;">
             <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.listener.info' | i18n }}</div>
             <nz-row>
-              <nz-col nzSpan="9" class="text-label">Tên Listeners</nz-col>
+              <nz-col nzSpan="9" class="text-label">Tên Listener</nz-col>
               <nz-col nzSpan="15" class="text-label">{{ validateForm.controls['listenerName'].value }}</nz-col>
             </nz-row>
             <nz-row>

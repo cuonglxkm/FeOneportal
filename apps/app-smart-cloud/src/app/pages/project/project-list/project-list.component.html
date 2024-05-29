@@ -1,9 +1,10 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" title="{{ 'project.note1' | i18n }}">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">{{ 'project.note1' | i18n }}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -38,7 +39,7 @@
         <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24"
              [nzXXl]="12">
           <button nz-button nzType="primary" (click)="createProject()" nzSize="large">
-            <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt="" />
+            <img style="padding-right: 10px;" src="assets/imgs/add_white.svg" alt="" />
             <span class="button-text-primary">{{ 'project.note3' | i18n }}</span>
           </button>
         </div>
@@ -73,30 +74,26 @@
           <td *ngIf="item.type != 'VPC'">-</td>
           <td *ngIf="item.type == 'VPC'">{{ item.createDate | date : "dd/MM/YYYY" }}</td>
           <td *ngIf="item.type == 'VPC'">{{ item.expireDate | date : "dd/MM/YYYY" }}</td>
-          <td [ngStyle]="{'color': item.resourceStatus === 'ENABLE' ? '#008D47' : '#EA3829'}">{{ item.resourceStatus === 'ENABLE' ? ('project.status.enable' | i18n) : ('project.status.delete' | i18n) }}</td>
+          <ng-container *ngIf="item.resourceStatus | ServiceStatusPipe as statusModel">
+            <td [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
+          </ng-container>
           <td >{{ item.type == 'VPC' ? ('project.note4' | i18n) : (item.type == 'Default' ? ('project.default' | i18n) :('project.note5' | i18n))}}</td>
-          <!--          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: forestgreen">Đang hoạt động</td>-->
-          <!--          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>-->
-          <!--          <td *ngIf="item.status === 0">-</td>-->
-          <!--          <td *ngIf="item.status === 2">IN-USE</td>-->
           <td>
             <div>
               <!----Chỉnh sửa----->
-              <span style="color: #0066B3; margin-right: 10px;"
+              <img style="cursor: pointer;; margin-right: 10px;"
+                    src="assets/imgs/edit-2.svg"
                     nz-tooltip
                     nzTooltipTitle="{{ 'app.text.edit' | i18n }}" nzTooltipPlacement="bottom"
-                    nz-icon
-                    nzType="edit"
-                    nzTheme="outline"
                     (click)="edit(item)"
-              ></span>
+              />
               <!----Xóa---->
-              <span style="color: #0066B3" *ngIf="item.type != 'Default'"
+              <img style="cursor: pointer;" *ngIf="item.type != 'Default'"
                     nz-tooltip
                     nzTooltipTitle="{{ 'app.delete' | i18n }}" nzTooltipPlacement="bottom"
-                    nz-icon nzType="delete" nzTheme="outline"
+                    src="assets/imgs/delete.svg"
                     (click)="delete(item)"
-              ></span>
+              />
             </div>
           </td>
         </tr>
@@ -153,9 +150,12 @@
 <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="{{ 'project.note22' | i18n }}" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
-              nzDescription="{{ 'project.note11' | i18n:{'name':itemDelete.displayName} }}"
+              [nzDescription]="alertDeleteOK"
               nzShowIcon style="margin-bottom: 10px;"></nz-alert>
-    <div class="text-label" style="margin-bottom: 3px; margin-top: 35px">{{ 'project.note15' | i18n }} </div>
+              <ng-template #alertDeleteOK>
+                <span [innerHTML]="'project.note11' | i18n:{'name':itemDelete.displayName}"></span>
+              </ng-template>
+    <div class="text-label" style="margin-bottom: 3px; margin-top: 25px">{{ 'project.note15' | i18n }} </div>
     <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{itemDelete.displayName}}" [(ngModel)]="nameDelete"
            (ngModelChange)="confirmNameDelete($event)" type="text" />
   </ng-container>

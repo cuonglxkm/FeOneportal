@@ -3,7 +3,7 @@ import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angul
 import {Location} from "@angular/common";
 import {UserGroupService} from "../../../../shared/services/user-group.service";
 import {FormSearchUserGroup, FormUserGroup} from "../../../../shared/models/user-group.model";
-import {PolicyModel} from "../../../../../../../../libs/common-utils/src/lib/models/policy.model";
+import {PolicyModel} from "../../../../shared/models/policy.model";
 import {User} from "../../../../shared/models/user.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {Router} from '@angular/router';

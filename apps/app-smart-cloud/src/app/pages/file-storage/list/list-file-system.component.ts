@@ -1,11 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  BaseResponse,
+  BaseResponse, NotificationService,
   ProjectModel,
-  ProjectService,
-  RegionModel,
-  SizeInCloudProject,
+  RegionModel
 } from '../../../../../../../libs/common-utils/src';
 import {
   FileSystemModel,
@@ -18,6 +16,8 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { error } from 'console';
+import { SizeInCloudProject } from 'src/app/shared/models/project.model';
+import { ProjectService } from 'src/app/shared/services/project.service';
 @Component({
   selector: 'one-portal-list-file-system',
   templateUrl: './list-file-system.component.html',
@@ -50,11 +50,12 @@ export class ListFileSystemComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    private projectService: ProjectService
-  ) {}
+    private projectService: ProjectService,
+    private cdr: ChangeDetectorRef,
+    private notificationService: NotificationService) {}
 
-  onInputChange(value) {
-    this.value = value;
+  onEnter() {
+    this.value = this.value.trim();
     this.getListFileSystem(false);
   }
 
@@ -103,6 +104,8 @@ export class ListFileSystemComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.checkRouter.file.system.noGateway')
           );
+        } else {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
         }
       },
     });
@@ -112,14 +115,14 @@ export class ListFileSystemComponent implements OnInit {
     //in vpc
     if (typeVpc == 1) {
       this.router.navigate([
-        '/app-smart-cloud/file-storage/file-system/resize/' + id,
+        '/app-smart-cloud/file-storage/file-system/resize/vpc/' + id,
       ]);
     }
 
     //no vpc
     if (typeVpc == 0) {
       this.router.navigate([
-        '/app-smart-cloud/file-storage/file-system/' + id + '/resize',
+        '/app-smart-cloud/file-storage/file-system/resize/normal/' + id,
       ]);
     }
   }
@@ -172,12 +175,14 @@ export class ListFileSystemComponent implements OnInit {
   }
 
   handleOkDelete() {
-    this.getListFileSystem(false);
+    this.getListFileSystem(true);
   }
 
   getProject() {
     this.projectService.getByProjectId(this.project).subscribe((data) => {
       this.projectInfo = data;
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message)
     });
   }
 
@@ -192,6 +197,30 @@ export class ListFileSystemComponent implements OnInit {
     this.customerId = this.tokenService.get()?.userId;
     this.fileSystemService.model.subscribe((data) => {
       console.log(data);
+    });
+    if (!this.region && !this.project) {
+      this.router.navigate(['/exception/500']);
+    }
+
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+
+    this.notificationService.connection.on('UpdateVolume', (data) => {
+      if (data) {
+        let volumeId = data.serviceId;
+
+        var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+        if (foundIndex > -1) {
+          var record = this.response.records[foundIndex];
+
+          record.status = data.status;
+          record.taskState = data.serviceStatus;
+
+          this.response.records[foundIndex] = record;
+          this.cdr.detectChanges();
+        }
+      }
     });
   }
 }

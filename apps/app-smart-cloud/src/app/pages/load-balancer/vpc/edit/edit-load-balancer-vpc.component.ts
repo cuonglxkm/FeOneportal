@@ -7,9 +7,10 @@ import { LoadBalancerService } from '../../../../shared/services/load-balancer.s
 import { OfferDetail } from '../../../../shared/models/catalog.model';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-extend-load-balancer-vpc',

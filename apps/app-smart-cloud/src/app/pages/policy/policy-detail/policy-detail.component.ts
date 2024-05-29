@@ -1,12 +1,12 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {ActivatedRoute, Router} from "@angular/router";
-import {PolicyInfo} from "../../../../../../../libs/common-utils/src/lib/models/policy.model";
-import {PolicyService} from "../../../../../../../libs/common-utils/src/lib/services/policy.service";
+import {PolicyInfo} from "../../../shared/models/policy.model";
+import {PolicyService} from "../../../shared/services/policy.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import { RegionService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { RegionCoreService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
@@ -27,7 +27,7 @@ export class PolicyDetailComponent implements OnInit {
   @ViewChild(JsonEditorComponent, {static: false}) editor: JsonEditorComponent;
 
 
-  constructor(private regionService: RegionService,
+  constructor(private regionService: RegionCoreService,
               private policyService: PolicyService,
               private router: Router,
               private notification: NzNotificationService,

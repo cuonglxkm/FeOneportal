@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse} from "@angular/common/http";
 import {throwError} from "rxjs";
-import { environment } from '../environments/environment';
 
 export abstract class BaseService {
 
@@ -16,12 +15,7 @@ export abstract class BaseService {
     iam: '/iam',
     payments: '/payments'
   }
-  protected baseUrl: string;
-
-  protected constructor() {
-    this.baseUrl = environment.baseUrl;
-  }
-
+  
   protected errorCode(error: HttpErrorResponse) {
     if (error.status === 401) {
       // Handle 401 Unauthorized error

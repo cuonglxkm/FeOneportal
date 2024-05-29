@@ -98,31 +98,10 @@ export class VolumeComponent implements OnInit {
     this.getListVolume(false);
   }
 
-  onInputChange(value) {
-    this.value = value.trim();
-    setTimeout(() => {
-      this.getListVolume(false);
-    }, 500);
-  }
 
-  get trimmedValue(): string {
-    return this.value;
-  }
-
-  set trimmedValue(value: string) {
-    this.value = value.trim();
-  }
-
-  focusOnSearch(event: KeyboardEvent): void {
-    event.preventDefault(); // Ngăn chặn hành vi mặc định của Enter nếu cần thiết
-    this.trimmedValue = this.trimmedValue.trim(); // Trim khoảng trắng đầu và cuối
-    this.performSearch();
-  }
-
-  performSearch(): void {
-    // Thực hiện tìm kiếm với giá trị đã được trim
-    console.log('Searching for:', this.trimmedValue);
-    // Thực hiện các hành động tìm kiếm khác
+  onEnter() {
+    this.value = this.value.trim();
+    this.getListVolume(false);
   }
 
   onPageSizeChange(value) {

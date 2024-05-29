@@ -2,7 +2,7 @@
              [action]="action"
              [title]="'volume.button.create' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
@@ -17,6 +17,7 @@
         <a routerLink="/app-smart-cloud/volume/create">{{ 'volume.button.create' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -332,7 +333,7 @@
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
               </button>
               <nz-modal [(nzVisible)]="isVisibleCreate" nzTabScrollList="true"
-                        (nzOnCancel)="handleCancelCreate()" nzCentered>
+                        (nzOnCancel)="handleCancelCreate()">
                 <div *nzModalTitle>
                   <span class="text-modal-header">{{ 'volume.modal.confirm.title.create'|i18n }}</span>
                 </div>

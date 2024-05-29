@@ -12,7 +12,7 @@ import {
 } from "../models/user-group.model";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
 import {User} from "../models/user.model";
-import {PolicyModel} from "../../../../../../libs/common-utils/src/lib/models/policy.model";
+import {PolicyModel} from "../models/policy.model";
 import {Observable, throwError} from "rxjs";
 import {catchError} from "rxjs/operators";
 

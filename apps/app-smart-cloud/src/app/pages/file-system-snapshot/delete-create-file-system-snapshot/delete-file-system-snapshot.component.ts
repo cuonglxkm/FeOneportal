@@ -52,6 +52,7 @@ export class DeleteFileSystemSnapshotComponent{
   handleCancel(){
     this.isVisible = false
     this.isLoading =  false
+    this.validateForm.reset()
   }
 
   handleOk() {
@@ -59,6 +60,7 @@ export class DeleteFileSystemSnapshotComponent{
     let formDelete = new FormDeleteFileSystemSnapshot()
     formDelete.id = this.filesystemsnapshotId
     formDelete.customerId = this.tokenService.get()?.userId;
+    formDelete.regionId = this.region
     console.log(formDelete);
     
     if(this.validateForm.valid) {
@@ -68,6 +70,7 @@ export class DeleteFileSystemSnapshotComponent{
             this.isVisible = false
             this.isLoading =  false
             this.notification.success(this.i18n.fanyi('app.status.success'), 'Xoá FileSystem Snapshot thành công')
+            this.validateForm.reset()
             this.onOk.emit(data)
           }
         }, error => {

@@ -21,6 +21,11 @@
 @button-border-medium-radius: 8px;
 
 @breadcrumb-active: #035ded;
+
+@border-vpn-connection: #989BB3;
+
+@border-color-price: #b2deff;
+
 // HEADER
 .alain-default__header-logo-expanded {
   max-width: 90%;
@@ -210,13 +215,13 @@ u {
 
 //Input
 .ant-input {
-  border-radius: 8px;
+  //border-radius: 8px;
   font-size: 16px;
 }
 .ant-select-show-search.ant-select:not(.ant-select-customize-input)
   .ant-select-selector {
   cursor: text;
-  border-radius: 8px;
+  //border-radius: 8px;
   height: 40px;
   font-size: 16px;
 }
@@ -230,6 +235,7 @@ u {
 }
 
 // END INPUT
+
 
 //SELECT
 
@@ -276,6 +282,11 @@ project-select-dropdown nz-select-item.ant-select-selection-item {
   border-radius: 8px;
 }
 
+.card-price{
+  border-color: @border-color-price;
+  border-radius: 8px;
+}
+
 //END CARD
 
 // BUTTON
@@ -313,6 +324,7 @@ project-select-dropdown nz-select-item.ant-select-selection-item {
 
 // END BUTTON
 
+
 // SLIDER
 
 .ant-slider:hover .ant-slider-track {
@@ -332,7 +344,7 @@ project-select-dropdown nz-select-item.ant-select-selection-item {
 }
 
 .ant-input-number {
-  border-radius: 4px;
+  border-radius: 8px;
   margin-left: 8px;
 }
 
@@ -569,3 +581,20 @@ align-items: center;
 .ant-modal-close-x {
   color:#DC3545;
 }
+
+// Tạo phân số
+.fraction {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.numerator {
+  border-bottom: 1px solid #000;
+  padding-bottom: 0.2em;
+}
+
+.denominator {
+  padding-top: 0.2em;
+}
+// END

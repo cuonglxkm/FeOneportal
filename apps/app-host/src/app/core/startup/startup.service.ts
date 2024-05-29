@@ -45,7 +45,7 @@ export class StartupService {
     console.log(defaultLang);
     
     const baseUrl = environment['baseUrl'];
-
+    console.log(baseUrl);
     return zip(
       this.i18n.loadLangData(defaultLang),
       
@@ -78,7 +78,10 @@ export class StartupService {
           this.aclService.setFull(true);
 
           this.menuService.add(appData.menu);
-          this.regionProjectService.getCoreData();
+          console.log(this.menuService.getPathByUrl('/app-smart-cloud/file-system-snapshot/list', false));
+          
+          
+          this.regionProjectService.getCoreData(baseUrl);
           //this.checkPermissionAction(this.menuService['data']);
           
           // if (checkData) {

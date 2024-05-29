@@ -1,0 +1,6 @@
+<nz-breadcrumb nzSeparator=">>">
+  <nz-breadcrumb-item *ngFor="let item of breadcrumbItems">
+    <a *ngIf="item.link; else noLink" [routerLink]="item.link">{{ item.label }}</a>
+    <ng-template #noLink>{{ item.label }}</ng-template>
+  </nz-breadcrumb-item>
+</nz-breadcrumb>
