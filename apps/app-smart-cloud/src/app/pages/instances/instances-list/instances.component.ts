@@ -159,6 +159,18 @@ export class InstancesComponent implements OnInit {
     });
     this.checkExistName();
     this.onCheckIPAddress();
+    this.onChangeSearchParam();
+  }
+
+  dataSubjectSearchParam: Subject<any> = new Subject<any>();
+  changeSearchParam(value: string) {
+    this.dataSubjectSearchParam.next(value);
+  }
+
+  onChangeSearchParam() {
+    this.dataSubjectSearchParam.pipe(debounceTime(500)).subscribe((res) => {
+      this.doSearch();
+    });
   }
 
   onRegionChange(region: RegionModel) {

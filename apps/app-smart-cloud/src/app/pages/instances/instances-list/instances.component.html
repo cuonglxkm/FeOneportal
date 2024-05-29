@@ -64,14 +64,12 @@
           nz-input
           [placeholder]="'app.placeholder.search' | i18n"
           [(ngModel)]="searchParam.name"
+          (ngModelChange)="changeSearchParam($event)"
           (keyup.enter)="doSearch()"
         />
       </nz-input-group>
       <ng-template #prefixIconSearch>
-        <img
-          src="assets/imgs/search.svg"
-          alt=""
-        />
+        <img src="assets/imgs/search.svg" alt="" />
       </ng-template>
     </div>
     <div
