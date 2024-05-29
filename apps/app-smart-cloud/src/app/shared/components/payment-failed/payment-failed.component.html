@@ -1,10 +1,13 @@
 <page-header [breadcrumb]="breadcrumb" [title]="false">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item> Home </nz-breadcrumb-item>
       <nz-breadcrumb-item> Billing </nz-breadcrumb-item>
       <nz-breadcrumb-item> Thanh toán </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
 </page-header>
 

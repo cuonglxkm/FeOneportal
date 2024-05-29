@@ -1351,7 +1351,7 @@
             nzDescription="{{'project.note46' | i18n}}" nzShowIcon></nz-alert>
         </nz-card>
       </div> -->
-      <nz-card *ngIf="vpcType == '1'">
+      <!-- <nz-card *ngIf="vpcType == '1'">
         <nz-row style="margin-top: 20px;margin-bottom: 10px;" nzGutter="16">
           <nz-col nzLg="24" nzMd="12" nzSm="24">
             <nz-form-item style="margin-bottom: 5px">
@@ -1373,8 +1373,13 @@
         </nz-row>
         <div class="text-custom-time" style="color: red;">
           {{ "volume.table.title.expire.date" | i18n }}: {{ expiredDate | date : 'dd/MM/yyyy' }}
-        </div>
-      </nz-card>
+        </div>       
+      </nz-card> -->
+      <div *ngIf="vpcType == '1'">
+        <one-portal-service-usage-period
+        [nameService]="'project'"  (valueChanged)="onChangeTime($event)" ></one-portal-service-usage-period>
+      </div>
+      
     </nz-col>
 
     <!---------------CARD-THÀNH TIỀN-------------->
@@ -1456,8 +1461,7 @@
               style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <nz-row style="margin-bottom: 10px" nzGutter="16">
               <nz-col nzSpan="16">
-                <span class="text-value">{{ 'app.service.cost' | i18n }} {{ this.form.controls['numOfMonth'].value || 0
-                  }}
+                <span class="text-value">{{ 'app.service.cost' | i18n }} {{ numOfMonth || 0 }}
                   {{ 'app.month' | i18n }}</span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">

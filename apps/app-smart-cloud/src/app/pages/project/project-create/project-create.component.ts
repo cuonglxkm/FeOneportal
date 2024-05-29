@@ -95,7 +95,7 @@ export class ProjectCreateComponent implements OnInit {
 
   trashVpnGpu = false;
   activeVpnGpu = false
-
+  numOfMonth:number;
   total: any;
   totalAmount = 0;
   totalPayment = 0;
@@ -268,7 +268,7 @@ export class ProjectCreateComponent implements OnInit {
               this.total = data;
               this.totalAmount = this.total.data.totalAmount.amount
               this.totalPayment = this.total.data.totalPayment.amount;
-              this.totalVAT = this.totalPayment - this.totalAmount 
+              this.totalVAT = this.total.data.totalVAT.amount;
               this.getPriceEachComponent(data.data);
             }
           );
@@ -416,7 +416,9 @@ export class ProjectCreateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/project']);
   }
 
-  onChangeTime() {
+  onChangeTime(res?:any) {    
+    console.log("res",res)
+    this.numOfMonth = res ;
     const dateNow = new Date();
     dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
     this.expiredDate = dateNow;

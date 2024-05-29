@@ -5,32 +5,35 @@ import { finalize } from 'rxjs/operators';
 import { data } from 'vis-network';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'one-portal-detach-ip-floating-lb',
   templateUrl: './detach-ip-floating-lb.component.html',
-  styleUrls: ['./detach-ip-floating-lb.component.less'],
+  styleUrls: ['./detach-ip-floating-lb.component.less']
 })
-export class DetachIpFloatingLbComponent implements AfterViewInit{
-  @Input() region: number
-  @Input() project: number
-  @Input() idLb: number
-  @Input() ipId: number
-  @Input() vipPortIp: string
-  @Input() IsFloatingIP: boolean
-  @Input() ipFloatingAddress: string
-  @Output() onOk = new EventEmitter()
-  @Output() onCancel = new EventEmitter()
+export class DetachIpFloatingLbComponent implements AfterViewInit {
+  @Input() region: number;
+  @Input() project: number;
+  @Input() idLb: number;
+  @Input() ipId: number;
+  @Input() vipPortIp: string;
+  @Input() IsFloatingIP: boolean;
+  @Input() ipFloatingAddress: string;
+  @Output() onOk = new EventEmitter();
+  @Output() onCancel = new EventEmitter();
 
-  isVisible: boolean = false
-  isLoading: boolean = false
-  isInput: boolean = false
-  value: string
+  isVisible: boolean = false;
+  isLoading: boolean = false;
+  isInput: boolean = false;
+  value: string;
 
   @ViewChild('ipFloatingAddressInput') ipFloatingAddressInput!: ElementRef<HTMLInputElement>;
   disableDelete = true;
+
   constructor(private loadBalancerService: LoadBalancerService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private router: Router,
               private notification: NzNotificationService) {
   }
 
@@ -52,27 +55,31 @@ export class DetachIpFloatingLbComponent implements AfterViewInit{
   }
 
   showModal() {
-    this.isVisible = true
-    setTimeout(() => {this.ipFloatingAddressInput?.nativeElement.focus()}, 1000)
+    this.isVisible = true;
+    setTimeout(() => {
+      this.ipFloatingAddressInput?.nativeElement.focus();
+    }, 1000);
   }
 
   handleCancel() {
-    this.isVisible = false
-    this.isLoading = false
-    this.onCancel.emit()
+    this.isVisible = false;
+    this.isLoading = false;
+    this.onCancel.emit();
   }
 
   handleOk() {
-    this.isLoading = true
+    this.isLoading = true;
     this.loadBalancerService.attachOrDetachIpFloating(this.ipId, this.idLb, this.region, this.project, null).pipe(finalize(() => {
       this.isLoading = false;
       this.isVisible = false;
       this.onCancel.emit();
-    })).subscribe(
+    }))
+      .pipe(finalize(()=> {this.onOk.emit();}))
+      .subscribe(
       data => {
-        this.notification.success(this.i18n.fanyi('app.status.success'), 'detach success')
+        this.notification.success(this.i18n.fanyi('app.status.success'), 'detach success');
       }, error => {
-        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
       }
     );
   }

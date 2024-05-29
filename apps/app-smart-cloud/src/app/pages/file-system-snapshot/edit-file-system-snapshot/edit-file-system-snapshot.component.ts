@@ -64,7 +64,6 @@ export class EditFileSystemSnapshotComponent {
 
   handleCancel(): void {
     this.isVisible = false;
-    this.validateForm.reset();
     this.onCancel.emit();
   }
 
@@ -113,5 +112,6 @@ export class EditFileSystemSnapshotComponent {
   ngOnInit(): void {
     this.validateForm.controls.name.setValue(this.data.name);
     this.validateForm.controls.description.setValue(this.data.description);
+    
   }
 }
