@@ -44,8 +44,8 @@
                  nz-input
                  placeholder="Tìm kiếm Access To"
                  [(ngModel)]="value"
-                 (input)="changeInputChange($event.target['value'])"
-                 (keydown.enter)="changeInputChange($event.target['value'])" />
+                 (input)="changeInputChange($event)"
+                 (keydown.enter)="onEnter($event)"/>
         </nz-input-group>
         <ng-template #prefixIconSearch>
           <img src="assets/imgs/search.svg" alt="" />
