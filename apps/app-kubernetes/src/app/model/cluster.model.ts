@@ -299,6 +299,19 @@ export class OrderItem {
   serviceDuration: number;
 }
 
+export class OrderPayment {
+  orderItems: OrderItemPayment[];
+  projectId: number;
+}
+
+export class OrderItemPayment {
+  orderItemQuantity: number;
+  specificationString: string;
+  specificationType: string;
+  serviceDuration: number;
+  sortItem: number;
+}
+
 export class ProgressData {
 
   namespace: string;

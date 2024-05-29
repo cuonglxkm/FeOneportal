@@ -549,7 +549,14 @@
             </div>
 
             <div nz-col [nzSpan]="12">
-              <div class="price-style price-color mr-3">{{(workerPrice ? workerPrice: 0) | number: '1.0-0'}} VND</div>
+              <div class="price-style price-color mr-3">
+                <ng-container *ngIf="isCalculating; else workerPriceTpl">
+                  <span nz-icon [nzType]="'loading'"></span>
+                </ng-container>
+                <ng-template #workerPriceTpl>
+                  {{(workerPrice ? workerPrice: 0) | number: '1.0-0'}} VND
+                </ng-template>
+              </div>
               <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
             </div>
           </div>
@@ -562,7 +569,14 @@
             </div>
 
             <div nz-col [nzSpan]="12">
-              <div class="price-style price-color mr-3">{{(vatCost ? vatCost: 0) | number: '1.0-0'}} VND</div>
+              <div class="price-style price-color mr-3">
+                <ng-container *ngIf="isCalculating; else vatPriceTpl">
+                  <span nz-icon [nzType]="'loading'"></span>
+                </ng-container>
+                <ng-template #vatPriceTpl>
+                  {{(vatCost ? vatCost: 0) | number: '1.0-0'}} VND
+                </ng-template>
+              </div>
               <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
             </div>
           </div>
@@ -584,7 +598,7 @@
               </div>
             </ng-container>
             <ng-template #customPackSummaryTpl>
-              <div nz-row [nzGutter]="8">
+              <div *ngIf="listFormWorkerGroup?.length > 0" nz-row [nzGutter]="8">
                 <div nz-col [nzSpan]="12">
                   <div class="ml-3 mb-3"><label class="weight-600">{{ 'app.cluster.wg-info' | i18n }}</label></div>
                 </div>
@@ -629,7 +643,14 @@
               <div class="mt-1 ml-3 mb-3 unit-color"><i>({{ 'app.cluster.vat-cost-1' | i18n : {vat: '10'} }})</i></div>
             </div>
             <div nz-col [nzSpan]="12">
-              <div class="price-style total-color mt-3 mr-3">{{(totalPrice? totalPrice: 0) | number: '1.0-0'}} VND</div>
+              <div class="price-style total-color mt-3 mr-3">
+                <ng-container *ngIf="isCalculating; else totalPriceTpl">
+                  <span nz-icon [nzType]="'loading'"></span>
+                </ng-container>
+                <ng-template #totalPriceTpl>
+                  {{(totalPrice? totalPrice: 0) | number: '1.0-0'}} VND
+                </ng-template>
+              </div>
               <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
             </div>
           </div>
@@ -645,7 +666,7 @@
 
             <div nz-col [nzSpan]="12">
               <button nz-button nzType="primary" nzBlock class="border-button" (click)="validateClusterInfo()"
-                [disabled]="myform.invalid || isSubmitting || (isUsingPackConfig && !chooseItem)">
+                [disabled]="myform.invalid || isSubmitting || (isUsingPackConfig && !chooseItem) || isCalculating">
                 <ng-container *ngIf="isSubmitting; else paymentIconTpl">
                   <span nz-icon [nzType]="'loading'"></span>
                 </ng-container>
