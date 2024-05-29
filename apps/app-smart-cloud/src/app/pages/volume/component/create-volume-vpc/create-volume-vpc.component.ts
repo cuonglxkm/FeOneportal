@@ -20,6 +20,7 @@ import {
 } from '../../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
+import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -112,7 +113,8 @@ export class CreateVolumeVpcComponent implements OnInit {
     private catalogService: CatalogService,
     private notification: NzNotificationService,
     private projectService: ProjectService,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private configurationsService: ConfigurationsService
   ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
@@ -291,7 +293,19 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   sizeInCloudProject: SizeInCloudProject = new SizeInCloudProject();
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueString: string;
+
+  getConfiguration() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueString = data.valueString;
+      this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
+      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+    })
+  }
   ngOnInit() {
+    this.getConfiguration();
     if (this.selectedValueHDD) {
       this.iops = 300;
     }
