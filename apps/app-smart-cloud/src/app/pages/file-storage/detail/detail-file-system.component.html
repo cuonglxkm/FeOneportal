@@ -168,46 +168,7 @@
           </nz-form-control>
         </nz-form-item>
         <div *ngIf="typeVpc == 0">
-          <nz-form-item>
-            <nz-form-label nzFor="time">
-              <div class="label">
-                <span>{{ 'app.service.used' | i18n }} (<span class="text-red">*</span
-                >) - {{'app.Month'|i18n}}</span>
-                <img nz-popover
-                     [nzPopoverContent]="'app.tooltip.time' | i18n : { name: 'File System' }"
-                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                     src="assets/imgs/pajamas_question.svg" alt="" />
-              </div>
-            </nz-form-label>
-            <nz-row style="height: 50px;">
-              <nz-col nzSpan="12">
-                <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-                  <input nz-input class="input-custom"
-                         [value]="getMonthDifference(fileSystem?.expireDate, fileSystem?.createdDate)  + ' tháng'"
-                         [disabled]="true" />
-                  <ng-template #dateErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min')">{{ 'app.more.0.less.100' | i18n }}</ng-container>
-                  </ng-template>
-                </nz-form-control>
-              </nz-col>
-              <nz-col style="margin-left: 25px;">
-                <nz-form-item>
-                  <nz-form-label nzFor="now">
-                    <div class="label">
-                      <span>{{ 'app.service.creation-date' | i18n }}: </span>
-                      <span>{{ fileSystem?.createdDate | date: 'dd/MM/yyyy' }}</span>
-                    </div>
-                  </nz-form-label>
-                </nz-form-item>
-              </nz-col>
-            </nz-row>
-            <nz-form-label>
-              <div class="label">
-                <span style="color: #E41818;">{{ 'app.service.expiration-date' | i18n }}: </span>
-                <span style="color: #E41818;">{{ fileSystem?.expireDate | date: 'dd/MM/yyyy' }}</span>
-              </div>
-            </nz-form-label>
-          </nz-form-item>
+          <one-portal-time-used-resize [expireDate]="fileSystem?.expireDate" [createDate]="fileSystem?.createdDate"/>
         </div>
       </form>
     </nz-card>

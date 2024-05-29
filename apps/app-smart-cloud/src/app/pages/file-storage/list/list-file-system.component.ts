@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   BaseResponse,
@@ -15,14 +15,14 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'one-portal-list-file-system',
   templateUrl: './list-file-system.component.html',
   styleUrls: ['./list-file-system.component.less']
 })
-export class ListFileSystemComponent implements OnInit {
+export class ListFileSystemComponent implements OnInit, OnDestroy {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -44,6 +44,8 @@ export class ListFileSystemComponent implements OnInit {
   projectInfo: SizeInCloudProject = new SizeInCloudProject();
 
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
 
   constructor(
     private router: Router,
@@ -56,16 +58,35 @@ export class ListFileSystemComponent implements OnInit {
     private notificationService: NotificationService) {
   }
 
-  changeInputChange(value) {
-    this.dataSubjectInputSearch.next(value)
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  changeInputChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.enterPressed = false;
+    this.dataSubjectInputSearch.next(value);
   }
 
   onChangeInputChange() {
-    this.dataSubjectInputSearch.pipe(debounceTime(500)).subscribe((res) => {
-      this.value = res.trim()
-      this.getListFileSystem(false)
-    })
+    this.searchSubscription = this.dataSubjectInputSearch.pipe(
+      debounceTime(700)
+    ).subscribe(res => {
+      if (!this.enterPressed) {
+        this.value = res.trim();
+        this.getListFileSystem(false);
+      }
+    });
+  }
 
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value.trim();
+    this.getListFileSystem(false);
   }
 
   regionChanged(region: RegionModel) {
@@ -180,11 +201,15 @@ export class ListFileSystemComponent implements OnInit {
   }
 
   handleOkEdit() {
-    setTimeout(() => {this.getListFileSystem(false);}, 1500)
+    setTimeout(() => {
+      this.getListFileSystem(false);
+    }, 1500);
   }
 
   handleOkDelete() {
-    setTimeout(() => {this.getListFileSystem(true);}, 1500)
+    setTimeout(() => {
+      this.getListFileSystem(true);
+    }, 1500);
   }
 
   getProject() {
@@ -209,30 +234,6 @@ export class ListFileSystemComponent implements OnInit {
     this.fileSystemService.model.subscribe((data) => {
       console.log(data);
     });
-    this.onChangeInputChange()
-    // if (!this.region && !this.project) {
-    //   this.router.navigate(['/exception/500']);
-    // }
-    //
-    // if (this.notificationService.connection == undefined) {
-    //   this.notificationService.initiateSignalrConnection();
-    // }
-    //
-    // this.notificationService.connection.on('UpdateVolume', (data) => {
-    //   if (data) {
-    //     let volumeId = data.serviceId;
-    //
-    //     var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
-    //     if (foundIndex > -1) {
-    //       var record = this.response.records[foundIndex];
-    //
-    //       record.status = data.status;
-    //       record.taskState = data.serviceStatus;
-    //
-    //       this.response.records[foundIndex] = record;
-    //       this.cdr.detectChanges();
-    //     }
-    //   }
-    // });
+    this.onChangeInputChange();
   }
 }

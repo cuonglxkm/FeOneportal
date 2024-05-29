@@ -62,18 +62,6 @@ export class DetailFileSystemComponent implements OnInit {
     });
   }
 
-  getMonthDifference(expiredDateStr: string, createdDateStr: string): number {
-    // Chuyển đổi chuỗi thành đối tượng Date
-    const expiredDate = new Date(expiredDateStr);
-    const createdDate = new Date(createdDateStr);
-
-    // Tính số tháng giữa hai ngày
-    const oneDay = 24 * 60 * 60 * 1000; // Số mili giây trong một ngày
-    const diffDays = Math.round(Math.abs((expiredDate.getTime() - createdDate.getTime()) / oneDay)); // Số ngày chênh lệch
-    const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
-    return diffMonths;
-  }
-
   copyText(data) {
     this.clipboardService.copyFromContent(data);
   }
