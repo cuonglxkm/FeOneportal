@@ -108,15 +108,34 @@
                   </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
-                  <nz-form-label>
-                    <div>
-                      <div>
-                        <span>{{ 'app.file.system.capacity' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
-                      </div>
-                      <span>{{ quotaShareInGb }} (GB)</span>
-                    </div>
-
-                  </nz-form-label>
+                  <nz-row>
+                    <nz-col nzSpan="14">
+                      <span class="text-label">{{'app.file.system.total.size'|i18n}}:</span>
+                      <img nz-popover
+                           [nzPopoverContent]="'app.file.system.capacity.vpc' | i18n"
+                           nzPopoverPlacement="bottom" style="margin-left: 6px; margin-bottom: 3px;"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
+                    </nz-col>
+                    <nz-col nzSpan="10">
+                      <span class="text-label">{{ quotaShareInGb }} (GB)</span>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row>
+                    <nz-col nzSpan="14">
+                      <span class="text-label">{{'app.backup.package.storage.used'|i18n}}:</span>
+                    </nz-col>
+                    <nz-col nzSpan="10">
+                      <span class="text-label">{{ storageUsed }} (GB)</span>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row>
+                    <nz-col nzSpan="14">
+                      <span class="text-label">{{'Dung lượng còn lại'|i18n}}:</span>
+                    </nz-col>
+                    <nz-col nzSpan="10">
+                      <span class="text-label">{{ storageRemaining }} (GB)</span>
+                    </nz-col>
+                  </nz-row>
                 </nz-form-item>
               </nz-col>
             </nz-row>

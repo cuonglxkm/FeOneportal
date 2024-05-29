@@ -16,6 +16,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   idFileSystem: number;
 
   storage: number;
-  isLoading: boolean = false;
+  isLoading: boolean = true;
   fileSystem: FileSystemDetail = new FileSystemDetail();
 
   isInitSnapshot: boolean = false;
@@ -53,6 +54,10 @@ export class ExtendFileSystemNormalComponent implements OnInit {
 
   extendFileSystem: ExtendFileSystem = new ExtendFileSystem();
 
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueStringConfiguration: string = '';
+
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -60,7 +65,8 @@ export class ExtendFileSystemNormalComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private projectService: ProjectService,
-              private instanceService: InstancesService) {
+              private instanceService: InstancesService,
+              private configurationsService: ConfigurationsService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -167,6 +173,15 @@ export class ExtendFileSystemNormalComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
   }
 
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+    })
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -175,5 +190,6 @@ export class ExtendFileSystemNormalComponent implements OnInit {
     this.idFileSystem = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
     this.getFileSystemById(this.idFileSystem);
     this.onChangeTime()
+    this.getConfigurations();
   }
 }
