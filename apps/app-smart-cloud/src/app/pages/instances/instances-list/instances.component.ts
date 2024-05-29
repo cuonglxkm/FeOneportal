@@ -27,7 +27,7 @@ import {
   RegionModel,
 } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject, debounceTime, from } from 'rxjs';
+import { Subject, debounceTime, Subscription } from 'rxjs';
 import {
   FormSearchNetwork,
   NetWorkModel,
@@ -159,6 +159,37 @@ export class InstancesComponent implements OnInit {
     });
     this.checkExistName();
     this.onCheckIPAddress();
+    this.onChangeSearchParam();
+  }
+
+  dataSubjectSearchParam: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
+  changeSearchParam(value: string) {
+    this.enterPressed = false;
+    this.dataSubjectSearchParam.next(value);
+  }
+
+  onChangeSearchParam() {
+    this.searchSubscription = this.dataSubjectSearchParam
+      .pipe(debounceTime(700))
+      .subscribe((res) => {
+        if (!this.enterPressed) {
+          this.doSearch();
+        }
+      });
+  }
+
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    this.doSearch();
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   onRegionChange(region: RegionModel) {
@@ -188,7 +219,7 @@ export class InstancesComponent implements OnInit {
           this.pageSize,
           this.region,
           this.projectId,
-          this.searchParam.name,
+          this.searchParam.name.trim(),
           this.searchParam.status,
           true,
           this.tokenService.get()?.userId
