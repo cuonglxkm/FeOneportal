@@ -102,10 +102,14 @@ export class EditFileSystemSnapshotComponent {
           },
           (error) => {
             this.isLoading = false;
-            this.notification.error(
-              'Thất bại',
-              'Cập nhật File System Snapshot thất bại'
-            );
+            if(error && error.error && error.error.detail && error.error.detail == "Tên File System Snapshot đã được sử dụng. Vui lòng nhập tên khác!"){
+              this.notification.error('Thất bại', error.error.detail);
+            } else {
+              this.notification.error(
+                'Thất bại',
+                'Cập nhật File System Snapshot thất bại'
+              );
+            }
           }
         );
     }
