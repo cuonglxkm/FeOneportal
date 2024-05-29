@@ -443,7 +443,7 @@
   "app.list.vlan": "VLAN list",
   "app.list.subnet": "Subnet list",
   "app.list.ip.of.vlan": "The list of IPs on the VLAN",
-  "app.input.name.snapshot": "Enter name File System",
+  "app.input.name.snapshot": "Enter name File System Snapshot",
 
   "app.alert.password": "Password setting rules: The length of an online-used password must be at least 12 characters, utilizing a combination of digits, uppercase letters, lowercase letters, and special symbols.",
   "app.alert.security.group": "To set up access mechanisms to the instance, you need to configure the Security Group in the",
@@ -600,6 +600,7 @@
   "app.button.bucket.create": "Create new Bucket",
   "app.button.bucket.create.success": "Create Bucket successfully",
   "app.button.bucket.create.fail": "Create Bucket failed",
+  "app.bucket.create.exist": "Bucket name is already existed",
   "app.config.bucket": "Configure Bucket",
   "app.config.access.bucket": "Configure Access Permissions for Bucket",
   "app.config.access.bucket.private": "Limit access to only users with AccessKey and SecretKey.",
@@ -1057,6 +1058,7 @@
   "app.file.system.snapshot.schedule.info": "File System Snapshot scheduling information",
   "app.file.system.snapshot.schedule.list": "File System Snapshot schedule list",
   "app.file.system.snapshot.schedule.manage": "Manage File System Snapshot schedule",
+  "app.file.system.snapshot.create.size.fail": "The capacity is not enough to create File System Snapshot. Please add capacity so the process is not interrupted!",
   "app.to.file.system": "Apply to File System",
 
   "app.tooltip.file.system.snapshot.schedule.name": "The name of the Snapshot schedule you want to create, consisting of lowercase letters (a-z), uppercase letters (A-Z), numbers (0-9), hyphens (-), and underscores (_), with possible spaces, containing at least 1 character and up to 255 characters",
