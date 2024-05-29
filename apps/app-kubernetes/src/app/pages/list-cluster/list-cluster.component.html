@@ -89,7 +89,19 @@
           <tr *ngFor="let item of clusterTable.data; let i = index;">
             <td class="right-align">{{ getIndexOfCluster(item.id) }}</td>
             <td>
-              <a routerLink={{item.serviceOrderCode}}>{{ item.clusterName }}</a>
+              <a routerLink={{item.serviceOrderCode}}>
+                <ng-container *ngIf="item.clusterName?.length <= 30; else truncateNameTpl">
+                  {{ item.clusterName }}
+                </ng-container>
+                <ng-template #truncateNameTpl>
+                  <span nz-popover nzPopoverPlacement="bottomLeft" [nzPopoverContent]="clusterNameTpl">
+                    {{ item.clusterName | truncateLabel }}
+                  </span>
+                  <ng-template #clusterNameTpl>
+                    {{ item.clusterName }}
+                  </ng-template>
+                </ng-template>
+              </a>
             </td>
             <td>{{ item.currentVersion }}</td>
             <td>
@@ -105,7 +117,10 @@
                 <ng-template #ortherStatusTpl>
                   <div class="flex-style">
                     <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"
-                      [nzStatus]="item.serviceStatus == 11 ? 'exception' : ''"></nz-progress>
+                      [nzStatus]="item.serviceStatus == 11 || item.serviceStatus == 3 ? 'exception' : ''"></nz-progress>
+                    <!-- <nz-progress [nzPercent]="item.clusterName | progressCluster : item.namespace : mapProgress" nzSize="small"
+                      nzType="circle" [nzWidth]="24" class="mr-2 pb-1"
+                      [nzStatus]="item.serviceStatus == 11 || item.serviceStatus == 3 ? 'exception' : ''"></nz-progress> -->
                     <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{ status.status | i18n }}</span>
                   </div>
                 </ng-template>
@@ -116,19 +131,30 @@
             <td class="right-align">{{ item.totalNode ? item.totalNode : 0 }}</td>
             <td>{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
             <td>
-              <img src="assets/imgs/edit-kafka.svg" class="icon-action" (click)="onDestroy()"
-                [nz-tooltip]="'app.text.edit' | i18n" routerLink="edit/{{item.serviceOrderCode}}" />
-              <img src="assets/imgs/upgrade.svg" alt="" class="icon-action"
-                [nz-tooltip]="'app.text.upgrade' | i18n" routerLink="upgrade/{{item.serviceOrderCode}}" />
-              <img src="assets/imgs/download-file.svg" class="icon-action"
-                [nz-tooltip]="'app.cluster.download-config' | i18n" (click)="handleDownloadKubeConfig(item)" />
-              <img src="assets/imgs/calendar-tick.svg" class="icon-action"
-                [nz-tooltip]="'app.extend' |  i18n" routerLink="extension/{{item.serviceOrderCode}}" />
+              <button nz-button nzType="text" [nzTooltipTitle]="'app.text.edit' | i18n" nzTooltipPlacement="top" nz-tooltip (click)="onDestroy()"
+                class="borderless marleft-0 action-btn" [disabled]="item.serviceStatus == 3"  routerLink="edit/{{item.serviceOrderCode}}">
+                <img src="assets/imgs/edit-kafka.svg" class="icon-action" />
+              </button>
+
+              <button nz-button nzType="text" [nzTooltipTitle]="'app.text.upgrade' | i18n" nzTooltipPlacement="top" nz-tooltip (click)="onDestroy()"
+                class="borderless marleft-0 action-btn" [disabled]="item.serviceStatus == 3" routerLink="upgrade/{{item.serviceOrderCode}}">
+                <img src="assets/imgs/upgrade.svg" class="icon-action" />
+              </button>
+
+              <button nz-button nzType="text" [nzTooltipTitle]="'app.extend' | i18n" nzTooltipPlacement="top" nz-tooltip (click)="onDestroy()"
+                class="borderless marleft-0 action-btn" routerLink="extension/{{item.serviceOrderCode}}">
+                <img src="assets/imgs/calendar-tick.svg" class="icon-action" />
+              </button>
+
+              <button nz-button nzType="text" [nzTooltipTitle]="'app.cluster.download-config' | i18n" nzTooltipPlacement="top" nz-tooltip
+                class="borderless marleft-0 action-btn" [disabled]="item.serviceStatus == 3">
+                <img src="assets/imgs/download-file.svg" class="icon-action" (click)="handleDownloadKubeConfig(item)" />
+              </button>
 
               <ng-container *ngIf="item.serviceStatus | checkStatus as progressing">
                 <button nz-button nzType="text" [nzTooltipTitle]="'app.cluster.delete-cluster' | i18n" nzTooltipPlacement="top" nz-tooltip
                   (click)="showModalConfirmDeleteCluster(item)" class="borderless marleft-0 action-btn" [disabled]="progressing == 2">
-                  <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer; width: fit-content;" />
+                  <img src="assets/imgs/trash1.svg" alt="" class="icon-action" />
                 </button>
               </ng-container>
             </td>

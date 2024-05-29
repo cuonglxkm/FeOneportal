@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { finalize } from 'rxjs';
-import SecurityGroupRule, { SecurityGroupData } from '../../../model/security-group.model';
+import SecurityGroupRule, { SecurityGroup, SecurityGroupData } from '../../../model/security-group.model';
 import { SecurityGroupService } from '../../../services/security-group.service';
 import { ShareService } from '../../../services/share.service';
 import Pagination from '../../../shared/models/pagination';
@@ -28,6 +28,7 @@ export class InboundComponent implements OnInit {
   regionId: number;
   projectId: number;
   securityGroupId: string;
+  listOfSG: SecurityGroup[];
 
   readonly LOCK_RULE = KubernetesConstant.LOCK_RULE;
 
@@ -38,6 +39,7 @@ export class InboundComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.listOfSG = [];
     this.listOfInbound = [];
     this.isLoadingInbound = false;
     this.total = 0;
@@ -48,6 +50,7 @@ export class InboundComponent implements OnInit {
       this.projectId = sgData.projectId;
       this.regionId = sgData.regionId;
       this.securityGroupId = sgData.securityGroupId;
+      this.listOfSG = sgData.listOfSG;
 
       this.getRuleInbound();
     });
@@ -82,7 +85,17 @@ export class InboundComponent implements OnInit {
     this.sgService.searchRule(this.condition)
       .pipe(finalize(() => this.isLoadingInbound = false))
       .subscribe({next: (data: any) => {
-        this.listOfInbound = data.records;
+        let tmp: SecurityGroupRule[] = data.records;
+
+        // map remoteGroupId => name
+        this.listOfInbound = tmp.map((rule: SecurityGroupRule) => {
+          const sg = this.listOfSG.find(sg => sg.id == rule.remoteGroupId);
+          return {
+            remoteGroupName: sg?.name,
+            ...rule
+          }
+        });
+
         this.total = data.totalCount;
       }, error: (err) => {
         this.listOfInbound = [];

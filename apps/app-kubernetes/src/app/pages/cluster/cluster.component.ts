@@ -20,8 +20,9 @@ import { ShareService } from '../../services/share.service';
 import { VlanService } from '../../services/vlan.service';
 import { ProjectModel } from '../../shared/models/project.model';
 import { RegionModel } from '../../shared/models/region.model';
-import { User } from '../../shared/models/user.model';
 import { UserInfo } from '../../model/user.model';
+import { I18NService } from '../../core/i18n/i18n.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -86,7 +87,8 @@ export class ClusterComponent implements OnInit {
     private router: Router,
     private shareService: ShareService,
     private cdr: ChangeDetectorRef,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.listOfK8sVersion = [];
     this.listOfSubnets = [];
@@ -130,7 +132,8 @@ export class ClusterComponent implements OnInit {
       // volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
       // volumeCloudType: ['hdd', [Validators.required]],
       usageTime: [1, [Validators.required, Validators.min(1), Validators.max(100)]],
-      expireDate: [null, [Validators.required]]
+      expireDate: [null, [Validators.required]],
+      createDate: [null, [Validators.required]]
     });
 
     // display expiry time
@@ -190,7 +193,7 @@ export class ClusterComponent implements OnInit {
           const latestVersion: K8sVersionModel = this.listOfK8sVersion?.[0];
           this.myform.get('kubernetesVersion').setValue(latestVersion?.k8sVersion);
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -202,7 +205,7 @@ export class ClusterComponent implements OnInit {
         if (r && r.code == 200) {
           this.listOfWorkerType = r.data;
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       })
   }
@@ -221,7 +224,7 @@ export class ClusterComponent implements OnInit {
             this.defaultVolumeTypeName = vlt.volumeTypeName;
           }
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -295,7 +298,7 @@ export class ClusterComponent implements OnInit {
         this.myCarousel.pointNumbers = Array.from({length: this.listOfServicePack.length}, (_, i) => i + 1);
 
       } else {
-        this.notificationService.error("Thất bại", r.message);
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }
@@ -307,7 +310,7 @@ export class ClusterComponent implements OnInit {
         this.listOfPriceItem = r.data;
         this.initPrice();
       } else {
-        this.notificationService.error("Thất bại", r.message);
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }
@@ -496,6 +499,7 @@ export class ClusterComponent implements OnInit {
   onSelectUsageTime(event: any) {
     if (event) {
       let d = new Date();
+      this.myform.get('createDate').setValue(d.toISOString().substring(0,19));
       d.setDate(d.getDate() + Number(event) * 30);
       this.expiryDate = d.getTime();
       this.myform.get('expireDate').setValue(new Date(this.expiryDate).toISOString().substring(0, 19));
@@ -530,6 +534,7 @@ export class ClusterComponent implements OnInit {
   onSelectCustomPackTab() {
     this.chooseItem = null;
     this.isChangeInfo = true;
+    this.offerId = 0;
     this.isUsingPackConfig = false;
     this.clearFormWorker();
     this.addWorkerGroup();
@@ -847,7 +852,7 @@ export class ClusterComponent implements OnInit {
         this.onSubmitOrder(cluster);
       } else {
         this.isSubmitting = false;
-        this.notificationService.error("Thất bại", r.message);
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         this.cdr.detectChanges();
       }
     });
@@ -891,12 +896,12 @@ export class ClusterComponent implements OnInit {
     .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
-        this.notificationService.success('Thành công', r.message);
+        this.notificationService.success(this.i18n.fanyi('app.status.success'), r.message);
 
         this.router.navigate(['/app-kubernetes']);
 
       } else {
-        this.notificationService.error('Thất bại', r.message);
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }

@@ -35,7 +35,6 @@
   </ng-template>
 </page-header>
 <div nz-row [nzGutter]="24">
-
   <div nz-col [nzSpan]="16" style="display: flex">
     <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
       <nz-card style="border-radius: 8px" [nzBordered]="false">
@@ -1269,6 +1268,7 @@
                     <th>{{ 'app.volume.type' | i18n }}</th>
                     <th>{{ 'app.volume.name' | i18n }}</th>
                     <th>{{ 'app.capacity' | i18n }} (GB)</th>
+                    <th>IOPS</th>
                     <th>{{ 'app.encrypt' | i18n }}</th>
                     <th>Multi Attach</th>
                     <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
@@ -1317,9 +1317,18 @@
                         [id]="'capacity_' + data.id"
                         [nzMin]="0"
                         [nzMax]="1000"
-                        [nzStep]="1"
+                        [nzStep]="10"
                         nzSize="large"
                       ></nz-input-number>
+                    </td>
+                    <td>
+                      <span *ngIf="data.type == 'hdd'">300</span>
+                      <span *ngIf="data.type == 'ssd' && data.capacity <= 40"
+                        >400</span
+                      >
+                      <span *ngIf="data.type == 'ssd' && data.capacity > 40">{{
+                        data.capacity * 10
+                      }}</span>
                     </td>
                     <td>
                       <label
@@ -1399,7 +1408,6 @@
                     <th>{{ 'app.ip.range' | i18n }}</th>
                     <th>{{ 'app.amount' | i18n }}</th>
                     <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
@@ -1441,7 +1449,6 @@
                     </td>
                     <td>
                       <button
-                        *ngIf="data.ip != ''"
                         style="border: none"
                         nz-button
                         (click)="deleteRowIPv4(data.id)"
@@ -1481,7 +1488,6 @@
                     <th>{{ 'app.ip.range' | i18n }}</th>
                     <th>{{ 'app.amount' | i18n }}/th></th>
                     <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">

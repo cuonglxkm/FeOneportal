@@ -18,6 +18,8 @@ import { VlanService } from '../../services/vlan.service';
 import { finalize, forkJoin } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { UserInfo } from '../../model/user.model';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-upgrade',
@@ -48,6 +50,8 @@ export class UpgradeComponent implements OnInit {
   isUsingPackConfig: boolean;
   isShowModalCancelUpgrade: boolean;
   isChangeInfo: boolean;
+  isShowModalConfirmUpgrade: boolean;
+  isAgreeArrangement: boolean;
 
   upgradeForm: FormGroup;
   listFormWorker: FormArray;
@@ -77,7 +81,8 @@ export class UpgradeComponent implements OnInit {
     private titleService: Title,
     private fb: FormBuilder,
     private vlanService: VlanService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.listOfServicePack = [];
     this.currentDate = new Date();
@@ -85,6 +90,8 @@ export class UpgradeComponent implements OnInit {
     this.isUsingPackConfig = true;
     this.isShowModalCancelUpgrade = false;
     this.isChangeInfo = false;
+    this.isShowModalConfirmUpgrade = false;
+    this.isAgreeArrangement = false;
     this.selectedTabIndex = 0;
     this.listOfK8sVersion = [];
     this.listOfVolumeType = [];
@@ -217,7 +224,7 @@ export class UpgradeComponent implements OnInit {
         if (r && r.code == 200) {
           this.listOfK8sVersion = r.data;
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -229,7 +236,7 @@ export class UpgradeComponent implements OnInit {
         if (r && r.code == 200) {
           this.listOfWorkerType = r.data;
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       })
   }
@@ -247,7 +254,7 @@ export class UpgradeComponent implements OnInit {
             this.defaultVolumeTypeName = vlt.volumeTypeName;
           }
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -462,7 +469,7 @@ export class UpgradeComponent implements OnInit {
         this.listOfPriceItem = r.data;
         this.initPrice();
       } else {
-        this.notificationService.error("Thất bại", r.message);
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }
@@ -601,12 +608,9 @@ export class UpgradeComponent implements OnInit {
   getRemainDay(): number {
     let tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
+    let expiredDate = new Date(this.detailCluster.expiredDate);
 
-    const createdDate = new Date(this.detailCluster.createdDate);
-    const usageTime = this.detailCluster.usageTime;
-    let expiredDate = createdDate.setMonth(createdDate.getMonth() + usageTime);
-
-    let diffTimes = Math.abs(expiredDate - tomorrow.getTime());
+    let diffTimes = Math.abs(expiredDate.getTime() - tomorrow.getTime());
     let diffDays = Math.floor(diffTimes / (1000 * 60 * 60 * 24));
     return diffDays;
   }
@@ -675,7 +679,7 @@ export class UpgradeComponent implements OnInit {
         let status = r.data;
         if (status == 'upgraded') {
           // only change name, redirect list service
-          this.notificationService.success('Thành công', r.message);
+          this.notificationService.success(this.i18n.fanyi('app.status.success'), r.message);
           this.router.navigate(['/app-kubernetes']);
 
         } else {
@@ -721,7 +725,7 @@ export class UpgradeComponent implements OnInit {
     cluster.currentTotalRam = this.currentTotalRam ? this.currentTotalRam : 0;
     cluster.currentTotalStorage = this.currentTotalStorage ? this.currentTotalStorage : 0;
 
-    cluster.newVcpu = this.newTotalRam ? this.newTotalRam : 0;
+    cluster.newVcpu = this.newTotalCpu ? this.newTotalCpu : 0;
     cluster.newTotalRam = this.newTotalRam ? this.newTotalRam : 0;
     cluster.newTotalStorage = this.newTotalStorage ? this.newTotalStorage : 0;
 
@@ -757,8 +761,14 @@ export class UpgradeComponent implements OnInit {
     this.isShowModalCancelUpgrade = true;
   }
 
+  handleShowModalConfirmUpgrade() {
+    this.isShowModalConfirmUpgrade = true;
+  }
+
   handleCancelModal() {
     this.isShowModalCancelUpgrade = false;
+    this.isShowModalConfirmUpgrade = false;
+    this.isAgreeArrangement = false;
   }
 
   back2list() {

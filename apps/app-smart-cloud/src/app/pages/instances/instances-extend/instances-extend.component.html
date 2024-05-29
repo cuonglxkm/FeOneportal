@@ -241,13 +241,13 @@
             <nz-col nzSpan="12">
               <span class="text-label" style="color: #eb1414"
                 >{{ 'app.service.creation-date' | i18n }}:
-                {{ instancesModel.createdDate | date : 'dd/MM/yyyy' }}</span
+                {{ instancesModel.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</span
               >
             </nz-col>
             <nz-col nzSpan="12">
               <span class="text-label" style="color: #eb1414"
                 >{{ 'app.service.expiration-date' | i18n }}:
-                {{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
+                {{ instancesModel.expiredDate | date : 'dd/MM/yyyy HH:mm:ss' }}
               </span>
             </nz-col>
           </nz-row>

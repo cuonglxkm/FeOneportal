@@ -216,13 +216,13 @@
               <nz-select formControlName="snapshot"
                          nzSize="large"
                          [(ngModel)]="snapshotSelected"
-                         [nzPlaceHolder]="'-Chọn Snapshot-'"
+                         [nzPlaceHolder]="'app.item.switch.file.system.snapshot'|i18n"
                          [nzShowSearch]="false" style="width: 100%;">
                 <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
                            [nzValue]="item.value"></nz-option>
               </nz-select>
               <ng-template #snapshotError let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng chọn Snapshot File System</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{'app.file.storage.snapshot.required.select'|i18n}}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -233,7 +233,7 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input formControlName="description" id="description" [placeholder]="'Nhập nội dung'"
+              <textarea nz-input formControlName="description" id="description" [placeholder]="'volume.tooltip.description'|i18n"
                         [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
