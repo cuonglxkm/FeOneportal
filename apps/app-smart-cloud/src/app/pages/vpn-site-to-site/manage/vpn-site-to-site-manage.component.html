@@ -8,7 +8,9 @@
   >
     <ng-template #breadcrumb>
       <nz-breadcrumb [nzSeparator]="separatorTemplate">
-        <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/']">Trang chủ</a>
+        </nz-breadcrumb-item>
         <nz-breadcrumb-item> Dịch vụ hạ tầng </nz-breadcrumb-item>
         <nz-breadcrumb-item> VPN site to site </nz-breadcrumb-item>
       </nz-breadcrumb>
@@ -96,8 +98,8 @@
       Ngày hết hạn: <span class="text-bold">{{response?.expiredDate | date: 'dd/MM/YYYY'}}</span>
     </div>
   </nz-card>
-  <nz-card style="border-radius: 8px">
-    <nz-tabset nzSelectedIndex>
+  <nz-card class="custom-tab" style="border-radius: 8px">
+    <nz-tabset nzSelectedIndex nzSize="large">
       <nz-tab nzTitle="IKE Policies" class="label-fontsize">
         <ng-template nz-tab>
           <one-portal-ike-policies></one-portal-ike-policies

@@ -862,7 +862,7 @@
   "app.file.system.type": "Loại File System",
   "app.file.system.name": "Tên File System",
   "app.file.system.name.tooltip": "Tên của File System cần tạo Snapshot",
-  "app.file.system.snapshot.name.tooltip": "Tên Snapshot chỉ được phép dùng các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.",
+  "app.file.system.snapshot.name.tooltip": "Tên File System Snapshot chỉ được phép dùng các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.",
   "app.file.system.snapshot.detail.name.tooltip": "Tên của File System",
   "app.file.system.snapshot.detail.size.tooltip": "Dung lượng của Snapshot ăn theo File System đã tạo",
   "app.file.system.snapshot.detail.snapshot.tooltip": "Tên của Snapshot đã tạo",

@@ -971,7 +971,7 @@
   "app.file.system.type": "File System type",
   "app.file.system.name": "File System name",
   "app.file.system.name.tooltip": "Name of the File System to create Snapshot",
-  "app.file.system.snapshot.name.tooltip": "Snapshot name are only allowed to use lowercase characters a-z, uppercase A-Z, numbers 0-9, hyphens (-) and underscores (_), can have spaces, minimum 1 character and maximum 255 characters.",
+  "app.file.system.snapshot.name.tooltip": "File System Snapshot name are only allowed to use lowercase characters a-z, uppercase A-Z, numbers 0-9, hyphens (-) and underscores (_), can have spaces, minimum 1 character and maximum 255 characters.",
   "app.file.system.snapshot.detail.name.tooltip": "Name of File System",
   "app.file.system.snapshot.detail.size.tooltip": "The capacity of Snapshot depends on the created File System",
   "app.file.system.snapshot.detail.snapshot.tooltip": "Name of Snapshot created",
