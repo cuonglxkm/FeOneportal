@@ -1822,12 +1822,13 @@
   "app.cluster.warning-upgrade-2": "Để đảm bảo an toàn, xin hãy thực hiện backup dữ liệu. Hoạt động này sẽ bắt đầu ngay lập tức và không thể quay trở lại phiên bản cũ.",
   "app.cluster.warning-upgrade-3": "Vui lòng đọc thêm thông tin tại",
 
-  "cluster.status.not-yet-extend": "Chưa gia hạn",
+  "cluster.status.not-yet-extend": "Tạm ngưng",
   "cluster.status.running": "Đang hoạt động",
   "cluster.status.initializing": "Đang khởi tạo",
   "cluster.status.upgrading": "Đang nâng cấp",
   "cluster.status.deleting": "Đang xóa",
   "cluster.status.failed": "Khởi tạo thất bại",
+  "cluster.status.restoring": "Đang khôi phục",
   "cluster.status.unknow": "Không xác định",
 
   "cluster.instance.running": "Đang chạy",
@@ -1850,6 +1851,7 @@
   "cluster.log.delete-outbound": "Xóa Rule Outbound",
   "cluster.log.extend": "Gia hạn dịch vụ",
   "cluster.log.edit": "Cập nhật thông tin",
+  "cluster.log.hibernate": "Tạm ngưng dịch vụ",
   "cluster.log.unknow": "Không xác định",
 
   "app.cluster.manage-cluster": "Quản lý Cluster",
@@ -1995,6 +1997,7 @@
   "cluster.instances.start-notify-2": "Bạn có chắc muốn bật node {{name}} ?",
   "cluster.validate.min-error.extend": "Nhập số tháng tối thiểu là 1",
   "cluster.validate.max-error.extend": "Nhập số tháng tối đa là 100",
+  "cluster.security-group.empty": "Không có thông tin security group",
 
   "app.text.version": "Phiên bản",
   "app.text.status": "Trạng thái",

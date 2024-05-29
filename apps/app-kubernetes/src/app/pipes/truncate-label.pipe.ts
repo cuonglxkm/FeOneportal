@@ -5,7 +5,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class TruncateLabel implements PipeTransform {
 
-  transform(value: string): string {
+  transform(value: string, len?: number): string {
+    if (value && len) {
+      return (value + '').substring(0, len) + '...';
+    }
     if (value) {
       return (value + '').substring(0, 30) + '...';
     }

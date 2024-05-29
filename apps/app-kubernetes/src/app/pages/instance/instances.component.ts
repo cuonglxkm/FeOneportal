@@ -1,9 +1,11 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ClusterService } from '../../services/cluster.service';
 import { EMPTY, Subject, catchError, debounceTime, distinctUntilChanged, filter, finalize, map, switchMap } from 'rxjs';
 import { InstanceModel } from '../../model/instance.model';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'cluster-instances',
@@ -39,7 +41,8 @@ export class InstancesComponent implements OnInit, OnChanges {
 
   constructor(
     private clusterService: ClusterService,
-    private notificationService: NzNotificationService
+    private notificationService: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.isLoadingInstance = false;
     this.isVisibleModal = false;
@@ -105,9 +108,9 @@ export class InstancesComponent implements OnInit, OnChanges {
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.searchInstances();
-        this.notificationService.success("", 'Đồng bộ instances thành công');
+        this.notificationService.success(this.i18n.fanyi('app.status.success'), r.message);
       } else {
-        this.notificationService.error('', r.message);
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }
@@ -149,10 +152,10 @@ export class InstancesComponent implements OnInit, OnChanges {
     }))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
-        this.notificationService.success('', r.message);
+        this.notificationService.success(this.i18n.fanyi('app.status.success'), r.message);
         this.searchInstances();
       } else {
-        this.notificationService.error('', r.message);
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }
