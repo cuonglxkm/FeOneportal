@@ -173,9 +173,9 @@
             <nz-form-label>
               <div>
                 {{'volume.unit-price'|i18n}}: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }}/GB/Ngày</span>
+                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }}/ GB/ {{'app.hour'|i18n}}</span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                   0 VND/GB/{{'volume.date'|i18n}}
+                   0 VND/ GB/ {{'app.hour'|i18n}}
                 </span>
               </div>
             </nz-form-label>
