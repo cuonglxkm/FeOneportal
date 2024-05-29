@@ -35,7 +35,7 @@ export class EditVolumeComponent implements OnInit {
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
     description: ['', Validators.maxLength(700)],
-    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
+    storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     radio: ['']
   });
 
@@ -252,8 +252,19 @@ export class EditVolumeComponent implements OnInit {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id;
     this.volumeEdit.newDescription = this.validateForm.controls.description.value;
     this.volumeEdit.regionId = this.region;
-    this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB;
-    this.volumeEdit.iops = this.iops;
+    if(this.volumeInfo?.sizeInGB != null) {
+      this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB;
+    }
+    if(this.volumeInfo?.volumeType == 'hdd') {
+      this.volumeEdit.iops = 300
+    }
+    if(this.volumeInfo?.volumeType == 'ssd') {
+      if(this.volumeEdit.newSize <= 40) {
+        this.volumeEdit.iops = 400
+      } else {
+        this.volumeEdit.iops = this.volumeEdit?.newSize * 10
+      }
+    }
     // editVolumeDto.newOfferId = 0;
     this.volumeEdit.serviceName = this.validateForm.controls.name.value;
     this.volumeEdit.projectId = this.project;
@@ -274,6 +285,10 @@ export class EditVolumeComponent implements OnInit {
   changeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
+        if((res % 10) > 0) {
+          this.notification.warning('',this.i18n.fanyi('app.notify.amount.capacity'))
+          this.validateForm.controls.storage.setValue(res - (res % 10))
+        }
         console.log('total amount');
         this.getTotalAmount()
       })

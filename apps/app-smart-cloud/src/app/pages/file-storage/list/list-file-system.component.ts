@@ -15,6 +15,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-list-file-system',
@@ -42,6 +43,8 @@ export class ListFileSystemComponent implements OnInit {
 
   projectInfo: SizeInCloudProject = new SizeInCloudProject();
 
+  dataSubjectInputSearch: Subject<any> = new Subject<any>();
+
   constructor(
     private router: Router,
     private fileSystemService: FileSystemService,
@@ -53,9 +56,16 @@ export class ListFileSystemComponent implements OnInit {
     private notificationService: NotificationService) {
   }
 
-  onEnter() {
-    this.value = this.value.trim();
-    this.getListFileSystem(false);
+  changeInputChange(value) {
+    this.dataSubjectInputSearch.next(value)
+  }
+
+  onChangeInputChange() {
+    this.dataSubjectInputSearch.pipe(debounceTime(500)).subscribe((res) => {
+      this.value = res.trim()
+      this.getListFileSystem(false)
+    })
+
   }
 
   regionChanged(region: RegionModel) {
@@ -199,6 +209,7 @@ export class ListFileSystemComponent implements OnInit {
     this.fileSystemService.model.subscribe((data) => {
       console.log(data);
     });
+    this.onChangeInputChange()
     // if (!this.region && !this.project) {
     //   this.router.navigate(['/exception/500']);
     // }
