@@ -8,7 +8,9 @@
   >
     <ng-template #breadcrumb>
       <nz-breadcrumb [nzSeparator]="separatorTemplate">
-        <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/']">Trang chủ</a>
+        </nz-breadcrumb-item>
         <nz-breadcrumb-item> Dịch vụ hạ tầng </nz-breadcrumb-item>
         <nz-breadcrumb-item> VPN site to site </nz-breadcrumb-item>
       </nz-breadcrumb>

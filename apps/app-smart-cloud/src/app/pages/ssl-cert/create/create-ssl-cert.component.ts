@@ -46,10 +46,10 @@ export class CreateSslCertComponent implements OnInit{
     certName: FormControl<string>
     passphrase: FormControl<string>
   }> = this.fb.group({
-    privateKey: ['', [Validators.required]],
-    certName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
-    publicKey: ['', [Validators.required]],
-    passphrase: ['', [Validators.required]],
+    privateKey: ['', Validators.required],
+    certName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]{0,49}$/)]],
+    publicKey: ['', Validators.required],
+    passphrase: [''],
   });
 
 
@@ -129,5 +129,9 @@ export class CreateSslCertComponent implements OnInit{
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+  }
+
+  navigateToList(){
+    this.router.navigate(['/app-smart-cloud/ssl-cert']);
   }
 }

@@ -53,6 +53,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   response: BaseResponse<FileSystemModel[]>;
   listFileSystems: FileSystemModel[];
   isLoading: boolean = false;
+  disableListFS: boolean = true;
   isCheckBegin: boolean = false;
   customerId: number;
   selectedFileSystemName: string;
@@ -119,6 +120,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       .subscribe(
         (data) => {
           this.isLoading = false;
+          this.disableListFS = false
           console.log('data file system', data);
           const filterData = data.records.filter(
             (x) => x.taskState == 'available'
@@ -136,6 +138,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
         },
         (error) => {
           this.isLoading = false;
+          this.disableListFS = false
           this.response = null;
         }
       );
@@ -163,81 +166,6 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       this.getTotalAmount();
     });
   }
-
-  // handleCreate() {
-  //   this.isLoading = true;
-  //   if (this.form.valid) {
-  //    if(this.typeVpc === 0){
-  //     console.log(this.formCreateFileSystemSnapshot);
-  //     this.formCreate.serviceInstanceId = 0;
-  //     this.formCreate.name = this.form.controls.nameSnapshot.value;
-  //     this.formCreate.description = this.form.controls.description.value;
-  //     this.formCreate.projectId = this.project;
-  //     this.formCreate.force = false;
-  //     this.formCreate.vpcId = this.project;
-  //     this.formCreate.displayName = this.form.controls.nameSnapshot.value
-  //     this.formCreate.displayDescription = this.form.controls.description.value
-  //     this.formCreate.customerId = this.tokenService.get()?.userId;
-  //     this.formCreate.userEmail = this.tokenService.get()?.email;
-  //     this.formCreate.actorEmail = this.tokenService.get()?.email;
-  //     this.formCreate.regionId = this.region;
-  //     this.formCreate.serviceName = this.form.controls.nameSnapshot.value;
-  //     this.formCreate.serviceType = ServiceType.SHARE_SNAPSHOT;
-  //     this.formCreate.actionType = ServiceActionType.CREATE;
-  //     this.formCreate.serviceInstanceId = 0;
-  //     this.formCreate.createDate = new Date().toISOString().substring(0, 19);
-  //     this.formCreate.expireDate = new Date().toISOString().substring(0, 19);
-  //     this.formCreate.createDateInContract = null;
-  //     this.formCreate.saleDept = null;
-  //     this.formCreate.saleDeptCode = null;
-  //     this.formCreate.contactPersonEmail = null;
-  //     this.formCreate.contactPersonPhone = null;
-  //     this.formCreate.contactPersonName = null;
-  //     this.formCreate.am = null;
-  //     this.formCreate.amManager = null;
-  //     this.formCreate.note = 'fileshare-snapshot-create';
-  //     this.formCreate.isTrial = false;
-  //     this.formCreate.offerId = 0;
-  //     this.formCreate.couponCode = null;
-  //     this.formCreate.dhsxkd_SubscriptionId = null;
-  //     this.formCreate.dSubscriptionNumber = null;
-  //     this.formCreate.dSubscriptionType = null;
-  //     this.formCreate.oneSMEAddonId = null;
-  //     this.formCreate.oneSME_SubscriptionId = null;
-  //     this.formCreate.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.ShareCreateSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null';
-  //    }else{
-  //     this.formCreateFileSystemSnapshot = this.getData();
-  //     console.log(this.formCreateFileSystemSnapshot);
-  //     this.fileSystemSnapshotService
-  //       .create(this.formCreateFileSystemSnapshot)
-  //       .subscribe(
-  //         (data) => {
-  //           this.isLoading = false
-  //           this.notification.success(
-  //             this.i18n.fanyi('app.status.success'),
-  //             'Tạo mới file system snapshot thành công'
-  //           );
-  //           this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
-  //         },
-  //         (error) => {
-  //           this.isLoading = false
-  //           if (error.status === 500) {
-  //             if(error.error && error.error.detail){
-  //               this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
-  //             } else {
-  //               this.notification.error(this.i18n.fanyi('app.status.fail'), 'Chỉ có thể tạo khi trạng thái của file system là Khởi tạo');
-  //             }
-  //           }else{
-  //             this.notification.error(
-  //               this.i18n.fanyi('app.status.fail'),
-  //               'Tạo mới file system snapshot thất bại'
-  //             );
-  //           }
-  //         }
-  //       );
-  //    }
-  //   }
-  // }
 
   caculator(event) {
     this.expiredDate = addDays(

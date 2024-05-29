@@ -43,6 +43,12 @@ export class SSLCertService extends BaseService {
     if (formSearch.vpcId != undefined || formSearch.vpcId != null) {
       params = params.append('vpcId', formSearch.vpcId)
     }
+    if (formSearch.currentPage != undefined || formSearch.currentPage != null) {
+      params = params.append('currentPage', formSearch.currentPage)
+    }
+    if (formSearch.pageSize != undefined || formSearch.pageSize != null) {
+      params = params.append('pageSize', formSearch.pageSize)
+    }
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/ssl', {
       headers: this.getHeaders(),
       params: params
