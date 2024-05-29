@@ -4,7 +4,7 @@
   [title]="'app.file.system.snapshot.create' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -23,6 +23,9 @@
         'app.file.system.snapshot.create' | i18n
       }}</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -70,6 +73,8 @@
               (ngModelChange)="updateSelectedFileSystems($event)"
               [(ngModel)]="fileSysId"
               class="input-select-custom"
+              [nzLoading]="isLoading"
+              [nzDisabled]="disableListFS"
             >
               <nz-option
                 *ngFor="let data of listFileSystems"
@@ -105,7 +110,7 @@
               [placeholder]="'app.input.name.snapshot' | i18n"
               formControlName="nameSnapshot"
               class="input-custom"
-              [maxLength]="255"
+              [maxLength]="50"
             />
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{
@@ -210,7 +215,7 @@
       </div>
       <div style="margin-bottom: 20px">
         <h3 class="custom-subtitle">{{ 'app.snapshot.name' | i18n }}</h3>
-        <span>{{ form.value.nameSnapshot }}</span>
+        <span class="word-break">{{ form.value.nameSnapshot }}</span>
       </div>
       <button
         (click)="handleCreateFSS()"

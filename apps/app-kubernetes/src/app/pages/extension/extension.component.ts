@@ -13,6 +13,8 @@ import { VlanService } from '../../services/vlan.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { PriceModel } from '../../model/price.model';
 import { UserInfo } from '../../model/user.model';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-extension',
@@ -29,7 +31,7 @@ export class ExtensionComponent implements OnInit {
   costByMonth: number;
   costAMonth: number;
   extendMonth: number;
-  expiryDate: number;
+  expiryDate: Date;
 
   listOfServicePack: PackModel[];
   listOfPriceItem: PriceModel[];
@@ -46,7 +48,8 @@ export class ExtensionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private vlanService: VlanService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.isShowModalCancelExtend = false;
     this.isSubmitting = false;
@@ -83,9 +86,7 @@ export class ExtensionComponent implements OnInit {
 
       // get detail cluster
       this.detailCluster = new KubernetesCluster(response[0].data);
-      let d = new Date(this.detailCluster.createdDate);
-      d.setMonth(d.getMonth() + Number(this.detailCluster.usageTime));
-      this.expiryDate = d.getTime();
+      this.expiryDate = this.detailCluster.expiredDate;
 
       this.getVlanbyId(this.detailCluster.vpcNetworkId);
 
@@ -131,7 +132,7 @@ export class ExtensionComponent implements OnInit {
         this.listOfPriceItem = r.data;
         this.initPrice();
       } else {
-        this.notificationService.error("Thất bại", r.message);
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }
@@ -241,6 +242,28 @@ export class ExtensionComponent implements OnInit {
     this.totalCost = this.costByMonth + this.vatCost;
   }
 
+  onCalculateResource() {
+    const wgs = this.detailCluster.workerGroup;
+    let totalCpu = 0, totalRam = 0, totalStorage = 0;
+    for (let i = 0; i < wgs.length; i++) {
+      const cpu = wgs[i].cpu ? wgs[i].cpu : 0;
+      const ram = wgs[i].ram ? wgs[i].ram : 0;
+      const storage = +wgs[i].volumeSize ? +wgs[i].volumeSize : 0;
+      const autoScale = wgs[i].autoScaling;
+      let nodeNumber: number;
+      if (autoScale) {
+        // TODO: ...
+      } else {
+        nodeNumber = wgs[i].minimumNode ? wgs[i].minimumNode : 0;
+      }
+
+      totalCpu += nodeNumber * cpu;
+      totalRam += nodeNumber * ram;
+      totalStorage += nodeNumber * storage;
+    }
+    return {totalRam, totalCpu, totalStorage};
+  }
+
   onExtendService() {
     let order = new Order();
     const userId = this.tokenService.get()?.userId;
@@ -254,9 +277,15 @@ export class ExtensionComponent implements OnInit {
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_EXTEND_TYPE;
 
+    const resource = this.onCalculateResource();
     let req = {
       serviceName: this.detailCluster.clusterName,
-      newExpireDate: new Date(this.expiryDate).toISOString().substring(0, 19),
+      newExpireDate: new Date(this.expectedExpirationDate).toISOString().substring(0, 19),
+      serviceType: KubernetesConstant.K8S_TYPE_ID,
+      currentOfferId: this.detailCluster.offerId,
+      totalRam: resource.totalRam,
+      totalCpu: resource.totalCpu,
+      totalStorage: resource.totalStorage,
       jsonData: JSON.stringify({
         ServiceOrderCode: this.serviceOrderCode,
         ExtendMonth: this.extendMonth,

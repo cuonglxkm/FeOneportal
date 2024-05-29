@@ -44,10 +44,11 @@
                  nz-input
                  placeholder="Tìm kiếm Access To"
                  [(ngModel)]="value"
-                 (input)="onInputChange($event.target['value'])" />
+                 (input)="changeInputChange($event)"
+                 (keydown.enter)="onEnter($event)"/>
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" />
+          <img src="assets/imgs/search.svg" alt="" />
         </ng-template>
       </nz-col>
       <nz-col nzSpan="12" style="flex:none;">
@@ -89,7 +90,7 @@
         <td>{{ data.state }}</td>
         <td>{{ data.created_at }}</td>
         <td>
-          <one-portal-delete-access-rule *ngIf="data.state != 'denying'"
+          <one-portal-delete-access-rule *ngIf="data.state == 'active'"
                                          [region]="region"
                                          [project]="project"
                                          [shareRuleId]="data.id"

@@ -6,7 +6,8 @@ import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
 import { BackupVmService } from '../../../shared/services/backup-vm.service';
-import { BackupVm, BackupVMFormSearch } from '../../../shared/models/backup-vm';
+import { BackupVm, BackupVMFormSearch, FormUpdateBackupVm } from '../../../shared/models/backup-vm';
+import { FormUpdateBackupVolume } from '../../volume/component/backup-volume/backup-volume.model';
 
 @Component({
   selector: 'one-portal-update-backup-vm',
@@ -72,7 +73,7 @@ export class UpdateBackupVmComponent implements AfterViewInit {
     this.isVisible = true;
     this.validateForm.controls.nameBackup.setValue(this.backupVmInfo?.name)
     this.validateForm.controls.description.setValue(this.backupVmInfo?.description)
-    // this.getListFileSystem();
+    this.getListBackupVM();
     // this.validateForm.controls.nameFileSystem.setValue(this.fileSystem?.name);
     // this.validateForm.controls.description.setValue(this.fileSystem?.description);
     setTimeout(() => {
@@ -81,7 +82,7 @@ export class UpdateBackupVmComponent implements AfterViewInit {
   }
 
   getListBackupVM() {
-
+    this.isLoading = true
     let formSearch: BackupVMFormSearch = new BackupVMFormSearch()
     formSearch.regionId = this.region
     formSearch.projectId = this.project
@@ -97,7 +98,7 @@ export class UpdateBackupVmComponent implements AfterViewInit {
       })
 
     }, error => {
-      this.isLoading = true
+      this.isLoading = false
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
     })
 
@@ -112,6 +113,21 @@ export class UpdateBackupVmComponent implements AfterViewInit {
   }
 
   handleOk() {
+    this.isLoading = true
 
+    let formUpdate = new FormUpdateBackupVm()
+    formUpdate.instanceBackupId = this.idBackupVm
+    formUpdate.name = this.validateForm.controls.nameBackup.value
+    formUpdate.description = this.validateForm.controls.description.value
+    this.backupVmService.update(formUpdate).subscribe(data => {
+      this.isLoading = false
+      this.isVisible = false
+      this.notification.success(this.i18n.fanyi('app.status.success'), 'Chỉnh sửa Backup VM thành công')
+    }, error => {
+      this.isLoading = false
+      this.isVisible = false
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Chỉnh sửa Backup VM thất bại. ' + error.error.detail)
+    })
+    this.onOk.emit()
   }
 }

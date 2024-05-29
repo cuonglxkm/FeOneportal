@@ -184,7 +184,7 @@
                                id="storage"
                                class="input-custom"
                                style="width: 100%; margin-left: 0;"
-                               [nzMin]="1" [nzStep]="1"></nz-input-number>
+                               [nzMin]="minStorage" [nzStep]="stepStorage" (ngModelChange)="changeValueStorage($event)"></nz-input-number>
               <ng-template #storageErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.required.storage' | i18n }}
                 </ng-container>
@@ -302,61 +302,63 @@
         </nz-card>
       </nz-col>
       <nz-col nzSpan="8">
-        <nz-card style="border-radius: 8px;">
-          <div style="margin-bottom: 20px">
-            <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
-          </div>
-          <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ validateForm.controls.name.getRawValue() }}
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'app.volume.type' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">
-            <span *ngIf="volumeCreate.volumeType == 'hdd'">{{ 'volume.hdd' | i18n }}</span>
-            <span *ngIf="volumeCreate.volumeType == 'ssd'">{{ 'volume.ssd' | i18n }}</span>
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'volume.storage.volume' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">{{ volumeCreate.volumeSize }} GB</div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'volume.table.title.iops' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">{{ this.iops }}</div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-row>
-            <nz-col style="width: 100%">
-              <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmCreate()"
-                      [disabled]="validateForm.invalid ||
+        <nz-affix [nzOffsetTop]="48">
+          <nz-card style="border-radius: 8px;" class="border-card">
+            <div style="margin-bottom: 20px">
+              <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
+            </div>
+            <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">
+              {{ validateForm.controls.name.getRawValue() }}
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">{{ 'app.volume.type' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">
+              <span *ngIf="volumeCreate.volumeType == 'hdd'">{{ 'volume.hdd' | i18n }}</span>
+              <span *ngIf="volumeCreate.volumeType == 'ssd'">{{ 'volume.ssd' | i18n }}</span>
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">{{ 'volume.storage.volume' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.storage.value }} GB</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">{{ 'volume.table.title.iops' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">{{ this.iops }}</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-row>
+              <nz-col style="width: 100%">
+                <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmCreate()"
+                        [disabled]="validateForm.invalid ||
                                   sizeInCloudProject == null ||
                                   (remaining == 0) || (validateForm.controls.storage.value > remaining)">
-                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
-              </button>
-              <nz-modal [(nzVisible)]="isVisibleCreate" nzTabScrollList="true"
-                        (nzOnCancel)="handleCancelCreate()">
-                <div *nzModalTitle>
-                  <span class="text-modal-header">{{ 'volume.modal.confirm.title.create'|i18n }}</span>
-                </div>
-                <div *nzModalContent>
-                  <div>
-                    <span class="text-label" style="text-align: center">{{ 'volume.modal.confirm.content'|i18n }}</span>
+                  <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                  <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
+                </button>
+                <nz-modal [(nzVisible)]="isVisibleCreate" nzTabScrollList="true"
+                          (nzOnCancel)="handleCancelCreate()" [nzAutofocus]="undefined">
+                  <div *nzModalTitle>
+                    <span class="text-modal-header">{{ 'volume.modal.confirm.title.create'|i18n }}</span>
                   </div>
-                </div>
-                <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                  <button nz-button nzType="default" (click)="handleCancelCreate()" class="button-cancel">
-                    <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel'|i18n }}
-                  </button>
-                  <button nz-button nzType="primary"
-                          (click)="handleOkCreate()"
-                          [nzLoading]="isLoadingCreate"
-                          class="button-ok">
-                    <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
-                  </button>
-                </div>
-              </nz-modal>
-            </nz-col>
-          </nz-row>
-        </nz-card>
+                  <div *nzModalContent>
+                    <div>
+                      <span class="text-label" style="text-align: center">{{ 'volume.modal.confirm.content'|i18n }}</span>
+                    </div>
+                  </div>
+                  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                    <button nz-button nzType="default" (click)="handleCancelCreate()" class="button-cancel">
+                      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel'|i18n }}
+                    </button>
+                    <button nz-button nzType="primary"
+                            (click)="handleOkCreate()"
+                            [nzLoading]="isLoadingCreate"
+                            class="button-ok" appAutofocus>
+                      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
+                    </button>
+                  </div>
+                </nz-modal>
+              </nz-col>
+            </nz-row>
+          </nz-card>
+        </nz-affix>
       </nz-col>
     </nz-row>
   </form>

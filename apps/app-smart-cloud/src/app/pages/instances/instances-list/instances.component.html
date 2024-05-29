@@ -64,17 +64,12 @@
           nz-input
           [placeholder]="'app.placeholder.search' | i18n"
           [(ngModel)]="searchParam.name"
-          (keyup.enter)="doSearch()"
+          (ngModelChange)="changeSearchParam($event)"
+          (keyup.enter)="onEnter($event)"
         />
       </nz-input-group>
       <ng-template #prefixIconSearch>
-        <img
-          src="assets/imgs/search.svg"
-          alt=""
-          style="cursor: pointer"
-          [nz-tooltip]="'app.button.search' | i18n"
-          (click)="doSearch()"
-        />
+        <img src="assets/imgs/search.svg" alt="" />
       </ng-template>
     </div>
     <div
@@ -196,8 +191,22 @@
           {{ 'app.status.not-renew' | i18n }}
         </td>
         <td nzBreakWord>{{ data.taskState }}</td>
-        <td nzBreakWord>{{ data.ipPrivate }}</td>
-        <td nzBreakWord>{{ data.ipPublic }}</td>
+        <td nzBreakWord nzAlign="left">
+          <div *ngIf="data.ipPrivate == ''">{{ data.ipPrivate }}</div>
+          <div *ngIf="data.ipPrivate != null">
+            <div *ngFor="let ip of data.ipPrivate.split(', '); let last = last">
+              {{ ip }}<br *ngIf="!last" />
+            </div>
+          </div>
+        </td>
+        <td nzBreakWord nzAlign="left">
+          <div *ngIf="data.ipPublic == ''">{{ data.ipPublic }}</div>
+          <div *ngIf="data.ipPublic != null">
+            <div *ngFor="let ip of data.ipPublic.split(', '); let last = last">
+              {{ ip }}<br *ngIf="!last" />
+            </div>
+          </div>
+        </td>
         <td nzRight>
           <img
             *ngIf="

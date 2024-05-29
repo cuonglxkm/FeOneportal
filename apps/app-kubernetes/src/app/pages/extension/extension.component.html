@@ -71,7 +71,7 @@
                 <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
                     [label]="'app.text.creation-time' | i18n"></row-data></td>
                 <td class="w-50 border-cell"><row-data
-                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
+                    [value]="detailCluster.expiredDate| date: 'dd/MM/yyyy'"
                     [label]="'app.service.expiration-date' | i18n" [type]="'danger'"></row-data></td>
               </tr>
 
@@ -191,7 +191,7 @@
         <div nz-col [nzSpan]="12">
           <div nz-row [nzGutter]="16" class="delete-icon">
             <div nz-col [nzSpan]="8"><label>{{ 'app.service.expiration-date' | i18n }}</label></div>
-            <div nz-col [nzSpan]="16"><label class="weight-600">{{expiryDate | date: 'dd/MM/yyyy'}}</label></div>
+            <div nz-col [nzSpan]="16"><label class="weight-600">{{detailCluster?.expiredDate | date: 'dd/MM/yyyy'}}</label></div>
           </div>
         </div>
       </div>
@@ -237,7 +237,19 @@
           </div>
 
           <div nz-col [nzSpan]="12">
-            <div class="price-style mr-3 mb-3">{{detailCluster?.clusterName}}</div>
+            <div class="price-style mr-3 mb-3">
+              <ng-container *ngIf="detailCluster?.clusterName.length <= 18; else truncateTpl">
+                {{ detailCluster?.clusterName }}
+              </ng-container>
+              <ng-template #truncateTpl>
+                <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="clusterNameTpl">
+                  {{ detailCluster?.clusterName | truncateLabel : 18 }}
+                </span>
+                <ng-template #clusterNameTpl>
+                  {{ detailCluster?.clusterName }}
+                </ng-template>
+              </ng-template>
+            </div>
           </div>
         </div>
 
@@ -332,7 +344,7 @@
           <div nz-col [nzSpan]="12">
             <button nz-button nzType="primary" nzBlock class="border-button" (click)="onExtendService()"
               [disabled]="isSubmitting || this.extendMonth == null || this.extendMonth == undefined
-                || detailCluster?.serviceStatus != 2 || statusInput != null">
+                || (detailCluster?.serviceStatus != 2 && detailCluster?.serviceStatus != 3) || statusInput != null">
               <span nz-icon>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M18.3334 9.99992V14.1666C18.3334 16.6666 16.6667 18.3333 14.1667 18.3333H5.83341C3.33341 18.3333 1.66675 16.6666 1.66675 14.1666V9.99992C1.66675 7.73325 3.03341 6.14992 5.15841 5.88325C5.37508 5.84992 5.60008 5.83325 5.83341 5.83325H14.1667C14.3834 5.83325 14.5917 5.84158 14.7917 5.87491C16.9417 6.12491 18.3334 7.71659 18.3334 9.99992Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

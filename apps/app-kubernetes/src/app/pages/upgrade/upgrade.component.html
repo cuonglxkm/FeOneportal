@@ -463,7 +463,7 @@
           </div>
 
           <div nz-col [nzSpan]="12">
-            <div class="price-style price-color mr-3">{{(upgradeCost ? upgradeCost : 0) | number: '1.0-0'}} VND</div>
+            <div class="price-style price-color mr-3">{{(newConfigCost ? newConfigCost : 0) | number: '1.0-0'}} VND</div>
             <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
           </div>
         </div>
@@ -478,7 +478,19 @@
           </div>
 
           <div nz-col [nzSpan]="12">
-            <div class="price-style mr-3 mb-3">{{detailCluster?.clusterName}}</div>
+            <div class="price-style mr-3 mb-3">
+              <ng-container *ngIf="detailCluster?.clusterName.length <= 18; else truncateTpl">
+                {{ detailCluster?.clusterName }}
+              </ng-container>
+              <ng-template #truncateTpl>
+                <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="clusterNameTpl">
+                  {{ detailCluster?.clusterName | truncateLabel : 18 }}
+                </span>
+                <ng-template #clusterNameTpl>
+                  {{ detailCluster?.clusterName }}
+                </ng-template>
+              </ng-template>
+            </div>
           </div>
         </div>
 
@@ -579,7 +591,7 @@
           </div>
 
           <div nz-col [nzSpan]="12">
-            <button nz-button nzType="primary" nzBlock class="border-button" (click)="onValidateInfo()"
+            <button nz-button nzType="primary" nzBlock class="border-button" (click)="handleShowModalConfirmUpgrade()"
               [disabled]="isSubmitting || upgradeForm.invalid || (chooseItem == null && isUsingPackConfig) || detailCluster?.serviceStatus != 2">
               <ng-container *ngIf="isSubmitting; else paymentIconTpl">
                 <span nz-icon [nzType]="'loading'"></span>
@@ -631,4 +643,53 @@
       {{ 'app.button.confirm' | i18n }}
     </button>
   </ng-template>
+</nz-modal>
+
+<!-- modal confirm upgrade -->
+<nz-modal [(nzVisible)]="isShowModalConfirmUpgrade" [nzTitle]="'app.cluster.upgrade-service' | i18n"
+  (nzOnCancel)="handleCancelModal()">
+  <div *nzModalContent>
+    <div>
+      <nz-alert
+        nzType="warning"
+        [nzMessage]="msgTpl"
+        [nzDescription]="desTpl"
+        [nzIcon]="customIconTemplate"
+        nzShowIcon
+      ></nz-alert>
+
+      <ng-template #msgTpl>
+        <span class="description-info">{{ 'app.version.note-title' | i18n }}</span>:
+      </ng-template>
+      <ng-template #desTpl>
+        <div>{{ 'app.cluster.warning-upgrade-1' | i18n }}</div>
+        <div>{{ 'app.cluster.warning-upgrade-2' | i18n }}</div>
+        <div>{{ 'app.cluster.warning-upgrade-3' | i18n }} <a href="https://kubernetes.io/releases/" target="_blank">K8S release note</a></div>
+      </ng-template>
+      <ng-template #customIconTemplate>
+        <span nz-icon>
+          <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.5 6.5L18.8612 19.25H4.13878L11.5 6.5Z" fill="white"/>
+            <path d="M21.76 16.42L15.36 4.9C14.5 3.35 13.31 2.5 12 2.5C10.69 2.5 9.49998 3.35 8.63998 4.9L2.23998 16.42C1.42998 17.89 1.33998 19.3 1.98998 20.41C2.63998 21.52 3.91998 22.13 5.59998 22.13H18.4C20.08 22.13 21.36 21.52 22.01 20.41C22.66 19.3 22.57 17.88 21.76 16.42ZM11.25 9.5C11.25 9.09 11.59 8.75 12 8.75C12.41 8.75 12.75 9.09 12.75 9.5V14.5C12.75 14.91 12.41 15.25 12 15.25C11.59 15.25 11.25 14.91 11.25 14.5V9.5ZM12.71 18.21C12.66 18.25 12.61 18.29 12.56 18.33C12.5 18.37 12.44 18.4 12.38 18.42C12.32 18.45 12.26 18.47 12.19 18.48C12.13 18.49 12.06 18.5 12 18.5C11.94 18.5 11.87 18.49 11.8 18.48C11.74 18.47 11.68 18.45 11.62 18.42C11.56 18.4 11.5 18.37 11.44 18.33C11.39 18.29 11.34 18.25 11.29 18.21C11.11 18.02 11 17.76 11 17.5C11 17.24 11.11 16.98 11.29 16.79C11.34 16.75 11.39 16.71 11.44 16.67C11.5 16.63 11.56 16.6 11.62 16.58C11.68 16.55 11.74 16.53 11.8 16.52C11.93 16.49 12.07 16.49 12.19 16.52C12.26 16.53 12.32 16.55 12.38 16.58C12.44 16.6 12.5 16.63 12.56 16.67C12.61 16.71 12.66 16.75 12.71 16.79C12.89 16.98 13 17.24 13 17.5C13 17.76 12.89 18.02 12.71 18.21Z" fill="#EA3829"/>
+          </svg>
+        </span>
+      </ng-template>
+    </div>
+
+    <div class="mt-3">
+      <label nz-checkbox [(ngModel)]="isAgreeArrangement">{{ 'app.payment.agree.to' | i18n }} <a href="">{{ 'app.version.arrangement' | i18n }}</a></label>
+    </div>
+  </div>
+
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancelModal()" [disabled]="isSubmitting">
+      <span nz-icon nzType="close" nzTheme="outline"></span>
+      {{ 'app.cluster.cancel' | i18n }}
+    </button>
+    <button nz-button nzType="primary" (click)="onValidateInfo()"
+      [disabled]="!isAgreeArrangement" [nzLoading]="isSubmitting">
+      <span nz-icon nzType="check" nzTheme="outline"></span>
+      {{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
 </nz-modal>

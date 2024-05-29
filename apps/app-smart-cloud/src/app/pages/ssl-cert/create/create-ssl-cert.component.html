@@ -4,7 +4,7 @@
   [title]="'Khởi tạo SSL Cert'"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -14,7 +14,11 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ssl-cert']">SSL Cert</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>Khởi tạo SSL Cert</nz-breadcrumb-item>
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -42,7 +46,7 @@
               <img
                 nz-popover
                 [nzPopoverContent]="
-                  'app.file.system.name.tooltip' | i18n
+                  
                 "
                 nzPopoverPlacement="bottom"
                 style="margin-left: 5px"
@@ -71,7 +75,7 @@
               <img
                 nz-popover
                 [nzPopoverContent]="
-                  'app.file.system.name.tooltip' | i18n
+                  
                 "
                 nzPopoverPlacement="bottom"
                 style="margin-left: 5px"
@@ -104,7 +108,7 @@
                 <img
                   nz-popover
                   [nzPopoverContent]="
-                    'app.file.system.name.tooltip' | i18n
+                    
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -120,23 +124,25 @@
                 placeholder="Nhập tên SSL Cert"
                 formControlName="certName"
                 class="input-custom"
+                maxlength="50"
               />
               <ng-template #nameErrorTpl>
-                <ng-container *ngIf="form.get('publicKey').hasError('required')">Tên SSL Cert không được để trống </ng-container>
+                <ng-container *ngIf="form.get('certName').hasError('required')">Tên SSL Cert không được để trống </ng-container>
+                <ng-container *ngIf="form.get('certName').hasError('pattern')">Tên SSL Cert không bao gồm dấu Tiếng Việt, dấu cách, ký tự đặc biệt (trừ _) </ng-container>
                 </ng-template>
             </nz-form-control>
           </nz-form-item>
         </nz-col>
         <nz-col nzSpan="12" class="mt-3">
           <nz-form-item>
-            <nz-form-control [nzErrorTip]="nameErrorTpl">
-              <nz-form-label nzFor="name">
+            <nz-form-control>
+              <nz-form-label>
                 <div>
-                  <span>Mật khẩu private key</span>
+                  <span>Passphrase</span>
                 <img
                   nz-popover
                   [nzPopoverContent]="
-                    'app.file.system.name.tooltip' | i18n
+                    
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -149,10 +155,10 @@
               <input
                 nz-input
                 type="text"
-                required
-                placeholder="Nhập mật khẩu private key"
+                placeholder="Passphrase"
                 formControlName="passphrase"
                 [type]="passwordVisible ? 'text' : 'password'"
+                maxlength="15"
               />
               <ng-template #suffixTemplate>
                 <span
@@ -176,7 +182,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'app.file.system.name.tooltip' | i18n
+                      
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -206,13 +212,23 @@
           </nz-form-item>
         </nz-col>
       </nz-row>
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end gap-2">
+      <button nz-button (click)="navigateToList()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />{{ 'app.button.cancel' | i18n }}
+      </button>
       <button
       nz-button
       nzType="primary"
       (click)="handleCreate()"
+      [disabled]="form.invalid" [nzLoading]="isLoading"
+      
     >
       <img
+       *ngIf="isLoading === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""

@@ -243,7 +243,7 @@
                   >{{ 'app.service.creation-date' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan">{{
-                  instancesModel.createdDate | date : 'dd/MM/yyyy'
+                  instancesModel.createdDate | date : 'dd/MM/yyyy HH:mm:ss'
                 }}</span>
               </nz-row>
             </nz-col>
@@ -253,7 +253,7 @@
                   >{{ 'app.service.expiration-date' | i18n }}:</span
                 >
                 <span class="text-value-detail"
-                  >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
+                  >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy HH:mm:ss' }}
                 </span>
               </nz-row></nz-col
             >
@@ -363,6 +363,7 @@
                           [nzMin]="0"
                           [nzMax]="remainingVolume"
                           [nzStep]="10"
+                          nzSize="large"
                         ></nz-input-number>
                       </td>
                     </tr>
@@ -388,6 +389,7 @@
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
                           [nzMax]="remainingRAM"
+                          nzSize="large"
                         ></nz-input-number>
                       </td>
                     </tr>
@@ -413,6 +415,7 @@
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
                           [nzMax]="remainingVCPU"
+                          nzSize="large"
                         ></nz-input-number>
                       </td>
                     </tr>
@@ -454,6 +457,7 @@
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
                           [nzMax]="remainingVCPU"
+                          nzSize="large"
                         ></nz-input-number>
                       </td>
                     </tr>
@@ -479,6 +483,7 @@
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
                           [nzMax]="remainingRAM"
+                          nzSize="large"
                         ></nz-input-number>
                       </td>
                     </tr>
@@ -506,6 +511,7 @@
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
                           [nzMax]="remainingVolume"
+                          nzSize="large"
                         ></nz-input-number>
                       </td>
                     </tr>
@@ -530,6 +536,7 @@
                           [(ngModel)]="GPU"
                           (keydown)="onKeyDown($event)"
                           [ngModelOptions]="{ standalone: true }"
+                          nzSize="large"
                         ></nz-input-number>
                       </td>
                     </tr>
@@ -568,8 +575,8 @@
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
     <div style="width: 100%" *ngIf="instancesModel">
-      <nz-affix [nzOffsetTop]="48">
-        <nz-card style="border-radius: 8px; width: 100%">
+      <nz-affix [nzOffsetTop]="72">
+        <nz-card class="card-border" style="border-radius: 8px; width: 100%">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{
               'app.estimated.cost' | i18n

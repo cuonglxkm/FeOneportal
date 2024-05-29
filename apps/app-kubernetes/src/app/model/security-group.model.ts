@@ -15,6 +15,7 @@ export interface SecurityGroup {
   name?: string;
   description?: string;
   rulesInfo?: SecurityGroupRule[];
+  securityGroupRules?: SecurityGroupRule[];
 }
 
 export default interface SecurityGroupRule {
@@ -29,6 +30,7 @@ export default interface SecurityGroupRule {
   securityGroupId?: string,
   portRange?: string,
   remoteIp?: string,
+  description: string;
 }
 
 export class CreateSGReqDto {
@@ -44,6 +46,7 @@ export class SecurityGroupData {
   projectId: number;
   detailCluster: KubernetesCluster;
   securityGroupId: string;
+  listOfSG: SecurityGroup[];
   listOfInbound: SecurityGroupRule[];
   listOfOutbound: SecurityGroupRule[];
 }

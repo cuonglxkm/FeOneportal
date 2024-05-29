@@ -67,6 +67,8 @@ export class RestoreBackupVmComponent implements OnInit {
   activeBlockSSHKey: boolean = false;
   disableKeypair: boolean = false;
 
+  numberMonth: number = 1;
+
   passwordVisible = false;
 
   validateForm = new FormGroup({

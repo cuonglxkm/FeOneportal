@@ -32,13 +32,13 @@
                             style="width: 300px;">
               <input name="name"
                      nz-input
-                     [nz-tooltip]="'app.button.search' | i18n"
                      [placeholder]="'app.file.system.placeholder.search'|i18n"
                      [(ngModel)]="value"
-                     (keydown.enter)="onEnter()" />
+                     (input)="changeInputChange($event)"
+                     (keydown.enter)="onEnter($event)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" />
+              <img src="assets/imgs/search.svg" alt="" />
             </ng-template>
           </nz-col>
           <nz-col [nzSpan]="16" style="flex:none;">

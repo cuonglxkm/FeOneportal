@@ -4,7 +4,7 @@
   [title]="'Chỉnh sửa VPN Connection'"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
@@ -17,6 +17,9 @@
       ></nz-breadcrumb-item>
       <nz-breadcrumb-item>Chỉnh sửa VPN Connection</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -345,7 +348,7 @@
     </nz-card>
   </div>
   <div nz-col [nzSpan]="7" class="gutter-row">
-    <nz-card style="border-radius: 8px;">
+    <nz-card style="border-radius: 8px;" class="card-border">
       <h2 class="custom-title">Thông số cấu hình</h2>
       <div>
         <div style="margin-bottom: 12px">

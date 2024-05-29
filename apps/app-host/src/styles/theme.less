@@ -175,7 +175,9 @@ u {
   color: #0074cc;
   text-shadow: 0 0 0.25px currentcolor;
 }
-
+.ant-tabs-tab-btn{
+font-size: @label-fontsize;
+}
 .ant-tabs-tab-btn:hover {
   color: #005999;
 }
@@ -347,6 +349,20 @@ project-select-dropdown nz-select-item.ant-select-selection-item {
 .ant-input-number {
   border-radius: @textbox-radius-lg;
   margin-left: 8px;
+}
+
+.ant-input-number-handler-wrap {
+  border-radius: 0 8px 8px 0;
+}
+
+.ant-input-number-handler-up {
+  border-top-right-radius: 8px;
+  cursor: pointer;
+}
+
+.ant-input-number-handler-down {
+  border-bottom-right-radius: 8px;
+  cursor: pointer;
 }
 
 // END SLIDER
@@ -617,3 +633,9 @@ justify-content: space-between;
 // nz-input-number{
 //   border-radius: @textbox-radius-lg
 // }
+
+.border-card {
+  gap: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--Primary-6, #B2DEFF)
+}

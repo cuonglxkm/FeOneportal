@@ -25,6 +25,7 @@ export class KubernetesCluster {
   usageTime: number;
   totalNode: number;
   createdDate: Date;
+  expiredDate: Date;
   workerGroup: WorkerGroupModel[];
   offerId: number;
   isProcessing: boolean;
@@ -55,6 +56,7 @@ export class KubernetesCluster {
     this.description = obj.description;
     this.totalNode = obj.total_node;
     this.createdDate = obj.created_date;
+    this.expiredDate = obj.expired_date;
     this.offerId = obj.offer_id;
     this.isProcessing = false;
 

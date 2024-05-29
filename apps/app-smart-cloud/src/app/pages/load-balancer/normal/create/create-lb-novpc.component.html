@@ -2,7 +2,8 @@
              [action]="action"
              [title]="'app.load.balancer.create' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{
@@ -16,6 +17,9 @@
         <a routerLink="/app-smart-cloud/load-balancer/create">{{ 'app.load.balancer.create' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -113,6 +117,8 @@
                              (ngModelChange)="updateValue($event)"
                              formControlName="subnet"
                              [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'"
+                             [nzLoading]="loadingSubnet"
+                             [nzDisabled]="disabledSubnet"
                              nzAllowClear>
                     <nz-option *ngFor="let index of mapSubnetArray"
                                [nzValue]="index.value"
@@ -161,8 +167,8 @@
                   <span *ngIf="isAvailable"
                         style="color: #ff4d4f;">{{ 'validation.ip.address.exist' | i18n }}</span>
                   <ng-template #ipAddressErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.ip.address.pattern' | i18n }}
-                    </ng-container>
+                    <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.ip.address.pattern' | i18n }}</ng-container>
+                    <ng-container *ngIf="control.hasError('failServer')">{{messageFail}}</ng-container>
                   </ng-template>
                 </nz-form-control>
               </nz-form-item>
@@ -365,9 +371,13 @@
           <nz-row>
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
-                      [disabled]="validateForm.invalid || (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '')">
+                      [disabled]="(enableInternetFacing == true && validateForm.invalid) ||
+                      (enableInternal == true && (validateForm.controls['name'].invalid || validateForm.controls['subnet'].invalid) ) ||
+                      (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '')">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                <span [style.color]="validateForm.invalid || (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '')? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+                <span [style.color]="(enableInternetFacing == true && validateForm.invalid) ||
+                      (enableInternal == true && (validateForm.controls['name'].invalid || validateForm.controls['subnet'].invalid) ) ||
+                      (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '')? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>

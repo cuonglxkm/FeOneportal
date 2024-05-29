@@ -244,7 +244,7 @@
                   >{{ 'app.service.creation-date' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan">{{
-                  instancesModel.createdDate | date : 'dd/MM/yyyy'
+                  instancesModel.createdDate | date : 'dd/MM/yyyy HH:mm:ss'
                 }}</span>
               </nz-row>
             </nz-col>
@@ -254,7 +254,7 @@
                   >{{ 'app.service.expiration-date' | i18n }}:</span
                 >
                 <span class="text-value-detail"
-                  >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
+                  >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy HH:mm:ss' }}
                 </span>
               </nz-row></nz-col
             >
@@ -747,49 +747,13 @@
           </div>
         </nz-card>
       </form>
-      <nz-card style="border-radius: 8px; width: 100%">
-        <span class="text-card-header">{{ 'app.guide.formula' | i18n }}</span>
-        <nz-row class="text-label" style="margin-top: 20px">
-          <nz-col style="margin-top: 10px">
-            <span>{{ 'app.note.guide.formula' | i18n }}</span>
-          </nz-col>
-          <nz-col style="padding-left: 5px">
-            <div>
-              <span class="fraction">
-                <span class="numerator">{{
-                  'app.note.guide.formula.numerator' | i18n
-                }}</span>
-                <span class="denominator">30 {{ 'app.days' | i18n }}</span>
-              </span>
-            </div>
-          </nz-col>
-          <nz-col style="margin-top: 10px; padding-left: 10px">
-            <span>x {{ 'app.remaining.days' | i18n }}</span>
-          </nz-col>
-        </nz-row>
-        <div style="margin-top: 10px" class="text-label">
-          {{ 'app.example.guide.formula' | i18n }}
-        </div>
-        <nz-row class="text-label">
-          <nz-col class="text-right" style="padding-left: 5px" nzSpan="12">
-            <div>
-              <span class="fraction">
-                <span class="numerator">1.500.000 - 1.000.000</span>
-                <span class="denominator">30 {{ 'app.days' | i18n }}</span>
-              </span>
-            </div>
-          </nz-col>
-          <nz-col style="margin-top: 10px; padding-left: 10px" nzSpan="12">
-            <span>x 15 {{ 'app.days' | i18n }} = 250.000 VND</span>
-          </nz-col>
-        </nz-row>
-      </nz-card>
+      <one-portal-guide-formula></one-portal-guide-formula>
     </nz-row>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
     <div style="width: 100%" *ngIf="instancesModel">
-      <nz-affix [nzOffsetTop]="48">
-        <nz-card style="border-radius: 8px">
+      <nz-affix [nzOffsetTop]="72">
+        <nz-card class="card-border" style="border-radius: 8px">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{
               'app.estimated.cost' | i18n
