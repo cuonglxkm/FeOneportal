@@ -98,8 +98,8 @@
       Ngày hết hạn: <span class="text-bold">{{response?.expiredDate | date: 'dd/MM/YYYY'}}</span>
     </div>
   </nz-card>
-  <nz-card style="border-radius: 8px">
-    <nz-tabset nzSelectedIndex>
+  <nz-card class="custom-tab" style="border-radius: 8px">
+    <nz-tabset nzSelectedIndex nzSize="large">
       <nz-tab nzTitle="IKE Policies" class="label-fontsize">
         <ng-template nz-tab>
           <one-portal-ike-policies></one-portal-ike-policies
