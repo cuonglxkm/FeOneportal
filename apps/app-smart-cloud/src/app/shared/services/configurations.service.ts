@@ -7,7 +7,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 @Injectable({
   providedIn: 'root',
 })
-export class UserService extends BaseService {
+export class ConfigurationsService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',

@@ -14,6 +14,7 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject } from 'rxjs';
+import { ConfigurationsService } from '../../../../../shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-resize-file-system',
@@ -40,10 +41,15 @@ export class ResizeFileSystemComponent implements OnInit {
 
   quotaShareInGb: number;
   storageRemaining: number;
+  storageUsed: number;
 
   isVisible: boolean = false
 
   dataSubjectStorage: Subject<any> = new Subject<any>();
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueStringConfiguration: string = '';
+
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -51,7 +57,8 @@ export class ResizeFileSystemComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService,
-              private projectService: ProjectService) {
+              private projectService: ProjectService,
+              private configurationsService: ConfigurationsService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -155,20 +162,31 @@ export class ResizeFileSystemComponent implements OnInit {
   onChangeStorage() {
     this.dataSubjectStorage.pipe(debounceTime(700))
       .subscribe((res) => {
-        if (this.storage % 10 > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
-          this.storage = this.storage - (this.storage % 10);
+        if (this.storage % this.stepStorage > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
+          this.storage = this.storage - (this.storage % this.stepStorage);
         }
       });
+  }
+
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+    })
   }
 
   ngOnInit() {
     this.idFileSystem = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
     this.projectService.getByProjectId(this.project).subscribe(data => {
       this.quotaShareInGb = data.cloudProject?.quotaShareInGb;
+      this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
       this.storageRemaining =  data.cloudProject?.quotaShareInGb - data.cloudProjectResourceUsed?.quotaShareInGb
       this.getFileSystemById(this.idFileSystem);
       this.onChangeStorage();
+      this.getConfigurations();
     });
 
   }

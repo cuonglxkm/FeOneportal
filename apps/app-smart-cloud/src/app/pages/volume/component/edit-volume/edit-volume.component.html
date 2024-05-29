@@ -130,9 +130,9 @@
                                  style="width: 100%; margin-left: 0;"
                                  nzAutoFocus
                                  class="input-custom"
-                                 [nzMin]="0"
+                                 [nzMin]="minStorage"
                                  (ngModelChange)="changeValueStorage($event)"
-                                 [nzStep]="10" />
+                                 [nzStep]="stepStorage" />
                 <ng-template #storageErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">{{'volume.input.required.storage'|i18n}}</ng-container>
                   <ng-container *ngIf="control.hasError('pattern')">{{'volume.input.storage.required'|i18n}}</ng-container>
