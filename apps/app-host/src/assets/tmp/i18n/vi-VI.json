@@ -307,6 +307,7 @@
   "app.breadcrumb.block.storage": "Block Storage",
 
   "app.instance": "máy ảo",
+  "app.volume": "volume",
   "app.instances": "Máy ảo",
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
@@ -842,7 +843,7 @@
   "app.access.rule.manage": "Quản lý Access Rule",
   "app.access.rule.list": "Danh sách Access Rule",
   "app.button.access.rule.create": "Tạo mới Access Rule",
-  "app.button.access.rule.add": "Thêm Access Rule",
+  "app.button.access.rule.add": "Tạo mới Access Rule",
 
   "validation.access.to": "Access To không được để trống.",
   "validation.access.to.pattern": " Access To có dạng x.x.x.x hoặc x.x.x.x/x.",
