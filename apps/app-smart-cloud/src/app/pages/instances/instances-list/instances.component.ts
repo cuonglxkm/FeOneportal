@@ -101,8 +101,6 @@ export class InstancesComponent implements OnInit {
 
     this.notificationService.connection.on('UpdateInstance', (data) => {
       if (data) {
-        debugger;
-        console.log(" Recei ", data)
         let instanceId = data.serviceId;
         let actionType = data.actionType;
         var taskState = data?.data?.taskState ?? "";
