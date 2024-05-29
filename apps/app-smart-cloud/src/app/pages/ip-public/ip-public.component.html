@@ -24,17 +24,16 @@
         <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24"
              [nzXXl]="12">
           <div style="display:flex;">
-            <nz-select class="text-left" [(ngModel)]="selectedStatus" (ngModelChange)="search(null)" nzSize="large"
+            <nz-select class="text-left" [(ngModel)]="selectedStatus" (ngModelChange)="getData(false)" nzSize="large"
                        style="width: 170px; margin-right: 20px;">
               <nz-option *ngFor="let p of statusData" [nzValue]="p.value" [nzLabel]="p.name"></nz-option>
             </nz-select>
             <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
                             nzSize="large">
-              <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input placeholder="{{ 'app.button.search' | i18n }}"/>
+              <input #searchBox (keyup.enter)="getData(false)" [(ngModel)]="ipAddress" (ngModelChange)="searchDelay.next(false)" nz-input placeholder="{{ 'app.button.search' | i18n }}"/>
             </nz-input-group>
             <ng-template #suffixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{ 'app.button.search' | i18n }}"
-                   (click)="search(searchBox.value)"/>
+              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"/>
             </ng-template>
           </div>
         </div>

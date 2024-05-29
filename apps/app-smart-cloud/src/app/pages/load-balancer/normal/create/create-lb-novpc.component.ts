@@ -83,6 +83,7 @@ export class CreateLbNovpcComponent implements OnInit {
   private readonly debounceTimeMs = 2000;
   disabledSubnet: boolean;
   messageFail: any;
+  offerId: number;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -227,7 +228,7 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   onInput(value) {
-    if (!this.validateForm.controls['ipAddress'].invalid) {
+    if (!this.validateForm.controls['ipAddress'].invalid && value!='') {
       this.validateIpaddress.next(value);
     }
   }
@@ -240,6 +241,7 @@ export class CreateLbNovpcComponent implements OnInit {
 
   onChangeOffer(value) {
     this.product.id = value;
+    this.offerId = Number.parseInt(value);
     const selectedOption = this.offerList.find(option => option.id === value);
     this.selectedValueOffer.nativeElement.innerText = selectedOption.offerName;
     this.catalogService.getDetailOffer(Number.parseInt(value)).subscribe(data => {
@@ -301,7 +303,7 @@ export class CreateLbNovpcComponent implements OnInit {
     this.formCreateLoadBalancer.amManager = null;
     this.formCreateLoadBalancer.note = null;
     this.formCreateLoadBalancer.isTrial = false;
-    this.formCreateLoadBalancer.offerId = this.product.id;
+    this.formCreateLoadBalancer.offerId = this.offerId;
     this.formCreateLoadBalancer.couponCode = null;
     this.formCreateLoadBalancer.dhsxkd_SubscriptionId = null;
     this.formCreateLoadBalancer.dSubscriptionNumber = null;
