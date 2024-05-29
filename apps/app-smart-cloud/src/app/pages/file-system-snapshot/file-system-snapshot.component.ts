@@ -3,7 +3,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { IpFloatingService } from '../../shared/services/ip-floating.service';
 import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floating.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
+import { BaseResponse, NotificationService, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { debounceTime } from 'rxjs';
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
@@ -35,7 +35,8 @@ export class FileSystemSnapshotComponent {
   formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot()
 
   constructor(private fileSystemSnapshotService: FileSystemSnapshotService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private notificationService: NotificationService) {
   }
 
   refreshParams() {
@@ -100,12 +101,18 @@ export class FileSystemSnapshotComponent {
   handleOkEditFileSystemSnapShot(){
     this.getData()
   }
-  ngOnInit() {
 
+  
+  ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-    this.customerId = this.tokenService.get()?.userId
-    // this.getData(true)
+    this.customerId = this.tokenService.get()?.userId  
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+    this.notificationService.connection.on('UpdateStateShareSnapshot', (data) => {
+      this.getData();
+    });
   }
 }

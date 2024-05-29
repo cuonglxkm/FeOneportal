@@ -32,7 +32,7 @@
                           style="width: 300px;">
             <input name="name"
                    nz-input
-                   [nz-tooltip]="'app.button.search' | i18n"
+                   [placeholder]="'app.button.search' | i18n"
                    [(ngModel)]="value"
                    (input)="onInputChange($event.target['value'])"/>
           </nz-input-group>
@@ -50,7 +50,7 @@
       <nz-table
       #fixedTable
       style="margin-top: 20px"
-      [nzData]="filteredData"
+      [nzData]="response?.records"
       [nzPageSize]="response?.pageSize"
       (nzPageSizeChange)="onPageSizeChange($event)"
       [nzPageIndex]="response?.currentPage"
@@ -67,7 +67,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let data of filteredData; index as i">
+      <tr *ngFor="let data of fixedTable.data; index as i">
         <td>{{data.name}}</td>
         <td>{{data.expiration | date: 'dd/MM/yyyy'}}</td>
         <td>

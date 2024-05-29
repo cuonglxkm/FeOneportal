@@ -4,7 +4,8 @@ import { IpFloatingService } from '../../shared/services/ip-floating.service';
 import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floating.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
+import { TimeCommon } from '../../shared/utils/common';
 
 @Component({
   selector: 'one-portal-list-ip-floating',
@@ -27,6 +28,7 @@ export class ListIpFloatingComponent implements OnInit {
   isLoading: boolean = false
 
   isBegin: boolean = false
+  searchDelay = new Subject<boolean>();
 
   constructor(private ipFloatingService: IpFloatingService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
@@ -121,6 +123,9 @@ export class ListIpFloatingComponent implements OnInit {
     this.ipFloatingService.model.subscribe(data => {
       console.log(data)
     })
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
+      this.getData(false);
+    });
     // this.getData(true)
   }
 }

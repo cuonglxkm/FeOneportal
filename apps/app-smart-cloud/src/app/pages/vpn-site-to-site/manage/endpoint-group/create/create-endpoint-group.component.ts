@@ -74,7 +74,7 @@ export class CreateEndpointGroupComponent implements OnInit {
     this.formCreateEndpointGroup.type = this.selectedType;
     this.formCreateEndpointGroup.endpoints =
       this.selectedType === 'cidr'
-        ? this.form.controls.endpointsCidr.value.split(' ')
+        ? this.form.controls.endpointsCidr.value.split(',').map(item => item.trim())
         : this.subnetId;
     return this.formCreateEndpointGroup;
   }

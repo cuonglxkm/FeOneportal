@@ -52,19 +52,31 @@
       [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoading">
       <thead>
         <tr>
-          <th class="header-table">{{ 'app.cluster.username' | i18n }}</th>
-          <th class="header-table">{{ 'app.cluster.resource-type' | i18n }}</th>
-          <th class="header-table">{{ 'app.cluster.resource-name' | i18n }}</th>
-          <th class="header-table">{{ 'app.text.operation' | i18n }}</th>
-          <th class="header-table">{{ 'app.cluster.content' | i18n }}</th>
-          <th class="header-table">{{ 'app.cluster.action-time' | i18n }}</th>
+          <th class="header-table" nzWidth="15">{{ 'app.cluster.username' | i18n }}</th>
+          <th class="header-table" nzWidth="10">{{ 'app.cluster.resource-type' | i18n }}</th>
+          <th class="header-table" nzWidth="20">{{ 'app.cluster.resource-name' | i18n }}</th>
+          <th class="header-table" nzWidth="15">{{ 'app.text.operation' | i18n }}</th>
+          <th class="header-table" nzWidth="25">{{ 'app.cluster.content' | i18n }}</th>
+          <th class="header-table" nzWidth="15">{{ 'app.cluster.action-time' | i18n }}</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of logTable.data; let i = index;">
           <td>{{ item.userAction }}</td>
           <td id="type">{{ item.resourceType }}</td>
-          <td>{{ item.resource }}</td>
+          <td>
+            <ng-container *ngIf="item.resource.length <= 25; else truncateResourceTpl">
+              {{ item.resource }}
+            </ng-container>
+            <ng-template #truncateResourceTpl>
+              <span nz-popover nzPopoverPlacement="bottomLeft" [nzPopoverContent]="resourceTpl">
+                {{ item.resource | truncateLabel : 25 }}
+              </span>
+              <ng-template #resourceTpl>
+                {{ item.resource }}
+              </ng-template>
+            </ng-template>
+          </td>
           <td>{{ (item.operation | action2label) | i18n }}</td>
           <td>
             <ng-container *ngIf="item.note?.length <= 30; else truncateValueTpl">
@@ -72,10 +84,9 @@
             </ng-container>
             <ng-template #truncateValueTpl>
               <div nz-popover
-                [nzPopoverTitle]="'app.cluster.content' | i18n"
                 [nzPopoverContent]="contentTpl"
-                nzPopoverPlacement="bottom">
-                {{item.note | truncateLabel}}
+                nzPopoverPlacement="bottomLeft">
+                {{item.note | truncateLabel : 40}}
               </div>
 
               <ng-template #contentTpl>
