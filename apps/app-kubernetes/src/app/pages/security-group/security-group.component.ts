@@ -10,6 +10,8 @@ import { KubernetesCluster } from '../../model/cluster.model';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { ClusterService } from '../../services/cluster.service';
 import { camelizeKeys } from 'humps';
+import { I18NService } from '../../core/i18n/i18n.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'security-group',
@@ -36,7 +38,8 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
     private clusterService: ClusterService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notificationService: NzNotificationService,
-    private shareService: ShareService
+    private shareService: ShareService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -85,7 +88,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
 
   handleCopyIDGroup() {
     this.clipboardService.copy(this.selectedSG.id);
-    this.notificationService.success("Đã sao chép", null);
+    this.notificationService.success(null, this.i18n.fanyi('app.bucket.detail.copy.success'));
   }
 
   getListSG() {
@@ -117,7 +120,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
         sgData.listOfSG = this.listOfSG;
         this.shareService.emitSGData(sgData);
       } else {
-        this.notificationService.error("", "Không có thông tin security group");
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('cluster.security-group.empty'));
       }
     });
   }

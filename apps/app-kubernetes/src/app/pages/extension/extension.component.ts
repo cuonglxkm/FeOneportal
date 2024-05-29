@@ -13,6 +13,8 @@ import { VlanService } from '../../services/vlan.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { PriceModel } from '../../model/price.model';
 import { UserInfo } from '../../model/user.model';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-extension',
@@ -46,7 +48,8 @@ export class ExtensionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private vlanService: VlanService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.isShowModalCancelExtend = false;
     this.isSubmitting = false;
@@ -129,7 +132,7 @@ export class ExtensionComponent implements OnInit {
         this.listOfPriceItem = r.data;
         this.initPrice();
       } else {
-        this.notificationService.error("Thất bại", r.message);
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }

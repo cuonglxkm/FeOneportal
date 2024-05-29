@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostListener, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -12,6 +12,8 @@ import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
 import { NotificationConstant } from '../../constants/notification.constant';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -71,7 +73,8 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     private notificationService: NzNotificationService,
     private ref: ChangeDetectorRef,
     private zone: NgZone,
-    private router: Router
+    private router: Router,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   private subscription: Subscription;
@@ -292,7 +295,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           this.listOfStatusCluster = r.data;
         } else {
-          this.notificationService.error("", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -390,10 +393,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
       }))
       .subscribe((r: any) => {
         if (r && r.code == 200) {
-          this.notificationService.success("", r.message);
           this.searchCluster();
-        } else {
-          this.notificationService.error("", r.message);
         }
       });
   }
@@ -411,7 +411,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
           if (notificationMessage.content && notificationMessage.content?.length > 0) {
             if (notificationMessage.status == NotificationConstant.NOTI_SUCCESS) {
               this.notificationService.success(
-                NotificationConstant.NOTI_SUCCESS_LABEL,
+                this.i18n.fanyi('app.status.success'),
                 notificationMessage.content);
 
               // refresh page
@@ -419,7 +419,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
 
             } else {
               this.notificationService.error(
-                NotificationConstant.NOTI_ERROR_LABEL,
+                this.i18n.fanyi('app.status.fail'),
                 notificationMessage.content);
             }
           }

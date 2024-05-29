@@ -2062,6 +2062,7 @@
   "cluster.instances.start-notify-2": "Are you sure you want to start node {{name}} ?",
   "cluster.validate.min-error.extend": "Enter a minimum of 1 month",
   "cluster.validate.max-error.extend": "Enter a maximum of 100 months",
+  "cluster.security-group.empty": "Security Group information not found",
 
   "app.text.version": "Version",
   "app.text.status": "Status",

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { KubernetesCluster } from '../../model/cluster.model';
 import { ClusterService } from '../../services/cluster.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,6 +8,8 @@ import { RegionModel } from 'libs/common-utils/src';
 import { ProjectModel } from '../../shared/models/project.model';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { finalize } from 'rxjs';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-edit-info',
@@ -29,7 +31,8 @@ export class EditInfoComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private notificationService: NzNotificationService
+    private notificationService: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.isSubmitting = false;
     this.showModalCancelEdit = false;
@@ -94,10 +97,10 @@ export class EditInfoComponent implements OnInit {
       .pipe(finalize(() => this.isSubmitting = false))
       .subscribe((r: any) => {
         if (r && r.code == 200) {
-          this.notificationService.success('', r.message);
+          this.notificationService.success(this.i18n.fanyi('app.status.success'), r.message);
           this.back2detail();
         } else {
-          this.notificationService.error('', r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       })
     }

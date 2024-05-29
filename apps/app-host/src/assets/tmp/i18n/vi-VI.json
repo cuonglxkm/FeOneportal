@@ -1955,6 +1955,7 @@
   "cluster.instances.start-notify-2": "Bạn có chắc muốn bật node {{name}} ?",
   "cluster.validate.min-error.extend": "Nhập số tháng tối thiểu là 1",
   "cluster.validate.max-error.extend": "Nhập số tháng tối đa là 100",
+  "cluster.security-group.empty": "Không có thông tin security group",
 
   "app.text.version": "Phiên bản",
   "app.text.status": "Trạng thái",
