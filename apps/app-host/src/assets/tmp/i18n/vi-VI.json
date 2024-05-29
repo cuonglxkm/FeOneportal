@@ -73,6 +73,7 @@
 
   "app.minute": "phút",
   "app.hour": "giờ",
+  "app.hours": "giờ",
   "app.day": "ngày",
   "app.days": "ngày",
   "app.week": "tuần",
@@ -201,11 +202,11 @@
   "app.random": "Ngẫu nhiên",
   "app.name": "Tên",
   "app.snapshot.create": "Tạo Snapshot",
-  "app.remaining.days": "Số ngày còn lại",
+  "app.remaining.hours": "Số giờ còn lại",
   "app.guide.formula": "Hướng dẫn công thức",
   "app.note.guide.formula": "Khi điều chỉnh dịch vụ, chi phí được tính:",
   "app.note.guide.formula.numerator": "Giá theo tháng gói B - Giá theo tháng gói A",
-  "app.example.guide.formula": "Ví dụ: Người dùng mua gói cấu hình SMC01 có giá 1.000.000 VND/tháng với thời gian sử dụng là 1 tháng từ ngày 01/04/2024 - 30/04/2024. Người dùng thực hiện điều chỉnh gói cấu hình khác với giá 1.500.000 VND/tháng vào ngày 15/04/2024. Như vậy người dùng đã sử dụng gói dịch vụ cũ 15 ngày và điều chỉnh gói cấu hình mới có thời gian sử dụng là 15 ngày. Vậy chi phí nâng gói cấu hình khi điều chỉnh dịch vụ của khách hàng cần thanh toán:",
+  "app.example.guide.formula": "Ví dụ: Người dùng mua gói cấu hình SMC01 có giá 720.000 VND/tháng và có 1000 VND/giờ với thời gian sử dụng là 1 tháng từ ngày 00:00:00 01/04/2024 - 23:59:59 30/04/2024. Người dùng thực hiện điều chỉnh gói cấu hình khác với giá 1.080.000 VND/tháng vào 2:00:00 15/04/2024. Như vậy người dùng đã sử dụng gói dịch vụ cũ 15 ngày 2 giờ và điều chỉnh gói cấu hình mới có thời gian sử dụng là 15 ngày 22 giờ (382 giờ). Vậy chi phí nâng gói cấu hình khi điều chỉnh dịch vụ của khách hàng cần thanh toán:",
 
   "app.ip.type": "Loại IP",
   "app.ip.address": "Địa chỉ IP",
@@ -307,6 +308,7 @@
   "app.breadcrumb.block.storage": "Block Storage",
 
   "app.instance": "máy ảo",
+  "app.volume": "volume",
   "app.instances": "Máy ảo",
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
@@ -843,7 +845,7 @@
   "app.access.rule.manage": "Quản lý Access Rule",
   "app.access.rule.list": "Danh sách Access Rule",
   "app.button.access.rule.create": "Tạo mới Access Rule",
-  "app.button.access.rule.add": "Thêm Access Rule",
+  "app.button.access.rule.add": "Tạo mới Access Rule",
 
   "validation.access.to": "Access To không được để trống.",
   "validation.access.to.pattern": " Access To có dạng x.x.x.x hoặc x.x.x.x/x.",
@@ -2807,5 +2809,16 @@
   "schedule.backup.health": "Khôi phục",
   "schedule.backup.action3": "Xác nhận tạm dừng lịch backup",
   "schedule.backup.action4": "Quý khách có chắc chắn muốn tạm dừng lịch backup",
-  "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight"
+  "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",
+
+
+  "app.manage.site.to.site.title":"Quản lý VPN site to site",
+  "app.manage.site.to.site.title.infomation":"Thông tin VPN site to site",
+  "app.manage.site.to.site.extend":"Gia hạn",
+  "app.manage.site.to.site.Adjust":"Điều chỉnh",
+  "app.manage.site.to.site.delete":"Xóa",
+  "app.manage.site.to.site.name.package":"Tên gói"
+
+
+
 }

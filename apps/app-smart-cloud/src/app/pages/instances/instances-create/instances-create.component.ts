@@ -1665,7 +1665,7 @@ export class InstancesCreateComponent implements OnInit {
     let id: number, value: any;
     this.dataBSSubject
       .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+        debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
         id = res.id;
@@ -1677,8 +1677,16 @@ export class InstancesCreateComponent implements OnInit {
           (obj) => obj.id == id
         );
         let changeBlockStorage = this.listOfDataBlockStorage[index];
+        if (changeBlockStorage.capacity % 10 > 0) {
+          this.notification.warning(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity')
+          );
+          changeBlockStorage.capacity =
+            changeBlockStorage.capacity - (changeBlockStorage.capacity % 10);
+        }
         this.volumeInit(changeBlockStorage);
-        let productId = changeBlockStorage.type == 'hdd' ? 2 : 61;
+        let productId = changeBlockStorage.type == 'hdd' ? 2 : 114;
         this.catalogService
           .getCatalogOffer(productId, this.region, null, null)
           .subscribe((data) => {

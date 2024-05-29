@@ -34,7 +34,7 @@ export function ipValidator(): ValidatorFn {
       return validateOctets(value) ? null : { invalidIp: true };
     } else if (subnetPattern.test(value)) {
       const [ipPart, subnetPart] = value.split('/');
-      return validateOctets(ipPart) && validateSubnet(subnetPart) ? null : { invalidIp: true };
+      return validateOctets(ipPart) && validateSubnet(ipPart, subnetPart) ? null : { invalidIp: true };
     }
 
     return { invalidIp: true };
@@ -46,8 +46,15 @@ function validateOctets(ip: string): boolean {
   return octets.every(octet => octet >= 0 && octet <= 255);
 }
 
-function validateSubnet(subnet: string): boolean {
+function validateSubnet(ip: string, subnet: string): boolean {
   const subnetValue = Number(subnet);
+  if(subnetValue === 16) {
+    const octets = ip.split('.').map(Number);
+    return octets[2] === 0 && octets[3] === 0;
+  } else if (subnetValue === 24) {
+    const octets = ip.split('.').map(Number);
+    return octets[3] === 0;
+  }
   return subnetValue >= 0 && subnetValue <= 32;
 }
 @Component({
@@ -154,7 +161,7 @@ export class CreateAccessRuleComponent implements AfterViewInit{
       }, error => {
         this.isVisible = false;
         this.isLoading = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.access.to.create.fail') + error.error.detail);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.access.to.create.fail. ') + error.error.detail);
       });
       this.validateForm.reset();
     }
