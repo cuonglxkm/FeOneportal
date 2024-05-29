@@ -29,7 +29,7 @@ export class ResizeFileSystemComponent implements OnInit {
   validateForm: FormGroup<{
     storage: FormControl<number>
   }> = this.fb.group({
-    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]]
+    storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]]
   });
 
   storage: number = 0;

@@ -16,6 +16,7 @@ export class EditSubUserComponent {
   @Input() region: number
   @Input() project: number
   @Input() idSubUser: string
+  @Input() permission: string
   @Input() uid: string
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
@@ -26,7 +27,7 @@ export class EditSubUserComponent {
   validateForm: FormGroup<{
     access: FormControl<string>
   }> = this.fb.group({
-    access: ['full', [Validators.required]]
+    access: ['', [Validators.required]]
   })
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -34,6 +35,10 @@ export class EditSubUserComponent {
               private fb: NonNullableFormBuilder,
               private subUserService: SubUserService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+  }
+
+  ngOnInit(): void {
+    this.validateForm.get('access').setValue(this.permission === 'full-control' ? 'full' : 'none')
   }
 
   showModal() {

@@ -28,7 +28,7 @@ export class StaticWebHostingComponent implements OnInit {
   @Input() bucketName: string;
   bucketDetail: BucketDetail = new BucketDetail();
   bucketWebsitecreate: BucketWebsite = new BucketWebsite();
-
+  isLoading: boolean = false;
   constructor(
     private bucketService: BucketService,
     private cdr: ChangeDetectorRef,
@@ -52,6 +52,7 @@ export class StaticWebHostingComponent implements OnInit {
   }
 
   update() {
+    this.isLoading = true
     if (this.bucketDetail.isWebsite) {
       this.bucketWebsitecreate.bucketName = this.bucketName;
       this.bucketWebsitecreate.indexDocumentSuffix =
@@ -68,17 +69,20 @@ export class StaticWebHostingComponent implements OnInit {
         .createBucketWebsite(this.bucketWebsitecreate)
         .subscribe({
           next: (data) => {
-            this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+            this.isLoading = false
             this.notification.success(
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.static.web.hosting.create.success')
             );
+            this.cdr.detectChanges()
           },
           error: (e) => {
+            this.isLoading = false
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.static.web.hosting.create.fail')
             );
+            this.cdr.detectChanges()
           },
         });
     } else {
@@ -86,17 +90,20 @@ export class StaticWebHostingComponent implements OnInit {
         .deleteBucketWebsite({ bucketName: this.bucketName })
         .subscribe({
           next: (data) => {
-            this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+            this.isLoading = false
             this.notification.success(
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.static.web.hosting.create.success')
             );
+            this.cdr.detectChanges()
           },
           error: (e) => {
+            this.isLoading = false
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.static.web.hosting.create.fail')
             );
+            this.cdr.detectChanges()
           },
         });
     }

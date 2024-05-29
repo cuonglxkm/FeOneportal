@@ -24,7 +24,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 export class BucketCreateComponent implements OnInit {
   bucketName: string;
   type: string;
-
+  isLoading: boolean = false;
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
@@ -82,7 +82,6 @@ export class BucketCreateComponent implements OnInit {
           this.cardHeight
         );
       });
-    this.cdr.detectChanges();
   }
 
   activePrivate: boolean = true;
@@ -99,8 +98,10 @@ export class BucketCreateComponent implements OnInit {
   }
 
   save() {
+    this.isLoading = true
     this.bucketService.createBucket(this.bucketName, this.type).subscribe({
       next: (data) => {
+        this.isLoading = false
         this.notification.success(
           this.i18n.fanyi('app.status.success'),
           this.i18n.fanyi('app.button.bucket.create.success')
@@ -108,11 +109,22 @@ export class BucketCreateComponent implements OnInit {
         this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
       },
       error: (e) => {
-        this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
-        this.notification.error(
-          this.i18n.fanyi('app.status.fail'),
-          this.i18n.fanyi('app.button.bucket.create.fail')
-        );
+        this.isLoading = false
+
+        console.log(e);
+        
+        if(e.status === 500){
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.create.exist')
+          );
+        }else{
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.button.bucket.create.fail')
+          );
+        }
+        this.cdr.detectChanges();
       },
     });
   }

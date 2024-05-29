@@ -85,6 +85,7 @@
             (keyup.enter)="loadData()"
             [(ngModel)]="folderNameLike"
             nz-input
+            [placeholder]="'app.users.search' | i18n"
             [nz-tooltip]="'app.button.search' | i18n"
           />
         </nz-input-group>
@@ -97,14 +98,6 @@
             (click)="loadData()"
           />
         </ng-template>
-        <button
-          nz-button
-          nzType="default"
-          (click)="openFilter()"
-          nzSize="large"
-        >
-          <span class="button-text-primary">Lọc</span>
-        </button>
       </div>
     </div>
     <div
@@ -316,184 +309,10 @@
   </nz-table>
 </nz-card>
 
-<!--Filter-->
-<nz-modal
-  [(nzVisible)]="isVisibleFilter"
-  nzTitle="Lọc danh sách Object"
-  (nzOnCancel)="handleCancel()"
-  (nzOnOk)="handleOkFilter()"
-  [nzOkText]="'app.button.confirm' | i18n"
-  [nzCancelText]="'app.button.cancel' | i18n"
-  [nzStyle]="modalStyle"
->
-<form nz-form [formGroup]="formFilter">
-  <ng-container *nzModalContent>
-    <nz-table [nzData]="dataFilter" nzHideOnSinglePage="true">
-      <thead>
-        <tr>
-          <th>Cột</th>
-          <th>Điều kiện</th>
-          <th>Giá trị</th>
-          <th>{{ 'app.text.operation' | i18n }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of dataFilter">
-          <td style="width: 28%">
-            <nz-select
-              [(ngModel)]="item.name"
-              (ngModelChange)="selectCol(item, $event)"
-              nzSize="large"
-              formControlName="filterName"
-              style="width: 100%"
-            >
-              <nz-option
-                *ngFor="let p of colReal"
-                [nzValue]="p"
-                [nzLabel]="p"
-              ></nz-option>
-            </nz-select>
-          </td>
-          <td style="width: 20%">
-            <nz-select
-              *ngIf="item.name == 'Tên'"
-              [(ngModel)]="item.condition"
-              (ngModelChange)="selectCondition(item.orderNum, 1, $event)"
-              nzSize="large"
-              [nzPlaceHolder]="item.condition"
-              formControlName="filterCondition"
-              style="width: 100%"
-            >
-              <nz-option
-                *ngFor="let p of conditionNameReal"
-                [nzValue]="p"
-                [nzLabel]="p"
-              ></nz-option>
-            </nz-select>
-            <nz-select
-              *ngIf="item.name == 'Thời gian chỉnh sửa'"
-              [(ngModel)]="item.condition"
-              (ngModelChange)="selectCondition(item.orderNum, 2, $event)"
-              nzSize="large"
-              [nzPlaceHolder]="item.condition"
-              formControlName="filterCondition"
-              style="width: 100%"
-            >
-              <nz-option
-                *ngFor="let p of conditionTimeReal"
-                [nzValue]="p"
-                [nzLabel]="p"
-              ></nz-option>
-            </nz-select>
-            <nz-select
-              *ngIf="item.name == 'Dung lượng'"
-              [(ngModel)]="item.condition"
-              (ngModelChange)="selectCondition(item.orderNum, 3, $event)"
-              nzSize="large"
-              [nzPlaceHolder]="item.condition"
-              formControlName="filterCondition"
-              style="width: 100%"
-            >
-              <nz-option
-                *ngFor="let p of conditionCapacityReal"
-                [nzValue]="p"
-                [nzLabel]="p"
-              ></nz-option>
-            </nz-select>
-          </td>
-          <td style="width: 47%">
-            <input
-              nzSize="large"
-              *ngIf="item.name == 'Tên'"
-              nz-input
-              placeholder="Basic usage"
-              [(ngModel)]="item.value"
-              formControlName="filterValueName"
-              type="text"
-              style="width: 100%"
-            />
-            <nz-date-picker
-              *ngIf="item.name == 'Thời gian chỉnh sửa'"
-              [(ngModel)]="fitem.value"
-              nzSize="large"
-              formControlName="filterValueDate"
-              style="width: 100%"
-            ></nz-date-picker>
-            <nz-input-number
-              *ngIf="item.name == 'Dung lượng'"
-              [(ngModel)]="item.value"
-              [nzMin]="0"
-              [nzStep]="1"
-              formControlName="filterValueSize"
-              nzSize="large"
-              style="width: 60%"
-            ></nz-input-number>
-            <nz-select
-              *ngIf="item.name == 'Dung lượng' && item.condition == 'Lớn hơn'"
-              [(ngModel)]="selectTypeMore"
-              (ngModelChange)="selectType(item.condition, $event)"
-              nzSize="large"
-              [nzPlaceHolder]="item.type"
-              style="width: 30%; margin-left: 5%"
-            >
-              <nz-option
-                *ngFor="let p of capMoreTypeReal"
-                [nzValue]="p"
-                [nzLabel]="p"
-              ></nz-option>
-            </nz-select>
-            <nz-select
-              *ngIf="item.name == 'Dung lượng' && item.condition == 'Nhỏ hơn'"
-              [(ngModel)]="selectTypeLess"
-              (ngModelChange)="selectType(item.condition, $event)"
-              nzSize="large"
-              [nzPlaceHolder]="item.type"
-              style="width: 30%; margin-left: 5%"
-            >
-              <nz-option
-                *ngFor="let p of capLessTypeReal"
-                [nzValue]="p"
-                [nzLabel]="p"
-              ></nz-option>
-            </nz-select>
-          </td>
-          <td style="width: 5%">
-            <button
-              style="border: none"
-              nz-button
-              (click)="deleteFilter(item.orderNum)"
-              nzSize="large"
-            >
-              <img style="margin-top: -4px" src="assets/imgs/trash.svg" />
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
-    <button
-      nz-button
-      *ngIf="isVisibleAddFilte"
-      nzType="primary"
-      (click)="addFilter()"
-      nzSize="large"
-      style="margin-top: 8px"
-    >
-      <img
-        style="padding-right: 10px"
-        src="assets/imgs/add-circle.svg"
-        alt=""
-      />
-      <span class="button-text-primary">Thêm một dòng</span>
-    </button>
-  </ng-container>
-</form>
-</nz-modal>
 <!--Tạo thư mục-->
 <nz-modal
   [(nzVisible)]="isVisibleCreateFolder"
   [nzTitle]="'app.bucket.detail.createFolder' | i18n"
-  (nzOnCancel)="isVisibleCreateFolder = false"
-  (nzOnOk)="createFolder()"
   [nzOkText]="'app.button.confirm' | i18n"
   [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
@@ -536,15 +355,33 @@
       />
     </div>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="isVisibleCreateFolder = false">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="createFolder()"
+      [nzLoading]="isLoadingCreateFolder"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+        *ngIf="isLoadingCreateFolder === false"
+      />{{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
 </nz-modal>
 <!--Tải file lên-->
 <nz-modal
   [(nzVisible)]="isVisibleUploadFile"
   [nzTitle]="'app.bucket.detail.uploadFile' | i18n"
-  (nzOnCancel)="handleCancelUploadFile()"
-  (nzOnOk)="uploadAllFile()"
-  [nzOkText]="'app.bucket.detail.uploadFile.all' | i18n"
-  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -708,6 +545,25 @@
       </nz-row>
     </div>
   </ng-container>
+  <div *nzModalFooter class="d-flex justify-content-end">
+    <button nz-button (click)="handleCancelUploadFile()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="uploadAllFile()"
+    >
+      <div class="d-flex align-items-center">
+        <one-portal-svg-icon class="icon-svg justify-center-icon" [icon]="'icon_download'"></one-portal-svg-icon>
+      <span>{{ 'app.bucket.detail.uploadFile.all' | i18n }}</span>
+      </div>
+    </button>
+  </div>
 </nz-modal>
 
 <!--Chi tiết-->
@@ -740,19 +596,22 @@
         <span class="button-text-primary">{{ 'app.copy' | i18n }}</span>
       </button>
     </nz-row>
-    <hr *ngIf="dataAction.objectType != 'folder'" />
-    <div *ngIf="dataAction.objectType != 'folder'">
+    <nz-divider *ngIf="dataAction.objectType != 'folder'"></nz-divider>
+    <div class="text-label mb-2" *ngIf="dataAction.objectType != 'folder'">
       Phân quyền:
-      {{
+      <span style="font-weight: 700;">{{
         dataAction != undefined
           ? dataAction.isPublic
             ? 'Public'
             : 'Private'
           : ''
-      }}
+      }}</span>
     </div>
-    <div *ngIf="dataAction.objectType != 'folder'">
-      Loại: {{ dataAction != undefined ? dataAction.objectType : '' }}
+    <div class="text-label" *ngIf="dataAction.objectType != 'folder'">
+      Loại: 
+      <span style="font-weight: 700;">
+      {{ dataAction != undefined ? dataAction.objectType : '' }}
+    </span>
     </div>
   </ng-container>
 </nz-modal>
@@ -765,9 +624,6 @@
     dataAction.objectType != 'folder' ? 'File' : 'Object'
   }}?"
   (nzOnCancel)="handleCancel()"
-  (nzOnOk)="deleteFolder()"
-  [nzOkText]="'app.button.confirm' | i18n"
-  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -795,6 +651,28 @@
       >?
     </div>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancel()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="deleteFolder()"
+      [nzLoading]="isLoadingDeleteObject"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+        *ngIf="isLoadingDeleteObject === false"
+      />{{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
 </nz-modal>
 
 <!--Sao chép-->
@@ -894,11 +772,8 @@
 <!--Chia sẻ-->
 <nz-modal
   [(nzVisible)]="isVisibleShare"
-  [nzTitle]="'app.bucket.detail.copy.shareFile' | i18n "
   (nzOnCancel)="handleCancelShareFile()"
-  (nzOnOk)="handleShare()"
-  [nzOkText]="'app.bucket.detail.copy.shareFile.link' | i18n "
-  [nzCancelText]="'app.button.cancel' | i18n"
+  [nzTitle]="'app.bucket.detail.copy.shareFile' | i18n "
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -931,6 +806,26 @@
       ></nz-skeleton>
     </div>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelShareFile()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleShare()"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/icon-copy3.svg"
+        alt=""
+      />{{ 'app.bucket.detail.copy.shareFile.link' | i18n }}
+    </button>
+  </div>
 </nz-modal>
 
 <!--Phân quyền-->
@@ -938,9 +833,6 @@
   [(nzVisible)]="isVisiblePermission"
   [nzTitle]="'app.bucket.detail.copy.authorize' | i18n "
   (nzOnCancel)="this.isVisiblePermission = false"
-  (nzOnOk)="editPermission()"
-  [nzOkText]="'app.button.confirm' | i18n"
-  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -1026,13 +918,35 @@
       </nz-row>
     </nz-radio-group>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="this.isVisiblePermission = false">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="editPermission()"
+      [nzLoading]="isLoadingAuthorize"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+        *ngIf="isLoadingAuthorize === false"
+      />{{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
 </nz-modal>
 
 <!--Phiên bản-->
 <nz-modal
   *ngIf="dataAction != undefined"
   [(nzVisible)]="isVisibleVersioning"
-  [nzTitle]="'app.bucket.detail.version.list' | i18n:  dataAction.key"
+  [nzTitle]="'app.bucket.detail.version.list' | i18n: {objectName: dataAction.key}"
   (nzOnCancel)="handleCancel()"
   (nzOnOk)="editPermission()"
   [nzOkText]="null"
@@ -1069,7 +983,7 @@
               <div>
                 <img
                   src="assets/imgs/download.svg"
-                  style="padding-right: 10px; height: 20px"
+                  style="padding-right: 10px; height: 20px; cursor: pointer;"
                   nz-tooltip
                   [nzTooltipTitle]="'app.payment.download' | i18n"
                   nzTooltipPlacement="bottom"
@@ -1078,7 +992,7 @@
                 <img
                   *ngIf="item.isLatest != true"
                   src="assets/imgs/refresh.svg"
-                  style="padding-right: 10px; height: 25px"
+                  style="padding-right: 10px; height: 25px; cursor: pointer;"
                   nz-tooltip
                   nzTooltipTitle="'app.restore' | i18n"
                   nzTooltipPlacement="bottom"
@@ -1086,7 +1000,7 @@
                 />
                 <img
                   src="assets/imgs/delete.svg"
-                  style="height: 20px"
+                  style="height: 25px; cursor: pointer;"
                   nz-tooltip
                   [nzTooltipTitle]="'app.delete' | i18n"
                   nzTooltipPlacement="bottom"
@@ -1106,9 +1020,6 @@
   [(nzVisible)]="isVisibleDeleteVersion"
   [nzTitle]="'app.bucket.detail.version.delete' | i18n "
   (nzOnCancel)="isVisibleDeleteVersion = false"
-  (nzOnOk)="deleteFolderVersion()"
-  [nzOkText]="'app.button.confirm' | i18n"
-  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -1121,6 +1032,28 @@
       {{ 'app.bucket.detail.version.delete.confirm' | i18n }}
     </div>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="isVisibleDeleteVersion = false">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="deleteFolderVersion()"
+      [nzLoading]="isVisibleDeleteVersion"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+        *ngIf="isVisibleDeleteVersion === false"
+      />{{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
 </nz-modal>
 
 <!--Khôi phục Phiên bản-->
@@ -1129,8 +1062,6 @@
   [nzTitle]="'app.bucket.detail.version.restore' | i18n"
   (nzOnCancel)="isVisibleRestoreVersion = false"
   (nzOnOk)="restoreObjectVersion()"
-  [nzOkText]="'app.button.confirm' | i18n"
-  [nzCancelText]="'app.button.cancel' | i18n"
   [nzStyle]="modalStyle"
 >
   <ng-container *nzModalContent>
@@ -1143,6 +1074,28 @@
       {{ 'app.bucket.detail.version.restore.confirm' | i18n }}
     </div>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="isVisibleRestoreVersion = false">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="restoreObjectVersion()"
+      [nzLoading]="isLoadingRestoreVersion"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+        *ngIf="isLoadingRestoreVersion === false"
+      />{{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
 </nz-modal>
 
 <!--Xóa-->

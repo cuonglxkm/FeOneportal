@@ -15,6 +15,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-create-volume',
@@ -58,7 +59,7 @@ export class CreateVolumeComponent implements OnInit {
     instanceId: [null as number],
     time: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     description: ['', Validators.maxLength(700)],
-    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
+    storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     checkMulti: [''],
     checkEncrypt: [''],
     isEncryption: [false],
@@ -100,7 +101,8 @@ export class CreateVolumeComponent implements OnInit {
     private instanceService: InstancesService,
     private cdr: ChangeDetectorRef,
     private catalogService: CatalogService,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private notification: NzNotificationService
   ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
@@ -215,6 +217,9 @@ export class CreateVolumeComponent implements OnInit {
     console.log('Selected option changed ssd:', this.selectedValueSSD);
     if (this.selectedValueSSD) {
       this.volumeCreate.volumeType = 'ssd';
+      this.validateForm.controls.storage.reset();
+      this.validateForm.controls.storage.markAsDirty()
+      this.validateForm.controls.storage.updateValueAndValidity()
       if (this.validateForm.get('storage').value <= 40) {
         this.iops = 400;
       } else {
@@ -229,6 +234,9 @@ export class CreateVolumeComponent implements OnInit {
     this.selectedValueSSD = false;
     console.log('Selected option changed hdd:', this.selectedValueHDD);
     // this.iops = this.validateForm.get('storage').value * 10
+    this.validateForm.controls.storage.reset();
+    this.validateForm.controls.storage.markAsDirty()
+    this.validateForm.controls.storage.updateValueAndValidity()
     if (this.selectedValueHDD) {
       this.volumeCreate.volumeType = 'hdd';
       this.iops = 300;
@@ -268,6 +276,7 @@ export class CreateVolumeComponent implements OnInit {
 
   timeSelectedChange(value) {
     this.timeSelected = value;
+    this.validateForm.controls.time.setValue(this.timeSelected)
     console.log(this.timeSelected);
     this.getTotalAmount();
   }
@@ -352,6 +361,10 @@ export class CreateVolumeComponent implements OnInit {
   changeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
+        if((res % 10) > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'))
+          this.validateForm.controls.storage.setValue(res - (res % 10))
+        }
         console.log('total amount');
         this.getTotalAmount();
       });

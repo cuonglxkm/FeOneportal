@@ -6,6 +6,7 @@ import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../..
 import { AccessRule } from '../../../../shared/models/access-rule.model';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
 import { FileSystemDetail, FileSystemModel } from '../../../../shared/models/file-system.model';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-list-access-rule',
@@ -30,17 +31,29 @@ export class ListAccessRuleComponent implements OnInit{
   response: BaseResponse<AccessRule[]>
 
   isLoading: boolean = false
+
+  dataSubjectInputSearch: Subject<any> = new Subject<any>();
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               private accessRuleService: AccessRuleService,
               private fileSystemService: FileSystemService) {
   }
 
-  onInputChange(value) {
-    this.value = value.trim()
-    this.getListAccessRule(false)
+  changeInputChange(value) {
+    this.dataSubjectInputSearch.next(value)
   }
 
+  onChangeInputChange() {
+    this.dataSubjectInputSearch.pipe(debounceTime(500)).subscribe((res) => {
+      this.value = res.trim()
+      this.getListAccessRule(false)
+    })
+  }
+
+  onEnter() {
+    this.value = this.value.trim()
+    this.getListAccessRule(false)
+  }
 
   onAccessTypeSelect(value) {
     this.accessType = value
@@ -123,5 +136,6 @@ export class ListAccessRuleComponent implements OnInit{
     console.log('id', this.idFileSystem)
     this.getFileSystemById()
     this.getListAccessRule(true)
+    this.onChangeInputChange()
   }
 }

@@ -66,7 +66,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     radio: [''],
     instanceId: [null as number],
     description: ['', Validators.maxLength(700)],
-    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]],
+    storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]],
     radioAction: [''],
     isEncryption: [false],
     isMultiAttach: [false]
@@ -148,10 +148,9 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
         if(res % 10 > 0) {
-          this.notification.warning('', this.i18n.fanyi(''))
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'))
+          this.validateForm.controls.storage.setValue(res - (res % 10))
         }
-        console.log('total amount');
-        // this.getTotalAmount()
       });
   }
 
@@ -246,6 +245,10 @@ export class CreateVolumeVpcComponent implements OnInit {
     console.log('Selected option changed ssd:', this.selectedValueSSD);
     if (this.selectedValueSSD) {
       this.volumeCreate.volumeType = 'ssd';
+      this.validateForm.controls.storage.reset();
+      this.validateForm.controls.storage.markAsDirty()
+      this.validateForm.controls.storage.updateValueAndValidity()
+      this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
       if (this.validateForm.get('storage').value <= 40) {
         this.iops = 400;
       } else {
@@ -263,6 +266,11 @@ export class CreateVolumeVpcComponent implements OnInit {
     // this.iops = this.validateForm.get('storage').value * 10
     if (this.selectedValueHDD) {
       this.volumeCreate.volumeType = 'hdd';
+      this.validateForm.controls.storage.reset();
+      this.validateForm.controls.storage.markAsDirty()
+      this.validateForm.controls.storage.updateValueAndValidity()
+
+      this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
       this.iops = 300;
     }
   }
