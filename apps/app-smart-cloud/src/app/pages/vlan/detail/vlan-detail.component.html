@@ -24,7 +24,7 @@
 </page-header>
 <nz-content>
   <nz-card [nzLoading]="isLoading">
-    <nz-tabset>
+    <nz-tabset [(nzSelectedIndex)]="selectedIndextab">
       <nz-tab [nzTitle]="titleSubnet">
         <nz-row nzJustify="space-between" style="margin-bottom: 15px;" *ngIf="!networkName?.includes('pri_network')">
           <nz-col nzSpan="16">
