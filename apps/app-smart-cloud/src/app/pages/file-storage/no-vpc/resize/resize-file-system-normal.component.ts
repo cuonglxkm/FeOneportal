@@ -105,7 +105,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     this.resizeFileSystem.actionType = 4;
     this.resizeFileSystem.serviceInstanceId = this.idFileSystem;
     this.resizeFileSystem.regionId = this.region;
-    this.resizeFileSystem.serviceName = this.fileSystem.name;
+    this.resizeFileSystem.serviceName = this.fileSystem?.name;
     this.resizeFileSystem.vpcId = this.project;
     this.resizeFileSystem.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.ShareResizeSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null';
     this.resizeFileSystem.userEmail = this.tokenService.get()?.email;
@@ -165,18 +165,6 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     var returnPath: string = '/app-smart-cloud/file-storage/file-system/resize/normal/' + this.idFileSystem;
     console.log('request', request);
     this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
-  }
-
-  getMonthDifference(expiredDateStr: string, createdDateStr: string): number {
-    // Chuyển đổi chuỗi thành đối tượng Date
-    const expiredDate = new Date(expiredDateStr);
-    const createdDate = new Date(createdDateStr);
-
-    // Tính số tháng giữa hai ngày
-    const oneDay = 24 * 60 * 60 * 1000; // Số mili giây trong một ngày
-    const diffDays = Math.round(Math.abs((expiredDate.getTime() - createdDate.getTime()) / oneDay)); // Số ngày chênh lệch
-    const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
-    return diffMonths;
   }
 
   navigateToDetail() {

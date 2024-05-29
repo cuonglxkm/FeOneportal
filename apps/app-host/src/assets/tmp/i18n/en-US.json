@@ -957,7 +957,7 @@
   "app.button.access.rule.add": "Create new Access Rule",
 
   "validation.access.to": "Access To cannot be left blank.",
-  "validation.access.to.pattern": "Access To should be in the format x.x.x.x or x.x.x.x/x",
+  "validation.access.to.pattern": "Access To is not in the correct format. Please enter an IP address in the format x.x.x.x or a CIDR in the format x.x.0.0/16 or x.x.0.0/24.",
   "validation.access.to.duplicate": "Access To đã tồn tại",
 
   "app.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR is granted access to this Filesystem",
@@ -971,7 +971,7 @@
   "app.file.system.type": "File System type",
   "app.file.system.name": "File System name",
   "app.file.system.name.tooltip": "Name of the File System to create Snapshot",
-  "app.file.system.snapshot.name.tooltip": "Snapshot name are only allowed to use lowercase characters a-z, uppercase A-Z, numbers 0-9, hyphens (-) and underscores (_), can have spaces, minimum 1 character and maximum 255 characters.",
+  "app.file.system.snapshot.name.tooltip": "File System Snapshot name are only allowed to use lowercase characters a-z, uppercase A-Z, numbers 0-9, hyphens (-) and underscores (_), can have spaces, minimum 1 character and maximum 255 characters.",
   "app.file.system.snapshot.detail.name.tooltip": "Name of File System",
   "app.file.system.snapshot.detail.size.tooltip": "The capacity of Snapshot depends on the created File System",
   "app.file.system.snapshot.detail.snapshot.tooltip": "Name of Snapshot created",
@@ -979,7 +979,7 @@
   "app.file.system.detail": "File System detail",
   "app.file.system.extend": "Extend File System",
   "app.file.system.create": "Create File System",
-  "app.file.system.create.button": "Create File System",
+  "app.file.system.create.button": "Create new File System",
   "app.file.system.resize": "Resize File System",
   "app.file.system.create.confirm": "Confirm creation of new File System",
   "app.file.system.create.from.snapshot": "Initialize from Snapshot",
@@ -993,6 +993,8 @@
   "app.choose.file.system.to.perform.snapshot": "Choose File System to perform Snapshot",
   "validation.snapshot.info.required": "Please enter name File System Snapshot",
   "validation.snapshot.name.pattern": "Snapshot name is only allowed to use lowercase characters a-z, uppercase A-Z, numbers 0-9, hyphens (-) and underscores (_), can have spaces, minimum 1 character and maximum 255 characters.",
+  "app.item.switch.file.system.snapshot": "-Select Snapshot-",
+  "app.file.storage.snapshot.required.select": "Please select Snapshot File System for me",
 
   "app.file.system.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR range allowed to access this filesystem",
   "app.file.system.access.to.create.success": "Create access rule success",
@@ -1933,6 +1935,7 @@
   "cluster.status.initializing": "Initializing",
   "cluster.status.upgrading": "Upgrading",
   "cluster.status.deleting": "Deleting",
+  "cluster.status.restoring": "Restoring",
   "cluster.status.failed": "Initialization failed",
   "cluster.status.unknow": "Unknow",
 
@@ -1956,6 +1959,7 @@
   "cluster.log.delete-outbound": "Delete Outbound Rule",
   "cluster.log.extend": "Renewal service",
   "cluster.log.edit": "Edit service",
+  "cluster.log.hibernate": "Suspend service",
   "cluster.log.unknow": "Unknow",
 
   "app.cluster.manage-cluster": "Cluster Management",
@@ -2101,6 +2105,7 @@
   "cluster.instances.start-notify-2": "Are you sure you want to start node {{name}} ?",
   "cluster.validate.min-error.extend": "Enter a minimum of 1 month",
   "cluster.validate.max-error.extend": "Enter a maximum of 100 months",
+  "cluster.security-group.empty": "Security Group information not found",
 
   "app.text.version": "Version",
   "app.text.status": "Status",
@@ -2526,7 +2531,7 @@
   "volume.title.breadcrumb.backup.volume": "Backup Volume",
   "volume.title.breadcrumb.list": "Volume Management",
   "volume.title.breadcrumb.create.backup.volume": " Create Backup Volume",
-  "volume.breadcrumb.resize": "Adjust Volume Capacity",
+  "volume.breadcrumb.resize": "Adjust Volume",
   "volume.breadcrumb.extend": "Extend Volume",
   "volume.table.title.name.volume": "Volume name",
   "volume.table.title.type.volume": "Volume type",
@@ -2534,7 +2539,7 @@
   "volume.table.title.iops": "IOPS",
   "volume.table.title.status.volume": "Volume Status",
   "volume.table.title.task.status": "Task Status",
-  "volume.table.title.ínstance": "Virtual Machine",
+  "volume.table.title.instance": "Virtual Machine",
   "volume.table.title.action": "Action",
   "volume.table.title.attach.instance": "Attach virtual machine",
   "volume.table.title.description": "Description",

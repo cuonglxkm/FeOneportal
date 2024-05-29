@@ -76,7 +76,7 @@
         <ng-template #normalTpl>
           <span nz-icon nzType="check" nzTheme="outline"></span>
         </ng-template>
-        {{ 'app.button.confirm' | i18n }}
+        {{ 'app.button.update' | i18n }}
       </button>
     </div>
   </form>
@@ -102,7 +102,7 @@
       <span nz-icon nzType="close" nzTheme="outline"></span>
       {{ 'app.cluster.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="back2list()">
+    <button nz-button nzType="primary" (click)="back2detail()">
       <span nz-icon nzType="check" nzTheme="outline"></span>
       {{ 'app.button.confirm' | i18n }}
     </button>

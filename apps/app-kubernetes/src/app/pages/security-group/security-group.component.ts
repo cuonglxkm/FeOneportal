@@ -9,6 +9,9 @@ import { ShareService } from '../../services/share.service';
 import { KubernetesCluster } from '../../model/cluster.model';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { ClusterService } from '../../services/cluster.service';
+import { camelizeKeys } from 'humps';
+import { I18NService } from '../../core/i18n/i18n.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'security-group',
@@ -35,7 +38,8 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
     private clusterService: ClusterService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notificationService: NzNotificationService,
-    private shareService: ShareService
+    private shareService: ShareService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -76,12 +80,15 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
       this.detailCluster = changes['detailCluster']?.currentValue;
     }
 
-    if (this.projectId && this.regionId) this.getListSG();
+    if (this.projectId && this.regionId) {
+      this.getListSG();
+      // this.getAllRuleSG();
+    }
   }
 
   handleCopyIDGroup() {
     this.clipboardService.copy(this.selectedSG.id);
-    this.notificationService.success("Đã sao chép", null);
+    this.notificationService.success(null, this.i18n.fanyi('app.bucket.detail.copy.success'));
   }
 
   getListSG() {
@@ -90,32 +97,42 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
     conditionSearch.projectId = this.projectId;
     conditionSearch.regionId = this.regionId;
 
-    this.securityGroupService.searchSecurityGroup(conditionSearch)
+    this.clusterService.getAllSG(this.projectId, this.regionId)
     .pipe(finalize(() => this.isLoadingSG = false))
-    .subscribe(data => {
-      this.listOfSG = data;
+    .subscribe((data: any) => {
+      this.listOfSG = camelizeKeys(data.data) as SecurityGroup[];
 
-      data.forEach(item => {
+      this.listOfSG.forEach(item => {
         if(item.name.includes(this.detailCluster.securityGroupName)) {
           this.selectedSG = item;
         }
       })
 
       if (this.selectedSG) {
-        this.listOfInbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'ingress');
-        this.listOfOutbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'egress');
+        this.listOfInbound = this.selectedSG?.securityGroupRules.filter(value => value.direction === 'ingress');
+        this.listOfOutbound = this.selectedSG?.securityGroupRules.filter(value => value.direction === 'egress');
 
         let sgData = new SecurityGroupData();
         sgData.projectId = this.projectId;
         sgData.regionId = this.regionId;
         sgData.detailCluster = this.detailCluster;
         sgData.securityGroupId = this.selectedSG?.id;
+        sgData.listOfSG = this.listOfSG;
         this.shareService.emitSGData(sgData);
       } else {
-        this.notificationService.error("Thất bại", "Không có thông tin security group");
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('cluster.security-group.empty'));
       }
     });
   }
+
+  // listOfRules: SecurityGroupRule[];
+  // getAllRuleSG() {
+  //   this.clusterService.getAllRuleSG(this.projectId, this.regionId)
+  //   .subscribe((r: any) => {
+  //     console.log(r);
+  //     this.listOfRules = r.data;
+  //   })
+  // }
 
   saveLogSG(rule: SecurityGroupRule) {
     let logSG = new SGLoggingReqDto();

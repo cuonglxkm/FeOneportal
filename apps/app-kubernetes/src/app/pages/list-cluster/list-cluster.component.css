@@ -117,10 +117,10 @@ img {
 .action-btn {
   padding: 0;
   height: 24px;
+  padding-left: 3px;
 }
 
 .icon-action {
   cursor: pointer;
   width: fit-content;
-  margin-right: 8px;
 }

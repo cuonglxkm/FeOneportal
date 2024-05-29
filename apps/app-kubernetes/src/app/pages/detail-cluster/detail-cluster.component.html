@@ -1,10 +1,11 @@
 <ng-container *ngIf="detailCluster; else loadingTpl">
-  <button nz-button nzType="primary" class="mb-3" [routerLink]="'/app-kubernetes/edit/' + serviceOrderCode">
+  <button nz-button nzType="primary" class="mb-3" [routerLink]="'/app-kubernetes/edit/' + serviceOrderCode"
+    [disabled]="detailCluster?.serviceStatus == 3" [nz-tooltip]="'app.text.edit'">
     <img src="assets/imgs/edit-1.svg" class="icon-action" (click)="onDestroy()"
       [nz-tooltip]="'app.text.edit' | i18n" [routerLink]="'/app-kubernetes/edit/' + serviceOrderCode" />
     {{ 'app.text.edit' | i18n }}
   </button>
-  <button nz-button nzType="primary" class="mb-3"
+  <button nz-button nzType="primary" class="mb-3" [disabled]="detailCluster?.serviceStatus == 3"
     [nz-tooltip]="'app.text.upgrade' | i18n" [routerLink]="'/app-kubernetes/upgrade/' + serviceOrderCode">
     <span nz-icon>
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,10 +57,12 @@
           <nz-table [nzTemplateMode]="true" nzBordered>
             <tbody>
               <tr>
-                <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
+                <td class="w-50"><row-data [value]="detailCluster.clusterName" [label]="'app.cluster.name' | i18n"></row-data></td>
+                <!-- <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                   <div nz-row>
-                    <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">{{ 'app.cluster.name' | i18n
-                      }}</div>
+                    <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">
+                      {{ 'app.cluster.name' | i18n }}
+                    </div>
                     <div nz-col [nzSpan]="16" class="description-info">
                       <ng-container *ngIf="!isEditMode; else editClusterNameTpl">
                         {{detailCluster.clusterName}}
@@ -85,7 +88,7 @@
                       </ng-template>
                     </div>
                   </div>
-                </td>
+                </td> -->
                 <td class="w-50">
                   <div nz-row>
                     <div nz-col [nzSpan]="8">
@@ -95,7 +98,7 @@
                       {{detailCluster.currentVersion}}
                       <button nz-button nzType="text" (click)="handleShowModalUpgradeVersion()"
                         class="action-icon borderless" [nzTooltipTitle]="'app.text.upgrade' | i18n"
-                        nzTooltipPlacement="top" nz-tooltip>
+                        nzTooltipPlacement="top" nz-tooltip [disabled]="detailCluster?.serviceStatus != 2 || detailCluster?.serviceStatus == 3">
                         <span nz-icon>
                           <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -179,7 +182,19 @@
                     <div nz-col [nzSpan]="8">{{ 'app.config' | i18n }}</div>
                     <div nz-col [nzSpan]="16">
                       <span class="description-info">
-                        <a (click)="handleViewKubeConfig()">{{detailCluster.clusterName}}.Kubeconfig</a>
+                        <a (click)="handleViewKubeConfig()">
+                          <ng-container *ngIf="detailCluster.clusterName.length <= 30; else truncateKubeconfigTpl">
+                            {{detailCluster.clusterName}}.Kubeconfig
+                          </ng-container>
+                          <ng-template #truncateKubeconfigTpl>
+                            <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="kubeconfigNameTpl">
+                              {{(detailCluster.clusterName + '.Kubeconfig') | truncateLabel}}
+                            </span>
+                            <ng-template #kubeconfigNameTpl>
+                              {{(detailCluster.clusterName + '.Kubeconfig')}}
+                            </ng-template>
+                          </ng-template>
+                        </a>
                       </span>
                       <button nz-button nzType="text" (click)="handleDownloadKubeConfig()"
                         class="action-icon borderless" [nzTooltipTitle]="'app.cluster.download-config' | i18n"
@@ -234,8 +249,7 @@
               <tr>
                 <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
                     [label]="'app.text.creation-time' | i18n"></row-data></td>
-                <td class="w-50"><row-data
-                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
+                <td class="w-50"><row-data [value]="detailCluster.expiredDate| date: 'dd/MM/yyyy'"
                     [label]="'app.service.expiration-date' | i18n" [type]="'danger'"></row-data></td>
               </tr>
 
@@ -639,7 +653,17 @@
                     <div nz-col [nzSpan]="8">SSH Key</div>
                     <div nz-col [nzSpan]="16">
                       <span class="description-info">
-                        k8s-{{detailCluster.clusterName}}-ssh_keypair
+                        <ng-container *ngIf="detailCluster.clusterName.length <= 30; else truncateSSHKeyTpl">
+                          {{'k8s-' + detailCluster.clusterName + '-ssh_keypair'}}
+                        </ng-container>
+                        <ng-template #truncateSSHKeyTpl>
+                          <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="sshkeyNameTpl">
+                            {{('k8s-' + detailCluster.clusterName + '-ssh_keypair') | truncateLabel}}
+                          </span>
+                          <ng-template #sshkeyNameTpl>
+                            {{'k8s-' + detailCluster.clusterName + '-ssh_keypair'}}
+                          </ng-template>
+                        </ng-template>
                       </span>
                       <button nz-button nzType="text" (click)="handleDownloadSSHkey()" class="action-icon borderless"
                         [nzTooltipTitle]="'app.cluster.download-ssh-key' | i18n" nzTooltipPlacement="top" nz-tooltip>

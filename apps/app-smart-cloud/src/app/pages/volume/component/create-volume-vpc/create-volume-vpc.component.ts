@@ -328,7 +328,7 @@ export class CreateVolumeVpcComponent implements OnInit {
 
 
     }, error => {
-      this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
       this.isLoading = false;
     });
 
