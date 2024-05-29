@@ -444,7 +444,7 @@
   "app.list.vlan": "VLAN list",
   "app.list.subnet": "Subnet list",
   "app.list.ip.of.vlan": "The list of IPs on the VLAN",
-  "app.input.name.snapshot": "Enter name File System",
+  "app.input.name.snapshot": "Enter name File System Snapshot",
 
   "app.alert.password": "Password setting rules: The length of an online-used password must be at least 12 characters, utilizing a combination of digits, uppercase letters, lowercase letters, and special symbols.",
   "app.alert.security.group": "To set up access mechanisms to the instance, you need to configure the Security Group in the",
@@ -954,7 +954,7 @@
   "app.access.rule.manage": "Manage Access Rule",
   "app.access.rule.list": "Access Rule list",
   "app.button.access.rule.create": "Create new Access Rule",
-  "app.button.access.rule.add": "Add Access Rule",
+  "app.button.access.rule.add": "Create new Access Rule",
 
   "validation.access.to": "Access To cannot be left blank.",
   "validation.access.to.pattern": "Access To should be in the format x.x.x.x or x.x.x.x/x",

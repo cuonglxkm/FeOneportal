@@ -308,6 +308,7 @@
   "app.breadcrumb.block.storage": "Block Storage",
 
   "app.instance": "máy ảo",
+  "app.volume": "volume",
   "app.instances": "Máy ảo",
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
@@ -331,7 +332,7 @@
   "app.list.vlan": "Danh sách VLAN",
   "app.list.subnet": "Danh sách Subnet",
   "app.list.ip.of.vlan": "Danh sách IP trên VLAN",
-  "app.input.name.snapshot": "Nhập tên File System",
+  "app.input.name.snapshot": "Nhập tên File System Snapshot",
 
   "app.alert.password": "Quy tắc đặt mật khẩu: Độ dài của một mật khẩu được sử dụng trực tuyến cần phải chứa tối thiểu là 12 ký tự, sử dụng hỗn hợp bao gồm các chữ số, chữ hoa, chữ thường và ký hiệu đặc biệt.",
   "app.alert.security.group": "Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần cấu hình Security Group trong mục",
@@ -607,7 +608,7 @@
   "app.bucket.detail.copy.authorize": "Quản lý phân quyền",
   "app.bucket.detail.copy.authorize.des": "Chỉ những người có quyền mới được truy cập",
   "app.bucket.detail.copy.authorize.des1": "Tất cả mọi người đều có thể truy cập thông tin của file.Lưu ý, Bucket public nhưng nếu object private thì cũng không truy cập được từ bên ngoài",
-  "app.bucket.detail.version.list": "Danh sách phiên bản của object:",
+  "app.bucket.detail.version.list": "Danh sách phiên bản của object: {{objectName}}",
   "app.bucket.detail.version.version": "Phiên bản",
   "app.bucket.detail.version.versionId": "Id phiển bản",
   "app.bucket.detail.version.delete": "Xác nhận xóa phiên bản Object?",
@@ -844,7 +845,7 @@
   "app.access.rule.manage": "Quản lý Access Rule",
   "app.access.rule.list": "Danh sách Access Rule",
   "app.button.access.rule.create": "Tạo mới Access Rule",
-  "app.button.access.rule.add": "Thêm Access Rule",
+  "app.button.access.rule.add": "Tạo mới Access Rule",
 
   "validation.access.to": "Access To không được để trống.",
   "validation.access.to.pattern": " Access To có dạng x.x.x.x hoặc x.x.x.x/x.",

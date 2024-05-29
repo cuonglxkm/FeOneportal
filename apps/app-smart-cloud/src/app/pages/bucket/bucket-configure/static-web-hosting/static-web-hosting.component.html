@@ -120,8 +120,9 @@
       alt=""
     />{{ 'app.button.cancel' | i18n }}
   </button>
-  <button nz-button nzType="primary" (click)="update()">
+  <button nz-button nzType="primary" [nzLoading]="isLoading" (click)="update()">
     <img
+    *ngIf="isLoading === false"
       style="padding-right: 10px; margin-top: -4px"
       src="assets/imgs/confirm.svg"
       alt=""
