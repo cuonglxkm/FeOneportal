@@ -21,8 +21,8 @@
 </page-header>
 <nz-content>
   <nz-card>
-    <span class="text-card-header">{{'ip.floating.label.list.address' | i18n}} IP Floating</span>
-    <nz-row nzJustify="space-between" style="margin-top: 20px;">
+<!--    <span class="text-card-header">{{'ip.floating.label.list.address' | i18n}} IP Floating</span>-->
+    <nz-row nzJustify="space-between">
       <nz-col nzSpan="16">
         <nz-input-group [nzPrefix]="prefixIconSearch"
                         nzSize="large"
@@ -31,10 +31,11 @@
                  nz-input
                  placeholder="{{'app.button.search' | i18n}}"
                  [(ngModel)]="value"
-                 (input)="onInputChange($event.target['value'])"/>
+                 (ngModelChange)="searchDelay.next(false)"
+                 (keydown.enter)="onInputChange($event.target['value'])"/>
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{'app.button.search' | i18n}}"/>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"/>
         </ng-template>
       </nz-col>
       <nz-col nzSpan="8" style="flex:none;" *ngIf="projectType == 0">

@@ -125,7 +125,7 @@ export class CreateLbVpcComponent implements OnInit {
   }
 
   onInput(value: string) {
-    if (!this.validateForm.controls['ipAddress'].invalid) {
+    if (!this.validateForm.controls['ipAddress'].invalid && value!='') {
       this.validateIpaddress.next(value);
     }
   }
@@ -283,7 +283,7 @@ export class CreateLbVpcComponent implements OnInit {
     this.formCreateLoadBalancer.amManager = null;
     this.formCreateLoadBalancer.note = null;
     this.formCreateLoadBalancer.isTrial = false;
-    this.formCreateLoadBalancer.offerId = this.product.id;
+    this.formCreateLoadBalancer.offerId = this.productId;
     this.formCreateLoadBalancer.couponCode = null;
     this.formCreateLoadBalancer.dhsxkd_SubscriptionId = null;
     this.formCreateLoadBalancer.dSubscriptionNumber = null;

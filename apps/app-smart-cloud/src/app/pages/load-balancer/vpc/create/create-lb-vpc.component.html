@@ -299,9 +299,13 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row>
             <nz-col style="width: 100%">
-              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid || (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '')" (click)="doCreateLoadBalancerVpc()" [nzLoading]="loadingCreate">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="(enableInternetFacing == true && validateForm.invalid) ||
+                      (enableInternal == true && (validateForm.controls['name'].invalid || validateForm.controls['subnet'].invalid) ) ||
+                      (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '')" (click)="doCreateLoadBalancerVpc()" [nzLoading]="loadingCreate">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;"/>
-                <span [style.color]="validateForm.invalid || (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '') ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+                <span [style.color]="(enableInternetFacing == true && validateForm.invalid) ||
+                      (enableInternal == true && (validateForm.controls['name'].invalid || validateForm.controls['subnet'].invalid) ) ||
+                      (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '') ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>
