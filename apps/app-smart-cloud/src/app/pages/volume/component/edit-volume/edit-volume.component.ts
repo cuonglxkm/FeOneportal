@@ -14,6 +14,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-u
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 
 @Component({
   selector: 'app-extend-volume',
@@ -65,7 +66,8 @@ export class EditVolumeComponent implements OnInit {
               private notification: NzNotificationService,
               private instanceService: InstancesService,
               private projectService: ProjectService,
-              @Inject(ALAIN_I18N_TOKEN) protected i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) protected i18n: I18NService,
+              private configurationsService: ConfigurationsService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
@@ -147,8 +149,21 @@ export class EditVolumeComponent implements OnInit {
     }
   }
 
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueString: string;
+
+  getConfiguration() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueString = data.valueString;
+      this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
+      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+    })
+  }
+
   ngOnInit() {
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+    this.getConfiguration();
     this.dateEdit = new Date();
     if (this.volumeId != undefined || this.volumeId != null) {
       console.log('id', this.volumeId);
@@ -215,12 +230,6 @@ export class EditVolumeComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/volumes']);
       this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
     });
-  }
-
-  //
-  changeVolumeType(value) {
-    this.selectedValueRadio = value;
-    // this.notification.warning('', 'Không thể thay đổi loại Volume.')
   }
 
   convertString(str: string): string {
