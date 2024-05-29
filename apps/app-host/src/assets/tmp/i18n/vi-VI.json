@@ -875,7 +875,7 @@
   "app.file.system.create.confirm": "Xác nhận khởi tạo File System",
   "app.file.system.create.from.snapshot": "Khởi tạo từ Snapshot",
   "app.file.system.capacity": "Dung lượng File System của quý khách",
-  "app.file.system.capacity.vpc": "Dung lượng File System đã mua của dịch vụ VPC",
+  "app.file.system.capacity.vpc": "Tổng dung lượng File System là dung lượng quý khách đã mua khi khi khởi tạo dự án VPC",
   "app.file.system.intro": "Lưu trữ dữ liệu theo cấu trúc phân cấp",
   "app.file.system.des": "File storage, hệ thống lưu trữ dữ liệu theo “cấu trúc phân cấp”. Dữ liệu sẽ được lưu trong các tập tin và thư mục, và được hiển thị cho cả hệ thống lưu trữ lẫn hệ thống truy xuất dưới cùng một định dạng.",
   "app.snapshot.file.system": "Snapshot của File System",
@@ -883,11 +883,12 @@
   "app.choose.file.system": "Chọn File System",
   "app.item.switch.file.system.snapshot": "-Chọn Snapshot-",
   "app.file.storage.snapshot.required.select": "Vui lòng chọn Snapshot File System",
+  "app.file.system.total.size": "Tổng dung lượng File System",
 
   "app.choose.file.system.to.perform.snapshot": "Chọn File System để thực hiện Snapshot",
   "validation.snapshot.info.required": "Vui lòng nhập tên File System Snapshot",
   "validation.snapshot.name.pattern": "Tên Snapshot chỉ được phép dùng các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.",
-
+  "app.file.system.confirm.create": "Quý khách chắn chắn muốn thực hiện khởi tạo File System không?",
   "app.checkRouter.file.system": "Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!",
   "app.checkRouter.file.system.noGateway": "Kiểm tra lại Router Interface! Vui lòng thêm gateway của dải pri_network",
 
@@ -904,7 +905,7 @@
   "app.file.system.not.enough.quota": "Dung lượng vượt quá dung lượng hiện có, xin vui lòng thử lại",
 
   "app.note.delete.file.system": "Để thực hiện xóa File System {{name}}, vui lòng nhập tên File System để xác nhận",
-  "app.alert.delete.file.system": "Bạn đang thực hiện xoá File System. Quý khách lưu ý khi xoá File System sẽ đồng thời xoá các Snapshot của File System đó.",
+  "app.alert.delete.file.system": "Bạn đang thực hiện xóa File System. Quý khách lưu ý khi xóa File System sẽ đồng thời xóa các Snapshot của File System đó.",
   "app.tooltip.file.system.name.pattern": "Tên của File System cần tạo, các ký tự chữ thường a-z,<br> chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng,<br> tối thiểu 1 ký tự và tối đa 50 ký tự. Tên các File System không trùng nhau",
   "app.tooltip.file.system.name.protocol": "Giao thức NFS (Network File System) là một giao thức mạng được sử dụng<br> để chia sẻ tập tin và thư mục qua mạng giữa các hệ thống máy tính khác nhau.<br> Nó cho phép một máy tính (được gọi là máy chủ NFS) chia sẻ tài nguyên file hệ thống của<br> nó với các máy tính khác (được gọi là máy khách NFS) trong mạng",
   "app.tooltip.capacity": "Dung lượng của File System, vui lòng nhập số chia hết cho 10",
