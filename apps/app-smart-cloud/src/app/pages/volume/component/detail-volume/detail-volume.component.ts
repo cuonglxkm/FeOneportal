@@ -25,7 +25,7 @@ export class DetailVolumeComponent implements OnInit {
 
   listVMs: string = '';
 
-  isLoading: boolean = false;
+  isLoading: boolean = true;
 
   typeVPC: number;
 
