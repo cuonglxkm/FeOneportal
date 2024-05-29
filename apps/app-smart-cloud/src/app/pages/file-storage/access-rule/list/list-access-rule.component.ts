@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { AccessRuleService } from '../../../../shared/services/access-rule.service';
@@ -6,14 +6,14 @@ import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../..
 import { AccessRule } from '../../../../shared/models/access-rule.model';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
 import { FileSystemDetail, FileSystemModel } from '../../../../shared/models/file-system.model';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'one-portal-list-access-rule',
   templateUrl: './list-access-rule.component.html',
   styleUrls: ['./list-access-rule.component.less'],
 })
-export class ListAccessRuleComponent implements OnInit{
+export class ListAccessRuleComponent implements OnInit, OnDestroy{
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -33,27 +33,46 @@ export class ListAccessRuleComponent implements OnInit{
   isLoading: boolean = false
 
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
+
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               private accessRuleService: AccessRuleService,
               private fileSystemService: FileSystemService) {
   }
 
-  changeInputChange(value) {
-    this.dataSubjectInputSearch.next(value)
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  changeInputChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.enterPressed = false;
+    this.dataSubjectInputSearch.next(value);
   }
 
   onChangeInputChange() {
-    this.dataSubjectInputSearch.pipe(debounceTime(500)).subscribe((res) => {
-      this.value = res.trim()
-      this.getListAccessRule(false)
-    })
+    this.searchSubscription = this.dataSubjectInputSearch.pipe(
+      debounceTime(700)
+    ).subscribe(res => {
+      if (!this.enterPressed) {
+        this.value = res.trim();
+        this.getListAccessRule(false);
+      }
+    });
   }
 
-  onEnter() {
-    this.value = this.value.trim()
-    this.getListAccessRule(false)
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value.trim();
+    this.getListAccessRule(false);
   }
+
 
   onAccessTypeSelect(value) {
     this.accessType = value
@@ -137,5 +156,7 @@ export class ListAccessRuleComponent implements OnInit{
     this.getFileSystemById()
     this.getListAccessRule(true)
     this.onChangeInputChange()
+
+
   }
 }
