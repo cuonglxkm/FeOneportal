@@ -13,7 +13,8 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://api-dev.onsmartcloud.com',
+  //baseUrl: 'https://api-dev.onsmartcloud.com',
+  baseUrl: 'http://localhost:3000',
   unitOfMeasureVpn: 'vpns2s',
   // modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;

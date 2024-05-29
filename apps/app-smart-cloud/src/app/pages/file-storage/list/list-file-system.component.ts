@@ -199,6 +199,38 @@ export class ListFileSystemComponent implements OnInit {
     this.fileSystemService.model.subscribe((data) => {
       console.log(data);
     });
+
+    this.notificationService.connection.on('UpdateFileStorage', (message) => {
+      debugger
+      console.log("khai10diem", message);
+      if (message) {
+        switch (message.actionType) {
+          case "CREATING":
+          case "RESIZED":
+          case "CREATED":
+          case "UPDATE":
+          case "DELETED":
+            this.getListFileSystem(true);
+          break;
+          //case "CREATED":
+            // let volumeId = message.serviceId;
+            // var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+            // if (foundIndex > -1) {
+            //   var record = this.response.records[foundIndex];
+            //   record.serviceStatus = message.data?.serviceStatus;
+            //   record.createDate = message.data?.creationDate;
+            //   record.expirationDate = message.data?.expirationDate;
+            //   this.response.records[foundIndex] = record;
+            //   this.cdr.detectChanges();
+            // }
+            // else
+            // {
+              //this.getListVolume(true);
+            //}
+          //break;
+        }
+      }
+    });
     // if (!this.region && !this.project) {
     //   this.router.navigate(['/exception/500']);
     // }
