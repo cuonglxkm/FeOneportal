@@ -101,9 +101,11 @@ export class InstancesComponent implements OnInit {
 
     this.notificationService.connection.on('UpdateInstance', (data) => {
       if (data) {
+        debugger;
+        console.log(" Recei ", data)
         let instanceId = data.serviceId;
         let actionType = data.actionType;
-
+        var taskState = data?.data?.taskState ?? "";
         var foundIndex = this.dataList.findIndex((x) => x.id == instanceId);
         if (!instanceId) {
           return;
@@ -154,15 +156,34 @@ export class InstancesComponent implements OnInit {
               this.cdr.detectChanges();
               break;
             case 'REBUILDING':
+              console.log("rebuilding")
+              var record = this.dataList[foundIndex];
+    
+              // if (data.status) {
+              //   record.status = data.status;
+              // }
+
+              if (taskState) {
+                record.taskState = taskState;
+              }
+
+              // if (data.flavorName) {
+              //   record.flavorName = data.flavorName;
+              // }
+
+              this.dataList[foundIndex] = record;
+              this.cdr.detectChanges();
+              break;
             case 'REBUILDED':
+              console.log("REBUILDED")
                   var record = this.dataList[foundIndex];
     
                   // if (data.status) {
                   //   record.status = data.status;
                   // }
     
-                  if (data.taskState) {
-                    record.taskState = data.taskState;
+                  if (taskState) {
+                    record.taskState = taskState;
                   }
     
                   // if (data.flavorName) {
@@ -179,8 +200,8 @@ export class InstancesComponent implements OnInit {
                   //   record.status = data.status;
                   // }
     
-                  if (data.taskState) {
-                    record.taskState = data.taskState;
+                  if (taskState) {
+                    record.taskState = taskState;
                   }
     
                   // if (data.flavorName) {
@@ -190,22 +211,16 @@ export class InstancesComponent implements OnInit {
                   this.dataList[foundIndex] = record;
                   this.cdr.detectChanges();
                 case 'DELETED':
-                          var record = this.dataList[foundIndex];
+                    this.reloadTable();
+                          // var record = this.dataList[foundIndex];
     
-                          // if (data.status) {
-                          //   record.status = data.status;
+                          // if (data.taskState) {
+                          //   record.taskState = data.taskState;
                           // }
             
-                          if (data.taskState) {
-                            record.taskState = data.taskState;
-                          }
             
-                          // if (data.flavorName) {
-                          //   record.flavorName = data.flavorName;
-                          // }
-            
-                          this.dataList[foundIndex] = record;
-                          this.cdr.detectChanges();
+                          // this.dataList[foundIndex] = record;
+                          // this.cdr.detectChanges();
           }
         }
       }
