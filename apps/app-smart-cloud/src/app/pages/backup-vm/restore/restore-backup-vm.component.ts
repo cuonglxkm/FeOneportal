@@ -6,17 +6,32 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVmService } from '../../../shared/services/backup-vm.service';
 import { getCurrentRegionAndProject } from '@shared';
-import { BackupVm, RestoreFormCurrent } from '../../../shared/models/backup-vm';
+import {
+  BackupVm,
+  RestoreFormCurrent,
+  SecurityGroupBackup,
+  VolumeBackup,
+} from '../../../shared/models/backup-vm';
 import { PackageBackupModel } from '../../../shared/models/package-backup.model';
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { DataPayment, InstanceCreate, IPPublicModel, ItemPayment, SHHKeyModel } from '../../instances/instances.model';
+import {
+  DataPayment,
+  InstanceCreate,
+  IPPublicModel,
+  ItemPayment,
+  SHHKeyModel,
+} from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { FormSearchNetwork, NetWorkModel, Port } from '../../../shared/models/vlan.model';
+import {
+  FormSearchNetwork,
+  NetWorkModel,
+  Port,
+} from '../../../shared/models/vlan.model';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { debounceTime, Subject } from 'rxjs';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
@@ -32,7 +47,7 @@ class ConfigCustom {
 @Component({
   selector: 'one-portal-restore-backup-vm',
   templateUrl: './restore-backup-vm.component.html',
-  styleUrls: ['./restore-backup-vm.component.less']
+  styleUrls: ['./restore-backup-vm.component.less'],
 })
 export class RestoreBackupVmComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
@@ -41,6 +56,8 @@ export class RestoreBackupVmComponent implements OnInit {
   backupVmModel: BackupVm;
   projectDetail: SizeInCloudProject;
   backupPackage: PackageBackupModel;
+  listExternalAttachVolume: VolumeBackup[] = [];
+  listSecurityGroupBackups: SecurityGroupBackup[] = [];
 
   selectedOption: string = 'current';
   typeVpc: number;
@@ -67,15 +84,20 @@ export class RestoreBackupVmComponent implements OnInit {
   activeBlockSSHKey: boolean = false;
   disableKeypair: boolean = false;
 
+  numberMonth: number = 1;
+
   passwordVisible = false;
 
   validateForm = new FormGroup({
     formCurrent: new FormGroup({
       securityGroupIds: new FormControl(null as string[]),
-      volumeAttachIds: new FormControl(null as number[])
+      volumeAttachIds: new FormControl(null as number[]),
     }),
     formNew: new FormGroup({
-      instanceName: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/)]),
+      instanceName: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9_]*$/),
+      ]),
       ipPublic: new FormControl(0, [Validators.required]),
       securityGroupIds: new FormControl(null as string[]),
       vlan: new FormControl('', []),
@@ -86,8 +108,8 @@ export class RestoreBackupVmComponent implements OnInit {
       password: new FormControl(''),
       keypair: new FormControl(''),
       volumeAttachIds: new FormControl(null as number[]),
-      newVolumeRestore: new FormControl(null as number[])
-    })
+      newVolumeRestore: new FormControl(null as number[]),
+    }),
   });
 
   get formCurrent() {
@@ -98,19 +120,21 @@ export class RestoreBackupVmComponent implements OnInit {
     return this.validateForm.get('formNew') as FormGroup;
   }
 
-  constructor(private router: Router,
-              private backupService: BackupVmService,
-              private activatedRoute: ActivatedRoute,
-              private projectService: ProjectService,
-              private backupPackageService: PackageBackupService,
-              private notification: NzNotificationService,
-              private dataService: InstancesService,
-              private vlanService: VlanService,
-              private cdr: ChangeDetectorRef,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    if(this.activeBlockPassword == true) {
-      this.initPassword()
+  constructor(
+    private router: Router,
+    private backupService: BackupVmService,
+    private activatedRoute: ActivatedRoute,
+    private projectService: ProjectService,
+    private backupPackageService: PackageBackupService,
+    private notification: NzNotificationService,
+    private dataService: InstancesService,
+    private vlanService: VlanService,
+    private cdr: ChangeDetectorRef,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+  ) {
+    if (this.activeBlockPassword == true) {
+      this.initPassword();
     }
   }
 
@@ -133,19 +157,28 @@ export class RestoreBackupVmComponent implements OnInit {
   password: string = '';
 
   initPassword(): void {
-    console.log('here')
+    console.log('here');
     this.activeBlockPassword = true;
     this.activeBlockSSHKey = false;
     this.selectedSSHKeyName = null;
-    this.validateForm.get('formNew').get('password').setValidators(
-      [Validators.required,
-        Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/)]);
+    this.validateForm
+      .get('formNew')
+      .get('password')
+      .setValidators([
+        Validators.required,
+        Validators.pattern(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
+        ),
+      ]);
   }
   initSSHkey(): void {
     this.activeBlockPassword = false;
     this.activeBlockSSHKey = true;
     this.password = '';
-    this.validateForm.get('formNew').get('keypair').setValidators( [Validators.required])
+    this.validateForm
+      .get('formNew')
+      .get('keypair')
+      .setValidators([Validators.required]);
   }
 
   getAllSSHKey() {
@@ -161,7 +194,6 @@ export class RestoreBackupVmComponent implements OnInit {
         });
       });
   }
-
 
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
@@ -197,7 +229,13 @@ export class RestoreBackupVmComponent implements OnInit {
   isCustomconfig = false;
   configCustom: ConfigCustom = new ConfigCustom();
 
-  getUnitPrice(volumeSize: number, ram: number, cpu: number, gpu: number, gpuTypeOfferId: number) {
+  getUnitPrice(
+    volumeSize: number,
+    ram: number,
+    cpu: number,
+    gpu: number,
+    gpuTypeOfferId: number
+  ) {
     let tempInstance: InstanceCreate = new InstanceCreate();
     tempInstance.offerId = 0;
     tempInstance.flavorId = 0;
@@ -220,9 +258,12 @@ export class RestoreBackupVmComponent implements OnInit {
     this.dataService.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien/đơn giá', result);
       if (volumeSize == 1) {
-        this.volumeUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
+        this.volumeUnitPrice = Number.parseFloat(
+          result.data.totalAmount.amount
+        );
         if (this.isCustomconfig) {
-          this.volumeIntoMoney = this.volumeUnitPrice * this.configCustom.capacity;
+          this.volumeIntoMoney =
+            this.volumeUnitPrice * this.configCustom.capacity;
         }
       }
       if (ram == 1) {
@@ -230,7 +271,6 @@ export class RestoreBackupVmComponent implements OnInit {
         if (this.isCustomconfig) {
           this.ramIntoMoney = this.ramUnitPrice * this.configCustom.ram;
         }
-
       }
       if (cpu == 1) {
         this.cpuUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
@@ -250,19 +290,29 @@ export class RestoreBackupVmComponent implements OnInit {
     // this.instanceCreate.imageId = this.hdh;
     this.instanceCreate.iops = 0;
     // this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
-    this.instanceCreate.keypairName = this.validateForm.get('formNew').get('keypair').value;
-    this.instanceCreate.securityGroups = this.validateForm.get('formNew').get('securityGroupIds').value;
+    this.instanceCreate.keypairName = this.validateForm
+      .get('formNew')
+      .get('keypair').value;
+    this.instanceCreate.securityGroups = this.validateForm
+      .get('formNew')
+      .get('securityGroupIds').value;
     this.instanceCreate.network = null;
     this.instanceCreate.isUsePrivateNetwork =
       this.validateForm.get('formNew').get('vlan').value == '' ? false : true;
     if (this.validateForm.get('formNew').get('vlan').value != '') {
-      this.instanceCreate.privateNetId = this.validateForm.get('formNew').get('vlan').value;
+      this.instanceCreate.privateNetId = this.validateForm
+        .get('formNew')
+        .get('vlan').value;
     }
     if (this.port != '') {
       this.instanceCreate.privatePortId = this.port;
     }
-    this.instanceCreate.ipPublic = this.validateForm.get('formNew').get('ipPublic').value;
-    this.instanceCreate.password = this.validateForm.get('formNew').get('password').value;
+    this.instanceCreate.ipPublic = this.validateForm
+      .get('formNew')
+      .get('ipPublic').value;
+    this.instanceCreate.password = this.validateForm
+      .get('formNew')
+      .get('password').value;
     // this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
     this.instanceCreate.encryption = false;
     // this.instanceCreate.isUseIPv6 = this.isUseIPv6;
@@ -313,7 +363,6 @@ export class RestoreBackupVmComponent implements OnInit {
     // this.instanceCreate.actorEmail = this.tokenService.get()['email'];
   }
 
-
   totalAmount: number = 0;
   totalincludesVAT: number = 0;
 
@@ -342,18 +391,24 @@ export class RestoreBackupVmComponent implements OnInit {
   totalAmountVolumeVAT = 0;
 
   getDetailBackupById(id) {
-    this.backupService.detail(id).subscribe(data => {
+    this.backupService.detail(id).subscribe((data) => {
       this.backupVmModel = data;
 
-      this.backupVmModel?.securityGroupBackups.forEach(item => {
+      this.listExternalAttachVolume = this.backupVmModel?.volumeBackups.filter(
+        (e) => e.isBootable == false
+      );
+
+      this.listSecurityGroupBackups = this.backupVmModel.securityGroupBackups;
+      
+      this.backupVmModel?.securityGroupBackups.forEach((item) => {
         this.nameSecurityGroup?.push(item.sgName);
       });
 
-      this.backupVmModel?.systemInfoBackups.forEach(item => {
+      this.backupVmModel?.systemInfoBackups.forEach((item) => {
         this.nameFlavor?.push(item.osName);
       });
 
-      this.backupVmModel?.volumeBackups.forEach(item => {
+      this.backupVmModel?.volumeBackups.forEach((item) => {
         if (item.isBootable == false) {
           this.nameVolumeBackupAttach?.push(item.name);
         }
@@ -369,8 +424,11 @@ export class RestoreBackupVmComponent implements OnInit {
       console.log('name', this.nameFlavorText);
       console.log('unique', this.nameFlavorTextUnique);
 
-      this.nameVolumeBackupAttachName = Array.from(new Set(this.nameVolumeBackupAttach));
-      this.nameVolumeBackupAttachNameUnique = this.nameVolumeBackupAttachName.join('\n');
+      this.nameVolumeBackupAttachName = Array.from(
+        new Set(this.nameVolumeBackupAttach)
+      );
+      this.nameVolumeBackupAttachNameUnique =
+        this.nameVolumeBackupAttachName.join('\n');
       console.log('name', this.nameVolumeBackupAttachName);
       console.log('unique', this.nameVolumeBackupAttachNameUnique);
 
@@ -481,7 +539,10 @@ export class RestoreBackupVmComponent implements OnInit {
     console.log('Restoring to the current virtual machine...');
     // Add your restore logic here
     // this.validateForm.get('formCurrent').get('')
-    console.log('formCurrent', this.validateForm.get('formCurrent').getRawValue());
+    console.log(
+      'formCurrent',
+      this.validateForm.get('formCurrent').getRawValue()
+    );
   }
 
   private restoreToNewVM(): void {
@@ -494,37 +555,56 @@ export class RestoreBackupVmComponent implements OnInit {
     console.log('current', 'confirm click');
     let formRestoreCurrent = new RestoreFormCurrent();
     formRestoreCurrent.instanceBackupId = this.backupVmModel?.id;
-    this.backupService.restoreCurrentBackupVm(formRestoreCurrent).subscribe(data => {
-      this.isLoadingCurrent = false;
-      this.notification.success(this.i18n.fanyi('app.status.success'), 'Khôi phục vào máy ảo hiện tại thành công');
-      this.router.navigate(['/app-smart-cloud/backup-vm']);
-    }, error => {
-      this.isLoadingCurrent = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Khôi phục vào máy ảo hiện tại thất bại' + error.error.detail);
-    });
+    this.backupService.restoreCurrentBackupVm(formRestoreCurrent).subscribe(
+      (data) => {
+        this.isLoadingCurrent = false;
+        this.notification.success(
+          this.i18n.fanyi('app.status.success'),
+          'Khôi phục vào máy ảo hiện tại thành công'
+        );
+        this.router.navigate(['/app-smart-cloud/backup-vm']);
+      },
+      (error) => {
+        this.isLoadingCurrent = false;
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          'Khôi phục vào máy ảo hiện tại thất bại' + error.error.detail
+        );
+      }
+    );
   }
 
   getProjectVpc(id) {
-    this.projectService.getProjectVpc(id).subscribe(data => {
+    this.projectService.getProjectVpc(id).subscribe((data) => {
       this.projectDetail = data;
     });
   }
 
   getBackupPackage(value) {
-    this.backupPackageService.detail(value).subscribe(data => {
+    this.backupPackageService.detail(value).subscribe((data) => {
       this.backupPackage = data;
     });
   }
 
   getAllIPPublic() {
-    this.dataService.getAllIPPublic(this.project, '', this.tokenService.get()?.userId, this.region, 9999, 1, true).subscribe((data: any) => {
-      const currentDateTime = new Date().toISOString();
-      this.listIPPublic = data.records.filter(
-        (e) =>
-          e.status == 0 && new Date(e.expiredDate) > new Date(currentDateTime)
-      );
-      console.log('list IP public', this.listIPPublic);
-    });
+    this.dataService
+      .getAllIPPublic(
+        this.project,
+        '',
+        this.tokenService.get()?.userId,
+        this.region,
+        9999,
+        1,
+        true
+      )
+      .subscribe((data: any) => {
+        const currentDateTime = new Date().toISOString();
+        this.listIPPublic = data.records.filter(
+          (e) =>
+            e.status == 0 && new Date(e.expiredDate) > new Date(currentDateTime)
+        );
+        console.log('list IP public', this.listIPPublic);
+      });
   }
 
   listVlanNetwork: NetWorkModel[] = [];
@@ -566,19 +646,27 @@ export class RestoreBackupVmComponent implements OnInit {
           adminStateUp: null,
           instanceName: null,
           subnetId: null,
-          attachedDeviceId: null
-        }
-      ];
-      this.dataService.getListAllPortByNetwork(this.validateForm.get('formNew').get('vlan').value, this.region).subscribe({
-        next: (data) => {
-          data.forEach((e: Port) => {
-            this.listPort.push(e);
-          });
+          attachedDeviceId: null,
         },
-        error: (e) => {
-          this.notification.error(e.statusText, this.i18n.fanyi('app.notify.get.list.port'));
-        }
-      });
+      ];
+      this.dataService
+        .getListAllPortByNetwork(
+          this.validateForm.get('formNew').get('vlan').value,
+          this.region
+        )
+        .subscribe({
+          next: (data) => {
+            data.forEach((e: Port) => {
+              this.listPort.push(e);
+            });
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.notify.get.list.port')
+            );
+          },
+        });
     }
   }
 

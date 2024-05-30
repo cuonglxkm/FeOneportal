@@ -8,15 +8,14 @@ import { VolumeService } from '../../../../shared/services/volume.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { InstancesService } from '../../../instances/instances.service';
-import {
-  ProjectModel,
-  RegionModel,
-} from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject } from 'rxjs';
+import { getCurrentRegionAndProject } from '@shared';
+import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-resize-volume-vpc',
@@ -46,7 +45,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
 
   volumeId: number;
 
-  isLoading = false;
+  isLoading = true;
 
   iops: number;
 
@@ -67,6 +66,10 @@ export class ResizeVolumeVpcComponent implements OnInit {
 
   dataSubjectStorage: Subject<any> = new Subject<any>();
 
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueString: string;
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
               private route: ActivatedRoute,
@@ -75,11 +78,16 @@ export class ResizeVolumeVpcComponent implements OnInit {
               private notification: NzNotificationService,
               private instanceService: InstancesService,
               private projectService: ProjectService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private configurationsService: ConfigurationsService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
     this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend'));
+
+    this.validateForm.controls.storage.valueChanges.subscribe(value => {
+      this.volumeInit();
+    })
 
   }
 
@@ -122,9 +130,9 @@ export class ResizeVolumeVpcComponent implements OnInit {
   onChangeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if(res % 10 > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'))
-          this.validateForm.controls.storage.setValue(res - (res % 10))
+        if (res % this.stepStorage > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
         }
       });
   }
@@ -147,34 +155,36 @@ export class ResizeVolumeVpcComponent implements OnInit {
   }
 
   getVolumeById(idVolume: number) {
+    this.isLoading = true;
     this.volumeService.getVolumeById(idVolume).subscribe(data => {
-      if (data !== undefined && data != null) {
-        this.volumeInfo = data;
-        this.oldSize = data.sizeInGB;
-        this.validateForm.controls.name.setValue(data.name);
-        // this.validateForm.controls.storage.setValue(data.sizeInGB);
-        this.validateForm.controls.description.setValue(data.description);
-        this.selectedValueRadio = data.volumeType;
-        this.validateForm.controls.radio.setValue(data.volumeType);
-
-        if (this.volumeInfo?.instanceId != null) {
-          this.getInstanceById(this.volumeInfo?.instanceId);
-        }
-
-        if (this.volumeInfo?.attachedInstances != null) {
-          this.volumeInfo?.attachedInstances?.forEach(item => {
-            this.listVMs += item.instanceName + '\n';
-          });
-        }
-
-        //Thoi gian su dung
-        const createDate = new Date(this.volumeInfo?.creationDate);
-        const exdDate = new Date(this.volumeInfo?.expirationDate);
-        this.expiryTime = (exdDate.getFullYear() - createDate.getFullYear()) * 12 + (exdDate.getMonth() - createDate.getMonth());
-
-      } else {
-        this.volumeInfo = null;
+      this.isLoading = false;
+      this.volumeInfo = data;
+      this.oldSize = data.sizeInGB;
+      this.validateForm.controls.name.setValue(data.name);
+      // this.validateForm.controls.storage.setValue(data.sizeInGB);
+      this.validateForm.controls.description.setValue(data.description);
+      this.selectedValueRadio = data.volumeType;
+      this.validateForm.controls.radio.setValue(data.volumeType);
+      this.volumeEdit.iops = this.volumeInfo?.iops
+      if (this.volumeInfo?.instanceId != null) {
+        this.getInstanceById(this.volumeInfo?.instanceId);
       }
+
+      if (this.volumeInfo?.attachedInstances != null) {
+        this.volumeInfo?.attachedInstances?.forEach(item => {
+          this.listVMs += item.instanceName + '\n';
+        });
+      }
+
+      //Thoi gian su dung
+      const createDate = new Date(this.volumeInfo?.creationDate);
+      const exdDate = new Date(this.volumeInfo?.expirationDate);
+      this.expiryTime = (exdDate.getFullYear() - createDate.getFullYear()) * 12 + (exdDate.getMonth() - createDate.getMonth());
+
+    }, error => {
+      this.isLoading = false;
+      this.router.navigate(['/app-smart-cloud/volumes']);
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
     });
   }
 
@@ -191,17 +201,17 @@ export class ResizeVolumeVpcComponent implements OnInit {
   volumeInit() {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id;
     this.volumeEdit.regionId = this.region;
-    if(this.volumeInfo?.sizeInGB != null) {
+    if (this.volumeInfo?.sizeInGB != null) {
       this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB;
     }
-    if(this.volumeInfo?.volumeType == 'hdd') {
-      this.volumeEdit.iops = 300
+    if (this.volumeInfo?.volumeType == 'hdd') {
+      this.volumeEdit.iops = 300;
     }
-    if(this.volumeInfo?.volumeType == 'ssd') {
-      if(this.volumeEdit.newSize <= 40) {
-        this.volumeEdit.iops = 400
+    if (this.volumeInfo?.volumeType == 'ssd') {
+      if (this.volumeEdit.newSize <= 40) {
+        this.volumeEdit.iops = 400;
       } else {
-        this.volumeEdit.iops = this.volumeEdit?.newSize * 10
+        this.volumeEdit.iops = this.volumeEdit?.newSize * 10;
       }
     }
     // editVolumeDto.newOfferId = 0;
@@ -233,7 +243,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
         serviceDuration: 1
       }
     ];
-    console.log('request', request)
+    console.log('request', request);
     this.volumeService.editSizeVolume(request).subscribe(data => {
         if (data.code == 200) {
           this.isLoadingConfirm = false;
@@ -255,6 +265,24 @@ export class ResizeVolumeVpcComponent implements OnInit {
     );
   }
 
+  getProject(id) {
+    this.projectService.getByProjectId(id).subscribe(data => {
+      this.isLoading = false;
+      this.sizeInCloudProject = data;
+      console.log(this.volumeInfo?.volumeType);
+      if (this.volumeInfo?.volumeType === 'hdd') {
+        this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
+      }
+      if (this.volumeInfo?.volumeType === 'ssd') {
+        this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
+      }
+      this.onChangeValueInput();
+    }, error => {
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+      this.isLoading = false;
+    });
+  }
+
   showConfirmResize() {
     this.isVisibleConfirm = true;
   }
@@ -267,27 +295,24 @@ export class ResizeVolumeVpcComponent implements OnInit {
     this.submitForm();
   }
 
+  getConfiguration() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueString = data.valueString;
+      this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
+      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+    })
+  }
+
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
+
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+    this.getConfiguration();
     if (this.volumeId != undefined || this.volumeId != null) {
-      console.log('id', this.volumeId);
       this.getVolumeById(this.volumeId);
-      this.isLoading = true;
-      this.projectService.getByProjectId(this.project).subscribe(data => {
-        this.isLoading = false;
-        this.sizeInCloudProject = data;
-        console.log(this.volumeInfo?.volumeType)
-        if(this.volumeInfo?.volumeType === 'hdd') {
-          this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
-        }
-        if(this.volumeInfo?.volumeType === 'ssd') {
-          this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
-        }
-        this.onChangeValueInput();
-      }, error => {
-        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
-        this.isLoading = false;
-      });
+      this.getProject(this.project);
     }
   }
 }

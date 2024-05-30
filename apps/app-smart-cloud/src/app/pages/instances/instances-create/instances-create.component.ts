@@ -1209,13 +1209,25 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   deleteRowIPv4(id: number): void {
-    this.listOfDataIPv4 = this.listOfDataIPv4.filter((d) => d.id !== id);
+    this.listOfDataIPv4 = [];
+    this.defaultIPv4 = new Network();
+    this.totalAmountIPv4 = 0;
+    this.totalVATIPv4 = 0;
+    this.totalPaymentIPv4 = 0;
     this.externalIp(this.listOfDataIPv4, true);
+    this.activeIPv4 = false;
+    this.cdr.detectChanges();
   }
 
   deleteRowIPv6(id: number): void {
-    this.listOfDataIPv6 = this.listOfDataIPv6.filter((d) => d.id !== id);
+    this.listOfDataIPv6 = [];
+    this.defaultIPv6 = new Network();
+    this.totalAmountIPv6 = 0;
+    this.totalVATIPv6 = 0;
+    this.totalPaymentIPv6 = 0;
     this.externalIp(this.listOfDataIPv6, false);
+    this.activeIPv6 = false;
+    this.cdr.detectChanges();
   }
 
   onInputIPv4(value: any, id: number) {
@@ -1225,16 +1237,6 @@ export class InstancesCreateComponent implements OnInit {
       }
     });
     this.changeTotalAmountIPv4(value);
-    const filteredArrayHas = this.listOfDataIPv4.filter(
-      (item) => item.ip == ''
-    );
-
-    if (filteredArrayHas.length == 0) {
-      this.defaultIPv4 = new Network();
-      this.idIPv4++;
-      this.defaultIPv4.id = this.idIPv4;
-      this.listOfDataIPv4.push(this.defaultIPv4);
-    }
     this.externalIp(this.listOfDataIPv4, true);
     this.cdr.detectChanges();
   }
@@ -1246,16 +1248,6 @@ export class InstancesCreateComponent implements OnInit {
       }
     });
     this.changeTotalAmountIPv6(value);
-    const filteredArrayHas = this.listOfDataIPv6.filter(
-      (item) => item.ip == ''
-    );
-
-    if (filteredArrayHas.length == 0) {
-      this.defaultIPv6 = new Network();
-      this.idIPv6++;
-      this.defaultIPv6.id = this.idIPv6;
-      this.listOfDataIPv6.push(this.defaultIPv6);
-    }
     this.externalIp(this.listOfDataIPv6, false);
     this.cdr.detectChanges();
   }

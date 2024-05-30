@@ -243,7 +243,7 @@
                   >{{ 'app.service.creation-date' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan">{{
-                  instancesModel.createdDate | date : 'dd/MM/yyyy'
+                  instancesModel.createdDate | date : 'HH:mm:ss dd/MM/yyyy'
                 }}</span>
               </nz-row>
             </nz-col>
@@ -253,7 +253,7 @@
                   >{{ 'app.service.expiration-date' | i18n }}:</span
                 >
                 <span class="text-value-detail"
-                  >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
+                  >{{ instancesModel.expiredDate | date : 'HH:mm:ss dd/MM/yyyy' }}
                 </span>
               </nz-row></nz-col
             >

@@ -9,12 +9,12 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DataPayment, InstancesModel, ItemPayment } from '../../../instances/instances.model';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
-import { now } from 'lodash';
 import { debounceTime, Subject } from 'rxjs';
 import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 
 @Component({
   selector: 'app-extend-volume',
@@ -43,7 +43,7 @@ export class EditVolumeComponent implements OnInit {
 
   volumeId: number;
 
-  isLoading = false;
+  isLoading = true;
 
   iops: number;
 
@@ -66,7 +66,8 @@ export class EditVolumeComponent implements OnInit {
               private notification: NzNotificationService,
               private instanceService: InstancesService,
               private projectService: ProjectService,
-              @Inject(ALAIN_I18N_TOKEN) protected i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) protected i18n: I18NService,
+              private configurationsService: ConfigurationsService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
@@ -148,24 +149,21 @@ export class EditVolumeComponent implements OnInit {
     }
   }
 
-  getMonthDifference(expiredDateStr: string, createdDateStr: string): number {
-    // Chuyển đổi chuỗi thành đối tượng Date
-    const expiredDate = new Date(expiredDateStr);
-    const createdDate = new Date(createdDateStr);
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueString: string;
 
-    // Tính số tháng giữa hai ngày
-    const oneDay = 24 * 60 * 60 * 1000; // Số mili giây trong một ngày
-    const diffDays = Math.round(Math.abs((expiredDate.getTime() - createdDate.getTime()) / oneDay)); // Số ngày chênh lệch
-    const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
-    return diffMonths;
-  }
-
-  goBack(): void {
-    this.router.navigate(['/app-smart-cloud/volume/detail/' + this.volumeId]);
+  getConfiguration() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueString = data.valueString;
+      this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
+      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+    })
   }
 
   ngOnInit() {
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+    this.getConfiguration();
     this.dateEdit = new Date();
     if (this.volumeId != undefined || this.volumeId != null) {
       console.log('id', this.volumeId);
@@ -173,7 +171,7 @@ export class EditVolumeComponent implements OnInit {
       this.getTotalAmountFirst();
     }
 
-    this.changeValueInput()
+    this.changeValueInput();
 
     // const idVolume = this.activatedRoute.snapshot.paramMap.get('id');
     // this.getVolumeById(idVolume);
@@ -199,44 +197,39 @@ export class EditVolumeComponent implements OnInit {
   array: string[] = [];
 
   getVolumeById(idVolume: number) {
+    this.isLoading = true;
     this.volumeService.getVolumeById(idVolume).subscribe(data => {
-      if (data !== undefined && data != null) {
-        this.volumeInfo = data;
-        this.oldSize = data.sizeInGB;
-        this.validateForm.controls.name.setValue(data.name);
-        // this.validateForm.controls.storage.setValue(data.sizeInGB);
-        this.validateForm.controls.description.setValue(data.description);
-        this.selectedValueRadio = data.volumeType;
-        this.validateForm.controls.radio.setValue(data.volumeType);
+      this.isLoading = false;
+      this.volumeInfo = data;
+      this.oldSize = data.sizeInGB;
+      this.validateForm.controls.name.setValue(data.name);
+      // this.validateForm.controls.storage.setValue(data.sizeInGB);
+      this.validateForm.controls.description.setValue(data.description);
+      this.selectedValueRadio = data.volumeType;
+      this.validateForm.controls.radio.setValue(data.volumeType);
 
-        this.iops = this.volumeInfo?.iops;
+      this.iops = this.volumeInfo?.iops;
 
-        if (this.volumeInfo?.instanceId != null) {
-          this.getInstanceById(this.volumeInfo?.instanceId);
-        }
-        console.log('volumesInfo', this.volumeInfo.attachedInstances);
-        if (data?.attachedInstances != null) {
-          this.volumeInfo?.attachedInstances?.forEach(item => {
-            this.listVMs += item.instanceName + '\n';
-          });
-        }
-        this.getTotalAmount();
-
-        //Thoi gian su dung
-        const createDate = new Date(this.volumeInfo?.creationDate);
-        const exdDate = new Date(this.volumeInfo?.expirationDate);
-        this.expiryTime = (exdDate.getFullYear() - createDate.getFullYear()) * 12 + (exdDate.getMonth() - createDate.getMonth());
-
-      } else {
-        this.volumeInfo = null;
+      if (this.volumeInfo?.instanceId != null) {
+        this.getInstanceById(this.volumeInfo?.instanceId);
       }
-    });
-  }
+      console.log('volumesInfo', this.volumeInfo?.attachedInstances);
+      if (data?.attachedInstances != null) {
+        this.volumeInfo?.attachedInstances?.forEach(item => {
+          this.listVMs += item.instanceName + '\n';
+        });
+      }
+      this.getTotalAmount();
 
-  //
-  changeVolumeType(value) {
-    this.selectedValueRadio = value;
-    // this.notification.warning('', 'Không thể thay đổi loại Volume.')
+      //Thoi gian su dung
+      const createDate = new Date(this.volumeInfo?.creationDate);
+      const exdDate = new Date(this.volumeInfo?.expirationDate);
+      this.expiryTime = (exdDate.getFullYear() - createDate.getFullYear()) * 12 + (exdDate.getMonth() - createDate.getMonth());
+    }, error => {
+      this.isLoading = false;
+      this.router.navigate(['/app-smart-cloud/volumes']);
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+    });
   }
 
   convertString(str: string): string {
@@ -246,23 +239,24 @@ export class EditVolumeComponent implements OnInit {
     }
     return parts.join(', ');
   }
+
   volumeEdit: EditSizeMemoryVolumeDTO = new EditSizeMemoryVolumeDTO();
 
   volumeInit() {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id;
     this.volumeEdit.newDescription = this.validateForm.controls.description.value;
     this.volumeEdit.regionId = this.region;
-    if(this.volumeInfo?.sizeInGB != null) {
+    if (this.volumeInfo?.sizeInGB != null) {
       this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB;
     }
-    if(this.volumeInfo?.volumeType == 'hdd') {
-      this.volumeEdit.iops = 300
+    if (this.volumeInfo?.volumeType == 'hdd') {
+      this.volumeEdit.iops = 300;
     }
-    if(this.volumeInfo?.volumeType == 'ssd') {
-      if(this.volumeEdit.newSize <= 40) {
-        this.volumeEdit.iops = 400
+    if (this.volumeInfo?.volumeType == 'ssd') {
+      if (this.volumeEdit.newSize <= 40) {
+        this.volumeEdit.iops = 400;
       } else {
-        this.volumeEdit.iops = this.volumeEdit?.newSize * 10
+        this.volumeEdit.iops = this.volumeEdit?.newSize * 10;
       }
     }
     // editVolumeDto.newOfferId = 0;
@@ -285,13 +279,13 @@ export class EditVolumeComponent implements OnInit {
   changeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if((res % 10) > 0) {
-          this.notification.warning('',this.i18n.fanyi('app.notify.amount.capacity'))
-          this.validateForm.controls.storage.setValue(res - (res % 10))
+        if ((res % this.stepStorage) > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
         }
         console.log('total amount');
-        this.getTotalAmount()
-      })
+        this.getTotalAmount();
+      });
   }
 
   changeValueStorage(value) {

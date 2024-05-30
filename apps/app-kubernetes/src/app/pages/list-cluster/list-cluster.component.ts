@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, HostListener, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { EMPTY, Observable, Subscription, combineLatest, defaultIfEmpty, finalize, interval, merge, of, take, takeUntil } from 'rxjs';
+import { EMPTY, Observable, Subscription, catchError, combineLatest, defaultIfEmpty, finalize, interval, merge, of, take, takeUntil, throwError, timeout, timeoutWith } from 'rxjs';
 import { environment } from '@env/environment';
 import { KubernetesCluster } from '../../model/cluster.model';
 import { ClusterStatus } from '../../model/status.model';
@@ -12,6 +12,8 @@ import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
 import { NotificationConstant } from '../../constants/notification.constant';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -49,7 +51,9 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     1, // Đang khởi tạo
     7, // Đang xóa
     6, // Đang nâng cấp
+    5, // Đang khôi phục
   ];
+  mapProgress: Map<string, number>;
 
   baseUrl = environment['baseUrl'];
 
@@ -69,7 +73,8 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     private notificationService: NzNotificationService,
     private ref: ChangeDetectorRef,
     private zone: NgZone,
-    private router: Router
+    private router: Router,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   private subscription: Subscription;
@@ -142,10 +147,12 @@ export class ListClusterComponent implements OnInit, OnDestroy {
               switch (cluster.serviceStatus) {
                 case 1: // initialing
                 case 6: // upgrading
-                  progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.CREATE_ACTION);
+                  progressObs = this.viewProgressCluster(cluster.regionId, cluster.namespace,
+                    cluster.serviceOrderCode, KubernetesConstant.CREATE_ACTION);
                   break;
                 case 7: // deleting
-                  progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.DELETE_ACTION);
+                  progressObs = this.viewProgressCluster(cluster.regionId, cluster.namespace,
+                    cluster.serviceOrderCode, KubernetesConstant.DELETE_ACTION);
                   break;
                 default:
                   progressObs = new Observable(_ => _.complete()).pipe(defaultIfEmpty(0));
@@ -158,20 +165,69 @@ export class ListClusterComponent implements OnInit, OnDestroy {
           }
         }
 
+        let progressFromLocal: string = localStorage.getItem('mapProgress');
+        if (progressFromLocal) {
+          this.mapProgress = new Map(JSON.parse(progressFromLocal));
+        } else {
+          this.mapProgress = new Map<string, number>();
+        }
+
+        // progress.forEach(p => {
+        //   p.pipe(
+        //     timeout(5000),
+        //     catchError(() => of(0))
+        //   ).subscribe((r: any) => {
+        //     let key = r.data.key;
+        //     let currentValue = r.data.progress;
+        //     let previousValue = this.mapProgress.get(key);
+        //     if (previousValue && currentValue <= previousValue) {
+        //       this.mapProgress.set(key, previousValue);
+        //     } else {
+        //       this.mapProgress.set(key, currentValue);
+        //     }
+        //   });
+        // });
+
         this.unsubscribeObs(this.eventSources);
-        this.subscription = combineLatest(progress).subscribe(data => {
-          // console.log({combine: data});
+        this.subscription = combineLatest(progress)
+        .subscribe(data => {
           this.listOfProgress = data;
+
+          // let progressFromLocal: string = localStorage.getItem('mapProgress');
+
+          // if (progressFromLocal) {
+          //   this.mapProgress = new Map(JSON.parse(progressFromLocal));
+          // } else {
+          //   this.mapProgress = new Map<string, number>();
+          // }
+
+          // for (let i = 0; i < this.listOfProgress.length; i++) {
+          //   let currentProgress = this.listOfProgress[i];
+          //   const cluster = this.listOfClusters[i];
+          //   let keyObj = cluster.namespace + ';' + cluster.clusterName;
+
+          //   if (currentProgress == 100) {
+          //     this.mapProgress.delete(keyObj);
+          //   } else {
+          //     let previousValue = this.mapProgress.get(keyObj);
+          //     if (previousValue && currentProgress <= previousValue) {
+          //       this.mapProgress.set(keyObj, previousValue);
+          //     } else {
+          //       this.mapProgress.set(keyObj, currentProgress);
+          //     }
+          //   }
+          // }
+
+          // localStorage.setItem('mapProgress', JSON.stringify(Array.from(this.mapProgress.entries())));
           this.ref.detectChanges();
-          console.log({ progress: this.listOfProgress });
         });
       }
     });
   }
 
-  viewProgressCluster(namespace: string, clusterName: string, action: string) {
+  viewProgressCluster(regionId: number, namespace: string, serviceOrderCode: string, action: string) {
     return new Observable(observable => {
-      let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${namespace}/${clusterName}/${action}`);
+      let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${regionId}/${namespace}/${serviceOrderCode}/${action}`);
       this.eventSources.push(source);
       source.onmessage = event => {
         this.zone.run(() => {
@@ -199,6 +255,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.websocketService.disconnect();
     this.unsubscribeObs(null);
+    localStorage.removeItem('mapProgress');
   }
 
   onDestroy(): void {
@@ -238,7 +295,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           this.listOfStatusCluster = r.data;
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -250,7 +307,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
           const yamlString = r.data;
           this.downloadKubeConfig(item.clusterName, yamlString);
         } else {
-          this.notificationService.error("Thất bại", "Có lỗi xảy ra trong quá trình tải xuống. Vui lòng thử lại sau");
+          console.error('An error ocur when download file');
         }
       });
   }
@@ -336,10 +393,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
       }))
       .subscribe((r: any) => {
         if (r && r.code == 200) {
-          this.notificationService.success("Thành công", r.message);
           this.searchCluster();
-        } else {
-          this.notificationService.error("Thất bại", r.message);
         }
       });
   }
@@ -357,7 +411,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
           if (notificationMessage.content && notificationMessage.content?.length > 0) {
             if (notificationMessage.status == NotificationConstant.NOTI_SUCCESS) {
               this.notificationService.success(
-                NotificationConstant.NOTI_SUCCESS_LABEL,
+                this.i18n.fanyi('app.status.success'),
                 notificationMessage.content);
 
               // refresh page
@@ -365,7 +419,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
 
             } else {
               this.notificationService.error(
-                NotificationConstant.NOTI_ERROR_LABEL,
+                this.i18n.fanyi('app.status.fail'),
                 notificationMessage.content);
             }
           }
