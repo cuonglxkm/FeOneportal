@@ -1,60 +1,20 @@
-#!/usr/bin/env groovy
-def agentLabel = "it-si-cloud-linux1"
-pipeline {
+def image
+def imageTag
+def appName
 
+pipeline {
+    
     agent { label 'worker-6-agent||jenkins-oneportal' }
 
     environment {
         registry = "registry.onsmartcloud.com"
         registryCredential = "cloud-harbor-id"
-        k8sCred = "k8s-dev-cred"
+        k8sCredential = "k8s-oneportal-stag"
         ENV = "dev"
     }
     stages {
-        stage('Show Build environment') {
-            steps {
-                sh 'env'
-                sh 'ip a'
-            }
-        }
 
-        stage('Build images') {
-            when {
-                branch "develop"
-            }
-            steps {
-                sh 'docker compose --parallel 2 build'
-            }
-        }
-
-        stage('Build images test') {
-            when {
-                branch "release"
-            }
-            steps {
-                sh 'docker compose -f compose-test.yml --parallel 2 build'
-            }
-        }
-
-        stage('Push images') {
-            when {
-                branch "develop"
-            }
-            steps {
-                sh 'docker compose push'
-            }
-        }
-
-        stage('Push images test') {
-            when {
-                branch "release"
-            }
-            steps {
-                sh 'docker compose -f compose-test.yml push'
-            }
-        }
-
-        stage('Redeploy k8s') {
+        stage("Initializing") {
             steps {
                 script {
                     appName = env.BRANCH_NAME.tokenize("/").last()
@@ -93,7 +53,7 @@ pipeline {
                 script {
                     env.APP_NAME = appName
                     env.IMAGE_TAG = imageTag
-                    withCredentials([file(credentialsId: k8sCred , variable: 'KUBECONFIG')]) {
+                    withCredentials([file(credentialsId: k8sCredential , variable: 'KUBECONFIG')]) {
                         dir("apps/${appName}/deploy") {
                             sh 'for f in *.yaml; do envsubst < $f | kubectl --insecure-skip-tls-verify apply -f - ; done '
                         }
