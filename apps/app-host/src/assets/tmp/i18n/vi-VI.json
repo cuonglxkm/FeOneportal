@@ -469,7 +469,7 @@
 
   "app.network.name": "Tên Network",
 
-  "app.object.storage.create": "Khởi tạo Object Storage",
+  "app.object.storage.create": "Tạo mới Object Storage",
   "app.button.object.storage.create": "Tạo mới Object Storage",
   "app.object.storage.info": "Thông tin Object Storage",
   "app.object.storage.resize": "Điều chỉnh Object Storage",

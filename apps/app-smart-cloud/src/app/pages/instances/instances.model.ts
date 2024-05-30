@@ -1,3 +1,5 @@
+import { OrderItemPrices } from "src/app/shared/models/price";
+
 export class IPSubnetModel {
   id: string;
   displayName: string;
@@ -331,6 +333,7 @@ export class OrderItem {
   specificationType: string;
   price: number;
   serviceDuration: number;
+  orderItemPrices?: OrderItemPrices[]
 }
 
 export class InstanceResize {
