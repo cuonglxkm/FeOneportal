@@ -112,6 +112,7 @@ export class FileSystemSnapshotComponent {
       this.notificationService.initiateSignalrConnection();
     }
     this.notificationService.connection.on('UpdateStateShareSnapshot', (data) => {
+      debugger
       this.getData();
     });
   }

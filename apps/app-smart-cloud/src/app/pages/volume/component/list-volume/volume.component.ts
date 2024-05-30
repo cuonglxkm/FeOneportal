@@ -261,6 +261,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
       if (message) {
         switch (message.actionType) {
           case "CREATING":
+          case "RESIZING":
           case "RESIZED":
           case "CREATED":
           case "DELETED":
