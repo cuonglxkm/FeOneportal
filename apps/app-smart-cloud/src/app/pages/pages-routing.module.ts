@@ -660,7 +660,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'backup/packages/edit/:id',
+    path: 'backup/packages/resize/:id',
     component: EditBackupPackageComponent,
     canActivate: [PermissionGuard],
     data: {
