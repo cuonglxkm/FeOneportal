@@ -2830,7 +2830,8 @@
   "app.manage.site.to.site.extend":"Gia hạn",
   "app.manage.site.to.site.Adjust":"Điều chỉnh",
   "app.manage.site.to.site.delete":"Xóa",
-  "app.manage.site.to.site.name.package":"Tên gói"
+  "app.manage.site.to.site.name.package":"Tên gói",
+  "app.validate.order.fail": "Lỗi khi kiểm tra order"
 
 
 

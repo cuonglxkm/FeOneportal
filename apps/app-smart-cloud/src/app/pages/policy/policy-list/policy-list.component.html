@@ -25,8 +25,6 @@
   </ng-template>
 </page-header>
 <nz-card class="custom-card">
-  <span class="text-card-header">{{ 'app.policies.policyInfo' | i18n }}</span>
-  <br>
   <div class="root-filter">
     <div class="filter-1 d-flex">
       <nz-select [(ngModel)]="selectedStatus" (ngModelChange)="loadData()" nzSize="large" style="width: 200px">
@@ -34,16 +32,16 @@
       </nz-select>
       <nz-input-group style="margin-left: 8px; width: 40%;" [nzPrefix]="suffixIconSearch"
                       nzSize="large">
-        <input name="name" nz-input [placeholder]="'app.placeholder.search' | i18n " [ngModel]="searchValue"
-               (ngModelChange)="changeSearch($event)" (keydown.enter)="search()"/>
+        <input name="name" nz-input [placeholder]="'app.placeholder.search' | i18n " [(ngModel)]="searchValue"
+               (ngModelChange)="searchDelay.next(false)" (keydown.enter)="search()"/>
       </nz-input-group>
       <ng-template #suffixIconSearch>
         <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"  />
       </ng-template>
     </div>
     <div class="filter-2">
-      
-      
+
+
       <nz-select [(ngModel)]="selectedAction" (nzOpenChange)="selectAction($event)" nzSize="large"
                  style="width: 90px; margin-right: 10px;margin-left: 10px;">
         <nz-option *ngFor="let p of listAction" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
@@ -57,7 +55,7 @@
         (click)="deletePolicy()"
         nzSize="large"
       >
-        <img style="margin-top: -4px" src="assets/imgs/trash.svg"/>
+        <img style="margin-top: -4px;height: 32px;" src="assets/imgs/delete.svg"/>
       </button>
       <button nz-button nzType="primary" (click)="createPolicy()" nzSize="large">
         <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
