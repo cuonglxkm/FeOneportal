@@ -2627,6 +2627,7 @@
   "volume.notification.input.select.snapshot": "Please select a instance",
   "volume.notification.request.create": "Create Volume",
   "volume.notification.require.create.success": "Volume creation request successful",
+  "volume.notification.request.create.fail": "Request to create Volume failed. ",
   "volume.notification.resize.success": "Volume adjustment successful.",
   "volume.notification.resize.fail": "Volume adjustment failed",
   "volume.notification.access.denied": "Volume does not exist!",
