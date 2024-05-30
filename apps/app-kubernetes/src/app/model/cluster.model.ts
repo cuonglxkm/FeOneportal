@@ -308,7 +308,7 @@ export class OrderItemPayment {
   orderItemQuantity: number;
   specificationString: string;
   specificationType: string;
-  serviceDuration: number;
+  serviceDuration?: number;
   sortItem: number;
 }
 
