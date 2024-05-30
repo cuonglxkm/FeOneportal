@@ -543,7 +543,7 @@
 
         <nz-divider class="divider-style"></nz-divider>
 
-        <div nz-row [nzGutter]="8">
+        <!-- <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
             <div class="ml-3"><label class="weight-600">{{ 'app.cluster.remain-cost' | i18n }}</label></div>
           </div>
@@ -554,11 +554,11 @@
           </div>
         </div>
 
-        <nz-divider class="divider-style"></nz-divider>
+        <nz-divider class="divider-style"></nz-divider> -->
 
         <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
-            <div class="ml-3"><label class="weight-600">{{ 'app.cluster.vat-cost-2' | i18n : {vat: '10'} }}</label>
+            <div class="ml-3"><label class="weight-600">{{ 'app.cluster.vat-cost-2' | i18n : {vat: vatPercent? vatPercent * 100 : 10} }}</label>
             </div>
           </div>
 
@@ -592,7 +592,8 @@
 
           <div nz-col [nzSpan]="12">
             <button nz-button nzType="primary" nzBlock class="border-button" (click)="handleShowModalConfirmUpgrade()"
-              [disabled]="isSubmitting || upgradeForm.invalid || (chooseItem == null && isUsingPackConfig) || detailCluster?.serviceStatus != 2">
+              [disabled]="isSubmitting || upgradeForm.invalid || (chooseItem == null && isUsingPackConfig) 
+              || detailCluster?.serviceStatus != 2 || totalCost <= 0">
               <ng-container *ngIf="isSubmitting; else paymentIconTpl">
                 <span nz-icon [nzType]="'loading'"></span>
               </ng-container>
@@ -610,7 +611,6 @@
               </ng-template>
               <span>{{ 'app.text.upgrade' | i18n }}</span>
             </button>
-            <!-- <button nz-button (click)="callme()">call me</button> -->
           </div>
         </div>
       </nz-card>

@@ -310,7 +310,7 @@
 
         <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
-            <div class="ml-3"><label class="weight-600">{{ 'app.cluster.vat-cost-2' | i18n : {vat: '10'} }}</label>
+            <div class="ml-3"><label class="weight-600">{{ 'app.cluster.vat-cost-2' | i18n : {vat: vatPercent ? vatPercent * 100 : 10} }}</label>
             </div>
           </div>
 
