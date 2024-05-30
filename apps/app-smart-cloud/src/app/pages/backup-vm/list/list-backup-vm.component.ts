@@ -182,16 +182,19 @@ export class ListBackupVmComponent implements OnInit {
 
     setTimeout(() => {this.getListBackupVM(true)}, 1500)
 
-    this.notificationService.connection.on('UpdateInstanceBackup', (data) => {
-      
-      if (data) {
-          switch (data.actionType) {
-            case "CREATING":
-              this.getListBackupVM(false);
-            break;
-            case "CREATED":
-              this.getListBackupVM(false);
-            break;
+    this.notificationService.connection.on('UpdateInstanceBackup', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case "CREATING":
+          case "CREATED":
+          case "RESIZING":
+          case "RESIZED":
+          case "EXTENDING":
+          case "EXTENDED":
+          case "DELETING":
+          case "DELETED":
+            this.getListBackupVM(false);
+          break;
           }
       }
     });
