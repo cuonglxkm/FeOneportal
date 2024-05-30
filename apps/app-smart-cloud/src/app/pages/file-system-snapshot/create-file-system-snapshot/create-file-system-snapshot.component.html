@@ -158,9 +158,9 @@
                     formControlName="time"
                     (ngModelChange)="caculator($event)"
                     class="input-custom"
-                    nzMin="1"
-                    nzMax="100"
-                    nzStep="1"
+                    [nzMin]="minStorage" 
+                    [nzStep]="stepStorage"
+                    [nzMax]="maxStorage"
                   />
                   <ng-template #dateErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')"
