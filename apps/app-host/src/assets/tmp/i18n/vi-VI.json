@@ -280,6 +280,7 @@
   "app.application.period": "Thời gian áp dụng",
   "app.reason": "Nguyên nhân",
   "app.choose.attachment.method": "Chọn hình thức gắn",
+  "app.create.port": "Tạo port",
 
   "app.input.name": "Nhập tên",
   "app.input.password": "Nhập mật khẩu",
@@ -454,7 +455,8 @@
   "app.international.bandwidth": "Băng thông quốc tế",
   "app.remain.configuration.in.vpc": "Cấu hình còn lại trong dự án VPC",
   "app.keypair.name": "Tên Keypair",
-  "app.note.create.port": "Vui lòng tạo Port để sử dụng tính năng này!",
+  "app.please": "Vui lòng",
+  "app.note.create.port": "để sử dụng tính năng này!",
 
   "app.disk.type": "Kiểu Volume",
   "app.volume.type": "Loại Volume",
@@ -1457,6 +1459,8 @@
   "kafka.user.delete": "Xóa tài khoản",
   "kafka.user.delete-title": "Bạn chắc chắn muốn xoá tài khoản",
   "kafka.user.delete-note": "Vui lòng nhập tên tài khoản cần xóa.",
+  "kafka.user.otp.pld": "Nhập mã OTP",
+  "kafka.otp.second": "giây",
 
   "kafka.acl.create": "Tạo mới ACL",
   "kafka.acl.title": "Tạo mới ACLs",
@@ -2026,6 +2030,7 @@
   "app.status.init-failed": "Khởi tạo lỗi",
   "app.status.suspend": "Tạm ngưng",
   "app.status.error": "Lỗi",
+  "app.status.restoring": "Đang khôi phục",
 
   "validation.service.name-required": "Tên dịch vụ không được để trống",
   "validation.service.name-not-correct": "Tên dịch vụ nhập chưa đúng",
@@ -2657,9 +2662,10 @@
   "app.info.backup.vm.description": "Mô tả",
   "app.info.backup.vm.total.storage": "Dung lượng backup",
   "app.info.backup.vm.external.volume": "Volume gắn ngoài",
+  "app.choose.backup.vm.external.volume": "Chọn Volume gắn ngoài",
   "app.info.backup.vm.restore.information": "Thông tin khôi phục",
   "app.backup.vm.restore.instance.name": "Tên máy ảo hiện tại",
-  "app.backup.vm.restore.storage.os": "Dung lượng ổ hệ điều hành hiện tại",
+  "app.backup.vm.restore.storage.os": "Dung lượng ổ hệ điều hành",
   "app.backup.vm.restore.current": "Restore vào máy ảo hiện tại",
   "app.backup.vm.restore.new": "Restore vào máy ảo mới",
   "app.backup.config.vm.new": "Cấu hình máy ảo mới",

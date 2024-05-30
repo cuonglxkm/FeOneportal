@@ -489,6 +489,12 @@
               class="text-label"
               style="color: #ea3829"
             >
+              {{ 'app.please' | i18n }}
+              <span
+                style="color: #0066b0; cursor: pointer"
+                (click)="navigatetoCreatePort()"
+                >{{ 'app.create.port' | i18n }}</span
+              >
               {{ 'app.note.create.port' | i18n }}
             </div>
             <nz-form-control *ngIf="listPort.length != 0">

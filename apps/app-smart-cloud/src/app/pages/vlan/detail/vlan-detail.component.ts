@@ -20,6 +20,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
+  selectedIndextab: number = 0;
   idNetwork: number;
 
   networkName: string;
@@ -47,6 +48,11 @@ export class VlanDetailComponent implements OnInit, OnChanges {
               private notification: NzNotificationService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation?.extras.state as { selectedIndextab: number };
+    if (state) {
+      this.selectedIndextab = state.selectedIndextab;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
