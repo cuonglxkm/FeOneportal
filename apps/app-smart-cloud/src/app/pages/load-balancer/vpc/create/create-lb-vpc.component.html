@@ -264,7 +264,7 @@
         </nz-card>
       </nz-col>
       <nz-col nzSpan="8">
-        <nz-card style="border-radius: 8px">
+        <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
           </div>
@@ -296,7 +296,6 @@
           <div style="margin-top: 10px" class="text-label">
             <span>{{ offerDetail?.offerName }}</span>
           </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row>
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="(enableInternetFacing == true && validateForm.invalid) ||

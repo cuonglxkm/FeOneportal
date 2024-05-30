@@ -95,7 +95,7 @@
                                      [nzMin]="fileSystem?.size"
                                      [(ngModel)]="storage"
                                      (ngModelChange)="storageSelectedChange($event)"
-                                     [nzStep]="10"></nz-input-number>
+                                     [nzStep]="stepStorage" [nzMax]="maxStorage"></nz-input-number>
                     <ng-template #storageErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
                       <ng-container

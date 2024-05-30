@@ -177,12 +177,14 @@ export class ResizeFileSystemNormalComponent implements OnInit {
   }
 
   dateEdit: Date;
+  maxStorage: number = 0;
   getConfigurations() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueStringConfiguration = data.valueString;
       const arr = this.valueStringConfiguration.split('#')
       this.minStorage = Number.parseInt(arr[0])
       this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
     })
   }
 

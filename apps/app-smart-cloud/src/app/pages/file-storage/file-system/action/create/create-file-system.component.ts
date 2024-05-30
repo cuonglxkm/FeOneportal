@@ -81,6 +81,7 @@ export class CreateFileSystemComponent implements OnInit {
   minStorage: number = 0;
   stepStorage: number = 0;
   valueStringConfiguration: string = '';
+  maxStorage: number = 0;
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
@@ -322,6 +323,7 @@ export class CreateFileSystemComponent implements OnInit {
       const arr = this.valueStringConfiguration.split('#')
       this.minStorage = Number.parseInt(arr[0])
       this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
     })
   }
 
