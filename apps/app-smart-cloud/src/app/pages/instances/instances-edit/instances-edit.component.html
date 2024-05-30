@@ -244,7 +244,7 @@
                   >{{ 'app.service.creation-date' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan">{{
-                  instancesModel.createdDate | date : 'dd/MM/yyyy'
+                  instancesModel.createdDate | date : 'HH:mm:ss dd/MM/yyyy'
                 }}</span>
               </nz-row>
             </nz-col>
@@ -254,7 +254,9 @@
                   >{{ 'app.service.expiration-date' | i18n }}:</span
                 >
                 <span class="text-value-detail"
-                  >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
+                  >{{
+                    instancesModel.expiredDate | date : 'HH:mm:ss dd/MM/yyyy'
+                  }}
                 </span>
               </nz-row></nz-col
             >
@@ -449,9 +451,9 @@
                           >) - GB</nz-form-label
                         >
                         <nz-slider
-                          [nzMin]="0"
-                          [nzMax]="1000"
-                          [nzStep]="10"
+                          [nzMin]="minCapacity"
+                          [nzMax]="maxCapacity"
+                          [nzStep]="stepCapacity"
                           [(ngModel)]="configCustom.capacity"
                           (ngModelChange)="changeCapacity($event)"
                           [ngModelOptions]="{ standalone: true }"
@@ -463,9 +465,9 @@
                           (keydown)="onKeyDown($event)"
                           (ngModelChange)="changeCapacity($event)"
                           [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="0"
-                          [nzMax]="1000"
-                          [nzStep]="10"
+                          [nzMin]="minCapacity"
+                          [nzMax]="maxCapacity"
+                          [nzStep]="stepCapacity"
                           nzSize="large"
                         ></nz-input-number>
                       </td>
@@ -647,9 +649,9 @@
                           >) - GB</nz-form-label
                         >
                         <nz-slider
-                          [nzMin]="0"
-                          [nzMax]="1000"
-                          [nzStep]="10"
+                          [nzMin]="minCapacity"
+                          [nzMax]="maxCapacity"
+                          [nzStep]="stepCapacity"
                           [(ngModel)]="configGPU.storage"
                           (ngModelChange)="changeStorageOfGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
@@ -661,9 +663,9 @@
                           (keydown)="onKeyDown($event)"
                           (ngModelChange)="changeStorageOfGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="0"
-                          [nzMax]="1000"
-                          [nzStep]="10"
+                          [nzMin]="minCapacity"
+                          [nzMax]="maxCapacity"
+                          [nzStep]="stepCapacity"
                           nzSize="large"
                         ></nz-input-number>
                       </td>

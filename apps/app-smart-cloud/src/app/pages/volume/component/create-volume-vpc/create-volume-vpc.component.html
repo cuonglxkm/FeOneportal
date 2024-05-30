@@ -184,7 +184,10 @@
                                id="storage"
                                class="input-custom"
                                style="width: 100%; margin-left: 0;"
-                               [nzMin]="0" [nzStep]="10" (ngModelChange)="changeValueStorage($event)"></nz-input-number>
+                               [nzMin]="minStorage"
+                               [nzStep]="stepStorage"
+                               [nzMax]="maxStorage"
+                               (ngModelChange)="changeValueStorage($event)"></nz-input-number>
               <ng-template #storageErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.required.storage' | i18n }}
                 </ng-container>

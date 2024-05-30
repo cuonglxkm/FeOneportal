@@ -18,6 +18,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-resize-file-system-normal',
@@ -51,6 +52,9 @@ export class ResizeFileSystemNormalComponent implements OnInit {
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
   dataSubjectStorage: Subject<any> = new Subject<any>();
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueStringConfiguration: string = '';
 
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
@@ -60,7 +64,8 @@ export class ResizeFileSystemNormalComponent implements OnInit {
               private notification: NzNotificationService,
               private projectService: ProjectService,
               private instanceService: InstancesService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private configurationsService: ConfigurationsService) {
 
   }
 
@@ -105,7 +110,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     this.resizeFileSystem.actionType = 4;
     this.resizeFileSystem.serviceInstanceId = this.idFileSystem;
     this.resizeFileSystem.regionId = this.region;
-    this.resizeFileSystem.serviceName = this.fileSystem.name;
+    this.resizeFileSystem.serviceName = this.fileSystem?.name;
     this.resizeFileSystem.vpcId = this.project;
     this.resizeFileSystem.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.ShareResizeSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null';
     this.resizeFileSystem.userEmail = this.tokenService.get()?.email;
@@ -119,9 +124,9 @@ export class ResizeFileSystemNormalComponent implements OnInit {
   onChangeStorage() {
     this.dataSubjectStorage.pipe(debounceTime(700))
       .subscribe((res) => {
-        if (this.storage % 10 > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
-          this.storage = this.storage - (this.storage % 10);
+        if (this.storage % this.stepStorage > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
+          this.storage = this.storage - (this.storage % this.stepStorage);
         }
         console.log('total amount');
         this.getTotalAmount();
@@ -167,23 +172,22 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
   }
 
-  getMonthDifference(expiredDateStr: string, createdDateStr: string): number {
-    // Chuyển đổi chuỗi thành đối tượng Date
-    const expiredDate = new Date(expiredDateStr);
-    const createdDate = new Date(createdDateStr);
-
-    // Tính số tháng giữa hai ngày
-    const oneDay = 24 * 60 * 60 * 1000; // Số mili giây trong một ngày
-    const diffDays = Math.round(Math.abs((expiredDate.getTime() - createdDate.getTime()) / oneDay)); // Số ngày chênh lệch
-    const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
-    return diffMonths;
-  }
-
   navigateToDetail() {
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/detail/' + this.idFileSystem]);
   }
 
   dateEdit: Date;
+  maxStorage: number = 0;
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
+    })
+  }
+
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -194,5 +198,6 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     this.getFileSystemById(this.idFileSystem);
     this.onChangeStorage();
     this.dateEdit = new Date();
+    this.getConfigurations();
   }
 }

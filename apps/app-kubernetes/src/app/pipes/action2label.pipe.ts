@@ -43,6 +43,9 @@ export class Action2Label implements PipeTransform {
       case 'EXTEND_SERVICE':
         return 'cluster.log.extend';
 
+      case 'HIBERNATE':
+        return 'cluster.log.hibernate';
+
       case 'EDIT':
         return 'cluster.log.edit';
 

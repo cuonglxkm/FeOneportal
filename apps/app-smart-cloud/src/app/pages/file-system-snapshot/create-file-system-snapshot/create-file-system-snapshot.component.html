@@ -73,6 +73,8 @@
               (ngModelChange)="updateSelectedFileSystems($event)"
               [(ngModel)]="fileSysId"
               class="input-select-custom"
+              [nzLoading]="isLoading"
+              [nzDisabled]="disableListFS"
             >
               <nz-option
                 *ngFor="let data of listFileSystems"

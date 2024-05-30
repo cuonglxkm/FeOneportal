@@ -23,7 +23,6 @@
       <th>Port Range</th>
       <th>Remote IP Prefix</th>
       <th>Remote Security Group</th>
-      <th>{{ 'app.cluster.description' | i18n }}</th>
       <th>{{ 'app.text.operation' | i18n }}</th>
     </tr>
   </thead>
@@ -36,9 +35,8 @@
         <td>{{item.portRange}}</td>
         <td>{{item.remoteIpPrefix}}</td>
         <td>
-          {{item.remoteGroupId}}
+          {{item.remoteGroupName}}
         </td>
-        <td></td>
         <td>
           <ng-container *ngIf="item | canDelRule; else cannotDelRuleTpl">
             <div class="center-align">

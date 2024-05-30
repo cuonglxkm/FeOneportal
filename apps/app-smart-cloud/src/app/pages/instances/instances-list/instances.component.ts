@@ -27,7 +27,7 @@ import {
   RegionModel,
 } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject, debounceTime, from } from 'rxjs';
+import { Subject, debounceTime, Subscription } from 'rxjs';
 import {
   FormSearchNetwork,
   NetWorkModel,
@@ -103,7 +103,7 @@ export class InstancesComponent implements OnInit {
       if (data) {
         let instanceId = data.serviceId;
         let actionType = data.actionType;
-
+        var taskState = data?.data?.taskState ?? "";
         var foundIndex = this.dataList.findIndex((x) => x.id == instanceId);
         if (!instanceId) {
           return;
@@ -153,12 +153,109 @@ export class InstancesComponent implements OnInit {
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
               break;
+            case 'REBUILDING':
+              console.log("rebuilding")
+              var record = this.dataList[foundIndex];
+    
+              // if (data.status) {
+              //   record.status = data.status;
+              // }
+
+              if (taskState) {
+                record.taskState = taskState;
+              }
+
+              // if (data.flavorName) {
+              //   record.flavorName = data.flavorName;
+              // }
+
+              this.dataList[foundIndex] = record;
+              this.cdr.detectChanges();
+              break;
+            case 'REBUILDED':
+              console.log("REBUILDED")
+                  var record = this.dataList[foundIndex];
+    
+                  // if (data.status) {
+                  //   record.status = data.status;
+                  // }
+    
+                  if (taskState) {
+                    record.taskState = taskState;
+                  }
+    
+                  // if (data.flavorName) {
+                  //   record.flavorName = data.flavorName;
+                  // }
+    
+                  this.dataList[foundIndex] = record;
+                  this.cdr.detectChanges();
+                  break;
+                case 'DELETING':
+                  var record = this.dataList[foundIndex];
+    
+                  // if (data.status) {
+                  //   record.status = data.status;
+                  // }
+    
+                  if (taskState) {
+                    record.taskState = taskState;
+                  }
+    
+                  // if (data.flavorName) {
+                  //   record.flavorName = data.flavorName;
+                  // }
+    
+                  this.dataList[foundIndex] = record;
+                  this.cdr.detectChanges();
+                case 'DELETED':
+                    this.reloadTable();
+                          // var record = this.dataList[foundIndex];
+    
+                          // if (data.taskState) {
+                          //   record.taskState = data.taskState;
+                          // }
+            
+            
+                          // this.dataList[foundIndex] = record;
+                          // this.cdr.detectChanges();
           }
         }
       }
     });
     this.checkExistName();
     this.onCheckIPAddress();
+    this.onChangeSearchParam();
+  }
+
+  dataSubjectSearchParam: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
+  changeSearchParam(value: string) {
+    this.enterPressed = false;
+    this.dataSubjectSearchParam.next(value);
+  }
+
+  onChangeSearchParam() {
+    this.searchSubscription = this.dataSubjectSearchParam
+      .pipe(debounceTime(700))
+      .subscribe((res) => {
+        if (!this.enterPressed) {
+          this.doSearch();
+        }
+      });
+  }
+
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    this.doSearch();
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   onRegionChange(region: RegionModel) {
@@ -188,7 +285,7 @@ export class InstancesComponent implements OnInit {
           this.pageSize,
           this.region,
           this.projectId,
-          this.searchParam.name,
+          this.searchParam.name.trim(),
           this.searchParam.status,
           true,
           this.tokenService.get()?.userId
@@ -303,6 +400,7 @@ export class InstancesComponent implements OnInit {
         next: (data) => {
           this.listPort = data.filter((e) => e.attachedDeviceId == '');
           this.portLoading = false;
+          this.instanceAction.portId = this.listPort[0].id;
         },
         error: (e) => {
           this.notification.error(
@@ -385,6 +483,13 @@ export class InstancesComponent implements OnInit {
           this.i18n.fanyi('app.notify.attach.vlan.fail')
         );
       },
+    });
+  }
+
+  navigatetoCreatePort() {
+    let selectedVlan = this.listVlanNetwork.filter(e => e.cloudId == this.instanceAction.networkId);
+    this.router.navigate([`/app-smart-cloud/vlan/network/detail/${selectedVlan[0].id}`], {
+      state: { selectedIndextab: 1 },
     });
   }
 

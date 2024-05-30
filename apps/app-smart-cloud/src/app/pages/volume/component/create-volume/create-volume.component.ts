@@ -16,6 +16,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-u
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 
 @Component({
   selector: 'app-create-volume',
@@ -102,8 +103,9 @@ export class CreateVolumeComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private catalogService: CatalogService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    private notification: NzNotificationService
-  ) {
+    private notification: NzNotificationService,
+    private configurationsService: ConfigurationsService,
+    ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
@@ -170,6 +172,19 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   isFirstMounting: boolean = false;
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueString: string;
+  maxStorage: number = 0;
+
+  getConfiguration() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueString = data.valueString;
+      this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
+      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
+    })
+  }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
@@ -361,9 +376,9 @@ export class CreateVolumeComponent implements OnInit {
   changeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if((res % 10) > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'))
-          this.validateForm.controls.storage.setValue(res - (res % 10))
+        if((res % this.stepStorage) > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}))
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage))
         }
         console.log('total amount');
         this.getTotalAmount();
@@ -426,6 +441,7 @@ export class CreateVolumeComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     // this.customerId = this.tokenService.get()?.userId
+    this.getConfiguration();
 
     this.changeValueInput();
 

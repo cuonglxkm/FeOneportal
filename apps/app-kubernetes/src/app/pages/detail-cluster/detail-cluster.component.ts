@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
@@ -16,6 +16,8 @@ import { ShareService } from '../../services/share.service';
 import { NotificationConstant } from '../../constants/notification.constant';
 import { NotificationWsService } from '../../services/ws.service';
 import { messageCallbackType } from '@stomp/stompjs';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-detail-cluster',
@@ -70,7 +72,8 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
     private clipboardService: ClipboardService,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private websocketService: NotificationWsService
+    private websocketService: NotificationWsService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.listOfK8sVersion = [];
     this.showModalKubeConfig = false;
@@ -119,7 +122,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
 
           this.currentVersion = this.detailCluster.currentVersion;
         } else {
-          this.notificationService.error("", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -143,7 +146,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
           if (notificationMessage.content && notificationMessage.content?.length > 0) {
             if (notificationMessage.status == NotificationConstant.NOTI_SUCCESS) {
               this.notificationService.success(
-                NotificationConstant.NOTI_SUCCESS_LABEL,
+                this.i18n.fanyi('app.status.success'),
                 notificationMessage.content);
 
               // refresh page
@@ -151,7 +154,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
 
             } else {
               this.notificationService.error(
-                NotificationConstant.NOTI_ERROR_LABEL,
+                this.i18n.fanyi('app.status.fail'),
                 notificationMessage.content);
             }
           }
@@ -283,7 +286,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           this.listOfWorkerType = r.data;
         } else {
-          this.notificationService.error("", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       })
   }
@@ -295,7 +298,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           this.listOfVolumeType = r.data;
         } else {
-          this.notificationService.error("", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -396,7 +399,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           this.listOfK8sVersion = r.data;
         } else {
-          this.notificationService.error("", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -418,7 +421,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
   // for ssh key
   handleCopySSHKey() {
     this.clipboardService.copy(this.sshKeyString);
-    this.notificationService.success("Đã sao chép", null);
+    this.notificationService.success(null, this.i18n.fanyi('app.bucket.detail.copy.success'));
   }
 
   handleDownloadSSHkey() {
@@ -449,12 +452,12 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
 
   handleCopyKubeConfig() {
     this.clipboardService.copy(this.yamlString);
-    this.notificationService.success("Đã sao chép", null);
+    this.notificationService.success(null, this.i18n.fanyi('app.bucket.detail.copy.success'));
   }
 
   handleCopyAPIEndpoint() {
     this.clipboardService.copy(this.detailCluster.apiEndpoint);
-    this.notificationService.success("Đã sao chép", null);
+    this.notificationService.success(null, this.i18n.fanyi('app.bucket.detail.copy.success'));
   }
 
   handleDownloadKubeConfig() {
@@ -492,10 +495,10 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
     .pipe(finalize(() => this.isUpgradingWorker = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
-        this.notificationService.success("", r.message);
+        this.notificationService.success(this.i18n.fanyi('app.status.success'), r.message);
         this.back2list();
       } else {
-        this.notificationService.error("", r.message);
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }
@@ -517,10 +520,10 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         this.showModalUpgradeVersion = false;
       })).subscribe((r: any) => {
         if (r && r.code == 200) {
-          this.notificationService.success("", r.message);
+          this.notificationService.success(this.i18n.fanyi('app.status.success'), r.message);
           this.back2list();
         } else {
-          this.notificationService.error("", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -551,8 +554,8 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         {{value}}
       </ng-container>
       <ng-template #truncateValueTpl>
-        <div [nzTooltipTitle]="contentTpl"
-          nzTooltipPlacement="bottom" nz-tooltip>
+        <div [nzPopoverContent]="contentTpl"
+          nzPopoverPlacement="bottom" nz-popover>
           {{value | truncateLabel}}
         </div>
 

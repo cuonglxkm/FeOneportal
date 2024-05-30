@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { KubernetesCluster } from '../../model/cluster.model';
@@ -8,6 +8,8 @@ import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
 import { switchMap } from 'rxjs';
 import { Title } from '@angular/platform-browser';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-overall',
@@ -26,7 +28,8 @@ export class OverallComponent implements OnInit {
     private vlanService: VlanService,
     private notificationService: NzNotificationService,
     private activatedRoute: ActivatedRoute,
-    private titleService: Title
+    private titleService: Title,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -65,7 +68,7 @@ export class OverallComponent implements OnInit {
 
           this.titleService.setTitle('Chi tiết cluster ' + this.detailCluster.clusterName);
         } else {
-          this.notificationService.error("Thất bại", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -77,7 +80,7 @@ export class OverallComponent implements OnInit {
         if (r && r.code == 200) {
           this.yamlString = r.data;
         } else {
-          this.notificationService.error("Thất bại", "Có lỗi xảy ra trong quá trình tải xuống. Vui lòng thử lại sau");
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -89,7 +92,7 @@ export class OverallComponent implements OnInit {
       if (r && r.code == 200) {
         this.sshKeyString = r.data;
       } else {
-        this.notificationService.error("Thất bại", "Có lỗi xảy ra trong quá trình tải xuống. Vui lòng thử lại sau");
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }

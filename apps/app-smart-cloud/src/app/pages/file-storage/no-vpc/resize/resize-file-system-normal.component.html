@@ -124,53 +124,14 @@
                 </div>
               </nz-form-label>
               <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input class="input-custom" [value]="fileSystem.description" [maxLength]="255"
+              <textarea nz-input class="input-custom" [value]="fileSystem?.description" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"  [disabled]="true"></textarea>
                 <ng-template #descriptionErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-            <nz-form-item>
-              <nz-form-label nzFor="time">
-                <div class="label">
-                <span>{{ 'app.service.used' | i18n }} (<span class="text-red">*</span
-                >) - {{'app.Month'|i18n}}</span>
-                  <img nz-popover
-                       [nzPopoverContent]="'app.tooltip.time' | i18n : { name: 'File System' }"
-                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                       src="assets/imgs/pajamas_question.svg" alt="" />
-                </div>
-              </nz-form-label>
-              <nz-row style="height: 50px;">
-                <nz-col nzSpan="12">
-                  <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-                    <input nz-input class="input-custom"
-                           [value]="getMonthDifference(fileSystem?.expireDate, fileSystem?.createdDate) + ' Tháng'"
-                           [disabled]="true" />
-                    <ng-template #dateErrorTpl let-control>
-                      <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min')">{{ 'app.more.0.less.100' | i18n }}</ng-container>
-                    </ng-template>
-                  </nz-form-control>
-                </nz-col>
-                <nz-col style="margin-left: 25px;">
-                  <nz-form-item>
-                    <nz-form-label nzFor="now">
-                      <div class="label">
-                        <span>{{ 'app.service.creation-date' | i18n }}: </span>
-                        <span>{{ fileSystem?.createdDate | date: 'dd/MM/yyyy' }}</span>
-                      </div>
-                    </nz-form-label>
-                  </nz-form-item>
-                </nz-col>
-              </nz-row>
-              <nz-form-label>
-                <div class="label">
-                  <span style="color: #E41818;">{{ 'app.service.expiration-date' | i18n }}: </span>
-                  <span style="color: #E41818;">{{ fileSystem?.expireDate | date: 'dd/MM/yyyy' }}</span>
-                </div>
-              </nz-form-label>
-            </nz-form-item>
+            <one-portal-time-used-resize [expireDate]="fileSystem?.expireDate" [createDate]="fileSystem?.createdDate"/>
           </nz-card>
           <nz-card style="border-radius: 8px;">
             <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
@@ -196,7 +157,8 @@
                                  class="input-custom"
                                  [nzMin]="fileSystem?.size"
                                  (ngModelChange)="changeValueStorage($event)"
-                                 [nzStep]="10" />
+                                 [nzStep]="stepStorage"
+                                 [nzMax]="maxStorage"/>
                 <ng-template #storageErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required') || control.hasError('pattern')">{{ 'validation.file.system.capacity.required' | i18n }}</ng-container>
                   <!--                <ng-container-->
@@ -248,17 +210,17 @@
                 <span class="text-label">{{ resizeFileSystem?.size }} GB</span>
               </div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <!--          <nz-row style="margin-bottom: 10px" nzGutter="16">-->
-              <!--            <nz-col nzSpan="16">-->
-              <!--              <span class="text-value"> {{ 'app.cost.a.month' | i18n }} </span>-->
-              <!--            </nz-col>-->
-              <!--            <nz-col class="text-right" nzSpan="8">-->
-              <!--              <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3" nzAlign="right">0 VND</span>-->
-              <!--              <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3" nzAlign="right">-->
-              <!--                {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}-->
-              <!--              </span>-->
-              <!--            </nz-col>-->
-              <!--          </nz-row>-->
+              <nz-row style="margin-bottom: 10px" nzGutter="16">
+                <nz-col nzSpan="16">
+                  <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+                </nz-col>
+                <nz-col class="text-right" nzSpan="8">
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
+                  {{orderItem?.totalVAT?.amount | number }} {{orderItem?.totalVAT?.currency}}
+                </span>
+                </nz-col>
+              </nz-row>
               <nz-row style="
             margin-bottom: 20px;
             background-color: #cce9ff;
