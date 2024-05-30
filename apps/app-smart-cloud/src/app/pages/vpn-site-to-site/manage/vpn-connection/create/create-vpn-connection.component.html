@@ -46,7 +46,7 @@
             <nz-form-item>
               <nz-form-control [nzErrorTip]="nameErrorTpl">
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
+                  <div style="margin-top: 15px;">
                     <span>Name</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
@@ -86,7 +86,7 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
+                  <div style="margin-top: 15px;">
                     <span>IPsec Policy</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
@@ -124,7 +124,7 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
+                  <div>
                     <span>VPN Service</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
 
@@ -162,7 +162,7 @@
             <nz-form-item>
               <nz-form-control [nzErrorTip]="peerRemoteIdErrorTpl">
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
+                  <div>
                     <span>Peer Remote IP VPN Gateway</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
@@ -200,7 +200,7 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
+                  <div>
                     <span>Local Endpoint Group</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
@@ -238,7 +238,7 @@
             <nz-form-item>
               <nz-form-control [nzErrorTip]="peerIdErrorTpl">
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
+                  <div>
                     <span>Peer ID VPN Connections</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
@@ -276,7 +276,7 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
+                  <div>
                     <span>IKE Policy</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
@@ -314,7 +314,7 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
+                  <div>
                     <span> Remote Endpoint Group</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
@@ -352,7 +352,7 @@
             <nz-form-item>
               <nz-form-control [nzErrorTip]="preShareKeyErrorTpl">
                 <nz-form-label nzFor="name" >
-                  <div style="margin-top: 15px">
+                  <div>
                     <span>Pre - Shared Key (PSK) string</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
@@ -568,15 +568,15 @@
           </div>
           <div style="margin-bottom: 20px">
             <h3 class="custom-subtitle">IKE Policy</h3>
-            <span>{{ selectedIkePolicyName }}</span>
+            <span class="text-break">{{ selectedIkePolicyName }}</span>
           </div>
           <div style="margin-bottom: 20px">
             <h3 class="custom-subtitle">IPsec Policy</h3>
-            <span>{{ selectedIpsecPolicyName }}</span>
+            <span class="text-break">{{ selectedIpsecPolicyName }}</span>
           </div>
           <div style="margin-bottom: 20px">
             <h3 class="custom-subtitle">VPN Service</h3>
-            <span>{{ selectedVpnServiceName }}</span>
+            <span class="text-break">{{ selectedVpnServiceName }}</span>
           </div>
           <div style="margin-bottom: 20px">
             <h3 class="custom-subtitle">Peer Remote IP VPN Gateway</h3>

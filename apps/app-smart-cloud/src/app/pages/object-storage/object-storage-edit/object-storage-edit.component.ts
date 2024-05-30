@@ -25,6 +25,7 @@ import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -37,6 +38,10 @@ export class ObjectStorageEditComponent implements OnInit {
   today: Date = new Date();
   addQuota: number = 0;
   objectStorageResize: ObjectStorageResize = new ObjectStorageResize();
+  valueStringConfiguration: string
+  minStorage: number
+  maxStorage: number
+  stepStorage: number
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -46,7 +51,8 @@ export class ObjectStorageEditComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private loadingSrv: LoadingService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private configurationsService: ConfigurationsService
   ) {}
 
   ngOnInit(): void {
@@ -144,5 +150,14 @@ export class ObjectStorageEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: this.order, path: returnPath },
     });
+  }
+
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+    })
   }
 }

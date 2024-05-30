@@ -2,19 +2,20 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, Subject } from 'rxjs';
-import { getCurrentRegionAndProject } from '@shared';
-import { ExtendFileSystem, FileSystemDetail, ResizeFileSystemRequestModel } from 'src/app/shared/models/file-system.model';
-import { DataPayment, ItemPayment } from '../../instances/instances.model';
-import { FileSystemService } from 'src/app/shared/services/file-system.service';
-import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
-import { InstancesService } from '../../instances/instances.service';
-import { OrderItem } from 'src/app/shared/models/price';
-import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
-import { ExtendFileSystemSnapshotRequestModel, OrderCreateFileSystemSnapshot, OrderExtendFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
+import { FileSystemDetail } from 'src/app/shared/models/file-system.model';
+import { ExtendFileSystemSnapshotRequestModel, OrderExtendFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
+import { OrderItem } from 'src/app/shared/models/price';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { FileSystemService } from 'src/app/shared/services/file-system.service';
+import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { DataPayment, ItemPayment } from '../../instances/instances.model';
+import { InstancesService } from '../../instances/instances.service';
 
 
 @Component({
@@ -41,6 +42,10 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
   isInitSnapshot: boolean = false;
 
   snapshot: any;
+  valueStringConfiguration: string
+  minStorage: number
+  maxStorage: number
+  stepStorage: number
 
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
@@ -63,10 +68,10 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private fileSystemService: FileSystemService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private notification: NzNotificationService,
-              private projectService: ProjectService,
               private instanceService: InstancesService,
-              private fileSystemSnapshotService: FileSystemSnapshotService) {
+              private fileSystemSnapshotService: FileSystemSnapshotService,
+              private configurationsService: ConfigurationsService,
+              private notification: NzNotificationService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -181,6 +186,16 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
   }
 
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+    })
+  }
+
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -189,5 +204,6 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
     this.fileSystemSnapshotId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.getFileSystemSnapshotById(this.fileSystemSnapshotId)
     this.onChangeTime()
+    this.getConfigurations();
   }
 }

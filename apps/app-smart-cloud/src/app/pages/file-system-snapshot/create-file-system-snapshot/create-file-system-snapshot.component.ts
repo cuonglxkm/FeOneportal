@@ -37,6 +37,7 @@ import { OrderItem } from 'src/app/shared/models/price';
 import { CreateVolumeRequestModel } from 'src/app/shared/models/volume.model';
 import { addDays } from 'date-fns';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
@@ -63,7 +64,10 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   dateString = new Date();
   expiredDate: Date = addDays(this.dateString, 30);
   isLoadingCreateFSS: boolean = false;
-
+  valueStringConfiguration: string
+  minStorage: number
+  maxStorage: number
+  stepStorage: number
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
 
@@ -149,6 +153,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.getListFileSystem();
+    this.getConfigurations();
   }
 
   constructor(
@@ -160,7 +165,8 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     private notification: NzNotificationService,
     private activatedRoute: ActivatedRoute,
     private instanceService: InstancesService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private configurationsService: ConfigurationsService
   ) {
     this.form.get('time').valueChanges.subscribe((data) => {
       this.getTotalAmount();
@@ -330,6 +336,17 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       });
     }
   }
+
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
+    })
+  }
+
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
