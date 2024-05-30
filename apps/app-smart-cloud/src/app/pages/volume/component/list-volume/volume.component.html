@@ -121,7 +121,7 @@
             </td>
             <td nzBreakWord>
               <div
-                *ngIf="!(data.serviceStatus == 'CREATING' || data.serviceStatus == 'ERROR' || data.serviceStatus == 'ATTACHING' || data.serviceStatus == 'DELETING' || data.serviceStatus == 'ERROR_DELETING')">
+                *ngIf="!(data.serviceStatus == 'CREATING' || data.serviceStatus == 'ERROR' || data.serviceStatus == 'ATTACHING' || data.serviceStatus == 'DELETING' || data.serviceStatus == 'ERROR_DELETING' || data.serviceStatus == 'RESIZING')">
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"

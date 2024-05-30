@@ -100,7 +100,7 @@
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">{{ 'app.service.expiration-date' | i18n }}</span>
-              <span class="text-value-detail customSpan">{{loadBalancer.expiredDate | date: 'dd/MM/yyyy'}}</span>
+              <span class="text-value-detail customSpan" style="color: red">{{loadBalancer.expiredDate | date: 'dd/MM/yyyy'}}</span>
             </nz-row>
           </nz-col>
         </nz-row>
@@ -110,10 +110,10 @@
   <nz-card>
     <nz-tabset>
       <ng-template #titleListener>
-        <span class="text-label">Listener</span>
+        <span class="text-label">Listeners</span>
       </ng-template>
       <ng-template #titlePool>
-        <span class="text-label">Pool</span>
+        <span class="text-label">Pools</span>
       </ng-template>
       <nz-tab [nzTitle]="titleListener">
         <nz-row nzJustify="space-between">

@@ -324,7 +324,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
           if(e.error.type === 'Exception'){
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              this.i18n.fanyi('app.file.system.snapshot.create.size.fail'),
+              e.error.message,
             );
           }else{
             this.notification.error(

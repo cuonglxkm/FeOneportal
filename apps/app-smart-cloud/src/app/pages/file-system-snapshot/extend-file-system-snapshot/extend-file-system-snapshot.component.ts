@@ -70,7 +70,8 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private instanceService: InstancesService,
               private fileSystemSnapshotService: FileSystemSnapshotService,
-              private configurationsService: ConfigurationsService) {
+              private configurationsService: ConfigurationsService,
+              private notification: NzNotificationService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -106,16 +107,23 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
   }
   getFileSystemSnapshotById(id) {
     this.isLoading = true
-    this.fileSystemSnapshotService.getFileSystemSnapshotById(id).subscribe(data => {
-      this.fileSystemSnapshotDetail = data
-      this.fileSystemId = data.shareId
-      this.getFileSystemById(data.shareId)
-      this.isLoading = false
-      const oldDate = new Date(this.fileSystemSnapshotDetail?.expireDate);
-      this.estimateExpireDate = oldDate;
-      const exp = this.estimateExpireDate.setDate(oldDate.getDate() + 30);
-      this.estimateExpireDate = new Date(exp);
-      this.getTotalAmount();
+    this.fileSystemSnapshotService.getFileSystemSnapshotById(id, this.project).subscribe(data => {
+      if(data){
+        this.fileSystemSnapshotDetail = data;
+        this.fileSystemId = data.shareId;
+        this.getFileSystemById(data.shareId);
+        const oldDate = new Date(this.fileSystemSnapshotDetail?.expireDate);
+        this.estimateExpireDate = oldDate;
+        const exp = this.estimateExpireDate.setDate(oldDate.getDate() + 30);
+        this.estimateExpireDate = new Date(exp);
+        this.getTotalAmount();
+      } else {
+        this.notification.error('', 'File System Snapshot không tồn tại!');
+        this.router.navigate([
+          '/app-smart-cloud/file-system-snapshot/list',
+        ]);
+      }
+      this.isLoading = false;
     }, error => {
       this.fileSystemSnapshotDetail = null
       this.isLoading = false
