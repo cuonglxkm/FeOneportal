@@ -22,6 +22,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs/operators';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-create-lb-novpc',
@@ -91,6 +92,7 @@ export class CreateLbNovpcComponent implements OnInit {
               private catalogService: CatalogService,
               private notification: NzNotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private orderService : OrderService,
               private loadBalancerService: LoadBalancerService) {
   }
 
@@ -359,9 +361,14 @@ export class CreateLbNovpcComponent implements OnInit {
     var returnPath: string = '/app-smart-cloud/load-balancer/create';
     console.log('request', request);
     console.log('service name', this.formCreateLoadBalancer.serviceName);
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: request, path: returnPath }
-    });
+    this.orderService.validaterOrder(request).subscribe(
+      data => {
+        this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+      },
+      error => {
+        this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.validate.order.fail'))
+      }
+    )
   }
 
   mapSubnet: Map<string, string> = new Map<string, string>();
