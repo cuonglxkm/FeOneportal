@@ -33,6 +33,7 @@ export class VpnS2sExtendComponent implements OnInit{
   vatNumber = 0;
   vatPer = 10;
   vpn: any;
+  vatDisplay;
   /**
    *
    */
@@ -85,7 +86,7 @@ export class VpnS2sExtendComponent implements OnInit{
       });
   }
 
-  caculator(event) {
+  caculator(event) {  
     if(this.offer){
       this.totalAmount = this.offer['Price'] * this.numberMonth;
       this.totalincludesVAT = this.totalAmount * ((this.vatNumber ? this.vatNumber : 0.1) + 1);
@@ -125,15 +126,14 @@ export class VpnS2sExtendComponent implements OnInit{
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = 0;
-    if(!this.vatNumber){
       this.orderService.getTotalAmount(dataPayment).subscribe((result) => {
         if(result && result.data && result.data.currentVAT){
           this.vatNumber = result.data.currentVAT;
           this.vatPer = this.vatNumber * 100;
+          this.vatDisplay = result.data.totalVAT.amount;
           this.totalincludesVAT = this.totalAmount * (this.vatNumber + 1);
         }
       });
-    }
     
   }
 
@@ -157,11 +157,11 @@ export class VpnS2sExtendComponent implements OnInit{
     this.loading = true;
     this.vpnSiteToSiteService.getVpnSiteToSite(this.vpcId).pipe().subscribe(data => {
       this.loading = false;
-      if(data){
-        this.vpn = data;
+      if(data){; 
+        this.vpn = data.body;    
         this.dateString = new Date(this.vpn['expiredDate']);
         this.expiredDate = addDays(this.dateString, 30);
-        this.offer = this.offerDatas.find(x => x['OfferName'] == data['offerName'] && x['Bandwidth'] == data['bandwidth']);
+        this.offer = this.offerDatas.find(x => x['OfferName'] == data.body['offerName'] && x['Bandwidth'] == data.body['bandwidth']);
         if(this.offer){
           let element = this.el.nativeElement.querySelector(`#offer-title-${this.offer['Id']}`);
           let listTr = element.parentNode.parentNode.children;

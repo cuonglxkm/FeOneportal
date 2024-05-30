@@ -469,7 +469,7 @@
 
   "app.network.name": "Tên Network",
 
-  "app.object.storage.create": "Khởi tạo Object Storage",
+  "app.object.storage.create": "Tạo mới Object Storage",
   "app.button.object.storage.create": "Tạo mới Object Storage",
   "app.object.storage.info": "Thông tin Object Storage",
   "app.object.storage.resize": "Điều chỉnh Object Storage",
@@ -938,10 +938,10 @@
   "validation.file.system.type.required": "Vui lòng chọn loại File System",
   "validation.file.system.description.maxlength": "Cho phép nhập tối đa 700 ký tự",
   "validation.file.system.capacity.required": "vui lòng nhập dung lượng của File System. Dung lượng của File System là số nguyên dương",
-  "validation.file.system.empty": "File System không đuợc để trống!",
-  "validation.number.of.snapshot.required": "Số bản Snapshot không đuợc để trống!",
-  "validation.number.of.day.required": "Số ngày không đuợc để trống!",
-  "validation.number.of.month.required": "Số tháng không đuợc để trống!",
+  "validation.file.system.empty": "File System không được để trống!",
+  "validation.number.of.snapshot.required": "Số bản Snapshot không được để trống!",
+  "validation.number.of.day.required": "Số ngày không được để trống!",
+  "validation.number.of.month.required": "Số tháng không được để trống!",
 
   "app.file.system.snapshot.delete": "Xóa File System Snapshot {{name}}",
   "app.file.system.snapshot.manage": "Quản lý File System Snapshot",

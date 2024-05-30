@@ -18,8 +18,11 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from '@env/environment';
 import { UserModel } from '../../../../../../libs/common-utils/src/lib/shared-model';
 import { of, switchMap, zip } from 'rxjs';
-import { CoreDataService, NotificationService } from '../../../../../../libs/common-utils/src';
-
+import {
+  CoreDataService,
+  NotificationService,
+} from '../../../../../../libs/common-utils/src';
+import Cookies from 'js-cookie';
 export interface TokenResponse {
   [key: string]: NzSafeAny;
 
@@ -88,7 +91,6 @@ export class CallbackComponent implements OnInit {
         switchMap((token) => {
           const accessToken = token.access_token || '';
           const decodedToken = helper.decodeToken(accessToken);
-
           let info = {
             token: token.access_token,
             email: decodedToken['email'],
@@ -117,8 +119,13 @@ export class CallbackComponent implements OnInit {
             );
         })
       )
-      .subscribe({ 
-        next : (response) => {
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+
+          // Cookies.set('auth_token', response.token || '', { domain: 'localhost', path: '/', secure: true });
+
+
           this.settingsSrv.setUser({
             ...this.settingsSrv.user,
             ...response,
@@ -133,27 +140,27 @@ export class CallbackComponent implements OnInit {
           //   .subscribe((checkData) => {
           //     if (checkData) {
           //       let json = {
-                  // key: 'Object Storage',
-                  // text: 'Object Storage',
-                  // icon: 'anticon-profile',
-                  // children: [
-                  //   {
-                  //     text: 'Bucket',
-                  //     link: '/app-smart-cloud/object-storage/bucket',
-                  //   },
-                  //   {
-                  //     text: 'Sub User',
-                  //     link: '/app-smart-cloud/object-storage/sub-user/list',
-                  //   },
-                  //   {
-                  //     text: 'S3 Key',
-                  //     link: '/app-smart-cloud/object',
-                  //   },
-                  //   {
-                  //     text: 'Thống kê',
-                  //     link: '/app-smart-cloud/object-storage/dashboard',
-                  //   },
-                  // ],
+          // key: 'Object Storage',
+          // text: 'Object Storage',
+          // icon: 'anticon-profile',
+          // children: [
+          //   {
+          //     text: 'Bucket',
+          //     link: '/app-smart-cloud/object-storage/bucket',
+          //   },
+          //   {
+          //     text: 'Sub User',
+          //     link: '/app-smart-cloud/object-storage/sub-user/list',
+          //   },
+          //   {
+          //     text: 'S3 Key',
+          //     link: '/app-smart-cloud/object',
+          //   },
+          //   {
+          //     text: 'Thống kê',
+          //     link: '/app-smart-cloud/object-storage/dashboard',
+          //   },
+          // ],
           //       };
           //       this.menuService.setItem('Object Storage', json);
           //       this.menuService.resume();
@@ -168,10 +175,10 @@ export class CallbackComponent implements OnInit {
           //     }
           //   });
         },
-        error : (error) => {
+        error: (error) => {
           console.log(error);
           setTimeout(() => this.router.navigateByUrl(`/exception/500`));
-        }
-    });
+        },
+      });
   }
 }

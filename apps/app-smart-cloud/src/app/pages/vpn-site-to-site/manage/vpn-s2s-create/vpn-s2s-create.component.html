@@ -117,6 +117,29 @@
             </span>
           </nz-col>
         </nz-row>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <nz-row style="margin-bottom: 10px" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span
+              class="text-value"
+              style="color: #0066b3"
+              nzAlign="right"
+              *ngIf="vatDisplay == null"
+              >0 VND</span
+            >
+            <span
+              class="text-value"
+              style="color: #0066b3"
+              nzAlign="right"
+              *ngIf="vatDisplay != undefined"
+            >
+              {{ vatDisplay | number }} VND
+            </span>
+          </nz-col>
+        </nz-row>
         <nz-row class="right-form-content-total" nzGutter="16" >
           <nz-col nzSpan="16">
             <span class="text-label">Tổng thanh toán</span><br />
