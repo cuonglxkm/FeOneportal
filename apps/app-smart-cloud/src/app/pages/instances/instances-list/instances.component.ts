@@ -100,10 +100,12 @@ export class InstancesComponent implements OnInit {
     }
 
     this.notificationService.connection.on('UpdateInstance', (data) => {
+      debugger
       if (data) {
         let instanceId = data.serviceId;
         let actionType = data.actionType;
         var taskState = data?.data?.taskState ?? "";
+        var flavorName = data?.data?.flavorName ?? "";
         var foundIndex = this.dataList.findIndex((x) => x.id == instanceId);
         if (!instanceId) {
           return;
@@ -125,100 +127,36 @@ export class InstancesComponent implements OnInit {
 
             case 'SHUTOFF':
             case 'START':
+            case 'REBOOTING':
+              this.updateRowState(taskState, foundIndex);
             case 'REBOOT':
-              var record = this.dataList[foundIndex];
-
-              record.taskState = data.taskState;
-
-              this.dataList[foundIndex] = record;
-              this.cdr.detectChanges();
+              this.updateRowState(taskState, foundIndex);
               break;
 
             case 'RESIZING':
+              this.updateRowState(taskState, foundIndex);
+              break;
             case 'RESIZED':
               var record = this.dataList[foundIndex];
-
-              if (data.status) {
-                record.status = data.status;
+              if (taskState) {
+                record.taskState = taskState;
               }
-
-              if (data.taskState) {
-                record.taskState = data.taskState;
+              if (flavorName) {
+                record.flavorName = flavorName;
               }
-
-              if (data.flavorName) {
-                record.flavorName = data.flavorName;
-              }
-
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
               break;
             case 'REBUILDING':
-              console.log("rebuilding")
-              var record = this.dataList[foundIndex];
-    
-              // if (data.status) {
-              //   record.status = data.status;
-              // }
-
-              if (taskState) {
-                record.taskState = taskState;
-              }
-
-              // if (data.flavorName) {
-              //   record.flavorName = data.flavorName;
-              // }
-
-              this.dataList[foundIndex] = record;
-              this.cdr.detectChanges();
+              this.updateRowState(taskState, foundIndex);
               break;
             case 'REBUILDED':
-              console.log("REBUILDED")
-                  var record = this.dataList[foundIndex];
-    
-                  // if (data.status) {
-                  //   record.status = data.status;
-                  // }
-    
-                  if (taskState) {
-                    record.taskState = taskState;
-                  }
-    
-                  // if (data.flavorName) {
-                  //   record.flavorName = data.flavorName;
-                  // }
-    
-                  this.dataList[foundIndex] = record;
-                  this.cdr.detectChanges();
+              this.updateRowState(taskState, foundIndex);
                   break;
-                case 'DELETING':
-                  var record = this.dataList[foundIndex];
-    
-                  // if (data.status) {
-                  //   record.status = data.status;
-                  // }
-    
-                  if (taskState) {
-                    record.taskState = taskState;
-                  }
-    
-                  // if (data.flavorName) {
-                  //   record.flavorName = data.flavorName;
-                  // }
-    
-                  this.dataList[foundIndex] = record;
-                  this.cdr.detectChanges();
-                case 'DELETED':
-                    this.reloadTable();
-                          // var record = this.dataList[foundIndex];
-    
-                          // if (data.taskState) {
-                          //   record.taskState = data.taskState;
-                          // }
-            
-            
-                          // this.dataList[foundIndex] = record;
-                          // this.cdr.detectChanges();
+            case 'DELETING':
+                this.updateRowState(taskState, foundIndex);
+            case 'DELETED':
+                this.reloadTable();
           }
         }
       }
@@ -932,5 +870,15 @@ export class InstancesComponent implements OnInit {
         );
       },
     });
+  }
+  
+  updateRowState(taskState: string, foundIndex: number)
+  {
+    var record = this.dataList[foundIndex];
+    if (taskState) {
+      record.taskState = taskState;
+    }
+    this.dataList[foundIndex] = record;
+    this.cdr.detectChanges();
   }
 }
