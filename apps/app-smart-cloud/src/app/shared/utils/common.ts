@@ -1,3 +1,3 @@
 export class TimeCommon {
-  public static readonly timeOutSearch = 500;
+  public static readonly timeOutSearch = 1200;
 }
