@@ -1457,6 +1457,8 @@
   "kafka.user.delete": "Xóa tài khoản",
   "kafka.user.delete-title": "Bạn chắc chắn muốn xoá tài khoản",
   "kafka.user.delete-note": "Vui lòng nhập tên tài khoản cần xóa.",
+  "kafka.user.otp.pld": "Nhập mã OTP",
+  "kafka.otp.second": "giây",
 
   "kafka.acl.create": "Tạo mới ACL",
   "kafka.acl.title": "Tạo mới ACLs",
@@ -2026,6 +2028,7 @@
   "app.status.init-failed": "Khởi tạo lỗi",
   "app.status.suspend": "Tạm ngưng",
   "app.status.error": "Lỗi",
+  "app.status.restoring": "Đang khôi phục",
 
   "validation.service.name-required": "Tên dịch vụ không được để trống",
   "validation.service.name-not-correct": "Tên dịch vụ nhập chưa đúng",

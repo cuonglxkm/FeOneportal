@@ -1565,6 +1565,8 @@
   "kafka.user.delete": "Delete user",
   "kafka.user.delete-title": "Are you sure to delete username",
   "kafka.user.delete-note": "Enter username want to delete.",
+  "kafka.user.otp.pld": "Enter OTP",
+  "kafka.otp.second": "seconds",
 
   "kafka.acl.create": "Create new ACL",
   "kafka.acl.title": "Create new ACLs",
@@ -2133,6 +2135,7 @@
   "app.status.init-failed": "Initialize failed",
   "app.status.suspend": "Suspend",
   "app.status.error": "Error",
+  "app.status.restoring": "Restoring",
 
   "validation.service.name-required": "The service name cannot be empty",
   "validation.service.name-not-correct": "The service name is not correct",
