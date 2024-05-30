@@ -305,6 +305,7 @@ export class ListenerCreateComponent implements OnInit{
   activeDropdownSSL = false;
   listCert: any = null;
   certId: any;
+  sessionFix1 = 'HTTP_Cookies';
   changeProtocolListener(event: any) {
     if (event == 'TERMINATED_HTTPS') {
       this.validateForm.controls['port'].setValue(443);
@@ -316,7 +317,7 @@ export class ListenerCreateComponent implements OnInit{
   private loadSSlCert() {
     this.service.loadSSlCert(this.tokenService.get()?.userId,this.regionId,this.projectId).subscribe(
       data => {
-        this.listCert = data;
+        this.listCert = data.records;
       }
     )
   }
