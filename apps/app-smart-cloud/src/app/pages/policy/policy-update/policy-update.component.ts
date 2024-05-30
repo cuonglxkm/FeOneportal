@@ -58,7 +58,7 @@ export class PolicyUpdateComponent implements OnInit {
 
   panels: Pannel[];
 
-  allService: string[] = [];
+  allServiceAvaiable: string[] = [];
 
   listServiceWithPer: ServicePermissionDetail[] = [];
 
@@ -78,23 +78,36 @@ export class PolicyUpdateComponent implements OnInit {
     this.editorOptions = new JsonEditorOptions()
     this.editorOptions.mode = 'code';
   }
-
+  listAcction: string[];
   visualOption(isVisual: boolean) {
     this.isVisual = isVisual;
+    this.listAcction = [];
+    // console.log(this.panels);
+    if (this.panels.length > 0) {
+      this.panels.forEach(panel => {
+        panel.listPer.forEach(per => {
+          if (per.isChecked) {
+            this.listAcction.push(per.name);
+          }
+        })
+      })
+    }
   }
 
   deleteService(panel: any) {
+    this.allServiceAvaiable.push(panel.idService);
     if (this.panels != null) {
       // @ts-ignore
       this.panels = this.panels.filter(temp => temp.id != panel.id);
     }
+    console.log(this.allServiceAvaiable)
   }
 
   addService() {
     this.panels.push({
       id: this.generateRandomString(10),
       idService: null,
-      name: 'Chọn dịch vụ',
+      name: null,
       listPer: null,
     },)
   }
@@ -122,7 +135,7 @@ export class PolicyUpdateComponent implements OnInit {
       this.getAllServiceV2().then(result => {
         // this.allService = result;
         result.forEach(objData => {
-          this.allService.push(objData.service);
+          this.allServiceAvaiable.push(objData.service);
         });
         this.doSetDataPermissionService(result).then(result => {
           // console.log(result);
@@ -159,7 +172,6 @@ export class PolicyUpdateComponent implements OnInit {
   }
 
   editPolicy() {
-
     let updateRequest = new UpdatePolicyRequest();
     let listAcction = [];
     // console.log(this.panels);
@@ -371,12 +383,13 @@ export class PolicyUpdateComponent implements OnInit {
         countSerice++;
       }
     });
-    if (countSerice > 1) {
-      this.notification.warning("Cảnh báo", "Dịch vụ này đã tồn tại");
-      // this.panels = this.panels.filter(pln => pln.id = selectedPanel.id);
-      return;
-    }
+    // if (countSerice > 1) {
+    //   this.notification.warning("Cảnh báo", "Dịch vụ này đã tồn tại");
+    //   // this.panels = this.panels.filter(pln => pln.id = selectedPanel.id);
+    //   return;
+    // }
 
+    this.allServiceAvaiable.splice(this.allServiceAvaiable.findIndex(item => item === selectedPanel.idService),1);
     this.listServiceWithPer.forEach(temp => {
       if (temp.serviceName == selectedPanel.idService) {
         selectedPanel.name = temp.serviceName;
