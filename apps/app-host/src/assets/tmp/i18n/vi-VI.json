@@ -417,7 +417,7 @@
   "app.notify.unrescue.instances.success": "UNRESCUE máy ảo thành công",
   "app.notify.unrescue.instances.fail": "UNRESCUE máy ảo không thành công",
   "app.notify.get.service.package.fail": "Lấy thông tin gói cấu hình không thành công",
-  "app.notify.amount.capacity": "Số lượng phải chia hết cho 10",
+  "app.notify.amount.capacity": "Số lượng phải chia hết cho {{number}}",
   "app.notify.amount.capacity1": "Số lượng dung lượng phải chia hết cho 10",
   "app.notify.amount.capacity.add": "Vượt quá quota dung lượng, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
   "app.notify.amount.ram.add": "Vượt quá quota RAM, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
@@ -896,7 +896,7 @@
 
   "app.file.system.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Máy ảo) hoặc CIDR được quyền truy cập tới File System này",
   "app.file.system.access.to.create.success": "Tạo mới access rule thành công",
-  "app.file.system.access.to.create.fail": "Tạo mới access rule thất bại",
+  "app.file.system.access.to.create.fail": "Tạo mới access rule thất bại. ",
   "app.file.system.access.to.delete.success": "Xóa access rule thành công",
   "app.file.system.access.to.delete.fail": "Xóa access rule thất bại",
   "app.file.system.access.to.delete.file.success": "Xóa File System thành công",

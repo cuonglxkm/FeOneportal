@@ -175,12 +175,14 @@ export class CreateVolumeComponent implements OnInit {
   minStorage: number = 0;
   stepStorage: number = 0;
   valueString: string;
+  maxStorage: number = 0;
 
   getConfiguration() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueString = data.valueString;
       this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
       this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
     })
   }
 

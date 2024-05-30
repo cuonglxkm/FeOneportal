@@ -28,6 +28,7 @@ import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { debounceTime, Subject } from 'rxjs';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -94,7 +95,8 @@ export class InstancesEditVpcComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private configurationService: ConfigurationsService
   ) {}
 
   checkPermission: boolean = false;
@@ -105,6 +107,7 @@ export class InstancesEditVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getConfigurations();
     this.getCurrentInfoInstance(this.id);
     this.getInfoVPC();
     this.onChangeCapacity();
@@ -323,7 +326,7 @@ export class InstancesEditVpcComponent implements OnInit {
 
   isChange: boolean = false;
   checkChangeConfig() {
-    if (this.storage % 10 > 0) {
+    if (this.storage % this.stepCapacity > 0) {
       this.isChange = false;
     } else {
       if (this.storage != 0 || this.ram != 0 || this.vCPU != 0) {
@@ -334,24 +337,36 @@ export class InstancesEditVpcComponent implements OnInit {
     }
   }
 
+  minCapacity: number;
+  maxCapacity: number;
+  stepCapacity: number;
+  getConfigurations() {
+    this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
+      next: (data) => {
+        let valueArray = data.valueString.split('#');
+        this.minCapacity = valueArray[0];
+        this.stepCapacity = valueArray[1];
+        this.maxCapacity = valueArray[2];
+      },
+    });
+  }
+
   dataSubjectCapacity: Subject<any> = new Subject<any>();
   changeCapacity(value: number) {
     this.dataSubjectCapacity.next(value);
   }
   onChangeCapacity() {
-    this.dataSubjectCapacity
-      .pipe(
-        debounceTime(700)
-      )
-      .subscribe((res) => {
-        if (res % 10 > 0) {
-          this.notification.warning(
-            '',
-            this.i18n.fanyi('app.notify.amount.capacity')
-          );
-          this.storage = this.storage - (this.storage % 10);
-        }
-      });
+    this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
+      if (res % this.stepCapacity > 0) {
+        this.notification.warning(
+          '',
+          this.i18n.fanyi('app.notify.amount.capacity', {
+            number: this.stepCapacity,
+          })
+        );
+        this.storage = this.storage - (this.storage % this.stepCapacity);
+      }
+    });
   }
 
   onRegionChange(region: RegionModel) {
