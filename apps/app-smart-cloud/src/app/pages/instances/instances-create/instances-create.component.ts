@@ -39,7 +39,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { Subject, debounceTime } from 'rxjs';
-import { addDays } from 'date-fns';
+import { addDays, isValid } from 'date-fns';
 import {
   FormSearchNetwork,
   NetWorkModel,
@@ -230,6 +230,7 @@ export class InstancesCreateComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getVolumeUnitMoney();
     this.getConfigurations();
     this.initIpSubnet();
     this.initFlavors();
@@ -761,33 +762,54 @@ export class InstancesCreateComponent implements OnInit {
         if (this.isCustomconfig) {
           this.volumeIntoMoney =
             this.volumeUnitPrice * this.configCustom.capacity;
+          if (this.configCustom.capacity == 0) {
+            this.volumeUnitPrice = 0;
+          }
         }
         if (this.isGpuConfig) {
           this.volumeIntoMoney = this.volumeUnitPrice * this.configGPU.storage;
+          if (this.configGPU.storage == 0) {
+            this.volumeUnitPrice = 0;
+          }
         }
       }
       if (ram == 1) {
         this.ramUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
         if (this.isCustomconfig) {
           this.ramIntoMoney = this.ramUnitPrice * this.configCustom.ram;
+          if (this.configCustom.ram == 0) {
+            this.ramUnitPrice = 0;
+          }
         }
         if (this.isGpuConfig) {
           this.ramIntoMoney = this.ramUnitPrice * this.configGPU.ram;
+          if (this.configGPU.ram == 0) {
+            this.ramUnitPrice = 0;
+          }
         }
       }
       if (cpu == 1) {
         this.cpuUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
         if (this.isCustomconfig) {
           this.cpuIntoMoney = this.cpuUnitPrice * this.configCustom.vCPU;
+          if (this.configCustom.vCPU == 0) {
+            this.cpuUnitPrice = 0;
+          }
         }
         if (this.isGpuConfig) {
           this.cpuIntoMoney = this.cpuUnitPrice * this.configGPU.CPU;
+          if (this.configGPU.CPU == 0) {
+            this.cpuUnitPrice = 0;
+          }
         }
       }
       if (gpu == 1) {
         this.gpuUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
         if (this.isGpuConfig) {
           this.gpuIntoMoney = this.gpuUnitPrice * this.configGPU.GPU;
+          if (this.configGPU.GPU == 0) {
+            this.gpuUnitPrice = 0;
+          }
         }
       }
       this.cdr.detectChanges();
@@ -1673,7 +1695,7 @@ export class InstancesCreateComponent implements OnInit {
     let id: number, value: any;
     this.dataBSSubject
       .pipe(
-        debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+        debounceTime(0) //
       )
       .subscribe((res) => {
         id = res.id;
@@ -1697,43 +1719,125 @@ export class InstancesCreateComponent implements OnInit {
             (changeBlockStorage.capacity % this.stepCapacity);
         }
         this.volumeInit(changeBlockStorage);
-        let productId = changeBlockStorage.type == 'hdd' ? 2 : 114;
-        this.catalogService
-          .getCatalogOffer(productId, this.region, null, null)
-          .subscribe((data) => {
-            let offer = data.find(
-              (offer) => offer.status.toUpperCase() == 'ACTIVE'
-            );
-            this.volumeCreate.offerId = offer.id;
-            let itemPayment: ItemPayment = new ItemPayment();
-            itemPayment.orderItemQuantity = 1;
-            itemPayment.specificationString = JSON.stringify(this.volumeCreate);
-            itemPayment.specificationType = 'volume_create';
-            itemPayment.serviceDuration = this.numberMonth;
-            itemPayment.sortItem = 0;
-            let dataPayment: DataPayment = new DataPayment();
-            dataPayment.orderItems = [itemPayment];
-            dataPayment.projectId = this.projectId;
-            this.dataService.getPrices(dataPayment).subscribe((result) => {
-              console.log('thanh tien volume', result);
-              changeBlockStorage.price =
-                Number.parseFloat(result.data.totalAmount.amount) /
-                this.numberMonth;
-              changeBlockStorage.VAT =
-                Number.parseFloat(result.data.totalVAT.amount) /
-                this.numberMonth;
-              changeBlockStorage.priceAndVAT =
-                Number.parseFloat(result.data.totalPayment.amount) /
-                this.numberMonth;
-              this.listOfDataBlockStorage[index] = changeBlockStorage;
-              this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
-                this.totalAmountVolume += e.price * this.numberMonth;
-                this.totalVATVolume += e.VAT * this.numberMonth;
-                this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
-              });
-              this.cdr.detectChanges();
-            });
+        if (changeBlockStorage.type == 'hdd') {
+          changeBlockStorage.price =
+            changeBlockStorage.capacity * this.unitPriceVolumeHDD;
+          changeBlockStorage.VAT =
+            changeBlockStorage.capacity * this.unitVATVolumeHDD;
+          changeBlockStorage.priceAndVAT =
+            changeBlockStorage.capacity * this.unitPaymentVolumeHDD;
+          this.listOfDataBlockStorage[index] = changeBlockStorage;
+          this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
+            this.totalAmountVolume += e.price * this.numberMonth;
+            this.totalVATVolume += e.VAT * this.numberMonth;
+            this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
           });
+        } else {
+          changeBlockStorage.price =
+            changeBlockStorage.capacity * this.unitPriceVolumeSSD;
+          changeBlockStorage.VAT =
+            changeBlockStorage.capacity * this.unitVATVolumeSSD;
+          changeBlockStorage.priceAndVAT =
+            changeBlockStorage.capacity * this.unitPaymentVolumeSSD;
+          this.listOfDataBlockStorage[index] = changeBlockStorage;
+          this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
+            this.totalAmountVolume += e.price * this.numberMonth;
+            this.totalVATVolume += e.VAT * this.numberMonth;
+            this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
+          });
+        }
+        this.cdr.detectChanges();
+      });
+  }
+
+  unitPriceVolumeHDD: number = 0;
+  unitVATVolumeHDD: number = 0;
+  unitPaymentVolumeHDD: number = 0;
+  unitPriceVolumeSSD: number = 0;
+  unitVATVolumeSSD: number = 0;
+  unitPaymentVolumeSSD: number = 0;
+  getVolumeUnitMoney() {
+    // Lấy giá tiền của Volume gắn thêm 1GB/1Tháng
+    this.catalogService
+      .getCatalogOffer(2, this.region, null, null)
+      .subscribe((data) => {
+        let offer = data.find(
+          (offer) => offer.status.toUpperCase() == 'ACTIVE'
+        );
+        let temVolumeCreate = new VolumeCreate();
+        temVolumeCreate.volumeType = 'hdd';
+        temVolumeCreate.volumeSize = 1;
+        temVolumeCreate.projectId = this.projectId.toString();
+        temVolumeCreate.serviceType = 2;
+        temVolumeCreate.serviceInstanceId = 0;
+        temVolumeCreate.customerId = this.tokenService.get()?.userId;
+        temVolumeCreate.isTrial = false;
+        temVolumeCreate.regionId = this.region;
+        temVolumeCreate.serviceName = '';
+        temVolumeCreate.offerId = offer.id;
+        let itemPayment: ItemPayment = new ItemPayment();
+        itemPayment.orderItemQuantity = 1;
+        itemPayment.specificationString = JSON.stringify(temVolumeCreate);
+        itemPayment.specificationType = 'volume_create';
+        itemPayment.serviceDuration = 1;
+        itemPayment.sortItem = 0;
+        let dataPayment: DataPayment = new DataPayment();
+        dataPayment.orderItems = [itemPayment];
+        dataPayment.projectId = this.projectId;
+        this.dataService.getPrices(dataPayment).subscribe((result) => {
+          console.log('thanh tien volume', result);
+          this.unitPriceVolumeHDD = Number.parseFloat(
+            result.data.totalAmount.amount
+          );
+          this.unitVATVolumeHDD = Number.parseFloat(
+            result.data.totalVAT.amount
+          );
+          this.unitPaymentVolumeHDD = Number.parseFloat(
+            result.data.totalPayment.amount
+          );
+          this.cdr.detectChanges();
+        });
+      });
+
+    this.catalogService
+      .getCatalogOffer(114, this.region, null, null)
+      .subscribe((data) => {
+        let offer = data.find(
+          (offer) => offer.status.toUpperCase() == 'ACTIVE'
+        );
+        let temVolumeCreate = new VolumeCreate();
+        temVolumeCreate.volumeType = 'ssd';
+        temVolumeCreate.volumeSize = 1;
+        temVolumeCreate.projectId = this.projectId.toString();
+        temVolumeCreate.serviceType = 2;
+        temVolumeCreate.serviceInstanceId = 0;
+        temVolumeCreate.customerId = this.tokenService.get()?.userId;
+        temVolumeCreate.isTrial = false;
+        temVolumeCreate.regionId = this.region;
+        temVolumeCreate.serviceName = '';
+        temVolumeCreate.offerId = offer.id;
+        let itemPayment: ItemPayment = new ItemPayment();
+        itemPayment.orderItemQuantity = 1;
+        itemPayment.specificationString = JSON.stringify(temVolumeCreate);
+        itemPayment.specificationType = 'volume_create';
+        itemPayment.serviceDuration = 1;
+        itemPayment.sortItem = 0;
+        let dataPayment: DataPayment = new DataPayment();
+        dataPayment.orderItems = [itemPayment];
+        dataPayment.projectId = this.projectId;
+        this.dataService.getPrices(dataPayment).subscribe((result) => {
+          console.log('thanh tien volume', result);
+          this.unitPriceVolumeSSD = Number.parseFloat(
+            result.data.totalAmount.amount
+          );
+          this.unitVATVolumeSSD = Number.parseFloat(
+            result.data.totalVAT.amount
+          );
+          this.unitPaymentVolumeSSD = Number.parseFloat(
+            result.data.totalPayment.amount
+          );
+          this.cdr.detectChanges();
+        });
       });
   }
 

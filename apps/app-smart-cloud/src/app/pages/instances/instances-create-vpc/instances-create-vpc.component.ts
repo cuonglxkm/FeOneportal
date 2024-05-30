@@ -433,6 +433,15 @@ export class InstancesCreateVpcComponent implements OnInit {
   isCustomconfig = true;
   isGpuConfig = false;
   listGPUType: OfferItem[] = [];
+  getListGpuType() {
+    this.dataService
+      .getListOffers(this.region, 'vm-flavor-gpu')
+      .subscribe((data) => {
+        this.listGPUType = data.filter(
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+        );
+      });
+  }
 
   onClickCustomConfig() {
     this.isCustomconfig = true;
@@ -520,6 +529,8 @@ export class InstancesCreateVpcComponent implements OnInit {
               })
             );
           }
+        } else {
+          this.isValidCapacity = true;
         }
       });
   }
