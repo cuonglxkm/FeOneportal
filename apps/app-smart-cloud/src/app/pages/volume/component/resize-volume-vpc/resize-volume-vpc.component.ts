@@ -85,6 +85,10 @@ export class ResizeVolumeVpcComponent implements OnInit {
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
     this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend'));
 
+    this.validateForm.controls.storage.valueChanges.subscribe(value => {
+      this.volumeInit();
+    })
+
   }
 
   checkQuota(control) {
@@ -161,7 +165,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.validateForm.controls.description.setValue(data.description);
       this.selectedValueRadio = data.volumeType;
       this.validateForm.controls.radio.setValue(data.volumeType);
-
+      this.volumeEdit.iops = this.volumeInfo?.iops
       if (this.volumeInfo?.instanceId != null) {
         this.getInstanceById(this.volumeInfo?.instanceId);
       }
