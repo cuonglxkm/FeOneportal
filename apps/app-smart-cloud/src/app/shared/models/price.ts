@@ -47,3 +47,12 @@ export class OrderItem {
   totalPayment: TotalPayment
 
 }
+
+export class OrderItemObject {
+  orderItemPrices: OrderItemPrices[]
+  totalAmount: TotalAmount
+  currentVAT: number
+  totalVAT: TotalVAT
+  totalPayment: TotalPayment
+
+}

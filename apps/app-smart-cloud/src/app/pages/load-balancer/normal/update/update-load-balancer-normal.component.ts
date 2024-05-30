@@ -15,6 +15,7 @@ import { FormSearchListBalancer, FormUpdateLB, LoadBalancerModel } from '../../.
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-update-load-balancer-normal',
@@ -49,6 +50,7 @@ export class UpdateLoadBalancerNormalComponent implements AfterViewInit{
 
   constructor(private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
+              private orderService : OrderService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private loadBalancerService: LoadBalancerService) {
   }

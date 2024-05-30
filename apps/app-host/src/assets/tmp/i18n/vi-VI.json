@@ -418,7 +418,7 @@
   "app.notify.unrescue.instances.success": "UNRESCUE máy ảo thành công",
   "app.notify.unrescue.instances.fail": "UNRESCUE máy ảo không thành công",
   "app.notify.get.service.package.fail": "Lấy thông tin gói cấu hình không thành công",
-  "app.notify.amount.capacity": "Số lượng phải chia hết cho 10",
+  "app.notify.amount.capacity": "Số lượng phải chia hết cho {{number}}",
   "app.notify.amount.capacity1": "Số lượng dung lượng phải chia hết cho 10",
   "app.notify.amount.capacity.add": "Vượt quá quota dung lượng, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
   "app.notify.amount.ram.add": "Vượt quá quota RAM, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
@@ -470,7 +470,7 @@
 
   "app.network.name": "Tên Network",
 
-  "app.object.storage.create": "Khởi tạo Object Storage",
+  "app.object.storage.create": "Tạo mới Object Storage",
   "app.button.object.storage.create": "Tạo mới Object Storage",
   "app.object.storage.info": "Thông tin Object Storage",
   "app.object.storage.resize": "Điều chỉnh Object Storage",
@@ -939,10 +939,10 @@
   "validation.file.system.type.required": "Vui lòng chọn loại File System",
   "validation.file.system.description.maxlength": "Cho phép nhập tối đa 700 ký tự",
   "validation.file.system.capacity.required": "vui lòng nhập dung lượng của File System. Dung lượng của File System là số nguyên dương",
-  "validation.file.system.empty": "File System không đuợc để trống!",
-  "validation.number.of.snapshot.required": "Số bản Snapshot không đuợc để trống!",
-  "validation.number.of.day.required": "Số ngày không đuợc để trống!",
-  "validation.number.of.month.required": "Số tháng không đuợc để trống!",
+  "validation.file.system.empty": "File System không được để trống!",
+  "validation.number.of.snapshot.required": "Số bản Snapshot không được để trống!",
+  "validation.number.of.day.required": "Số ngày không được để trống!",
+  "validation.number.of.month.required": "Số tháng không được để trống!",
 
   "app.file.system.snapshot.delete": "Xóa File System Snapshot {{name}}",
   "app.file.system.snapshot.manage": "Quản lý File System Snapshot",
@@ -2838,7 +2838,8 @@
   "app.manage.site.to.site.extend":"Gia hạn",
   "app.manage.site.to.site.Adjust":"Điều chỉnh",
   "app.manage.site.to.site.delete":"Xóa",
-  "app.manage.site.to.site.name.package":"Tên gói"
+  "app.manage.site.to.site.name.package":"Tên gói",
+  "app.validate.order.fail": "Lỗi khi kiểm tra order"
 
 
 

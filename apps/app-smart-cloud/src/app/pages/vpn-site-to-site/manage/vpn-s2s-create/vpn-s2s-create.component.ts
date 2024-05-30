@@ -29,6 +29,7 @@ export class VpnS2sCreateComponent implements OnInit {
   spec: any;
   vatNumber = 0;
   vatPer = 10;
+  vatDisplay
   /**
    *
    */
@@ -143,15 +144,14 @@ export class VpnS2sCreateComponent implements OnInit {
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = 0;
-    if(!this.vatNumber){
       this.orderService.getTotalAmount(dataPayment).subscribe((result) => {
         if(result && result.data && result.data.currentVAT){
           this.vatNumber = result.data.currentVAT;
+          this.vatDisplay = result.data.totalVAT.amount;
           this.vatPer = this.vatNumber * 100;
           this.totalincludesVAT = this.totalAmount * (this.vatNumber + 1);
         }
       });
-    }
     
   }
 

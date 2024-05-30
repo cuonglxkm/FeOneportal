@@ -44,7 +44,7 @@
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
+            <nz-form-item class="mb-5">
               <nz-form-control [nzErrorTip]="nameErrorTpl">
                 <nz-form-label nzFor="name">Name</nz-form-label>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
@@ -80,7 +80,7 @@
             </nz-form-item>
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
+            <nz-form-item class="mb-5">
               <nz-form-control>
                 <nz-form-label>Authorization Algorithm</nz-form-label>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
@@ -111,7 +111,7 @@
             </nz-form-item>
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
+            <nz-form-item class="mb-5">
               <nz-form-control nzErrorTip="Trường dữ liệu không đuợc để trống!">
                 <nz-form-label nzFor="name">Encryption Algorithm</nz-form-label>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
@@ -142,7 +142,7 @@
             </nz-form-item>
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
+            <nz-form-item class="mb-5">
               <nz-form-control nzErrorTip="Trường dữ liệu không đuợc để trống!">
                 <div>
                   <nz-form-label nzFor="name">IKE version</nz-form-label>
@@ -175,7 +175,7 @@
             </nz-form-item>
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
+            <nz-form-item class="mb-5">
               <nz-form-control nzErrorTip="Trường dữ liệu không đuợc để trống!">
                 <nz-form-label nzFor="name">Lifetime Units</nz-form-label>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
@@ -206,7 +206,7 @@
             </nz-form-item>
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
+            <nz-form-item class="mb-5">
               <nz-form-control nzErrorTip="Trường dữ liệu không đuợc để trống!">
                 <nz-form-label nzFor="name">Lifetime Value</nz-form-label>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
@@ -241,7 +241,7 @@
             </nz-form-item>
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
+            <nz-form-item class="mb-5">
               <nz-form-control nzErrorTip="Trường dữ liệu không đuợc để trống!">
                 <nz-form-label nzFor="name"
                   >Perfect Forward Secrecy</nz-form-label
@@ -274,7 +274,7 @@
             </nz-form-item>
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
+            <nz-form-item class="mb-5">
               <nz-form-control>
                 <nz-form-label nzFor="name">
                   IKE Phase1 Negotiation Mode
@@ -311,7 +311,7 @@
     </nz-card>
   </div>
   <div nz-col [nzSpan]="7" class="gutter-row">
-    <nz-card style="border-radius: 8px">
+    <nz-card style="border-radius: 8px" class="card-border">
       <h2 class="custom-title">Thông số cấu hình</h2>
       <div style="overflow-y: auto; height: 332px; margin-bottom: 16px" class="parameter-ike">
         <div style="margin-bottom: 12px">

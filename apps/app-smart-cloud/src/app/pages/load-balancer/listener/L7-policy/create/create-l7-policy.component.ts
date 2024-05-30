@@ -155,8 +155,8 @@ export class CreateL7PolicyComponent implements OnInit {
     formCreateL7Policy.position = this.validateForm.controls.prioritize.value
     formCreateL7Policy.projectId = this.project.toString()
     formCreateL7Policy.redirectHttpCode = null
-    formCreateL7Policy.redirectPoolId = null
-    formCreateL7Policy.redirectUrl = null
+    formCreateL7Policy.redirectPoolId = this.validateForm.controls['action'].value == 'REDIRECT_TO_POOL' ? this.validateForm.controls['pool'].value : null
+    formCreateL7Policy.redirectUrl = this.validateForm.controls['action'].value == 'REDIRECT_TO_URL' ? this.validateForm.controls['url'].value : null
     formCreateL7Policy.customerId = this.tokenService.get()?.userId
 
     this.loadBalancerService.createL7Policy(formCreateL7Policy).subscribe(data => {
