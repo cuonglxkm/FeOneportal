@@ -49,6 +49,7 @@ import { VlanService } from 'src/app/shared/services/vlan.service';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -157,7 +158,8 @@ export class InstancesCreateComponent implements OnInit {
     private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver,
-    private vlanService: VlanService
+    private vlanService: VlanService,
+    private configurationService: ConfigurationsService
   ) {}
 
   @ViewChild('nameInput') firstInput: ElementRef;
@@ -232,6 +234,7 @@ export class InstancesCreateComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getConfigurations();
     this.initIpSubnet();
     this.initFlavors();
     this.getListGpuType();
@@ -847,19 +850,36 @@ export class InstancesCreateComponent implements OnInit {
       });
   }
 
+  minCapacity: number;
+  maxCapacity: number;
+  stepCapacity: number;
+  getConfigurations() {
+    this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
+      next: (data) => {
+        let valueArray = data.valueString.split('#');
+        this.minCapacity = valueArray[0];
+        this.stepCapacity = valueArray[1];
+        this.maxCapacity = valueArray[2];
+      },
+    });
+  }
+
   dataSubjectCapacity: Subject<any> = new Subject<any>();
   changeCapacity(value: number) {
     this.dataSubjectCapacity.next(value);
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
-      if (this.configCustom.capacity % 10 > 0) {
+      if (this.configCustom.capacity % this.stepCapacity > 0) {
         this.notification.warning(
           '',
-          this.i18n.fanyi('app.notify.amount.capacity')
+          this.i18n.fanyi('app.notify.amount.capacity', {
+            number: this.stepCapacity,
+          })
         );
         this.configCustom.capacity =
-          this.configCustom.capacity - (this.configCustom.capacity % 10);
+          this.configCustom.capacity -
+          (this.configCustom.capacity % this.stepCapacity);
       }
       this.getUnitPrice(1, 0, 0, 0, null);
       if (
@@ -1669,13 +1689,16 @@ export class InstancesCreateComponent implements OnInit {
           (obj) => obj.id == id
         );
         let changeBlockStorage = this.listOfDataBlockStorage[index];
-        if (changeBlockStorage.capacity % 10 > 0) {
+        if (changeBlockStorage.capacity % this.stepCapacity > 0) {
           this.notification.warning(
             '',
-            this.i18n.fanyi('app.notify.amount.capacity')
+            this.i18n.fanyi('app.notify.amount.capacity', {
+              number: this.stepCapacity,
+            })
           );
           changeBlockStorage.capacity =
-            changeBlockStorage.capacity - (changeBlockStorage.capacity % 10);
+            changeBlockStorage.capacity -
+            (changeBlockStorage.capacity % this.stepCapacity);
         }
         this.volumeInit(changeBlockStorage);
         let productId = changeBlockStorage.type == 'hdd' ? 2 : 114;

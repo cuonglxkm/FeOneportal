@@ -175,12 +175,14 @@ export class CreateVolumeComponent implements OnInit {
   minStorage: number = 0;
   stepStorage: number = 0;
   valueString: string;
+  maxStorage: number = 0;
 
   getConfiguration() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueString = data.valueString;
       this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
       this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
     })
   }
 
@@ -374,9 +376,9 @@ export class CreateVolumeComponent implements OnInit {
   changeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if((res % 10) > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'))
-          this.validateForm.controls.storage.setValue(res - (res % 10))
+        if((res % this.stepStorage) > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}))
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage))
         }
         console.log('total amount');
         this.getTotalAmount();

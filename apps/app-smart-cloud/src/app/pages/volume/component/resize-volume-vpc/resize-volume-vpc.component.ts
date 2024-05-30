@@ -69,6 +69,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   minStorage: number = 0;
   stepStorage: number = 0;
   valueString: string;
+  maxStorage: number = 0;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
@@ -84,6 +85,10 @@ export class ResizeVolumeVpcComponent implements OnInit {
     this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
     this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend'));
+
+    this.validateForm.controls.storage.valueChanges.subscribe(value => {
+      this.volumeInit();
+    })
 
   }
 
@@ -126,9 +131,9 @@ export class ResizeVolumeVpcComponent implements OnInit {
   onChangeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if (res % 10 > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
-          this.validateForm.controls.storage.setValue(res - (res % 10));
+        if (res % this.stepStorage > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
         }
       });
   }
@@ -161,7 +166,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.validateForm.controls.description.setValue(data.description);
       this.selectedValueRadio = data.volumeType;
       this.validateForm.controls.radio.setValue(data.volumeType);
-
+      this.volumeEdit.iops = this.volumeInfo?.iops
       if (this.volumeInfo?.instanceId != null) {
         this.getInstanceById(this.volumeInfo?.instanceId);
       }
@@ -296,6 +301,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.valueString = data.valueString;
       this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
       this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
     })
   }
 

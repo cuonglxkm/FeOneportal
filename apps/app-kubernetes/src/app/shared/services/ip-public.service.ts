@@ -58,4 +58,5 @@ export class IpPublicService extends BaseService{
       data
     );
   }
+  
 }

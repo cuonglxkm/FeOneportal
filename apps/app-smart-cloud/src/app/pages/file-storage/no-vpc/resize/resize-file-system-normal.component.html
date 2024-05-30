@@ -157,7 +157,8 @@
                                  class="input-custom"
                                  [nzMin]="fileSystem?.size"
                                  (ngModelChange)="changeValueStorage($event)"
-                                 [nzStep]="10" />
+                                 [nzStep]="stepStorage"
+                                 [nzMax]="maxStorage"/>
                 <ng-template #storageErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required') || control.hasError('pattern')">{{ 'validation.file.system.capacity.required' | i18n }}</ng-container>
                   <!--                <ng-container-->
@@ -209,17 +210,17 @@
                 <span class="text-label">{{ resizeFileSystem?.size }} GB</span>
               </div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <!--          <nz-row style="margin-bottom: 10px" nzGutter="16">-->
-              <!--            <nz-col nzSpan="16">-->
-              <!--              <span class="text-value"> {{ 'app.cost.a.month' | i18n }} </span>-->
-              <!--            </nz-col>-->
-              <!--            <nz-col class="text-right" nzSpan="8">-->
-              <!--              <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3" nzAlign="right">0 VND</span>-->
-              <!--              <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3" nzAlign="right">-->
-              <!--                {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}-->
-              <!--              </span>-->
-              <!--            </nz-col>-->
-              <!--          </nz-row>-->
+              <nz-row style="margin-bottom: 10px" nzGutter="16">
+                <nz-col nzSpan="16">
+                  <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+                </nz-col>
+                <nz-col class="text-right" nzSpan="8">
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
+                  {{orderItem?.totalVAT?.amount | number }} {{orderItem?.totalVAT?.currency}}
+                </span>
+                </nz-col>
+              </nz-row>
               <nz-row style="
             margin-bottom: 20px;
             background-color: #cce9ff;
