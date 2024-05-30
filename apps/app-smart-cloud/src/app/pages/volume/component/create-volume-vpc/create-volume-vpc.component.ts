@@ -20,6 +20,7 @@ import {
 } from '../../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
+import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -112,7 +113,8 @@ export class CreateVolumeVpcComponent implements OnInit {
     private catalogService: CatalogService,
     private notification: NzNotificationService,
     private projectService: ProjectService,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private configurationsService: ConfigurationsService
   ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
@@ -147,9 +149,9 @@ export class CreateVolumeVpcComponent implements OnInit {
   changeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if(res % 10 > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'))
-          this.validateForm.controls.storage.setValue(res - (res % 10))
+        if(res % this.stepStorage > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}))
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage))
         }
       });
   }
@@ -291,7 +293,21 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   sizeInCloudProject: SizeInCloudProject = new SizeInCloudProject();
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueString: string;
+  maxStorage: number = 0;
+
+  getConfiguration() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueString = data.valueString;
+      this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
+      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
+    })
+  }
   ngOnInit() {
+    this.getConfiguration();
     if (this.selectedValueHDD) {
       this.iops = 300;
     }

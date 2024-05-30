@@ -63,9 +63,9 @@ export class FileSystemSnapshotService extends BaseService {
         Object.assign(formCreate), {headers: this.getHeaders()})
   }
 
-  getFileSystemSnapshotById(id: number){
+  getFileSystemSnapshotById(id: number, projectId: number){
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions +
-      `/file-storage/sharesnapshot/${id}`).pipe(
+      `/file-storage/sharesnapshot/${id}?projectId=${projectId}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

@@ -39,7 +39,12 @@
 </page-header>
 <div nz-row [nzGutter]="24">
   <div nz-col [nzSpan]="16" style="display: flex">
-    <form style="width: 100%" nz-form [formGroup]="validateForm" nzLayout="vertical">
+    <form
+      style="width: 100%"
+      nz-form
+      [formGroup]="validateForm"
+      nzLayout="vertical"
+    >
       <nz-card style="border-radius: 8px">
         <span class="text-card-header">{{
           'app.backup.vm.ìnformation' | i18n
@@ -76,7 +81,7 @@
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label>
-                <span>{{ 'app.info.backup.vm.vm.root' | i18n }}</span>
+                <span>{{ 'app.instances' | i18n }}</span>
               </nz-form-label>
               <nz-form-control>
                 <input
@@ -102,6 +107,14 @@
             </nz-form-item>
           </nz-col>
         </nz-row>
+        <nz-form-item>
+          <nz-form-label>
+            <span style="color: #ff0000"
+              >{{ 'app.service.expiration-date' | i18n }} :
+              {{ backupVmModel?.expirationDate | date : 'dd/MM/yyyy' }}</span
+            >
+          </nz-form-label>
+        </nz-form-item>
       </nz-card>
       <nz-card style="border-radius: 8px">
         <span class="text-card-header">{{
@@ -125,49 +138,16 @@
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
-                  <span>{{
-                    'app.backup.vm.restore.instance.name' | i18n
-                  }}</span>
+                  <span>{{ 'app.backup.vm.restore.storage.os' | i18n }}</span>
                 </nz-form-label>
                 <nz-form-control>
                   <input
                     nz-input
                     class="input-custom"
-                    [value]="backupVmModel?.instanceName"
+                    [value]="backupVmModel?.size + ' GB'"
                     [disabled]="true"
                   />
                 </nz-form-control>
-              </nz-form-item>
-              <nz-form-item>
-                <nz-form-label>
-                  <span>{{ 'app.backup.vm.restore.storage.os' | i18n }}</span>
-                </nz-form-label>
-                <nz-form-control>
-                  <nz-input-group [nzAddOnAfter]="'GB'" style="width: 100%">
-                    <input
-                      nz-input
-                      class="input-custom"
-                      [value]="backupVmModel?.systemInfoBackups[0].osName"
-                      [disabled]="true"
-                    />
-                  </nz-input-group>
-                </nz-form-control>
-              </nz-form-item>
-              <nz-form-item>
-                <nz-form-label>
-                  <span *ngIf="typeVpc == 0" style="color: #ff0000"
-                    >{{ 'app.service.expiration-date' | i18n }} :
-                    {{
-                      backupPackage?.expirationDate | date : 'dd/MM/yyyy'
-                    }}</span
-                  >
-                  <span *ngIf="typeVpc == 1" style="color: #ff0000"
-                    >{{ 'app.service.expiration-date' | i18n }} :
-                    {{
-                      projectDetail?.expirationDate | date : 'dd/MM/yyyy'
-                    }}</span
-                  >
-                </nz-form-label>
               </nz-form-item>
             </nz-col>
             <nz-col nzSpan="12">
@@ -176,25 +156,39 @@
                   <span>Security Group</span>
                 </nz-form-label>
                 <nz-form-control>
-                  <input
-                    nz-input
-                    class="input-custom"
-                    [value]="nameSecurityGroupTextUnique"
-                    [disabled]="true"
-                  />
+                  <nz-select
+                    [nzPlaceHolder]="'app.choose.security.group' | i18n"
+                    [nzShowSearch]="true"
+                    nzSize="large"
+                  >
+                    <nz-option
+                      *ngFor="let sg of listSecurityGroupBackups"
+                      [nzLabel]="sg.sgName"
+                      [nzValue]="sg.id"
+                    />
+                  </nz-select>
                 </nz-form-control>
               </nz-form-item>
+            </nz-col>
+          </nz-row>
+          <nz-row nzGutter="24" style="margin-top: 20px">
+            <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
                   <span>{{ 'app.info.backup.vm.external.volume' | i18n }}</span>
                 </nz-form-label>
                 <nz-form-control>
-                  <input
-                    nz-input
-                    class="input-custom"
-                    [value]="nameVolumeBackupAttachNameUnique"
-                    [disabled]="true"
-                  />
+                  <nz-select
+                    [nzPlaceHolder]="'app.choose.backup.vm.external.volume' | i18n"
+                    [nzShowSearch]="true"
+                    nzSize="large"
+                  >
+                    <nz-option
+                      *ngFor="let e of listExternalAttachVolume"
+                      [nzLabel]="e.name"
+                      [nzValue]="e.id"
+                    />
+                  </nz-select>
                 </nz-form-control>
               </nz-form-item>
             </nz-col>
@@ -723,7 +717,7 @@
           </div>
           <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
-            {{ instanceCreate.serviceName }}
+            {{ backupVmModel?.instanceName }}
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>

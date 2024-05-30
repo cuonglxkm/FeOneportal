@@ -338,6 +338,7 @@ export class InstancesComponent implements OnInit {
         next: (data) => {
           this.listPort = data.filter((e) => e.attachedDeviceId == '');
           this.portLoading = false;
+          this.instanceAction.portId = this.listPort[0].id;
         },
         error: (e) => {
           this.notification.error(
@@ -420,6 +421,13 @@ export class InstancesComponent implements OnInit {
           this.i18n.fanyi('app.notify.attach.vlan.fail')
         );
       },
+    });
+  }
+
+  navigatetoCreatePort() {
+    let selectedVlan = this.listVlanNetwork.filter(e => e.cloudId == this.instanceAction.networkId);
+    this.router.navigate([`/app-smart-cloud/vlan/network/detail/${selectedVlan[0].id}`], {
+      state: { selectedIndextab: 1 },
     });
   }
 

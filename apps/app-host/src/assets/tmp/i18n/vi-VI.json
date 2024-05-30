@@ -280,6 +280,7 @@
   "app.application.period": "Thời gian áp dụng",
   "app.reason": "Nguyên nhân",
   "app.choose.attachment.method": "Chọn hình thức gắn",
+  "app.create.port": "Tạo port",
 
   "app.input.name": "Nhập tên",
   "app.input.password": "Nhập mật khẩu",
@@ -416,7 +417,7 @@
   "app.notify.unrescue.instances.success": "UNRESCUE máy ảo thành công",
   "app.notify.unrescue.instances.fail": "UNRESCUE máy ảo không thành công",
   "app.notify.get.service.package.fail": "Lấy thông tin gói cấu hình không thành công",
-  "app.notify.amount.capacity": "Số lượng phải chia hết cho 10",
+  "app.notify.amount.capacity": "Số lượng phải chia hết cho {{number}}",
   "app.notify.amount.capacity1": "Số lượng dung lượng phải chia hết cho 10",
   "app.notify.amount.capacity.add": "Vượt quá quota dung lượng, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
   "app.notify.amount.ram.add": "Vượt quá quota RAM, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
@@ -454,7 +455,8 @@
   "app.international.bandwidth": "Băng thông quốc tế",
   "app.remain.configuration.in.vpc": "Cấu hình còn lại trong dự án VPC",
   "app.keypair.name": "Tên Keypair",
-  "app.note.create.port": "Vui lòng tạo Port để sử dụng tính năng này!",
+  "app.please": "Vui lòng",
+  "app.note.create.port": "để sử dụng tính năng này!",
 
   "app.disk.type": "Kiểu Volume",
   "app.volume.type": "Loại Volume",
@@ -467,7 +469,7 @@
 
   "app.network.name": "Tên Network",
 
-  "app.object.storage.create": "Khởi tạo Object Storage",
+  "app.object.storage.create": "Tạo mới Object Storage",
   "app.button.object.storage.create": "Tạo mới Object Storage",
   "app.object.storage.info": "Thông tin Object Storage",
   "app.object.storage.resize": "Điều chỉnh Object Storage",
@@ -875,7 +877,7 @@
   "app.file.system.create.confirm": "Xác nhận khởi tạo File System",
   "app.file.system.create.from.snapshot": "Khởi tạo từ Snapshot",
   "app.file.system.capacity": "Dung lượng File System của quý khách",
-  "app.file.system.capacity.vpc": "Dung lượng File System đã mua của dịch vụ VPC",
+  "app.file.system.capacity.vpc": "Tổng dung lượng File System là dung lượng quý khách đã mua khi khi khởi tạo dự án VPC",
   "app.file.system.intro": "Lưu trữ dữ liệu theo cấu trúc phân cấp",
   "app.file.system.des": "File storage, hệ thống lưu trữ dữ liệu theo “cấu trúc phân cấp”. Dữ liệu sẽ được lưu trong các tập tin và thư mục, và được hiển thị cho cả hệ thống lưu trữ lẫn hệ thống truy xuất dưới cùng một định dạng.",
   "app.snapshot.file.system": "Snapshot của File System",
@@ -883,17 +885,18 @@
   "app.choose.file.system": "Chọn File System",
   "app.item.switch.file.system.snapshot": "-Chọn Snapshot-",
   "app.file.storage.snapshot.required.select": "Vui lòng chọn Snapshot File System",
+  "app.file.system.total.size": "Tổng dung lượng File System",
 
   "app.choose.file.system.to.perform.snapshot": "Chọn File System để thực hiện Snapshot",
   "validation.snapshot.info.required": "Vui lòng nhập tên File System Snapshot",
   "validation.snapshot.name.pattern": "Tên Snapshot chỉ được phép dùng các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.",
-
+  "app.file.system.confirm.create": "Quý khách chắn chắn muốn thực hiện khởi tạo File System không?",
   "app.checkRouter.file.system": "Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!",
   "app.checkRouter.file.system.noGateway": "Kiểm tra lại Router Interface! Vui lòng thêm gateway của dải pri_network",
 
   "app.file.system.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Máy ảo) hoặc CIDR được quyền truy cập tới File System này",
   "app.file.system.access.to.create.success": "Tạo mới access rule thành công",
-  "app.file.system.access.to.create.fail": "Tạo mới access rule thất bại",
+  "app.file.system.access.to.create.fail": "Tạo mới access rule thất bại. ",
   "app.file.system.access.to.delete.success": "Xóa access rule thành công",
   "app.file.system.access.to.delete.fail": "Xóa access rule thất bại",
   "app.file.system.access.to.delete.file.success": "Xóa File System thành công",
@@ -904,7 +907,7 @@
   "app.file.system.not.enough.quota": "Dung lượng vượt quá dung lượng hiện có, xin vui lòng thử lại",
 
   "app.note.delete.file.system": "Để thực hiện xóa File System {{name}}, vui lòng nhập tên File System để xác nhận",
-  "app.alert.delete.file.system": "Bạn đang thực hiện xoá File System. Quý khách lưu ý khi xoá File System sẽ đồng thời xoá các Snapshot của File System đó.",
+  "app.alert.delete.file.system": "Bạn đang thực hiện xóa File System. Quý khách lưu ý khi xóa File System sẽ đồng thời xóa các Snapshot của File System đó.",
   "app.tooltip.file.system.name.pattern": "Tên của File System cần tạo, các ký tự chữ thường a-z,<br> chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng,<br> tối thiểu 1 ký tự và tối đa 50 ký tự. Tên các File System không trùng nhau",
   "app.tooltip.file.system.name.protocol": "Giao thức NFS (Network File System) là một giao thức mạng được sử dụng<br> để chia sẻ tập tin và thư mục qua mạng giữa các hệ thống máy tính khác nhau.<br> Nó cho phép một máy tính (được gọi là máy chủ NFS) chia sẻ tài nguyên file hệ thống của<br> nó với các máy tính khác (được gọi là máy khách NFS) trong mạng",
   "app.tooltip.capacity": "Dung lượng của File System, vui lòng nhập số chia hết cho 10",
@@ -935,10 +938,10 @@
   "validation.file.system.type.required": "Vui lòng chọn loại File System",
   "validation.file.system.description.maxlength": "Cho phép nhập tối đa 700 ký tự",
   "validation.file.system.capacity.required": "vui lòng nhập dung lượng của File System. Dung lượng của File System là số nguyên dương",
-  "validation.file.system.empty": "File System không đuợc để trống!",
-  "validation.number.of.snapshot.required": "Số bản Snapshot không đuợc để trống!",
-  "validation.number.of.day.required": "Số ngày không đuợc để trống!",
-  "validation.number.of.month.required": "Số tháng không đuợc để trống!",
+  "validation.file.system.empty": "File System không được để trống!",
+  "validation.number.of.snapshot.required": "Số bản Snapshot không được để trống!",
+  "validation.number.of.day.required": "Số ngày không được để trống!",
+  "validation.number.of.month.required": "Số tháng không được để trống!",
 
   "app.file.system.snapshot.delete": "Xóa File System Snapshot {{name}}",
   "app.file.system.snapshot.manage": "Quản lý File System Snapshot",
@@ -1456,6 +1459,8 @@
   "kafka.user.delete": "Xóa tài khoản",
   "kafka.user.delete-title": "Bạn chắc chắn muốn xoá tài khoản",
   "kafka.user.delete-note": "Vui lòng nhập tên tài khoản cần xóa.",
+  "kafka.user.otp.pld": "Nhập mã OTP",
+  "kafka.otp.second": "giây",
 
   "kafka.acl.create": "Tạo mới ACL",
   "kafka.acl.title": "Tạo mới ACLs",
@@ -2025,6 +2030,7 @@
   "app.status.init-failed": "Khởi tạo lỗi",
   "app.status.suspend": "Tạm ngưng",
   "app.status.error": "Lỗi",
+  "app.status.restoring": "Đang khôi phục",
 
   "validation.service.name-required": "Tên dịch vụ không được để trống",
   "validation.service.name-not-correct": "Tên dịch vụ nhập chưa đúng",
@@ -2656,9 +2662,10 @@
   "app.info.backup.vm.description": "Mô tả",
   "app.info.backup.vm.total.storage": "Dung lượng backup",
   "app.info.backup.vm.external.volume": "Volume gắn ngoài",
+  "app.choose.backup.vm.external.volume": "Chọn Volume gắn ngoài",
   "app.info.backup.vm.restore.information": "Thông tin khôi phục",
   "app.backup.vm.restore.instance.name": "Tên máy ảo hiện tại",
-  "app.backup.vm.restore.storage.os": "Dung lượng ổ hệ điều hành hiện tại",
+  "app.backup.vm.restore.storage.os": "Dung lượng ổ hệ điều hành",
   "app.backup.vm.restore.current": "Restore vào máy ảo hiện tại",
   "app.backup.vm.restore.new": "Restore vào máy ảo mới",
   "app.backup.config.vm.new": "Cấu hình máy ảo mới",
@@ -2823,7 +2830,8 @@
   "app.manage.site.to.site.extend":"Gia hạn",
   "app.manage.site.to.site.Adjust":"Điều chỉnh",
   "app.manage.site.to.site.delete":"Xóa",
-  "app.manage.site.to.site.name.package":"Tên gói"
+  "app.manage.site.to.site.name.package":"Tên gói",
+  "app.validate.order.fail": "Lỗi khi kiểm tra order"
 
 
 

@@ -35,6 +35,7 @@ import {
 } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -106,7 +107,8 @@ export class InstancesEditComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private el: ElementRef,
     private renderer: Renderer2,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private configurationService: ConfigurationsService
   ) {}
 
   @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
@@ -179,6 +181,7 @@ export class InstancesEditComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getConfigurations();
     this.getListIpPublic();
     this.getListGpuType();
     this.breakpointObserver
@@ -615,33 +618,45 @@ export class InstancesEditComponent implements OnInit {
       });
   }
 
+  minCapacity: number;
+  maxCapacity: number;
+  stepCapacity: number;
+  getConfigurations() {
+    this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
+      next: (data) => {
+        let valueArray = data.valueString.split('#');
+        this.minCapacity = valueArray[0];
+        this.stepCapacity = valueArray[1];
+        this.maxCapacity = valueArray[2];
+      },
+    });
+  }
+
   dataSubjectCapacity: Subject<any> = new Subject<any>();
   changeCapacity(value: number) {
     this.dataSubjectCapacity.next(value);
   }
   onChangeCapacity() {
-    this.dataSubjectCapacity
-      .pipe(
-        debounceTime(700)
-      )
-      .subscribe((res) => {
-        if (this.configCustom.capacity % 10 > 0) {
-          this.notification.warning(
-            '',
-            this.i18n.fanyi('app.notify.amount.capacity')
-          );
-          this.configCustom.capacity =
-            this.configCustom.capacity - (this.configCustom.capacity % 10);
-        }
-        if (this.configCustom.capacity == 0) {
-          this.volumeUnitPrice = '0';
-          this.volumeIntoMoney = 0;
-          this.instanceResize.storage = this.instancesModel.storage;
-        } else {
-          this.getUnitPrice(this.configCustom.capacity, 0, 0, 0, 0);
-        }
-        this.onChangeConfigCustom();
-      });
+    this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
+      if (this.configCustom.capacity % this.stepCapacity > 0) {
+        this.notification.warning(
+          '',
+          this.i18n.fanyi('app.notify.amount.capacity', {
+            number: this.stepCapacity,
+          })
+        );
+        this.configCustom.capacity =
+          this.configCustom.capacity - (this.configCustom.capacity % this.stepCapacity);
+      }
+      if (this.configCustom.capacity == 0) {
+        this.volumeUnitPrice = '0';
+        this.volumeIntoMoney = 0;
+        this.instanceResize.storage = this.instancesModel.storage;
+      } else {
+        this.getUnitPrice(this.configCustom.capacity, 0, 0, 0, 0);
+      }
+      this.onChangeConfigCustom();
+    });
   }
 
   //#region Cấu hình GPU

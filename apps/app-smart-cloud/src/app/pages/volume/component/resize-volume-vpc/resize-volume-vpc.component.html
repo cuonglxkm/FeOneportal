@@ -139,7 +139,9 @@
                                  class="input-custom"
                                  style="width: 100%; margin-left: 0;"
                                  nzAutoFocus
-                                 [nzMin]="0" [nzStep]="10"
+                                 [nzMin]="minStorage"
+                                 [nzStep]="stepStorage"
+                                 [nzMax]="maxStorage"
                                  (ngModelChange)="changeValueStorage($event)"/>
                 <ng-template #storageErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.storage.vpc.required'|i18n }}</ng-container>
@@ -170,7 +172,7 @@
             <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.storage.value + volumeInfo?.sizeInGB }} GB</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div class="text-value">{{ 'volume.table.title.iops' | i18n }}</div>
-            <div style="margin-top: 10px" class="text-label">{{ volumeInfo?.iops }}</div>
+            <div style="margin-top: 10px" class="text-label">{{ volumeEdit?.iops }}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <nz-row>
               <nz-col style="width: 100%">

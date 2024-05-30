@@ -161,7 +161,7 @@ export class CreateAccessRuleComponent implements AfterViewInit{
       }, error => {
         this.isVisible = false;
         this.isLoading = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.access.to.create.fail. ') + error.error.detail);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.access.to.create.fail ') + error.error.detail);
       });
       this.validateForm.reset();
     }

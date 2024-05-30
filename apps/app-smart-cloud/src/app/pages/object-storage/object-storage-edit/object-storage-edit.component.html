@@ -8,7 +8,7 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/']"
+        ><a [routerLink]="['/app-smart-cloud/object-storage/bucket']"
           >Object Storage</a
         ></nz-breadcrumb-item
       >
@@ -41,6 +41,9 @@
               style="width: 100%; margin-left: 0px"
               [(ngModel)]="objectStorage.quota"
               [ngModelOptions]="{ standalone: true }"
+              [nzMin]="minStorage" 
+              [nzStep]="stepStorage"
+              [nzMax]="maxStorage"
               [disabled]="true"
               nzSize="large"
             ></nz-input-number>
@@ -116,7 +119,8 @@
       </nz-card>
     </nz-col>
     <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px">
+      <nz-affix>
+      <nz-card style="border-radius: 8px" class="card-border">
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{
             'app.estimated.cost' | i18n
@@ -164,6 +168,7 @@
           </nz-col>
         </nz-row>
       </nz-card>
+    </nz-affix>
     </nz-col>
   </nz-row>
 </form>

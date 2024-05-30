@@ -165,11 +165,11 @@ export class VpnS2sResizeComponent implements OnInit{
     this.vpnSiteToSiteService.getVpnSiteToSite(this.vpcId).pipe().subscribe(data => {
       this.loading = false;
       if(data){
-        this.vpn = data;
+        this.vpn = data.body;
         this.dateString = new Date(this.vpn['createdDate']);
         this.expiredDate = new Date(this.vpn['expiredDate']);
         this.numberMonth = Math.round((this.expiredDate.getTime() - this.dateString.getTime())/86400000/30);
-        this.offer = this.offerDatas.find(x => x['OfferName'] == data['offerName'] && x['Bandwidth'] == data['bandwidth']);
+        this.offer = this.offerDatas.find(x => x['OfferName'] == data.body['offerName'] && x['Bandwidth'] == data.body['bandwidth']);
         if(this.offer){
           this.oldOfferId = this.offer['Id'];
           let element = this.el.nativeElement.querySelector(`#offer-title-${this.offer['Id']}`);

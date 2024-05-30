@@ -9,6 +9,10 @@ import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { OrderItem } from '../../../../shared/models/price';
 import { EditSizeVolumeModel } from '../../../../shared/models/volume.model';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { OrderService } from '../../../../shared/services/order.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-extend-load-balancer-normal',
@@ -36,7 +40,10 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
               private loadBalancerService: LoadBalancerService,
+              private orderService : OrderService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private notification: NzNotificationService,
               private fb: NonNullableFormBuilder) {
     this.validateForm.get('time').valueChanges.subscribe((newValue: any) => {
       this.getTotalAmount();
@@ -118,7 +125,15 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
       ];
       var returnPath: string = '/app-smart-cloud/load-balancer/extend/normal/' + this.loadBalancerId
       console.log('request', request)
-      this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+      this.orderService.validaterOrder(request).subscribe(
+        data => {
+          this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+        },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.validate.order.fail'))
+        }
+      )
+
     }
   }
 

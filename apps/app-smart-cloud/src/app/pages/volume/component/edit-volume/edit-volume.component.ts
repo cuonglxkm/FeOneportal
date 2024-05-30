@@ -14,6 +14,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-u
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 
 @Component({
   selector: 'app-extend-volume',
@@ -65,7 +66,8 @@ export class EditVolumeComponent implements OnInit {
               private notification: NzNotificationService,
               private instanceService: InstancesService,
               private projectService: ProjectService,
-              @Inject(ALAIN_I18N_TOKEN) protected i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) protected i18n: I18NService,
+              private configurationsService: ConfigurationsService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
@@ -147,8 +149,23 @@ export class EditVolumeComponent implements OnInit {
     }
   }
 
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueString: string;
+  maxStorage: number = 0;
+
+  getConfiguration() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueString = data.valueString;
+      this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
+      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
+    })
+  }
+
   ngOnInit() {
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+    this.getConfiguration();
     this.dateEdit = new Date();
     if (this.volumeId != undefined || this.volumeId != null) {
       console.log('id', this.volumeId);
@@ -217,12 +234,6 @@ export class EditVolumeComponent implements OnInit {
     });
   }
 
-  //
-  changeVolumeType(value) {
-    this.selectedValueRadio = value;
-    // this.notification.warning('', 'Không thể thay đổi loại Volume.')
-  }
-
   convertString(str: string): string {
     const parts = str.trim().split('\n');
     if (parts.length === 1) {
@@ -270,9 +281,9 @@ export class EditVolumeComponent implements OnInit {
   changeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if ((res % 10) > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
-          this.validateForm.controls.storage.setValue(res - (res % 10));
+        if ((res % this.stepStorage) > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
         }
         console.log('total amount');
         this.getTotalAmount();
