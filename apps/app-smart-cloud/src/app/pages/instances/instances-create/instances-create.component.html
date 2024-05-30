@@ -559,9 +559,9 @@
                         >) - GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="10"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         [(ngModel)]="configCustom.capacity"
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
@@ -573,9 +573,9 @@
                         (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="10"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
@@ -755,8 +755,9 @@
                         >) - GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="1000"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         [(ngModel)]="configGPU.storage"
                         (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
@@ -768,9 +769,9 @@
                         (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="1"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
@@ -1315,9 +1316,9 @@
                         "
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'capacity_' + data.id"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="10"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         nzSize="large"
                       ></nz-input-number>
                     </td>

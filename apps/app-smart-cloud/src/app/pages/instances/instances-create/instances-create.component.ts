@@ -49,6 +49,7 @@ import { VlanService } from 'src/app/shared/services/vlan.service';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -157,7 +158,8 @@ export class InstancesCreateComponent implements OnInit {
     private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver,
-    private vlanService: VlanService
+    private vlanService: VlanService,
+    private configurationService: ConfigurationsService
   ) {}
 
   @ViewChild('nameInput') firstInput: ElementRef;
@@ -232,6 +234,7 @@ export class InstancesCreateComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getConfigurations();
     this.initIpSubnet();
     this.initFlavors();
     this.getListGpuType();
@@ -845,6 +848,20 @@ export class InstancesCreateComponent implements OnInit {
           this.totalincludesVAT = 0;
         }
       });
+  }
+
+  minCapacity: number;
+  maxCapacity: number;
+  stepCapacity: number;
+  getConfigurations() {
+    this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
+      next: (data) => {
+        let valueArray = data.valueString.split('#');
+        this.minCapacity = valueArray[0];
+        this.stepCapacity = valueArray[1];
+        this.maxCapacity = valueArray[2];
+      },
+    });
   }
 
   dataSubjectCapacity: Subject<any> = new Subject<any>();

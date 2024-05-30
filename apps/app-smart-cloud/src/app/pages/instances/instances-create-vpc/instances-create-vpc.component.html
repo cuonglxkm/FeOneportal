@@ -387,9 +387,9 @@
                         >) - GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="10"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         [(ngModel)]="instanceCreate.volumeSize"
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
@@ -397,9 +397,9 @@
                     </td>
                     <td>
                       <nz-input-number
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="10"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         [(ngModel)]="instanceCreate.volumeSize"
                         (ngModelChange)="changeCapacity($event)"
                         (keydown)="onKeyDown($event)"
@@ -536,8 +536,9 @@
                         >) - GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="remainingVolume"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         [(ngModel)]="instanceCreate.volumeSize"
                         (ngModelChange)="checkValidConfig()"
                         [ngModelOptions]="{ standalone: true }"
@@ -545,8 +546,9 @@
                     </td>
                     <td>
                       <nz-input-number
-                        [nzMin]="0"
-                        [nzMax]="remainingVolume"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         [(ngModel)]="instanceCreate.volumeSize"
                         (ngModelChange)="checkValidConfig()"
                         (keydown)="onKeyDown($event)"
