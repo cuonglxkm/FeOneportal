@@ -157,7 +157,8 @@
                                  class="input-custom"
                                  [nzMin]="fileSystem?.size"
                                  (ngModelChange)="changeValueStorage($event)"
-                                 [nzStep]="stepStorage" />
+                                 [nzStep]="stepStorage"
+                                 [nzMax]="maxStorage"/>
                 <ng-template #storageErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required') || control.hasError('pattern')">{{ 'validation.file.system.capacity.required' | i18n }}</ng-container>
                   <!--                <ng-container-->
