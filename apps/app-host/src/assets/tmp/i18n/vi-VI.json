@@ -894,7 +894,7 @@
 
   "app.file.system.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Máy ảo) hoặc CIDR được quyền truy cập tới File System này",
   "app.file.system.access.to.create.success": "Tạo mới access rule thành công",
-  "app.file.system.access.to.create.fail": "Tạo mới access rule thất bại",
+  "app.file.system.access.to.create.fail": "Tạo mới access rule thất bại. ",
   "app.file.system.access.to.delete.success": "Xóa access rule thành công",
   "app.file.system.access.to.delete.fail": "Xóa access rule thất bại",
   "app.file.system.access.to.delete.file.success": "Xóa File System thành công",

@@ -69,6 +69,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   minStorage: number = 0;
   stepStorage: number = 0;
   valueString: string;
+  maxStorage: number = 0;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
@@ -300,6 +301,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.valueString = data.valueString;
       this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
       this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
     })
   }
 
