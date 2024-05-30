@@ -506,7 +506,7 @@
                         <span class="priceFlavor">{{
                           item.price.fixedPrice.amount | number
                         }}</span
-                        ><span> VND/tháng</span>
+                        ><span> VND/{{ 'app.Month' | i18n }}</span>
                       </div>
                     </nz-col>
                   </nz-row>
@@ -904,7 +904,6 @@
               <nz-form-control>
                 <nz-select
                   nzMode="multiple"
-                  nzPlaceHolder="Chọn Security Group"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="selectedSecurityGroup"
                   [nzServerSearch]="true"

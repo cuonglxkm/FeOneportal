@@ -51,9 +51,6 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
-interface InstancesForm {
-  name: FormControl<string>;
-}
 class ConfigCustom {
   //cấu hình tùy chỉnh
   vCPU?: number = 0;
@@ -94,7 +91,6 @@ class Network {
   animations: [slider],
 })
 export class InstancesCreateComponent implements OnInit {
-  largeSeparator: string = '<span class="separator large">»</span>';
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,

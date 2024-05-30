@@ -1,4 +1,12 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   ProjectModel,
   RegionModel,
@@ -23,6 +31,8 @@ import {
   InstanceCreate,
   IPPublicModel,
   ItemPayment,
+  OfferItem,
+  SecurityGroupModel,
   SHHKeyModel,
 } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
@@ -36,6 +46,9 @@ import { VlanService } from '../../../shared/services/vlan.service';
 import { debounceTime, Subject } from 'rxjs';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
+import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -43,15 +56,37 @@ class ConfigCustom {
   ram?: number = 0;
   capacity?: number = 0;
 }
+class ConfigGPU {
+  CPU: number = 0;
+  ram: number = 0;
+  storage: number = 0;
+  GPU: number = 0;
+  gpuOfferId: number = 0;
+}
 
 @Component({
   selector: 'one-portal-restore-backup-vm',
   templateUrl: './restore-backup-vm.component.html',
   styleUrls: ['./restore-backup-vm.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [slider],
 })
 export class RestoreBackupVmComponent implements OnInit {
+  public carouselTileConfig: NguCarouselConfig = {
+    grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
+    speed: 250,
+    point: {
+      visible: true,
+    },
+    touch: true,
+    loop: true,
+    // interval: { timing: 1500 },
+    animation: 'lazy',
+  };
+
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
+  userId: number;
 
   backupVmModel: BackupVm;
   projectDetail: SizeInCloudProject;
@@ -63,10 +98,8 @@ export class RestoreBackupVmComponent implements OnInit {
   typeVpc: number;
 
   nameSecurityGroup = [];
-  nameSecurityGroupTextUnique: string;
   nameSecurityGroupText: string[];
 
-  nameFlavorTextUnique: string;
   nameFlavorText: string[];
   nameFlavor = [];
 
@@ -77,11 +110,6 @@ export class RestoreBackupVmComponent implements OnInit {
   isLoadingCurrent: boolean = false;
   isLoadingNew: boolean = false;
 
-  listIPPublic: IPPublicModel[] = [];
-
-  listSSHKey: SHHKeyModel[] = [];
-  activeBlockPassword: boolean = true;
-  activeBlockSSHKey: boolean = false;
   disableKeypair: boolean = false;
 
   numberMonth: number = 1;
@@ -94,21 +122,21 @@ export class RestoreBackupVmComponent implements OnInit {
       volumeAttachIds: new FormControl(null as number[]),
     }),
     formNew: new FormGroup({
-      instanceName: new FormControl('', [
-        Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9_]*$/),
-      ]),
-      ipPublic: new FormControl(0, [Validators.required]),
-      securityGroupIds: new FormControl(null as string[]),
-      vlan: new FormControl('', []),
-      port: new FormControl(''),
-      storage: new FormControl(1, [Validators.required]),
-      ram: new FormControl(1, [Validators.required]),
-      cpu: new FormControl(1, [Validators.required]),
-      password: new FormControl(''),
-      keypair: new FormControl(''),
-      volumeAttachIds: new FormControl(null as number[]),
-      newVolumeRestore: new FormControl(null as number[]),
+      name: new FormControl('', {
+        nonNullable: true,
+        validators: [
+          Validators.required,
+          Validators.pattern(/^[a-zA-Z0-9_]*$/),
+        ],
+      }),
+      passOrKeyFormControl: new FormControl('', {
+        validators: [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
+          ),
+        ],
+      }),
     }),
   });
 
@@ -130,12 +158,58 @@ export class RestoreBackupVmComponent implements OnInit {
     private dataService: InstancesService,
     private vlanService: VlanService,
     private cdr: ChangeDetectorRef,
+    private configurationService: ConfigurationsService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
     if (this.activeBlockPassword == true) {
       this.initPassword();
     }
+  }
+
+  @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
+  reloadCarousel: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.reloadCarousel = true;
+    this.updateActivePoint();
+  }
+
+  ngAfterViewInit(): void {
+    this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
+  }
+
+  updateActivePoint(): void {
+    // Gọi hàm reloadCarousel khi cần reload
+    if (this.reloadCarousel) {
+      this.reloadCarousel = false;
+      setTimeout(() => {
+        this.myCarouselFlavor.reset();
+      }, 100);
+    }
+  }
+  
+  ngOnInit() {
+    this.userId = this.tokenService.get()?.userId;
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
+    const idBackup = this.activatedRoute.snapshot.paramMap.get('id');
+    this.getConfigurations();
+    this.initFlavors();
+    this.getListGpuType();
+    if (idBackup != undefined || idBackup != null) {
+      this.getDetailBackupById(idBackup);
+      this.getProjectVpc(this.project);
+    }
+    this.getAllIPPublic();
+    this.getListNetwork();
+    this.onChangeCapacity();
+    this.onChangeRam();
+    this.onChangeVCPU();
+    this.getAllSSHKey();
+    this.cdr.detectChanges();
   }
 
   regionChanged(region: RegionModel) {
@@ -151,48 +225,6 @@ export class RestoreBackupVmComponent implements OnInit {
 
   userChanged(project: ProjectModel) {
     this.router.navigate(['/app-smart-cloud/backup-vm']);
-  }
-
-  selectedSSHKeyName: string;
-  password: string = '';
-
-  initPassword(): void {
-    console.log('here');
-    this.activeBlockPassword = true;
-    this.activeBlockSSHKey = false;
-    this.selectedSSHKeyName = null;
-    this.validateForm
-      .get('formNew')
-      .get('password')
-      .setValidators([
-        Validators.required,
-        Validators.pattern(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
-        ),
-      ]);
-  }
-  initSSHkey(): void {
-    this.activeBlockPassword = false;
-    this.activeBlockSSHKey = true;
-    this.password = '';
-    this.validateForm
-      .get('formNew')
-      .get('keypair')
-      .setValidators([Validators.required]);
-  }
-
-  getAllSSHKey() {
-    this.listSSHKey = [];
-    this.dataService
-      .getAllSSHKey(this.region, this.tokenService.get()?.userId, 999999, 0)
-      .subscribe((data: any) => {
-        data.records.forEach((e) => {
-          const itemMapper = new SHHKeyModel();
-          itemMapper.id = e.id;
-          itemMapper.displayName = e.name;
-          this.listSSHKey.push(itemMapper);
-        });
-      });
   }
 
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -218,71 +250,8 @@ export class RestoreBackupVmComponent implements OnInit {
     }
   }
 
-  volumeUnitPrice = 0;
-  volumeIntoMoney = 0;
-  ramUnitPrice = 0;
-  ramIntoMoney = 0;
-  cpuUnitPrice = 0;
-  cpuIntoMoney = 0;
-  gpuUnitPrice = 0;
-  gpuIntoMoney = 0;
-  isCustomconfig = false;
   configCustom: ConfigCustom = new ConfigCustom();
-
-  getUnitPrice(
-    volumeSize: number,
-    ram: number,
-    cpu: number,
-    gpu: number,
-    gpuTypeOfferId: number
-  ) {
-    let tempInstance: InstanceCreate = new InstanceCreate();
-    tempInstance.offerId = 0;
-    tempInstance.flavorId = 0;
-    tempInstance.volumeSize = volumeSize;
-    tempInstance.ram = ram;
-    tempInstance.cpu = cpu;
-    tempInstance.gpuCount = gpu;
-    tempInstance.gpuTypeOfferId = gpuTypeOfferId;
-    tempInstance.projectId = this.project;
-    tempInstance.regionId = this.region;
-    let itemPayment: ItemPayment = new ItemPayment();
-    itemPayment.orderItemQuantity = 1;
-    itemPayment.specificationString = JSON.stringify(tempInstance);
-    itemPayment.specificationType = 'instance_create';
-    itemPayment.serviceDuration = 1;
-    itemPayment.sortItem = 0;
-    let dataPayment: DataPayment = new DataPayment();
-    dataPayment.orderItems = [itemPayment];
-    dataPayment.projectId = this.project;
-    this.dataService.getPrices(dataPayment).subscribe((result) => {
-      console.log('thanh tien/đơn giá', result);
-      if (volumeSize == 1) {
-        this.volumeUnitPrice = Number.parseFloat(
-          result.data.totalAmount.amount
-        );
-        if (this.isCustomconfig) {
-          this.volumeIntoMoney =
-            this.volumeUnitPrice * this.configCustom.capacity;
-        }
-      }
-      if (ram == 1) {
-        this.ramUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
-        if (this.isCustomconfig) {
-          this.ramIntoMoney = this.ramUnitPrice * this.configCustom.ram;
-        }
-      }
-      if (cpu == 1) {
-        this.cpuUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
-        if (this.isCustomconfig) {
-          this.cpuIntoMoney = this.cpuUnitPrice * this.configCustom.vCPU;
-        }
-      }
-
-      this.cdr.detectChanges();
-    });
-  }
-
+  configGPU: ConfigGPU = new ConfigGPU();
   instanceCreate: InstanceCreate = new InstanceCreate();
 
   instanceInit() {
@@ -364,8 +333,11 @@ export class RestoreBackupVmComponent implements OnInit {
   }
 
   totalAmount: number = 0;
+  totalVAT: number = 0;
   totalincludesVAT: number = 0;
-
+  totalAmountVolume: number = 0;
+  totalVATVolume: number = 0;
+  totalPaymentVolume: number = 0;
   getTotalAmount() {
     this.instanceInit();
     let itemPayment: ItemPayment = new ItemPayment();
@@ -387,9 +359,6 @@ export class RestoreBackupVmComponent implements OnInit {
     });
   }
 
-  totalAmountVolume = 0;
-  totalAmountVolumeVAT = 0;
-
   getDetailBackupById(id) {
     this.backupService.detail(id).subscribe((data) => {
       this.backupVmModel = data;
@@ -399,7 +368,7 @@ export class RestoreBackupVmComponent implements OnInit {
       );
 
       this.listSecurityGroupBackups = this.backupVmModel.securityGroupBackups;
-      
+
       this.backupVmModel?.securityGroupBackups.forEach((item) => {
         this.nameSecurityGroup?.push(item.sgName);
       });
@@ -415,14 +384,6 @@ export class RestoreBackupVmComponent implements OnInit {
       });
 
       this.nameSecurityGroupText = Array.from(new Set(this.nameSecurityGroup));
-      this.nameSecurityGroupTextUnique = this.nameSecurityGroupText.join('\n');
-      console.log('name', this.nameSecurityGroup);
-      console.log('unique', this.nameSecurityGroupText);
-
-      this.nameFlavorText = Array.from(new Set(this.nameFlavor));
-      this.nameFlavorTextUnique = this.nameFlavorText.join('\n');
-      console.log('name', this.nameFlavorText);
-      console.log('unique', this.nameFlavorTextUnique);
 
       this.nameVolumeBackupAttachName = Array.from(
         new Set(this.nameVolumeBackupAttach)
@@ -451,78 +412,6 @@ export class RestoreBackupVmComponent implements OnInit {
       // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
       event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
     }
-  }
-
-  dataSubjectRam: Subject<any> = new Subject<any>();
-  changeRam(value: number) {
-    this.dataSubjectRam.next(value);
-  }
-  onChangeRam() {
-    this.dataSubjectRam
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        this.getUnitPrice(0, 1, 0, 0, null);
-        if (
-          this.configCustom.vCPU != 0 &&
-          this.configCustom.ram != 0 &&
-          this.configCustom.capacity != 0
-        ) {
-          this.getTotalAmount();
-        } else if (this.configCustom.ram == 0) {
-          this.totalAmount = 0;
-          this.totalincludesVAT = 0;
-        }
-      });
-  }
-
-  dataSubjectCapacity: Subject<any> = new Subject<any>();
-  changeCapacity(value: number) {
-    this.dataSubjectCapacity.next(value);
-  }
-  onChangeCapacity() {
-    this.dataSubjectCapacity
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        this.getUnitPrice(1, 0, 0, 0, null);
-        if (
-          this.configCustom.vCPU != 0 &&
-          this.configCustom.ram != 0 &&
-          this.configCustom.capacity != 0
-        ) {
-          this.getTotalAmount();
-        } else if (this.configCustom.capacity == 0) {
-          this.totalAmount = 0;
-          this.totalincludesVAT = 0;
-        }
-      });
-  }
-
-  dataSubjectVCPU: Subject<any> = new Subject<any>();
-  changeVCPU(value: number) {
-    this.dataSubjectVCPU.next(value);
-  }
-  onChangeVCPU() {
-    this.dataSubjectVCPU
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        this.getUnitPrice(0, 0, 1, 0, null);
-        if (
-          this.configCustom.vCPU != 0 &&
-          this.configCustom.ram != 0 &&
-          this.configCustom.capacity != 0
-        ) {
-          this.getTotalAmount();
-        } else if (this.configCustom.vCPU == 0) {
-          this.totalAmount = 0;
-          this.totalincludesVAT = 0;
-        }
-      });
   }
 
   onSelectionChange(): void {
@@ -586,17 +475,13 @@ export class RestoreBackupVmComponent implements OnInit {
     });
   }
 
+  //#region Chọn IP Public Chọn Security Group
+  listIPPublic: IPPublicModel[] = [];
+  listSecurityGroup: SecurityGroupModel[] = [];
+  selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
-      .getAllIPPublic(
-        this.project,
-        '',
-        this.tokenService.get()?.userId,
-        this.region,
-        9999,
-        1,
-        true
-      )
+      .getAllIPPublic(this.project, '', this.userId, this.region, 9999, 1, true)
       .subscribe((data: any) => {
         const currentDateTime = new Date().toISOString();
         this.listIPPublic = data.records.filter(
@@ -608,8 +493,7 @@ export class RestoreBackupVmComponent implements OnInit {
   }
 
   listVlanNetwork: NetWorkModel[] = [];
-
-  // vlanNetwork: string = '';
+  vlanNetwork: string = '';
   getListNetwork(): void {
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
     formSearchNetwork.region = this.region;
@@ -628,9 +512,8 @@ export class RestoreBackupVmComponent implements OnInit {
   listPort: Port[] = [];
   port: string = '';
   hidePort: boolean = true;
-
   getListPort() {
-    if (this.validateForm.get('formNew').get('vlan').value == '') {
+    if (this.vlanNetwork == '') {
       this.hidePort = true;
       this.port = '';
     } else {
@@ -639,7 +522,7 @@ export class RestoreBackupVmComponent implements OnInit {
         {
           id: '',
           name: '',
-          fixedIPs: ['Ngẫu nhiên'],
+          fixedIPs: [this.i18n.fanyi('app.random')],
           macAddress: null,
           attachedDevice: null,
           status: null,
@@ -650,14 +533,13 @@ export class RestoreBackupVmComponent implements OnInit {
         },
       ];
       this.dataService
-        .getListAllPortByNetwork(
-          this.validateForm.get('formNew').get('vlan').value,
-          this.region
-        )
+        .getListAllPortByNetwork(this.vlanNetwork, this.region)
         .subscribe({
           next: (data) => {
             data.forEach((e: Port) => {
-              this.listPort.push(e);
+              if (e.attachedDeviceId == '') {
+                this.listPort.push(e);
+              }
             });
           },
           error: (e) => {
@@ -670,21 +552,539 @@ export class RestoreBackupVmComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-    let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
-    const idBackup = this.activatedRoute.snapshot.paramMap.get('id');
-    if (idBackup != undefined || idBackup != null) {
-      this.getDetailBackupById(idBackup);
-      this.getProjectVpc(this.project);
+  getAllSecurityGroup() {
+    this.dataService
+      .getAllSecurityGroup(
+        this.region,
+        this.tokenService.get()?.userId,
+        this.project
+      )
+      .subscribe((data: any) => {
+        this.listSecurityGroup = data;
+        this.listSecurityGroup.forEach((e) => {
+          if (e.name.toUpperCase() == 'DEFAULT') {
+            this.selectedSecurityGroup.push(e.name);
+          }
+        });
+        this.cdr.detectChanges();
+      });
+  }
+  //#endregion
+
+  //#region Gói cấu hình/ Cấu hình tùy chỉnh
+  isPreConfigPackage = true;
+  isCustomconfig = false;
+  isGpuConfig = false;
+  onClickConfigPackage() {
+    this.isPreConfigPackage = true;
+    this.isCustomconfig = false;
+    this.isGpuConfig = false;
+    this.resetData();
+    this.disableHDD = false;
+  }
+
+  onClickCustomConfig() {
+    this.isPreConfigPackage = false;
+    this.isCustomconfig = true;
+    this.isGpuConfig = false;
+    this.resetData();
+    this.disableHDD = false;
+  }
+
+  disableHDD: boolean = false;
+  onClickGpuConfig() {
+    this.isPreConfigPackage = false;
+    this.isCustomconfig = false;
+    this.isGpuConfig = true;
+    this.resetData();
+    this.configGPU.gpuOfferId = this.listGPUType[0].id;
+    this.activeBlockHDD = false;
+    this.activeBlockSSD = true;
+    this.disableHDD = true;
+  }
+
+  resetData() {
+    this.offerFlavor = null;
+    this.selectedElementFlavor = null;
+    this.configGPU = new ConfigGPU();
+    this.configCustom = new ConfigCustom();
+    this.volumeUnitPrice = 0;
+    this.volumeIntoMoney = 0;
+    this.ramUnitPrice = 0;
+    this.ramIntoMoney = 0;
+    this.cpuUnitPrice = 0;
+    this.cpuIntoMoney = 0;
+    this.gpuUnitPrice = 0;
+    this.gpuIntoMoney = 0;
+    this.totalAmount = 0;
+    this.totalVAT = 0;
+    this.totalincludesVAT = 0;
+  }
+
+  activeBlockHDD: boolean = true;
+  activeBlockSSD: boolean = false;
+  password: string = '';
+  hdh: any = null;
+  offerFlavor: any = null;
+  listOfferFlavors: OfferItem[] = [];
+  selectedElementFlavor: string = null;
+  selectedSSHKeyName: string;
+  initFlavors(): void {
+    this.dataService
+      .getListOffers(this.region, 'VM-Flavor')
+      .subscribe((data: any) => {
+        let listOfferFlavorsTemp = data.filter(
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+        );
+        if (this.activeBlockHDD) {
+          this.listOfferFlavors = listOfferFlavorsTemp.filter((e) =>
+            e.offerName.includes('HDD')
+          );
+        } else {
+          this.listOfferFlavors = listOfferFlavorsTemp.filter((e) =>
+            e.offerName.includes('SSD')
+          );
+        }
+        this.listOfferFlavors.forEach((e: OfferItem) => {
+          e.description = '';
+          e.characteristicValues.forEach((ch) => {
+            if (ch.charOptionValues[0] == 'CPU') {
+              e.description += ch.charOptionValues[1] + ' vCPU / ';
+            }
+            if (ch.charOptionValues[0] == 'RAM') {
+              e.description += ch.charOptionValues[1] + ' GB RAM / ';
+            }
+            if (ch.charOptionValues[0] == 'HDD') {
+              if (this.activeBlockHDD) {
+                e.description += ch.charOptionValues[1] + ' GB HDD';
+              } else {
+                e.description += ch.charOptionValues[1] + ' GB SSD';
+              }
+            }
+          });
+        });
+        this.listOfferFlavors = this.listOfferFlavors.sort(
+          (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
+        );
+        console.log('list flavor check', this.listOfferFlavors);
+        this.cdr.detectChanges();
+      });
+  }
+
+  onInputFlavors(event: any) {
+    this.offerFlavor = this.listOfferFlavors.find(
+      (flavor) => flavor.id === event
+    );
+    if (this.hdh != null) {
+      this.getTotalAmount();
+    }
+    console.log(this.offerFlavor);
+  }
+
+  selectElementInputFlavors(id: string) {
+    this.selectedElementFlavor = id;
+  }
+
+  volumeUnitPrice = 0;
+  volumeIntoMoney = 0;
+  ramUnitPrice = 0;
+  ramIntoMoney = 0;
+  cpuUnitPrice = 0;
+  cpuIntoMoney = 0;
+  gpuUnitPrice = 0;
+  gpuIntoMoney = 0;
+  getUnitPrice(
+    volumeSize: number,
+    ram: number,
+    cpu: number,
+    gpu: number,
+    gpuTypeOfferId: number
+  ) {
+    let tempInstance: InstanceCreate = new InstanceCreate();
+    tempInstance.imageId = this.hdh;
+    tempInstance.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
+    tempInstance.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
+    tempInstance.offerId = 0;
+    tempInstance.flavorId = 0;
+    tempInstance.volumeSize = volumeSize;
+    tempInstance.ram = ram;
+    tempInstance.cpu = cpu;
+    tempInstance.gpuCount = gpu;
+    tempInstance.gpuTypeOfferId = gpuTypeOfferId;
+    if (this.configGPU.gpuOfferId) {
+      tempInstance.gpuType = this.listGPUType.filter(
+        (e) => e.id == this.configGPU.gpuOfferId
+      )[0].characteristicValues[0].charOptionValues[0];
+    }
+    tempInstance.projectId = this.project;
+    tempInstance.regionId = this.region;
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(tempInstance);
+    itemPayment.specificationType = 'instance_create';
+    itemPayment.serviceDuration = 1;
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    dataPayment.projectId = this.project;
+    this.dataService.getPrices(dataPayment).subscribe((result) => {
+      console.log('thanh tien/đơn giá', result);
+      if (volumeSize == 1) {
+        this.volumeUnitPrice = Number.parseFloat(
+          result.data.totalAmount.amount
+        );
+        if (this.isCustomconfig) {
+          this.volumeIntoMoney =
+            this.volumeUnitPrice * this.configCustom.capacity;
+        }
+        if (this.isGpuConfig) {
+          this.volumeIntoMoney = this.volumeUnitPrice * this.configGPU.storage;
+        }
+      }
+      if (ram == 1) {
+        this.ramUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
+        if (this.isCustomconfig) {
+          this.ramIntoMoney = this.ramUnitPrice * this.configCustom.ram;
+        }
+        if (this.isGpuConfig) {
+          this.ramIntoMoney = this.ramUnitPrice * this.configGPU.ram;
+        }
+      }
+      if (cpu == 1) {
+        this.cpuUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
+        if (this.isCustomconfig) {
+          this.cpuIntoMoney = this.cpuUnitPrice * this.configCustom.vCPU;
+        }
+        if (this.isGpuConfig) {
+          this.cpuIntoMoney = this.cpuUnitPrice * this.configGPU.CPU;
+        }
+      }
+      if (gpu == 1) {
+        this.gpuUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
+        if (this.isGpuConfig) {
+          this.gpuIntoMoney = this.gpuUnitPrice * this.configGPU.GPU;
+        }
+      }
+      this.cdr.detectChanges();
+    });
+  }
+
+  dataSubjectVCPU: Subject<any> = new Subject<any>();
+  changeVCPU(value: number) {
+    this.dataSubjectVCPU.next(value);
+  }
+  onChangeVCPU() {
+    this.dataSubjectVCPU
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.getUnitPrice(0, 0, 1, 0, null);
+        if (
+          this.configCustom.vCPU != 0 &&
+          this.configCustom.ram != 0 &&
+          this.configCustom.capacity != 0 &&
+          this.hdh != null
+        ) {
+          this.getTotalAmount();
+        } else if (this.configCustom.vCPU == 0) {
+          this.totalAmount = 0;
+          this.totalVAT = 0;
+          this.totalincludesVAT = 0;
+        }
+      });
+  }
+
+  dataSubjectRam: Subject<any> = new Subject<any>();
+  changeRam(value: number) {
+    this.dataSubjectRam.next(value);
+  }
+  onChangeRam() {
+    this.dataSubjectRam
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.getUnitPrice(0, 1, 0, 0, null);
+        if (
+          this.configCustom.vCPU != 0 &&
+          this.configCustom.ram != 0 &&
+          this.configCustom.capacity != 0 &&
+          this.hdh != null
+        ) {
+          this.getTotalAmount();
+        } else if (this.configCustom.ram == 0) {
+          this.totalAmount = 0;
+          this.totalVAT = 0;
+          this.totalincludesVAT = 0;
+        }
+      });
+  }
+
+  minCapacity: number;
+  maxCapacity: number;
+  stepCapacity: number;
+  getConfigurations() {
+    this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
+      next: (data) => {
+        let valueArray = data.valueString.split('#');
+        this.minCapacity = valueArray[0];
+        this.stepCapacity = valueArray[1];
+        this.maxCapacity = valueArray[2];
+      },
+    });
+  }
+
+  dataSubjectCapacity: Subject<any> = new Subject<any>();
+  changeCapacity(value: number) {
+    this.dataSubjectCapacity.next(value);
+  }
+  onChangeCapacity() {
+    this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
+      if (this.configCustom.capacity % this.stepCapacity > 0) {
+        this.notification.warning(
+          '',
+          this.i18n.fanyi('app.notify.amount.capacity', {
+            number: this.stepCapacity,
+          })
+        );
+        this.configCustom.capacity =
+          this.configCustom.capacity -
+          (this.configCustom.capacity % this.stepCapacity);
+      }
+      this.getUnitPrice(1, 0, 0, 0, null);
+      if (
+        this.configCustom.vCPU != 0 &&
+        this.configCustom.ram != 0 &&
+        this.configCustom.capacity != 0 &&
+        this.hdh != null
+      ) {
+        this.getTotalAmount();
+      } else if (this.configCustom.capacity == 0) {
+        this.totalAmount = 0;
+        this.totalVAT = 0;
+        this.totalincludesVAT = 0;
+      }
+    });
+  }
+  //#endregion
+
+  //#region Cấu hình GPU
+  listGPUType: OfferItem[] = [];
+  getListGpuType() {
+    this.dataService
+      .getListOffers(this.region, 'vm-flavor-gpu')
+      .subscribe((data) => {
+        this.listGPUType = data.filter(
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+        );
+      });
+  }
+
+  dataSubjectCpuGpu: Subject<any> = new Subject<any>();
+  changeCpuOfGpu(value: number) {
+    this.dataSubjectCpuGpu.next(value);
+  }
+
+  onChangeCpuOfGpu() {
+    this.dataSubjectCpuGpu
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.getUnitPrice(0, 0, 1, 0, null);
+        if (
+          this.configGPU.CPU != 0 &&
+          this.configGPU.ram != 0 &&
+          this.configGPU.storage != 0 &&
+          this.configGPU.GPU != 0 &&
+          this.configGPU.gpuOfferId != 0 &&
+          this.hdh != null
+        ) {
+          this.getTotalAmount();
+        } else if (this.configGPU.CPU == 0) {
+          this.totalAmount = 0;
+          this.totalVAT = 0;
+          this.totalincludesVAT = 0;
+        }
+      });
+  }
+
+  dataSubjectRamGpu: Subject<any> = new Subject<any>();
+  changeRamOfGpu(value: number) {
+    this.dataSubjectRamGpu.next(value);
+  }
+  onChangeRamOfGpu() {
+    this.dataSubjectRamGpu
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.getUnitPrice(0, 1, 0, 0, null);
+        if (
+          this.configGPU.CPU != 0 &&
+          this.configGPU.ram != 0 &&
+          this.configGPU.storage != 0 &&
+          this.configGPU.GPU != 0 &&
+          this.configGPU.gpuOfferId != 0 &&
+          this.hdh != null
+        ) {
+          this.getTotalAmount();
+        } else if (this.configGPU.ram == 0) {
+          this.totalAmount = 0;
+          this.totalVAT = 0;
+          this.totalincludesVAT = 0;
+        }
+      });
+  }
+
+  dataSubjectStorageGpu: Subject<any> = new Subject<any>();
+  changeStorageOfGpu(value: number) {
+    this.dataSubjectStorageGpu.next(value);
+  }
+  onChangeStorageOfGpu() {
+    this.dataSubjectStorageGpu
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.getUnitPrice(1, 0, 0, 0, null);
+        if (
+          this.configGPU.CPU != 0 &&
+          this.configGPU.ram != 0 &&
+          this.configGPU.storage != 0 &&
+          this.configGPU.GPU != 0 &&
+          this.configGPU.gpuOfferId != 0 &&
+          this.hdh != null
+        ) {
+          this.getTotalAmount();
+        } else if (this.configGPU.storage == 0) {
+          this.totalAmount = 0;
+          this.totalVAT = 0;
+          this.totalincludesVAT = 0;
+        }
+      });
+  }
+
+  dataSubjectGpu: Subject<any> = new Subject<any>();
+  changeGpu(value: number) {
+    this.dataSubjectGpu.next(value);
+  }
+  onChangeGpu() {
+    this.dataSubjectGpu
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.configGPU.gpuOfferId != 0) {
+          this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
+        }
+        if (
+          this.configGPU.CPU != 0 &&
+          this.configGPU.ram != 0 &&
+          this.configGPU.storage != 0 &&
+          this.configGPU.GPU != 0 &&
+          this.configGPU.gpuOfferId != 0 &&
+          this.hdh != null
+        ) {
+          this.getTotalAmount();
+        } else if (this.configGPU.GPU == 0) {
+          this.totalAmount = 0;
+          this.totalVAT = 0;
+          this.totalincludesVAT = 0;
+        }
+      });
+  }
+
+  gpuTypeName: string = '';
+  changeGpuType() {
+    this.gpuTypeName = this.listGPUType.filter(
+      (e) => e.id == this.configGPU.gpuOfferId
+    )[0].offerName;
+    if (this.configGPU.GPU != 0) {
+      this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
+    }
+    if (
+      this.configGPU.CPU != 0 &&
+      this.configGPU.ram != 0 &&
+      this.configGPU.storage != 0 &&
+      this.configGPU.GPU != 0 &&
+      this.configGPU.gpuOfferId != 0 &&
+      this.hdh != null
+    ) {
+      this.getTotalAmount();
+    }
+  }
+  //#endregion
+
+  //#region selectedPasswordOrSSHkey
+  listSSHKey: SHHKeyModel[] = [];
+  activeBlockPassword: boolean = true;
+  activeBlockSSHKey: boolean = false;
+
+  initPassword(): void {
+    this.activeBlockPassword = true;
+    this.activeBlockSSHKey = false;
+    this.selectedSSHKeyName = null;
+    (this.validateForm.get('formNew') as FormGroup).setControl(
+      'passOrKeyFormControl',
+      new FormControl('', {
+        validators: [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
+          ),
+        ],
+      })
+    );
+  }
+  initSSHkey(): void {
+    this.activeBlockPassword = false;
+    this.activeBlockSSHKey = true;
+    this.password = '';
+    (this.validateForm.get('formNew') as FormGroup).setControl(
+      'passOrKeyFormControl',
+      new FormControl('', {
+        validators: [Validators.required],
+      })
+    );
+  }
+
+  getAllSSHKey() {
+    this.listSSHKey = [];
+    this.dataService
+      .getAllSSHKey(this.region, this.userId, 999999, 0)
+      .subscribe((data: any) => {
+        data.records.forEach((e) => {
+          const itemMapper = new SHHKeyModel();
+          itemMapper.id = e.id;
+          itemMapper.displayName = e.name;
+          this.listSSHKey.push(itemMapper);
+        });
+      });
+  }
+
+  onChangeTime(numberMonth: number) {
+    this.numberMonth = numberMonth;
+    if (
+      this.hdh != null &&
+      (this.offerFlavor != null ||
+        (this.configCustom.vCPU != 0 &&
+          this.configCustom.ram != 0 &&
+          this.configCustom.capacity != 0))
+    ) {
+      this.getTotalAmount();
     }
 
-    this.getAllIPPublic();
-    this.getListNetwork();
-    this.onChangeCapacity();
-    this.onChangeRam();
-    this.onChangeVCPU();
-    this.getAllSSHKey();
+    this.totalAmountVolume = 0;
+    this.totalVATVolume = 0;
+    this.totalPaymentVolume = 0;
+    // this.listOfDataBlockStorage.forEach((bs) => {
+    //   this.totalAmountVolume += bs.price * this.numberMonth;
+    //   this.totalVATVolume += bs.VAT * this.numberMonth;
+    //   this.totalPaymentVolume += bs.priceAndVAT * this.numberMonth;
+    // });
+    this.cdr.detectChanges();
   }
+  //#endregion
 }
