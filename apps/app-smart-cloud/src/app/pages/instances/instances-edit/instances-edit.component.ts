@@ -638,13 +638,15 @@ export class InstancesEditComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
-      if (this.configCustom.capacity % 10 > 0) {
+      if (this.configCustom.capacity % this.stepCapacity > 0) {
         this.notification.warning(
           '',
-          this.i18n.fanyi('app.notify.amount.capacity')
+          this.i18n.fanyi('app.notify.amount.capacity', {
+            number: this.stepCapacity,
+          })
         );
         this.configCustom.capacity =
-          this.configCustom.capacity - (this.configCustom.capacity % 10);
+          this.configCustom.capacity - (this.configCustom.capacity % this.stepCapacity);
       }
       if (this.configCustom.capacity == 0) {
         this.volumeUnitPrice = '0';

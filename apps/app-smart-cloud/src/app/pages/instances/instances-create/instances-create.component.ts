@@ -870,13 +870,16 @@ export class InstancesCreateComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
-      if (this.configCustom.capacity % 10 > 0) {
+      if (this.configCustom.capacity % this.stepCapacity > 0) {
         this.notification.warning(
           '',
-          this.i18n.fanyi('app.notify.amount.capacity')
+          this.i18n.fanyi('app.notify.amount.capacity', {
+            number: this.stepCapacity,
+          })
         );
         this.configCustom.capacity =
-          this.configCustom.capacity - (this.configCustom.capacity % 10);
+          this.configCustom.capacity -
+          (this.configCustom.capacity % this.stepCapacity);
       }
       this.getUnitPrice(1, 0, 0, 0, null);
       if (
@@ -1686,13 +1689,16 @@ export class InstancesCreateComponent implements OnInit {
           (obj) => obj.id == id
         );
         let changeBlockStorage = this.listOfDataBlockStorage[index];
-        if (changeBlockStorage.capacity % 10 > 0) {
+        if (changeBlockStorage.capacity % this.stepCapacity > 0) {
           this.notification.warning(
             '',
-            this.i18n.fanyi('app.notify.amount.capacity')
+            this.i18n.fanyi('app.notify.amount.capacity', {
+              number: this.stepCapacity,
+            })
           );
           changeBlockStorage.capacity =
-            changeBlockStorage.capacity - (changeBlockStorage.capacity % 10);
+            changeBlockStorage.capacity -
+            (changeBlockStorage.capacity % this.stepCapacity);
         }
         this.volumeInit(changeBlockStorage);
         let productId = changeBlockStorage.type == 'hdd' ? 2 : 114;

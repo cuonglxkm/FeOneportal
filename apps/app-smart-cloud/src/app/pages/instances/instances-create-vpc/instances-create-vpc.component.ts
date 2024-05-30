@@ -486,14 +486,16 @@ export class InstancesCreateVpcComponent implements OnInit {
         debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
-        if (this.instanceCreate.volumeSize % 10 > 0) {
+        if (this.instanceCreate.volumeSize % this.stepCapacity > 0) {
           this.notification.warning(
             '',
-            this.i18n.fanyi('app.notify.amount.capacity')
+            this.i18n.fanyi('app.notify.amount.capacity', {
+              number: this.stepCapacity,
+            })
           );
           this.instanceCreate.volumeSize =
             this.instanceCreate.volumeSize -
-            (this.instanceCreate.volumeSize % 10);
+            (this.instanceCreate.volumeSize % this.stepCapacity);
           this.checkValidConfig();
           this.cdr.detectChanges();
         }
