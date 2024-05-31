@@ -717,7 +717,7 @@ export class UpgradeComponent implements OnInit {
     cluster.currentTotalRam = this.currentTotalRam ? this.currentTotalRam : 0;
     cluster.currentTotalStorage = this.currentTotalStorage ? this.currentTotalStorage : 0;
 
-    cluster.newVcpu = this.newTotalCpu ? this.newTotalCpu : 0;
+    cluster.newTotalCpu = this.newTotalCpu ? this.newTotalCpu : 0;
     cluster.newTotalRam = this.newTotalRam ? this.newTotalRam : 0;
     cluster.newTotalStorage = this.newTotalStorage ? this.newTotalStorage : 0;
 
