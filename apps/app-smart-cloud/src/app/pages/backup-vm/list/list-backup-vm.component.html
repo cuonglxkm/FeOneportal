@@ -7,7 +7,9 @@
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
   </ng-template>
 
   <ng-template #action>
@@ -43,7 +45,8 @@
                      nz-input
                      [placeholder]="'app.service.search-text'|i18n"
                      [(ngModel)]="value"
-                     (input)="onInputChange($event.target['value'])" />
+                     (input)="changeInputChange($event)"
+                     (keydown.enter)="onEnter($event)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img src="assets/imgs/search.svg"
@@ -109,39 +112,39 @@
               <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>
             </td>
             <td nzBreakWord>
-<!--              <div [ngSwitch]="data.status">-->
-                <div *ngIf="data.status.includes('AVAILABLE')">
-                  <img src="assets/imgs/rotate-right.svg" alt=""
-                       style="cursor: pointer;"
-                       (click)="navigateToRestore(data.id)"
-                       nz-popover nzPopoverPlacement="bottom"
-                       [nzPopoverContent]="'Restore'" />
-                  <one-portal-delete-backup-vm [region]="region"
-                                               [project]="project"
-                                               [idBackup]="data.id"
-                                               [backupName]="data.name"
-                                               (onOk)="handleOkDelete()" />
-                  <one-portal-update-backup-vm [region]="region"
-                                               [project]="project"
-                                               [idBackupVm]="data.id"
-                                               [backupName]="data.name"
-                                               [backupVmInfo]="data"
-                                               (onOk)="handleOkDelete()" />
-                </div>
-                <div *ngIf="data.status.includes('SUSPENDED')">
-                  <one-portal-delete-backup-vm [region]="region"
-                                               [project]="project"
-                                               [idBackup]="data.id"
-                                               [backupName]="data.name"
-                                               (onOk)="handleOkDelete()" />
-                </div>
-                <div *ngIf="data.status.includes('AVAILABLE') && data.serviceStatus.includes('ERROR')">
-                  <one-portal-delete-backup-vm [region]="region"
-                                               [project]="project"
-                                               [idBackup]="data.id"
-                                               [backupName]="data.name"
-                                               (onOk)="handleOkDelete()" />
-                </div>
+              <!--              <div [ngSwitch]="data.status">-->
+              <div *ngIf="data.status.includes('AVAILABLE')">
+                <img src="assets/imgs/rotate-right.svg" alt=""
+                     style="cursor: pointer;"
+                     (click)="navigateToRestore(data.id)"
+                     nz-popover nzPopoverPlacement="bottom"
+                     [nzPopoverContent]="'Restore'" />
+                <one-portal-delete-backup-vm [region]="region"
+                                             [project]="project"
+                                             [idBackup]="data.id"
+                                             [backupName]="data.name"
+                                             (onOk)="handleOkDelete()" />
+                <one-portal-update-backup-vm [region]="region"
+                                             [project]="project"
+                                             [idBackupVm]="data.id"
+                                             [backupName]="data.name"
+                                             [backupVmInfo]="data"
+                                             (onOk)="handleOkDelete()" />
+              </div>
+              <div *ngIf="data.status.includes('SUSPENDED')">
+                <one-portal-delete-backup-vm [region]="region"
+                                             [project]="project"
+                                             [idBackup]="data.id"
+                                             [backupName]="data.name"
+                                             (onOk)="handleOkDelete()" />
+              </div>
+              <div *ngIf="data.status.includes('AVAILABLE') && data.serviceStatus.includes('ERROR')">
+                <one-portal-delete-backup-vm [region]="region"
+                                             [project]="project"
+                                             [idBackup]="data.id"
+                                             [backupName]="data.name"
+                                             (onOk)="handleOkDelete()" />
+              </div>
             </td>
           </tr>
           </tbody>
@@ -167,7 +170,7 @@
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'"
-                  (click)="navigateToCreateBackup()"  nzSize="large">
+                  (click)="navigateToCreateBackup()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             {{ 'app.backup.vm.button.create'|i18n }}
           </button>
