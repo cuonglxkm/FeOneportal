@@ -114,7 +114,8 @@
           name="name"
           nz-input
           [placeholder]="'app.placeholder.search' | i18n"
-          [(ngModel)]="searchValue"
+          [(ngModel)]="value"
+          #searchBox (keyup.enter)="searchBucket(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
         />
       </nz-input-group>
       <ng-template #prefixIconSearch>

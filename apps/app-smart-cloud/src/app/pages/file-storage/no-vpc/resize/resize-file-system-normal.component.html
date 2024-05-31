@@ -131,7 +131,7 @@
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-            <one-portal-time-used-resize [expireDate]="fileSystem?.expireDate" [createDate]="fileSystem?.createdDate"/>
+            <one-portal-time-used-resize [nameService]="'File System'" [expireDate]="fileSystem?.expireDate" [createDate]="fileSystem?.createdDate"/>
           </nz-card>
           <nz-card style="border-radius: 8px;">
             <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>

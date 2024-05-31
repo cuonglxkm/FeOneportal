@@ -1,9 +1,10 @@
 import { Component, Inject, Input, SimpleChanges } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { FormSearchVpnService, VpnServiceDTO } from 'src/app/shared/models/vpn-service';
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-vpn-service',
@@ -19,13 +20,15 @@ export class VpnService {
   pageSize: number = 5
   pageIndex: number = 1
 
-  value: string
+  value: string = ''
 
   response: BaseResponse<VpnServiceDTO>
 
   isLoading: boolean = false
 
   formSearchVpnService: FormSearchVpnService = new FormSearchVpnService()
+
+  searchDelay = new Subject<boolean>();
 
   constructor(private vpnServiceService: VpnServiceService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -37,9 +40,9 @@ export class VpnService {
     this.pageIndex = 1;
   }
   
-  onInputChange(value) {
-    this.value = value.trim();
-    this.getData()
+  search(search: string) {  
+    this.value = search.trim();
+    this.getData();
   }
 
 
@@ -58,7 +61,7 @@ export class VpnService {
     this.isLoading = true
     this.formSearchVpnService.projectId = this.project
     this.formSearchVpnService.regionId = this.region
-    this.formSearchVpnService.name =this.value
+    this.formSearchVpnService.name =this.value.trim()
     this.formSearchVpnService.pageSize = this.pageSize
     this.formSearchVpnService.currentPage = this.pageIndex
     this.vpnServiceService.getVpnService(this.formSearchVpnService)
@@ -91,5 +94,8 @@ export class VpnService {
 
   ngOnInit() {
       this.getData();
+      this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+        this.getData();
+      });
   }
 }

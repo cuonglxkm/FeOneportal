@@ -11,6 +11,7 @@ import { SubUserService } from '../../../shared/services/sub-user.service';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-s3-key',
@@ -37,7 +38,8 @@ export class S3KeyComponent implements OnInit {
   isLoadingDelete: boolean = false;
   formGenerateS3Key: s3KeyGenerate = new s3KeyGenerate();
   formDeleteS3Key: formDeleteS3Key = new formDeleteS3Key();
-  searchBox: string = ''
+  value: string = ''
+  searchDelay = new Subject<boolean>();
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -52,6 +54,20 @@ export class S3KeyComponent implements OnInit {
 
   ngOnInit(): void {
     this.hasObjectStorage();
+  }
+
+  search(search: string) {  
+    this.value = search
+    console.log(this.value);
+    
+    if (!this.value || this.value.trim() === "") { 
+      this.listOfS3Key = this.response.records; 
+    } else {
+      this.listOfS3Key = this.response.records.filter(item => 
+       item.subUser.toLowerCase().includes(this.value.toLowerCase())
+      ); 
+    }
+    
   }
 
   hasOS: boolean = undefined;
@@ -77,10 +93,6 @@ export class S3KeyComponent implements OnInit {
           );
         },
       });
-  }
-
-  search() {
-    this.getData()
   }
 
   createS3Key() {
@@ -111,7 +123,7 @@ export class S3KeyComponent implements OnInit {
   }
 
   getData() {
-    this.service.getDataS3Key(this.key, this.size, this.index).subscribe((data) => {
+    this.service.getDataS3Key(this.value.trim(), this.size, this.index).subscribe((data) => {
       this.total = data.totalCount;
       this.response = data
       this.listOfS3Key = data.records;

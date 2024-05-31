@@ -11,7 +11,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { id } from 'date-fns/locale';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize } from 'rxjs';
+import { finalize, Subject } from 'rxjs';
 import {
   BucketCors,
   BucketCorsCreate,
@@ -31,7 +31,7 @@ class HeaderName {
 })
 export class BucketCorsComponent implements OnInit {
   @Input() bucketName: string;
-  inputSearch: string = '';
+  value: string = '';
   listBucketCors: BucketCors[] = [];
   listHeaderName: HeaderName[] = [];
   loading: boolean = true;
@@ -44,6 +44,7 @@ export class BucketCorsComponent implements OnInit {
   isLoadingCreate: boolean = false;
   isLoadingUpdate: boolean = false;
   isLoadingDelete: boolean = false;
+  searchDelay = new Subject<boolean>();
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private bucketService: BucketService,
@@ -77,6 +78,11 @@ export class BucketCorsComponent implements OnInit {
           );
         },
       });
+  }
+
+  search(search: string) {  
+    this.value = search.trim();
+    this.searchBucketCors();
   }
 
   resetData() {
