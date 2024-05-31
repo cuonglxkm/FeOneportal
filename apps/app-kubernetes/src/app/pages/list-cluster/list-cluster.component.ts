@@ -14,6 +14,7 @@ import { ProjectModel } from '../../shared/models/project.model';
 import { NotificationConstant } from '../../constants/notification.constant';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../core/i18n/i18n.service';
+import { NzI18nService } from 'ng-zorro-antd/i18n';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -398,6 +399,10 @@ export class ListClusterComponent implements OnInit, OnDestroy {
       });
   }
 
+  getDefaultLanguage() {
+    return this.i18n.defaultLang;
+  }
+
   // websocket
   private openWs() {
     // list topic subscribe
@@ -409,10 +414,12 @@ export class ListClusterComponent implements OnInit, OnDestroy {
         try {
           const notificationMessage = JSON.parse(noti.body);
           if (notificationMessage.content && notificationMessage.content?.length > 0) {
+            const jsonMsg: any[] = notificationMessage.content;
+            let msg = jsonMsg.find((noti: any) => noti.lang == this.getDefaultLanguage());
             if (notificationMessage.status == NotificationConstant.NOTI_SUCCESS) {
               this.notificationService.success(
                 this.i18n.fanyi('app.status.success'),
-                notificationMessage.content);
+                msg?.content);
 
               // refresh page
               this.searchCluster();
@@ -420,7 +427,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
             } else {
               this.notificationService.error(
                 this.i18n.fanyi('app.status.fail'),
-                notificationMessage.content);
+                msg?.content);
             }
           }
         } catch (ex) {
