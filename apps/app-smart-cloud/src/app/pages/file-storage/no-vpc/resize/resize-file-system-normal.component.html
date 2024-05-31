@@ -155,7 +155,7 @@
                                  style="width: 100%; margin-left: 0;"
                                  nzAutoFocus
                                  class="input-custom"
-                                 [nzMin]="fileSystem?.size"
+                                 [nzMin]="minStorage"
                                  (ngModelChange)="changeValueStorage($event)"
                                  [nzStep]="stepStorage"
                                  [nzMax]="maxStorage"/>
