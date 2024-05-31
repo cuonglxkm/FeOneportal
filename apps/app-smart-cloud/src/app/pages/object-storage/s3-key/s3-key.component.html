@@ -33,8 +33,8 @@
         nzSize="large"
       >
         <input
-          (keyup.enter)="search()"
-          [(ngModel)]="searchBox"
+        [(ngModel)]="value"
+        #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
           name="name"
           nz-input
           [placeholder]="'app.s3.key.search' | i18n"

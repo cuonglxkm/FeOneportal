@@ -37,7 +37,7 @@ import { OrderItemObject } from 'src/app/shared/models/price';
 export class ObjectStorageEditComponent implements OnInit {
   id: any;
   today: Date = new Date();
-  addQuota: number = 0;
+  addQuota: number = 1;
   objectStorageResize: ObjectStorageResize = new ObjectStorageResize();
   valueStringConfiguration: string
   minStorage: number
@@ -71,7 +71,8 @@ export class ObjectStorageEditComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.objectStorage = data;
-          this.objectStorageResize.newQuota = this.objectStorage.quota;
+          this.objectStorageResize.newQuota = this.addQuota + this.objectStorage.quota;
+          this.dataSubject.next(1);
           this.cdr.detectChanges();
         },
         error: (e) => {

@@ -3,16 +3,16 @@ import {
   Component,
   Inject,
   Input,
-  SimpleChange,
   SimpleChanges,
 } from '@angular/core';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import {
   EndpointGroupDTO,
   FormSearchEndpointGroup,
 } from 'src/app/shared/models/endpoint-group';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-endpoint-group',
@@ -27,11 +27,13 @@ export class EndpointGroupComponent {
   pageSize: number = 5;
   pageIndex: number = 1;
 
-  value: string;
+  value: string = '';
 
   response: BaseResponse<EndpointGroupDTO>;
 
   isLoading: boolean = false;
+
+  searchDelay = new Subject<boolean>();
 
   formSearchEnpointGroup: FormSearchEndpointGroup =
     new FormSearchEndpointGroup();
@@ -46,8 +48,8 @@ export class EndpointGroupComponent {
     this.pageIndex = 1;
   }
 
-  onInputChange(value) {
-    this.value = value.trim();
+  search(search: string) {
+    this.value = search.trim();
     this.getData();
   }
 
@@ -66,12 +68,11 @@ export class EndpointGroupComponent {
     this.isLoading = true;
     this.formSearchEnpointGroup.vpcId = this.project;
     this.formSearchEnpointGroup.regionId = this.region;
-    this.formSearchEnpointGroup.name = this.value;
+    this.formSearchEnpointGroup.name = this.value.trim();
     this.formSearchEnpointGroup.pageSize = this.pageSize;
     this.formSearchEnpointGroup.currentPage = this.pageIndex;
     this.endpointGroupService
       .getListEndpointGroup(this.formSearchEnpointGroup)
-      .pipe(debounceTime(500))
       .subscribe((data) => {
         this.isLoading = false;
         console.log('data', data);
@@ -98,5 +99,8 @@ export class EndpointGroupComponent {
 
   ngOnInit() {
     this.getData();
+    this.searchDelay.pipe(debounceTime(1200)).subscribe(() => {
+      this.getData();
+    });
   }
 }

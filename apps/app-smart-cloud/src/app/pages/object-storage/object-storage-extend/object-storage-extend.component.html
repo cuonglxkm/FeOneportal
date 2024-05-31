@@ -72,13 +72,13 @@
           <nz-col nzSpan="12">
             <div class="text-label">
               {{ 'app.service.start.date' | i18n }}:
-              {{ objectStorage.createdDate | date : 'dd/MM/yyyy' }}
+              {{ objectStorage.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}
             </div>
           </nz-col>
           <nz-col nzSpan="12">
             <div style="margin-left: 20px" class="text-label">
               {{ 'app.service.expiration-date' | i18n }}:
-              {{ objectStorage.expiredDate | date : 'dd/MM/yyyy' }}
+              {{ objectStorage.expiredDate | date : 'dd/MM/yyyy HH:mm:ss' }}
             </div>
           </nz-col>
         </nz-row>
@@ -107,7 +107,7 @@
                 "
               >
                 {{ 'app.expected.expiry.date' | i18n }}:
-                {{ newExpiredDate | date : 'dd/MM/yyyy' }}
+                {{ newExpiredDate | date : 'dd/MM/yyyy HH:mm:ss' }}
               </div>
             </nz-row>
           </nz-form-control>

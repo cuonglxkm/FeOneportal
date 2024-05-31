@@ -8,10 +8,10 @@
         style="width: 300px"
       >
         <input
-          [(ngModel)]="value"
           nz-input
           placeholder="Tìm kiếm theo tên"
-          (input)="onInputChange($event.target['value'])"
+          [(ngModel)]="value"
+          #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
         />
       </nz-input-group>
       <ng-template #prefixIconSearch>
@@ -19,7 +19,7 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          nz-tooltip="Tìm kiếm"
+          
         />
       </ng-template>
     </nz-col>

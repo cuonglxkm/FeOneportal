@@ -4,7 +4,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
@@ -22,13 +22,15 @@ export class IkePoliciesComponent {
   pageSize: number = 5
   pageIndex: number = 1
 
-  value: string
+  value: string = ''
 
   response: BaseResponse<IKEPolicyModel>
 
   isLoading: boolean = false
 
   formSearchIkePolicy: FormSearchIKEPolicy = new FormSearchIKEPolicy()
+
+  searchDelay = new Subject<boolean>();
 
   constructor(private ikePolicyService: IkePolicyService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -40,9 +42,9 @@ export class IkePoliciesComponent {
     this.pageIndex = 1;
   }
   
-  onInputChange(value) {
-    this.value = value.trim();
-    this.getData()
+  search(search: string) {
+    this.value = search.trim();
+    this.getData();
   }
 
 
@@ -62,7 +64,7 @@ export class IkePoliciesComponent {
     this.isLoading = true
     this.formSearchIkePolicy.projectId = this.project
     this.formSearchIkePolicy.regionId = this.region
-    this.formSearchIkePolicy.searchValue =this.value
+    this.formSearchIkePolicy.searchValue =this.value.trim()
     console.log("get data");
     console.log(this.formSearchIkePolicy);
     this.formSearchIkePolicy.pageSize = this.pageSize
@@ -102,7 +104,10 @@ export class IkePoliciesComponent {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
-    console.log("region",this.region);
       this.getData();
+      this.getData();
+    this.searchDelay.pipe(debounceTime(1200)).subscribe(() => {
+      this.getData();
+    });
   }
 }
