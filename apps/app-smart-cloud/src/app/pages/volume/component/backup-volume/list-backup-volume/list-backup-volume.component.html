@@ -89,11 +89,14 @@
             <td *ngIf="typeVpc == 0">{{ data.backupPackageName }}</td>
             <td>{{ data.creationDate | date: 'dd/MM/yyyy' }}</td>
             <td>{{ data.expirationDate | date: 'dd/MM/yyyy' }}</td>
-            <td [ngSwitch]="data.status" class="status">
+            <!-- <td [ngSwitch]="data.status" class="status">
               <span *ngSwitchCase="'AVAILABLE'" class="available">{{ 'app.status.running'|i18n }}</span>
               <span *ngSwitchCase="'SUSPENDED'" class="suspended">{{ 'app.status.suspend'|i18n }}</span>
               <span *ngSwitchCase="'ERROR'" class="error">{{ 'app.status.error'|i18n }}</span>
-            </td>
+            </td> -->
+            <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+              <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
+            </ng-container>
             <td>
               <div *ngIf="data.serviceStatus == 'KHOITAO'">
                 <!--- chỉnh sửa---!--->

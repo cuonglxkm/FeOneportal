@@ -117,9 +117,10 @@
           {{ 'app.adjust.date' | i18n }}: {{ today | date : 'dd/MM/yyyy' }}
         </div>
       </nz-card>
+      <one-portal-guide-formula></one-portal-guide-formula>
     </nz-col>
     <nz-col nzSpan="8">
-      <nz-affix>
+      <nz-affix [nzOffsetTop]="72">
       <nz-card style="border-radius: 8px" class="card-border">
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{
@@ -130,6 +131,30 @@
           <span class="text-value"> {{ 'app.capacity' | i18n }} </span><br />
           <span class="text-label">{{ objectStorageResize.newQuota }} GB</span>
         </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span
+                class="text-value"
+                style="color: #0066b3"
+                nzAlign="right"
+                *ngIf="orderObject == null"
+                >0 VND</span
+              >
+              <span
+                class="text-value"
+                style="color: #0066b3"
+                nzAlign="right"
+                *ngIf="orderObject != undefined"
+              >
+                {{ orderObject?.totalVAT?.amount | number }}
+                {{ orderObject?.totalVAT?.currency }}
+              </span>
+            </nz-col>
+          </nz-row>
         <nz-row
           style="
             margin-bottom: 20px;
