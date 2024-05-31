@@ -396,7 +396,7 @@
                       <tr>
                         <th>{{ 'app.resource' | i18n }}</th>
                         <th>{{ 'app.payment-detail.quantity' | i18n }}</th>
-                        <th>Thành tiền/Đơn giá (VND/tháng)</th>
+                        <th>Thành tiền/Đơn giá (VND)</th>
                       </tr>
                     </thead>
                     <tbody class="ant-table-tbody">
@@ -619,7 +619,7 @@
                     <nz-input-group nzCompact>
                       <nz-select nzSize="large" [nzLoading]="loadingIpConnectInternet"
                         [nzDisabled]="disableIpConnectInternet"
-                        style="width: 60%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
+                        style="width: 60%; margin-left: -1px;border-radius: 10px;" 
                         nzPlaceHolder="--{{'project.note40' | i18n}}--" [(ngModel)]="ipConnectInternet"
                         [ngModelOptions]="{standalone: true}" (ngModelChange)="openIpSubnet()">
                         <nz-option nzLabel="Không sử dụng"
@@ -644,8 +644,8 @@
                       </nz-form-control>
                     </nz-form-item>
                     <nz-form-item style="width: 40%">
-                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá
-                        ({{ "app.payment-detail.month" | i18n }})
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                        
                       </nz-form-label>
                       <nz-form-control>
                         <div class="centered">
@@ -670,8 +670,8 @@
                       </nz-form-control>
                     </nz-form-item>
                     <nz-form-item style="width: 40%">
-                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá
-                        ({{ "app.payment-detail.month" | i18n }})
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                      
                       </nz-form-label>
                       <nz-form-control>
                         <div class="centered">
@@ -695,8 +695,8 @@
                       </nz-form-control>
                     </nz-form-item>
                     <nz-form-item style="width: 40%">
-                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá
-                        ({{ "app.payment-detail.month" | i18n }})
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                       
                       </nz-form-label>
                       <nz-form-control>
                         <div class="centered">
@@ -823,8 +823,8 @@
                     </td>
                     <td style="width:40%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá
-                          ({{ "app.payment-detail.month" | i18n }})
+                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                          
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
@@ -879,9 +879,9 @@
                         <nz-form-label class="custom-label">Chọn gói</nz-form-label>
                         <nz-form-control>
                           <nz-input-group nzCompact>
-                            <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
-                              style="width: 90%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
-                              nzPlaceHolder="--{{'project.note49' | i18n}}--" [(ngModel)]="loadBalancerId"
+                            <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false" 
+                              style="width: 90%; margin-left: -1px;border-radius: 10px;"
+                             [(ngModel)]="loadBalancerId"
                               [ngModelOptions]="{ standalone: true }" (ngModelChange)="findNameLoadBalance($event)">
                               <nz-option *ngFor="let i of listLoadbalancer" [nzLabel]="i.offerName" [nzValue]="i.id" />
                             </nz-select>
@@ -891,8 +891,8 @@
                     </td>
                     <td style="width:40%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá
-                          ({{ "app.payment-detail.month" | i18n }})
+                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                        
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
@@ -943,8 +943,8 @@
                     </td>
                     <td style="width:40%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá
-                          ({{ "app.payment-detail.month" | i18n }})
+                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                        
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
@@ -976,8 +976,8 @@
                     </td>
                     <td style="width:40%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá
-                          ({{ "app.payment-detail.month" | i18n }})
+                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                        
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
@@ -1029,8 +1029,8 @@
                     </td>
                     <td style="width:40%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá
-                          ({{ "app.payment-detail.month" | i18n }})
+                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                        
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
@@ -1071,19 +1071,17 @@
                       <nz-form-item>
                         <nz-form-label class="custom-label">Số lượng GPU (Type - NVIDIA30)</nz-form-label>
                         <nz-form-control>
-                          <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
-                            style="width: 96%;border-radius: 10px;" [nzAllowClear]='true'
-                            nzPlaceHolder="" [(ngModel)]="siteToSiteId"
-                            [ngModelOptions]="{ standalone: true }" (ngModelChange)="calculate(null)">
-                            <nz-option *ngFor="let i of listSiteToSite" [nzLabel]="i.offerName" [nzValue]="i.id" />
-                          </nz-select>
+                          <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" name="gpu"
+                            [(ngModel)]="numberBackup"
+                            (ngModelChange)="onInputChange($event, 'backup')" [ngModelOptions]="{ standalone: true }"
+                            nzSize="large"></nz-input-number>
                         </nz-form-control>
                       </nz-form-item>
                     </td>
                     <td style="width:40%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá
-                          ({{ "app.payment-detail.month" | i18n }})
+                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                       
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
@@ -1103,19 +1101,17 @@
                       <nz-form-item>
                         <nz-form-label class="custom-label">Số lượng GPU (Type - NVIDIA100)</nz-form-label>
                         <nz-form-control>
-                          <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
-                            style="width: 96%;border-radius: 10px;" [nzAllowClear]='true'
-                            nzPlaceHolder="" [(ngModel)]="siteToSiteId"
-                            [ngModelOptions]="{ standalone: true }" (ngModelChange)="calculate(null)">
-                            <nz-option *ngFor="let i of listSiteToSite" [nzLabel]="i.offerName" [nzValue]="i.id" />
-                          </nz-select>
+                          <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" name="gpu-NVIDIA100"
+                            [(ngModel)]="numberBackup"
+                            (ngModelChange)="onInputChange($event, 'backup')" [ngModelOptions]="{ standalone: true }"
+                            nzSize="large"></nz-input-number>
                         </nz-form-control>
                       </nz-form-item>
                     </td>
                     <td style="width:40%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá
-                          ({{ "app.payment-detail.month" | i18n }})
+                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                       
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
@@ -1351,7 +1347,7 @@
             nzDescription="{{'project.note46' | i18n}}" nzShowIcon></nz-alert>
         </nz-card>
       </div> -->
-      <nz-card *ngIf="vpcType == '1'">
+      <!-- <nz-card *ngIf="vpcType == '1'">
         <nz-row style="margin-top: 20px;margin-bottom: 10px;" nzGutter="16">
           <nz-col nzLg="24" nzMd="12" nzSm="24">
             <nz-form-item style="margin-bottom: 5px">
@@ -1374,11 +1370,11 @@
         <div class="text-custom-time" style="color: red;">
           {{ "volume.table.title.expire.date" | i18n }}: {{ expiredDate | date : 'dd/MM/yyyy' }}
         </div>       
-      </nz-card>
-      <!-- <div *ngIf="vpcType == '1'">
+      </nz-card> -->
+      <div *ngIf="vpcType == '1'">
         <one-portal-service-usage-period
         [nameService]="'project'"  (valueChanged)="onChangeTime($event)" ></one-portal-service-usage-period>
-      </div> -->
+      </div>
       
     </nz-col>
 
@@ -1465,7 +1461,7 @@
               style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <nz-row style="margin-bottom: 10px" nzGutter="16">
               <nz-col nzSpan="16">
-                <span class="text-value">{{ 'app.service.cost' | i18n }} {{ this.form.controls['numOfMonth'].value || 0 }}
+                <span class="text-value">{{ 'app.service.cost' | i18n }} {{ numOfMonth || 0 }}
                   {{ 'app.month' | i18n }}</span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
