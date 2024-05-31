@@ -6,7 +6,7 @@
     {{ 'app.lifeCycle.config.intro.next' | i18n }}
   </span>
 </div>
-<div class="text-right p-0 m-b-0">
+<div class="d-flex justify-content-between">
   <nz-input-group
     style="margin-right: 8px; width: 25%; border-radius: 8px"
     [nzPrefix]="prefixIconSearch"
@@ -24,7 +24,7 @@
       src="assets/imgs/search.svg"
       alt=""
       style="cursor: pointer"
-      [nz-tooltip]="'app.button.search' | i18n"
+      
       (click)="searchLifeCycle()"
     />
   </ng-template>

@@ -17,6 +17,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'app-create-volume',
@@ -105,7 +106,8 @@ export class CreateVolumeComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private notification: NzNotificationService,
     private configurationsService: ConfigurationsService,
-    ) {
+    private orderService: OrderService,
+  ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
@@ -408,12 +410,18 @@ export class CreateVolumeComponent implements OnInit {
         serviceDuration: this.validateForm.controls.time.value
       }
     ];
-    var returnPath: string = '/app-smart-cloud/volume/create';
-    console.log('request', request);
-    console.log('service name', this.volumeCreate.serviceName);
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: request, path: returnPath }
-    });
+    this.orderService.validaterOrder(request).subscribe(data => {
+      if(data.success) {
+        var returnPath: string = '/app-smart-cloud/volume/create';
+        console.log('request', request);
+        console.log('service name', this.volumeCreate.serviceName);
+        this.router.navigate(['/app-smart-cloud/order/cart'], {
+          state: { data: request, path: returnPath }
+        });
+      }
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+    })
   }
 
   getTotalAmount() {

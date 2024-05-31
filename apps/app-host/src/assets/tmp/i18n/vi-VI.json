@@ -2544,6 +2544,7 @@
   "volume.alert.resize.storage": "Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn.",
 
   "app.breadcrumb.list.backup.volume": "Danh sách Backup Volume",
+  "app.breadcrumb.list.backup.volume.restore": "Khôi phục Backup Volume",
   "app.backup.volume.info": "Thông tin Backup Volume",
   "app.backup.volume.detail": "Chi tiết Backup Volume",
   "app.backup.volume.btn.create": "Tạo mới Backup volume",

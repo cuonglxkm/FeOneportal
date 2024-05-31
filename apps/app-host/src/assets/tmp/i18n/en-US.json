@@ -2645,7 +2645,9 @@
   "volume.tooltip.iops": "IOPS is proportional to the volume capacity. 1GB of capacity is equivalent to 10 IOPS. The higher the IOPS, the faster the read and write speeds.",
   "volume.alert.message.confirm.detach": "Are you sure you want to detach the Volume from the virtual machine?",
   "volume.alert.resize.storage": "When increasing the capacity of the Volume, the new cost will be calculated from the adjustment date until the expiration date.",
+
   "app.breadcrumb.list.backup.volume": "Backup Volume management",
+  "app.breadcrumb.list.backup.volume.restore": "Restore Backup Volume",
   "app.backup.volume.info": "Backup Volume Information",
   "app.backup.volume.detail": "Backup Volume details",
   "app.backup.volume.btn.create": "Create new Backup volume",

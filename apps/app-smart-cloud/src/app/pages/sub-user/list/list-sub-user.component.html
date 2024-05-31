@@ -46,7 +46,7 @@
               nz-input
               [placeholder]="'app.placeholder.search' | i18n"
               [(ngModel)]="value"
-              (input)="onInputChange($event.target['value'])"
+              #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
             />
           </nz-input-group>
           <ng-template #prefixIconSearch>
@@ -54,7 +54,6 @@
               src="assets/imgs/search.svg"
               alt=""
               style="cursor: pointer"
-              [nz-tooltip]="'app.button.search' | i18n"
             />
           </ng-template>
           <button

@@ -19,6 +19,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-resize-file-system-normal',
@@ -62,7 +63,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
               private fileSystemService: FileSystemService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
-              private projectService: ProjectService,
+              private orderService: OrderService,
               private instanceService: InstancesService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private configurationsService: ConfigurationsService) {
@@ -167,9 +168,15 @@ export class ResizeFileSystemNormalComponent implements OnInit {
       }
     ];
     console.log('request', request);
-    var returnPath: string = '/app-smart-cloud/file-storage/file-system/resize/normal/' + this.idFileSystem;
-    console.log('request', request);
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    this.orderService.validaterOrder(request).subscribe(data => {
+      if(data.success) {
+        var returnPath: string = '/app-smart-cloud/file-storage/file-system/resize/normal/' + this.idFileSystem;
+        console.log('request', request);
+        this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+      }
+    }, error =>  {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+    })
   }
 
   navigateToDetail() {

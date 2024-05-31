@@ -64,20 +64,21 @@
             </nz-textarea-count>
           </nz-form-control>
         </nz-form-item>
-        <nz-row style="margin-bottom: 20px">
+        <one-portal-time-used-resize [expireDate]="objectStorage.expiredDate " [createDate]="objectStorage.createdDate" [nameService]="'Object Storage'"/>
+        <!-- <nz-row style="margin-bottom: 20px">
           <nz-col nzSpan="12">
             <div class="text-label">
               {{ 'app.service.start.date' | i18n }}:
-              {{ objectStorage.createdDate | date : 'dd/MM/yyyy' }}
+              {{ objectStorage.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}
             </div>
           </nz-col>
           <nz-col nzSpan="12">
             <div style="margin-left: 20px" class="text-label">
               {{ 'app.service.expiration-date' | i18n }}:
-              {{ objectStorage.expiredDate | date : 'dd/MM/yyyy' }}
+              {{ objectStorage.expiredDate | date : 'dd/MM/yyyy HH:mm:ss' }}
             </div>
           </nz-col>
-        </nz-row>
+        </nz-row> -->
       </nz-card>
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
@@ -103,7 +104,7 @@
           <nz-form-control>
             <nz-input-number
               style="width: 100%; margin-left: 0px"
-              [nzMin]="0"
+              [nzMin]="1"
               [nzMax]="1000"
               [nzStep]="1"
               [(ngModel)]="addQuota"
@@ -114,7 +115,7 @@
           </nz-form-control>
         </nz-form-item>
         <div style="margin-top: 20px" class="text-label">
-          {{ 'app.adjust.date' | i18n }}: {{ today | date : 'dd/MM/yyyy' }}
+          {{ 'app.adjust.date' | i18n }}: {{ today | date : 'dd/MM/yyyy HH:mm:ss' }}
         </div>
       </nz-card>
       <one-portal-guide-formula></one-portal-guide-formula>

@@ -40,7 +40,9 @@ export class CreateBackupVmNormalComponent implements OnInit{
   listBackupVM: BackupVm[] = [];
   instance: InstancesModel;
   listInstances: InstancesModel[] = [];
-  isLoading: boolean = false;
+
+  isLoading: boolean = true;
+
   securityGroups: SecurityGroup[] = [];
   volumeAttachments: VolumeAttachment[] = [];
   backupPackages: PackageBackupModel[] = [];

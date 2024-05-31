@@ -114,54 +114,56 @@
 
 
     <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF" [nzLoading]="loadingCalculate">
-        <div style="margin-bottom: 20px">
-          <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
-        </div>
-        <div class="text-value">{{'app.ip.range' | i18n}}</div>
-        <div style="margin-top: 10px" class="text-label">{{ ipName }}</div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">{{'app.attach.to.vm' | i18n}}</div>
-        <div style="margin-top: 10px" class="text-label">{{ VMName }}</div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">{{'app.ip.type' | i18n}}</div>
-        <div style="margin-top: 10px" class="text-label">{{ checkIpv6 == true ? 'IPv6' : 'IPv4' }}</div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <nz-row style="margin-bottom: 10px" nzGutter="16">
-          <nz-col nzSpan="16">
-            <span class="text-value"> {{'app.service.cost' | i18n}} {{ this.form.controls['numOfMonth'].value || 0 }} {{'app.month' | i18n}} </span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
+      <nz-affix [nzOffsetTop]="72">
+        <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF" [nzLoading]="loadingCalculate">
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
+          </div>
+          <div class="text-value">{{'app.ip.range' | i18n}}</div>
+          <div style="margin-top: 10px" class="text-label">{{ ipName }}</div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{'app.attach.to.vm' | i18n}}</div>
+          <div style="margin-top: 10px" class="text-label">{{ VMName }}</div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{'app.ip.type' | i18n}}</div>
+          <div style="margin-top: 10px" class="text-label">{{ checkIpv6 == true ? 'IPv6' : 'IPv4' }}</div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value"> {{'app.service.cost' | i18n}} {{ this.form.controls['numOfMonth'].value || 0 }} {{'app.month' | i18n}} </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
               {{ totalAmount |number }}
               VND
             </span>
-          </nz-col>
-        </nz-row>
-        <nz-row style="
+            </nz-col>
+          </nz-row>
+          <nz-row style="
             margin-bottom: 20px;
             background-color: #cce9ff;
             padding: 16px 0 16px 0;
             border-radius: 8px;
           " nzGutter="16">
-          <nz-col nzSpan="16">
-            <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
-            <span class="text-note-italicized">{{'app.include.vat' | i18n:{"vat":"10"} }}</span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | number }} VND</span>
-          </nz-col>
-        </nz-row>
-        <nz-row>
-          <nz-col style="width: 100%">
-            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
-                    [disabled]="form.invalid">
-              <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="form.invalid ? 'gray' : 'white'">{{'app.button.create' | i18n}}</span>
-            </button>
-          </nz-col>
-        </nz-row>
-      </nz-card>
+            <nz-col nzSpan="16">
+              <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
+              <span class="text-note-italicized">{{'app.include.vat' | i18n:{"vat":"10"} }}</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | number }} VND</span>
+            </nz-col>
+          </nz-row>
+          <nz-row>
+            <nz-col style="width: 100%">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
+                      [disabled]="form.invalid">
+                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <span [style.color]="form.invalid ? 'gray' : 'white'">{{'app.button.create' | i18n}}</span>
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-affix>
     </nz-col>
   </nz-row>
 

@@ -58,6 +58,7 @@
                 maxlength="250"
                 [(ngModel)]="objectStorageCreate.note"
                 [ngModelOptions]="{ standalone: true }"
+                [placeholder]="'volume.tooltip.description' | i18n"
                 nz-input
               ></textarea>
             </nz-textarea-count>
