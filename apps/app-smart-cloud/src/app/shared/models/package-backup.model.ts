@@ -122,6 +122,7 @@ export class FormExtendBackupPackageModel {
   regionId: number
   serviceName: string
   customerId: number
+  projectId: number
   vpcId: string
   typeName: string
   serviceType: number

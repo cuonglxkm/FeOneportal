@@ -180,7 +180,7 @@
             </nz-form-item>
             <nz-form-item style="margin-bottom: 0;">
               <nz-form-label>
-                <span>{{ 'app.adjust.date' | i18n }}: {{ dateEdit | date: 'dd/MM/yyyy' }}</span>
+                <span>{{ 'app.adjust.date' | i18n }}: {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
               </nz-form-label>
             </nz-form-item>
           </nz-card>

@@ -58,8 +58,8 @@ export class DetailPackageBackupComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/backup/packages/extend/' + this.idPackageBackup])
   }
 
-  navigateToEdit() {
-    this.router.navigate(['/app-smart-cloud/backup/packages/edit/' + this.idPackageBackup])
+  navigateToResize() {
+    this.router.navigate(['/app-smart-cloud/backup/packages/resize/' + this.idPackageBackup])
   }
 
   loadProjects() {

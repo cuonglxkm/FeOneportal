@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { BackupVolume } from '../backup-volume.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -15,13 +15,14 @@ import {
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'one-portal-list-backup-volume',
   templateUrl: './list-backup-volume.component.html',
   styleUrls: ['./list-backup-volume.component.less']
 })
-export class ListBackupVolumeComponent implements OnInit{
+export class ListBackupVolumeComponent implements OnInit, OnDestroy{
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -30,7 +31,7 @@ export class ListBackupVolumeComponent implements OnInit{
 
   statusSelected = 'all';
 
-  inputName: string;
+  value: string;
 
   pageSize: number = 10;
   pageIndex: number = 1;
@@ -43,6 +44,10 @@ export class ListBackupVolumeComponent implements OnInit{
     {label: this.i18n.fanyi('app.status.running'), value: 'available'},
     {label: this.i18n.fanyi('app.status.suspend'), value: 'suspended'}
   ]
+
+  dataSubjectInputSearch: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
 
   //child component
   // @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
@@ -76,8 +81,34 @@ export class ListBackupVolumeComponent implements OnInit{
     this.getListBackupVolumes(false);
   }
 
-  onInputChange(value) {
-    this.inputName = value.trim();
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  changeInputChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.enterPressed = false;
+    this.dataSubjectInputSearch.next(value);
+  }
+
+  onChangeInputChange() {
+    this.searchSubscription = this.dataSubjectInputSearch.pipe(
+      debounceTime(700)
+    ).subscribe(res => {
+      if (!this.enterPressed) {
+        this.value = res.trim();
+        this.getListBackupVolumes(false);
+      }
+    });
+  }
+
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value.trim();
     this.getListBackupVolumes(false);
   }
 
@@ -99,7 +130,7 @@ export class ListBackupVolumeComponent implements OnInit{
     }
     if(this.statusSelected == 'available' ) valueSearch = 'available'
     if(this.statusSelected == 'suspended') valueSearch = 'suspended'
-    this.backupVolumeService.getListBackupVolume(this.region, this.project, valueSearch, this.inputName, this.pageSize, this.pageIndex).subscribe(data => {
+    this.backupVolumeService.getListBackupVolume(this.region, this.project, valueSearch, this.value, this.pageSize, this.pageIndex).subscribe(data => {
       this.isLoading = false
       this.response = data;
 
@@ -130,10 +161,15 @@ export class ListBackupVolumeComponent implements OnInit{
     setTimeout(() => {this.getListBackupVolumes(false)}, 2000)
   }
 
+  navigateToRestore(id) {
+    this.router.navigate(['/app-smart-cloud/backup-volume/restore/' + id])
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.onChangeInputChange();
     if (!this.region && !this.project) {
       this.router.navigate(['/exception/500']);
     }
@@ -142,20 +178,20 @@ export class ListBackupVolumeComponent implements OnInit{
       this.notificationService.initiateSignalrConnection();
     }
 
-    this.notificationService.connection.on('UpdateVolume', (data) => {
-      if (data) {
-        let volumeId = data.serviceId;
-
-        var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
-        if (foundIndex > -1) {
-          var record = this.response.records[foundIndex];
-
-          record.status = data.status;
-          record.serviceStatus = data.serviceStatus;
-
-          this.response.records[foundIndex] = record;
-          this.cdr.detectChanges();
-        }
+    this.notificationService.connection.on('UpdateVolumeBackup', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case "CREATING":
+          case "CREATED":
+          case "RESIZING":
+          case "RESIZED":
+          case "EXTENDING":
+          case "EXTENDED":
+          case "DELETING":
+          case "DELETED":
+            this.getListBackupVolumes(false);
+          break;
+          }
       }
     });
 

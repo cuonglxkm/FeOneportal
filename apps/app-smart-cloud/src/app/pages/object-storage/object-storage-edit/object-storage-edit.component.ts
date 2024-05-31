@@ -26,6 +26,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderItemObject } from 'src/app/shared/models/price';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -42,7 +43,7 @@ export class ObjectStorageEditComponent implements OnInit {
   minStorage: number
   maxStorage: number
   stepStorage: number
-
+  orderObject: OrderItemObject = new OrderItemObject();
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -70,6 +71,7 @@ export class ObjectStorageEditComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.objectStorage = data;
+          this.objectStorageResize.newQuota = this.objectStorage.quota;
           this.cdr.detectChanges();
         },
         error: (e) => {
@@ -124,6 +126,7 @@ export class ObjectStorageEditComponent implements OnInit {
           this.totalincludesVAT = Number.parseFloat(
             result.data.totalPayment.amount
           );
+          this.orderObject = result.data
           this.cdr.detectChanges();
         });
       });

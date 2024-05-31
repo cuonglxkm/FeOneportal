@@ -67,7 +67,7 @@ export class ObjectStorageExtend {
 }
 
 export class ObjectStorageResize {
-  newQuota: number;
+  newQuota: number = 0;
   newOfferId: number;
   serviceType: number;
   actionType: number;
