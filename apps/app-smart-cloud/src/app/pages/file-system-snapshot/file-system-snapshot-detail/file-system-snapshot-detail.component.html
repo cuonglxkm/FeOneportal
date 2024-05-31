@@ -128,10 +128,10 @@
      </nz-form-item>
      <ng-container *ngIf="typeVPC == 0">
       <!-- <nz-descriptions-item [nzTitle]="titleCreateDate">
-        <span class="text-label"><b>{{ fileSystemSnapshotDetail?.createTime | date:'dd/MM/yyyy' }}</b></span></nz-descriptions-item>
+        <span class="text-label"><b>{{ fileSystemSnapshotDetail?.createTime | date:'dd/MM/yyyy HH:mm:ss' }}</b></span></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleExpireDate" class="text-label">
         <span style="color: rgba(235, 20, 20, 0.85)"
-              class="text-label"><b>{{ fileSystemSnapshotDetail?.expireDate | date:'dd/MM/yyyy' }}</b></span>
+              class="text-label"><b>{{ fileSystemSnapshotDetail?.expireDate | date:'dd/MM/yyyy HH:mm:ss' }}</b></span>
       </nz-descriptions-item>
       <ng-template #titleCreateDate>
         <span class="text-label">{{ 'volume.table.title.create.date' | i18n }}:</span>
