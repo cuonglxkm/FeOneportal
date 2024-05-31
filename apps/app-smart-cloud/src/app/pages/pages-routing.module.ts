@@ -196,7 +196,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'volume/extend/:id',
+    path: 'volume/edit/:id',
     component: EditVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
