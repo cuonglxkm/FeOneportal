@@ -249,7 +249,6 @@ export class CreateFileSystemComponent implements OnInit {
       this.storageBuyVpc = data.cloudProject?.quotaShareInGb
       this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
       this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
-
       console.log('share remaining', this.storageRemaining)
       this.isLoading = false
     })
