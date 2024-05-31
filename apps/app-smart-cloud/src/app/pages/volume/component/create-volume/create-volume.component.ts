@@ -17,6 +17,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'app-create-volume',
@@ -105,7 +106,8 @@ export class CreateVolumeComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private notification: NzNotificationService,
     private configurationsService: ConfigurationsService,
-    ) {
+    private orderService: OrderService,
+  ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
@@ -373,7 +375,13 @@ export class CreateVolumeComponent implements OnInit {
   unitPrice = 0;
 
 
-  changeValueInput() {
+
+
+  changeValueStorage(value) {
+    this.dataSubjectStorage.next(value);
+  }
+
+  onChangeValueStorage() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
         if((res % this.stepStorage) > 0) {
@@ -383,10 +391,6 @@ export class CreateVolumeComponent implements OnInit {
         console.log('total amount');
         this.getTotalAmount();
       });
-  }
-
-  changeValueStorage(value) {
-    this.dataSubjectStorage.next(value);
   }
 
   navigateToPaymentSummary() {
@@ -406,17 +410,22 @@ export class CreateVolumeComponent implements OnInit {
         serviceDuration: this.validateForm.controls.time.value
       }
     ];
-    var returnPath: string = '/app-smart-cloud/volume/create';
-    console.log('request', request);
-    console.log('service name', this.volumeCreate.serviceName);
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: request, path: returnPath }
-    });
+    this.orderService.validaterOrder(request).subscribe(data => {
+      if(data.success) {
+        var returnPath: string = '/app-smart-cloud/volume/create';
+        console.log('request', request);
+        console.log('service name', this.volumeCreate.serviceName);
+        this.router.navigate(['/app-smart-cloud/order/cart'], {
+          state: { data: request, path: returnPath }
+        });
+      }
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+    })
   }
 
   getTotalAmount() {
     this.volumeInit();
-
     console.log('time', this.timeSelected);
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -443,7 +452,7 @@ export class CreateVolumeComponent implements OnInit {
     // this.customerId = this.tokenService.get()?.userId
     this.getConfiguration();
 
-    this.changeValueInput();
+    this.onChangeValueStorage();
 
     this.getListSnapshot();
     this.getListInstance();

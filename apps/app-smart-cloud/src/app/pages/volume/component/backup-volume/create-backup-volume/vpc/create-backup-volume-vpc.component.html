@@ -152,30 +152,32 @@
       </nz-card>
     </nz-col>
     <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px;">
-        <span class="text-card-header">{{'app.config.parameters'|i18n}}</span>
-        <div style="margin-top: 10px" class="text-value">{{'app.table.backup.vm.name'|i18n}}</div>
-        <div style="margin-top: 10px" class="text-label">
-          {{ validateForm.controls.backupName.value }}
-        </div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">{{ 'app.table.backup.vm.backup.package'|i18n }}</div>
-<!--        <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.packageName }}</div>-->
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">{{ 'app.input.backup.volume.select.volume'|i18n }}</div>
-        <div style="margin-top: 10px" class="text-label">{{ volumeInfo?.name }}</div>
-        <!--        <div style="margin-top: 10px" class="text-label">{{ 'app.info.backup.vm.storage.flavor'|i18n }} - {{ instance?.storage }} GB</div>-->
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <nz-row>
-          <nz-col style="width: 100%">
-            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createBackupVolume()" [nzLoading]="isLoading"
-                    [disabled]="validateForm.invalid">
-              <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" alt="" />
-              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
-            </button>
-          </nz-col>
-        </nz-row>
-      </nz-card>
+      <nz-affix [nzOffsetTop]="48">
+        <nz-card class="border-card">
+          <span class="text-card-header">{{'app.config.parameters'|i18n}}</span>
+          <div style="margin-top: 10px" class="text-value">{{'app.table.backup.vm.name'|i18n}}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ validateForm.controls.backupName.value }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.table.backup.vm.backup.package'|i18n }}</div>
+          <!--        <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.packageName }}</div>-->
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.input.backup.volume.select.volume'|i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">{{ volumeInfo?.name }}</div>
+          <!--        <div style="margin-top: 10px" class="text-label">{{ 'app.info.backup.vm.storage.flavor'|i18n }} - {{ instance?.storage }} GB</div>-->
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row>
+            <nz-col style="width: 100%">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createBackupVolume()" [nzLoading]="isLoading"
+                      [disabled]="validateForm.invalid">
+                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" alt="" />
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-affix>
     </nz-col>
   </nz-row>
 </nz-content>

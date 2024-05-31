@@ -139,6 +139,8 @@ export class CreateVolumeVpcComponent implements OnInit {
     const value = control.value;
     if (this.remaining < value) {
       return { notEnough: true };
+    } else if(this.remaining == 0) {
+      return { outOfStorage: true };
     } else {
       return null;
     }
@@ -498,7 +500,7 @@ export class CreateVolumeVpcComponent implements OnInit {
         },
         error => {
           this.isLoadingAction = false;
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.request.create.fail'));
         });
     }
   }

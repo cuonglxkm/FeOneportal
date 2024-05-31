@@ -37,6 +37,7 @@ export class ObjectStorageCreateComponent implements OnInit {
   maxStorage: number
   stepStorage: number
   unitPrice = 0;
+  dataSubject: Subject<any> = new Subject<any>();
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -47,9 +48,11 @@ export class ObjectStorageCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.dataSubject.next(1);
     this.onChangeCapacity();
     this.onChangeTime();
     this.getConfigurations()
+    this.getTotalAmount()
   }
 
   dataSubjectTime: Subject<any> = new Subject<any>();
@@ -98,7 +101,7 @@ export class ObjectStorageCreateComponent implements OnInit {
 
   totalAmount: number = 0;
   totalincludesVAT: number = 0;
-  dataSubject: Subject<any> = new Subject<any>();
+  
   changeCapacity(value: number) {
     this.dataSubject.next(value);
   }
@@ -131,6 +134,8 @@ export class ObjectStorageCreateComponent implements OnInit {
         result.data.totalPayment.amount
       );
       this.orderObject = result.data
+      console.log('this.orderObject', this.orderObject);
+      this.cdr.detectChanges();
     });
   }
 

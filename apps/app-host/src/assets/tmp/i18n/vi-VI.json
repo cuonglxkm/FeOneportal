@@ -311,6 +311,7 @@
 
   "app.instance": "máy ảo",
   "app.volume": "volume",
+  "app.backup-package": "gói backup",
   "app.instances": "Máy ảo",
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
@@ -2526,9 +2527,11 @@
   "volume.notification.input.select.snapshot": "Vui lòng chọn Snapshot",
   "volume.notification.request.create": "Tạo Volume",
   "volume.notification.require.create.success": "Yêu cầu tạo Volume thành công.",
+  "volume.notification.request.create.fail": "Yêu cầu tạo Volume thất bại",
   "volume.notification.resize.success": "Điều chỉnh Volume thành công.",
   "volume.notification.resize.fail": "Điều chỉnh Volume thất bại.",
   "volume.notification.access.denied": "Volume không tồn tại!",
+
 
   "volume.input.storage.vpc.required": "Vui lòng nhập dung lượng của gói Backup",
   "volume.unit-price": "Đơn giá",
@@ -2544,6 +2547,7 @@
   "volume.alert.resize.storage": "Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn.",
 
   "app.breadcrumb.list.backup.volume": "Danh sách Backup Volume",
+  "app.breadcrumb.list.backup.volume.restore": "Khôi phục Backup Volume",
   "app.backup.volume.info": "Thông tin Backup Volume",
   "app.backup.volume.detail": "Chi tiết Backup Volume",
   "app.backup.volume.btn.create": "Tạo mới Backup volume",
@@ -2602,7 +2606,7 @@
   "app.backup.package.list": "Danh sách gói Backup",
   "app.backup.package.information": "Thông tin của gói Backup",
   "app.backup.package.name": "Tên gói Backup",
-  "app.backup.package.storage": "Dung lượng gói backup",
+  "app.backup.package.storage": "Dung lượng gói backup (GB)",
   "app.backup.package.storage.current": "Dung lượng gói Backup hiện tại",
   "app.backup.package.storage.addition": "Dung lượng gói Backup bổ sung",
   "app.backup.package.storage.total": "Dung lượng",
@@ -2622,28 +2626,33 @@
   "app.backup.package.edit.title": "Chỉnh sửa thông tin gói Backup",
 
   "app.tooltip.backup.package.name": "Tên gói backup của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.",
-  "app.tooltip.backup.package.storage": "Dung lượng mặc định tối thiểu là 1, chưa giới hạn dung lượng tối đa",
+  "app.tooltip.backup.package.storage": "Dung lượng của gói backup",
   "app.tooltip.backup.package.storage.addition": "Chi phí dung lượng bổ sung tính từ ngày chỉnh sửa cho tới ngày hết hạn.",
   "app.alert.backup.package.resize": "Khi thực hiện tăng dung lượng gói Backup, chi phí mới sẽ được tính từ ngày chỉnh sửa cho tới ngày hết hạn.",
   "app.placeholder.backup.package.name": "Nhập tên gói",
   "app.placeholder.backup.package.description": "Nhập mô tả",
   "app.placeholder.backup.package.time": "Mỗi tháng tương đương 30 ngày.",
-
+  "app.backup.package.placeholder.search.name": "Tìm kiếm theo tên",
   "app.notification.warning.input": "Vui lòng nhập đầy đủ thông tin",
   "app.notification.request.create.success": "Yêu cầu tạo gói backup thành công.",
   "app.notification.request.create.fail": "Yêu cầu tạo gói backup thất bại. {{error}}",
   "app.notification.delete.package.success": "Xóa gói backup thành công",
   "app.notification.delete.package.fail": "Xóa gói backup thất bại. {{ error }}",
   "app.notification.delete.confirm": "Vui lòng nhập đúng tên Backup Package",
+  "app.notification.delete.confirm.null": "Vui lòng nhập tên Backup Package",
   "app.notification.extend.success": "Gia hạn gói backup thành công.",
   "app.notification.extend.fail": "Gia hạn gói backup thất bại. {{error}}",
+  "app.notification.update.package.backup.success": "Chỉnh sửa gói backup thành công",
+  "app.notification.update.package.backup.error": "Chỉnh sửa gói backup thất bại. {{error}}",
 
   "app.backup.package.name.required": "Vui lòng nhập tên gói Backup",
   "app.backup.package.name.pattern": "Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt",
-  "app.backup.package.name.maxLength": "Tối đa 70 ký tự",
+  "app.backup.package.name.maxLength": "Tối đa 50 ký tự",
+  "app.backup.package.name.duplicate": "Tên gói backup đã tồn tại. ",
   "app.backup.package.storage.required": "Vui lòng nhập dung lượng của gói Backup",
   "app.backup.package.storage.pattern": "Vui lòng nhập số nguyên",
   "app.backup.package.description.maxLength": "Cho phép nhập tối đa 255 kí tự",
+
 
   "app.backup.vm.list": "Danh sách Backup VM",
   "app.backup.vm.detail": "Chi tiết Backup VM",

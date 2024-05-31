@@ -168,7 +168,7 @@
           </nz-form-control>
         </nz-form-item>
         <div *ngIf="typeVpc == 0">
-          <one-portal-time-used-resize [expireDate]="fileSystem?.expireDate" [createDate]="fileSystem?.createdDate"/>
+          <one-portal-time-used-resize [nameService]="'File System'" [expireDate]="fileSystem?.expireDate" [createDate]="fileSystem?.createdDate"/>
         </div>
       </form>
     </nz-card>

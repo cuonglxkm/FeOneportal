@@ -236,6 +236,7 @@ import { DeleteBackupVolumeComponent } from './volume/component/backup-volume/de
 import { RestoreBackupVmComponent } from './backup-vm/restore-backup-vm/restore-backup-vm.component';
 import { NguCarousel, NguCarouselDefDirective, NguCarouselNextDirective, NguCarouselPrevDirective, NguItemComponent, NguTileComponent } from '@ngu/carousel';
 import { CarouselModule } from 'ngx-owl-carousel-o';
+import { UpdateBackupPackageComponent } from './backup-package/update/update-backup-package.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -453,6 +454,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DeleteSslCertComponent,
     DeleteBackupVolumeComponent,
     RestoreBackupVmComponent,
+    UpdateBackupPackageComponent,
   ],
   imports: [
     CommonModule,

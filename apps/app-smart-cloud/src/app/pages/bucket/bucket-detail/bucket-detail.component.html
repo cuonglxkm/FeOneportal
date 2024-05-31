@@ -82,11 +82,10 @@
           nzSize="large"
         >
           <input
-            (keyup.enter)="loadData()"
-            [(ngModel)]="folderNameLike"
+          [(ngModel)]="value"
+          #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
             nz-input
             [placeholder]="'app.users.search' | i18n"
-            [nz-tooltip]="'app.button.search' | i18n"
           />
         </nz-input-group>
         <ng-template #suffixIconSearch>
@@ -94,8 +93,6 @@
             src="assets/imgs/search.svg"
             alt=""
             style="cursor: pointer"
-            [nz-tooltip]="'app.button.search' | i18n"
-            (click)="loadData()"
           />
         </ng-template>
       </div>

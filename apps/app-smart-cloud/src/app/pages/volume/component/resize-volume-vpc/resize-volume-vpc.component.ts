@@ -96,6 +96,8 @@ export class ResizeVolumeVpcComponent implements OnInit {
     const value = control.value;
     if (this.remaining < value) {
       return { notEnough: true };
+    } else if(this.remaining == 0) {
+      return { outOfStorage: true };
     } else {
       return null;
     }
@@ -176,6 +178,8 @@ export class ResizeVolumeVpcComponent implements OnInit {
           this.listVMs += item.instanceName + '\n';
         });
       }
+
+
 
       //Thoi gian su dung
       const createDate = new Date(this.volumeInfo?.creationDate);
@@ -277,6 +281,10 @@ export class ResizeVolumeVpcComponent implements OnInit {
       if (this.volumeInfo?.volumeType === 'ssd') {
         this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
       }
+
+      this.validateForm.controls.storage.markAsDirty()
+      this.validateForm.controls.storage.updateValueAndValidity()
+
       this.onChangeValueInput();
     }, error => {
       this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
@@ -306,6 +314,9 @@ export class ResizeVolumeVpcComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validateForm.controls.storage.markAsDirty()
+    this.validateForm.controls.storage.updateValueAndValidity()
+
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
@@ -316,5 +327,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.getVolumeById(this.volumeId);
       this.getProject(this.project);
     }
+
+
   }
 }

@@ -10,6 +10,8 @@ import { I18NService } from '@core';
 export class TimeUsedResizeComponent {
   @Input() expireDate: any
   @Input() createDate: any
+  @Input() nameService: any
+  
 
   constructor(@Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
