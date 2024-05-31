@@ -762,54 +762,33 @@ export class InstancesCreateComponent implements OnInit {
         if (this.isCustomconfig) {
           this.volumeIntoMoney =
             this.volumeUnitPrice * this.configCustom.capacity;
-          if (this.configCustom.capacity == 0) {
-            this.volumeUnitPrice = 0;
-          }
         }
         if (this.isGpuConfig) {
           this.volumeIntoMoney = this.volumeUnitPrice * this.configGPU.storage;
-          if (this.configGPU.storage == 0) {
-            this.volumeUnitPrice = 0;
-          }
         }
       }
       if (ram == 1) {
         this.ramUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
         if (this.isCustomconfig) {
           this.ramIntoMoney = this.ramUnitPrice * this.configCustom.ram;
-          if (this.configCustom.ram == 0) {
-            this.ramUnitPrice = 0;
-          }
         }
         if (this.isGpuConfig) {
           this.ramIntoMoney = this.ramUnitPrice * this.configGPU.ram;
-          if (this.configGPU.ram == 0) {
-            this.ramUnitPrice = 0;
-          }
         }
       }
       if (cpu == 1) {
         this.cpuUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
         if (this.isCustomconfig) {
           this.cpuIntoMoney = this.cpuUnitPrice * this.configCustom.vCPU;
-          if (this.configCustom.vCPU == 0) {
-            this.cpuUnitPrice = 0;
-          }
         }
         if (this.isGpuConfig) {
           this.cpuIntoMoney = this.cpuUnitPrice * this.configGPU.CPU;
-          if (this.configGPU.CPU == 0) {
-            this.cpuUnitPrice = 0;
-          }
         }
       }
       if (gpu == 1) {
         this.gpuUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
         if (this.isGpuConfig) {
           this.gpuIntoMoney = this.gpuUnitPrice * this.configGPU.GPU;
-          if (this.configGPU.GPU == 0) {
-            this.gpuUnitPrice = 0;
-          }
         }
       }
       this.cdr.detectChanges();
