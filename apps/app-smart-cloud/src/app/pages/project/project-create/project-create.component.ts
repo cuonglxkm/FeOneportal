@@ -90,7 +90,7 @@ export class ProjectCreateComponent implements OnInit {
   disableIpConnectInternet = false;
   loadingIpConnectInternet = false;
   ipConnectInternet = '';
-  loadBalancerId = '';
+  loadBalancerId :number;
   siteToSiteId = '';
 
   trashVpnGpu = false;
@@ -146,8 +146,9 @@ export class ProjectCreateComponent implements OnInit {
   loadBalancerName:string;
   sitetositeName:string;
 
+
   form = new FormGroup({
-    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(20)] }),
+    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(50)] }),
     description: new FormControl(''),
     ipConnectInternet: new FormControl(''),
     numOfMonth: new FormControl(1, { validators: [Validators.required] })
@@ -184,12 +185,13 @@ export class ProjectCreateComponent implements OnInit {
     this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
       this.calculateReal();
     });
-    this.onChangeTime();
+    // this.onChangeTime();
     this.getStepBlock('BLOCKSTORAGE')
 
     this.iconToggle = "icon_circle_minus"
+    this.numOfMonth = this.form.controls['numOfMonth'].value;
   }
-
+   
   calculateReal() {
     this.refreshValue();
     if (this.vpcType == '1') {
@@ -199,7 +201,7 @@ export class ProjectCreateComponent implements OnInit {
       if (lstIp != null && lstIp != undefined) {
         ip = lstIp[0];
       }
-      let numOfMonth = this.form.controls['numOfMonth'].value;
+      // let numOfMonth = this.form.controls['numOfMonth'].value;
       // let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : 1;
       // let IPFloating = this.selectIndexTab == 1 && this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
       // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
@@ -265,7 +267,7 @@ export class ProjectCreateComponent implements OnInit {
               specificationString: JSON.stringify(requestBody),
               specificationType: 'vpc_create',
               sortItem: 0,
-              serviceDuration: numOfMonth
+              serviceDuration: this.numOfMonth
             }
           ]
         };
@@ -323,9 +325,8 @@ messageNotification:string;
   }
   
   checkNumberInput(value: number, name: string): void {
-    const messageStepNotification = `Vui lòng nhập số chia hết cho  ${this.stepBlock} `;
+    const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
     const numericValue = Number(value);
-    // if(isNaN(numericValue)){
       if (isNaN(numericValue)||  numericValue % this.stepBlock !== 0 && numericValue <= this.maxBlock && numericValue>=this.minBlock) {
         this.notification.warning( '', messageStepNotification);     
           switch (name){
@@ -499,12 +500,14 @@ messageNotification:string;
     this.router.navigate(['/app-smart-cloud/project']);
   }
 
-  onChangeTime(res?:any) {    
-    console.log("res",res)
-    this.numOfMonth = res ;
-    const dateNow = new Date();
-    dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
-    this.expiredDate = dateNow;
+  onChangeTime(numberMonth: number) {    
+    
+    this.numOfMonth = numberMonth ;
+    console.log("numOfMonth123", this.numOfMonth)
+    // const dateNow = new Date();
+    // dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
+    // console.log("this.numOfMonth hh",this.numOfMonth)
+    // this.expiredDate = dateNow;
     this.calculate(null);
   }
 
@@ -640,6 +643,8 @@ messageNotification:string;
   initBackup() {
     this.activeBackup = true;
     this.trashBackup = true;
+    // this.price.backupUnit= 
+
   }
   deleteBackup() {
     this.activeBackup = false;
@@ -658,7 +663,7 @@ messageNotification:string;
     this.activeLoadBalancer = false;
     this.trashLoadBalancer = false;
     this.numberLoadBalancer = 0;
-    this.loadBalancerId = '';
+    // this.loadBalancerId = '';
     this.calculate(null)
   }
 
@@ -741,6 +746,8 @@ messageNotification:string;
             .getListOffersByProductId(data[0].id, this.regionId)
             .subscribe((data: any) => {
               this.listLoadbalancer = data;
+              console.log("listLoadbalancer ff", this.listLoadbalancer)
+              this.loadBalancerId =this.listLoadbalancer[0].id
             });
         }
       );
