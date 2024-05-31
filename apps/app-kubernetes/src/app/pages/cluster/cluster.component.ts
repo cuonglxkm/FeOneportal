@@ -341,12 +341,15 @@ export class ClusterComponent implements OnInit {
   totalRam: number;
   totalCpu: number;
   totalStorage: number;
+  totalHDDStorage: number;
+  totalSSDStorage: number;
   vatCost: number;
   workerCostPerMonth: number;
   onCalculatePrice() {
     this.totalPrice = 0;
     this.workerPrice = 0;
     this.vatCost = 0;
+    this.totalHDDStorage = 0; this.totalSSDStorage = 0;
     this.totalCpu = 0; this.totalRam = 0; this.totalStorage = 0;
 
     const wg = this.myform.get('workerGroup').value;
