@@ -162,9 +162,9 @@ export class ResizeFileSystemComponent implements OnInit {
   onChangeStorage() {
     this.dataSubjectStorage.pipe(debounceTime(700))
       .subscribe((res) => {
-        if (this.storage % this.stepStorage > 0) {
+        if (res % this.stepStorage > 0) {
           this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
-          this.storage = this.storage - (this.storage % this.stepStorage);
+          this.storage = res - (res % this.stepStorage);
         }
       });
   }

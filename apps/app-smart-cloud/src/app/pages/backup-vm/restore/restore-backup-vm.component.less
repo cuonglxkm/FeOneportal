@@ -1,0 +1,210 @@
+@import '@delon/theme/index';
+
+:host ::ng-deep {
+    .ant-carousel {
+      .slick-dots {
+        bottom: -10px;
+  
+        button {
+          background: @grey-10;
+        }
+  
+        .slick-active button {
+          background: @primary-color;
+        }
+      }
+    }
+  }
+  
+  nz-form-label.ant-form-item-label {
+    font-weight: 500;
+  }
+  
+  .pb-1 {
+    padding: 14px 250px 14px 0px;
+  }
+  
+  .fw-400 {
+    font-weight: 400;
+  }
+  
+  .fw-600 {
+    font-weight: 600;
+  }
+  
+  i {
+    cursor: pointer;
+  }
+  
+  .flavor-card {
+    display: flex;
+    padding: 14px 55px 52px 36px;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .flavor-body {
+    border-radius: 4px;
+    background-color: #e6f3fc;
+  }
+  
+  .flavor-body-active {
+    border-radius: 10px;
+    border: 1px solid #1890ff;
+  }
+  
+  /* app.component.css */
+  .initialClassFlavor {
+    color: #fff;
+    background-color: #0066b3 !important;
+    border-color: #0066b3 !important;
+    width: 100%;
+  }
+  
+  .newClassFlavor {
+    background-color: #e6f3fc;
+    border-color: #e6f3fc;
+    width: 100%;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px 4px 0 0;
+  }
+  
+  .flavor-footer {
+    color: #2b2d3b;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0.10000000149011612px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 4px 4px;
+  }
+  
+  .flavor-footer-active {
+    color: #2b2d3b;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0.10000000149011612px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 4px 4px;
+  }
+  
+  .bgGray {
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .nameFlavor {
+    color: #0066b3;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 36px;
+    letter-spacing: 0.10000000149011612px;
+    text-align: center;
+  }
+  
+  .initialNameFlavor {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 36px;
+    letter-spacing: 0.10000000149011612px;
+    text-align: center;
+  }
+  
+  .priceFlavor {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 30px;
+    letter-spacing: 0.10000000149011612px;
+    text-align: left;
+  }
+  
+  .myPoint {
+    list-style-type: none;
+    text-align: center;
+    padding: 12px;
+    margin: 0;
+    white-space: nowrap;
+    overflow: auto;
+    box-sizing: border-box;
+    li {
+      display: inline-block;
+      border-radius: 50%;
+      border: 2px solid rgb(12, 116, 219);
+      padding: 4px;
+      margin: 0 3px;
+      transition-timing-function: cubic-bezier(0.17, 0.67, 0.83, 0.67);
+      transition: 0.4s;
+      cursor: pointer;
+      &.active {
+        background: #0c41db;
+        transform: scale(1.2);
+      }
+    }
+  }
+  
+  table.custom-table {
+    border-collapse: collapse;
+    cursor: pointer;
+  }
+  
+  .text-custom {
+    color: #555;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%; /* 19.6px */
+  }
+  
+  .page-header-custom {
+    color: #2b2d3b;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 40px;
+    letter-spacing: 0.1px;
+    text-align: left;
+  }
+  
+  .text-custom-time {
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0.10000000149011612px;
+    text-align: left;
+  }
+  
+  .text-custom-price {
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.10000000149011612px;
+    text-align: left;
+  }
+  
+  .text-value-detail {
+    color: #2b2d3b;
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0.10000000149011612px;
+    text-align: left;
+  }
+  
+  .custom-div {
+    padding: 10px 8px 10px 8px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    background-color: #e2e2e9;
+    border-radius: 8px;
+  }
+  

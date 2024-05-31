@@ -7,7 +7,9 @@
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
   </ng-template>
 
   <ng-template #action>
@@ -43,7 +45,8 @@
                      nz-input
                      [placeholder]="'app.service.search-text'|i18n"
                      [(ngModel)]="value"
-                     (input)="onInputChange($event.target['value'])" />
+                     (input)="changeInputChange($event)"
+                     (keydown.enter)="onEnter($event)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img src="assets/imgs/search.svg"
@@ -95,15 +98,9 @@
             <td nzBreakWord *ngIf="typeVPC==0">{{ data.backupPackageName }}</td>
             <td nzBreakWord>{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
             <td nzBreakWord>{{ data.expirationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
-            <td nzBreakWord>
-              <div class="status" [ngSwitch]="data.status">
-                <span class="available" *ngSwitchCase="'AVAILABLE'">{{ 'app.status.running'|i18n }}</span>
-                <span class="suspended" *ngSwitchCase="'SUSPENDED'">{{ 'app.status.suspend'|i18n }}</span>
-                <span class="available" *ngSwitchCase="'CREATING'">{{ 'app.status.init'|i18n }}</span>
-                <span class="suspended" *ngSwitchCase="'DELETING'">{{ 'app.status.deleting'|i18n }}</span>
-                <span class="error" *ngSwitchCase="'ERROR'">{{ 'app.status.error'|i18n }}</span>
-              </div>
-            </td>
+            <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+              <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
+            </ng-container>
             <td nzBreakWord>
               <span *ngIf="data.serviceStatus === 'KHOITAO'">-</span>
               <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>
@@ -135,7 +132,7 @@
                                                [backupName]="data.name"
                                                (onOk)="handleOkDelete()" />
                 </div>
-                <div *ngIf="data.status.includes('AVAILABLE') && data.serviceStatus.includes('ERROR')">
+                <div *ngIf="data.status.includes('ERROR')">
                   <one-portal-delete-backup-vm [region]="region"
                                                [project]="project"
                                                [idBackup]="data.id"
@@ -167,7 +164,7 @@
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'"
-                  (click)="navigateToCreateBackup()"  nzSize="large">
+                  (click)="navigateToCreateBackup()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             {{ 'app.backup.vm.button.create'|i18n }}
           </button>

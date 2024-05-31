@@ -4,7 +4,7 @@ import { PackageBackupService } from '../../../shared/services/package-backup.se
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NonNullableFormBuilder } from '@angular/forms';
-import { PackageBackupModel } from '../../../shared/models/package-backup.model';
+import { PackageBackupModel, ServiceInPackage } from '../../../shared/models/package-backup.model';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { FormDeleteFileSystem } from '../../../shared/models/file-system.model';
@@ -24,9 +24,11 @@ export class DeleteBackupPackageComponent implements AfterViewInit{
   isVisible: boolean = false
   isLoading: boolean = false
 
-  value: string;
+  value: string = '';
 
   isInput: boolean = false;
+
+  serviceInBackupPackage: ServiceInPackage = new ServiceInPackage();
 
   @ViewChild('backupPackageInputName') backupPackageInputName!: ElementRef<HTMLInputElement>;
 
@@ -63,6 +65,8 @@ export class DeleteBackupPackageComponent implements AfterViewInit{
   handleCancel() {
     this.isVisible = false;
     this.isLoading = false;
+    this.value = '';
+    this.isInput = false
     this.onCancel.emit();
   }
 
@@ -80,9 +84,16 @@ export class DeleteBackupPackageComponent implements AfterViewInit{
 
   showModal() {
     this.isVisible = true;
+    this.getServiceFromPackage();
     setTimeout(() => {
       this.backupPackageInputName?.nativeElement.focus();
     }, 1000);
+  }
+
+  getServiceFromPackage() {
+    this.packageBackupService.getServiceInPackage(this.packageBackupModel?.id).subscribe(data => {
+      this.serviceInBackupPackage = data
+    })
   }
   ngAfterViewInit() {
     this.backupPackageInputName?.nativeElement.focus();

@@ -59,6 +59,9 @@ export class VpcService extends BaseService {
   getDetail(id: any): Observable<VpcModel> {
     return this.http.get<VpcModel>(this.baseUrl + this.ENDPOINT.provisions + '/vpcs/' + id);
   }
+  getDetailTest(): Observable<VpcModel> {
+    return this.http.get<VpcModel>(this.baseUrl + this.ENDPOINT.provisions + '/vpcs/182');
+  }
 
   getTotalResouce(id: any): Observable<TotalVpcResource> {
     return this.http.get<TotalVpcResource>(this.baseUrl + this.ENDPOINT.provisions + '/projects/' + id);
