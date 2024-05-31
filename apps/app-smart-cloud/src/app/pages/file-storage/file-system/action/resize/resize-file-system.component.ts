@@ -78,6 +78,8 @@ export class ResizeFileSystemComponent implements OnInit {
     const value = control.value;
     if (this.storageRemaining < value) {
       return { notEnough: true };
+    } else if(this.storageRemaining == 0) {
+      return { outOfStorage: true };
     } else {
       return null;
     }
@@ -185,6 +187,8 @@ export class ResizeFileSystemComponent implements OnInit {
       this.quotaShareInGb = data.cloudProject?.quotaShareInGb;
       this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
       this.storageRemaining =  data.cloudProject?.quotaShareInGb - data.cloudProjectResourceUsed?.quotaShareInGb
+      this.validateForm.controls.storage.markAsDirty()
+      this.validateForm.controls.storage.updateValueAndValidity()
       this.getFileSystemById(this.idFileSystem);
       this.onChangeStorage();
       this.getConfigurations();
