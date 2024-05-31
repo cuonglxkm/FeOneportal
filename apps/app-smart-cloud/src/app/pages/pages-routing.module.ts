@@ -140,7 +140,6 @@ import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/exte
 import { PermissionGuard } from '../shared/guard/PermissionGuard';
 import { CreateBackupVmNormalComponent } from './backup-vm/create/no-vpc/create-backup-vm-normal.component';
 import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup-vm-vpc.component';
-import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { NetworkTopologyComponent } from './network-topology/network-topology.component';
 import {
   CreateBackupVolumeVpcComponent
@@ -151,6 +150,7 @@ import {
 import { SslCertListComponent } from './ssl-cert/ssl-cert-list.component';
 import { CreateSslCertComponent } from './ssl-cert/create/create-ssl-cert.component';
 import { ExtendFileSystemSnapshotComponent } from './file-system-snapshot/extend-file-system-snapshot/extend-file-system-snapshot.component';
+import { RestoreBackupVmComponent } from './backup-vm/restore-backup-vm/restore-backup-vm.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
