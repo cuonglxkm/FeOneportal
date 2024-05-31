@@ -184,7 +184,7 @@ export class CreateVolumeComponent implements OnInit {
       this.valueString = data.valueString;
       this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
       this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
-      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2]) - (this.maxStorage % this.stepStorage)
     })
   }
 

@@ -311,7 +311,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
       const arr = this.valueStringConfiguration.split('#')
       this.minStorage = Number.parseInt(arr[0])
       this.stepStorage = Number.parseInt(arr[1])
-      this.maxStorage = Number.parseInt(arr[2])
+      this.maxStorage = Number.parseInt(arr[2]) - (this.maxStorage % this.stepStorage)
     })
   }
 
