@@ -98,15 +98,9 @@
             <td nzBreakWord *ngIf="typeVPC==0">{{ data.backupPackageName }}</td>
             <td nzBreakWord>{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
             <td nzBreakWord>{{ data.expirationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
-            <td nzBreakWord>
-              <div class="status" [ngSwitch]="data.status">
-                <span class="available" *ngSwitchCase="'AVAILABLE'">{{ 'app.status.running'|i18n }}</span>
-                <span class="suspended" *ngSwitchCase="'SUSPENDED'">{{ 'app.status.suspend'|i18n }}</span>
-                <span class="available" *ngSwitchCase="'CREATING'">{{ 'app.status.init'|i18n }}</span>
-                <span class="suspended" *ngSwitchCase="'DELETING'">{{ 'app.status.deleting'|i18n }}</span>
-                <span class="error" *ngSwitchCase="'ERROR'">{{ 'app.status.error'|i18n }}</span>
-              </div>
-            </td>
+            <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+              <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
+            </ng-container>
             <td nzBreakWord>
               <span *ngIf="data.serviceStatus === 'KHOITAO'">-</span>
               <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>

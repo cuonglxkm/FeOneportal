@@ -151,6 +151,9 @@ import {
 import { SslCertListComponent } from './ssl-cert/ssl-cert-list.component';
 import { CreateSslCertComponent } from './ssl-cert/create/create-ssl-cert.component';
 import { ExtendFileSystemSnapshotComponent } from './file-system-snapshot/extend-file-system-snapshot/extend-file-system-snapshot.component';
+import {
+  RestoreBackupVolumeComponent
+} from './volume/component/backup-volume/restore-backup-volume/restore-backup-volume.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
@@ -193,7 +196,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'volume/edit/:id',
+    path: 'volume/extend/:id',
     component: EditVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -366,6 +369,14 @@ const routes: Routes = [
       permission: 'backup:Get'
     }
 
+  },
+  {
+    path: 'backup-volume/restore/:id',
+    component: RestoreBackupVolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:Get'
+    }
   },
   {
     path: 'backup-volume',
