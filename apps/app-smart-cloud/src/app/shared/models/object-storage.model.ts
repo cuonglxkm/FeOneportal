@@ -20,7 +20,7 @@ export class ObjectStorage {
   statusDisplay: string;
 }
 export class ObjectStorageCreate {
-  quota: number = 0;
+  quota: number = 1;
   customerId: number;
   userEmail: any;
   actorEmail: any;
@@ -67,7 +67,7 @@ export class ObjectStorageExtend {
 }
 
 export class ObjectStorageResize {
-  newQuota: number = 0;
+  newQuota: number;
   newOfferId: number;
   serviceType: number;
   actionType: number;

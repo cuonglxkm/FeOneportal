@@ -18,12 +18,13 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import { NzUploadFile } from 'ng-zorro-antd/upload/interface';
-import { forkJoin, of } from 'rxjs';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { forkJoin, of, Subject } from 'rxjs';
+import { catchError, debounceTime, finalize, map } from 'rxjs/operators';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { ObjectObjectStorageModel } from '../../../shared/models/object-storage.model';
 import { BucketService } from '../../../shared/services/bucket.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -72,7 +73,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   lstFileUpdate: NzUploadFile[] = [];
   isLoadingDeleteObjects: boolean = false;
-
+  searchDelay = new Subject<boolean>();
 
   setOfCheckedId = new Set<string>();
   form = new FormGroup({
@@ -86,7 +87,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   indeterminate = false;
   countObjectSelected = 0;
   nameFolder = '';
-  folderNameLike = '';
+  value = '';
   pageSize: number;
   pageIndex: number;
   treeFolder = [];
@@ -155,9 +156,18 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           : [],
     };
   };
+
+  search(search: string) {  
+    this.value = search.trim();
+    this.loadData();
+  }
+
   ngOnInit(): void {
     this.loadBucket();
     this.loadData();
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+      this.loadData();
+    });
   }
 
   onPageSizeChange(event: any) {
@@ -343,7 +353,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.service
       .getData(
         this.activatedRoute.snapshot.paramMap.get('name'),
-        this.currentKey + this.folderNameLike,
+        this.currentKey + this.value.trim(),
         this.filterQuery,
         this.tokenService.get()?.userId,
         '',

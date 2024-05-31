@@ -106,7 +106,7 @@
             <ng-template #titleDescription>
               <span class="text-label">{{ 'volume.table.title.description'|i18n }}:</span>
             </ng-template>
-            <one-portal-time-used-resize [expireDate]="volumeInfo?.expirationDate" [createDate]="volumeInfo?.creationDate"/>
+            <one-portal-time-used-resize [nameService]="'Volume'" [expireDate]="volumeInfo?.expirationDate" [createDate]="volumeInfo?.creationDate"/>
           </nz-card>
           <nz-card style="border-radius: 8px;">
             <span class="text-card-header">{{'app.adjust.info'|i18n}}</span>

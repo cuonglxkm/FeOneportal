@@ -137,7 +137,7 @@
                 <span style="color: #ea3829"
                   >Ngày khởi tạo:
                   {{
-                    fileSystemSnapshotDetail?.createTime | date : 'dd/MM/yyyy'
+                    fileSystemSnapshotDetail?.createTime | date : 'dd/MM/yyyy HH:mm:ss'
                   }}
                 </span>
               </nz-form-label>
@@ -147,7 +147,7 @@
                 <span style="color: #ea3829"
                   >{{ 'app.service.expiration-date' | i18n }}:
                   {{
-                    fileSystemSnapshotDetail?.expireDate | date : 'dd/MM/yyyy'
+                    fileSystemSnapshotDetail?.expireDate | date : 'dd/MM/yyyy HH:mm:ss'
                   }}</span
                 >
               </nz-form-label>
@@ -193,7 +193,7 @@
                   >{{ 'app.expected.expiry.date' | i18n }}:
                   {{
                     orderItem?.orderItemPrices[0].expiredDate
-                      | date : 'dd/MM/yyyy'
+                      | date : 'dd/MM/yyyy HH:mm:ss'
                   }}
                 </span>
               </nz-form-label>
