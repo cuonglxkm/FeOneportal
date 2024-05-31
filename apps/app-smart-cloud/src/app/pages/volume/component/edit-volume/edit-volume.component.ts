@@ -143,7 +143,7 @@ export class EditVolumeComponent implements OnInit {
           serviceDuration: this.expiryTime
         }
       ];
-      var returnPath: string = '/app-smart-cloud/volume/extend/' + this.volumeId;
+      var returnPath: string = '/app-smart-cloud/volume/edit/' + this.volumeId;
       console.log('request', request);
       this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
     }
