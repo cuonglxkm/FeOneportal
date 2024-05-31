@@ -410,7 +410,7 @@
               <nz-col style="width: 100%">
                 <button style="width: 100%" nz-button nzSize="large" nzType="primary"
                         (click)="navigateToPaymentSummary()"
-                        [disabled]="validateForm.invalid">
+                        [disabled]="validateForm.invalid || (validateForm.controls.storage.value == 0)">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                   <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
                 </button>

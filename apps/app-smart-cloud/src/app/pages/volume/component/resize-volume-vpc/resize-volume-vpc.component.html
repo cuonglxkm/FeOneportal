@@ -141,7 +141,7 @@
                                  nzAutoFocus
                                  [nzMin]="minStorage"
                                  [nzStep]="stepStorage"
-                                 [nzMax]="maxStorage"
+                                 [nzMax]="remaining"
                                  (ngModelChange)="changeValueStorage($event)"/>
                 <ng-template #storageErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.storage.vpc.required'|i18n }}</ng-container>
