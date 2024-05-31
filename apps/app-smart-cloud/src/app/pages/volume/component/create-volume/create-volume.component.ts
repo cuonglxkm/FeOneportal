@@ -373,7 +373,13 @@ export class CreateVolumeComponent implements OnInit {
   unitPrice = 0;
 
 
-  changeValueInput() {
+
+
+  changeValueStorage(value) {
+    this.dataSubjectStorage.next(value);
+  }
+
+  onChangeValueStorage() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
         if((res % this.stepStorage) > 0) {
@@ -383,10 +389,6 @@ export class CreateVolumeComponent implements OnInit {
         console.log('total amount');
         this.getTotalAmount();
       });
-  }
-
-  changeValueStorage(value) {
-    this.dataSubjectStorage.next(value);
   }
 
   navigateToPaymentSummary() {
@@ -416,7 +418,6 @@ export class CreateVolumeComponent implements OnInit {
 
   getTotalAmount() {
     this.volumeInit();
-
     console.log('time', this.timeSelected);
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -443,7 +444,7 @@ export class CreateVolumeComponent implements OnInit {
     // this.customerId = this.tokenService.get()?.userId
     this.getConfiguration();
 
-    this.changeValueInput();
+    this.onChangeValueStorage();
 
     this.getListSnapshot();
     this.getListInstance();
