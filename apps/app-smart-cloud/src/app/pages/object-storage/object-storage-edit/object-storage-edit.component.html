@@ -104,9 +104,9 @@
           <nz-form-control>
             <nz-input-number
               style="width: 100%; margin-left: 0px"
-              [nzMin]="1"
-              [nzMax]="1000"
-              [nzStep]="1"
+              [nzMin]="minStorage" 
+              [nzStep]="stepStorage"
+              [nzMax]="maxStorage"
               [(ngModel)]="addQuota"
               (ngModelChange)="changeTotalAmount($event)"
               [ngModelOptions]="{ standalone: true }"
