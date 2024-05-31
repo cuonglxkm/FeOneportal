@@ -900,7 +900,7 @@
   "app.file.system.access.to.create.fail": "Tạo mới access rule thất bại. ",
   "app.file.system.access.to.delete.success": "Xóa access rule thành công",
   "app.file.system.access.to.delete.fail": "Xóa access rule thất bại",
-  "app.file.system.access.to.delete.file.success": "Xóa File System thành công",
+  "app.file.system.access.to.delete.file.success": "Gửi yêu cầu xóa File System thành công",
   "app.file.system.access.to.delete.file.fail": "Xóa File System thất bại",
 
   "app.file.system.placeholder.search": "Tìm kiếm theo tên",
