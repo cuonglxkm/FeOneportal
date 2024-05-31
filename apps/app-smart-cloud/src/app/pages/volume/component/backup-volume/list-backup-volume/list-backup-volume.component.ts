@@ -142,20 +142,20 @@ export class ListBackupVolumeComponent implements OnInit{
       this.notificationService.initiateSignalrConnection();
     }
 
-    this.notificationService.connection.on('UpdateVolume', (data) => {
-      if (data) {
-        let volumeId = data.serviceId;
-
-        var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
-        if (foundIndex > -1) {
-          var record = this.response.records[foundIndex];
-
-          record.status = data.status;
-          record.serviceStatus = data.serviceStatus;
-
-          this.response.records[foundIndex] = record;
-          this.cdr.detectChanges();
-        }
+    this.notificationService.connection.on('UpdateVolumeBackup', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case "CREATING":
+          case "CREATED":
+          case "RESIZING":
+          case "RESIZED":
+          case "EXTENDING":
+          case "EXTENDED":
+          case "DELETING":
+          case "DELETED":
+            this.getListBackupVolumes(false);
+          break;
+          }
       }
     });
 

@@ -128,7 +128,9 @@ export class BucketListComponent implements OnInit {
     ]);
   }
 
-  deleteObjectStorage() {}
+  deleteObjectStorage() {
+    
+  }
 
   isVisibleDeleteBucket: boolean = false;
   bucketDeleteName: string;

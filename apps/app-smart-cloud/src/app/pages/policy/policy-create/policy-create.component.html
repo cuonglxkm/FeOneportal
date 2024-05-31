@@ -6,9 +6,15 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/policy']">{{"app.breadcrumb.account"|i18n}}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/policy']">IAM</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/policy']">Polices</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> {{ 'app.breadcrumb.create-policy' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.create-policy' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
@@ -21,16 +27,10 @@
   </ng-template>
 
   <ng-template #content>
-    <nz-steps [nzCurrent]="currentStep" style="width: 55%; margin: 0 auto;" class="step-policy">
-      <nz-step  [nzDescription]="'app.create-policy.step1.title' | i18n"
-        style="width:900px"></nz-step>
-      <nz-step 
-        [nzDescription]="'app.create-policy.step2.title' | i18n"></nz-step>
+    <nz-steps [nzCurrent]="currentStep" style="width: 55%; margin: 0 auto;" >
+      <nz-step  [nzTitle]="'app.create-policy.step1.title' | i18n"></nz-step>
+      <nz-step  [nzTitle]="'app.create-policy.step2.title' | i18n"></nz-step>
     </nz-steps>
-
-
-    
-
   </ng-template>
 </page-header>
 
@@ -38,26 +38,23 @@
   <ng-container *ngSwitchCase=0>
     <!--BƯỚC 1-->
     <nz-card>
-      <div nz-row class="mb-md">
-        <div nz-col nzSpan="18">
+      <div nz-row nzJustify="space-between">
+        <div>
           <div class="text-card-header">Policy editor</div>
-          <p style="color: #888;" class="label-fontsize">{{ 'app.create-policy.editor.des' | i18n }}</p>       
-          <div style="display: flex;align-items: center">
+          <p style="color: #888;" class="label-fontsize">{{ 'app.create-policy.editor.des' | i18n }}</p>
+        </div>
+        <div style="display: flex;align-items: center">
             <button (click)="visualOption(1)" nz-button nzType="primary" nzSize="large" style="
             border-color: #0066B3; width: 140px;height: 40px; " [style.background-color]=" isVisual ? '#0066B3' : 'white'">
               <span [style.color]="isVisual ? 'white' : '#0066B3'">Visual</span>
             </button>
             <button (click)="visualOption(2)" nz-button nzType="primary" nzSize="large" style="
             border-color: #0066B3;
-           
+
              width: 140px;
               height: 40px; " [style.background-color]="  isVisual ? 'white' : '#0066B3'">
               <span [style.color]="isVisual ? '#0066B3' : 'white'">Json</span>
             </button>
-          </div>
-        </div>
-        <div nz-col nzSpan="6">
-
         </div>
       </div>
     </nz-card>
@@ -67,17 +64,16 @@
         <nz-card *ngFor="let serviceItem of serviceArray" style="position: relative;">
           <button (click)="deleteService(serviceItem)" nz-button nzType="default"
             style="z-index: 1;position: absolute; right: 30px; top: 30px;">
+<!--            <img style="height: 32px;" src="assets/imgs/delete.svg"/>-->
             <i nz-icon nzType="delete"></i><span nz-icon nzTheme="outline"></span>
           </button>
           <nz-collapse [nzGhost]="true">
-            <nz-collapse-panel [nzHeader]="serviceItem.serviceName || ('app.create-policy.chooseService' | i18n)"
-              [nzActive]="false">
+            <nz-collapse-panel [nzHeader]="serviceItem.serviceName || ('app.create-policy.chooseService' | i18n)" [nzActive]="false">
               <div style=" display: flex; align-items: center; justify-content: space-between;">
                 <p *ngIf="!serviceItem.isVisualTablePermiss" style="color: #888;">{{
                   'app.create-policy.isNotVisualTablePermiss' | i18n }}</p>
                 <p *ngIf="serviceItem.isVisualTablePermiss" style="color: #888;">{{
                   'app.create-policy.isVisualTablePermiss' | i18n }}</p>
-                <!--                              {{JSON.stringify(serviceArray)}}-->
               </div>
               <div *ngIf="serviceItem.serviceName === null">
                 <div class="text-card-header">{{ 'app.create-policy.chooseService' | i18n }}</div>
@@ -139,11 +135,10 @@
 
 
   <ng-container *ngSwitchCase=1>
-    <!--    Bước 2-->
+    <!--Bước 2-->
     <form #myForm="ngForm" nz-form [formGroup]="form" [nzLayout]="'vertical'">
       <nz-card>
-        <h2>{{'app.create-policy.copyJson' | i18n}}</h2>
-        <hr style="opacity: 0.5px;">
+        <div class="text-card-header">{{'app.create-policy.copyJson' | i18n}}</div>
         <h3 style=" font-weight: normal; margin-top: 20px">Tên của policy<span nz-typography nzType="danger"
             style="color: red">*</span></h3>
         <nz-form-item>
@@ -164,9 +159,8 @@
         </nz-form-item>
       </nz-card>
       <nz-card>
-        <h2>{{'app.create-policy.permisstionInfo' | i18n}}</h2>
-        <hr style="opacity: 0.5px; margin-bottom: 25px">
-        <nz-input-group style="margin-right: 8px; width: 40%; margin-bottom: 10px" [nzSuffix]="suffixIconSearch"
+        <div class="text-card-header">{{'app.create-policy.permisstionInfo' | i18n}}</div>
+        <nz-input-group style="margin-right: 8px; width: 40%; margin-bottom: 10px; margin-top: 20px" [nzSuffix]="suffixIconSearch"
           nzSize="large">
           <input #searchBox type="text" nz-input [placeholder]="'app.users.search' | i18n"
             (keyup.enter)="search(searchBox.value, true)" />
@@ -200,9 +194,7 @@
           "> <span style="color:#0066B3">{{'app.button.back' | i18n}}</span>
         </button>
         <button *ngIf="currentStep==1" [disabled]="form.invalid" nzSize="large" (click)="createPolicy()" nz-button
-          nzType="primary" style="
-            border: none;
-          ">{{'app.button.confirm' | i18n}}
+          nzType="primary" style="border: none;">{{'app.button.confirm' | i18n}}
         </button>
       </div>
     </form>

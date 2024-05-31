@@ -135,7 +135,7 @@
                                                [backupName]="data.name"
                                                (onOk)="handleOkDelete()" />
                 </div>
-                <div *ngIf="data.status.includes('AVAILABLE') && data.serviceStatus.includes('ERROR')">
+                <div *ngIf="data.status.includes('ERROR')">
                   <one-portal-delete-backup-vm [region]="region"
                                                [project]="project"
                                                [idBackup]="data.id"

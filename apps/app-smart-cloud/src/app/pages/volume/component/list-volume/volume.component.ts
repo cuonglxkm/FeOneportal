@@ -261,8 +261,12 @@ export class VolumeComponent implements OnInit, OnDestroy {
       if (message) {
         switch (message.actionType) {
           case "CREATING":
-          case "RESIZED":
           case "CREATED":
+          case "RESIZING":
+          case "RESIZED":
+          case "EXTENDING":
+          case "EXTENDED":
+          case "DELETING":
           case "DELETED":
             this.getListVolume(true);
           break;

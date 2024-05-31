@@ -115,7 +115,7 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>VPN Service</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
@@ -145,7 +145,7 @@
           <nz-form-item >
             <nz-form-control [nzErrorTip]="peerRemoteIdErrorTpl">
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>Peer Remote IP VPN Gateway</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
@@ -179,7 +179,7 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>Local System Subnet</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
@@ -209,7 +209,7 @@
           <nz-form-item >
             <nz-form-control  [nzErrorTip]="peerIdErrorTpl">
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>Peer ID VPN Connections</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
@@ -243,7 +243,7 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>IKE Policy</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
@@ -273,7 +273,7 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>Remote Local Subnet</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
@@ -302,7 +302,7 @@
           <nz-form-item>
             <nz-form-control [nzErrorTip]="preShareKeyErrorTpl">
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>Pre - Shared Key (PSK) string</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
@@ -357,15 +357,15 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IKE Policy</h3>
-          <span>{{vpnConnection.ikepolicy}}</span>
+          <span class="text-break">{{vpnConnection.ikepolicy}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IPsec Policy</h3>
-          <span>{{vpnConnection.ipSecPolicy}}</span>
+          <span class="text-break">{{vpnConnection.ipSecPolicy}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">VPN Service</h3>
-          <span>{{vpnConnection.vpnService}}</span>
+          <span class="text-break">{{vpnConnection.vpnService}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Peer Remote IP VPN Gateway</h3>
