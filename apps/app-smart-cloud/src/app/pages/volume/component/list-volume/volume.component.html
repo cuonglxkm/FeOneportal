@@ -316,7 +316,7 @@
             </td>
             <td>
               <div
-                *ngIf="!(i.serviceStatus == 'CREATING' || i.serviceStatus == 'ERROR' || i.serviceStatus == 'ATTACHING' || i.serviceStatus == 'DELETING' || i.serviceStatus == 'ERROR_DELETING' || data.serviceStatus == 'RESIZING')">
+                *ngIf="!(i.serviceStatus == 'CREATING' || i.serviceStatus == 'ERROR' || i.serviceStatus == 'ATTACHING' || i.serviceStatus == 'DELETING' || i.serviceStatus == 'ERROR_DELETING' || i.serviceStatus == 'RESIZING')">
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="i.id"
