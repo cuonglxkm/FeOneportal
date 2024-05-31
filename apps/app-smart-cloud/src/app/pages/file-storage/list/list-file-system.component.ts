@@ -235,9 +235,8 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
       console.log(data);
     });
 
-    this.notificationService.connection.on('UpdateFileStorage', (message) => {
+    this.notificationService.connection.on('UpdateStateFileStorage', (message) => {
       debugger
-      console.log("khai10diem", message);
       if (message) {
         switch (message.actionType) {
           case "CREATING":
@@ -245,6 +244,8 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
           case "CREATED":
           case "UPDATE":
           case "DELETED":
+          case "EXTENDING":
+          case "DELETING":
             this.getListFileSystem(true);
           break;
           //case "CREATED":
