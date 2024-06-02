@@ -100,31 +100,15 @@ export class InstancesComponent implements OnInit {
     }
 
     this.notificationService.connection.on('UpdateInstance', (data) => {
-      debugger
       if (data) {
         let instanceId = data.serviceId;
         let actionType = data.actionType;
         var taskState = data?.data?.taskState ?? "";
         var flavorName = data?.data?.flavorName ?? "";
-        var foundIndex = this.dataList.findIndex((x) => x.id == instanceId);
-        if (!instanceId) {
-          return;
-        }
+
         var foundIndex = this.dataList.findIndex((x) => x.id == instanceId);
         if (foundIndex > -1) {
           switch (actionType) {
-            case 'CREATE':
-              var record = this.dataList[foundIndex];
-
-              record.status = data.status;
-              record.taskState = data.taskState;
-              record.ipPrivate = data.ipPrivate;
-              record.ipPublic = data.ipPublic;
-
-              this.dataList[foundIndex] = record;
-              this.cdr.detectChanges();
-              break;
-
             case 'SHUTOFF':
             case 'START':
             case 'REBOOTING':
@@ -132,7 +116,6 @@ export class InstancesComponent implements OnInit {
             case 'REBOOT':
               this.updateRowState(taskState, foundIndex);
               break;
-
             case 'RESIZING':
               this.updateRowState(taskState, foundIndex);
               break;
@@ -157,6 +140,15 @@ export class InstancesComponent implements OnInit {
                 this.updateRowState(taskState, foundIndex);
             case 'DELETED':
                 this.reloadTable();
+          }
+        }
+        else
+        {
+          switch (actionType) {
+            case 'CREATING':
+            case 'CREATED':
+              this.getDataList();
+            break;
           }
         }
       }
