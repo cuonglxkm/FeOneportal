@@ -38,10 +38,10 @@ export class EditBackupPackageComponent implements OnInit {
   });
 
   isLoading: boolean = true;
-  packageBackupModel: PackageBackupModel = new PackageBackupModel();
+  packageBackupModel: PackageBackupModel;
   isLoadingButton: boolean = false;
 
-  storage: number;
+  storage: number = 0;
 
   resizeDate: Date;
 
@@ -107,8 +107,8 @@ export class EditBackupPackageComponent implements OnInit {
       this.isLoading = false;
       console.log('data', data);
       this.packageBackupModel = data;
-      this.storage = this.packageBackupModel?.sizeInGB;
-      this.validateForm.controls.storage.setValue(this.packageBackupModel?.sizeInGB);
+      // this.storage = this.packageBackupModel?.sizeInGB;
+      // this.validateForm.controls.storage.setValue(this.packageBackupModel?.sizeInGB);
       // this.getTotalAmount();
     }, error => {
       this.isLoading = false;
@@ -121,7 +121,8 @@ export class EditBackupPackageComponent implements OnInit {
 
   backupPackageInit() {
     this.formUpdateBackupPackageModel.packageName = this.packageBackupModel.packageName;
-    if(this.formUpdateBackupPackageModel.newSize != null) {
+    console.log('size', this.packageBackupModel.sizeInGB)
+    if(this.packageBackupModel?.sizeInGB != null) {
       this.formUpdateBackupPackageModel.newSize = this.storage + this.packageBackupModel?.sizeInGB
     } else {
       this.formUpdateBackupPackageModel.newSize = this.storage
