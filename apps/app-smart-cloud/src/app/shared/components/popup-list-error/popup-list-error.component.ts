@@ -1,8 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 
 @Component({
@@ -11,16 +13,13 @@ import {
   styleUrls: ['./popup-list-error.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PopupListErrorComponent implements OnInit {
+export class PopupListErrorComponent {
   @Input() isVisible: boolean = false;
-  @Input() errorStr: string = '';
-  errorList: string[] = [];
-
-  ngOnInit(): void {
-    this.errorList = this.errorStr.split(', ');
-  }
+  @Input() errorList: string[] = [];
+  @Output() onCancel = new EventEmitter();
 
   handleCancel() {
     this.isVisible = false;
+    this.onCancel.emit();
   }
 }

@@ -1172,3 +1172,8 @@
     </button>
   </div>
 </nz-modal>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>
