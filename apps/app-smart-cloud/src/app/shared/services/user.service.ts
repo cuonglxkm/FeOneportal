@@ -48,6 +48,24 @@ export class UserService extends BaseService {
     );
   }
 
+  getUserById(id: number): Observable<any> {
+    let url_ = `/users/${id}`;
+
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.users + url_,
+      this.httpOptions
+    );
+  }
+
+  getCustomerGroup(): Observable<any> {
+    let url_ = `/customer-group`;
+
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.users + url_,
+      this.httpOptions
+    );
+  }
+
   createOrUpdate(data: any): Observable<any> {
     let url_ = `/users`;
     url_ = url_.replace(/[?&]$/, '');
