@@ -47,10 +47,11 @@
                      nz-input
                      placeholder="{{'app.placeholder.search' | i18n}}"
                      [(ngModel)]="value"
-                     (input)="onInputChange($event.target['value'])"/>
+                     (ngModelChange)="searchDelay.next(false)"
+                     (keydown.enter)="this.getListScheduleBackup(false)"/>
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{'menu.search' | i18n}}" />
+              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"/>
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">

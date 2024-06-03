@@ -12,6 +12,7 @@ export class OrderItemPrices {
     amount: number
     currency: string
   }
+  unitPricePerHour: UnitPricePerHour
 }
 
 export class TotalAmount {
@@ -20,6 +21,10 @@ export class TotalAmount {
 }
 
 export class UnitPrice {
+  amount: number
+  currency: string
+}
+export class UnitPricePerHour {
   amount: number
   currency: string
 }
@@ -35,6 +40,15 @@ export class TotalVAT {
 }
 
 export class OrderItem {
+  orderItemPrices: OrderItemPrices[]
+  totalAmount: TotalAmount
+  currentVAT: number
+  totalVAT: TotalVAT
+  totalPayment: TotalPayment
+
+}
+
+export class OrderItemObject {
   orderItemPrices: OrderItemPrices[]
   totalAmount: TotalAmount
   currentVAT: number

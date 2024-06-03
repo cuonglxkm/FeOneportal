@@ -39,7 +39,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { Subject, debounceTime } from 'rxjs';
-import { addDays } from 'date-fns';
+import { addDays, isValid } from 'date-fns';
 import {
   FormSearchNetwork,
   NetWorkModel,
@@ -49,10 +49,8 @@ import { VlanService } from 'src/app/shared/services/vlan.service';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
-interface InstancesForm {
-  name: FormControl<string>;
-}
 class ConfigCustom {
   //cấu hình tùy chỉnh
   vCPU?: number = 0;
@@ -93,7 +91,6 @@ class Network {
   animations: [slider],
 })
 export class InstancesCreateComponent implements OnInit {
-  largeSeparator: string = '<span class="separator large">»</span>';
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
@@ -157,7 +154,8 @@ export class InstancesCreateComponent implements OnInit {
     private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver,
-    private vlanService: VlanService
+    private vlanService: VlanService,
+    private configurationService: ConfigurationsService
   ) {}
 
   @ViewChild('nameInput') firstInput: ElementRef;
@@ -232,6 +230,8 @@ export class InstancesCreateComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getVolumeUnitMoney();
+    this.getConfigurations();
     this.initIpSubnet();
     this.initFlavors();
     this.getListGpuType();
@@ -847,19 +847,36 @@ export class InstancesCreateComponent implements OnInit {
       });
   }
 
+  minCapacity: number;
+  maxCapacity: number;
+  stepCapacity: number;
+  getConfigurations() {
+    this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
+      next: (data) => {
+        let valueArray = data.valueString.split('#');
+        this.minCapacity = valueArray[0];
+        this.stepCapacity = valueArray[1];
+        this.maxCapacity = valueArray[2];
+      },
+    });
+  }
+
   dataSubjectCapacity: Subject<any> = new Subject<any>();
   changeCapacity(value: number) {
     this.dataSubjectCapacity.next(value);
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
-      if (this.configCustom.capacity % 10 > 0) {
+      if (this.configCustom.capacity % this.stepCapacity > 0) {
         this.notification.warning(
           '',
-          this.i18n.fanyi('app.notify.amount.capacity')
+          this.i18n.fanyi('app.notify.amount.capacity', {
+            number: this.stepCapacity,
+          })
         );
         this.configCustom.capacity =
-          this.configCustom.capacity - (this.configCustom.capacity % 10);
+          this.configCustom.capacity -
+          (this.configCustom.capacity % this.stepCapacity);
       }
       this.getUnitPrice(1, 0, 0, 0, null);
       if (
@@ -1657,7 +1674,7 @@ export class InstancesCreateComponent implements OnInit {
     let id: number, value: any;
     this.dataBSSubject
       .pipe(
-        debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+        debounceTime(0) //
       )
       .subscribe((res) => {
         id = res.id;
@@ -1669,52 +1686,137 @@ export class InstancesCreateComponent implements OnInit {
           (obj) => obj.id == id
         );
         let changeBlockStorage = this.listOfDataBlockStorage[index];
-        if (changeBlockStorage.capacity % 10 > 0) {
+        if (changeBlockStorage.capacity % this.stepCapacity > 0) {
           this.notification.warning(
             '',
-            this.i18n.fanyi('app.notify.amount.capacity')
+            this.i18n.fanyi('app.notify.amount.capacity', {
+              number: this.stepCapacity,
+            })
           );
           changeBlockStorage.capacity =
-            changeBlockStorage.capacity - (changeBlockStorage.capacity % 10);
+            changeBlockStorage.capacity -
+            (changeBlockStorage.capacity % this.stepCapacity);
         }
         this.volumeInit(changeBlockStorage);
-        let productId = changeBlockStorage.type == 'hdd' ? 2 : 114;
-        this.catalogService
-          .getCatalogOffer(productId, this.region, null, null)
-          .subscribe((data) => {
-            let offer = data.find(
-              (offer) => offer.status.toUpperCase() == 'ACTIVE'
-            );
-            this.volumeCreate.offerId = offer.id;
-            let itemPayment: ItemPayment = new ItemPayment();
-            itemPayment.orderItemQuantity = 1;
-            itemPayment.specificationString = JSON.stringify(this.volumeCreate);
-            itemPayment.specificationType = 'volume_create';
-            itemPayment.serviceDuration = this.numberMonth;
-            itemPayment.sortItem = 0;
-            let dataPayment: DataPayment = new DataPayment();
-            dataPayment.orderItems = [itemPayment];
-            dataPayment.projectId = this.projectId;
-            this.dataService.getPrices(dataPayment).subscribe((result) => {
-              console.log('thanh tien volume', result);
-              changeBlockStorage.price =
-                Number.parseFloat(result.data.totalAmount.amount) /
-                this.numberMonth;
-              changeBlockStorage.VAT =
-                Number.parseFloat(result.data.totalVAT.amount) /
-                this.numberMonth;
-              changeBlockStorage.priceAndVAT =
-                Number.parseFloat(result.data.totalPayment.amount) /
-                this.numberMonth;
-              this.listOfDataBlockStorage[index] = changeBlockStorage;
-              this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
-                this.totalAmountVolume += e.price * this.numberMonth;
-                this.totalVATVolume += e.VAT * this.numberMonth;
-                this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
-              });
-              this.cdr.detectChanges();
-            });
+        if (changeBlockStorage.type == 'hdd') {
+          changeBlockStorage.price =
+            changeBlockStorage.capacity * this.unitPriceVolumeHDD;
+          changeBlockStorage.VAT =
+            changeBlockStorage.capacity * this.unitVATVolumeHDD;
+          changeBlockStorage.priceAndVAT =
+            changeBlockStorage.capacity * this.unitPaymentVolumeHDD;
+          this.listOfDataBlockStorage[index] = changeBlockStorage;
+          this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
+            this.totalAmountVolume += e.price * this.numberMonth;
+            this.totalVATVolume += e.VAT * this.numberMonth;
+            this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
           });
+        } else {
+          changeBlockStorage.price =
+            changeBlockStorage.capacity * this.unitPriceVolumeSSD;
+          changeBlockStorage.VAT =
+            changeBlockStorage.capacity * this.unitVATVolumeSSD;
+          changeBlockStorage.priceAndVAT =
+            changeBlockStorage.capacity * this.unitPaymentVolumeSSD;
+          this.listOfDataBlockStorage[index] = changeBlockStorage;
+          this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
+            this.totalAmountVolume += e.price * this.numberMonth;
+            this.totalVATVolume += e.VAT * this.numberMonth;
+            this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
+          });
+        }
+        this.cdr.detectChanges();
+      });
+  }
+
+  unitPriceVolumeHDD: number = 0;
+  unitVATVolumeHDD: number = 0;
+  unitPaymentVolumeHDD: number = 0;
+  unitPriceVolumeSSD: number = 0;
+  unitVATVolumeSSD: number = 0;
+  unitPaymentVolumeSSD: number = 0;
+  getVolumeUnitMoney() {
+    // Lấy giá tiền của Volume gắn thêm 1GB/1Tháng
+    this.catalogService
+      .getCatalogOffer(2, this.region, null, null)
+      .subscribe((data) => {
+        let offer = data.find(
+          (offer) => offer.status.toUpperCase() == 'ACTIVE'
+        );
+        let temVolumeCreate = new VolumeCreate();
+        temVolumeCreate.volumeType = 'hdd';
+        temVolumeCreate.volumeSize = 1;
+        temVolumeCreate.projectId = this.projectId.toString();
+        temVolumeCreate.serviceType = 2;
+        temVolumeCreate.serviceInstanceId = 0;
+        temVolumeCreate.customerId = this.tokenService.get()?.userId;
+        temVolumeCreate.isTrial = false;
+        temVolumeCreate.regionId = this.region;
+        temVolumeCreate.serviceName = '';
+        temVolumeCreate.offerId = offer.id;
+        let itemPayment: ItemPayment = new ItemPayment();
+        itemPayment.orderItemQuantity = 1;
+        itemPayment.specificationString = JSON.stringify(temVolumeCreate);
+        itemPayment.specificationType = 'volume_create';
+        itemPayment.serviceDuration = 1;
+        itemPayment.sortItem = 0;
+        let dataPayment: DataPayment = new DataPayment();
+        dataPayment.orderItems = [itemPayment];
+        dataPayment.projectId = this.projectId;
+        this.dataService.getPrices(dataPayment).subscribe((result) => {
+          console.log('thanh tien volume', result);
+          this.unitPriceVolumeHDD = Number.parseFloat(
+            result.data.totalAmount.amount
+          );
+          this.unitVATVolumeHDD = Number.parseFloat(
+            result.data.totalVAT.amount
+          );
+          this.unitPaymentVolumeHDD = Number.parseFloat(
+            result.data.totalPayment.amount
+          );
+          this.cdr.detectChanges();
+        });
+      });
+
+    this.catalogService
+      .getCatalogOffer(114, this.region, null, null)
+      .subscribe((data) => {
+        let offer = data.find(
+          (offer) => offer.status.toUpperCase() == 'ACTIVE'
+        );
+        let temVolumeCreate = new VolumeCreate();
+        temVolumeCreate.volumeType = 'ssd';
+        temVolumeCreate.volumeSize = 1;
+        temVolumeCreate.projectId = this.projectId.toString();
+        temVolumeCreate.serviceType = 2;
+        temVolumeCreate.serviceInstanceId = 0;
+        temVolumeCreate.customerId = this.tokenService.get()?.userId;
+        temVolumeCreate.isTrial = false;
+        temVolumeCreate.regionId = this.region;
+        temVolumeCreate.serviceName = '';
+        temVolumeCreate.offerId = offer.id;
+        let itemPayment: ItemPayment = new ItemPayment();
+        itemPayment.orderItemQuantity = 1;
+        itemPayment.specificationString = JSON.stringify(temVolumeCreate);
+        itemPayment.specificationType = 'volume_create';
+        itemPayment.serviceDuration = 1;
+        itemPayment.sortItem = 0;
+        let dataPayment: DataPayment = new DataPayment();
+        dataPayment.orderItems = [itemPayment];
+        dataPayment.projectId = this.projectId;
+        this.dataService.getPrices(dataPayment).subscribe((result) => {
+          console.log('thanh tien volume', result);
+          this.unitPriceVolumeSSD = Number.parseFloat(
+            result.data.totalAmount.amount
+          );
+          this.unitVATVolumeSSD = Number.parseFloat(
+            result.data.totalVAT.amount
+          );
+          this.unitPaymentVolumeSSD = Number.parseFloat(
+            result.data.totalPayment.amount
+          );
+          this.cdr.detectChanges();
+        });
       });
   }
 

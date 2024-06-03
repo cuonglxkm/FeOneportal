@@ -234,6 +234,7 @@ import { DeleteSslCertComponent } from './ssl-cert/delete/delete-ssl-cert.compon
 
 import { TrimDirective } from './file-storage/TrimDirective';
 import { DeleteBackupVolumeComponent } from './volume/component/backup-volume/delete-backup-volume/delete-backup-volume.component';
+import { UpdateBackupPackageComponent } from './backup-package/update/update-backup-package.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -451,6 +452,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ExtendFileSystemSnapshotComponent,
     DeleteSslCertComponent,
     DeleteBackupVolumeComponent,
+    UpdateBackupPackageComponent,
   ],
   imports: [
     CommonModule,

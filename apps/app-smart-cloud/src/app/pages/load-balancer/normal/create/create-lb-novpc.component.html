@@ -303,85 +303,87 @@
         </nz-card>
       </nz-col>
       <nz-col nzSpan="8">
-        <nz-card style="border-radius: 8px">
-          <div style="margin-bottom: 20px">
-            <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
-          </div>
-          <div style="margin-top: 10px" class="text-value">{{ 'app.load.balancer.name' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ validateForm.controls.name.getRawValue() }}
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">{{ 'app.usage' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">
-            <span *ngIf="enableInternetFacing">Internet Facing</span>
-            <span *ngIf="enableInternal">Internal</span>
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">Subnet</div>
-          <div style="margin-top: 10px" class="text-label">
-            <span #selectedValueSpan></span>
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">IP Address</div>
-          <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.ipAddress.value }}</div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value" *ngIf="enableInternetFacing">IP Floating</div>
-          <div style="margin-top: 10px" class="text-label" *ngIf="enableInternetFacing">
-            <span #selectedValueIpFloating></span>
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div style="margin-top: 10px" class="text-value">{{ 'app.text.package' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">
-            <span #selectedValueOffer></span>
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-value"> {{ 'app.cost.a.month' | i18n }} </span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+        <nz-affix [nzOffsetTop]="72">
+          <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF">
+            <div style="margin-bottom: 20px">
+              <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
+            </div>
+            <div style="margin-top: 10px" class="text-value">{{ 'app.load.balancer.name' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">
+              {{ validateForm.controls.name.getRawValue() }}
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div style="margin-top: 10px" class="text-value">{{ 'app.usage' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">
+              <span *ngIf="enableInternetFacing">Internet Facing</span>
+              <span *ngIf="enableInternal">Internal</span>
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div style="margin-top: 10px" class="text-value">Subnet</div>
+            <div style="margin-top: 10px" class="text-label">
+              <span #selectedValueSpan></span>
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div style="margin-top: 10px" class="text-value">IP Address</div>
+            <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.ipAddress.value }}</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div style="margin-top: 10px" class="text-value" *ngIf="enableInternetFacing">IP Floating</div>
+            <div style="margin-top: 10px" class="text-label" *ngIf="enableInternetFacing">
+              <span #selectedValueIpFloating></span>
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div style="margin-top: 10px" class="text-value">{{ 'app.text.package' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">
+              <span #selectedValueOffer></span>
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
+                <span class="text-value"> {{ 'app.cost.month' | i18n: {month: formCreateLoadBalancer.duration} }} </span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
                     nzAlign="right">
               0 VND
             </span>
-              <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
-                    nzAlign="right">
+                <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
+                      nzAlign="right">
               {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
             </span>
-            </nz-col>
-          </nz-row>
-          <nz-row style="
+              </nz-col>
+            </nz-row>
+            <nz-row style="
             margin-bottom: 20px;
             background-color: #cce9ff;
             padding: 16px 0 16px 0;
             border-radius: 8px;
           " nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
-              <span class="text-note-italicized">({{ 'app.include.vat' | i18n : { vat: '10' } }})</span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
-              <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">0 VND</span>
-              <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+              <nz-col nzSpan="16">
+                <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
+                <span class="text-note-italicized">({{ 'app.include.vat' | i18n : { vat: '10' } }})</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+                <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">0 VND</span>
+                <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
               {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
             </span>
-            </nz-col>
-          </nz-row>
-          <nz-row>
-            <nz-col style="width: 100%">
-              <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
-                      [disabled]="(enableInternetFacing == true && validateForm.invalid) ||
+              </nz-col>
+            </nz-row>
+            <nz-row>
+              <nz-col style="width: 100%">
+                <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
+                        [disabled]="(enableInternetFacing == true && validateForm.invalid) ||
                       (enableInternal == true && (validateForm.controls['name'].invalid || validateForm.controls['subnet'].invalid) ) ||
                       (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '')">
-                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                <span [style.color]="(enableInternetFacing == true && validateForm.invalid) ||
+                  <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                  <span [style.color]="(enableInternetFacing == true && validateForm.invalid) ||
                       (enableInternal == true && (validateForm.controls['name'].invalid || validateForm.controls['subnet'].invalid) ) ||
                       (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '')? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
-              </button>
-            </nz-col>
-          </nz-row>
-        </nz-card>
+                </button>
+              </nz-col>
+            </nz-row>
+          </nz-card>
+        </nz-affix>
       </nz-col>
     </nz-row>
   </form>

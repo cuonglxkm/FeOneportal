@@ -1,22 +1,23 @@
-import {Component, Inject, ViewChild} from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {PolicyModel} from "../../../shared/models/policy.model";
 import {PolicyService} from "../../../shared/services/policy.service";
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {Router} from "@angular/router";
 import {ClipboardService} from "ngx-clipboard";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {finalize} from "rxjs";
+import { debounceTime, finalize, Subject } from 'rxjs';
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { TimeCommon } from '../../../shared/utils/common';
 @Component({
   selector: 'one-portal-policy-list',
   templateUrl: './policy-list.component.html',
   styleUrls: ['./policy-list.component.less'],
 })
-export class PolicyListComponent {
+export class PolicyListComponent implements OnInit{
   selectedStatus: any;
   selectedAction: any;
   isVisibleDelete = false;
@@ -34,6 +35,7 @@ export class PolicyListComponent {
   searchParam: any;
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   public optionJsonEditor: JsonEditorOptions;
+  searchDelay = new Subject<boolean>();
 
   listPolicyType =[
     {label: this.i18n.fanyi("app.policies.allTypePolicy"),value :""},
@@ -59,6 +61,9 @@ export class PolicyListComponent {
   ngOnInit() {
     this.selectedStatus = this.listPolicyType[0].value;
     this.selectedAction = this.listAction[0].value;
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
+      this.search();
+    })
     this.loadData();
   }
 
@@ -171,10 +176,6 @@ export class PolicyListComponent {
     this.searchValue = '';
     this.radioValue = null;
     this.loadData();
-  }
-
-  changeSearch(e: any): void {
-    this.searchValue = e;
   }
 
   handleRadioClick(name: any) {

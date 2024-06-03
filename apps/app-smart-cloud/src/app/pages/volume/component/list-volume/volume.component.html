@@ -92,7 +92,7 @@
             <th nzBreakWord>{{ 'volume.table.title.iops' | i18n }}</th>
             <th nzBreakWord>{{ 'volume.table.title.status.volume' | i18n }}</th>
             <th nzBreakWord>{{ 'volume.table.title.task.status' | i18n }}</th>
-            <th nzBreakWord>{{ 'volume.table.title.ínstance' | i18n }}</th>
+            <th nzBreakWord>{{ 'volume.table.title.instance' | i18n }}</th>
             <th nzBreakWord>{{ 'volume.table.title.action' | i18n }}</th>
           </tr>
           </thead>
@@ -121,7 +121,7 @@
             </td>
             <td nzBreakWord>
               <div
-                *ngIf="!(data.serviceStatus == 'CREATING' || data.serviceStatus == 'ERROR' || data.serviceStatus == 'ATTACHING' || data.serviceStatus == 'DELETING' || data.serviceStatus == 'ERROR_DELETING')">
+                *ngIf="!(data.serviceStatus == 'CREATING' || data.serviceStatus == 'ERROR' || data.serviceStatus == 'ATTACHING' || data.serviceStatus == 'DELETING' || data.serviceStatus == 'ERROR_DELETING' || data.serviceStatus == 'RESIZING')">
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
@@ -285,38 +285,20 @@
               <div *ngIf="i.iops == null">300</div>
               <div *ngIf="i.iops != null">{{ i.iops }}</div>
             </td>
-            <td nzBreakWord>
-              <div class="status" [ngSwitch]="i.status">
-                                <span class="available" *ngSwitchCase="'KHOITAO'">
-                                            {{ 'app.status.running' | i18n }}
-                                          </span>
-                <span class="available" *ngSwitchCase="'CREATING'">
-                                            {{ 'app.status.init' | i18n }}
-                                          </span>
-                <span class="suspended" *ngSwitchCase="'SUSPENDED'">
-                                            {{ 'app.status.suspend' | i18n }}
-                                          </span>
-                <span class="error" *ngSwitchCase="'ERROR'">
-                                            {{ 'app.status.error' | i18n }}
-                                          </span>
-                <span class="error" *ngSwitchCase="'ERROR_DELETING'">
-                                            {{ 'app.status.error' | i18n }}
-                                          </span>
-                <span class="suspended" *ngSwitchCase="'DELETING'">
-                                            {{ 'app.status.deleting' | i18n }}
-                                          </span>
-              </div>
-            </td>
+            <ng-container *ngIf="i.status | ServiceStatusPipe as statusModel">
+              <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</td>
+            </ng-container>
             <td nzBreakWord>{{ i.serviceStatus }}</td>
             <td nzBreakWord>
               <div *ngIf="i.attachedInstances.length <= 0">-</div>
               <div *ngIf="i.attachedInstances.length > 0">
-                <div *ngFor="let index of i.attachedInstances; let last = last">{{ index.instanceName }}<br *ngIf="!last"></div>
+                <div *ngFor="let index of i.attachedInstances; let last = last">{{ index.instanceName }}<br
+                  *ngIf="!last"></div>
               </div>
             </td>
             <td>
               <div
-                *ngIf="!(i.serviceStatus == 'CREATING' || i.serviceStatus == 'ERROR' || i.serviceStatus == 'ATTACHING' || i.serviceStatus == 'DELETING' || i.serviceStatus == 'ERROR_DELETING')">
+                *ngIf="!(i.serviceStatus == 'CREATING' || i.serviceStatus == 'ERROR' || i.serviceStatus == 'ATTACHING' || i.serviceStatus == 'DELETING' || i.serviceStatus == 'ERROR_DELETING' || i.serviceStatus == 'RESIZING')">
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="i.id"
@@ -345,6 +327,7 @@
                      src="assets/imgs/more1.svg" alt="" style="cursor: pointer; margin-left: 5px;" />
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
+                    <li nz-menu-item>{{ 'volume.menu.create.snapshot' | i18n }}</li>
                     <li nz-menu-item
                         (click)="navigateToCreateScheduleBackup(i.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
                     </li>

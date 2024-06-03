@@ -17,6 +17,9 @@ import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-u
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../shared/services/order.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 
 @Component({
@@ -57,6 +60,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   minStorage: number = 0;
   stepStorage: number = 0;
   valueStringConfiguration: string = '';
+  maxStorage: number = 0;
 
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
@@ -66,7 +70,9 @@ export class ExtendFileSystemNormalComponent implements OnInit {
               private notification: NzNotificationService,
               private projectService: ProjectService,
               private instanceService: InstancesService,
-              private configurationsService: ConfigurationsService) {
+              private configurationsService: ConfigurationsService,
+              private orderService: OrderService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -168,9 +174,13 @@ export class ExtendFileSystemNormalComponent implements OnInit {
       }
     ];
     console.log('request', request);
-    var returnPath: string = '/app-smart-cloud/file-storage/file-system/' + this.idFileSystem + '/extend';
-    console.log('request', request);
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    this.orderService.validaterOrder(request).subscribe(data => {
+      var returnPath: string = '/app-smart-cloud/file-storage/file-system/' + this.idFileSystem + '/extend';
+      console.log('request', request);
+      this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+    })
   }
 
   getConfigurations() {
@@ -179,6 +189,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
       const arr = this.valueStringConfiguration.split('#')
       this.minStorage = Number.parseInt(arr[0])
       this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
     })
   }
 

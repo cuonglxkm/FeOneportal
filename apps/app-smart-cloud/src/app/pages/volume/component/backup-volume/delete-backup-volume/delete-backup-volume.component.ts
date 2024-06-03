@@ -66,7 +66,7 @@ export class DeleteBackupVolumeComponent implements AfterViewInit{
         this.isLoading = false;
         this.isVisible = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.vm.notification.success.delete'));
-        this.onOk.emit(data);
+
       }, error => {
         console.log('error', error);
         this.isLoading = false;
@@ -77,6 +77,7 @@ export class DeleteBackupVolumeComponent implements AfterViewInit{
       this.isInput = true;
       this.isLoading = false;
     }
+    this.onOk.emit()
   }
 
   ngAfterViewInit() {

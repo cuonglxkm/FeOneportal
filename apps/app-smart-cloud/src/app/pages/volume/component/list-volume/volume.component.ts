@@ -261,9 +261,14 @@ export class VolumeComponent implements OnInit, OnDestroy {
       if (message) {
         switch (message.actionType) {
           case "CREATING":
-          case "RESIZED":
           case "CREATED":
+          case "RESIZING":
+          case "RESIZED":
+          case "EXTENDING":
+          case "EXTENDED":
+          case "DELETING":
           case "DELETED":
+          case "DELETING":
             this.getListVolume(true);
           break;
           //case "CREATED":
@@ -279,7 +284,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
             // }
             // else
             // {
-              this.getListVolume(true);
+              // this.getListVolume(true);
             //}
           //break;
         }

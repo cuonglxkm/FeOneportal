@@ -12,11 +12,12 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { BucketModel } from 'src/app/shared/models/bucket.model';
 import { ObjectStorage } from 'src/app/shared/models/object-storage.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-bucket-list',
@@ -30,8 +31,9 @@ export class BucketListComponent implements OnInit {
   pageNumber: number = 1;
   pageSize: number = 10;
   total: number;
-  searchValue: string = '';
+  value: string = '';
   loading: boolean = true;
+  searchDelay = new Subject<boolean>();
 
   constructor(
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -47,6 +49,10 @@ export class BucketListComponent implements OnInit {
 
   ngOnInit(): void {
     this.hasObjectStorage();
+    this.search();
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+      this.search();
+    });
   }
 
   hasOS: boolean = undefined;
@@ -79,7 +85,7 @@ export class BucketListComponent implements OnInit {
   search() {
     this.loading = true;
     this.bucketService
-      .getListBucket(this.pageNumber, this.pageSize, this.searchValue)
+      .getListBucket(this.pageNumber, this.pageSize, this.value.trim())
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -99,6 +105,11 @@ export class BucketListComponent implements OnInit {
           );
         },
       });
+  }
+
+  searchBucket(search: string) {  
+    this.value = search.trim();
+    this.search();
   }
 
   copyText(endPoint: string) {
@@ -128,7 +139,9 @@ export class BucketListComponent implements OnInit {
     ]);
   }
 
-  deleteObjectStorage() {}
+  deleteObjectStorage() {
+    
+  }
 
   isVisibleDeleteBucket: boolean = false;
   bucketDeleteName: string;

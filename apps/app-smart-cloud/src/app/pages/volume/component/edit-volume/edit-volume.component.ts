@@ -15,6 +15,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'app-extend-volume',
@@ -67,7 +68,8 @@ export class EditVolumeComponent implements OnInit {
               private instanceService: InstancesService,
               private projectService: ProjectService,
               @Inject(ALAIN_I18N_TOKEN) protected i18n: I18NService,
-              private configurationsService: ConfigurationsService) {
+              private configurationsService: ConfigurationsService,
+              private orderService: OrderService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
@@ -143,21 +145,29 @@ export class EditVolumeComponent implements OnInit {
           serviceDuration: this.expiryTime
         }
       ];
-      var returnPath: string = '/app-smart-cloud/volume/extend/' + this.volumeId;
-      console.log('request', request);
-      this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+      this.orderService.validaterOrder(request).subscribe(data => {
+        if(data.success) {
+          var returnPath: string = '/app-smart-cloud/volume/edit/' + this.volumeId;
+          console.log('request', request);
+          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        }
+      }, error => {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+      })
     }
   }
 
   minStorage: number = 0;
   stepStorage: number = 0;
   valueString: string;
+  maxStorage: number = 0;
 
   getConfiguration() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueString = data.valueString;
       this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
       this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
     })
   }
 

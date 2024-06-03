@@ -141,7 +141,7 @@ export class FormRuleComponent implements OnInit {
     if (type === 'other-IPv4') {
 
       this.validateForm.controls.protocol.setValidators([Validators.required, AppValidator.validateProtocol,
-        Validators.pattern(/^-?([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])$/)]);
+        Validators.pattern(/^(0|[1-9]\d?|1\d{2}|2[0-4]\d|25[0-5])$/)]);
       this.validateForm.controls.protocol.markAsDirty();
       this.validateForm.controls.protocol.reset();
     }

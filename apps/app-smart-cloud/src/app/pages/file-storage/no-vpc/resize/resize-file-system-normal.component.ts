@@ -19,6 +19,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-resize-file-system-normal',
@@ -62,7 +63,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
               private fileSystemService: FileSystemService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
-              private projectService: ProjectService,
+              private orderService: OrderService,
               private instanceService: InstancesService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private configurationsService: ConfigurationsService) {
@@ -124,9 +125,9 @@ export class ResizeFileSystemNormalComponent implements OnInit {
   onChangeStorage() {
     this.dataSubjectStorage.pipe(debounceTime(700))
       .subscribe((res) => {
-        if (this.storage % this.stepStorage > 0) {
+        if (res % this.stepStorage > 0) {
           this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
-          this.storage = this.storage - (this.storage % this.stepStorage);
+          this.storage = res - (res % this.stepStorage);
         }
         console.log('total amount');
         this.getTotalAmount();
@@ -167,9 +168,15 @@ export class ResizeFileSystemNormalComponent implements OnInit {
       }
     ];
     console.log('request', request);
-    var returnPath: string = '/app-smart-cloud/file-storage/file-system/resize/normal/' + this.idFileSystem;
-    console.log('request', request);
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    this.orderService.validaterOrder(request).subscribe(data => {
+      if(data.success) {
+        var returnPath: string = '/app-smart-cloud/file-storage/file-system/resize/normal/' + this.idFileSystem;
+        console.log('request', request);
+        this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+      }
+    }, error =>  {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+    })
   }
 
   navigateToDetail() {
@@ -177,12 +184,14 @@ export class ResizeFileSystemNormalComponent implements OnInit {
   }
 
   dateEdit: Date;
+  maxStorage: number = 0;
   getConfigurations() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueStringConfiguration = data.valueString;
       const arr = this.valueStringConfiguration.split('#')
       this.minStorage = Number.parseInt(arr[0])
       this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
     })
   }
 
@@ -195,7 +204,6 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     this.idFileSystem = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
     this.getFileSystemById(this.idFileSystem);
     this.onChangeStorage();
-    this.dateEdit = new Date();
     this.getConfigurations();
   }
 }

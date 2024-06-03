@@ -19,6 +19,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-create-file-system-normal',
@@ -82,6 +83,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
   minStorage: number = 0;
   stepStorage: number = 0;
   valueStringConfiguration: string = '';
+  maxStorage: number = 0;
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
@@ -93,7 +95,8 @@ export class CreateFileSystemNormalComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private notification: NzNotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private configurationsService: ConfigurationsService) {
+              private configurationsService: ConfigurationsService,
+              private orderService: OrderService) {
   }
 
   duplicateNameValidator(control) {
@@ -288,12 +291,18 @@ export class CreateFileSystemNormalComponent implements OnInit {
         serviceDuration: this.validateForm.controls.time.value
       }
     ];
-    var returnPath: string = '/app-smart-cloud/file-storage/file-system/create/normal';
-    console.log('request', request);
-    console.log('service name', this.formCreate.serviceName);
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: request, path: returnPath }
-    });
+    this.orderService.validaterOrder(request).subscribe(data => {
+      if(data.success) {
+        var returnPath: string = '/app-smart-cloud/file-storage/file-system/create/normal';
+        console.log('request', request);
+        console.log('service name', this.formCreate.serviceName);
+        this.router.navigate(['/app-smart-cloud/order/cart'], {
+          state: { data: request, path: returnPath }
+        });
+      }
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+    })
   }
 
   getConfigurations() {
@@ -302,6 +311,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
       const arr = this.valueStringConfiguration.split('#')
       this.minStorage = Number.parseInt(arr[0])
       this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
     })
   }
 

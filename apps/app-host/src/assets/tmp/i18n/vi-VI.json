@@ -280,6 +280,7 @@
   "app.application.period": "Thời gian áp dụng",
   "app.reason": "Nguyên nhân",
   "app.choose.attachment.method": "Chọn hình thức gắn",
+  "app.create.port": "Tạo port",
 
   "app.input.name": "Nhập tên",
   "app.input.password": "Nhập mật khẩu",
@@ -309,6 +310,7 @@
 
   "app.instance": "máy ảo",
   "app.volume": "volume",
+  "app.backup-package": "gói backup",
   "app.instances": "Máy ảo",
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
@@ -416,7 +418,7 @@
   "app.notify.unrescue.instances.success": "UNRESCUE máy ảo thành công",
   "app.notify.unrescue.instances.fail": "UNRESCUE máy ảo không thành công",
   "app.notify.get.service.package.fail": "Lấy thông tin gói cấu hình không thành công",
-  "app.notify.amount.capacity": "Số lượng phải chia hết cho 10",
+  "app.notify.amount.capacity": "Số lượng phải chia hết cho {{number}}",
   "app.notify.amount.capacity1": "Số lượng dung lượng phải chia hết cho 10",
   "app.notify.amount.capacity.add": "Vượt quá quota dung lượng, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
   "app.notify.amount.ram.add": "Vượt quá quota RAM, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
@@ -454,7 +456,8 @@
   "app.international.bandwidth": "Băng thông quốc tế",
   "app.remain.configuration.in.vpc": "Cấu hình còn lại trong dự án VPC",
   "app.keypair.name": "Tên Keypair",
-  "app.note.create.port": "Vui lòng tạo Port để sử dụng tính năng này!",
+  "app.please": "Vui lòng",
+  "app.note.create.port": "để sử dụng tính năng này!",
 
   "app.disk.type": "Kiểu Volume",
   "app.volume.type": "Loại Volume",
@@ -467,7 +470,7 @@
 
   "app.network.name": "Tên Network",
 
-  "app.object.storage.create": "Khởi tạo Object Storage",
+  "app.object.storage.create": "Tạo mới Object Storage",
   "app.button.object.storage.create": "Tạo mới Object Storage",
   "app.object.storage.info": "Thông tin Object Storage",
   "app.object.storage.resize": "Điều chỉnh Object Storage",
@@ -894,7 +897,7 @@
 
   "app.file.system.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Máy ảo) hoặc CIDR được quyền truy cập tới File System này",
   "app.file.system.access.to.create.success": "Tạo mới access rule thành công",
-  "app.file.system.access.to.create.fail": "Tạo mới access rule thất bại",
+  "app.file.system.access.to.create.fail": "Tạo mới access rule thất bại. ",
   "app.file.system.access.to.delete.success": "Xóa access rule thành công",
   "app.file.system.access.to.delete.fail": "Xóa access rule thất bại",
   "app.file.system.access.to.delete.file.success": "Xóa File System thành công",
@@ -936,10 +939,10 @@
   "validation.file.system.type.required": "Vui lòng chọn loại File System",
   "validation.file.system.description.maxlength": "Cho phép nhập tối đa 700 ký tự",
   "validation.file.system.capacity.required": "vui lòng nhập dung lượng của File System. Dung lượng của File System là số nguyên dương",
-  "validation.file.system.empty": "File System không đuợc để trống!",
-  "validation.number.of.snapshot.required": "Số bản Snapshot không đuợc để trống!",
-  "validation.number.of.day.required": "Số ngày không đuợc để trống!",
-  "validation.number.of.month.required": "Số tháng không đuợc để trống!",
+  "validation.file.system.empty": "File System không được để trống!",
+  "validation.number.of.snapshot.required": "Số bản Snapshot không được để trống!",
+  "validation.number.of.day.required": "Số ngày không được để trống!",
+  "validation.number.of.month.required": "Số tháng không được để trống!",
 
   "app.file.system.snapshot.delete": "Xóa File System Snapshot {{name}}",
   "app.file.system.snapshot.manage": "Quản lý File System Snapshot",
@@ -2521,9 +2524,11 @@
   "volume.notification.input.select.snapshot": "Vui lòng chọn Snapshot",
   "volume.notification.request.create": "Tạo Volume",
   "volume.notification.require.create.success": "Yêu cầu tạo Volume thành công.",
+  "volume.notification.request.create.fail": "Yêu cầu tạo Volume thất bại",
   "volume.notification.resize.success": "Điều chỉnh Volume thành công.",
   "volume.notification.resize.fail": "Điều chỉnh Volume thất bại.",
   "volume.notification.access.denied": "Volume không tồn tại!",
+
 
   "volume.input.storage.vpc.required": "Vui lòng nhập dung lượng của gói Backup",
   "volume.unit-price": "Đơn giá",
@@ -2539,6 +2544,7 @@
   "volume.alert.resize.storage": "Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn.",
 
   "app.breadcrumb.list.backup.volume": "Danh sách Backup Volume",
+  "app.breadcrumb.list.backup.volume.restore": "Khôi phục Backup Volume",
   "app.backup.volume.info": "Thông tin Backup Volume",
   "app.backup.volume.detail": "Chi tiết Backup Volume",
   "app.backup.volume.btn.create": "Tạo mới Backup volume",
@@ -2597,7 +2603,7 @@
   "app.backup.package.list": "Danh sách gói Backup",
   "app.backup.package.information": "Thông tin của gói Backup",
   "app.backup.package.name": "Tên gói Backup",
-  "app.backup.package.storage": "Dung lượng gói backup",
+  "app.backup.package.storage": "Dung lượng gói backup (GB)",
   "app.backup.package.storage.current": "Dung lượng gói Backup hiện tại",
   "app.backup.package.storage.addition": "Dung lượng gói Backup bổ sung",
   "app.backup.package.storage.total": "Dung lượng",
@@ -2617,28 +2623,33 @@
   "app.backup.package.edit.title": "Chỉnh sửa thông tin gói Backup",
 
   "app.tooltip.backup.package.name": "Tên gói backup của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.",
-  "app.tooltip.backup.package.storage": "Dung lượng mặc định tối thiểu là 1, chưa giới hạn dung lượng tối đa",
+  "app.tooltip.backup.package.storage": "Dung lượng của gói backup",
   "app.tooltip.backup.package.storage.addition": "Chi phí dung lượng bổ sung tính từ ngày chỉnh sửa cho tới ngày hết hạn.",
   "app.alert.backup.package.resize": "Khi thực hiện tăng dung lượng gói Backup, chi phí mới sẽ được tính từ ngày chỉnh sửa cho tới ngày hết hạn.",
   "app.placeholder.backup.package.name": "Nhập tên gói",
   "app.placeholder.backup.package.description": "Nhập mô tả",
   "app.placeholder.backup.package.time": "Mỗi tháng tương đương 30 ngày.",
-
+  "app.backup.package.placeholder.search.name": "Tìm kiếm theo tên",
   "app.notification.warning.input": "Vui lòng nhập đầy đủ thông tin",
   "app.notification.request.create.success": "Yêu cầu tạo gói backup thành công.",
   "app.notification.request.create.fail": "Yêu cầu tạo gói backup thất bại. {{error}}",
   "app.notification.delete.package.success": "Xóa gói backup thành công",
   "app.notification.delete.package.fail": "Xóa gói backup thất bại. {{ error }}",
   "app.notification.delete.confirm": "Vui lòng nhập đúng tên Backup Package",
+  "app.notification.delete.confirm.null": "Vui lòng nhập tên Backup Package",
   "app.notification.extend.success": "Gia hạn gói backup thành công.",
   "app.notification.extend.fail": "Gia hạn gói backup thất bại. {{error}}",
+  "app.notification.update.package.backup.success": "Chỉnh sửa gói backup thành công",
+  "app.notification.update.package.backup.error": "Chỉnh sửa gói backup thất bại. {{error}}",
 
   "app.backup.package.name.required": "Vui lòng nhập tên gói Backup",
   "app.backup.package.name.pattern": "Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt",
-  "app.backup.package.name.maxLength": "Tối đa 70 ký tự",
+  "app.backup.package.name.maxLength": "Tối đa 50 ký tự",
+  "app.backup.package.name.duplicate": "Tên gói backup đã tồn tại. ",
   "app.backup.package.storage.required": "Vui lòng nhập dung lượng của gói Backup",
   "app.backup.package.storage.pattern": "Vui lòng nhập số nguyên",
   "app.backup.package.description.maxLength": "Cho phép nhập tối đa 255 kí tự",
+
 
   "app.backup.vm.list": "Danh sách Backup VM",
   "app.backup.vm.detail": "Chi tiết Backup VM",
@@ -2660,9 +2671,10 @@
   "app.info.backup.vm.description": "Mô tả",
   "app.info.backup.vm.total.storage": "Dung lượng backup",
   "app.info.backup.vm.external.volume": "Volume gắn ngoài",
+  "app.choose.backup.vm.external.volume": "Chọn Volume gắn ngoài",
   "app.info.backup.vm.restore.information": "Thông tin khôi phục",
   "app.backup.vm.restore.instance.name": "Tên máy ảo hiện tại",
-  "app.backup.vm.restore.storage.os": "Dung lượng ổ hệ điều hành hiện tại",
+  "app.backup.vm.restore.storage.os": "Dung lượng ổ hệ điều hành",
   "app.backup.vm.restore.current": "Restore vào máy ảo hiện tại",
   "app.backup.vm.restore.new": "Restore vào máy ảo mới",
   "app.backup.config.vm.new": "Cấu hình máy ảo mới",
@@ -2827,7 +2839,8 @@
   "app.manage.site.to.site.extend":"Gia hạn",
   "app.manage.site.to.site.Adjust":"Điều chỉnh",
   "app.manage.site.to.site.delete":"Xóa",
-  "app.manage.site.to.site.name.package":"Tên gói"
+  "app.manage.site.to.site.name.package":"Tên gói",
+  "app.validate.order.fail": "Lỗi khi kiểm tra order"
 
 
 

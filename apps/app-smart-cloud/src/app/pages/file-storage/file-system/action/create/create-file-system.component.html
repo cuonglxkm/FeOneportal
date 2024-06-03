@@ -154,15 +154,16 @@
                                      class="input-custom"
                                      [(ngModel)]="storage"
                                      (ngModelChange)="storageSelectedChange($event)"
-                                     [nzMin]="minStorage" [nzStep]="stepStorage"></nz-input-number>
+                                     [nzMin]="minStorage"
+                                     [nzStep]="stepStorage" [nzMax]="storageRemaining"></nz-input-number>
                     <ng-template #storageErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
                       </ng-container>
                       <ng-container
                         *ngIf="control.hasError('pattern')">{{ 'app.file.system.error.pattern.storage' | i18n }}
                       </ng-container>
-                      <ng-container
-                        *ngIf="control.hasError('notEnough')">{{ 'app.file.system.not.enough.quota' | i18n }}
+                      <ng-container *ngIf="control.hasError('notEnough') || control.hasError('outOfStorage')">
+                        {{ 'app.alert.quota.vpc' | i18n }}<a [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a>{{ 'app.alert.quota.vpc.next' | i18n }}
                       </ng-container>
                     </ng-template>
                   </nz-form-control>

@@ -81,6 +81,7 @@ export class CreateFileSystemComponent implements OnInit {
   minStorage: number = 0;
   stepStorage: number = 0;
   valueStringConfiguration: string = '';
+  maxStorage: number = 0;
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
@@ -110,6 +111,8 @@ export class CreateFileSystemComponent implements OnInit {
     const value = control.value;
     if (this.storageRemaining < value) {
       return { notEnough: true };
+    } else if(this.storageRemaining == 0) {
+      return { outOfStorage: true };
     } else {
       return null;
     }
@@ -248,8 +251,9 @@ export class CreateFileSystemComponent implements OnInit {
       this.storageBuyVpc = data.cloudProject?.quotaShareInGb
       this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
       this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
-
       console.log('share remaining', this.storageRemaining)
+      this.validateForm.controls.storage.markAsDirty()
+      this.validateForm.controls.storage.updateValueAndValidity()
       this.isLoading = false
     })
   }
@@ -322,6 +326,7 @@ export class CreateFileSystemComponent implements OnInit {
       const arr = this.valueStringConfiguration.split('#')
       this.minStorage = Number.parseInt(arr[0])
       this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
     })
   }
 

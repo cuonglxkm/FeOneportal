@@ -20,6 +20,7 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-create-lb-vpc',
@@ -82,6 +83,7 @@ export class CreateLbVpcComponent implements OnInit {
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private vlanService: VlanService,
               private catalogService: CatalogService,
+              private orderService : OrderService,
               private projectService: ProjectService,
               private loadBalancerService: LoadBalancerService,
               private notification: NzNotificationService) {
@@ -311,35 +313,43 @@ export class CreateLbVpcComponent implements OnInit {
       }
     ];
     console.log(request);
-    this.loadBalancerService.createLoadBalancer(request)
-      .pipe(finalize(() => {
-        this.loadingCreate = false;
-      }))
-      .subscribe(data => {
-        if (data != null) {
-          if (data.code == 200) {
-            this.isLoading = false;
-            this.notification.success(
-              '',
-              this.i18n.fanyi('app.notification.request.create.LB.success')
-            );
-            this.router.navigate(['/app-smart-cloud/load-balancer/list']);
-          }
-        } else {
-          this.isLoading = false;
-          this.notification.error(
-            '',
-            this.i18n.fanyi('app.notification.request.create.LB.fail')
-          );
-        }
+    this.orderService.validaterOrder(request).subscribe(
+      data => {
+        this.loadBalancerService.createLoadBalancer(request)
+          .pipe(finalize(() => {
+            this.loadingCreate = false;
+          }))
+          .subscribe(data => {
+              if (data != null) {
+                if (data.code == 200) {
+                  this.isLoading = false;
+                  this.notification.success(
+                    '',
+                    this.i18n.fanyi('app.notification.request.create.LB.success')
+                  );
+                  this.router.navigate(['/app-smart-cloud/load-balancer/list']);
+                }
+              } else {
+                this.isLoading = false;
+                this.notification.error(
+                  '',
+                  this.i18n.fanyi('app.notification.request.create.LB.fail')
+                );
+              }
+            },
+            error => {
+              this.isLoading = false;
+              this.notification.error(
+                '',
+                this.i18n.fanyi('app.notification.request.create.LB.fail')
+              );
+            });
       },
       error => {
-        this.isLoading = false;
-        this.notification.error(
-          '',
-          this.i18n.fanyi('app.notification.request.create.LB.fail')
-        );
-      });
+        this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.validate.order.fail'))
+        this.loadingCreate = false;
+      }
+    )
   }
 
   mapSubnet: Map<string, string> = new Map<string, string>();
@@ -365,6 +375,7 @@ export class CreateLbVpcComponent implements OnInit {
     if (this.enableInternal == true) {
       let formSearchSubnet = new FormSearchSubnet();
       formSearchSubnet.region = this.region;
+      formSearchSubnet.vpcId = this.project;
       formSearchSubnet.pageSize = 9999;
       formSearchSubnet.pageNumber = 1;
       formSearchSubnet.customerId = this.tokenService.get()?.userId;

@@ -37,9 +37,90 @@
     </div>
   </ng-template>
 </page-header>
+<ngu-carousel
+  *ngIf="activeBlockHDD"
+  #myCarouselFlavor
+  [inputs]="carouselTileConfig"
+  [dataSource]="listOfferFlavors"
+>
+  <ngu-tile *nguCarouselDef="let item; let ani = animate" [@slider]="ani">
+    <div
+      [tabIndex]="0"
+      style="cursor: pointer"
+      (click)="
+        onInputFlavors(item.id); selectElementInputFlavors('flavor_' + item.id)
+      "
+      (keyup.enter)="
+        onInputFlavors(item.id); selectElementInputFlavors('flavor_' + item.id)
+      "
+      [id]="'flavor_' + item.id"
+    >
+      <nz-row>
+        <nz-col
+          style="padding-bottom: 5px"
+          class="newClassFlavor text-center"
+          [class.initialClassFlavor]="
+            selectedElementFlavor === 'flavor_' + item.id
+          "
+        >
+          <div>
+            <span
+              class="nameFlavor"
+              [class.initialNameFlavor]="
+                selectedElementFlavor === 'flavor_' + item.id
+              "
+              >{{ item.offerName | slice : 3 : -4 }}</span
+            >
+            <div style="margin-top: -16px">
+              <img
+                style="width: 100px"
+                [src]="
+                  selectedElementFlavor === 'flavor_' + item.id
+                    ? 'assets/imgs/line2.svg'
+                    : 'assets/imgs/line.svg'
+                "
+                alt=""
+              />
+            </div>
+            <span class="priceFlavor">{{
+              item.price.fixedPrice.amount | number
+            }}</span
+            ><span> VND/{{ 'app.Month' | i18n }}</span>
+          </div>
+        </nz-col>
+      </nz-row>
+      <nz-row>
+        <nz-col
+          style="width: 100%; padding-top: 5px"
+          [class.flavor-footer-active]="
+            selectedElementFlavor === 'flavor_' + item.id
+          "
+          [class.flavor-footer]="selectedElementFlavor != 'flavor_' + item.id"
+        >
+          <div>
+            <p>{{ item.description }}</p>
+          </div>
+        </nz-col>
+      </nz-row>
+    </div>
+  </ngu-tile>
+
+  <ul class="myPoint" NguCarouselPoint>
+    <li
+      *ngFor="let i of myCarouselFlavor.pointNumbers"
+      [class.active]="i === myCarouselFlavor.activePoint"
+      (click)="myCarouselFlavor.moveTo(i)"
+    ></li>
+  </ul>
+</ngu-carousel>
 <div nz-row [nzGutter]="24">
   <div nz-col [nzSpan]="16" style="display: flex">
-    <form style="width: 100%" nz-form [formGroup]="validateForm" nzLayout="vertical">
+    <form
+      style="width: 100%"
+      nz-form
+      [formGroup]="validateForm"
+      nzLayout="vertical"
+    >
       <nz-card style="border-radius: 8px">
         <span class="text-card-header">{{
           'app.backup.vm.ìnformation' | i18n
@@ -76,7 +157,7 @@
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label>
-                <span>{{ 'app.info.backup.vm.vm.root' | i18n }}</span>
+                <span>{{ 'app.instances' | i18n }}</span>
               </nz-form-label>
               <nz-form-control>
                 <input
@@ -102,6 +183,14 @@
             </nz-form-item>
           </nz-col>
         </nz-row>
+        <nz-form-item>
+          <nz-form-label>
+            <span style="color: #ff0000"
+              >{{ 'app.service.expiration-date' | i18n }} :
+              {{ backupVmModel?.expirationDate | date : 'dd/MM/yyyy' }}</span
+            >
+          </nz-form-label>
+        </nz-form-item>
       </nz-card>
       <nz-card style="border-radius: 8px">
         <span class="text-card-header">{{
@@ -125,49 +214,16 @@
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
-                  <span>{{
-                    'app.backup.vm.restore.instance.name' | i18n
-                  }}</span>
+                  <span>{{ 'app.backup.vm.restore.storage.os' | i18n }}</span>
                 </nz-form-label>
                 <nz-form-control>
                   <input
                     nz-input
                     class="input-custom"
-                    [value]="backupVmModel?.instanceName"
+                    [value]="backupVmModel?.size + ' GB'"
                     [disabled]="true"
                   />
                 </nz-form-control>
-              </nz-form-item>
-              <nz-form-item>
-                <nz-form-label>
-                  <span>{{ 'app.backup.vm.restore.storage.os' | i18n }}</span>
-                </nz-form-label>
-                <nz-form-control>
-                  <nz-input-group [nzAddOnAfter]="'GB'" style="width: 100%">
-                    <input
-                      nz-input
-                      class="input-custom"
-                      [value]="backupVmModel?.systemInfoBackups[0].osName"
-                      [disabled]="true"
-                    />
-                  </nz-input-group>
-                </nz-form-control>
-              </nz-form-item>
-              <nz-form-item>
-                <nz-form-label>
-                  <span *ngIf="typeVpc == 0" style="color: #ff0000"
-                    >{{ 'app.service.expiration-date' | i18n }} :
-                    {{
-                      backupPackage?.expirationDate | date : 'dd/MM/yyyy'
-                    }}</span
-                  >
-                  <span *ngIf="typeVpc == 1" style="color: #ff0000"
-                    >{{ 'app.service.expiration-date' | i18n }} :
-                    {{
-                      projectDetail?.expirationDate | date : 'dd/MM/yyyy'
-                    }}</span
-                  >
-                </nz-form-label>
               </nz-form-item>
             </nz-col>
             <nz-col nzSpan="12">
@@ -176,25 +232,41 @@
                   <span>Security Group</span>
                 </nz-form-label>
                 <nz-form-control>
-                  <input
-                    nz-input
-                    class="input-custom"
-                    [value]="nameSecurityGroupTextUnique"
-                    [disabled]="true"
-                  />
+                  <nz-select
+                    [nzPlaceHolder]="'app.choose.security.group' | i18n"
+                    [nzShowSearch]="true"
+                    nzSize="large"
+                  >
+                    <nz-option
+                      *ngFor="let sg of listSecurityGroupBackups"
+                      [nzLabel]="sg.sgName"
+                      [nzValue]="sg.id"
+                    />
+                  </nz-select>
                 </nz-form-control>
               </nz-form-item>
+            </nz-col>
+          </nz-row>
+          <nz-row nzGutter="24" style="margin-top: 20px">
+            <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
                   <span>{{ 'app.info.backup.vm.external.volume' | i18n }}</span>
                 </nz-form-label>
                 <nz-form-control>
-                  <input
-                    nz-input
-                    class="input-custom"
-                    [value]="nameVolumeBackupAttachNameUnique"
-                    [disabled]="true"
-                  />
+                  <nz-select
+                    [nzPlaceHolder]="
+                      'app.choose.backup.vm.external.volume' | i18n
+                    "
+                    [nzShowSearch]="true"
+                    nzSize="large"
+                  >
+                    <nz-option
+                      *ngFor="let e of listExternalAttachVolume"
+                      [nzLabel]="e.name"
+                      [nzValue]="e.id"
+                    />
+                  </nz-select>
                 </nz-form-control>
               </nz-form-item>
             </nz-col>
@@ -202,8 +274,501 @@
         </div>
         <div *ngIf="selectedOption == 'new'" formGroupName="formNew">
           <div *ngIf="typeVpc == 0">
-            <nz-row nzGutter="24" style="margin-top: 25px">
-              <nz-col nzSpan="12">
+            <nz-tabset
+              nzCentered
+              nzSize="large"
+              (keydown)="handleKeyboardEvent($event)"
+            >
+              <nz-tab
+                [nzTitle]="'app.Preconfigured.Package' | i18n"
+                (nzClick)="onClickConfigPackage()"
+              >
+                <ngu-carousel
+                  *ngIf="activeBlockHDD"
+                  #myCarouselFlavor
+                  [inputs]="carouselTileConfig"
+                  [dataSource]="listOfferFlavors"
+                >
+                  <ngu-tile
+                    *nguCarouselDef="let item; let ani = animate"
+                    [@slider]="ani"
+                  >
+                    <div
+                      [tabIndex]="0"
+                      style="cursor: pointer"
+                      (click)="
+                        onInputFlavors(item.id);
+                        selectElementInputFlavors('flavor_' + item.id)
+                      "
+                      (keyup.enter)="
+                        onInputFlavors(item.id);
+                        selectElementInputFlavors('flavor_' + item.id)
+                      "
+                      [id]="'flavor_' + item.id"
+                    >
+                      <nz-row>
+                        <nz-col
+                          style="padding-bottom: 5px"
+                          class="newClassFlavor text-center"
+                          [class.initialClassFlavor]="
+                            selectedElementFlavor === 'flavor_' + item.id
+                          "
+                        >
+                          <div>
+                            <span
+                              class="nameFlavor"
+                              [class.initialNameFlavor]="
+                                selectedElementFlavor === 'flavor_' + item.id
+                              "
+                              >{{ item.offerName | slice : 3 : -4 }}</span
+                            >
+                            <div style="margin-top: -16px">
+                              <img
+                                style="width: 100px"
+                                [src]="
+                                  selectedElementFlavor === 'flavor_' + item.id
+                                    ? 'assets/imgs/line2.svg'
+                                    : 'assets/imgs/line.svg'
+                                "
+                                alt=""
+                              />
+                            </div>
+                            <span class="priceFlavor">{{
+                              item.price.fixedPrice.amount | number
+                            }}</span
+                            ><span> VND/{{ 'app.Month' | i18n }}</span>
+                          </div>
+                        </nz-col>
+                      </nz-row>
+                      <nz-row>
+                        <nz-col
+                          style="width: 100%; padding-top: 5px"
+                          [class.flavor-footer-active]="
+                            selectedElementFlavor === 'flavor_' + item.id
+                          "
+                          [class.flavor-footer]="
+                            selectedElementFlavor != 'flavor_' + item.id
+                          "
+                        >
+                          <div>
+                            <p>{{ item.description }}</p>
+                          </div>
+                        </nz-col>
+                      </nz-row>
+                    </div>
+                  </ngu-tile>
+
+                  <ul class="myPoint" NguCarouselPoint>
+                    <li
+                      *ngFor="let i of myCarouselFlavor.pointNumbers"
+                      [class.active]="i === myCarouselFlavor.activePoint"
+                      (click)="myCarouselFlavor.moveTo(i)"
+                    ></li>
+                  </ul>
+                </ngu-carousel>
+                <ngu-carousel
+                  *ngIf="activeBlockSSD"
+                  #myCarouselFlavor
+                  [inputs]="carouselTileConfig"
+                  [dataSource]="listOfferFlavors"
+                >
+                  <ngu-tile
+                    *nguCarouselDef="let item; let ani = animate"
+                    [@slider]="ani"
+                  >
+                    <div
+                      [tabIndex]="0"
+                      style="cursor: pointer"
+                      (click)="
+                        onInputFlavors(item.id);
+                        selectElementInputFlavors('flavor_' + item.id)
+                      "
+                      (keyup.enter)="
+                        onInputFlavors(item.id);
+                        selectElementInputFlavors('flavor_' + item.id)
+                      "
+                      [id]="'flavor_' + item.id"
+                    >
+                      <nz-row>
+                        <nz-col
+                          style="padding-bottom: 5px"
+                          class="newClassFlavor text-center"
+                          [class.initialClassFlavor]="
+                            selectedElementFlavor === 'flavor_' + item.id
+                          "
+                        >
+                          <div>
+                            <span
+                              class="nameFlavor"
+                              [class.initialNameFlavor]="
+                                selectedElementFlavor === 'flavor_' + item.id
+                              "
+                              >{{ item.offerName | slice : 3 : -4 }}</span
+                            >
+                            <div style="margin-top: -16px">
+                              <img
+                                style="width: 100px"
+                                [src]="
+                                  selectedElementFlavor === 'flavor_' + item.id
+                                    ? 'assets/imgs/line2.svg'
+                                    : 'assets/imgs/line.svg'
+                                "
+                                alt=""
+                              />
+                            </div>
+                            <span class="priceFlavor">{{
+                              item.price.fixedPrice.amount | number
+                            }}</span
+                            ><span> VND/{{ 'app.Month' | i18n }}</span>
+                          </div>
+                        </nz-col>
+                      </nz-row>
+                      <nz-row>
+                        <nz-col
+                          style="width: 100%; padding-top: 5px"
+                          [class.flavor-footer-active]="
+                            selectedElementFlavor === 'flavor_' + item.id
+                          "
+                          [class.flavor-footer]="
+                            selectedElementFlavor != 'flavor_' + item.id
+                          "
+                        >
+                          <div>
+                            <p>{{ item.description }}</p>
+                          </div>
+                        </nz-col>
+                      </nz-row>
+                    </div>
+                  </ngu-tile>
+
+                  <ul class="myPoint" NguCarouselPoint>
+                    <li
+                      *ngFor="let i of myCarouselFlavor.pointNumbers"
+                      [class.active]="i === myCarouselFlavor.activePoint"
+                      (click)="myCarouselFlavor.moveTo(i)"
+                    ></li>
+                  </ul>
+                </ngu-carousel>
+              </nz-tab>
+              <nz-tab
+                [nzTitle]="'app.custom.configuration' | i18n"
+                (nzClick)="onClickCustomConfig()"
+              >
+                <div class="ant-table">
+                  <table>
+                    <thead class="ant-table-thead">
+                      <tr>
+                        <th>{{ 'app.resource' | i18n }}</th>
+                        <th>{{ 'app.amount' | i18n }}</th>
+                        <th>{{ 'app.money.price' | i18n }}</th>
+                      </tr>
+                    </thead>
+                    <tbody class="ant-table-tbody">
+                      <tr>
+                        <td style="width: 50%">
+                          <nz-form-label style="margin-left: -12px"
+                            >{{ 'app.capacity' | i18n }} (<span class="text-red"
+                              >*</span
+                            >) - GB</nz-form-label
+                          >
+                          <nz-slider
+                            [nzMin]="minCapacity"
+                            [nzMax]="maxCapacity"
+                            [nzStep]="stepCapacity"
+                            [(ngModel)]="configCustom.capacity"
+                            (ngModelChange)="changeCapacity($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                          ></nz-slider>
+                        </td>
+                        <td>
+                          <nz-input-number
+                            [(ngModel)]="configCustom.capacity"
+                            (keydown)="onKeyDown($event)"
+                            (ngModelChange)="changeCapacity($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                            [nzMin]="minCapacity"
+                            [nzMax]="maxCapacity"
+                            [nzStep]="stepCapacity"
+                            nzSize="large"
+                          ></nz-input-number>
+                        </td>
+                        <td nzAlign="right">
+                          <label class="text-custom-price">
+                            {{ volumeIntoMoney | number }} VND </label
+                          ><br />
+                          <label class="text-custom-price">
+                            {{ volumeUnitPrice | number }} VND
+                          </label>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <nz-form-label style="margin-left: -12px"
+                            >RAM (<span class="text-red">*</span>) -
+                            GB</nz-form-label
+                          >
+                          <nz-slider
+                            [nzMin]="0"
+                            [nzMax]="62"
+                            [(ngModel)]="configCustom.ram"
+                            (ngModelChange)="changeRam($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                          ></nz-slider>
+                        </td>
+                        <td>
+                          <nz-input-number
+                            [(ngModel)]="configCustom.ram"
+                            (keydown)="onKeyDown($event)"
+                            (ngModelChange)="changeRam($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                            [nzMin]="0"
+                            [nzMax]="62"
+                            [nzStep]="1"
+                            nzSize="large"
+                          ></nz-input-number>
+                        </td>
+
+                        <td nzAlign="right">
+                          <label class="text-custom-price">
+                            {{ ramIntoMoney | number }} VND </label
+                          ><br />
+                          <label class="text-custom-price">
+                            {{ ramUnitPrice | number }} VND
+                          </label>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <nz-form-label style="margin-left: -12px"
+                            >CPU (<span class="text-red">*</span>) -
+                            vCPU</nz-form-label
+                          >
+                          <nz-slider
+                            [nzMin]="0"
+                            [nzMax]="62"
+                            [(ngModel)]="configCustom.vCPU"
+                            (ngModelChange)="changeVCPU($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                          ></nz-slider>
+                        </td>
+                        <td>
+                          <nz-input-number
+                            [(ngModel)]="configCustom.vCPU"
+                            (keydown)="onKeyDown($event)"
+                            (ngModelChange)="changeVCPU($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                            [nzMin]="0"
+                            [nzMax]="62"
+                            [nzStep]="1"
+                            nzSize="large"
+                          ></nz-input-number>
+                        </td>
+                        <td nzAlign="right">
+                          <label class="text-custom-price">
+                            {{ cpuIntoMoney | number }} VND </label
+                          ><br />
+                          <label class="text-custom-price">
+                            {{ cpuUnitPrice | number }} VND
+                          </label>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </nz-tab>
+              <nz-tab
+                [nzTitle]="'app.gpu.configuration' | i18n"
+                (nzClick)="onClickGpuConfig()"
+              >
+                <div class="ant-table">
+                  <table>
+                    <thead class="ant-table-thead">
+                      <tr>
+                        <th>{{ 'app.resource' | i18n }}</th>
+                        <th>{{ 'app.amount' | i18n }}</th>
+                        <th>{{ 'app.money.price' | i18n }}</th>
+                      </tr>
+                    </thead>
+                    <tbody class="ant-table-tbody">
+                      <tr>
+                        <td>
+                          <nz-form-label style="margin-left: -12px"
+                            >CPUs (<span class="text-red">*</span
+                            >)</nz-form-label
+                          >
+                          <nz-slider
+                            [nzMin]="0"
+                            [nzMax]="62"
+                            [(ngModel)]="configGPU.CPU"
+                            (ngModelChange)="changeCpuOfGpu($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                          ></nz-slider>
+                        </td>
+                        <td>
+                          <nz-input-number
+                            [(ngModel)]="configGPU.CPU"
+                            (keydown)="onKeyDown($event)"
+                            (ngModelChange)="changeCpuOfGpu($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                            [nzMin]="0"
+                            [nzMax]="62"
+                            [nzStep]="1"
+                            nzSize="large"
+                          ></nz-input-number>
+                        </td>
+                        <td nzAlign="right">
+                          <label class="text-custom-price">
+                            {{ cpuIntoMoney | number }} VND </label
+                          ><br />
+                          <label class="text-custom-price">
+                            {{ cpuUnitPrice | number }} VND
+                          </label>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <nz-form-label style="margin-left: -12px"
+                            >RAM (<span class="text-red">*</span>) -
+                            GB</nz-form-label
+                          >
+                          <nz-slider
+                            [nzMin]="0"
+                            [nzMax]="62"
+                            [(ngModel)]="configGPU.ram"
+                            (ngModelChange)="changeRamOfGpu($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                          ></nz-slider>
+                        </td>
+                        <td>
+                          <nz-input-number
+                            [(ngModel)]="configGPU.ram"
+                            (keydown)="onKeyDown($event)"
+                            (ngModelChange)="changeRamOfGpu($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                            [nzMin]="0"
+                            [nzMax]="62"
+                            [nzStep]="1"
+                            nzSize="large"
+                          ></nz-input-number>
+                        </td>
+
+                        <td nzAlign="right">
+                          <label class="text-custom-price">
+                            {{ ramIntoMoney | number }} VND </label
+                          ><br />
+                          <label class="text-custom-price">
+                            {{ ramUnitPrice | number }} VND
+                          </label>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="width: 50%">
+                          <nz-form-label style="margin-left: -12px"
+                            >{{ 'app.ssd.capacity' | i18n }} (<span
+                              class="text-red"
+                              >*</span
+                            >) - GB</nz-form-label
+                          >
+                          <nz-slider
+                            [nzMin]="minCapacity"
+                            [nzMax]="maxCapacity"
+                            [nzStep]="stepCapacity"
+                            [(ngModel)]="configGPU.storage"
+                            (ngModelChange)="changeStorageOfGpu($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                          ></nz-slider>
+                        </td>
+                        <td>
+                          <nz-input-number
+                            [(ngModel)]="configGPU.storage"
+                            (keydown)="onKeyDown($event)"
+                            (ngModelChange)="changeStorageOfGpu($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                            [nzMin]="minCapacity"
+                            [nzMax]="maxCapacity"
+                            [nzStep]="stepCapacity"
+                            nzSize="large"
+                          ></nz-input-number>
+                        </td>
+                        <td nzAlign="right">
+                          <label class="text-custom-price">
+                            {{ volumeIntoMoney | number }} VND </label
+                          ><br />
+                          <label class="text-custom-price">
+                            {{ volumeUnitPrice | number }} VND
+                          </label>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="width: 50%">
+                          <nz-form-label style="margin-left: -12px"
+                            >{{ 'app.gpu.number' | i18n }} (<span
+                              class="text-red"
+                              >*</span
+                            >)</nz-form-label
+                          >
+                          <nz-slider
+                            [nzMin]="0"
+                            [nzMax]="8"
+                            [(ngModel)]="configGPU.GPU"
+                            (ngModelChange)="changeGpu($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                          ></nz-slider>
+                        </td>
+                        <td>
+                          <nz-input-number
+                            [(ngModel)]="configGPU.GPU"
+                            (keydown)="onKeyDown($event)"
+                            (ngModelChange)="changeGpu($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                            [nzMin]="0"
+                            [nzMax]="8"
+                            [nzStep]="1"
+                            nzSize="large"
+                          ></nz-input-number>
+                        </td>
+                        <td nzAlign="right">
+                          <label class="text-custom-price">
+                            {{ gpuIntoMoney | number }} VND </label
+                          ><br />
+                          <label class="text-custom-price">
+                            {{ gpuUnitPrice | number }} VND
+                          </label>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
+                  <nz-form-label
+                    >{{ 'app.choose.gpu.type' | i18n }} (<span class="text-red"
+                      >*</span
+                    >)</nz-form-label
+                  >
+                  <nz-form-control>
+                    <nz-select
+                      [nzPlaceHolder]="
+                        '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
+                      "
+                      [nzShowSearch]="true"
+                      [(ngModel)]="configGPU.gpuOfferId"
+                      (ngModelChange)="changeGpuType()"
+                      [ngModelOptions]="{ standalone: true }"
+                      nzSize="large"
+                    >
+                      <nz-option
+                        *ngFor="let i of listGPUType"
+                        [nzLabel]="i.offerName"
+                        [nzValue]="i.id"
+                      />
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-tab>
+            </nz-tabset>
+            <br />
+            <nz-row nzGutter="16">
+              <nz-col nzLg="12" nzMd="12" nzSm="24">
                 <nz-form-item>
                   <nz-form-label>
                     <span
@@ -229,7 +794,7 @@
                       appAutofocus
                       class="input-custom"
                       nz-input
-                      formControlName="instanceName"
+                      formControlName="name"
                       [placeholder]="'app.input.name' | i18n"
                       [maxlength]="50"
                     />
@@ -243,22 +808,44 @@
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
+              </nz-col>
+              <nz-col nzLg="12" nzMd="12" nzSm="24">
                 <nz-form-item>
-                  <nz-form-label>
-                    <span
-                      >{{ 'app.choose.ip.public' | i18n }} (<span
-                        style="color: #ff0000"
-                        >*</span
-                      >)</span
+                  <nz-form-label>{{
+                    'app.choose.security.group' | i18n
+                  }}</nz-form-label>
+                  <nz-form-control>
+                    <nz-select
+                      nzMode="multiple"
+                      [ngModelOptions]="{ standalone: true }"
+                      [(ngModel)]="selectedSecurityGroup"
+                      [nzServerSearch]="true"
+                      nzSize="large"
                     >
-                    <img
+                      <nz-option
+                        *ngFor="let i of listSecurityGroup"
+                        [nzLabel]="i.name"
+                        [nzValue]="i.name"
+                        [nzDisabled]="i.name.toUpperCase() === 'DEFAULT'"
+                      />
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+            <nz-row nzGutter="16">
+              <nz-col nzLg="12" nzMd="12" nzSm="24">
+                <nz-form-item
+                  ><nz-form-label
+                    >{{ 'app.choose.ip.public' | i18n }} (<span class="text-red"
+                      >*</span
+                    >)<img
                       style="margin-left: 10px"
                       nz-popover
                       [nzPopoverContent]="contentTemplateIPPublic"
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
-                    />
-                    <ng-template #contentTemplateIPPublic>
+                    /><ng-template #contentTemplateIPPublic>
                       <span
                         [innerHTML]="'app.tooltip.instance.ip.public' | i18n"
                       ></span>
@@ -268,37 +855,67 @@
                         ]"
                         >{{ 'app.ip.floating' | i18n }}</a
                       >
-                    </ng-template>
-                  </nz-form-label>
+                    </ng-template></nz-form-label
+                  >
                   <nz-form-control>
-                    <nz-form-control>
-                      <nz-select
-                        [nzPlaceHolder]="'menu.dashboard.v1' | i18n"
-                        [nzShowSearch]="true"
-                        formControlName="ipPublic"
-                        nzSize="large"
-                      >
-                        <nz-option
-                          [nzLabel]="'menu.dashboard.v1' | i18n"
-                          [nzValue]="0"
-                        />
-                        <nz-option
-                          *ngFor="let i of listIPPublic"
-                          [nzLabel]="i.ipAddress || i.networkId"
-                          [nzValue]="i.id"
-                        />
-                      </nz-select>
-                    </nz-form-control>
+                    <nz-select
+                      [nzPlaceHolder]="'menu.dashboard.v1' | i18n"
+                      [nzShowSearch]="true"
+                      [(ngModel)]="ipPublicValue"
+                      [ngModelOptions]="{ standalone: true }"
+                      nzSize="large"
+                    >
+                      <nz-option
+                        [nzLabel]="'menu.dashboard.v1' | i18n"
+                        [nzValue]="0"
+                      />
+                      <nz-option
+                        *ngFor="let i of listIPPublic"
+                        [nzLabel]="i.ipAddress || i.networkId"
+                        [nzValue]="i.id"
+                      />
+                    </nz-select>
                   </nz-form-control>
                 </nz-form-item>
-                <nz-form-item *ngIf="!hidePort">
-                  <nz-form-label>
-                    <span
-                      >{{ 'app.choose.port' | i18n }} (<span class="text-red"
-                        >*</span
-                      >)</span
+              </nz-col>
+              <nz-col nzLg="12" nzMd="12" nzSm="24">
+                <nz-form-item>
+                  <nz-form-label
+                    >{{ 'app.choose.vlan.instance' | i18n }} (<span
+                      class="text-red"
+                      >*</span
+                    >)</nz-form-label
+                  >
+                  <nz-form-control>
+                    <nz-select
+                      [nzShowSearch]="true"
+                      [(ngModel)]="vlanNetwork"
+                      (ngModelChange)="getListPort()"
+                      [ngModelOptions]="{ standalone: true }"
+                      nzSize="large"
                     >
-                  </nz-form-label>
+                      <nz-option
+                        [nzLabel]="'app.do.not.use' | i18n"
+                        [nzValue]="''"
+                      />
+                      <nz-option
+                        *ngFor="let i of listVlanNetwork"
+                        [nzLabel]="i.name"
+                        [nzValue]="i.cloudId"
+                      />
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+            <nz-row *ngIf="!hidePort" nzGutter="24">
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label
+                    >{{ 'app.choose.port' | i18n }} (<span class="text-red"
+                      >*</span
+                    >)</nz-form-label
+                  >
                   <nz-form-control>
                     <nz-select
                       [nzShowSearch]="true"
@@ -315,286 +932,105 @@
                   </nz-form-control>
                 </nz-form-item>
               </nz-col>
-              <nz-col nzSpan="12">
-                <nz-form-item>
-                  <nz-form-label>
-                    <span>{{ 'app.choose.security.group' | i18n }}</span>
-                    <img
-                      style="margin-left: 10px"
-                      nz-popover
-                      [nzPopoverPlacement]="'bottom'"
-                      [nzPopoverContent]="'app.choose.security.group' | i18n"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
-                  </nz-form-label>
-                  <nz-form-control>
-                    <nz-select
-                      nzMode="multiple"
-                      nzSize="large"
-                      formControlName="securityGroupIds"
-                      [nzPlaceHolder]="'app.choose.security.group' | i18n"
-                    >
-                      <nz-option
-                        *ngFor="
-                          let index of backupVmModel?.securityGroupBackups
-                        "
-                        [nzValue]="index.id"
-                        >{{ index.sgName }}
-                      </nz-option>
-                    </nz-select>
-                  </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>
-                    <span
-                      >{{ 'app.choose.vlan.instance' | i18n }} (<span
-                        style="color: #ff0000"
-                        >*</span
-                      >)</span
-                    >
-                  </nz-form-label>
-                  <nz-form-control>
-                    <nz-select
-                      [nzShowSearch]="true"
-                      formControlName="vlan"
-                      (ngModelChange)="getListPort()"
-                      nzSize="large"
-                    >
-                      <nz-option [nzLabel]="'Không sử dụng'" [nzValue]="''" />
-                      <nz-option
-                        *ngFor="let i of listVlanNetwork"
-                        [nzLabel]="i.name"
-                        [nzValue]="i.cloudId"
-                      />
-                    </nz-select>
-                  </nz-form-control>
-                </nz-form-item>
-              </nz-col>
             </nz-row>
-            <nz-tabset
-              nzCentered
-              nzSize="large"
-              (keydown)="handleKeyboardEvent($event)"
-            >
-              <nz-tab [nzTitle]="'app.backup.config.vm.new' | i18n">
-                <div class="ant-table">
-                  <table>
-                    <thead class="ant-table-thead">
-                      <tr>
-                        <th>{{ 'app.resource' | i18n }}</th>
-                        <th>{{ 'app.amount' | i18n }}</th>
-                        <th>{{ 'app.money.price' | i18n }}</th>
-                      </tr>
-                    </thead>
-                    <tbody class="ant-table-tbody">
-                      <tr>
-                        <td style="width: 50%">
-                          <nz-form-label style="margin-left: -12px"
-                            >{{ 'app.capacity' | i18n }} (<span class="text-red"
-                              >*</span
-                            >) - GB
-                          </nz-form-label>
-                          <nz-slider
-                            [nzMin]="0"
-                            [nzMax]="1000"
-                            [(ngModel)]="configCustom.capacity"
-                            [ngModelOptions]="{ standalone: true }"
-                            (ngModelChange)="changeCapacity($event)"
-                          ></nz-slider>
-                        </td>
-                        <td>
-                          <nz-input-number
-                            [(ngModel)]="configCustom.capacity"
-                            (keydown)="onKeyDown($event)"
-                            (ngModelChange)="changeCapacity($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                            [nzMin]="0"
-                            [nzMax]="1000"
-                            [nzStep]="1"
-                            nzSize="large"
-                          ></nz-input-number>
-                        </td>
-                        <td nzAlign="right">
-                          <label class="text-custom-price"
-                            >{{ volumeIntoMoney | number }} VND </label
-                          ><br />
-                          <label class="text-custom-price"
-                            >{{ volumeUnitPrice | number }} VND</label
-                          >
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <nz-form-label style="margin-left: -12px"
-                            >RAM (<span class="text-red">*</span>) - GB
-                          </nz-form-label>
-                          <nz-slider
-                            [nzMin]="0"
-                            [nzMax]="62"
-                            [(ngModel)]="configCustom.ram"
-                            (ngModelChange)="changeRam($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                          ></nz-slider>
-                        </td>
-                        <td>
-                          <nz-input-number
-                            [(ngModel)]="configCustom.ram"
-                            (keydown)="onKeyDown($event)"
-                            (ngModelChange)="changeRam($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                            [nzMin]="0"
-                            [nzMax]="62"
-                            [nzStep]="1"
-                            nzSize="large"
-                          ></nz-input-number>
-                        </td>
-                        <td nzAlign="right">
-                          <label class="text-custom-price"
-                            >{{ ramIntoMoney | number }} VND </label
-                          ><br />
-                          <label class="text-custom-price"
-                            >{{ ramUnitPrice | number }} VND</label
-                          >
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <nz-form-label style="margin-left: -12px"
-                            >CPU (<span class="text-red">*</span>) - vCPU
-                          </nz-form-label>
-                          <nz-slider
-                            [nzMin]="0"
-                            [nzMax]="62"
-                            [(ngModel)]="configCustom.vCPU"
-                            (ngModelChange)="changeVCPU($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                          ></nz-slider>
-                        </td>
-                        <td>
-                          <nz-input-number
-                            [(ngModel)]="configCustom.vCPU"
-                            (keydown)="onKeyDown($event)"
-                            (ngModelChange)="changeVCPU($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                            [nzMin]="0"
-                            [nzMax]="62"
-                            [nzStep]="1"
-                            nzSize="large"
-                          ></nz-input-number>
-                        </td>
-                        <td nzAlign="right">
-                          <label class="text-custom-price"
-                            >{{ cpuIntoMoney | number }} VND </label
-                          ><br />
-                          <label class="text-custom-price"
-                            >{{ cpuUnitPrice | number }} VND</label
-                          >
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </nz-tab>
-            </nz-tabset>
-            <nz-form-item style="padding-top: 20px">
-              <nz-form-label>
-                <span
-                  >{{ 'app.access.method.instance' | i18n }} (<span
-                    style="color: #ff0000"
-                    >*</span
-                  >)
-                  <img
-                    style="margin-left: 10px"
-                    [nz-tooltip]="'app.tooltip.access.method.instance' | i18n"
-                    src="assets/imgs/pajamas_question.svg"
-                    alt=""
-                /></span>
-              </nz-form-label>
-              <nz-radio-group>
-                <nz-row nzGutter="16">
-                  <nz-col nzXs="24" nzMd="12" nzLg="12">
-                    <nz-card
-                      style="border-radius: 4px"
-                      [ngStyle]="{
-                        border: activeBlockPassword
-                          ? '1px solid #0066B3'
-                          : '1px solid #DADADA'
-                      }"
+            <nz-row>
+              <nz-form-label nzFor="name"
+                >{{ 'app.access.method.instance' | i18n }} (<span
+                  class="text-red"
+                  >*</span
+                >)<img
+                  style="margin-left: 10px"
+                  [nz-tooltip]="'app.tooltip.access.method.instance' | i18n"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+              /></nz-form-label>
+            </nz-row>
+            <nz-row nzGutter="16">
+              <nz-radio-group
+                style="width: 100%; display: inline-flex"
+                name="selectedPasswordOrSSHkey"
+              >
+                <nz-col nzXs="24" nzMd="12" nzLg="12">
+                  <nz-card
+                    style="border-radius: 4px"
+                    [ngStyle]="{
+                      border: activeBlockPassword
+                        ? '1px solid #0066B3'
+                        : '1px solid #DADADA'
+                    }"
+                  >
+                    <nz-card-meta
+                      [nzAvatar]="nzAvatarselectedPasswordOrSSHkey1"
+                      [nzTitle]="nzTitleselectedPasswordOrSSHkey1"
+                      [nzDescription]="nzDescriptionselectedPasswordOrSSHkey1"
                     >
-                      <nz-card-meta
-                        [nzAvatar]="nzAvatarselectedPasswordOrSSHkey1"
-                        [nzTitle]="nzTitleselectedPasswordOrSSHkey1"
-                        [nzDescription]="nzDescriptionselectedPasswordOrSSHkey1"
-                      >
-                        <ng-template #nzAvatarselectedPasswordOrSSHkey1>
-                          <label
-                            [tabIndex]="0"
-                            nz-radio
-                            [ngModel]="activeBlockPassword"
-                            [ngModelOptions]="{ standalone: true }"
-                            (click)="initPassword()"
-                            (keyup.enter)="initPassword()"
-                          ></label>
-                        </ng-template>
-                        <ng-template #nzTitleselectedPasswordOrSSHkey1>
-                          <b>{{ 'app.password' | i18n }} </b>
-                        </ng-template>
-                        <ng-template #nzDescriptionselectedPasswordOrSSHkey1>
-                          <ellipsis class="text-custom">
-                            {{ 'app.password.intro.text' | i18n }}
-                          </ellipsis>
-                        </ng-template>
-                      </nz-card-meta>
-                    </nz-card>
-                  </nz-col>
-                  <nz-col nzXs="24" nzMd="12" nzLg="12">
-                    <nz-card
-                      style="border-radius: 4px"
-                      [ngStyle]="{
-                        border: activeBlockSSHKey
-                          ? '1px solid #0066B3'
-                          : '1px solid #DADADA'
-                      }"
+                      <ng-template #nzAvatarselectedPasswordOrSSHkey1>
+                        <label
+                          [tabIndex]="0"
+                          nz-radio
+                          [ngModel]="activeBlockPassword"
+                          [ngModelOptions]="{ standalone: true }"
+                          (click)="initPassword()"
+                          (keyup.enter)="initPassword()"
+                        ></label>
+                      </ng-template>
+                      <ng-template #nzTitleselectedPasswordOrSSHkey1>
+                        <b>{{ 'app.password' | i18n }} </b>
+                      </ng-template>
+                      <ng-template #nzDescriptionselectedPasswordOrSSHkey1>
+                        <ellipsis class="text-custom">
+                          {{ 'app.password.intro.text' | i18n }}</ellipsis
+                        >
+                      </ng-template>
+                    </nz-card-meta>
+                  </nz-card>
+                </nz-col>
+                <nz-col nzXs="24" nzMd="12" nzLg="12">
+                  <nz-card
+                    style="border-radius: 4px"
+                    [ngStyle]="{
+                      border: activeBlockSSHKey
+                        ? '1px solid #0066B3'
+                        : '1px solid #DADADA'
+                    }"
+                  >
+                    <nz-card-meta
+                      [nzAvatar]="nzAvatarselectedPasswordOrSSHkey2"
+                      [nzTitle]="nzTitleselectedPasswordOrSSHkey2"
+                      [nzDescription]="nzDescriptionselectedPasswordOrSSHkey2"
                     >
-                      <nz-card-meta
-                        [nzAvatar]="nzAvatarselectedPasswordOrSSHkey2"
-                        [nzTitle]="nzTitleselectedPasswordOrSSHkey2"
-                        [nzDescription]="nzDescriptionselectedPasswordOrSSHkey2"
-                      >
-                        <ng-template #nzAvatarselectedPasswordOrSSHkey2>
-                          <label
-                            [tabIndex]="0"
-                            nz-radio
-                            [ngModel]="activeBlockSSHKey"
-                            [ngModelOptions]="{ standalone: true }"
-                            (click)="initSSHkey()"
-                            (keyup.enter)="initSSHkey()"
-                            [disabled]="disableKeypair"
-                          ></label>
-                        </ng-template>
-                        <ng-template #nzTitleselectedPasswordOrSSHkey2>
-                          <b>Keypair</b>
-                        </ng-template>
-                        <ng-template #nzDescriptionselectedPasswordOrSSHkey2>
-                          <ellipsis class="text-custom">{{
-                            'app.keypair.intro.text' | i18n
-                          }}</ellipsis>
-                        </ng-template>
-                      </nz-card-meta>
-                    </nz-card>
-                  </nz-col>
-                </nz-row>
+                      <ng-template #nzAvatarselectedPasswordOrSSHkey2>
+                        <label
+                          [tabIndex]="0"
+                          nz-radio
+                          [ngModel]="activeBlockSSHKey"
+                          [ngModelOptions]="{ standalone: true }"
+                          (click)="initSSHkey()"
+                          (keyup.enter)="initSSHkey()"
+                          [disabled]="disableKeypair"
+                        ></label>
+                      </ng-template>
+                      <ng-template #nzTitleselectedPasswordOrSSHkey2>
+                        <b>Keypair</b>
+                      </ng-template>
+                      <ng-template #nzDescriptionselectedPasswordOrSSHkey2>
+                        <ellipsis class="text-custom">
+                          {{ 'app.keypair.intro.text' | i18n }}</ellipsis
+                        >
+                      </ng-template>
+                    </nz-card-meta>
+                  </nz-card>
+                </nz-col>
               </nz-radio-group>
               <div *ngIf="activeBlockPassword" style="width: 100%">
                 <nz-col nzSpan="24">
                   <nz-form-item>
-                    <nz-form-label nzFor="name">
-                      {{ 'app.label.instance.password' | i18n }} (<span
-                        style="color: #ff0000"
+                    <nz-form-label nzFor="name"
+                      >{{ 'app.label.instance.password' | i18n }} (<span
+                        class="text-red"
                         >*</span
-                      >)
-                    </nz-form-label>
+                      >)</nz-form-label
+                    >
                     <nz-form-control [nzErrorTip]="passwordErrorTpl">
                       <nz-input-group
                         [nzSuffix]="suffixTemplate"
@@ -605,7 +1041,8 @@
                           [type]="passwordVisible ? 'text' : 'password'"
                           nz-input
                           [placeholder]="'app.input.password' | i18n"
-                          formControlName="password"
+                          formControlName="passOrKeyFormControl"
+                          [(ngModel)]="password"
                         />
                       </nz-input-group>
                       <ng-template #suffixTemplate>
@@ -622,12 +1059,12 @@
                       </ng-template>
                     </nz-form-control>
                     <ng-template #passwordErrorTpl let-control>
-                      <ng-container *ngIf="control.hasError('required')"
-                        >{{ 'validation.instance.password.required' | i18n }}
-                      </ng-container>
-                      <ng-container *ngIf="control.hasError('pattern')"
-                        >{{ 'validation.password.pattern' | i18n }}
-                      </ng-container>
+                      <ng-container *ngIf="control.hasError('required')">{{
+                        'validation.instance.password.required' | i18n
+                      }}</ng-container>
+                      <ng-container *ngIf="control.hasError('pattern')">{{
+                        'validation.password.pattern' | i18n
+                      }}</ng-container>
                     </ng-template>
                   </nz-form-item>
                 </nz-col>
@@ -648,11 +1085,11 @@
               <div *ngIf="activeBlockSSHKey" style="width: 100%">
                 <nz-col nzSpan="24">
                   <nz-form-item>
-                    <nz-form-label>
-                      {{ 'app.choose.keypair' | i18n }} (<span class="text-red"
+                    <nz-form-label
+                      >{{ 'app.choose.keypair' | i18n }} (<span class="text-red"
                         >*</span
-                      >)
-                    </nz-form-label>
+                      >)</nz-form-label
+                    >
                     <nz-form-control [nzErrorTip]="keypairErrorTpl">
                       <nz-select
                         *ngIf="activeBlockSSHKey"
@@ -672,17 +1109,15 @@
                       </nz-select>
                     </nz-form-control>
                     <ng-template #keypairErrorTpl let-control>
-                      <ng-container *ngIf="control.hasError('required')"
-                        >{{
-                          'validation.choose.required'
-                            | i18n : { name: 'keypair' }
-                        }}
-                      </ng-container>
+                      <ng-container *ngIf="control.hasError('required')">{{
+                        'validation.choose.required'
+                          | i18n : { name: 'keypair' }
+                      }}</ng-container>
                     </ng-template>
                   </nz-form-item>
                 </nz-col>
-                <nz-form-label style="margin-bottom: 20px"
-                  >{{ 'app.instances.keypair.label' | i18n }}&nbsp;
+                <nz-form-label style="margin-bottom: 20px">
+                  {{ 'app.instances.keypair.label' | i18n }}&nbsp;
                   <a [routerLink]="['/app-smart-cloud/keypair']">{{
                     'app.label.create' | i18n
                   }}</a>
@@ -699,14 +1134,15 @@
                       <a
                         href="https://docs.smartcloud.vn/index.php/knowledge-base/su-dung-keypair/"
                         target="_blank"
-                        >{{ 'app.here' | i18n }}</a
-                      >
-                      <br />{{ 'app.alert.keypair.next' | i18n }}
+                        >{{ 'app.here' | i18n }}
+                      </a>
+                      <br />
+                      {{ 'app.alert.keypair.next' | i18n }}
                     </div>
                   </ng-template>
                 </nz-col>
               </div>
-            </nz-form-item>
+            </nz-row>
           </div>
         </div>
       </nz-card>
@@ -723,7 +1159,7 @@
           </div>
           <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
-            {{ instanceCreate.serviceName }}
+            {{ backupVmModel?.instanceName }}
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>

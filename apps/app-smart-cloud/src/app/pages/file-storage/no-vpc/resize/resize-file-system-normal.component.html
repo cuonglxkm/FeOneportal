@@ -131,7 +131,7 @@
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-            <one-portal-time-used-resize [expireDate]="fileSystem?.expireDate" [createDate]="fileSystem?.createdDate"/>
+            <one-portal-time-used-resize [nameService]="'File System'" [expireDate]="fileSystem?.expireDate" [createDate]="fileSystem?.createdDate"/>
           </nz-card>
           <nz-card style="border-radius: 8px;">
             <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
@@ -155,9 +155,10 @@
                                  style="width: 100%; margin-left: 0;"
                                  nzAutoFocus
                                  class="input-custom"
-                                 [nzMin]="fileSystem?.size"
+                                 [nzMin]="minStorage"
                                  (ngModelChange)="changeValueStorage($event)"
-                                 [nzStep]="stepStorage" />
+                                 [nzStep]="stepStorage"
+                                 [nzMax]="maxStorage"/>
                 <ng-template #storageErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required') || control.hasError('pattern')">{{ 'validation.file.system.capacity.required' | i18n }}</ng-container>
                   <!--                <ng-container-->
@@ -179,7 +180,7 @@
             </nz-form-item>
             <nz-form-item style="margin-bottom: 0;">
               <nz-form-label>
-                <span>{{ 'app.adjust.date' | i18n }}: {{ dateEdit | date: 'dd/MM/yyyy' }}</span>
+                <span>{{ 'app.adjust.date' | i18n }}: {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
               </nz-form-label>
             </nz-form-item>
           </nz-card>

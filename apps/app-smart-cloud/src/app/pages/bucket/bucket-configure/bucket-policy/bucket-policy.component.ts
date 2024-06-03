@@ -18,13 +18,14 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import {
   BucketPolicy,
   bucketPolicyDetail,
 } from 'src/app/shared/models/bucket.model';
 import { SubUser } from 'src/app/shared/models/sub-user.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-bucket-policy',
@@ -34,7 +35,7 @@ import { BucketService } from 'src/app/shared/services/bucket.service';
 })
 export class BucketPolicyComponent implements OnInit {
   @Input() bucketName: string;
-  searchValue: string = '';
+  value: string = '';
   listBucketPolicy: BucketPolicy[] = [];
   pageSize: number = 10;
   pageNumber: number = 1;
@@ -46,7 +47,7 @@ export class BucketPolicyComponent implements OnInit {
   listPermission = [{ name: 'Allow' }, { name: 'Deny' }];
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   public optionJsonEditor: JsonEditorOptions;
-
+  searchDelay = new Subject<boolean>();
   constructor(
     private bucketService: BucketService,
     private notification: NzNotificationService,
@@ -61,6 +62,9 @@ export class BucketPolicyComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchBucketPolicy();
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+      this.searchBucketPolicy();
+    });
   }
 
   formEdit: FormGroup<{
@@ -74,6 +78,7 @@ export class BucketPolicyComponent implements OnInit {
     permission: ['', Validators.required],
     listActionPermission: [[] as string[], Validators.required],
   });
+  
 
   searchBucketPolicy() {
     this.loading = true;
@@ -82,7 +87,7 @@ export class BucketPolicyComponent implements OnInit {
         this.bucketName,
         this.pageNumber,
         this.pageSize,
-        this.searchValue
+        this.value.trim()
       )
       .pipe(
         finalize(() => {
@@ -105,6 +110,11 @@ export class BucketPolicyComponent implements OnInit {
           );
         },
       });
+  }
+
+  search(search: string) {  
+    this.value = search.trim();
+    this.searchBucketPolicy();
   }
 
   listSubuser: SubUser[] = [];

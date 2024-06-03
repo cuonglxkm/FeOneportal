@@ -17,6 +17,9 @@ import {
 } from '../../instances/instances.model';
 import { Subject, debounceTime } from 'rxjs';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderItemObject } from 'src/app/shared/models/price';
+
 
 @Component({
   selector: 'one-portal-object-storage-create',
@@ -29,17 +32,27 @@ export class ObjectStorageCreateComponent implements OnInit {
   numberMonth: number = 1;
   expiredDate: Date = addDays(this.today, 30);
   objectStorageCreate: ObjectStorageCreate = new ObjectStorageCreate();
+  valueStringConfiguration: string
+  minStorage: number
+  maxStorage: number
+  stepStorage: number
+  unitPrice = 0;
+  dataSubject: Subject<any> = new Subject<any>();
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private service: ObjectStorageService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private configurationsService: ConfigurationsService
   ) {}
 
   ngOnInit(): void {
+    this.dataSubject.next(1);
     this.onChangeCapacity();
     this.onChangeTime();
+    this.getConfigurations()
+    this.getTotalAmount()
   }
 
   dataSubjectTime: Subject<any> = new Subject<any>();
@@ -88,7 +101,7 @@ export class ObjectStorageCreateComponent implements OnInit {
 
   totalAmount: number = 0;
   totalincludesVAT: number = 0;
-  dataSubject: Subject<any> = new Subject<any>();
+  
   changeCapacity(value: number) {
     this.dataSubject.next(value);
   }
@@ -102,6 +115,8 @@ export class ObjectStorageCreateComponent implements OnInit {
       });
   }
 
+  orderObject: OrderItemObject = new OrderItemObject();
+  orderItem: OrderItem[] = [];
   getTotalAmount() {
     this.initObjectStorage();
     let itemPayment: ItemPayment = new ItemPayment();
@@ -118,12 +133,14 @@ export class ObjectStorageCreateComponent implements OnInit {
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );
+      this.orderObject = result.data
+      console.log('this.orderObject', this.orderObject);
       this.cdr.detectChanges();
     });
   }
 
   order: Order = new Order();
-  orderItem: OrderItem[] = [];
+
   create() {
     this.initObjectStorage();
     let specification = JSON.stringify(this.objectStorageCreate);
@@ -144,5 +161,15 @@ export class ObjectStorageCreateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: this.order, path: returnPath },
     });
+  }
+
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
+    })
   }
 }

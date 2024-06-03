@@ -104,121 +104,51 @@ export class InstancesComponent implements OnInit {
         let instanceId = data.serviceId;
         let actionType = data.actionType;
         var taskState = data?.data?.taskState ?? "";
-        var foundIndex = this.dataList.findIndex((x) => x.id == instanceId);
-        if (!instanceId) {
-          return;
-        }
+        var flavorName = data?.data?.flavorName ?? "";
+
         var foundIndex = this.dataList.findIndex((x) => x.id == instanceId);
         if (foundIndex > -1) {
           switch (actionType) {
-            case 'CREATE':
-              var record = this.dataList[foundIndex];
-
-              record.status = data.status;
-              record.taskState = data.taskState;
-              record.ipPrivate = data.ipPrivate;
-              record.ipPublic = data.ipPublic;
-
-              this.dataList[foundIndex] = record;
-              this.cdr.detectChanges();
-              break;
-
             case 'SHUTOFF':
             case 'START':
+            case 'REBOOTING':
+              this.updateRowState(taskState, foundIndex);
             case 'REBOOT':
-              var record = this.dataList[foundIndex];
-
-              record.taskState = data.taskState;
-
-              this.dataList[foundIndex] = record;
-              this.cdr.detectChanges();
+              this.updateRowState(taskState, foundIndex);
               break;
-
             case 'RESIZING':
+              this.updateRowState(taskState, foundIndex);
+              break;
             case 'RESIZED':
               var record = this.dataList[foundIndex];
-
-              if (data.status) {
-                record.status = data.status;
+              if (taskState) {
+                record.taskState = taskState;
               }
-
-              if (data.taskState) {
-                record.taskState = data.taskState;
+              if (flavorName) {
+                record.flavorName = flavorName;
               }
-
-              if (data.flavorName) {
-                record.flavorName = data.flavorName;
-              }
-
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
               break;
             case 'REBUILDING':
-              console.log("rebuilding")
-              var record = this.dataList[foundIndex];
-    
-              // if (data.status) {
-              //   record.status = data.status;
-              // }
-
-              if (taskState) {
-                record.taskState = taskState;
-              }
-
-              // if (data.flavorName) {
-              //   record.flavorName = data.flavorName;
-              // }
-
-              this.dataList[foundIndex] = record;
-              this.cdr.detectChanges();
+              this.updateRowState(taskState, foundIndex);
               break;
             case 'REBUILDED':
-              console.log("REBUILDED")
-                  var record = this.dataList[foundIndex];
-    
-                  // if (data.status) {
-                  //   record.status = data.status;
-                  // }
-    
-                  if (taskState) {
-                    record.taskState = taskState;
-                  }
-    
-                  // if (data.flavorName) {
-                  //   record.flavorName = data.flavorName;
-                  // }
-    
-                  this.dataList[foundIndex] = record;
-                  this.cdr.detectChanges();
+              this.updateRowState(taskState, foundIndex);
                   break;
-                case 'DELETING':
-                  var record = this.dataList[foundIndex];
-    
-                  // if (data.status) {
-                  //   record.status = data.status;
-                  // }
-    
-                  if (taskState) {
-                    record.taskState = taskState;
-                  }
-    
-                  // if (data.flavorName) {
-                  //   record.flavorName = data.flavorName;
-                  // }
-    
-                  this.dataList[foundIndex] = record;
-                  this.cdr.detectChanges();
-                case 'DELETED':
-                    this.reloadTable();
-                          // var record = this.dataList[foundIndex];
-    
-                          // if (data.taskState) {
-                          //   record.taskState = data.taskState;
-                          // }
-            
-            
-                          // this.dataList[foundIndex] = record;
-                          // this.cdr.detectChanges();
+            case 'DELETING':
+                this.updateRowState(taskState, foundIndex);
+            case 'DELETED':
+                this.reloadTable();
+          }
+        }
+        else
+        {
+          switch (actionType) {
+            case 'CREATING':
+            case 'CREATED':
+              this.getDataList();
+            break;
           }
         }
       }
@@ -400,6 +330,7 @@ export class InstancesComponent implements OnInit {
         next: (data) => {
           this.listPort = data.filter((e) => e.attachedDeviceId == '');
           this.portLoading = false;
+          this.instanceAction.portId = this.listPort[0].id;
         },
         error: (e) => {
           this.notification.error(
@@ -482,6 +413,13 @@ export class InstancesComponent implements OnInit {
           this.i18n.fanyi('app.notify.attach.vlan.fail')
         );
       },
+    });
+  }
+
+  navigatetoCreatePort() {
+    let selectedVlan = this.listVlanNetwork.filter(e => e.cloudId == this.instanceAction.networkId);
+    this.router.navigate([`/app-smart-cloud/vlan/network/detail/${selectedVlan[0].id}`], {
+      state: { selectedIndextab: 1 },
     });
   }
 
@@ -932,5 +870,15 @@ export class InstancesComponent implements OnInit {
         );
       },
     });
+  }
+  
+  updateRowState(taskState: string, foundIndex: number)
+  {
+    var record = this.dataList[foundIndex];
+    if (taskState) {
+      record.taskState = taskState;
+    }
+    this.dataList[foundIndex] = record;
+    this.cdr.detectChanges();
   }
 }

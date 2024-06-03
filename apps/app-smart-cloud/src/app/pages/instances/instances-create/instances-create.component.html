@@ -506,7 +506,7 @@
                         <span class="priceFlavor">{{
                           item.price.fixedPrice.amount | number
                         }}</span
-                        ><span> VND/tháng</span>
+                        ><span> VND/{{ 'app.Month' | i18n }}</span>
                       </div>
                     </nz-col>
                   </nz-row>
@@ -547,7 +547,7 @@
                   <tr>
                     <th>{{ 'app.resource' | i18n }}</th>
                     <th>{{ 'app.amount' | i18n }}</th>
-                    <th>{{ 'app.money.price' | i18n }}</th>
+                    <th>{{ 'app.money.price' | i18n }} (VND)</th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
@@ -559,9 +559,9 @@
                         >) - GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="10"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         [(ngModel)]="configCustom.capacity"
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
@@ -573,18 +573,18 @@
                         (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="10"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ volumeIntoMoney | number }} VND </label
+                        {{ volumeIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ volumeUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ volumeUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -617,10 +617,10 @@
 
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ ramIntoMoney | number }} VND </label
+                        {{ ramIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ ramUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ ramUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -652,10 +652,10 @@
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ cpuIntoMoney | number }} VND </label
+                        {{ cpuIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ cpuUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ cpuUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -673,7 +673,7 @@
                   <tr>
                     <th>{{ 'app.resource' | i18n }}</th>
                     <th>{{ 'app.amount' | i18n }}</th>
-                    <th>{{ 'app.money.price' | i18n }}</th>
+                    <th>{{ 'app.money.price' | i18n }} (VND)</th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
@@ -704,10 +704,10 @@
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ cpuIntoMoney | number }} VND </label
+                        {{ cpuIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ cpuUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ cpuUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -740,10 +740,10 @@
 
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ ramIntoMoney | number }} VND </label
+                        {{ ramIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ ramUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ ramUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -755,8 +755,9 @@
                         >) - GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="1000"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         [(ngModel)]="configGPU.storage"
                         (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
@@ -768,18 +769,18 @@
                         (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="1"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ volumeIntoMoney | number }} VND </label
+                        {{ volumeIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ volumeUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ volumeUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -812,10 +813,10 @@
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ gpuIntoMoney | number }} VND </label
+                        {{ gpuIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ gpuUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ gpuUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -903,7 +904,6 @@
               <nz-form-control>
                 <nz-select
                   nzMode="multiple"
-                  nzPlaceHolder="Chọn Security Group"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="selectedSecurityGroup"
                   [nzServerSearch]="true"
@@ -1315,9 +1315,9 @@
                         "
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'capacity_' + data.id"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="10"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
