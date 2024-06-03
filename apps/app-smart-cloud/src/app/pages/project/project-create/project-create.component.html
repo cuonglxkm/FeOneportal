@@ -55,7 +55,7 @@
             nzSize="large">
             <nz-row [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }" style="margin-top: 10px">
               <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-                <nz-card style="border-radius: 4px" [nzAlign]="'middle'" [ngStyle]="{
+                <nz-card style="border-radius: 8px" [nzAlign]="'middle'" [ngStyle]="{
                       border: activeNoneVpc
                     ? '1px solid #0066B3'
                     : '1px solid #DADADA',
@@ -88,7 +88,7 @@
                 </nz-card>
               </nz-col>
               <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-                <nz-card style="border-radius: 4px" [nzAlign]="'middle'" [ngStyle]="{
+                <nz-card style="border-radius: 8px" [nzAlign]="'middle'" [ngStyle]="{
                       border: activeVpc
                     ? '1px solid #0066B3'
                     : '1px solid #DADADA',
@@ -350,15 +350,16 @@
                   <ngu-tile *nguCarouselDef="let item; index as i; let ani = animate" [@slider]="ani">
                     <div style="cursor: pointer" (click)="onInputFlavors(item.id,item.offerName);"
                       [id]="'flavor_' + item.id">
-                      <nz-row>
+                      <nz-row class="border-bottom">
                         <nz-col style="padding-bottom: 5px" class="newClassFlavor text-center"
                           [class.initialClassFlavor]=" selectedElementFlavor === 'flavor_' + item.id">
                           <div style="position: relative;">
-                            <span class="nameFlavor"
+                            <div >
+                              <p class="nameFlavor pt-3 mb-0 "
                               [class.initialNameFlavor]="selectedElementFlavor === 'flavor_' + item.id">{{
                               item.offerName
-                              }}</span>
-                            <div style="margin-top: -16px">
+                              }}</p>
+                            <div style="margin-top: -10px">
                               <img style="width: 80%"
                                 [src]="selectedElementFlavor === 'flavor_' + item.id? 'assets/imgs/line2.svg': 'assets/imgs/line.svg'"
                                 alt="" />
@@ -368,6 +369,8 @@
                             <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
                               <img src="assets/imgs/mostpop.svg">
                             </div>
+                            </div>
+                            
                           </div>
                         </nz-col>
                       </nz-row>
@@ -375,7 +378,7 @@
                         <nz-col style="width: 100%; padding-top: 5px"
                           [class.flavor-footer-active]="selectedElementFlavor === 'flavor_' + item.id"
                           [class.flavor-footer]="selectedElementFlavor != 'flavor_' + item.id">
-                          <div>
+                          <div class="mt-3">
                             <p>{{ item.description }}</p>
                           </div>
                         </nz-col>
@@ -1066,66 +1069,37 @@
               </div>
               <div *ngIf="activeVpnGpu">
                 <div class="ant-table">
-                  <table>
+                  <table *ngFor="let typeCatelog of listTypeCatelogOffer;let i = index;trackBy:trackById">
                     <td style="width:60%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label">Số lượng GPU (Type - NVIDIA30)</nz-form-label>
+                        <nz-form-label class="custom-label">Số lượng GPU (Type - {{typeCatelog?.offerName}})</nz-form-label>
                         <nz-form-control>
-                          <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" name="gpu"
-                            [(ngModel)]="numberBackup"
-                            (ngModelChange)="onInputChange($event, 'backup')" [ngModelOptions]="{ standalone: true }"
-                            nzSize="large"></nz-input-number>
+                          <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzStep="1" [nzMax]="getMaxValue(i)" name="gpu"
+                            [(ngModel)]="numbergpu[i]"
+                            (ngModelChange)="getValues(i)"
+                            [ngModelOptions]="{ standalone: true }"
+                            nzSize="large"
+                            [nzDisabled]="isDisabled(i)"></nz-input-number>
                         </nz-form-control>
                       </nz-form-item>
                     </td>
                     <td style="width:40%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
-                       
-                        </nz-form-label>
+                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND) </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
                             <p class="text-custom-price" >
                               0 
                             </p>
                             <p class="text-price-unit" >
-                              0 
+                              {{typeCatelog?.price?.fixedPrice?.amount |formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
                       </nz-form-item>
                     </td>
                   </table>
-                  <table>
-                    <td style="width:60%">
-                      <nz-form-item>
-                        <nz-form-label class="custom-label">Số lượng GPU (Type - NVIDIA100)</nz-form-label>
-                        <nz-form-control>
-                          <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" name="gpu-NVIDIA100"
-                            [(ngModel)]="numberBackup"
-                            (ngModelChange)="onInputChange($event, 'backup')" [ngModelOptions]="{ standalone: true }"
-                            nzSize="large"></nz-input-number>
-                        </nz-form-control>
-                      </nz-form-item>
-                    </td>
-                    <td style="width:40%">
-                      <nz-form-item>
-                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
-                       
-                        </nz-form-label>
-                        <nz-form-control>
-                          <div class="centered">
-                            <p class="text-custom-price" >
-                              0
-                            </p>
-                            <p class="text-price-unit" >
-                              0
-                            </p>
-                          </div>
-                        </nz-form-control>
-                      </nz-form-item>
-                    </td>
-                  </table>
+                 
                 </div>
               </div>
               <nz-alert class="ant-alert-warning-custom"  nzType="warning"
