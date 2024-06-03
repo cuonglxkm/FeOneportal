@@ -378,6 +378,11 @@
     </nz-row>
   </form>
 </nz-content>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>
 <!--<nz-content *ngIf="typeVPC == 1">-->
 <!--  <one-portal-create-volume-vpc />-->
 <!--</nz-content>-->

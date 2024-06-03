@@ -393,6 +393,12 @@ export class CreateVolumeComponent implements OnInit {
       });
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   navigateToPaymentSummary() {
     // this.getTotalAmount()
     this.volumeInit();
@@ -419,7 +425,8 @@ export class CreateVolumeComponent implements OnInit {
           state: { data: request, path: returnPath }
         });
       } else {
-        // this.notification.error(this.i18n.fanyi('app.status.fail'), data.)
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
       }
     }, error => {
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
