@@ -2578,6 +2578,7 @@
   "volume.action.detach": "Detach Volume",
   "volume.action.snapshot.select": "Select Snapshot",
   "volume.action.type.volume.select": "-Select Snapshot-",
+  "volume.menu.create.snapshot": "Create Snapshot",
   "volume.menu.create.schedule.backup": "Create Backup Schedule",
   "volume.menu.create.schedule.snapshot": "Create Snapshot Schedule",
   "volume.menu.update.volume": "Edit",

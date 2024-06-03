@@ -85,6 +85,6 @@ export class RestoreBackupVolumeComponent implements OnInit{
 
     this.idBackupVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'))
     this.getDetailBackupVolume(this.idBackupVolume);
-    this.getInfoProjectVpc(this.idBackupVolume);
+    this.getInfoProjectVpc(this.project);
   }
 }
