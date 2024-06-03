@@ -14,6 +14,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { OrderService } from '../../../../shared/services/order.service';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-renew-volume',
@@ -26,7 +27,7 @@ export class RenewVolumeComponent implements OnInit {
 
   idVolume: number;
 
-  volumeInfo: VolumeDTO = new VolumeDTO();
+  volumeInfo: VolumeDTO;
 
   attachedDto: AttachedDto[] = [];
 
@@ -48,6 +49,8 @@ export class RenewVolumeComponent implements OnInit {
   isVisibleConfirmRenew: boolean = false;
   newValue = 0;
 
+  timeSelected: number
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
               private router: Router,
@@ -63,9 +66,9 @@ export class RenewVolumeComponent implements OnInit {
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
     this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend'));
 
-    this.validateForm.get('time').valueChanges.subscribe((newValue: any) => {
-      this.getTotalAmount();
-    });
+    // this.validateForm.get('time').valueChanges.subscribe((newValue: any) => {
+    //   this.getTotalAmount();
+    // });
   }
 
 
@@ -110,6 +113,8 @@ export class RenewVolumeComponent implements OnInit {
       this.volumeInfo = null;
       this.attachedDto = null;
       this.listVMs = null;
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
+      this.router.navigate(['/app-smart-cloud/volumes'])
     });
   }
 
@@ -158,7 +163,6 @@ export class RenewVolumeComponent implements OnInit {
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
-      console.log('thanh tien volume', result.data);
       this.orderItem = result.data;
       this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount;
       this.estimateExpireDate = this.orderItem.orderItemPrices[0].expiredDate;
@@ -237,15 +241,15 @@ export class RenewVolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volume/detail/' + this.idVolume]);
   }
 
+  onChangeTime(value) {
+    this.timeSelected = value;
+    this.validateForm.controls.time.setValue(this.timeSelected)
+    this.getTotalAmount()
+  }
 
   ngOnInit(): void {
     this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-
     this.getVolumeById(this.idVolume);
-
-
-
-
   }
 
 

@@ -160,12 +160,15 @@
                     nzMode="multiple"
                     [nzPlaceHolder]="'app.choose.security.group' | i18n"
                     [nzShowSearch]="true"
+                    [(ngModel)]="selectedSecurityGroup"
+                    [ngModelOptions]="{ standalone: true }"
                     nzSize="large"
                   >
                     <nz-option
                       *ngFor="let sg of listSecurityGroupBackups"
                       [nzLabel]="sg.sgName"
-                      [nzValue]="sg.id"
+                      [nzValue]="sg.sgName"
+                      [nzDisabled]="sg.sgName.toUpperCase() === 'DEFAULT'"
                     />
                   </nz-select>
                 </nz-form-control>
@@ -173,7 +176,11 @@
             </nz-col>
           </nz-row>
         </div>
-        <div *ngIf="selectedOption == 'new'" formGroupName="formNew">
+        <div
+          style="margin-bottom: 20px"
+          *ngIf="selectedOption == 'new'"
+          formGroupName="formNew"
+        >
           <div *ngIf="typeVpc == 0">
             <nz-tabset
               nzCentered
@@ -692,10 +699,12 @@
                     [nzErrorTip]="nameErrorTpl"
                   >
                     <input
-                      appAutofocus
+                      #nameInput
                       class="input-custom"
                       nz-input
                       formControlName="name"
+                      [(ngModel)]="instanceCreate.serviceName"
+                      (ngModelChange)="changeName($event)"
                       [placeholder]="'app.input.name' | i18n"
                       [maxlength]="50"
                     />
@@ -720,7 +729,7 @@
                       nzMode="multiple"
                       [ngModelOptions]="{ standalone: true }"
                       [(ngModel)]="selectedSecurityGroup"
-                      [nzServerSearch]="true"
+                      [nzShowSearch]="true"
                       nzSize="large"
                     >
                       <nz-option
@@ -1060,6 +1069,7 @@
                   "
                   [nzShowSearch]="true"
                   [(ngModel)]="listIDAttachVolume"
+                  (ngModelChange)="changeAttachVolume()"
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 >
@@ -1134,21 +1144,28 @@
           </div>
         </div>
       </nz-card>
+      <one-portal-service-usage-period
+        *ngIf="selectedOption == 'new'"
+        [nameService]="'instance'"
+        (valueChanged)="onChangeTime($event)"
+      ></one-portal-service-usage-period>
     </form>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
     <div style="width: 100%">
       <nz-affix [nzOffsetTop]="72">
-        <nz-card class="card-border" style="border-radius: 8px; width: 100%">
+        <nz-card
+          *ngIf="selectedOption == 'new'"
+          class="card-border"
+          style="border-radius: 8px; width: 100%"
+        >
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{
               'app.estimated.cost' | i18n
             }}</span>
           </div>
           <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ backupVmModel?.instanceName }}
-          </div>
+          <div style="margin-top: 10px" class="text-label"></div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
@@ -1248,6 +1265,53 @@
                 <span [style.color]="formCurrent.invalid ? 'gray' : 'white'">{{
                   'app.button.create' | i18n
                 }}</span>
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+        <nz-card
+          *ngIf="selectedOption == 'current'"
+          class="card-border"
+          style="border-radius: 8px; width: 100%"
+        >
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{
+              'app.config.parameters' | i18n
+            }}</span>
+          </div>
+          <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ backupVmModel?.instanceName }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ backupVmModel?.systemInfoBackups[0].osName }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">Security Group</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ selectedSecurityGroup.join(', ') }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-value">
+            {{ 'app.info.backup.vm.external.volume' | i18n }}
+          </div>
+          <div *ngFor="let v of listOfDataBlockStorage; let last = last">
+            <div style="margin-top: 10px" class="text-label">
+              {{ v.capacity }} GB {{ v.name }} ({{ v.type }})
+            </div>
+          </div>
+          <nz-row style="margin-top: 20px">
+            <nz-col style="width: 100%">
+              <button
+                style="width: 100%"
+                nz-button
+                nzSize="large"
+                nzType="primary"
+              >
+                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <span>{{ 'app.button.create' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>

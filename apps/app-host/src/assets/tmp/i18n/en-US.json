@@ -329,6 +329,7 @@
   "app.note.guide.formula.numerator": "Monthly price of package B - Monthly price of package A",
   "app.example.guide.formula": "Example: A user purchases the SMC01 configuration package for 720,000 VND/month (1,000 VND/hour) with a usage period from 00:00:00 01/04/2024 to 23:59:59 30/04/2024. The user adjusts to a different configuration package priced at 1,080,000 VND/month at 2:00:00 on 15/04/2024. The user has used the old service package for 15 days and 2 hours and switches to the new configuration package for the remaining 15 days and 22 hours (382 hours). Therefore, the cost for upgrading the configuration package when adjusting the service is calculated as follows:",
   "app.create.port": "Create port",
+  "app.notify.error": "Error notification",
 
   "app.ip.type": "IP Type",
   "app.ip.address": "IP Address",
@@ -972,7 +973,9 @@
   "app.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR is granted access to this Filesystem",
   "app.alert.delete.access.to": "You are currently deleting an Access Rule",
   "app.access.to.remove.confirm": "Are you sure you want to delete the Access Rule?",
-
+  "app.file-system-snapshot": "File System Snapshot",
+  "app.object-storage": "Object Storage",
+  "app.vpns2s": "VPN Site to Site",
   "app.file.system.delete": "Confirm delete the {{name}} File System",
   "app.file.system.manage": "List File System",
   "app.file.system.info": "File System information",
@@ -2580,6 +2583,7 @@
   "volume.action.detach": "Detach Volume",
   "volume.action.snapshot.select": "Select Snapshot",
   "volume.action.type.volume.select": "-Select Snapshot-",
+  "volume.menu.create.snapshot": "Create Snapshot",
   "volume.menu.create.schedule.backup": "Create Backup Schedule",
   "volume.menu.create.schedule.snapshot": "Create Snapshot Schedule",
   "volume.menu.update.volume": "Edit",
