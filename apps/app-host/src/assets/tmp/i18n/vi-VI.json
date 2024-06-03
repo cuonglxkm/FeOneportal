@@ -311,6 +311,7 @@
 
   "app.instance": "máy ảo",
   "app.volume": "volume",
+  "app.file-system": "file system",
   "app.backup-package": "gói backup",
   "app.instances": "Máy ảo",
   "app.instances.list": "Danh sách máy ảo",
