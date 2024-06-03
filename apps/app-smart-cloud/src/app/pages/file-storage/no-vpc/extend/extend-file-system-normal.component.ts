@@ -35,7 +35,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
 
   storage: number;
   isLoading: boolean = true;
-  fileSystem: FileSystemDetail = new FileSystemDetail();
+  fileSystem: FileSystemDetail;
 
   isInitSnapshot: boolean = false;
 
@@ -62,6 +62,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   valueStringConfiguration: string = '';
   maxStorage: number = 0;
 
+  timeSelected: any
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -92,11 +93,13 @@ export class ExtendFileSystemNormalComponent implements OnInit {
     this.dataSubjectTime.next(value);
   }
 
-  onChangeTime() {
-      this.dataSubjectTime.pipe(debounceTime(500))
-        .subscribe((res) => {
+  onChangeTime(value) {
+      // this.dataSubjectTime.pipe(debounceTime(500))
+      //   .subscribe((res) => {
+    this.timeSelected = value
+    this.validateForm.controls.time.setValue(this.timeSelected)
           this.getTotalAmount();
-        })
+        // })
   }
 
   getFileSystemById(id) {
@@ -200,7 +203,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
 
     this.idFileSystem = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
     this.getFileSystemById(this.idFileSystem);
-    this.onChangeTime()
+    // this.onChangeTime()
     this.getConfigurations();
   }
 }

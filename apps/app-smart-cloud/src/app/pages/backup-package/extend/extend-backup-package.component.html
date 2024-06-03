@@ -36,7 +36,7 @@
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
       <nz-row nzGutter="24">
         <nz-col nzSpan="16">
-          <nz-card style="border-radius: 8px;">
+          <nz-card style="border-radius: 8px;" *ngIf="packageBackupModel">
             <span class="text-card-header">{{'app.backup.package.information'|i18n}}</span>
             <nz-form-item>
               <nz-form-label style="margin-top: 25px;">
@@ -67,44 +67,48 @@
               </nz-form-control>
             </nz-form-item>
           </nz-card>
-          <nz-card style="bottom: 8px;">
-            <span class="text-card-header">{{'app.extension.info'|i18n}}</span>
-            <nz-row nzGutter="24" style="margin-top: 25px;">
-              <nz-col nzSpan="12">
-              <span class="text-label" style="color: #EA3829"
-                    *ngIf="orderItem?.orderItemPrices?.length > 0">{{'app.backup.package.create.date'|i18n}}: {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
-              </nz-col>
-              <nz-col nzSpan="12">
-              <span class="text-label" style="color: #EA3829"
-                    *ngIf="orderItem?.orderItemPrices?.length > 0">{{'app.backup.package.expire.date'|i18n}}:  {{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
-              </nz-col>
-            </nz-row>
-            <nz-form-item>
-              <nz-form-label nzFor="time">
-                <div class="label" style="margin-top: 15px;">
-                  <span>{{'app.months.for.extend'|i18n}}</span>
-                  <img nz-popover [nzPopoverContent]="'app.placeholder.backup.package.time'|i18n"
-                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                       src="assets/imgs/pajamas_question.svg" alt="" />
-                </div>
-              </nz-form-label>
-              <nz-form-control>
-                <nz-input-number formControlName="time"
-                                 nzSize="large"
-                                 style="width: 100%; margin-left: 0;"
-                                 [nzMin]="1" [nzStep]="1"
-                                 (ngModelChange)="changeTime($event)"
-                                 [nzMax]="100"/>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label>
-                <div style="color: rgba(252, 16, 16, 1);">
-                  <span>{{'app.expected.expiry.date'|i18n}}: {{ estimateExpiredDate | date: 'dd/MM/yyyy' }}</span>
-                </div>
-              </nz-form-label>
-            </nz-form-item>
-          </nz-card>
+          <one-portal-service-time-extend *ngIf="packageBackupModel"
+                                          [createDate]="packageBackupModel?.creationDate"
+                                          [expiredDate]="packageBackupModel?.expirationDate"
+                                          (valueChanged)="onChangeTime($event)"/>
+<!--          <nz-card style="bottom: 8px;">-->
+<!--            <span class="text-card-header">{{'app.extension.info'|i18n}}</span>-->
+<!--            <nz-row nzGutter="24" style="margin-top: 25px;">-->
+<!--              <nz-col nzSpan="12">-->
+<!--              <span class="text-label" style="color: #EA3829"-->
+<!--                    *ngIf="orderItem?.orderItemPrices?.length > 0">{{'app.backup.package.create.date'|i18n}}: {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>-->
+<!--              </nz-col>-->
+<!--              <nz-col nzSpan="12">-->
+<!--              <span class="text-label" style="color: #EA3829"-->
+<!--                    *ngIf="orderItem?.orderItemPrices?.length > 0">{{'app.backup.package.expire.date'|i18n}}:  {{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>-->
+<!--              </nz-col>-->
+<!--            </nz-row>-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label nzFor="time">-->
+<!--                <div class="label" style="margin-top: 15px;">-->
+<!--                  <span>{{'app.months.for.extend'|i18n}}</span>-->
+<!--                  <img nz-popover [nzPopoverContent]="'app.placeholder.backup.package.time'|i18n"-->
+<!--                       nzPopoverPlacement="bottom" style="margin-left: 5px;"-->
+<!--                       src="assets/imgs/pajamas_question.svg" alt="" />-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control>-->
+<!--                <nz-input-number formControlName="time"-->
+<!--                                 nzSize="large"-->
+<!--                                 style="width: 100%; margin-left: 0;"-->
+<!--                                 [nzMin]="1" [nzStep]="1"-->
+<!--                                 (ngModelChange)="changeTime($event)"-->
+<!--                                 [nzMax]="100"/>-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label>-->
+<!--                <div style="color: rgba(252, 16, 16, 1);">-->
+<!--                  <span>{{'app.expected.expiry.date'|i18n}}: {{ estimateExpiredDate | date: 'dd/MM/yyyy' }}</span>-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--            </nz-form-item>-->
+<!--          </nz-card>-->
         </nz-col>
         <nz-col nzSpan="8">
           <nz-affix [nzOffsetTop]="72">
