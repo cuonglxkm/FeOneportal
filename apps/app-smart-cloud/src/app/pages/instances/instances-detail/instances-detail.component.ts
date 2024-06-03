@@ -150,13 +150,13 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   navigateToEdit() {
-    if (this.project.type == 0) {
+    if (this.project.type == 1) {
       this.route.navigate([
-        '/app-smart-cloud/instances/instances-edit/' + this.id,
+        '/app-smart-cloud/instances/instances-edit-vpc/' + this.id,
       ]);
     } else {
       this.route.navigate([
-        '/app-smart-cloud/instances/instances-edit-vpc/' + this.id,
+        '/app-smart-cloud/instances/instances-edit/' + this.id,
       ]);
     }
   }
