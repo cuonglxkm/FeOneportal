@@ -604,6 +604,7 @@ export class UpgradeComponent implements OnInit {
       this.newConfigCost = r.orderItemPrices[0].unitPrice.amount;
       this.upgradeCost = r.totalAmount.amount;
       this.totalCost = r.totalPayment.amount;
+      this.cdr.detectChanges();
     });
   }
 
@@ -615,6 +616,7 @@ export class UpgradeComponent implements OnInit {
     this.totalCost = 0;
     this.vatCost = 0;
     this.newConfigCost = 0;
+    this.upgradeCost = 0;
   }
 
   // validate duplicate worker group name

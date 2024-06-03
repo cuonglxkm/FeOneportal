@@ -238,7 +238,7 @@
                   <nz-form-item>
                     <nz-form-label nzFor="volume">{{ 'app.cluster.storage' | i18n }} (<span class="required-color">*</span>)</nz-form-label>
                     <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
-                      <input type="text" nz-input [placeHolder]="'cluster.placeholder.storage' | i18n" formControlName="volumeStorage" (ngModelChange)="onCalculatePrice()"
+                      <input type="text" nz-input [placeholder]="'cluster.placeholder.storage' | i18n" formControlName="volumeStorage" (ngModelChange)="onCalculatePrice()"
                         id="volume" (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" nzSize="large" [ngClass]="{'default-pack': isUsingPackConfig==true}" />
                     </nz-form-control>
                     <ng-template #volumeStorageErrorTpl let-control>
@@ -564,7 +564,7 @@
                   <span nz-icon [nzType]="'loading'"></span>
                 </ng-container>
                 <ng-template #workerPriceTpl>
-                  {{(workerPrice ? workerPrice: 0) | number: '1.0-0'}} VND
+                  {{(workerPrice && workerPrice >= 0 ? workerPrice: 0) | number: '1.0-0'}} VND
                 </ng-template>
               </div>
             </div>
@@ -573,16 +573,21 @@
           <ng-container *ngIf="isChangeInfo">
             <nz-divider class="divider-style"></nz-divider>
             <ng-container *ngIf="chooseItem; else customPackSummaryTpl">
-              <div class="ml-3"><label class="weight-600">{{ 'app.text.package' | i18n }}: <b>{{chooseItem.packName}}</b></label></div>
-              <div class="ml-3 summary-info">{{chooseItem.cpu}}vCPU</div>
-              <div class="ml-3 summary-info">{{chooseItem.ram}}GB</div>
-              <div class="ml-3 summary-info">{{chooseItem.rootStorage}}GB {{chooseItem.rootStorageName}}</div>
+              <div class="ml-3">
+                <label class="weight-600">{{ 'app.text.package' | i18n }}: <b>{{chooseItem.packName}}</b></label>
+                <div class="summary-info">{{chooseItem.cpu}}vCPU</div>
+                <div class="summary-info">{{chooseItem.ram}}GB</div>
+                <div class="summary-info">{{chooseItem.rootStorage}}GB {{chooseItem.rootStorageName}}</div>
+              </div>
+
             </ng-container>
             <ng-template #customPackSummaryTpl>
-              <div class="ml-3"><label class="weight-600">{{ 'app.text.package' | i18n }}: {{ 'mongodb.db.optional' | i18n }}</label></div>
-              <div class="ml-3 summary-info">{{totalCpu}}vCPU</div>
-              <div class="ml-3 summary-info">{{totalRam}}GB</div>
-              <div class="ml-3 summary-info">{{totalStorage}}GB</div>
+              <div class="ml-3">
+                <label class="weight-600">{{ 'app.text.package' | i18n }}: {{ 'mongodb.db.optional' | i18n }}</label>
+                <div class="summary-info">{{totalCpu}}vCPU</div>
+                <div class="summary-info">{{totalRam}}GB</div>
+                <div class="summary-info">{{totalStorage}}GB</div>
+              </div>
             </ng-template>
           </ng-container>
 
@@ -601,7 +606,7 @@
                   <span nz-icon [nzType]="'loading'"></span>
                 </ng-container>
                 <ng-template #vatPriceTpl>
-                  {{(vatCost ? vatCost: 0) | number: '1.0-0'}} VND
+                  {{(vatCost && vatCost >= 0 ? vatCost: 0) | number: '1.0-0'}} VND
                 </ng-template>
               </div>
             </div>
@@ -618,7 +623,7 @@
                   <span nz-icon [nzType]="'loading'"></span>
                 </ng-container>
                 <ng-template #totalPriceTpl>
-                  {{(totalPrice? totalPrice: 0) | number: '1.0-0'}} VND
+                  {{(totalPrice && totalPrice >= 0 ? totalPrice: 0) | number: '1.0-0'}} VND
                 </ng-template>
               </div>
             </div>
