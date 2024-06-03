@@ -426,6 +426,8 @@
   "app.volume": "volume",
   "app.backup-package": "backup package",
   "app.instances": "Instances",
+  "app.ip-public": "Ip Public",
+  "app.ip-loating": "Ip Floating",
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",
   "app.instances.edit": "Resize Instance",
