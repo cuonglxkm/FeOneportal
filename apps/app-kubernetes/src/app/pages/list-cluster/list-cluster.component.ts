@@ -126,7 +126,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
           const cluster: KubernetesCluster = new KubernetesCluster(item);
           this.listOfClusters.push(cluster);
 
-          // get cluster is in-progress (initialing, deleting, upgrading,...)
+          // get cluster is in-progress (initialing, deleting, upgrading, restoring...)
           if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) listOfClusterInProgress.push(cluster);
         });
         this.total = r.data.total;
@@ -147,6 +147,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
 
               switch (cluster.serviceStatus) {
                 case 1: // initialing
+                case 5: // restoring
                 case 6: // upgrading
                   progressObs = this.viewProgressCluster(cluster.regionId, cluster.namespace,
                     cluster.serviceOrderCode, KubernetesConstant.CREATE_ACTION);
