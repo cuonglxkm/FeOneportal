@@ -19,6 +19,7 @@ pipeline {
                 script {
                     appName = env.BRANCH_NAME.tokenize("/").last()
                     imageTag = "${registry}/idg/${appName}-${ENV}:${env.BUILD_NUMBER}"
+                    AUTOTEST_BRANCH = "${AUTOTEST_BRANCH}${appName}"
                 }
             }
         }
@@ -60,6 +61,37 @@ pipeline {
                     }
                 }
 
+            }
+        }
+
+        stage("Check autotest agent available") {
+            options {
+              timeout(time: 10, unit: 'SECONDS')   // timeout on this stage
+            }
+            agent { label AUTOTEST_AGENT }
+            steps {
+                script {
+                    echo "switch agent succeccfully"
+                }
+            }
+        }
+
+        stage("Automation Testing") {
+            agent { label AUTOTEST_AGENT }
+            steps {
+                script {
+                    bat """
+                        git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+                        git fetch origin
+                        git checkout ${AUTOTEST_BRANCH}
+                    """
+                    def projectFile = "VNPT_OnePortal.prj"
+                    def testSuitePath = "Test Suites/VNPT_OnePortal_k8s"
+                    bat """
+                        set workspace = %cd%
+                        katalonc -noSplash -runMode=console -projectPath="%workspace%\\${projectFile}" -retry=0 -testSuitePath="${testSuitePath}" -browserType="Chrome" -executionProfile="one_Portal" -apiKey="a49ac01e-c4ad-4ceb-9ce2-7a009dad4627" --config -proxy.auth.option=NO_PROXY -proxy.system.option=NO_PROXY -proxy.system.applyToDesiredCapabilities=true -webui.autoUpdateDrivers=true
+                    """
+                }
             }
         }
 

@@ -101,8 +101,6 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
       // volumeCloudType: [null, [Validators.required]],
       workerGroup: this.listFormWorkerGroupUpgrade
     });
-
-    this.openWs();
   }
 
   ngOnDestroy(): void {
@@ -132,58 +130,6 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
   //   this.getListWorkerType(this.regionId, this.cloudProfileId);
   //   this.getListVolumeType(this.regionId, this.cloudProfileId);
   // }
-
-  // websocket
-  private openWs() {
-    // list topic subscribe
-    const topicSpecificUser = NotificationConstant.WS_SPECIFIC_TOPIC + "/" + '';
-    const topicBroadcast = NotificationConstant.WS_BROADCAST_TOPIC;
-
-    const notificationMessageCb = (noti) => {
-      if (noti.body) {
-        try {
-          const notificationMessage = JSON.parse(noti.body);
-          if (notificationMessage.content && notificationMessage.content?.length > 0) {
-            if (notificationMessage.status == NotificationConstant.NOTI_SUCCESS) {
-              this.notificationService.success(
-                this.i18n.fanyi('app.status.success'),
-                notificationMessage.content);
-
-              // refresh page
-              this.getDetailCluster(this.serviceOrderCode);
-
-            } else {
-              this.notificationService.error(
-                this.i18n.fanyi('app.status.fail'),
-                notificationMessage.content);
-            }
-          }
-        } catch (ex) {
-          console.log("parse message error: ", ex);
-        }
-
-      }
-    }
-
-    this.initNotificationWebsocket([
-      { topics: [topicBroadcast, topicSpecificUser], cb: notificationMessageCb }
-    ]);
-  }
-
-  private initNotificationWebsocket(topicCBs: Array<{ topics: string[], cb: messageCallbackType }>) {
-
-    setTimeout(() => {
-      this.websocketService = NotificationWsService.getInstance();
-      this.websocketService.connect(
-        () => {
-          for (const topicCB of topicCBs) {
-            for (const topic of topicCB.topics) {
-              this.websocketService.subscribe(topic, topicCB.cb);
-            }
-          }
-        });
-    }, 1000);
-  }
 
   initFormWorkerGroup(wgs: WorkerGroupModel[]) {
     for (let i = 0; i < wgs.length; i++) {

@@ -604,6 +604,7 @@ export class UpgradeComponent implements OnInit {
       this.newConfigCost = r.orderItemPrices[0].unitPrice.amount;
       this.upgradeCost = r.totalAmount.amount;
       this.totalCost = r.totalPayment.amount;
+      this.cdr.detectChanges();
     });
   }
 
@@ -615,6 +616,7 @@ export class UpgradeComponent implements OnInit {
     this.totalCost = 0;
     this.vatCost = 0;
     this.newConfigCost = 0;
+    this.upgradeCost = 0;
   }
 
   // validate duplicate worker group name
@@ -717,7 +719,7 @@ export class UpgradeComponent implements OnInit {
     cluster.currentTotalRam = this.currentTotalRam ? this.currentTotalRam : 0;
     cluster.currentTotalStorage = this.currentTotalStorage ? this.currentTotalStorage : 0;
 
-    cluster.newVcpu = this.newTotalCpu ? this.newTotalCpu : 0;
+    cluster.newTotalCpu = this.newTotalCpu ? this.newTotalCpu : 0;
     cluster.newTotalRam = this.newTotalRam ? this.newTotalRam : 0;
     cluster.newTotalStorage = this.newTotalStorage ? this.newTotalStorage : 0;
 
@@ -726,6 +728,7 @@ export class UpgradeComponent implements OnInit {
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
     cluster.sortItem = 0;
     cluster.tenant = this.projectName;
+    cluster.serviceInstanceId = this.detailCluster.id;
 
     const wgs: [] = cluster.workerGroup;
     const tmp: WorkerGroupReqDto[] = [];
