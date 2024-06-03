@@ -100,7 +100,7 @@ import { environment } from '@env/environment';
         <img style="margin-left: 10px" src="assets/imgs/logo-vnpt.svg" alt="" />
       </footer>
     </layout-default>
-
+    
     <setting-drawer *ngIf="showSettingDrawer" />
     <theme-btn />
   `,

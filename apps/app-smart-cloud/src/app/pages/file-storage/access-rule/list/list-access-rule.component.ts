@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { AccessRuleService } from '../../../../shared/services/access-rule.service';
-import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { BaseResponse, NotificationService, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { AccessRule } from '../../../../shared/models/access-rule.model';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
 import { FileSystemDetail, FileSystemModel } from '../../../../shared/models/file-system.model';
@@ -39,7 +39,8 @@ export class ListAccessRuleComponent implements OnInit, OnDestroy{
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               private accessRuleService: AccessRuleService,
-              private fileSystemService: FileSystemService) {
+              private fileSystemService: FileSystemService,
+              private notificationService: NotificationService) {
   }
 
   ngOnDestroy(): void {
@@ -154,9 +155,21 @@ export class ListAccessRuleComponent implements OnInit, OnDestroy{
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('fileSystem'))
     console.log('id', this.idFileSystem)
     this.getFileSystemById()
-    this.getListAccessRule(true)
+    this.getListAccessRule(true);
+    
+    this.notificationService.connection.on('UpdateStateAccessRule', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case "APPLYING":
+          case "ACTIVE":
+          case "DENYING":
+          case "DELETED":
+            this.getListAccessRule(true);
+          break;
+          
+        }
+      }
+    });
     this.onChangeInputChange()
-
-
   }
 }

@@ -19,6 +19,7 @@ import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-sn
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject } from 'rxjs';
+import { ConfigurationsService } from '../../../../../shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-create-file-system',
@@ -58,7 +59,7 @@ export class CreateFileSystemComponent implements OnInit {
   ];
 
   isVisibleConfirm: boolean = false;
-  isLoading: boolean = false;
+  isLoading: boolean = true;
 
   storage: number = 0;
 
@@ -71,11 +72,16 @@ export class CreateFileSystemComponent implements OnInit {
   nameList: string[] = [];
 
   storageBuyVpc: number;
+  storageUsed: number
   storageRemaining: number;
 
   isInitSnapshot = false;
 
   dataSubjectStorage: Subject<any> = new Subject<any>();
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueStringConfiguration: string = '';
+  maxStorage: number = 0;
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
@@ -87,7 +93,8 @@ export class CreateFileSystemComponent implements OnInit {
               private projectService: ProjectService,
               private fileSystemSnapshotService: FileSystemSnapshotService,
               private activatedRoute: ActivatedRoute,
-              private renderer: Renderer2) {
+              private renderer: Renderer2,
+              private configurationsService: ConfigurationsService) {
   }
 
   duplicateNameValidator(control) {
@@ -104,6 +111,8 @@ export class CreateFileSystemComponent implements OnInit {
     const value = control.value;
     if (this.storageRemaining < value) {
       return { notEnough: true };
+    } else if(this.storageRemaining == 0) {
+      return { outOfStorage: true };
     } else {
       return null;
     }
@@ -155,6 +164,7 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   getListFileSystem() {
+    this.isLoading = true
     let formSearch = new FormSearchFileSystem();
     formSearch.vpcId = this.project;
     formSearch.regionId = this.region;
@@ -163,6 +173,7 @@ export class CreateFileSystemComponent implements OnInit {
     formSearch.pageSize = 9999;
     formSearch.isCheckState = true;
     this.fileSystemService.search(formSearch).subscribe(data => {
+      this.isLoading = false
       data?.records?.forEach(item => {
         this.nameList?.push(item?.name);
       });
@@ -235,11 +246,15 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   getStorageBuyVpc() {
+    this.isLoading = true
     this.projectService.getProjectVpc(this.project).subscribe(data => {
       this.storageBuyVpc = data.cloudProject?.quotaShareInGb
+      this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
       this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
-
       console.log('share remaining', this.storageRemaining)
+      this.validateForm.controls.storage.markAsDirty()
+      this.validateForm.controls.storage.updateValueAndValidity()
+      this.isLoading = false
     })
   }
 
@@ -298,11 +313,21 @@ export class CreateFileSystemComponent implements OnInit {
   onChangeStorage() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if (res % 10 > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
-          this.storage = res - (res % 10)
+        if (res % this.stepStorage > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
+          this.storage = res - (res % this.stepStorage)
         }
       });
+  }
+
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
+    })
   }
 
   ngOnInit() {
@@ -317,5 +342,6 @@ export class CreateFileSystemComponent implements OnInit {
     this.getListFileSystem();
     this.getStorageBuyVpc();
     this.onChangeStorage();
+    this.getConfigurations();
   }
 }

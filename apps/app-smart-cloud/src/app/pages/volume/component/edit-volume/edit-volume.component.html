@@ -51,7 +51,7 @@
                     <span *ngIf="volumeInfo?.volumeType === 'hdd'"
                           class="text-value-detail">{{ 'volume.hdd'|i18n }}</span>
                     <span *ngIf="volumeInfo?.volumeType === 'ssd'"
-                          class="text-value-detail">{{ 'volume.hdd'|i18n }}</span>
+                          class="text-value-detail">{{ 'volume.ssd'|i18n }}</span>
                   </nz-row>
                 </nz-col>
               </nz-row>
@@ -106,7 +106,7 @@
             <ng-template #titleDescription>
               <span class="text-label">{{ 'volume.table.title.description'|i18n }}:</span>
             </ng-template>
-            <one-portal-time-used-resize [expireDate]="volumeInfo?.expirationDate" [createDate]="volumeInfo?.creationDate"/>
+            <one-portal-time-used-resize [nameService]="'Volume'" [expireDate]="volumeInfo?.expirationDate" [createDate]="volumeInfo?.creationDate"/>
           </nz-card>
           <nz-card style="border-radius: 8px;">
             <span class="text-card-header">{{'app.adjust.info'|i18n}}</span>
@@ -132,7 +132,8 @@
                                  class="input-custom"
                                  [nzMin]="minStorage"
                                  (ngModelChange)="changeValueStorage($event)"
-                                 [nzStep]="stepStorage" />
+                                 [nzStep]="stepStorage"
+                                 [nzMax]="maxStorage"/>
                 <ng-template #storageErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">{{'volume.input.required.storage'|i18n}}</ng-container>
                   <ng-container *ngIf="control.hasError('pattern')">{{'volume.input.storage.required'|i18n}}</ng-container>
@@ -159,7 +160,7 @@
           <one-portal-guide-formula />
         </nz-col>
         <nz-col nzSpan="8">
-          <nz-affix [nzOffsetTop]="48">
+          <nz-affix [nzOffsetTop]="72">
             <nz-card style="border-radius: 8px" class="border-card">
               <div style="margin-bottom: 20px">
                 <span class="text-card-header">{{'app.estimated.cost'|i18n}}</span>

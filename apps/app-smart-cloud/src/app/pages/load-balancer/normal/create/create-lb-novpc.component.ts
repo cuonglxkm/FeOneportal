@@ -22,6 +22,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs/operators';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-create-lb-novpc',
@@ -74,6 +75,8 @@ export class CreateLbNovpcComponent implements OnInit {
   isInput: boolean = true;
 
   isAvailable: boolean = false;
+  loadingFloating = true;
+  disabledFloating= true;
 
   @ViewChild('selectedValueSpan') selectedValueSpan: ElementRef;
   @ViewChild('selectedValueOffer') selectedValueOffer: ElementRef;
@@ -91,6 +94,7 @@ export class CreateLbNovpcComponent implements OnInit {
               private catalogService: CatalogService,
               private notification: NzNotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private orderService : OrderService,
               private loadBalancerService: LoadBalancerService) {
   }
 
@@ -234,7 +238,11 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   getIpBySubnet(subnetId) {
-    this.loadBalancerService.getIPBySubnet(subnetId, this.project, this.region).subscribe(data => {
+    this.loadBalancerService.getIPBySubnet(subnetId, this.project, this.region)
+      .pipe(finalize(() => {
+        this.loadingFloating = false;
+        this.disabledFloating = false;}))
+      .subscribe(data => {
       this.ipFloating = data;
     });
   }
@@ -250,12 +258,6 @@ export class CreateLbNovpcComponent implements OnInit {
       this.flavorId = this.offerDetail?.characteristicValues[1].charOptionValues[0];
       this.getTotalAmount();
     });
-  }
-
-  timeSelectedChange(value) {
-    this.timeSelected = value;
-    console.log(this.timeSelected);
-    this.getTotalAmount();
   }
 
   loadBalancerInit() {
@@ -359,9 +361,14 @@ export class CreateLbNovpcComponent implements OnInit {
     var returnPath: string = '/app-smart-cloud/load-balancer/create';
     console.log('request', request);
     console.log('service name', this.formCreateLoadBalancer.serviceName);
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: request, path: returnPath }
-    });
+    this.orderService.validaterOrder(request).subscribe(
+      data => {
+        this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+      },
+      error => {
+        this.notification.error(this.i18n.fanyi('app.status.fail'),error.error.message)
+      }
+    )
   }
 
   mapSubnet: Map<string, string> = new Map<string, string>();
@@ -456,6 +463,12 @@ export class CreateLbNovpcComponent implements OnInit {
           this.invalidIpAddress = true;
         })
     }
+  }
+
+  onChangeTime($event: any) {
+    this.validateForm.controls['time'].setValue($event);
+    this.timeSelected = $event;
+    this.getTotalAmount();
   }
 }
 

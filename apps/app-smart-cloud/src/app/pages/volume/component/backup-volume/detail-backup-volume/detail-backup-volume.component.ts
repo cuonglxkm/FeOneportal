@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {BackupVolume} from "../backup-volume.model";
 import { ActivatedRoute, Router } from '@angular/router';
 import {BackupVolumeService} from "../../../../../shared/services/backup-volume.service";
@@ -8,6 +8,9 @@ import { getCurrentRegionAndProject } from '@shared';
 import { PackageBackupService } from '../../../../../shared/services/package-backup.service';
 import { PackageBackupModel } from '../../../../../shared/models/package-backup.model';
 import { SizeInCloudProject } from '../../../../../shared/models/project.model';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-detail-backup-volume',
@@ -30,7 +33,9 @@ export class DetailBackupVolumeComponent implements OnInit{
               private backupVolumeService: BackupVolumeService,
               private activatedRoute: ActivatedRoute,
               private projectService: ProjectService,
-              private backupPackageService: PackageBackupService) {
+              private backupPackageService: PackageBackupService,
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
 
@@ -59,7 +64,8 @@ export class DetailBackupVolumeComponent implements OnInit{
           this.backupPackageDetail = data;
         });
       }
-
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.access.denied'))
     })
   }
   projectDetail: SizeInCloudProject

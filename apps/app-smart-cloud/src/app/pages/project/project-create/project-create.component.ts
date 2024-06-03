@@ -15,6 +15,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, Subject } from 'rxjs';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
 
 
 
@@ -28,7 +29,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 export class ProjectCreateComponent implements OnInit {
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
+    grid: { xs: 1, sm: 1, md: 2, lg: 3, all: 0 },
     speed: 250,
     point: {
       visible: true
@@ -90,16 +91,16 @@ export class ProjectCreateComponent implements OnInit {
   disableIpConnectInternet = false;
   loadingIpConnectInternet = false;
   ipConnectInternet = '';
-  loadBalancerId = '';
+  loadBalancerId: number;
   siteToSiteId = '';
 
   trashVpnGpu = false;
   activeVpnGpu = false
-  numOfMonth:number;
+  numOfMonth: number;
   total: any;
   totalAmount = 0;
   totalPayment = 0;
-  totalVAT =0;
+  totalVAT = 0;
   listIpConnectInternet: any[];
   selectIndexTab: any = 0;
   listIpType = [
@@ -137,9 +138,22 @@ export class ProjectCreateComponent implements OnInit {
 
     siteToSite: 0,
     siteToSiteUnit: 0
+
   };
+  minBlock: number = 0;
+  stepBlock: number = 0;
+  maxBlock: number = 0;
+
+  loadBalancerName: string;
+  sitetositeName: string;
+  listTypeCatelogOffer: any;
+
+  numbergpu: number[] = [];
+  maxTotal: number = 8;
+  remaining: number = this.maxTotal
+
   form = new FormGroup({
-    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(20)] }),
+    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(50)] }),
     description: new FormControl(''),
     ipConnectInternet: new FormControl(''),
     numOfMonth: new FormControl(1, { validators: [Validators.required] })
@@ -157,11 +171,13 @@ export class ProjectCreateComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
+    private catelogService:CatalogService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private ipService: IpPublicService) {
     this.inputChangeSubject.pipe(
       debounceTime(800)
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
+
   }
 
   ngOnInit() {
@@ -172,12 +188,17 @@ export class ProjectCreateComponent implements OnInit {
     this.initLoadBalancerData();
     this.loadListIpConnectInternet();
     this.loadInforProjectNormal();
+    this.calculateReal();
     this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
       this.calculateReal();
     });
-    this.onChangeTime();
+    // this.onChangeTime();
+    this.getStepBlock('BLOCKSTORAGE')
 
     this.iconToggle = "icon_circle_minus"
+    this.numOfMonth = this.form.controls['numOfMonth'].value;
+   
+   
   }
 
   calculateReal() {
@@ -189,21 +210,21 @@ export class ProjectCreateComponent implements OnInit {
       if (lstIp != null && lstIp != undefined) {
         ip = lstIp[0];
       }
-      let numOfMonth = this.form.controls['numOfMonth'].value;
+      // let numOfMonth = this.form.controls['numOfMonth'].value;
       // let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : 1;
       // let IPFloating = this.selectIndexTab == 1 && this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
       // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
       // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
 
-      let IPPublicNum = this.numberIpPublic;      
+      let IPPublicNum = this.numberIpPublic;
       let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
       // let IPFloating =  this.numberIpFloating;
       let IPV6 = this.numberIpv6;
       // if (( this.offerFlavor != undefined) || ( this.vCPU != 0 && this.ram != 0)) {
       // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
-        console.log("offerFlavor", this.offerFlavor)
-        if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
-        console.log("lstIp",lstIp)
+      console.log("offerFlavor", this.offerFlavor)
+      if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
+        console.log("lstIp", lstIp)
         if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
           let listString = lstIp[1].split(' ');
           if (listString.length == 3) {
@@ -241,7 +262,7 @@ export class ProjectCreateComponent implements OnInit {
           serviceInstanceId: 0,
           customerId: this.tokenService.get()?.userId,
           offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
-        
+
 
           actionType: 0,
           regionId: this.regionId,
@@ -255,7 +276,7 @@ export class ProjectCreateComponent implements OnInit {
               specificationString: JSON.stringify(requestBody),
               specificationType: 'vpc_create',
               sortItem: 0,
-              serviceDuration: numOfMonth
+              serviceDuration: this.numOfMonth
             }
           ]
         };
@@ -290,67 +311,133 @@ export class ProjectCreateComponent implements OnInit {
     this.searchSubject.next('');
 
   }
+  getStepBlock(name: string) {
+    this.ipService.getStepBlock(name).subscribe((res: any) => {
+      const valuestring: any = res.valueString;
+      const parts = valuestring.split("#")
+      this.minBlock = parseInt(parts[0]);
+      this.stepBlock = parseInt(parts[1]);
+      this.maxBlock = parseInt(parts[2]);
+    })
+  }
+  messageNotification: string;
 
   onInputChange(value: number, name: string): void {
     console.log("object value", value)
     this.inputChangeSubject.next({ value, name });
   }
+
   checkNumberInput(value: number, name: string): void {
+    const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
     const numericValue = Number(value);
-    if (isNaN(numericValue) || numericValue % 10 !== 0 && numericValue<=1000) {
-      this.notification.warning(
-        '',
-        'Vui lòng nhập số chia hết cho 10 ');     
-      if(numericValue % 10 < 5){
-        switch (name){
-          case "hhd":{
-            this.hhd =  Math.floor(numericValue / 10) *10;             
-            break;
-          }
-          case "ssd":{
-            this.ssd  =  Math.floor(numericValue / 10) *10;          
-            break;
-          }
-          case "backup":{
-            this.numberBackup =  Math.floor(numericValue / 10) *10;        
-            break;
-          }
-          case "fileSystem":{
-            this.numberFileSystem =  Math.floor(numericValue / 10) *10;        
-            break;
-          }
-          case "fileSnapshot":{
-            this.numberFileScnapsshot =  Math.floor(numericValue / 10) *10;        
-            break;
-          }
+    if (isNaN(numericValue) || numericValue % this.stepBlock !== 0 && numericValue <= this.maxBlock && numericValue >= this.minBlock) {
+      this.notification.warning('', messageStepNotification);
+      switch (name) {
+        case "hhd": {
+          this.hhd = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
         }
-      }
-      else{
-        switch (name){
-          case "hhd":{
-            this.hhd =  Math.ceil(numericValue / 10) *10;        
-            break;
-          }
-          case "ssd":{
-            this.ssd  =  Math.ceil(numericValue / 10) *10;        
-            break;
-          }
-          case "backup":{
-            this.numberBackup =  Math.ceil(numericValue / 10) *10;        
-            break;
-          }
-          case "fileSystem":{
-            this.numberFileSystem =  Math.ceil(numericValue / 10) *10;        
-            break;
-          }
-          case "fileSnapshot":{
-            this.numberFileScnapsshot =  Math.ceil(numericValue / 10) *10;        
-            break;
-          }
+        case "ssd": {
+          this.ssd = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
+        }
+        case "backup": {
+          this.numberBackup = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
+        }
+        case "fileSystem": {
+          this.numberFileSystem = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
+        }
+        case "fileSnapshot": {
+          this.numberFileScnapsshot = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
         }
       }
     }
-   
+    // else if(isNaN(numericValue)||numericValue < this.minBlock){
+    //   this.notification.warning(
+    //     '',
+    //     'Giá trị  quá nhỏ ');
+    //     switch (name){
+    //       case "hhd":{
+    //         this.hhd =  this.minBlock            
+    //         break;
+    //       }
+    //       case "ssd":{
+    //         this.ssd  =  this.minBlock         
+    //         break;
+    //       }
+    //       case "backup":{
+    //         this.numberBackup =  this.minBlock       
+    //         break;
+    //       }
+    //       case "fileSystem":{
+    //         this.numberFileSystem = this.minBlock        
+    //         break;
+    //       }
+    //       case "fileSnapshot":{
+    //         this.numberFileScnapsshot =  this.minBlock          
+    //         break;
+    //       }
+    //     }
+    // }
+    // else if( isNaN(numericValue)|| numericValue > this.maxBlock){
+
+    //   this.notification.warning(
+    //     '',
+    //     'Giá trị  quá lớn ');
+    //     switch (name){
+    //       case "hhd":{
+    //         this.hhd =  this.maxBlock            
+    //         break;
+    //       }
+    //       case "ssd":{
+    //         this.ssd  =  this.maxBlock         
+    //         break;
+    //       }
+    //       case "backup":{
+    //         this.numberBackup =  this.maxBlock       
+    //         break;
+    //       }
+    //       case "fileSystem":{
+    //         this.numberFileSystem = this.maxBlock        
+    //         break;
+    //       }
+    //       case "fileSnapshot":{
+    //         this.numberFileScnapsshot =  this.maxBlock          
+    //         break;
+    //       }
+    //     }
+    // }
+    // else if(isNaN(numericValue)|| numericValue% this.stepBlock == 0 && numericValue <= this.maxBlock && numericValue>=this.minBlock){
+    //   switch (name){
+    //     case "hhd":{
+    //       this.hhd =    numericValue        
+    //       break;
+    //     }
+    //     case "ssd":{
+    //       this.ssd  =  numericValue    
+    //       break;
+    //     }
+    //     case "backup":{
+    //       this.numberBackup =  numericValue    
+    //       break;
+    //     }
+    //     case "fileSystem":{
+    //       this.numberFileSystem =numericValue  
+    //       break;
+    //     }
+    //     case "fileSnapshot":{
+    //       this.numberFileScnapsshot =  numericValue         
+    //       break;
+    //     }
+    //   }
+    // }
+
+    // }
+
+
     this.calculate(null);
   }
   selectPackge = '';
@@ -401,7 +488,7 @@ export class ProjectCreateComponent implements OnInit {
                     e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + ' IP');
 
                     e.ipNumber = ch.charOptionValues[0];
-                    console.log(" e.ipNumber",  e.ipNumber)
+                    console.log(" e.ipNumber", e.ipNumber)
                   }
                 });
               });
@@ -416,12 +503,14 @@ export class ProjectCreateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/project']);
   }
 
-  onChangeTime(res?:any) {    
-    console.log("res",res)
-    this.numOfMonth = res ;
-    const dateNow = new Date();
-    dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
-    this.expiredDate = dateNow;
+  onChangeTime(numberMonth: number) {
+
+    this.numOfMonth = numberMonth;
+    console.log("numOfMonth123", this.numOfMonth)
+    // const dateNow = new Date();
+    // dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
+    // console.log("this.numOfMonth hh",this.numOfMonth)
+    // this.expiredDate = dateNow;
     this.calculate(null);
   }
 
@@ -557,16 +646,15 @@ export class ProjectCreateComponent implements OnInit {
   initBackup() {
     this.activeBackup = true;
     this.trashBackup = true;
+    // this.price.backupUnit= 
+
   }
   deleteBackup() {
     this.activeBackup = false;
     this.trashBackup = false;
-    this.totalAmount=this.totalAmount-this.price.backup;
-    this.totalPayment = this.totalPayment -  this.price.backup - (0.1 * this.price.backup);
-    this.totalVAT =  this.totalPayment -this.totalAmount;
-    this.price.backup = 0;
-    this.price.backupUnit = 0;
+
     this.numberBackup = 0;
+    this.calculate(null)
   }
 
 
@@ -577,14 +665,9 @@ export class ProjectCreateComponent implements OnInit {
   deleteLoadBalancer() {
     this.activeLoadBalancer = false;
     this.trashLoadBalancer = false;
-
-    this.totalAmount=this.totalAmount - this.price.loadBalancer 
-    this.totalPayment = this.totalPayment -  this.price.loadBalancer - (0.1 * this.price.loadBalancer)
-    this.totalVAT =  this.totalPayment -this.totalAmount;
     this.numberLoadBalancer = 0;
-    this.price.loadBalancer = 0;
-    this.price.loadBalancerUnit = 0;
-    this.loadBalancerId = '';
+    // this.loadBalancerId = '';
+    this.calculate(null)
   }
 
 
@@ -595,17 +678,9 @@ export class ProjectCreateComponent implements OnInit {
   deleteFileStorage() {
     this.activeFileStorage = false;
     this.trashFileStorage = false;
-
-    this.totalAmount=this.totalAmount -  this.price.fileStorage -this.price.filestorageSnapshot
-    this.totalPayment = this.totalPayment -  this.price.fileStorage -  this.price.filestorageSnapshot - (0.1 * this.price.filestorageSnapshot)- (0.1 * this.price.fileStorage)
-    this.totalVAT =  this.totalPayment -this.totalAmount;
-
-    this.price.fileStorage = 0;
-    this.price.fileStorageUnit = 0;
-    this.price.filestorageSnapshot = 0;
-    this.price.filestorageSnapshotUnit = 0;
     this.numberFileSystem = 0
     this.numberFileScnapsshot = 0
+    this.calculate(null)
 
   }
   initVpnSiteToSite() {
@@ -615,18 +690,15 @@ export class ProjectCreateComponent implements OnInit {
   deleteVpnSiteToSite() {
     this.activeSiteToSite = false;
     this.trashVpnSiteToSite = false;
-
-    this.totalAmount=this.totalAmount -  this.price.siteToSite -this.price.siteToSite
-    this.totalPayment = this.totalPayment -  this.price.fileStorage  - (0.1 * this.price.fileStorage)
-    this.totalVAT =  this.totalPayment -this.totalAmount;
-
-    this.price.siteToSite = 0;
-    this.price.siteToSiteUnit = 0;
     this.siteToSiteId = '';
+    this.calculate(null)
   }
   initVpnGpu() {
     this.activeVpnGpu = true;
     this.trashVpnGpu = true;
+    this.getCatelogOffer();
+    console.log("object")
+
   }
   deleteVpnGpu() {
     this.activeVpnGpu = false;
@@ -680,12 +752,14 @@ export class ProjectCreateComponent implements OnInit {
             .getListOffersByProductId(data[0].id, this.regionId)
             .subscribe((data: any) => {
               this.listLoadbalancer = data;
+              console.log("listLoadbalancer ff", this.listLoadbalancer)
+              this.loadBalancerId = this.listLoadbalancer[0].id
             });
         }
       );
   }
 
-  
+
 
   private getPriceEachComponent(data: any) {
     console.log(data.orderItemPrices);
@@ -696,16 +770,14 @@ export class ProjectCreateComponent implements OnInit {
         console.log("IpPublic", this.price.IpPublic)
         this.price.IpPublicUnit = item.unitPrice.amount;
         console.log("IpPublic", this.price.IpPublicUnit)
-        // this.price.IpPublic = item.unitPrice.amount;
 
       } else if (item.typeName == 'ipfloating') {
         this.price.IpFloating = item.totalAmount.amount;
         this.price.IpFloatingUnit = item.unitPrice.amount;
-        // this.price.IpFloating = item.unitPrice.amount;
       } else if (item.typeName == 'ipv6') {
         this.price.IpV6 = item.totalAmount.amount;
         this.price.IpV6Unit = item.unitPrice.amount;
-        // this.price.IpV6 = item.unitPrice.amount;
+
       } else if (item.typeName == 'backup') {
         this.price.backup = item.totalAmount.amount;
         console.log("backup", this.price.backup)
@@ -713,22 +785,22 @@ export class ProjectCreateComponent implements OnInit {
         console.log("backup Unit", this.price.backupUnit)
       } else if (item.typeName == 'filestorage') {
         this.price.fileStorage = item.totalAmount.amount;
-        // console.log("fileStorage",this.price.fileStorage )
+
         this.price.fileStorageUnit = item.unitPrice.amount;
         console.log("fileStorageUnit", this.price.fileStorageUnit)
-        // fileStorage += item.unitPrice.amount;
+
       } else if (item.typeName == 'filestorage-snapshot') {
         this.price.filestorageSnapshot = item.totalAmount.amount;
         this.price.filestorageSnapshotUnit = item.unitPrice.amount;
-        // fileStorage += item.unitPrice.amount;
+
       } else if (item.typeName == 'loadbalancer') {
         this.price.loadBalancer = item.totalAmount.amount;
         this.price.loadBalancerUnit = item.unitPrice.amount;
-        // this.price.loadBalancer = item.unitPrice.amount;
+
       } else if (item.typeName == 'vpn-site-to-site') {
         this.price.siteToSite = item.totalAmount.amount;
         this.price.siteToSiteUnit = item.unitPrice.amount;
-        // this.price.siteToSite = item.unitPrice.amount;
+
       } else if (item.typeName == 'vcpu') {
 
         this.price.vcpu = item.totalAmount.amount;
@@ -759,6 +831,7 @@ export class ProjectCreateComponent implements OnInit {
   private loadInforProjectNormal() {
     this.instancesService.getListOffers(this.regionId, 'vpc').subscribe(
       data => {
+        console.log("hhhhh", data)
         for (let item of data[0].characteristicValues) {
           if (item.charName == 'network') {
             this.nwNormal = item.charOptionValues[2];
@@ -802,6 +875,70 @@ export class ProjectCreateComponent implements OnInit {
 
   // 
 
+  findNameLoadBalance(loadBalancerId: number) {
+    if (loadBalancerId) {
+      const selectedLoadBalancer = this.listLoadbalancer.find(lb => lb.id === loadBalancerId)
+      this.loadBalancerName = selectedLoadBalancer ? selectedLoadBalancer.offerName : null;
+    } else {
+      this.loadBalancerName = null;
+    }
+    this.calculate(null);
+  }
 
+  findNameSiteToSite(siteToSiteId: number) {
+    if (siteToSiteId) {
+      const selectedSiteToSite = this.listSiteToSite.find(lb => lb.id === siteToSiteId)
+      this.sitetositeName = selectedSiteToSite ? selectedSiteToSite.offerName : null;
+
+    } else {
+      this.sitetositeName = null;
+    }
+    this.calculate(null);
+  }
+
+getCatelogOffer(){
+  this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
+    res => {
+      this.listTypeCatelogOffer = res
+      console.log("object123", res)
+      this.listTypeCatelogOffer.forEach(() => this.numbergpu.push(0));
+    }
+  );
+}
+trackById(index: number, item: any): any {
+  return item.offerName;
+}
+maxNumber:number[]=[8,8]
+getValues(index:number) {
+  this.maxNumber=[8,8]
+  if(index==0){
+    if(this.numbergpu[0]<=this.maxTotal){
+      this.maxNumber[1] = this.maxTotal -this.numbergpu[0]
+      if(this.numbergpu[1]>0 && this.numbergpu[1]>this.maxNumber[1]){
+        this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+        this.numbergpu[1]= this.maxNumber[1]
+      }
+    }
+  }
+  else{
+    if(this.numbergpu[1]<=this.maxTotal){
+      this.maxNumber[0] = this.maxTotal -this.numbergpu[1]
+      if(this.numbergpu[0]>0 && this.numbergpu[0]>this.maxNumber[0]){
+        this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+        this.numbergpu[0]= this.maxNumber[0]
+      }
+    }
+  }
+}
+getMaxValue(index: number): number {
+  if (this.numbergpu[index] < 8) {
+    return this.maxNumber[index];
+  } 
+}
+
+isDisabled(index: number): boolean {
+  let total = this.numbergpu.reduce((sum, current) => sum + current, 0);
+  return total >= this.maxTotal && this.numbergpu[index] === 0;
+}
 
 }

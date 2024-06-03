@@ -98,6 +98,8 @@ export class DefaultInterceptor implements HttpInterceptor {
         responseType: 'json',
         context: new HttpContext().set(ALLOW_ANONYMOUS, true)
       });
+      console.log(result);
+      
     return result;
   }
 

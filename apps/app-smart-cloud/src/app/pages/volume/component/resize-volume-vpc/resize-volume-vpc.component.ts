@@ -69,6 +69,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   minStorage: number = 0;
   stepStorage: number = 0;
   valueString: string;
+  maxStorage: number = 0;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
@@ -85,12 +86,18 @@ export class ResizeVolumeVpcComponent implements OnInit {
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
     this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend'));
 
+    this.validateForm.controls.storage.valueChanges.subscribe(value => {
+      this.volumeInit();
+    })
+
   }
 
   checkQuota(control) {
     const value = control.value;
     if (this.remaining < value) {
       return { notEnough: true };
+    } else if(this.remaining == 0) {
+      return { outOfStorage: true };
     } else {
       return null;
     }
@@ -126,9 +133,9 @@ export class ResizeVolumeVpcComponent implements OnInit {
   onChangeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if (res % 10 > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'));
-          this.validateForm.controls.storage.setValue(res - (res % 10));
+        if (res % this.stepStorage > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
         }
       });
   }
@@ -161,7 +168,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.validateForm.controls.description.setValue(data.description);
       this.selectedValueRadio = data.volumeType;
       this.validateForm.controls.radio.setValue(data.volumeType);
-
+      this.volumeEdit.iops = this.volumeInfo?.iops
       if (this.volumeInfo?.instanceId != null) {
         this.getInstanceById(this.volumeInfo?.instanceId);
       }
@@ -171,6 +178,8 @@ export class ResizeVolumeVpcComponent implements OnInit {
           this.listVMs += item.instanceName + '\n';
         });
       }
+
+
 
       //Thoi gian su dung
       const createDate = new Date(this.volumeInfo?.creationDate);
@@ -272,6 +281,10 @@ export class ResizeVolumeVpcComponent implements OnInit {
       if (this.volumeInfo?.volumeType === 'ssd') {
         this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
       }
+
+      this.validateForm.controls.storage.markAsDirty()
+      this.validateForm.controls.storage.updateValueAndValidity()
+
       this.onChangeValueInput();
     }, error => {
       this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
@@ -296,10 +309,14 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.valueString = data.valueString;
       this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
       this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
     })
   }
 
   ngOnInit() {
+    this.validateForm.controls.storage.markAsDirty()
+    this.validateForm.controls.storage.updateValueAndValidity()
+
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
@@ -310,5 +327,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.getVolumeById(this.volumeId);
       this.getProject(this.project);
     }
+
+
   }
 }

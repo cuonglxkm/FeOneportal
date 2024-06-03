@@ -241,13 +241,13 @@
             <nz-col nzSpan="12">
               <span class="text-label" style="color: #eb1414"
                 >{{ 'app.service.creation-date' | i18n }}:
-                {{ instancesModel.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</span
+                {{ instancesModel.createdDate | date : 'HH:mm:ss dd/MM/yyyy' }}</span
               >
             </nz-col>
             <nz-col nzSpan="12">
               <span class="text-label" style="color: #eb1414"
                 >{{ 'app.service.expiration-date' | i18n }}:
-                {{ instancesModel.expiredDate | date : 'dd/MM/yyyy HH:mm:ss' }}
+                {{ instancesModel.expiredDate | date : 'HH:mm:ss dd/MM/yyyy' }}
               </span>
             </nz-col>
           </nz-row>
@@ -345,7 +345,7 @@
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalVAT }}
+              {{ totalVAT | number }}
               VND
             </span>
           </nz-col>

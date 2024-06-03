@@ -4,6 +4,7 @@ import { FileSystemDetail } from 'src/app/shared/models/file-system.model';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-file-system-snapshot-detail',
@@ -29,7 +30,8 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
   constructor(private fileSystemSnapshotService: FileSystemSnapshotService,
               private router: Router,
               private fileSystemService: FileSystemService,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private notification: NzNotificationService) {
   }
 
   onRegionChange(region: RegionModel) {
@@ -47,14 +49,21 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
 
   getFileSystemSnapshotById(id) {
     this.isLoading = true
-    this.fileSystemSnapshotService.getFileSystemSnapshotById(id).subscribe(data => {
-      this.fileSystemSnapshotDetail = data
-      this.fileSystemId = data.shareId
-      this.getFileSystemById(data.shareId)
-      this.isLoading = false
+    this.fileSystemSnapshotService.getFileSystemSnapshotById(id, this.project).subscribe(data => {
+      if(data){
+        this.fileSystemSnapshotDetail = data;
+        this.fileSystemId = data.shareId;
+        this.getFileSystemById(data.shareId);
+      } else {
+        this.notification.error('', 'File System Snapshot không tồn tại!');
+        this.router.navigate([
+          '/app-smart-cloud/file-system-snapshot/list',
+        ]);
+      }
+      this.isLoading = false;
     }, error => {
       this.fileSystemSnapshotDetail = null
-      this.isLoading = false
+      this.isLoading = false;
     })
   }
 

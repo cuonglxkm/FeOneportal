@@ -37,6 +37,7 @@ import { OrderItem } from 'src/app/shared/models/price';
 import { CreateVolumeRequestModel } from 'src/app/shared/models/volume.model';
 import { addDays } from 'date-fns';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
@@ -63,9 +64,13 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   dateString = new Date();
   expiredDate: Date = addDays(this.dateString, 30);
   isLoadingCreateFSS: boolean = false;
-
+  valueStringConfiguration: string
+  minStorage: number
+  maxStorage: number
+  stepStorage: number
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
+  timeSelected: any
 
   formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot =
     new FormCreateFileSystemSnapShot();
@@ -149,6 +154,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.getListFileSystem();
+    this.getConfigurations();
   }
 
   constructor(
@@ -160,7 +166,8 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     private notification: NzNotificationService,
     private activatedRoute: ActivatedRoute,
     private instanceService: InstancesService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private configurationsService: ConfigurationsService
   ) {
     this.form.get('time').valueChanges.subscribe((data) => {
       this.getTotalAmount();
@@ -172,6 +179,13 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       this.dateString,
       30 * this.form.get('time').value
     );
+  }
+
+  onChangeTime(value) {
+    this.timeSelected = value;
+    this.form.controls.time.setValue(this.timeSelected);
+    console.log(this.timeSelected);
+    this.getTotalAmount();
   }
 
   fileSystemSnapshotInit() {
@@ -251,7 +265,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
         specification: JSON.stringify(this.formCreate),
         specificationType: 'sharesnapshot_create',
         price: this.typeVpc === 0 ? this.orderItem?.totalAmount.amount : 0,
-        serviceDuration: this.typeVpc === 0 ? 1 : this.form.controls.time.value,
+        serviceDuration: this.typeVpc === 0 ? this.form.controls.time.value : 1,
       },
     ];
     if (this.typeVpc === 0) {
@@ -269,7 +283,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
           if(e.error.type === 'Exception'){
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              this.i18n.fanyi('app.file.system.snapshot.create.size.fail'),
+              e.error.message,
             );
           }else{
             this.notification.error(
@@ -318,7 +332,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
           if(e.error.type === 'Exception'){
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              this.i18n.fanyi('app.file.system.snapshot.create.size.fail'),
+              e.error.message,
             );
           }else{
             this.notification.error(
@@ -330,6 +344,17 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       });
     }
   }
+
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
+    })
+  }
+
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;

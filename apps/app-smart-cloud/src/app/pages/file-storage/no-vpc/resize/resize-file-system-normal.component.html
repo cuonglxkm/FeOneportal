@@ -131,7 +131,7 @@
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-            <one-portal-time-used-resize [expireDate]="fileSystem?.expireDate" [createDate]="fileSystem?.createdDate"/>
+            <one-portal-time-used-resize [nameService]="'File System'" [expireDate]="fileSystem?.expireDate" [createDate]="fileSystem?.createdDate"/>
           </nz-card>
           <nz-card style="border-radius: 8px;">
             <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
@@ -155,9 +155,10 @@
                                  style="width: 100%; margin-left: 0;"
                                  nzAutoFocus
                                  class="input-custom"
-                                 [nzMin]="fileSystem?.size"
+                                 [nzMin]="minStorage"
                                  (ngModelChange)="changeValueStorage($event)"
-                                 [nzStep]="10" />
+                                 [nzStep]="stepStorage"
+                                 [nzMax]="maxStorage"/>
                 <ng-template #storageErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required') || control.hasError('pattern')">{{ 'validation.file.system.capacity.required' | i18n }}</ng-container>
                   <!--                <ng-container-->
@@ -179,14 +180,14 @@
             </nz-form-item>
             <nz-form-item style="margin-bottom: 0;">
               <nz-form-label>
-                <span>{{ 'app.adjust.date' | i18n }}: {{ dateEdit | date: 'dd/MM/yyyy' }}</span>
+                <span>{{ 'app.adjust.date' | i18n }}: {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
               </nz-form-label>
             </nz-form-item>
           </nz-card>
           <one-portal-guide-formula />
         </nz-col>
         <nz-col nzSpan="8">
-          <nz-affix [nzOffsetTop]="48">
+          <nz-affix [nzOffsetTop]="72">
             <nz-card class="border-card">
               <span class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
               <div style="margin-top: 10px" class="text-value">{{ 'app.file.system.name' | i18n }}</div>
@@ -209,17 +210,17 @@
                 <span class="text-label">{{ resizeFileSystem?.size }} GB</span>
               </div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <!--          <nz-row style="margin-bottom: 10px" nzGutter="16">-->
-              <!--            <nz-col nzSpan="16">-->
-              <!--              <span class="text-value"> {{ 'app.cost.a.month' | i18n }} </span>-->
-              <!--            </nz-col>-->
-              <!--            <nz-col class="text-right" nzSpan="8">-->
-              <!--              <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3" nzAlign="right">0 VND</span>-->
-              <!--              <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3" nzAlign="right">-->
-              <!--                {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}-->
-              <!--              </span>-->
-              <!--            </nz-col>-->
-              <!--          </nz-row>-->
+              <nz-row style="margin-bottom: 10px" nzGutter="16">
+                <nz-col nzSpan="16">
+                  <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+                </nz-col>
+                <nz-col class="text-right" nzSpan="8">
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
+                  {{orderItem?.totalVAT?.amount | number }} {{orderItem?.totalVAT?.currency}}
+                </span>
+                </nz-col>
+              </nz-row>
               <nz-row style="
             margin-bottom: 20px;
             background-color: #cce9ff;

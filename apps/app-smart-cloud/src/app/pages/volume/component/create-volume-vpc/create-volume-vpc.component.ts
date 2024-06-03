@@ -139,6 +139,8 @@ export class CreateVolumeVpcComponent implements OnInit {
     const value = control.value;
     if (this.remaining < value) {
       return { notEnough: true };
+    } else if(this.remaining == 0) {
+      return { outOfStorage: true };
     } else {
       return null;
     }
@@ -149,9 +151,9 @@ export class CreateVolumeVpcComponent implements OnInit {
   changeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if(res % 10 > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity'))
-          this.validateForm.controls.storage.setValue(res - (res % 10))
+        if(res % this.stepStorage > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}))
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage))
         }
       });
   }
@@ -296,12 +298,14 @@ export class CreateVolumeVpcComponent implements OnInit {
   minStorage: number = 0;
   stepStorage: number = 0;
   valueString: string;
+  maxStorage: number = 0;
 
   getConfiguration() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueString = data.valueString;
       this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
       this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
     })
   }
   ngOnInit() {
@@ -496,7 +500,7 @@ export class CreateVolumeVpcComponent implements OnInit {
         },
         error => {
           this.isLoadingAction = false;
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.request.create.fail'));
         });
     }
   }

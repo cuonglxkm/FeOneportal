@@ -43,6 +43,7 @@ import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -165,7 +166,8 @@ export class InstancesCreateVpcComponent implements OnInit {
     private loadingSrv: LoadingService,
     private el: ElementRef,
     private renderer: Renderer2,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private configurationService: ConfigurationsService
   ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
@@ -196,6 +198,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getConfigurations();
     this.getAllImageType();
     this.initSnapshot();
     this.getAllIPPublic();
@@ -286,6 +289,7 @@ export class InstancesCreateVpcComponent implements OnInit {
           this.remainingVCPU =
             this.infoVPC.cloudProject.quotavCpu -
             this.infoVPC.cloudProjectResourceUsed.cpu;
+          this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(
@@ -407,13 +411,15 @@ export class InstancesCreateVpcComponent implements OnInit {
   activeBlockHDD: boolean = true;
   activeBlockSSD: boolean = false;
   initHDD(): void {
-    this.activeBlockHDD = true;
-    this.activeBlockSSD = false;
-    this.remainingVolume =
-      this.infoVPC.cloudProject.quotaHddInGb -
-      this.infoVPC.cloudProjectResourceUsed.hdd;
-    this.instanceCreate.volumeSize = 0;
-    this.cdr.detectChanges();
+    if (!this.disableHDD) {
+      this.activeBlockHDD = true;
+      this.activeBlockSSD = false;
+      this.remainingVolume =
+        this.infoVPC.cloudProject.quotaHddInGb -
+        this.infoVPC.cloudProjectResourceUsed.hdd;
+      this.instanceCreate.volumeSize = 0;
+      this.cdr.detectChanges();
+    }
   }
   initSSD(): void {
     this.activeBlockHDD = false;
@@ -430,6 +436,15 @@ export class InstancesCreateVpcComponent implements OnInit {
   isCustomconfig = true;
   isGpuConfig = false;
   listGPUType: OfferItem[] = [];
+  getListGpuType() {
+    this.dataService
+      .getListOffers(this.region, 'vm-flavor-gpu')
+      .subscribe((data) => {
+        this.listGPUType = data.filter(
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+        );
+      });
+  }
 
   onClickCustomConfig() {
     this.isCustomconfig = true;
@@ -458,6 +473,20 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.instanceCreate.gpuCount = 0;
   }
 
+  minCapacity: number;
+  maxCapacity: number;
+  stepCapacity: number;
+  getConfigurations() {
+    this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
+      next: (data) => {
+        let valueArray = data.valueString.split('#');
+        this.minCapacity = valueArray[0];
+        this.stepCapacity = valueArray[1];
+        this.maxCapacity = valueArray[2];
+      },
+    });
+  }
+
   isValidCapacity: boolean = false;
   dataSubjectCapacity: Subject<any> = new Subject<any>();
   changeCapacity(value: number) {
@@ -469,14 +498,16 @@ export class InstancesCreateVpcComponent implements OnInit {
         debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
-        if (this.instanceCreate.volumeSize % 10 > 0) {
+        if (this.instanceCreate.volumeSize % this.stepCapacity > 0) {
           this.notification.warning(
             '',
-            this.i18n.fanyi('app.notify.amount.capacity')
+            this.i18n.fanyi('app.notify.amount.capacity', {
+              number: this.stepCapacity,
+            })
           );
           this.instanceCreate.volumeSize =
             this.instanceCreate.volumeSize -
-            (this.instanceCreate.volumeSize % 10);
+            (this.instanceCreate.volumeSize % this.stepCapacity);
           this.checkValidConfig();
           this.cdr.detectChanges();
         }
@@ -501,6 +532,8 @@ export class InstancesCreateVpcComponent implements OnInit {
               })
             );
           }
+        } else {
+          this.isValidCapacity = true;
         }
       });
   }

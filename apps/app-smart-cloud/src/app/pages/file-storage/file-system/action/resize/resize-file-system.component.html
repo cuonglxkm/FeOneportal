@@ -95,28 +95,47 @@
                                      [nzMin]="fileSystem?.size"
                                      [(ngModel)]="storage"
                                      (ngModelChange)="storageSelectedChange($event)"
-                                     [nzStep]="10"></nz-input-number>
+                                     [nzStep]="stepStorage" [nzMax]="storageRemaining"></nz-input-number>
                     <ng-template #storageErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
                       <ng-container
                         *ngIf="control.hasError('pattern')">{{ 'app.file.system.error.pattern.storage' | i18n }}
                       </ng-container>
-                      <ng-container
-                        *ngIf="control.hasError('notEnough')">{{ 'app.file.system.not.enough.quota' | i18n }}
+                      <ng-container *ngIf="control.hasError('notEnough') || control.hasError('outOfStorage')">
+                        {{ 'app.alert.quota.vpc' | i18n }}<a [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a>{{ 'app.alert.quota.vpc.next' | i18n }}
                       </ng-container>
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
-                  <nz-form-label>
-                    <div>
-                      <div>
-                        <span>{{ 'app.file.system.capacity' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
-                      </div>
-                      <span>{{ quotaShareInGb }} (GB)</span>
-                    </div>
-
-                  </nz-form-label>
+                  <nz-row>
+                    <nz-col nzSpan="14">
+                      <span class="text-label">{{'app.file.system.total.size'|i18n}}:</span>
+                      <img nz-popover
+                           [nzPopoverContent]="'app.file.system.capacity.vpc' | i18n"
+                           nzPopoverPlacement="bottom" style="margin-left: 6px; margin-bottom: 3px;"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
+                    </nz-col>
+                    <nz-col nzSpan="10">
+                      <span class="text-label">{{ quotaShareInGb }} (GB)</span>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row>
+                    <nz-col nzSpan="14">
+                      <span class="text-label">{{'app.backup.package.storage.used'|i18n}}:</span>
+                    </nz-col>
+                    <nz-col nzSpan="10">
+                      <span class="text-label">{{ storageUsed }} (GB)</span>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row>
+                    <nz-col nzSpan="14">
+                      <span class="text-label">{{'Dung lượng còn lại'|i18n}}:</span>
+                    </nz-col>
+                    <nz-col nzSpan="10">
+                      <span class="text-label">{{ storageRemaining }} (GB)</span>
+                    </nz-col>
+                  </nz-row>
                 </nz-form-item>
               </nz-col>
             </nz-row>
@@ -139,7 +158,7 @@
           </nz-card>
         </nz-col>
         <nz-col nzSpan="8">
-          <nz-affix [nzOffsetTop]="48">
+          <nz-affix [nzOffsetTop]="72">
             <nz-card class="border-card">
               <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
               <div style="margin-top: 10px" class="text-value">{{ 'app.file.system.name' | i18n }}</div>

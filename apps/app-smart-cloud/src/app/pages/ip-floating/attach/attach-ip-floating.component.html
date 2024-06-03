@@ -1,8 +1,6 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
-      nzTheme="outline"
-      nz-popover
-      nzPopoverContent="{{'ip.floating.label.attach' | i18n}}"
-      nzPopoverPlacement="bottom" (click)="showModal()"></span>
+<img style="padding-right: 10px;" src="assets/imgs/add.svg"
+     nz-tooltip nzTooltipTitle="{{'ip.floating.label.attach' | i18n}}" nzTooltipPlacement="bottom"
+     (click)="showModal()"/>
 <nz-modal [(nzVisible)]="isVisible"
           nzCentered
           [nzTitle]="modalTitle"

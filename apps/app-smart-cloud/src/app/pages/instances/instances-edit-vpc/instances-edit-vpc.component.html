@@ -13,6 +13,12 @@
           'app.instances' | i18n
         }}</a>
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a
+          [routerLink]="['/app-smart-cloud/instances/instances-detail/' + id]"
+          >{{ 'app.instances.detail' | i18n }}</a
+        >
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.instances.edit' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -243,7 +249,7 @@
                   >{{ 'app.service.creation-date' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan">{{
-                  instancesModel.createdDate | date : 'dd/MM/yyyy HH:mm:ss'
+                  instancesModel.createdDate | date : 'HH:mm:ss dd/MM/yyyy'
                 }}</span>
               </nz-row>
             </nz-col>
@@ -253,7 +259,9 @@
                   >{{ 'app.service.expiration-date' | i18n }}:</span
                 >
                 <span class="text-value-detail"
-                  >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy HH:mm:ss' }}
+                  >{{
+                    instancesModel.expiredDate | date : 'HH:mm:ss dd/MM/yyyy'
+                  }}
                 </span>
               </nz-row></nz-col
             >
@@ -347,22 +355,40 @@
                         >
                         <nz-slider
                           [(ngModel)]="storage"
-                          (ngModelChange)="checkChangeConfig(); changeCapacity($event)"
+                          (ngModelChange)="
+                            checkChangeConfig(); changeCapacity($event)
+                          "
                           [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="0"
+                          [nzMin]="minCapacity"
                           [nzMax]="remainingVolume"
-                          [nzStep]="10"
+                          [nzStep]="stepCapacity"
                         ></nz-slider>
+                        <div
+                          *ngIf="remainingVolume == 0"
+                          style="font-size: 14px; color: #ff4d4f"
+                        >
+                          {{ 'app.alert.quota.vpc' | i18n }}
+                          <a
+                            [routerLink]="[
+                              '/app-smart-cloud/project/update',
+                              projectId
+                            ]"
+                            >{{ 'app.this' | i18n }}</a
+                          >
+                          {{ 'app.alert.quota.vpc.next' | i18n }}
+                        </div>
                       </td>
                       <td>
                         <nz-input-number
                           [(ngModel)]="storage"
-                          (ngModelChange)="checkChangeConfig(); changeCapacity($event)"
+                          (ngModelChange)="
+                            checkChangeConfig(); changeCapacity($event)
+                          "
                           (keydown)="onKeyDown($event)"
                           [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="0"
+                          [nzMin]="minCapacity"
                           [nzMax]="remainingVolume"
-                          [nzStep]="10"
+                          [nzStep]="stepCapacity"
                           nzSize="large"
                         ></nz-input-number>
                       </td>
@@ -380,6 +406,20 @@
                           [nzMin]="0"
                           [nzMax]="remainingRAM"
                         ></nz-slider>
+                        <div
+                          *ngIf="remainingRAM == 0"
+                          style="font-size: 14px; color: #ff4d4f"
+                        >
+                          {{ 'app.alert.quota.vpc' | i18n }}
+                          <a
+                            [routerLink]="[
+                              '/app-smart-cloud/project/update',
+                              projectId
+                            ]"
+                            >{{ 'app.this' | i18n }}</a
+                          >
+                          {{ 'app.alert.quota.vpc.next' | i18n }}
+                        </div>
                       </td>
                       <td>
                         <nz-input-number
@@ -406,6 +446,20 @@
                           [nzMin]="0"
                           [nzMax]="remainingVCPU"
                         ></nz-slider>
+                        <div
+                          *ngIf="remainingVCPU == 0"
+                          style="font-size: 14px; color: #ff4d4f"
+                        >
+                          {{ 'app.alert.quota.vpc' | i18n }}
+                          <a
+                            [routerLink]="[
+                              '/app-smart-cloud/project/update',
+                              projectId
+                            ]"
+                            >{{ 'app.this' | i18n }}</a
+                          >
+                          {{ 'app.alert.quota.vpc.next' | i18n }}
+                        </div>
                       </td>
                       <td>
                         <nz-input-number
@@ -448,6 +502,20 @@
                           [nzMin]="0"
                           [nzMax]="remainingVCPU"
                         ></nz-slider>
+                        <div
+                          *ngIf="remainingVCPU == 0"
+                          style="font-size: 14px; color: #ff4d4f"
+                        >
+                          {{ 'app.alert.quota.vpc' | i18n }}
+                          <a
+                            [routerLink]="[
+                              '/app-smart-cloud/project/update',
+                              projectId
+                            ]"
+                            >{{ 'app.this' | i18n }}</a
+                          >
+                          {{ 'app.alert.quota.vpc.next' | i18n }}
+                        </div>
                       </td>
                       <td>
                         <nz-input-number
@@ -474,6 +542,20 @@
                           [nzMin]="0"
                           [nzMax]="remainingRAM"
                         ></nz-slider>
+                        <div
+                          *ngIf="remainingRAM == 0"
+                          style="font-size: 14px; color: #ff4d4f"
+                        >
+                          {{ 'app.alert.quota.vpc' | i18n }}
+                          <a
+                            [routerLink]="[
+                              '/app-smart-cloud/project/update',
+                              projectId
+                            ]"
+                            >{{ 'app.this' | i18n }}</a
+                          >
+                          {{ 'app.alert.quota.vpc.next' | i18n }}
+                        </div>
                       </td>
                       <td>
                         <nz-input-number
@@ -499,9 +581,24 @@
                           [(ngModel)]="storage"
                           (ngModelChange)="checkChangeConfig()"
                           [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="0"
+                          [nzMin]="minCapacity"
                           [nzMax]="remainingVolume"
+                          [nzStep]="stepCapacity"
                         ></nz-slider>
+                        <div
+                          *ngIf="remainingVolume == 0"
+                          style="font-size: 14px; color: #ff4d4f"
+                        >
+                          {{ 'app.alert.quota.vpc' | i18n }}
+                          <a
+                            [routerLink]="[
+                              '/app-smart-cloud/project/update',
+                              projectId
+                            ]"
+                            >{{ 'app.this' | i18n }}</a
+                          >
+                          {{ 'app.alert.quota.vpc.next' | i18n }}
+                        </div>
                       </td>
                       <td>
                         <nz-input-number
@@ -509,8 +606,9 @@
                           (ngModelChange)="checkChangeConfig()"
                           (keydown)="onKeyDown($event)"
                           [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="0"
+                          [nzMin]="minCapacity"
                           [nzMax]="remainingVolume"
+                          [nzStep]="stepCapacity"
                           nzSize="large"
                         ></nz-input-number>
                       </td>
@@ -528,6 +626,20 @@
                           [(ngModel)]="GPU"
                           [ngModelOptions]="{ standalone: true }"
                         ></nz-slider>
+                        <div
+                          *ngIf="remainingGpu == 0"
+                          style="font-size: 14px; color: #ff4d4f"
+                        >
+                          {{ 'app.alert.quota.vpc' | i18n }}
+                          <a
+                            [routerLink]="[
+                              '/app-smart-cloud/project/update',
+                              projectId
+                            ]"
+                            >{{ 'app.this' | i18n }}</a
+                          >
+                          {{ 'app.alert.quota.vpc.next' | i18n }}
+                        </div>
                       </td>
                       <td>
                         <nz-input-number
@@ -579,7 +691,7 @@
         <nz-card class="card-border" style="border-radius: 8px; width: 100%">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{
-              'app.estimated.cost' | i18n
+              'app.config.parameters' | i18n
             }}</span>
           </div>
           <div class="text-value">{{ 'app.instances.name' | i18n }}</div>

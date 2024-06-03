@@ -16,6 +16,10 @@ import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../shared/services/order.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 
 @Component({
@@ -30,8 +34,8 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   idFileSystem: number;
 
   storage: number;
-  isLoading: boolean = false;
-  fileSystem: FileSystemDetail = new FileSystemDetail();
+  isLoading: boolean = true;
+  fileSystem: FileSystemDetail;
 
   isInitSnapshot: boolean = false;
 
@@ -53,6 +57,12 @@ export class ExtendFileSystemNormalComponent implements OnInit {
 
   extendFileSystem: ExtendFileSystem = new ExtendFileSystem();
 
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueStringConfiguration: string = '';
+  maxStorage: number = 0;
+
+  timeSelected: any
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -60,7 +70,10 @@ export class ExtendFileSystemNormalComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private projectService: ProjectService,
-              private instanceService: InstancesService) {
+              private instanceService: InstancesService,
+              private configurationsService: ConfigurationsService,
+              private orderService: OrderService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -80,11 +93,13 @@ export class ExtendFileSystemNormalComponent implements OnInit {
     this.dataSubjectTime.next(value);
   }
 
-  onChangeTime() {
-      this.dataSubjectTime.pipe(debounceTime(500))
-        .subscribe((res) => {
+  onChangeTime(value) {
+      // this.dataSubjectTime.pipe(debounceTime(500))
+      //   .subscribe((res) => {
+    this.timeSelected = value
+    this.validateForm.controls.time.setValue(this.timeSelected)
           this.getTotalAmount();
-        })
+        // })
   }
 
   getFileSystemById(id) {
@@ -162,9 +177,23 @@ export class ExtendFileSystemNormalComponent implements OnInit {
       }
     ];
     console.log('request', request);
-    var returnPath: string = '/app-smart-cloud/file-storage/file-system/' + this.idFileSystem + '/extend';
-    console.log('request', request);
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    this.orderService.validaterOrder(request).subscribe(data => {
+      var returnPath: string = '/app-smart-cloud/file-storage/file-system/' + this.idFileSystem + '/extend';
+      console.log('request', request);
+      this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+    })
+  }
+
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
+    })
   }
 
   ngOnInit() {
@@ -174,6 +203,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
 
     this.idFileSystem = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
     this.getFileSystemById(this.idFileSystem);
-    this.onChangeTime()
+    // this.onChangeTime()
+    this.getConfigurations();
   }
 }

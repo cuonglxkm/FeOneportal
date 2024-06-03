@@ -7,6 +7,8 @@ import { FormSearchListBalancer, LoadBalancerModel } from '../../../shared/model
 import { LoadBalancerService } from '../../../shared/services/load-balancer.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { debounceTime, Subject } from 'rxjs';
+import { TimeCommon } from '../../../shared/utils/common';
 
 @Component({
   selector: 'one-portal-list-load-balancer',
@@ -47,10 +49,10 @@ export class ListLoadBalancerComponent implements OnInit{
     this.search(true)
   }
 
-  onInputChange(value) {
-    this.value = value
-    this.search(false)
-  }
+  // onInputChange(value) {
+  //   this.value = value
+  //   this.search(false)
+  // }
 
   onPageSizeChange(value) {
     this.pageSize = value
@@ -114,6 +116,7 @@ export class ListLoadBalancerComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/load-balancer/' + idLb + '/listener/create'])
   }
 
+  searchDelay = new Subject<boolean>();
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -123,5 +126,9 @@ export class ListLoadBalancerComponent implements OnInit{
     }
     console.log('project', this.project);
     this.customerId = this.tokenService.get()?.userId;
+
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
+      this.search(false);
+    });
   }
 }

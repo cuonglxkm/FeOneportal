@@ -24,9 +24,9 @@
 </page-header>
 <nz-content>
   <nz-card [nzLoading]="isLoading">
-    <nz-tabset>
+    <nz-tabset [(nzSelectedIndex)]="selectedIndextab">
       <nz-tab [nzTitle]="titleSubnet">
-        <nz-row nzJustify="space-between" style="margin-bottom: 15px;" *ngIf="!networkName?.includes('pri_network')">
+        <nz-row nzJustify="space-between" style="margin-bottom: 15px;" >
           <nz-col nzSpan="16">
             <nz-input-group [nzPrefix]="prefixIconSearch"
                             nzSize="large"
@@ -34,13 +34,14 @@
               <input name="name"
                      nz-input placeholder="{{ 'volume.tooltip.title.filter.img' | i18n }}"
                      [(ngModel)]="valueSubnet"
-                     (keydown.enter)="onInputChangeSubnet()" />
+                     (keydown.enter)="onEnterSubnet($event)"
+                     (input)="changeInputChangeSubnet($event)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
             </ng-template>
           </nz-col>
-          <nz-col nzSpan="8" style="flex:none;">
+          <nz-col nzSpan="8" style="flex:none;" *ngIf="!networkName?.includes('pri_network')">
             <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateSubnet()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">{{ 'app.vlan.note66' | i18n }}</span>
@@ -97,7 +98,8 @@
               <input name="name"
                      nz-input placeholder="{{ 'volume.tooltip.title.filter.img' | i18n }}"
                      [(ngModel)]="valuePort"
-                     (keydown.enter)="onInputChangePort()" />
+                     (keydown.enter)="onEnterPort($event)"
+                     (input)="changeInputChangePort($event)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"

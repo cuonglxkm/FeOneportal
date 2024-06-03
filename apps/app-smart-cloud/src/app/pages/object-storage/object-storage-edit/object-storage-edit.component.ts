@@ -25,6 +25,8 @@ import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderItemObject } from 'src/app/shared/models/price';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -35,9 +37,13 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 export class ObjectStorageEditComponent implements OnInit {
   id: any;
   today: Date = new Date();
-  addQuota: number = 0;
+  addQuota: number = 1;
   objectStorageResize: ObjectStorageResize = new ObjectStorageResize();
-
+  valueStringConfiguration: string
+  minStorage: number
+  maxStorage: number
+  stepStorage: number
+  orderObject: OrderItemObject = new OrderItemObject();
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -46,13 +52,15 @@ export class ObjectStorageEditComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private loadingSrv: LoadingService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private configurationsService: ConfigurationsService
   ) {}
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getObjectStorage();
     this.getTotalAmount();
+    this.getConfigurations()
   }
 
   objectStorage: ObjectStorage = new ObjectStorage();
@@ -64,6 +72,8 @@ export class ObjectStorageEditComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.objectStorage = data;
+          this.objectStorageResize.newQuota = this.addQuota + this.objectStorage.quota;
+          this.dataSubject.next(1);
           this.cdr.detectChanges();
         },
         error: (e) => {
@@ -118,6 +128,7 @@ export class ObjectStorageEditComponent implements OnInit {
           this.totalincludesVAT = Number.parseFloat(
             result.data.totalPayment.amount
           );
+          this.orderObject = result.data
           this.cdr.detectChanges();
         });
       });
@@ -144,5 +155,15 @@ export class ObjectStorageEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: this.order, path: returnPath },
     });
+  }
+
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
+    })
   }
 }

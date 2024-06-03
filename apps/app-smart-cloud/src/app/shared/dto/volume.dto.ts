@@ -18,8 +18,8 @@ export class VolumeDTO {
   projectId: number;
   project: string | null;
   instanceName: string;
-  expirationDate: string;
-  creationDate: string;
+  expirationDate: Date;
+  creationDate: Date;
   deletedDate: string;
   suspendDate: string;
   serviceStatus: string;
