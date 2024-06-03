@@ -87,6 +87,7 @@
   "app.password.confirm": "Xác nhận mật khẩu",
   "app.note": "Ghi chú",
   "app.here": "Tại đây",
+  "app.this": "đây",
   "app.to": "Đến",
   "app.monitor": "Giám sát",
   "app.ip.floating": "IP Floating",
@@ -354,6 +355,8 @@
   "app.alert.delete.instance.warn": "Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và",
   "app.alert.delete.instance.warn.next": "KHÔNG THỂ KHÔI PHỤC LẠI",
   "app.alert.reset.instance.password": "Nếu HĐH là Linux, hệ thống sẽ đặt lại mật khẩu cho tài khoản root. Nếu HĐH là Windows, hệ thống sẽ đặt lại mật khẩu cho tài khoản Administrator",
+  "app.alert.quota.vpc": "Quý khách đã sử dụng hết quota. Vui lòng bấm vào",
+  "app.alert.quota.vpc.next": "để mở rộng quota",
 
   "app.tooltip.instance.name": "Tên máy ảo không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)",
   "app.tooltip.instances.from.snapshot": "Quý khách có thể tạo máy ảo từ một bản snapshot có sẵn để phục hồi máy ảo về trạng thái khi thực hiện tạo bản snapshot đó",

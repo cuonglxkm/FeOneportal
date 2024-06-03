@@ -64,7 +64,7 @@ class ConfigGPU {
   GPU: number = 0;
   gpuOfferId: number = 0;
 }
-class BlockStorage {
+export class BlockStorage {
   id: number = 0;
   type?: string = '';
   name?: string = '';
@@ -524,6 +524,9 @@ export class InstancesCreateComponent implements OnInit {
     this.isGpuConfig = true;
     this.resetData();
     this.configGPU.gpuOfferId = this.listGPUType[0].id;
+    this.gpuTypeName = this.listGPUType.filter(
+      (e) => e.id == this.configGPU.gpuOfferId
+    )[0].offerName;
     this.activeBlockHDD = false;
     this.activeBlockSSD = true;
     this.disableHDD = true;
@@ -545,6 +548,10 @@ export class InstancesCreateComponent implements OnInit {
     this.totalAmount = 0;
     this.totalVAT = 0;
     this.totalincludesVAT = 0;
+    this.instanceCreate.ram = 0
+    this.instanceCreate.cpu = 0
+    this.instanceCreate.volumeSize = 0
+    this.instanceCreate.gpuCount = 0
   }
   //#endregion
 
@@ -806,17 +813,8 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 0, 1, 0, null);
-        if (
-          this.configCustom.vCPU != 0 &&
-          this.configCustom.ram != 0 &&
-          this.configCustom.capacity != 0 &&
-          this.hdh != null
-        ) {
+        if (this.hdh != null) {
           this.getTotalAmount();
-        } else if (this.configCustom.vCPU == 0) {
-          this.totalAmount = 0;
-          this.totalVAT = 0;
-          this.totalincludesVAT = 0;
         }
       });
   }
@@ -832,17 +830,8 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 1, 0, 0, null);
-        if (
-          this.configCustom.vCPU != 0 &&
-          this.configCustom.ram != 0 &&
-          this.configCustom.capacity != 0 &&
-          this.hdh != null
-        ) {
+        if (this.hdh != null) {
           this.getTotalAmount();
-        } else if (this.configCustom.ram == 0) {
-          this.totalAmount = 0;
-          this.totalVAT = 0;
-          this.totalincludesVAT = 0;
         }
       });
   }
@@ -879,17 +868,8 @@ export class InstancesCreateComponent implements OnInit {
           (this.configCustom.capacity % this.stepCapacity);
       }
       this.getUnitPrice(1, 0, 0, 0, null);
-      if (
-        this.configCustom.vCPU != 0 &&
-        this.configCustom.ram != 0 &&
-        this.configCustom.capacity != 0 &&
-        this.hdh != null
-      ) {
+      if (this.hdh != null) {
         this.getTotalAmount();
-      } else if (this.configCustom.capacity == 0) {
-        this.totalAmount = 0;
-        this.totalVAT = 0;
-        this.totalincludesVAT = 0;
       }
     });
   }
@@ -919,19 +899,8 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 0, 1, 0, null);
-        if (
-          this.configGPU.CPU != 0 &&
-          this.configGPU.ram != 0 &&
-          this.configGPU.storage != 0 &&
-          this.configGPU.GPU != 0 &&
-          this.configGPU.gpuOfferId != 0 &&
-          this.hdh != null
-        ) {
+        if (this.hdh != null) {
           this.getTotalAmount();
-        } else if (this.configGPU.CPU == 0) {
-          this.totalAmount = 0;
-          this.totalVAT = 0;
-          this.totalincludesVAT = 0;
         }
       });
   }
@@ -947,19 +916,8 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 1, 0, 0, null);
-        if (
-          this.configGPU.CPU != 0 &&
-          this.configGPU.ram != 0 &&
-          this.configGPU.storage != 0 &&
-          this.configGPU.GPU != 0 &&
-          this.configGPU.gpuOfferId != 0 &&
-          this.hdh != null
-        ) {
+        if (this.hdh != null) {
           this.getTotalAmount();
-        } else if (this.configGPU.ram == 0) {
-          this.totalAmount = 0;
-          this.totalVAT = 0;
-          this.totalincludesVAT = 0;
         }
       });
   }
@@ -975,19 +933,8 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(1, 0, 0, 0, null);
-        if (
-          this.configGPU.CPU != 0 &&
-          this.configGPU.ram != 0 &&
-          this.configGPU.storage != 0 &&
-          this.configGPU.GPU != 0 &&
-          this.configGPU.gpuOfferId != 0 &&
-          this.hdh != null
-        ) {
+        if (this.hdh != null) {
           this.getTotalAmount();
-        } else if (this.configGPU.storage == 0) {
-          this.totalAmount = 0;
-          this.totalVAT = 0;
-          this.totalincludesVAT = 0;
         }
       });
   }
@@ -1005,19 +952,8 @@ export class InstancesCreateComponent implements OnInit {
         if (this.configGPU.gpuOfferId != 0) {
           this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
         }
-        if (
-          this.configGPU.CPU != 0 &&
-          this.configGPU.ram != 0 &&
-          this.configGPU.storage != 0 &&
-          this.configGPU.GPU != 0 &&
-          this.configGPU.gpuOfferId != 0 &&
-          this.hdh != null
-        ) {
+        if (this.hdh != null) {
           this.getTotalAmount();
-        } else if (this.configGPU.GPU == 0) {
-          this.totalAmount = 0;
-          this.totalVAT = 0;
-          this.totalincludesVAT = 0;
         }
       });
   }
@@ -1711,7 +1647,7 @@ export class InstancesCreateComponent implements OnInit {
             this.totalVATVolume += e.VAT * this.numberMonth;
             this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
           });
-        } else {
+        } else if (changeBlockStorage.type == 'ssd') {
           changeBlockStorage.price =
             changeBlockStorage.capacity * this.unitPriceVolumeSSD;
           changeBlockStorage.VAT =

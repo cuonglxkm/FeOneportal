@@ -560,8 +560,8 @@
                       >
                       <nz-slider
                         [nzMin]="minCapacity"
-                        [nzMax]="maxCapacity"
-                        [nzStep]="stepCapacity"
+                        [nzMax]="11"
+                        [nzStep]="3"
                         [(ngModel)]="configCustom.capacity"
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
@@ -574,8 +574,8 @@
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="minCapacity"
-                        [nzMax]="maxCapacity"
-                        [nzStep]="stepCapacity"
+                        [nzMax]="11"
+                        [nzStep]="3"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
@@ -1578,39 +1578,23 @@
           <div style="margin-top: 10px" class="text-label">{{ nameHdh }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.text.package' | i18n }}</div>
-          <div
-            *ngIf="instanceCreate.cpu"
-            style="margin-top: 10px"
-            class="text-label"
-          >
+          <div style="margin-top: 10px" class="text-label">
             {{ instanceCreate.cpu }} CPUs
           </div>
-          <div
-            *ngIf="instanceCreate.ram"
-            style="margin-top: 10px"
-            class="text-label"
-          >
+          <div style="margin-top: 10px" class="text-label">
             {{ instanceCreate.ram }} GB RAM
           </div>
-          <div
-            *ngIf="instanceCreate.volumeSize"
-            style="margin-top: 10px"
-            class="text-label"
-          >
+          <div style="margin-top: 10px" class="text-label">
             {{ instanceCreate.volumeSize }} GB Root Disk (<span>{{
-              instanceCreate.volumeType | uppercase
+              activeBlockHDD ? 'HDD' : 'SSD'
             }}</span
             >)
           </div>
-          <div
-            *ngIf="instanceCreate.gpuCount"
-            style="margin-top: 10px"
-            class="text-label"
-          >
+          <div *ngIf="isGpuConfig" style="margin-top: 10px" class="text-label">
             {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'app.setting' | i18n }}</div>
+          <div class="text-value">{{ 'service.bonus' | i18n }}</div>
           <div
             *ngIf="externalVolumeHdd > 0"
             style="margin-top: 10px"
