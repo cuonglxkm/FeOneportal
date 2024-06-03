@@ -290,10 +290,9 @@
             </nz-form-control>
           </nz-form-item>
         </nz-card>
-
+        <one-portal-service-usage-period [nameService]="'volume'"
+                                         (valueChanged)="timeSelectedChange($event)" />
       </nz-col>
-      <one-portal-service-usage-period [nameService]="'volume'"
-                                       (valueChanged)="timeSelectedChange($event)" />
       <nz-col nzSpan="8">
         <nz-affix [nzOffsetTop]="72">
           <nz-card style="border-radius: 8px" class="border-card">
