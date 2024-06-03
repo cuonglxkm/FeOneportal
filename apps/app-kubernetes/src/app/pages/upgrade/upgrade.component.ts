@@ -728,6 +728,7 @@ export class UpgradeComponent implements OnInit {
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
     cluster.sortItem = 0;
     cluster.tenant = this.projectName;
+    cluster.serviceInstanceId = this.detailCluster.id;
 
     const wgs: [] = cluster.workerGroup;
     const tmp: WorkerGroupReqDto[] = [];

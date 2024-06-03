@@ -300,6 +300,7 @@ export class ExtensionComponent implements OnInit {
     const resource = this.onCalculateResource();
     let req = {
       serviceName: this.detailCluster.clusterName,
+      serviceInstanceId: this.detailCluster.id,
       newExpireDate: new Date(this.expectedExpirationDate).toISOString().substring(0, 19),
       serviceType: KubernetesConstant.K8S_TYPE_ID,
       currentOfferId: this.detailCluster.offerId,
