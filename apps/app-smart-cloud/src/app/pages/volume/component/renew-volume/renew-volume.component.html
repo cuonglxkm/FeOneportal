@@ -46,7 +46,7 @@
     <form nz-form [formGroup]="validateForm" (ngSubmit)="showModalConfirmRenew()" nzLayout="vertical">
       <nz-row [nzGutter]="24">
         <nz-col nzSpan="16">
-          <nz-card style="border-radius: 8px;">
+          <nz-card style="border-radius: 8px;" *ngIf="volumeInfo">
             <span class="text-card-header">{{ 'volume.detail.title'|i18n }}</span>
             <div class="customRow" style="margin-top: 25px;">
               <nz-row>
@@ -119,49 +119,52 @@
               <span class="text-label">{{ 'volume.table.title.description'|i18n }}:</span>
             </ng-template>
           </nz-card>
-          <nz-card style="border-radius: 8px;">
-            <span class="text-card-header">{{ 'app.extension.info'|i18n }}</span>
-            <nz-row nzJustify="space-between" style="margin-top: 15px;">
-              <nz-col>
-                <nz-form-label>
-                  <span style="color: #EA3829">{{ 'app.service.creation-date'|i18n }}
-                    : {{ volumeInfo?.creationDate | date: 'dd/MM/yyyy' }} </span>
-                </nz-form-label>
-              </nz-col>
-              <nz-col nzSpan="12">
-                <nz-form-label>
-                  <span style="color: #EA3829">{{ 'app.service.expiration-date'|i18n }}
-                    :  {{ volumeInfo?.expirationDate | date: 'dd/MM/yyyy' }}</span>
-                </nz-form-label>
-              </nz-col>
-            </nz-row>
-            <nz-form-item style="margin-top: 10px;">
-              <nz-form-label nzFor="time">
-                <div class="label">
-                  <span>{{ 'app.months.for.extend'|i18n }}</span>
-                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                </div>
-              </nz-form-label>
-              <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-                <nz-input-number style="width:100%; margin-left: 0;" nzAutoFocus class="input-custom"
-                                 formControlName="time" nzMin="1" nzMax="100" nzStep="1" />
-                <ng-template #dateErrorTpl let-control>
-                  <ng-container
-                    *ngIf="control.hasError('required')||control.hasError('max') || control.hasError('min') || control.hasError('pattern')">
-                    {{ 'volume.input.time' |i18n }}
-                  </ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-row>
-              <nz-col>
-                <nz-form-label>
-                  <span style="color: #F50000;">{{ 'app.expected.expiry.date'|i18n }}
-                    : {{ estimateExpireDate | date: 'dd/MM/yyyy' }} </span>
-                </nz-form-label>
-              </nz-col>
-            </nz-row>
-          </nz-card>
+<!--          <nz-card style="border-radius: 8px;" *ngIf="volumeInfo">-->
+<!--            <span class="text-card-header">{{ 'app.extension.info'|i18n }}</span>-->
+<!--            <nz-row nzJustify="space-between" style="margin-top: 15px;">-->
+<!--              <nz-col>-->
+<!--                <nz-form-label>-->
+<!--                  <span style="color: #EA3829">{{ 'app.service.creation-date'|i18n }}-->
+<!--                    : {{ volumeInfo?.creationDate | date: 'dd/MM/yyyy' }} </span>-->
+<!--                </nz-form-label>-->
+<!--              </nz-col>-->
+<!--              <nz-col nzSpan="12">-->
+<!--                <nz-form-label>-->
+<!--                  <span style="color: #EA3829">{{ 'app.service.expiration-date'|i18n }}-->
+<!--                    :  {{ volumeInfo?.expirationDate | date: 'dd/MM/yyyy' }}</span>-->
+<!--                </nz-form-label>-->
+<!--              </nz-col>-->
+<!--            </nz-row>-->
+<!--            <nz-form-item style="margin-top: 10px;">-->
+<!--              <nz-form-label nzFor="time">-->
+<!--                <div class="label">-->
+<!--                  <span>{{ 'app.months.for.extend'|i18n }}</span>-->
+<!--                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">-->
+<!--                <nz-input-number style="width:100%; margin-left: 0;" nzAutoFocus class="input-custom"-->
+<!--                                 formControlName="time" nzMin="1" nzMax="100" nzStep="1" />-->
+<!--                <ng-template #dateErrorTpl let-control>-->
+<!--                  <ng-container-->
+<!--                    *ngIf="control.hasError('required')||control.hasError('max') || control.hasError('min') || control.hasError('pattern')">-->
+<!--                    {{ 'volume.input.time' |i18n }}-->
+<!--                  </ng-container>-->
+<!--                </ng-template>-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--            <nz-row>-->
+<!--              <nz-col>-->
+<!--                <nz-form-label>-->
+<!--                  <span style="color: #F50000;">{{ 'app.expected.expiry.date'|i18n }}-->
+<!--                    : {{ estimateExpireDate | date: 'dd/MM/yyyy' }} </span>-->
+<!--                </nz-form-label>-->
+<!--              </nz-col>-->
+<!--            </nz-row>-->
+<!--          </nz-card>-->
+          <one-portal-service-time-extend *ngIf="volumeInfo"
+                                          [createDate]="volumeInfo?.creationDate"
+                                          [expiredDate]="volumeInfo?.expirationDate" (valueChanged)="onChangeTime($event)"/>
         </nz-col>
         <nz-col nzSpan="8">
           <nz-affix [nzOffsetTop]="72">
