@@ -37,6 +37,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   dateString = new Date();
   total: any;
   totalAmount: any;
+  totalVat: any;
   totalPayment: any;
   loadingIp = true;
   loadingInstanse = true;
@@ -272,7 +273,8 @@ export class CreateUpdateIpPublicComponent implements OnInit {
           data => {
             this.total = data;
             this.totalAmount = Math.round(this.total?.data?.totalAmount?.amount);
-            this.totalPayment = Math.round(this.total?.data?.totalPayment?.amount)
+            this.totalPayment = Math.round(this.total?.data?.totalPayment?.amount);
+            this.totalVat = Math.round(this.total?.data?.totalVAT?.amount);
           }
         );
     } else {
@@ -299,5 +301,10 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         this.checkIpv6 = null;
       }
     })
+  }
+
+  onChangeTime($event: any) {
+    this.form.controls['numOfMonth'].setValue($event);
+    this.caculator(null);
   }
 }
