@@ -70,6 +70,8 @@ export class ProjectListComponent implements OnInit {
     this.getData(true);
 
     this.notificationService.connection.on('UpdateProject', (data) => {
+      console.log("UpdateProject:");
+      console.log(data);
       if (data) {
         let projectId = data.serviceId;
         switch (data.actionType) {
@@ -81,6 +83,7 @@ export class ProjectListComponent implements OnInit {
           case "CREATED":
             var foundIndex = this.listOfData.findIndex(x => x.id == projectId);
             if (foundIndex > -1) {
+              console.log("Tìm thấy foundIndex:" + foundIndex);
               var record = this.listOfData[foundIndex];
               record.serviceStatus = data.serviceStatus;
               record.createDate = data.creationDate;

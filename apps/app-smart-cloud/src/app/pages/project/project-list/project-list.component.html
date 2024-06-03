@@ -81,14 +81,14 @@
           <td>
             <div>
               <!----Chỉnh sửa----->
-              <img style="cursor: pointer;; margin-right: 10px;"
+              <img style="cursor: pointer;; margin-right: 10px;" *ngIf="item.resourceStatus != 'CREATING' && item.resourceStatus != 'RESIZING'&& item.resourceStatus != 'DELETING'"
                     src="assets/imgs/edit-2.svg"
                     nz-tooltip
                     nzTooltipTitle="{{ 'app.text.edit' | i18n }}" nzTooltipPlacement="bottom"
                     (click)="edit(item)"
               />
               <!----Xóa---->
-              <img style="cursor: pointer;" *ngIf="item.type != 'Default'"
+              <img style="cursor: pointer;" *ngIf="item.type != 'Default' && item.resourceStatus != 'CREATING' && item.resourceStatus != 'RESIZING'&& item.resourceStatus != 'DELETING'"
                     nz-tooltip
                     nzTooltipTitle="{{ 'app.delete' | i18n }}" nzTooltipPlacement="bottom"
                     src="assets/imgs/delete.svg"
