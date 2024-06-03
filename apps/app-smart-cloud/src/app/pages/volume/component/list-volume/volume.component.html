@@ -2,7 +2,7 @@
              [action]="action"
              [title]="'volume.title' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
@@ -14,6 +14,7 @@
         <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -49,7 +50,7 @@
                 name="name"
                 nz-input
                 [(ngModel)]="value"
-                (input)="onInputChange($event.target['value'])"
+                (keydown.enter)="onEnter()"
                 placeholder="{{ 'volume.placeholder.filter.name' | i18n }}" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
@@ -242,7 +243,7 @@
                 name="name"
                 nz-input
                 [(ngModel)]="value"
-                (input)="onInputChange($event.target['value'])"
+                (keydown.enter)="onEnter()"
                 placeholder="{{'volume.placeholder.filter.name' | i18n}}" />
             </nz-input-group>
             <ng-template #prefixIconSearch>

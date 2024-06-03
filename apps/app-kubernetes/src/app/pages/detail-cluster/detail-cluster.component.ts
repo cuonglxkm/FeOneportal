@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
@@ -16,6 +16,8 @@ import { ShareService } from '../../services/share.service';
 import { NotificationConstant } from '../../constants/notification.constant';
 import { NotificationWsService } from '../../services/ws.service';
 import { messageCallbackType } from '@stomp/stompjs';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-detail-cluster',
@@ -70,7 +72,8 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
     private clipboardService: ClipboardService,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private websocketService: NotificationWsService
+    private websocketService: NotificationWsService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.listOfK8sVersion = [];
     this.showModalKubeConfig = false;
@@ -98,8 +101,6 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
       // volumeCloudType: [null, [Validators.required]],
       workerGroup: this.listFormWorkerGroupUpgrade
     });
-
-    this.openWs();
   }
 
   ngOnDestroy(): void {
@@ -119,7 +120,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
 
           this.currentVersion = this.detailCluster.currentVersion;
         } else {
-          this.notificationService.error("", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -129,58 +130,6 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
   //   this.getListWorkerType(this.regionId, this.cloudProfileId);
   //   this.getListVolumeType(this.regionId, this.cloudProfileId);
   // }
-
-  // websocket
-  private openWs() {
-    // list topic subscribe
-    const topicSpecificUser = NotificationConstant.WS_SPECIFIC_TOPIC + "/" + '';
-    const topicBroadcast = NotificationConstant.WS_BROADCAST_TOPIC;
-
-    const notificationMessageCb = (noti) => {
-      if (noti.body) {
-        try {
-          const notificationMessage = JSON.parse(noti.body);
-          if (notificationMessage.content && notificationMessage.content?.length > 0) {
-            if (notificationMessage.status == NotificationConstant.NOTI_SUCCESS) {
-              this.notificationService.success(
-                NotificationConstant.NOTI_SUCCESS_LABEL,
-                notificationMessage.content);
-
-              // refresh page
-              this.getDetailCluster(this.serviceOrderCode);
-
-            } else {
-              this.notificationService.error(
-                NotificationConstant.NOTI_ERROR_LABEL,
-                notificationMessage.content);
-            }
-          }
-        } catch (ex) {
-          console.log("parse message error: ", ex);
-        }
-
-      }
-    }
-
-    this.initNotificationWebsocket([
-      { topics: [topicBroadcast, topicSpecificUser], cb: notificationMessageCb }
-    ]);
-  }
-
-  private initNotificationWebsocket(topicCBs: Array<{ topics: string[], cb: messageCallbackType }>) {
-
-    setTimeout(() => {
-      this.websocketService = NotificationWsService.getInstance();
-      this.websocketService.connect(
-        () => {
-          for (const topicCB of topicCBs) {
-            for (const topic of topicCB.topics) {
-              this.websocketService.subscribe(topic, topicCB.cb);
-            }
-          }
-        });
-    }, 1000);
-  }
 
   initFormWorkerGroup(wgs: WorkerGroupModel[]) {
     for (let i = 0; i < wgs.length; i++) {
@@ -283,7 +232,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           this.listOfWorkerType = r.data;
         } else {
-          this.notificationService.error("", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       })
   }
@@ -295,7 +244,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           this.listOfVolumeType = r.data;
         } else {
-          this.notificationService.error("", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -396,7 +345,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           this.listOfK8sVersion = r.data;
         } else {
-          this.notificationService.error("", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }
@@ -418,7 +367,7 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
   // for ssh key
   handleCopySSHKey() {
     this.clipboardService.copy(this.sshKeyString);
-    this.notificationService.success("Đã sao chép", null);
+    this.notificationService.success(null, this.i18n.fanyi('app.bucket.detail.copy.success'));
   }
 
   handleDownloadSSHkey() {
@@ -449,12 +398,12 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
 
   handleCopyKubeConfig() {
     this.clipboardService.copy(this.yamlString);
-    this.notificationService.success("Đã sao chép", null);
+    this.notificationService.success(null, this.i18n.fanyi('app.bucket.detail.copy.success'));
   }
 
   handleCopyAPIEndpoint() {
     this.clipboardService.copy(this.detailCluster.apiEndpoint);
-    this.notificationService.success("Đã sao chép", null);
+    this.notificationService.success(null, this.i18n.fanyi('app.bucket.detail.copy.success'));
   }
 
   handleDownloadKubeConfig() {
@@ -492,10 +441,10 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
     .pipe(finalize(() => this.isUpgradingWorker = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
-        this.notificationService.success("", r.message);
+        this.notificationService.success(this.i18n.fanyi('app.status.success'), r.message);
         this.back2list();
       } else {
-        this.notificationService.error("", r.message);
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }
@@ -517,10 +466,10 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
         this.showModalUpgradeVersion = false;
       })).subscribe((r: any) => {
         if (r && r.code == 200) {
-          this.notificationService.success("", r.message);
+          this.notificationService.success(this.i18n.fanyi('app.status.success'), r.message);
           this.back2list();
         } else {
-          this.notificationService.error("", r.message);
+          this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
         }
       });
   }

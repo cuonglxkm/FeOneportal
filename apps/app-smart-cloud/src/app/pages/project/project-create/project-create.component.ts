@@ -105,7 +105,7 @@ export class ProjectCreateComponent implements OnInit {
     siteToSite: 0
   };
   form = new FormGroup({
-    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/)] }),
+    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(20)] }),
     description: new FormControl(''),
     ipConnectInternet: new FormControl(''),
     numOfMonth: new FormControl(1, { validators: [Validators.required] })
@@ -385,7 +385,7 @@ export class ProjectCreateComponent implements OnInit {
     if (this.vpcType == '0') {
       this.ipService.createIpPublic(request).subscribe(
         data => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.note50'));
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
           this.router.navigate(['/app-smart-cloud/project']);
         },
         error => {

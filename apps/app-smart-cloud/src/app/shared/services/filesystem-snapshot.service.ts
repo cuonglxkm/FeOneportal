@@ -96,7 +96,7 @@ export class FileSystemSnapshotService extends BaseService {
   }
 
   deleteFileSystemSnapshot(formDelete: FormDeleteFileSystemSnapshot) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/sharesnapshot/${formDelete.id}?customerId=${formDelete.customerId}`).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/sharesnapshot/${formDelete.id}?regionId=${formDelete.regionId}&customerId=${formDelete.customerId}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

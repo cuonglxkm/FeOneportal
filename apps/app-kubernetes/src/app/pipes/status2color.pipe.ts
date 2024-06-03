@@ -14,14 +14,14 @@ export class Status2ColorPipe implements PipeTransform {
         return new StatusModel("#008d47", "cluster.status.running");
       case 3:
         return new StatusModel("#FFBB63", "app.status.suspend");
+      case 5:
+        return new StatusModel('#513FE7', "cluster.status.restoring");
       case 6:
         return new StatusModel("#0066b0", "cluster.status.upgrading");
       case 7:
         return new StatusModel("#EA382", "cluster.status.deleting");
       case 11:
         return new StatusModel("#EA3829", "cluster.status.failed");
-      case 16:
-        return new StatusModel('#513FE7', "cluster.status.restoring");
 
       default:
         return new StatusModel("#4c4f67", "cluster.status.unknow");

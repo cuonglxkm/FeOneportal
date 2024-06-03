@@ -8,7 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class AttachIpFloatingLbComponent {
   @Input() region: number
   @Input() project: number
-  @Input() internetFacing: boolean
+  @Input() IsFloatingIP: boolean
   @Input() ipFloatingAddress: string
   @Input() vipIp: string
   @Output() onOk = new EventEmitter()

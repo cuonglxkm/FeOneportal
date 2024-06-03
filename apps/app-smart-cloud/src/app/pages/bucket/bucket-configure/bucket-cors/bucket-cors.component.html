@@ -37,20 +37,20 @@
   style="margin-top: 10px"
   #rowSelectionTable
   nzShowSizeChanger
-  [nzScroll]="{ x: '100%', y: '250px' }"
   [nzFrontPagination]="false"
   [nzData]="listBucketCors"
   (nzPageIndexChange)="searchBucketCors()"
   (nzPageSizeChange)="searchBucketCors()"
+  nzTableLayout="fixed"
   [nzLoading]="loading"
 >
   <thead>
     <tr>
-      <th>Domain</th>
-      <th>Allow Methods</th>
-      <th>Allow Headers</th>
-      <th>Access Control Max Age</th>
-      <th>{{ 'app.text.operation' | i18n }}</th>
+      <th [nzWidth]="300">Domain</th>
+      <th [nzWidth]="300">Allow Methods</th>
+      <th [nzWidth]="300">Allow Headers</th>
+      <th [nzWidth]="300">Access Control Max Age</th>
+      <th [nzWidth]="300">{{ 'app.text.operation' | i18n }}</th>
     </tr>
   </thead>
   <tbody>
@@ -71,7 +71,7 @@
             [nz-tooltip]="'app.text.edit' | i18n"
           />
           <img
-            src="assets/imgs/trash.svg"
+            src="assets/imgs/delete.svg"
             alt=""
             (click)="modalDelete(item)"
             style="cursor: pointer; margin-right: 16px"
@@ -85,7 +85,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleCreate"
-  nzTitle="'app.create.bucket.cors' | i18n"
+  [nzTitle]="'app.create.bucket.cors' | i18n"
   (nzOnCancel)="handleCancelCreate()"
 >
   <ng-container *nzModalContent>

@@ -23,21 +23,32 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
 
   fileSystem: FileSystemDetail = new FileSystemDetail();
 
+  typeVPC: number
+
+  breadcrumbItems = [
+    { label: 'Trang chủ', link: '/' },
+    { label: 'Dịch vụ hạ tầng' },
+    { label: 'File Storage' },
+    { label: 'File System Snapshot', link: '/app-smart-cloud/file-system-snapshot/list' },
+    { label: 'Chi tiết File System Snapshot' }
+  ];
+
   constructor(private fileSystemSnapshotService: FileSystemSnapshotService,
               private router: Router,
               private fileSystemService: FileSystemService,
               private activatedRoute: ActivatedRoute) {
   }
 
-  regionChanged(region: RegionModel) {
+  onRegionChange(region: RegionModel) {
     this.router.navigate(['/app-smart-cloud/file-system-snapshot/list'])
   }
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id
+    this.typeVPC = project?.type;
   }
 
-  userChanged(project: ProjectModel){
+  userChangeProject(project: ProjectModel){
     this.router.navigate(['/app-smart-cloud/file-system-snapshot/list'])
   }
 
@@ -60,6 +71,10 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
     }, error => {
       this.fileSystem = null
     })
+  }
+
+  navigateToExtend(){
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot/extend/' + this.fileSystemSnapshotId])
   }
 
   ngOnInit() {

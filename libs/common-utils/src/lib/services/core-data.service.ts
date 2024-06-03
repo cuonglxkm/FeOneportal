@@ -1,9 +1,9 @@
 import { Router } from "@angular/router";
-import { ProjectService } from "./project.service";
-import { RegionService } from "./region.service";
+import { RegionCoreService } from "./region-core.service";
 import { Inject, Injectable } from "@angular/core";
-import { PolicyService } from "./policy.service";
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
+import { PolicyCoreService } from "./policy-core.service";
+import { ProjectCoreService } from "./project-core.service";
 
 @Injectable({ 
     providedIn: 'root' 
@@ -11,16 +11,16 @@ import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 export class CoreDataService {
     constructor(
         private router: Router,
-        private regionService: RegionService,
-        private projectService: ProjectService,
-        private policyService: PolicyService,
+        private regionService: RegionCoreService,
+        private projectService: ProjectCoreService,
+        private policyUserService: PolicyCoreService,
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
     ) {}
 
     userSelected: any;
     listUser: any[] = [];
 
-    public getCoreData() {
+    public getCoreData(baseUrl: string) {
         const userString = localStorage.getItem('user');
 
         if (userString == null) {
@@ -40,7 +40,7 @@ export class CoreDataService {
             name: user.name
         });
 
-        this.policyService.getShareUsers(userRootId).subscribe({next : (data) => {
+        this.policyUserService.getShareUsers(baseUrl, userRootId).subscribe({next : (data) => {
             if (data) {
                 this.listUser = this.listUser.concat(data.filter(x => x.id != user.userId));
                 localStorage.setItem('ShareUsers', JSON.stringify(this.listUser))
@@ -54,7 +54,7 @@ export class CoreDataService {
                     localStorage.setItem('UserRootId', JSON.stringify(this.userSelected.id));
                 }
 
-                this.getRegions();
+                this.getRegions(baseUrl);
             }
           }, error : (error) => {
             this.listUser = []
@@ -63,12 +63,12 @@ export class CoreDataService {
         });
     }
 
-    public getRegions() {
+    public getRegions(baseUrl: string) {
         let regionId = localStorage.getItem('regionId');
 
         //localStorage.removeItem('regions');
 
-        this.regionService.getAll().subscribe({
+        this.regionService.getAll(baseUrl).subscribe({
             next : (data) => {
                 if (!data) {
                     this.router.navigateByUrl(`/exception/500`)
@@ -78,17 +78,17 @@ export class CoreDataService {
 
                 if (!regionId) {
                     localStorage.setItem('regionId', JSON.stringify(data[0].regionId));
-                    this.getProjects(data[0].regionId);
+                    this.getProjects(baseUrl, data[0].regionId);
                 }
                 else {
                     const found = data.some(el => el.regionId === Number(regionId));
 
                     if (!found) {
                         localStorage.setItem('regionId', JSON.stringify(data[0].regionId));
-                        this.getProjects(data[0].regionId);
+                        this.getProjects(baseUrl, data[0].regionId);
                     }
                     else {
-                        this.getProjects(Number(regionId));
+                        this.getProjects(baseUrl, Number(regionId));
                     }
                 }
             }, 
@@ -98,15 +98,16 @@ export class CoreDataService {
         });
     }
 
-    public getProjects(regionId: number) {
+    public getProjects(baseUrl:string, regionId: number) {
         if (regionId < 1) {
             return;
         }
 
         //localStorage.removeItem('projects');
 
-        this.projectService.getByRegion(regionId).subscribe({
+        this.projectService.getByRegion(baseUrl, regionId).subscribe({
             next: (data) => {
+                
                 if (!data) {
                     this.router.navigateByUrl(`/exception/500`)
                 }

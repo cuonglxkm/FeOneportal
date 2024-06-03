@@ -127,7 +127,7 @@ export class CallbackComponent implements OnInit {
           if (this.notificationService.connection == undefined) {
             this.notificationService.initiateSignalrConnection(true);
           }
-          this.coreDataService.getCoreData();
+          this.coreDataService.getCoreData(baseUrl);
           // this.httpClient
           //   .get(baseUrl + '/provisions/object-storage/userinfo')
           //   .subscribe((checkData) => {

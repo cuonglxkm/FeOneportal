@@ -71,7 +71,7 @@
                 <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
                     [label]="'app.text.creation-time' | i18n"></row-data></td>
                 <td class="w-50 border-cell"><row-data
-                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
+                    [value]="detailCluster.expiredDate| date: 'dd/MM/yyyy'"
                     [label]="'app.service.expiration-date' | i18n" [type]="'danger'"></row-data></td>
               </tr>
 
@@ -310,7 +310,7 @@
 
         <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
-            <div class="ml-3"><label class="weight-600">{{ 'app.cluster.vat-cost-2' | i18n : {vat: '10'} }}</label>
+            <div class="ml-3"><label class="weight-600">{{ 'app.cluster.vat-cost-2' | i18n : {vat: vatPercent ? vatPercent * 100 : 10} }}</label>
             </div>
           </div>
 

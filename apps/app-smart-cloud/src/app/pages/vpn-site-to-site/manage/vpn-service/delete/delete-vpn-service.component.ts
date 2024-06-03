@@ -72,7 +72,7 @@ export class DeleteVpnServiceComponent{
           }
         }, error => {
           if(error.status === 500){
-            this.isVisible = false
+          this.isVisible = false
           this.isLoading =  false
           this.notification.error('Thất bại', 'Vpn Service đang được sử dụng')
           }else{

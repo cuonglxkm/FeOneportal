@@ -141,12 +141,17 @@ import { PermissionGuard } from '../shared/guard/PermissionGuard';
 import { CreateBackupVmNormalComponent } from './backup-vm/create/no-vpc/create-backup-vm-normal.component';
 import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup-vm-vpc.component';
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
+import { NetworkTopologyComponent } from './network-topology/network-topology.component';
 import {
   CreateBackupVolumeVpcComponent
 } from './volume/component/backup-volume/create-backup-volume/vpc/create-backup-volume-vpc.component';
 import {
   CreateBackupVolumeNormalComponent
 } from './volume/component/backup-volume/create-backup-volume/no-vpc/create-backup-volume-normal.component';
+import { SslCertListComponent } from './ssl-cert/ssl-cert-list.component';
+import { CreateSslCertComponent } from './ssl-cert/create/create-ssl-cert.component';
+import { ExtendFileSystemSnapshotComponent } from './file-system-snapshot/extend-file-system-snapshot/extend-file-system-snapshot.component';
+
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
 const routes: Routes = [
@@ -800,15 +805,6 @@ const routes: Routes = [
 
   },
   {
-    path: 'file-storage/file-system/create/:snapshotId',
-    component: CreateFileSystemComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'order:Create'
-    }
-
-  },
-  {
     path: 'file-storage/file-system/list',
     component: ListFileSystemComponent,
     canActivate: [PermissionGuard],
@@ -817,7 +813,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'file-storage/file-system/detail/:id',
+    path: 'file-storage/file-system/detail/:idFileSystem',
     component: DetailFileSystemComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -825,7 +821,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'file-storage/file-system/resize/:id',
+    path: 'file-storage/file-system/resize/vpc/:idFileSystem',
     component: ResizeFileSystemComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -901,6 +897,14 @@ const routes: Routes = [
   {
     path: 'file-system-snapshot/detail/:id',
     component: FileSystemSnapshotDetailComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'fileStorages:GetShareSnapshotFileStorage'
+    }
+  },
+  {
+    path: 'file-system-snapshot/extend/:id',
+    component: ExtendFileSystemSnapshotComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'fileStorages:GetShareSnapshotFileStorage'
@@ -1158,6 +1162,15 @@ const routes: Routes = [
 
   },
   {
+    path: 'file-storage/file-system/create/:snapshotId',
+    component: CreateFileSystemComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
+
+  },
+  {
     path: 'file-storage/file-system/:idFileSystem/extend',
     component: ExtendFileSystemNormalComponent,
     canActivate: [PermissionGuard],
@@ -1166,15 +1179,30 @@ const routes: Routes = [
     }
 
   },
+
   {
-    path: 'file-storage/file-system/:idFileSystem/resize',
+    path: 'file-storage/file-system/resize/normal/:idFileSystem',
     component: ResizeFileSystemNormalComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'order:Create'
     }
 
-  }
+  },
+  {
+
+    path: 'network-topology',
+    component: NetworkTopologyComponent,
+  },
+  {
+    path: 'ssl-cert',
+    component: SslCertListComponent,
+  },
+  {
+    path: 'ssl-cert/create',
+    component: CreateSslCertComponent,
+  },
+
 ];
 
 @NgModule({

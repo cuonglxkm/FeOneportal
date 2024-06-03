@@ -10,7 +10,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 export class DetachIpFloatingLbComponent implements AfterViewInit{
   @Input() region: number
   @Input() project: number
-  @Input() internetFacing: boolean
+  @Input() IsFloatingIP: boolean
   @Input() ipFloatingAddress: string
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()

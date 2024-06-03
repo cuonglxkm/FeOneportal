@@ -1,64 +1,95 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.file.system.snapshot.manage' | i18n">
-    <ng-template #breadcrumb>
-      <nz-breadcrumb>
-        <nz-breadcrumb-item>
-          <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
-        </nz-breadcrumb-item>
-         <nz-breadcrumb-item>
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'app.file.system.snapshot.list' | i18n"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
-        <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-        <nz-breadcrumb-item>{{ 'app.file.system.snapshot.manage' | i18n }}</nz-breadcrumb-item>
-      </nz-breadcrumb>
-    </ng-template>
-    <ng-template #action>
-      <div class="alain-custom-action text-right">
-        <share-users-combobox></share-users-combobox>
-        <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-        <project-select-dropdown [regionId]="region"
-                                 (valueChanged)="projectChange($event)"
-                                 (userChanged)="projectChange($event)"></project-select-dropdown>
-      </div>
-    </ng-template>
-  </page-header>
-  <nz-content>
-    <nz-card>
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span class="text-card-header">{{ 'app.file.system.snapshot.manage' | i18n }}</span>
-      <nz-row style="gap: 16px">
+      <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        File System Snapshot
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="projectChange($event)"
+        (userChanged)="projectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card>
+
+      <nz-row class="d-flex justify-content-between">
         <nz-col>
-          <nz-input-group [nzPrefix]="prefixIconSearch"
-                          nzSize="large"
-                          style="width: 300px;">
-            <input name="name"
-                   nz-input
-                   [nz-tooltip]="'app.button.search' | i18n"
-                   [(ngModel)]="value"
-                   (input)="onInputChange($event.target['value'])"/>
+          <nz-input-group
+            [nzPrefix]="prefixIconSearch"
+            nzSize="large"
+            style="width: 300px"
+          >
+            <input
+              name="name"
+              nz-input
+              [nz-tooltip]="'app.button.search' | i18n"
+              [(ngModel)]="value"
+              (input)="onInputChange($event.target['value'])"
+              [placeholder]="'app.file.system.placeholder.search' | i18n"
+            />
           </nz-input-group>
           <ng-template #prefixIconSearch>
-            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"/>
+            <img
+              src="assets/imgs/search.svg"
+              alt=""
+              style="cursor: pointer"
+              [nz-tooltip]="'app.button.search' | i18n"
+            />
           </ng-template>
         </nz-col>
         <nz-col>
-            <button [routerLink]="['/app-smart-cloud/file-system-snapshot/create']" nz-button nzType="primary" nzSize="large">
-                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
-                <span class="button-text-primary">{{ 'app.file.system.snapshot.create' | i18n }}</span>
-              </button>
+          <button
+            [routerLink]="['/app-smart-cloud/file-system-snapshot/create']"
+            nz-button
+            nzType="primary"
+            nzSize="large"
+          >
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/add-circle.svg"
+              alt=""
+            />
+            <span class="button-text-primary">{{
+              'app.file.system.snapshot.create' | i18n
+            }}</span>
+          </button>
         </nz-col>
       </nz-row>
-      </div>
-      <nz-table #fixedTable
-                style="margin-top: 20px;"
-                [nzData]="filteredData"
-                [nzPageSize]="response?.pageSize"
-                (nzPageSizeChange)="onPageSizeChange($event)"
-                [nzPageIndex]="response?.currentPage"
-                (nzPageIndexChange)="onPageIndexChange($event)"
-                [nzTotal]="response?.totalCount"
-                [nzFrontPagination]="false"
-                [nzLoading]="isLoading">
-        <thead>
+    <nz-table
+      #fixedTable
+      style="margin-top: 20px"
+      [nzData]="filteredData"
+      [nzPageSize]="response?.pageSize"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzPageIndex]="response?.currentPage"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzTotal]="response?.totalCount"
+      [nzFrontPagination]="false"
+      [nzLoading]="isLoading"
+    >
+      <thead>
         <tr>
           <th>STT</th>
           <th>{{ 'app.snapshot.name' | i18n }}</th>
@@ -66,43 +97,76 @@
           <th>{{ 'app.task.status' | i18n }}</th>
           <th>{{ 'app.file.system.name' | i18n }}</th>
           <th>{{ 'app.service.start.date' | i18n }}</th>
-          <th nzAlign='center'>{{ 'app.text.operation' | i18n }}</th>
+          <th nzAlign="center">{{ 'app.text.operation' | i18n }}</th>
         </tr>
-        </thead>
-        <tbody>
+      </thead>
+      <tbody>
         <tr *ngFor="let data of fixedTable.data; index as i">
-          <td>{{i+1}}</td>
+          <td>{{ i + 1 }}</td>
           <td>
-            <a [routerLink]="'/app-smart-cloud/file-system-snapshot/detail/' + data.id">{{data.name}}</a>
+            <a
+              [routerLink]="
+                '/app-smart-cloud/file-system-snapshot/detail/' + data.id
+              "
+              >{{ data.name }}</a
+            >
           </td>
-          <td>{{data.size}}</td>
-          <td>{{data.status}}</td>
-          <td>{{data.shareName}}</td>
-          <td>{{data.createdDate | date: 'dd/MM/yyyy'}}</td>
+          <td nzAlign="right">{{ data.size }}</td>
+          <td>{{ data.status }}</td>
+          <td>{{ data.shareName }}</td>
+          <td>{{ data.createdDate | date : 'dd/MM/yyyy' }}</td>
           <td>
-              <div class="d-flex gap-2 justify-content-center">
-                <one-portal-edit-file-system-snapshot [region]="region"
-              [project]="project" [data]="data" (onOk)="handleOkEditFileSystemSnapShot()" [filesystemsnapshotId]="data.id" />
-              <one-portal-delete-file-system-snapshot 
-              [region]="region"
-              [project]="project" [filesystemsnapshotId]="data.id" 
-              [filesystemsnapshotName]="data.name" 
-              (onOk)="handleOkDeleteFileSystemSnapShot()"
+            <div class="d-flex gap-2 justify-content-center">
+              <one-portal-edit-file-system-snapshot
+                [region]="region"
+                [project]="project"
+                [data]="data"
+                (onOk)="handleOkEditFileSystemSnapShot()"
+                [filesystemsnapshotId]="data.id"
               />
-              <img nz-dropdown
-                     [nzDropdownMenu]="opMenu"
-                     src="assets/imgs/more1.svg" alt="" style="cursor: pointer;"/>
-                <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                  <ul nz-menu>
-                    <li *ngIf="projectType == 1" nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/create/' + data.id">{{ 'app.file.system.create.button' | i18n }}</li>
-                    <li *ngIf="projectType == 0" nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/create/normal/' + data.id">{{ 'app.file.system.create.button' | i18n }}</li>
-                  </ul>
-                </nz-dropdown-menu>
-              </div>
+
+              <img
+                nz-dropdown
+                [nzDropdownMenu]="opMenu"
+                src="assets/imgs/more1.svg"
+                alt=""
+                style="cursor: pointer"
+              />
+              <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li
+                    *ngIf="projectType == 1"
+                    nz-menu-item
+                    [routerLink]="
+                      '/app-smart-cloud/file-storage/file-system/create/' +
+                      data.id
+                    "
+                  >
+                    {{ 'app.file.system.create.button' | i18n }}
+                  </li>
+                  <li
+                    *ngIf="projectType == 0"
+                    nz-menu-item
+                    [routerLink]="
+                      '/app-smart-cloud/file-storage/file-system/create/normal/' +
+                      data.id
+                    "
+                  >
+                    {{ 'app.file.system.create.button' | i18n }}
+                  </li>
+                  <one-portal-delete-file-system-snapshot
+                    [region]="region"
+                    [project]="project"
+                    [filesystemsnapshotId]="data.id"
+                    [filesystemsnapshotName]="data.name"
+                    (onOk)="handleOkDeleteFileSystemSnapShot()"
+                  />
+                </ul>
+              </nz-dropdown-menu>
+            </div>
           </td>
         </tr>
-        </tbody>
-      </nz-table>
-    </nz-card>
-  </nz-content>
-  
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-content>

@@ -409,7 +409,7 @@
   (nzOnCancel)="handleCancelGanVLAN()"
 >
   <ng-container *nzModalContent>
-    <form nz-form [formGroup]="formGanVlan" [nzLayout]="'vertical'">
+    <form nz-form [nzLayout]="'vertical'">
       <nz-alert
         *ngIf="!isChoosePort"
         style="margin-bottom: 16px"
@@ -449,6 +449,7 @@
       <nz-radio-group
         style="width: 100%; margin-bottom: 16px; margin-top: 10px"
         [(ngModel)]="isChoosePort"
+        (ngModelChange)="changeAttachType()"
         [ngModelOptions]="{ standalone: true }"
       >
         <div style="display: flex">
@@ -502,20 +503,19 @@
           <nz-form-label class="text-label">{{
             'app.ip.address' | i18n
           }}</nz-form-label>
-          <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
+          <nz-form-control>
             <input
               class="input-custom"
               nz-input
               [placeholder]="'app.input.ip.address' | i18n"
-              formControlName="ipAddress"
               [(ngModel)]="instanceAction.ipAddress"
+              (ngModelChange)="inputIPAddress($event)"
+              [ngModelOptions]="{ standalone: true }"
             />
+            <span *ngIf="isInvalidIPAddress" style="color: #ff4d4f">{{
+              invalidIPAddress
+            }}</span>
           </nz-form-control>
-          <ng-template #ipAddressErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('pattern')">{{
-              'validation.ip.address.pattern' | i18n
-            }}</ng-container>
-          </ng-template>
         </nz-form-item>
       </div>
     </form>
@@ -528,7 +528,12 @@
         alt=""
       />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkGanVLAN()">
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkGanVLAN()"
+      [disabled]="isInvalidIPAddress"
+    >
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
@@ -737,7 +742,7 @@
             [maxlength]="50"
           />
           <div *ngIf="isExistName" style="color: #ff4d4f">
-            {{ 'validation.exist.name' | i18n : { name: 'instance' } }}
+            {{ 'validation.exist.instance.name' | i18n }}
           </div>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{

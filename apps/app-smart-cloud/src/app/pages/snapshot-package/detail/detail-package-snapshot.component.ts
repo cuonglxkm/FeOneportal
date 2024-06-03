@@ -6,7 +6,8 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NonNullableFormBuilder} from "@angular/forms";
 import {PackageBackupModel} from "../../../shared/models/package-backup.model";
 import {getCurrentRegionAndProject} from "@shared";
-import { ProjectService, RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-detail-package-snapshot',
