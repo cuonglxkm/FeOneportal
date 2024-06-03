@@ -75,6 +75,9 @@ export class ProjectUpdateComponent implements OnInit {
   activeSiteToSite = false;
   trashVpnSiteToSite = false;
 
+  activeVpnGpu= false;
+  trashVpnGpu = false;
+
   vCPUOld = 0;
   ramOld = 0;
   hhdOld = 0;
@@ -130,7 +133,11 @@ export class ProjectUpdateComponent implements OnInit {
   minBlock: number = 0;
   stepBlock: number = 0;
   maxBlock: number = 0;
+  loadBalancerName:string;
+  sitetositeName:string;
+  listTypeCatelogOffer:any;
 
+  numbergpu: number[] = [];
 
 
   form = new FormGroup({
@@ -170,6 +177,8 @@ export class ProjectUpdateComponent implements OnInit {
     this.loadData();
     this.iconToggle = "icon_circle_minus";
     this.getStepBlock('BLOCKSTORAGE');
+    this.getCatelogOffer()
+   
   }
 
   calculate() {
@@ -316,7 +325,6 @@ export class ProjectUpdateComponent implements OnInit {
     this.activeBackup = false;
     this.trashBackup = false;
     this.numberBackup = 0;
-
   }
 
   initLoadBalancer() {
@@ -326,9 +334,21 @@ export class ProjectUpdateComponent implements OnInit {
   initFileStorage() {
     this.activeFileStorage = true;
   }
+  initVpnGpu() {
+    this.activeVpnGpu = true;
+    this.trashVpnGpu = true;
+    this.getCatelogOffer();
+    console.log("object")
+
+  }
+  deleteVpnGpu() {
+    this.activeVpnGpu = false;
+    this.trashVpnGpu = false;
+  }
 
   changeTab(event: any) {
     this.selectIndexTab = event.index;
+    console.log("selectIndexTab123", this.selectIndexTab)
   }
 
   loadListIpConnectInternet() {
@@ -397,7 +417,7 @@ export class ProjectUpdateComponent implements OnInit {
             this.activeSiteToSite = true;
           }
 
-          this.checkConfigPackage(182)
+          this.checkConfigPackage(this.data?.offerId)
         }
       )
   }
@@ -592,19 +612,22 @@ export class ProjectUpdateComponent implements OnInit {
   }
 
   checkConfigPackage(offerId: number) {
-    if (offerId != null) {
-      if (offerId === this.data.offerId && this.vCPU == this.data.quotavCpu && this.ram == this.data.quotaRamInGb && this.hhd == this.data.quotaHddInGb) {
-        console.log("checkPackage", this.checkPackage)
+    if (offerId != 0) {
+      // if ( this.vCPU == this.data.quotavCpu && this.ram == this.data.quotaRamInGb && this.hhd == this.data.quotaHddInGb) {
+      
         this.checkPackage = true
-      }
-      else {
-        this.checkPackage = false
-        console.log("checkPackage2", this.checkPackage)
-      }
+        console.log("checkPackage", this.checkPackage)
+        this.selectIndexTab=0
+      // }
+      // else {
+      //   this.checkPackage = false
+      //   console.log("checkPackage2", this.checkPackage)
+      // }
 
     }
     else {
       this.checkPackage = false
+      this.selectIndexTab=1
       console.log("checkPackage3", this.checkPackage)
     }
   }
@@ -621,16 +644,10 @@ export class ProjectUpdateComponent implements OnInit {
   getStepBlock(name: string) {
     this.ipService.getStepBlock(name).subscribe((res: any) => {
       const valuestring: any = res.valueString;
-      console.log("mediaChannelData", valuestring)
       const parts = valuestring.split("#")
       this.minBlock = parseInt(parts[0]);
-      console.log("minBlock", this.minBlock)
       this.stepBlock = parseInt(parts[1]);
-      console.log("stepBlock", this.stepBlock)
       this.maxBlock = parseInt(parts[2]);
-      console.log("stepBlock", this.maxBlock)
-      // this.min
-
     })
   }
 
@@ -666,5 +683,41 @@ export class ProjectUpdateComponent implements OnInit {
         }
       }
     }
+  }
+
+  findNameLoadBalance(loadBalancerId: number) {
+    if (loadBalancerId) {
+      const selectedLoadBalancer = this.listLoadbalancer.find(lb => lb.id === loadBalancerId)
+      this.loadBalancerName = selectedLoadBalancer ? selectedLoadBalancer.offerName : null;
+    } else {
+      this.loadBalancerName = null;
+    }
+    // this.calculate();
+  }
+
+  findNameSiteToSite(siteToSiteId: number) {
+    if (siteToSiteId) {
+      const selectedSiteToSite = this.listSiteToSite.find(lb => lb.id === siteToSiteId)
+      this.sitetositeName = selectedSiteToSite ? selectedSiteToSite.offerName : null;
+
+    } else {
+      this.sitetositeName = null;
+    }
+    // this.calculate();
+  }
+  getCatelogOffer(){
+    this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
+      res => {
+        this.listTypeCatelogOffer = res
+        console.log("object123", res)
+        this.listTypeCatelogOffer.forEach(() => this.numbergpu.push(0));
+      }
+    );
+  }
+  trackById(index: number, item: any): any {
+    return item.offerName;
+  }
+  getValues() {
+    console.log("loggg",this.numbergpu);
   }
 }
