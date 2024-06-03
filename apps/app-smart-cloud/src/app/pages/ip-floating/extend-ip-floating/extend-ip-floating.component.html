@@ -99,7 +99,7 @@
           <nz-col style="width: 100%">
             <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="extendIpPublic()" [disabled]="numOfMonth == null || numOfMonth ==0 || isLoading" [nzLoading]="isLoading">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="numOfMonth == null || numOfMonth ==0 ? 'gray' : 'white'">{{'app.extend' | i18n:{"vat":"10"} }}</span>
+              <span [style.color]="numOfMonth == null || numOfMonth ==0 || isLoading? 'gray' : 'white'">{{'app.extend' | i18n:{"vat":"10"} }}</span>
             </button>
           </nz-col>
         </nz-row>
