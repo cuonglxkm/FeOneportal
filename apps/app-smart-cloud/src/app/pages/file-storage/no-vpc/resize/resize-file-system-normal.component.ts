@@ -88,7 +88,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
       this.fileSystem = data;
       this.isLoading = false;
-      this.storage = this.fileSystem?.size;
+      // this.storage = this.fileSystem?.size;
       // this.validateForm.controls.storage.setValue(this.fileSystem?.size);
       this.validateForm.controls.snapshot.setValue(this.fileSystem?.isSnapshot);
       // this.getTotalAmount();
