@@ -95,14 +95,14 @@
                                      [nzMin]="fileSystem?.size"
                                      [(ngModel)]="storage"
                                      (ngModelChange)="storageSelectedChange($event)"
-                                     [nzStep]="stepStorage" [nzMax]="maxStorage"></nz-input-number>
+                                     [nzStep]="stepStorage" [nzMax]="storageRemaining"></nz-input-number>
                     <ng-template #storageErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
                       <ng-container
                         *ngIf="control.hasError('pattern')">{{ 'app.file.system.error.pattern.storage' | i18n }}
                       </ng-container>
-                      <ng-container
-                        *ngIf="control.hasError('notEnough')">{{ 'app.file.system.not.enough.quota' | i18n }}
+                      <ng-container *ngIf="control.hasError('notEnough') || control.hasError('outOfStorage')">
+                        {{ 'app.alert.quota.vpc' | i18n }}<a [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a>{{ 'app.alert.quota.vpc.next' | i18n }}
                       </ng-container>
                     </ng-template>
                   </nz-form-control>
@@ -158,7 +158,7 @@
           </nz-card>
         </nz-col>
         <nz-col nzSpan="8">
-          <nz-affix [nzOffsetTop]="48">
+          <nz-affix [nzOffsetTop]="72">
             <nz-card class="border-card">
               <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
               <div style="margin-top: 10px" class="text-value">{{ 'app.file.system.name' | i18n }}</div>

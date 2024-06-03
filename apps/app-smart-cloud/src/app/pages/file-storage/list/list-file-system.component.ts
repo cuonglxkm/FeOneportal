@@ -246,6 +246,7 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
           case "DELETED":
           case "EXTENDING":
           case "DELETING":
+          case "AVAILABLE":
             this.getListFileSystem(true);
           break;
           //case "CREATED":

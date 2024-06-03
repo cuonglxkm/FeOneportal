@@ -69,10 +69,10 @@
           <span class="text-card-header">{{ 'app.extension.info' | i18n }}</span>
           <nz-row style="margin-top: 20px;">
             <nz-col nzSpan="12">
-              <span class="text-label">{{ 'app.service.start.date' | i18n }}: {{ loadBalancer.createDate | date:'dd/MM/yyyy' }}</span>
+              <span class="text-label" style="color: #F50000;">{{ 'app.service.start.date' | i18n }}: {{ loadBalancer.createDate | date:'HH:mm:ss dd/MM/yyyy' }}</span>
             </nz-col>
             <nz-col nzSpan="12">
-              <span class="text-label">{{ 'app.service.expiration-date' | i18n }}: {{ loadBalancer.expiredDate | date:'dd/MM/yyyy' }} </span>
+              <span class="text-label" style="color: #F50000;">{{ 'app.service.expiration-date' | i18n }}: {{ loadBalancer.expiredDate | date:'HH:mm:ss dd/MM/yyyy' }} </span>
             </nz-col>
           </nz-row>
           <nz-form-item style="margin-top: 10px;">
@@ -127,7 +127,7 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-value"> {{ 'app.cost.a.month' | i18n }} </span>
+              <span class="text-value"> {{ 'app.cost.month' | i18n: {month: validateForm.controls['time'].value} }} </span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
@@ -136,7 +136,20 @@
             </span>
               <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
                     nzAlign="right">
-              {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+              {{ orderItem?.totalAmount?.amount | number: '1.0-0' }}
+                VND
+            </span>
+            </nz-col>
+          </nz-row>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value"> {{'app.cost.vat' | i18n}}</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ orderItem?.totalVAT?.amount | number: '1.0-0' }}
+              VND
             </span>
             </nz-col>
           </nz-row>

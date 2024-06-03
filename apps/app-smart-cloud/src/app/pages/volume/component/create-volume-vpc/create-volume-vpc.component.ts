@@ -139,6 +139,8 @@ export class CreateVolumeVpcComponent implements OnInit {
     const value = control.value;
     if (this.remaining < value) {
       return { notEnough: true };
+    } else if(this.remaining == 0) {
+      return { outOfStorage: true };
     } else {
       return null;
     }

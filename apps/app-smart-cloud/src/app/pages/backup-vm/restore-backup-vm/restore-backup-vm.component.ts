@@ -10,6 +10,7 @@ import {
 import {
   ProjectModel,
   RegionModel,
+  slider,
 } from '../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVmService } from '../../../shared/services/backup-vm.service';
@@ -34,6 +35,7 @@ import {
   OfferItem,
   SecurityGroupModel,
   SHHKeyModel,
+  VolumeCreate,
 } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -48,7 +50,8 @@ import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
-import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
+import { BlockStorage } from '../../instances/instances-create/instances-create.component';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -63,7 +66,6 @@ class ConfigGPU {
   GPU: number = 0;
   gpuOfferId: number = 0;
 }
-
 @Component({
   selector: 'one-portal-restore-backup-vm',
   templateUrl: './restore-backup-vm.component.html',
@@ -87,6 +89,7 @@ export class RestoreBackupVmComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   userId: number;
+  idBackup: number;
 
   backupVmModel: BackupVm;
   projectDetail: SizeInCloudProject;
@@ -154,6 +157,7 @@ export class RestoreBackupVmComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private projectService: ProjectService,
     private backupPackageService: PackageBackupService,
+    private catalogService: CatalogService,
     private notification: NzNotificationService,
     private dataService: InstancesService,
     private vlanService: VlanService,
@@ -189,20 +193,20 @@ export class RestoreBackupVmComponent implements OnInit {
       }, 100);
     }
   }
-  
+
   ngOnInit() {
     this.userId = this.tokenService.get()?.userId;
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-    const idBackup = this.activatedRoute.snapshot.paramMap.get('id');
+    this.idBackup = Number.parseInt(
+      this.activatedRoute.snapshot.paramMap.get('id')
+    );
     this.getConfigurations();
+    this.getVolumeUnitMoney();
     this.initFlavors();
     this.getListGpuType();
-    if (idBackup != undefined || idBackup != null) {
-      this.getDetailBackupById(idBackup);
-      this.getProjectVpc(this.project);
-    }
+    this.getProjectVpc(this.project);
     this.getAllIPPublic();
     this.getListNetwork();
     this.onChangeCapacity();
@@ -359,6 +363,7 @@ export class RestoreBackupVmComponent implements OnInit {
     });
   }
 
+  listIDAttachVolume: number[] = [];
   getDetailBackupById(id) {
     this.backupService.detail(id).subscribe((data) => {
       this.backupVmModel = data;
@@ -366,6 +371,26 @@ export class RestoreBackupVmComponent implements OnInit {
       this.listExternalAttachVolume = this.backupVmModel?.volumeBackups.filter(
         (e) => e.isBootable == false
       );
+
+      this.listExternalAttachVolume.forEach((e) => {
+        this.listIDAttachVolume.push(e.id);
+        let tempBS = new BlockStorage();
+        tempBS.id = e.id;
+        tempBS.name = e.name;
+        tempBS.capacity = e.size;
+        if (e.typeName.toUpperCase().includes('HDD')) {
+          tempBS.type = 'HDD';
+          tempBS.price = e.size * this.unitPriceVolumeHDD;
+          tempBS.VAT = e.size * this.unitVATVolumeHDD;
+          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
+        } else {
+          tempBS.type = 'SSD';
+          tempBS.price = e.size * this.unitPriceVolumeSSD;
+          tempBS.VAT = e.size * this.unitVATVolumeSSD;
+          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
+        }
+        this.listOfDataBlockStorage.push(tempBS);
+      });
 
       this.listSecurityGroupBackups = this.backupVmModel.securityGroupBackups;
 
@@ -394,6 +419,7 @@ export class RestoreBackupVmComponent implements OnInit {
       console.log('unique', this.nameVolumeBackupAttachNameUnique);
 
       this.getBackupPackage(this.backupVmModel?.backupPacketId);
+      this.cdr.detectChanges();
     });
   }
 
@@ -1014,6 +1040,101 @@ export class RestoreBackupVmComponent implements OnInit {
     ) {
       this.getTotalAmount();
     }
+  }
+  //#endregion
+  //#region volume gắn ngoài
+  listOfDataBlockStorage: BlockStorage[] = [];
+
+  unitPriceVolumeHDD: number = 0;
+  unitVATVolumeHDD: number = 0;
+  unitPaymentVolumeHDD: number = 0;
+  unitPriceVolumeSSD: number = 0;
+  unitVATVolumeSSD: number = 0;
+  unitPaymentVolumeSSD: number = 0;
+  getVolumeUnitMoney() {
+    // Lấy giá tiền của Volume gắn thêm 1GB/1Tháng
+    this.catalogService
+      .getCatalogOffer(2, this.region, null, null)
+      .subscribe((data) => {
+        let offer = data.find(
+          (offer) => offer.status.toUpperCase() == 'ACTIVE'
+        );
+        let temVolumeCreate = new VolumeCreate();
+        temVolumeCreate.volumeType = 'hdd';
+        temVolumeCreate.volumeSize = 1;
+        temVolumeCreate.projectId = this.project.toString();
+        temVolumeCreate.serviceType = 2;
+        temVolumeCreate.serviceInstanceId = 0;
+        temVolumeCreate.customerId = this.tokenService.get()?.userId;
+        temVolumeCreate.isTrial = false;
+        temVolumeCreate.regionId = this.region;
+        temVolumeCreate.serviceName = '';
+        temVolumeCreate.offerId = offer.id;
+        let itemPayment: ItemPayment = new ItemPayment();
+        itemPayment.orderItemQuantity = 1;
+        itemPayment.specificationString = JSON.stringify(temVolumeCreate);
+        itemPayment.specificationType = 'volume_create';
+        itemPayment.serviceDuration = 1;
+        itemPayment.sortItem = 0;
+        let dataPayment: DataPayment = new DataPayment();
+        dataPayment.orderItems = [itemPayment];
+        dataPayment.projectId = this.project;
+        this.dataService.getPrices(dataPayment).subscribe((result) => {
+          console.log('thanh tien volume', result);
+          this.unitPriceVolumeHDD = Number.parseFloat(
+            result.data.totalAmount.amount
+          );
+          this.unitVATVolumeHDD = Number.parseFloat(
+            result.data.totalVAT.amount
+          );
+          this.unitPaymentVolumeHDD = Number.parseFloat(
+            result.data.totalPayment.amount
+          );
+          this.cdr.detectChanges();
+        });
+      });
+
+    this.catalogService
+      .getCatalogOffer(114, this.region, null, null)
+      .subscribe((data) => {
+        let offer = data.find(
+          (offer) => offer.status.toUpperCase() == 'ACTIVE'
+        );
+        let temVolumeCreate = new VolumeCreate();
+        temVolumeCreate.volumeType = 'ssd';
+        temVolumeCreate.volumeSize = 1;
+        temVolumeCreate.projectId = this.project.toString();
+        temVolumeCreate.serviceType = 2;
+        temVolumeCreate.serviceInstanceId = 0;
+        temVolumeCreate.customerId = this.tokenService.get()?.userId;
+        temVolumeCreate.isTrial = false;
+        temVolumeCreate.regionId = this.region;
+        temVolumeCreate.serviceName = '';
+        temVolumeCreate.offerId = offer.id;
+        let itemPayment: ItemPayment = new ItemPayment();
+        itemPayment.orderItemQuantity = 1;
+        itemPayment.specificationString = JSON.stringify(temVolumeCreate);
+        itemPayment.specificationType = 'volume_create';
+        itemPayment.serviceDuration = 1;
+        itemPayment.sortItem = 0;
+        let dataPayment: DataPayment = new DataPayment();
+        dataPayment.orderItems = [itemPayment];
+        dataPayment.projectId = this.project;
+        this.dataService.getPrices(dataPayment).subscribe((result) => {
+          console.log('thanh tien volume', result);
+          this.unitPriceVolumeSSD = Number.parseFloat(
+            result.data.totalAmount.amount
+          );
+          this.unitVATVolumeSSD = Number.parseFloat(
+            result.data.totalVAT.amount
+          );
+          this.unitPaymentVolumeSSD = Number.parseFloat(
+            result.data.totalPayment.amount
+          );
+          this.getDetailBackupById(this.idBackup);
+          this.cdr.detectChanges();
+        });
+      });
   }
   //#endregion
 

@@ -289,6 +289,7 @@ export class InstancesCreateVpcComponent implements OnInit {
           this.remainingVCPU =
             this.infoVPC.cloudProject.quotavCpu -
             this.infoVPC.cloudProjectResourceUsed.cpu;
+          this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(
