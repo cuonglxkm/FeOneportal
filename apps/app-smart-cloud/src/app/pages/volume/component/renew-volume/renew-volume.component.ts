@@ -27,7 +27,7 @@ export class RenewVolumeComponent implements OnInit {
 
   idVolume: number;
 
-  volumeInfo: VolumeDTO = new VolumeDTO();
+  volumeInfo: VolumeDTO;
 
   attachedDto: AttachedDto[] = [];
 
@@ -49,6 +49,8 @@ export class RenewVolumeComponent implements OnInit {
   isVisibleConfirmRenew: boolean = false;
   newValue = 0;
 
+  timeSelected: number
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
               private router: Router,
@@ -64,9 +66,9 @@ export class RenewVolumeComponent implements OnInit {
     this.volumeStatus.set('ERROR', this.i18n.fanyi('app.status.error'));
     this.volumeStatus.set('SUSPENDED', this.i18n.fanyi('app.status.suspend'));
 
-    this.validateForm.get('time').valueChanges.subscribe((newValue: any) => {
-      this.getTotalAmount();
-    });
+    // this.validateForm.get('time').valueChanges.subscribe((newValue: any) => {
+    //   this.getTotalAmount();
+    // });
   }
 
 
@@ -111,6 +113,8 @@ export class RenewVolumeComponent implements OnInit {
       this.volumeInfo = null;
       this.attachedDto = null;
       this.listVMs = null;
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
+      this.router.navigate(['/app-smart-cloud/volumes'])
     });
   }
 
@@ -237,15 +241,15 @@ export class RenewVolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volume/detail/' + this.idVolume]);
   }
 
+  onChangeTime(value) {
+    this.timeSelected = value;
+    this.validateForm.controls.time.setValue(this.timeSelected)
+    this.getTotalAmount()
+  }
 
   ngOnInit(): void {
     this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-
     this.getVolumeById(this.idVolume);
-
-
-
-
   }
 
 
