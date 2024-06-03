@@ -148,7 +148,7 @@ export class ExtendIpPublicComponent implements OnInit{
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: 'ip_extend',
-          price: this.total.data.totalAmount.amount / Number(this.numOfMonth),
+          price: this.total.data.totalAmount.amount,
           serviceDuration: this.numOfMonth
         }
       ]

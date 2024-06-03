@@ -161,7 +161,7 @@ export class CreateIpFloatingNormalComponent implements OnInit{
               orderItemQuantity: 1,
               specification: JSON.stringify(requestBody),
               specificationType: "ip_create",
-              price: this.total.data.totalAmount.amount / Number(this.form.controls['numOfMonth'].value),
+              price: this.total.data.totalAmount.amount,
               serviceDuration: this.form.controls['numOfMonth'].value
             }
           ]
