@@ -42,7 +42,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
 
   storage: number = 0;
   isLoading: boolean = true;
-  fileSystem: FileSystemDetail = new FileSystemDetail();
+  fileSystem: FileSystemDetail;
 
   resizeFileSystem: ResizeFileSystem = new ResizeFileSystem();
 
@@ -88,7 +88,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
       this.fileSystem = data;
       this.isLoading = false;
-      this.storage = this.fileSystem?.size;
+      // this.storage = this.fileSystem?.size;
       // this.validateForm.controls.storage.setValue(this.fileSystem?.size);
       this.validateForm.controls.snapshot.setValue(this.fileSystem?.isSnapshot);
       // this.getTotalAmount();
@@ -101,6 +101,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
 
   initFileSystem() {
     this.resizeFileSystem.customerId = this.tokenService.get()?.userId;
+    console.log('size', this.fileSystem?.size)
     if(this.fileSystem?.size != null) {
       this.resizeFileSystem.size = this.storage + this.fileSystem?.size;
     } else {

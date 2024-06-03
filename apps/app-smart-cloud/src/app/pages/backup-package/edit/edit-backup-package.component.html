@@ -37,7 +37,7 @@
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
       <nz-row nzGutter="24">
         <nz-col nzSpan="16">
-          <nz-card style="border-radius: 8px;">
+          <nz-card style="border-radius: 8px;" *ngIf="packageBackupModel">
             <span class="text-card-header">{{ 'app.backup.package.information'|i18n }}</span>
             <nz-form-item>
               <nz-form-label nzFor="name">
@@ -100,7 +100,7 @@
               </nz-col>
             </nz-row>
           </nz-card>
-          <nz-card style="border-radius: 8px;">
+          <nz-card style="border-radius: 8px;" *ngIf="packageBackupModel">
             <span class="text-card-header">{{ 'app.adjust.info'|i18n }}</span>
             <nz-alert nzBanner style="margin-top: 10px; margin-bottom: 10px;"
                       [nzMessage]="'app.alert.backup.package.resize'|i18n"
@@ -170,7 +170,7 @@
               </div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <div class="text-value">{{ 'app.backup.package.storage'|i18n }}</div>
-              <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.storage.value }} GB</div>
+              <div style="margin-top: 10px" class="text-label">{{ formUpdateBackupPackageModel?.newSize }} GB</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <nz-row style="margin-bottom: 10px" nzGutter="16">
                 <nz-col nzSpan="16">

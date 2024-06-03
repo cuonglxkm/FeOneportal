@@ -36,6 +36,7 @@ import {
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -108,7 +109,8 @@ export class InstancesEditComponent implements OnInit {
     private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver,
-    private configurationService: ConfigurationsService
+    private configurationService: ConfigurationsService,
+    private orderService: OrderService
   ) {}
 
   @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
@@ -646,7 +648,8 @@ export class InstancesEditComponent implements OnInit {
           })
         );
         this.configCustom.capacity =
-          this.configCustom.capacity - (this.configCustom.capacity % this.stepCapacity);
+          this.configCustom.capacity -
+          (this.configCustom.capacity % this.stepCapacity);
       }
       if (this.configCustom.capacity == 0) {
         this.volumeUnitPrice = '0';
@@ -855,6 +858,11 @@ export class InstancesEditComponent implements OnInit {
     this.instanceResize.projectId = this.projectId;
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   readyEdit(): void {
     if (
       this.isGpuConfig == true &&
@@ -883,9 +891,24 @@ export class InstancesEditComponent implements OnInit {
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: this.order, path: returnPath },
+    this.orderService.validaterOrder(this.order).subscribe({
+      next: (result) => {
+        if (result.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: this.order, path: returnPath },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = result.data;
+        }
+      },
+      error: (error) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          error.error.detail
+        );
+      },
     });
   }
 
