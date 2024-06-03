@@ -192,12 +192,12 @@
           <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfServicePack" class="carousel-div">
             <div *nguCarouselDef="let item;" class="item">
               <div class="pack-item"
-                [ngClass]="{'choose': item===chooseItem, 'pack-item-disable': currentPackItem && !(currentPackItem | checkUpgradePack: item)}"
+                [ngClass]="{'choose': item===chooseItem, 'pack-item-disable': (currentPackItem && !(currentPackItem | checkUpgradePack: item)) || detailCluster?.offerId == 0}"
                 (click)="onChoosePack(item)">
                 <div class="item-header"
-                  [ngClass]="{'item-header-disable': currentPackItem && !(currentPackItem | checkUpgradePack: item)}">
+                  [ngClass]="{'item-header-disable': (currentPackItem && !(currentPackItem | checkUpgradePack: item)) || detailCluster.offerId == 0}">
                   <div class="item-name"
-                    [ngClass]="{'item-name-disable': currentPackItem && !(currentPackItem | checkUpgradePack: item)}">
+                    [ngClass]="{'item-name-disable': (currentPackItem && !(currentPackItem | checkUpgradePack: item)) || detailCluster.offerId == 0}">
                     <span>{{item.packName}}</span>
                     <div class="item-price">
                       <div class="price">
@@ -502,10 +502,8 @@
         <div class="ml-3"><label class="weight-600">{{ 'app.text.version' | i18n }}</label></div>
         <div class="ml-3">{{detailCluster?.currentVersion}}</div>
 
-        <nz-divider class="divider-style"></nz-divider>
-
-
         <ng-container *ngIf="isChangeInfo == true">
+          <nz-divider class="divider-style"></nz-divider>
           <ng-container *ngIf="chooseItem; else customPackSummaryTpl">
             <div class="ml-3">
               <label class="weight-600">{{ 'app.text.package' | i18n }}:<b>{{chooseItem.packName}}</b></label>
