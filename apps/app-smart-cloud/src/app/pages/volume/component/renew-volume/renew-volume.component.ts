@@ -14,6 +14,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { OrderService } from '../../../../shared/services/order.service';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-renew-volume',
@@ -158,7 +159,6 @@ export class RenewVolumeComponent implements OnInit {
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
-      console.log('thanh tien volume', result.data);
       this.orderItem = result.data;
       this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount;
       this.estimateExpireDate = this.orderItem.orderItemPrices[0].expiredDate;

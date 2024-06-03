@@ -307,7 +307,7 @@
         </nz-card>
       </nz-col>
       <nz-col nzSpan="8">
-        <nz-affix [nzOffsetTop]="48">
+        <nz-affix [nzOffsetTop]="72">
           <nz-card style="border-radius: 8px;" class="border-card">
             <div style="margin-bottom: 20px">
               <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
@@ -334,6 +334,7 @@
                 <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmCreate()"
                         [disabled]="validateForm.invalid ||
                                   sizeInCloudProject == null ||
+                                  (validateForm.controls.storage.value == 0) ||
                                   (remaining == 0) || (validateForm.controls.storage.value > remaining)">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                   <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>

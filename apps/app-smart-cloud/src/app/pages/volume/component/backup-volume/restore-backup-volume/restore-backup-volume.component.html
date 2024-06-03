@@ -24,6 +24,62 @@
 </page-header>
 <nz-spin [nzSpinning]="isLoading">
   <nz-content>
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="16">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">{{'app.backup.volume.info'|i18n}}</span>
+          <form nz-form nzLayout="vertical">
+            <nz-row nzGutter="24" style="margin-top: 25px;">
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{'app.backup.volume.name'|i18n}}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input nz-input class="input-custom" [value]="backupVolume?.name" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{'app.input.backup.volume.select.volume'|i18n}}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input nz-input class="input-custom" [value]="backupVolume?.volumeName" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+            <nz-row nzGutter="24">
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{'app.info.backup.vm.total.storage'|i18n}}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input *ngIf="typeVpc == 1" nz-input class="input-custom" [value]="projectDetail?.cloudProject?.quotaBackupVolumeInGb" [disabled]="true" />
+                    <input *ngIf="typeVpc == 0" nz-input class="input-custom" [value]="backupPackageDetail?.sizeInGB" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{'app.volume.type'|i18n}}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input nz-input class="input-custom" [value]="backupVolume?.volumeName" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+          </form>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
 
+      </nz-col>
+    </nz-row>
   </nz-content>
 </nz-spin>
