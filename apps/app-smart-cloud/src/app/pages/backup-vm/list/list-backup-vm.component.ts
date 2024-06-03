@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {BackupVm, BackupVMFormSearch} from "../../../shared/models/backup-vm";
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import Pagination from "../../../shared/models/pagination";
@@ -11,13 +11,14 @@ import { RegionModel, ProjectModel, NotificationService } from '../../../../../.
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'one-portal-list-backup-vm',
   templateUrl: './list-backup-vm.component.html',
   styleUrls: ['./list-backup-vm.component.less'],
 })
-export class ListBackupVmComponent implements OnInit {
+export class ListBackupVmComponent implements OnInit, OnDestroy {
 
   region = JSON.parse(localStorage.getItem('regionId'));
 
@@ -61,6 +62,10 @@ export class ListBackupVmComponent implements OnInit {
 
   typeVPC: number
 
+  dataSubjectInputSearch: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
+
   constructor(private backupVmService: BackupVmService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
@@ -83,10 +88,35 @@ export class ListBackupVmComponent implements OnInit {
     this.getListBackupVM(true)
   }
 
-  onInputChange(value: string) {
-    this.value = value;
-    console.log('input text: ', this.value)
-    this.getListBackupVM(false)
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  changeInputChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.enterPressed = false;
+    this.dataSubjectInputSearch.next(value);
+  }
+
+  onChangeInputChange() {
+    this.searchSubscription = this.dataSubjectInputSearch.pipe(
+      debounceTime(700)
+    ).subscribe(res => {
+      if (!this.enterPressed) {
+        this.value = res.trim();
+        this.getListBackupVM(false);
+      }
+    });
+  }
+
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value.trim();
+    this.getListBackupVM(false);
   }
 
   showModalDelete(id: number): void {
@@ -173,14 +203,13 @@ export class ListBackupVmComponent implements OnInit {
     this.formSearch.pageSize = 10
     this.isLoading = true;
 
+    this.selectedValue = this.status[0].value
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
-    // if (this.project && this.region) {
-    //   this.loadProjects()
-    // }
 
-    setTimeout(() => {this.getListBackupVM(true)}, 1500)
+    this.onChangeInputChange()
+    // setTimeout(() => {this.getListBackupVM(true)}, 1500)
 
     this.notificationService.connection.on('UpdateInstanceBackup', (message) => {
       if (message) {

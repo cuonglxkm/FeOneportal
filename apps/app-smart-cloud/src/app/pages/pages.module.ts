@@ -220,7 +220,6 @@ import { AttachIpFloatingLbComponent } from './load-balancer/list/attach/attach-
 import { DetachIpFloatingLbComponent } from './load-balancer/list/detach/detach-ip-floating-lb.component';
 import { CreateBackupVmNormalComponent } from './backup-vm/create/no-vpc/create-backup-vm-normal.component';
 import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup-vm-vpc.component';
-import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { RestoreBackupVolumeComponent } from './volume/component/backup-volume/restore-backup-volume/restore-backup-volume.component';
 import { UpdateBackupVmComponent } from './backup-vm/update/update-backup-vm.component';
 import { NetworkTopologyComponent } from './network-topology/network-topology.component';
@@ -234,6 +233,10 @@ import { DeleteSslCertComponent } from './ssl-cert/delete/delete-ssl-cert.compon
 
 import { TrimDirective } from './file-storage/TrimDirective';
 import { DeleteBackupVolumeComponent } from './volume/component/backup-volume/delete-backup-volume/delete-backup-volume.component';
+import { RestoreBackupVmComponent } from './backup-vm/restore-backup-vm/restore-backup-vm.component';
+import { NguCarousel, NguCarouselDefDirective, NguCarouselNextDirective, NguCarouselPrevDirective, NguItemComponent, NguTileComponent } from '@ngu/carousel';
+import { CarouselModule } from 'ngx-owl-carousel-o';
+import { UpdateBackupPackageComponent } from './backup-package/update/update-backup-package.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -438,7 +441,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DetachIpFloatingLbComponent,
     CreateBackupVmNormalComponent,
     CreateBackupVmVpcComponent,
-    RestoreBackupVmComponent,
     RestoreBackupVolumeComponent,
     UpdateBackupVmComponent,
     NetworkTopologyComponent,
@@ -451,6 +453,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ExtendFileSystemSnapshotComponent,
     DeleteSslCertComponent,
     DeleteBackupVolumeComponent,
+    RestoreBackupVmComponent,
+    UpdateBackupPackageComponent,
   ],
   imports: [
     CommonModule,
@@ -480,6 +484,13 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     // ChartModule,
     HttpClientModule,
     TrimDirective,
+    CarouselModule,
+    NguCarousel,
+    NguTileComponent,
+    NguCarouselDefDirective,
+    NguCarouselNextDirective,
+    NguCarouselPrevDirective,
+    NguItemComponent,
   ],
 })
 export class PagesModule {}

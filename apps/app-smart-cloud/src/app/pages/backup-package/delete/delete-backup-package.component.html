@@ -1,9 +1,9 @@
-<img style="cursor: pointer; width: 28px; height: 28px;"
+<img style="cursor: pointer; width: 28px; height: 28px; margin-left: 10px;"
      nz-popover alt="" src="assets/imgs/delete.svg"
      [nzPopoverContent]="'app.delete' | i18n"
      nzPopoverPlacement="bottom" (click)="showModal()" />
 <nz-modal [(nzVisible)]="isVisible" nzTabScrollList="true"
-          (nzOnCancel)="handleCancel()" nzCentered>
+          (nzOnCancel)="handleCancel()">
   <div *nzModalTitle>
     <span class="text-modal-title">{{'app.backup.package.delete.modal.title'|i18n}}</span>
   </div>
@@ -12,8 +12,15 @@
       [nzMessage]="'app.backup.package.delete.alert'|i18n:{name: packageBackupModel?.packageName}"
       nzShowIcon></nz-alert>
     <span class="text-label" style="margin-top: 10px">{{'app.backup.package.delete.content.title'|i18n:{name: packageBackupModel?.packageName} }}</span>
-    <input nz-input class="input-custom"  [(ngModel)]="value" (keydown.enter)="focusOkButton($event)" (ngModelChange)="onInputChange($event)" type="text" />
-    <span *ngIf="isInput" style="color: red;">{{'app.notification.delete.confirm'|i18n}}</span>
+    <input #backupPackageInputName
+           nz-input
+           class="input-custom"
+           [(ngModel)]="value"
+           (keydown.enter)="focusOkButton($event)"
+           (ngModelChange)="onInputChange($event)"
+           [placeholder]="'app.input.name' | i18n" />
+    <span *ngIf="isInput && value == ''" style="color: red;">{{'app.notification.delete.confirm.null'|i18n}}</span>
+    <span *ngIf="isInput && value != ''" style="color: red;">{{'app.notification.delete.confirm'|i18n}}</span>
     <nz-alert nzBanner
               style="margin-top: 10px;"
               [nzMessage]="'app.backup.package.delete.modal.alert.backupvm'|i18n"
@@ -26,11 +33,16 @@
         <th>{{'app.capacity'|i18n}}</th>
       </tr>
       </thead>
+      <tbody>
+      <tr *ngFor="let data of serviceInBackupPackage.instanceBackups">
+        <td>{{data.name}}</td>
+        <td>{{data.size}}</td>
+      </tr>
+      </tbody>
     </nz-table>
-    <nz-alert nzBanner  style="margin-top: 15px;"
+    <nz-alert nzBanner style="margin-top: 15px;"
               [nzMessage]="'app.backup.package.delete.modal.alert.backupvl'|i18n"
-              nzShowIcon
-    ></nz-alert>
+              nzShowIcon></nz-alert>
     <nz-table nzShowPagination="false" style="margin-top: 15px;">
       <thead>
       <tr>
@@ -38,11 +50,16 @@
         <th>{{'app.capacity'|i18n}}</th>
       </tr>
       </thead>
+      <tbody>
+      <tr *ngFor="let data of serviceInBackupPackage.volumeBackups">
+        <td>{{data.name}}</td>
+        <td>{{data.sizeInGB}}</td>
+      </tr>
+      </tbody>
     </nz-table>
     <nz-alert nzBanner style="margin-top: 15px;"
               [nzMessage]="'app.backup.package.delete.modal.alert.backup.schedule'|i18n"
-              nzShowIcon
-    ></nz-alert>
+              nzShowIcon></nz-alert>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">

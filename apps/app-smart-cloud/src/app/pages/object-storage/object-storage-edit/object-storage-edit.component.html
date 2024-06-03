@@ -64,20 +64,21 @@
             </nz-textarea-count>
           </nz-form-control>
         </nz-form-item>
-        <nz-row style="margin-bottom: 20px">
+        <one-portal-time-used-resize [expireDate]="objectStorage.expiredDate " [createDate]="objectStorage.createdDate" [nameService]="'Object Storage'"/>
+        <!-- <nz-row style="margin-bottom: 20px">
           <nz-col nzSpan="12">
             <div class="text-label">
               {{ 'app.service.start.date' | i18n }}:
-              {{ objectStorage.createdDate | date : 'dd/MM/yyyy' }}
+              {{ objectStorage.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}
             </div>
           </nz-col>
           <nz-col nzSpan="12">
             <div style="margin-left: 20px" class="text-label">
               {{ 'app.service.expiration-date' | i18n }}:
-              {{ objectStorage.expiredDate | date : 'dd/MM/yyyy' }}
+              {{ objectStorage.expiredDate | date : 'dd/MM/yyyy HH:mm:ss' }}
             </div>
           </nz-col>
-        </nz-row>
+        </nz-row> -->
       </nz-card>
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
@@ -103,9 +104,9 @@
           <nz-form-control>
             <nz-input-number
               style="width: 100%; margin-left: 0px"
-              [nzMin]="0"
-              [nzMax]="1000"
-              [nzStep]="1"
+              [nzMin]="minStorage" 
+              [nzStep]="stepStorage"
+              [nzMax]="maxStorage"
               [(ngModel)]="addQuota"
               (ngModelChange)="changeTotalAmount($event)"
               [ngModelOptions]="{ standalone: true }"
@@ -114,12 +115,13 @@
           </nz-form-control>
         </nz-form-item>
         <div style="margin-top: 20px" class="text-label">
-          {{ 'app.adjust.date' | i18n }}: {{ today | date : 'dd/MM/yyyy' }}
+          {{ 'app.adjust.date' | i18n }}: {{ today | date : 'dd/MM/yyyy HH:mm:ss' }}
         </div>
       </nz-card>
+      <one-portal-guide-formula></one-portal-guide-formula>
     </nz-col>
     <nz-col nzSpan="8">
-      <nz-affix>
+      <nz-affix [nzOffsetTop]="72">
       <nz-card style="border-radius: 8px" class="card-border">
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{
@@ -130,6 +132,30 @@
           <span class="text-value"> {{ 'app.capacity' | i18n }} </span><br />
           <span class="text-label">{{ objectStorageResize.newQuota }} GB</span>
         </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span
+                class="text-value"
+                style="color: #0066b3"
+                nzAlign="right"
+                *ngIf="orderObject == null"
+                >0 VND</span
+              >
+              <span
+                class="text-value"
+                style="color: #0066b3"
+                nzAlign="right"
+                *ngIf="orderObject != undefined"
+              >
+                {{ orderObject?.totalVAT?.amount | number }}
+                {{ orderObject?.totalVAT?.currency }}
+              </span>
+            </nz-col>
+          </nz-row>
         <nz-row
           style="
             margin-bottom: 20px;

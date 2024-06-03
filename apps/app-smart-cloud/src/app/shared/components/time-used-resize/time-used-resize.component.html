@@ -4,7 +4,7 @@
                 <span>{{ 'app.service.used' | i18n }} (<span class="text-red">*</span
                 >) - {{'app.Month'|i18n}}</span>
       <img nz-popover
-           [nzPopoverContent]="'app.tooltip.time' | i18n : { name: 'File System' }"
+           [nzPopoverContent]="'app.tooltip.time' | i18n : { name: nameService }"
            nzPopoverPlacement="bottom" style="margin-left: 5px;"
            src="assets/imgs/pajamas_question.svg" alt="" />
     </div>
@@ -22,7 +22,7 @@
         <nz-form-label nzFor="now">
           <div class="label">
             <span>{{ 'app.service.creation-date' | i18n }}: </span>
-            <span>{{ createDate | date: 'dd/MM/yyyy' }}</span>
+            <span>{{ createDate | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
           </div>
         </nz-form-label>
       </nz-form-item>
@@ -31,7 +31,7 @@
   <nz-form-label>
     <div class="label">
       <span style="color: #E41818;">{{ 'app.service.expiration-date' | i18n }}: </span>
-      <span style="color: #E41818;">{{ expireDate | date: 'dd/MM/yyyy' }}</span>
+      <span style="color: #E41818;">{{ expireDate | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
     </div>
   </nz-form-label>
 </nz-form-item>

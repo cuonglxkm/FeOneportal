@@ -1,13 +1,12 @@
-import { Component, Inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { VlanService } from '../../../shared/services/vlan.service';
-import { RegionModel, ProjectModel, BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 import { FormSearchSubnet, Port, Subnet } from '../../../shared/models/vlan.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { trim } from 'lodash';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 
@@ -16,7 +15,7 @@ import { I18NService } from '@core';
   templateUrl: './vlan-detail.component.html',
   styleUrls: ['./vlan-detail.component.less']
 })
-export class VlanDetailComponent implements OnInit, OnChanges {
+export class VlanDetailComponent implements OnInit, OnChanges, OnDestroy {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -28,19 +27,27 @@ export class VlanDetailComponent implements OnInit, OnChanges {
 
   isLoading: boolean = false;
   isLoadingSubnet: boolean = false;
-  isLoadingPort: boolean = false
+  isLoadingPort: boolean = false;
 
   valueSubnet: string;
   valuePort: string;
 
-  pageSizeSubnet: number = 10
-  pageIndexSubnet: number = 1
+  pageSizeSubnet: number = 10;
+  pageIndexSubnet: number = 1;
 
-  pageSizePort: number = 10
-  pageIndexPort: number = 1
+  pageSizePort: number = 10;
+  pageIndexPort: number = 1;
 
   responseSubnet: BaseResponse<Subnet[]>;
   responsePort: BaseResponse<Port[]>;
+
+  dataSubjectInputSearchSubnet: Subject<any> = new Subject<any>();
+  private searchSubscriptionSubnet: Subscription;
+  private enterPressedSubnet: boolean = false;
+
+  dataSubjectInputSearchPort: Subject<any> = new Subject<any>();
+  private searchSubscriptionPort: Subscription;
+  private enterPressedPort: boolean = false;
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -56,46 +63,75 @@ export class VlanDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('reload')
+    console.log('reload');
     if (changes.checkDelete && changes.checkDelete.currentValue !== changes.checkDelete.previousValue) {
       setTimeout(() => {
         this.getVlanByNetworkId();
       }, 2000);
     }
+  }
+
+  ngOnDestroy() {
+    if (this.searchSubscriptionSubnet) {
+      this.searchSubscriptionSubnet.unsubscribe();
     }
+    if (this.searchSubscriptionPort) {
+      this.searchSubscriptionPort.unsubscribe();
+    }
+  }
 
   regionChanged(region: RegionModel) {
-    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+    this.router.navigate(['/app-smart-cloud/vlan/network/list']);
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project?.id
+    this.project = project?.id;
     // this.getVlanByNetworkId()
   }
 
   userChanged(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+    this.router.navigate(['/app-smart-cloud/vlan/network/list']);
   }
 
   getVlanByNetworkId() {
-    this.isLoading = true
+    this.isLoading = true;
     this.vlanService.getVlanByNetworkId(this.idNetwork, this.project)
       .pipe(debounceTime(500)).subscribe(data => {
-      this.networkName = data.name
-      this.isLoading = false
-      this.networkCloudId = data.cloudId
-      this.getSubnetByNetwork()
-      this.getPortByNetwork()
-    },error => {
-      this.isLoading = false
-      this.router.navigate(['/app-smart-cloud/vlan/network/list'])
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message)
-    })
+      this.networkName = data.name;
+      this.isLoading = false;
+      this.networkCloudId = data.cloudId;
+      this.getSubnetByNetwork();
+      this.getPortByNetwork();
+    }, error => {
+      this.isLoading = false;
+      this.router.navigate(['/app-smart-cloud/vlan/network/list']);
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
+    });
   }
 
   //SUBNET
-  onInputChangeSubnet() {
-    this.valueSubnet = this.valueSubnet.trim();
+  changeInputChangeSubnet(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.enterPressedSubnet = false;
+    this.dataSubjectInputSearchSubnet.next(value);
+  }
+
+  onChangeInputChangeSubnet() {
+    this.searchSubscriptionSubnet = this.dataSubjectInputSearchSubnet.pipe(
+      debounceTime(700)
+    ).subscribe(res => {
+      if (!this.enterPressedSubnet) {
+        this.valueSubnet = res.trim();
+        this.getSubnetByNetwork();
+      }
+    });
+  }
+
+  onEnterSubnet(event: Event) {
+    event.preventDefault();
+    this.enterPressedSubnet = true;
+    const value = (event.target as HTMLInputElement).value;
+    this.valueSubnet = value.trim();
     this.getSubnetByNetwork();
   }
 
@@ -121,8 +157,8 @@ export class VlanDetailComponent implements OnInit, OnChanges {
   handleOkDeleteSubnet() {
     setTimeout(() => {
       this.vlanService.triggerReload();
-      this.getVlanByNetworkId()
-    }, 1500)
+      this.getVlanByNetworkId();
+    }, 1500);
   }
 
   getSubnetByNetwork() {
@@ -141,7 +177,7 @@ export class VlanDetailComponent implements OnInit, OnChanges {
       this.isLoadingSubnet = false;
     }, error => {
       this.responseSubnet = null;
-      this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
+      this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
       this.isLoadingSubnet = false;
     });
   }
@@ -157,14 +193,34 @@ export class VlanDetailComponent implements OnInit, OnChanges {
     this.getPortByNetwork();
   }
 
-  onInputChangePort() {
-    this.valuePort = this.valuePort.trim();
-    this.getPortByNetwork()
+  changeInputChangePort(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.enterPressedPort = false;
+    this.dataSubjectInputSearchPort.next(value);
+  }
+
+  onChangeInputChangePort() {
+    this.searchSubscriptionPort = this.dataSubjectInputSearchPort.pipe(
+      debounceTime(700)
+    ).subscribe(res => {
+      if (!this.enterPressedPort) {
+        this.valuePort = res.trim();
+        this.getPortByNetwork();
+      }
+    });
+  }
+
+  onEnterPort(event: Event) {
+    event.preventDefault();
+    this.enterPressedPort = true;
+    const value = (event.target as HTMLInputElement).value;
+    this.valuePort = value.trim();
+    this.getPortByNetwork();
   }
 
   getPortByNetwork() {
     this.isLoadingPort = true;
-    console.log('networkcloud', this.networkCloudId)
+    console.log('networkcloud', this.networkCloudId);
     this.vlanService.getPortByNetwork(this.networkCloudId, this.region, this.pageSizePort, this.pageIndexPort, this.valuePort)
       .pipe(debounceTime(500))
       .subscribe(data => {
@@ -174,52 +230,56 @@ export class VlanDetailComponent implements OnInit, OnChanges {
       }, error => {
         this.responsePort = null;
         this.isLoadingPort = false;
-        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
+        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
       });
   }
 
   handleOkAttach() {
     setTimeout(() => {
-      this.getVlanByNetworkId()
+      this.getVlanByNetworkId();
     }, 1000);
   }
 
   handleOkDetach() {
     setTimeout(() => {
-      this.getVlanByNetworkId()
+      this.getVlanByNetworkId();
     }, 1000);
 
   }
 
   handleOkDeletePort() {
     setTimeout(() => {
-      this.getVlanByNetworkId()
+      this.getVlanByNetworkId();
     }, 1500);
 
   }
 
   handleOkCreatePort() {
     setTimeout(() => {
-      this.getVlanByNetworkId()
+      this.getVlanByNetworkId();
     }, 1000);
   }
+
   ngOnInit() {
     console.log('render');
-    this.idNetwork = Number.parseInt(this.route.snapshot.paramMap.get('id'))
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
+    this.idNetwork = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
+
+    this.onChangeInputChangePort();
+    this.onChangeInputChangeSubnet();
 
     // this.onPageIndexChangePort(1)
     setTimeout(() => {
-      this.getVlanByNetworkId()
-    }, 1000)
+      this.getVlanByNetworkId();
+    }, 1000);
 
-    console.log('cloudId', this.networkCloudId)
-    if(this.networkCloudId != '') {
+    console.log('cloudId', this.networkCloudId);
+    if (this.networkCloudId != '') {
       setTimeout(() => {
-        this.getPortByNetwork()
-      }, 500)
+        this.getPortByNetwork();
+      }, 500);
     }
 
   }

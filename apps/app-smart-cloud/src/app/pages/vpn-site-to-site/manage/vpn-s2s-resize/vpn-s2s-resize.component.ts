@@ -34,6 +34,7 @@ export class VpnS2sResizeComponent implements OnInit{
   vatPer = 10;
   vpn: any;
   oldOfferId = 0;
+  vatDisplay
   /**
    *
    */
@@ -130,6 +131,7 @@ export class VpnS2sResizeComponent implements OnInit{
       if(result && result.data && result.data.totalAmount && result.data.totalPayment){
         this.vatNumber = result.data.currentVAT;
         this.vatPer = this.vatNumber * 100;
+        this.vatDisplay = result.data.totalVAT.amount;
         this.totalAmount = result.data.totalAmount.amount > 0 ? result.data.totalAmount.amount : 0;
         this.totalincludesVAT = result.data.totalPayment.amount > 0 ? result.data.totalPayment.amount : 0;
         if(this.totalincludesVAT > 0){

@@ -289,6 +289,7 @@ export class InstancesCreateVpcComponent implements OnInit {
           this.remainingVCPU =
             this.infoVPC.cloudProject.quotavCpu -
             this.infoVPC.cloudProjectResourceUsed.cpu;
+          this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(
@@ -433,6 +434,15 @@ export class InstancesCreateVpcComponent implements OnInit {
   isCustomconfig = true;
   isGpuConfig = false;
   listGPUType: OfferItem[] = [];
+  getListGpuType() {
+    this.dataService
+      .getListOffers(this.region, 'vm-flavor-gpu')
+      .subscribe((data) => {
+        this.listGPUType = data.filter(
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+        );
+      });
+  }
 
   onClickCustomConfig() {
     this.isCustomconfig = true;
@@ -520,6 +530,8 @@ export class InstancesCreateVpcComponent implements OnInit {
               })
             );
           }
+        } else {
+          this.isValidCapacity = true;
         }
       });
   }

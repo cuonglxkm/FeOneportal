@@ -28,6 +28,8 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { TimeCommon } from 'src/app/shared/utils/common';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-router-list',
@@ -97,7 +99,9 @@ export class RouterListComponent implements OnInit {
   routerName: string = ''
   searchStatus: string = ''
   isCheckBegin: boolean = false;
-  value: string
+  value: string = ''
+
+  searchDelay = new Subject<boolean>();
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: RouterService,
@@ -112,6 +116,9 @@ export class RouterListComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.formEdit.controls.name.setValue(this.routerUpdate.routerName)
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+      this.getDataList(false);
+    });
   }
 
   selectedChecked(e: any): void {
@@ -136,8 +143,8 @@ export class RouterListComponent implements OnInit {
     this.getDataList(false);
   }
 
-  doSearch(value: string) {
-    this.routerName = value
+  search(search: string) {  
+    this.value = search.trim();
     this.getDataList(false)
   }
 
@@ -149,7 +156,7 @@ export class RouterListComponent implements OnInit {
   getDataList(isBegin) {
     this.formListRouter.currentPage = this.currentPage
       this.formListRouter.pageSize = this.pageSize
-      this.formListRouter.routerName = this.routerName
+      this.formListRouter.routerName = this.value.trim()
       this.formListRouter.status = this.searchStatus
       this.formListRouter.regionId = this.region
       this.formListRouter.vpcId = this.projectId
