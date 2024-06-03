@@ -418,6 +418,8 @@ export class CreateVolumeComponent implements OnInit {
         this.router.navigate(['/app-smart-cloud/order/cart'], {
           state: { data: request, path: returnPath }
         });
+      } else {
+        // this.notification.error(this.i18n.fanyi('app.status.fail'), data.)
       }
     }, error => {
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
