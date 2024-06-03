@@ -45,13 +45,14 @@ import {
   Port,
 } from '../../../shared/models/vlan.model';
 import { VlanService } from '../../../shared/services/vlan.service';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { BlockStorage } from '../../instances/instances-create/instances-create.component';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { LoadingService } from '@delon/abc/loading';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -163,6 +164,7 @@ export class RestoreBackupVmComponent implements OnInit {
     private vlanService: VlanService,
     private cdr: ChangeDetectorRef,
     private configurationService: ConfigurationsService,
+    private loadingSrv: LoadingService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
@@ -365,62 +367,77 @@ export class RestoreBackupVmComponent implements OnInit {
 
   listIDAttachVolume: number[] = [];
   getDetailBackupById(id) {
-    this.backupService.detail(id).subscribe((data) => {
-      this.backupVmModel = data;
+    this.backupService
+      .detail(id)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe((data) => {
+        this.backupVmModel = data;
 
-      this.listExternalAttachVolume = this.backupVmModel?.volumeBackups.filter(
-        (e) => e.isBootable == false
-      );
+        this.listExternalAttachVolume =
+          this.backupVmModel?.volumeBackups.filter(
+            (e) => e.isBootable == false
+          );
 
-      this.listExternalAttachVolume.forEach((e) => {
-        this.listIDAttachVolume.push(e.id);
-        let tempBS = new BlockStorage();
-        tempBS.id = e.id;
-        tempBS.name = e.name;
-        tempBS.capacity = e.size;
-        if (e.typeName.toUpperCase().includes('HDD')) {
-          tempBS.type = 'HDD';
-          tempBS.price = e.size * this.unitPriceVolumeHDD;
-          tempBS.VAT = e.size * this.unitVATVolumeHDD;
-          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
-        } else {
-          tempBS.type = 'SSD';
-          tempBS.price = e.size * this.unitPriceVolumeSSD;
-          tempBS.VAT = e.size * this.unitVATVolumeSSD;
-          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
-        }
-        this.listOfDataBlockStorage.push(tempBS);
+        this.listExternalAttachVolume.forEach((e) => {
+          this.listIDAttachVolume.push(e.id);
+          let tempBS = new BlockStorage();
+          tempBS.id = e.id;
+          tempBS.name = e.name;
+          tempBS.capacity = e.size;
+          if (e.typeName.toUpperCase().includes('HDD')) {
+            tempBS.type = 'HDD';
+            tempBS.price = e.size * this.unitPriceVolumeHDD;
+            tempBS.VAT = e.size * this.unitVATVolumeHDD;
+            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
+          } else {
+            tempBS.type = 'SSD';
+            tempBS.price = e.size * this.unitPriceVolumeSSD;
+            tempBS.VAT = e.size * this.unitVATVolumeSSD;
+            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
+          }
+          this.listOfDataBlockStorage.push(tempBS);
+        });
+
+        this.listSecurityGroupBackups = this.backupVmModel.securityGroupBackups;
+        this.listSecurityGroupBackups.forEach((e) => {
+          if (e.sgName.toUpperCase() == 'DEFAULT') {
+            this.selectedSecurityGroup.push(e.sgName);
+          }
+        });
+
+        this.backupVmModel?.securityGroupBackups.forEach((item) => {
+          this.nameSecurityGroup?.push(item.sgName);
+        });
+
+        this.backupVmModel?.systemInfoBackups.forEach((item) => {
+          this.nameFlavor?.push(item.osName);
+        });
+
+        this.backupVmModel?.volumeBackups.forEach((item) => {
+          if (item.isBootable == false) {
+            this.nameVolumeBackupAttach?.push(item.name);
+          }
+        });
+
+        this.nameSecurityGroupText = Array.from(
+          new Set(this.nameSecurityGroup)
+        );
+
+        this.nameVolumeBackupAttachName = Array.from(
+          new Set(this.nameVolumeBackupAttach)
+        );
+        this.nameVolumeBackupAttachNameUnique =
+          this.nameVolumeBackupAttachName.join('\n');
+        console.log('name', this.nameVolumeBackupAttachName);
+        console.log('unique', this.nameVolumeBackupAttachNameUnique);
+
+        this.getBackupPackage(this.backupVmModel?.backupPacketId);
+        this.cdr.detectChanges();
       });
-
-      this.listSecurityGroupBackups = this.backupVmModel.securityGroupBackups;
-
-      this.backupVmModel?.securityGroupBackups.forEach((item) => {
-        this.nameSecurityGroup?.push(item.sgName);
-      });
-
-      this.backupVmModel?.systemInfoBackups.forEach((item) => {
-        this.nameFlavor?.push(item.osName);
-      });
-
-      this.backupVmModel?.volumeBackups.forEach((item) => {
-        if (item.isBootable == false) {
-          this.nameVolumeBackupAttach?.push(item.name);
-        }
-      });
-
-      this.nameSecurityGroupText = Array.from(new Set(this.nameSecurityGroup));
-
-      this.nameVolumeBackupAttachName = Array.from(
-        new Set(this.nameVolumeBackupAttach)
-      );
-      this.nameVolumeBackupAttachNameUnique =
-        this.nameVolumeBackupAttachName.join('\n');
-      console.log('name', this.nameVolumeBackupAttachName);
-      console.log('unique', this.nameVolumeBackupAttachNameUnique);
-
-      this.getBackupPackage(this.backupVmModel?.backupPacketId);
-      this.cdr.detectChanges();
-    });
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -442,27 +459,17 @@ export class RestoreBackupVmComponent implements OnInit {
 
   onSelectionChange(): void {
     console.log('Selected option:', this.selectedOption);
-    // Here, you can add logic based on the selection
+    this.selectedSecurityGroup = [];
     if (this.selectedOption === 'current') {
-      this.restoreToCurrentVM();
+      this.listSecurityGroupBackups.forEach((e) => {
+        if (e.sgName.toUpperCase() == 'DEFAULT') {
+          this.selectedSecurityGroup.push(e.sgName);
+        }
+      });
     } else if (this.selectedOption === 'new') {
-      this.restoreToNewVM();
+      this.getAllSecurityGroup();
     }
-  }
-
-  private restoreToCurrentVM(): void {
-    console.log('Restoring to the current virtual machine...');
-    // Add your restore logic here
-    // this.validateForm.get('formCurrent').get('')
-    console.log(
-      'formCurrent',
-      this.validateForm.get('formCurrent').getRawValue()
-    );
-  }
-
-  private restoreToNewVM(): void {
-    console.log('Restoring to a new virtual machine...');
-    // Add your restore logic here
+    this.cdr.detectChanges();
   }
 
   submitFormCurrent() {
@@ -850,6 +857,7 @@ export class RestoreBackupVmComponent implements OnInit {
   minCapacity: number;
   maxCapacity: number;
   stepCapacity: number;
+  surplus: number;
   getConfigurations() {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {
@@ -857,6 +865,8 @@ export class RestoreBackupVmComponent implements OnInit {
         this.minCapacity = valueArray[0];
         this.stepCapacity = valueArray[1];
         this.maxCapacity = valueArray[2];
+        this.surplus = valueArray[2] % valueArray[1];
+        this.cdr.detectChanges();
       },
     });
   }
@@ -867,6 +877,10 @@ export class RestoreBackupVmComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
+      if (res > this.maxCapacity - this.surplus) {
+        this.configCustom.capacity = this.maxCapacity - this.surplus;
+        this.cdr.detectChanges();
+      }
       if (this.configCustom.capacity % this.stepCapacity > 0) {
         this.notification.warning(
           '',
@@ -1051,8 +1065,9 @@ export class RestoreBackupVmComponent implements OnInit {
   unitPriceVolumeSSD: number = 0;
   unitVATVolumeSSD: number = 0;
   unitPaymentVolumeSSD: number = 0;
+  // Lấy giá tiền của Volume gắn thêm 1GB/1Tháng
   getVolumeUnitMoney() {
-    // Lấy giá tiền của Volume gắn thêm 1GB/1Tháng
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.catalogService
       .getCatalogOffer(2, this.region, null, null)
       .subscribe((data) => {
@@ -1135,6 +1150,30 @@ export class RestoreBackupVmComponent implements OnInit {
           this.cdr.detectChanges();
         });
       });
+  }
+
+  changeAttachVolume() {
+    this.listOfDataBlockStorage = [];
+    this.listExternalAttachVolume.forEach((e) => {
+      if (this.listIDAttachVolume.includes(e.id)) {
+        let tempBS = new BlockStorage();
+        tempBS.id = e.id;
+        tempBS.name = e.name;
+        tempBS.capacity = e.size;
+        if (e.typeName.toUpperCase().includes('HDD')) {
+          tempBS.type = 'HDD';
+          tempBS.price = e.size * this.unitPriceVolumeHDD;
+          tempBS.VAT = e.size * this.unitVATVolumeHDD;
+          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
+        } else {
+          tempBS.type = 'SSD';
+          tempBS.price = e.size * this.unitPriceVolumeSSD;
+          tempBS.VAT = e.size * this.unitVATVolumeSSD;
+          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
+        }
+        this.listOfDataBlockStorage.push(tempBS);
+      }
+    });
   }
   //#endregion
 

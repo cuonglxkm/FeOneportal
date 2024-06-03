@@ -411,13 +411,15 @@ export class InstancesCreateVpcComponent implements OnInit {
   activeBlockHDD: boolean = true;
   activeBlockSSD: boolean = false;
   initHDD(): void {
-    this.activeBlockHDD = true;
-    this.activeBlockSSD = false;
-    this.remainingVolume =
-      this.infoVPC.cloudProject.quotaHddInGb -
-      this.infoVPC.cloudProjectResourceUsed.hdd;
-    this.instanceCreate.volumeSize = 0;
-    this.cdr.detectChanges();
+    if (!this.disableHDD) {
+      this.activeBlockHDD = true;
+      this.activeBlockSSD = false;
+      this.remainingVolume =
+        this.infoVPC.cloudProject.quotaHddInGb -
+        this.infoVPC.cloudProjectResourceUsed.hdd;
+      this.instanceCreate.volumeSize = 0;
+      this.cdr.detectChanges();
+    }
   }
   initSSD(): void {
     this.activeBlockHDD = false;
