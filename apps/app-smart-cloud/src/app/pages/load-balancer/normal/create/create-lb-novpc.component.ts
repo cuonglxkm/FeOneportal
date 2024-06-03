@@ -259,7 +259,7 @@ export class CreateLbNovpcComponent implements OnInit {
       this.getTotalAmount();
     });
   }
-
+  loadingCaCulate = true;
   loadBalancerInit() {
     console.log('init', this.formCreateLoadBalancer)
     console.log('valid form', this.validateForm)
@@ -319,7 +319,7 @@ export class CreateLbNovpcComponent implements OnInit {
   unitPrice = 0;
 
   getTotalAmount() {
-
+    this.loadingCaCulate = true;
     this.loadBalancerInit();
 
     console.log('offer id', this.formCreateLoadBalancer.offerId);
@@ -335,7 +335,10 @@ export class CreateLbNovpcComponent implements OnInit {
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
     this.loadBalancerService.totalAmount(dataPayment)
-      .pipe(debounceTime(500))
+      .pipe(debounceTime(500),
+      finalize(()=>{
+        this.loadingCaCulate = false;
+      }))
       .subscribe((result) => {
         console.log('thanh tien Load balancer', result.data);
         this.orderItem = result.data;
