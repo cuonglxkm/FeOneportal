@@ -166,6 +166,7 @@ export class ExtendIpPublicComponent implements OnInit{
   }
 
   caculator() {
+    this.loadingCalculate = true;
     let num = this.numOfMonth;
     if (num != null && num != undefined) {
       const dateExpired = new Date(this.ipInfo?.expiredDate);
@@ -221,7 +222,11 @@ export class ExtendIpPublicComponent implements OnInit{
           }
         ]
       };
-      this.service.getTotalAmount(request).subscribe(
+      this.service.getTotalAmount(request)
+        .pipe(finalize(() => {
+          this.loadingCalculate = false;
+        }))
+        .subscribe(
         data => {
           this.total = data;
         }
@@ -230,4 +235,6 @@ export class ExtendIpPublicComponent implements OnInit{
       this.total = undefined;
     }
   }
+
+  loadingCalculate = true;
 }
