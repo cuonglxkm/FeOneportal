@@ -50,6 +50,7 @@ import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -155,7 +156,8 @@ export class InstancesCreateComponent implements OnInit {
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver,
     private vlanService: VlanService,
-    private configurationService: ConfigurationsService
+    private configurationService: ConfigurationsService,
+    private orderService: OrderService
   ) {}
 
   @ViewChild('nameInput') firstInput: ElementRef;
@@ -1421,6 +1423,11 @@ export class InstancesCreateComponent implements OnInit {
     this.ipCreate.serviceName = checkIpv6 ? 'IPv6' : 'IPv4';
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   save(): void {
     if (!this.isSnapshot && this.hdh == null) {
       this.notification.error(
@@ -1553,10 +1560,25 @@ export class InstancesCreateComponent implements OnInit {
           this.order.note = 'tạo vm';
           this.order.orderItems = this.orderItem;
 
-          var returnPath: string = window.location.pathname;
-          console.log('instance create', this.instanceCreate);
-          this.router.navigate(['/app-smart-cloud/order/cart'], {
-            state: { data: this.order, path: returnPath },
+          this.orderService.validaterOrder(this.order).subscribe({
+            next: (result) => {
+              if (result.success) {
+                var returnPath: string = window.location.pathname;
+                console.log('instance create', this.instanceCreate);
+                this.router.navigate(['/app-smart-cloud/order/cart'], {
+                  state: { data: this.order, path: returnPath },
+                });
+              } else {
+                this.isVisiblePopupError = true;
+                this.errorList = result.data;
+              }
+            },
+            error: (error) => {
+              this.notification.error(
+                this.i18n.fanyi('app.status.fail'),
+                error.error.detail
+              );
+            },
           });
         },
         error: (e) => {
