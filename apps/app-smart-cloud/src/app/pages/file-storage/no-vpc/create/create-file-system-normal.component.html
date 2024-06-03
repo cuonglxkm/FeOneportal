@@ -207,56 +207,58 @@
                 </nz-textarea-count>
               </nz-form-control>
             </nz-form-item>
-            <nz-form-item>
-              <nz-form-label nzFor="time">
-                <div class="label">
-                  <span>{{ 'app.service.used' | i18n }} (<span class="text-red">*</span>) - {{'app.Month'|i18n}}</span>
-                  <img nz-popover [nzPopoverContent]="'app.tooltip.time' | i18n : { name: 'File System' }"
-                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                       src="assets/imgs/pajamas_question.svg" alt="" />
-                </div>
-              </nz-form-label>
-              <nz-row style="height: 50px;">
-                <nz-col nzSpan="12">
-                  <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-                    <nz-input-number
-                      style="width:100%; border-radius: 8px; margin-left: 0;"
-                      formControlName="time"
-                      (ngModelChange)="timeSelectedChange($event)"
-                      class="input-custom"
-                      nzMin="1"
-                      nzMax="100"
-                      nzStep="1" />
-                    <ng-template #dateErrorTpl let-control>
-                      <ng-container *ngIf="control.hasError('required')">{{ 'app.more.0.less.100' | i18n }}
-                      </ng-container>
-                      <ng-container
-                        *ngIf="control.hasError('max') || control.hasError('min') || control.hasError('min') || control.hasError('pattern')">
-                        {{ 'app.more.0.less.100' | i18n }}
-                      </ng-container>
-                    </ng-template>
-                  </nz-form-control>
-                </nz-col>
-                <nz-col style="margin-left: 25px;">
-                  <nz-form-item>
-                    <nz-form-label nzFor="now">
-                      <div class="label">
-                        <span>{{ 'app.service.creation-date' | i18n }}: </span>
-                        <span *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
-                      </div>
-                    </nz-form-label>
-                  </nz-form-item>
-                </nz-col>
-              </nz-row>
-              <nz-form-label style="margin-top: 15px;">
-                <div class="label" style="color: red;">
-                  <span>{{ 'app.service.expiration-date' | i18n }}: </span>
-                  <span
-                    *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
-                </div>
-              </nz-form-label>
-            </nz-form-item>
+<!--            <nz-form-item>-->
+<!--              <nz-form-label nzFor="time">-->
+<!--                <div class="label">-->
+<!--                  <span>{{ 'app.service.used' | i18n }} (<span class="text-red">*</span>) - {{'app.Month'|i18n}}</span>-->
+<!--                  <img nz-popover [nzPopoverContent]="'app.tooltip.time' | i18n : { name: 'File System' }"-->
+<!--                       nzPopoverPlacement="bottom" style="margin-left: 5px;"-->
+<!--                       src="assets/imgs/pajamas_question.svg" alt="" />-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--              <nz-row style="height: 50px;">-->
+<!--                <nz-col nzSpan="12">-->
+<!--                  <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">-->
+<!--                    <nz-input-number-->
+<!--                      style="width:100%; border-radius: 8px; margin-left: 0;"-->
+<!--                      formControlName="time"-->
+<!--                      (ngModelChange)="timeSelectedChange($event)"-->
+<!--                      class="input-custom"-->
+<!--                      nzMin="1"-->
+<!--                      nzMax="100"-->
+<!--                      nzStep="1" />-->
+<!--                    <ng-template #dateErrorTpl let-control>-->
+<!--                      <ng-container *ngIf="control.hasError('required')">{{ 'app.more.0.less.100' | i18n }}-->
+<!--                      </ng-container>-->
+<!--                      <ng-container-->
+<!--                        *ngIf="control.hasError('max') || control.hasError('min') || control.hasError('min') || control.hasError('pattern')">-->
+<!--                        {{ 'app.more.0.less.100' | i18n }}-->
+<!--                      </ng-container>-->
+<!--                    </ng-template>-->
+<!--                  </nz-form-control>-->
+<!--                </nz-col>-->
+<!--                <nz-col style="margin-left: 25px;">-->
+<!--                  <nz-form-item>-->
+<!--                    <nz-form-label nzFor="now">-->
+<!--                      <div class="label">-->
+<!--                        <span>{{ 'app.service.creation-date' | i18n }}: </span>-->
+<!--                        <span *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>-->
+<!--                      </div>-->
+<!--                    </nz-form-label>-->
+<!--                  </nz-form-item>-->
+<!--                </nz-col>-->
+<!--              </nz-row>-->
+<!--              <nz-form-label style="margin-top: 15px;">-->
+<!--                <div class="label" style="color: red;">-->
+<!--                  <span>{{ 'app.service.expiration-date' | i18n }}: </span>-->
+<!--                  <span-->
+<!--                    *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--            </nz-form-item>-->
+
           </nz-card>
+          <one-portal-service-usage-period [nameService]="'file-system'" (valueChanged)="onChangeTime($event)"/>
         </nz-col>
         <nz-col nzSpan="8">
           <nz-affix [nzOffsetTop]="72">
