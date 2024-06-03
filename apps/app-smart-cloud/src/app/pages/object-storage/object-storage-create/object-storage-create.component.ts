@@ -19,6 +19,7 @@ import { Subject, debounceTime } from 'rxjs';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderItemObject } from 'src/app/shared/models/price';
+import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 
 
 @Component({
@@ -38,47 +39,39 @@ export class ObjectStorageCreateComponent implements OnInit {
   stepStorage: number
   unitPrice = 0;
   dataSubject: Subject<any> = new Subject<any>();
-
+  timeSelected: any;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private service: ObjectStorageService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private configurationsService: ConfigurationsService
+    private configurationsService: ConfigurationsService,
+    private fb: NonNullableFormBuilder
   ) {}
 
   ngOnInit(): void {
     this.dataSubject.next(1);
     this.onChangeCapacity();
-    this.onChangeTime();
     this.getConfigurations()
     this.getTotalAmount()
   }
+
+  validateForm: FormGroup<{
+    time: FormControl<number>
+  }> = this.fb.group({
+    time: [1]
+  });
 
   dataSubjectTime: Subject<any> = new Subject<any>();
   changeTime(value: number) {
     this.dataSubjectTime.next(value);
   }
 
-  onChangeTime() {
-    this.dataSubjectTime
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        this.numberMonth = res;
-        if (res == 0) {
-          this.totalAmount = 0;
-          this.totalincludesVAT = 0;
-          this.expiredDate = null;
-        } else {
-          let lastDate = new Date();
-          lastDate.setDate(this.today.getDate() + this.numberMonth * 30);
-          this.expiredDate = lastDate;
-          this.totalincludesVAT * this.numberMonth;
-          this.getTotalAmount();
-        }
-      });
+  onChangeTime(value) {
+    this.timeSelected = value;
+    this.validateForm.controls.time.setValue(this.timeSelected);
+    console.log(this.timeSelected);
+    this.getTotalAmount();
   }
 
   initObjectStorage() {
@@ -123,7 +116,7 @@ export class ObjectStorageCreateComponent implements OnInit {
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.objectStorageCreate);
     itemPayment.specificationType = 'objectstorage_create';
-    itemPayment.serviceDuration = this.numberMonth;
+    itemPayment.serviceDuration = this.validateForm.controls.time.value;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
@@ -134,7 +127,6 @@ export class ObjectStorageCreateComponent implements OnInit {
         result.data.totalPayment.amount
       );
       this.orderObject = result.data
-      console.log('this.orderObject', this.orderObject);
       this.cdr.detectChanges();
     });
   }
@@ -148,8 +140,8 @@ export class ObjectStorageCreateComponent implements OnInit {
     orderItemOS.orderItemQuantity = 1;
     orderItemOS.specification = specification;
     orderItemOS.specificationType = 'objectstorage_create';
-    orderItemOS.price = this.totalAmount / this.numberMonth;
-    orderItemOS.serviceDuration = this.numberMonth;
+    orderItemOS.price = this.totalAmount
+    orderItemOS.serviceDuration = this.validateForm.controls.time.value;
     this.orderItem.push(orderItemOS);
 
     this.order.customerId = this.tokenService.get()?.userId;

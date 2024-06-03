@@ -60,7 +60,7 @@ export class ObjectStorageEditComponent implements OnInit {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getObjectStorage();
     this.getTotalAmount();
-    this.getConfigurations();
+    this.getConfigurations()
   }
 
   objectStorage: ObjectStorage = new ObjectStorage();

@@ -8,6 +8,7 @@ import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 @Component({
   selector: 'one-portal-vpn-s2s-create',
   templateUrl: './vpn-s2s-create.component.html',
@@ -30,6 +31,7 @@ export class VpnS2sCreateComponent implements OnInit {
   vatNumber = 0;
   vatPer = 10;
   vatDisplay
+  timeSelected: any;
   /**
    *
    */
@@ -39,10 +41,17 @@ export class VpnS2sCreateComponent implements OnInit {
     private renderer: Renderer2,
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private fb: NonNullableFormBuilder
   ) {
     this.unitOfMeasure = environment.unitOfMeasureVpn;
   }
+
+  validateForm: FormGroup<{
+    time: FormControl<number>
+  }> = this.fb.group({
+    time: [1]
+  });
 
   ngOnInit() {
     this.numberMonth = 1;
@@ -94,7 +103,7 @@ export class VpnS2sCreateComponent implements OnInit {
 
       }
       this.renderer.addClass(element.parentNode, 'tr-selected');
-      this.totalAmount = this.offer['Price'] * this.numberMonth;
+      this.totalAmount = this.offer['Price'] * this.validateForm.controls.time.value
       this.totalincludesVAT = this.totalAmount * ((this.vatNumber ? this.vatNumber : 0.1) + 1);
       this.isEnable = true;
       this.specChange();
@@ -105,7 +114,7 @@ export class VpnS2sCreateComponent implements OnInit {
 
   caculator(event) {
     if(this.offer){
-      this.totalAmount = this.offer['Price'] * this.numberMonth;
+      this.totalAmount = this.offer['Price'] * this.validateForm.controls.time.value
       this.totalincludesVAT = this.totalAmount * ((this.vatNumber ? this.vatNumber : 0.1) + 1);
       this.specChange();
       this.priceChange();
@@ -125,7 +134,7 @@ export class VpnS2sCreateComponent implements OnInit {
           specification: JSON.stringify(this.spec),
           specificationType: "vpnsitetosite_create",
           price: this.totalAmount,
-          serviceDuration: this.numberMonth
+          serviceDuration: this.validateForm.controls.time.value
         }
       ]
     }
@@ -134,13 +143,20 @@ export class VpnS2sCreateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
   }
 
+  onChangeTime(value) {
+    this.timeSelected = value;
+    this.validateForm.controls.time.setValue(this.timeSelected);
+    console.log(this.timeSelected);
+    this.priceChange();
+  }
+
   priceChange(){
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.spec);
     itemPayment.specificationType = 'vpnsitetosite_create';
     itemPayment.sortItem = 0;
-    itemPayment.serviceDuration = this.numberMonth;
+    itemPayment.serviceDuration = this.validateForm.controls.time.value;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = 0;
@@ -149,7 +165,8 @@ export class VpnS2sCreateComponent implements OnInit {
           this.vatNumber = result.data.currentVAT;
           this.vatDisplay = result.data.totalVAT.amount;
           this.vatPer = this.vatNumber * 100;
-          this.totalincludesVAT = this.totalAmount * (this.vatNumber + 1);
+          this.totalincludesVAT = Number.parseFloat(result.data.totalPayment.amount);
+          this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
         }
       });
     

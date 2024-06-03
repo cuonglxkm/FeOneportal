@@ -34,6 +34,7 @@
   </div>
 </ng-template>
 </page-header>
+<form nz-form [formGroup]="validateForm">
 <nz-row nzGutter="24" class="body-form">
   <nz-col nzSpan="16" class="left-content">
     <nz-card class="left-content-card">
@@ -69,7 +70,7 @@
         </tbody>
       </nz-table>
 
-      <div nz-row class="mb-md pt-5">
+      <!-- <div nz-row class="mb-md pt-5">
         <div nz-col nzSpan="11">
           <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
           <nz-form-item>
@@ -93,11 +94,12 @@
         <div nz-col nzSpan="12" style="margin-left: 15px">
           <p  style="margin-top: 39px;">Thời gian bắt đầu sử dụng: {{dateString | date:'dd/MM/yyyy'}}</p>
         </div>
-      </div>
-      <div nz-col>
+      </div> -->
+      <!-- <div nz-col>
         <p class="red-text">Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}</p>
-      </div>
+      </div> -->
     </nz-card>
+    <one-portal-service-usage-period [nameService]="'vpns2s'" (valueChanged)="onChangeTime($event)"/>
   </nz-col>
   <nz-col nzSpan="8" class="right-content">
      <nz-affix [nzOffsetTop]="72">
@@ -109,7 +111,7 @@
         <nz-row class="right-form-content-month" nzGutter="16">
           <nz-col nzSpan="16">
             <span class="text-value">
-              Chi phí <span>{{ numberMonth | number }}</span> tháng
+              Chi phí <span>{{ validateForm.controls.time.value | number }}</span> tháng
             </span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
@@ -172,3 +174,4 @@
      </nz-affix>
   </nz-col>
 </nz-row>
+</form>

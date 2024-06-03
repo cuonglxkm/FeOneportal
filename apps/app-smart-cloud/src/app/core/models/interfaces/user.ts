@@ -1,4 +1,4 @@
-import { SignInProvider } from "../enum"
+import { SignInProvider } from "../enum" 
 
 export interface UserInfoNew {
     userId: string
@@ -21,7 +21,7 @@ export interface fsUser {
 
 
 export interface UserLogin {
-    id: string,
+    id: string
     username: string;
     password: string;
 }
@@ -36,7 +36,7 @@ export interface User {
     userName?: string;
     available?: boolean;
     roleName?: string[];
-    sex?: 1 | 0;
+    sex?: 1 | number;
     telephone?: string;
     mobile?: string | number;
     email?: string;
@@ -64,8 +64,8 @@ export interface UserToken {
     aud: string
     auth_time: number
     email: string
-    email_verified: boolean,
-    name: string,
-    picture: string,
+    email_verified: boolean
+    name: string
+    picture: string
     user_id: string
 }
