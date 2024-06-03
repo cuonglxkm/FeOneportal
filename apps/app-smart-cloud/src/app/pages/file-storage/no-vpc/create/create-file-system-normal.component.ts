@@ -46,7 +46,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
       this.duplicateNameValidator.bind(this)]],
     protocol: ['NFS', [Validators.required]],
     type: [1, [Validators.required]],
-    storage: [0, [Validators.required,Validators.pattern(/^[0-9]*$/)]],
+    storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     checked: [false],
     description: [''],
     snapshot: [null as number, []],
@@ -57,7 +57,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
   optionProtocols = [
     { value: 'NFS', label: 'NFS' },
     { value: 'CIFS', label: 'CIFS' },
-    { value: 'SMB', label: 'SMB'}
+    { value: 'SMB', label: 'SMB' }
   ];
 
   isVisibleConfirm: boolean = false;
@@ -134,20 +134,19 @@ export class CreateFileSystemNormalComponent implements OnInit {
   }
 
 
-  onChangeTime() {
-    this.dataSubjectTime.pipe(debounceTime(500))
-      .subscribe((res) => {
-        console.log('total amount');
-        this.getTotalAmount();
-      });
+  onChangeTime(value) {
+    this.timeSelected = value;
+    this.validateForm.controls.time.setValue(this.timeSelected);
+    console.log(this.timeSelected);
+    this.getTotalAmount();
   }
 
   onChangeStorage() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
         if (res % this.stepStorage > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
-          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage))
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
         }
         console.log('total amount');
         this.getTotalAmount();
@@ -164,19 +163,19 @@ export class CreateFileSystemNormalComponent implements OnInit {
 
   getListSnapshot() {
     let formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot();
-    formSearchFileSystemSnapshot.vpcId = this.project
-    formSearchFileSystemSnapshot.regionId = this.region
-    formSearchFileSystemSnapshot.isCheckState = false
+    formSearchFileSystemSnapshot.vpcId = this.project;
+    formSearchFileSystemSnapshot.regionId = this.region;
+    formSearchFileSystemSnapshot.isCheckState = false;
     formSearchFileSystemSnapshot.pageSize = 9999;
     formSearchFileSystemSnapshot.currentPage = 1;
-    formSearchFileSystemSnapshot.customerId = this.tokenService.get()?.userId
+    formSearchFileSystemSnapshot.customerId = this.tokenService.get()?.userId;
     this.fileSystemSnapshotService.getFileSystemSnapshot(formSearchFileSystemSnapshot).subscribe(data => {
       data.records.forEach(snapshot => {
         this.snapshotList.push({ label: snapshot.name, value: snapshot.id });
       });
-      if(this.activatedRoute.snapshot.paramMap.get('snapshotId')){
+      if (this.activatedRoute.snapshot.paramMap.get('snapshotId')) {
         const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('snapshotId'));
-        if(this.snapshotList.find(x => x.value == idSnapshot)) {
+        if (this.snapshotList.find(x => x.value == idSnapshot)) {
           this.snapshotSelectedChange(true);
           this.snapshotSelected = idSnapshot;
         }
@@ -292,7 +291,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
       }
     ];
     this.orderService.validaterOrder(request).subscribe(data => {
-      if(data.success) {
+      if (data.success) {
         var returnPath: string = '/app-smart-cloud/file-storage/file-system/create/normal';
         console.log('request', request);
         console.log('service name', this.formCreate.serviceName);
@@ -301,18 +300,18 @@ export class CreateFileSystemNormalComponent implements OnInit {
         });
       }
     }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
-    })
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+    });
   }
 
   getConfigurations() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueStringConfiguration = data.valueString;
-      const arr = this.valueStringConfiguration.split('#')
-      this.minStorage = Number.parseInt(arr[0])
-      this.stepStorage = Number.parseInt(arr[1])
-      this.maxStorage = Number.parseInt(arr[2])
-    })
+      const arr = this.valueStringConfiguration.split('#');
+      this.minStorage = Number.parseInt(arr[0]);
+      this.stepStorage = Number.parseInt(arr[1]);
+      this.maxStorage = Number.parseInt(arr[2]);
+    });
   }
 
   ngOnInit() {
@@ -324,7 +323,6 @@ export class CreateFileSystemNormalComponent implements OnInit {
     this.getListSnapshot();
     this.getListFileSystem();
     this.onChangeStorage();
-    this.onChangeTime();
     this.getTotalAmount();
     this.getConfigurations();
   }

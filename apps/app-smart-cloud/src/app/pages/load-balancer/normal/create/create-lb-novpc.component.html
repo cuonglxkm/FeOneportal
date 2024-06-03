@@ -180,6 +180,8 @@
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-select [nzPlaceHolder]="'app.ip.public.select.ip.dropdown' | i18n" (ngModelChange)="selectedIp($event)" nzAllowClear
+                         [nzLoading]="loadingFloating"
+                         [nzDisabled]="disabledFloating"
                          formControlName="ipFloating" nzSize="large">
                 <nz-option *ngFor="let index of ipFloating" [nzValue]="index.id"
                            [nzLabel]="index.ipAddress"></nz-option>
@@ -238,56 +240,6 @@
             </nz-col>
           </nz-row>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-form-item style="margin-top: 5px; margin-bottom: 5px;">
-            <nz-form-label nzFor="time">
-              <div class="label">
-                <span>{{ 'app.service.duration' | i18n }} (<span class="text-red">*</span
-                  >)</span>
-                <img nz-popover [nzPopoverContent]="'app.tooltip.time' | i18n : { name: 'Load Balancer' }"
-                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                     src="assets/imgs/pajamas_question.svg" alt="" />
-              </div>
-            </nz-form-label>
-            <nz-row style="height: 50px;">
-              <nz-col nzSpan="12">
-                <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-                  <nz-input-number style="width:100%; border-radius: 8px; margin-left: 0;"
-                                   formControlName="time"
-                                   (ngModelChange)="timeSelectedChange($event)"
-                                   class="input-custom"
-                                   nzMin="1"
-                                   nzMax="100"
-                                   nzStep="1" />
-                  <ng-template #dateErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">{{ 'app.more.0.less.100' | i18n }}
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('max')">{{ 'app.more.0.less.100' | i18n }}
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('min')">{{ 'app.more.0.less.100' | i18n }}
-                    </ng-container>
-                  </ng-template>
-                </nz-form-control>
-              </nz-col>
-              <nz-col style="margin-left: 25px;">
-                <nz-form-item>
-                  <nz-form-label nzFor="now">
-                    <div class="label">
-                      <span>{{ 'app.time.start' | i18n }}: </span>
-                      <span
-                        *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
-                    </div>
-                  </nz-form-label>
-                </nz-form-item>
-              </nz-col>
-            </nz-row>
-            <nz-form-label>
-              <div class="label" style="color: red;">
-                <span>{{ 'app.service.expiration-date' | i18n }}: </span>
-                <span
-                  *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
-              </div>
-            </nz-form-label>
-          </nz-form-item>
           <nz-form-item>
             <nz-form-label>
               <span>{{ 'app.service.description' | i18n }}</span>
@@ -301,6 +253,10 @@
             </nz-form-control>
           </nz-form-item>
         </nz-card>
+        <one-portal-service-usage-period
+          [nameService]="'load-balancer'"
+          (valueChanged)="onChangeTime($event)"
+        ></one-portal-service-usage-period>
       </nz-col>
       <nz-col nzSpan="8">
         <nz-affix [nzOffsetTop]="72">
@@ -348,7 +304,20 @@
             </span>
                 <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
                       nzAlign="right">
-              {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+              {{ orderItem?.totalAmount?.amount | number: '1.0-0' }}
+                  VND
+            </span>
+              </nz-col>
+            </nz-row>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
+                <span class="text-value"> {{'app.cost.vat' | i18n}}</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ orderItem?.totalVAT?.amount | number: '1.0-0' }}
+              VND
             </span>
               </nz-col>
             </nz-row>

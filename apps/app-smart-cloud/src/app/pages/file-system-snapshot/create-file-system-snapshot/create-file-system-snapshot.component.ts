@@ -70,6 +70,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   stepStorage: number
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
+  timeSelected: any
 
   formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot =
     new FormCreateFileSystemSnapShot();
@@ -180,6 +181,13 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     );
   }
 
+  onChangeTime(value) {
+    this.timeSelected = value;
+    this.form.controls.time.setValue(this.timeSelected);
+    console.log(this.timeSelected);
+    this.getTotalAmount();
+  }
+
   fileSystemSnapshotInit() {
     this.formCreate.serviceInstanceId = 0;
     this.formCreate.name = this.form.controls.nameSnapshot.value;
@@ -257,7 +265,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
         specification: JSON.stringify(this.formCreate),
         specificationType: 'sharesnapshot_create',
         price: this.typeVpc === 0 ? this.orderItem?.totalAmount.amount : 0,
-        serviceDuration: this.typeVpc === 0 ? 1 : this.form.controls.time.value,
+        serviceDuration: this.typeVpc === 0 ? this.form.controls.time.value : 1,
       },
     ];
     if (this.typeVpc === 0) {

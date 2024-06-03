@@ -15,6 +15,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, Subject } from 'rxjs';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
 
 
 
@@ -90,16 +91,16 @@ export class ProjectCreateComponent implements OnInit {
   disableIpConnectInternet = false;
   loadingIpConnectInternet = false;
   ipConnectInternet = '';
-  loadBalancerId :number;
+  loadBalancerId: number;
   siteToSiteId = '';
 
   trashVpnGpu = false;
   activeVpnGpu = false
-  numOfMonth:number;
+  numOfMonth: number;
   total: any;
   totalAmount = 0;
   totalPayment = 0;
-  totalVAT =0;
+  totalVAT = 0;
   listIpConnectInternet: any[];
   selectIndexTab: any = 0;
   listIpType = [
@@ -137,15 +138,19 @@ export class ProjectCreateComponent implements OnInit {
 
     siteToSite: 0,
     siteToSiteUnit: 0
-  
+
   };
-  minBlock :number=0;
-  stepBlock:number=0;
-  maxBlock:number=0;
+  minBlock: number = 0;
+  stepBlock: number = 0;
+  maxBlock: number = 0;
 
-  loadBalancerName:string;
-  sitetositeName:string;
+  loadBalancerName: string;
+  sitetositeName: string;
+  listTypeCatelogOffer: any;
 
+  numbergpu: number[] = [];
+  maxTotal: number = 8;
+  remaining: number = this.maxTotal
 
   form = new FormGroup({
     name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(50)] }),
@@ -166,11 +171,13 @@ export class ProjectCreateComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
+    private catelogService:CatalogService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private ipService: IpPublicService) {
     this.inputChangeSubject.pipe(
       debounceTime(800)
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
+
   }
 
   ngOnInit() {
@@ -190,8 +197,10 @@ export class ProjectCreateComponent implements OnInit {
 
     this.iconToggle = "icon_circle_minus"
     this.numOfMonth = this.form.controls['numOfMonth'].value;
-  }
    
+   
+  }
+
   calculateReal() {
     this.refreshValue();
     if (this.vpcType == '1') {
@@ -207,15 +216,15 @@ export class ProjectCreateComponent implements OnInit {
       // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
       // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
 
-      let IPPublicNum = this.numberIpPublic;      
+      let IPPublicNum = this.numberIpPublic;
       let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
       // let IPFloating =  this.numberIpFloating;
       let IPV6 = this.numberIpv6;
       // if (( this.offerFlavor != undefined) || ( this.vCPU != 0 && this.ram != 0)) {
       // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
-        console.log("offerFlavor", this.offerFlavor)
-        if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
-        console.log("lstIp",lstIp)
+      console.log("offerFlavor", this.offerFlavor)
+      if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
+        console.log("lstIp", lstIp)
         if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
           let listString = lstIp[1].split(' ');
           if (listString.length == 3) {
@@ -253,7 +262,7 @@ export class ProjectCreateComponent implements OnInit {
           serviceInstanceId: 0,
           customerId: this.tokenService.get()?.userId,
           offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
-        
+
 
           actionType: 0,
           regionId: this.regionId,
@@ -299,58 +308,52 @@ export class ProjectCreateComponent implements OnInit {
       this.activeNoneVpc = false;
 
     }
-     this.searchSubject.next('');
+    this.searchSubject.next('');
 
   }
-  getStepBlock(name:string){
-    this.ipService.getStepBlock(name).subscribe((res:any) => {
-      const valuestring :any = res.valueString;
-      console.log("mediaChannelData", valuestring)
-    const  parts = valuestring.split("#")
-    this.minBlock = parseInt(parts[0]);
-    console.log("minBlock", this.minBlock)
-    this.stepBlock =parseInt(parts[1]);
-    console.log("stepBlock", this.stepBlock)
-    this.maxBlock =parseInt(parts[2]);
-    console.log("stepBlock", this.maxBlock)
-      // this.min
-   
+  getStepBlock(name: string) {
+    this.ipService.getStepBlock(name).subscribe((res: any) => {
+      const valuestring: any = res.valueString;
+      const parts = valuestring.split("#")
+      this.minBlock = parseInt(parts[0]);
+      this.stepBlock = parseInt(parts[1]);
+      this.maxBlock = parseInt(parts[2]);
     })
   }
-messageNotification:string;
+  messageNotification: string;
 
   onInputChange(value: number, name: string): void {
     console.log("object value", value)
     this.inputChangeSubject.next({ value, name });
   }
-  
+
   checkNumberInput(value: number, name: string): void {
     const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
     const numericValue = Number(value);
-      if (isNaN(numericValue)||  numericValue % this.stepBlock !== 0 && numericValue <= this.maxBlock && numericValue>=this.minBlock) {
-        this.notification.warning( '', messageStepNotification);     
-          switch (name){
-            case "hhd":{
-              this.hhd =  Math.floor(numericValue / this.stepBlock) *this.stepBlock;             
-              break;
-            }
-            case "ssd":{
-              this.ssd  =  Math.floor(numericValue / this.stepBlock) *this.stepBlock;      
-              break;
-            }
-            case "backup":{
-              this.numberBackup =  Math.floor(numericValue / this.stepBlock) *this.stepBlock;      
-              break;
-            }
-            case "fileSystem":{
-              this.numberFileSystem =  Math.floor(numericValue / this.stepBlock) *this.stepBlock;     
-              break;
-            }
-            case "fileSnapshot":{
-              this.numberFileScnapsshot =  Math.floor(numericValue / this.stepBlock) *this.stepBlock;       
-              break;
-            }
-          }
+    if (isNaN(numericValue) || numericValue % this.stepBlock !== 0 && numericValue <= this.maxBlock && numericValue >= this.minBlock) {
+      this.notification.warning('', messageStepNotification);
+      switch (name) {
+        case "hhd": {
+          this.hhd = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
+        }
+        case "ssd": {
+          this.ssd = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
+        }
+        case "backup": {
+          this.numberBackup = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
+        }
+        case "fileSystem": {
+          this.numberFileSystem = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
+        }
+        case "fileSnapshot": {
+          this.numberFileScnapsshot = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
+        }
+      }
     }
     // else if(isNaN(numericValue)||numericValue < this.minBlock){
     //   this.notification.warning(
@@ -431,10 +434,10 @@ messageNotification:string;
     //     }
     //   }
     // }
-    
+
     // }
-   
-   
+
+
     this.calculate(null);
   }
   selectPackge = '';
@@ -485,7 +488,7 @@ messageNotification:string;
                     e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + ' IP');
 
                     e.ipNumber = ch.charOptionValues[0];
-                    console.log(" e.ipNumber",  e.ipNumber)
+                    console.log(" e.ipNumber", e.ipNumber)
                   }
                 });
               });
@@ -500,9 +503,9 @@ messageNotification:string;
     this.router.navigate(['/app-smart-cloud/project']);
   }
 
-  onChangeTime(numberMonth: number) {    
-    
-    this.numOfMonth = numberMonth ;
+  onChangeTime(numberMonth: number) {
+
+    this.numOfMonth = numberMonth;
     console.log("numOfMonth123", this.numOfMonth)
     // const dateNow = new Date();
     // dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
@@ -693,6 +696,9 @@ messageNotification:string;
   initVpnGpu() {
     this.activeVpnGpu = true;
     this.trashVpnGpu = true;
+    this.getCatelogOffer();
+    console.log("object")
+
   }
   deleteVpnGpu() {
     this.activeVpnGpu = false;
@@ -747,13 +753,13 @@ messageNotification:string;
             .subscribe((data: any) => {
               this.listLoadbalancer = data;
               console.log("listLoadbalancer ff", this.listLoadbalancer)
-              this.loadBalancerId =this.listLoadbalancer[0].id
+              this.loadBalancerId = this.listLoadbalancer[0].id
             });
         }
       );
   }
 
-  
+
 
   private getPriceEachComponent(data: any) {
     console.log(data.orderItemPrices);
@@ -825,6 +831,7 @@ messageNotification:string;
   private loadInforProjectNormal() {
     this.instancesService.getListOffers(this.regionId, 'vpc').subscribe(
       data => {
+        console.log("hhhhh", data)
         for (let item of data[0].characteristicValues) {
           if (item.charName == 'network') {
             this.nwNormal = item.charOptionValues[2];
@@ -868,29 +875,70 @@ messageNotification:string;
 
   // 
 
-findNameLoadBalance(loadBalancerId:number){
-  if(loadBalancerId){
-   const selectedLoadBalancer =this.listLoadbalancer.find(lb => lb.id === loadBalancerId)
-   this.loadBalancerName = selectedLoadBalancer ? selectedLoadBalancer.offerName : null;
+  findNameLoadBalance(loadBalancerId: number) {
+    if (loadBalancerId) {
+      const selectedLoadBalancer = this.listLoadbalancer.find(lb => lb.id === loadBalancerId)
+      this.loadBalancerName = selectedLoadBalancer ? selectedLoadBalancer.offerName : null;
     } else {
       this.loadBalancerName = null;
     }
-    this.calculate(null); 
+    this.calculate(null);
   }
 
-  findNameSiteToSite(siteToSiteId:number){
-    if(siteToSiteId){
-      const selectedSiteToSite =this.listSiteToSite.find(lb => lb.id === siteToSiteId)
+  findNameSiteToSite(siteToSiteId: number) {
+    if (siteToSiteId) {
+      const selectedSiteToSite = this.listSiteToSite.find(lb => lb.id === siteToSiteId)
       this.sitetositeName = selectedSiteToSite ? selectedSiteToSite.offerName : null;
-     
-       } else {
-         this.sitetositeName = null;
-       }
-       this.calculate(null); 
-  }
- 
-   
- 
 
+    } else {
+      this.sitetositeName = null;
+    }
+    this.calculate(null);
+  }
+
+getCatelogOffer(){
+  this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
+    res => {
+      this.listTypeCatelogOffer = res
+      console.log("object123", res)
+      this.listTypeCatelogOffer.forEach(() => this.numbergpu.push(0));
+    }
+  );
+}
+trackById(index: number, item: any): any {
+  return item.offerName;
+}
+maxNumber:number[]=[8,8]
+getValues(index:number) {
+  this.maxNumber=[8,8]
+  if(index==0){
+    if(this.numbergpu[0]<=this.maxTotal){
+      this.maxNumber[1] = this.maxTotal -this.numbergpu[0]
+      if(this.numbergpu[1]>0 && this.numbergpu[1]>this.maxNumber[1]){
+        this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+        this.numbergpu[1]= this.maxNumber[1]
+      }
+    }
+  }
+  else{
+    if(this.numbergpu[1]<=this.maxTotal){
+      this.maxNumber[0] = this.maxTotal -this.numbergpu[1]
+      if(this.numbergpu[0]>0 && this.numbergpu[0]>this.maxNumber[0]){
+        this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+        this.numbergpu[0]= this.maxNumber[0]
+      }
+    }
+  }
+}
+getMaxValue(index: number): number {
+  if (this.numbergpu[index] < 8) {
+    return this.maxNumber[index];
+  } 
+}
+
+isDisabled(index: number): boolean {
+  let total = this.numbergpu.reduce((sum, current) => sum + current, 0);
+  return total >= this.maxTotal && this.numbergpu[index] === 0;
+}
 
 }

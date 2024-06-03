@@ -122,7 +122,7 @@
                                  nzSize="large"
                                  style="width: 100%; margin-left: 0;"
                                  [(ngModel)]="storage"
-                                 [nzMin]="packageBackupModel?.sizeInGB"
+                                 [nzMin]="minStorage"
                                  [nzStep]="stepStorage"
                                  [nzMax]="maxStorage"
                                  (ngModelChange)="changeValueStorage($event)"/>
@@ -159,7 +159,7 @@
           <one-portal-guide-formula />
         </nz-col>
         <nz-col nzSpan="8">
-          <nz-affix [nzOffsetTop]="48">
+          <nz-affix [nzOffsetTop]="72">
             <nz-card class="border-card">
               <div style="margin-bottom: 20px">
                 <span class="text-card-header">{{ 'app.estimated.cost'|i18n }}</span>

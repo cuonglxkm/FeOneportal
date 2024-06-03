@@ -60,6 +60,7 @@ export class ObjectStorageEditComponent implements OnInit {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getObjectStorage();
     this.getTotalAmount();
+    this.getConfigurations()
   }
 
   objectStorage: ObjectStorage = new ObjectStorage();
@@ -162,6 +163,7 @@ export class ObjectStorageEditComponent implements OnInit {
       const arr = this.valueStringConfiguration.split('#')
       this.minStorage = Number.parseInt(arr[0])
       this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
     })
   }
 }

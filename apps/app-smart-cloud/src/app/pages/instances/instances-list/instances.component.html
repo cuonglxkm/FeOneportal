@@ -181,7 +181,10 @@
             </nz-row>
           </ng-template>
         </td>
-        <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">
+        <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+          <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</td>
+        </ng-container>
+        <!-- <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">
           {{ 'app.status.running' | i18n }}
         </td>
         <td *ngIf="data.status == 'RESIZING'" style="color: #4fe414">
@@ -189,7 +192,7 @@
         </td>
         <td *ngIf="data.status == 'TAMNGUNG'" style="color: #ea3829">
           {{ 'app.status.not-renew' | i18n }}
-        </td>
+        </td> -->
         <td nzBreakWord>{{ data.taskState }}</td>
         <td nzBreakWord nzAlign="left">
           <div *ngIf="data.ipPrivate == ''">{{ data.ipPrivate }}</div>

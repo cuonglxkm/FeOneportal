@@ -22,7 +22,7 @@
   </ng-template>
 </page-header>
 
-<form nz-form [nzLayout]="'vertical'">
+<form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card style="border-radius: 8px" [nzBordered]="false">
@@ -63,41 +63,9 @@
               ></textarea>
             </nz-textarea-count>
           </nz-form-control>
-        </nz-form-item>
-        <nz-form-item style="margin-top: -24px">
-          <nz-form-label>
-            {{ 'app.service.duration' | i18n }} (<span class="text-red">*</span
-            >)
-          </nz-form-label>
-          <nz-form-control>
-            <nz-row>
-              <nz-input-number
-                style="width: 50%; margin-left: -1px"
-                [nzMin]="1"
-                [nzStep]="1"
-                [ngModel]="numberMonth"
-                (ngModelChange)="changeTime($event)"
-                [ngModelOptions]="{ standalone: true }"
-                nzSize="large"
-              ></nz-input-number>
-              <div
-                class="text-label"
-                style="display: flex; margin-left: 20px; align-items: center"
-              >
-                {{ 'app.service.start.date' | i18n }}:
-                {{ today | date : 'dd/MM/yyyy' }}
-              </div>
-            </nz-row>
-          </nz-form-control>
-        </nz-form-item>
-        <div
-          class="text-label"
-          style="margin-top: -14px; color: rgba(252, 16, 16, 1)"
-        >
-          {{ 'app.service.expiration-date' | i18n }}:
-          {{ expiredDate | date : 'dd/MM/yyyy' }}
-        </div>
+        </nz-form-item> 
       </nz-card>
+      <one-portal-service-usage-period [nameService]="'file-system'" (valueChanged)="onChangeTime($event)"/>
     </nz-col>
     <nz-col nzSpan="8">
       <nz-affix>

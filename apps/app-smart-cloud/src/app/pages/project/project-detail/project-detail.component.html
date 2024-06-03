@@ -100,7 +100,7 @@
               <span class="label-fontsize">Ngày hết hạn:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold">{{data.type == 'VPC'  ? ( data?.expireDate | date : 'dd/MM/YYYY') : '-'}}</span>
+              <span class="label-fontsize font-bold">{{data?.type == 'VPC'  ? ( data?.expireDate | date : 'dd/MM/YYYY') : '-'}}</span>
             </div>
           </div>
         </div>
@@ -108,7 +108,7 @@
     </div>
     <div class="text-description">
       <label for="description" class="label-fontsize pb-3">Mô tả</label>
-      <textarea name="description" id="description" rows="3" readonly>{{data?.description}}</textarea>
+      <textarea name="description" id="description" class="row-gray-bg" rows="3" readonly>{{data?.description}}</textarea>
     </div>
     
 

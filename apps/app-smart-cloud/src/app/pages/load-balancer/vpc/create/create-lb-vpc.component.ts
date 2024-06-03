@@ -237,7 +237,11 @@ export class CreateLbVpcComponent implements OnInit {
   }
 
   getIpBySubnet(subnetId) {
-    this.loadBalancerService.getIPBySubnet(subnetId, this.project, this.region).subscribe(data => {
+    this.loadBalancerService.getIPBySubnet(subnetId, this.project, this.region)
+      .pipe(finalize(() => {
+        this.loadingFloating = false;
+        this.disabledFloating = false;}))
+      .subscribe(data => {
       this.ipFloating = data;
     });
   }
@@ -346,7 +350,7 @@ export class CreateLbVpcComponent implements OnInit {
             });
       },
       error => {
-        this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.validate.order.fail'))
+        this.notification.error(this.i18n.fanyi('app.status.fail'),error.error.message)
         this.loadingCreate = false;
       }
     )
@@ -357,6 +361,8 @@ export class CreateLbVpcComponent implements OnInit {
   loadingCreate = false;
   disabledSubnet = true;
   messageFail = '';
+  loadingFloating = true;
+  disabledFloating= true;
 
   setDataToMap(data: any) {
     // Xóa dữ liệu hiện có trong mapSubnet (nếu cần)

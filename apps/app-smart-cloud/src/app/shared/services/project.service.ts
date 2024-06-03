@@ -40,4 +40,7 @@ export class ProjectService extends BaseService {
       headers: this.getHeaders()
     })
   }
+  getCatelogOffer(unitOfMeasureProduct:string){
+    
+  }
 }
