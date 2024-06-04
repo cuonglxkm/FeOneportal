@@ -93,24 +93,11 @@ export class RestoreBackupVmComponent implements OnInit {
   idBackup: number;
 
   backupVmModel: BackupVm;
-  projectDetail: SizeInCloudProject;
   backupPackage: PackageBackupModel;
   listExternalAttachVolume: VolumeBackup[] = [];
   listSecurityGroupBackups: SecurityGroupBackup[] = [];
 
   selectedOption: string = 'current';
-  typeVpc: number;
-
-  nameSecurityGroup = [];
-  nameSecurityGroupText: string[];
-
-  nameFlavorText: string[];
-  nameFlavor = [];
-
-  nameVolumeBackupAttach = [];
-  nameVolumeBackupAttachName: string[];
-  nameVolumeBackupAttachNameUnique: string;
-
   isLoadingCurrent: boolean = false;
   isLoadingNew: boolean = false;
 
@@ -206,9 +193,7 @@ export class RestoreBackupVmComponent implements OnInit {
     );
     this.getConfigurations();
     this.getVolumeUnitMoney();
-    this.initFlavors();
     this.getListGpuType();
-    this.getProjectVpc(this.project);
     this.getAllIPPublic();
     this.getListNetwork();
     this.onChangeCapacity();
@@ -225,8 +210,6 @@ export class RestoreBackupVmComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
-    this.typeVpc = project?.type;
-    // this.router.navigate(['/app-smart-cloud/backup-vm'])
   }
 
   userChanged(project: ProjectModel) {
@@ -376,6 +359,19 @@ export class RestoreBackupVmComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
+        if (
+          this.backupVmModel?.volumeBackups
+            .filter((e) => e.isBootable == true)[0]
+            .typeName.toUpperCase()
+            .includes('HDD')
+        ) {
+          this.activeBlockHDD = true;
+          this.activeBlockSSD = false;
+        } else {
+          this.activeBlockHDD = false;
+          this.activeBlockSSD = true;
+        }
+        this.initFlavors();
 
         this.listExternalAttachVolume =
           this.backupVmModel?.volumeBackups.filter(
@@ -408,32 +404,6 @@ export class RestoreBackupVmComponent implements OnInit {
             this.selectedSecurityGroup.push(e.sgName);
           }
         });
-
-        this.backupVmModel?.securityGroupBackups.forEach((item) => {
-          this.nameSecurityGroup?.push(item.sgName);
-        });
-
-        this.backupVmModel?.systemInfoBackups.forEach((item) => {
-          this.nameFlavor?.push(item.osName);
-        });
-
-        this.backupVmModel?.volumeBackups.forEach((item) => {
-          if (item.isBootable == false) {
-            this.nameVolumeBackupAttach?.push(item.name);
-          }
-        });
-
-        this.nameSecurityGroupText = Array.from(
-          new Set(this.nameSecurityGroup)
-        );
-
-        this.nameVolumeBackupAttachName = Array.from(
-          new Set(this.nameVolumeBackupAttach)
-        );
-        this.nameVolumeBackupAttachNameUnique =
-          this.nameVolumeBackupAttachName.join('\n');
-        console.log('name', this.nameVolumeBackupAttachName);
-        console.log('unique', this.nameVolumeBackupAttachNameUnique);
 
         this.getBackupPackage(this.backupVmModel?.backupPacketId);
         this.cdr.detectChanges();
@@ -494,12 +464,6 @@ export class RestoreBackupVmComponent implements OnInit {
         );
       }
     );
-  }
-
-  getProjectVpc(id) {
-    this.projectService.getProjectVpc(id).subscribe((data) => {
-      this.projectDetail = data;
-    });
   }
 
   getBackupPackage(value) {
@@ -877,7 +841,7 @@ export class RestoreBackupVmComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
-      if (res > this.maxCapacity - this.surplus) {
+      if (res > this.maxCapacity) {
         this.configCustom.capacity = this.maxCapacity - this.surplus;
         this.cdr.detectChanges();
       }

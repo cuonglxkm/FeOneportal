@@ -181,7 +181,7 @@
           *ngIf="selectedOption == 'new'"
           formGroupName="formNew"
         >
-          <div *ngIf="typeVpc == 0">
+          <div>
             <nz-tabset
               nzCentered
               nzSize="large"
@@ -1193,7 +1193,7 @@
             class="text-label"
           >
             {{ instanceCreate.volumeSize }} GB Root Disk (<span>{{
-              instanceCreate.volumeType | uppercase
+              activeBlockHDD ? 'HDD' : 'SSD'
             }}</span
             >)
           </div>
