@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVolumeService } from '../../../../../shared/services/backup-volume.service';
@@ -11,6 +11,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { SizeInCloudProject } from '../../../../../shared/models/project.model';
 import { BackupVolume } from '../backup-volume.model';
 import { PackageBackupModel } from '../../../../../shared/models/package-backup.model';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'one-portal-restore-backup-volume',
@@ -32,12 +33,24 @@ export class RestoreBackupVolumeComponent implements OnInit{
 
   typeVpc: number;
 
+  selectedOption: string = 'current';
+
+  validateForm = new FormGroup({
+    formCurrent: new FormGroup({
+
+    }),
+    formNew: new FormGroup({
+
+    }),
+  });
+
   constructor(private router: Router,
               private backupVolumeService: BackupVolumeService,
               private activatedRoute: ActivatedRoute,
               private projectService: ProjectService,
               private backupPackageService: PackageBackupService,
               private notification: NzNotificationService,
+              private cdr: ChangeDetectorRef,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -53,6 +66,16 @@ export class RestoreBackupVolumeComponent implements OnInit{
 
   userChanged(project: ProjectModel) {
     this.router.navigate(['/app-smart-cloud/backup-volume'])
+  }
+
+  onSelectionChange(): void {
+    console.log('Selected option:', this.selectedOption);
+    if (this.selectedOption === 'current') {
+
+    } else if (this.selectedOption === 'new') {
+
+    }
+    this.cdr.detectChanges();
   }
 
   getDetailBackupVolume(id) {

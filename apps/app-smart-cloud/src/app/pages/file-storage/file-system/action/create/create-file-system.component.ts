@@ -279,16 +279,16 @@ export class CreateFileSystemComponent implements OnInit {
       if (data != null) {
         if (data.code == 200) {
           this.isLoading = false;
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu tạo File Storage thành công.');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu tạo File System thành công.');
           this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
         }
       } else {
         this.isLoading = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File Storage thất bại.');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File System thất bại.');
       }
     }, error => {
       this.isLoading = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File Storage thất bại.');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File System thất bại.');
     });
 
   }
@@ -302,7 +302,7 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   handleOk() {
-    this.isLoading = true;
+    // this.isLoading = true;
     this.submitForm();
   }
 

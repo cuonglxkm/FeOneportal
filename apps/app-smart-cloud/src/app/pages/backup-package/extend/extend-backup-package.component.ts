@@ -97,6 +97,12 @@ export class ExtendBackupPackageComponent implements OnInit {
     });
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   navigateToPaymentSummary() {
     this.isLoadingAction = true;
     this.getTotalAmount();
@@ -119,6 +125,9 @@ export class ExtendBackupPackageComponent implements OnInit {
         var returnPath: string = '/app-smart-cloud/backup/packages/extend/' + this.idBackupPackage;
         console.log('request', request);
         this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+      } else {
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
       }
     }, error => {
       this.isLoadingAction = false;

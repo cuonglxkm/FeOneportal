@@ -393,6 +393,12 @@ export class CreateVolumeComponent implements OnInit {
       });
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   navigateToPaymentSummary() {
     // this.getTotalAmount()
     this.volumeInit();
@@ -418,6 +424,9 @@ export class CreateVolumeComponent implements OnInit {
         this.router.navigate(['/app-smart-cloud/order/cart'], {
           state: { data: request, path: returnPath }
         });
+      } else {
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
       }
     }, error => {
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
@@ -425,6 +434,7 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   getTotalAmount() {
+    this.isLoadingAction = true
     this.volumeInit();
     console.log('time', this.timeSelected);
     let itemPayment: ItemPayment = new ItemPayment();
@@ -439,6 +449,7 @@ export class CreateVolumeComponent implements OnInit {
     this.instanceService.getTotalAmount(dataPayment)
       .pipe(debounceTime(500))
       .subscribe((result) => {
+        this.isLoadingAction = false
         console.log('thanh tien volume', result.data);
         this.orderItem = result.data;
         this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
