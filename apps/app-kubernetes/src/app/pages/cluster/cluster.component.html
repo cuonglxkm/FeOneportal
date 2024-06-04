@@ -339,7 +339,7 @@
               <nz-form-label nzFor="subnet">Subnet (<span class="required-color">*</span>)</nz-form-label>
               <nz-form-control [nzErrorTip]="errorSubnetTpl">
                 <nz-select nzShowSearch [nzPlaceHolder]="'app.choose.subnet' | i18n" formControlName="subnet" id="subnet" class="w-85" nzSize="large"
-                  (ngModelChange)="checkOverLapseIP(); onSelectSubnet($event)">
+                  (ngModelChange)="checkOverLapseIP(); onSelectSubnet($event); checkOverlapPodCidr();">
                   <ng-container *ngFor="let item of listOfSubnets">
                     <ng-container *ngIf="item.enableDhcp; else disableSubnetTpl">
                       <nz-option [nzLabel]="item.subnetAddressRequired"
