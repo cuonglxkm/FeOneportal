@@ -38,6 +38,7 @@ import { CreateVolumeRequestModel } from 'src/app/shared/models/volume.model';
 import { addDays } from 'date-fns';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
@@ -71,6 +72,9 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
   timeSelected: any
+  storageBuyVpc: number;
+  storageUsed: number
+  storageRemaining: number;
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
@@ -162,6 +166,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     this.project = regionAndProject.projectId;
     this.getListFileSystem();
     this.getConfigurations();
+    this.getStorageBuyVpc()
   }
 
   constructor(
@@ -174,7 +179,8 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private instanceService: InstancesService,
     private orderService: OrderService,
-    private configurationsService: ConfigurationsService
+    private configurationsService: ConfigurationsService,
+    private projectService: ProjectService
   ) {
     this.form.get('time').valueChanges.subscribe((data) => {
       this.getTotalAmount();
@@ -258,6 +264,17 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
         this.orderItem = result.data;
         this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
       });
+  }
+
+  getStorageBuyVpc() {
+    this.isLoading = true
+    this.projectService.getProjectVpc(this.project).subscribe(data => {
+      this.storageBuyVpc = data.cloudProject?.quotaShareInGb
+      this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
+      this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
+      console.log('share remaining', this.storageRemaining)
+      this.isLoading = false
+    })
   }
 
   handleCreateFSS() {
