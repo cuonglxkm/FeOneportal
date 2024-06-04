@@ -70,10 +70,8 @@ export class DetailFileSystemComponent implements OnInit {
   navigateToResize(typeVpc) {
     if (typeVpc == 1) {
       this.router.navigate(['/app-smart-cloud/file-storage/file-system/resize/vpc/' + this.fileSystemId ]);
-    }
-    if (typeVpc == 0) {
+    } else  {
       this.router.navigate(['/app-smart-cloud/file-storage/file-system/resize/normal/' + this.fileSystemId]);
-
     }
   }
 
