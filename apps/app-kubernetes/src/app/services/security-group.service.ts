@@ -15,7 +15,7 @@ export class SecurityGroupService extends BaseService {
     super();
   }
 
-  baseUrl: string = "https://api-dev.onsmartcloud.com";
+  baseUrl: string = "https://api.onsmartcloud.com";
 
   private getHeaders() {
     return new HttpHeaders({
