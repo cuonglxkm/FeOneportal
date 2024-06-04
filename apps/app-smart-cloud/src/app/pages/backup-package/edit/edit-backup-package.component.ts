@@ -163,6 +163,12 @@ export class EditBackupPackageComponent implements OnInit {
     });
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   formOrder() {
     let request: BackupPackageRequestModel = new BackupPackageRequestModel();
     request.customerId = this.formUpdateBackupPackageModel.customerId;
@@ -185,10 +191,13 @@ export class EditBackupPackageComponent implements OnInit {
     let request = this.formOrder();
     this.orderService.validaterOrder(request).subscribe(data => {
       this.isLoadingButton = false;
-      console.log('dataa', data);
+      console.log('data', data);
       if (data.success) {
         console.log('request', request);
         this.navigateToPaymentSummary(request);
+      } else {
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
       }
       //
     }, error => {

@@ -1,4 +1,4 @@
-import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import {PermissionPolicyModel} from "../../../shared/models/policy.model";
 import {PolicyService} from "../../../shared/services/policy.service";
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
@@ -19,42 +19,19 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
   templateUrl: './policy-create.component.html',
   styleUrls: ['./policy-create.component.less'],
 })
-export class PolicyCreateComponent {
+export class PolicyCreateComponent implements OnInit{
   currentStep = 0;
   regionId: number;
   projectId: number;
   isVisual: boolean = true;
   isVisibleCreate: boolean = false;
   isVisibleNoticeCreate: boolean = false;
-  listPermission: readonly PermissionPolicyModel[] = [];
   setOfCheckedId = new Set<string>();
   optionData = 1;
   countOrderNum: number = 1;
   searchKey: any;
   listService: any[] = [];
   listServiceAvaiable : string[] = [];
-  // listServiceAvaiable : string[] = [
-  //   "product",
-  //   "ippublic"
-  // ];
-  // listService = [
-  //   {
-  //     name: "product",
-  //     actions : [
-  //       "product:Update",
-  //       "product:Create",
-  //       "product:Push",
-  //     ]
-  //   },
-  //   {
-  //     name: "ippublic",
-  //     actions : [
-  //       "ippublic:Create",
-  //       "ippublic:Update",
-  //       "ippublic:Delete",
-  //     ]
-  //   }
-  // ]
 
   public optionJsonEditor: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;

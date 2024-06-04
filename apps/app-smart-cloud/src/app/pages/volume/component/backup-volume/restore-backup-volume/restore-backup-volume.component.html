@@ -5,7 +5,9 @@
       <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home'|i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/backup-volume'">{{ 'app.breadcrumb.list.backup.volume'|i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a
+        [routerLink]="'/app-smart-cloud/backup-volume'">{{ 'app.breadcrumb.list.backup.volume'|i18n }}</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.list.backup.volume.restore'|i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
@@ -24,16 +26,17 @@
 </page-header>
 <nz-spin [nzSpinning]="isLoading">
   <nz-content>
-    <nz-row nzGutter="24">
-      <nz-col nzSpan="16">
-        <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">{{'app.backup.volume.info'|i18n}}</span>
-          <form nz-form nzLayout="vertical">
+    <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+      <nz-row nzGutter="24">
+        <nz-col nzSpan="16">
+          <nz-card style="border-radius: 8px;">
+            <span class="text-card-header">{{ 'app.backup.volume.info'|i18n }}</span>
+
             <nz-row nzGutter="24" style="margin-top: 25px;">
               <nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>{{'app.backup.volume.name'|i18n}}</span>
+                    <span>{{ 'app.backup.volume.name'|i18n }}</span>
                   </nz-form-label>
                   <nz-form-control>
                     <input nz-input class="input-custom" [value]="backupVolume?.name" [disabled]="true" />
@@ -43,7 +46,7 @@
               <nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>{{'app.input.backup.volume.select.volume'|i18n}}</span>
+                    <span>{{ 'app.input.backup.volume.select.volume'|i18n }}</span>
                   </nz-form-label>
                   <nz-form-control>
                     <input nz-input class="input-custom" [value]="backupVolume?.volumeName" [disabled]="true" />
@@ -55,18 +58,20 @@
               <nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>{{'app.info.backup.vm.total.storage'|i18n}}</span>
+                    <span>{{ 'app.info.backup.vm.total.storage'|i18n }}</span>
                   </nz-form-label>
                   <nz-form-control>
-                    <input *ngIf="typeVpc == 1" nz-input class="input-custom" [value]="projectDetail?.cloudProject?.quotaBackupVolumeInGb" [disabled]="true" />
-                    <input *ngIf="typeVpc == 0" nz-input class="input-custom" [value]="backupPackageDetail?.sizeInGB" [disabled]="true" />
+                    <input *ngIf="typeVpc == 1" nz-input class="input-custom"
+                           [value]="projectDetail?.cloudProject?.quotaBackupVolumeInGb" [disabled]="true" />
+                    <input *ngIf="typeVpc == 0" nz-input class="input-custom" [value]="backupPackageDetail?.sizeInGB"
+                           [disabled]="true" />
                   </nz-form-control>
                 </nz-form-item>
               </nz-col>
               <nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>{{'app.volume.type'|i18n}}</span>
+                    <span>{{ 'app.volume.type'|i18n }}</span>
                   </nz-form-label>
                   <nz-form-control>
                     <input nz-input class="input-custom" [value]="backupVolume?.volumeName" [disabled]="true" />
@@ -74,12 +79,35 @@
                 </nz-form-item>
               </nz-col>
             </nz-row>
-          </form>
-        </nz-card>
-      </nz-col>
-      <nz-col nzSpan="8">
+            <nz-form-item *ngIf="typeVpc == 0">
+              <nz-form-label>
+                <span style="color: #FF0000;">{{ 'app.service.expiration-date' | i18n }}
+                  : {{ backupPackageDetail?.expirationDate | date: 'HH:mm:ss dd/MM/yyyy' }}</span>
+              </nz-form-label>
+            </nz-form-item>
+          </nz-card>
+          <nz-card style="border-radius: 8px;">
+            <span class="text-card-header">{{ 'app.info.backup.vm.restore.information' | i18n }}</span>
+            <nz-radio-group
+              [(ngModel)]="selectedOption"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onSelectionChange()"
+              style="margin-top: 20px; display: grid">
+              <label nz-radio nzValue="current">{{ 'app.backup.vm.restore.current' | i18n }}</label>
+              <label nz-radio nzValue="new" style="margin-top: 10px">{{ 'app.backup.vm.restore.new' | i18n }}</label>
+            </nz-radio-group>
+            <div *ngIf="selectedOption == 'current'" formGroupName="formCurrent">
 
-      </nz-col>
-    </nz-row>
+            </div>
+            <div *ngIf="selectedOption == 'new'" formGroupName="formNew">
+
+            </div>
+          </nz-card>
+        </nz-col>
+        <nz-col nzSpan="8">
+
+        </nz-col>
+      </nz-row>
+    </form>
   </nz-content>
 </nz-spin>
