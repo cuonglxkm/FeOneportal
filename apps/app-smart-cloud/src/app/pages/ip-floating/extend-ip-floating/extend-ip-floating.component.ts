@@ -224,4 +224,9 @@ export class ExtendIpFloatingComponent implements OnInit{
       this.total = undefined;
     }
   }
+
+  onChangeTime($event: any) {
+    this.numOfMonth = $event;
+    this.caculator();
+  }
 }

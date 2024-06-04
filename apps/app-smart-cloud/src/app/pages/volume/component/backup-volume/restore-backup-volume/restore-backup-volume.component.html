@@ -88,24 +88,67 @@
           </nz-card>
           <nz-card style="border-radius: 8px;">
             <span class="text-card-header">{{ 'app.info.backup.vm.restore.information' | i18n }}</span>
-            <nz-radio-group
-              [(ngModel)]="selectedOption"
-              [ngModelOptions]="{ standalone: true }"
-              (ngModelChange)="onSelectionChange()"
-              style="margin-top: 20px; display: grid">
-              <label nz-radio nzValue="current">{{ 'app.backup.vm.restore.current' | i18n }}</label>
-              <label nz-radio nzValue="new" style="margin-top: 10px">{{ 'app.backup.vm.restore.new' | i18n }}</label>
-            </nz-radio-group>
-            <div *ngIf="selectedOption == 'current'" formGroupName="formCurrent">
+            <nz-row nzGutter="24">
+              <nz-col nzSpan="12">
+                <nz-radio-group
+                  [(ngModel)]="selectedOption"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="onSelectionChange()"
+                  style="margin-top: 20px; display: grid">
+                  <label nz-radio nzValue="current">{{ 'app.backup.vm.restore.current' | i18n }}</label>
+                  <label nz-radio nzValue="new" style="margin-top: 10px">{{ 'app.backup.vm.restore.new' | i18n }}</label>
+                </nz-radio-group>
+              </nz-col>
+              <nz-col nzSpan="12">
+                <div *ngIf="selectedOption == 'current'" formGroupName="formCurrent">
+                  <nz-form-item>
+                    <nz-form-label>
+                      <span>{{'app.backup.volume.restore.current.select.volume'|i18n}} (<span style="color: #EA3829;">*</span>)</span>
+                      <img nz-popover
+                           [nzPopoverContent]="''|i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
+                    </nz-form-label>
+                    <nz-form-control>
+                      <nz-select nzSize="large"
+                                formControlName="volumeId">
+                        <nz-option *ngFor="let data of listVolumes"
+                                   [nzValue]="data.id"
+                                   [nzLabel]="data.name"></nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+              </nz-col>
+            </nz-row>
 
-            </div>
+
             <div *ngIf="selectedOption == 'new'" formGroupName="formNew">
 
             </div>
           </nz-card>
         </nz-col>
         <nz-col nzSpan="8">
-
+          <nz-affix [nzOffsetTop]="72">
+            <nz-card class="border-card">
+              <div style="margin-bottom: 20px">
+                <span class="text-card-header">{{'app.config.parameters'|i18n}}</span>
+              </div>
+              <div *ngIf="selectedOption == 'current'">
+                <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
+                <div style="margin-top: 10px" class="text-label"></div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <div class="text-value">{{ 'app.volume.type' | i18n }}</div>
+                <div style="margin-top: 10px" class="text-label">
+                  <span>{{ 'volume.hdd' | i18n }}</span>
+                  <span>{{ 'volume.ssd' | i18n }}</span>
+                </div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <div class="text-value">{{ 'volume.storage.volume' | i18n }}</div>
+                <div style="margin-top: 10px" class="text-label"></div>
+              </div>
+            </nz-card>
+          </nz-affix>
         </nz-col>
       </nz-row>
     </form>

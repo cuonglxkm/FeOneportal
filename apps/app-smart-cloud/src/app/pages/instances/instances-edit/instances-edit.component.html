@@ -857,6 +857,7 @@
                 nz-button
                 nzSize="large"
                 nzType="primary"
+                [nzLoading]="isLoading"
                 (click)="readyEdit()"
                 [disabled]="totalAmount == 0"
               >

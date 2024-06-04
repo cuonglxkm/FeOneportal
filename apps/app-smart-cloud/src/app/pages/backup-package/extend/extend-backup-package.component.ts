@@ -75,6 +75,7 @@ export class ExtendBackupPackageComponent implements OnInit {
   }
 
   changeTime(value) {
+    this.validateForm.controls['time'].setValue(value);
     this.dataSubjectTime.next(value);
   }
 
