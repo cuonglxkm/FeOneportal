@@ -302,7 +302,7 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   handleOk() {
-    this.isLoading = true;
+    // this.isLoading = true;
     this.submitForm();
   }
 

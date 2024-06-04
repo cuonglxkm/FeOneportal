@@ -196,7 +196,12 @@
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </nz-col>
                   <nz-col nzSpan="10">
-                    <span class="text-label">{{ storageBuyVpc }} (GB)</span>
+                    <span class="text-label">
+                      <nz-row style="text-align: right;">
+                        <nz-col nzSpan="4">{{ storageBuyVpc }}</nz-col>
+                        <nz-col nzSpan="4">(GB)</nz-col>
+                      </nz-row>
+                    </span>
                   </nz-col>
                 </nz-row>
                 <nz-row>
@@ -204,7 +209,12 @@
                     <span class="text-label">{{'app.backup.package.storage.used'|i18n}}:</span>
                   </nz-col>
                   <nz-col nzSpan="10">
-                    <span class="text-label">{{ storageUsed }} (GB)</span>
+                    <span class="text-label">
+                      <nz-row style="text-align: right;">
+                        <nz-col nzSpan="4">{{ storageUsed }}</nz-col>
+                        <nz-col nzSpan="4">(GB)</nz-col>
+                      </nz-row>
+                    </span>
                   </nz-col>
                 </nz-row>
                 <nz-row>
@@ -212,7 +222,12 @@
                     <span class="text-label">{{'Dung lượng còn lại'|i18n}}:</span>
                   </nz-col>
                   <nz-col nzSpan="10">
-                    <span class="text-label">{{ storageRemaining }} (GB)</span>
+                    <span class="text-label">
+                      <nz-row style="text-align: right;">
+                        <nz-col nzSpan="4">{{ storageRemaining }}</nz-col>
+                        <nz-col nzSpan="4">(GB)</nz-col>
+                      </nz-row>
+                    </span>
                   </nz-col>
                 </nz-row>
               </nz-col>
