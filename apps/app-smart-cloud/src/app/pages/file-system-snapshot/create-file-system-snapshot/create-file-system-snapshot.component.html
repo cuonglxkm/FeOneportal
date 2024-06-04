@@ -361,12 +361,7 @@
     </ng-container>
   </div>
 </div>
-<div
-  class="text-right"
-  style="
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    height: 100%;
-  "
-></div>
+<one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />
