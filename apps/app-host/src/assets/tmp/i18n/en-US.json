@@ -2683,6 +2683,7 @@
   "app.backup.volume.alert.delete": "You are deleting the Backup Volume",
   "app.backup.volume.confirm.delete": "To proceed with deleting Backup Volume {{name}}, please enter the name of the Backup to confirm.",
 
+  "app.backup.volume.restore.current.select.volume": "Select Volume Restore",
 
   "app.backup.volume.validator.backup.package.required": "Please enter the name of the Backup",
   "app.backup.volume.request.create": "Backup Volume creation request has been sent.",

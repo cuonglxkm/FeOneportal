@@ -145,13 +145,15 @@ export class CreateFileSystemComponent implements OnInit {
     let formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot();
     formSearchFileSystemSnapshot.vpcId = this.project
     formSearchFileSystemSnapshot.regionId = this.region
-    formSearchFileSystemSnapshot.isCheckState = false
+    formSearchFileSystemSnapshot.isCheckState = true
     formSearchFileSystemSnapshot.pageSize = 9999;
     formSearchFileSystemSnapshot.currentPage = 1;
     formSearchFileSystemSnapshot.customerId = this.tokenService.get()?.userId
     this.fileSystemSnapshotService.getFileSystemSnapshot(formSearchFileSystemSnapshot).subscribe(data => {
       data.records.forEach(snapshot => {
-        this.snapshotList.push({ label: snapshot.name, value: snapshot.id });
+        if(['available','KHOITAO'].includes(snapshot.status)) {
+          this.snapshotList.push({ label: snapshot.name, value: snapshot.id });
+        }
       });
       if(this.activatedRoute.snapshot.paramMap.get('snapshotId')){
         const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('snapshotId'));

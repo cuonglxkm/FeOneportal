@@ -1,45 +1,48 @@
 <nz-card style="border-radius: 8px;">
   <span class="text-card-header">{{ 'app.extension.info' | i18n }}</span>
-  <nz-row nzJustify="space-between" style="margin-top: 15px;">
-    <nz-col>
-      <nz-form-label>
-        <span style="color: #EA3829">{{ 'app.service.creation-date' | i18n }}: {{ createDate | date: 'HH:mm:ss dd/MM/yyyy'}} </span>
+  <form nz-form nzLayout="vertical">
+    <nz-row nzJustify="space-between" style="margin-top: 15px;">
+      <nz-col>
+        <nz-form-label>
+          <span style="color: #EA3829">{{ 'app.service.creation-date' | i18n }}: {{ createDate | date: 'HH:mm:ss dd/MM/yyyy'}} </span>
+        </nz-form-label>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-form-label>
+          <span style="color: #EA3829">{{ 'app.service.expiration-date' | i18n }}:  {{ expiredDate | date: 'HH:mm:ss dd/MM/yyyy'}}</span>
+        </nz-form-label>
+      </nz-col>
+    </nz-row>
+    <nz-form-item style="margin-top: 10px;">
+      <nz-form-label nzFor="time">
+        <div class="label">
+          <span>{{ 'app.months.for.extend' | i18n }}</span>
+          (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+        </div>
       </nz-form-label>
-    </nz-col>
-    <nz-col nzSpan="12">
-      <nz-form-label>
-        <span style="color: #EA3829">{{ 'app.service.expiration-date' | i18n }}:  {{ expiredDate | date: 'HH:mm:ss dd/MM/yyyy'}}</span>
-      </nz-form-label>
-    </nz-col>
-  </nz-row>
-  <nz-form-item style="margin-top: 10px;">
-    <nz-form-label nzFor="time">
-      <div class="label">
-        <span>{{ 'app.months.for.extend' | i18n }}</span>
-        (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-      </div>
-    </nz-form-label>
-    <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-      <nz-input-number style="width:100%; margin-left: 0;"
-                       nzAutoFocus
-                       [nzMin]="1"
-                       [nzMax]="100"
-                       [nzStep]="1"
-                       [(ngModel)]="numberMonth"
-                       (keydown)="onKeyDown($event)"
-                       (ngModelChange)="changeTime($event)"
-                       [ngModelOptions]="{ standalone: true }"
-                       nzSize="large"/>
-      <ng-template #dateErrorTpl let-control>
-        <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min') || control.hasError('pattern')">{{ 'app.more.0.less.100' | i18n }}</ng-container>
-      </ng-template>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-row>
-    <nz-col>
-      <nz-form-label>
-        <span style="color: #F50000;">{{ 'app.expected.expiry.date' | i18n }}: {{ newExpiredDate | date: 'dd/MM/yyyy'}} </span>
-      </nz-form-label>
-    </nz-col>
-  </nz-row>
+      <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+        <nz-input-number style="width:100%; margin-left: 0;"
+                         nzAutoFocus
+                         [nzMin]="1"
+                         [nzMax]="100"
+                         [nzStep]="1"
+                         [(ngModel)]="numberMonth"
+                         (keydown)="onKeyDown($event)"
+                         (ngModelChange)="changeTime($event)"
+                         [ngModelOptions]="{ standalone: true }"
+                         nzSize="large"/>
+        <ng-template #dateErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min') || control.hasError('pattern')">{{ 'app.more.0.less.100' | i18n }}</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-row>
+      <nz-col>
+        <nz-form-label>
+          <span style="color: #F50000;">{{ 'app.expected.expiry.date' | i18n }}: {{ newExpiredDate | date: 'dd/MM/yyyy'}} </span>
+        </nz-form-label>
+      </nz-col>
+    </nz-row>
+  </form>
+
 </nz-card>
