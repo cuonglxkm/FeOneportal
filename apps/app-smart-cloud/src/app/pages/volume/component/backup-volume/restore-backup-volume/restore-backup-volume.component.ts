@@ -12,6 +12,10 @@ import { SizeInCloudProject } from '../../../../../shared/models/project.model';
 import { BackupVolume } from '../backup-volume.model';
 import { PackageBackupModel } from '../../../../../shared/models/package-backup.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { VolumeDTO } from '../../../../../shared/dto/volume.dto';
+import { debounceTime } from 'rxjs';
+import { VolumeService } from '../../../../../shared/services/volume.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'one-portal-restore-backup-volume',
@@ -37,12 +41,16 @@ export class RestoreBackupVolumeComponent implements OnInit{
 
   validateForm = new FormGroup({
     formCurrent: new FormGroup({
-
+      volumeId: new FormControl(null as number)
     }),
     formNew: new FormGroup({
 
     }),
   });
+
+  listVolumes: VolumeDTO[] = [];
+
+  volumeSelected: any;
 
   constructor(private router: Router,
               private backupVolumeService: BackupVolumeService,
@@ -50,7 +58,9 @@ export class RestoreBackupVolumeComponent implements OnInit{
               private projectService: ProjectService,
               private backupPackageService: PackageBackupService,
               private notification: NzNotificationService,
+              private volumeService: VolumeService,
               private cdr: ChangeDetectorRef,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -101,6 +111,23 @@ export class RestoreBackupVolumeComponent implements OnInit{
     })
   }
 
+  getListVolumes() {
+    this.isLoading = true
+    this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project,
+      this.region, 9999, 1, null, null)
+      .pipe(debounceTime(500))
+      .subscribe(data => {
+          this.isLoading = false;
+          this.listVolumes = data.records;
+          this.validateForm.get('formCurrent').get('volumeId').setValue(this.listVolumes[0]?.id)
+      }, error => {
+        this.isLoading = false;
+        this.listVolumes = [];
+        console.log(error);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+      });
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -109,5 +136,6 @@ export class RestoreBackupVolumeComponent implements OnInit{
     this.idBackupVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'))
     this.getDetailBackupVolume(this.idBackupVolume);
     this.getInfoProjectVpc(this.project);
+    this.getListVolumes();
   }
 }

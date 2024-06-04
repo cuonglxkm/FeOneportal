@@ -211,6 +211,7 @@
   </div>
   <div nz-col [nzSpan]="8" class="gutter-row">
     <ng-container *ngIf="typeVpc === 1">
+      <nz-affix nzOffsetTop="72">
       <nz-card class="card-price">
         <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
         <div style="margin-bottom: 12px">
@@ -243,8 +244,10 @@
           }}</span>
         </button>
       </nz-card>
+    </nz-affix>
     </ng-container>
     <ng-container *ngIf="typeVpc === 0">
+      <nz-affix nzOffsetTop="72">
       <nz-card class="right-form card-price">
         <div class="right-title">
           <span class="text-card-header">Chi phí ước tính</span>
@@ -354,15 +357,11 @@
           </nz-col>
         </nz-row>
       </nz-card>
+    </nz-affix>
     </ng-container>
   </div>
 </div>
-<div
-  class="text-right"
-  style="
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    height: 100%;
-  "
-></div>
+<one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />
