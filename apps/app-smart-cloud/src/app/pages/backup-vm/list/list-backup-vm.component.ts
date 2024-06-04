@@ -249,7 +249,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   }
 
   navigateToRestore(id: number) {
-    this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm/' + id])
+    this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm-vpc/' + id])
   }
 
   selectedActionChange(value: any, data: BackupVm) {
