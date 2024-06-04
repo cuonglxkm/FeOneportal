@@ -466,7 +466,7 @@ export class InstancesEditComponent implements OnInit {
     ram: number,
     cpu: number,
     gpu: number,
-    gpuTypeOfferId: number
+    gpuOfferId: number
   ) {
     let tempInstance: InstanceResize = new InstanceResize();
     tempInstance.currentFlavorId = this.instancesModel.flavorId;
@@ -477,7 +477,7 @@ export class InstancesEditComponent implements OnInit {
     tempInstance.newFlavorId = 0;
     tempInstance.serviceInstanceId = this.instancesModel.id;
     tempInstance.gpuCount = gpu + this.instancesModel.gpuCount;
-    tempInstance.newGpuOfferId = gpuTypeOfferId;
+    tempInstance.newGpuOfferId = gpuOfferId;
     if (this.configGPU.gpuOfferId) {
       tempInstance.gpuType = this.listGPUType.filter(
         (e) => e.id == this.configGPU.gpuOfferId
