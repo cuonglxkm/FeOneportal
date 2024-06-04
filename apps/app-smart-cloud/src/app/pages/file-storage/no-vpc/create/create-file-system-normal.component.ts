@@ -199,7 +199,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
   }
 
   fileSystemInit() {
-    this.formCreate.projectId = null;
+    this.formCreate.projectCloudId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
     this.formCreate.size = this.validateForm.controls.storage.value;
     this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();

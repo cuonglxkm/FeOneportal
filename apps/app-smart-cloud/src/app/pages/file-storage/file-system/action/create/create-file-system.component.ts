@@ -184,7 +184,7 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   initFileSystem() {
-    this.formCreate.projectId = null;
+    this.formCreate.projectCloudId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
     this.formCreate.size = this.storage;
     this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();
