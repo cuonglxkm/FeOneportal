@@ -2586,6 +2586,7 @@
   "app.backup.volume.notification.create.request.send": "Yêu cầu tạo Backup Volume đã được gửi đi.",
   "app.backup.volume.alert.delete": "Bạn đang thực hiện xóa Backup Volume",
   "app.backup.volume.confirm.delete": "Đế thực hiện xoá Backup Volume {{name}}, vui lòng nhập tên Backup để xác nhận.",
+  "app.backup.volume.tooltip.type": "",
 
   "app.backup.volume.restore.current.select.volume": "Chọn Volume restore",
 

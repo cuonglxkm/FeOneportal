@@ -18,7 +18,7 @@
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
-  <div *ngIf="typeVpc == 0" style="display: flex">
+  <div *ngIf="typeVpc == 0 || typeVpc == 2" style="display: flex">
     <div style="margin-right: 8px;" *ngIf="fileSystem?.status === 'available'">
       <div nz-col nzSpan="4">
         <button class="button-cancel" (click)="navigateToResize(typeVpc)"
