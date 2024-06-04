@@ -53,8 +53,12 @@ export class ServiceTimeExtendComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.expiredDate);
+    console.log(this.createDate);
+    
     let expiredDate = new Date(this.expiredDate);
     expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+    
     this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
     console.log('new', this.newExpiredDate)
     this.onChangeTime();

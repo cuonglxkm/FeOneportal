@@ -58,6 +58,7 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
     snapshot: [false],
     time: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]]
   });
+  timeSelected: any
 
   estimateExpireDate: Date = null;
 
@@ -91,12 +92,6 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
     this.dataSubjectTime.next(value);
   }
 
-  onChangeTime() {
-      this.dataSubjectTime.pipe(debounceTime(500))
-        .subscribe((res) => {
-          this.getTotalAmount();
-        })
-  }
 
   getFileSystemById(id) {
     this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
@@ -105,6 +100,15 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
       this.fileSystem = null
     })
   }
+
+  onChangeTime(value) {
+    // this.dataSubjectTime.pipe(debounceTime(500))
+    //   .subscribe((res) => {
+  this.timeSelected = value
+  this.validateForm.controls.time.setValue(this.timeSelected)
+  this.getTotalAmount();
+      // })
+}
   getFileSystemSnapshotById(id) {
     this.isLoading = true
     this.fileSystemSnapshotService.getFileSystemSnapshotById(id, this.project).subscribe(data => {
@@ -203,7 +207,6 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
 
     this.fileSystemSnapshotId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.getFileSystemSnapshotById(this.fileSystemSnapshotId)
-    this.onChangeTime()
     this.getConfigurations();
   }
 }

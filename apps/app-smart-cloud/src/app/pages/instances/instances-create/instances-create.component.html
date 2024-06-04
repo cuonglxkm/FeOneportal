@@ -1697,6 +1697,7 @@
                 nz-button
                 nzSize="large"
                 nzType="primary"
+                [nzLoading]="isLoading"
                 (click)="save()"
                 [disabled]="
                   form.invalid ||

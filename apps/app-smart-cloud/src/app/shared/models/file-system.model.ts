@@ -60,7 +60,7 @@ export class FileSystemDetail {
 }
 
 export class OrderCreateFileSystem {
-  projectId: number;
+  projectCloudId: number;
   shareProtocol: string;
   size: number;
   name: string;

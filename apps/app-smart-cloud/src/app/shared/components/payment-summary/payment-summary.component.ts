@@ -5,7 +5,7 @@ import {
   Inject,
   OnInit,
 } from '@angular/core';
-import { UserModel } from '../../../../../../../libs/common-utils/src';
+import { AppValidator, UserModel } from '../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -21,7 +21,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { InvoiceService } from '../../services/invoice.service';
-import { FormCreateUserInvoice } from '../../models/invoice';
+import { FormCreateUserInvoice, FormInitUserInvoice } from '../../models/invoice';
 
 
 class ServiceInfo {
@@ -51,6 +51,7 @@ export class PaymentSummaryComponent implements OnInit {
   listServiceInfo: ServiceInfo[] = [];
   userModel: UserModel = {};
   order: Order = new Order();
+  formInitUserInvoice: FormInitUserInvoice = new FormInitUserInvoice()
   acceptTerm: boolean = false;
   totalAmount: number = 0;
   promotion: number = 0;
@@ -67,10 +68,11 @@ export class PaymentSummaryComponent implements OnInit {
   formCreatUserInvoice: FormCreateUserInvoice = new FormCreateUserInvoice()
   isExportInvoice: boolean = false
   isCheckedExportInvoice: boolean = false
-  radioValue = '1';
+  isLoadingUpdateInfo: boolean = false
+  radioValue = 1;
   options = [
-    { label: '1', value: 'Khách hàng doanh nghiệp' },
-    { label: '2', value: 'Khách hàng cá nhân' },
+    { label: 'Khách hàng doanh nghiệp', value: 1 },
+    { label: 'Khách hàng cá nhân', value: 2 },
   ];
 
   constructor(
@@ -250,13 +252,9 @@ export class PaymentSummaryComponent implements OnInit {
             break;
         }
         serviceItem.price = e.price / e.serviceDuration;
-        serviceItem.duration = e.serviceDuration;
         serviceItem.amount = e.orderItemQuantity;
-        if (serviceItem.type == this.i18n.fanyi('app.button.resize')) {
-          serviceItem.currency = e.price;
-        } else {
-          serviceItem.currency = e.price
-        }
+        serviceItem.duration = e.serviceDuration;
+        serviceItem.currency = e.price;
         this.listServiceInfo.push(serviceItem);
       });
       this.listServiceInfo.forEach((e) => {
@@ -266,6 +264,10 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getUser()
+  }
+
+  getUser(){
     this.email = this.tokenService.get()?.email;
     const accessToken = this.tokenService.get()?.token;
 
@@ -298,12 +300,12 @@ export class PaymentSummaryComponent implements OnInit {
     taxCode: FormControl<string>
     address: FormControl<string>
   }> = this.fb.group({
-    nameCompany: ['', [Validators.required]],
-    email: ['', [Validators.required]],
-    phoneNumber: ['', [Validators.required]],
-    nameCustomer: ['', [Validators.required]],
-    taxCode: ['', [Validators.required]],
-    address: ['', [Validators.required]]
+    nameCompany: ['', Validators.required],
+    email: ['', [Validators.required, AppValidator.validEmail]],
+    phoneNumber: ['', [Validators.required, AppValidator.validPhoneNumber]],
+    nameCustomer: ['', [Validators.required, AppValidator.cannotContainSpecialCharactor]],
+    taxCode: ['', [Validators.required, Validators.pattern(/^[0-9-]+$/)]],
+    address: ['', Validators.required]
   });
 
   formExportInvoice: FormGroup<{
@@ -315,10 +317,10 @@ export class PaymentSummaryComponent implements OnInit {
     address: FormControl<string>
   }> = this.fb.group({
     nameCompany: ['', [Validators.required]],
-    email: ['', [Validators.required]],
-    phoneNumber: ['', [Validators.required]],
-    nameCustomer: ['', [Validators.required, Validators.pattern(/^[a-zA-Z ]$/)]],
-    taxCode: ['', [Validators.required, Validators.pattern(/^[0-9-]$/)]],
+    email: ['', [Validators.required, AppValidator.validEmail]],
+    phoneNumber: ['', [Validators.required, AppValidator.validPhoneNumber]],
+    nameCustomer: ['', [Validators.required, AppValidator.cannotContainSpecialCharactor]],
+    taxCode: ['', [Validators.required, Validators.pattern(/^[0-9-]+$/)]],
     address: ['', [Validators.required]]
   });
 
@@ -416,6 +418,17 @@ export class PaymentSummaryComponent implements OnInit {
     this.customerTypes = customerGroupFilter[0].customerTypes
     this.customerType = this.customerTypes[0].id
   }
+
+
+  initUserInvoice(){
+    this.formInitUserInvoice.Address = this.formExportInvoice.controls.address.value
+    this.formInitUserInvoice.CompanyName = this.formExportInvoice.controls.nameCompany.value
+    this.formInitUserInvoice.BuyerName = this.formExportInvoice.controls.nameCustomer.value
+    this.formInitUserInvoice.TaxCode = this.formExportInvoice.controls.taxCode.value
+    this.formInitUserInvoice.PhoneNumber = this.formExportInvoice.controls.phoneNumber.value
+    this.formInitUserInvoice.Email = this.formExportInvoice.controls.email.value
+    this.formInitUserInvoice.CustomerType = this.radioValue
+  }
   payNow() {    
     if(this.userModel && this.userModel.customerInvoice === null){
       this.isVisibleCustomerInvoice = true
@@ -431,6 +444,8 @@ export class PaymentSummaryComponent implements OnInit {
   
 
   pay(){
+    this.initUserInvoice()
+    this.isCheckedExportInvoice === true ? this.order.invoiceInfo = JSON.stringify(this.formInitUserInvoice) : this.order.invoiceInfo = ""
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.service
       .create(this.order)
@@ -461,6 +476,7 @@ export class PaymentSummaryComponent implements OnInit {
 
   handleOkUpdateCustomerInvoice(){
   //  this.pay()
+  this.isLoadingUpdateInfo = true
    this.formCreatUserInvoice.companyName = this.formCustomerInvoice.controls.nameCompany.value
    this.formCreatUserInvoice.address = this.formCustomerInvoice.controls.address.value
    this.formCreatUserInvoice.phoneNumber = this.formCustomerInvoice.controls.phoneNumber.value
@@ -474,13 +490,16 @@ export class PaymentSummaryComponent implements OnInit {
    
     this.invoiceService.create(this.formCreatUserInvoice).subscribe({
       next: (data) => {
+        this.isLoadingUpdateInfo = false
         this.notification.success(
           this.i18n.fanyi('app.status.success'),
           this.i18n.fanyi('Cập nhật thông tin xuất hóa đơn thành công')
         );
         this.isVisibleCustomerInvoice = false
+        this.getUser()
       },
       error: (e) => {
+        this.isLoadingUpdateInfo = false
         this.notification.error(
           e.statusText,
           this.i18n.fanyi('Cập nhật thông tin xuất hóa đơn thất bại')
@@ -498,16 +517,14 @@ export class PaymentSummaryComponent implements OnInit {
     this.isVisibleCustomerInvoice = false
   }
 
-  updateExportInvoice(event){
-    console.log(event);
-    
+  updateExportInvoice(event){ 
     if(this.userModel && this.userModel.customerInvoice && event === true){
-      this.formCustomerInvoice.controls.email.setValue(this.userModel.customerInvoice.email)
-      this.formCustomerInvoice.controls.nameCustomer.setValue(this.userModel.customerInvoice.fullName)
-      this.formCustomerInvoice.controls.address.setValue(this.userModel.customerInvoice.address)
-      this.formCustomerInvoice.controls.phoneNumber.setValue(this.userModel.customerInvoice.phoneNumber)
-      this.formCustomerInvoice.controls.taxCode.setValue(this.userModel.customerInvoice.taxCode)
-      this.formCustomerInvoice.controls.nameCompany.setValue(this.userModel.customerInvoice.companyName)
+      this.formExportInvoice.controls.email.setValue(this.userModel.customerInvoice.email)
+      this.formExportInvoice.controls.nameCustomer.setValue(this.userModel.customerInvoice.fullName)
+      this.formExportInvoice.controls.address.setValue(this.userModel.customerInvoice.address)
+      this.formExportInvoice.controls.phoneNumber.setValue(this.userModel.customerInvoice.phoneNumber)
+      this.formExportInvoice.controls.taxCode.setValue(this.userModel.customerInvoice.taxCode)
+      this.formExportInvoice.controls.nameCompany.setValue(this.userModel.customerInvoice.companyName)
     }
   }
 
