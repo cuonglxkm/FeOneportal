@@ -13,7 +13,6 @@ import { I18NService } from '../../core/i18n/i18n.service';
 import { NotificationConstant } from '../../constants/notification.constant';
 import { NotificationWsService } from '../../services/ws.service';
 import { messageCallbackType } from '@stomp/stompjs';
-import { WebsocketService } from '../../../../../app-mongodb-replicaset/src/app/service/websocket.service';
 
 @Component({
   selector: 'one-portal-overall',

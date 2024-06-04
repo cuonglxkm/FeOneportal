@@ -715,12 +715,16 @@ export class ClusterComponent implements OnInit {
 
     if (podCidr && serviceCidr) {
       if (overlapCidr(podCidr, serviceCidr)) {
+        this.myform.get('serviceCidr').markAsDirty();
         this.myform.get('serviceCidr').setErrors({overlapPodCidr: true});
       } else {
         delete this.myform.get('serviceCidr').errors?.overlapPodCidr;
       }
+    }
 
+    if (serviceCidr && subnet) {
       if (overlapCidr(serviceCidr, subnet)) {
+        this.myform.get('serviceCidr').markAsDirty();
         this.myform.get('serviceCidr').setErrors({overlapSubnet: true});
       } else {
         delete this.myform.get('serviceCidr').errors?.overlapSubnet;
