@@ -30,7 +30,6 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
   checkIpv6: boolean = null;
-  selectedAction: any;
   listIpSubnet: any[];
   listInstance: any[];
   instanceSelected: any;
@@ -171,7 +170,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: "ip_create",
-          price: this.total.data.totalAmount.amount / Number(this.form.controls['numOfMonth'].value),
+          price: this.total.data.totalAmount.amount,
           serviceDuration: this.form.controls['numOfMonth'].value
         }
       ]

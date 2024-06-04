@@ -247,4 +247,8 @@
       </nz-row>
     </form>
   </nz-content>
+  <one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />
 </nz-spin>

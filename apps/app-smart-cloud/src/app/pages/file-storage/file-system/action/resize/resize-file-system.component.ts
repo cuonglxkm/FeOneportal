@@ -139,16 +139,16 @@ export class ResizeFileSystemComponent implements OnInit {
       if (data != null) {
         if (data.code == 200) {
           this.isLoading = false;
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu điều chỉnh File Storage thành công.');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu điều chỉnh File System thành công.');
           setTimeout(() => {this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);}, 1500)
         }
       } else {
         this.isLoading = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu điều chỉnh File Storage thất bại.');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu điều chỉnh File System thất bại.');
       }
     }, error => {
       this.isLoading = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu điều chỉnh File Storage thất bại.');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu điều chỉnh File System thất bại.');
     });
 
   }

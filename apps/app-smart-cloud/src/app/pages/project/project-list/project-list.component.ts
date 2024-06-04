@@ -70,6 +70,8 @@ export class ProjectListComponent implements OnInit {
     this.getData(true);
 
     this.notificationService.connection.on('UpdateProject', (data) => {
+      console.log("UpdateProject:");
+      console.log(data);
       if (data) {
         let projectId = data.serviceId;
         switch (data.actionType) {
@@ -81,42 +83,25 @@ export class ProjectListComponent implements OnInit {
           case "CREATED":
             var foundIndex = this.listOfData.findIndex(x => x.id == projectId);
             if (foundIndex > -1) {
-              var record = this.listOfData[foundIndex];
-              record.serviceStatus = data.serviceStatus;
-              record.createDate = data.creationDate;
-              record.expireDate = data.expirationDate;
-              this.listOfData[foundIndex] = record;
-              this.cdr.detectChanges();
-            }
-            else {
               this.getData(true);
             }
             break;
           case "RESIZED":
             var foundIndex = this.listOfData.findIndex(x => x.id == projectId);
             if (foundIndex > -1) {
-              var record = this.listOfData[foundIndex];
-              record.serviceStatus = "ENABLE";
-              this.listOfData[foundIndex] = record;
-              this.cdr.detectChanges();
+              this.getData(true);
             }
             break;
           case "RESIZING":
             var foundIndex = this.listOfData.findIndex(x => x.id == projectId);
             if (foundIndex > -1) {
-              var record = this.listOfData[foundIndex];
-              record.serviceStatus = "RESIZING";
-              this.listOfData[foundIndex] = record;
-              this.cdr.detectChanges();
+              this.getData(true);
             }
             break;
           case "DELETING":
             var foundIndex = this.listOfData.findIndex(x => x.id == projectId);
             if (foundIndex > -1) {
-              var record = this.listOfData[foundIndex];
-              record.serviceStatus = "DELETING";
-              this.listOfData[foundIndex] = record;
-              this.cdr.detectChanges();
+              this.getData(true);
             }
             break;
         }

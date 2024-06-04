@@ -24,15 +24,9 @@ export class ExtendIpPublicComponent implements OnInit{
   ipAddress: any;
   attachedVm: any;
   isIpV6: boolean;
-
-  attachedDto: AttachedDto[] = [];
-
   listVMs: string = '';
-
   isLoading: boolean = false;
-
   projectId: any;
-
   regionId: any;
   total: any;
   dateString: any;
@@ -46,10 +40,6 @@ export class ExtendIpPublicComponent implements OnInit{
     this.projectId = regionAndProject.projectId;
 
   }
-
-  // form = new FormGroup({
-  //   numOfMonth: new FormControl('', {validators: [Validators.required]}),
-  // });
 
   private getIPPublicById(id: string) {
     this.isLoading = true;
@@ -70,29 +60,6 @@ export class ExtendIpPublicComponent implements OnInit{
       }
     );
   }
-
-  openPopupExtend() {
-    const modal: NzModalRef = this.modalService.create({
-      nzTitle: 'Gia hạn IP Public',
-      nzContent: PopupExtendVolumeComponent,
-      nzFooter: [
-        {
-          label: 'Hủy',
-          type: 'default',
-          onClick: () => modal.destroy()
-        },
-        {
-          label: 'Đồng ý',
-          type: 'primary',
-          onClick: () => {
-            this.router.navigate(['/app-smart-cloud/ip-public/extend/' + this.ipInfo.id]);
-            modal.destroy();
-          }
-        }
-      ]
-    });
-  }
-
 
   volumeStatus: Map<String, string>;
   numOfMonth = 1;
@@ -148,7 +115,7 @@ export class ExtendIpPublicComponent implements OnInit{
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: 'ip_extend',
-          price: this.total.data.totalAmount.amount / Number(this.numOfMonth),
+          price: this.total.data.totalAmount.amount,
           serviceDuration: this.numOfMonth
         }
       ]
@@ -166,6 +133,7 @@ export class ExtendIpPublicComponent implements OnInit{
   }
 
   caculator() {
+    this.loadingCalculate = true;
     let num = this.numOfMonth;
     if (num != null && num != undefined) {
       const dateExpired = new Date(this.ipInfo?.expiredDate);
@@ -221,7 +189,11 @@ export class ExtendIpPublicComponent implements OnInit{
           }
         ]
       };
-      this.service.getTotalAmount(request).subscribe(
+      this.service.getTotalAmount(request)
+        .pipe(finalize(() => {
+          this.loadingCalculate = false;
+        }))
+        .subscribe(
         data => {
           this.total = data;
         }
@@ -229,5 +201,12 @@ export class ExtendIpPublicComponent implements OnInit{
     } else {
       this.total = undefined;
     }
+  }
+
+  loadingCalculate = true;
+
+  onChangeTime($event: any) {
+    this.numOfMonth = $event;
+    this.caculator();
   }
 }

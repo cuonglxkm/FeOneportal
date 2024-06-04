@@ -62,6 +62,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
 
   isVisibleConfirm: boolean = false;
   isLoading: boolean = false;
+  isLoadingAction: boolean = false
 
   snapshotList: NzSelectOptionInterface[] = [];
 
@@ -151,10 +152,6 @@ export class CreateFileSystemNormalComponent implements OnInit {
         console.log('total amount');
         this.getTotalAmount();
       });
-  }
-
-  timeSelectedChange(value) {
-    this.dataSubjectTime.next(value);
   }
 
   storageSelectedChange(value) {
@@ -256,6 +253,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
   }
 
   getTotalAmount() {
+    this.isLoadingAction = true
     this.fileSystemInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -269,13 +267,21 @@ export class CreateFileSystemNormalComponent implements OnInit {
     this.instanceService.getTotalAmount(dataPayment)
       .pipe(debounceTime(500))
       .subscribe((result) => {
+        this.isLoadingAction = false
         console.log('thanh tien file system', result.data);
         this.orderItem = result.data;
         this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
       });
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   navigateToPayment() {
+    this.isLoadingAction = true
     this.fileSystemInit();
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
     request.customerId = this.formCreate.customerId;
@@ -291,6 +297,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
       }
     ];
     this.orderService.validaterOrder(request).subscribe(data => {
+      this.isLoadingAction = false
       if (data.success) {
         var returnPath: string = '/app-smart-cloud/file-storage/file-system/create/normal';
         console.log('request', request);
@@ -298,6 +305,9 @@ export class CreateFileSystemNormalComponent implements OnInit {
         this.router.navigate(['/app-smart-cloud/order/cart'], {
           state: { data: request, path: returnPath }
         });
+      } else {
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
       }
     }, error => {
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);

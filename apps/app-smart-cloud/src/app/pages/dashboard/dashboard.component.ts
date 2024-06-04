@@ -37,6 +37,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getSubscriptionsDashboard() {
+    this.dashboardService.getHeader().subscribe(data => {
+      console.log(data)
+    });
     this.dashboardService.getSubscriptionsDashboard().subscribe(data => {
       this.subscriptionsDashboard = data;
       this.dashboardSubscription = data?.details;
