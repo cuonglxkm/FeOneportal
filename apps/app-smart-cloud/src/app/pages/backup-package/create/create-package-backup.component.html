@@ -155,8 +155,9 @@
             </nz-row>
             <nz-row>
               <nz-col style="width: 100%">
-                <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
-                        [disabled]="validateForm.invalid">
+                <button style="width: 100%" nz-button nzSize="large" nzType="primary"
+                        (click)="navigateToPaymentSummary()"
+                        [disabled]="validateForm.invalid || validateForm.controls.storage.value == 0" [nzLoading]="isLoadingAction">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                   <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{'app.button.create'|i18n}}</span>
                 </button>
@@ -168,3 +169,7 @@
     </nz-row>
   </form>
 </nz-content>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()" />

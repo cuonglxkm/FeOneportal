@@ -169,6 +169,12 @@ export class RenewVolumeComponent implements OnInit {
     });
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   doExtend() {
     // this.volumeInit()
     this.getTotalAmount();
@@ -188,10 +194,16 @@ export class RenewVolumeComponent implements OnInit {
     console.log('request', request)
     console.log('unit', this.orderItem?.orderItemPrices[0]?.unitPrice.amount)
     this.orderService.validaterOrder(request).subscribe(data => {
-      var returnPath: string = '/app-smart-cloud/volume/detail/'+this.idVolume;
-      this.router.navigate(['/app-smart-cloud/order/cart'], {
-        state: { data: request, path: returnPath },
-      });
+      if(data.success) {
+        var returnPath: string = '/app-smart-cloud/volume/detail/'+this.idVolume;
+        this.router.navigate(['/app-smart-cloud/order/cart'], {
+          state: { data: request, path: returnPath },
+        });
+      } else {
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
+      }
+
     }, error => {
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
     })
