@@ -130,6 +130,8 @@ export class InstancesComponent implements OnInit {
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
               break;
+            case 'RESIZEFAILED':
+              this.reloadTable();
             case 'REBUILDING':
               this.updateRowState(taskState, foundIndex);
               break;

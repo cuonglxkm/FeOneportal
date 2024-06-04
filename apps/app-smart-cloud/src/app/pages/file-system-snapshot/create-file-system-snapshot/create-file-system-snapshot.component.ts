@@ -72,6 +72,13 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   unitPrice = 0;
   timeSelected: any
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
+
   formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot =
     new FormCreateFileSystemSnapShot();
   formCreate: OrderCreateFileSystemSnapshot =
@@ -271,6 +278,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     if (this.typeVpc === 0) {
       this.orderService.validaterOrder(request).subscribe({
         next: (data) => {
+          if (data.success) {
           var returnPath: string =
             '/app-smart-cloud/file-system-snapshot/create';
           console.log('request', request);
@@ -278,68 +286,65 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
           this.router.navigate(['/app-smart-cloud/order/cart'], {
             state: { data: request, path: returnPath },
           });
+        }else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
         },
         error: (e) => {
-          if(e.error.type === 'Exception'){
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              e.error.message,
+              e.error.detail
             );
-          }else{
-            this.notification.error(
-              this.i18n.fanyi('app.status.fail'),
-              'Yêu cầu tạo File System Snapshot thất bại.'
-            );
-          }
         },
       });
     } else {
       this.isLoadingCreateFSS = true;
       this.orderService.validaterOrder(request).subscribe({
         next: (data) => {
-          this.instanceService.create(request).subscribe(
-            (data) => {
-              if (data != null) {
-                if (data.code == 200) {
+          if (data.success) {
+            this.instanceService.create(request).subscribe(
+              (data) => {
+                if (data != null) {
+                  if (data.code == 200) {
+                    this.isLoadingCreateFSS = false;
+                    this.notification.success(
+                      this.i18n.fanyi('app.status.success'),
+                      'Yêu cầu tạo File System Snapshot thành công.'
+                    );
+                    this.router.navigate([
+                      '/app-smart-cloud/file-system-snapshot/list',
+                    ]);
+                  }
+                } else {
                   this.isLoadingCreateFSS = false;
-                  this.notification.success(
-                    this.i18n.fanyi('app.status.success'),
-                    'Yêu cầu tạo File System Snapshot thành công.'
+                  this.notification.error(
+                    this.i18n.fanyi('app.status.fail'),
+                    'Yêu cầu tạo File System Snapshot thất bại.'
                   );
-                  this.router.navigate([
-                    '/app-smart-cloud/file-system-snapshot/list',
-                  ]);
                 }
-              } else {
+              },
+              (error) => {
                 this.isLoadingCreateFSS = false;
                 this.notification.error(
                   this.i18n.fanyi('app.status.fail'),
                   'Yêu cầu tạo File System Snapshot thất bại.'
                 );
               }
-            },
-            (error) => {
-              this.isLoadingCreateFSS = false;
-              this.notification.error(
-                this.i18n.fanyi('app.status.fail'),
-                'Yêu cầu tạo File System Snapshot thất bại.'
-              );
-            }
-          );
+            );
+            
+          }else{
+            this.isVisiblePopupError = true;
+            this.errorList = data.data;
+            this.isLoadingCreateFSS = false;
+          }
         },
         error: (e) => {
           this.isLoadingCreateFSS = false;
-          if(e.error.type === 'Exception'){
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              e.error.message,
+              e.error.detail
             );
-          }else{
-            this.notification.error(
-              this.i18n.fanyi('app.status.fail'),
-              'Yêu cầu tạo File System Snapshot thất bại.'
-            );
-          }
         },
       });
     }

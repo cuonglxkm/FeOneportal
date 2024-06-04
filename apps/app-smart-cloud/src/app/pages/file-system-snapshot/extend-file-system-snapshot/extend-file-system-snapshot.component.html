@@ -127,83 +127,14 @@
             </nz-form-control>
           </nz-form-item>
         </nz-card>
-        <nz-card style="border-radius: 8px">
-          <span class="text-card-header">{{
-            'app.extension.info' | i18n
-          }}</span>
-          <nz-row nzJustify="space-between" style="margin-top: 15px">
-            <nz-col>
-              <nz-form-label>
-                <span style="color: #ea3829"
-                  >Ngày khởi tạo:
-                  {{
-                    fileSystemSnapshotDetail?.createTime | date : 'dd/MM/yyyy HH:mm:ss'
-                  }}
-                </span>
-              </nz-form-label>
-            </nz-col>
-            <nz-col nzSpan="12">
-              <nz-form-label>
-                <span style="color: #ea3829"
-                  >{{ 'app.service.expiration-date' | i18n }}:
-                  {{
-                    fileSystemSnapshotDetail?.expireDate | date : 'dd/MM/yyyy HH:mm:ss'
-                  }}</span
-                >
-              </nz-form-label>
-            </nz-col>
-          </nz-row>
-          <nz-form-item style="margin-top: 10px">
-            <nz-form-label nzFor="time">
-              <div class="label">
-                <span>{{ 'app.months.for.extend' | i18n }}</span>
-                (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-              </div>
-            </nz-form-label>
-            <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-              <nz-input-number
-                style="width: 100%; margin-left: 0"
-                nzAutoFocus
-                class="input-custom"
-                (ngModelChange)="changeTime($event)"
-                formControlName="time"
-                [nzMin]="1"
-                [nzStep]="1"
-                [nzMax]="100"
-              />
-              <ng-template #dateErrorTpl let-control>
-                <ng-container
-                  *ngIf="
-                    control.hasError('required') ||
-                    control.hasError('max') ||
-                    control.hasError('min') ||
-                    control.hasError('pattern')
-                  "
-                  >{{ 'app.more.0.less.100' | i18n }}</ng-container
-                >
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-row>
-            <nz-col>
-              <nz-form-label>
-                <span
-                  style="color: #f50000"
-                  *ngIf="orderItem?.orderItemPrices?.length > 0"
-                  >{{ 'app.expected.expiry.date' | i18n }}:
-                  {{
-                    orderItem?.orderItemPrices[0].expiredDate
-                      | date : 'dd/MM/yyyy HH:mm:ss'
-                  }}
-                </span>
-              </nz-form-label>
-            </nz-col>
-          </nz-row>
-        </nz-card>
+        <one-portal-service-time-extend *ngIf="fileSystemSnapshotDetail"
+                                          [createDate]="fileSystemSnapshotDetail?.createTime"
+                                          [expiredDate]="fileSystemSnapshotDetail?.expireDate"
+                                          (valueChanged)="onChangeTime($event)" />
       </nz-col>
       <nz-col nzSpan="8">
-        <nz-affix>
-        <nz-card style="border-radius: 8px">
+        <nz-affix [nzOffsetTop]="72">
+        <nz-card style="border-radius: 8px" class="border-card">
           <span class="text-card-header">{{
             'app.estimated.cost' | i18n
           }}</span>
