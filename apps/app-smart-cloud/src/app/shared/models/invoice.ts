@@ -11,3 +11,13 @@ export class FormCreateUserInvoice {
     customerId: number
   }
   
+
+  export class FormInitUserInvoice {
+    CustomerType: number
+    BuyerName: string
+    CompanyName: string
+    TaxCode: string
+    Address: string
+    PhoneNumber: string
+    Email: string
+  }
