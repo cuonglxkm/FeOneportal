@@ -775,7 +775,7 @@
                   nzMode="multiple"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="selectedSecurityGroup"
-                  [nzServerSearch]="true"
+                  [nzShowSearch]="true"
                   nzSize="large"
                 >
                   <nz-option
@@ -1088,29 +1088,20 @@
           <div style="margin-top: 10px" class="text-label">{{ nameImage }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.text.package' | i18n }}</div>
-          <div
-            *ngIf="instanceCreate.cpu"
-            style="margin-top: 10px"
-            class="text-label"
-          >
+          <div style="margin-top: 10px" class="text-label">
             {{ instanceCreate.cpu }} CPUs
           </div>
-          <div
-            *ngIf="instanceCreate.ram"
-            style="margin-top: 10px"
-            class="text-label"
-          >
+          <div style="margin-top: 10px" class="text-label">
             {{ instanceCreate.ram }} GB RAM
           </div>
-          <div
-            *ngIf="instanceCreate.volumeSize"
-            style="margin-top: 10px"
-            class="text-label"
-          >
+          <div style="margin-top: 10px" class="text-label">
             {{ instanceCreate.volumeSize }} GB Root Disk (<span>{{
-              instanceCreate.volumeType | uppercase
+              activeBlockHDD ? 'HDD' : 'SSD'
             }}</span
             >)
+          </div>
+          <div *ngIf="isGpuConfig" style="margin-top: 10px" class="text-label">
+            {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row>
@@ -1181,3 +1172,8 @@
     </button>
   </div>
 </nz-modal>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>

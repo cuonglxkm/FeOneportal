@@ -445,7 +445,7 @@ export class PaymentSummaryComponent implements OnInit {
 
   pay(){
     this.initUserInvoice()
-    this.order.invoiceInfo = JSON.stringify(this.formInitUserInvoice)    
+    this.isCheckedExportInvoice === true ? this.order.invoiceInfo = JSON.stringify(this.formInitUserInvoice) : this.order.invoiceInfo = ""
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.service
       .create(this.order)

@@ -42,7 +42,8 @@ export class ResizeFileSystemNormalComponent implements OnInit {
 
   storage: number = 0;
   isLoading: boolean = true;
-  fileSystem: FileSystemDetail = new FileSystemDetail();
+  isLoadingAction: boolean = false;
+  fileSystem: FileSystemDetail;
 
   resizeFileSystem: ResizeFileSystem = new ResizeFileSystem();
 
@@ -56,6 +57,12 @@ export class ResizeFileSystemNormalComponent implements OnInit {
   minStorage: number = 0;
   stepStorage: number = 0;
   valueStringConfiguration: string = '';
+
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
 
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
@@ -88,7 +95,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
       this.fileSystem = data;
       this.isLoading = false;
-      this.storage = this.fileSystem?.size;
+      // this.storage = this.fileSystem?.size;
       // this.validateForm.controls.storage.setValue(this.fileSystem?.size);
       this.validateForm.controls.snapshot.setValue(this.fileSystem?.isSnapshot);
       // this.getTotalAmount();
@@ -101,6 +108,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
 
   initFileSystem() {
     this.resizeFileSystem.customerId = this.tokenService.get()?.userId;
+    console.log('size', this.fileSystem?.size)
     if(this.fileSystem?.size != null) {
       this.resizeFileSystem.size = this.storage + this.fileSystem?.size;
     } else {
@@ -135,6 +143,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
   }
 
   getTotalAmount() {
+    this.isLoadingAction = true
     this.initFileSystem();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -145,6 +154,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
+      this.isLoadingAction = false
       console.log('thanh tien volume', result.data);
       this.orderItem = result.data;
       this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
@@ -152,7 +162,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
   }
 
   navigateToPaymentSummary() {
-    this.isLoading = true;
+    this.isLoadingAction = true;
     this.initFileSystem();
     let request = new ResizeFileSystemRequestModel();
     request.customerId = this.resizeFileSystem.customerId;
@@ -169,10 +179,14 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     ];
     console.log('request', request);
     this.orderService.validaterOrder(request).subscribe(data => {
+      this.isLoadingAction = false
       if(data.success) {
         var returnPath: string = '/app-smart-cloud/file-storage/file-system/resize/normal/' + this.idFileSystem;
         console.log('request', request);
         this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+      } else {
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
       }
     }, error =>  {
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)

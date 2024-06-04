@@ -3,17 +3,17 @@
   <nz-row nzJustify="space-between" style="margin-top: 15px;">
     <nz-col>
       <nz-form-label>
-        <span style="color: #EA3829">{{ 'app.service.creation-date' | i18n }}: {{ createDate | date: 'dd/MM/yyyy'}} </span>
+        <span style="color: #EA3829">{{ 'app.service.creation-date' | i18n }}: {{ createDate | date: 'HH:mm:ss dd/MM/yyyy'}} </span>
       </nz-form-label>
     </nz-col>
     <nz-col nzSpan="12">
       <nz-form-label>
-        <span style="color: #EA3829">{{ 'app.service.expiration-date' | i18n }}:  {{ expiredDate }}</span>
+        <span style="color: #EA3829">{{ 'app.service.expiration-date' | i18n }}:  {{ expiredDate | date: 'HH:mm:ss dd/MM/yyyy'}}</span>
       </nz-form-label>
     </nz-col>
   </nz-row>
   <nz-form-item style="margin-top: 10px;">
-    <nz-form-label nzFor="time">
+    <nz-form-label nzFor="time" style="width: 100%; text-align: left;">
       <div class="label">
         <span>{{ 'app.months.for.extend' | i18n }}</span>
         (<span style="color: rgba(252, 16, 16, 1); ">*</span>)

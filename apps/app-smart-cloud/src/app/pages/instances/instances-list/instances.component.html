@@ -182,7 +182,13 @@
           </ng-template>
         </td>
         <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-          <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</td>
+          <td
+            nzBreakWord
+            nzAlign="left"
+            [ngStyle]="{ color: statusModel.color }"
+          >
+            {{ statusModel.status }}
+          </td>
         </ng-container>
         <!-- <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">
           {{ 'app.status.running' | i18n }}
@@ -252,6 +258,13 @@
             [nz-tooltip]="'app.create.backup.schedule' | i18n"
           />
           <img
+            *ngIf="
+              data.status.toUpperCase() == 'KHOITAO' &&
+              data.taskState.toUpperCase() != 'REBUILDING' &&
+              !data.taskState.toUpperCase().includes('RESIZING') &&
+              data.taskState.toUpperCase() != 'ERROR' &&
+              data.taskState.toUpperCase() != 'POWERING-OFF'
+            "
             nz-dropdown
             [nzDropdownMenu]="opMenu"
             src="assets/imgs/more1.svg"

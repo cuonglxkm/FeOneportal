@@ -70,13 +70,13 @@
         </div>
         <nz-row style="margin-bottom: 20px">
           <nz-col nzSpan="12">
-            <div class="text-label">
+            <div class="text-label" style="color: #eb1414;">
               {{ 'app.service.start.date' | i18n }}:
               {{ objectStorage.createdDate | date : 'HH:mm:ss dd/MM/yyyy' }}
             </div>
           </nz-col>
           <nz-col nzSpan="12">
-            <div style="margin-left: 20px" class="text-label">
+            <div style="margin-left: 20px" class="text-label" style="color: #eb1414;">
               {{ 'app.service.expiration-date' | i18n }}:
               {{ objectStorage.expiredDate | date : 'HH:mm:ss dd/MM/yyyy' }}
             </div>
@@ -115,7 +115,7 @@
       </nz-card>
     </nz-col>
     <nz-col nzSpan="8">
-      <nz-affix>
+      <nz-affix nzOffsetTop="72">
       <nz-card style="border-radius: 8px" class="card-border">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
@@ -140,7 +140,7 @@
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
-                {{ totalAmount / numberMonth | number }} VND
+                {{ totalAmount | number }} VND
               </span>
             </nz-col>
           </nz-row>

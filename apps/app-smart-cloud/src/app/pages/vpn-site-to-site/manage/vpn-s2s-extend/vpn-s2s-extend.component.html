@@ -69,7 +69,7 @@
         </tbody>
       </nz-table>
     </nz-card>
-    <nz-card class="left-content-card">
+    <!-- <nz-card class="left-content-card">
       <span class="text-card-header">Thông tin gia hạn</span>
       <nz-row nzGutter="16" class="pt-5">
         <nz-col nzSpan="12">
@@ -111,9 +111,14 @@
       <div nz-col class="title-pading-left">
         <p class="red-text">Ngày hết hạn dự kiến: {{ expiredDate | date : 'dd/MM/yyyy' }}</p>
       </div>
-    </nz-card>
+    </nz-card> -->
+    <one-portal-service-time-extend *ngIf="vpn"
+                                          [createDate]="vpn?.createdDate"
+                                          [expiredDate]="vpn?.expiredDate"
+                                          (valueChanged)="onChangeTime($event)" />
   </nz-col>
   <nz-col nzSpan="8">
+    <nz-affix nzOffsetTop="72">
       <nz-card class="right-form">
         <div class="right-title">
               <span class="text-card-header">Chi phí ước tính</span>
@@ -122,7 +127,7 @@
         <nz-row class="right-form-content-month" nzGutter="16">
           <nz-col nzSpan="16">
             <span class="text-value">
-              Chi phí <span>{{ numberMonth | number }}</span> tháng
+              Chi phí <span>{{ validateForm.controls.time.value }}</span> tháng
             </span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
@@ -182,5 +187,6 @@
           </nz-col>
         </nz-row>
       </nz-card>
+    </nz-affix>
   </nz-col>
 </nz-row>

@@ -17,7 +17,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../libs/common-util
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
-import { debounceTime, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { OrderService } from '../../../shared/services/order.service';
 
 @Component({
@@ -33,7 +33,7 @@ export class ExtendBackupPackageComponent implements OnInit {
 
   idBackupPackage: number;
 
-  packageBackupModel: PackageBackupModel = new PackageBackupModel();
+  packageBackupModel: PackageBackupModel;
 
   validateForm: FormGroup<{
     time: FormControl<number>
@@ -43,9 +43,11 @@ export class ExtendBackupPackageComponent implements OnInit {
 
   estimateExpiredDate: Date;
 
-  isLoadingAction: boolean = false
+  isLoadingAction: boolean = false;
 
   dataSubjectTime: Subject<any> = new Subject<any>();
+
+  timeSelected: any;
 
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
@@ -76,11 +78,13 @@ export class ExtendBackupPackageComponent implements OnInit {
     this.dataSubjectTime.next(value);
   }
 
-  onChangeTime() {
-    this.dataSubjectTime.pipe(debounceTime(500))
-      .subscribe((res) => {
-        this.getTotalAmount();
-      });
+  onChangeTime(value) {
+    // this.dataSubjectTime.pipe(debounceTime(500))
+    //   .subscribe((res) => {
+    this.timeSelected = value;
+    this.validateForm.controls.time.setValue(this.timeSelected);
+    this.getTotalAmount();
+    // });
   }
 
   getDetailPackageBackup(id) {
@@ -93,8 +97,14 @@ export class ExtendBackupPackageComponent implements OnInit {
     });
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   navigateToPaymentSummary() {
-    this.isLoadingAction = true
+    this.isLoadingAction = true;
     this.getTotalAmount();
     let request: BackupPackageRequestModel = new BackupPackageRequestModel();
     request.customerId = this.formExtendBackupPackage.customerId;
@@ -110,14 +120,17 @@ export class ExtendBackupPackageComponent implements OnInit {
       }
     ];
     this.orderService.validaterOrder(request).subscribe(data => {
-      this.isLoadingAction = false
+      this.isLoadingAction = false;
       if (data.success) {
         var returnPath: string = '/app-smart-cloud/backup/packages/extend/' + this.idBackupPackage;
         console.log('request', request);
         this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+      } else {
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
       }
     }, error => {
-      this.isLoadingAction = false
+      this.isLoadingAction = false;
       console.log('error', error);
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
     });
@@ -154,7 +167,7 @@ export class ExtendBackupPackageComponent implements OnInit {
     this.formExtendBackupPackage.regionId = this.region;
     this.formExtendBackupPackage.serviceName = this.packageBackupModel?.packageName;
     this.formExtendBackupPackage.customerId = this.packageBackupModel?.customerId;
-    this.formExtendBackupPackage.projectId = this.project
+    this.formExtendBackupPackage.projectId = this.project;
     this.formExtendBackupPackage.vpcId = this.project.toString();
     this.formExtendBackupPackage.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.BackupPacketExtendSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null';
     this.formExtendBackupPackage.serviceType = 14;
@@ -169,7 +182,7 @@ export class ExtendBackupPackageComponent implements OnInit {
   unitPrice = 0;
 
   getTotalAmount() {
-    this.isLoadingAction = true
+    this.isLoadingAction = true;
     this.backupPackageInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -181,7 +194,7 @@ export class ExtendBackupPackageComponent implements OnInit {
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
-      this.isLoadingAction = false
+      this.isLoadingAction = false;
       console.log('thanh tien backup package', result.data);
       this.orderItem = result.data;
       this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount;
@@ -197,7 +210,7 @@ export class ExtendBackupPackageComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     // this.customerId = this.tokenService.get()?.userId
-    this.onChangeTime();
+    // this.onChangeTime();
 
     if (this.idBackupPackage) {
       this.getDetailPackageBackup(this.idBackupPackage);

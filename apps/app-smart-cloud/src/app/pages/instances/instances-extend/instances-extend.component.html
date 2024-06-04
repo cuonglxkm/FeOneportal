@@ -345,7 +345,7 @@
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalVAT }}
+              {{ totalVAT | number }}
               VND
             </span>
           </nz-col>
@@ -392,3 +392,8 @@
     </nz-col>
   </nz-row>
 </div>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>

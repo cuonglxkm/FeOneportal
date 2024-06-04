@@ -73,7 +73,7 @@
 
     <nz-col nzSpan="8">
       <nz-affix [nzOffsetTop]="72">
-        <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF" [nzLoading]="loadingCalculate">
+        <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
           </div>
@@ -126,9 +126,9 @@
           <nz-row>
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
-                      [disabled]="form.invalid">
+                      [disabled]="form.invalid || loadingCalculate" [nzLoading]="loadingCalculate">
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
-                <span [style.color]="form.invalid ? 'gray' : 'white'">{{'app.button.create' | i18n}}</span>
+                <span [style.color]="form.invalid || loadingCalculate ? 'gray' : 'white'">{{'app.button.create' | i18n}}</span>
               </button>
             </nz-col>
           </nz-row>

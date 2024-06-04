@@ -104,6 +104,7 @@
   "app.amount": "Số lượng",
   "app.resource": "Tài nguyên",
   "app.money.price": "Thành tiền/Đơn giá",
+  "app.notify.error": "Thông báo lỗi",
 
   "app.encrypt": "Mã hóa",
   "app.monthly.price": "Giá theo tháng",
@@ -317,6 +318,9 @@
   "app.vpns2s": "VPN Site to Site",
   "app.backup-package": "gói backup",
   "app.instances": "Máy ảo",
+  "app.ip-public": "Ip Public",
+  "app.ip-loating": "Ip Floating",
+  "app.load-balancer": "Load Balancer",
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
   "app.instances.edit": "Điều chỉnh máy ảo",

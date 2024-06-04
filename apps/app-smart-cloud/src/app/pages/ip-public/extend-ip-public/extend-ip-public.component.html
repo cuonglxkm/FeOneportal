@@ -59,7 +59,7 @@
       </nz-card>
     </nz-col>
     <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF" [nzLoading]="isLoading">
+      <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF">
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
         </div>
@@ -111,9 +111,9 @@
         </nz-row>
         <nz-row>
           <nz-col style="width: 100%">
-            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="extendIpPublic()" [disabled]="numOfMonth == null || numOfMonth ==0">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" [nzLoading]="loadingCalculate" (click)="extendIpPublic()" [disabled]="numOfMonth == null || numOfMonth ==0 || loadingCalculate">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="numOfMonth == null || numOfMonth ==0 ? 'gray' : 'white'">{{'app.extend' | i18n:{"vat":"10"} }}</span>
+              <span [style.color]="numOfMonth == null || numOfMonth ==0 || loadingCalculate? 'gray' : 'white'">{{'app.extend' | i18n:{"vat":"10"} }}</span>
             </button>
           </nz-col>
         </nz-row>

@@ -50,6 +50,7 @@ import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -155,7 +156,8 @@ export class InstancesCreateComponent implements OnInit {
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver,
     private vlanService: VlanService,
-    private configurationService: ConfigurationsService
+    private configurationService: ConfigurationsService,
+    private orderService: OrderService
   ) {}
 
   @ViewChild('nameInput') firstInput: ElementRef;
@@ -458,24 +460,26 @@ export class InstancesCreateComponent implements OnInit {
   activeBlockSSD: boolean = false;
 
   initHDD(): void {
-    this.activeBlockHDD = true;
-    this.activeBlockSSD = false;
-    this.offerFlavor = null;
-    this.selectedElementFlavor = null;
-    this.totalAmount = 0;
-    this.totalVAT = 0;
-    this.totalincludesVAT = 0;
-    this.getUnitPrice(1, 0, 0, 0, null);
-    if (
-      this.isCustomconfig &&
-      this.configCustom.vCPU != 0 &&
-      this.configCustom.ram != 0 &&
-      this.configCustom.capacity != 0
-    ) {
-      this.getTotalAmount();
+    if (!this.disableHDD) {
+      this.activeBlockHDD = true;
+      this.activeBlockSSD = false;
+      this.offerFlavor = null;
+      this.selectedElementFlavor = null;
+      this.totalAmount = 0;
+      this.totalVAT = 0;
+      this.totalincludesVAT = 0;
+      this.getUnitPrice(1, 0, 0, 0, null);
+      if (
+        this.isCustomconfig &&
+        this.configCustom.vCPU != 0 &&
+        this.configCustom.ram != 0 &&
+        this.configCustom.capacity != 0
+      ) {
+        this.getTotalAmount();
+      }
+      this.listOfferFlavors = [];
+      this.initFlavors();
     }
-    this.listOfferFlavors = [];
-    this.initFlavors();
   }
   initSSD(): void {
     this.activeBlockHDD = false;
@@ -548,10 +552,10 @@ export class InstancesCreateComponent implements OnInit {
     this.totalAmount = 0;
     this.totalVAT = 0;
     this.totalincludesVAT = 0;
-    this.instanceCreate.ram = 0
-    this.instanceCreate.cpu = 0
-    this.instanceCreate.volumeSize = 0
-    this.instanceCreate.gpuCount = 0
+    this.instanceCreate.ram = 0;
+    this.instanceCreate.cpu = 0;
+    this.instanceCreate.volumeSize = 0;
+    this.instanceCreate.gpuCount = 0;
   }
   //#endregion
 
@@ -839,6 +843,7 @@ export class InstancesCreateComponent implements OnInit {
   minCapacity: number;
   maxCapacity: number;
   stepCapacity: number;
+  surplus: number;
   getConfigurations() {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {
@@ -846,6 +851,8 @@ export class InstancesCreateComponent implements OnInit {
         this.minCapacity = valueArray[0];
         this.stepCapacity = valueArray[1];
         this.maxCapacity = valueArray[2];
+        this.surplus = valueArray[2] % valueArray[1];
+        this.cdr.detectChanges();
       },
     });
   }
@@ -856,6 +863,10 @@ export class InstancesCreateComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
+      if (res > this.maxCapacity - this.surplus) {
+        this.configCustom.capacity = this.maxCapacity - this.surplus;
+        this.cdr.detectChanges();
+      }
       if (this.configCustom.capacity % this.stepCapacity > 0) {
         this.notification.warning(
           '',
@@ -1412,6 +1423,11 @@ export class InstancesCreateComponent implements OnInit {
     this.ipCreate.serviceName = checkIpv6 ? 'IPv6' : 'IPv4';
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   save(): void {
     if (!this.isSnapshot && this.hdh == null) {
       this.notification.error(
@@ -1544,10 +1560,25 @@ export class InstancesCreateComponent implements OnInit {
           this.order.note = 'tạo vm';
           this.order.orderItems = this.orderItem;
 
-          var returnPath: string = window.location.pathname;
-          console.log('instance create', this.instanceCreate);
-          this.router.navigate(['/app-smart-cloud/order/cart'], {
-            state: { data: this.order, path: returnPath },
+          this.orderService.validaterOrder(this.order).subscribe({
+            next: (result) => {
+              if (result.success) {
+                var returnPath: string = window.location.pathname;
+                console.log('instance create', this.instanceCreate);
+                this.router.navigate(['/app-smart-cloud/order/cart'], {
+                  state: { data: this.order, path: returnPath },
+                });
+              } else {
+                this.isVisiblePopupError = true;
+                this.errorList = result.data;
+              }
+            },
+            error: (error) => {
+              this.notification.error(
+                this.i18n.fanyi('app.status.fail'),
+                error.error.detail
+              );
+            },
           });
         },
         error: (e) => {

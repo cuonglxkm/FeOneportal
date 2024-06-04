@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { debounceTime, Subject } from 'rxjs';
 import { addDays } from 'date-fns';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'one-portal-service-time-extend',
@@ -9,17 +8,16 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./service-time-extend.component.less']
 })
 export class ServiceTimeExtendComponent implements OnInit {
-  @Input() createDate: Date;
-  @Input() expiredDate: Date;
+  @Input() createDate: any;
+  @Input() expiredDate: any;
   @Output() valueChanged = new EventEmitter();
 
   dataSubjectTime: Subject<any> = new Subject<any>();
-  today: Date = new Date();
   numberMonth: number = 1;
-  newExpiredDate: Date = addDays(this.today, 30);
+  newExpiredDate: any;
 
-  constructor(private cdr: ChangeDetectorRef,
-              private datePipe: DatePipe) {}
+  constructor(private cdr: ChangeDetectorRef) {
+  }
 
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
@@ -45,19 +43,25 @@ export class ServiceTimeExtendComponent implements OnInit {
   onChangeTime() {
     this.dataSubjectTime.pipe(debounceTime(500))
       .subscribe((res) => {
+        console.log(res);
         this.valueChanged.emit(res);
-        let expiredDate = new Date(this.expiredDate.getDate());
+        let expiredDate = new Date(this.expiredDate);
         expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-        this.newExpiredDate = expiredDate;
+        this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
         this.cdr.detectChanges();
       });
   }
 
   ngOnInit(): void {
+    console.log(this.expiredDate);
+    console.log(this.createDate);
+    
+    let expiredDate = new Date(this.expiredDate);
+    expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+    
+    this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
+    console.log('new', this.newExpiredDate)
     this.onChangeTime();
-
-    console.log('createdDate', this.createDate);
-    console.log('expiredDate', this.expiredDate);
   }
 
 }

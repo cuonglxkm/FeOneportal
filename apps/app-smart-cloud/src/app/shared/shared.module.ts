@@ -28,6 +28,7 @@ import { formatPrice } from './pipes/formatPrice.pipe';
 import { ServiceUsagePeriodComponent } from './components/service-usage-period/service-usage-period.component';
 import { GuideFormulaComponent } from './components/guide-formula/guide-formula.component';
 import { TimeUsedResizeComponent } from './components/time-used-resize/time-used-resize.component';
+import { PopupListErrorComponent } from './components/popup-list-error/popup-list-error.component';
 import { ServiceTimeExtendComponent } from './components/service-time-extend/service-time-extend.component';
 
 const antDesignIcons = AllIcons as {
@@ -49,6 +50,7 @@ const COMPONENTS: Array<Type<any>> = [
   ProjectSelectDropdownComponent,
   ServiceUsagePeriodComponent,
   GuideFormulaComponent,
+  PopupListErrorComponent,
   FlavorSelectComponent,
   ImageSelectComponent,
   SecurityGroupSelectComponent,
