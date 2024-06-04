@@ -38,7 +38,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, finalize } from 'rxjs';
 import { addDays, isValid } from 'date-fns';
 import {
   FormSearchNetwork,
@@ -1195,6 +1195,8 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   onInputIPv4(value: any, id: number) {
+    this.isLoading = true;
+    this.cdr.detectChanges();
     this.listOfDataIPv4.forEach((e) => {
       if (e.id == id) {
         e.amount = 1;
@@ -1206,6 +1208,8 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   onInputIPv6(value: any, id: number) {
+    this.isLoading = true;
+    this.cdr.detectChanges();
     this.listOfDataIPv6.forEach((e) => {
       if (e.id == id) {
         e.amount = 1;
@@ -1429,6 +1433,7 @@ export class InstancesCreateComponent implements OnInit {
     this.isVisiblePopupError = false;
   }
   save(): void {
+    this.isLoading = true;
     if (!this.isSnapshot && this.hdh == null) {
       this.notification.error(
         '',
@@ -1503,7 +1508,7 @@ export class InstancesCreateComponent implements OnInit {
           orderItemInstance.orderItemQuantity = 1;
           orderItemInstance.specification = specificationInstance;
           orderItemInstance.specificationType = 'instance_create';
-          orderItemInstance.price = this.totalAmount / this.numberMonth;
+          orderItemInstance.price = this.totalAmount;
           orderItemInstance.serviceDuration = this.numberMonth;
           this.orderItem.push(orderItemInstance);
           console.log('order instance', orderItemInstance);
@@ -1516,7 +1521,7 @@ export class InstancesCreateComponent implements OnInit {
               orderItemVolume.orderItemQuantity = 1;
               orderItemVolume.specification = specificationVolume;
               orderItemVolume.specificationType = 'volume_create';
-              orderItemVolume.price = e.price;
+              orderItemVolume.price = e.price * this.numberMonth;
               orderItemVolume.serviceDuration = this.numberMonth;
               this.orderItem.push(orderItemVolume);
             }
@@ -1531,7 +1536,7 @@ export class InstancesCreateComponent implements OnInit {
                 orderItemIP.orderItemQuantity = 1;
                 orderItemIP.specification = specificationIP;
                 orderItemIP.specificationType = 'ip_create';
-                orderItemIP.price = e.price;
+                orderItemIP.price = (e.price / e.amount) * this.numberMonth;
                 orderItemIP.serviceDuration = this.numberMonth;
                 this.orderItem.push(orderItemIP);
               }
@@ -1548,7 +1553,7 @@ export class InstancesCreateComponent implements OnInit {
                 orderItemIP.orderItemQuantity = 1;
                 orderItemIP.specification = specificationIP;
                 orderItemIP.specificationType = 'ip_create';
-                orderItemIP.price = e.price;
+                orderItemIP.price = (e.price / e.amount) * this.numberMonth;
                 orderItemIP.serviceDuration = this.numberMonth;
                 this.orderItem.push(orderItemIP);
               }
@@ -1560,26 +1565,29 @@ export class InstancesCreateComponent implements OnInit {
           this.order.note = 'tạo vm';
           this.order.orderItems = this.orderItem;
 
-          this.orderService.validaterOrder(this.order).subscribe({
-            next: (result) => {
-              if (result.success) {
-                var returnPath: string = window.location.pathname;
-                console.log('instance create', this.instanceCreate);
-                this.router.navigate(['/app-smart-cloud/order/cart'], {
-                  state: { data: this.order, path: returnPath },
-                });
-              } else {
-                this.isVisiblePopupError = true;
-                this.errorList = result.data;
-              }
-            },
-            error: (error) => {
-              this.notification.error(
-                this.i18n.fanyi('app.status.fail'),
-                error.error.detail
-              );
-            },
-          });
+          this.orderService
+            .validaterOrder(this.order)
+            .pipe(finalize(() => (this.isLoading = false)))
+            .subscribe({
+              next: (result) => {
+                if (result.success) {
+                  var returnPath: string = window.location.pathname;
+                  console.log('instance create', this.instanceCreate);
+                  this.router.navigate(['/app-smart-cloud/order/cart'], {
+                    state: { data: this.order, path: returnPath },
+                  });
+                } else {
+                  this.isVisiblePopupError = true;
+                  this.errorList = result.data;
+                }
+              },
+              error: (error) => {
+                this.notification.error(
+                  this.i18n.fanyi('app.status.fail'),
+                  error.error.detail
+                );
+              },
+            });
         },
         error: (e) => {
           let numbers: number[] = [];
@@ -1605,6 +1613,8 @@ export class InstancesCreateComponent implements OnInit {
   totalVAT: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
+    this.isLoading = true;
+    this.cdr.detectChanges();
     this.instanceInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -1622,6 +1632,7 @@ export class InstancesCreateComponent implements OnInit {
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );
+      this.isLoading = false;
       this.cdr.detectChanges();
     });
   }
@@ -1797,7 +1808,7 @@ export class InstancesCreateComponent implements OnInit {
   getTotalAmountIPv4() {
     this.dataSubjectIpv4
       .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+        debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
         this.totalAmountIPv4 = 0;
@@ -1842,6 +1853,7 @@ export class InstancesCreateComponent implements OnInit {
                   this.totalPaymentIPv4 += Number.parseFloat(
                     result.data.totalPayment.amount
                   );
+                  this.isLoading = false;
                   this.cdr.detectChanges();
                 });
               });
@@ -1860,7 +1872,7 @@ export class InstancesCreateComponent implements OnInit {
   getTotalAmountIPv6() {
     this.dataSubjectIpv6
       .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+        debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
         this.totalAmountIPv6 = 0;
@@ -1905,6 +1917,7 @@ export class InstancesCreateComponent implements OnInit {
                   this.totalPaymentIPv6 += Number.parseFloat(
                     result.data.totalPayment.amount
                   );
+                  this.isLoading = false;
                   this.cdr.detectChanges();
                 });
               });

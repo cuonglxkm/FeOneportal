@@ -155,7 +155,7 @@ export class ObjectStorageExtendComponent implements OnInit {
     orderItemOS.orderItemQuantity = 1;
     orderItemOS.specification = specification;
     orderItemOS.specificationType = 'objectstorage_extend';
-    orderItemOS.price = this.totalAmount / this.numberMonth;
+    orderItemOS.price = this.totalAmount;
     orderItemOS.serviceDuration = this.numberMonth;
     this.orderItem.push(orderItemOS);
 
