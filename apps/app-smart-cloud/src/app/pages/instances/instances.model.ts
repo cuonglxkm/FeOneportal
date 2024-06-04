@@ -325,6 +325,7 @@ export class Order {
   couponCode: string;
   note: string;
   orderItems: any[];
+  invoiceInfo?: string
 }
 
 export class OrderItem {

@@ -73,21 +73,21 @@
       <span class="text-card-header">Thông tin gia hạn</span>
       <nz-row nzGutter="16" class="pt-5">
         <nz-col nzSpan="12">
-          <span class="text-label">Ngày cấp dịch vụ: </span>
-          <span class="text-value-detail">{{
-            vpn?.createdDate | date : 'dd/MM/yyyy'
+          <span class="text-label red-text">Ngày cấp dịch vụ: </span>
+          <span class="text-value-detail red-text">{{
+            vpn?.createdDate | date : 'HH:mm:ss dd/MM/yyyy'
           }}</span>
         </nz-col>
         <nz-col nzSpan="12">
-          <span class="text-label">Ngày hết hạn: </span>
-          <span class="text-value-detail">
-            {{ vpn?.expiredDate | date : 'dd/MM/yyyy' }}</span
+          <span class="text-label red-text">Ngày hết hạn: </span>
+          <span class="text-value-detail red-text">
+            {{ vpn?.expiredDate | date : 'HH:mm:ss dd/MM/yyyy' }}</span
           >
         </nz-col>
       </nz-row>
       <div nz-row class="mb-md pt-5" style="margin-bottom: 0 !important;">
         <div nz-col nzSpan="24">
-          <nz-form-label nzRequired>Số tháng cần gia hạn thêm</nz-form-label>
+          <nz-form-label>Số tháng cần gia hạn thêm</nz-form-label>
           <nz-form-item>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
               <nz-input-number class="input-number-element"

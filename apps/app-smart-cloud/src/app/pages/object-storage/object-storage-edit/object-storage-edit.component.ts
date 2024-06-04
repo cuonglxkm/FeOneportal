@@ -144,6 +144,7 @@ export class ObjectStorageEditComponent implements OnInit {
     orderItemOS.specification = specification;
     orderItemOS.specificationType = 'objectstorage_resize';
     orderItemOS.price = this.totalAmount;
+    orderItemOS.serviceDuration = 1;
     this.orderItem.push(orderItemOS);
 
     this.order.customerId = this.tokenService.get()?.userId;
