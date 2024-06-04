@@ -46,32 +46,54 @@ export class BucketListComponent implements OnInit {
     private message: NzMessageService,
     private loadingSrv: LoadingService
   ) {}
+  hasOS: boolean = undefined;
 
   ngOnInit(): void {
-    this.hasObjectStorage();
-    this.search();
-    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+    this.hasObjectStorageInfo()
+      this.hasObjectStorage();
       this.search();
-    });
+      this.searchDelay
+        .pipe(debounceTime(TimeCommon.timeOutSearch))
+        .subscribe(() => {
+          this.search();
+        });
   }
 
-  hasOS: boolean = undefined;
-  hasObjectStorage() {
-    this.hasOS = undefined;
+
+
+  hasObjectStorageInfo() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
-      .getObjectStorage()
+      .getUserInfo()
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
           if (data) {
-            this.objectStorage = data;
             this.hasOS = true;
             this.search();
           } else {
             this.hasOS = false;
           }
           this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error(
+            e.error.detail,
+            this.i18n.fanyi('app.notification.object.storage.fail')
+          );
+        },
+      });
+  }
+  hasObjectStorage() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectSevice
+      .getObjectStorage()
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          this.objectStorage = data;
+          this.search();
+          
         },
         error: (e) => {
           this.notification.error(
@@ -107,7 +129,7 @@ export class BucketListComponent implements OnInit {
       });
   }
 
-  searchBucket(search: string) {  
+  searchBucket(search: string) {
     this.value = search.trim();
     this.search();
   }
@@ -139,9 +161,7 @@ export class BucketListComponent implements OnInit {
     ]);
   }
 
-  deleteObjectStorage() {
-    
-  }
+  deleteObjectStorage() {}
 
   isVisibleDeleteBucket: boolean = false;
   bucketDeleteName: string;
@@ -151,7 +171,8 @@ export class BucketListComponent implements OnInit {
     this.isVisibleDeleteBucket = true;
     this.codeVerify = '';
     this.bucketDeleteName = bucketName;
-    this.titleModalDeleteBucket = this.i18n.fanyi('app.bucket.delete.bucket') + ' ' + bucketName;
+    this.titleModalDeleteBucket =
+      this.i18n.fanyi('app.bucket.delete.bucket') + ' ' + bucketName;
   }
 
   handleCancelDeleteBucket() {
@@ -163,11 +184,17 @@ export class BucketListComponent implements OnInit {
       this.bucketService.deleteBucket(this.bucketDeleteName).subscribe({
         next: (data) => {
           if (data == 'Thao tác thành công') {
-            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.bucket.delete.bucket.success'));
+            this.notification.success(
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.bucket.delete.bucket.success')
+            );
             this.isVisibleDeleteBucket = false;
             this.search();
           } else {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.bucket.delete.bucket.fail'));
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.bucket.delete.bucket.fail')
+            );
           }
         },
         error: (error) => {
@@ -178,7 +205,10 @@ export class BucketListComponent implements OnInit {
         },
       });
     } else {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.bucket.delete.bucket.fail1'));
+      this.notification.error(
+        this.i18n.fanyi('app.status.fail'),
+        this.i18n.fanyi('app.bucket.delete.bucket.fail1')
+      );
     }
   }
 
@@ -193,7 +223,10 @@ export class BucketListComponent implements OnInit {
 
   handleOkDeleteOS() {
     this.isVisibleDeleteOS = false;
-    this.notification.success(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.nofitacation.remove.sucess'));
+    this.notification.success(
+      this.i18n.fanyi('app.status.fail'),
+      this.i18n.fanyi('router.nofitacation.remove.sucess')
+    );
 
     // this.dataService
     //   .deleteRouter(this.cloudId, this.region, this.projectId)

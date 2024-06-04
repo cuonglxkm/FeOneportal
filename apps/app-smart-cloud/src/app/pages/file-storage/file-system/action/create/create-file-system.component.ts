@@ -152,7 +152,7 @@ export class CreateFileSystemComponent implements OnInit {
     this.fileSystemSnapshotService.getFileSystemSnapshot(formSearchFileSystemSnapshot).subscribe(data => {
       data.records.forEach(snapshot => {
         if(['available','KHOITAO'].includes(snapshot.status)) {
-          this.snapshotList.push({ label: snapshot.name, value: snapshot.id });
+          this.snapshotList.push({ label: snapshot.name, value: snapshot.snapshotId });
         }
       });
       if(this.activatedRoute.snapshot.paramMap.get('snapshotId')){
