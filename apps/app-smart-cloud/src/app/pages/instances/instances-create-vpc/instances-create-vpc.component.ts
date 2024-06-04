@@ -843,6 +843,9 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.isVisiblePopupError = false;
   }
   handleOkCreate(): void {
+    this.isVisibleCreate = false;
+    this.isLoading = true;
+    this.cdr.detectChanges();
     this.dataService
       .checkflavorforimage(
         this.hdh,
@@ -852,7 +855,6 @@ export class InstancesCreateVpcComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.isVisibleCreate = false;
           this.instanceInit();
 
           let specificationInstance = JSON.stringify(this.instanceCreate);
@@ -874,38 +876,43 @@ export class InstancesCreateVpcComponent implements OnInit {
           //   state: { data: this.order, path: returnPath },
           // });
 
-          this.orderService.validaterOrder(this.order).subscribe({
-            next: (result) => {
-              if (result.success) {
-                this.dataService.create(this.order).subscribe({
-                  next: (data: any) => {
-                    this.notification.success(
-                      '',
-                      this.i18n.fanyi(
-                        'app.notify.success.instances.order.create'
-                      )
-                    );
-                    this.router.navigate(['/app-smart-cloud/instances']);
-                  },
-                  error: (e) => {
-                    this.notification.error(
-                      e.statusText,
-                      this.i18n.fanyi('app.notify.fail.instances.order.create')
-                    );
-                  },
-                });
-              } else {
-                this.isVisiblePopupError = true;
-                this.errorList = result.data;
-              }
-            },
-            error: (error) => {
-              this.notification.error(
-                this.i18n.fanyi('app.status.fail'),
-                error.error.detail
-              );
-            },
-          });
+          this.orderService
+            .validaterOrder(this.order)
+            .pipe(finalize(() => (this.isLoading = false)))
+            .subscribe({
+              next: (result) => {
+                if (result.success) {
+                  this.dataService.create(this.order).subscribe({
+                    next: (data: any) => {
+                      this.notification.success(
+                        '',
+                        this.i18n.fanyi(
+                          'app.notify.success.instances.order.create'
+                        )
+                      );
+                      this.router.navigate(['/app-smart-cloud/instances']);
+                    },
+                    error: (e) => {
+                      this.notification.error(
+                        e.statusText,
+                        this.i18n.fanyi(
+                          'app.notify.fail.instances.order.create'
+                        )
+                      );
+                    },
+                  });
+                } else {
+                  this.isVisiblePopupError = true;
+                  this.errorList = result.data;
+                }
+              },
+              error: (error) => {
+                this.notification.error(
+                  this.i18n.fanyi('app.status.fail'),
+                  error.error.detail
+                );
+              },
+            });
         },
         error: (e) => {
           let numbers: number[] = [];

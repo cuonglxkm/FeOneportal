@@ -1,4 +1,4 @@
-import { OrderItemPrices } from "src/app/shared/models/price";
+import { OrderItemPrices } from 'src/app/shared/models/price';
 
 export class IPSubnetModel {
   id: string;
@@ -333,7 +333,7 @@ export class OrderItem {
   specificationType: string;
   price: number;
   serviceDuration: number;
-  orderItemPrices?: OrderItemPrices[]
+  orderItemPrices?: OrderItemPrices[];
 }
 
 export class InstanceResize {
@@ -347,7 +347,7 @@ export class InstanceResize {
   cpu: number;
   gpuCount: any;
   gpuType: any;
-  newGpuTypeOfferId: any;
+  newGpuOfferId: any;
   typeName: string;
   newOfferId: number;
   serviceType: number;

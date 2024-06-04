@@ -726,6 +726,7 @@
                 nz-button
                 nzSize="large"
                 nzType="primary"
+                [nzLoading]="isLoading"
                 (click)="update()"
                 [disabled]="!isChange"
               >
