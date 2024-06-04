@@ -214,11 +214,11 @@
       <nz-affix nzOffsetTop="72">
       <nz-card class="card-price">
         <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
-        <div style="margin-bottom: 12px">
+        <div class="text-label" style="margin-bottom: 12px">
           <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>
           <span>{{ selectedFileSystemName }}</span>
         </div>
-        <div style="margin-bottom: 20px">
+        <div class="text-label" style="margin-bottom: 20px">
           <h3 class="custom-subtitle">{{ 'app.snapshot.name' | i18n }}</h3>
           <span class="word-break">{{ form.value.nameSnapshot }}</span>
         </div>
@@ -252,15 +252,15 @@
         <div class="right-title">
           <span class="text-card-header">Chi phí ước tính</span>
         </div>
-        <div style="margin-bottom: 12px">
+        <div class="text-label" style="margin-bottom: 12px">
           <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>
           <span>{{ selectedFileSystemName }}</span>
         </div>
-        <div style="margin-bottom: 20px">
+        <div class="text-label" style="margin-bottom: 20px">
           <h3 class="custom-subtitle">{{ 'app.snapshot.name' | i18n }}</h3>
           <span class="word-break">{{ form.value.nameSnapshot }}</span>
         </div>
-        <div style="margin-bottom: 20px">
+        <div class="text-label" style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Dung lượng File System</h3>
           <span *ngIf="fileSysSize">{{ fileSysSize }} GB</span>
         </div>
