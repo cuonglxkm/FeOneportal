@@ -21,7 +21,7 @@ export class SnapshotVolumeService extends BaseService {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
-      user_root_id: this.tokenService.get()?.userId,
+      'User-Root-Id': this.tokenService.get()?.userId,
     }),
   };
   //API GW
