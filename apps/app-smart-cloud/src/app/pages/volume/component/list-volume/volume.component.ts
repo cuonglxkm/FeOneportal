@@ -220,8 +220,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
   navigateToCreateBackup(idVolume) {
     if (this.typeVPC == 1) {
       this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc', { volumeId: idVolume }]);
-    }
-    if (this.typeVPC == 0) {
+    } else {
       this.router.navigate(['/app-smart-cloud/backup-volume/create/normal', { volumeId: idVolume }]);
     }
 
@@ -260,32 +259,32 @@ export class VolumeComponent implements OnInit, OnDestroy {
     this.notificationService.connection.on('UpdateVolume', (message) => {
       if (message) {
         switch (message.actionType) {
-          case "CREATING":
-          case "CREATED":
-          case "RESIZING":
-          case "RESIZED":
-          case "EXTENDING":
-          case "EXTENDED":
-          case "DELETING":
-          case "DELETED":
-          case "DELETING":
+          case 'CREATING':
+          case 'CREATED':
+          case 'RESIZING':
+          case 'RESIZED':
+          case 'EXTENDING':
+          case 'EXTENDED':
+          case 'DELETING':
+          case 'DELETED':
+          case 'DELETING':
             this.getListVolume(true);
-          break;
+            break;
           //case "CREATED":
-            // let volumeId = message.serviceId;
-            // var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
-            // if (foundIndex > -1) {
-            //   var record = this.response.records[foundIndex];
-            //   record.serviceStatus = message.data?.serviceStatus;
-            //   record.createDate = message.data?.creationDate;
-            //   record.expirationDate = message.data?.expirationDate;
-            //   this.response.records[foundIndex] = record;
-            //   this.cdr.detectChanges();
-            // }
-            // else
-            // {
-              // this.getListVolume(true);
-            //}
+          // let volumeId = message.serviceId;
+          // var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+          // if (foundIndex > -1) {
+          //   var record = this.response.records[foundIndex];
+          //   record.serviceStatus = message.data?.serviceStatus;
+          //   record.createDate = message.data?.creationDate;
+          //   record.expirationDate = message.data?.expirationDate;
+          //   this.response.records[foundIndex] = record;
+          //   this.cdr.detectChanges();
+          // }
+          // else
+          // {
+          // this.getListVolume(true);
+          //}
           //break;
         }
       }
