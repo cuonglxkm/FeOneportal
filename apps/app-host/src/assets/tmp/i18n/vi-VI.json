@@ -1324,6 +1324,8 @@
   "app.policy.delete.noti.fail": "Xóa thất bại Policy",
   "app.edit-policy.noti.sucess": "Chỉnh sửa Policy thành công",
   "app.edit-policy.noti.fail": "Chỉnh sửa Policy thất bại",
+  "app.edit-policy.noti.warming.1": "Chưa có dịch vụ vào được chọn",
+  "app.edit-policy.noti.warming.2": "Lấy thông tin Policy thất bại.",
 
   "app.breadcrumb.account": "Tài khoản",
   "app.breadcrumb.security": "Bảo mật",
@@ -2282,6 +2284,7 @@
   "app.ip.floating20": "Cấp phát IP Floating thất bại",
   "app.ip.floating21": "Cấp phát IP Floating",
   "app.ip.floating22": "Tạo mới IP Floating",
+  "app.ip.floating23": "Dải network bị hết IP, xin vui lòng chọn dải IP khác!",
   "app.button.remove": "Xóa",
 
   "app.vlan.create": "Tạo mới Network",

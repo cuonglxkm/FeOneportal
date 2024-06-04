@@ -24,15 +24,9 @@ export class ExtendIpPublicComponent implements OnInit{
   ipAddress: any;
   attachedVm: any;
   isIpV6: boolean;
-
-  attachedDto: AttachedDto[] = [];
-
   listVMs: string = '';
-
   isLoading: boolean = false;
-
   projectId: any;
-
   regionId: any;
   total: any;
   dateString: any;
@@ -46,10 +40,6 @@ export class ExtendIpPublicComponent implements OnInit{
     this.projectId = regionAndProject.projectId;
 
   }
-
-  // form = new FormGroup({
-  //   numOfMonth: new FormControl('', {validators: [Validators.required]}),
-  // });
 
   private getIPPublicById(id: string) {
     this.isLoading = true;
@@ -70,29 +60,6 @@ export class ExtendIpPublicComponent implements OnInit{
       }
     );
   }
-
-  openPopupExtend() {
-    const modal: NzModalRef = this.modalService.create({
-      nzTitle: 'Gia hạn IP Public',
-      nzContent: PopupExtendVolumeComponent,
-      nzFooter: [
-        {
-          label: 'Hủy',
-          type: 'default',
-          onClick: () => modal.destroy()
-        },
-        {
-          label: 'Đồng ý',
-          type: 'primary',
-          onClick: () => {
-            this.router.navigate(['/app-smart-cloud/ip-public/extend/' + this.ipInfo.id]);
-            modal.destroy();
-          }
-        }
-      ]
-    });
-  }
-
 
   volumeStatus: Map<String, string>;
   numOfMonth = 1;
@@ -237,4 +204,9 @@ export class ExtendIpPublicComponent implements OnInit{
   }
 
   loadingCalculate = true;
+
+  onChangeTime($event: any) {
+    this.numOfMonth = $event;
+    this.caculator();
+  }
 }

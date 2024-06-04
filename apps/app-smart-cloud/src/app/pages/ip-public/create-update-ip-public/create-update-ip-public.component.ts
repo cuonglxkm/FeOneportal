@@ -30,7 +30,6 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
   checkIpv6: boolean = null;
-  selectedAction: any;
   listIpSubnet: any[];
   listInstance: any[];
   instanceSelected: any;

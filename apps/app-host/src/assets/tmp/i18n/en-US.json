@@ -1430,6 +1430,8 @@
   "app.policy.delete.noti.fail": "Delete Policy failed",
   "app.edit-policy.noti.sucess": "Update Policy successfully",
   "app.edit-policy.noti.fail": "Update Policy failed",
+  "app.edit-policy.noti.warming.1": "There are no services selected",
+  "app.edit-policy.noti.warming.2": "Get fail information of Policy.",
 
   "app.breadcrumb.account": "Account",
   "app.breadcrumb.security": "Security",
@@ -2387,6 +2389,7 @@
   "app.ip.floating20": "Failed to allocate IP floating",
   "app.ip.floating21": "Allocate IP floating",
   "app.ip.floating22": "Create New IP floating",
+  "app.ip.floating23": "Network range is out of IP, please choose another IP range!",
   "app.button.remove": "Remove",
   "app.vlan.create": "Create Network",
   "app.vlan.note1": "Network list",

@@ -97,7 +97,6 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
     this.loadBalancerService.totalAmount(dataPayment)
       .pipe(finalize(()=>{this.loadingCaCulate = false;}))
       .subscribe((result) => {
-      console.log('thanh tien volume', result.data);
       this.orderItem = result.data;
       this.unitPrice = this.orderItem?.orderItemPrices[0].unitPrice.amount;
       this.estimateExpireDate = this.orderItem?.orderItemPrices[0].expiredDate;
@@ -151,5 +150,10 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
     this.loadBalancerId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.getLoadBalancer();
 
+  }
+
+  onChangeTime($event: any) {
+    this.validateForm.controls['time'].setValue($event);
+    this.getTotalAmount();
   }
 }
