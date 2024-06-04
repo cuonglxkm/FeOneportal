@@ -2587,6 +2587,8 @@
   "app.backup.volume.alert.delete": "Bạn đang thực hiện xóa Backup Volume",
   "app.backup.volume.confirm.delete": "Đế thực hiện xoá Backup Volume {{name}}, vui lòng nhập tên Backup để xác nhận.",
 
+  "app.backup.volume.restore.current.select.volume": "Chọn Volume restore",
+
   "app.dashboard.subscription.service": "Dịch vụ",
   "app.dashboard.subscription.service.active": "Đang hoạt động",
   "app.dashboard.subscription.service.near.expire": "Sắp hết hạn",
