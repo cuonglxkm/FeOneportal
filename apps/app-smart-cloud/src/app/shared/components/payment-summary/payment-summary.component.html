@@ -49,7 +49,8 @@
           </div>
           <nz-radio-group
             [ngModelOptions]="{ standalone: true }"
-            [(ngModel)]="radioValue" (ngModelChange)="changeOptionInvoices($event)"
+            [(ngModel)]="radioValue"
+            (ngModelChange)="changeOptionInvoices($event)"
             class="mb-5"
           >
             <ng-container *ngFor="let item of options">
@@ -86,7 +87,8 @@
                   <ng-container *ngIf="control.hasError('required')"
                     >Tên người mua không được để trống</ng-container
                   >
-                  <ng-container *ngIf="control.hasError('containSpecialExceptComma')"
+                  <ng-container
+                    *ngIf="control.hasError('containSpecialExceptComma')"
                     >Tên người mua không chứa ký tự đặc biệt</ng-container
                   >
                 </ng-template>
@@ -156,8 +158,8 @@
                     <div>
                       <span>Địa chỉ</span>
                       <ng-container *ngIf="radioValue === 1">
-                      (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    </ng-container>
+                        (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                      </ng-container>
                     </div>
                   </nz-form-label>
                   <input
@@ -184,8 +186,8 @@
                     <div>
                       <span>Số điện thoại</span>
                       <ng-container *ngIf="radioValue === 1">
-                      (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    </ng-container>
+                        (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                      </ng-container>
                     </div>
                   </nz-form-label>
                   <input
@@ -304,7 +306,13 @@
               <td>{{ item.name }}</td>
               <td>{{ item.type }}</td>
               <td nzAlign="right">{{ item.price | number : '1.0-0' }}</td>
-              <td nzAlign="right">{{ (item.type === ('app.button.resize' | i18n)) ? '' : item.duration }}</td>
+              <td nzAlign="right">
+                {{
+                  item.type === ('app.button.resize' | i18n)
+                    ? ''
+                    : item.duration
+                }}
+              </td>
               <td nzAlign="right">{{ item.amount }}</td>
               <td nzAlign="right">{{ item.currency | number : '1.0-0' }}</td>
             </tr>
@@ -343,12 +351,16 @@
           <tr style="margin-bottom: 5px">
             <td class="text-16">VAT(10%)</td>
             <td style="text-align: right">
-              <span class="price"
-                >{{
-                  (totalAmount - promotion) * 0.1 | number : '1.0-0'
-                }}
-                VND</span
-              >
+              <ng-container *ngIf="totalVAT; else calculateAmount">
+                <span class="price">
+                  {{ totalVAT | number : '1.0-0' }} VND
+                </span>
+              </ng-container>
+              <ng-template #calculateAmount>
+                <span class="price">
+                  {{ (totalAmount - promotion) * 0.1 | number : '1.0-0' }} VND
+                </span>
+              </ng-template>
             </td>
           </tr>
           <tr>
@@ -392,22 +404,39 @@
                 >({{ 'app.payment-detail.vat' | i18n }})</span
               >
             </td>
-            <td
-              style="
-                text-align: right;
-                color: #ea3829;
-                font-weight: 600;
-                padding: 10px;
-                border-radius: 0 8px 8px 0;
-                font-size: 16px;
-              "
-            >
-              {{
-                totalAmount - promotion + (totalAmount - promotion) * 0.1
-                  | number : '1.0-0'
-              }}
-              VND
-            </td>
+
+            <ng-container *ngIf="totalPayment; else calculateAmountPayment">
+              <td
+                style="
+                  text-align: right;
+                  color: #ea3829;
+                  font-weight: 600;
+                  padding: 10px;
+                  border-radius: 0 8px 8px 0;
+                  font-size: 16px;
+                "
+              >
+                {{ totalPayment | number : '1.0-0' }} VND
+              </td>
+            </ng-container>
+            <ng-template #calculateAmountPayment>
+              <td
+                style="
+                  text-align: right;
+                  color: #ea3829;
+                  font-weight: 600;
+                  padding: 10px;
+                  border-radius: 0 8px 8px 0;
+                  font-size: 16px;
+                "
+              >
+                {{
+                  totalAmount - promotion + (totalAmount - promotion) * 0.1
+                    | number : '1.0-0'
+                }}
+                VND
+              </td>
+            </ng-template>
           </tr>
         </nz-table>
 
@@ -669,9 +698,9 @@
               <ng-container *ngIf="control.hasError('required')"
                 >Số điện thoại không được để trống</ng-container
               >
-            <ng-container *ngIf="control.hasError('validPhoneNumber')">{{
-              'validation.phone-number.wrong-format' | i18n
-            }}</ng-container>
+              <ng-container *ngIf="control.hasError('validPhoneNumber')">{{
+                'validation.phone-number.wrong-format' | i18n
+              }}</ng-container>
             </ng-template>
           </nz-form-item>
         </div>
@@ -698,7 +727,8 @@
               <ng-container *ngIf="control.hasError('required')"
                 >Tên người mua không được để trống</ng-container
               >
-              <ng-container *ngIf="control.hasError('containSpecialExceptComma')"
+              <ng-container
+                *ngIf="control.hasError('containSpecialExceptComma')"
                 >Tên người mua không chứa ký tự đặc biệt</ng-container
               >
             </ng-template>
@@ -830,14 +860,14 @@
         />{{ 'app.button.cancel' | i18n }}
       </button>
       <button
-      (click)="handleOkUpdateCustomerInvoice()"
-      nz-button
-      nzType="primary"
-      [nzLoading]="isLoadingUpdateInfo"
-      [disabled]="formCustomerInvoice.invalid" 
+        (click)="handleOkUpdateCustomerInvoice()"
+        nz-button
+        nzType="primary"
+        [nzLoading]="isLoadingUpdateInfo"
+        [disabled]="formCustomerInvoice.invalid"
       >
         <img
-         *ngIf="isLoadingUpdateInfo === false"
+          *ngIf="isLoadingUpdateInfo === false"
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/confirm.svg"
           alt=""

@@ -16,7 +16,8 @@
       name="name"
       nz-input
       [placeholder]="'app.placeholder.search' | i18n"
-      [(ngModel)]="inputSearch"
+      [(ngModel)]="value"
+      #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
     />
   </nz-input-group>
   <ng-template #prefixIconSearch>
@@ -183,7 +184,8 @@
           style="width: 100%; margin-left: 0px"
           [nzMin]="1"
           [nzMax]="30"
-          [nzStep]="1"
+          [nzStep]="1" 
+          [nzDisabled]="lifecycleCreate.isSetExpiration_Day === false"
           [(ngModel)]="lifecycleCreate.lifecycleRuleExpiration_Day"
           [ngModelOptions]="{ standalone: true }"
           nzSize="large"
@@ -211,6 +213,7 @@
           [nzMin]="1"
           [nzMax]="30"
           [nzStep]="1"
+          [nzDisabled]="lifecycleCreate.isSetNoncurrentVersionExpiration_Day === false"
           [(ngModel)]="
             lifecycleCreate.lifecycleRuleNoncurrentVersionExpiration_Day
           "
@@ -240,6 +243,7 @@
           [nzMin]="1"
           [nzMax]="30"
           [nzStep]="1"
+          [nzDisabled]="lifecycleCreate.lifecycleRuleAbortIncompleteMultipartUpload_Day === false"
           [(ngModel)]="
             lifecycleCreate.lifecycleRuleAbortIncompleteMultipartUpload_Day
           "

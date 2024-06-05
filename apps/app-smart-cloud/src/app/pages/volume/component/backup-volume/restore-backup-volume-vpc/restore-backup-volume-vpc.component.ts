@@ -1,13 +1,4 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BackupVolumeService } from '../../../../../shared/services/backup-volume.service';
-import { ProjectService } from '../../../../../shared/services/project.service';
-import { PackageBackupService } from '../../../../../shared/services/package-backup.service';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { I18NService } from '@core';
-import { getCurrentRegionAndProject } from '@shared';
 import { SizeInCloudProject } from '../../../../../shared/models/project.model';
 import {
   BackupVolume,
@@ -16,25 +7,33 @@ import {
   FormRestoreNewBackupVolume
 } from '../backup-volume.model';
 import { PackageBackupModel } from '../../../../../shared/models/package-backup.model';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormRecord, Validators } from '@angular/forms';
 import { VolumeDTO } from '../../../../../shared/dto/volume.dto';
-import { debounceTime, Subject } from 'rxjs';
-import { VolumeService } from '../../../../../shared/services/volume.service';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { ConfigurationsService } from '../../../../../shared/services/configurations.service';
-import { DataPayment, InstancesModel, ItemPayment, VolumeCreate } from '../../../../instances/instances.model';
-import { InstancesService } from '../../../../instances/instances.service';
+import { InstancesModel } from '../../../../instances/instances.model';
 import { OrderItem } from '../../../../../shared/models/price';
-import { CreateVolumeRequestModel } from '../../../../../shared/models/volume.model';
+import { debounceTime, Subject } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BackupVolumeService } from '../../../../../shared/services/backup-volume.service';
+import { ProjectService } from '../../../../../shared/services/project.service';
+import { PackageBackupService } from '../../../../../shared/services/package-backup.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { VolumeService } from '../../../../../shared/services/volume.service';
+import { ConfigurationsService } from '../../../../../shared/services/configurations.service';
+import { InstancesService } from '../../../../instances/instances.service';
 import { OrderService } from '../../../../../shared/services/order.service';
-import { CatalogService } from '../../../../../shared/services/catalog.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
+import { getCurrentRegionAndProject } from '@shared';
+import { CreateVolumeRequestModel } from '../../../../../shared/models/volume.model';
 
 @Component({
-  selector: 'one-portal-restore-backup-volume',
-  templateUrl: './restore-backup-volume.component.html',
-  styleUrls: ['./restore-backup-volume.component.less']
+  selector: 'one-portal-restore-backup-volume-vpc',
+  templateUrl: './restore-backup-volume-vpc.component.html',
+  styleUrls: ['./restore-backup-volume-vpc.component.less']
 })
-export class RestoreBackupVolumeComponent implements OnInit {
+export class RestoreBackupVolumeVpcComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -91,10 +90,10 @@ export class RestoreBackupVolumeComponent implements OnInit {
   unitPrice = 0;
 
   volumeRestoreNew: FormRestoreNewBackupVolume = new FormRestoreNewBackupVolume();
-
+  storageInVpc: number;
+  storageUsed: number;
+  storageRemaining: number;
   dataSubjectStorage: Subject<any> = new Subject<any>();
-
-  offerId : number = 0;
 
   constructor(private router: Router,
               private backupVolumeService: BackupVolumeService,
@@ -107,7 +106,6 @@ export class RestoreBackupVolumeComponent implements OnInit {
               private configurationsService: ConfigurationsService,
               private instanceService: InstancesService,
               private orderService: OrderService,
-              private catalogService: CatalogService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
@@ -156,8 +154,6 @@ export class RestoreBackupVolumeComponent implements OnInit {
           this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
           this.validateForm.get('formNew').get('storage').setValue(res - (res % this.stepStorage));
         }
-        console.log('total amount');
-        this.getTotalAmount();
       });
   }
 
@@ -167,9 +163,9 @@ export class RestoreBackupVolumeComponent implements OnInit {
       this.validateForm.get('formNew').get('volumeName').clearValidators();
       this.validateForm.get('formNew').get('volumeName').updateValueAndValidity();
     } else if (this.selectedOption === 'new') {
-      this.validateForm.get('formNew').get('storage').setValue(this.backupVolume?.size)
-      this.validateForm.get('formNew').get('volumeName').setValidators([Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)])
-      this.validateForm.get('formNew').get('storage').setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)])
+      this.validateForm.get('formNew').get('storage').setValue(this.backupVolume?.size);
+      this.validateForm.get('formNew').get('volumeName').setValidators([Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]);
+      this.validateForm.get('formNew').get('storage').setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)]);
       // this.validateForm.get
     }
     this.cdr.detectChanges();
@@ -179,17 +175,6 @@ export class RestoreBackupVolumeComponent implements OnInit {
     this.isLoading = true;
     this.backupVolumeService.detail(id).subscribe(data => {
       this.backupVolume = data;
-      if(this.backupVolume?.typeName.includes('hdd')) {
-        this.catalogService.getCatalogOffer(2, this.region, null, null).subscribe(data => {
-          this.offerId = data[0].productId
-        })
-      }
-      if(this.backupVolume?.typeName.includes('ssd')) {
-        this.catalogService.getCatalogOffer(114, this.region, null, null).subscribe(data => {
-          this.offerId = data[0].productId
-        })
-      }
-      console.log('offerId', this.offerId)
       this.isLoading = false;
       if (this.backupVolume?.backupPackageId != null) {
         this.backupPackageService.detail(this.backupVolume?.backupPackageId).subscribe(data => {
@@ -206,6 +191,9 @@ export class RestoreBackupVolumeComponent implements OnInit {
   getInfoProjectVpc(id) {
     this.projectService.getProjectVpc(id).subscribe(data => {
       this.projectDetail = data;
+      this.storageInVpc = this.projectDetail.cloudProject.quotaBackupVolumeInGb;
+      this.storageUsed = this.projectDetail.cloudProjectResourceUsed.backup;
+      this.storageRemaining = this.projectDetail.cloudProject.quotaBackupVolumeInGb - this.projectDetail.cloudProjectResourceUsed.backup;
     });
   }
 
@@ -261,15 +249,6 @@ export class RestoreBackupVolumeComponent implements OnInit {
       });
   }
 
-  timeSelected: any;
-
-  onChangeTime(value) {
-    this.timeSelected = value;
-    this.validateForm.get('formNew').get('time').setValue(this.timeSelected);
-    console.log(this.timeSelected);
-    this.getTotalAmount();
-  }
-
   //restore current
   restoreCurrent() {
     this.isLoadingAction = true;
@@ -279,111 +258,86 @@ export class RestoreBackupVolumeComponent implements OnInit {
     this.backupVolumeService.restoreBackupVolumeCurrent(formRestoreCurrent).subscribe(data => {
       this.isLoadingAction = false;
       this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.volume.notification.restore.success'));
-      this.router.navigate(['/app-smart-cloud/backup-volume'])
+      this.router.navigate(['/app-smart-cloud/backup-volume']);
     }, error => {
       this.isLoadingAction = false;
       this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.backup.volume.notification.restore.fail', { error: error.error.detail }));
-      this.router.navigate(['/app-smart-cloud/backup-volume'])
+      this.router.navigate(['/app-smart-cloud/backup-volume']);
     });
   }
 
   //restore new
   volumeInit() {
-    this.volumeRestoreNew.volumeBackupId = this.idBackupVolume
-    this.volumeRestoreNew.volumeName = this.validateForm.get('formNew').get('volumeName').value
-    this.volumeRestoreNew.customerId = this.tokenService.get()?.userId
-    this.volumeRestoreNew.userEmail = this.tokenService.get()?.email
-    this.volumeRestoreNew.actorEmail = this.tokenService.get()?.email
-    this.volumeRestoreNew.projectId = this.project
-    this.volumeRestoreNew.vpcId = this.project
-    this.volumeRestoreNew.regionId = this.region
-    this.volumeRestoreNew.serviceName = this.validateForm.get('formNew').get('volumeName').value
-    this.volumeRestoreNew.serviceType = 2
-    this.volumeRestoreNew.actionType = 0
-    this.volumeRestoreNew.serviceInstanceId = 0
-    this.volumeRestoreNew.createDateInContract = null
-    this.volumeRestoreNew.saleDept = null
-    this.volumeRestoreNew.saleDeptCode = null
-    this.volumeRestoreNew.contactPersonEmail = null
-    this.volumeRestoreNew.contactPersonPhone = null
-    this.volumeRestoreNew. contactPersonName = null
-    this.volumeRestoreNew.am = null
-    this.volumeRestoreNew.amManager = null
-    this.volumeRestoreNew.note = 'restore backup volume'
-    this.volumeRestoreNew.isTrial = false
-    this.volumeRestoreNew.offerId = this.offerId
-    this.volumeRestoreNew.couponCode = null
-    this.volumeRestoreNew.dhsxkd_SubscriptionId = null
-    this.volumeRestoreNew.dSubscriptionNumber = null
-    this.volumeRestoreNew.dSubscriptionType = null
-    this.volumeRestoreNew.oneSMEAddonId = null
-    this.volumeRestoreNew.oneSME_SubscriptionId = null
-    this.volumeRestoreNew.isSendMail = true
-    this.volumeRestoreNew.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.BackupVolumeRestoreSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    this.volumeRestoreNew.volumeBackupId = this.idBackupVolume;
+    this.volumeRestoreNew.volumeName = this.validateForm.get('formNew').get('volumeName').value;
+    this.volumeRestoreNew.customerId = this.tokenService.get()?.userId;
+    this.volumeRestoreNew.userEmail = this.tokenService.get()?.email;
+    this.volumeRestoreNew.actorEmail = this.tokenService.get()?.email;
+    this.volumeRestoreNew.projectId = this.project;
+    this.volumeRestoreNew.vpcId = this.project;
+    this.volumeRestoreNew.regionId = this.region;
+    this.volumeRestoreNew.serviceName = this.validateForm.get('formNew').get('volumeName').value;
+    this.volumeRestoreNew.serviceType = 2;
+    this.volumeRestoreNew.actionType = 0;
+    this.volumeRestoreNew.serviceInstanceId = 0;
+    this.volumeRestoreNew.createDateInContract = null;
+    this.volumeRestoreNew.saleDept = null;
+    this.volumeRestoreNew.saleDeptCode = null;
+    this.volumeRestoreNew.contactPersonEmail = null;
+    this.volumeRestoreNew.contactPersonPhone = null;
+    this.volumeRestoreNew.contactPersonName = null;
+    this.volumeRestoreNew.am = null;
+    this.volumeRestoreNew.amManager = null;
+    this.volumeRestoreNew.note = 'restore backup volume';
+    this.volumeRestoreNew.isTrial = false;
+    this.volumeRestoreNew.offerId = 0;
+    this.volumeRestoreNew.couponCode = null;
+    this.volumeRestoreNew.dhsxkd_SubscriptionId = null;
+    this.volumeRestoreNew.dSubscriptionNumber = null;
+    this.volumeRestoreNew.dSubscriptionType = null;
+    this.volumeRestoreNew.oneSMEAddonId = null;
+    this.volumeRestoreNew.oneSME_SubscriptionId = null;
+    this.volumeRestoreNew.isSendMail = true;
+    this.volumeRestoreNew.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.BackupVolumeRestoreSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
   }
 
-  getTotalAmount() {
+  doRestoreBackupVolumeNew() {
     this.isLoadingAction = true;
-    this.volumeInit();
-    console.log('time', this.timeSelected);
-    let itemPayment: ItemPayment = new ItemPayment();
-    itemPayment.orderItemQuantity = 1;
-    itemPayment.specificationString = JSON.stringify(this.volumeRestoreNew);
-    itemPayment.specificationType = 'restore_volumebackup';
-    itemPayment.serviceDuration = this.validateForm.get('formNew').get('time').value;
-    itemPayment.sortItem = 0;
-    let dataPayment: DataPayment = new DataPayment();
-    dataPayment.orderItems = [itemPayment];
-    dataPayment.projectId = this.project;
-    this.instanceService.getTotalAmount(dataPayment)
-      .pipe(debounceTime(500))
-      .subscribe((result) => {
-        this.isLoadingAction = false;
-        console.log('thanh tien volume', result.data);
-        this.orderItem = result.data;
-        this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
-      });
-  }
-
-  isVisiblePopupError: boolean = false;
-  errorList: string[] = [];
-  closePopupError() {
-    this.isVisiblePopupError = false;
-  }
-
-  navigateToPaymentSummary() {
-    this.volumeInit();
-    console.log('value', this.volumeRestoreNew)
-    let request: FormOrderRestoreBackupVolume = new FormOrderRestoreBackupVolume();
-    request.customerId = this.volumeRestoreNew.customerId;
-    request.createdByUserId = this.volumeRestoreNew.customerId;
-    request.note = this.i18n.fanyi('app.backup.volume.note.restore.new');
-    request.orderItems = [
-      {
-        orderItemQuantity: 1,
-        specification: JSON.stringify(this.volumeRestoreNew),
-        specificationType: 'restore_volumebackup',
-        price: this.orderItem?.totalAmount.amount,
-        serviceDuration: this.validateForm.get('formNew').get('time').value
-      }
-    ];
-    this.orderService.validaterOrder(request).subscribe(data => {
-      if(data.success) {
-        var returnPath: string = '/app-smart-cloud/backup-volume/restore/' + this.idBackupVolume;
-        console.log('request', request);
-        console.log('service name', this.volumeRestoreNew.serviceName);
-        this.router.navigate(['/app-smart-cloud/order/cart'], {
-          state: { data: request, path: returnPath }
+    if (this.validateForm.get('formNew').valid) {
+      this.volumeInit();
+      let request: FormOrderRestoreBackupVolume = new FormOrderRestoreBackupVolume();
+      request.customerId = this.volumeRestoreNew.customerId;
+      request.createdByUserId = this.volumeRestoreNew.customerId;
+      request.note = this.i18n.fanyi('volume.notification.request.create');
+      request.orderItems = [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(this.volumeRestoreNew),
+          specificationType: 'restore_volumebackup',
+          price: 0,
+          serviceDuration: 1
+        }
+      ];
+      console.log(request);
+      this.volumeService.createNewVolume(request).subscribe(data => {
+          if (data != null) {
+            if (data.code == 200) {
+              this.isLoadingAction = false;
+              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.volume.notification.restore.success'));
+              setTimeout(() => {
+                this.router.navigate(['/app-smart-cloud/backup-volume']);
+              }, 2500);
+            }
+          } else {
+            this.isLoadingAction = false;
+          }
+        },
+        error => {
+          this.isLoadingAction = false;
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.backup.volume.notification.restore.fail', { error: error.error.detail }));
         });
-      } else {
-        this.isVisiblePopupError = true;
-        this.errorList = data.data;
-      }
-    }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
-    })
+    }
   }
-
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -393,15 +347,10 @@ export class RestoreBackupVolumeComponent implements OnInit {
     this.idBackupVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
 
     this.getDetailBackupVolume(this.idBackupVolume);
-
     this.getInfoProjectVpc(this.project);
     this.getListVolumes();
     this.getConfiguration();
     this.onChangeValueStorage();
     this.getListInstance();
-    this.getTotalAmount();
-
-    // console.log('valid current',this.validateForm.get('formCurrent').get('volumeId').valid)
-
   }
 }

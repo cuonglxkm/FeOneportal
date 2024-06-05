@@ -70,6 +70,7 @@ export class ProjectExtendComponent implements OnInit{
       .subscribe(
         data => {
           this.data = data;
+          console.log("dtaaaa", this.data)
           this.expiredDate = data.expireDate;
           this.today = data.createDate;
           const expiredDateOld = new Date(this.expiredDate);

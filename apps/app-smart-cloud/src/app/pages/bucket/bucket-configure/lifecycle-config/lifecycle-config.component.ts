@@ -9,13 +9,14 @@ import {
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import {
   BucketLifecycle,
   BucketLifecycleCreate,
   LifecycleTagPredicate,
 } from 'src/app/shared/models/bucket.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 class Tag {
   id: number = 0;
@@ -31,12 +32,16 @@ class Tag {
 })
 export class LifecycleConfigComponent implements OnInit {
   @Input() bucketName: string;
-  inputSearch: string = '';
+  value: string = '';
   listLifecycle: BucketLifecycle[] = [];
   loading: boolean = true;
+  pageSize: number = 10;
+  pageNumber: number = 1;
+  total: number;
   isLoadingCreate: boolean = false;
   isLoadingUpdate: boolean = false;
   isLoadingDelete: boolean = false;
+  searchDelay = new Subject<boolean>();
   constructor(
     private bucketService: BucketService,
     private notification: NzNotificationService,
@@ -46,12 +51,22 @@ export class LifecycleConfigComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchLifeCycle();
+    this.searchLifeCycle();
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+      this.searchLifeCycle();
+    });
   }
+
 
   searchLifeCycle() {
     this.loading = true;
     this.bucketService
-      .getListBucketLifecycle(this.bucketName)
+      .getListBucketLifecycle(
+        this.bucketName,
+        this.pageNumber,
+        this.pageSize,
+        this.value.trim()
+      )
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -60,7 +75,10 @@ export class LifecycleConfigComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.listLifecycle = data;
+          this.listLifecycle = data.records;
+          console.log(this.listLifecycle);
+
+          this.total = data.totalCount;
         },
         error: (e) => {
           this.listLifecycle = [];
@@ -70,6 +88,11 @@ export class LifecycleConfigComponent implements OnInit {
           );
         },
       });
+  }
+
+  search(search: string) {  
+    this.value = search.trim();
+    this.searchLifeCycle();
   }
 
   isVisibleCreate = false;

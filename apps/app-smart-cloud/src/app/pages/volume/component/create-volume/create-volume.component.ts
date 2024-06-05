@@ -94,6 +94,8 @@ export class CreateVolumeComponent implements OnInit {
   enableEncrypt: boolean = false;
   enableMultiAttach: boolean = false;
 
+  offerId: number;
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private volumeService: VolumeService,
@@ -407,6 +409,8 @@ export class CreateVolumeComponent implements OnInit {
     request.customerId = this.volumeCreate.customerId;
     request.createdByUserId = this.volumeCreate.customerId;
     request.note = this.i18n.fanyi('volume.notification.request.create');
+    request.totalPayment = this.orderItem?.totalPayment?.amount
+    request.totalVAT = this.orderItem?.totalVAT?.amount
     request.orderItems = [
       {
         orderItemQuantity: 1,
