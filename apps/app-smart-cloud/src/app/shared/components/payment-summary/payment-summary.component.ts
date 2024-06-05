@@ -65,6 +65,8 @@ export class PaymentSummaryComponent implements OnInit {
   customerType: any
   customerTypes: any
   email: string
+  totalPayment: number;
+  totalVAT: number
   formCreatUserInvoice: FormCreateUserInvoice = new FormCreateUserInvoice()
   isExportInvoice: boolean = false
   isCheckedExportInvoice: boolean = false
@@ -103,6 +105,8 @@ export class PaymentSummaryComponent implements OnInit {
       this.order.createdByUserId = myOrder.createdByUserId;
       this.order.note = myOrder.note;
       this.order.orderItems = myOrder.orderItems;
+      this.totalPayment = myOrder.totalPayment;
+      this.totalVAT = myOrder.totalVAT;
       console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
         console.log(e);

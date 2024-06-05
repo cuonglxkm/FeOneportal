@@ -425,6 +425,8 @@ export class CreateVolumeComponent implements OnInit {
     request.customerId = this.volumeCreate.customerId;
     request.createdByUserId = this.volumeCreate.customerId;
     request.note = this.i18n.fanyi('volume.notification.request.create');
+    request.totalPayment = this.orderItem?.totalPayment?.amount
+    request.totalVAT = this.orderItem?.totalVAT?.amount
     request.orderItems = [
       {
         orderItemQuantity: 1,
