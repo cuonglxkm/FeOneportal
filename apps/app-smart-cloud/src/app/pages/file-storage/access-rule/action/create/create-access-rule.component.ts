@@ -155,8 +155,8 @@ export class CreateAccessRuleComponent implements AfterViewInit{
       this.accessRuleService.createAccessRule(formCreate).subscribe(data => {
         this.isVisible = false;
         this.isLoading = false;
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.access.to.create.success'));
-        this.onOk.emit();
+        //this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.access.to.create.success'));
+        this.onOk.emit(this.isVisible);
 
       }, error => {
         this.isVisible = false;
