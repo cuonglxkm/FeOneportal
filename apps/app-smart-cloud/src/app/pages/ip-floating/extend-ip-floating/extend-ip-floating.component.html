@@ -30,25 +30,10 @@
         </div>
       </nz-card>
       <form nz-form nzLayout="vertical">
-        <one-portal-service-time-extend [createDate]="dateString"
+        <one-portal-service-time-extend *ngIf="ipInfo != undefined" [createDate]="dateString"
                                         [expiredDate]="ipInfo?.expiredDate"
                                         (valueChanged)="onChangeTime($event)"/>
       </form>
-<!--      <nz-card style="border-radius: 8px;">-->
-<!--        <span class="text-card-header">{{'app.extension.info' | i18n}}</span>-->
-<!--        <nz-table style="margin-top: 25px">-->
-<!--          <td style="width: 50%">-->
-<!--            <div class="text-label" style="color: red">{{'app.service.start.date' | i18n}}: {{dateString | date:'HH:mm:ss dd/MM/yyyy'}} </div>-->
-<!--          </td>-->
-<!--          <td style="width: 50%">-->
-<!--            <div class="text-label" style="color: red">{{'app.service.expiration-date' | i18n}}: {{ipInfo?.expiredDate | date:'HH:mm:ss dd/MM/yyyy'}} </div>-->
-<!--          </td>-->
-<!--        </nz-table>-->
-<!--        <div  class="text-label" style=" margin-top: 18px;">{{'app.months.for.extend' | i18n}} (<span class="text-red">*</span>)</div>-->
-<!--        <nz-input-number style="width: 100%; margin-top: 10px; margin-bottom: 18px;margin-left: -3px" [nzMin]="1" [nzMax]="100" [nzStep]="1"-->
-<!--                         [(ngModel)]="numOfMonth" (ngModelChange)="caculator()"-->
-<!--                         [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>-->
-<!--        <div class="text-label" style="color: red">{{'app.expected.expiry.date' | i18n}}: {{dateStringExpired | date : 'dd/MM/yyyy'}}</div>-->
 <!--      </nz-card>-->
     </nz-col>
     <nz-col nzSpan="8">
