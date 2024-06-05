@@ -1,12 +1,12 @@
 <span class="titlecard-custom">{{ 'app.set.bucket.policy' | i18n }}</span>
 <div style="margin-top: 20px; margin-bottom: 10px" class="text-label">
   <span>{{ 'app.bucket.policy.intro' | i18n }}</span
-  ><br /><br />
+  ><br />
   <span>
     {{ 'app.bucket.policy.intro.next' | i18n }}
   </span>
 </div>
-<div class="text-right p-0 m-b-0">
+<div class="d-flex justify-content-between">
   <nz-input-group
     style="margin-right: 8px; width: 25%; border-radius: 8px"
     [nzPrefix]="prefixIconSearch"
@@ -16,7 +16,8 @@
       name="name"
       nz-input
       [placeholder]="'app.placeholder.search' | i18n"
-      [(ngModel)]="searchValue"
+      [(ngModel)]="value"
+      #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
     />
   </nz-input-group>
   <ng-template #prefixIconSearch>
@@ -24,8 +25,6 @@
       src="assets/imgs/search.svg"
       alt=""
       style="cursor: pointer"
-      [nz-tooltip]="'app.button.search' | i18n"
-      (click)="searchBucketPolicy()"
     />
   </ng-template>
   <button nz-button nzType="primary" (click)="modalCreate()">

@@ -1,10 +1,13 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="">
     <ng-template #breadcrumb>
-      <nz-breadcrumb>
+      <nz-breadcrumb [nzSeparator]="separatorTemplate">
         <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
         <nz-breadcrumb-item>Networks</nz-breadcrumb-item>
         <nz-breadcrumb-item><a>Network Topology</a></nz-breadcrumb-item>
       </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
     </ng-template>
     <ng-template #action>
       <div class="alain-custom-action text-right">
@@ -18,12 +21,23 @@
   </page-header>
   <nz-content>
     <nz-card [nzLoading]="isLoading">
-      <!-- <div *ngIf="data && data.length > 0">
-        
-      </div> -->
-      <div #treeContainer>
-          
+      <div #formContainer>
+        <div #treeContainer>
+        </div>
+        <div class="row form-group hide-element infomation-popup" id="topo{{noteForcus?.id}}">
+          <div class="card">
+            <a style="cursor: pointer;" (click)="RemovePopup()">
+              <span class="icon-remove-form">&#10005;</span>
+            </a>
+            <div class="card-body" style="padding-top: 5px;font-size: 15px;">
+              <div class="text-left title-form-info">Thông tin</div>
+              <div class="info-item-div"><span class="info-item-title">Tên:</span> <span class="info-item-content" id="node-name-popup">noteForcus?.name</span></div>
+              <div class="info-item-div"><span class="info-item-title">Trạng thái:</span> <span class="info-item-content" id="node-status-popup">noteForcus?.status</span></div>
+            </div>
+          </div>
+        </div>
       </div>
+      
     </nz-card>
   </nz-content>
   

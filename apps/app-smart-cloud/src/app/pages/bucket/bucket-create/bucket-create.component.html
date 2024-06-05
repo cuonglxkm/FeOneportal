@@ -1,16 +1,19 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'app.bucket.create' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item
         ><a [routerLink]="['/']">{{
           'app.breadcrumb.home' | i18n
         }}</a></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item> Bucket </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/object-storage/bucket']">Bucket</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.bucket.create' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
 </page-header>
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
@@ -51,7 +54,7 @@
                     {{ 'validation.info.required' | i18n }}
                   </ng-container>
                   <ng-container *ngIf="control.hasError('pattern')">{{
-                    'validation.bucket.name.invalid' | i18n
+                    'validation.bucket.name' | i18n
                   }}</ng-container>
                 </ng-template>
               </nz-form-control>
@@ -153,23 +156,23 @@
         </div>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col>
-            <span class="text-label"> {{ 'app.bucket.name' | i18n }} </span>
+            <span class="text-value"> {{ 'app.bucket.name' | i18n }} </span>
           </nz-col>
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col>
-            <span class="text-value"> {{ bucketName }} </span>
+            <span class="text-label"> {{ bucketName }} </span>
           </nz-col>
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col>
-            <span class="text-label"> {{ 'app.set.acl' | i18n }} </span>
+            <span class="text-value"> {{ 'app.set.acl' | i18n }} </span>
           </nz-col>
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col>
-            <span *ngIf="activePrivate" class="text-value"> Private </span>
-            <span *ngIf="activePublic" class="text-value"> Public </span>
+            <span *ngIf="activePrivate" class="text-label"> Private </span>
+            <span *ngIf="activePublic" class="text-label"> Public </span>
           </nz-col>
         </nz-row>
         <nz-row>
@@ -179,13 +182,12 @@
               nz-button
               nzSize="large"
               nzType="primary"
+              [nzLoading]="isLoading"
               (click)="save()"
-              [disabled]="form.invalid"
+              [disabled]="form.invalid" 
             >
-              <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="form.invalid ? 'gray' : 'white'"
-                >{{ 'app.button.create' | i18n }}</span
-              >
+            <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+            <span [style.color]="form.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
             </button>
           </nz-col>
         </nz-row>

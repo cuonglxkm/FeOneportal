@@ -58,6 +58,9 @@ export class IpPublicService extends BaseService{
       data
     );
   }
+  getStepBlock(name:string): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.configurations + '?name=' +name);
+  }
 
   ValidateIpByNetwork(regionId: number, networkId: string): Observable<any> {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/validate-by-network/' + regionId + "?networkId=" + networkId);

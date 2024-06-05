@@ -12,12 +12,17 @@ import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
 import { Order, OrderItem } from 'src/app/pages/instances/instances.model';
 import { InstancesService } from 'src/app/pages/instances/instances.service';
-import { finalize } from 'rxjs';
+import { finalize, filter } from 'rxjs';
 import { PaymentSummaryService } from '../../services/payment-summary.service';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { UserService } from '../../services/user.service';
+import { InvoiceService } from '../../services/invoice.service';
+import { FormCreateUserInvoice } from '../../models/invoice';
+
 
 class ServiceInfo {
   name: string;
@@ -34,6 +39,7 @@ class Discount {
   description: string;
   endDate: string;
 }
+
 
 @Component({
   selector: 'one-portal-payment-summary',
@@ -52,6 +58,20 @@ export class PaymentSummaryComponent implements OnInit {
   loading: boolean = true;
   returnPath: string;
   serviceType: string;
+  isVisibleCustomerInvoice: boolean = false;
+  customerGroup: any
+  customerGroups: any
+  customerType: any
+  customerTypes: any
+  email: string
+  formCreatUserInvoice: FormCreateUserInvoice = new FormCreateUserInvoice()
+  isExportInvoice: boolean = false
+  isCheckedExportInvoice: boolean = false
+  radioValue = '1';
+  options = [
+    { label: '1', value: 'Khách hàng doanh nghiệp' },
+    { label: '2', value: 'Khách hàng cá nhân' },
+  ];
 
   constructor(
     private service: InstancesService,
@@ -62,6 +82,9 @@ export class PaymentSummaryComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private http: HttpClient,
     private loadingSrv: LoadingService,
+    private fb: NonNullableFormBuilder,
+    private userService: UserService,
+    private invoiceService: InvoiceService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
@@ -198,23 +221,23 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'sharesnapshot_create':
-            serviceItem.name = `FileSystem Snapshot - ${specificationObj.serviceName}`;
+            serviceItem.name = `File System Snapshot - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'filestorage_create':
-            serviceItem.name = `FileSystem - ${specificationObj.serviceName}`;
+            serviceItem.name = `File System - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'filestorage_resize':
-            serviceItem.name = `FileSystem - ${specificationObj.serviceName}`;
-            serviceItem.type = this.i18n.fanyi('app.label.resize');
+            serviceItem.name = `File System - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
             break;
           case 'filestorage_extend':
-            serviceItem.name = `FileSystem - ${specificationObj.serviceName}`;
+            serviceItem.name = `File System - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
             case 'sharesnapshot_extend':
-              serviceItem.name = `FileSystem Snapshot - ${specificationObj.serviceName}`;
+              serviceItem.name = `File System Snapshot - ${specificationObj.serviceName}`;
               serviceItem.type = this.i18n.fanyi('app.button.extend');
               break;
               case 'mongodb_resize':
@@ -243,12 +266,12 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let email = this.tokenService.get()?.email;
+    this.email = this.tokenService.get()?.email;
     const accessToken = this.tokenService.get()?.token;
 
     let baseUrl = environment['baseUrl'];
     this.http
-      .get<UserModel>(`${baseUrl}/users/${email}`, {
+      .get<UserModel>(`${baseUrl}/users/${this.tokenService.get()?.email}`, {
         headers: new HttpHeaders({
           Authorization: 'Bearer ' + accessToken,
         }),
@@ -257,6 +280,8 @@ export class PaymentSummaryComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.userModel = res;
+          console.log(this.userModel);
+          
           this.cdr.detectChanges();
         },
         error: (error) => {
@@ -264,6 +289,38 @@ export class PaymentSummaryComponent implements OnInit {
         },
       });
   }
+
+  formCustomerInvoice: FormGroup<{
+    nameCompany: FormControl<string>
+    email: FormControl<string>
+    phoneNumber: FormControl<string>
+    nameCustomer: FormControl<string>
+    taxCode: FormControl<string>
+    address: FormControl<string>
+  }> = this.fb.group({
+    nameCompany: ['', [Validators.required]],
+    email: ['', [Validators.required]],
+    phoneNumber: ['', [Validators.required]],
+    nameCustomer: ['', [Validators.required]],
+    taxCode: ['', [Validators.required]],
+    address: ['', [Validators.required]]
+  });
+
+  formExportInvoice: FormGroup<{
+    nameCompany: FormControl<string>
+    email: FormControl<string>
+    phoneNumber: FormControl<string>
+    nameCustomer: FormControl<string>
+    taxCode: FormControl<string>
+    address: FormControl<string>
+  }> = this.fb.group({
+    nameCompany: ['', [Validators.required]],
+    email: ['', [Validators.required]],
+    phoneNumber: ['', [Validators.required]],
+    nameCustomer: ['', [Validators.required, Validators.pattern(/^[a-zA-Z ]$/)]],
+    taxCode: ['', [Validators.required, Validators.pattern(/^[0-9-]$/)]],
+    address: ['', [Validators.required]]
+  });
 
   listDiscount: Discount[] = [];
   discountPicked: string = '';
@@ -331,7 +388,49 @@ export class PaymentSummaryComponent implements OnInit {
     this.isVisibleDiscount = false;
   }
 
-  payNow() {
+  getListCustomerGroup() {
+    this.userService.getCustomerGroup().subscribe({
+      next: (data) => {
+        this.customerGroups = data
+
+        console.log(this.customerGroups);
+        this.customerGroup = data[0].id
+        let customerGroupFilter =  this.customerGroups.filter((item) => item.id === this.customerGroup)
+        this.customerTypes = customerGroupFilter[0].customerTypes
+        this.customerType = this.customerTypes[0].id
+        
+      }, 
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          this.i18n.fanyi('Lấy danh sách thất bại')
+        );
+      },
+    })
+  }
+
+  changeCustomerGroup(id){
+    console.log(id);
+    
+    let customerGroupFilter = this.customerGroups.filter((item) => item.id === id)
+    this.customerTypes = customerGroupFilter[0].customerTypes
+    this.customerType = this.customerTypes[0].id
+  }
+  payNow() {    
+    if(this.userModel && this.userModel.customerInvoice === null){
+      this.isVisibleCustomerInvoice = true
+      this.formCustomerInvoice.controls.email.setValue(this.userModel.email)
+      this.formCustomerInvoice.controls.nameCustomer.setValue(this.userModel.fullName)
+      this.formCustomerInvoice.controls.address.setValue(this.userModel.address)
+      this.formCustomerInvoice.controls.phoneNumber.setValue(this.userModel.phoneNumber)
+      this.getListCustomerGroup()
+    }else{
+      this.pay()
+    }
+  }
+  
+
+  pay(){
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.service
       .create(this.order)
@@ -360,7 +459,56 @@ export class PaymentSummaryComponent implements OnInit {
       });
   }
 
+  handleOkUpdateCustomerInvoice(){
+  //  this.pay()
+   this.formCreatUserInvoice.companyName = this.formCustomerInvoice.controls.nameCompany.value
+   this.formCreatUserInvoice.address = this.formCustomerInvoice.controls.address.value
+   this.formCreatUserInvoice.phoneNumber = this.formCustomerInvoice.controls.phoneNumber.value
+   this.formCreatUserInvoice.fullName = this.formCustomerInvoice.controls.nameCustomer.value
+   this.formCreatUserInvoice.email = this.formCustomerInvoice.controls.email.value
+   this.formCreatUserInvoice.taxCode = this.formCustomerInvoice.controls.taxCode.value
+   this.formCreatUserInvoice.customerGroupId = this.customerGroup
+   this.formCreatUserInvoice.customerTypeId = this.customerType
+   this.formCreatUserInvoice.customerId = this.tokenService.get()?.userId
+   console.log(this.formCreatUserInvoice);
+   
+    this.invoiceService.create(this.formCreatUserInvoice).subscribe({
+      next: (data) => {
+        this.notification.success(
+          this.i18n.fanyi('app.status.success'),
+          this.i18n.fanyi('Cập nhật thông tin xuất hóa đơn thành công')
+        );
+        this.isVisibleCustomerInvoice = false
+      },
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          this.i18n.fanyi('Cập nhật thông tin xuất hóa đơn thất bại')
+        );
+      },
+    })
+
+  }
+
   navigateToCreate() {
     this.router.navigate([this.returnPath]);
   }
+
+  handleCancelUpdateCustomerInvoice(){
+    this.isVisibleCustomerInvoice = false
+  }
+
+  updateExportInvoice(event){
+    console.log(event);
+    
+    if(this.userModel && this.userModel.customerInvoice && event === true){
+      this.formCustomerInvoice.controls.email.setValue(this.userModel.customerInvoice.email)
+      this.formCustomerInvoice.controls.nameCustomer.setValue(this.userModel.customerInvoice.fullName)
+      this.formCustomerInvoice.controls.address.setValue(this.userModel.customerInvoice.address)
+      this.formCustomerInvoice.controls.phoneNumber.setValue(this.userModel.customerInvoice.phoneNumber)
+      this.formCustomerInvoice.controls.taxCode.setValue(this.userModel.customerInvoice.taxCode)
+      this.formCustomerInvoice.controls.nameCompany.setValue(this.userModel.customerInvoice.companyName)
+    }
+  }
+
 }

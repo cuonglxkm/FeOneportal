@@ -4,7 +4,7 @@
 
 >
 <ng-template #breadcrumb>
-  <nz-breadcrumb>
+  <nz-breadcrumb [nzSeparator]="separatorTemplate">
     <nz-breadcrumb-item>
         <a [routerLink]="['/']">Trang chủ</a>
     </nz-breadcrumb-item>
@@ -16,6 +16,9 @@
     </nz-breadcrumb-item>
     <nz-breadcrumb-item>Gia hạn VPN site to site</nz-breadcrumb-item>
   </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
 </ng-template>
 <ng-template #action>
   <div class="alain-custom-action text-right">
@@ -88,7 +91,7 @@
           <nz-form-item>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
               <nz-input-number class="input-number-element"
-              [(ngModel)]="numberMonth"
+                [(ngModel)]="numberMonth"
                 style="width:100%;"
                 (ngModelChange)="caculator($event)"
                 nzMin="1"
@@ -125,6 +128,29 @@
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value month-money" nzAlign="right">
               {{ totalAmount | number }} VND
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <nz-row style="margin-bottom: 10px" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span
+              class="text-value"
+              style="color: #0066b3"
+              nzAlign="right"
+              *ngIf="vatDisplay == null"
+              >0 VND</span
+            >
+            <span
+              class="text-value"
+              style="color: #0066b3"
+              nzAlign="right"
+              *ngIf="vatDisplay != undefined"
+            >
+              {{ vatDisplay | number }} VND
             </span>
           </nz-col>
         </nz-row>

@@ -70,6 +70,7 @@ export class DeleteFileSystemComponent implements AfterViewInit {
       let formDelete = new FormDeleteFileSystem();
       formDelete.id = this.fileSystemId;
       formDelete.regionId = this.region;
+      formDelete.project = this.project
       this.fileSystemService.deleteFileSystem(formDelete).subscribe(data => {
         this.isVisible = false;
         this.isLoading = false;

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { VolumeService } from '../../../../shared/services/volume.service';
@@ -14,7 +14,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-volume',
@@ -22,7 +22,7 @@ import { debounceTime } from 'rxjs';
   styleUrls: ['./volume.component.less']
 })
 
-export class VolumeComponent implements OnInit {
+export class VolumeComponent implements OnInit, OnDestroy {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -63,6 +63,10 @@ export class VolumeComponent implements OnInit {
 
   isBegin: boolean = false;
 
+  dataSubjectInputSearch: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
+
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
@@ -73,6 +77,7 @@ export class VolumeComponent implements OnInit {
               private notification: NzNotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
+
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
@@ -87,20 +92,44 @@ export class VolumeComponent implements OnInit {
     this.isLoading = true;
     setTimeout(() => {
       this.getListVolume(true);
-    }, 500);
+    }, 2000);
   }
 
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  changeInputChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.enterPressed = false;
+    this.dataSubjectInputSearch.next(value);
+  }
+
+  onChangeInputChange() {
+    this.searchSubscription = this.dataSubjectInputSearch.pipe(
+      debounceTime(700)
+    ).subscribe(res => {
+      if (!this.enterPressed) {
+        this.value = res.trim();
+        this.getListVolume(false);
+      }
+    });
+  }
+
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value.trim();
+    this.getListVolume(false);
+  }
 
   onChange(value) {
     console.log('selected', value);
 
     this.selectedValue = value;
-    this.getListVolume(false);
-  }
-
-
-  onEnter() {
-    this.value = this.value.trim();
     this.getListVolume(false);
   }
 
@@ -216,6 +245,7 @@ export class VolumeComponent implements OnInit {
     console.log('project', this.project);
     this.selectedValue = this.options[0].value;
     this.customerId = this.tokenService.get()?.userId;
+    this.onChangeInputChange();
     this.volumeService.model.subscribe(data => {
       console.log(data);
     });
@@ -227,21 +257,36 @@ export class VolumeComponent implements OnInit {
       this.notificationService.initiateSignalrConnection();
     }
 
-    this.notificationService.connection.on('UpdateVolume', (data) => {
-      if (data) {
-        let volumeId = data.serviceId;
-
-        var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
-        if (foundIndex > -1) {
-          var record = this.response.records[foundIndex];
-
-          record.status = data.status;
-          record.serviceStatus = data.serviceStatus;
-
-          this.response.records[foundIndex] = record;
-
-          this.getListVolume(false);
-          this.cdr.detectChanges();
+    this.notificationService.connection.on('UpdateVolume', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case "CREATING":
+          case "CREATED":
+          case "RESIZING":
+          case "RESIZED":
+          case "EXTENDING":
+          case "EXTENDED":
+          case "DELETING":
+          case "DELETED":
+          case "DELETING":
+            this.getListVolume(true);
+          break;
+          //case "CREATED":
+            // let volumeId = message.serviceId;
+            // var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+            // if (foundIndex > -1) {
+            //   var record = this.response.records[foundIndex];
+            //   record.serviceStatus = message.data?.serviceStatus;
+            //   record.createDate = message.data?.creationDate;
+            //   record.expirationDate = message.data?.expirationDate;
+            //   this.response.records[foundIndex] = record;
+            //   this.cdr.detectChanges();
+            // }
+            // else
+            // {
+              // this.getListVolume(true);
+            //}
+          //break;
         }
       }
     });

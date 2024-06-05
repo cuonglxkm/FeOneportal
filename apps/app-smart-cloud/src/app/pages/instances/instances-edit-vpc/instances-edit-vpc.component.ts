@@ -27,6 +27,9 @@ import {
 import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { debounceTime, Subject } from 'rxjs';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -45,6 +48,29 @@ export class InstancesEditVpcComponent implements OnInit {
   projectId: number;
   listSecurityGroupModel: SecurityGroupModel[] = [];
   listSecurityGroup: SecurityGroupModel[] = [];
+
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault(); // Ngăn chặn hành vi mặc định của các phím mũi tên
+
+      const tabs = document.querySelectorAll('.ant-tabs-tab'); // Lấy danh sách các tab
+      const activeTab = document.querySelector('.ant-tabs-tab-active'); // Lấy tab đang active
+
+      // Tìm index của tab đang active
+      let activeTabIndex = Array.prototype.indexOf.call(tabs, activeTab);
+
+      if (event.key === 'ArrowLeft') {
+        activeTabIndex -= 1; // Di chuyển tới tab trước đó
+      } else if (event.key === 'ArrowRight') {
+        activeTabIndex += 1; // Di chuyển tới tab tiếp theo
+      }
+
+      // Kiểm tra xem tab có hợp lệ không
+      if (activeTabIndex >= 0 && activeTabIndex < tabs.length) {
+        (tabs[activeTabIndex] as HTMLElement).click(); // Kích hoạt tab mới
+      }
+    }
+  }
 
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
@@ -70,7 +96,9 @@ export class InstancesEditVpcComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private configurationService: ConfigurationsService,
+    private orderService: OrderService
   ) {}
 
   checkPermission: boolean = false;
@@ -81,8 +109,10 @@ export class InstancesEditVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getConfigurations();
     this.getCurrentInfoInstance(this.id);
     this.getInfoVPC();
+    this.onChangeCapacity();
   }
 
   isConfigGpuAtInitial: boolean = false;
@@ -231,8 +261,7 @@ export class InstancesEditVpcComponent implements OnInit {
       this.instanceResize.cpu = this.vCPU + this.instancesModel.cpu;
       this.instanceResize.ram = this.ram + this.instancesModel.ram;
       this.instanceResize.storage = this.storage + this.instancesModel.storage;
-      this.instanceResize.gpuCount =
-        this.GPU + this.instancesModel.gpuCount;
+      this.instanceResize.gpuCount = this.GPU + this.instancesModel.gpuCount;
       if (this.gpuTypeOfferId) {
         this.instanceResize.gpuType = this.listGPUType.filter(
           (e) => e.id == this.gpuTypeOfferId
@@ -251,6 +280,11 @@ export class InstancesEditVpcComponent implements OnInit {
     this.instanceResize.projectId = this.projectId;
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   order: Order = new Order();
   orderItem: OrderItem[] = [];
   update() {
@@ -280,18 +314,33 @@ export class InstancesEditVpcComponent implements OnInit {
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 
-    this.dataService.create(this.order).subscribe({
-      next: (data: any) => {
-        this.notification.success(
-          '',
-          this.i18n.fanyi('app.notify.update.instances.success')
-        );
-        this.router.navigate(['/app-smart-cloud/instances']);
+    this.orderService.validaterOrder(this.order).subscribe({
+      next: (result) => {
+        if (result.success) {
+          this.dataService.create(this.order).subscribe({
+            next: (data: any) => {
+              this.notification.success(
+                '',
+                this.i18n.fanyi('app.notify.update.instances.success')
+              );
+              this.router.navigate(['/app-smart-cloud/instances']);
+            },
+            error: (e) => {
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('app.notify.update.instances.fail')
+              );
+            },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = result.data;
+        }
       },
-      error: (e) => {
+      error: (error) => {
         this.notification.error(
-          e.statusText,
-          this.i18n.fanyi('app.notify.update.instances.fail')
+          this.i18n.fanyi('app.status.fail'),
+          error.error.detail
         );
       },
     });
@@ -299,11 +348,47 @@ export class InstancesEditVpcComponent implements OnInit {
 
   isChange: boolean = false;
   checkChangeConfig() {
-    if (this.storage != 0 || this.ram != 0 || this.vCPU != 0) {
-      this.isChange = true;
-    } else {
+    if (this.storage % this.stepCapacity > 0) {
       this.isChange = false;
+    } else {
+      if (this.storage != 0 || this.ram != 0 || this.vCPU != 0) {
+        this.isChange = true;
+      } else {
+        this.isChange = false;
+      }
     }
+  }
+
+  minCapacity: number;
+  maxCapacity: number;
+  stepCapacity: number;
+  getConfigurations() {
+    this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
+      next: (data) => {
+        let valueArray = data.valueString.split('#');
+        this.minCapacity = valueArray[0];
+        this.stepCapacity = valueArray[1];
+        this.maxCapacity = valueArray[2];
+      },
+    });
+  }
+
+  dataSubjectCapacity: Subject<any> = new Subject<any>();
+  changeCapacity(value: number) {
+    this.dataSubjectCapacity.next(value);
+  }
+  onChangeCapacity() {
+    this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
+      if (res % this.stepCapacity > 0) {
+        this.notification.warning(
+          '',
+          this.i18n.fanyi('app.notify.amount.capacity', {
+            number: this.stepCapacity,
+          })
+        );
+        this.storage = this.storage - (this.storage % this.stepCapacity);
+      }
+    });
   }
 
   onRegionChange(region: RegionModel) {

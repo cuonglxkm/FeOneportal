@@ -1,4 +1,4 @@
-<img style="color: #0066b3; margin-left: 15px"
+<img style="margin-left: 15px; cursor: pointer;"
       src="assets/imgs/delete.svg" alt=""
       nz-popover
       [nz-tooltip]="'app.text.delete' | i18n"
@@ -29,7 +29,7 @@
             nzType="default"
             (click)="handleCancel()"
             class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.text.delete' | i18n }}
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button
             nzType="primary"

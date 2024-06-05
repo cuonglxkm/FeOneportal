@@ -4,7 +4,7 @@
   [title]="'app.file.system.snapshot.create' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -23,27 +23,30 @@
         'app.file.system.snapshot.create' | i18n
       }}</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="region"
-      (valueChanged)="onProjectChange($event)"
-      (userChanged)="userChangeProject($event)"
-    ></project-select-dropdown>
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+        (userChanged)="userChangeProject($event)"
+      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
 
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="16" class="gutter-row">
+    <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
     <nz-card style="border-radius: 8px">
       <h2 class="custom-title">{{ 'app.file.system.snapshot.info' | i18n }}</h2>
-      <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <nz-form-item>
           <nz-form-control [nzErrorTip]="'validation.file.system.empty' | i18n">
             <nz-form-label nzFor="name">
@@ -52,9 +55,7 @@
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 <img
                   nz-popover
-                  [nzPopoverContent]="
-                    'app.file.system.name.tooltip' | i18n
-                  "
+                  [nzPopoverContent]="'app.file.system.name.tooltip' | i18n"
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
                   src="assets/imgs/pajamas_question.svg"
@@ -70,9 +71,11 @@
               (ngModelChange)="updateSelectedFileSystems($event)"
               [(ngModel)]="fileSysId"
               class="input-select-custom"
+              [nzLoading]="isLoading"
+              [nzDisabled]="disableListFS"
             >
               <nz-option
-                *ngFor="let data of response?.records"
+                *ngFor="let data of listFileSystems"
                 [nzLabel]="data.name"
                 [nzValue]="data.id"
               ></nz-option>
@@ -101,10 +104,11 @@
               nz-input
               type="text"
               required
+              appTrim
               [placeholder]="'app.input.name.snapshot' | i18n"
               formControlName="nameSnapshot"
               class="input-custom"
-              [maxLength]="255"
+              [maxLength]="50"
             />
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{
@@ -116,15 +120,22 @@
             </ng-template>
           </nz-form-control>
         </nz-form-item>
-        <span class="text-label">{{
-          'app.service.description' | i18n
-        }}</span>
-          <nz-textarea-count [nzMaxCharacterCount]="255">
-            <textarea nz-input formControlName="description" id="description" [maxLength]="255"
-                  [placeholder]="'app.input.des' | i18n"  [nzAutosize]="{ minRows: 4, maxRows: 6 }"></textarea>
-          </nz-textarea-count>
+        <span class="text-label">{{ 'app.service.description' | i18n }}</span>
+        <nz-textarea-count [nzMaxCharacterCount]="255">
+          <textarea
+            nz-input
+            formControlName="description"
+            id="description"
+            [maxLength]="255"
+            [placeholder]="'app.input.des' | i18n"
+            [nzAutosize]="{ minRows: 4, maxRows: 6 }"
+          ></textarea>
+        </nz-textarea-count>
+
+      </nz-card>
         <ng-container *ngIf="typeVpc === 0">
-          <nz-form-item class="mt-5">
+          <one-portal-service-usage-period [nameService]="'file-system-snapshot'" (valueChanged)="onChangeTime($event)"/>
+          <!-- <nz-form-item class="mt-5">
             <nz-form-label nzFor="time">
               <div class="label">
                 <span
@@ -152,9 +163,9 @@
                     formControlName="time"
                     (ngModelChange)="caculator($event)"
                     class="input-custom"
-                    nzMin="1"
-                    nzMax="100"
-                    nzStep="1"
+                    [nzMin]="1"
+                    [nzStep]="1"
+                    [nzMax]="100"
                   />
                   <ng-template #dateErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')"
@@ -194,130 +205,156 @@
                 }}</span>
               </div>
             </nz-form-label>
-          </nz-form-item>
+          </nz-form-item> -->
         </ng-container>
-      </form>
-    </nz-card>
+    </form>
   </div>
   <div nz-col [nzSpan]="8" class="gutter-row">
     <ng-container *ngIf="typeVpc === 1">
       <nz-card class="card-price">
-      <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
-      <div style="margin-bottom: 12px">
-        <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>
-        <span>{{ selectedFileSystemName }}</span>
-      </div>
-      <div style="margin-bottom: 20px">
-        <h3 class="custom-subtitle">{{ 'app.snapshot.name' | i18n }}</h3>
-        <span>{{ form.value.nameSnapshot }}</span>
-      </div>
-      <button
-        (click)="handleCreateFSS()"
-        nz-button
-        nzType="primary"
-        style="
-          border: none;
-          width: 100%;
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          justify-content: center;
-        "
-        nzSize="large"
-        [disabled]="form.invalid"
-        [nzLoading]="isLoadingCreateFSS"
-      >
-        <img src="assets/imgs/wallet.svg" alt="" />
-        <span class="button-text-primary">{{ 'app.button.create' | i18n }}</span>
-      </button>
-    </nz-card>
+        <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
+        <div style="margin-bottom: 12px">
+          <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>
+          <span>{{ selectedFileSystemName }}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">{{ 'app.snapshot.name' | i18n }}</h3>
+          <span class="word-break">{{ form.value.nameSnapshot }}</span>
+        </div>
+        <button
+          (click)="handleCreateFSS()"
+          nz-button
+          nzType="primary"
+          style="
+            border: none;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: center;
+          "
+          nzSize="large"
+          [disabled]="form.invalid"
+          [nzLoading]="isLoadingCreateFSS"
+        >
+          <img src="assets/imgs/wallet.svg" alt="" />
+          <span class="button-text-primary">{{
+            'app.button.create' | i18n
+          }}</span>
+        </button>
+      </nz-card>
     </ng-container>
-    <ng-container *ngIf="typeVpc === 0"> 
-    <nz-card class="right-form card-price">
-      <div class="right-title">
-        <span class="text-card-header">Chi phí ước tính</span>
-      </div>
-      <div style="margin-bottom: 12px">
-        <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>
-        <span>{{ selectedFileSystemName }}</span>
-      </div>
-      <div style="margin-bottom: 20px">
-        <h3 class="custom-subtitle">{{ 'app.snapshot.name' | i18n }}</h3>
-        <span class="word-break">{{ form.value.nameSnapshot }}</span>
-      </div>
-      <div style="margin-bottom: 20px">
-        <h3 class="custom-subtitle">Dung lượng File System</h3>
-        <span *ngIf="fileSysSize">{{fileSysSize}} GB</span>
-      </div>
-      <nz-row class="right-form-content-month" nzGutter="16">
-        <nz-col nzSpan="16">
-          <span class="text-value"> Chi phí 1 tháng </span>
-        </nz-col>
-        <nz-col class="text-right" nzSpan="8">
-          <span class="text-value month-money" nzAlign="right">
+    <ng-container *ngIf="typeVpc === 0">
+      <nz-card class="right-form card-price">
+        <div class="right-title">
+          <span class="text-card-header">Chi phí ước tính</span>
+        </div>
+        <div style="margin-bottom: 12px">
+          <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>
+          <span>{{ selectedFileSystemName }}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">{{ 'app.snapshot.name' | i18n }}</h3>
+          <span class="word-break">{{ form.value.nameSnapshot }}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Dung lượng File System</h3>
+          <span *ngIf="fileSysSize">{{ fileSysSize }} GB</span>
+        </div>
+        <nz-row class="right-form-content-month" nzGutter="16">
+          <nz-col nzSpan="16">
             <span
-              *ngIf="orderItem?.orderItemPrices?.length <= 0"
-              class="text-value"
-              style="color: #0066b3"
-              nzAlign="right"
-              >0 VNĐ</span
-            >
-            <span
-              *ngIf="orderItem?.orderItemPrices?.length > 0"
-              class="text-value"
-              style="color: #0066b3"
-              nzAlign="right"
-            >
-              {{ orderItem?.orderItemPrices[0].unitPrice.amount | number }}
-              {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+                  class="text-value">{{ 'app.cost.n.month'| i18n : { numberMonth: form.controls.time.value } }}</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value month-money" nzAlign="right">
+              <span
+                *ngIf="orderItem?.orderItemPrices?.length <= 0"
+                class="text-value"
+                style="color: #0066b3"
+                nzAlign="right"
+                >0 VNĐ</span
+              >
+              <span
+                *ngIf="orderItem?.orderItemPrices?.length > 0"
+                class="text-value"
+                style="color: #0066b3"
+                nzAlign="right"
+              >
+                {{ orderItem?.orderItemPrices[0].totalAmount.amount | number }}
+                {{ orderItem?.orderItemPrices[0].totalAmount.currency }}
+              </span>
             </span>
-          </span>
-        </nz-col>
-      </nz-row>
-      <nz-row class="right-form-content-total" nzGutter="16">
-        <nz-col nzSpan="16">
-          <span class="text-label">Tổng thanh toán</span><br />
-          <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
-        </nz-col>
-        <nz-col class="text-right" nzSpan="8">
-          <span class="text-value vat-money" nzAlign="right">
+          </nz-col>
+        </nz-row>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <nz-row style="margin-bottom: 10px" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
             <span
+              class="text-value"
+              style="color: #0066b3"
+              nzAlign="right"
+              *ngIf="orderItem == null"
+              >0 VND</span
+            >
+            <span
+              class="text-value"
+              style="color: #0066b3"
+              nzAlign="right"
               *ngIf="orderItem != undefined"
-              class="text-value"
-              style="color: #ea3829"
-              nzAlign="right"
             >
-              {{ orderItem?.totalPayment?.amount | number }}
-              {{ orderItem?.totalPayment?.currency }}
+              {{ orderItem?.totalVAT?.amount | number }}
+              {{ orderItem?.totalVAT?.currency }}
             </span>
-            <span
-              *ngIf="orderItem == undefined"
-              class="text-value"
-              style="color: #ea3829"
-              nzAlign="right"
+          </nz-col>
+        </nz-row>
+        <nz-row class="right-form-content-total" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-label">Tổng thanh toán</span><br />
+            <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value vat-money" nzAlign="right">
+              <span
+                *ngIf="orderItem != undefined"
+                class="text-value"
+                style="color: #ea3829"
+                nzAlign="right"
+              >
+                {{ orderItem?.totalPayment?.amount | number }}
+                {{ orderItem?.totalPayment?.currency }}
+              </span>
+              <span
+                *ngIf="orderItem == undefined"
+                class="text-value"
+                style="color: #ea3829"
+                nzAlign="right"
+              >
+                0 VND
+              </span>
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col style="width: 100%" class="text-right">
+            <button
+              style="width: 100%"
+              nz-button
+              nzSize="large"
+              nzType="primary"
+              [disabled]="!form.valid"
+              (click)="handleCreateFSS()"
             >
-              0 VND
-            </span>
-          </span>
-        </nz-col>
-      </nz-row>
-      <nz-row>
-        <nz-col style="width: 100%" class="text-right">
-          <button
-            style="width: 100%"
-            nz-button
-            nzSize="large"
-            nzType="primary"
-            [disabled]="!form.valid"
-            (click)="handleCreateFSS()"
-          >
-            <span nz-icon nzType="wallet" nzTheme="outline"></span>
-            Khởi tạo
-          </button>
-        </nz-col>
-      </nz-row>
-    </nz-card>
-  </ng-container>
+              <span nz-icon nzType="wallet" nzTheme="outline"></span>
+              Khởi tạo
+            </button>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </ng-container>
   </div>
 </div>
 <div

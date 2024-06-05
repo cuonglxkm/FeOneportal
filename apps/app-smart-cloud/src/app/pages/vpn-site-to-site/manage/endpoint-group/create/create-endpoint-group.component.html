@@ -1,29 +1,45 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Khởi tạo Endpoint Group'">
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Tạo mới Endpoint Group'"
+>
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']">Dịch vụ hạ tầng</a>
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">VPN site to
-          site</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Khởi tạo Endpoint Group</nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+          >VPN site to site</a
+        ></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item>Tạo mới Endpoint Group</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="region" (valueChanged)="onProjectChange($event)"></project-select-dropdown>
+      <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
 
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="17" class="gutter-row">
-    <nz-card style="border-radius: 8px;">
+    <nz-card style="border-radius: 8px">
       <h2 class="custom-title">Thông tin Endpoint Group</h2>
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <nz-form-item>
@@ -31,18 +47,36 @@
             <nz-form-label nzFor="name">
               <div>
                 <span>Name</span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
-                  [nzPopoverContent]="'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
-                  nzPopoverPlacement="bottom"></span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                <img
+                  nz-popover
+                  [nzPopoverContent]="
+                    'Tên của Endpoint bao gồm các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
+                  "
+                  nzPopoverPlacement="bottom"
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
               </div>
             </nz-form-label>
-            <input class="input-custom" nz-input type="text" required placeholder="Nhập tên" formControlName="name" />
+            <input
+              class="input-custom"
+              [maxlength]="50"
+              appTrim
+              nz-input
+              type="text"
+              required
+              placeholder="Nhập tên"
+              formControlName="name"
+            />
             <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Tên Endpoint Group không được để
-                trống</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">Tên Endpoint Group chỉ chứa kí tự viết thường, viết
-                hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+              <ng-container *ngIf="control.hasError('required')"
+                >Tên Endpoint Group không được để trống</ng-container
+              >
+              <ng-container *ngIf="control.hasError('pattern')"
+                >Tên Endpoint Group chỉ chứa các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự</ng-container
+              >
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -52,95 +86,180 @@
             <nz-form-label nzFor="name">
               <div>
                 <span>Type</span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
-                  [nzPopoverContent]="'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'"
-                  nzPopoverPlacement="bottom"></span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                <img
+                  nz-popover
+                  [nzPopoverContent]="
+                    'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'
+                  "
+                  nzPopoverPlacement="bottom"
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
               </div>
             </nz-form-label>
-            <nz-select class="input-select-custom" nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}" (ngModelChange)="handleChangeType($event)">
-              <nz-option *ngFor="let data of type" [nzLabel]="data.label"
-                [nzValue]="data.value"></nz-option>
+            <nz-select
+              class="input-select-custom"
+              nzShowSearch
+              nzAllowClear
+              [(ngModel)]="selectedType"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="handleChangeType($event)"
+            >
+              <nz-option
+                *ngFor="let data of type"
+                [nzLabel]="data.label"
+                [nzValue]="data.value"
+              ></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-control [nzErrorTip]="selectedType == 'cidr' && 'Cidr không được để trống'">
+          <nz-form-control
+            [nzErrorTip]="selectedType == 'cidr' && cidrErrorTpl"
+          >
             <nz-form-label *ngIf="selectedType == 'subnet'">
               <div>
                 <span nzFor="name">Local Systems Subnets </span>
-                <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
-                    [nzPopoverContent]="'Local Subnet(s). Trường này hợp lệ và có ý nghĩa nếu Type là Subnet
-                    Đây là VLAN trong VPC.'"
-                    nzPopoverPlacement="bottom"></span>
+                <img
+                  nz-popover
+                  nzPopoverContent="
+                        Local Subnet(s). Trường này hợp lệ và có ý nghĩa nếu Type là Subnet
+                    Đây là VLAN trong VPC.
+                      "
+                  nzPopoverPlacement="bottom"
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
               </div>
             </nz-form-label>
-            <nz-checkbox-wrapper *ngIf="selectedType == 'subnet' && listSubnets.length !== 0" style="width: 100%;" (nzOnChange)="log($event)">
+            <nz-checkbox-wrapper
+              *ngIf="selectedType == 'subnet' && listSubnets.length !== 0"
+              style="width: 100%"
+              (nzOnChange)="log($event)"
+            >
               <div *ngIf="selectedType == 'subnet'">
                 <div *ngFor="let item of listSubnets">
-                  <div [ngModel]="checked" [nzValue]="item.cidr" nz-checkbox>{{ item.cidr }}</div>
+                  <div [ngModel]="checked" [nzValue]="item.cidr" nz-checkbox>
+                    {{ item.cidr }}
+                  </div>
                 </div>
               </div>
             </nz-checkbox-wrapper>
 
-            <ng-container *ngIf="selectedType == 'subnet' && listSubnets.length === 0">
-              <a style="display: block;" [routerLink]="['/app-smart-cloud/network/router/detail/' + routerId]">Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!</a>
+            <ng-container
+              *ngIf="selectedType == 'subnet' && listSubnets.length === 0"
+            >
+              <a
+                style="display: block"
+                [routerLink]="[
+                  '/app-smart-cloud/network/router/detail/' + routerId
+                ]"
+                >Vui lòng kiểm tra Router và add Interface Router để sử dụng
+                dịch vụ!</a
+              >
             </ng-container>
-            
-            
+
             <nz-form-label *ngIf="selectedType == 'cidr'">
               <div *ngIf="selectedType == 'cidr'">
                 <span nzFor="name">External Systems CIDRs </span>
-                <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
-                    [nzPopoverContent]="'Remote peer subnet(s) với  mask(s) ở định dạng CIDR được phân tách bằng dấu phẩy nếu cần (ví dụ: 20.1.0.0/24, 21.1.0.0/24) trường này hợp lệ nếu Type là CIDR.
-                    Đây là danh sách các remote subnet cần quảng qua VPN Site to site.'"
-                    nzPopoverPlacement="bottom"></span>
+                <img
+                  nz-popover
+                  nzPopoverContent="
+                    Remote peer subnet(s) với  mask(s) ở định dạng CIDR được phân tách bằng dấu phẩy nếu cần (ví dụ: 20.1.0.0/24, 21.1.0.0/24) trường này hợp lệ nếu Type là CIDR.
+                    Đây là danh sách các remote subnet cần quảng qua VPN Site to site.
+                  "
+                  nzPopoverPlacement="bottom"
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
               </div>
             </nz-form-label>
-            <input formControlName="endpointsCidr" class="input-custom" *ngIf="selectedType == 'cidr'" nz-input type="text" placeholder="Cidr(for external systems)" />         
+            <input
+              formControlName="endpointsCidr"
+              class="input-custom"
+              *ngIf="selectedType == 'cidr'"
+              nz-input
+              type="text"
+              placeholder="Cidr(for external systems)"
+            />
+            <ng-template #cidrErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >CIDR không được để trống</ng-container
+              >
+              <ng-container *ngIf="control.hasError('pattern')"
+                >CIDR phải có dạng x.x.x.0/24</ng-container
+              >
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </form>
     </nz-card>
   </div>
   <div nz-col [nzSpan]="7" class="gutter-row">
-    <nz-card style="border-radius: 8px;">
+    <nz-card style="border-radius: 8px;" class="card-border">
       <h2 class="custom-title">Thông số cấu hình</h2>
-      <div style="overflow: auto; height: 257px; margin-bottom: 16px;">
+      <div style="overflow: auto; height: 235px; margin-bottom: 16px">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
-          <span>{{form.value.name}}</span>
+          <span class="text-break">{{ form.value.name }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Type</h3>
-          <span *ngIf="selectedType == 'subnet'">Subnet(for local systems)</span>
+          <span *ngIf="selectedType == 'subnet'"
+            >Subnet(for local systems)</span
+          >
           <span *ngIf="selectedType == 'cidr'">Cidr(for external systems)</span>
         </div>
 
         <div style="margin-bottom: 20px">
-          <h3 *ngIf="selectedType == 'subnet'" class="custom-subtitle">Local Systems Subnets</h3>
-          <h3 *ngIf="selectedType == 'cidr'" class="custom-subtitle">External Systems CIDRs</h3>
-          <span *ngIf="selectedType == 'cidr'">{{form.value.endpointsCidr}}</span>
+          <h3 *ngIf="selectedType == 'subnet'" class="custom-subtitle">
+            Local Systems Subnets
+          </h3>
+          <h3 *ngIf="selectedType == 'cidr'" class="custom-subtitle">
+            External Systems CIDRs
+          </h3>
+          <span *ngIf="selectedType == 'cidr'">{{
+            form.value.endpointsCidr
+          }}</span>
           <div *ngIf="selectedType == 'subnet'">
-              <label >{{listCidrInfo}}</label>
+            <label>{{ listCidrInfo }}</label>
           </div>
         </div>
       </div>
-      <button [nzLoading]="isLoading" (click)="handleCreate()" nz-button nzType="primary"
-        style="border: none; width: 100%; display: flex; align-items: center; gap: 5px; justify-content: center;"
-        nzSize="large" [disabled]="form.invalid" [nzLoading]="isLoading">
+      <button
+        [nzLoading]="isLoading"
+        (click)="handleCreate()"
+        nz-button
+        nzType="primary"
+        style="
+          border: none;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          justify-content: center;
+        "
+        nzSize="large"
+        [disabled]="form.invalid"
+        [nzLoading]="isLoading"
+      >
         <img src="assets/imgs/wallet.svg" alt="" />
         <span class="button-text-primary">Khởi tạo</span>
       </button>
-
     </nz-card>
   </div>
 </div>
 
-<div class="text-right" style="
+<div
+  class="text-right"
+  style="
     display: flex;
     align-items: center;
     justify-content: flex-end;
     height: 100%;
-  ">
-</div>
+  "
+></div>

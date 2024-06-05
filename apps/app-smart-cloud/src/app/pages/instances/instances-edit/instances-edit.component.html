@@ -4,7 +4,7 @@
   [title]="'app.instances.edit' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -13,8 +13,17 @@
           'app.instances' | i18n
         }}</a>
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a
+          [routerLink]="['/app-smart-cloud/instances/instances-detail/' + id]"
+          >{{ 'app.instances.detail' | i18n }}</a
+        >
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.instances.edit' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -241,7 +250,7 @@
                   >{{ 'app.service.creation-date' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan">{{
-                  instancesModel.createdDate | date : 'dd/MM/yyyy'
+                  instancesModel.createdDate | date : 'HH:mm:ss dd/MM/yyyy'
                 }}</span>
               </nz-row>
             </nz-col>
@@ -251,7 +260,9 @@
                   >{{ 'app.service.expiration-date' | i18n }}:</span
                 >
                 <span class="text-value-detail"
-                  >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
+                  >{{
+                    instancesModel.expiredDate | date : 'HH:mm:ss dd/MM/yyyy'
+                  }}
                 </span>
               </nz-row></nz-col
             >
@@ -446,8 +457,9 @@
                           >) - GB</nz-form-label
                         >
                         <nz-slider
-                          [nzMin]="0"
-                          [nzMax]="1000"
+                          [nzMin]="minCapacity"
+                          [nzMax]="maxCapacity"
+                          [nzStep]="stepCapacity"
                           [(ngModel)]="configCustom.capacity"
                           (ngModelChange)="changeCapacity($event)"
                           [ngModelOptions]="{ standalone: true }"
@@ -459,9 +471,9 @@
                           (keydown)="onKeyDown($event)"
                           (ngModelChange)="changeCapacity($event)"
                           [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="0"
-                          [nzMax]="1000"
-                          [nzStep]="1"
+                          [nzMin]="minCapacity"
+                          [nzMax]="maxCapacity"
+                          [nzStep]="stepCapacity"
                           nzSize="large"
                         ></nz-input-number>
                       </td>
@@ -643,8 +655,9 @@
                           >) - GB</nz-form-label
                         >
                         <nz-slider
-                          [nzMin]="0"
-                          [nzMax]="1000"
+                          [nzMin]="minCapacity"
+                          [nzMax]="maxCapacity"
+                          [nzStep]="stepCapacity"
                           [(ngModel)]="configGPU.storage"
                           (ngModelChange)="changeStorageOfGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
@@ -656,9 +669,9 @@
                           (keydown)="onKeyDown($event)"
                           (ngModelChange)="changeStorageOfGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="0"
-                          [nzMax]="1000"
-                          [nzStep]="1"
+                          [nzMin]="minCapacity"
+                          [nzMax]="maxCapacity"
+                          [nzStep]="stepCapacity"
                           nzSize="large"
                         ></nz-input-number>
                       </td>
@@ -742,49 +755,13 @@
           </div>
         </nz-card>
       </form>
-      <nz-card style="border-radius: 8px; width: 100%">
-        <span class="text-card-header">{{ 'app.guide.formula' | i18n }}</span>
-        <nz-row class="text-label" style="margin-top: 20px">
-          <nz-col style="margin-top: 10px">
-            <span>{{ 'app.note.guide.formula' | i18n }}</span>
-          </nz-col>
-          <nz-col style="padding-left: 5px">
-            <div>
-              <span class="fraction">
-                <span class="numerator">{{
-                  'app.note.guide.formula.numerator' | i18n
-                }}</span>
-                <span class="denominator">30 {{ 'app.days' | i18n }}</span>
-              </span>
-            </div>
-          </nz-col>
-          <nz-col style="margin-top: 10px; padding-left: 10px">
-            <span>x {{ 'app.remaining.days' | i18n }}</span>
-          </nz-col>
-        </nz-row>
-        <div style="margin-top: 10px" class="text-label">
-          {{ 'app.example.guide.formula' | i18n }}
-        </div>
-        <nz-row class="text-label">
-          <nz-col class="text-right" style="padding-left: 5px" nzSpan="12">
-            <div>
-              <span class="fraction">
-                <span class="numerator">1.500.000 - 1.000.000</span>
-                <span class="denominator">30 {{ 'app.days' | i18n }}</span>
-              </span>
-            </div>
-          </nz-col>
-          <nz-col style="margin-top: 10px; padding-left: 10px" nzSpan="12">
-            <span>x 15 {{ 'app.days' | i18n }} = 250.000 VND</span>
-          </nz-col>
-        </nz-row>
-      </nz-card>
+      <one-portal-guide-formula></one-portal-guide-formula>
     </nz-row>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
     <div style="width: 100%" *ngIf="instancesModel">
-      <nz-affix [nzOffsetTop]="48">
-        <nz-card style="border-radius: 8px">
+      <nz-affix [nzOffsetTop]="72">
+        <nz-card class="card-border" style="border-radius: 8px">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{
               'app.estimated.cost' | i18n
@@ -835,6 +812,20 @@
             {{ instanceResize.gpuCount }} GPU (Nvidia
             {{ instanceResize.gpuType | uppercase }})
           </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">
+                {{ 'app.cost.vat' | i18n }}
+              </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalVAT | number }}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
           <nz-row
             style="
               margin-top: 16px;
@@ -881,3 +872,8 @@
     </div>
   </div>
 </div>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>

@@ -10,6 +10,9 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { finalize } from 'rxjs/operators';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { OrderService } from '../../../shared/services/order.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-extend-ip-public',
@@ -99,6 +102,8 @@ export class ExtendIpPublicComponent implements OnInit{
               private ipService: IpPublicService,
               private router: Router,
               private activatedRoute: ActivatedRoute,
+              private orderService : OrderService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private modalService: NzModalService,
               private notification: NzNotificationService) {
     this.volumeStatus = new Map<String, string>();
@@ -149,7 +154,15 @@ export class ExtendIpPublicComponent implements OnInit{
       ]
     };
     var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    this.orderService.validaterOrder(request).subscribe(
+      data => {
+        this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+      },
+      error => {
+        this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.validate.order.fail'))
+      }
+    )
+
   }
 
   caculator() {

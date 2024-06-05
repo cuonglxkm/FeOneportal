@@ -4,7 +4,7 @@
   [title]="'app.instances.detail' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -17,6 +17,9 @@
         {{ 'app.instances.detail' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -307,7 +310,7 @@
             >{{ 'app.service.creation-date' | i18n }}:</span
           >
           <span class="text-value-detail customSpan">{{
-            instancesModel.createdDate | date : 'dd/MM/yyyy'
+            instancesModel.createdDate | date : 'HH:mm:ss dd/MM/yyyy'
           }}</span>
         </nz-row>
       </nz-col>
@@ -317,7 +320,7 @@
             >{{ 'app.service.expiration-date' | i18n }}:</span
           >
           <span class="text-value-detail"
-            >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
+            >{{ instancesModel.expiredDate | date : 'HH:mm:ss dd/MM/yyyy' }}
           </span>
         </nz-row></nz-col
       >

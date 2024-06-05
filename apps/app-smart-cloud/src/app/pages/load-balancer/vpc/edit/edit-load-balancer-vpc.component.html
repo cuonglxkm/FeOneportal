@@ -2,7 +2,8 @@
              [action]="action"
              [title]="'app.load.balancer.resize' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
@@ -14,6 +15,9 @@
         <a routerLink="/app-smart-cloud/load-balancer/create">{{ 'app.load.balancer.resize' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -184,45 +188,46 @@
       </nz-card>
     </nz-col>
     <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px">
-        <div style="margin-bottom: 20px">
-          <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
-        </div>
-        <div style="margin-top: 10px" class="text-value">{{ 'app.load.balancer.name' | i18n }}</div>
-        <div style="margin-top: 10px" class="text-label">
-          {{ validateForm.controls.nameLoadBalancer.getRawValue() }}
-        </div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">{{ 'app.usage' | i18n }}</div>
-        <div style="margin-top: 10px" class="text-label">
-          <span *ngIf="loadBalancer?.internetFacing == true">Internet Facing</span>
-          <span *ngIf="loadBalancer?.internetFacing == false">Internal</span>
-        </div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">Subnet</div>
-        <div style="margin-top: 10px" class="text-label">
-          <span class="text-label">{{ loadBalancer?.subnetName }}({{ loadBalancer?.subnetAddress }})</span>
-        </div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">IP Address</div>
-        <div style="margin-top: 10px" class="text-label">
-          <span class="text-label">{{ loadBalancer?.ipAddress }}</span>
-        </div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div style="margin-top: 10px" class="text-value">{{ 'app.text.package' | i18n }}</div>
-        <div style="margin-top: 10px" class="text-label">
-          <span class="text-label">{{ loadBalancer?.offerName }}</span>
-        </div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <nz-row>
-          <nz-col style="width: 100%">
-            <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="!validateForm.valid" (click)="submitForm()">
-              <i nz-icon [nzType]="'edit'"  style="margin-right: 5px; padding-bottom: 5px;"></i>
-              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.text.edit' | i18n }}</span>
-            </button>
-          </nz-col>
-        </nz-row>
-      </nz-card>
+      <nz-affix [nzOffsetTop]="72">
+        <nz-card style="border-radius: 8px">
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
+          </div>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.load.balancer.name' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ validateForm.controls.nameLoadBalancer.getRawValue() }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.usage' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span *ngIf="loadBalancer?.internetFacing == true">Internet Facing</span>
+            <span *ngIf="loadBalancer?.internetFacing == false">Internal</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">Subnet</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span class="text-label">{{ loadBalancer?.subnetName }}({{ loadBalancer?.subnetAddress }})</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">IP Address</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span class="text-label">{{ loadBalancer?.ipAddress }}</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">{{ 'app.text.package' | i18n }}</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span class="text-label">{{ loadBalancer?.offerName }}</span>
+          </div>
+          <nz-row>
+            <nz-col style="width: 100%">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="!validateForm.valid" (click)="submitForm()">
+                <i nz-icon [nzType]="'edit'"  style="margin-right: 5px; padding-bottom: 5px;"></i>
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.text.edit' | i18n }}</span>
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-affix>
     </nz-col>
   </nz-row>
 </nz-content>

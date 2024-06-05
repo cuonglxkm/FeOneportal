@@ -1,18 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FileSystemModel, FormSearchFileSystem } from 'src/app/shared/models/file-system.model';
-import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
-import { FileSystemService } from 'src/app/shared/services/file-system.service';
-import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
-import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
-import { I18NService } from '@core';
-import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { FileSystemModel } from 'src/app/shared/models/file-system.model';
 import { FormCreateSslCert } from 'src/app/shared/models/ssl-cert.model';
 import { SSLCertService } from 'src/app/shared/services/ssl-cert.service';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { differenceInCalendarDays } from 'date-fns';
 
 
 @Component({
@@ -37,6 +35,10 @@ export class CreateSslCertComponent implements OnInit{
 
   passwordVisible: boolean = false
 
+  today = new Date();
+  disabledDate = (current: Date): boolean =>
+    differenceInCalendarDays(current, this.today) < 0;
+
   expireDate: Date = new Date()
   form: FormGroup<{
     privateKey: FormControl<string>;
@@ -44,10 +46,10 @@ export class CreateSslCertComponent implements OnInit{
     certName: FormControl<string>
     passphrase: FormControl<string>
   }> = this.fb.group({
-    privateKey: ['', [Validators.required]],
-    certName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
-    publicKey: ['', [Validators.required]],
-    passphrase: ['', [Validators.required]],
+    privateKey: ['', Validators.required],
+    certName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]{0,49}$/)]],
+    publicKey: ['', Validators.required],
+    passphrase: [''],
   });
 
 
@@ -127,5 +129,9 @@ export class CreateSslCertComponent implements OnInit{
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+  }
+
+  navigateToList(){
+    this.router.navigate(['/app-smart-cloud/ssl-cert']);
   }
 }

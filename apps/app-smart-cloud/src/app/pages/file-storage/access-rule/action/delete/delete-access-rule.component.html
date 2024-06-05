@@ -1,11 +1,13 @@
-<img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
+<img src="assets/imgs/delete.svg" style="width: 28px; height: 28px; margin-left: 5px; cursor: pointer;"
      nz-popover
      [nzPopoverContent]="'app.delete' | i18n"
      nzPopoverPlacement="bottom" (click)="showModal()"/>
 <nz-modal [(nzVisible)]="isVisible"
-          (nzOnCancel)="handleCancel()" nzMask="false">
+          (nzOnCancel)="handleCancel()"
+          [nzAutofocus]="undefined"
+          nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">{{ 'app.delete' | i18n }} Access Rule ?</span>
+    <span class="text-modal-title">Xác nhận xóa Access Rule ?</span>
   </div>
   <div *nzModalContent>
     <nz-alert nzBanner
@@ -24,6 +26,7 @@
     <button nz-button nzType="primary"
             (click)="handleOk()"
             [nzLoading]="isLoading"
+            appAutofocus
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
     </button>

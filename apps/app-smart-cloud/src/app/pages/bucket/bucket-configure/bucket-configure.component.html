@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'app.config.bucket' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item
         ><a [routerLink]="['/']">{{
           'app.breadcrumb.home' | i18n
@@ -13,6 +13,9 @@
         {{ 'app.config.bucket' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
 </page-header>
 <nz-card style="border-radius: 4px" [nzBordered]="false">
@@ -76,8 +79,9 @@
               alt=""
             />{{ 'app.button.cancel' | i18n }}
           </button>
-          <button nz-button nzType="primary" (click)="setBucketACL()">
+          <button nz-button nzType="primary" [nzLoading]="isLoading" (click)="setBucketACL()">
             <img
+              *ngIf="isLoading === false"
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/confirm.svg"
               alt=""
@@ -120,8 +124,9 @@
               alt=""
             />{{ 'app.button.cancel' | i18n }}
           </button>
-          <button nz-button nzType="primary" (click)="setBucketVersioning()">
+          <button nz-button nzType="primary" [nzLoading]="isLoadingVersion" (click)="setBucketVersioning()">
             <img
+              *ngIf="isLoadingVersion === false"
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/confirm.svg"
               alt=""

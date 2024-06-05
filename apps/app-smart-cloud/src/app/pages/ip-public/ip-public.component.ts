@@ -10,6 +10,8 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {getCurrentRegionAndProject} from "@shared";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { TimeCommon } from '../../shared/utils/common';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-ip-public',
@@ -41,12 +43,11 @@ export class IpPublicComponent implements OnInit {
   disableAtt = true;
   id: any;
   instanceName: any;
-
+  searchDelay = new Subject<boolean>();
   statusData = [
     {name: this.i18n.fanyi('app.status.all'), value: ''},
     {name: this.i18n.fanyi('app.status.running'), value: 'KHOITAO'},
     {name: this.i18n.fanyi('app.status.low-renew'), value: 'TAMNGUNG'}];
-  actionData = ['Gắn Ip Pulbic', 'Gỡ Ip Pulbic', 'Xóa'];
   disableDelete = true;
   ipAddressDelete = '';
 
@@ -55,7 +56,6 @@ export class IpPublicComponent implements OnInit {
               private instancService: InstancesService,
               private notification: NzNotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,) {
-
   }
 
   modalStyle = {
@@ -73,8 +73,10 @@ export class IpPublicComponent implements OnInit {
     this.service.model.subscribe(data => {
       console.log(data)
     })
-
     this.getData(true);
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe((isStart: boolean) => {
+      this.getData(isStart);
+    });
   }
 
   getData(isCheckBegin: boolean): void {
@@ -88,13 +90,6 @@ export class IpPublicComponent implements OnInit {
           this.isBegin = this.listOfIp === null || this.listOfIp.length < 1 ? true : false;
         }
       });
-  }
-
-  search(inputSearch: any) {
-    if (inputSearch !== null) {
-      this.ipAddress = inputSearch;
-    }
-    this.getData(false);
   }
 
   onRegionChange(region: RegionModel) {

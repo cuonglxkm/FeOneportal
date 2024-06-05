@@ -38,6 +38,7 @@ import { CreateEndpointGroupComponent } from './manage/endpoint-group/create/cre
 import { DetailEndpointGroupComponent } from './manage/endpoint-group/detail/detail-endpoint-group.component';
 import { DeleteEndpointGroupComponent } from './manage/endpoint-group/delete/delete-endpoint-group.component';
 import { EditEndpointGroupComponent } from './manage/endpoint-group/edit/edit-endpoint-group.component';
+import { TrimDirective } from '../file-storage/TrimDirective';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { EditEndpointGroupComponent } from './manage/endpoint-group/edit/edit-en
     NguCarousel,
     NguCarouselDefDirective,
     NguTileComponent,
+    TrimDirective
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

@@ -4,6 +4,8 @@ import {UserGroupService} from "../../../../shared/services/user-group.service";
 import {FormSearchUserGroup, UserGroupModel} from "../../../../shared/models/user-group.model";
 import Pagination from "../../../../shared/models/pagination";
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { debounceTime, Subject } from 'rxjs';
+import { TimeCommon } from '../../../../shared/utils/common';
 
 export interface UserGroup {
   id: number;
@@ -81,15 +83,15 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     const listOfEnabledData = this.listOfCurrentPageData;
     this.checked = listOfEnabledData.every(({name}) => this.setOfCheckedId.has(name));
     this.indeterminate = listOfEnabledData.some(({name}) => this.setOfCheckedId.has(name)) && !this.checked;
-    
-    
+
+
   }
 
   updateCheckedSet(name: string, checked: boolean): void {
     if (checked) {
       this.setOfCheckedId.add(name);
-      
-     
+
+
     } else {
       this.setOfCheckedId.delete(name);
     }
@@ -108,7 +110,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
   }
 
   showModalDelete() {
-    this.deleteList = this.collection.records.filter(data => 
+    this.deleteList = this.collection.records.filter(data =>
       this.setOfCheckedId.has(data.name)
       // console.log("this.setOfCheckedId.has(data.name)", data)
     )
@@ -165,12 +167,15 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     })
     console.log(listGroup)
   }
-
+  searchDelay = new Subject<boolean>();
   ngOnInit(): void {
     this.form.currentPage = 1
     this.form.pageSize = 10
-
     this.getData()
+
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
+      this.getData();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {

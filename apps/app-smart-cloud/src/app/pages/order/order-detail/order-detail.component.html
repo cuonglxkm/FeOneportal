@@ -168,7 +168,7 @@
         <tbody>
           <tr *ngFor="let item of data?.orderItems">
             <ng-container *ngIf="data?.statusCode == 4">
-              <td [ngSwitch]="serviceName">
+              <td [ngSwitch]="item.serviceNameLink">
                 <a *ngSwitchCase="'File Storage'" [routerLink]="[
                     '/app-smart-cloud/file-storage/file-system/list'
                   ]">{{ item?.serviceName }}</a>

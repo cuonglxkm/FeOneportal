@@ -3,9 +3,9 @@ def imageTag
 def appName
 
 pipeline {
-
-    agent { label 'worker-6-agent||jenkins-oneportal' }
-
+    agent {
+        label agentLabel
+    }
     environment {
         registry = "registry.onsmartcloud.com"
         registryCredential = "cloud-harbor-id"
@@ -74,10 +74,10 @@ pipeline {
             steps {
                 script {
                     echo "switch agent succeccfully"
-                }    
+                }
             }
         }
-        
+
         stage("Automation Testing") {
             agent { label AUTOTEST_AGENT }
             steps {
@@ -90,7 +90,7 @@ pipeline {
                     def projectFile = "VNPT_OnePortal.prj"
                     def testSuitePath = "Test Suites/VNPT_OnePortal_k8s"
                     bat """
-                        set workspace = %cd% 
+                        set workspace = %cd%
                         katalonc -noSplash -runMode=console -projectPath="%workspace%\\${projectFile}" -retry=0 -testSuitePath="${testSuitePath}" -browserType="Chrome" -executionProfile="one_Portal" -apiKey="a49ac01e-c4ad-4ceb-9ce2-7a009dad4627" --config -proxy.auth.option=NO_PROXY -proxy.system.option=NO_PROXY -proxy.system.applyToDesiredCapabilities=true -webui.autoUpdateDrivers=true
                     """
                 }

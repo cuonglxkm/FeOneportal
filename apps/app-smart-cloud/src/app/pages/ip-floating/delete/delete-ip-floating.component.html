@@ -1,8 +1,11 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
-      nzTheme="outline" nz-popover
-      nzPopoverContent="{{'app.user-group.deleteMany.title' | i18n}}
-"
-      nzPopoverPlacement="bottom" (click)="showModal()"></span>
+<!--<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"-->
+<!--      nzTheme="outline" nz-popover-->
+<!--      nzPopoverContent="{{'app.user-group.deleteMany.title' | i18n}}-->
+<!--"-->
+<!--      nzPopoverPlacement="bottom" (click)="showModal()"></span>-->
+<img src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
+     nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"
+     (click)="showModal()"/>
 <nz-modal [(nzVisible)]="isVisible"
           nzCentered
           [nzTitle]="modalTitle"
@@ -13,9 +16,9 @@
     <span class="text-modal-title">{{'ip.floating.label.attach' | i18n}}</span>
   </ng-template>
   <ng-template #modalContent>
-    <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
+    <form [formGroup]="validateForm"  nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
       <nz-alert nzType="warning"
-                nzDescription="{{'ip.floating.alert.remove.ip.address' | i18n}}"
+                nzDescription="{{('ip.floating.alert.remove.ip.address' | i18n) + ip}}"
                 nzShowIcon
                 style="margin-bottom: 24px;">
       </nz-alert>
@@ -28,7 +31,7 @@
         <nz-form-control>
           <input nz-input
                  class="input-custom"
-                 formControlName="name"
+                 formControlName="ip"
                  placeholder="{{'ip.floating.label.press' | i18n}}" />
         </nz-form-control>
       </nz-form-item>

@@ -17,6 +17,9 @@ import {Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {getCurrentRegionAndProject} from "@shared";
 import {CatalogService} from "../../../shared/services/catalog.service";
+import { OrderService } from '../../../shared/services/order.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-create-update-ip-public',
@@ -34,6 +37,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   dateString = new Date();
   total: any;
   totalAmount: any;
+  totalVat: any;
   totalPayment: any;
   loadingIp = true;
   loadingInstanse = true;
@@ -55,6 +59,8 @@ export class CreateUpdateIpPublicComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private catalogService: CatalogService,
+              private orderService : OrderService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private router: Router) {
   }
 
@@ -172,7 +178,14 @@ export class CreateUpdateIpPublicComponent implements OnInit {
     }
 
     var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+    this.orderService.validaterOrder(request).subscribe(
+      data => {
+        this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+      },
+      error => {
+        this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.validate.order.fail'))
+      }
+    )
   }
 
   caculator(event) {
@@ -260,7 +273,8 @@ export class CreateUpdateIpPublicComponent implements OnInit {
           data => {
             this.total = data;
             this.totalAmount = Math.round(this.total?.data?.totalAmount?.amount);
-            this.totalPayment = Math.round(this.total?.data?.totalPayment?.amount)
+            this.totalPayment = Math.round(this.total?.data?.totalPayment?.amount);
+            this.totalVat = Math.round(this.total?.data?.totalVAT?.amount);
           }
         );
     } else {
@@ -287,5 +301,10 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         this.checkIpv6 = null;
       }
     })
+  }
+
+  onChangeTime($event: any) {
+    this.form.controls['numOfMonth'].setValue($event);
+    this.caculator(null);
   }
 }

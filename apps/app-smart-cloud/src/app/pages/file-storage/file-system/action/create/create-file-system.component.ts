@@ -18,13 +18,15 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { debounceTime, Subject } from 'rxjs';
+import { ConfigurationsService } from '../../../../../shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-create-file-system',
   templateUrl: './create-file-system.component.html',
   styleUrls: ['./create-file-system.component.less']
 })
-export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CreateFileSystemComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -57,7 +59,9 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
   ];
 
   isVisibleConfirm: boolean = false;
-  isLoading: boolean = false;
+  isLoading: boolean = true;
+
+  storage: number = 0;
 
   snapshotList: NzSelectOptionInterface[] = [];
 
@@ -68,8 +72,16 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
   nameList: string[] = [];
 
   storageBuyVpc: number;
+  storageUsed: number
+  storageRemaining: number;
 
   isInitSnapshot = false;
+
+  dataSubjectStorage: Subject<any> = new Subject<any>();
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueStringConfiguration: string = '';
+  maxStorage: number = 0;
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
@@ -81,18 +93,8 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
               private projectService: ProjectService,
               private fileSystemSnapshotService: FileSystemSnapshotService,
               private activatedRoute: ActivatedRoute,
-              private renderer: Renderer2) {
-  }
-
-  @ViewChild('confirmButton') confirmButton: ElementRef;
-
-  ngAfterViewInit() {
-    this.addKeydownListener();
-  }
-
-  private addKeydownListener(): void {
-    // Đăng ký sự kiện keydown trên document
-    this.keydownListener = this.renderer.listen('document', 'keydown', this.onKeyDown.bind(this));
+              private renderer: Renderer2,
+              private configurationsService: ConfigurationsService) {
   }
 
   duplicateNameValidator(control) {
@@ -107,8 +109,10 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
 
   checkQuota(control) {
     const value = control.value;
-    if (this.storageBuyVpc < value) {
+    if (this.storageRemaining < value) {
       return { notEnough: true };
+    } else if(this.storageRemaining == 0) {
+      return { outOfStorage: true };
     } else {
       return null;
     }
@@ -160,6 +164,7 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   getListFileSystem() {
+    this.isLoading = true
     let formSearch = new FormSearchFileSystem();
     formSearch.vpcId = this.project;
     formSearch.regionId = this.region;
@@ -168,6 +173,7 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
     formSearch.pageSize = 9999;
     formSearch.isCheckState = true;
     this.fileSystemService.search(formSearch).subscribe(data => {
+      this.isLoading = false
       data?.records?.forEach(item => {
         this.nameList?.push(item?.name);
       });
@@ -175,32 +181,10 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
     });
   }
 
-  onModalOpen(): void {
-    // Tự động focus vào nút xác nhận sau khi modal mở
-    setTimeout(() => {
-      if (this.confirmButton) {
-        this.confirmButton.nativeElement.focus();
-      }
-    }, 0);
-  }
-  // onKeyDown(event: KeyboardEvent): void {
-  //   console.log('Key pressed:', event.key);
-  //   if (event.key === 'enter') {
-  //     // Ngăn chặn hành động mặc định của Enter
-  //     event.preventDefault();
-  //     console.log('here')
-  //     // Kích hoạt nút OK
-  //     if (this.confirmButton && this.confirmButton.nativeElement) {
-  //       this.confirmButton.nativeElement.click();
-  //     }
-  //   }
-  // }
-
-
   initFileSystem() {
     this.formCreate.projectId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
-    this.formCreate.size = this.validateForm.controls.storage.value;
+    this.formCreate.size = this.storage;
     this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();
     this.formCreate.description = this.validateForm.controls.description.value;
     this.formCreate.displayName = this.validateForm.controls.name.value;
@@ -262,8 +246,15 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   getStorageBuyVpc() {
+    this.isLoading = true
     this.projectService.getProjectVpc(this.project).subscribe(data => {
-      this.storageBuyVpc = data.cloudProject.quotaShareInGb
+      this.storageBuyVpc = data.cloudProject?.quotaShareInGb
+      this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
+      this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
+      console.log('share remaining', this.storageRemaining)
+      this.validateForm.controls.storage.markAsDirty()
+      this.validateForm.controls.storage.updateValueAndValidity()
+      this.isLoading = false
     })
   }
 
@@ -301,54 +292,44 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
     });
 
   }
-  private keydownListener: () => void;
+
   showModalConfirm() {
     this.isVisibleConfirm = true;
-    this.initFileSystem();
-    setTimeout(() => {
-      if (this.confirmButton && this.confirmButton.nativeElement) {
-        this.confirmButton.nativeElement.focus();
-      }
-      // Đăng ký sự kiện keydown trên document khi modal mở
-      this.keydownListener = this.renderer.listen('document', 'keydown', this.onKeyDown.bind(this));
-    }, 0);
   }
-
   handleCancel() {
     this.isVisibleConfirm = false;
     this.isLoading = false;
-    this.removeKeydownListener();
   }
 
   handleOk() {
     this.isLoading = true;
     this.submitForm();
-    this.removeKeydownListener();
   }
 
-  onKeyDown(event: KeyboardEvent): void {
-    console.log('Key pressed:', event.key);
-    if (event.key === 'Enter') { // Kiểm tra phím Enter
-      // Ngăn chặn hành động mặc định của Enter
-      event.preventDefault();
-
-      // Kích hoạt nút OK
-      if (this.confirmButton && this.confirmButton.nativeElement) {
-        this.confirmButton.nativeElement.click();
-      }
-    }
+  storageSelectedChange(value) {
+    this.dataSubjectStorage.next(value);
   }
 
-  private removeKeydownListener(): void {
-    // Hủy đăng ký sự kiện keydown khi modal đóng
-    if (this.keydownListener) {
-      this.keydownListener();
-    }
+  onChangeStorage() {
+    this.dataSubjectStorage.pipe(debounceTime(500))
+      .subscribe((res) => {
+        if (res % this.stepStorage > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
+          this.storage = res - (res % this.stepStorage)
+        }
+      });
   }
-  ngOnDestroy(): void {
-    // Đảm bảo hủy đăng ký sự kiện khi component bị phá hủy
-    this.removeKeydownListener();
+
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
+    })
   }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -360,5 +341,7 @@ export class CreateFileSystemComponent implements OnInit, AfterViewInit, OnDestr
     this.getListSnapshot();
     this.getListFileSystem();
     this.getStorageBuyVpc();
+    this.onChangeStorage();
+    this.getConfigurations();
   }
 }

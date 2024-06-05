@@ -140,7 +140,6 @@ import { ExtendIpFloatingComponent } from './ip-floating/extend-ip-floating/exte
 import { PermissionGuard } from '../shared/guard/PermissionGuard';
 import { CreateBackupVmNormalComponent } from './backup-vm/create/no-vpc/create-backup-vm-normal.component';
 import { CreateBackupVmVpcComponent } from './backup-vm/create/vpc/create-backup-vm-vpc.component';
-import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { NetworkTopologyComponent } from './network-topology/network-topology.component';
 import {
   CreateBackupVolumeVpcComponent
@@ -151,6 +150,10 @@ import {
 import { SslCertListComponent } from './ssl-cert/ssl-cert-list.component';
 import { CreateSslCertComponent } from './ssl-cert/create/create-ssl-cert.component';
 import { ExtendFileSystemSnapshotComponent } from './file-system-snapshot/extend-file-system-snapshot/extend-file-system-snapshot.component';
+import { RestoreBackupVmComponent } from './backup-vm/restore-backup-vm/restore-backup-vm.component';
+import {
+  RestoreBackupVolumeComponent
+} from './volume/component/backup-volume/restore-backup-volume/restore-backup-volume.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
@@ -359,13 +362,21 @@ const routes: Routes = [
 
   },
   {
-    path: 'backup-volume/detail',
+    path: 'backup-volume/detail/:id',
     component: DetailBackupVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'backup:Get'
     }
 
+  },
+  {
+    path: 'backup-volume/restore/:id',
+    component: RestoreBackupVolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:Get'
+    }
   },
   {
     path: 'backup-volume',
@@ -660,7 +671,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'backup/packages/edit/:id',
+    path: 'backup/packages/resize/:id',
     component: EditBackupPackageComponent,
     canActivate: [PermissionGuard],
     data: {

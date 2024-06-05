@@ -34,10 +34,10 @@
             >
           </td>
           <td *ngIf="data.bootable" nzLeft>{{ data.name }}</td>
-          <td>
+          <td nzAlign="right">
             {{ data.sizeInGB }}
           </td>
-          <td>
+          <td nzAlign="right">
             {{ data.iops }}
           </td>
           <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">

@@ -1,9 +1,10 @@
 import { Component, Inject, Input, SimpleChanges } from '@angular/core';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { FormSearchVpnConnection, VpnConnectionDTO } from 'src/app/shared/models/vpn-connection';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-vpn-connection',
@@ -19,13 +20,15 @@ export class VpnConnection {
   pageSize: number = 5
   pageIndex: number = 1
 
-  value: string
+  value: string = ''
 
   response: BaseResponse<VpnConnectionDTO>
 
   isLoading: boolean = false
 
   formSearchVpnConnection: FormSearchVpnConnection = new FormSearchVpnConnection()
+
+  searchDelay = new Subject<boolean>();
 
   constructor(private vpnConnection: VpnConnectionService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -37,9 +40,9 @@ export class VpnConnection {
     this.pageIndex = 1;
   }
   
-  onInputChange(value) {
-    this.value = value;
-    this.getData()
+  search(search: string) {  
+    this.value = search.trim();
+    this.getData();
   }
 
 
@@ -58,7 +61,7 @@ export class VpnConnection {
     this.isLoading = true
     this.formSearchVpnConnection.projectId = this.project
     this.formSearchVpnConnection.regionId = this.region
-    this.formSearchVpnConnection.searchValue =this.value
+    this.formSearchVpnConnection.searchValue =this.value.trim()
     this.formSearchVpnConnection.pageSize = this.pageSize
     this.formSearchVpnConnection.currentPage = this.pageIndex
     this.vpnConnection.getVpnConnection(this.formSearchVpnConnection)
@@ -102,6 +105,9 @@ export class VpnConnection {
   
 
   ngOnInit() {
+    this.getData();
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.getData();
-  }
+    });
+}
 }

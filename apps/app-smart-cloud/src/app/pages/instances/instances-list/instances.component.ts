@@ -27,7 +27,7 @@ import {
   RegionModel,
 } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject, debounceTime, from } from 'rxjs';
+import { Subject, debounceTime, Subscription } from 'rxjs';
 import {
   FormSearchNetwork,
   NetWorkModel,
@@ -103,55 +103,49 @@ export class InstancesComponent implements OnInit {
       if (data) {
         let instanceId = data.serviceId;
         let actionType = data.actionType;
+        var taskState = data?.data?.taskState ?? '';
+        var flavorName = data?.data?.flavorName ?? '';
 
-        var foundIndex = this.dataList.findIndex((x) => x.id == instanceId);
-        if (!instanceId) {
-          return;
-        }
         var foundIndex = this.dataList.findIndex((x) => x.id == instanceId);
         if (foundIndex > -1) {
           switch (actionType) {
-            case 'CREATE':
-              var record = this.dataList[foundIndex];
-
-              record.status = data.status;
-              record.taskState = data.taskState;
-              record.ipPrivate = data.ipPrivate;
-              record.ipPublic = data.ipPublic;
-
-              this.dataList[foundIndex] = record;
-              this.cdr.detectChanges();
-              break;
-
             case 'SHUTOFF':
             case 'START':
+            case 'REBOOTING':
+              this.updateRowState(taskState, foundIndex);
             case 'REBOOT':
+              this.updateRowState(taskState, foundIndex);
+              break;
+            case 'RESIZING':
+              this.updateRowState(taskState, foundIndex);
+              break;
+            case 'RESIZED':
               var record = this.dataList[foundIndex];
-
-              record.taskState = data.taskState;
-
+              if (taskState) {
+                record.taskState = taskState;
+              }
+              if (flavorName) {
+                record.flavorName = flavorName;
+              }
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
               break;
-
-            case 'RESIZING':
-            case 'RESIZED':
-              var record = this.dataList[foundIndex];
-
-              if (data.status) {
-                record.status = data.status;
-              }
-
-              if (data.taskState) {
-                record.taskState = data.taskState;
-              }
-
-              if (data.flavorName) {
-                record.flavorName = data.flavorName;
-              }
-
-              this.dataList[foundIndex] = record;
-              this.cdr.detectChanges();
+            case 'REBUILDING':
+              this.updateRowState(taskState, foundIndex);
+              break;
+            case 'REBUILDED':
+              this.updateRowState(taskState, foundIndex);
+              break;
+            case 'DELETING':
+              this.updateRowState(taskState, foundIndex);
+            case 'DELETED':
+              this.reloadTable();
+          }
+        } else {
+          switch (actionType) {
+            case 'CREATING':
+            case 'CREATED':
+              this.getDataList();
               break;
           }
         }
@@ -159,6 +153,37 @@ export class InstancesComponent implements OnInit {
     });
     this.checkExistName();
     this.onCheckIPAddress();
+    this.onChangeSearchParam();
+  }
+
+  dataSubjectSearchParam: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
+  changeSearchParam(value: string) {
+    this.enterPressed = false;
+    this.dataSubjectSearchParam.next(value);
+  }
+
+  onChangeSearchParam() {
+    this.searchSubscription = this.dataSubjectSearchParam
+      .pipe(debounceTime(700))
+      .subscribe((res) => {
+        if (!this.enterPressed) {
+          this.doSearch();
+        }
+      });
+  }
+
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    this.doSearch();
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   onRegionChange(region: RegionModel) {
@@ -188,7 +213,7 @@ export class InstancesComponent implements OnInit {
           this.pageSize,
           this.region,
           this.projectId,
-          this.searchParam.name,
+          this.searchParam.name.trim(),
           this.searchParam.status,
           true,
           this.tokenService.get()?.userId
@@ -303,6 +328,7 @@ export class InstancesComponent implements OnInit {
         next: (data) => {
           this.listPort = data.filter((e) => e.attachedDeviceId == '');
           this.portLoading = false;
+          this.instanceAction.portId = this.listPort[0].id;
         },
         error: (e) => {
           this.notification.error(
@@ -386,6 +412,18 @@ export class InstancesComponent implements OnInit {
         );
       },
     });
+  }
+
+  navigatetoCreatePort() {
+    let selectedVlan = this.listVlanNetwork.filter(
+      (e) => e.cloudId == this.instanceAction.networkId
+    );
+    this.router.navigate(
+      [`/app-smart-cloud/vlan/network/detail/${selectedVlan[0].id}`],
+      {
+        state: { selectedIndextab: 1 },
+      }
+    );
   }
 
   changeAttachType() {
@@ -779,10 +817,10 @@ export class InstancesComponent implements OnInit {
   }
 
   navigateToCreate() {
-    if (this.project.type == 0) {
-      this.router.navigate(['/app-smart-cloud/instances/instances-create']);
-    } else {
+    if (this.project.type == 1) {
       this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/instances/instances-create']);
     }
   }
   navigateToEdit(id: number) {
@@ -835,5 +873,14 @@ export class InstancesComponent implements OnInit {
         );
       },
     });
+  }
+
+  updateRowState(taskState: string, foundIndex: number) {
+    var record = this.dataList[foundIndex];
+    if (taskState) {
+      record.taskState = taskState;
+    }
+    this.dataList[foundIndex] = record;
+    this.cdr.detectChanges();
   }
 }

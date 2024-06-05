@@ -35,6 +35,8 @@ import {
 } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -106,7 +108,9 @@ export class InstancesEditComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private el: ElementRef,
     private renderer: Renderer2,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private configurationService: ConfigurationsService,
+    private orderService: OrderService
   ) {}
 
   @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
@@ -179,6 +183,7 @@ export class InstancesEditComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getConfigurations();
     this.getListIpPublic();
     this.getListGpuType();
     this.breakpointObserver
@@ -261,6 +266,7 @@ export class InstancesEditComponent implements OnInit {
     this.gpuUnitPrice = '0';
     this.gpuIntoMoney = 0;
     this.totalAmount = 0;
+    this.totalVAT = 0;
     this.totalincludesVAT = 0;
   }
 
@@ -564,6 +570,7 @@ export class InstancesEditComponent implements OnInit {
         this.configGPU.gpuOfferId == 0)
     ) {
       this.totalAmount = 0;
+      this.totalVAT = 0;
       this.totalincludesVAT = 0;
     } else {
       this.getTotalAmount();
@@ -613,25 +620,46 @@ export class InstancesEditComponent implements OnInit {
       });
   }
 
+  minCapacity: number;
+  maxCapacity: number;
+  stepCapacity: number;
+  getConfigurations() {
+    this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
+      next: (data) => {
+        let valueArray = data.valueString.split('#');
+        this.minCapacity = valueArray[0];
+        this.stepCapacity = valueArray[1];
+        this.maxCapacity = valueArray[2];
+      },
+    });
+  }
+
   dataSubjectCapacity: Subject<any> = new Subject<any>();
   changeCapacity(value: number) {
     this.dataSubjectCapacity.next(value);
   }
   onChangeCapacity() {
-    this.dataSubjectCapacity
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        if (this.configCustom.capacity == 0) {
-          this.volumeUnitPrice = '0';
-          this.volumeIntoMoney = 0;
-          this.instanceResize.storage = this.instancesModel.storage;
-        } else {
-          this.getUnitPrice(this.configCustom.capacity, 0, 0, 0, 0);
-        }
-        this.onChangeConfigCustom();
-      });
+    this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
+      if (this.configCustom.capacity % this.stepCapacity > 0) {
+        this.notification.warning(
+          '',
+          this.i18n.fanyi('app.notify.amount.capacity', {
+            number: this.stepCapacity,
+          })
+        );
+        this.configCustom.capacity =
+          this.configCustom.capacity -
+          (this.configCustom.capacity % this.stepCapacity);
+      }
+      if (this.configCustom.capacity == 0) {
+        this.volumeUnitPrice = '0';
+        this.volumeIntoMoney = 0;
+        this.instanceResize.storage = this.instancesModel.storage;
+      } else {
+        this.getUnitPrice(this.configCustom.capacity, 0, 0, 0, 0);
+      }
+      this.onChangeConfigCustom();
+    });
   }
 
   //#region Cấu hình GPU
@@ -830,19 +858,12 @@ export class InstancesEditComponent implements OnInit {
     this.instanceResize.projectId = this.projectId;
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   readyEdit(): void {
-    if (
-      this.isCustomconfig == true &&
-      (this.configCustom.vCPU == 0 ||
-        this.configCustom.ram == 0 ||
-        this.configCustom.capacity == 0)
-    ) {
-      this.notification.error(
-        '',
-        this.i18n.fanyi('app.notify.optional.configuration.invalid')
-      );
-      return;
-    }
     if (
       this.isGpuConfig == true &&
       (this.configGPU.GPU == 0 || this.configGPU.gpuOfferId == 0) &&
@@ -870,13 +891,29 @@ export class InstancesEditComponent implements OnInit {
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: this.order, path: returnPath },
+    this.orderService.validaterOrder(this.order).subscribe({
+      next: (result) => {
+        if (result.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: this.order, path: returnPath },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = result.data;
+        }
+      },
+      error: (error) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          error.error.detail
+        );
+      },
     });
   }
 
   totalAmount: number = 0;
+  totalVAT: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
     this.instanceResizeInit();
@@ -891,6 +928,7 @@ export class InstancesEditComponent implements OnInit {
     this.dataService.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );

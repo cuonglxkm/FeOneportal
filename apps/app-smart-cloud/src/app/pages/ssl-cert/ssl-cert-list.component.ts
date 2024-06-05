@@ -90,6 +90,8 @@ export class SslCertListComponent {
     this.formSearchSslSearch.vpcId = this.project
     this.formSearchSslSearch.region = this.region
     this.formSearchSslSearch.customerId = this.customerId
+    this.formSearchSslSearch.currentPage = this.pageIndex
+    this.formSearchSslSearch.pageSize = this.pageSize
     this.SslCertService.getSslCert(this.formSearchSslSearch)
       .pipe(debounceTime(500))
       .subscribe(data => {
@@ -97,7 +99,6 @@ export class SslCertListComponent {
         
       this.isLoading = false
       this.response = data
-      this.filteredData = data
       
     })
   }

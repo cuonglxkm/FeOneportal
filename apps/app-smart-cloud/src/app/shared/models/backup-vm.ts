@@ -183,3 +183,61 @@ export class CreateBackupVmOrderData {
     }
   ]
 }
+
+export class FormUpdateBackupVm {
+  instanceBackupId: number
+  name: string
+  description: string
+}
+
+export class RestoreInstanceBackup {
+  instanceBackupId: number
+  volumeBackupIds: any
+  instanceName: any
+  securityGroups: any
+  subnetCloudId: any
+  offerFlavorId: number
+  keypairName: any
+  volumeSize: number
+  isUsePrivateNetwork: boolean
+  ipPublic: any
+  password: any
+  encryption: boolean
+  ram: number
+  cpu: number
+  gpuCount: any
+  gpuTypeOfferId: any
+  privateNetId: any
+  privatePortId: any
+  customerId: number
+  userEmail: any
+  actorEmail: any
+  projectId: any
+  vpcId: any
+  regionId: number
+  serviceName: any
+  serviceType: number
+  actionType: number
+  serviceInstanceId: number
+  createDate: string
+  expireDate: string
+  createDateInContract: any
+  saleDept: any
+  saleDeptCode: any
+  contactPersonEmail: any
+  contactPersonPhone: any
+  contactPersonName: any
+  am: any
+  amManager: any
+  note: any
+  isTrial: boolean
+  offerId: number
+  couponCode: any
+  dhsxkd_SubscriptionId: any
+  dSubscriptionNumber: any
+  dSubscriptionType: any
+  oneSMEAddonId: any
+  oneSME_SubscriptionId: any
+  isSendMail: boolean
+  typeName: string
+}

@@ -4,7 +4,7 @@
   [title]="'Chỉnh sửa lịch Snapshot'"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">Home</a>
       </nz-breadcrumb-item>
@@ -15,6 +15,9 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item> Chỉnh sửa lịch Snapshot</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">

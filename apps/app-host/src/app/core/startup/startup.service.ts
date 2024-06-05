@@ -78,7 +78,6 @@ export class StartupService {
           this.aclService.setFull(true);
 
           this.menuService.add(appData.menu);
-          console.log(this.menuService.getPathByUrl('/app-smart-cloud/file-system-snapshot/list', false));
           
           
           this.regionProjectService.getCoreData(baseUrl);

@@ -4,7 +4,7 @@
   [title]="'app.instances.extend' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -25,6 +25,9 @@
         {{ 'app.instances.extend' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -222,68 +225,64 @@
         </div>
       </nz-card>
 
-      <nz-card
-        style="border-radius: 8px"
-        [nzBordered]="false"
-        [nzLoading]="loading"
-        *ngIf="instancesModel"
-      >
-        <div style="margin-bottom: 20px">
-          <span class="text-card-header">{{
-            'app.extension.info' | i18n
-          }}</span>
-        </div>
-        <nz-row nzGutter="16">
-          <nz-col nzSpan="12">
-            <span class="text-label"
-              >{{ 'app.service.start.date' | i18n }}:
-            </span>
-            <span class="text-value-detail">{{
-              instancesModel.createdDate | date : 'dd/MM/yyyy'
+      <form nz-form [nzLayout]="'vertical'">
+        <nz-card
+          style="border-radius: 8px"
+          [nzBordered]="false"
+          [nzLoading]="loading"
+          *ngIf="instancesModel"
+        >
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{
+              'app.extension.info' | i18n
             }}</span>
-          </nz-col>
-          <nz-col nzSpan="12">
-            <span class="text-label"
-              >{{ 'app.service.expiration-date' | i18n }}:
-            </span>
-            <span class="text-value-detail">
-              {{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}</span
-            >
-          </nz-col>
-        </nz-row>
-        <nz-row style="margin-top: 20px" nzGutter="16">
-          <nz-col nzSpan="12">
-            <nz-form-item>
-              <nz-form-label>{{
-                'app.months.for.extend' | i18n
-              }}</nz-form-label>
-              <nz-form-control>
-                <nz-input-number
-                  [nzMin]="1"
-                  [nzMax]="100"
-                  [nzStep]="1"
-                  [ngModel]="numberMonth"
-                  (keydown)="onKeyDown($event)"
-                  (ngModelChange)="changeTime($event)"
-                  [ngModelOptions]="{ standalone: true }"
-                  nzSize="large"
-                ></nz-input-number>
-              </nz-form-control> </nz-form-item
-          ></nz-col>
-          <nz-col nzSpan="12">
-            <div
-              class="text-label text-red"
-              style="display: flex; align-items: center"
-            >
-              {{ 'app.expected.expiry.date' | i18n }}:
-              {{ newExpiredDate | date : 'dd/MM/yyyy' }}
-            </div>
-          </nz-col>
-        </nz-row>
-      </nz-card></nz-col
-    >
+          </div>
+          <nz-row nzGutter="16">
+            <nz-col nzSpan="12">
+              <span class="text-label" style="color: #eb1414"
+                >{{ 'app.service.creation-date' | i18n }}:
+                {{ instancesModel.createdDate | date : 'HH:mm:ss dd/MM/yyyy' }}</span
+              >
+            </nz-col>
+            <nz-col nzSpan="12">
+              <span class="text-label" style="color: #eb1414"
+                >{{ 'app.service.expiration-date' | i18n }}:
+                {{ instancesModel.expiredDate | date : 'HH:mm:ss dd/MM/yyyy' }}
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-form-item style="margin-top: 20px">
+            <nz-form-label
+              >{{ 'app.months.for.extend' | i18n }} (<span class="text-red"
+                >*</span
+              >)
+            </nz-form-label>
+            <nz-form-control>
+              <nz-input-number
+                style="width: 100%; margin-left: -1px"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                [ngModel]="numberMonth"
+                (keydown)="onKeyDown($event)"
+                (ngModelChange)="changeTime($event)"
+                [ngModelOptions]="{ standalone: true }"
+                nzSize="large"
+              ></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+          <div
+            class="text-label"
+            style="display: flex; align-items: center; color: #eb1414"
+          >
+            {{ 'app.expected.expiry.date' | i18n }}:
+            {{ newExpiredDate | date : 'dd/MM/yyyy' }}
+          </div>
+        </nz-card>
+      </form>
+    </nz-col>
     <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px">
+      <nz-card class="card-border" style="border-radius: 8px">
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{
             'app.estimated.cost' | i18n
@@ -324,11 +323,30 @@
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col nzSpan="16">
-            <span class="text-value"> {{ 'app.monthly.price' | i18n }} </span>
+            <span *ngIf="numberMonth == 1" class="text-value">
+              {{ 'app.cost.a.month' | i18n }}
+            </span>
+            <span *ngIf="numberMonth > 1" class="text-value">
+              {{ 'app.cost.n.month' | i18n : { numberMonth: numberMonth } }}
+            </span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmount / numberMonth | number }} VND
+              {{ totalAmount | number }} VND
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <nz-row style="margin-bottom: 10px" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-value">
+              {{ 'app.cost.vat' | i18n }}
+            </span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalVAT | number }}
+              VND
             </span>
           </nz-col>
         </nz-row>
@@ -374,3 +392,8 @@
     </nz-col>
   </nz-row>
 </div>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>

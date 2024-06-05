@@ -1,10 +1,10 @@
 <page-header
   *ngIf="hasOS"
   [breadcrumb]="breadcrumb"
-  [title]="'app.s3.key.manage' | i18n"
+  [title]="'app.s3.key.list' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item
         ><a [routerLink]="['/']">{{
           'app.breadcrumb.home' | i18n
@@ -16,45 +16,25 @@
         ></nz-breadcrumb-item
       >
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
 </page-header>
 
 <nz-card *ngIf="hasOS" class="text-label">
-  <div
-    style="margin-bottom: 20px"
-    nz-row
-    [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }"
-  >
+
     <div
-      class="text-left p-0 m-b-0"
-      nz-col
-      [nzLg]="12"
-      [nzMd]="12"
-      [nzSm]="24"
-      [nzXl]="12"
-      [nzXs]="24"
-      [nzXXl]="12"
-    >
-      <span class="text-card-header">{{ 'app.s3.key.list' | i18n }}</span>
-    </div>
-    <div
-      class="text-right p-0 m-b-0"
-      nz-col
-      [nzLg]="12"
-      [nzMd]="12"
-      [nzSm]="24"
-      [nzXl]="12"
-      [nzXs]="24"
-      [nzXXl]="12"
+      class="d-flex justify-content-between"
     >
       <nz-input-group
-        style="margin-right: 8px; width: 40%; border-radius: 8px"
+        style="margin-right: 8px; border-radius: 8px"
         [nzPrefix]="suffixIconSearch"
         nzSize="large"
       >
         <input
-          (keyup.enter)="search()"
-          [(ngModel)]="searchBox"
+        [(ngModel)]="value"
+        #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
           name="name"
           nz-input
           [placeholder]="'app.s3.key.search' | i18n"
@@ -78,7 +58,6 @@
           'app.s3.key.create' | i18n
         }}</span>
       </button>
-    </div>
   </div>
   <!-- Bảng-->
   <nz-table
@@ -139,14 +118,13 @@
               (click)="openModelRecreate(item)"
             ></span>
             <!----Xóa---->
-            <span
-              style="color: #0066b3; cursor: pointer"
-              [nz-tooltip]="'app.text.delete' | i18n"
-              nz-icon
-              nzType="delete"
-              nzTheme="outline"
+            <img
+              src="assets/imgs/delete.svg"
+              alt=""
               (click)="openModelDelete(item.accessKey)"
-            ></span>
+              style="cursor: pointer; margin-right: 16px"
+              nz-tooltip="{{ 'app.delete' | i18n }}"
+            />
           </div>
         </td>
       </tr>
@@ -197,7 +175,7 @@
       [nzLoading]="isLoadingCreateS3key"
     >
       <img
-      *ngIf="isLoadingCreateS3key === false"
+        *ngIf="isLoadingCreateS3key === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""

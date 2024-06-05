@@ -20,11 +20,10 @@
     <div *ngIf="!isBegin" nz-row class="mb-md">
       <nz-input-group style="margin-right: 8px; width: 100%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
                       nzSize="large">
-        <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input placeholder="{{'menu.search' | i18n}}" />
+        <input #searchBox (keyup.enter)="search(searchBox.value)" [(ngModel)]="searchKey" (ngModelChange)="searchDelay.next(false)" name="name" nz-input placeholder="{{'menu.search' | i18n}}" />
       </nz-input-group>
       <ng-template #suffixIconSearch>
-        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{'menu.search' | i18n}}"
-             (click)="search(searchBox.value)" />
+        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"/>
       </ng-template>
     </div>
 
