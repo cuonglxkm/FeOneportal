@@ -16,6 +16,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { Interface } from 'readline';
 
 
 
@@ -26,6 +27,7 @@ import { CatalogService } from 'src/app/shared/services/catalog.service';
   styleUrls: ['./project-create.component.less'],
   animations: [slider]
 })
+
 
 export class ProjectCreateComponent implements OnInit {
   public carouselTileConfig: NguCarouselConfig = {
@@ -63,6 +65,10 @@ export class ProjectCreateComponent implements OnInit {
   numberFileSystem: any = 0;
   numberFileScnapsshot: any = 0;
   numberSecurityGroup: any = 0;
+
+  numberSnapshot:number =0;
+
+
   vCPU = 0;
   ram = 0;
   hhd = 0;
@@ -92,10 +98,14 @@ export class ProjectCreateComponent implements OnInit {
   loadingIpConnectInternet = false;
   ipConnectInternet = '';
   loadBalancerId: number;
-  siteToSiteId = '';
+  siteToSiteId: number;
 
   trashVpnGpu = false;
   activeVpnGpu = false
+
+  activeSnapshot = false;
+  trashSnapshot = false;
+
   numOfMonth: number;
   total: any;
   totalAmount = 0;
@@ -119,6 +129,7 @@ export class ProjectCreateComponent implements OnInit {
     hhdPerUnit: 0,
     ssdPerUnit: 0,
 
+
     IpFloating: 0,
     IpFloatingUnit: 0,
 
@@ -126,6 +137,9 @@ export class ProjectCreateComponent implements OnInit {
     IpPublicUnit: 0,
     IpV6: 0,
     IpV6Unit: 0,
+    snapshot:0,
+    snapshotUnit:0,
+
     backup: 0,
     backupUnit: 0,
     loadBalancer: 0,
@@ -135,11 +149,20 @@ export class ProjectCreateComponent implements OnInit {
 
     filestorageSnapshot: 0,
     filestorageSnapshotUnit: 0,
+    
+
 
     siteToSite: 0,
     siteToSiteUnit: 0
 
+
   };
+ 
+  gpuQuotasGobal: { GpuOfferId: number, GpuCount: number, GpuType: string, GpuPrice:number, GpuPriceUnit:number}[] = [];
+
+
+  prices: any;
+
   minBlock: number = 0;
   stepBlock: number = 0;
   maxBlock: number = 0;
@@ -150,7 +173,8 @@ export class ProjectCreateComponent implements OnInit {
 
   numbergpu: number[] = [];
   maxTotal: number = 8;
-  remaining: number = this.maxTotal
+
+
 
   form = new FormGroup({
     name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(50)] }),
@@ -171,7 +195,7 @@ export class ProjectCreateComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private catelogService:CatalogService,
+    private catelogService: CatalogService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private ipService: IpPublicService) {
     this.inputChangeSubject.pipe(
@@ -197,8 +221,6 @@ export class ProjectCreateComponent implements OnInit {
 
     this.iconToggle = "icon_circle_minus"
     this.numOfMonth = this.form.controls['numOfMonth'].value;
-   
-   
   }
 
   calculateReal() {
@@ -257,8 +279,13 @@ export class ProjectCreateComponent implements OnInit {
           publicNetworkId: ip,
           publicNetworkAddress: ipName,
           quotaIPv6Count: IPV6,
-          typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
-          serviceType: 12,
+        
+
+          gpuQuotas: this.gpuQuotasGobal,
+          quotaVolumeSnapshotInGb: this.numberSnapshot,
+
+          // typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
+          // serviceType: 12,
           serviceInstanceId: 0,
           customerId: this.tokenService.get()?.userId,
           offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
@@ -291,6 +318,7 @@ export class ProjectCreateComponent implements OnInit {
               this.totalPayment = this.total.data.totalPayment.amount;
               this.totalVAT = this.total.data.totalVAT.amount;
               this.getPriceEachComponent(data.data);
+              
             }
           );
       } else {
@@ -316,8 +344,11 @@ export class ProjectCreateComponent implements OnInit {
       const valuestring: any = res.valueString;
       const parts = valuestring.split("#")
       this.minBlock = parseInt(parts[0]);
+      console.log("this.minBlock", this.minBlock)
       this.stepBlock = parseInt(parts[1]);
+      console.log("this.stepBlock", this.stepBlock)
       this.maxBlock = parseInt(parts[2]);
+      console.log("this.maxBlock", this.maxBlock)
     })
   }
   messageNotification: string;
@@ -351,6 +382,10 @@ export class ProjectCreateComponent implements OnInit {
         }
         case "fileSnapshot": {
           this.numberFileScnapsshot = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
+        }
+        case "snapshot": {
+          this.numberSnapshot = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
           break;
         }
       }
@@ -556,6 +591,10 @@ export class ProjectCreateComponent implements OnInit {
         quotaShareSnapshotInGb: this.numberFileScnapsshot,
         publicNetworkId: ip,
         publicNetworkAddress: ipName,
+      
+        gpuQuotas: this.gpuQuotasGobal,
+        quotaVolumeSnapshotInGb: this.numberSnapshot,
+
         typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
         serviceType: 12,
         serviceInstanceId: 0,
@@ -686,24 +725,45 @@ export class ProjectCreateComponent implements OnInit {
   initVpnSiteToSite() {
     this.activeSiteToSite = true;
     this.trashVpnSiteToSite = true;
+    this.siteToSiteId = this.listSiteToSite[1].id;
+    this.findNameSiteToSite(this.siteToSiteId)
+    
+    this.calculate(null)
   }
   deleteVpnSiteToSite() {
     this.activeSiteToSite = false;
     this.trashVpnSiteToSite = false;
-    this.siteToSiteId = '';
+    this.siteToSiteId = null
+    this.sitetositeName=""
     this.calculate(null)
   }
   initVpnGpu() {
     this.activeVpnGpu = true;
     this.trashVpnGpu = true;
     this.getCatelogOffer();
-    console.log("object")
+    this.calculate(null);
 
   }
   deleteVpnGpu() {
     this.activeVpnGpu = false;
     this.trashVpnGpu = false;
+    this.gpuQuotasGobal =[ ]
+    this.calculate(null)
   }
+
+  initSnapshot(){
+    this.activeSnapshot = true;
+    this.trashSnapshot = true;
+    this.calculate(null)
+  }
+
+  deleteSnapshot(){
+    this.activeSnapshot = false;
+    this.trashSnapshot = false;
+    this.numberSnapshot=0;
+    this.calculate(null)
+  }
+
   openIpSubnet() {
     this.calculate(-1);
   }
@@ -712,7 +772,6 @@ export class ProjectCreateComponent implements OnInit {
     this.totalAmount = 0;
     this.totalPayment = 0;
     this.selectIndexTab = event.index;
-    console.log("this.selectIndexTab", this.selectIndexTab)
     this.calculateReal();
   }
 
@@ -739,6 +798,7 @@ export class ProjectCreateComponent implements OnInit {
             .getListOffersByProductId(data[0].id, this.regionId)
             .subscribe((data: any) => {
               this.listSiteToSite = data;
+              // this.siteToSiteId = this.listSiteToSite[1].id
             });
         }
       );
@@ -767,9 +827,7 @@ export class ProjectCreateComponent implements OnInit {
     for (let item of data.orderItemPrices[0]?.details) {
       if (item.typeName == 'ippublic') {
         this.price.IpPublic = item.totalAmount.amount;
-        console.log("IpPublic", this.price.IpPublic)
         this.price.IpPublicUnit = item.unitPrice.amount;
-        console.log("IpPublic", this.price.IpPublicUnit)
 
       } else if (item.typeName == 'ipfloating') {
         this.price.IpFloating = item.totalAmount.amount;
@@ -780,9 +838,7 @@ export class ProjectCreateComponent implements OnInit {
 
       } else if (item.typeName == 'backup') {
         this.price.backup = item.totalAmount.amount;
-        console.log("backup", this.price.backup)
         this.price.backupUnit = item.unitPrice.amount;
-        console.log("backup Unit", this.price.backupUnit)
       } else if (item.typeName == 'filestorage') {
         this.price.fileStorage = item.totalAmount.amount;
 
@@ -816,6 +872,28 @@ export class ProjectCreateComponent implements OnInit {
         this.price.hhd = item.totalAmount.amount;
         this.price.hhdPerUnit = item.unitPrice.amount;
       }
+      else if (item.typeName == 'Nvidia A30') {     
+        console.log("this.gpuQuotasGobal555", this.gpuQuotasGobal)   
+        for(let gpu of this.gpuQuotasGobal){
+          if(gpu.GpuType =='Nvidia A30'){
+            gpu.GpuPrice = item.totalAmount.amount;
+            gpu.GpuPriceUnit = item.unitPrice.amount;
+          }
+        }
+            
+      }
+      else if (item.typeName == 'Nvidia A100') {
+        for(let gpu of this.gpuQuotasGobal){
+          if(gpu.GpuType =='Nvidia A100'){
+            gpu.GpuPrice = item.totalAmount.amount;
+            gpu.GpuPriceUnit = item.unitPrice.amount;
+          }
+        }
+      }
+      else if(item.typeName == 'snapshot'){
+        this.price.snapshot = item.totalAmount.amount;
+        this.price.snapshotUnit = item.unitPrice.amount;
+      }
     }
     // this.price.fileStorage = fileStorage;
   }
@@ -831,7 +909,6 @@ export class ProjectCreateComponent implements OnInit {
   private loadInforProjectNormal() {
     this.instancesService.getListOffers(this.regionId, 'vpc').subscribe(
       data => {
-        console.log("hhhhh", data)
         for (let item of data[0].characteristicValues) {
           if (item.charName == 'network') {
             this.nwNormal = item.charOptionValues[2];
@@ -896,49 +973,101 @@ export class ProjectCreateComponent implements OnInit {
     this.calculate(null);
   }
 
-getCatelogOffer(){
-  this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
-    res => {
-      this.listTypeCatelogOffer = res
-      console.log("object123", res)
-      this.listTypeCatelogOffer.forEach(() => this.numbergpu.push(0));
-    }
-  );
-}
-trackById(index: number, item: any): any {
-  return item.offerName;
-}
-maxNumber:number[]=[8,8]
-getValues(index:number) {
-  this.maxNumber=[8,8]
-  if(index==0){
-    if(this.numbergpu[0]<=this.maxTotal){
-      this.maxNumber[1] = this.maxTotal -this.numbergpu[0]
-      if(this.numbergpu[1]>0 && this.numbergpu[1]>this.maxNumber[1]){
-        this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-        this.numbergpu[1]= this.maxNumber[1]
+  getCatelogOffer() {
+    this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
+      res => {
+        this.listTypeCatelogOffer = res
+        console.log("listTypeCatelogOffer", res)
+        this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item:any) => ({
+          GpuOfferId: item.id,
+          GpuCount: 0,
+          GpuType: item.offerName,
+          GpuPrice:null,
+          GpuPriceUnit:null
+        }));
       }
-    }
+    );
   }
-  else{
-    if(this.numbergpu[1]<=this.maxTotal){
-      this.maxNumber[0] = this.maxTotal -this.numbergpu[1]
-      if(this.numbergpu[0]>0 && this.numbergpu[0]>this.maxNumber[0]){
-        this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-        this.numbergpu[0]= this.maxNumber[0]
-      }
-    }
+  trackById(index: number, item: any): any {
+    return item.offerName;
   }
-}
-getMaxValue(index: number): number {
-  if (this.numbergpu[index] < 8) {
-    return this.maxNumber[index];
-  } 
-}
+  maxNumber: number[] = [8, 8]
+  // getValues(index:number) {
+  //   const offerName = this.listTypeCatelogOffer[index]?.offerName;
+  //   this.GpuofferNames[index] = offerName; 
+  //   console.log("this.GpuofferNames[index]", this.GpuofferNames[index])
+  //   this.GpuType = this.GpuofferNames[index];
+  //   console.log("GpuType", this.GpuType)
+  //   const GpuId= this.listTypeCatelogOffer[index]?.id;
+  //   this.GpuId[index] = GpuId;
 
-isDisabled(index: number): boolean {
-  let total = this.numbergpu.reduce((sum, current) => sum + current, 0);
-  return total >= this.maxTotal && this.numbergpu[index] === 0;
-}
+  // console.log("this.GpuId[index]", this.GpuId[index])
+  // this.GpuOfferId = this.GpuId[index];
+  // console.log("GpuOfferId", this.GpuOfferId)
+
+  //   this.maxNumber=[8,8]
+  //   if(index==0){
+  //     if(this.numbergpu[0]<=this.maxTotal){
+  //       this.maxNumber[1] = this.maxTotal -this.numbergpu[0]
+  //       if(this.numbergpu[1]>0 && this.numbergpu[1]>this.maxNumber[1]){
+  //         this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+  //         this.numbergpu[1]= this.maxNumber[1]
+  //       }
+  //     }
+  //     this.GpuCount = this.numbergpu[index]
+  //     console.log("GpuCount", this.GpuCount)
+  //   }
+  //   else{
+  //     if(this.numbergpu[1]<=this.maxTotal){
+  //       this.maxNumber[0] = this.maxTotal -this.numbergpu[1]
+  //       if(this.numbergpu[0]>0 && this.numbergpu[0]>this.maxNumber[0]){
+  //         this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+  //         this.numbergpu[0]= this.maxNumber[0]
+  //       }
+  //     }
+  //     this.GpuCount = this.numbergpu[index]
+  //     console.log("GpuCount", this.GpuCount)
+  //   }
+  //   this.calculate(null);
+  // }
+
+
+  getValues(index:number, value:number): void {
+
+    console.log("index",index)
+    console.log("value",value)
+    console.log("gpuQuotasGobal 123",this.gpuQuotasGobal )
+    // console.log(this.gpuQuotasGobal[index].GpuCount);
+    if (index == 0) {
+      if (this.gpuQuotasGobal[0].GpuCount <= this.maxTotal) {
+        this.maxNumber[1] = this.maxTotal - this.gpuQuotasGobal[0].GpuCount;
+        if (this.gpuQuotasGobal[1].GpuCount > 0 && this.gpuQuotasGobal[1].GpuCount > this.maxNumber[1]) {
+          this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+          this.gpuQuotasGobal[1].GpuCount = this.maxNumber[1]
+        }
+      }
+    }
+    else {
+      if (this.gpuQuotasGobal[1].GpuCount <= this.maxTotal) {
+        this.maxNumber[0] = this.maxTotal - this.gpuQuotasGobal[1].GpuCount
+        if (this.gpuQuotasGobal[0].GpuCount > 0 && this.gpuQuotasGobal[0].GpuCount > this.maxNumber[0]) {
+          this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+          this.gpuQuotasGobal[0].GpuCount = this.maxNumber[0]
+        }
+      }
+    }
+    this.calculate(null)
+  }
+
+  getMaxValue(index: number): number {
+    if (this.gpuQuotasGobal[index].GpuCount < 8) {
+      return this.maxNumber[index];
+    }
+  }
+
+  isDisabled(index: number): boolean {
+    let total = this.numbergpu.reduce((sum, current) => sum + current, 0);
+    return total >= this.maxTotal && this.numbergpu[index] === 0;
+  }
 
 }
