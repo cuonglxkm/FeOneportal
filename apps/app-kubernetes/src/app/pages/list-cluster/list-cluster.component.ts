@@ -58,13 +58,13 @@ export class ListClusterComponent implements OnInit, OnDestroy {
 
   baseUrl = environment['baseUrl'];
 
-  @HostListener('window:unload', [ '$event' ])
-  unloadHandler(event) {
+  @HostListener('window:unload', ['$event'])
+  async unloadHandler(event) {
     this.ngOnDestroy();
   }
 
-  @HostListener('window:beforeunload', [ '$event' ])
-  beforeUnloadHandler(event) {
+  @HostListener('window:beforeunload', ['$event'])
+  async beforeUnloadHandler(event) {
     this.ngOnDestroy();
   }
 

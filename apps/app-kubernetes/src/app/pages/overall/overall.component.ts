@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { KubernetesCluster } from '../../model/cluster.model';
@@ -19,7 +19,7 @@ import { messageCallbackType } from '@stomp/stompjs';
   templateUrl: './overall.component.html',
   styleUrls: ['./overall.component.css'],
 })
-export class OverallComponent implements OnInit {
+export class OverallComponent implements OnInit, OnDestroy {
 
   serviceOrderCode: string;
   detailCluster: KubernetesCluster;
@@ -36,6 +36,16 @@ export class OverallComponent implements OnInit {
     private websocketService: NotificationWsService
   ) {}
 
+  @HostListener('window:unload', ['$event'])
+  async unloadHandler(event) {
+    this.ngOnDestroy();
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  async beforeUnloadHandler(event) {
+    this.ngOnDestroy();
+  }
+
   ngOnInit(): void {
     this.selectedIndexTab = +localStorage.getItem('currentTab') || 0;
 
@@ -48,6 +58,10 @@ export class OverallComponent implements OnInit {
 
     // open ws
     this.openWs();
+  }
+
+  ngOnDestroy(): void {
+    this.websocketService.disconnect();
   }
 
   regionId: number;

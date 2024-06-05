@@ -1906,6 +1906,7 @@
   "mongodb.log.role-update": "Update Role",
   "mongodb.log.role-delete": "Delete Role",
 
+  "app.cluster.summary": "VNPT Kubernetes Service is a Kubernetes-based platform ensuring high efficiency for enterprises by running containerized applications in the cloud, securely, stably, and with high performance",
   "app.cluster.platform-service": "Platform Services",
   "app.cluster.create-service": "Create Kubernetes",
   "app.cluster.list": "List cluster",
