@@ -30,13 +30,13 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
   checkIpv6: boolean = null;
-  selectedAction: any;
   listIpSubnet: any[];
   listInstance: any[];
   instanceSelected: any;
   dateString = new Date();
   total: any;
   totalAmount: any;
+  totalVat: any;
   totalPayment: any;
   loadingIp = true;
   loadingInstanse = true;
@@ -170,7 +170,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: "ip_create",
-          price: this.total.data.totalAmount.amount / Number(this.form.controls['numOfMonth'].value),
+          price: this.total.data.totalAmount.amount,
           serviceDuration: this.form.controls['numOfMonth'].value
         }
       ]
@@ -272,7 +272,8 @@ export class CreateUpdateIpPublicComponent implements OnInit {
           data => {
             this.total = data;
             this.totalAmount = Math.round(this.total?.data?.totalAmount?.amount);
-            this.totalPayment = Math.round(this.total?.data?.totalPayment?.amount)
+            this.totalPayment = Math.round(this.total?.data?.totalPayment?.amount);
+            this.totalVat = Math.round(this.total?.data?.totalVAT?.amount);
           }
         );
     } else {
@@ -299,5 +300,10 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         this.checkIpv6 = null;
       }
     })
+  }
+
+  onChangeTime($event: any) {
+    this.form.controls['numOfMonth'].setValue($event);
+    this.caculator(null);
   }
 }

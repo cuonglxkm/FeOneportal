@@ -5,11 +5,16 @@
       <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{'app.file.system.manage'|i18n}}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a  (click)="navigateToDetail()">{{'app.file.system.detail' | i18n}}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/resize/{{ idFileSystem }}'">Điều chỉnh File System</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a
+        [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{ 'app.file.system.manage'|i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a (click)="navigateToDetail()">{{ 'app.file.system.detail' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/resize/{{ idFileSystem }}'">Điều
+        chỉnh File System</a></nz-breadcrumb-item>
     </nz-breadcrumb>
-    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -32,7 +37,8 @@
               <nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>{{ 'app.file.system.name' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                    <span>{{ 'app.file.system.name' | i18n }} (<span
+                      style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
                     <img nz-popover
                          [nzPopoverContent]="contentTemplateFSname"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -44,7 +50,8 @@
                     </ng-template>
                   </nz-form-label>
                   <nz-form-control>
-                    <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.name"  [disabled]="true" />
+                    <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.name"
+                           [disabled]="true" />
                   </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
@@ -61,27 +68,31 @@
                     </ng-template>
                   </nz-form-label>
                   <nz-form-control>
-                    <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.shareProto"  [disabled]="true" />
+                    <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.shareProto"
+                           [disabled]="true" />
                   </nz-form-control>
                 </nz-form-item>
               </nz-col>
               <nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>{{ 'app.file.system.type' | i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                    <span>{{ 'app.file.system.type' | i18n }} (<span
+                      style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
                     <img nz-popover
                          [nzPopoverContent]="'app.tooltip.file.system.type' | i18n"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </nz-form-label>
                   <nz-form-control>
-                    <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.type" [disabled]="true" />
+                    <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.type"
+                           [disabled]="true" />
                   </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
                   <nz-form-label nzFor="storage">
                     <div>
-                      <span>{{ 'app.capacity' | i18n }} (GB) (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                      <span>{{ 'app.capacity' | i18n }} (GB) (<span
+                        style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
                       <img nz-popover
                            [nzPopoverContent]="'app.tooltip.capacity'|i18n"
                            nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -97,12 +108,14 @@
                                      (ngModelChange)="storageSelectedChange($event)"
                                      [nzStep]="stepStorage" [nzMax]="storageRemaining"></nz-input-number>
                     <ng-template #storageErrorTpl let-control>
-                      <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+                      <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
+                      </ng-container>
                       <ng-container
                         *ngIf="control.hasError('pattern')">{{ 'app.file.system.error.pattern.storage' | i18n }}
                       </ng-container>
                       <ng-container *ngIf="control.hasError('notEnough') || control.hasError('outOfStorage')">
-                        {{ 'app.alert.quota.vpc' | i18n }}<a [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a>{{ 'app.alert.quota.vpc.next' | i18n }}
+                        {{ 'app.alert.quota.vpc' | i18n }}<a
+                        [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a>{{ 'app.alert.quota.vpc.next' | i18n }}
                       </ng-container>
                     </ng-template>
                   </nz-form-control>
@@ -110,30 +123,44 @@
                 <nz-form-item>
                   <nz-row>
                     <nz-col nzSpan="14">
-                      <span class="text-label">{{'app.file.system.total.size'|i18n}}:</span>
+                      <span class="text-label">{{ 'app.file.system.total.size'|i18n }}:</span>
                       <img nz-popover
                            [nzPopoverContent]="'app.file.system.capacity.vpc' | i18n"
                            nzPopoverPlacement="bottom" style="margin-left: 6px; margin-bottom: 3px;"
                            src="assets/imgs/pajamas_question.svg" alt="" />
                     </nz-col>
                     <nz-col nzSpan="10">
-                      <span class="text-label">{{ quotaShareInGb }} (GB)</span>
+                      <span class="text-label">
+                        <nz-row style="text-align: right;">
+                          <nz-col nzSpan="4">{{ quotaShareInGb }}</nz-col>
+                          <nz-col nzSpan="4">(GB)</nz-col>
+                        </nz-row>
+                      </span>
                     </nz-col>
                   </nz-row>
                   <nz-row>
                     <nz-col nzSpan="14">
-                      <span class="text-label">{{'app.backup.package.storage.used'|i18n}}:</span>
+                      <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}:</span>
                     </nz-col>
                     <nz-col nzSpan="10">
-                      <span class="text-label">{{ storageUsed }} (GB)</span>
+                      <span class="text-label">
+                        <nz-row style="text-align: right;">
+                          <nz-col nzSpan="4">{{ storageUsed }}</nz-col>
+                          <nz-col nzSpan="4">(GB)</nz-col>
+                      </nz-row></span>
                     </nz-col>
                   </nz-row>
                   <nz-row>
                     <nz-col nzSpan="14">
-                      <span class="text-label">{{'Dung lượng còn lại'|i18n}}:</span>
+                      <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}:</span>
                     </nz-col>
                     <nz-col nzSpan="10">
-                      <span class="text-label">{{ storageRemaining }} (GB)</span>
+                      <span class="text-label">
+                        <nz-row style="text-align: right;">
+                          <nz-col nzSpan="4">{{ storageRemaining }}</nz-col>
+                          <nz-col nzSpan="4">(GB)</nz-col>
+                        </nz-row>
+                      </span>
                     </nz-col>
                   </nz-row>
                 </nz-form-item>
@@ -148,9 +175,11 @@
               <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
                 <nz-textarea-count [nzMaxCharacterCount]="255">
               <textarea nz-input class=input-custom [value]="fileSystem.description" [maxLength]="255"
-                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"  [disabled]="true"></textarea>
+                        [nzAutosize]="{ minRows: 3, maxRows: 5 }" [disabled]="true"></textarea>
                   <ng-template #descriptionErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('maxlength')">{{ 'validation.file.system.description.maxlength' | i18n }}</ng-container>
+                    <ng-container
+                      *ngIf="control.hasError('maxlength')">{{ 'validation.file.system.description.maxlength' | i18n }}
+                    </ng-container>
                   </ng-template>
                 </nz-textarea-count>
               </nz-form-control>
@@ -158,7 +187,7 @@
           </nz-card>
         </nz-col>
         <nz-col nzSpan="8">
-          <nz-affix [nzOffsetTop]="48">
+          <nz-affix [nzOffsetTop]="72">
             <nz-card class="border-card">
               <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
               <div style="margin-top: 10px" class="text-value">{{ 'app.file.system.name' | i18n }}</div>
@@ -186,8 +215,9 @@
                   <button style="width: 100%" nz-button nzSize="large" nzType="primary"
                           [disabled]="!validateForm.valid || (fileSystem?.size >= validateForm.controls.storage.value)"
                           (click)="doResizeFileSystem()">
-                    <i nz-icon [nzType]="'edit'"  style="margin-right: 5px; padding-bottom: 5px;"></i>
-                    <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.resize' | i18n }}</span>
+                    <i nz-icon [nzType]="'edit'" style="margin-right: 5px; padding-bottom: 5px;"></i>
+                    <span
+                      [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.resize' | i18n }}</span>
                   </button>
                 </nz-col>
               </nz-row>

@@ -18,7 +18,7 @@ export class InstancesService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      user_root_id: this.tokenService.get()?.userId,
+      'User-Root-Id': this.tokenService.get()?.userId,
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
     }),
   };
@@ -259,6 +259,13 @@ export class InstancesService extends BaseService {
       `${
         this.baseUrl + this.ENDPOINT.catalogs
       }/offers?regionId=${regionId}&unitOfMeasure=${unitOfMeasure}`
+    );
+  }
+  getTypeCatelogOffers(regionId: number, unitOfMeasureProduct: string): Observable<any> {
+    return this.http.get<any>(
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/offers?regionId=${regionId}&unitOfMeasureProduct=${unitOfMeasureProduct}`
     );
   }
 

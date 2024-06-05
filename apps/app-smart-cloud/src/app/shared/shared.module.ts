@@ -28,6 +28,9 @@ import { formatPrice } from './pipes/formatPrice.pipe';
 import { ServiceUsagePeriodComponent } from './components/service-usage-period/service-usage-period.component';
 import { GuideFormulaComponent } from './components/guide-formula/guide-formula.component';
 import { TimeUsedResizeComponent } from './components/time-used-resize/time-used-resize.component';
+import { PopupListErrorComponent } from './components/popup-list-error/popup-list-error.component';
+import { ServiceTimeExtendComponent } from './components/service-time-extend/service-time-extend.component';
+import { TrimDirective } from '../pages/file-storage/TrimDirective';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -48,6 +51,7 @@ const COMPONENTS: Array<Type<any>> = [
   ProjectSelectDropdownComponent,
   ServiceUsagePeriodComponent,
   GuideFormulaComponent,
+  PopupListErrorComponent,
   FlavorSelectComponent,
   ImageSelectComponent,
   SecurityGroupSelectComponent,
@@ -57,6 +61,7 @@ const COMPONENTS: Array<Type<any>> = [
   SvgIconComponent,
   BreadcrumbComponent,
   TimeUsedResizeComponent,
+  ServiceTimeExtendComponent,
 ];
 const DIRECTIVES: Array<Type<any>> = [];
 
@@ -71,7 +76,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     AlainThemeModule.forChild(),
     DelonACLModule,
     DelonFormModule,
-
+    TrimDirective,
     ...SHARED_DELON_MODULES,
     ...SHARED_ZORRO_MODULES,
     // third libs
@@ -85,6 +90,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     IsPermissionPipe,
     ServiceStatusPipe,
     formatPrice,
+
   ],
   exports: [
     CommonModule,

@@ -27,6 +27,7 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderItemObject } from 'src/app/shared/models/price';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -39,11 +40,16 @@ export class ObjectStorageEditComponent implements OnInit {
   today: Date = new Date();
   addQuota: number = 1;
   objectStorageResize: ObjectStorageResize = new ObjectStorageResize();
-  valueStringConfiguration: string
-  minStorage: number
-  maxStorage: number
-  stepStorage: number
+  valueStringConfiguration: string;
+  minStorage: number;
+  maxStorage: number;
+  stepStorage: number;
   orderObject: OrderItemObject = new OrderItemObject();
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -53,6 +59,7 @@ export class ObjectStorageEditComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private loadingSrv: LoadingService,
     private notification: NzNotificationService,
+    private orderService: OrderService,
     private configurationsService: ConfigurationsService
   ) {}
 
@@ -60,6 +67,7 @@ export class ObjectStorageEditComponent implements OnInit {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getObjectStorage();
     this.getTotalAmount();
+    this.getConfigurations();
   }
 
   objectStorage: ObjectStorage = new ObjectStorage();
@@ -71,7 +79,8 @@ export class ObjectStorageEditComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.objectStorage = data;
-          this.objectStorageResize.newQuota = this.addQuota + this.objectStorage.quota;
+          this.objectStorageResize.newQuota =
+            this.addQuota + this.objectStorage.quota;
           this.dataSubject.next(1);
           this.cdr.detectChanges();
         },
@@ -127,7 +136,7 @@ export class ObjectStorageEditComponent implements OnInit {
           this.totalincludesVAT = Number.parseFloat(
             result.data.totalPayment.amount
           );
-          this.orderObject = result.data
+          this.orderObject = result.data;
           this.cdr.detectChanges();
         });
       });
@@ -143,25 +152,43 @@ export class ObjectStorageEditComponent implements OnInit {
     orderItemOS.specification = specification;
     orderItemOS.specificationType = 'objectstorage_resize';
     orderItemOS.price = this.totalAmount;
+    orderItemOS.serviceDuration = 1;
     this.orderItem.push(orderItemOS);
 
     this.order.customerId = this.tokenService.get()?.userId;
     this.order.createdByUserId = this.tokenService.get()?.userId;
     this.order.note = 'Điều chỉnh object storage';
     this.order.orderItems = this.orderItem;
-
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: this.order, path: returnPath },
+    this.orderService.validaterOrder(this.order).subscribe({
+      next: (data) => {
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: this.order, path: returnPath },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error: (e) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          e.error.detail
+        );
+      },
     });
   }
 
   getConfigurations() {
-    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
-      this.valueStringConfiguration = data.valueString;
-      const arr = this.valueStringConfiguration.split('#')
-      this.minStorage = Number.parseInt(arr[0])
-      this.stepStorage = Number.parseInt(arr[1])
-    })
+    this.configurationsService
+      .getConfigurations('BLOCKSTORAGE')
+      .subscribe((data) => {
+        this.valueStringConfiguration = data.valueString;
+        const arr = this.valueStringConfiguration.split('#');
+        this.minStorage = Number.parseInt(arr[0]);
+        this.stepStorage = Number.parseInt(arr[1]);
+        this.maxStorage = Number.parseInt(arr[2]);
+      });
   }
 }

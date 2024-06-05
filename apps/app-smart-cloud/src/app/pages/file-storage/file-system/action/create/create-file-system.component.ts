@@ -145,13 +145,15 @@ export class CreateFileSystemComponent implements OnInit {
     let formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot();
     formSearchFileSystemSnapshot.vpcId = this.project
     formSearchFileSystemSnapshot.regionId = this.region
-    formSearchFileSystemSnapshot.isCheckState = false
+    formSearchFileSystemSnapshot.isCheckState = true
     formSearchFileSystemSnapshot.pageSize = 9999;
     formSearchFileSystemSnapshot.currentPage = 1;
     formSearchFileSystemSnapshot.customerId = this.tokenService.get()?.userId
     this.fileSystemSnapshotService.getFileSystemSnapshot(formSearchFileSystemSnapshot).subscribe(data => {
       data.records.forEach(snapshot => {
-        this.snapshotList.push({ label: snapshot.name, value: snapshot.id });
+        if(['available','KHOITAO'].includes(snapshot.status)) {
+          this.snapshotList.push({ label: snapshot.name, value: snapshot.snapshotId });
+        }
       });
       if(this.activatedRoute.snapshot.paramMap.get('snapshotId')){
         const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('snapshotId'));
@@ -182,7 +184,7 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   initFileSystem() {
-    this.formCreate.projectId = null;
+    this.formCreate.projectCloudId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
     this.formCreate.size = this.storage;
     this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();
@@ -279,16 +281,16 @@ export class CreateFileSystemComponent implements OnInit {
       if (data != null) {
         if (data.code == 200) {
           this.isLoading = false;
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu tạo File Storage thành công.');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu tạo File System thành công.');
           this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
         }
       } else {
         this.isLoading = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File Storage thất bại.');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File System thất bại.');
       }
     }, error => {
       this.isLoading = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File Storage thất bại.');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File System thất bại.');
     });
 
   }
@@ -302,7 +304,7 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   handleOk() {
-    this.isLoading = true;
+    // this.isLoading = true;
     this.submitForm();
   }
 

@@ -160,7 +160,7 @@
           <one-portal-guide-formula />
         </nz-col>
         <nz-col nzSpan="8">
-          <nz-affix [nzOffsetTop]="48">
+          <nz-affix [nzOffsetTop]="72">
             <nz-card style="border-radius: 8px" class="border-card">
               <div style="margin-bottom: 20px">
                 <span class="text-card-header">{{'app.estimated.cost'|i18n}}</span>
@@ -214,7 +214,7 @@
               </nz-row>
               <nz-row>
                 <nz-col style="width: 100%">
-                  <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
+                  <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()" [nzLoading]="isLoading"
                           [disabled]="validateForm.invalid || (volumeEdit?.newSize == volumeInfo?.sizeInGB)">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{'app.button.resize'|i18n}}</span>
@@ -227,5 +227,10 @@
       </nz-row>
     </form>
   </nz-content>
+  <one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()"
+  ></one-portal-popup-list-error>
 </nz-spin>
 

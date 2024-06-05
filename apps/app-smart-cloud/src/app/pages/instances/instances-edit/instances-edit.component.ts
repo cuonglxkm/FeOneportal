@@ -22,7 +22,7 @@ import {
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
@@ -36,6 +36,7 @@ import {
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -84,6 +85,7 @@ export class InstancesEditComponent implements OnInit {
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
   configGPU: ConfigGPU = new ConfigGPU();
   cardHeight: string = '160px';
+  isLoading = false;
 
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
@@ -108,7 +110,8 @@ export class InstancesEditComponent implements OnInit {
     private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver,
-    private configurationService: ConfigurationsService
+    private configurationService: ConfigurationsService,
+    private orderService: OrderService
   ) {}
 
   @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
@@ -463,7 +466,7 @@ export class InstancesEditComponent implements OnInit {
     ram: number,
     cpu: number,
     gpu: number,
-    gpuTypeOfferId: number
+    gpuOfferId: number
   ) {
     let tempInstance: InstanceResize = new InstanceResize();
     tempInstance.currentFlavorId = this.instancesModel.flavorId;
@@ -474,7 +477,7 @@ export class InstancesEditComponent implements OnInit {
     tempInstance.newFlavorId = 0;
     tempInstance.serviceInstanceId = this.instancesModel.id;
     tempInstance.gpuCount = gpu + this.instancesModel.gpuCount;
-    tempInstance.newGpuTypeOfferId = gpuTypeOfferId;
+    tempInstance.newGpuOfferId = gpuOfferId;
     if (this.configGPU.gpuOfferId) {
       tempInstance.gpuType = this.listGPUType.filter(
         (e) => e.id == this.configGPU.gpuOfferId
@@ -621,6 +624,7 @@ export class InstancesEditComponent implements OnInit {
   minCapacity: number;
   maxCapacity: number;
   stepCapacity: number;
+  surplus: number;
   getConfigurations() {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {
@@ -628,6 +632,8 @@ export class InstancesEditComponent implements OnInit {
         this.minCapacity = valueArray[0];
         this.stepCapacity = valueArray[1];
         this.maxCapacity = valueArray[2];
+        this.surplus = valueArray[2] % valueArray[1];
+        this.cdr.detectChanges();
       },
     });
   }
@@ -638,6 +644,10 @@ export class InstancesEditComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
+      if (res > this.maxCapacity) {
+        this.configCustom.capacity = this.maxCapacity - this.surplus;
+        this.cdr.detectChanges();
+      }
       if (this.configCustom.capacity % this.stepCapacity > 0) {
         this.notification.warning(
           '',
@@ -646,7 +656,8 @@ export class InstancesEditComponent implements OnInit {
           })
         );
         this.configCustom.capacity =
-          this.configCustom.capacity - (this.configCustom.capacity % this.stepCapacity);
+          this.configCustom.capacity -
+          (this.configCustom.capacity % this.stepCapacity);
       }
       if (this.configCustom.capacity == 0) {
         this.volumeUnitPrice = '0';
@@ -806,11 +817,11 @@ export class InstancesEditComponent implements OnInit {
         this.configCustom.capacity + this.instancesModel.storage;
       this.instanceResize.newOfferId = 0;
       this.instanceResize.newFlavorId = 0;
-      this.instanceResize.newGpuTypeOfferId = 0;
+      this.instanceResize.newGpuOfferId = 0;
     } else if (this.isGpuConfig) {
       this.instanceResize.newOfferId = 0;
       this.instanceResize.newFlavorId = 0;
-      this.instanceResize.newGpuTypeOfferId = this.configGPU.gpuOfferId;
+      this.instanceResize.newGpuOfferId = this.configGPU.gpuOfferId;
       this.instanceResize.ram = this.configGPU.ram + this.instancesModel.ram;
       this.instanceResize.cpu = this.configGPU.CPU + this.instancesModel.cpu;
       this.instanceResize.storage =
@@ -855,7 +866,14 @@ export class InstancesEditComponent implements OnInit {
     this.instanceResize.projectId = this.projectId;
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   readyEdit(): void {
+    this.isLoading = true;
+    this.cdr.detectChanges();
     if (
       this.isGpuConfig == true &&
       (this.configGPU.GPU == 0 || this.configGPU.gpuOfferId == 0) &&
@@ -875,6 +893,7 @@ export class InstancesEditComponent implements OnInit {
     orderItemInstanceResize.specification = specificationInstance;
     orderItemInstanceResize.specificationType = 'instance_resize';
     orderItemInstanceResize.price = this.totalAmount;
+    orderItemInstanceResize.serviceDuration = 1;
     this.orderItem.push(orderItemInstanceResize);
 
     this.order.customerId = this.userId;
@@ -883,16 +902,36 @@ export class InstancesEditComponent implements OnInit {
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: this.order, path: returnPath },
-    });
+    this.orderService
+      .validaterOrder(this.order)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (result) => {
+          if (result.success) {
+            var returnPath: string = window.location.pathname;
+            this.router.navigate(['/app-smart-cloud/order/cart'], {
+              state: { data: this.order, path: returnPath },
+            });
+          } else {
+            this.isVisiblePopupError = true;
+            this.errorList = result.data;
+          }
+        },
+        error: (error) => {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            error.error.detail
+          );
+        },
+      });
   }
 
   totalAmount: number = 0;
   totalVAT: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
+    this.isLoading = true;
+    this.cdr.detectChanges();
     this.instanceResizeInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -909,6 +948,7 @@ export class InstancesEditComponent implements OnInit {
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );
+      this.isLoading = false;
       this.cdr.detectChanges();
     });
   }

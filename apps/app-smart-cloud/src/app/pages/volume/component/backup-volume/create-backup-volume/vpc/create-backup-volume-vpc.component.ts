@@ -51,6 +51,8 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
   isLoading: boolean = false
   volumeInfo: VolumeDTO = new VolumeDTO()
 
+
+
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
               private backupVmService: BackupVmService,
@@ -170,8 +172,10 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
   projectDetail: SizeInCloudProject
 
   getInfoProjectVpc(id) {
+    this.isLoading = true
     this.projectService.getProjectVpc(id).subscribe(data => {
       this.projectDetail = data
+      this.isLoading = false
     })
   }
   ngOnInit() {
