@@ -27,12 +27,12 @@
             </nz-select>
             <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
                             nzSize="large">
-              <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input
+              <input #searchBox (keyup.enter)="search(searchBox.value)"  [(ngModel)]="searchKey" (input)="search($event.target.value)" name="name" nz-input
                      placeholder="{{ 'app.users.search' | i18n}}" />
             </nz-input-group>
             <ng-template #suffixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n}}"
-                   (click)="search(searchBox.value)" />
+                   />
             </ng-template>
           </div>
         </div>

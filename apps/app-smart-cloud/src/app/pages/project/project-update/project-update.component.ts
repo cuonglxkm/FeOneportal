@@ -59,6 +59,7 @@ export class ProjectUpdateComponent implements OnInit {
   numberFileSystem: any = 0;
   numberFileScnapsshot: any = 0;
   numberSecurityGroup: any = 0;
+  numberSnapshot:number =0;
 
   activeIP = false;
   trashIP = false;
@@ -78,17 +79,33 @@ export class ProjectUpdateComponent implements OnInit {
   activeVpnGpu= false;
   trashVpnGpu = false;
 
+  activeSnapshot= false;
+  trashSnapshot = false;
+
   vCPUOld = 0;
   ramOld = 0;
   hhdOld = 0;
   ssdOld = 0;
-  vCPU = 1;
-  ram = 1;
+  ipv6Old :number;
+  ipPublicOld:number;
+  ipFloatingOld:number;
+  backupOld:number;
+  snapshotOld:number;
+  loadBalancerOld:number;
+  fileSnapshotOld:number;
+  fileSystemOld:number;
+  vpnsitetositeIdOld:number;
+  vpnsitetositeNameOld:string;
+  loadbalancerOfferNameOld:string;
+
+
+  vCPU = 0;
+  ram = 0;
   hhd = 0;
   ssd = 0;
   ipConnectInternet = 'loading data....';
-  loadBalancerId = '';
-  siteToSiteId = '';
+  loadBalancerId : number;
+  siteToSiteId: number;
 
   total: any;
   totalAmount = 0;
@@ -117,6 +134,8 @@ export class ProjectUpdateComponent implements OnInit {
     IpV6Unit: 0,
     backup: 0,
     backupUnit: 0,
+    snapshot:0,
+    snapshotUnit:0,
     loadBalancer: 0,
     loadBalancerUnit: 0,
     fileStorage: 0,
@@ -137,8 +156,9 @@ export class ProjectUpdateComponent implements OnInit {
   sitetositeName:string;
   listTypeCatelogOffer:any;
 
-  numbergpu: number[] = [];
-
+  // numbergpu: number[] = [];
+  gpuQuotasGobal: { GpuOfferId: number, GpuCount: number, GpuType: string, GpuPrice:number, GpuPriceUnit:number}[] = [];
+  maxTotal: number = 8;
 
   form = new FormGroup({
     name: new FormControl({ value: 'loading data....', disabled: false }, { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),] }),
@@ -177,7 +197,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.loadData();
     this.iconToggle = "icon_circle_minus";
     this.getStepBlock('BLOCKSTORAGE');
-    this.getCatelogOffer()
+
    
   }
 
@@ -307,44 +327,7 @@ export class ProjectUpdateComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
     }
   }
-  initIP() {
-    this.activeIP = true;
-    this.trashIP = true;
-  }
-  deleteIP() {
-    this.activeIP = false;
-    this.trashIP = false;
-    this.numberIpPublic = 0;
-    this.calculate()
-  }
-  initBackup() {
-    this.activeBackup = true;
-    this.trashBackup = true;
-  }
-  deleteBackup() {
-    this.activeBackup = false;
-    this.trashBackup = false;
-    this.numberBackup = 0;
-  }
 
-  initLoadBalancer() {
-    this.activeLoadBalancer = true;
-  }
-
-  initFileStorage() {
-    this.activeFileStorage = true;
-  }
-  initVpnGpu() {
-    this.activeVpnGpu = true;
-    this.trashVpnGpu = true;
-    this.getCatelogOffer();
-    console.log("object")
-
-  }
-  deleteVpnGpu() {
-    this.activeVpnGpu = false;
-    this.trashVpnGpu = false;
-  }
 
   changeTab(event: any) {
     this.selectIndexTab = event.index;
@@ -382,40 +365,55 @@ export class ProjectUpdateComponent implements OnInit {
           this.form.controls['description'].setValue(data.description);
           this.today = this.data.createDate;
           this.expiredDate = this.data.expireDate;
-          this.vCPUOld = this.vCPU = data.quotavCpu;
-          this.ramOld = this.ram = data.quotaRamInGb;
-          this.hhdOld = this.hhd = data.quotaHddInGb;
-          this.ssdOld = this.ssd = data.quotaSSDInGb;
+          // this.vCPUOld = this.vCPU = data.quotavCpu;
+          // this.ramOld = this.ram = data.quotaRamInGb;
+          // this.hhdOld = this.hhd = data.quotaHddInGb;
+          // this.ssdOld = this.ssd = data.quotaSSDInGb;
+
+          this.vCPUOld =  data.quotavCpu;
+          this.ramOld =  data.quotaRamInGb;
+          this.hhdOld =  data.quotaHddInGb;
+          this.ssdOld =  data.quotaSSDInGb;
+          this.ipv6Old = data.quotaIpv6Count;
+          this.ipPublicOld = data.quotaIpPublicCount;
+          this.ipFloatingOld = data.quotaIpFloatingCount;
+          this.backupOld = data.quotaBackupVolumeInGb;
+         this.loadBalancerOld = data.quotaLoadBalancerSDNCount;
+          this.fileSystemOld = data.quotaShareInGb;
+          this.fileSnapshotOld = data.quotaShareSnapshotInGb;
+          this.vpnsitetositeNameOld = data.vpnSiteToSiteOfferName;
+          this.loadbalancerOfferNameOld = data.loadbalancerOfferName;
+
           if (data.offerId != null) {
             this.selectIndexTab = 0;
           } else {
             this.selectIndexTab = 1;
           }
 
-          this.numberNetwork = data.quotaNetworkCount
-          this.numberRouter = data.quotaRouterCount
-          this.numberSecurityGroup = data.quotaSecurityGroupCount
-          this.numberBackup = data.quotaBackupVolumeInGb;
-          this.numberLoadBalancer = data.quotaLoadBalancerSDNCount;
-          this.numberFileSystem = data.quotaShareInGb;
-          this.numberFileScnapsshot = data.quotaShareSnapshotInGb;
-          this.numberIpFloating = data.quotaIpFloatingCount;
-          this.numberIpPublic = data.quotaIpPublicCount;
-          this.numberIpv6 = data.quotaIpv6Count;
-          this.siteToSiteId = data.vpnSiteToSiteOfferId;
-          this.loadBalancerId = data.offerIdLBSDN;
-          if (data.quotaLoadBalancerSDNCount > 0) {
-            this.activeLoadBalancer = true;
-          }
-          if (data.quotaBackupVolumeInGb > 0) {
-            this.activeBackup = true;
-          }
-          if (data.quotaShareInGb > 0) {
-            this.activeFileStorage = true;
-          }
-          if (data.vpnSiteToSiteOfferId != null) {
-            this.activeSiteToSite = true;
-          }
+          // this.numberNetwork = data.quotaNetworkCount
+          // this.numberRouter = data.quotaRouterCount
+          // this.numberSecurityGroup = data.quotaSecurityGroupCount
+          // this.numberBackup = data.quotaBackupVolumeInGb;
+          // this.numberLoadBalancer = data.quotaLoadBalancerSDNCount;
+          // this.numberFileSystem = data.quotaShareInGb;
+          // this.numberFileScnapsshot = data.quotaShareSnapshotInGb;
+          // this.numberIpFloating = data.quotaIpFloatingCount;
+          // this.numberIpPublic = data.quotaIpPublicCount;
+          // this.numberIpv6 = data.quotaIpv6Count;
+          // this.siteToSiteId = data.vpnSiteToSiteOfferId;
+          // this.loadBalancerId = data.offerIdLBSDN;
+          // if (data.quotaLoadBalancerSDNCount > 0) {
+          //   this.activeLoadBalancer = true;
+          // }
+          // if (data.quotaBackupVolumeInGb > 0) {
+          //   this.activeBackup = true;
+          // }
+          // if (data.quotaShareInGb > 0) {
+          //   this.activeFileStorage = true;
+          // }
+          // if (data.vpnSiteToSiteOfferId != null) {
+          //   this.activeSiteToSite = true;
+          // }
 
           this.checkConfigPackage(this.data?.offerId)
         }
@@ -437,6 +435,7 @@ export class ProjectUpdateComponent implements OnInit {
             .getListOffersByProductId(data[0].id, this.regionId)
             .subscribe((data: any) => {
               this.listLoadbalancer = data;
+              this.loadBalancerId = this.listLoadbalancer[0].id
             });
         }
       );
@@ -455,9 +454,7 @@ export class ProjectUpdateComponent implements OnInit {
       );
   }
 
-  initVpnSiteToSite() {
-    this.activeSiteToSite = true;
-  }
+  
 
   private calculateReal() {
     this.refreshValue();
@@ -486,6 +483,11 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaShareInGb: this.numberFileSystem,
         newQuotaShareSnapshotInGb: this.numberFileScnapsshot,
         newQuotaIpv6Count: this.selectIndexTab == 0 ? 1 : IPV6,
+      
+
+        gpuQuotas: this.gpuQuotasGobal,
+        quotaVolumeSnapshotInGb: this.numberSnapshot,
+
         typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
         serviceType: 12,
         serviceInstanceId: this.data.id,
@@ -575,6 +577,24 @@ export class ProjectUpdateComponent implements OnInit {
       } else if (item.typeName == 'hdd') {
         this.price.hhd = item.totalAmount.amount;
         this.price.hhdPerUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'Nvidia A30') {     
+        console.log("this.gpuQuotasGobal555", this.gpuQuotasGobal)   
+        for(let gpu of this.gpuQuotasGobal){
+          if(gpu.GpuType =='Nvidia A30'){
+            gpu.GpuPrice = item.totalAmount.amount;
+            gpu.GpuPriceUnit = item.unitPrice.amount;
+          }
+        }
+            
+      }
+      else if (item.typeName == 'Nvidia A100') {
+        for(let gpu of this.gpuQuotasGobal){
+          if(gpu.GpuType =='Nvidia A100'){
+            gpu.GpuPrice = item.totalAmount.amount;
+            gpu.GpuPriceUnit = item.unitPrice.amount;
+          }
+        }
       }
     }
     // this.price.fileStorage = fileStorage;
@@ -681,6 +701,10 @@ export class ProjectUpdateComponent implements OnInit {
           this.numberFileScnapsshot = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
           break;
         }
+        case "snapshot": {
+          this.numberSnapshot = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+          break;
+        }
       }
     }
   }
@@ -705,19 +729,125 @@ export class ProjectUpdateComponent implements OnInit {
     }
     // this.calculate();
   }
-  getCatelogOffer(){
+  getCatelogOffer() {
     this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
       res => {
         this.listTypeCatelogOffer = res
-        console.log("object123", res)
-        this.listTypeCatelogOffer.forEach(() => this.numbergpu.push(0));
+        console.log("listTypeCatelogOffer", res)
+        this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item:any) => ({
+          GpuOfferId: item.id,
+          GpuCount: 0,
+          GpuType: item.offerName,
+          GpuPrice:null,
+          GpuPriceUnit:null
+        }));
       }
     );
   }
+  maxNumber: number[] = [8, 8];
+  getValues(index:number, value:number): void {
+
+    console.log("index",index)
+    console.log("value",value)
+    console.log("gpuQuotasGobal 123",this.gpuQuotasGobal )
+    // console.log(this.gpuQuotasGobal[index].GpuCount);
+    if (index == 0) {
+      if (this.gpuQuotasGobal[0].GpuCount <= this.maxTotal) {
+        this.maxNumber[1] = this.maxTotal - this.gpuQuotasGobal[0].GpuCount;
+        if (this.gpuQuotasGobal[1].GpuCount > 0 && this.gpuQuotasGobal[1].GpuCount > this.maxNumber[1]) {
+          this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+          this.gpuQuotasGobal[1].GpuCount = this.maxNumber[1]
+        }
+      }
+    }
+    else {
+      if (this.gpuQuotasGobal[1].GpuCount <= this.maxTotal) {
+        this.maxNumber[0] = this.maxTotal - this.gpuQuotasGobal[1].GpuCount
+        if (this.gpuQuotasGobal[0].GpuCount > 0 && this.gpuQuotasGobal[0].GpuCount > this.maxNumber[0]) {
+          this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+          this.gpuQuotasGobal[0].GpuCount = this.maxNumber[0]
+        }
+      }
+    }
+    
+  }
+
+  getMaxValue(index: number): number {
+    if (this.gpuQuotasGobal[index].GpuCount < 8) {
+      return this.maxNumber[index];
+    }
+  }
+
   trackById(index: number, item: any): any {
     return item.offerName;
   }
-  getValues() {
-    console.log("loggg",this.numbergpu);
+  initIP() {
+    this.activeIP = true;
+    this.trashIP = true;
+  }
+  deleteIP() {
+    this.activeIP = false;
+    this.trashIP = false;
+    this.numberIpPublic = 0;
+    this.calculate()
+  }
+  initBackup() {
+    this.activeBackup = true;
+    this.trashBackup = true;
+  }
+  deleteBackup() {
+    this.activeBackup = false;
+    this.trashBackup = false;
+    this.numberBackup = 0;
+  }
+
+  initLoadBalancer() {
+    this.activeLoadBalancer = true;
+    this.trashLoadBalancer = true
+  }
+  deleteLoadBalancer() {
+    this.activeLoadBalancer = false;
+    this.trashLoadBalancer = false
+  }
+
+  initFileStorage() {
+    this.activeFileStorage = true;
+    this.trashFileStorage = true;
+  }
+  deleteFileStorage(){
+    this.activeFileStorage = false;
+    this.trashFileStorage = false;
+  }
+  initVpnSiteToSite() {
+    this.activeSiteToSite = true;
+    this.trashVpnSiteToSite = true;
+    this.siteToSiteId = this.listSiteToSite[1].id;
+  }
+  deleteVpnSiteToSite(){
+    this.activeSiteToSite = false;
+    this.trashVpnSiteToSite = false;
+    this.siteToSiteId = null
+    this.sitetositeName=""
+  }
+  initVpnGpu() {
+    this.activeVpnGpu = true;
+    this.trashVpnGpu = true;
+    this.getCatelogOffer();
+    console.log("object")
+
+  }
+  deleteVpnGpu() {
+    this.activeVpnGpu = false;
+    this.trashVpnGpu = false;
+    this.gpuQuotasGobal =[ ]
+  }
+  initSnapshot(){
+    this.activeSnapshot = true;
+    this.trashSnapshot = true;
+  }
+
+  deleteSnapshot(){
+    this.activeSnapshot = false;
+    this.trashSnapshot = false;
   }
 }
