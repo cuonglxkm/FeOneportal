@@ -114,6 +114,11 @@
                   "action": "volume:List"
                 },
                 {
+                  "text": "Snapshot",
+                  "link": "/app-smart-cloud/snapshot",
+                  "action": "snapshot:List"
+                },
+                {
                   "text": "Snapshot Volume",
                   "link": "/app-smart-cloud/snapshotvls",
                   "action": "volumesnapshot:List"
@@ -326,7 +331,7 @@
           "text": "Operation History",
           "icon": "anticon-edit",
           "link": "/app-smart-cloud/operation-history"
-          
+
         }
       ]
     }

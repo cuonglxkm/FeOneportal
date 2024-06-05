@@ -38,6 +38,7 @@ import { CreateVolumeRequestModel } from 'src/app/shared/models/volume.model';
 import { addDays } from 'date-fns';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
@@ -71,6 +72,9 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
   timeSelected: any
+  storageBuyVpc: number;
+  storageUsed: number
+  storageRemaining: number;
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
@@ -162,6 +166,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     this.project = regionAndProject.projectId;
     this.getListFileSystem();
     this.getConfigurations();
+    this.getStorageBuyVpc()
   }
 
   constructor(
@@ -174,7 +179,8 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private instanceService: InstancesService,
     private orderService: OrderService,
-    private configurationsService: ConfigurationsService
+    private configurationsService: ConfigurationsService,
+    private projectService: ProjectService
   ) {
     this.form.get('time').valueChanges.subscribe((data) => {
       this.getTotalAmount();
@@ -260,6 +266,17 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       });
   }
 
+  getStorageBuyVpc() {
+    this.isLoading = true
+    this.projectService.getProjectVpc(this.project).subscribe(data => {
+      this.storageBuyVpc = data.cloudProject?.quotaShareInGb
+      this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
+      this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
+      console.log('share remaining', this.storageRemaining)
+      this.isLoading = false
+    })
+  }
+
   handleCreateFSS() {
     this.fileSystemSnapshotInit();
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
@@ -310,7 +327,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
                     this.isLoadingCreateFSS = false;
                     this.notification.success(
                       this.i18n.fanyi('app.status.success'),
-                      'Yêu cầu tạo File System Snapshot thành công.'
+                      this.i18n.fanyi('app.file.snapshot.create.success')
                     );
                     this.router.navigate([
                       '/app-smart-cloud/file-system-snapshot/list',
@@ -320,7 +337,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
                   this.isLoadingCreateFSS = false;
                   this.notification.error(
                     this.i18n.fanyi('app.status.fail'),
-                    'Yêu cầu tạo File System Snapshot thất bại.'
+                    this.i18n.fanyi('app.file.snapshot.create.fail')
                   );
                 }
               },
@@ -328,7 +345,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
                 this.isLoadingCreateFSS = false;
                 this.notification.error(
                   this.i18n.fanyi('app.status.fail'),
-                  'Yêu cầu tạo File System Snapshot thất bại.'
+                  this.i18n.fanyi('app.file.snapshot.create.fail')
                 );
               }
             );

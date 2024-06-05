@@ -20,7 +20,10 @@ import { ObjectStorageService } from 'src/app/shared/services/object-storage.ser
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderItemObject } from 'src/app/shared/models/price';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
-
+import { OrderService } from 'src/app/shared/services/order.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-object-storage-create',
@@ -33,10 +36,10 @@ export class ObjectStorageCreateComponent implements OnInit {
   numberMonth: number = 1;
   expiredDate: Date = addDays(this.today, 30);
   objectStorageCreate: ObjectStorageCreate = new ObjectStorageCreate();
-  valueStringConfiguration: string
-  minStorage: number
-  maxStorage: number
-  stepStorage: number
+  valueStringConfiguration: string;
+  minStorage: number;
+  maxStorage: number;
+  stepStorage: number;
   unitPrice = 0;
   dataSubject: Subject<any> = new Subject<any>();
   timeSelected: any;
@@ -46,20 +49,29 @@ export class ObjectStorageCreateComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private configurationsService: ConfigurationsService,
-    private fb: NonNullableFormBuilder
+    private fb: NonNullableFormBuilder,
+    private orderService: OrderService,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
+
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
 
   ngOnInit(): void {
     this.dataSubject.next(1);
     this.onChangeCapacity();
-    this.getConfigurations()
-    this.getTotalAmount()
+    this.getConfigurations();
+    this.getTotalAmount();
   }
 
   validateForm: FormGroup<{
-    time: FormControl<number>
+    time: FormControl<number>;
   }> = this.fb.group({
-    time: [1]
+    time: [1],
   });
 
   dataSubjectTime: Subject<any> = new Subject<any>();
@@ -94,7 +106,7 @@ export class ObjectStorageCreateComponent implements OnInit {
 
   totalAmount: number = 0;
   totalincludesVAT: number = 0;
-  
+
   changeCapacity(value: number) {
     this.dataSubject.next(value);
   }
@@ -126,7 +138,7 @@ export class ObjectStorageCreateComponent implements OnInit {
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );
-      this.orderObject = result.data
+      this.orderObject = result.data;
       this.cdr.detectChanges();
     });
   }
@@ -140,7 +152,7 @@ export class ObjectStorageCreateComponent implements OnInit {
     orderItemOS.orderItemQuantity = 1;
     orderItemOS.specification = specification;
     orderItemOS.specificationType = 'objectstorage_create';
-    orderItemOS.price = this.totalAmount
+    orderItemOS.price = this.totalAmount;
     orderItemOS.serviceDuration = this.validateForm.controls.time.value;
     this.orderItem.push(orderItemOS);
 
@@ -148,20 +160,36 @@ export class ObjectStorageCreateComponent implements OnInit {
     this.order.createdByUserId = this.tokenService.get()?.userId;
     this.order.note = 'tạo object storage';
     this.order.orderItems = this.orderItem;
-
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: this.order, path: returnPath },
+    this.orderService.validaterOrder(this.order).subscribe({
+      next: (data) => {
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: this.order, path: returnPath },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error: (e) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          e.error.detail
+        );
+      },
     });
   }
 
   getConfigurations() {
-    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
-      this.valueStringConfiguration = data.valueString;
-      const arr = this.valueStringConfiguration.split('#')
-      this.minStorage = Number.parseInt(arr[0])
-      this.stepStorage = Number.parseInt(arr[1])
-      this.maxStorage = Number.parseInt(arr[2])
-    })
+    this.configurationsService
+      .getConfigurations('BLOCKSTORAGE')
+      .subscribe((data) => {
+        this.valueStringConfiguration = data.valueString;
+        const arr = this.valueStringConfiguration.split('#');
+        this.minStorage = Number.parseInt(arr[0]);
+        this.stepStorage = Number.parseInt(arr[1]);
+        this.maxStorage = Number.parseInt(arr[2]);
+      });
   }
 }
