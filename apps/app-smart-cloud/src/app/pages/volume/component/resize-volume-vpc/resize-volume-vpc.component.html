@@ -147,7 +147,7 @@
                   <ng-container *ngIf="control.hasError('required')">{{ 'volume.input.storage.vpc.required'|i18n }}</ng-container>
                   <ng-container *ngIf="control.hasError('pattern')">{{'volume.input.storage.required'|i18n}}</ng-container>
                   <ng-container *ngIf="control.hasError('notEnough') || control.hasError('outOfStorage')">
-                    {{ 'app.alert.quota.vpc' | i18n }}<a [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a>{{ 'app.alert.quota.vpc.next' | i18n }}
+                    {{ 'app.alert.quota.vpc' | i18n }} <a [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a> {{ 'app.alert.quota.vpc.next' | i18n }}
                   </ng-container>
                 </ng-template>
               </nz-form-control>
