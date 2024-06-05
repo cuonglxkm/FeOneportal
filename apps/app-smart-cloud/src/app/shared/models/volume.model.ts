@@ -5,6 +5,8 @@ export class CreateVolumeRequestModel {
   createdByUserId: number;
   note: string;
   couponCode: string
+  totalPayment?: number;
+  totalVAT?: number;
   orderItems: [
     {
       orderItemQuantity: number;
