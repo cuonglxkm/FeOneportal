@@ -2653,6 +2653,10 @@
   "volume.notification.resize.success": "Volume adjustment successful.",
   "volume.notification.resize.fail": "Volume adjustment failed",
   "volume.notification.access.denied": "Volume does not exist!",
+  "volume.iops.fix.hdd": "HDD IOPS is fixed at 300.",
+  "volume.iops.fix.ssd": "SSD IOPS scales with volume capacity and is calculated using the formula IOPS = Capacity * 10.",
+  "volume.iops.fix.ssd1": "However, IOPS has a minimum value of 400, so for volumes <= 40 GB, the IOPS will always be 400.",
+  "volume.iops.fix.ssd2": "For 41GB and above, IOPS is calculated using the formula IOPS = Capacity * 10.",
 
   "volume.input.storage.vpc.required": "Please enter the capacity of the Backup package",
   "volume.unit-price": "Unit price",
