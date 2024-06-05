@@ -155,6 +155,9 @@ import {
   RestoreBackupVolumeComponent
 } from './volume/component/backup-volume/restore-backup-volume/restore-backup-volume.component';
 import { RestoreBackupVmVpcComponent } from './backup-vm/restore-backup-vm-vpc/restore-backup-vm-vpc.component';
+import {
+  RestoreBackupVolumeVpcComponent
+} from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
@@ -382,6 +385,15 @@ const routes: Routes = [
   {
     path: 'backup-volume/restore/:id',
     component: RestoreBackupVolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:Get'
+    }
+  },
+
+  {
+    path: 'backup-volume/restore/vpc/:id',
+    component: RestoreBackupVolumeVpcComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'backup:Get'

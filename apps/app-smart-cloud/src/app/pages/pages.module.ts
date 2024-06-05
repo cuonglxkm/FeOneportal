@@ -245,6 +245,7 @@ import {
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { UpdateBackupPackageComponent } from './backup-package/update/update-backup-package.component';
 import { RestoreBackupVmVpcComponent } from './backup-vm/restore-backup-vm-vpc/restore-backup-vm-vpc.component';
+import { RestoreBackupVolumeVpcComponent } from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -464,6 +465,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     RestoreBackupVmComponent,
     UpdateBackupPackageComponent,
     RestoreBackupVmVpcComponent,
+    RestoreBackupVolumeVpcComponent,
   ],
   imports: [
     CommonModule,

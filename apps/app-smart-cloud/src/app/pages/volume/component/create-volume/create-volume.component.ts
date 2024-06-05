@@ -94,6 +94,8 @@ export class CreateVolumeComponent implements OnInit {
   enableEncrypt: boolean = false;
   enableMultiAttach: boolean = false;
 
+  offerId: number;
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private volumeService: VolumeService,

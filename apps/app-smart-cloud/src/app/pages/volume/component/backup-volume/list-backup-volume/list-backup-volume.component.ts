@@ -162,7 +162,12 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
   }
 
   navigateToRestore(id) {
-    this.router.navigate(['/app-smart-cloud/backup-volume/restore/' + id])
+    if(this.typeVpc == 1) {
+      this.router.navigate(['/app-smart-cloud/backup-volume/restore/vpc/' + id])
+    } else {
+      this.router.navigate(['/app-smart-cloud/backup-volume/restore/' + id])
+    }
+
   }
 
   ngOnInit() {
