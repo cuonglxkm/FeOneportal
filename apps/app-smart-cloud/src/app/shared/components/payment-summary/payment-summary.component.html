@@ -49,7 +49,7 @@
           </div>
           <nz-radio-group
             [ngModelOptions]="{ standalone: true }"
-            [(ngModel)]="radioValue"
+            [(ngModel)]="radioValue" (ngModelChange)="changeOptionInvoices($event)"
             class="mb-5"
           >
             <ng-container *ngFor="let item of options">
@@ -124,7 +124,9 @@
                   <nz-form-label nzFor="name">
                     <div>
                       <span>Mã số thuế</span>
-                      (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                      <ng-container *ngIf="radioValue === 1">
+                        (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                      </ng-container>
                     </div>
                   </nz-form-label>
                   <input
@@ -153,7 +155,9 @@
                   <nz-form-label nzFor="name">
                     <div>
                       <span>Địa chỉ</span>
+                      <ng-container *ngIf="radioValue === 1">
                       (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                    </ng-container>
                     </div>
                   </nz-form-label>
                   <input
@@ -179,7 +183,9 @@
                   <nz-form-label nzFor="name">
                     <div>
                       <span>Số điện thoại</span>
+                      <ng-container *ngIf="radioValue === 1">
                       (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                    </ng-container>
                     </div>
                   </nz-form-label>
                   <input
@@ -755,7 +761,9 @@
               <nz-form-label nzFor="name">
                 <div>
                   <span>Mã số thuế</span>
-                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <ng-container *ngIf="customerType !== 1">
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  </ng-container>
                 </div>
               </nz-form-label>
               <input

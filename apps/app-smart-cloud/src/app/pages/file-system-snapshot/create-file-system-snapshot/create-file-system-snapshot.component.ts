@@ -327,7 +327,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
                     this.isLoadingCreateFSS = false;
                     this.notification.success(
                       this.i18n.fanyi('app.status.success'),
-                      'Yêu cầu tạo File System Snapshot thành công.'
+                      this.i18n.fanyi('app.file.snapshot.create.success')
                     );
                     this.router.navigate([
                       '/app-smart-cloud/file-system-snapshot/list',
@@ -337,7 +337,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
                   this.isLoadingCreateFSS = false;
                   this.notification.error(
                     this.i18n.fanyi('app.status.fail'),
-                    'Yêu cầu tạo File System Snapshot thất bại.'
+                    this.i18n.fanyi('app.file.snapshot.create.fail')
                   );
                 }
               },
@@ -345,7 +345,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
                 this.isLoadingCreateFSS = false;
                 this.notification.error(
                   this.i18n.fanyi('app.status.fail'),
-                  'Yêu cầu tạo File System Snapshot thất bại.'
+                  this.i18n.fanyi('app.file.snapshot.create.fail')
                 );
               }
             );

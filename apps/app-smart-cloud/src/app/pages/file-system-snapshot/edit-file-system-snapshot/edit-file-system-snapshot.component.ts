@@ -21,6 +21,8 @@ import { FormEditFileSystemSnapShot } from 'src/app/shared/models/filesystem-sna
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { FileSystemDetail } from 'src/app/shared/models/file-system.model';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-edit-file-system-snapshot',
@@ -55,6 +57,7 @@ export class EditFileSystemSnapshotComponent {
     private fb: NonNullableFormBuilder,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fileSystemSnapshotService: FileSystemSnapshotService
   ) {}
 
@@ -93,8 +96,8 @@ export class EditFileSystemSnapshotComponent {
         .subscribe(
           (data) => {
             this.notification.success(
-              'Thành công',
-              'Cập nhật File System Snapshot thành công'
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.file.snapshot.edit.success')
             );
             this.isVisible = false;
             this.isLoading = false;
@@ -103,11 +106,11 @@ export class EditFileSystemSnapshotComponent {
           (error) => {
             this.isLoading = false;
             if(error && error.error && error.error.detail && error.error.detail == "Tên File System Snapshot đã được sử dụng. Vui lòng nhập tên khác!"){
-              this.notification.error('Thất bại', error.error.detail);
+              this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
             } else {
               this.notification.error(
-                'Thất bại',
-                'Cập nhật File System Snapshot thất bại'
+                this.i18n.fanyi('app.status.fail'),
+                this.i18n.fanyi('app.file.snapshot.edit.fail')
               );
             }
           }

@@ -155,7 +155,7 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
             this.estimateExpireDate = new Date(exp);
             this.getTotalAmount();
           } else {
-            this.notification.error('', 'File System Snapshot không tồn tại!');
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.storage.not.exist'));
             this.router.navigate([
               '/app-smart-cloud/file-system-snapshot/list',
             ]);
