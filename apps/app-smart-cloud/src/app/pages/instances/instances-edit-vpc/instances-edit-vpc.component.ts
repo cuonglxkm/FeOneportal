@@ -27,8 +27,9 @@ import {
 import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -96,7 +97,8 @@ export class InstancesEditVpcComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private notification: NzNotificationService,
-    private configurationService: ConfigurationsService
+    private configurationService: ConfigurationsService,
+    private orderService: OrderService
   ) {}
 
   checkPermission: boolean = false;
@@ -127,7 +129,7 @@ export class InstancesEditVpcComponent implements OnInit {
         ) {
           this.isConfigGpuAtInitial = true;
           this.isGpuConfig = true;
-          this.gpuTypeOfferId = this.listGPUType.filter(
+          this.gpuOfferId = this.listGPUType.filter(
             (e) =>
               e.characteristicValues[0].charOptionValues[0] ==
               this.instancesModel.gpuType
@@ -246,7 +248,7 @@ export class InstancesEditVpcComponent implements OnInit {
   ram: number = 0;
   storage: number = 0;
   GPU: number = 0;
-  gpuTypeOfferId: number = 0;
+  gpuOfferId: number = 0;
   instanceResize: InstanceResize = new InstanceResize();
   instanceResizeInit() {
     this.instanceResize.description = null;
@@ -260,9 +262,9 @@ export class InstancesEditVpcComponent implements OnInit {
       this.instanceResize.ram = this.ram + this.instancesModel.ram;
       this.instanceResize.storage = this.storage + this.instancesModel.storage;
       this.instanceResize.gpuCount = this.GPU + this.instancesModel.gpuCount;
-      if (this.gpuTypeOfferId) {
+      if (this.gpuOfferId) {
         this.instanceResize.gpuType = this.listGPUType.filter(
-          (e) => e.id == this.gpuTypeOfferId
+          (e) => e.id == this.gpuOfferId
         )[0].characteristicValues[0].charOptionValues[0];
       } else {
         this.instanceResize.gpuType = this.instancesModel.gpuType;
@@ -278,12 +280,20 @@ export class InstancesEditVpcComponent implements OnInit {
     this.instanceResize.projectId = this.projectId;
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   order: Order = new Order();
   orderItem: OrderItem[] = [];
+  isLoading: boolean = false;
   update() {
+    this.isLoading = true;
+    this.cdr.detectChanges();
     if (
       this.isGpuConfig == true &&
-      (this.GPU == 0 || this.gpuTypeOfferId == 0) &&
+      (this.GPU == 0 || this.gpuOfferId == 0) &&
       (this.instancesModel.gpuCount == null ||
         this.instancesModel.gpuCount == 0)
     ) {
@@ -307,21 +317,39 @@ export class InstancesEditVpcComponent implements OnInit {
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 
-    this.dataService.create(this.order).subscribe({
-      next: (data: any) => {
-        this.notification.success(
-          '',
-          this.i18n.fanyi('app.notify.update.instances.success')
-        );
-        this.router.navigate(['/app-smart-cloud/instances']);
-      },
-      error: (e) => {
-        this.notification.error(
-          e.statusText,
-          this.i18n.fanyi('app.notify.update.instances.fail')
-        );
-      },
-    });
+    this.orderService
+      .validaterOrder(this.order)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (result) => {
+          if (result.success) {
+            this.dataService.create(this.order).subscribe({
+              next: (data: any) => {
+                this.notification.success(
+                  '',
+                  this.i18n.fanyi('app.notify.update.instances.success')
+                );
+                this.router.navigate(['/app-smart-cloud/instances']);
+              },
+              error: (e) => {
+                this.notification.error(
+                  e.statusText,
+                  this.i18n.fanyi('app.notify.update.instances.fail')
+                );
+              },
+            });
+          } else {
+            this.isVisiblePopupError = true;
+            this.errorList = result.data;
+          }
+        },
+        error: (error) => {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            error.error.detail
+          );
+        },
+      });
   }
 
   isChange: boolean = false;

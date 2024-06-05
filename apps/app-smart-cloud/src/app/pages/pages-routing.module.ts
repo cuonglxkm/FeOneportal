@@ -154,6 +154,9 @@ import { RestoreBackupVmComponent } from './backup-vm/restore-backup-vm/restore-
 import {
   RestoreBackupVolumeComponent
 } from './volume/component/backup-volume/restore-backup-volume/restore-backup-volume.component';
+import { SnapshotCreateComponent } from './snapshot/create/snapshot-create.component';
+import { SnapshotListComponent } from './snapshot/list/snapshot-list.component';
+import { RestoreBackupVmVpcComponent } from './backup-vm/restore-backup-vm-vpc/restore-backup-vm-vpc.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
@@ -304,6 +307,14 @@ const routes: Routes = [
   {
     path: 'backup-vm/restore-backup-vm/:id',
     component: RestoreBackupVmComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:InstanceBackupRestore'
+    }
+  },
+  {
+    path: 'backup-vm/restore-backup-vm-vpc/:id',
+    component: RestoreBackupVmVpcComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'backup:InstanceBackupRestore'
@@ -1213,7 +1224,14 @@ const routes: Routes = [
     path: 'ssl-cert/create',
     component: CreateSslCertComponent,
   },
-
+  {
+    path: 'snapshot/create',
+    component: SnapshotCreateComponent,
+  },
+  {
+    path: 'snapshot',
+    component: SnapshotListComponent,
+  }
 ];
 
 @NgModule({

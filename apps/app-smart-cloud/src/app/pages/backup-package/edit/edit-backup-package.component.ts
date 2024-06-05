@@ -38,10 +38,10 @@ export class EditBackupPackageComponent implements OnInit {
   });
 
   isLoading: boolean = true;
-  packageBackupModel: PackageBackupModel = new PackageBackupModel();
+  packageBackupModel: PackageBackupModel;
   isLoadingButton: boolean = false;
 
-  storage: number;
+  storage: number = 0;
 
   resizeDate: Date;
 
@@ -107,8 +107,8 @@ export class EditBackupPackageComponent implements OnInit {
       this.isLoading = false;
       console.log('data', data);
       this.packageBackupModel = data;
-      this.storage = this.packageBackupModel?.sizeInGB;
-      this.validateForm.controls.storage.setValue(this.packageBackupModel?.sizeInGB);
+      // this.storage = this.packageBackupModel?.sizeInGB;
+      // this.validateForm.controls.storage.setValue(this.packageBackupModel?.sizeInGB);
       // this.getTotalAmount();
     }, error => {
       this.isLoading = false;
@@ -121,7 +121,8 @@ export class EditBackupPackageComponent implements OnInit {
 
   backupPackageInit() {
     this.formUpdateBackupPackageModel.packageName = this.packageBackupModel.packageName;
-    if(this.formUpdateBackupPackageModel.newSize != null) {
+    console.log('size', this.packageBackupModel.sizeInGB)
+    if(this.packageBackupModel?.sizeInGB != null) {
       this.formUpdateBackupPackageModel.newSize = this.storage + this.packageBackupModel?.sizeInGB
     } else {
       this.formUpdateBackupPackageModel.newSize = this.storage
@@ -162,6 +163,12 @@ export class EditBackupPackageComponent implements OnInit {
     });
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   formOrder() {
     let request: BackupPackageRequestModel = new BackupPackageRequestModel();
     request.customerId = this.formUpdateBackupPackageModel.customerId;
@@ -184,10 +191,13 @@ export class EditBackupPackageComponent implements OnInit {
     let request = this.formOrder();
     this.orderService.validaterOrder(request).subscribe(data => {
       this.isLoadingButton = false;
-      console.log('dataa', data);
+      console.log('data', data);
       if (data.success) {
         console.log('request', request);
         this.navigateToPaymentSummary(request);
+      } else {
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
       }
       //
     }, error => {

@@ -35,7 +35,9 @@ export class ExtendFileSystemNormalComponent implements OnInit {
 
   storage: number;
   isLoading: boolean = true;
-  fileSystem: FileSystemDetail = new FileSystemDetail();
+
+  isLoadingAction: boolean = false
+  fileSystem: FileSystemDetail;
 
   isInitSnapshot: boolean = false;
 
@@ -62,6 +64,13 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   valueStringConfiguration: string = '';
   maxStorage: number = 0;
 
+  timeSelected: any
+
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -92,11 +101,13 @@ export class ExtendFileSystemNormalComponent implements OnInit {
     this.dataSubjectTime.next(value);
   }
 
-  onChangeTime() {
-      this.dataSubjectTime.pipe(debounceTime(500))
-        .subscribe((res) => {
+  onChangeTime(value) {
+      // this.dataSubjectTime.pipe(debounceTime(500))
+      //   .subscribe((res) => {
+    this.timeSelected = value
+    this.validateForm.controls.time.setValue(this.timeSelected)
           this.getTotalAmount();
-        })
+        // })
   }
 
   getFileSystemById(id) {
@@ -139,6 +150,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   }
 
   getTotalAmount() {
+    this.isLoadingAction = true
     this.fileSystemInit()
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -151,6 +163,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
     dataPayment.projectId = this.project;
 
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
+      this.isLoadingAction = false
       console.log('thanh tien extend', result.data);
       this.orderItem = result.data;
       this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
@@ -158,6 +171,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   }
 
   navigateToPaymentSummary() {
+    this.isLoadingAction = true
     this.fileSystemInit();
     this.getTotalAmount()
     let request = new ResizeFileSystemRequestModel();
@@ -175,9 +189,16 @@ export class ExtendFileSystemNormalComponent implements OnInit {
     ];
     console.log('request', request);
     this.orderService.validaterOrder(request).subscribe(data => {
-      var returnPath: string = '/app-smart-cloud/file-storage/file-system/' + this.idFileSystem + '/extend';
-      console.log('request', request);
-      this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+      this.isLoadingAction = false
+      if(data.success) {
+        var returnPath: string = '/app-smart-cloud/file-storage/file-system/' + this.idFileSystem + '/extend';
+        console.log('request', request);
+        this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+      } else {
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
+      }
+
     }, error => {
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
     })
@@ -200,7 +221,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
 
     this.idFileSystem = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
     this.getFileSystemById(this.idFileSystem);
-    this.onChangeTime()
+    // this.onChangeTime()
     this.getConfigurations();
   }
 }

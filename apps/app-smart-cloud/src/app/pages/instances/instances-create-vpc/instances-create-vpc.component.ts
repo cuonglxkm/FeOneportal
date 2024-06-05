@@ -44,6 +44,7 @@ import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -167,7 +168,8 @@ export class InstancesCreateVpcComponent implements OnInit {
     private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver,
-    private configurationService: ConfigurationsService
+    private configurationService: ConfigurationsService,
+    private orderService: OrderService
   ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
@@ -411,13 +413,15 @@ export class InstancesCreateVpcComponent implements OnInit {
   activeBlockHDD: boolean = true;
   activeBlockSSD: boolean = false;
   initHDD(): void {
-    this.activeBlockHDD = true;
-    this.activeBlockSSD = false;
-    this.remainingVolume =
-      this.infoVPC.cloudProject.quotaHddInGb -
-      this.infoVPC.cloudProjectResourceUsed.hdd;
-    this.instanceCreate.volumeSize = 0;
-    this.cdr.detectChanges();
+    if (!this.disableHDD) {
+      this.activeBlockHDD = true;
+      this.activeBlockSSD = false;
+      this.remainingVolume =
+        this.infoVPC.cloudProject.quotaHddInGb -
+        this.infoVPC.cloudProjectResourceUsed.hdd;
+      this.instanceCreate.volumeSize = 0;
+      this.cdr.detectChanges();
+    }
   }
   initSSD(): void {
     this.activeBlockHDD = false;
@@ -833,7 +837,15 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.isVisibleCreate = true;
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   handleOkCreate(): void {
+    this.isVisibleCreate = false;
+    this.isLoading = true;
+    this.cdr.detectChanges();
     this.dataService
       .checkflavorforimage(
         this.hdh,
@@ -843,7 +855,6 @@ export class InstancesCreateVpcComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.isVisibleCreate = false;
           this.instanceInit();
 
           let specificationInstance = JSON.stringify(this.instanceCreate);
@@ -865,21 +876,43 @@ export class InstancesCreateVpcComponent implements OnInit {
           //   state: { data: this.order, path: returnPath },
           // });
 
-          this.dataService.create(this.order).subscribe({
-            next: (data: any) => {
-              this.notification.success(
-                '',
-                this.i18n.fanyi('app.notify.success.instances.order.create')
-              );
-              this.router.navigate(['/app-smart-cloud/instances']);
-            },
-            error: (e) => {
-              this.notification.error(
-                e.statusText,
-                this.i18n.fanyi('app.notify.fail.instances.order.create')
-              );
-            },
-          });
+          this.orderService
+            .validaterOrder(this.order)
+            .pipe(finalize(() => (this.isLoading = false)))
+            .subscribe({
+              next: (result) => {
+                if (result.success) {
+                  this.dataService.create(this.order).subscribe({
+                    next: (data: any) => {
+                      this.notification.success(
+                        '',
+                        this.i18n.fanyi(
+                          'app.notify.success.instances.order.create'
+                        )
+                      );
+                      this.router.navigate(['/app-smart-cloud/instances']);
+                    },
+                    error: (e) => {
+                      this.notification.error(
+                        e.statusText,
+                        this.i18n.fanyi(
+                          'app.notify.fail.instances.order.create'
+                        )
+                      );
+                    },
+                  });
+                } else {
+                  this.isVisiblePopupError = true;
+                  this.errorList = result.data;
+                }
+              },
+              error: (error) => {
+                this.notification.error(
+                  this.i18n.fanyi('app.status.fail'),
+                  error.error.detail
+                );
+              },
+            });
         },
         error: (e) => {
           let numbers: number[] = [];

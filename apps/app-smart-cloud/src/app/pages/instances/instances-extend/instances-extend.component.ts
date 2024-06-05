@@ -23,6 +23,9 @@ import { debounceTime, finalize, Subject } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { OrderService } from 'src/app/shared/services/order.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-instances-extend',
@@ -43,16 +46,17 @@ export class InstancesExtendComponent implements OnInit {
   newExpiredDate: string;
   order: Order = new Order();
   orderItem: OrderItem[] = [];
-  isDisable = true;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private service: InstancesService,
     private cdr: ChangeDetectorRef,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private loadingSrv: LoadingService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private orderService: OrderService
   ) {}
 
   onKeyDown(event: KeyboardEvent) {
@@ -150,7 +154,6 @@ export class InstancesExtendComponent implements OnInit {
       .subscribe((res) => {
         this.numberMonth = res;
         if (res == 0) {
-          this.isDisable = true;
           this.totalAmount = 0;
           this.totalVAT = 0;
           this.totalincludesVAT = 0;
@@ -183,7 +186,8 @@ export class InstancesExtendComponent implements OnInit {
   totalVAT: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
-    this.isDisable = true;
+    this.isLoading = true;
+    this.cdr.detectChanges();
     this.instanceExtendInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -198,23 +202,31 @@ export class InstancesExtendComponent implements OnInit {
     this.service.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
-      this.totalVAT =Number.parseFloat(result.data.totalVAT.amount);
+      this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );
-      this.isDisable = false;
+      this.isLoading = false;
       this.cdr.detectChanges();
     });
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+  isLoading: boolean = false;
   handleOkExtend(): void {
+    this.isLoading = true;
+    this.cdr.detectChanges();
     this.instanceExtendInit();
     let specificationInstance = JSON.stringify(this.instanceExtend);
     let orderItemInstanceResize = new OrderItem();
     orderItemInstanceResize.orderItemQuantity = 1;
     orderItemInstanceResize.specification = specificationInstance;
     orderItemInstanceResize.specificationType = 'instance_extend';
-    orderItemInstanceResize.price = this.totalAmount / this.numberMonth;
+    orderItemInstanceResize.price = this.totalAmount;
     orderItemInstanceResize.serviceDuration = this.numberMonth;
     this.orderItem.push(orderItemInstanceResize);
 
@@ -224,10 +236,28 @@ export class InstancesExtendComponent implements OnInit {
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: this.order, path: returnPath },
-    });
+    this.orderService
+      .validaterOrder(this.order)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (result) => {
+          if (result.success) {
+            var returnPath: string = window.location.pathname;
+            this.router.navigate(['/app-smart-cloud/order/cart'], {
+              state: { data: this.order, path: returnPath },
+            });
+          } else {
+            this.isVisiblePopupError = true;
+            this.errorList = result.data;
+          }
+        },
+        error: (error) => {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            error.error.detail
+          );
+        },
+      });
   }
 
   onRegionChange(region: any) {

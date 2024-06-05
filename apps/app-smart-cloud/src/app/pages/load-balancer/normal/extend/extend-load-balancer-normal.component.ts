@@ -13,6 +13,8 @@ import { OrderService } from '../../../../shared/services/order.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { fi } from 'date-fns/locale';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'one-portal-extend-load-balancer-normal',
@@ -36,6 +38,7 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
   estimateExpireDate: Date = null;
+  loadingCaCulate = true;
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
@@ -78,6 +81,7 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
   }
 
   getTotalAmount() {
+    this.loadingCaCulate = true;
     this.loadBalancerInit();
     console.log(this.formExtendLoadBalancer)
     let itemPayment: ItemPayment = new ItemPayment();
@@ -90,8 +94,9 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
-    this.loadBalancerService.totalAmount(dataPayment).subscribe((result) => {
-      console.log('thanh tien volume', result.data);
+    this.loadBalancerService.totalAmount(dataPayment)
+      .pipe(finalize(()=>{this.loadingCaCulate = false;}))
+      .subscribe((result) => {
       this.orderItem = result.data;
       this.unitPrice = this.orderItem?.orderItemPrices[0].unitPrice.amount;
       this.estimateExpireDate = this.orderItem?.orderItemPrices[0].expiredDate;
@@ -145,5 +150,10 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
     this.loadBalancerId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.getLoadBalancer();
 
+  }
+
+  onChangeTime($event: any) {
+    this.validateForm.controls['time'].setValue($event);
+    this.getTotalAmount();
   }
 }

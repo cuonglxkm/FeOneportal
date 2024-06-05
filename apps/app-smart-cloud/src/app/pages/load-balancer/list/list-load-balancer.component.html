@@ -113,12 +113,8 @@
             <td nzBreakWord>{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
             <td nzBreakWord>{{ data.expiredDate | date: 'dd/MM/yyyy' }}</td>
             <td nzBreakWord>{{ data.offerName }}</td>
-            <td nzBreakWord>
-<!--              <span *ngIf="data.provisioningStatus === 'ERROR'">-->
-<!--                <one-portal-delete-load-balancer [idLoadBalancer]="data.id"-->
-<!--                                                 [nameLoadBalancer]="data.name" [region]="region" [project]="project"-->
-<!--                                                 (onOk)="handleDeleteOk()" />-->
-<!--              </span>-->
+            <td *ngIf="data.provisioningStatus == 'PENDING_CREATE'" nzBreakWord></td>
+            <td *ngIf="data.provisioningStatus !== 'PENDING_CREATE'" nzBreakWord>
               <span *ngIf="data.provisioningStatus !== 'ERROR'">
                 <one-portal-attach-ip-floating-lb [region]="region" (onOk)="search(false)"
                                                   [project]="project"

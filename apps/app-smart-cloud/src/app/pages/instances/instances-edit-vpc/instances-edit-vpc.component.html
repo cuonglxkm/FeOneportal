@@ -13,6 +13,12 @@
           'app.instances' | i18n
         }}</a>
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a
+          [routerLink]="['/app-smart-cloud/instances/instances-detail/' + id]"
+          >{{ 'app.instances.detail' | i18n }}</a
+        >
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.instances.edit' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -661,7 +667,7 @@
                       '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
                     "
                     [nzShowSearch]="true"
-                    [(ngModel)]="gpuTypeOfferId"
+                    [(ngModel)]="gpuOfferId"
                     [ngModelOptions]="{ standalone: true }"
                     nzSize="large"
                   >
@@ -720,6 +726,7 @@
                 nz-button
                 nzSize="large"
                 nzType="primary"
+                [nzLoading]="isLoading"
                 (click)="update()"
                 [disabled]="!isChange"
               >
@@ -733,3 +740,8 @@
     </div>
   </div>
 </div>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>

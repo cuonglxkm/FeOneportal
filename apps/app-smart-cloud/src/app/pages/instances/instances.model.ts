@@ -1,4 +1,4 @@
-import { OrderItemPrices } from "src/app/shared/models/price";
+import { OrderItemPrices } from 'src/app/shared/models/price';
 
 export class IPSubnetModel {
   id: string;
@@ -226,11 +226,12 @@ export class InstanceCreate {
   keypairName: any;
   securityGroups: any;
   network: any;
-  volumeSize: number = 0;
+  volumeSize: number;
   isUsePrivateNetwork: boolean;
   ipPublic: any;
   password: any;
   snapshotCloudId: any;
+  snapshotId: any;
   encryption: boolean;
   isUseIPv6: boolean;
   addRam: number;
@@ -240,12 +241,12 @@ export class InstanceCreate {
   poolName: any;
   usedMss: boolean;
   customerUsingMss: any;
-  ram: number = 0;
-  cpu: number = 0;
+  ram: number;
+  cpu: number;
   volumeType: any;
+  gpuCount: any;
+  gpuOfferId: any;
   gpuType: any;
-  gpuCount: any = 0;
-  gpuTypeOfferId: any;
   privateNetId: any;
   privatePortId: any;
   typeName: string;
@@ -277,6 +278,7 @@ export class InstanceCreate {
   dSubscriptionType: any;
   oneSMEAddonId: any;
   oneSME_SubscriptionId: any;
+  isSendMail: boolean;
 }
 
 export class VolumeCreate {
@@ -325,6 +327,7 @@ export class Order {
   couponCode: string;
   note: string;
   orderItems: any[];
+  invoiceInfo?: string;
 }
 
 export class OrderItem {
@@ -333,7 +336,7 @@ export class OrderItem {
   specificationType: string;
   price: number;
   serviceDuration: number;
-  orderItemPrices?: OrderItemPrices[]
+  orderItemPrices?: OrderItemPrices[];
 }
 
 export class InstanceResize {
@@ -347,7 +350,7 @@ export class InstanceResize {
   cpu: number;
   gpuCount: any;
   gpuType: any;
-  newGpuTypeOfferId: any;
+  newGpuOfferId: any;
   typeName: string;
   newOfferId: number;
   serviceType: number;

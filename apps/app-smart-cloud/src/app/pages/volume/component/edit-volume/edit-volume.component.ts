@@ -44,6 +44,7 @@ export class EditVolumeComponent implements OnInit {
 
   volumeId: number;
 
+  isLoadingAction = false;
   isLoading = true;
 
   iops: number;
@@ -128,7 +129,14 @@ export class EditVolumeComponent implements OnInit {
       });
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   navigateToPaymentSummary() {
+    this.isLoadingAction = true
     if (this.validateForm.valid) {
       this.nameList = [];
       this.getTotalAmount();
@@ -146,10 +154,14 @@ export class EditVolumeComponent implements OnInit {
         }
       ];
       this.orderService.validaterOrder(request).subscribe(data => {
+        this.isLoadingAction = false
         if(data.success) {
           var returnPath: string = '/app-smart-cloud/volume/edit/' + this.volumeId;
           console.log('request', request);
           this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
         }
       }, error => {
         this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
@@ -337,6 +349,7 @@ export class EditVolumeComponent implements OnInit {
   }
 
   getTotalAmount() {
+    this.isLoadingAction = true
     this.volumeInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -347,6 +360,7 @@ export class EditVolumeComponent implements OnInit {
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
+      this.isLoadingAction = false
       console.log('thanh tien volume', result.data);
       this.orderItem = result.data;
       this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
@@ -364,12 +378,12 @@ export class EditVolumeComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.volumeEdit),
         specificationType: 'volume_resize',
-        price: this.orderItem?.orderItemPrices[0]?.unitPrice.amount,
-        serviceDuration: this.expiryTime
+        price: this.orderItem?.totalAmount.amount,
+        serviceDuration: 1
       }
     ];
     console.log('request', request);
-    console.log('price', this.orderItem?.orderItemPrices[0]?.unitPrice.amount);
+    console.log('price', this.orderItem?.orderItemPrices[0]?.totalAmount.amount);
     var returnPath: string = '/app-smart-cloud/volume/detail/' + this.volumeId;
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: request, path: returnPath }

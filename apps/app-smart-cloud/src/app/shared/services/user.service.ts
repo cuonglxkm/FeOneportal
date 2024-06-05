@@ -11,7 +11,7 @@ export class UserService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      user_root_id: this.tokenService.get()?.userId,
+      'User-Root-Id': this.tokenService.get()?.userId,
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
     }),
   };
@@ -44,6 +44,24 @@ export class UserService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.iam + url_,
+      this.httpOptions
+    );
+  }
+
+  getUserById(id: number): Observable<any> {
+    let url_ = `/users/${id}`;
+
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.users + url_,
+      this.httpOptions
+    );
+  }
+
+  getCustomerGroup(): Observable<any> {
+    let url_ = `/customer-group`;
+
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.users + url_,
       this.httpOptions
     );
   }

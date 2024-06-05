@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { finalize } from 'rxjs/operators';
 import { RegionModel, ProjectModel } from '../../../../../../libs/common-utils/src';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-ip-floating-normal',
@@ -26,6 +28,7 @@ export class CreateIpFloatingNormalComponent implements OnInit{
   dateString = new Date();
   total: any;
   totalAmount: any;
+  totalVat: any;
   totalPayment: any;
   loadingIp = true;
   loadingInstanse = true;
@@ -47,6 +50,7 @@ export class CreateIpFloatingNormalComponent implements OnInit{
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private catalogService: CatalogService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private router: Router) {
   }
 
@@ -160,7 +164,7 @@ export class CreateIpFloatingNormalComponent implements OnInit{
               orderItemQuantity: 1,
               specification: JSON.stringify(requestBody),
               specificationType: "ip_create",
-              price: this.total.data.totalAmount.amount / Number(this.form.controls['numOfMonth'].value),
+              price: this.total.data.totalAmount.amount,
               serviceDuration: this.form.controls['numOfMonth'].value
             }
           ]
@@ -169,12 +173,12 @@ export class CreateIpFloatingNormalComponent implements OnInit{
         var returnPath: string = window.location.pathname;
         this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
       } else {
-        this.notification.warning("Cảnh báo", "Dải network bị hết IP, xin vui lòng chọn dải IP khác!!!");
+        this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.ip.floating23'));
       }
     }, error => {
 
     });
-    
+
   }
 
   caculator(event) {
@@ -263,7 +267,8 @@ export class CreateIpFloatingNormalComponent implements OnInit{
           data => {
             this.total = data;
             this.totalAmount = Math.round(this.total?.data?.totalAmount?.amount);
-            this.totalPayment = Math.round(this.total?.data?.totalPayment?.amount)
+            this.totalPayment = Math.round(this.total?.data?.totalPayment?.amount);
+            this.totalVat = Math.round(this.total?.data?.totalVAT?.amount)
           }
         );
     } else {
@@ -290,5 +295,10 @@ export class CreateIpFloatingNormalComponent implements OnInit{
         this.checkIpv6 = false;
       }
     })
+  }
+
+  onChangeTime($event: any) {
+    this.form.controls['numOfMonth'].setValue($event);
+    this.caculator(null);
   }
 }

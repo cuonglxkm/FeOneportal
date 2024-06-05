@@ -13,7 +13,7 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        File System Snapshot
+        <a [routerLink]="'/app-smart-cloud/file-system-snapshot/list'">File System Snapshot</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -47,7 +47,6 @@
             <input
               name="name"
               nz-input
-              [nz-tooltip]="'app.button.search' | i18n"
               [(ngModel)]="value"
               (input)="onInputChange($event.target['value'])"
               [placeholder]="'app.file.system.placeholder.search' | i18n"
@@ -57,8 +56,6 @@
             <img
               src="assets/imgs/search.svg"
               alt=""
-              style="cursor: pointer"
-              [nz-tooltip]="'app.button.search' | i18n"
             />
           </ng-template>
         </nz-col>

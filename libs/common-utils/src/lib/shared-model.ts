@@ -25,4 +25,5 @@ export class UserModel {
   companyName?: string;
   channelSaleId?: number;
   fullName?: string;
+  customerInvoice?: any
 }

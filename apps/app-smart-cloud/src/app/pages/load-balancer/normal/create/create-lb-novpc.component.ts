@@ -75,6 +75,8 @@ export class CreateLbNovpcComponent implements OnInit {
   isInput: boolean = true;
 
   isAvailable: boolean = false;
+  loadingFloating = true;
+  disabledFloating= true;
 
   @ViewChild('selectedValueSpan') selectedValueSpan: ElementRef;
   @ViewChild('selectedValueOffer') selectedValueOffer: ElementRef;
@@ -236,7 +238,11 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   getIpBySubnet(subnetId) {
-    this.loadBalancerService.getIPBySubnet(subnetId, this.project, this.region).subscribe(data => {
+    this.loadBalancerService.getIPBySubnet(subnetId, this.project, this.region)
+      .pipe(finalize(() => {
+        this.loadingFloating = false;
+        this.disabledFloating = false;}))
+      .subscribe(data => {
       this.ipFloating = data;
     });
   }
@@ -253,13 +259,7 @@ export class CreateLbNovpcComponent implements OnInit {
       this.getTotalAmount();
     });
   }
-
-  timeSelectedChange(value) {
-    this.timeSelected = value;
-    console.log(this.timeSelected);
-    this.getTotalAmount();
-  }
-
+  loadingCaCulate = true;
   loadBalancerInit() {
     console.log('init', this.formCreateLoadBalancer)
     console.log('valid form', this.validateForm)
@@ -319,7 +319,7 @@ export class CreateLbNovpcComponent implements OnInit {
   unitPrice = 0;
 
   getTotalAmount() {
-
+    this.loadingCaCulate = true;
     this.loadBalancerInit();
 
     console.log('offer id', this.formCreateLoadBalancer.offerId);
@@ -335,7 +335,10 @@ export class CreateLbNovpcComponent implements OnInit {
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
     this.loadBalancerService.totalAmount(dataPayment)
-      .pipe(debounceTime(500))
+      .pipe(debounceTime(500),
+      finalize(()=>{
+        this.loadingCaCulate = false;
+      }))
       .subscribe((result) => {
         console.log('thanh tien Load balancer', result.data);
         this.orderItem = result.data;
@@ -366,7 +369,7 @@ export class CreateLbNovpcComponent implements OnInit {
         this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
       },
       error => {
-        this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.validate.order.fail'))
+        this.notification.error(this.i18n.fanyi('app.status.fail'),error.error.message)
       }
     )
   }
@@ -463,6 +466,12 @@ export class CreateLbNovpcComponent implements OnInit {
           this.invalidIpAddress = true;
         })
     }
+  }
+
+  onChangeTime($event: any) {
+    this.validateForm.controls['time'].setValue($event);
+    this.timeSelected = $event;
+    this.getTotalAmount();
   }
 }
 
