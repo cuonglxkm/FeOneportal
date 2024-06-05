@@ -264,7 +264,7 @@
   "app.ip.public.list": "List of Public IP",
   "app.ip.public.status": "Public IP Status",
   "app.ip.public.create.label": "Create New Public IP",
-  "app.ip.public.init.title": "Public IP - Support for Internet-connected Devices",
+  "app.ip.public.init.title": "IP Public <br/> Support for Internet-connected Devices",
   "app.ip.public.init.subTitle": "Supports secure connection protocols, enabling devices to communicate with each other over the internet. Allows faster internet access.",
   "app.ip.public.remove.confirm": "Are you sure you want to remove the Public IP from the virtual machine?",
   "app.ip.public.confirm.button": "Please consider carefully before clicking the Confirm button.",
