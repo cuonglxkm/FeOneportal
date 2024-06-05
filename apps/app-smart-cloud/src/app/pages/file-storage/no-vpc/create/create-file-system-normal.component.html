@@ -181,6 +181,7 @@
                            nzSize="large"
                            [(ngModel)]="snapshotSelected"
                            [nzPlaceHolder]="'-Chọn Snapshot-'"
+                           (ngModelChange)="onSnapshotChangeSelected($event)"
                            [nzShowSearch]="false">
                   <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
                              [nzValue]="item.value"></nz-option>

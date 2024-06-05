@@ -2552,7 +2552,10 @@
   "volume.notification.resize.success": "Điều chỉnh Volume thành công.",
   "volume.notification.resize.fail": "Điều chỉnh Volume thất bại.",
   "volume.notification.access.denied": "Volume không tồn tại!",
-
+  "volume.iops.fix.hdd": "HDD IOPS cố định là 300",
+  "volume.iops.fix.ssd": "SSD IOPS tịnh tiến theo dung lượng Volume được tính theo công thức IOPS = Dung lượng * 10.",
+  "volume.iops.fix.ssd1": "Tuy nhiên IOPS có giá trị Min = 400 nên là đối với các Volume <= 40 GB thì IOPS luôn là 400,",
+  "volume.iops.fix.ssd2": "từ 41GB trở lên thì theo công thức IOPS = Dung lượng * 10",
 
   "volume.input.storage.vpc.required": "Vui lòng nhập dung lượng của gói Backup",
   "volume.unit-price": "Đơn giá",

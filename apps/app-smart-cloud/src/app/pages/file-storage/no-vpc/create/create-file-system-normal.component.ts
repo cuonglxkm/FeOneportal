@@ -134,6 +134,11 @@ export class CreateFileSystemNormalComponent implements OnInit {
     }
   }
 
+  onSnapshotChangeSelected(value) {
+    this.snapshotSelected = value
+    console.log('selected', this.snapshotSelected)
+  }
+
 
   onChangeTime(value) {
     this.timeSelected = value;
@@ -169,7 +174,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
     this.fileSystemSnapshotService.getFileSystemSnapshot(formSearchFileSystemSnapshot).subscribe(data => {
       data.records.forEach(snapshot => {
         if(['available','KHOITAO'].includes(snapshot.status)) {
-          this.snapshotList.push({ label: snapshot.name, value: snapshot.snapshotId });
+          this.snapshotList.push({ label: snapshot.name + ' (' + snapshot.size + ' GB)', value: snapshot.snapshotId });
         }
       });
       if (this.activatedRoute.snapshot.paramMap.get('snapshotId')) {
