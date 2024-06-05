@@ -60,11 +60,12 @@ export class EditFileSystemSnapshotComponent {
 
   showModal(): void {
     this.isVisible = true;
+    this.validateForm.controls.name.setValue(this.data.name);
+    this.validateForm.controls.description.setValue(this.data.description);
   }
 
   handleCancel(): void {
     this.isVisible = false;
-    this.validateForm.reset();
     this.onCancel.emit();
   }
 
@@ -101,17 +102,21 @@ export class EditFileSystemSnapshotComponent {
           },
           (error) => {
             this.isLoading = false;
-            this.notification.error(
-              'Thất bại',
-              'Cập nhật File System Snapshot thất bại'
-            );
+            if(error && error.error && error.error.detail && error.error.detail == "Tên File System Snapshot đã được sử dụng. Vui lòng nhập tên khác!"){
+              this.notification.error('Thất bại', error.error.detail);
+            } else {
+              this.notification.error(
+                'Thất bại',
+                'Cập nhật File System Snapshot thất bại'
+              );
+            }
           }
         );
     }
   }
 
   ngOnInit(): void {
-    this.validateForm.controls.name.setValue(this.data.name);
-    this.validateForm.controls.description.setValue(this.data.description);
+    
+    
   }
 }

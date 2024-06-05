@@ -1,0 +1,39 @@
+<img src="assets/imgs/delete.svg" alt=""
+     style="width: 30px; height: 30px; cursor: pointer; margin-left: 5px;"
+     (click)="showModal()"
+     nz-popover nzPopoverPlacement="bottom"
+     [nzPopoverContent]="'app.text.delete'|i18n" />
+<nz-modal [(nzVisible)]="isVisible"
+          (nzOnCancel)="handleCancel()" nzCentered>
+  <div *nzModalTitle>
+    <span class="text-modal-title">{{'app.backup.volume.modal.delete.title'|i18n}} {{backupName}}</span>
+  </div>
+  <div *nzModalContent>
+    <nz-alert nzBanner
+              nzShowIcon
+              [nzMessage]="'app.backup.volume.alert.delete'|i18n">
+    </nz-alert>
+    <div style="margin-top: 10px;">
+      <span class="text-label">{{ 'app.backup.volume.confirm.delete'|i18n: {name: backupName} }}</span>
+      <input nz-input #backupInputName
+             style="margin-top: 10px;"
+             class="input-custom"
+             [ngModel]="value"
+             (keydown.enter)="focusOkButton($event)"
+             (ngModelChange)="onInputChange($event)"
+             [placeholder]="'app.backup.vm.placeholder.input'|i18n" />
+      <span *ngIf="isInput" style="color: red;">{{ 'app.backup.vm.notification.input.name.delete'|i18n }}</span>
+    </div>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{'app.button.cancel'|i18n}}
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok" >
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm'|i18n}}
+    </button>
+  </div>
+</nz-modal>

@@ -1,10 +1,13 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="('app.create' | i18n) + ' IP Floating'">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/networks/ip-floating/list']">IP Floating</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.create' | i18n}} IP Floating</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -18,62 +21,28 @@
     <nz-col nzSpan="16">
       <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
         <span class="text-card-header">{{'app.info' | i18n}} IP Floating</span>
-        <div nz-row class="mb-md pt-5">
-          <div nz-col nzSpan="24">
-            <nz-form-label nzFor="name">{{'app.ip.range' | i18n}} <span class="text-red">*</span>
-              <img
-                style="margin-left: 10px"
-                nz-tooltip="{{'app.ip.public.note' | i18n}}"
-                src="assets/imgs/pajamas_question.svg"
-                alt=""
-              />
-            </nz-form-label>
-            <nz-input-group nzCompact>
-              <nz-select nzSize="large" [nzLoading]="loadingIp" [nzDisabled]="disableIp"
-                         style="width: 100%;border-radius: 10px;" nzPlaceHolder="{{'app.ip.public.select.ip.dropdown' | i18n}}"
-                         formControlName="ipSubnet" (nzOpenChange)="caculator(null)">
-                <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.displayName+'|||'+i.networkId" />
-              </nz-select>
-            </nz-input-group>
-          </div>
-        </div>
-        <div nz-row class="mb-md pt-5">
-          <div nz-col nzSpan="11">
-            <nz-form-label>{{'app.service.used' | i18n}} (<span class="text-red">*</span>) - {{'app.month' | i18n}} <img
-              style="margin-left: 10px"
-              nz-tooltip="{{'app.ip.public.note4' | i18n}}"
-              src="assets/imgs/pajamas_question.svg"
-              alt=""
-            /></nz-form-label>
-            <nz-form-item>
-              <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-                <nz-input-number
-                  style="width:100%; margin-left: -3px;"
-                  formControlName="numOfMonth"
-                  (ngModelChange)="caculator($event)"
-                  nzMin="1"
-                  nzMax="100"
-                  nzStep="1"
-                  nzSize="large" />
-                <ng-template #dateErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">{{'app.more.0.less.100' | i18n}}</ng-container>
-                  <ng-container *ngIf="control.hasError('max')">{{'app.more.0.less.100' | i18n}}</ng-container>
-                  <ng-container *ngIf="control.hasError('min')">{{'app.more.0.less.100' | i18n}}</ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
-          <div nz-col nzSpan="12" style="margin-left: 15px">
-            <p style="margin-top: 39px;">{{'app.time.start' | i18n}}: {{ dateString | date:'dd/MM/yyyy' }}</p>
-          </div>
-        </div>
-        <p style="color: red"><b style="color: red">{{'app.service.expiration-date' | i18n}}: </b>{{dateStringExpired | date : "dd/MM/YYYY"}}</p>
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label>
+            {{'app.ip.range' | i18n}} (<span class="text-red">*</span>)
+            <img style="margin-left: 10px" nz-popover nz-tooltip="{{'app.ip.public.note' | i18n}}" src="assets/imgs/pajamas_question.svg" alt="" />
+          </nz-form-label>
+          <nz-form-control>
+            <nz-select [nzLoading]="loadingIp" [nzDisabled]="disableIp" formControlName="ipSubnet" (nzOpenChange)="caculator(null)"
+                       nzSize="large" style="width: 100%;" nzPlaceHolder="{{'app.ip.public.select.ip.dropdown' | i18n}}">
+              <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.displayName+'|||'+i.networkId" />
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
       </nz-card>
+      <one-portal-service-usage-period
+        [nameService]="'ip-floating'"
+        (valueChanged)="onChangeTime($event)"
+      ></one-portal-service-usage-period>
     </nz-col>
 
 
     <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px" [nzLoading]="loadingCalculate">
+      <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF" >
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
         </div>
@@ -87,6 +56,18 @@
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
               {{ totalAmount |number }}
+              VND
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <nz-row style="margin-bottom: 10px" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-value"> {{'app.cost.vat' | i18n}}</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalVat |number }}
               VND
             </span>
           </nz-col>

@@ -43,6 +43,8 @@ import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -165,7 +167,9 @@ export class InstancesCreateVpcComponent implements OnInit {
     private loadingSrv: LoadingService,
     private el: ElementRef,
     private renderer: Renderer2,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private configurationService: ConfigurationsService,
+    private orderService: OrderService
   ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
@@ -196,6 +200,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getConfigurations();
     this.getAllImageType();
     this.initSnapshot();
     this.getAllIPPublic();
@@ -236,6 +241,9 @@ export class InstancesCreateVpcComponent implements OnInit {
         );
       });
     this.checkExistName();
+    this.onChangeCapacity();
+    this.onChangeVCPU();
+    this.onChangeRam();
     this.cdr.detectChanges();
   }
 
@@ -252,14 +260,16 @@ export class InstancesCreateVpcComponent implements OnInit {
         debounceTime(300) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
-        this.dataService.checkExistName(res, this.region, this.projectId).subscribe((data) => {
-          if (data == true) {
-            this.isExistName = true;
-          } else {
-            this.isExistName = false;
-          }
-          this.cdr.detectChanges();
-        });
+        this.dataService
+          .checkExistName(res, this.region, this.projectId)
+          .subscribe((data) => {
+            if (data == true) {
+              this.isExistName = true;
+            } else {
+              this.isExistName = false;
+            }
+            this.cdr.detectChanges();
+          });
       });
   }
 
@@ -281,6 +291,7 @@ export class InstancesCreateVpcComponent implements OnInit {
           this.remainingVCPU =
             this.infoVPC.cloudProject.quotavCpu -
             this.infoVPC.cloudProjectResourceUsed.cpu;
+          this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(
@@ -402,13 +413,15 @@ export class InstancesCreateVpcComponent implements OnInit {
   activeBlockHDD: boolean = true;
   activeBlockSSD: boolean = false;
   initHDD(): void {
-    this.activeBlockHDD = true;
-    this.activeBlockSSD = false;
-    this.remainingVolume =
-      this.infoVPC.cloudProject.quotaHddInGb -
-      this.infoVPC.cloudProjectResourceUsed.hdd;
-    this.instanceCreate.volumeSize = 0;
-    this.cdr.detectChanges();
+    if (!this.disableHDD) {
+      this.activeBlockHDD = true;
+      this.activeBlockSSD = false;
+      this.remainingVolume =
+        this.infoVPC.cloudProject.quotaHddInGb -
+        this.infoVPC.cloudProjectResourceUsed.hdd;
+      this.instanceCreate.volumeSize = 0;
+      this.cdr.detectChanges();
+    }
   }
   initSSD(): void {
     this.activeBlockHDD = false;
@@ -425,6 +438,15 @@ export class InstancesCreateVpcComponent implements OnInit {
   isCustomconfig = true;
   isGpuConfig = false;
   listGPUType: OfferItem[] = [];
+  getListGpuType() {
+    this.dataService
+      .getListOffers(this.region, 'vm-flavor-gpu')
+      .subscribe((data) => {
+        this.listGPUType = data.filter(
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+        );
+      });
+  }
 
   onClickCustomConfig() {
     this.isCustomconfig = true;
@@ -451,6 +473,125 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.instanceCreate.volumeSize = 0;
     this.instanceCreate.ram = 0;
     this.instanceCreate.gpuCount = 0;
+  }
+
+  minCapacity: number;
+  maxCapacity: number;
+  stepCapacity: number;
+  getConfigurations() {
+    this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
+      next: (data) => {
+        let valueArray = data.valueString.split('#');
+        this.minCapacity = valueArray[0];
+        this.stepCapacity = valueArray[1];
+        this.maxCapacity = valueArray[2];
+      },
+    });
+  }
+
+  isValidCapacity: boolean = false;
+  dataSubjectCapacity: Subject<any> = new Subject<any>();
+  changeCapacity(value: number) {
+    this.dataSubjectCapacity.next(value);
+  }
+  onChangeCapacity() {
+    this.dataSubjectCapacity
+      .pipe(
+        debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.instanceCreate.volumeSize % this.stepCapacity > 0) {
+          this.notification.warning(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity', {
+              number: this.stepCapacity,
+            })
+          );
+          this.instanceCreate.volumeSize =
+            this.instanceCreate.volumeSize -
+            (this.instanceCreate.volumeSize % this.stepCapacity);
+          this.checkValidConfig();
+          this.cdr.detectChanges();
+        }
+        if (this.instanceCreate.volumeSize > this.remainingVolume) {
+          this.isValidCapacity = false;
+          if (this.activeBlockHDD) {
+            this.notification.error(
+              '',
+              this.i18n.fanyi('app.notify.amount.capacity.add', {
+                num1: this.infoVPC.cloudProjectResourceUsed.hdd,
+                num2: this.infoVPC.cloudProject.quotaHddInGb,
+                num3: this.instanceCreate.volumeSize - this.remainingVolume,
+              })
+            );
+          } else {
+            this.notification.error(
+              '',
+              this.i18n.fanyi('app.notify.amount.capacity.add', {
+                num1: this.infoVPC.cloudProjectResourceUsed.ssd,
+                num2: this.infoVPC.cloudProject.quotaSSDInGb,
+                num3: this.instanceCreate.volumeSize - this.remainingVolume,
+              })
+            );
+          }
+        } else {
+          this.isValidCapacity = true;
+        }
+      });
+  }
+
+  isValidVCPU: boolean = false;
+  dataSubjectVCPU: Subject<any> = new Subject<any>();
+  changeVCPU(value: number) {
+    this.dataSubjectVCPU.next(value);
+  }
+  onChangeVCPU() {
+    this.dataSubjectVCPU
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.instanceCreate.cpu > this.remainingVCPU) {
+          this.isValidVCPU = false;
+          this.notification.error(
+            '',
+            this.i18n.fanyi('app.notify.amount.cpu.add', {
+              num1: this.infoVPC.cloudProjectResourceUsed.cpu,
+              num2: this.infoVPC.cloudProject.quotavCpu,
+              num3: this.instanceCreate.cpu - this.remainingVCPU,
+            })
+          );
+        } else {
+          this.isValidVCPU = true;
+        }
+      });
+  }
+
+  isValidRam: boolean = false;
+  dataSubjectRam: Subject<any> = new Subject<any>();
+  changeRam(value: number) {
+    this.dataSubjectRam.next(value);
+  }
+  onChangeRam() {
+    this.dataSubjectRam
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.instanceCreate.ram > this.remainingRAM) {
+          this.isValidRam = false;
+          this.notification.error(
+            '',
+            this.i18n.fanyi('app.notify.amount.ram.add', {
+              num1: this.infoVPC.cloudProjectResourceUsed.ram,
+              num2: this.infoVPC.cloudProject.quotaRamInGb,
+              num3: this.instanceCreate.ram - this.remainingRAM,
+            })
+          );
+        } else {
+          this.isValidRam = true;
+        }
+      });
   }
   //#endregion
 
@@ -696,6 +837,11 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.isVisibleCreate = true;
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   handleOkCreate(): void {
     this.dataService
       .checkflavorforimage(
@@ -728,18 +874,35 @@ export class InstancesCreateVpcComponent implements OnInit {
           //   state: { data: this.order, path: returnPath },
           // });
 
-          this.dataService.create(this.order).subscribe({
-            next: (data: any) => {
-              this.notification.success(
-                '',
-                this.i18n.fanyi('app.notify.success.instances.order.create')
-              );
-              this.router.navigate(['/app-smart-cloud/instances']);
+          this.orderService.validaterOrder(this.order).subscribe({
+            next: (result) => {
+              if (result.success) {
+                this.dataService.create(this.order).subscribe({
+                  next: (data: any) => {
+                    this.notification.success(
+                      '',
+                      this.i18n.fanyi(
+                        'app.notify.success.instances.order.create'
+                      )
+                    );
+                    this.router.navigate(['/app-smart-cloud/instances']);
+                  },
+                  error: (e) => {
+                    this.notification.error(
+                      e.statusText,
+                      this.i18n.fanyi('app.notify.fail.instances.order.create')
+                    );
+                  },
+                });
+              } else {
+                this.isVisiblePopupError = true;
+                this.errorList = result.data;
+              }
             },
-            error: (e) => {
+            error: (error) => {
               this.notification.error(
-                e.statusText,
-                this.i18n.fanyi('app.notify.fail.instances.order.create')
+                this.i18n.fanyi('app.status.fail'),
+                error.error.detail
               );
             },
           });

@@ -1,36 +1,38 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Khởi tạo VPN Service'"
+  [title]="'Tạo mới VPN Service'"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
-          >Dịch vụ hạ tầng</a
-        >
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
         ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
           >VPN site to site</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>Khởi tạo VPN Service</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Tạo mới VPN Service</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -48,33 +50,34 @@
                   <div style="margin-top: 15px">
                     <span>Name</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <span
-                      nz-icon
-                      nzType="question-circle"
-                      nzTheme="outline"
+                    <img
                       nz-popover
                       [nzPopoverContent]="
-                        'Tên của VPN Service, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'
+                         'Tên của VPN Service, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
                       "
                       nzPopoverPlacement="bottom"
-                    ></span>
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
                   </div>
                 </nz-form-label>
                 <input
                   nz-input
                   type="text"
                   required
+                  appTrim
+                  [maxlength]="50"
                   placeholder="Nhập tên"
                   formControlName="name"
                   class="input-custom"
                 />
                 <ng-template #nameErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
-                    >Tên Vpn Service không được để trống</ng-container
+                    >Tên VPN Service không được để trống</ng-container
                   >
                   <ng-container *ngIf="control.hasError('pattern')"
-                    >Tên Vpn Service chỉ chứa kí tự viết thường, viết hoa, số,
-                    dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container
+                    >Tên VPN Service chỉ chứa các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự</ng-container
                   >
                 </ng-template>
               </nz-form-control>
@@ -87,16 +90,16 @@
                   <div style="margin-top: 15px">
                     <span>Router</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <span
-                      nz-icon
-                      nzType="question-circle"
-                      nzTheme="outline"
+                    <img
                       nz-popover
                       [nzPopoverContent]="
                         'Router được tạo mặc định cho dịch vụ.'
                       "
                       nzPopoverPlacement="bottom"
-                    ></span>
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
                   </div>
                 </nz-form-label>
                 <input
@@ -125,12 +128,12 @@
     </nz-card>
   </div>
   <div nz-col [nzSpan]="7" class="gutter-row">
-    <nz-card style="border-radius: 8px">
+    <nz-card style="border-radius: 8px" class="card-border">
       <h2 class="custom-title">Thông số cấu hình</h2>
       <div style="overflow: auto; margin-bottom: 16px">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
-          <span>{{ form.value.name }}</span>
+          <span class="text-break">{{ form.value.name }}</span>
         </div>
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Router</h3>

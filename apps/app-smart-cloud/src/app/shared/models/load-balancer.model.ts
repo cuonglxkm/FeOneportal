@@ -25,6 +25,8 @@ export class LoadBalancerModel {
   listeners: string[];
   isFloatingIP: true;
   floatingIPAddress: string;
+  vipPortId: string;
+  ipId: number;
   ipVIP: string;
   offerName: string;
   subnetName: string;

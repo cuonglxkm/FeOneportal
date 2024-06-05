@@ -9,20 +9,24 @@ import {
   ResizeFileSystem,
   ResizeFileSystemRequestModel
 } from '../../../../shared/models/file-system.model';
-import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
 import { debounceTime, Subject } from 'rxjs';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-resize-file-system-normal',
   templateUrl: './resize-file-system-normal.component.html',
-  styleUrls: ['./resize-file-system-normal.component.less'],
+  styleUrls: ['./resize-file-system-normal.component.less']
 })
-export class ResizeFileSystemNormalComponent implements OnInit{
+export class ResizeFileSystemNormalComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -36,19 +40,22 @@ export class ResizeFileSystemNormalComponent implements OnInit{
     storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/)]]
   });
 
-  storage: number;
-  isLoading: boolean = false;
-  fileSystem: FileSystemDetail = new FileSystemDetail();
+  storage: number = 0;
+  isLoading: boolean = true;
+  fileSystem: FileSystemDetail;
 
   resizeFileSystem: ResizeFileSystem = new ResizeFileSystem();
 
-  isInitSnapshot: boolean = false
+  isInitSnapshot: boolean = false;
 
-  snapshot: any
+  snapshot: any;
 
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
   dataSubjectStorage: Subject<any> = new Subject<any>();
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueStringConfiguration: string = '';
 
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
@@ -56,8 +63,11 @@ export class ResizeFileSystemNormalComponent implements OnInit{
               private fileSystemService: FileSystemService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
-              private projectService: ProjectService,
-              private instanceService: InstancesService,) {
+              private orderService: OrderService,
+              private instanceService: InstancesService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private configurationsService: ConfigurationsService) {
+
   }
 
   regionChanged(region: RegionModel) {
@@ -75,13 +85,13 @@ export class ResizeFileSystemNormalComponent implements OnInit{
 
   getFileSystemById(id) {
     this.isLoading = true;
-    this.fileSystemService.getFileSystemById(id, this.region).subscribe(data => {
+    this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
       this.fileSystem = data;
       this.isLoading = false;
-      this.storage = this.fileSystem.size;
-      this.validateForm.controls.storage.setValue(this.fileSystem?.size);
-      this.validateForm.controls.snapshot.setValue(this.fileSystem?.isSnapshot)
-      this.getTotalAmount()
+      // this.storage = this.fileSystem?.size;
+      // this.validateForm.controls.storage.setValue(this.fileSystem?.size);
+      this.validateForm.controls.snapshot.setValue(this.fileSystem?.isSnapshot);
+      // this.getTotalAmount();
     }, error => {
       this.fileSystem = null;
       this.isLoading = false;
@@ -91,13 +101,18 @@ export class ResizeFileSystemNormalComponent implements OnInit{
 
   initFileSystem() {
     this.resizeFileSystem.customerId = this.tokenService.get()?.userId;
-    this.resizeFileSystem.size = this.validateForm.controls.storage.value + this.fileSystem?.size;
+    console.log('size', this.fileSystem?.size)
+    if(this.fileSystem?.size != null) {
+      this.resizeFileSystem.size = this.storage + this.fileSystem?.size;
+    } else {
+      this.resizeFileSystem.size = this.storage
+    }
     this.resizeFileSystem.newOfferId = 0;
     this.resizeFileSystem.serviceType = 18;
     this.resizeFileSystem.actionType = 4;
     this.resizeFileSystem.serviceInstanceId = this.idFileSystem;
     this.resizeFileSystem.regionId = this.region;
-    this.resizeFileSystem.serviceName = this.fileSystem.name;
+    this.resizeFileSystem.serviceName = this.fileSystem?.name;
     this.resizeFileSystem.vpcId = this.project;
     this.resizeFileSystem.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.ShareResizeSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null';
     this.resizeFileSystem.userEmail = this.tokenService.get()?.email;
@@ -109,12 +124,17 @@ export class ResizeFileSystemNormalComponent implements OnInit{
   }
 
   onChangeStorage() {
-    this.dataSubjectStorage.pipe(debounceTime(500))
+    this.dataSubjectStorage.pipe(debounceTime(700))
       .subscribe((res) => {
+        if (res % this.stepStorage > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}));
+          this.storage = res - (res % this.stepStorage);
+        }
         console.log('total amount');
-        this.getTotalAmount()
-      })
+        this.getTotalAmount();
+      });
   }
+
   getTotalAmount() {
     this.initFileSystem();
     let itemPayment: ItemPayment = new ItemPayment();
@@ -144,31 +164,39 @@ export class ResizeFileSystemNormalComponent implements OnInit{
         orderItemQuantity: 1,
         specification: JSON.stringify(this.resizeFileSystem),
         specificationType: 'filestorage_resize',
+        price: this.orderItem?.totalAmount.amount,
         serviceDuration: 1
       }
     ];
     console.log('request', request);
-    var returnPath: string = '/app-smart-cloud/file-storage/file-system/' + this.idFileSystem + '/resize';
-    console.log('request', request);
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    this.orderService.validaterOrder(request).subscribe(data => {
+      if(data.success) {
+        var returnPath: string = '/app-smart-cloud/file-storage/file-system/resize/normal/' + this.idFileSystem;
+        console.log('request', request);
+        this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+      }
+    }, error =>  {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+    })
   }
 
-  getMonthDifference(expiredDateStr: string, createdDateStr: string): number {
-    // Chuyển đổi chuỗi thành đối tượng Date
-    const expiredDate = new Date(expiredDateStr);
-    const createdDate = new Date(createdDateStr);
-
-    // Tính số tháng giữa hai ngày
-    const oneDay = 24 * 60 * 60 * 1000; // Số mili giây trong một ngày
-    const diffDays = Math.round(Math.abs((expiredDate.getTime() - createdDate.getTime()) / oneDay)); // Số ngày chênh lệch
-    const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
-    return diffMonths;
-  }
   navigateToDetail() {
-    this.router.navigate(['/app-smart-cloud/file-storage/file-system/detail/' + this.idFileSystem])
+    this.router.navigate(['/app-smart-cloud/file-storage/file-system/detail/' + this.idFileSystem]);
   }
 
-  dateEdit: Date
+  dateEdit: Date;
+  maxStorage: number = 0;
+  getConfigurations() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueStringConfiguration = data.valueString;
+      const arr = this.valueStringConfiguration.split('#')
+      this.minStorage = Number.parseInt(arr[0])
+      this.stepStorage = Number.parseInt(arr[1])
+      this.maxStorage = Number.parseInt(arr[2])
+    })
+  }
+
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -177,7 +205,6 @@ export class ResizeFileSystemNormalComponent implements OnInit{
     this.idFileSystem = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
     this.getFileSystemById(this.idFileSystem);
     this.onChangeStorage();
-    this.dateEdit = new Date();
-    // this.getTotalAmount()
+    this.getConfigurations();
   }
 }

@@ -53,14 +53,14 @@ export class ProjectListComponent implements OnInit {
   loadingDelete = false;
 
   constructor(private router: Router,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private vpcService: VpcService,
-              private ipService: IpPublicService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private notification: NzNotificationService,
-              private notificationService: NotificationService,
-              private cdr: ChangeDetectorRef
-            ) {
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private vpcService: VpcService,
+    private ipService: IpPublicService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private notification: NzNotificationService,
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef
+  ) {
 
   }
 
@@ -70,16 +70,20 @@ export class ProjectListComponent implements OnInit {
     this.getData(true);
 
     this.notificationService.connection.on('UpdateProject', (data) => {
+      console.log("UpdateProject:");
+      console.log(data);
       if (data) {
-
+        let projectId = data.serviceId;
         switch (data.actionType) {
           case "CREATING":
+          case "DELETED":
+          case "ERROR":
             this.getData(true);
-          break;
+            break;
           case "CREATED":
-            let projectId = data.serviceId;
             var foundIndex = this.listOfData.findIndex(x => x.id == projectId);
             if (foundIndex > -1) {
+              console.log("Tìm thấy foundIndex:" + foundIndex);
               var record = this.listOfData[foundIndex];
               record.serviceStatus = data.serviceStatus;
               record.createDate = data.creationDate;
@@ -87,11 +91,37 @@ export class ProjectListComponent implements OnInit {
               this.listOfData[foundIndex] = record;
               this.cdr.detectChanges();
             }
-            else
-            {
+            else {
               this.getData(true);
             }
-          break;
+            break;
+          case "RESIZED":
+            var foundIndex = this.listOfData.findIndex(x => x.id == projectId);
+            if (foundIndex > -1) {
+              var record = this.listOfData[foundIndex];
+              record.serviceStatus = "ENABLE";
+              this.listOfData[foundIndex] = record;
+              this.cdr.detectChanges();
+            }
+            break;
+          case "RESIZING":
+            var foundIndex = this.listOfData.findIndex(x => x.id == projectId);
+            if (foundIndex > -1) {
+              var record = this.listOfData[foundIndex];
+              record.serviceStatus = "RESIZING";
+              this.listOfData[foundIndex] = record;
+              this.cdr.detectChanges();
+            }
+            break;
+          case "DELETING":
+            var foundIndex = this.listOfData.findIndex(x => x.id == projectId);
+            if (foundIndex > -1) {
+              var record = this.listOfData[foundIndex];
+              record.serviceStatus = "DELETING";
+              this.listOfData[foundIndex] = record;
+              this.cdr.detectChanges();
+            }
+            break;
         }
       }
     });

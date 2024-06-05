@@ -4,14 +4,12 @@
   [title]="'Chỉnh sửa IPsecPolicies'"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
-          >Dịch vụ hạ tầng</a
-        >
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
         ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
@@ -20,17 +18,21 @@
       >
       <nz-breadcrumb-item>Chính sửa IPsec Policy</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -48,24 +50,31 @@
                   <div style="margin-top: 15px;">
                     <span>Name</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle"
-                          nzTheme="outline"
-                          nz-popover
-                          [nzPopoverContent]="'Tên của IPsec, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
-                          nzPopoverPlacement="bottom"></span>
+                    <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'Tên của IPsec, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                   </div>
                 </nz-form-label>
                 <input
                   nz-input
                   type="text"
                   required
+                  appTrim
+                  maxlength="50"
                   placeholder="Nhập tên"
                   formControlName="name"
                   class="input-custom"
                 />
                 <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Tên ipsec policy không được để trống</ng-container>
-                  <ng-container *ngIf="control.hasError('pattern')">Tên ipsec policy chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+                  <ng-container *ngIf="control.hasError('required')">Tên IPsec Policy không được để trống</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">Tên của IPsec chỉ chứa các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự</ng-container>
                 </ng-template> 
               </nz-form-control>
             </nz-form-item>
@@ -77,11 +86,16 @@
                   <div style="margin-top: 15px;">
                     <span>Authorization Algorithm</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle"
-                          nzTheme="outline"
-                          nz-popover
-                          [nzPopoverContent]="'Thuật toán xác thực danh tính cho IPsec Policy bao gồm các lựa chọn: sha1, sha256, sha384, sha512 (dựa trên thuật toán băm mã hóa dựa theo số bit) mặc định sha1.'"
-                          nzPopoverPlacement="bottom"></span>
+                    <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'Thuật toán xác thực danh tính cho IPsec Policy bao gồm các lựa chọn: sha1, sha256, sha384, sha512 (dựa trên thuật toán băm mã hóa dựa theo số bit) mặc định sha1.'
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                   </div>
                 </nz-form-label>
                 <nz-select
@@ -104,14 +118,19 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px;">
+                  <div>
                     <span>Encryption Mode</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle"
-                          nzTheme="outline"
-                          nz-popover
-                          [nzPopoverContent]="'Giao thức này cung cấp tính bí mật dữ liệu bằng việc mật mã hóa các gói tin. Bao gồm tunnel và transport (mặc định là tunnel).'"
-                          nzPopoverPlacement="bottom"></span>
+                    <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'Giao thức này cung cấp tính bí mật dữ liệu bằng việc mật mã hóa các gói tin. Bao gồm tunnel và transport (mặc định là tunnel).'
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                   </div>
                 </nz-form-label>
                 <nz-select
@@ -134,14 +153,19 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px;">
+                  <div>
                     <span>Encryption Algorithm</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle"
-                          nzTheme="outline"
-                          nz-popover
-                          [nzPopoverContent]="'Thuật toán mã hóa đối xứng sử dụng cho IPsec Policy bao gồm các lựa chọn: 3des, aes-128, aes-192, aes-256 ( dựa theo thuật toán mã hóa đối xứng  với độ dài khóa tương đương với số bit) mặc định aes-128.'"
-                          nzPopoverPlacement="bottom"></span>
+                    <img
+                      nz-popover
+                      [nzPopoverContent]="
+                        'Thuật toán mã hóa đối xứng sử dụng cho IPsec Policy bao gồm các lựa chọn: 3des, aes-128, aes-192, aes-256 ( dựa theo thuật toán mã hóa đối xứng  với độ dài khóa tương đương với số bit) mặc định aes-128.'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
                   </div>
                 </nz-form-label>
                 <nz-select
@@ -164,14 +188,19 @@
             <nz-form-item>
               <nz-form-control nzErrorTip="File System không đuợc để trống!">
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px;">
+                  <div>
                     <span>Lifetime Units</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle"
-                          nzTheme="outline"
-                          nz-popover
-                          [nzPopoverContent]="'Đơn vị đo thời gian tồn tại của IPsec Policy key (mặc định là giây).'"
-                          nzPopoverPlacement="bottom"></span>
+                    <img
+                      nz-popover
+                      [nzPopoverContent]="
+                        'Đơn vị đo thời gian tồn tại của IPsec Policy key (mặc định là giây).'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
                   </div>
                 </nz-form-label>
                 <nz-select
@@ -195,14 +224,19 @@
             <nz-form-item>
               <nz-form-control [nzErrorTip]="lifeTimeValueErrorTpl">
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px;">
+                  <div>
                     <span>Lifetime Value</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle"
-                          nzTheme="outline"
-                          nz-popover
-                          [nzPopoverContent]="' Giá trị của Lifetime units, Khách hàng tùy ý nhập giá trị lớn hơn 60 (mặc định là 3600).'"
-                          nzPopoverPlacement="bottom"></span>
+                    <img
+                      nz-popover
+                      [nzPopoverContent]="
+                        ' Giá trị của Lifetime units, Khách hàng tùy ý nhập giá trị lớn hơn 60 (mặc định là 3600).'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
                   </div>
                 </nz-form-label>
                 <input
@@ -223,14 +257,19 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px;">
+                  <div>
                     <span>Perfect Forward Secrecy</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle"
-                          nzTheme="outline"
-                          nz-popover
-                          [nzPopoverContent]="'Perfect Forward Secrecy (PFS) là một tính năng bảo mật đảm bảo rằng ngay cả khi kẻ tấn công giành được quyền truy cập vào thông tin liên lạc được mã hóa, thì chúng cũng không thể giải mã các phiên liên lạc trước đây nếu chúng không có quyền truy cập vào các khóa mã hóa được sử dụng trong các phiên đó. Có các lựa chọn là group2, group5, group14 (mặc định là group5).'"
-                          nzPopoverPlacement="bottom"></span>
+                    <img
+                      nz-popover
+                      [nzPopoverContent]="
+                        'Perfect Forward Secrecy (PFS) là một tính năng bảo mật đảm bảo rằng ngay cả khi kẻ tấn công giành được quyền truy cập vào thông tin liên lạc được mã hóa, thì chúng cũng không thể giải mã các phiên liên lạc trước đây nếu chúng không có quyền truy cập vào các khóa mã hóa được sử dụng trong các phiên đó. Có các lựa chọn là group2, group5, group14 (mặc định là group5).'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
                   </div>
                 </nz-form-label>
                 <nz-select
@@ -253,14 +292,19 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px;">
+                  <div>
                     <span>Transform Protocol</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle"
-                          nzTheme="outline"
-                          nz-popover
-                          [nzPopoverContent]="'Giao thức truyền tải mã hóa của IPsec bao gồm các lựa chọn: esp, ah, ah-esp (mặc định esp).'"
-                          nzPopoverPlacement="bottom"></span>
+                    <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'Giao thức truyền tải mã hóa của IPsec bao gồm các lựa chọn: esp, ah, ah-esp (mặc định esp).'
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                   </div>
                 </nz-form-label>
                 <nz-select
@@ -284,12 +328,12 @@
     </nz-card>
   </div>
   <div nz-col [nzSpan]="7" class="gutter-row">
-    <nz-card style="border-radius: 8px">
+    <nz-card style="border-radius: 8px" class="card-border">
       <h2 class="custom-title">Thông số cấu hình</h2>
       <div style="overflow: auto; height: 358px; margin-bottom: 16px;">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
-          <span>{{form.value.name}}</span>
+          <span class="text-break">{{form.value.name}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Authorization Algorithm</h3>

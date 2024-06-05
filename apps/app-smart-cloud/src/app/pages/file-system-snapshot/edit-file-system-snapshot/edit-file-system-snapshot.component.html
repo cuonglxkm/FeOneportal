@@ -9,7 +9,6 @@
 />
 <nz-modal
   [(nzVisible)]="isVisible"
-  nzCentered
   [nzTitle]="modalTitle"
   [nzContent]="modalContent"
   [nzFooter]="null"
@@ -46,9 +45,10 @@
         >
           <input
             class="input-custom"
+            appTrim
             nz-input
             formControlName="name"
-            [maxlength]="255"
+            [maxlength]="50"
           />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{
@@ -62,12 +62,12 @@
       </nz-form-item>
       <nz-form-item>
         <span class="text-label">{{ 'app.service.description' | i18n }}</span>
-        <nz-textarea-count [nzMaxCharacterCount]="500">
+        <nz-textarea-count [nzMaxCharacterCount]="255">
           <textarea
             nz-input
             formControlName="description"
             id="description"
-            [maxLength]="500"
+            [maxLength]="255"
             [placeholder]="'app.input.des' | i18n"
             [nzAutosize]="{ minRows: 4, maxRows: 6 }"
           ></textarea>

@@ -20,7 +20,7 @@ export class ObjectStorage {
   statusDisplay: string;
 }
 export class ObjectStorageCreate {
-  quota: number;
+  quota: number = 1;
   customerId: number;
   userEmail: any;
   actorEmail: any;

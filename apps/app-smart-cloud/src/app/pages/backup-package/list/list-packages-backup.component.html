@@ -1,9 +1,9 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'app.backup.package.breadcrumb.management'|i18n" xmlns="http://www.w3.org/1999/html">
+             [title]="'app.backup.package.list'|i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">{{ '' }}</nz-breadcrumb-item>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home'|i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
@@ -11,9 +11,12 @@
         {{ 'app.backup.package.breadcrumb.backup' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/backup/packages">{{ 'app.backup.package.breadcrumb.management'|i18n }}</a>
+        <a routerLink="/app-smart-cloud/backup/packages">{{ 'app.backup.package.list'|i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -26,32 +29,32 @@
 </page-header>
 <nz-content>
   <nz-card style="bottom: 8px;">
-    <span  class="text-card-header">{{ 'app.backup.package.list'|i18n }}</span>
-    <nz-row nzJustify="space-between" style="margin-top: 25px;">
+    <nz-row nzJustify="space-between">
       <nz-col nzSpan="16">
-        <nz-select [nzPlaceHolder]="'volume.placeholder.filter.status'|i18n"
-                   [ngModel]="selected"
-                   (ngModelChange)="onChangeSelected($event)"
+        <nz-select [(ngModel)]="selectedValue"
                    nzSize="large"
-                   style="margin-right: 10px; width: 170px;"
-                   [nzTooltipTitle]="'volume.tooltip.title.filter.status'|i18n"
+                   style="margin-right: 10px; width: 200px;"
+                   (ngModelChange)="onChange($event)"
+                   nzPlaceHolder="{{ 'app.status.all' | i18n }}"
+                   nzTooltipTitle="{{ 'tooltip.title.filter.status' | i18n }}"
                    nzTooltipPlacement="bottom"
                    nz-tooltip>
-          <nz-option nzValue="ALL" [nzLabel]="'app.status.all'|i18n"></nz-option>
-          <nz-option nzValue="AVAILABLE" [nzLabel]="'app.status.running'|i18n"></nz-option>
-          <nz-option nzValue="SUSPEND" [nzLabel]="'app.status.suspend'|i18n"></nz-option>
+          <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
         </nz-select>
         <nz-input-group
           style="width: 300px;"
           [nzPrefix]="prefixIconSearch"
           nzSize="large">
-          <input name="name" nz-input
+          <input appAutofocus
+                 name="name"
+                 nz-input
+                 placeholder="{{ 'app.backup.package.placeholder.search.name' | i18n }}"
                  [(ngModel)]="value"
-                 (input)="onInputChange($event.target['value'])"
-                 placeholder="{{ 'volume.placeholder.filter.name' | i18n }}" />
+                 (input)="changeInputChange($event)"
+                 (keydown.enter)="onEnter($event)" />
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" />
+          <img src="assets/imgs/search.svg" alt="" />
         </ng-template>
       </nz-col>
       <nz-col nzSpan="8" style="flex:none;">
@@ -76,9 +79,9 @@
       <thead>
       <tr>
         <th nzLeft>{{ 'app.backup.package.name'|i18n }}</th>
-        <th nzBreakWord>{{ 'app.backup.package.storage.total' |i18n }}</th>
-        <th nzBreakWord>{{ 'app.backup.package.storage.used'|i18n }}</th>
-        <th nzBreakWord>{{ 'app.backup.package.storage.remaining'|i18n }}</th>
+        <th nzBreakWord>{{ 'app.backup.package.storage.total' |i18n }} (GB)</th>
+        <th nzBreakWord>{{ 'app.backup.package.storage.used'|i18n }} (GB)</th>
+        <th nzBreakWord>{{ 'app.backup.package.storage.remaining'|i18n }} (GB)</th>
         <th nzBreakWord>{{ 'app.backup.package.expire.date'|i18n }}</th>
         <th nzBreakWord>{{ 'app.payment.status'|i18n }}</th>
         <th nzBreakWord>{{ 'app.text.operation'|i18n }}</th>
@@ -87,100 +90,26 @@
       <tbody>
       <tr *ngFor="let data of fixedTable.data">
         <td><a [routerLink]="'/app-smart-cloud/backup/packages/detail/'+ data.id">{{ data.packageName }}</a></td>
-        <td>{{ data.sizeInGB }} (GB)</td>
-        <td>{{ data.usedSize }} (GB)</td>
-        <td>{{ data.totalSize - data.usedSize }} (GB)</td>
+        <td nzAlign="right">{{ data.sizeInGB }}</td>
+        <td nzAlign="right">{{ data.usedSize }}</td>
+        <td nzAlign="right">{{ data.totalSize - data.usedSize }}</td>
         <td>{{ data.expirationDate | date:'dd/MM/yyyy' }}</td>
-        <td [ngSwitch]="data.status.trim()">
-          <span *ngSwitchCase="'AVAILABLE'" class="available">{{ 'app.status.running'|i18n }}</span>
-          <span *ngSwitchCase="'CREATING'" class="available">{{ 'app.status.init'|i18n }}</span>
-          <span *ngSwitchCase="'SUSPENDED'" class="error">{{ 'app.status.suspend'|i18n }}</span>
-          <span *ngSwitchCase="'DELETEING'" class="error">{{ 'app.status.deleting'|i18n }}</span>
-        </td>
+        <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+          <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</td>
+        </ng-container>
         <td>
           <div>
             <!---Chỉnh sửa------>
-            <img nz-popover src="assets/imgs/edit-2.svg" alt=""
-                 nzPopoverPlacement="bottom"
-                 (click)="showUpdate(data)"
-                 style="cursor: pointer;"
-                 [nzPopoverContent]="'app.text.edit' | i18n" />
-            <nz-modal [(nzVisible)]="isVisibleUpdate" nzTabScrollList="true"
-                      (nzOnCancel)="handleUpdateCancel()" nzCentered>
-              <div *nzModalTitle>
-                <span class="text-modal-title">{{ 'app.backup.package.edit.title'|i18n }}</span>
-              </div>
-              <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
-                <form nz-form [formGroup]="validateForm" nzLayout="vertical">
-                  <nz-form-item>
-                    <nz-form-label nzFor="name">
-                      <div style="margin-top: 15px;">
-                        <span>{{ 'app.backup.package.name'|i18n }}</span>
-                        (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                        <span nz-icon nzType="question-circle"
-                              nzTheme="outline"
-                              nz-popover
-                              [nzPopoverContent]="'app.tooltip.backup.package.name'|i18n"
-                              nzPopoverPlacement="bottom"></span>
-                      </div>
-                    </nz-form-label>
-                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                      <input nz-input
-                             formControlName="namePackage"
-                             class="input-custom"
-                             [placeholder]="'app.placeholder.backup.package.name'|i18n" [maxLength]="70" />
-                      <ng-template #nameErrorTpl let-control>
-                        <ng-container
-                          *ngIf="control.hasError('required')">{{ 'app.backup.package.name.required'|i18n }}
-                        </ng-container>
-                        <ng-container *ngIf="control.hasError('pattern')">{{ 'app.backup.package.name.pattern'|i18n }}
-                        </ng-container>
-                        <ng-container
-                          *ngIf="control.hasError('maxLength')">{{ 'app.backup.package.name.maxLength'|i18n }}
-                        </ng-container>
-                      </ng-template>
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label nzFor="description">
-                      <div class="label">
-                        <span>{{ 'app.backup.package.description'|i18n }}</span>
-                      </div>
-                    </nz-form-label>
-                    <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-                    <textarea nz-input
-                              formControlName="description"
-                              id="description"
-                              [placeholder]="'app.placeholder.backup.package.description'|i18n"
-                              [maxLength]="255"
-                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
-                      <ng-template #descriptionErrorTpl let-control>
-                        <ng-container
-                          *ngIf="control.hasError('maxlength')">{{ 'app.backup.package.description.maxLength'|i18n }}
-                        </ng-container>
-                      </ng-template>
-                    </nz-form-control>
-                  </nz-form-item>
-                </form>
-              </div>
-              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                <button nz-button nzType="default" (click)="handleUpdateCancel()" class="button-cancel">
-                  <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel'|i18n }}
-                </button>
-                <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleUpdateOk()"
-                        [nzLoading]="isLoadingUpdate"
-                        class="button-ok">
-                  <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm'|i18n }}
-                </button>
-              </div>
-            </nz-modal>
+            <one-portal-update-backup-package [region]="region"
+                                              [project]="project"
+                                              [idBackupPackage]="data.id"
+                                              [backupPackage]="data"
+                                              (onOk)="handleUpdateOk()" />
             <!---Điều chỉnh dung lượng------>
-            <span style="color: #0066B3; margin-right: 10px; margin-left: 10px; cursor: pointer;"
-                  nz-tooltip
-                  [nzTooltipTitle]="'app.backup.package.breadcrumb.resize'|i18n"
-                  nzTooltipPlacement="bottom"
-                  nz-icon nzType="arrows-alt" nzTheme="outline"
-                  (click)="navigateToEdit(data.id)"> </span>
+            <img src="assets/imgs/resize.svg" alt="" style="margin-left: 15px; cursor: pointer;"
+                 (click)="navigateToResize(data.id)"
+                 nz-popover nzPopoverPlacement="bottom"
+                 [nzPopoverContent]="'app.backup.package.breadcrumb.resize'|i18n"/>
             <!---Xóa------>
             <one-portal-delete-backup-package [region]="region" [project]="project" [packageBackupModel]="data"
                                               (onOk)="handleDeletedOk()" />

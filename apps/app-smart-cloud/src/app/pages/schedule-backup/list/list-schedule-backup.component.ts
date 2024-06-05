@@ -10,6 +10,8 @@ import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../li
 import { getCurrentRegionAndProject } from '@shared';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { debounceTime, Subject } from 'rxjs';
+import { TimeCommon } from '../../../shared/utils/common';
 
 @Component({
   selector: 'one-portal-list-schedule-backup',
@@ -32,7 +34,7 @@ export class ListScheduleBackupComponent implements OnInit {
 
   listBackupSchedule: BackupSchedule[] = [];
   customerId: number;
-
+  searchDelay = new Subject<boolean>();
   pageSize: number = 10;
   pageIndex: number = 1;
 
@@ -75,11 +77,11 @@ export class ListScheduleBackupComponent implements OnInit {
     this.getListScheduleBackup(false);
   }
 
-  onInputChange(value: string) {
-    this.value = value;
-    console.log('input text: ', this.value);
-    this.getListScheduleBackup(false);
-  }
+  // onInputChange(value: string) {
+  //   this.value = value;
+  //   console.log('input text: ', this.value);
+  //   this.getListScheduleBackup(false);
+  // }
 
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/schedule/backup/create']);
@@ -163,5 +165,8 @@ export class ListScheduleBackupComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
+      this.getListScheduleBackup(false);
+    });
   }
 }

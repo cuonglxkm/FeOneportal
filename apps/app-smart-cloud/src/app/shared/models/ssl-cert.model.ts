@@ -2,6 +2,8 @@ export class FormSearchSslSearch {
     customerId: number
     region: number
     vpcId: number
+    currentPage: number
+    pageSize: number
   }
 
   export class FormCreateSslCert {

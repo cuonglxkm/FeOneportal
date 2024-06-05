@@ -222,7 +222,7 @@ export class ExtensionComponent implements OnInit {
   expectedExpirationDate: number;
   setUsageTime() {
     let d = new Date(this.expiryDate);
-    d.setDate(d.getDate() + Number(this.extendMonth) * 30 + 1);
+    d.setDate(d.getDate() + Number(this.extendMonth) * 30);
     this.expectedExpirationDate = d.getTime();
 
     this.onCalculatePrice();

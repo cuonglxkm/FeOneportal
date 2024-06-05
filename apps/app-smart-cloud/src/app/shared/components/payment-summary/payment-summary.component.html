@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'app.payment.service' | i18n">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -11,15 +11,199 @@
         {{ 'app.payment.service' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
 </page-header>
 <div nz-row nzGutter="16">
   <div nz-col nzSpan="16">
+  <form nz-form [formGroup]="formExportInvoice">
     <nz-card style="border-radius: 8px">
-      <div style="margin-bottom: 20px">
-        <span class="text-card-header">{{ 'app.customer.info' | i18n }}</span>
+      <div class="d-flex justify-content-between">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{ 'app.customer.info' | i18n }}</span>
+        </div>
+        <div *ngIf="userModel && userModel.customerInvoice !== null">
+          <span class="text-card-header" [ngModelOptions]="{standalone: true}" nz-checkbox [(ngModel)]="isCheckedExportInvoice" (ngModelChange)="updateExportInvoice($event)">Xuất hóa đơn</span>
+        </div>
       </div>
-      <nz-row>
+      <ng-container *ngIf="userModel && userModel.customerInvoice !== null && isCheckedExportInvoice === true">
+        <div style="margin-bottom: 20px">
+          <span class="text-label fw-600">Nhóm khách hàng</span>
+        </div>
+        <nz-radio-group [ngModelOptions]="{standalone: true}" [(ngModel)]="radioValue" class="mb-5">
+          <ng-container *ngFor="let item of options">
+            <label class="text-label fw-600" style="margin-right: 50px" nz-radio [nzValue]="item.label">{{item.value}}</label>
+          </ng-container>
+        </nz-radio-group>
+        <nz-row nzGutter="24">
+          <nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="nameCustomerErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>Tên người mua</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)               
+                  </div>
+                </nz-form-label>
+                <input
+                nz-input
+                type="text"
+                placeholder="Nguyễn Văn A"
+                class="input-custom"    
+                formControlName="nameCustomer"       
+                appTrim
+                [maxlength]="50"
+              />
+              </nz-form-control>
+              <ng-template #nameCustomerErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Tên người mua không được để trống</ng-container
+                >
+                <ng-container *ngIf="control.hasError('pattern')"
+                  >Tên người mua không chứa ký tự đặc biệt</ng-container
+                >
+              </ng-template>
+            </nz-form-item>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="companyNameErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>Tên đơn vị</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)               
+                  </div>
+                </nz-form-label>
+                <input
+                nz-input
+                type="text"
+                placeholder="Công ty TNHH và đầu tư AAA"
+                class="input-custom"       
+                appTrim
+                formControlName="nameCompany"
+                [maxlength]="100"
+              />
+              </nz-form-control>
+              <ng-template #companyNameErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Tên đơn vị không được để trống</ng-container
+                >
+              </ng-template>
+            </nz-form-item>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="taxCodeErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>Mã số thuế</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)               
+                  </div>
+                </nz-form-label>
+                <input
+                nz-input
+                type="text"
+                placeholder="6796784685"
+                class="input-custom"       
+                appTrim
+                formControlName="taxCode"
+                [maxlength]="15"
+              />
+              </nz-form-control>
+              <ng-template #taxCodeErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Mã số thuế không được để trống</ng-container
+                >
+                <ng-container *ngIf="control.hasError('pattern')"
+                  >Mã số thuế chỉ cho nhập số và dấu gạch ngang</ng-container
+                >
+              </ng-template>
+            </nz-form-item>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="addressErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>Địa chỉ</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)               
+                  </div>
+                </nz-form-label>
+                <input
+                nz-input
+                type="text"
+                placeholder="địa chỉ A"
+                class="input-custom"       
+                appTrim
+                formControlName="address"
+                [maxlength]="100"
+              />
+              </nz-form-control>
+              <ng-template #addressErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Địa chỉ không được để trống</ng-container
+                >
+              </ng-template>
+            </nz-form-item>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="addressErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>Số điện thoại</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)               
+                  </div>
+                </nz-form-label>
+                <input
+                nz-input
+                type="text"
+                placeholder="0245685679567"
+                class="input-custom"       
+                appTrim
+                formControlName="phoneNumber"
+                [maxlength]="10"
+              />
+              </nz-form-control>
+              <ng-template #nameCustomerErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Số điện thoại không được để trống</ng-container
+                >
+              </ng-template>
+            </nz-form-item>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="addressErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>Email</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)               
+                  </div>
+                </nz-form-label>
+                <input
+                nz-input
+                type="text"
+                placeholder="test@test.vn"
+                class="input-custom"     
+                formControlName="email"  
+                appTrim
+                [maxlength]="50"
+              />
+              </nz-form-control>
+              <ng-template #nameCustomerErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Địa chỉ không được để trống</ng-container
+                >
+              </ng-template>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+      </ng-container>
+  
+      <nz-row *ngIf="isCheckedExportInvoice === false">
         <div nz-col nzSpan="24">
           <nz-row style="height: 50px">
             <span class="fw-600 text-16" nz-col nzSpan="4"
@@ -53,6 +237,7 @@
           </nz-row>
         </div>
       </nz-row>
+
     </nz-card>
     <nz-card style="border-radius: 8px">
       <div style="margin-bottom: 20px">
@@ -90,8 +275,9 @@
         </tbody>
       </nz-table>
     </nz-card>
+  </form>
   </div>
-  <div nz-col nzSpan="8">
+  <div nz-col nzSpan="8" class="gutter-row">
     <nz-card style="border-radius: 8px; border-color: #b2deff">
       <div style="margin-bottom: 20px">
         <span class="text-card-header">{{
@@ -339,4 +525,258 @@
       />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
+</nz-modal>
+
+ <!-- Customer Invoice -->
+ <nz-modal
+ [(nzVisible)]="isVisibleCustomerInvoice"
+ nzTitle="Cập nhật thông tin xuất hóa đơn"
+ (nzOnCancel)="handleCancelUpdateCustomerInvoice()"
+  nzWidth="1000px" 
+>
+ <form nz-form [formGroup]="formCustomerInvoice">
+   <ng-container *nzModalContent>
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="8" class="gutter-row">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="nameCompanyErrorTpl">
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px">
+                <span>Tên công ty/cá nhân</span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+              </div>
+            </nz-form-label>
+            <input
+              nz-input
+              type="text"
+              placeholder="Nhập tên công ty/cá nhân"
+              formControlName="nameCompany"
+              class="input-custom"
+              appTrim
+              [maxlength]="50"
+            />
+            <ng-template #nameCompanyErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Tên công ty/cá nhân không được để trống</ng-container
+              >
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="8" class="gutter-row">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="emailErrorTpl">
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px">
+                <span>Email nhận hóa đơn</span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)          
+              </div>
+            </nz-form-label>
+            <input
+              nz-input
+              type="text"
+              [value]="email"
+              class="input-custom"
+              [maxlength]="50"
+              placeholder="vanthe@vnpt.com"
+              formControlName="email"
+            />
+          </nz-form-control>
+          <ng-template #emailErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >Email không được để trống</ng-container
+            >
+          </ng-template>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="8" class="gutter-row">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="phoneErrorTpl">
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px">
+                <span>Số điện thoại</span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+              
+              </div>
+            </nz-form-label>
+            <input
+              nz-input
+              type="text"
+              placeholder="0941371355"
+              class="input-custom"
+              [maxlength]="50"
+              formControlName="phoneNumber"
+            />
+          </nz-form-control>
+          <ng-template #phoneErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >Số điện thoại không được để trống</ng-container
+            >
+          </ng-template>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="8" class="gutter-row">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="nameCustomerErrorTpl">
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Tên người mua</span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+               
+              </div>
+            </nz-form-label>
+            <input
+            nz-input
+            type="text"
+            placeholder="Nguyễn Văn Thế"
+            formControlName="nameCustomer"
+            class="input-custom"
+            appTrim
+            [maxlength]="50"
+          />
+          </nz-form-control>
+          <ng-template #nameCustomerErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >Tên người mua không được để trống</ng-container
+            >
+          </ng-template>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="8" class="gutter-row">
+        <nz-form-item>
+          <nz-form-control>
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Nhóm khách hàng</span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)             
+              </div>
+            </nz-form-label>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              [(ngModel)]="customerGroup"
+              [ngModelOptions]="{ standalone: true }" 
+              (ngModelChange)="changeCustomerGroup($event)"
+              class="input-select-custom"
+            >
+              <nz-option
+                *ngFor="let data of customerGroups"
+                [nzLabel]="data.name"
+                [nzValue]="data.id"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="8" class="gutter-row">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="lifeTimeValueErrorTpl">
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Loại khách hàng</span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)               
+              </div>
+            </nz-form-label>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              [(ngModel)]="customerType"
+              [ngModelOptions]="{ standalone: true }"
+              class="input-select-custom"
+            >
+              <nz-option
+                *ngFor="let data of customerTypes"
+                [nzLabel]="data.name"
+                [nzValue]="data.id"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="8" class="gutter-row">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="taxCodeErrorTpl">
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Mã số thuế</span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)               
+              </div>
+            </nz-form-label>
+            <input
+            nz-input
+            type="text"
+            placeholder="036423624356"
+            formControlName="taxCode"
+            class="input-custom"
+            appTrim
+            [maxlength]="50"
+          />
+          </nz-form-control>
+          <ng-template #nameCustomerErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >Mã số thuế không được để trống</ng-container
+            >
+          </ng-template>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="16" class="gutter-row">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="addressErrorTpl">
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Địa chỉ chi tiết</span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)               
+              </div>
+            </nz-form-label>
+            <input
+            nz-input
+            type="text"
+            required
+            placeholder="57 Huỳnh Thúc Kháng, Đống Đa"
+            class="input-custom"
+            formControlName="address"
+            appTrim
+            [maxlength]="50"
+          />
+          </nz-form-control>
+          <ng-template #nameCustomerErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >Địa chỉ không được để trống</ng-container
+            >
+          </ng-template>
+        </nz-form-item>
+      </div>
+      <nz-alert
+        class="mt-4"
+        style="width: 100%;"
+        nzBanner
+        nzMessage="* Quý khách lưu ý:"
+        nzDescription="- Trước khi thực hiện xuất hóa đơn điện tử lần đầu, khách hàng hãy cập nhật thông tin hiển thị trên hóa đơn điện tử"
+      ></nz-alert>
+    </div>
+
+     
+   </ng-container>
+   <div *nzModalFooter>
+     <button nz-button (click)="handleCancelUpdateCustomerInvoice()">
+       <img
+         style="padding-right: 10px; margin-top: -4px"
+         src="assets/imgs/cancel.svg"
+         alt=""
+       />{{ 'app.button.cancel' | i18n }}
+     </button>
+     <button
+     [disabled]="formCustomerInvoice.invalid"
+       nz-button
+       nzType="primary"
+       (click)="handleOkUpdateCustomerInvoice()"
+     >
+       <img
+         style="padding-right: 10px; margin-top: -4px"
+         src="assets/imgs/confirm.svg"
+         alt=""
+       />{{ 'app.button.confirm' | i18n }}
+     </button>
+   </div>
+ </form>
 </nz-modal>

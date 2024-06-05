@@ -11,10 +11,11 @@ import { getCurrentRegionAndProject } from '@shared';
 import { ClipboardService } from 'ngx-clipboard';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { LoadingService } from '@delon/abc/loading';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-list-sub-user',
@@ -25,7 +26,7 @@ export class ListSubUserComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  value: string;
+  value: string = '';
 
   pageSize: number = 10;
   pageIndex: number = 1;
@@ -40,6 +41,7 @@ export class ListSubUserComponent implements OnInit {
 
   isExpand: number | null = null;
 
+  searchDelay = new Subject<boolean>();
   constructor(
     private router: Router,
     private subUserService: SubUserService,
@@ -119,7 +121,7 @@ export class ListSubUserComponent implements OnInit {
   getListSubUsers(isBegin) {
     this.isLoading = true;
     this.subUserService
-      .getListSubUser(this.value, this.pageSize, this.pageIndex)
+      .getListSubUser(this.value.trim(), this.pageSize, this.pageIndex)
       .subscribe(
         (data) => {
           this.response = data;
@@ -178,6 +180,14 @@ export class ListSubUserComponent implements OnInit {
     this.project = regionAndProject.projectId;
     this.hasObjectStorage();
     this.renderer.listen('document', 'click', this.handleCloseExpand.bind(this));
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+      this.getListSubUsers(false);
+    });
+  }
+
+  search(search: string) {  
+    this.value = search.trim();
+    this.getListSubUsers(false);
   }
 
   ngOnDestroy() {

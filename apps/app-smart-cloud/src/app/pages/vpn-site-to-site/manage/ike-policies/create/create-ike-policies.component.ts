@@ -113,7 +113,7 @@ export class CreateIkePoliciesComponent implements OnInit{
             this.isLoading = false
             this.notification.success(
               'Thành công',
-              'Tạo mới ike policy thành công'
+              'Tạo mới IKE Policy thành công'
             );
             this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
           },
@@ -121,7 +121,7 @@ export class CreateIkePoliciesComponent implements OnInit{
             this.isLoading = false
             this.notification.error(
               'Thất bại',
-              'Tạo mới ike policy thất bại'
+              'Tạo mới IKE Policy thất bại'
             );
             console.log(error);
           }
@@ -132,9 +132,14 @@ export class CreateIkePoliciesComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+  }
+
+  userChangeProject(){
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 }

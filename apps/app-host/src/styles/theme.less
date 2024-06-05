@@ -6,7 +6,7 @@
 @import '@fontsource/inter';
 @import '@delon/theme/theme-default.less';
 @import '../assets/color.less';
-
+@import '../assets/custom-css.less';
 // ==========The following is the custom theme variable area==========
 // The theme paraments can be generated at https://ng-alain.github.io/ng-alain/
 // @primary-color: #f50;
@@ -128,7 +128,7 @@ u {
 }
 
 .ant-alert-warning {
-  border-radius: 4px;
+  border-radius: 8px;
   background-color: @note-background-color;
   border: 1px solid #ffe58f;
 }
@@ -175,7 +175,9 @@ u {
   color: #0074cc;
   text-shadow: 0 0 0.25px currentcolor;
 }
-
+.ant-tabs-tab-btn{
+font-size: @label-fontsize;
+}
 .ant-tabs-tab-btn:hover {
   color: #005999;
 }
@@ -215,7 +217,7 @@ u {
 
 //Input
 .ant-input {
-  //border-radius: 8px;
+  border-radius: 8px;
   font-size: 16px;
 }
 .ant-select-show-search.ant-select:not(.ant-select-customize-input)
@@ -228,7 +230,7 @@ u {
 .input-custom {
   display: flex;
   height: 40px;
-  //border-radius: 4px;
+  border-radius: 8px;
   justify-content: space-between;
   align-items: center;
   font-size: 16px;
@@ -241,6 +243,7 @@ u {
 
 .input-select-custom {
   height: 40px;
+
 }
 
 .ant-select:not(.ant-select-customize-input) .ant-select-selector {
@@ -344,8 +347,22 @@ project-select-dropdown nz-select-item.ant-select-selection-item {
 }
 
 .ant-input-number {
-  border-radius: 8px;
+  border-radius: @textbox-radius-lg;
   margin-left: 8px;
+}
+
+.ant-input-number-handler-wrap {
+  border-radius: 0 8px 8px 0;
+}
+
+.ant-input-number-handler-up {
+  border-top-right-radius: 8px;
+  cursor: pointer;
+}
+
+.ant-input-number-handler-down {
+  border-bottom-right-radius: 8px;
+  cursor: pointer;
 }
 
 // END SLIDER
@@ -486,6 +503,11 @@ body {
   color: #2b2d3b;
 }
 
+.text-break{
+  word-break: break-all;
+  text-overflow: ellipsis;
+}
+
 // MENU
 .sidebar-nav__selected > .sidebar-nav__item-link {
   color: #0074cc;
@@ -598,3 +620,25 @@ align-items: center;
   padding-top: 0.2em;
 }
 // END
+
+.card-border{
+  border: 1px solid #B2DEFF;
+}
+.ant-input-number-lg input {
+  height: 40px;
+}
+.justify-content-between{
+justify-content: space-between;
+}
+// nz-input-number{
+//   border-radius: @textbox-radius-lg
+// }
+
+.border-card {
+  gap: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--Primary-6, #B2DEFF)
+}
+.label-color{
+  color:@text-subtitle-color;
+}

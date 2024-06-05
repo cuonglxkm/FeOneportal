@@ -73,14 +73,18 @@ export class AttachIpFloatingComponent implements OnInit {
       formAction.portId = this.validateForm.controls.portId.value
       formAction.action = 'attach'
       this.ipFloatingService.action(formAction).subscribe(data => {
-        this.isVisible = false
-        this.isLoading = false
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('ip.floating.nofitacation.attach.success'))
-        this.onOk.emit(data)
+        this.isVisible = false;
+        this.isLoading = false;
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('ip.floating.nofitacation.attach.success'));
+        this.onOk.emit(data);
       }, error => {
-        this.isVisible = false
-        this.isLoading = false
-        this.notification.error(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('ip.floating.nofitacation.attach.fail'))
+        this.isVisible = true;
+        this.isLoading = false;
+        if(error && error.error && error.error.type && error.error.type == "Exception" && error.error.message){
+          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
+        } else {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('ip.floating.nofitacation.attach.fail'));
+        }
       })
     }
 
@@ -119,7 +123,7 @@ export class AttachIpFloatingComponent implements OnInit {
     this.isLoadingPort = true
     this.vlanService.getVlanByNetworkId(idNetwork, this.project).subscribe(data => {
       this.vlanService.getPortByNetwork(data.cloudId, this.region, 9999, 1, null).subscribe(item => {
-        this.listPort = item.records
+        this.listPort = item.records.filter(x => (!x.attachedDevice || x.attachedDevice == "" || x.attachedDevice == "compute:nova") && !x.name.includes("octavia"));
         this.isLoadingPort = false
       }, error => {
         this.listPort = null

@@ -2,7 +2,8 @@
              [action]="action"
              [title]="'app.load.balancer.detail' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item>{{
         'app.breadcrumb.home' | i18n
       }}</nz-breadcrumb-item>
@@ -20,6 +21,9 @@
         }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -96,7 +100,7 @@
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">{{ 'app.service.expiration-date' | i18n }}</span>
-              <span class="text-value-detail customSpan">{{loadBalancer.expiredDate | date: 'dd/MM/yyyy'}}</span>
+              <span class="text-value-detail customSpan" style="color: red">{{loadBalancer.expiredDate | date: 'dd/MM/yyyy'}}</span>
             </nz-row>
           </nz-col>
         </nz-row>
@@ -106,10 +110,10 @@
   <nz-card>
     <nz-tabset>
       <ng-template #titleListener>
-        <span class="text-label">Listener</span>
+        <span class="text-label">Listeners</span>
       </ng-template>
       <ng-template #titlePool>
-        <span class="text-label">Pool</span>
+        <span class="text-label">Pools</span>
       </ng-template>
       <nz-tab [nzTitle]="titleListener">
         <nz-row nzJustify="space-between">

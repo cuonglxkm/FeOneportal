@@ -261,6 +261,13 @@ export class InstancesService extends BaseService {
       }/offers?regionId=${regionId}&unitOfMeasure=${unitOfMeasure}`
     );
   }
+  getTypeCatelogOffers(regionId: number, unitOfMeasureProduct: string): Observable<any> {
+    return this.http.get<any>(
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/offers?regionId=${regionId}&unitOfMeasureProduct=${unitOfMeasureProduct}`
+    );
+  }
 
   getTotalAmount(data: any): Observable<any> {
     return this.http

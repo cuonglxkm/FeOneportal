@@ -4,31 +4,33 @@
   [title]="'Xem chi tiết IKE Policy'"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
-          >Dịch vụ hạ tầng</a
-        >
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
         >VPN site to site</a
       ></nz-breadcrumb-item>
       <nz-breadcrumb-item>Xem chi tiết IKE Policy</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -48,16 +50,16 @@
             style="color: rgba(252, 16, 16, 1)"
             >*</span
           >)
-          <span
-            nz-icon
-            nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="
-              'Tên của IKE, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'
-            "
-            nzPopoverPlacement="bottom"
-          ></span>
+          <img
+          nz-popover
+          [nzPopoverContent]="
+            'Tên của Ike Policy bao gồm các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
+          "
+          nzPopoverPlacement="bottom"
+          style="margin-left: 5px"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
             </nz-form-label
           >
             <input
@@ -79,16 +81,16 @@
             style="color: rgba(252, 16, 16, 1)"
             >*</span
           >)
-          <span
-            nz-icon
-            nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="
-              'Thuật toán xác thực danh tính cho IKE Policy bao gồm các lựa chọn: sha1, sha256, sha384, sha512 (dựa trên thuật toán băm mã hóa dựa theo số bit) mặc định sha1'
-            "
-            nzPopoverPlacement="bottom"
-          ></span>
+          <img
+                  nz-popover
+                  [nzPopoverContent]="
+                    'Thuật toán xác thực danh tính cho Ike Policy bao gồm các lựa chọn: sha1, sha256, sha384, sha512 (dựa trên thuật toán băm mã hóa dựa theo số bit) mặc định sha1.'
+                  "
+                  nzPopoverPlacement="bottom"
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
             </nz-form-label
           >
             <input
@@ -110,16 +112,16 @@
             style="color: rgba(252, 16, 16, 1)"
             >*</span
           >)
-          <span
-            nz-icon
-            nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="
-              'Là một giao thức được sử dụng để thiết lập liên lạc an toàn giữa hai thiết bị qua internet. Có 2 lựa chọn v1 và v2, v2 sẽ bao gồm nhiều phương pháp xác thực và mã hóa hơn đảm bảo tính bảo mật và toàn vẹn dữ liệu hơn. mặc định là v1.'
-            "
-            nzPopoverPlacement="bottom"
-          ></span>
+          <img
+          nz-popover
+          [nzPopoverContent]="
+            'Là một giao thức được sử dụng để thiết lập liên lạc an toàn giữa hai thiết bị qua internet. Có 2 lựa chọn v1 và v2, v2 sẽ bao gồm nhiều phương pháp xác thực và mã hóa hơn đảm bảo tính bảo mật và toàn vẹn dữ liệu hơn. mặc định là v1.'
+          "
+          nzPopoverPlacement="bottom"
+          style="margin-left: 5px"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
             </nz-form-label
           >
             <input
@@ -142,16 +144,16 @@
             style="color: rgba(252, 16, 16, 1)"
             >*</span
           >)
-          <span
-            nz-icon
-            nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="
-              'Thuật toán mã hóa đối xứng sử dụng cho IKE Policy bao gồm các lựa chọn: 3des, aes-128, aes-192, aes-256 ( dựa theo thuật toán mã hóa đối xứng  với độ dài khóa tương đương với số bit) mặc định aes-128.'
-            "
-            nzPopoverPlacement="bottom"
-          ></span>
+          <img
+          nz-popover
+          [nzPopoverContent]="
+            'Thuật toán mã hóa đối xứng sử dụng cho Ike Policy bao gồm các lựa chọn: 3des, aes-128, aes-192, aes-256 ( dựa theo thuật toán mã hóa đối xứng  với độ dài khóa tương đương với số bit) mặc định aes-128.'
+          "
+          nzPopoverPlacement="bottom"
+          style="margin-left: 5px"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
             </nz-form-label
           >
             <input
@@ -173,16 +175,16 @@
             style="color: rgba(252, 16, 16, 1)"
             >*</span
           >)
-          <span
-            nz-icon
-            nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="
-              'Đơn vị đo thời gian tồn tại của IKE Policy key (mặc định là giây).'
-            "
-            nzPopoverPlacement="bottom"
-          ></span>
+          <img
+          nz-popover
+          [nzPopoverContent]="
+            'Đơn vị đo thời gian tồn tại của Ike Policy key (mặc định là giây).'
+          "
+          nzPopoverPlacement="bottom"
+          style="margin-left: 5px"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
             </nz-form-label
           >
             <input
@@ -205,16 +207,16 @@
             style="color: rgba(252, 16, 16, 1)"
             >*</span
           >)
-          <span
-            nz-icon
-            nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="
-              'Giá trị của Lifetime units, Khách hàng tùy ý nhập giá trị lớn hơn 60 (mặc định là 3600).'
-            "
-            nzPopoverPlacement="bottom"
-          ></span>
+          <img
+                  nz-popover
+                  [nzPopoverContent]="
+                    'Giá trị của Lifetime units, Khách hàng tùy ý nhập giá trị lớn hơn 60 (mặc định là 3600).'
+                  "
+                  nzPopoverPlacement="bottom"
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
             </nz-form-label
           >
             <input
@@ -237,16 +239,16 @@
             style="color: rgba(252, 16, 16, 1)"
             >*</span
           >)
-          <span
-            nz-icon
-            nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="
-              'Perfect Forward Secrecy (PFS) là một tính năng bảo mật đảm bảo rằng ngay cả khi kẻ tấn công giành được quyền truy cập vào thông tin liên lạc được mã hóa, thì chúng cũng không thể giải mã các phiên liên lạc trước đây nếu chúng không có quyền truy cập vào các khóa mã hóa được sử dụng trong các phiên đó. Có các lựa chọn là group2, group5, group14 (mặc định là group5).'
-            "
-            nzPopoverPlacement="bottom"
-          ></span>
+          <img
+                  nz-popover
+                  [nzPopoverContent]="
+                    'Perfect Forward Secrecy (PFS) là một tính năng bảo mật đảm bảo rằng ngay cả khi kẻ tấn công giành được quyền truy cập vào thông tin liên lạc được mã hóa, thì chúng cũng không thể giải mã các phiên liên lạc trước đây nếu chúng không có quyền truy cập vào các khóa mã hóa được sử dụng trong các phiên đó. Có các lựa chọn là group2, group5, group14 (mặc định là group5).'
+                  "
+                  nzPopoverPlacement="bottom"
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
             </nz-form-label
           >
             <input
@@ -268,16 +270,16 @@
             style="color: rgba(252, 16, 16, 1)"
             >*</span
           >)
-          <span
-            nz-icon
-            nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="
-              'Có 2 lựa chọn là Main và aggressive ( mặc định là main sẽ đảm bảo mật hơn).'
-            "
-            nzPopoverPlacement="bottom"
-          ></span>
+          <img
+          nz-popover
+          [nzPopoverContent]="
+            'Có 2 lựa chọn là Main và aggressive ( mặc định là main sẽ đảm bảo mật hơn)'
+          "
+          nzPopoverPlacement="bottom"
+          style="margin-left: 5px"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
             </nz-form-label
           >
             <input

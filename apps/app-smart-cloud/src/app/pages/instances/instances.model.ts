@@ -1,3 +1,5 @@
+import { OrderItemPrices } from "src/app/shared/models/price";
+
 export class IPSubnetModel {
   id: string;
   displayName: string;
@@ -224,7 +226,7 @@ export class InstanceCreate {
   keypairName: any;
   securityGroups: any;
   network: any;
-  volumeSize: number;
+  volumeSize: number = 0;
   isUsePrivateNetwork: boolean;
   ipPublic: any;
   password: any;
@@ -238,11 +240,11 @@ export class InstanceCreate {
   poolName: any;
   usedMss: boolean;
   customerUsingMss: any;
-  ram: number;
-  cpu: number;
+  ram: number = 0;
+  cpu: number = 0;
   volumeType: any;
   gpuType: any;
-  gpuCount: any;
+  gpuCount: any = 0;
   gpuTypeOfferId: any;
   privateNetId: any;
   privatePortId: any;
@@ -331,6 +333,7 @@ export class OrderItem {
   specificationType: string;
   price: number;
   serviceDuration: number;
+  orderItemPrices?: OrderItemPrices[]
 }
 
 export class InstanceResize {

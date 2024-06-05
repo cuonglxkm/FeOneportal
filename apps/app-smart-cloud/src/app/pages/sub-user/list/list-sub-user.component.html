@@ -2,7 +2,7 @@
   *ngIf="hasOS"
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'app.sub.user.manage' | i18n"
+  [title]="'app.sub.user.list' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
@@ -15,7 +15,7 @@
       <nz-breadcrumb-item>Object Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item
         [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'"
-        >Subuser</nz-breadcrumb-item
+        >SubUser</nz-breadcrumb-item
       >
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
@@ -35,12 +35,7 @@
 </page-header>
 <nz-content *ngIf="hasOS">
   <nz-card style="border-radius: 8px">
-    <nz-row nzJustify="space-between">
-      <nz-col [nzSpan]="8">
-        <span class="text-card-header">{{ 'app.sub.user.list' | i18n }}</span>
-      </nz-col>
-      <nz-col [nzSpan]="16" style="flex: none">
-        <div>
+        <div class="d-flex justify-content-between">
           <nz-input-group
             [nzPrefix]="prefixIconSearch"
             nzSize="large"
@@ -51,7 +46,7 @@
               nz-input
               [placeholder]="'app.placeholder.search' | i18n"
               [(ngModel)]="value"
-              (input)="onInputChange($event.target['value'])"
+              #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
             />
           </nz-input-group>
           <ng-template #prefixIconSearch>
@@ -59,7 +54,6 @@
               src="assets/imgs/search.svg"
               alt=""
               style="cursor: pointer"
-              [nz-tooltip]="'app.button.search' | i18n"
             />
           </ng-template>
           <button
@@ -79,8 +73,6 @@
             }}</span>
           </button>
         </div>
-      </nz-col>
-    </nz-row>
     <nz-table
       #fixTable
       style="margin-top: 24px"
@@ -107,7 +99,7 @@
         <ng-container *ngFor="let data of fixTable.data; index as i">
           <tr>
             <td>{{ i + 1 }}</td>
-            <td>{{ data.userId }}</td>
+            <td>{{ data.subUserId }}</td>
             <td>
               <nz-row nzJustify="space-between">
                 <nz-col>
@@ -152,6 +144,7 @@
                 [region]="region"
                 [project]="project"
                 [idSubUser]="data.subUserId"
+                [permission]="data.permissions"
                 [uid]="data.userId"
                 (onOk)="handleOkEdit()"
               />

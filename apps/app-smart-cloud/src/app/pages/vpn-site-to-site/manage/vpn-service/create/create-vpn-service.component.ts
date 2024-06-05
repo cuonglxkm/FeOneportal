@@ -27,7 +27,7 @@ export class CreateVpnServiceComponent implements OnInit{
   form: FormGroup<{
     name: FormControl<string>;
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/)]],
   });
 
 
@@ -86,7 +86,7 @@ export class CreateVpnServiceComponent implements OnInit{
             this.isLoading = false
             this.notification.success(
               'Thành công',
-              'Tạo mới Vpn Service thành công'
+              'Tạo mới VPN Service thành công'
             );
             this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
           },
@@ -94,7 +94,7 @@ export class CreateVpnServiceComponent implements OnInit{
             this.isLoading = false
             this.notification.error(
               'Thất bại',
-              'Tạo mới Vpn Service thất bại'
+              'Tạo mới VPN Service thất bại'
             );
             console.log(error);
           }
@@ -105,9 +105,14 @@ export class CreateVpnServiceComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+  }
+
+  userChangeProject(){
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 }

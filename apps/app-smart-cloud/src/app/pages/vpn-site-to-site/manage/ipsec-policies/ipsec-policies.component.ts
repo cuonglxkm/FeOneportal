@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Inject, Input, Output, SimpleChanges } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { FormSearchIpsecPolicy, IpsecPolicyDTO } from 'src/app/shared/models/ipsec-policy';
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 
 @Component({
@@ -20,13 +21,15 @@ export class IpsecPoliciesComponent {
   pageSize: number = 5
   pageIndex: number = 1
 
-  value: string
+  value: string = ''
 
   response: BaseResponse<IpsecPolicyDTO>
 
   isLoading: boolean = false
 
   formSearchIpsecPolicy: FormSearchIpsecPolicy = new FormSearchIpsecPolicy()
+
+  searchDelay = new Subject<boolean>();
 
   constructor(private ipsecPolicyService: IpsecPolicyService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -38,10 +41,11 @@ export class IpsecPoliciesComponent {
     this.pageIndex = 1;
   }
   
-  onInputChange(value) {
-    this.value = value;
-    this.getData()
+  search(search: string) {  
+    this.value = search.trim();
+    this.getData();
   }
+
 
 
   onPageSizeChange(event) {
@@ -59,7 +63,7 @@ export class IpsecPoliciesComponent {
     this.isLoading = true
     this.formSearchIpsecPolicy.vpcId = this.project
     this.formSearchIpsecPolicy.regionId = this.region
-    this.formSearchIpsecPolicy.name =this.value
+    this.formSearchIpsecPolicy.name =this.value.trim()
     this.formSearchIpsecPolicy.pageSize = this.pageSize
     this.formSearchIpsecPolicy.currentPage = this.pageIndex
     this.ipsecPolicyService.getIpsecpolicy(this.formSearchIpsecPolicy)
@@ -88,5 +92,8 @@ export class IpsecPoliciesComponent {
 
   ngOnInit() {
       this.getData();
+      this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+        this.getData();
+      });
   }
 }

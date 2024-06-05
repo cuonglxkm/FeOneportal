@@ -29,10 +29,12 @@ export class EditVpnConnectionComponent implements OnInit {
   isLoading: boolean = false
 
   form: FormGroup<{
+    name: FormControl<string>;
     peerRemoteIp: FormControl<string>;
     peerId: FormControl<string>;
     preSharedKey: FormControl<string>;
   }> = this.fb.group({
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/)]],
     peerRemoteIp: [
       '',
       [
@@ -127,7 +129,7 @@ export class EditVpnConnectionComponent implements OnInit {
             this.isLoading = false
             this.notification.success(
               'Thành công',
-              'Cập nhật vpn connection thành công'
+              'Cập nhật VPN Connection thành công'
             );
             this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
           },
@@ -135,7 +137,7 @@ export class EditVpnConnectionComponent implements OnInit {
             this.isLoading = false
             this.notification.error(
               'Thất bại',
-              'Cập nhật vpn connection thất bại'
+              'Cập nhật VPN Connection thất bại'
             );
             console.log(error);
           }
@@ -145,9 +147,14 @@ export class EditVpnConnectionComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+  }
+
+  userChangeProject(){
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 }

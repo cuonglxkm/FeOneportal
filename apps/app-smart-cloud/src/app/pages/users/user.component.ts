@@ -8,11 +8,12 @@ import {
 import { Router } from '@angular/router';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { TimeCommon } from '../../shared/utils/common';
 
 @Component({
   selector: 'one-portal-user',
@@ -41,12 +42,16 @@ export class UserComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
-
+  searchDelay = new Subject<boolean>();
   ngOnInit(): void {
     this.service.model.subscribe((data) => {
       console.log(data);
     });
     this.getData();
+
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
+      this.getData();
+    });
   }
 
   ngOnChange(): void {}
@@ -137,10 +142,6 @@ export class UserComponent implements OnInit {
     } else {
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.user.delete.noti.fail"));
     }
-  }
-
-  changeSearch(e: any): void {
-    this.searchParam = e;
   }
 
   onCurrentPageDataChange(listOfCurrentPageData: User[]): void {

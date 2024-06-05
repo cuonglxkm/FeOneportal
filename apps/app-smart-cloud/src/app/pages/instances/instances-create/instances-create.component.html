@@ -4,7 +4,7 @@
   [title]="'app.instances.create' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -17,6 +17,9 @@
         'app.instances.create' | i18n
       }}</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -503,7 +506,7 @@
                         <span class="priceFlavor">{{
                           item.price.fixedPrice.amount | number
                         }}</span
-                        ><span> VND/tháng</span>
+                        ><span> VND/{{ 'app.Month' | i18n }}</span>
                       </div>
                     </nz-col>
                   </nz-row>
@@ -544,7 +547,7 @@
                   <tr>
                     <th>{{ 'app.resource' | i18n }}</th>
                     <th>{{ 'app.amount' | i18n }}</th>
-                    <th>{{ 'app.money.price' | i18n }}</th>
+                    <th>{{ 'app.money.price' | i18n }} (VND)</th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
@@ -556,8 +559,9 @@
                         >) - GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="1000"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         [(ngModel)]="configCustom.capacity"
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
@@ -569,18 +573,18 @@
                         (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="1"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ volumeIntoMoney | number }} VND </label
+                        {{ volumeIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ volumeUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ volumeUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -613,10 +617,10 @@
 
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ ramIntoMoney | number }} VND </label
+                        {{ ramIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ ramUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ ramUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -648,10 +652,10 @@
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ cpuIntoMoney | number }} VND </label
+                        {{ cpuIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ cpuUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ cpuUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -669,7 +673,7 @@
                   <tr>
                     <th>{{ 'app.resource' | i18n }}</th>
                     <th>{{ 'app.amount' | i18n }}</th>
-                    <th>{{ 'app.money.price' | i18n }}</th>
+                    <th>{{ 'app.money.price' | i18n }} (VND)</th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
@@ -700,10 +704,10 @@
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ cpuIntoMoney | number }} VND </label
+                        {{ cpuIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ cpuUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ cpuUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -736,10 +740,10 @@
 
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ ramIntoMoney | number }} VND </label
+                        {{ ramIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ ramUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ ramUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -751,8 +755,9 @@
                         >) - GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="1000"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         [(ngModel)]="configGPU.storage"
                         (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
@@ -764,18 +769,18 @@
                         (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="1"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ volumeIntoMoney | number }} VND </label
+                        {{ volumeIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ volumeUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ volumeUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -808,10 +813,10 @@
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ gpuIntoMoney | number }} VND </label
+                        {{ gpuIntoMoney | number }} </label
                       ><br />
-                      <label class="text-custom-price">
-                        {{ gpuUnitPrice | number }} VND
+                      <label class="text-custom-unit-price">
+                        {{ gpuUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -899,10 +904,9 @@
               <nz-form-control>
                 <nz-select
                   nzMode="multiple"
-                  nzPlaceHolder="Chọn Security Group"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="selectedSecurityGroup"
-                  [nzServerSearch]="true"
+                  [nzShowSearch]="true"
                   nzSize="large"
                 >
                   <nz-option
@@ -1235,52 +1239,6 @@
             </nz-col>
           </div>
         </nz-row>
-
-        <nz-row style="margin-top: 20px; margin-bottom: -25px" nzGutter="16">
-          <nz-col nzSpan="24">
-            <nz-form-item style="margin-bottom: 5px">
-              <nz-form-label
-                >{{ 'app.service.duration' | i18n }} (<span class="text-red"
-                  >*</span
-                >)<img
-                  style="margin-left: 10px"
-                  [nz-tooltip]="'app.tooltip.usage.time' | i18n"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
-              /></nz-form-label>
-              <nz-form-control>
-                <nz-row>
-                  <nz-input-number
-                    style="width: 50%; margin-left: -1px"
-                    [nzMin]="1"
-                    [nzMax]="100"
-                    [nzStep]="1"
-                    [(ngModel)]="numberMonth"
-                    (keydown)="onKeyDown($event)"
-                    (ngModelChange)="changeTime($event)"
-                    [ngModelOptions]="{ standalone: true }"
-                    nzSize="large"
-                  ></nz-input-number>
-                  <div
-                    class="text-label"
-                    style="
-                      display: flex;
-                      margin-left: 20px;
-                      align-items: center;
-                    "
-                  >
-                    {{ 'app.service.start-date' | i18n }}:
-                    {{ today | date : 'dd/MM/yyyy' }}
-                  </div>
-                </nz-row>
-              </nz-form-control>
-            </nz-form-item>
-          </nz-col>
-        </nz-row>
-        <div style="color: #eb1414; margin-top: 20px" class="text-label">
-          {{ 'app.service.expiration-date' | i18n }}:
-          {{ expiredDate | date : 'dd/MM/yyyy' }}
-        </div>
       </nz-card>
 
       <nz-card style="border-radius: 8px">
@@ -1310,13 +1268,16 @@
                     <th>{{ 'app.volume.type' | i18n }}</th>
                     <th>{{ 'app.volume.name' | i18n }}</th>
                     <th>{{ 'app.capacity' | i18n }} (GB)</th>
+                    <th>IOPS</th>
                     <th>{{ 'app.encrypt' | i18n }}</th>
                     <th>Multi Attach</th>
                     <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
-                  <tr *ngFor="let data of listOfDataBlockStorage; let i = index">
+                  <tr
+                    *ngFor="let data of listOfDataBlockStorage; let i = index"
+                  >
                     <td>
                       <nz-select
                         [nzPlaceHolder]="'app.choose' | i18n"
@@ -1354,11 +1315,20 @@
                         "
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'capacity_' + data.id"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="1"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         nzSize="large"
                       ></nz-input-number>
+                    </td>
+                    <td>
+                      <span *ngIf="data.type == 'hdd'">300</span>
+                      <span *ngIf="data.type == 'ssd' && data.capacity <= 40"
+                        >400</span
+                      >
+                      <span *ngIf="data.type == 'ssd' && data.capacity > 40">{{
+                        data.capacity * 10
+                      }}</span>
                     </td>
                     <td>
                       <label
@@ -1438,7 +1408,6 @@
                     <th>{{ 'app.ip.range' | i18n }}</th>
                     <th>{{ 'app.amount' | i18n }}</th>
                     <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
@@ -1480,7 +1449,6 @@
                     </td>
                     <td>
                       <button
-                        *ngIf="data.ip != ''"
                         style="border: none"
                         nz-button
                         (click)="deleteRowIPv4(data.id)"
@@ -1520,7 +1488,6 @@
                     <th>{{ 'app.ip.range' | i18n }}</th>
                     <th>{{ 'app.amount' | i18n }}/th></th>
                     <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
@@ -1587,12 +1554,16 @@
           nzShowIcon
         ></nz-alert>
       </nz-card>
+      <one-portal-service-usage-period
+        [nameService]="'instance'"
+        (valueChanged)="onChangeTime($event)"
+      ></one-portal-service-usage-period>
     </form>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
     <div style="width: 100%">
-      <nz-affix [nzOffsetTop]="48">
-        <nz-card style="border-radius: 8px; width: 100%">
+      <nz-affix [nzOffsetTop]="72">
+        <nz-card class="card-border" style="border-radius: 8px; width: 100%">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{
               'app.estimated.cost' | i18n
@@ -1607,39 +1578,23 @@
           <div style="margin-top: 10px" class="text-label">{{ nameHdh }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.text.package' | i18n }}</div>
-          <div
-            *ngIf="instanceCreate.cpu"
-            style="margin-top: 10px"
-            class="text-label"
-          >
+          <div style="margin-top: 10px" class="text-label">
             {{ instanceCreate.cpu }} CPUs
           </div>
-          <div
-            *ngIf="instanceCreate.ram"
-            style="margin-top: 10px"
-            class="text-label"
-          >
+          <div style="margin-top: 10px" class="text-label">
             {{ instanceCreate.ram }} GB RAM
           </div>
-          <div
-            *ngIf="instanceCreate.volumeSize"
-            style="margin-top: 10px"
-            class="text-label"
-          >
+          <div style="margin-top: 10px" class="text-label">
             {{ instanceCreate.volumeSize }} GB Root Disk (<span>{{
-              instanceCreate.volumeType | uppercase
+              activeBlockHDD ? 'HDD' : 'SSD'
             }}</span
             >)
           </div>
-          <div
-            *ngIf="instanceCreate.gpuCount"
-            style="margin-top: 10px"
-            class="text-label"
-          >
+          <div *ngIf="isGpuConfig" style="margin-top: 10px" class="text-label">
             {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'app.setting' | i18n }}</div>
+          <div class="text-value">{{ 'service.bonus' | i18n }}</div>
           <div
             *ngIf="externalVolumeHdd > 0"
             style="margin-top: 10px"
@@ -1671,16 +1626,37 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-value"> {{ 'app.monthly.price' | i18n }} </span>
+              <span *ngIf="numberMonth == 1" class="text-value">
+                {{ 'app.cost.a.month' | i18n }}
+              </span>
+              <span *ngIf="numberMonth > 1" class="text-value">
+                {{ 'app.cost.n.month' | i18n : { numberMonth: numberMonth } }}
+              </span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
                 {{
-                  (totalAmount +
+                  totalAmount +
                     totalAmountVolume +
                     totalAmountIPv4 +
-                    totalAmountIPv6) /
-                    numberMonth | number : '1.0-0'
+                    totalAmountIPv6 | number
+                }}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">
+                {{ 'app.cost.vat' | i18n }}
+              </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{
+                  totalVAT + totalVATVolume + totalVATIPv4 + totalVATIPv6
+                    | number
                 }}
                 VND
               </span>
@@ -1706,9 +1682,9 @@
               <span class="text-value" style="color: #ea3829" nzAlign="right">
                 {{
                   totalincludesVAT +
-                    totalAmountVolumeVAT +
-                    totalAmountIPv4VAT +
-                    totalAmountIPv6VAT | number : '1.0-0'
+                    totalPaymentVolume +
+                    totalPaymentIPv4 +
+                    totalPaymentIPv6 | number : '1.0-0'
                 }}
                 VND
               </span>
@@ -1726,9 +1702,9 @@
                   form.invalid ||
                   isExistName ||
                   totalincludesVAT +
-                    totalAmountVolumeVAT +
-                    totalAmountIPv4VAT +
-                    totalAmountIPv6VAT ==
+                    totalPaymentVolume +
+                    totalPaymentIPv4 +
+                    totalPaymentIPv6 ==
                     0
                 "
               >
@@ -1738,9 +1714,9 @@
                     form.invalid ||
                     isExistName ||
                     totalincludesVAT +
-                      totalAmountVolumeVAT +
-                      totalAmountIPv4VAT +
-                      totalAmountIPv6VAT ==
+                      totalPaymentVolume +
+                      totalPaymentIPv4 +
+                      totalPaymentIPv6 ==
                       0
                       ? 'gray'
                       : 'white'
@@ -1755,3 +1731,8 @@
     </div>
   </div>
 </div>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>

@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
 import { AppValidator, BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { add } from 'date-fns';
@@ -14,7 +14,7 @@ import { add } from 'date-fns';
   templateUrl: './list-vlan.component.html',
   styleUrls: ['./list-vlan.component.less'],
 })
-export class ListVlanComponent implements OnInit{
+export class ListVlanComponent implements OnInit, OnDestroy {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -40,6 +40,11 @@ export class ListVlanComponent implements OnInit{
   });
 
   isBegin: boolean = false
+
+  dataSubjectInputSearch: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
+
   constructor(private vlanService: VlanService,
               private router: Router,
               private route: ActivatedRoute,
@@ -59,9 +64,35 @@ export class ListVlanComponent implements OnInit{
     this.getListVlanNetwork(true)
   }
 
-  onInputChange() {
-    this.value = this.value.trim();
-    this.getListVlanNetwork(false)
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  changeInputChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.enterPressed = false;
+    this.dataSubjectInputSearch.next(value);
+  }
+
+  onChangeInputChange() {
+    this.searchSubscription = this.dataSubjectInputSearch.pipe(
+      debounceTime(700)
+    ).subscribe(res => {
+      if (!this.enterPressed) {
+        this.value = res.trim();
+        this.getListVlanNetwork(false);
+      }
+    });
+  }
+
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value.trim();
+    this.getListVlanNetwork(false);
   }
 
   navigateToCreateNetwork() {
@@ -116,6 +147,7 @@ export class ListVlanComponent implements OnInit{
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    this.onChangeInputChange();
     this.vlanService.model.subscribe(data => {
       console.log(data)
     })

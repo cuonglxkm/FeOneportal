@@ -8,7 +8,6 @@ style="cursor: pointer; width: 28px; height: 28px"
 />
 <nz-modal
   [(nzVisible)]="isVisible"
-  nzCentered
   [nzTitle]="modalTitle"
   [nzContent]="modalContent"
   [nzFooter]="null"
@@ -56,7 +55,11 @@ style="cursor: pointer; width: 28px; height: 28px"
             (click)="handleCancel()"
             class="button-back"
           >
-            Huỷ
+          <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />{{ 'app.button.cancel' | i18n }}
           </button>
           <nz-form-control *nzSpaceItem>
             <button
@@ -67,7 +70,13 @@ style="cursor: pointer; width: 28px; height: 28px"
               (click)="handleOk()"
               [disabled]="validateForm.invalid"
             >
-              Xác nhận
+            <img
+            *ngIf="isLoading === false"
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/confirm.svg"
+            alt=""
+          />
+          {{ 'app.button.confirm' | i18n }}
             </button>
           </nz-form-control>
         </nz-space>

@@ -26,7 +26,6 @@
                                (userChanged)="userChangeProject($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
-
   </ng-template>
   <div *ngIf="!volumeInfo?.bootable">
     <div *ngIf="typeVPC == 0" style="display: flex">
@@ -68,95 +67,96 @@
     </div>
   </div>
 </page-header>
-<nz-content>
-  <nz-card [nzLoading]="isLoading">
-    <span class="text-card-header">{{ 'volume.detail.title' | i18n }}</span>
-    <nz-descriptions [nzColumn]="2" nzBordered style="margin-top: 20px;">
-      <nz-descriptions-item [nzTitle]="titleName" class="text-label">
-        <span class="text-label"><b>{{ volumeInfo?.name }}</b></span>
-      </nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleType">
-        <span *ngIf="volumeInfo?.volumeType === 'hdd'" class="text-label"><b>{{ 'volume.hdd'|i18n }}</b></span>
-        <span *ngIf="volumeInfo?.volumeType === 'ssd'" class="text-label"><b>{{ 'volume.ssd'|i18n }}</b></span>
-      </nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleStorage">
-        <span class="text-label"><b>{{ volumeInfo?.sizeInGB }} GB</b></span>
-      </nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleIOPS">
-        <span class="text-label">
-          <b>{{ volumeInfo?.iops }}</b>
-        </span>
-      </nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleStatus" class="text-label">
-        <span *ngIf="volumeInfo?.status === 'KHOITAO'"
-              style="color: #008D47" class="text-label"><b>{{ volumeStatus.get(volumeInfo?.status) }}</b></span>
-        <span *ngIf="volumeInfo?.status === 'ERROR'"
-              style="color: #EA3829" class="text-label"><b>{{ volumeStatus.get(volumeInfo?.status) }}</b></span>
-        <span *ngIf="volumeInfo?.status === 'SUSPENDED'"
-              style="color: #FFBB63" class="text-label"><b>{{ volumeStatus.get(volumeInfo?.status) }}</b></span>
-      </nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleAttachInstance">
-        <span *ngIf="listVMs != ''">
-          <b>
-            <span>{{ convertString(listVMs) }}</span>
-          </b>
-        </span>
-        <span *ngIf="listVMs == ''" style="color: #0074CC;" class="text-label">
-          <b>{{ 'volume.notification.no.instance'|i18n }}</b></span>
-      </nz-descriptions-item>
-
-    </nz-descriptions>
-    <ng-template #titleName>
-      <span class="text-label">{{ 'volume.table.title.name.volume' | i18n }}:</span>
-    </ng-template>
-    <ng-template #titleType>
-      <span class="text-label">{{ 'volume.table.title.type.volume' | i18n }}:</span>
-    </ng-template>
-    <ng-template #titleStorage>
-      <span class="text-label">{{ 'volume.table.title.storage' | i18n }}:</span>
-    </ng-template>
-    <ng-template #titleIOPS>
-      <span class="text-label">{{ 'volume.table.title.iops' | i18n }}:</span>
-    </ng-template>
-    <ng-template #titleStatus>
-      <span class="text-label">{{ 'volume.table.title.status.volume' | i18n }}:</span>
-    </ng-template>
-    <ng-template #titleAttachInstance>
-      <span class="text-label">{{ 'app.attach.to.vm'|i18n }}:</span>
-    </ng-template>
-    <div style="display: flex; margin-bottom: 15px;">
+<nz-spin [nzSpinning]="isLoading">
+  <nz-content>
+    <nz-card style="border-radius: 8px;">
+      <span class="text-card-header">{{ 'volume.detail.title' | i18n }}</span>
+      <div class="customRow" style="margin-top: 25px;">
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+                    <span class="text-label customSpan"
+                          style="width: 35%">{{ 'volume.table.title.name.volume' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{ volumeInfo?.name }}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'volume.table.title.type.volume' | i18n }}</span>
+              <span *ngIf="volumeInfo?.volumeType === 'hdd'"
+                    class="text-value-detail">{{ 'volume.hdd'|i18n }}</span>
+              <span *ngIf="volumeInfo?.volumeType === 'ssd'"
+                    class="text-value-detail">{{ 'volume.ssd'|i18n }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+                      <span class="text-label customSpan"
+                            style="width: 35%">{{ 'volume.table.title.storage' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{ volumeInfo?.sizeInGB }} GB</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'volume.table.title.iops' | i18n }}</span>
+              <span class="text-value-detail">{{ volumeInfo?.iops }} </span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+                    <span class="text-label"
+                          style="width: 35%; margin-left: 2%;">{{ 'volume.table.title.status.volume' | i18n }}</span>
+              <ng-container *ngIf="volumeInfo?.status | ServiceStatusPipe as statusModel">
+                      <span class="text-value-detail" style="margin-left: 2%;"
+                            [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+              </ng-container>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'volume.table.title.attach.instance'|i18n }}</span>
+              <span *ngIf="volumeInfo?.attachedInstances?.length > 0" class="text-value-detail">{{ convertString(listVMs) }}</span>
+              <span *ngIf="volumeInfo?.attachedInstances?.length <= 0" class="text-value-detail">{{ 'volume.notification.no.instance'|i18n }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+      </div>
+      <div>
+        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled style="font-size: 16px;">{{ 'volume.info.type.encrypt'|i18n }}</label>
+      </div>
       <div style="margin-top: 15px;">
-        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isEncryption"
-               nzDisabled>{{ 'volume.info.type.encrypt'|i18n }}</label>
+        <label  class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled style="font-size: 16px;">{{ 'volume.info.type.multiAttach'|i18n }}</label>
       </div>
-      <div style="margin-top: 15px; margin-left: 15px;">
-        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach"
-               nzDisabled>{{ 'volume.info.type.multiAttach'|i18n }}</label>
+      <div style="margin-top: 15px;">
+        <nz-descriptions>
+          <nz-descriptions-item [nzTitle]="titleDescription">
+            <span class="text-label">{{ volumeInfo?.description }}</span>
+          </nz-descriptions-item>
+        </nz-descriptions>
       </div>
-    </div>
-    <ng-template #titleDescription>
-      <span class="text-label">{{ 'volume.table.title.description' | i18n }}:</span>
-    </ng-template>
-    <nz-descriptions>
-      <nz-descriptions-item [nzTitle]="titleDescription">
-        <span class="text-label">{{ volumeInfo?.description }}</span>
-      </nz-descriptions-item>
-    </nz-descriptions>
-    <nz-descriptions [nzColumn]="2" *ngIf="typeVPC == 0">
-      <nz-descriptions-item [nzTitle]="titleCreateDate">
-        <span class="text-label"><b>{{ volumeInfo?.creationDate | date:'dd/MM/yyyy' }}</b></span></nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleExpireDate" class="text-label">
-        <span style="color: rgba(235, 20, 20, 0.85)"
-              class="text-label"><b>{{ volumeInfo?.expirationDate | date:'dd/MM/yyyy' }}</b></span>
-      </nz-descriptions-item>
-      <ng-template #titleCreateDate>
-        <span class="text-label">{{ 'volume.table.title.create.date' | i18n }}:</span>
+      <ng-template #titleDescription>
+        <span class="text-label">{{ 'volume.table.title.description'|i18n }}:</span>
       </ng-template>
-      <ng-template #titleExpireDate>
+      <nz-descriptions [nzColumn]="2" *ngIf="typeVPC == 0">
+        <nz-descriptions-item [nzTitle]="titleCreateDate">
+          <span class="text-label"><b>{{ volumeInfo?.creationDate | date:'hh:ss:mm dd/MM/yyyy' }}</b></span></nz-descriptions-item>
+        <nz-descriptions-item [nzTitle]="titleExpireDate" class="text-label">
+        <span style="color: rgba(235, 20, 20, 0.85)"
+              class="text-label"><b>{{ volumeInfo?.expirationDate | date:'hh:ss:mm dd/MM/yyyy' }}</b></span>
+        </nz-descriptions-item>
+        <ng-template #titleCreateDate>
+          <span class="text-label">{{ 'volume.table.title.create.date' | i18n }}:</span>
+        </ng-template>
+        <ng-template #titleExpireDate>
         <span style="color: rgba(235, 20, 20, 0.85)" class="text-label">{{ 'volume.table.title.expire.date' | i18n }}
           :</span>
-      </ng-template>
+        </ng-template>
 
-    </nz-descriptions>
-  </nz-card>
-</nz-content>
+      </nz-descriptions>
+    </nz-card>
+  </nz-content>
+</nz-spin>

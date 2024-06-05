@@ -64,7 +64,7 @@ export class CreateIpsecPoliciesComponent implements OnInit{
     name: FormControl<string>;
     lifeTimeValue: FormControl<number>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/)]],
     lifeTimeValue: [3600, [Validators.required, Validators.min(60)]]
   });
 
@@ -115,7 +115,7 @@ export class CreateIpsecPoliciesComponent implements OnInit{
             this.isLoading = false
             this.notification.success(
               'Thành công',
-              'Tạo mới ipsec policy thành công'
+              'Tạo mới IPsec Policy thành công'
             );
             this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
           },
@@ -123,7 +123,7 @@ export class CreateIpsecPoliciesComponent implements OnInit{
             this.isLoading = false
             this.notification.error(
               'Thất bại',
-              'Tạo mới ipsec policy thất bại'
+              'Tạo mới IPsec Policy thất bại'
             );
             console.log(error);
           }
@@ -134,9 +134,14 @@ export class CreateIpsecPoliciesComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+  }
+
+  userChangeProject(){
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
   }
 }

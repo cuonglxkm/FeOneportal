@@ -65,13 +65,13 @@ export class DeleteVolumeComponent implements AfterViewInit{
       this.volumeService.deleteVolume(this.volumeId).subscribe(data => {
           this.isLoading = false;
           this.isVisible = false;
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Xóa volume thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu xóa volume đã được gửi đi thành công');
           this.onOk.emit(data);
       }, error => {
         console.log('error', error);
         this.isLoading = false;
         this.isVisible = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Xóa volume thất bại' + error.error.detail);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu xóa volume gửi đi thất bại' + error.error.detail);
       });
     } else {
       this.isInput = true;

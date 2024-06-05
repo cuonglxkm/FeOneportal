@@ -10,6 +10,8 @@ import { finalize } from 'rxjs/operators';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { I18NService } from '@core';
+import { debounceTime, Subject } from 'rxjs';
+import { TimeCommon } from '../../shared/utils/common';
 
 @Component({
   selector: 'one-portal-ssh-key',
@@ -36,6 +38,7 @@ export class SshKeyComponent implements OnInit {
   isVisibleDelete = false;
   isVisibleCreate = false;
   isVisibleDetail = false;
+  searchDelay = new Subject<boolean>();
 
   //resource
   loading = false;
@@ -67,6 +70,9 @@ export class SshKeyComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.loadSshKeys(true);
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
+      this.loadSshKeys(false);
+    });
   }
 
   loadSshKeys(isCheckBegin: boolean): void {

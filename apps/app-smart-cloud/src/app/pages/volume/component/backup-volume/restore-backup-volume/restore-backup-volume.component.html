@@ -1,1 +1,85 @@
-<p>restore-backup-volume works!</p>
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action" [title]="'app.breadcrumb.list.backup.volume.restore'|i18n">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home'|i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/backup-volume'">{{ 'app.breadcrumb.list.backup.volume'|i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.list.backup.volume.restore'|i18n }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="region"
+                               (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-spin [nzSpinning]="isLoading">
+  <nz-content>
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="16">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">{{'app.backup.volume.info'|i18n}}</span>
+          <form nz-form nzLayout="vertical">
+            <nz-row nzGutter="24" style="margin-top: 25px;">
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{'app.backup.volume.name'|i18n}}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input nz-input class="input-custom" [value]="backupVolume?.name" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{'app.input.backup.volume.select.volume'|i18n}}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input nz-input class="input-custom" [value]="backupVolume?.volumeName" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+            <nz-row nzGutter="24">
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{'app.info.backup.vm.total.storage'|i18n}}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input *ngIf="typeVpc == 1" nz-input class="input-custom" [value]="projectDetail?.cloudProject?.quotaBackupVolumeInGb" [disabled]="true" />
+                    <input *ngIf="typeVpc == 0" nz-input class="input-custom" [value]="backupPackageDetail?.sizeInGB" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{'app.volume.type'|i18n}}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input nz-input class="input-custom" [value]="backupVolume?.volumeName" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+          </form>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
+
+      </nz-col>
+    </nz-row>
+  </nz-content>
+</nz-spin>

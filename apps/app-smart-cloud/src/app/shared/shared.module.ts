@@ -24,6 +24,12 @@ import { ShareUsersComboboxComponent } from './components/share-users-combobox/s
 import { SvgIconComponent } from './components/svg-icon/svg-icon.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { ServiceStatusPipe } from './pipes/status.pipe';
+import { formatPrice } from './pipes/formatPrice.pipe';
+import { ServiceUsagePeriodComponent } from './components/service-usage-period/service-usage-period.component';
+import { GuideFormulaComponent } from './components/guide-formula/guide-formula.component';
+import { TimeUsedResizeComponent } from './components/time-used-resize/time-used-resize.component';
+import { PopupListErrorComponent } from './components/popup-list-error/popup-list-error.component';
+import { ServiceTimeExtendComponent } from './components/service-time-extend/service-time-extend.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -42,6 +48,9 @@ const THIRDMODULES: Array<Type<any>> = [];
 const COMPONENTS: Array<Type<any>> = [
   RegionSelectDropdownComponent,
   ProjectSelectDropdownComponent,
+  ServiceUsagePeriodComponent,
+  GuideFormulaComponent,
+  PopupListErrorComponent,
   FlavorSelectComponent,
   ImageSelectComponent,
   SecurityGroupSelectComponent,
@@ -49,7 +58,9 @@ const COMPONENTS: Array<Type<any>> = [
   PaymentFailedComponent,
   ShareUsersComboboxComponent,
   SvgIconComponent,
-  BreadcrumbComponent
+  BreadcrumbComponent,
+  TimeUsedResizeComponent,
+  ServiceTimeExtendComponent,
 ];
 const DIRECTIVES: Array<Type<any>> = [];
 
@@ -64,7 +75,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     AlainThemeModule.forChild(),
     DelonACLModule,
     DelonFormModule,
-    
+
     ...SHARED_DELON_MODULES,
     ...SHARED_ZORRO_MODULES,
     // third libs
@@ -76,7 +87,9 @@ const DIRECTIVES: Array<Type<any>> = [];
     ...DIRECTIVES,
     PaymentSummaryComponent,
     IsPermissionPipe,
-    ServiceStatusPipe
+    ServiceStatusPipe,
+    formatPrice,
+
   ],
   exports: [
     CommonModule,
@@ -94,7 +107,8 @@ const DIRECTIVES: Array<Type<any>> = [];
     ...COMPONENTS,
     ...DIRECTIVES,
     IsPermissionPipe,
-    ServiceStatusPipe
+    ServiceStatusPipe,
+    formatPrice,
   ],
   providers: [{ provide: NZ_ICONS, useValue: icons }],
 })

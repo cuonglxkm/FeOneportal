@@ -4,13 +4,12 @@
   [title]="'Chỉnh sửa VPN Connection'"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a>
-          Dịch vụ hạ tầng</a
+          Dịch vụ hạ tầng
         >
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
@@ -18,17 +17,21 @@
       ></nz-breadcrumb-item>
       <nz-breadcrumb-item>Chỉnh sửa VPN Connection</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -41,16 +44,21 @@
         <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
-            <nz-form-control>
+            <nz-form-control [nzErrorTip]="nameErrorTpl">
             <nz-form-label nzFor="name">
               <div style="margin-top: 15px;">
                 <span>Name</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'Name: Tên, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
-                      nzPopoverPlacement="bottom"></span>
+                <img
+                nz-popover
+                [nzPopoverContent]="
+                  'Name: Tên, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
+                "
+                nzPopoverPlacement="bottom"
+                style="margin-left: 5px"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+              />
               </div>
             </nz-form-label>
             <input
@@ -58,9 +66,19 @@
               type="text"
               [value]="vpnConnection.name"
               [disabled]="true"
+              appTrim
+              maxlength="50"
+              formControlName="name"
               class="input-custom"
             />
-            
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Tên VPN Connection không được để trống</ng-container
+              >
+              <ng-container *ngIf="control.hasError('pattern')"
+                >Tên VPN Connection chỉ chứa các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự</ng-container
+              >
+            </ng-template>
           </nz-form-control>
           </nz-form-item>
         </div>
@@ -71,11 +89,16 @@
               <div style="margin-top: 15px;">
                 <span>IPsec Policy</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'IPsec Policy: Khách hàng chọn IPsec Policy đã tạo thành công ở mục IPsec Policies trước đó ( lựa chọn theo tên).'"
-                      nzPopoverPlacement="bottom"></span>
+                <img
+                nz-popover
+                [nzPopoverContent]="
+                  'IPsec Policy: Khách hàng chọn IPsec Policy đã tạo thành công ở mục IPsec Policies trước đó ( lựa chọn theo tên).'
+                "
+                nzPopoverPlacement="bottom"
+                style="margin-left: 5px"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+              />
               </div>
             </nz-form-label>
             <input
@@ -92,14 +115,19 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>VPN Service</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
+                <img
                       nz-popover
-                      [nzPopoverContent]="'VPN Service: Khách hàng lựa chọn VPN Service đã tạo thành công trước đó ( lựa chọn theo tên ).'"
-                      nzPopoverPlacement="bottom"></span>
+                      [nzPopoverContent]="
+                        'VPN Service: Khách hàng lựa chọn VPN Service đã tạo thành công trước đó ( lựa chọn theo tên ).'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
               </div>
             </nz-form-label>
             <input
@@ -117,14 +145,19 @@
           <nz-form-item >
             <nz-form-control [nzErrorTip]="peerRemoteIdErrorTpl">
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>Peer Remote IP VPN Gateway</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
+                <img
                       nz-popover
-                      [nzPopoverContent]="'Peer Remote IP VPN  Gateway  [bắt buộc]: Khách hàng nhập IP VPN Gateway ở đầu VPN tunnel phía Client, tương ứng với trường Peer gateway public IPv4/IPv6 Address or FQDN.'"
-                      nzPopoverPlacement="bottom"></span>
+                      [nzPopoverContent]="
+                        'Peer Remote IP VPN  Gateway  [bắt buộc]: Khách hàng nhập IP VPN Gateway ở đầu VPN tunnel phía Client, tương ứng với trường Peer gateway public IPv4/IPv6 Address or FQDN.'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
               </div>
             </nz-form-label>
             <input
@@ -146,14 +179,19 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>Local System Subnet</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
+                <img
                       nz-popover
-                      [nzPopoverContent]="'Local System Subnet [bắt buộc] : tương ứng với trường Endpoint group for local subnet trên OpenStack.'"
-                      nzPopoverPlacement="bottom"></span>
+                      [nzPopoverContent]="
+                        'Local Endpoint Group (System Subnet) : Local subnet của người dùng'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
               </div>
             </nz-form-label>
             <input
@@ -171,14 +209,19 @@
           <nz-form-item >
             <nz-form-control  [nzErrorTip]="peerIdErrorTpl">
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>Peer ID VPN Connections</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
+                <img
                       nz-popover
-                      [nzPopoverContent]="'Peer ID VPN Connections  [bắt buộc]: Khách hàng nhập ID (có thể sử dụng luôn IP VPN Gateway) chung sử dụng cho cả tunnel đầu SmartCloud và đầu VPN tunnel phía Client (mục này bắt buộc điền tuy nhiên không cần thiết nếu đã nhập đúng IP VPN gateway ở 2 đầu tunnel), tương ứng với trường Peer router identity for authentication (Peer ID) trên OpenStack.'"
-                      nzPopoverPlacement="bottom"></span>
+                      [nzPopoverContent]="
+                        'Peer ID VPN Connection là ID của thiết bị đầu xa đang thực hiện kết nối. Nó có thể là các định dạng theo địa chỉ IP, tên miền, địa chỉ email hoặc distinguished name. Trong khi thiết lập kết thì cần đảm bảo đúng định dạng giữa 2 đầu VPN.'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
               </div>
             </nz-form-label>
             <input
@@ -200,14 +243,19 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>IKE Policy</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
+                <img
                       nz-popover
-                      [nzPopoverContent]="'IKE Policy: Khách hàng chọn IKE Policy đã tạo thành công ở mục IKE Policies trước đó ( lựa chọn theo tên).'"
-                      nzPopoverPlacement="bottom"></span>
+                      [nzPopoverContent]="
+                        'IKE Policy: Khách hàng chọn IKE Policy đã tạo thành công ở mục IKE Policies trước đó ( lựa chọn theo tên).'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
               </div>
             </nz-form-label>
             <input
@@ -225,14 +273,19 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>Remote Local Subnet</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
+                <img
                       nz-popover
-                      [nzPopoverContent]="'Khách hàng lựa chọn remote Endpoint Group đã tạo.'"
-                      nzPopoverPlacement="bottom"></span>
+                      [nzPopoverContent]="
+                        'Khách hàng lựa chọn remote Endpoint Group đã tạo.'
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
               </div>
             </nz-form-label>
             <input
@@ -249,14 +302,19 @@
           <nz-form-item>
             <nz-form-control [nzErrorTip]="preShareKeyErrorTpl">
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div>
                 <span>Pre - Shared Key (PSK) string</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'Pre-Shared Key (PSK) String: Khách hàng nhập key chung giữa 2 tunnel để có thể dùng giải mã gói tin, Khách hàng tùy ý nhập key này.'"
-                      nzPopoverPlacement="bottom"></span>
+                <img
+                nz-popover
+                [nzPopoverContent]="
+                  'Pre-Shared Key (PSK) String: Khách hàng nhập key chung giữa 2 tunnel để có thể dùng giải mã gói tin, Khách hàng tùy ý nhập key này.'
+                "
+                nzPopoverPlacement="bottom"
+                style="margin-left: 5px"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+              />
               </div>
             </nz-form-label>
             <nz-input-group style="width: 100%; border-radius: 4px;" nzSearch [nzSuffix]="suffixTemplate">
@@ -265,6 +323,7 @@
                 [type]="preSharedKeyVisible ? 'text' : 'password'"
                 style="height: 30px;"
                 required
+                appTrim
                 [value]="vpnConnection.preSharedKey"
                 formControlName="preSharedKey"
                 class="input-custom"
@@ -279,7 +338,7 @@
               ></span>
             </ng-template>
             <ng-template #preShareKeyErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Pre share key không được để trống</ng-container>
+              <ng-container *ngIf="control.hasError('required')">Pre - Shared Key không được để trống</ng-container>
             </ng-template>
           </nz-form-control>
           </nz-form-item>
@@ -289,24 +348,24 @@
     </nz-card>
   </div>
   <div nz-col [nzSpan]="7" class="gutter-row">
-    <nz-card style="border-radius: 8px;">
+    <nz-card style="border-radius: 8px;" class="card-border">
       <h2 class="custom-title">Thông số cấu hình</h2>
       <div>
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
-          <span>{{vpnConnection.name}}</span>
+          <span class="text-break">{{vpnConnection.name}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IKE Policy</h3>
-          <span>{{vpnConnection.ikepolicy}}</span>
+          <span class="text-break">{{vpnConnection.ikepolicy}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IPsec Policy</h3>
-          <span>{{vpnConnection.ipSecPolicy}}</span>
+          <span class="text-break">{{vpnConnection.ipSecPolicy}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">VPN Service</h3>
-          <span>{{vpnConnection.vpnService}}</span>
+          <span class="text-break">{{vpnConnection.vpnService}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Peer Remote IP VPN Gateway</h3>
@@ -326,13 +385,14 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Pre - Shared Key (PSK) string</h3>
-          <span>{{form.value.preSharedKey}}</span>
+          <span class="text-break">{{form.value.preSharedKey}}</span>
         </div>
       </div>
       <button
         (click)="handleEdit()"
         nz-button
-        nzType="primary"
+        nzType="primary" 
+        [nzLoading]="isLoading"
         style="
           border: none;
           width: 100%;

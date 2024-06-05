@@ -1,27 +1,30 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { addDays, differenceInCalendarDays, setHours } from 'date-fns';
+import * as JSZip from 'jszip';
+import mime from 'mime';
 import { DisabledTimeFn } from 'ng-zorro-antd/date-picker';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import { NzUploadFile } from 'ng-zorro-antd/upload/interface';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { forkJoin, of, Subject } from 'rxjs';
+import { catchError, debounceTime, finalize, map } from 'rxjs/operators';
+import { BaseService } from 'src/app/shared/services/base.service';
 import { ObjectObjectStorageModel } from '../../../shared/models/object-storage.model';
 import { BucketService } from '../../../shared/services/bucket.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { I18NService } from '@core';
-import * as JSZip from 'jszip';
-import mime from 'mime';
-import { forkJoin, of } from 'rxjs';
-import { BaseService } from 'src/app/shared/services/base.service';
-import { cloneDeep } from 'lodash';
-
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -70,24 +73,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   lstFileUpdate: NzUploadFile[] = [];
   isLoadingDeleteObjects: boolean = false;
-  listOfFilter: any;
-  colReal = ['Tên', 'Thời gian chỉnh sửa', 'Dung lượng'];
-  conditionNameReal = ['Bằng', 'Bao gồm', 'Bắt đầu', 'Kêt thức'];
-  conditionTimeReal = ['Lớn hơn', 'Nhỏ hơn'];
-  conditionCapacityReal = ['Lớn hơn', 'Nhỏ hơn'];
-  capMoreTypeReal = ['Bytes', 'KB', 'MB', 'GB'];
-  capLessTypeReal = ['Bytes', 'KB', 'MB', 'GB'];
-  defaultDataFilter = {
-    orderNum: 1,
-    name: '',
-    condition: '',
-    value: '',
-    type: '',
-  };
-  dataFilter = [{ orderNum: 0, name: '', condition: '', value: '', type: '' }];
-  dataFilterLog = [
-    { orderNum: 0, name: '', condition: '', value: '', type: '' },
-  ];
+  searchDelay = new Subject<boolean>();
 
   setOfCheckedId = new Set<string>();
   form = new FormGroup({
@@ -101,46 +87,31 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   indeterminate = false;
   countObjectSelected = 0;
   nameFolder = '';
-  folderNameLike = '';
+  value = '';
   pageSize: number;
   pageIndex: number;
   treeFolder = [];
   linkShare = '';
   today = new Date();
   timeDefaultValue = setHours(new Date(), 0);
-  dateShare: any;
+  dateShare=  new Date();
   versionId: string;
   private: any;
   percent = 0;
   keyName: string;
   isLoadingGetLink: boolean = false;
   isVisibleDeleteObject: boolean = false;
-  disabledDate = (current: Date): boolean =>
-    differenceInCalendarDays(current, this.today) < 0;
+
   activePrivate = true;
-  filterName: string;
-  filterCondition: string;
-  filterValueName: string;
-  filterValueSize: number = 0;
-  filterValueDate: Date;
   filterQuery: string = '';
-  selectTypeMore: string = '';
-  selectTypeLess: string = '';
   listFile = [];
 
-  formFilter: FormGroup<{
-    filterName: FormControl<string>
-    filterCondition: FormControl<string>
-    filterValueName: FormControl<string>
-    filterValueDate: FormControl<string>
-    filterValueSize: FormControl<number>
-  }> = this.fb.group({
-    filterName: [''],
-    filterCondition: [''],
-    filterValueName: [''],
-    filterValueDate: [''],
-    filterValueSize: [0]
-  });
+  isLoadingCreateFolder: boolean = false;
+  isLoadingAuthorize: boolean = false;
+  isLoadingDeleteObject: boolean = false;
+  isLoadingDeleteVersion: boolean = false;
+  isLoadingRestoreVersion: boolean = false;
+
   constructor(
     private service: ObjectObjectStorageService,
     private bucketservice: BucketService,
@@ -155,9 +126,48 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     super();
   }
 
+  range(start: number, end: number): number[] {
+    const result: number[] = [];
+    for (let i = start; i < end; i++) {
+      result.push(i);
+    }
+    return result;
+  }
+
+  disabledDate = (current: Date): boolean =>
+    differenceInCalendarDays(current, this.today) < 0;
+  disabledDateTime: DisabledTimeFn = () => {
+    const selectedDate = new Date(this.dateShare);
+    const currentHour = this.today.getHours();
+    const currentMinute = this.today.getMinutes();
+    const currentSecond = this.today.getSeconds();
+    console.log(selectedDate);
+    
+    return {
+      nzDisabledHours: () => this.range(0, currentHour),
+      nzDisabledMinutes: () =>
+        selectedDate.getHours() === currentHour
+          ? this.range(0, currentMinute)
+          : [],
+      nzDisabledSeconds: () =>
+        selectedDate.getHours() === currentHour &&
+        selectedDate.getMinutes() === currentMinute
+          ? this.range(0, currentSecond)
+          : [],
+    };
+  };
+
+  search(search: string) {  
+    this.value = search.trim();
+    this.loadData();
+  }
+
   ngOnInit(): void {
     this.loadBucket();
     this.loadData();
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+      this.loadData();
+    });
   }
 
   onPageSizeChange(event: any) {
@@ -174,92 +184,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.isVisibleFilter = true;
   }
 
-  handleOkFilter() {
-    let filterName;
-    switch (this.formFilter.controls.filterName.value) {
-      case 'Tên':
-        filterName = 'key';
-        break;
-      case 'Thời gian chỉnh sửa':
-        filterName = 'lastModified ';
-        break;
-      case 'Dung lượng':
-        filterName = 'size ';
-        break;
-    }
-    let filterCondition;
-    switch (this.formFilter.controls.filterCondition.value) {
-      case 'Bằng':
-        filterCondition = '=';
-        break;
-      case 'Bao gồm':
-        filterCondition = '.Contains';
-        break;
-      case 'Bắt đầu':
-        filterCondition = '.StartsWith';
-        break;
-      case 'Kết thúc':
-        filterCondition = '.EndsWith';
-        break;
-      case 'Lớn hơn':
-        filterCondition = '> ';
-        break;
-      case 'Nhỏ hơn':
-        filterCondition = '<';
-        break;
-    }
-
-    let filterValueSize;
-
-    if (this.formFilter.controls.filterCondition.value === 'Lớn hơn') {
-      switch (this.selectTypeMore) {
-        case 'Bytes':
-          filterValueSize = this.formFilter.controls.filterValueSize.value;
-          break;
-        case 'KB':
-          filterValueSize = this.formFilter.controls.filterValueSize.value * 1024;
-          break;
-        case 'MB':
-          filterValueSize = this.formFilter.controls.filterValueSize.value * 1024 * 1024;
-          break;
-        case 'GB':
-          filterValueSize = this.formFilter.controls.filterValueSize.value * 1024 * 1024 * 1024;
-          break;
-      }
-    } else {
-      switch (this.selectTypeLess) {
-        case 'Bytes':
-          filterValueSize = this.filterValueSize;
-          break;
-        case 'KB':
-          filterValueSize = this.filterValueSize * 1024;
-          break;
-        case 'MB':
-          filterValueSize = this.filterValueSize * 1024 * 1024;
-          break;
-        case 'GB':
-          filterValueSize = this.filterValueSize * 1024 * 1024 * 1024;
-          break;
-      }
-    }
-
-    const year = this.filterValueDate.getFullYear();
-    const month = this.filterValueDate.getMonth();
-    const day = this.filterValueDate.getDate();
-    let filterValue =
-    this.formFilter.controls.filterName.value === 'Tên' && this.formFilter.controls.filterCondition.value === 'Bằng'
-        ? `"${this.formFilter.controls.filterName.value}"`
-        : this.formFilter.controls.filterName.value === 'Dung lượng'
-        ? `${filterValueSize}`
-        : this.formFilter.controls.filterName.value === 'Thời gian chỉnh sửa'
-        ? `DateTime(${year},${month + 1},${day},0,0,0)`
-        : `("${this.formFilter.controls.filterName.value}")`;
-    this.filterQuery = filterName + filterCondition + filterValue;
-    console.log(this.filterQuery);
-
-    // this.loadData();
-    // this.isVisibleFilter = false;
-  }
 
   handleCancel() {
     this.isVisibleFilter = false;
@@ -269,147 +193,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.isVisibleVersioning = false;
   }
 
-  handleCancelShareFile(){
+  handleCancelShareFile() {
     this.isVisibleShare = false;
-    this.linkShare = ''
+    this.dateShare = new Date();
+    this.linkShare = '';
   }
 
-  selectCol(item: any, event: any) {
-    console.log(event);
-    
-    const filteredItems = this.dataFilter.filter((item) => item.name == event);
-    if (event == 'Tên') {
-      if (filteredItems.length >= 4) {
-        this.removeFromListString(this.colReal, event);
-      }
-    } else if (event == 'Thời gian chỉnh sửa') {
-      if (filteredItems.length >= 2) {
-        this.removeFromListString(this.colReal, event);
-      }
-    } else if (event == 'Dung lượng') {
-      if (filteredItems.length >= 8) {
-        this.removeFromListString(this.colReal, event);
-      }
-    }
-    this.clearData(item);
-    let indexLog = this.dataFilterLog.findIndex(
-      (itemModel) => itemModel.orderNum === item.orderNum
-    );
-    if (indexLog != -1) {
-      const dataLog = this.dataFilterLog[indexLog];
-      if (dataLog.name != '' && dataLog.name != event) {
-        this.addToReality(dataLog);
-      }
-    }
 
-    this.dataFilterLog = JSON.parse(JSON.stringify(this.dataFilter));
-  }
-
-  selectCondition(orderNum: any, index: number, event: any) {
-    if (index == 1) {
-      this.removeFromListString(this.conditionNameReal, event);
-      if (this.conditionNameReal.length == 0) {
-        this.removeFromListString(this.colReal, 'Tên');
-      }
-    } else if (index == 2) {
-      this.removeFromListString(this.conditionTimeReal, event);
-      if (this.conditionTimeReal.length == 0) {
-        this.removeFromListString(this.colReal, 'Thời gian chỉnh sửa');
-      }
-    } else if (index == 3) {
-      const filteredItems = this.dataFilter.filter(
-        (item) => item.condition == event && item.name == 'Dung lượng'
-      );
-      if (filteredItems.length >= 4) {
-        this.removeFromListString(this.conditionCapacityReal, event);
-      }
-    }
-
-    let indexLog = this.dataFilterLog.findIndex(
-      (item) => item.orderNum === orderNum
-    );
-    const dataLog = this.dataFilterLog[indexLog];
-    if (dataLog.condition != '' && dataLog.condition != event) {
-      this.addToReality(dataLog);
-    }
-
-    Promise.resolve().then(() => {
-      this.dataFilterLog = JSON.parse(JSON.stringify(this.dataFilter));
-    });
-  }
-
-  selectType(condition: string, event: any) {
-    if (condition == 'Lớn hơn') {
-      this.removeFromListString(this.capMoreTypeReal, event);
-    } else if (condition == 'Nhỏ hơn') {
-      this.removeFromListString(this.capLessTypeReal, event);
-    }
-  }
-
-  removeFromListString(listData: any, string: any) {
-    const index: number = listData.findIndex((item) => item == string);
-    if (index != -1) {
-      listData.splice(index, 1);
-    }
-  }
-
-  addtoListString(listData: any, string: any) {
-    if (string != '') {
-      const index: number = listData.findIndex((item) => item == string);
-      if (index == -1) {
-        listData.push(string);
-      }
-    }
-  }
-
-  deleteFilter(string: any) {
-    const index: number = this.dataFilter.findIndex(
-      (item) => item.orderNum == string
-    );
-    if (index != -1) {
-      let data = Object.assign({}, this.dataFilter[index]);
-      this.addToReality(data);
-      this.dataFilter.splice(index, 1);
-      if (this.dataFilter.length < 14) {
-        this.isVisibleAddFilte = true;
-      }
-    }
-  }
-
-  addToReality(data: any) {
-    this.addtoListString(this.colReal, data.name);
-    if (data.name == 'Tên') {
-      this.addtoListString(this.conditionNameReal, data.condition);
-    } else if (data.name == 'Thời gian chỉnh sửa') {
-      this.addtoListString(this.conditionTimeReal, data.condition);
-    } else if (data.name == 'Dung lượng') {
-      this.addtoListString(this.conditionCapacityReal, data.condition);
-      if (data.type != '' && data.condition == 'Lớn hơn') {
-        this.addtoListString(this.capMoreTypeReal, data.type);
-      } else if (data.type != '' && data.condition == 'Nhỏ hơn') {
-        this.addtoListString(this.capLessTypeReal, data.type);
-      }
-    }
-  }
-
-  addFilter() {
-    let filter = cloneDeep(this.defaultDataFilter);
-    console.log(filter);
-
-    filter.orderNum = this.orderNum++;
-    console.log(this.dataFilter);
-    
-    this.dataFilter.push(filter);
-    if (this.dataFilter.length >= 14) {
-      this.isVisibleAddFilte = false;
-    }
-  }
-
-  private clearData(item: any) {
-    item.condition = '';
-    item.value = '';
-    item.type = '';
-  }
 
   toFolder1(item: any, isBucket) {
     if (isBucket) {
@@ -429,24 +219,26 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   createFolder() {
-    this.isVisibleCreateFolder = false;
+    this.isLoadingCreateFolder = true
     let data = {
       bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
       folderName: this.currentKey + this.nameFolder,
     };
     this.service
-      .createFolder(data)
-      .pipe(
-        finalize(() => {
-          this.loadData();
-        })
-      )
-      .subscribe(
-        () => {
+    .createFolder(data)
+    .pipe(
+      finalize(() => {
+        this.isLoadingCreateFolder = false
+      })
+    )
+    .subscribe(
+      () => {
+          this.isVisibleCreateFolder = false;
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.bucket.detail.createFolder.name.success')
           );
+          this.loadData();
         },
         (error) => {
           this.notification.error(
@@ -552,7 +344,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   onAllChecked(isAddAll: boolean): void {
-    this.listOfData.forEach(item => this.updateCheckedSet(isAddAll, item));
+    this.listOfData.forEach((item) => this.updateCheckedSet(isAddAll, item));
     this.refreshCheckedStatus();
   }
 
@@ -561,7 +353,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.service
       .getData(
         this.activatedRoute.snapshot.paramMap.get('name'),
-        this.currentKey + this.folderNameLike,
+        this.currentKey + this.value.trim(),
         this.filterQuery,
         this.tokenService.get()?.userId,
         '',
@@ -614,7 +406,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   deleteFolder() {
-    this.isVisibleDelete = false;
+    this.isLoadingDeleteObject = true
     let data = {
       bucketName: this.dataAction.bucketName,
       selectedItems: [this.dataAction],
@@ -623,15 +415,17 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       .deleteObject(data)
       .pipe(
         finalize(() => {
-          this.loadData();
+          this.isLoadingDeleteObject = false
         })
       )
       .subscribe(
         () => {
+          this.isVisibleDelete = false;
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.bucket.detail.deleteObject.success')
           );
+          this.loadData();
         },
         (error) => {
           this.notification.error(
@@ -784,7 +578,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   editPermission() {
-    this.isVisiblePermission = false;
+    this.isLoadingAuthorize = true
     if (
       (this.dataAction.isPublic == true && this.activePrivate == true) ||
       (this.dataAction.isPublic == false && this.activePrivate == false)
@@ -797,15 +591,17 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         )
         .pipe(
           finalize(() => {
-            this.loadData();
+            this.isLoadingAuthorize = false
           })
         )
         .subscribe(
           () => {
+            this.isVisiblePermission = false;
             this.notification.success(
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.bucket.detail.authorize.success')
             );
+            this.loadData();
           },
           (error) => {
             this.notification.error(
@@ -859,7 +655,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   deleteFolderVersion() {
-    this.isVisibleDeleteVersion = false;
+    this.isLoadingDeleteVersion = true
     let data = {
       bucketName: this.dataAction.bucketName,
       objectType: this.dataAction.objectType,
@@ -871,16 +667,18 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       .deleteObjectSimple(data)
       .pipe(
         finalize(() => {
-          this.loadDataVersion();
-          this.loadData();
+          this.isVisibleDeleteVersion = false
         })
       )
       .subscribe(
         () => {
+          this.isVisibleDeleteVersion = false;
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.bucket.detail.deleteVerision.success')
           );
+          this.loadDataVersion();
+          this.loadData();
         },
         (error) => {
           this.notification.error(
@@ -892,7 +690,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   restoreObjectVersion() {
-    this.isVisibleRestoreVersion = false;
+    this.isLoadingRestoreVersion = true
     let data = {
       bucketName: this.dataAction.bucketName,
       key: this.dataAction.key,
@@ -902,16 +700,18 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       .restoreObject(data)
       .pipe(
         finalize(() => {
-          this.loadDataVersion();
-          this.loadData();
+          this.isLoadingRestoreVersion = false
         })
       )
       .subscribe(
         () => {
+          this.isVisibleRestoreVersion = false;
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.bucket.detail.restoreVerision.success')
           );
+          this.loadDataVersion();
+          this.loadData();
         },
         (error) => {
           this.notification.error(
@@ -958,7 +758,10 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     console.log(filesToUpload);
 
     if (filesToUpload.length == 0) {
-      this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.bucket.detail.uploadFile.warning'));
+      this.notification.warning(
+        this.i18n.fanyi('app.status.warning'),
+        this.i18n.fanyi('app.bucket.detail.uploadFile.warning')
+      );
     } else {
       const uploadNextFile = (index) => {
         if (index < filesToUpload.length) {
@@ -976,7 +779,10 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   uploadSingleFile(item) {
     if (item.uploaded) {
-      this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.bucket.detail.uploadFile.warning1'));
+      this.notification.warning(
+        this.i18n.fanyi('app.status.warning'),
+        this.i18n.fanyi('app.bucket.detail.uploadFile.warning1')
+      );
       return Promise.resolve();
     }
     var chunkCounter = 0;
@@ -1066,14 +872,14 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               item.uploaded = true;
               this.notification.success(
                 this.i18n.fanyi('app.status.success'),
-                this.i18n.fanyi('app.bucket.detail.updateFile.success')
+                this.i18n.fanyi('app.bucket.detail.uploadFile.success')
               );
               this.loadData();
               resolve();
             } else {
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
-                this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+                this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
               );
               reject();
             }
@@ -1082,7 +888,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           xhr.onerror = () => {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+              this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
             );
             reject();
           };
@@ -1140,7 +946,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               xhr.onerror = () => {
                 this.notification.error(
                   this.i18n.fanyi('app.status.fail'),
-                  this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+                  this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
                 );
                 this.uploadFailed = true;
                 item.percentage = 100;
@@ -1164,7 +970,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             (error) => {
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
-                this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+                this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
               );
             }
           );
@@ -1195,7 +1001,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               item.isUpload = true;
               this.notification.success(
                 this.i18n.fanyi('app.status.success'),
-                this.i18n.fanyi('app.bucket.detail.updateFile.success')
+                this.i18n.fanyi('app.bucket.detail.uploadFile.success')
               );
               this.loadData();
               resolve();
@@ -1203,7 +1009,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             xhr.onerror = () => {
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
-                this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+                this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
               );
               reject();
             };
@@ -1212,7 +1018,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           (error) => {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              this.i18n.fanyi('app.bucket.detail.updateFile.fail')
+              this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
             );
             reject();
           }

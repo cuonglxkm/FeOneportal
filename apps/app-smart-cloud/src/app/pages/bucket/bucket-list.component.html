@@ -4,14 +4,17 @@
   [title]="'app.bucket.manage' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item
         ><a [routerLink]="['/']">{{
           'app.breadcrumb.home' | i18n
         }}</a></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item> Bucket </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Bucket</nz-breadcrumb-item>
     </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   </ng-template>
 </page-header>
 <nz-card *ngIf="hasOS" style="border-radius: 4px" [nzBordered]="false">
@@ -111,7 +114,8 @@
           name="name"
           nz-input
           [placeholder]="'app.placeholder.search' | i18n"
-          [(ngModel)]="searchValue"
+          [(ngModel)]="value"
+          #searchBox (keyup.enter)="searchBucket(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
         />
       </nz-input-group>
       <ng-template #prefixIconSearch>
@@ -119,7 +123,7 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          [nz-tooltip]="'app.button.search' | i18n"
+          
           (click)="search()"
         />
       </ng-template>
