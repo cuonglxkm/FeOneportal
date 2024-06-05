@@ -65,6 +65,8 @@ export class PaymentSummaryComponent implements OnInit {
   customerType: any
   customerTypes: any
   email: string
+  totalPayment: number;
+  totalVAT: number
   formCreatUserInvoice: FormCreateUserInvoice = new FormCreateUserInvoice()
   isExportInvoice: boolean = false
   isCheckedExportInvoice: boolean = false
@@ -103,6 +105,8 @@ export class PaymentSummaryComponent implements OnInit {
       this.order.createdByUserId = myOrder.createdByUserId;
       this.order.note = myOrder.note;
       this.order.orderItems = myOrder.orderItems;
+      this.totalPayment = myOrder.totalPayment;
+      this.totalVAT = myOrder.totalVAT;
       console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
         console.log(e);
@@ -324,6 +328,25 @@ export class PaymentSummaryComponent implements OnInit {
     address: ['', [Validators.required]]
   });
 
+  changeOptionInvoices(value: string) {
+    console.log(this.radioValue);
+    if(this.radioValue === 2){
+      this.formExportInvoice.controls.address.clearValidators()
+      this.formExportInvoice.controls.address.updateValueAndValidity()
+      this.formExportInvoice.controls.taxCode.clearValidators()
+      this.formExportInvoice.controls.taxCode.updateValueAndValidity()
+      this.formExportInvoice.controls.phoneNumber.clearValidators()
+      this.formExportInvoice.controls.phoneNumber.updateValueAndValidity()
+    }else{
+      this.formExportInvoice.controls.address.setValidators(Validators.required)
+      this.formExportInvoice.controls.address.updateValueAndValidity()
+      this.formExportInvoice.controls.taxCode.setValidators(Validators.pattern(/^[0-9-]+$/))
+      this.formExportInvoice.controls.taxCode.updateValueAndValidity()
+      this.formExportInvoice.controls.phoneNumber.setValidators([Validators.required, AppValidator.validPhoneNumber])
+      this.formExportInvoice.controls.phoneNumber.updateValueAndValidity()
+    }
+  }
+
   listDiscount: Discount[] = [];
   discountPicked: string = '';
   getListDiscount() {
@@ -400,7 +423,12 @@ export class PaymentSummaryComponent implements OnInit {
         let customerGroupFilter =  this.customerGroups.filter((item) => item.id === this.customerGroup)
         this.customerTypes = customerGroupFilter[0].customerTypes
         this.customerType = this.customerTypes[0].id
-        
+        if(this.customerType === 1){
+          this.formCustomerInvoice.controls.taxCode.clearValidators()
+          this.formCustomerInvoice.controls.taxCode.updateValueAndValidity()
+        }else{
+          this.formCustomerInvoice.controls.taxCode.setValidators([Validators.required, Validators.pattern(/^[0-9-]+$/)])
+        }
       }, 
       error: (e) => {
         this.notification.error(
@@ -417,6 +445,15 @@ export class PaymentSummaryComponent implements OnInit {
     let customerGroupFilter = this.customerGroups.filter((item) => item.id === id)
     this.customerTypes = customerGroupFilter[0].customerTypes
     this.customerType = this.customerTypes[0].id
+    console.log(this.customerType);
+    
+    if(this.customerType === 1){
+      this.formCustomerInvoice.controls.taxCode.clearValidators()
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity()
+    }else{
+      this.formCustomerInvoice.controls.taxCode.setValidators([Validators.required, Validators.pattern(/^[0-9-]+$/)])
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity()
+    }
   }
 
 

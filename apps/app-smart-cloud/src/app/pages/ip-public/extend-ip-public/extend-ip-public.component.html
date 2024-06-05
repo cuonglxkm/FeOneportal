@@ -38,8 +38,8 @@
         </div>
       </nz-card>
       <form nz-form nzLayout="vertical">
-        <one-portal-service-time-extend [createDate]="dateString"
-                                        [expiredDate]="ipInfo?.expiredDate"
+        <one-portal-service-time-extend *ngIf="ipInfo != undefined" [createDate]="dateString"
+                                        [expiredDate]="ipInfo.expiredDate"
                                         (valueChanged)="onChangeTime($event)"/>
       </form>
     </nz-col>

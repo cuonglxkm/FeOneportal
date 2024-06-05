@@ -48,7 +48,7 @@ export class DeleteAccessRuleComponent {
 
       this.isVisible = false;
       this.isLoading = false;
-      this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.access.to.delete.success'));
+      //this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.access.to.delete.success'));
       this.onOk.emit(data);
     }, error => {
       this.isVisible = false;
