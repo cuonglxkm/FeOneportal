@@ -243,11 +243,17 @@ export class CreateVolumeVpcComponent implements OnInit {
 
     console.log('Selected option changed ssd:', this.selectedValueSSD);
     if (this.selectedValueSSD) {
+
       this.volumeCreate.volumeType = 'ssd';
+
+      this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
+
       this.validateForm.controls.storage.reset();
       this.validateForm.controls.storage.markAsDirty();
       this.validateForm.controls.storage.updateValueAndValidity();
-      this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
+
+
+
       if (this.validateForm.get('storage').value <= 40) {
         this.iops = 400;
       } else {
@@ -257,19 +263,21 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   }
 
-
   onChangeStatusHDD() {
     this.selectedValueHDD = true;
     this.selectedValueSSD = false;
     console.log('Selected option changed hdd:', this.selectedValueHDD);
     // this.iops = this.validateForm.get('storage').value * 10
     if (this.selectedValueHDD) {
+
       this.volumeCreate.volumeType = 'hdd';
+
+      this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
+
       this.validateForm.controls.storage.reset();
       this.validateForm.controls.storage.markAsDirty();
       this.validateForm.controls.storage.updateValueAndValidity();
 
-      this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
       this.iops = 300;
     }
   }
