@@ -244,6 +244,10 @@ import {
 } from '@ngu/carousel';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { UpdateBackupPackageComponent } from './backup-package/update/update-backup-package.component';
+import { SnapshotCreateComponent } from './snapshot/create/snapshot-create.component';
+import { SnapshotListComponent } from './snapshot/list/snapshot-list.component';
+import { SnapshotDeleteComponent } from './snapshot/delete/snapshot-delete.component';
+import { SnapshotEditComponent } from './snapshot/edit/snapshot-edit.component';
 import { RestoreBackupVmVpcComponent } from './backup-vm/restore-backup-vm-vpc/restore-backup-vm-vpc.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
@@ -463,6 +467,12 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DeleteBackupVolumeComponent,
     RestoreBackupVmComponent,
     UpdateBackupPackageComponent,
+    SnapshotCreateComponent,
+    SnapshotCreateComponent,
+    SnapshotCreateComponent,
+    SnapshotListComponent,
+    SnapshotDeleteComponent,
+    SnapshotEditComponent,
     RestoreBackupVmVpcComponent,
   ],
   imports: [
