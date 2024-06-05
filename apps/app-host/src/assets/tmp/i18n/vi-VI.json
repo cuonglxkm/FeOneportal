@@ -344,6 +344,14 @@
   "app.list.subnet": "Danh sách Subnet",
   "app.list.ip.of.vlan": "Danh sách IP trên VLAN",
   "app.input.name.snapshot": "Nhập tên File System Snapshot",
+  "app.file.snapshot.create.success": "Yêu cầu tạo File System Snapshot thành công.",
+  "app.file.snapshot.create.fail": "Yêu cầu tạo File System Snapshot thất bại.",
+  "app.file.snapshot.delete.success": "Xoá File System Snapshot thành công.",
+  "app.file.snapshot.delete.fail": "Xoá File System Snapshot thất bại.",
+  "app.file.snapshot.edit.success": "Cập nhật File System Snapshot thành công.",
+  "app.file.snapshot.edit.fail": "Cập nhật File System Snapshot thất bại.",
+  "app.file.storage.not.exist": "File System Snapshot không tồn tại!",
+
 
   "app.alert.password": "Quy tắc đặt mật khẩu: Độ dài của một mật khẩu được sử dụng trực tuyến cần phải chứa tối thiểu là 12 ký tự, sử dụng hỗn hợp bao gồm các chữ số, chữ hoa, chữ thường và ký hiệu đặc biệt.",
   "app.alert.security.group": "Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần cấu hình Security Group trong mục",

@@ -125,16 +125,16 @@
           </nz-col>
           <nz-col nzSpan="12">
             <nz-row>
-              <nz-col nzSpan="14">
+              <nz-col nzSpan="18">
                 <span class="text-label">{{'app.file.system.total.size'|i18n}}:</span>
                 <img nz-popover
                      [nzPopoverContent]="'app.file.system.capacity.vpc' | i18n"
                      nzPopoverPlacement="bottom" style="margin-left: 6px; margin-bottom: 3px;"
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-col>
-              <nz-col nzSpan="10">
+              <nz-col nzSpan="6">
                 <span class="text-label">
-                  <nz-row style="text-align: right;">
+                  <nz-row  style="text-align: right; gap: 5px;">
                     <nz-col nzSpan="4">{{ storageBuyVpc }}</nz-col>
                     <nz-col nzSpan="4">(GB)</nz-col>
                   </nz-row>
@@ -142,12 +142,12 @@
               </nz-col>
             </nz-row>
             <nz-row>
-              <nz-col nzSpan="14">
+              <nz-col nzSpan="18">
                 <span class="text-label">{{'app.backup.package.storage.used'|i18n}}:</span>
               </nz-col>
-              <nz-col nzSpan="10">
+              <nz-col nzSpan="6">
                 <span class="text-label">
-                  <nz-row style="text-align: right;">
+                  <nz-row style="text-align: right; gap: 5px;">
                     <nz-col nzSpan="4">{{ storageUsed }}</nz-col>
                     <nz-col nzSpan="4">(GB)</nz-col>
                   </nz-row>
@@ -155,12 +155,12 @@
               </nz-col>
             </nz-row>
             <nz-row>
-              <nz-col nzSpan="14">
+              <nz-col nzSpan="18">
                 <span class="text-label">{{'Dung lượng còn lại'|i18n}}:</span>
               </nz-col>
-              <nz-col nzSpan="10">
+              <nz-col nzSpan="6">
                 <span class="text-label">
-                  <nz-row style="text-align: right;">
+                  <nz-row style="text-align: right; gap: 5px;">
                     <nz-col nzSpan="4">{{ storageRemaining }}</nz-col>
                     <nz-col nzSpan="4">(GB)</nz-col>
                   </nz-row>
