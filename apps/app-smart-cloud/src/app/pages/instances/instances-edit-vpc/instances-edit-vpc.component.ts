@@ -129,7 +129,7 @@ export class InstancesEditVpcComponent implements OnInit {
         ) {
           this.isConfigGpuAtInitial = true;
           this.isGpuConfig = true;
-          this.gpuTypeOfferId = this.listGPUType.filter(
+          this.gpuOfferId = this.listGPUType.filter(
             (e) =>
               e.characteristicValues[0].charOptionValues[0] ==
               this.instancesModel.gpuType
@@ -248,7 +248,7 @@ export class InstancesEditVpcComponent implements OnInit {
   ram: number = 0;
   storage: number = 0;
   GPU: number = 0;
-  gpuTypeOfferId: number = 0;
+  gpuOfferId: number = 0;
   instanceResize: InstanceResize = new InstanceResize();
   instanceResizeInit() {
     this.instanceResize.description = null;
@@ -262,9 +262,9 @@ export class InstancesEditVpcComponent implements OnInit {
       this.instanceResize.ram = this.ram + this.instancesModel.ram;
       this.instanceResize.storage = this.storage + this.instancesModel.storage;
       this.instanceResize.gpuCount = this.GPU + this.instancesModel.gpuCount;
-      if (this.gpuTypeOfferId) {
+      if (this.gpuOfferId) {
         this.instanceResize.gpuType = this.listGPUType.filter(
-          (e) => e.id == this.gpuTypeOfferId
+          (e) => e.id == this.gpuOfferId
         )[0].characteristicValues[0].charOptionValues[0];
       } else {
         this.instanceResize.gpuType = this.instancesModel.gpuType;
@@ -293,7 +293,7 @@ export class InstancesEditVpcComponent implements OnInit {
     this.cdr.detectChanges();
     if (
       this.isGpuConfig == true &&
-      (this.GPU == 0 || this.gpuTypeOfferId == 0) &&
+      (this.GPU == 0 || this.gpuOfferId == 0) &&
       (this.instancesModel.gpuCount == null ||
         this.instancesModel.gpuCount == 0)
     ) {
