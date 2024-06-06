@@ -43,7 +43,9 @@
   "service.status.violation": "Vi phạm điều khoản",
   "service.status.deleting": "Đang xóa",
   "service.status.error": "Lỗi",
+  "service.status.restoring": "Restoring",
   "service.status.unknown": "Không xác định",
+  
 
   "form.clear.local.storage": "Làm sạch Local Storage",
   "form.account.information": "Thông tin tài khoản",

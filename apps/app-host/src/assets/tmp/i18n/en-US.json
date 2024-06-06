@@ -418,7 +418,10 @@
   "service.status.violation": "Violation of terms",
   "service.status.deleting": "Deleting",
   "service.status.error": "Error",
+  "service.status.restoring": "Restoring",
   "service.status.unknown": "Unknown ",
+  
+
 
   "app.breadcrumb.home": "Home",
   "app.breadcrumb.infrastructure.service": "Infrastructure service",
