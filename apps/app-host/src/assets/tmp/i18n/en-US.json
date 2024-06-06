@@ -3089,6 +3089,8 @@
   "app.vpn.connection-create.deadpeer.interval.tooltip": "Dead peer detection interval: Value of the time period in which the Dead peer detection timer will send test packets.",
   "app.vpn.connection-create.deadpeer.timeout.tooltip": "Dead peer detection timeout: Status determination time is the timeout when no status response packet is received.",
   "app.vpn.connection-create.initstate.tooltip": "Initiator state: Is the initialization state: including bi-directional and response-only.",
+  "vlan.title":"LAN Network (VLAN)",
+  "app.vpn.connection-create.initstate.tooltip": "Initiator state: Is the initialization state: including bi-directional and response-only.",
   "app.ike.policy-detail": "IKE Policy Detail",
   "app.ipsec.policy-detail": "Ipsec Policy Detail",
   "app.vpn.service.policy-detail": "VPN Service Detail",
@@ -3176,5 +3178,6 @@
   "app.vpn-connection-delete.success": "Delete VPN Connection sucessfully",
   "app.vpn-connection-delete.fail": "Delete VPN Connection failed",
 
-  "app.router.name" : "Routers name"
+  "app.router.name" : "Routers name",
+  "app.load.listener.name" : "Listener name"
 }
