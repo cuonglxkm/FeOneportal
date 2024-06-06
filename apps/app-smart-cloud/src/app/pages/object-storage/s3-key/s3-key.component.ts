@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { LoadingService } from '@delon/abc/loading';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize } from 'rxjs/operators';
+import { debounceTime, finalize } from 'rxjs/operators';
 import { formDeleteS3Key, s3KeyCreate, s3KeyGenerate } from 'src/app/shared/models/s3key.model';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
@@ -12,6 +12,7 @@ import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { Subject } from 'rxjs';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-s3-key',
@@ -22,7 +23,7 @@ export class S3KeyComponent implements OnInit {
   size = 10;
   index: number = 1;
   total: number = 0;
-  loading = false;
+  isLoading: boolean = false;
   listOfS3Key: any;
   isVisibleDelete = false;
   isVisibleReCreate = false;
@@ -54,20 +55,15 @@ export class S3KeyComponent implements OnInit {
 
   ngOnInit(): void {
     this.hasObjectStorage();
+    this.getData()
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+      this.getData();
+    });
   }
 
   search(search: string) {  
-    this.value = search
-    console.log(this.value);
-    
-    if (!this.value || this.value.trim() === "") { 
-      this.listOfS3Key = this.response.records; 
-    } else {
-      this.listOfS3Key = this.response.records.filter(item => 
-       item.subUser.toLowerCase().includes(this.value.toLowerCase())
-      ); 
-    }
-    
+    this.value = search.trim();
+    this.getData()
   }
 
   hasOS: boolean = undefined;
@@ -123,7 +119,9 @@ export class S3KeyComponent implements OnInit {
   }
 
   getData() {
+    this.isLoading = true
     this.service.getDataS3Key(this.value.trim(), this.size, this.index).subscribe((data) => {
+      this.isLoading = false
       this.total = data.totalCount;
       this.response = data
       this.listOfS3Key = data.records;
