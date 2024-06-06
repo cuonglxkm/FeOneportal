@@ -69,7 +69,7 @@ export class DeleteFileSystemSnapshotComponent{
           if(data) {
             this.isVisible = false
             this.isLoading =  false
-            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.snapshot.delete.success'))
+            // this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.snapshot.delete.success'))
             this.validateForm.reset()
             this.onOk.emit(data)
           }
