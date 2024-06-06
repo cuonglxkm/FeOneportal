@@ -45,7 +45,7 @@
   "service.status.error": "Lỗi",
   "service.status.restoring": "Restoring",
   "service.status.unknown": "Không xác định",
-  
+
 
   "form.clear.local.storage": "Làm sạch Local Storage",
   "form.account.information": "Thông tin tài khoản",
@@ -1632,7 +1632,7 @@
   "mongodb.monitoring.alert-1": "Click và kéo trên biểu đồ để ",
   "mongodb.monitoring.alert-2": " đến 1 vùng cụ thể. Double click vào biểu đồ để ",
   "mongodb.monitoring.alert-3": " về thời gian hiển thị ban đầu.",
-  
+
   "mongodb.create.title": "Khởi tạo MongoDB Cluster",
   "mongodb.create.name": "Tên MongoDB Cluster",
   "mongodb.create.name-placeholder": "Nhập tên MongoDB Cluster",
@@ -2338,6 +2338,7 @@
   "app.ip.floating23": "Dải network bị hết IP, xin vui lòng chọn dải IP khác!",
   "app.button.remove": "Xóa",
 
+  "app.vlan.title": "Mạng LAN (VLAN)",
   "app.vlan.create": "Tạo mới Network",
   "app.vlan.note1": "Danh sách Network",
   "app.vlan.note2": "Địa chỉ Subnet",

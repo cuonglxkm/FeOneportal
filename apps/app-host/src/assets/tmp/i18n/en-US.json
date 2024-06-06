@@ -420,7 +420,7 @@
   "service.status.error": "Error",
   "service.status.restoring": "Restoring",
   "service.status.unknown": "Unknown ",
-  
+
 
 
   "app.breadcrumb.home": "Home",
@@ -1721,7 +1721,7 @@
   "mongodb.overview.chart-connection.series": "Num of connections",
   "mongodb.overview.chart-logicalSize.name": "Sum total size of the document and index data (MB)",
   "mongodb.overview.chart-opcounter.name": "Num of Operations/s",
-  
+
   "mongo.db.monitoring":"Monitoring",
   "mongodb.monitoring.auto": "Auto",
   "mongodb.monitoring.minutes": "minutes",
@@ -2442,6 +2442,8 @@
   "app.ip.floating22": "Create New IP floating",
   "app.ip.floating23": "Network range is out of IP, please choose another IP range!",
   "app.button.remove": "Remove",
+
+  "app.vlan.title": "LAN Network (VLAN)",
   "app.vlan.create": "Create Network",
   "app.vlan.note1": "Network list",
   "app.vlan.note2": "Subnet address",
