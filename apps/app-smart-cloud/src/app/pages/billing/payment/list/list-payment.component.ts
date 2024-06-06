@@ -209,7 +209,7 @@ export class ListPaymentComponent implements OnInit{
     this.paymentService.exportInvoice(id).subscribe((data) => {
       const element = document.createElement('div');
       element.style.width = '268mm';
-      element.style.height = '297mm';
+      element.style.height = '371mm';
       if (typeof data === 'string' && data.trim().length > 0) {
         element.innerHTML = data;
         
