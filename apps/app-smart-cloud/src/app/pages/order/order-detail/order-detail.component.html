@@ -281,7 +281,7 @@
             <span nz-icon nzType="shop" nzTheme="outline"></span>
             {{ 'app.order-detail.repurchase' | i18n }}
           </button>
-          <button *ngIf="data?.statusCode < 2" nz-button nzType="primary" style="
+          <button *ngIf="data?.statusCode < 2" (click)="pay()" nz-button nzType="primary" style="
               width: 100%;
               display: flex;
               align-items: center;

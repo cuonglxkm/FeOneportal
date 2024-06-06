@@ -1,0 +1,127 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'app.load.balancer.manage' | i18n" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+      <nz-breadcrumb-item>{{
+          'app.breadcrumb.home' | i18n
+        }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{
+          'app.breadcrumb.infrastructure.service' | i18n
+        }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #separatorTemplate
+    ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card>
+    <ng-container [ngSwitch]="isBegin">
+      <ng-container *ngSwitchCase="false">
+        <nz-row nzJustify="space-between">
+          <nz-col nzSpan="12">
+            <!--            <span class="text-card-header">{{ 'app.load.balancer.list' | i18n }}</span>-->
+            <nz-input-group style="width: 350px; margin-right: 15px;" [nzPrefix]="prefixIconSearch" nzSize="large">
+              <input name="name"
+                     nz-input
+                     [(ngModel)]="value"
+                     (ngModelChange)="searchDelay.next(false)"
+                     [placeholder]="'app.load.balancer.search' | i18n"
+                     (keydown.enter)="search(false)"/>
+            </nz-input-group>
+            <ng-template #prefixIconSearch>
+              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" />
+            </ng-template>
+          </nz-col>
+          <nz-col nzSpan="12" style="flex:none;">
+            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+              <span class="button-text-primary">{{ 'app.button.load.balancer.create' | i18n }}</span>
+            </button>
+          </nz-col>
+        </nz-row>
+        <nz-table #fixedTable
+                  style="margin-top: 20px;"
+                  [nzData]="response?.records || []"
+                  [nzPageSize]="response?.pageSize"
+                  (nzPageSizeChange)="onPageSizeChange($event)"
+                  [nzPageIndex]="response?.currentPage"
+                  (nzPageIndexChange)="onPageIndexChange($event)"
+                  [nzTotal]="response?.totalCount"
+                  [nzFrontPagination]="false"
+                  nzShowPagination
+                  [nzLoading]="isLoading">
+          <thead>
+          <tr>
+            <th nzLeft>{{ 'app.snapshot.name' | i18n }}</th>
+            <th nzLeft>Gói Snapshot</th>
+            <th nzLeft>{{ 'app.capacity' | i18n }} GB</th>
+            <th nzLeft>Volume/VM</th>
+            <th nzLeft>Loại Snapshot</th>
+            <th nzLeft>{{ 'app.service.status' | i18n }}</th>
+            <th nzLeft>{{ 'app.users.createDate' | i18n }}</th>
+            <th nzLeft>{{ 'app.action-history.operation' | i18n }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of fixedTable.data">
+            <td>
+              <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt="" style="margin-left: 5px; cursor:pointer;" />
+              <nz-dropdown-menu #opMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item >{{ 'app.text.edit' | i18n}}</li>
+                <li nz-menu-item >{{ 'volume.notification.request.create' | i18n}}</li>
+                <li nz-menu-item style="color: red">{{ 'app.delete' | i18n}}</li>
+              </ul>
+            </nz-dropdown-menu>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <result>
+          <nz-row>
+            <nz-col class="text-center" style="width: 100%">
+              <img src="/assets/imgs/load-balancer-blank.png" alt="" />
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+              <span class="text-intro-title"
+                    style="color: #0066b3">Load Balancer<br>{{ 'app.load.balancing.service' | i18n }}</span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">{{ 'app.load.balancing.intro' | i18n }}<br>
+                  {{ 'app.load.balancing.intro.next' | i18n }}</span>
+            </nz-col>
+          </nz-row>
+          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()"
+                  nzSize="large">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+            {{ 'app.button.load.balancer.create' | i18n }}
+          </button>
+        </result>
+      </ng-container>
+    </ng-container>
+  </nz-card>
+</nz-content>

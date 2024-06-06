@@ -466,7 +466,7 @@ export class InstancesEditComponent implements OnInit {
     ram: number,
     cpu: number,
     gpu: number,
-    gpuTypeOfferId: number
+    gpuOfferId: number
   ) {
     let tempInstance: InstanceResize = new InstanceResize();
     tempInstance.currentFlavorId = this.instancesModel.flavorId;
@@ -477,7 +477,7 @@ export class InstancesEditComponent implements OnInit {
     tempInstance.newFlavorId = 0;
     tempInstance.serviceInstanceId = this.instancesModel.id;
     tempInstance.gpuCount = gpu + this.instancesModel.gpuCount;
-    tempInstance.newGpuOfferId = gpuTypeOfferId;
+    tempInstance.newGpuOfferId = gpuOfferId;
     if (this.configGPU.gpuOfferId) {
       tempInstance.gpuType = this.listGPUType.filter(
         (e) => e.id == this.configGPU.gpuOfferId
@@ -624,6 +624,7 @@ export class InstancesEditComponent implements OnInit {
   minCapacity: number;
   maxCapacity: number;
   stepCapacity: number;
+  surplus: number;
   getConfigurations() {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {
@@ -631,6 +632,8 @@ export class InstancesEditComponent implements OnInit {
         this.minCapacity = valueArray[0];
         this.stepCapacity = valueArray[1];
         this.maxCapacity = valueArray[2];
+        this.surplus = valueArray[2] % valueArray[1];
+        this.cdr.detectChanges();
       },
     });
   }
@@ -641,6 +644,10 @@ export class InstancesEditComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
+      if (res > this.maxCapacity) {
+        this.configCustom.capacity = this.maxCapacity - this.surplus;
+        this.cdr.detectChanges();
+      }
       if (this.configCustom.capacity % this.stepCapacity > 0) {
         this.notification.warning(
           '',

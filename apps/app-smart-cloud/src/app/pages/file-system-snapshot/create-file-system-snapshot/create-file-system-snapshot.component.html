@@ -82,44 +82,93 @@
             </nz-select>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item>
-          <nz-form-control [nzErrorTip]="nameErrorTpl">
-            <nz-form-label nzFor="name">
-              <div>
-                <span>{{ 'app.snapshot.name' | i18n }}</span>
-                (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                <img
-                  nz-popover
-                  [nzPopoverContent]="
-                    'app.file.system.snapshot.name.tooltip' | i18n
-                  "
-                  nzPopoverPlacement="bottom"
-                  style="margin-left: 5px"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
+        <nz-row nzGutter="40">
+          <nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="nameErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>{{ 'app.snapshot.name' | i18n }}</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                    <img
+                      nz-popover
+                      [nzPopoverContent]="
+                        'app.file.system.snapshot.name.tooltip' | i18n
+                      "
+                      nzPopoverPlacement="bottom"
+                      style="margin-left: 5px"
+                      src="assets/imgs/pajamas_question.svg"
+                      alt=""
+                    />
+                  </div>
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  required
+                  appTrim
+                  [placeholder]="'app.input.name.snapshot' | i18n"
+                  formControlName="nameSnapshot"
+                  class="input-custom"
+                  [maxLength]="50"
                 />
-              </div>
-            </nz-form-label>
-            <input
-              nz-input
-              type="text"
-              required
-              appTrim
-              [placeholder]="'app.input.name.snapshot' | i18n"
-              formControlName="nameSnapshot"
-              class="input-custom"
-              [maxLength]="50"
-            />
-            <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">{{
-                'validation.snapshot.info.required' | i18n
-              }}</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">{{
-                'validation.snapshot.name.pattern' | i18n
-              }}</ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
+                <ng-template #nameErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">{{
+                    'validation.snapshot.info.required' | i18n
+                  }}</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">{{
+                    'validation.snapshot.name.pattern' | i18n
+                  }}</ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row>
+              <nz-col nzSpan="18">
+                <span class="text-label">{{'app.file.system.total.size'|i18n}}:</span>
+                <img nz-popover
+                     [nzPopoverContent]="'app.file.system.capacity.vpc' | i18n"
+                     nzPopoverPlacement="bottom" style="margin-left: 6px; margin-bottom: 3px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </nz-col>
+              <nz-col nzSpan="6">
+                <span class="text-label">
+                  <nz-row  style="text-align: right; gap: 5px;">
+                    <nz-col nzSpan="4">{{ storageBuyVpc }}</nz-col>
+                    <nz-col nzSpan="4">(GB)</nz-col>
+                  </nz-row>
+                </span>
+              </nz-col>
+            </nz-row>
+            <nz-row>
+              <nz-col nzSpan="18">
+                <span class="text-label">{{'app.backup.package.storage.used'|i18n}}:</span>
+              </nz-col>
+              <nz-col nzSpan="6">
+                <span class="text-label">
+                  <nz-row style="text-align: right; gap: 5px;">
+                    <nz-col nzSpan="4">{{ storageUsed }}</nz-col>
+                    <nz-col nzSpan="4">(GB)</nz-col>
+                  </nz-row>
+                </span>
+              </nz-col>
+            </nz-row>
+            <nz-row>
+              <nz-col nzSpan="18">
+                <span class="text-label">{{'Dung lượng còn lại'|i18n}}:</span>
+              </nz-col>
+              <nz-col nzSpan="6">
+                <span class="text-label">
+                  <nz-row style="text-align: right; gap: 5px;">
+                    <nz-col nzSpan="4">{{ storageRemaining }}</nz-col>
+                    <nz-col nzSpan="4">(GB)</nz-col>
+                  </nz-row>
+                </span>
+              </nz-col>
+            </nz-row>
+          </nz-col>
+        </nz-row>
         <span class="text-label">{{ 'app.service.description' | i18n }}</span>
         <nz-textarea-count [nzMaxCharacterCount]="255">
           <textarea
@@ -214,11 +263,11 @@
       <nz-affix nzOffsetTop="72">
       <nz-card class="card-price">
         <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
-        <div style="margin-bottom: 12px">
+        <div class="text-label" style="margin-bottom: 12px">
           <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>
           <span>{{ selectedFileSystemName }}</span>
         </div>
-        <div style="margin-bottom: 20px">
+        <div class="text-label" style="margin-bottom: 20px">
           <h3 class="custom-subtitle">{{ 'app.snapshot.name' | i18n }}</h3>
           <span class="word-break">{{ form.value.nameSnapshot }}</span>
         </div>
@@ -252,15 +301,15 @@
         <div class="right-title">
           <span class="text-card-header">Chi phí ước tính</span>
         </div>
-        <div style="margin-bottom: 12px">
+        <div class="text-label" style="margin-bottom: 12px">
           <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>
           <span>{{ selectedFileSystemName }}</span>
         </div>
-        <div style="margin-bottom: 20px">
+        <div class="text-label" style="margin-bottom: 20px">
           <h3 class="custom-subtitle">{{ 'app.snapshot.name' | i18n }}</h3>
           <span class="word-break">{{ form.value.nameSnapshot }}</span>
         </div>
-        <div style="margin-bottom: 20px">
+        <div class="text-label" style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Dung lượng File System</h3>
           <span *ngIf="fileSysSize">{{ fileSysSize }} GB</span>
         </div>
@@ -361,12 +410,7 @@
     </ng-container>
   </div>
 </div>
-<div
-  class="text-right"
-  style="
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    height: 100%;
-  "
-></div>
+<one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />

@@ -76,15 +76,15 @@
             <div>
               <!----Gắn----->
               <img *ngIf="item.status != 2 && item.status != 3" style="padding-right: 10px;" src="assets/imgs/add.svg"
-                   nz-tooltip nzTooltipTitle="{{'app.attach' | i18n}} IP Pulbic" nzTooltipPlacement="bottom"
+                   nz-tooltip nzTooltipTitle="{{'app.attach' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gắn Ip Pulbic', item)"/>
               <!---Gỡ------>
               <img *ngIf="item.status == 2 && item.status != 3" style="padding-right: 10px;" src="assets/imgs/cancel.svg"
-                   nz-tooltip nzTooltipTitle="{{'app.detach' | i18n}} IP Pulbic" nzTooltipPlacement="bottom"
+                   nz-tooltip nzTooltipTitle="{{'app.detach' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gỡ Ip Pulbic', item)"/>
               <!---Gia Han------>
               <img *ngIf="projectType != 1 && item.status != 3" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
-                   nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Pulbic" nzTooltipPlacement="bottom"
+                   nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gia hạn Ip Pulbic', item)"/>
               <!----Xóa---->
               <img src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
@@ -97,15 +97,54 @@
       </nz-table>
     </ng-container>
     <ng-container *ngSwitchDefault>
-      <nz-result [nzIcon]="customIcon" nzTitle="{{'app.ip.public.init.title' | i18n}}"
-                 nzSubTitle="{{'app.ip.public.init.subTitle' | i18n}}">
-        <ng-template #customIcon>
-          <img src="assets/imgs/Ip-Public-ver2.png" alt="Custom Icon">
-        </ng-template>
-        <div nz-result-extra>
-          <button (click)="createIp()" nz-button nzSize="large" nzType="primary" *ngIf="projectType != 1">{{'app.ip.public.create.label' | i18n}}</button>
-        </div>
-      </nz-result>
+<!--      <nz-result [nzIcon]="customIcon" nzTitle="{{'app.ip.public.init.title' | i18n}}"-->
+<!--                 nzSubTitle="{{'app.ip.public.init.subTitle' | i18n}}">-->
+<!--        <ng-template #customIcon>-->
+<!--          <img src="assets/imgs/Ip-Public-ver2.png" alt="Custom Icon">-->
+<!--        </ng-template>-->
+<!--        <div nz-result-extra>-->
+<!--          <button (click)="createIp()" nz-button nzSize="large" nzType="primary" *ngIf="projectType != 1">{{'app.ip.public.create.label' | i18n}}</button>-->
+<!--        </div>-->
+<!--      </nz-result>-->
+      <result>
+        <nz-row>
+          <nz-col class="text-center" style="width: 100%">
+            <img src="assets/imgs/Ip-Public-ver2.png" alt="" />
+          </nz-col>
+        </nz-row>
+        <nz-row style="margin-top: 20px">
+          <nz-col class="text-center" style="width: 100%">
+          <span
+            class="text-intro-title"
+            style="color: #0066b3"
+            [innerHTML]="'app.ip.public.init.title' | i18n"
+          >
+          </span
+          ></nz-col>
+        </nz-row>
+        <nz-row style="margin-top: 20px">
+          <nz-col class="text-center" style="width: 100%">
+          <span
+            class="text-intro-desc"
+            [innerHTML]="'app.ip.public.init.subTitle' | i18n"
+          ></span
+          ></nz-col>
+        </nz-row>
+        <button
+          style="margin-top: 20px"
+          nz-button
+          [nzType]="'primary'"
+          (click)="createIp()"
+          nzSize="large"
+        >
+<!--          <img-->
+<!--            style="padding-right: 10px; margin-top: -4px"-->
+<!--            src="assets/imgs/cloud-plus-bold.svg"-->
+<!--            alt=""-->
+<!--          />-->
+          {{ 'app.ip.public.create.label' | i18n }}
+        </button>
+      </result>
     </ng-container>
   </ng-container>
 </nz-card>

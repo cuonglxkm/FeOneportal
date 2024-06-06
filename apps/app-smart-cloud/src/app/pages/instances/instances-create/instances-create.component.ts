@@ -39,7 +39,6 @@ import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { Subject, debounceTime, finalize } from 'rxjs';
-import { addDays, isValid } from 'date-fns';
 import {
   FormSearchNetwork,
   NetWorkModel,
@@ -318,26 +317,26 @@ export class InstancesCreateComponent implements OnInit {
 
   //Kiểm tra khu vực có IPv6
   hasOfferIpv6: boolean = false;
-  checkOfferIpv6() {
-    this.catalogService
-      .getCatalogOffer(101, this.region, null, null)
-      .subscribe({
-        next: (data) => {
-          if (data) {
-            this.hasOfferIpv6 = true;
-          } else {
-            this.hasOfferIpv6 = false;
-          }
-        },
-        error: (e) => {
-          this.notification.error(
-            e.statusText,
-            'Lấy offer ipv6 không thành công'
-          );
-          this.hasOfferIpv6 = false;
-        },
-      });
-  }
+  // checkOfferIpv6() {
+  //   this.catalogService
+  //     .getCatalogOffer(null, this.region, null, 'ipv6')
+  //     .subscribe({
+  //       next: (data) => {
+  //         if (data) {
+  //           this.hasOfferIpv6 = true;
+  //         } else {
+  //           this.hasOfferIpv6 = false;
+  //         }
+  //       },
+  //       error: (e) => {
+  //         this.notification.error(
+  //           e.statusText,
+  //           'Lấy offer ipv6 không thành công'
+  //         );
+  //         this.hasOfferIpv6 = false;
+  //       },
+  //     });
+  // }
 
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
@@ -735,7 +734,7 @@ export class InstancesCreateComponent implements OnInit {
     ram: number,
     cpu: number,
     gpu: number,
-    gpuTypeOfferId: number
+    gpuOfferId: number
   ) {
     let tempInstance: InstanceCreate = new InstanceCreate();
     tempInstance.imageId = this.hdh;
@@ -747,7 +746,7 @@ export class InstancesCreateComponent implements OnInit {
     tempInstance.ram = ram;
     tempInstance.cpu = cpu;
     tempInstance.gpuCount = gpu;
-    tempInstance.gpuTypeOfferId = gpuTypeOfferId;
+    tempInstance.gpuOfferId = gpuOfferId;
     if (this.configGPU.gpuOfferId) {
       tempInstance.gpuType = this.listGPUType.filter(
         (e) => e.id == this.configGPU.gpuOfferId
@@ -863,7 +862,7 @@ export class InstancesCreateComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
-      if (res > this.maxCapacity - this.surplus) {
+      if (res > this.maxCapacity) {
         this.configCustom.capacity = this.maxCapacity - this.surplus;
         this.cdr.detectChanges();
       }
@@ -1294,7 +1293,7 @@ export class InstancesCreateComponent implements OnInit {
           (e) => e.id == this.configGPU.gpuOfferId
         )[0].characteristicValues[0].charOptionValues[0];
       }
-      this.instanceCreate.gpuTypeOfferId = this.configGPU.gpuOfferId;
+      this.instanceCreate.gpuOfferId = this.configGPU.gpuOfferId;
     } else {
       this.instanceCreate.offerId = this.offerFlavor.id;
       this.offerFlavor.characteristicValues.forEach((e) => {
@@ -1716,7 +1715,7 @@ export class InstancesCreateComponent implements OnInit {
   getVolumeUnitMoney() {
     // Lấy giá tiền của Volume gắn thêm 1GB/1Tháng
     this.catalogService
-      .getCatalogOffer(2, this.region, null, null)
+      .getCatalogOffer(null, this.region, null, 'volume-hdd')
       .subscribe((data) => {
         let offer = data.find(
           (offer) => offer.status.toUpperCase() == 'ACTIVE'
@@ -1757,7 +1756,7 @@ export class InstancesCreateComponent implements OnInit {
       });
 
     this.catalogService
-      .getCatalogOffer(114, this.region, null, null)
+      .getCatalogOffer(null, this.region, null, 'volume-ssd')
       .subscribe((data) => {
         let offer = data.find(
           (offer) => offer.status.toUpperCase() == 'ACTIVE'
@@ -1818,7 +1817,7 @@ export class InstancesCreateComponent implements OnInit {
           if (e.ip != '') {
             this.ipInit(e, false);
             this.catalogService
-              .getCatalogOffer(3, this.region, null, null)
+              .getCatalogOffer(null, this.region, null, 'ip')
               .subscribe((data) => {
                 let offer = data.find(
                   (offer) => offer.status.toUpperCase() == 'ACTIVE'
@@ -1882,7 +1881,7 @@ export class InstancesCreateComponent implements OnInit {
           if (e.ip != '') {
             this.ipInit(e, true);
             this.catalogService
-              .getCatalogOffer(101, this.region, null, null)
+              .getCatalogOffer(null, this.region, null, 'ipv6')
               .subscribe((data) => {
                 let offer = data.find(
                   (offer) => offer.status.toUpperCase() == 'ACTIVE'

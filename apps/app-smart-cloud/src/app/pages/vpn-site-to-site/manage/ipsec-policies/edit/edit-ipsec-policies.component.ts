@@ -15,6 +15,8 @@ import {
 } from 'src/app/shared/models/ipsec-policy';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-edit-ipsec-policies',
@@ -122,6 +124,7 @@ export class EditIpsecPoliciesComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private fb: NonNullableFormBuilder,
     private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   handleCreate() {
@@ -174,16 +177,16 @@ export class EditIpsecPoliciesComponent implements OnInit {
           (data) => {
             this.isLoading = false
             this.notification.success(
-              'Thành công',
-              'Cập nhật IPsec Policy thành công'
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.ipsec.policy-edit.success')
             );
             this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
           },
           (error) => {
             this.isLoading = false
             this.notification.error(
-              'Thất bại',
-              'Cập nhật IPsec Policy thất bại'
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.ipsec.policy-edit.fail')
             );
             console.log(error);
           }

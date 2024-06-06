@@ -70,8 +70,7 @@
           </nz-form-item>
           <nz-form-item>
             <div style="display: flex;">
-              <nz-switch formControlName="isSnapshot" (ngModelChange)="onSwitchSnapshot()" nzCheckedChildren="ON"
-                         nzUnCheckedChildren="OFF"></nz-switch>
+              <nz-switch formControlName="isSnapshot" [(ngModel)]="isInitSnapshot" (ngModelChange)="onSwitchSnapshot($event)" ></nz-switch>
               <span style="margin-left: 10px; margin-top: 1px;"
                     class="text-label">{{ 'volume.switch.snapshot'|i18n }}</span>
               <img style="margin-left: 10px"
@@ -109,16 +108,6 @@
             </nz-form-item>
           </div>
           <nz-form-item>
-            <!--            <nz-form-label nzFor="volumeType">-->
-            <!--              <div class="label">-->
-            <!--                <span>{{'volume.action.type.volume.select'|i18n}}</span>-->
-            <!--                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)-->
-            <!--                <img nz-popover-->
-            <!--                     [nzPopoverContent]="'volume.tooltip.select.type.volume'| i18n"-->
-            <!--                     nzPopoverPlacement="bottom"-->
-            <!--                     src="assets/imgs/pajamas_question.svg" alt="" />-->
-            <!--              </div>-->
-            <!--            </nz-form-label>-->
             <nz-form-label nzFor="volumeType">
               <div class="label">
                 <span>{{ 'app.choose.volume.type'|i18n }}</span>
@@ -215,7 +204,7 @@
                 <td nzAlign="right">
                   <label class="text-custom-price">{{ unitPrice * validateForm.controls.storage.value | number }}</label>
                   <br>
-                  <label class="text-custom-price">{{ unitPrice | number }}</label>
+                  <label class="text-custom-price" style="color: #2b2d3b33;">{{ unitPrice | number }}</label>
                 </td>
               </tr>
               </tbody>

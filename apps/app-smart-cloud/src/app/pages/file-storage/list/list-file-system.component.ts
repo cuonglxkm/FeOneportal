@@ -114,13 +114,10 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
           this.router.navigate([
             '/app-smart-cloud/file-storage/file-system/create'
           ]);
-        }
-
-        //no vpc
-        if (typeVpc == 0) {
-          this.router.navigate([
-            '/app-smart-cloud/file-storage/file-system/create/normal'
-          ]);
+        } else {
+          //no vpc
+            this.router.navigate([
+              '/app-smart-cloud/file-storage/file-system/create/normal'])
         }
       },
       error: (error) => {
@@ -149,14 +146,13 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
       this.router.navigate([
         '/app-smart-cloud/file-storage/file-system/resize/vpc/' + id
       ]);
-    }
-
-    //no vpc
-    if (typeVpc == 0) {
+    } else {
+      //no vpc
       this.router.navigate([
         '/app-smart-cloud/file-storage/file-system/resize/normal/' + id
       ]);
     }
+
   }
 
   onPageSizeChange(value) {
@@ -207,9 +203,7 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   }
 
   handleOkDelete() {
-    setTimeout(() => {
-      this.getListFileSystem(true);
-    }, 1500);
+    this.getListFileSystem(true);
   }
 
   getProject() {
@@ -239,31 +233,31 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
       debugger
       if (message) {
         switch (message.actionType) {
-          case "CREATING":
-          case "RESIZED":
-          case "CREATED":
-          case "UPDATE":
-          case "DELETED":
-          case "EXTENDING":
-          case "DELETING":
-          case "AVAILABLE":
+          case 'CREATING':
+          case 'RESIZED':
+          case 'CREATED':
+          case 'UPDATE':
+          case 'DELETED':
+          case 'EXTENDING':
+          case 'DELETING':
+          case 'AVAILABLE':
             this.getListFileSystem(true);
-          break;
+            break;
           //case "CREATED":
-            // let volumeId = message.serviceId;
-            // var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
-            // if (foundIndex > -1) {
-            //   var record = this.response.records[foundIndex];
-            //   record.serviceStatus = message.data?.serviceStatus;
-            //   record.createDate = message.data?.creationDate;
-            //   record.expirationDate = message.data?.expirationDate;
-            //   this.response.records[foundIndex] = record;
-            //   this.cdr.detectChanges();
-            // }
-            // else
-            // {
-              //this.getListVolume(true);
-            //}
+          // let volumeId = message.serviceId;
+          // var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+          // if (foundIndex > -1) {
+          //   var record = this.response.records[foundIndex];
+          //   record.serviceStatus = message.data?.serviceStatus;
+          //   record.createDate = message.data?.creationDate;
+          //   record.expirationDate = message.data?.expirationDate;
+          //   this.response.records[foundIndex] = record;
+          //   this.cdr.detectChanges();
+          // }
+          // else
+          // {
+          //this.getListVolume(true);
+          //}
           //break;
         }
       }

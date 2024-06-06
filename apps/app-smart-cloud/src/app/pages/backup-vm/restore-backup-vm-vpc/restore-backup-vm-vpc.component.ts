@@ -109,23 +109,11 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   idBackup: number;
 
   backupVmModel: BackupVm;
-  projectDetail: SizeInCloudProject;
   backupPackage: PackageBackupModel;
   listExternalAttachVolume: VolumeBackup[] = [];
   listSecurityGroupBackups: SecurityGroupBackup[] = [];
 
   selectedOption: string = 'current';
-  typeVpc: number;
-
-  nameSecurityGroup = [];
-  nameSecurityGroupText: string[];
-
-  nameFlavorText: string[];
-  nameFlavor = [];
-
-  nameVolumeBackupAttach = [];
-  nameVolumeBackupAttachName: string[];
-  nameVolumeBackupAttachNameUnique: string;
 
   isLoadingCurrent: boolean = false;
   isLoadingNew: boolean = false;
@@ -134,6 +122,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   numberMonth: number = 1;
 
+  ipPublicValue: number = 0;
   passwordVisible = false;
   remainingRAM: number = 0;
   remainingVolume: number = 0;
@@ -225,9 +214,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       this.activatedRoute.snapshot.paramMap.get('id')
     );
     this.getConfigurations();
-    this.getVolumeUnitMoney();
+    this.getDetailBackupById(this.idBackup);
+    this.getInfoVPC();
     this.getListGpuType();
-    this.getProjectVpc(this.project);
     this.getAllIPPublic();
     this.getListNetwork();
     this.onChangeCapacity();
@@ -273,8 +262,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
-    this.typeVpc = project?.type;
-    // this.router.navigate(['/app-smart-cloud/backup-vm'])
   }
 
   userChanged(project: ProjectModel) {
@@ -424,6 +411,18 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
+        if (
+          this.backupVmModel?.volumeBackups
+            .filter((e) => e.isBootable == true)[0]
+            .typeName.toUpperCase()
+            .includes('HDD')
+        ) {
+          this.activeBlockHDD = true;
+          this.activeBlockSSD = false;
+        } else {
+          this.activeBlockHDD = false;
+          this.activeBlockSSD = true;
+        }
 
         this.listExternalAttachVolume =
           this.backupVmModel?.volumeBackups.filter(
@@ -438,14 +437,8 @@ export class RestoreBackupVmVpcComponent implements OnInit {
           tempBS.capacity = e.size;
           if (e.typeName.toUpperCase().includes('HDD')) {
             tempBS.type = 'HDD';
-            tempBS.price = e.size * this.unitPriceVolumeHDD;
-            tempBS.VAT = e.size * this.unitVATVolumeHDD;
-            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
           } else {
             tempBS.type = 'SSD';
-            tempBS.price = e.size * this.unitPriceVolumeSSD;
-            tempBS.VAT = e.size * this.unitVATVolumeSSD;
-            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
           }
           this.listOfDataBlockStorage.push(tempBS);
         });
@@ -456,33 +449,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
             this.selectedSecurityGroup.push(e.sgName);
           }
         });
-
-        this.backupVmModel?.securityGroupBackups.forEach((item) => {
-          this.nameSecurityGroup?.push(item.sgName);
-        });
-
-        this.backupVmModel?.systemInfoBackups.forEach((item) => {
-          this.nameFlavor?.push(item.osName);
-        });
-
-        this.backupVmModel?.volumeBackups.forEach((item) => {
-          if (item.isBootable == false) {
-            this.nameVolumeBackupAttach?.push(item.name);
-          }
-        });
-
-        this.nameSecurityGroupText = Array.from(
-          new Set(this.nameSecurityGroup)
-        );
-
-        this.nameVolumeBackupAttachName = Array.from(
-          new Set(this.nameVolumeBackupAttach)
-        );
-        this.nameVolumeBackupAttachNameUnique =
-          this.nameVolumeBackupAttachName.join('\n');
-        console.log('name', this.nameVolumeBackupAttachName);
-        console.log('unique', this.nameVolumeBackupAttachNameUnique);
-
         this.getBackupPackage(this.backupVmModel?.backupPacketId);
         this.cdr.detectChanges();
       });
@@ -542,12 +508,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         );
       }
     );
-  }
-
-  getProjectVpc(id) {
-    this.projectService.getProjectVpc(id).subscribe((data) => {
-      this.projectDetail = data;
-    });
   }
 
   getBackupPackage(value) {
@@ -742,15 +702,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
-      .getAllIPPublic(
-        this.project,
-        '',
-        this.userId,
-        this.region,
-        9999,
-        1,
-        true
-      )
+      .getAllIPPublic(this.project, '', this.userId, this.region, 9999, 1, true)
       .subscribe((data: any) => {
         const currentDateTime = new Date().toISOString();
         this.listIPPublic = data.records.filter(
@@ -893,100 +845,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   //#endregion
   //#region volume gắn ngoài
   listOfDataBlockStorage: BlockStorage[] = [];
-
-  unitPriceVolumeHDD: number = 0;
-  unitVATVolumeHDD: number = 0;
-  unitPaymentVolumeHDD: number = 0;
-  unitPriceVolumeSSD: number = 0;
-  unitVATVolumeSSD: number = 0;
-  unitPaymentVolumeSSD: number = 0;
-  // Lấy giá tiền của Volume gắn thêm 1GB/1Tháng
-  getVolumeUnitMoney() {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-    this.catalogService
-      .getCatalogOffer(2, this.region, null, null)
-      .subscribe((data) => {
-        let offer = data.find(
-          (offer) => offer.status.toUpperCase() == 'ACTIVE'
-        );
-        let temVolumeCreate = new VolumeCreate();
-        temVolumeCreate.volumeType = 'hdd';
-        temVolumeCreate.volumeSize = 1;
-        temVolumeCreate.projectId = this.project.toString();
-        temVolumeCreate.serviceType = 2;
-        temVolumeCreate.serviceInstanceId = 0;
-        temVolumeCreate.customerId = this.tokenService.get()?.userId;
-        temVolumeCreate.isTrial = false;
-        temVolumeCreate.regionId = this.region;
-        temVolumeCreate.serviceName = '';
-        temVolumeCreate.offerId = offer.id;
-        let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
-        itemPayment.specificationString = JSON.stringify(temVolumeCreate);
-        itemPayment.specificationType = 'volume_create';
-        itemPayment.serviceDuration = 1;
-        itemPayment.sortItem = 0;
-        let dataPayment: DataPayment = new DataPayment();
-        dataPayment.orderItems = [itemPayment];
-        dataPayment.projectId = this.project;
-        this.dataService.getPrices(dataPayment).subscribe((result) => {
-          console.log('thanh tien volume', result);
-          this.unitPriceVolumeHDD = Number.parseFloat(
-            result.data.totalAmount.amount
-          );
-          this.unitVATVolumeHDD = Number.parseFloat(
-            result.data.totalVAT.amount
-          );
-          this.unitPaymentVolumeHDD = Number.parseFloat(
-            result.data.totalPayment.amount
-          );
-          this.cdr.detectChanges();
-        });
-      });
-
-    this.catalogService
-      .getCatalogOffer(114, this.region, null, null)
-      .subscribe((data) => {
-        let offer = data.find(
-          (offer) => offer.status.toUpperCase() == 'ACTIVE'
-        );
-        let temVolumeCreate = new VolumeCreate();
-        temVolumeCreate.volumeType = 'ssd';
-        temVolumeCreate.volumeSize = 1;
-        temVolumeCreate.projectId = this.project.toString();
-        temVolumeCreate.serviceType = 2;
-        temVolumeCreate.serviceInstanceId = 0;
-        temVolumeCreate.customerId = this.tokenService.get()?.userId;
-        temVolumeCreate.isTrial = false;
-        temVolumeCreate.regionId = this.region;
-        temVolumeCreate.serviceName = '';
-        temVolumeCreate.offerId = offer.id;
-        let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
-        itemPayment.specificationString = JSON.stringify(temVolumeCreate);
-        itemPayment.specificationType = 'volume_create';
-        itemPayment.serviceDuration = 1;
-        itemPayment.sortItem = 0;
-        let dataPayment: DataPayment = new DataPayment();
-        dataPayment.orderItems = [itemPayment];
-        dataPayment.projectId = this.project;
-        this.dataService.getPrices(dataPayment).subscribe((result) => {
-          console.log('thanh tien volume', result);
-          this.unitPriceVolumeSSD = Number.parseFloat(
-            result.data.totalAmount.amount
-          );
-          this.unitVATVolumeSSD = Number.parseFloat(
-            result.data.totalVAT.amount
-          );
-          this.unitPaymentVolumeSSD = Number.parseFloat(
-            result.data.totalPayment.amount
-          );
-          this.getDetailBackupById(this.idBackup);
-          this.cdr.detectChanges();
-        });
-      });
-  }
-
   changeAttachVolume() {
     this.listOfDataBlockStorage = [];
     this.listExternalAttachVolume.forEach((e) => {
@@ -997,14 +855,8 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         tempBS.capacity = e.size;
         if (e.typeName.toUpperCase().includes('HDD')) {
           tempBS.type = 'HDD';
-          tempBS.price = e.size * this.unitPriceVolumeHDD;
-          tempBS.VAT = e.size * this.unitVATVolumeHDD;
-          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
         } else {
           tempBS.type = 'SSD';
-          tempBS.price = e.size * this.unitPriceVolumeSSD;
-          tempBS.VAT = e.size * this.unitVATVolumeSSD;
-          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
         }
         this.listOfDataBlockStorage.push(tempBS);
       }
