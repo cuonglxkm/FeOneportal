@@ -22,11 +22,7 @@
   text-align: right;
 }
 
-.header-table {
-  background-color: #E2EEFC;
-}
-
-p {
+p, span {
   font-size: 16px;
 }
 

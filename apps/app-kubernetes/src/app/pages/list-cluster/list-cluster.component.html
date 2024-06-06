@@ -75,20 +75,20 @@
         [nzLoading]="isLoadingCluster">
         <thead>
           <tr>
-            <th class="header-table">{{ 'app.order.ordinalNumber' | i18n }}</th>
-            <th class="header-table">{{ 'app.cluster.name' | i18n }}</th>
-            <th class="header-table">{{ 'app.text.version' | i18n }}</th>
-            <th class="header-table">{{ 'app.service.status' | i18n }}</th>
-            <th class="header-table">{{ 'app.cluster.api-endpoint' | i18n }}</th>
-            <th class="header-table">{{ 'app.cluster.total-node' | i18n }}</th>
-            <th class="header-table">{{ 'app.text.created-date' | i18n }}</th>
-            <th class="header-table">{{ 'app.text.operation' | i18n }}</th>
+            <th>{{ 'app.order.ordinalNumber' | i18n }}</th>
+            <th>{{ 'app.cluster.name' | i18n }}</th>
+            <th>{{ 'app.text.version' | i18n }}</th>
+            <th>{{ 'app.service.status' | i18n }}</th>
+            <th>{{ 'app.cluster.api-endpoint' | i18n }}</th>
+            <th>{{ 'app.cluster.total-node' | i18n }}</th>
+            <th>{{ 'app.text.created-date' | i18n }}</th>
+            <th>{{ 'app.text.operation' | i18n }}</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of clusterTable.data; let i = index;">
             <td class="right-align">{{ getIndexOfCluster(item.id) }}</td>
-            <td>
+            <td nzBreakWord>
               <a routerLink={{item.serviceOrderCode}}>
                 <ng-container *ngIf="item.clusterName?.length <= 30; else truncateNameTpl">
                   {{ item.clusterName }}
@@ -127,7 +127,20 @@
 
               </ng-container>
             </td>
-            <td>{{ item.apiEndpoint }}</td>
+            <td nzBreakWord>
+              {{ item.apiEndpoint }}
+              <!-- <ng-container *ngIf="item.apiEndpoint?.length <= 25; else apiEndpointTruncateTpl">
+                {{ item.apiEndpoint }}
+              </ng-container>
+              <ng-template #apiEndpointTruncateTpl>
+                <span [nzPopoverContent]="contentTpl" nzPopoverPlacement="bottom" nz-popover>
+                  {{ item.apiEndpoint | truncateLabel : 25 }}
+                </span>
+                <ng-template #contentTpl>
+                  <div style="width: fit-content">{{ item.apiEndpoint }}</div>
+                </ng-template>
+              </ng-template> -->
+            </td>
             <td class="right-align">{{ item.totalNode ? item.totalNode : 0 }}</td>
             <td>{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
             <td>
