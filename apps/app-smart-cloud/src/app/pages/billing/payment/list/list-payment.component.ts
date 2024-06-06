@@ -208,26 +208,17 @@ export class ListPaymentComponent implements OnInit{
   serviceDownload(id: number) {
     this.paymentService.exportInvoice(id).subscribe((data) => {
       const element = document.createElement('div');
-      
+      element.style.width = '268mm';
+      element.style.height = '297mm';
       if (typeof data === 'string' && data.trim().length > 0) {
         element.innerHTML = data;
         
         document.body.appendChild(element);
         
         html2canvas(element).then(canvas => {
-          const imgData = canvas.toDataURL('image/png');
-          const pdf = new jsPDF();
-          const aspectRatio = canvas.width / canvas.height;
-          let imgWidth = pdf.internal.pageSize.getWidth();
-          let imgHeight = imgWidth / aspectRatio;
-    
-          if (imgHeight > pdf.internal.pageSize.getHeight()) {
-            imgHeight = pdf.internal.pageSize.getHeight();
-            imgWidth = imgHeight * aspectRatio;
-          }
-          
-          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-          
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
           pdf.save(`invoice_${id}.pdf`);
           
           document.body.removeChild(element);
