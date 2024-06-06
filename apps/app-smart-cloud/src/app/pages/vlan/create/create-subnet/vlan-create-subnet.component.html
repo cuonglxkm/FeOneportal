@@ -4,8 +4,8 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/vlan/network/list">VLAN</a>
+      <nz-breadcrumb-item>{{'app.vlan.title'|i18n}}</nz-breadcrumb-item>
+        <nz-breadcrumb-item>  <a routerLink="/app-smart-cloud/vlan/network/list">Network</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/vlan/network/detail/{{ idNetwork }}">{{ 'app.vlan.note65' | i18n }}</a>
