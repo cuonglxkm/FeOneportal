@@ -31,7 +31,7 @@ export class CreateVolumeComponent implements OnInit {
   isLoadingAction = false;
 
   volumeName = '';
-  snapshotList: NzSelectOptionInterface[] = [];
+  snapshotList = [];
   isInitSnapshot = false;
   snapshot: any;
 
@@ -493,11 +493,12 @@ export class CreateVolumeComponent implements OnInit {
       this.isLoadingAction = false
       console.log('data vl snapshot', data.records)
       data?.records.forEach(item => {
-        this.snapshotList.push({ label: item.name , value: item.id });
+        this.snapshotList?.push(item);
       });
-      if (this.activatedRoute.snapshot.paramMap.get('snapshotId')) {
-        const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('snapshotId'));
-        if (this.snapshotList.find(x => x.value == idSnapshot)) {
+      if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
+        console.log('here',this.activatedRoute.snapshot.paramMap.get('idSnapshot'))
+        const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idSnapshot'));
+        if (this.snapshotList?.find(x => x.id == idSnapshot)) {
           this.onSwitchSnapshot(true);
           this.snapshotSelected = idSnapshot;
         }

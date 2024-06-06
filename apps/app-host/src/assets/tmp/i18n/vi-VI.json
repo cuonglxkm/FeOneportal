@@ -2338,6 +2338,7 @@
   "app.ip.floating23": "Dải network bị hết IP, xin vui lòng chọn dải IP khác!",
   "app.button.remove": "Xóa",
 
+  "app.vlan.title": "Mạng LAN (VLAN)",
   "app.vlan.create": "Tạo mới Network",
   "app.vlan.note1": "Danh sách Network",
   "app.vlan.note2": "Địa chỉ Subnet",
@@ -3074,6 +3075,8 @@
   "app.vpn-connection-edit.success": "Chỉnh sửa VPN Connection thành công",
   "app.vpn-connection-edit.fail": "Chỉnh sửa VPN Connection thất bại",
   "app.vpn-connection-delete.success": "Xóa VPN Connection thành công",
-  "app.vpn-connection-delete.fail": "Xóa VPN Connection thất bại"
+  "app.vpn-connection-delete.fail": "Xóa VPN Connection thất bại",
+
+  "app.router.name" : "Tên Routers"
 
 }

@@ -2442,6 +2442,8 @@
   "app.ip.floating22": "Create New IP floating",
   "app.ip.floating23": "Network range is out of IP, please choose another IP range!",
   "app.button.remove": "Remove",
+
+  "app.vlan.title": "LAN Network (VLAN)",
   "app.vlan.create": "Create Network",
   "app.vlan.note1": "Network list",
   "app.vlan.note2": "Subnet address",
@@ -3174,5 +3176,7 @@
   "app.vpn-connection-edit.success": "Edit VPN Connection sucessfully",
   "app.vpn-connection-edit.fail": "Edit VPN Connection failed",
   "app.vpn-connection-delete.success": "Delete VPN Connection sucessfully",
-  "app.vpn-connection-delete.fail": "Delete VPN Connection failed"
+  "app.vpn-connection-delete.fail": "Delete VPN Connection failed",
+
+  "app.router.name" : "Routers name"
 }

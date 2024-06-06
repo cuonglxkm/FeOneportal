@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Router'"
+  [title]="('app.list' | i18n) + ' Routers'"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
@@ -14,7 +14,7 @@
       <nz-breadcrumb-item> Network </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/network/router']"
-          >Router</a
+          >Routers</a
         >
       </nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -117,7 +117,7 @@
   >
     <thead>
       <tr>
-        <th nzLeft>{{ 'app.create-user-groups.name' | i18n }}</th>
+        <th nzLeft>{{ 'app.router.name' | i18n }}</th>
         <th>{{ 'app.network.range' | i18n }}</th>
         <th>{{ 'app.text.status' | i18n }}</th>
         <th nzRight>{{ 'app.text.operation' | i18n }}</th>
