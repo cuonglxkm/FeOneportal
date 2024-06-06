@@ -63,7 +63,7 @@ export class CreateFileSystemComponent implements OnInit {
 
   storage: number = 0;
 
-  snapshotList: NzSelectOptionInterface[] = [];
+  snapshotList = [];
 
   snapshotSelected: number;
 
@@ -82,6 +82,10 @@ export class CreateFileSystemComponent implements OnInit {
   stepStorage: number = 0;
   valueStringConfiguration: string = '';
   maxStorage: number = 0;
+
+  idSnapshot: number;
+
+  snapshotCloudId: string;
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
@@ -141,6 +145,16 @@ export class CreateFileSystemComponent implements OnInit {
     }
   }
 
+  onSnapshotChangeSelected(value) {
+    this.snapshotSelected = value;
+    console.log('selected', this.snapshotSelected);
+    if (this.snapshotSelected != null) {
+      this.getDetailFileSystemSnapshot(this.snapshotSelected);
+      // this.validateForm.controls.storage.setValue(this.fileSystemSnapshotDetail?.)
+    }
+
+  }
+
   getListSnapshot() {
     let formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot();
     formSearchFileSystemSnapshot.vpcId = this.project
@@ -152,17 +166,30 @@ export class CreateFileSystemComponent implements OnInit {
     this.fileSystemSnapshotService.getFileSystemSnapshot(formSearchFileSystemSnapshot).subscribe(data => {
       data.records.forEach(snapshot => {
         if(['available','KHOITAO'].includes(snapshot.status)) {
-          this.snapshotList.push({ label: snapshot.name + '(' + snapshot.size + ' GB)', value: snapshot.snapshotId });
+          this.snapshotList.push(snapshot);
         }
       });
-      if(this.activatedRoute.snapshot.paramMap.get('snapshotId')){
+      if (this.activatedRoute.snapshot.paramMap.get('snapshotId') != undefined) {
         const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('snapshotId'));
-        if(this.snapshotList.find(x => x.value == idSnapshot)) {
+        console.log('listSnapshot: ', this.snapshotList);
+        if (this.snapshotList?.find(x => x.id == idSnapshot)) {
           this.snapshotSelectedChange(true);
           this.snapshotSelected = idSnapshot;
+          this.validateForm.controls.snapshot.setValue(this.snapshotSelected);
+          this.getDetailFileSystemSnapshot(idSnapshot);
         }
       }
     });
+  }
+
+  getDetailFileSystemSnapshot(id) {
+    this.fileSystemSnapshotService.getFileSystemSnapshotById(id, this.project).subscribe(data => {
+      // console.log('data', data.cloudId);
+      this.snapshotCloudId = data.cloudId;
+      this.minStorage = data.sizeInGB
+      this.validateForm.controls.storage.setValue(data.sizeInGB)
+    });
+
   }
 
   getListFileSystem() {
@@ -195,10 +222,11 @@ export class CreateFileSystemComponent implements OnInit {
     if (this.validateForm.controls.type.value == 1) {
       this.formCreate.shareType = 'generic_share_type';
     }
-    if (this.validateForm.controls.snapshot.value == null) {
-      this.formCreate.snapshotId = null;
-    } else {
-      this.formCreate.snapshotId = this.validateForm.controls.snapshot.value.toString();
+    if(this.validateForm.controls.snapshot.value != null) {
+      this.formCreate.snapshotId = this.validateForm.controls.snapshot.value;
+    }
+    if(this.snapshotCloudId != undefined) {
+      this.formCreate.snapshotCloudId = this.snapshotCloudId;
     }
     this.formCreate.isPublic = false;
     this.formCreate.shareGroupId = null;
@@ -261,6 +289,7 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   doCreateFileSystem() {
+    this.isLoading = true
     let request = new CreateFileSystemRequestModel();
     request.customerId = this.formCreate.customerId;
     request.createdByUserId = this.formCreate.customerId;
@@ -281,16 +310,16 @@ export class CreateFileSystemComponent implements OnInit {
       if (data != null) {
         if (data.code == 200) {
           this.isLoading = false;
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu tạo File System thành công.');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.create.success'));
           this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
         }
       } else {
         this.isLoading = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File System thất bại.');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
       }
     }, error => {
       this.isLoading = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File System thất bại.');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
     });
 
   }
@@ -339,7 +368,12 @@ export class CreateFileSystemComponent implements OnInit {
 
     this.validateForm.controls.type.setValue(1)
 
-    console.log('create');
+    if (this.activatedRoute.snapshot.paramMap.get('snapshotId') != undefined || this.activatedRoute.snapshot.paramMap.get('snapshotId') != null) {
+      console.log('here')
+      this.idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('snapshotId'))
+      this.validateForm.controls.isSnapshot.setValue(true)
+      this.validateForm.controls.snapshot.setValue(this.idSnapshot)
+    }
     this.getListSnapshot();
     this.getListFileSystem();
     this.getStorageBuyVpc();

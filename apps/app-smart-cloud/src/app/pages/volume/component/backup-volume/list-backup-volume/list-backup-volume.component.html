@@ -2,7 +2,7 @@
              [action]="action" [title]="'app.breadcrumb.list.backup.volume'|i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
-      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home'|i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home'|i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'volume.title.breadcrumb.backup.volume'|i18n }}</nz-breadcrumb-item>

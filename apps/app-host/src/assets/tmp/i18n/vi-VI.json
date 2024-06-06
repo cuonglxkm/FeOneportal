@@ -43,7 +43,9 @@
   "service.status.violation": "Vi phạm điều khoản",
   "service.status.deleting": "Đang xóa",
   "service.status.error": "Lỗi",
+  "service.status.restoring": "Restoring",
   "service.status.unknown": "Không xác định",
+  
 
   "form.clear.local.storage": "Làm sạch Local Storage",
   "form.account.information": "Thông tin tài khoản",
@@ -869,9 +871,13 @@
   "app.access.rule.list": "Danh sách Access Rule",
   "app.button.access.rule.create": "Tạo mới Access Rule",
   "app.button.access.rule.add": "Tạo mới Access Rule",
+  "app.access.rule.placeholder": "Nhập access rule",
+  "app.access.rule.tooltip.access.level": "Mức độ cho phép truy cập vào tài nguyên",
+  "app.access.rule.tooltip.access.level.read-only": "Chỉ đọc",
+  "app.access.rule.tooltip.access.level.read-write": "Đọc và ghi",
 
   "validation.access.to": "Access To không được để trống.",
-  "validation.access.to.pattern": " Access To không đúng định dạng. Vui lòng nhập địa chỉ IP có định dạng x.x.x.x hoặc CIDR có định dạng x.x.0.0/16 hoặc x.x.0.0/24.",
+  "validation.access.to.pattern": " Access To không đúng định dạng. Vui lòng nhập địa chỉ IP có định dạng x.x.x.x hoặc CIDR có định dạng x.x.0.0/16 hoặc x.x.x.0/24.",
   "validation.access.to.duplicate": " Địa chỉ Access To đã tồn tại.",
 
   "app.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Instance)<br> hoặc CIDR được quyền truy cập tới Filesystem này",
@@ -907,6 +913,8 @@
   "app.item.switch.file.system.snapshot": "-Chọn Snapshot-",
   "app.file.storage.snapshot.required.select": "Vui lòng chọn Snapshot File System",
   "app.file.system.total.size": "Tổng dung lượng File System",
+  "app.file.system.notification.require.create.success": "Yêu cầu tạo File System thành công.",
+  "app.file.system.notification.require.create.fail": "Yêu cầu tạo File System thất bại.",
 
   "app.choose.file.system.to.perform.snapshot": "Chọn File System để thực hiện Snapshot",
   "validation.snapshot.info.required": "Vui lòng nhập tên File System Snapshot",
