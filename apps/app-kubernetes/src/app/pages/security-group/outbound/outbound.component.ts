@@ -40,7 +40,7 @@ export class OutboundComponent implements OnInit {
     this.listOfSG = [];
     this.listOfOutbound = [];
     this.pageIndex = 1;
-    this.pageSize = 5;
+    this.pageSize = 10;
     this.total = 0;
     this.isLoadingOutbound = false;
 

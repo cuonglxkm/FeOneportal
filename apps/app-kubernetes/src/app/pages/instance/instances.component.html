@@ -23,16 +23,16 @@
       [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoadingInstance">
       <thead>
         <tr>
-          <th class="header-table">{{ 'app.order.ordinalNumber' | i18n }}</th>
-          <th class="header-table">{{ 'app.cluster.node' | i18n }}</th>
-          <th class="header-table">{{ 'app.cluster.worker-group-name' | i18n }}</th>
-          <th class="header-table">{{ 'app.text.status' | i18n }}</th>
-          <th class="header-table">IP Private</th>
-          <th class="header-table">vCPU</th>
-          <th class="header-table">RAM (GB)</th>
-          <th class="header-table">Storage (GB)</th>
-          <th class="header-table">{{ 'app.hard.drive.type' | i18n }}</th>
-          <th class="header-table">{{ 'app.text.operation' | i18n }}</th>
+          <th>{{ 'app.order.ordinalNumber' | i18n }}</th>
+          <th>{{ 'app.cluster.node' | i18n }}</th>
+          <th>{{ 'app.cluster.worker-group-name' | i18n }}</th>
+          <th>{{ 'app.text.status' | i18n }}</th>
+          <th>IP Private</th>
+          <th>vCPU</th>
+          <th>RAM (GB)</th>
+          <th>Storage (GB)</th>
+          <th>{{ 'app.hard.drive.type' | i18n }}</th>
+          <th>{{ 'app.text.operation' | i18n }}</th>
         </tr>
       </thead>
       <tbody>

@@ -32,7 +32,7 @@
         </nz-select>
       </div>
 
-      <div mleft-16 class="mleft-16 w-20">
+      <div class="mleft-16 w-20">
         <nz-range-picker
           nzFormat="dd/MM/yyyy"
           [(ngModel)]="date"
@@ -52,12 +52,12 @@
       [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoading">
       <thead>
         <tr>
-          <th class="header-table" nzWidth="15">{{ 'app.cluster.username' | i18n }}</th>
-          <th class="header-table" nzWidth="10">{{ 'app.cluster.resource-type' | i18n }}</th>
-          <th class="header-table" nzWidth="20">{{ 'app.cluster.resource-name' | i18n }}</th>
-          <th class="header-table" nzWidth="15">{{ 'app.text.operation' | i18n }}</th>
-          <th class="header-table" nzWidth="25">{{ 'app.cluster.content' | i18n }}</th>
-          <th class="header-table" nzWidth="15">{{ 'app.cluster.action-time' | i18n }}</th>
+          <th nzWidth="15">{{ 'app.cluster.username' | i18n }}</th>
+          <th nzWidth="10">{{ 'app.cluster.resource-type' | i18n }}</th>
+          <th nzWidth="20">{{ 'app.cluster.resource-name' | i18n }}</th>
+          <th nzWidth="15">{{ 'app.text.operation' | i18n }}</th>
+          <th nzWidth="25">{{ 'app.cluster.content' | i18n }}</th>
+          <th nzWidth="15">{{ 'app.cluster.action-time' | i18n }}</th>
         </tr>
       </thead>
       <tbody>

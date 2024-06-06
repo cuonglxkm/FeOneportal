@@ -256,6 +256,7 @@ label, span {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .item-name {
@@ -296,6 +297,7 @@ label, span {
   line-height: 24px;
   letter-spacing: 0.10000000149011612px;
   padding: 20px;
+  cursor: pointer;
 }
 
 .choose .item-price,
