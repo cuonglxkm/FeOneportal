@@ -78,7 +78,7 @@ export class PaymentSummaryComponent implements OnInit {
   totalVAT: number;
   formCreatUserInvoice: FormCreateUserInvoice = new FormCreateUserInvoice();
   isExportInvoice: boolean = false;
-  isCheckedExportInvoice: boolean = false;
+  isCheckedExportInvoice: boolean = true;
   isLoadingUpdateInfo: boolean = false;
   radioValue = 1;
   options = [
@@ -311,6 +311,8 @@ export class PaymentSummaryComponent implements OnInit {
               this.userModel.phoneNumber
             );
             this.getListCustomerGroup();
+          }else if(this.userModel && this.userModel.customerInvoice !== null){
+            this.getDataExportInvoice()
           }
           this.cdr.detectChanges();
         },
@@ -367,6 +369,8 @@ export class PaymentSummaryComponent implements OnInit {
       this.formExportInvoice.controls.taxCode.updateValueAndValidity();
       this.formExportInvoice.controls.phoneNumber.clearValidators();
       this.formExportInvoice.controls.phoneNumber.updateValueAndValidity();
+      this.formExportInvoice.controls.nameCompany.clearValidators();
+      this.formExportInvoice.controls.nameCompany.updateValueAndValidity();
     } else {
       this.formExportInvoice.controls.address.setValidators(
         Validators.required
@@ -381,6 +385,10 @@ export class PaymentSummaryComponent implements OnInit {
         AppValidator.validPhoneNumber,
       ]);
       this.formExportInvoice.controls.phoneNumber.updateValueAndValidity();
+      this.formExportInvoice.controls.nameCompany.setValidators([
+        Validators.required,
+      ]);
+      this.formExportInvoice.controls.nameCompany.updateValueAndValidity();
     }
   }
 
@@ -604,27 +612,31 @@ export class PaymentSummaryComponent implements OnInit {
     this.router.navigate([this.returnPath]);
   }
 
+  getDataExportInvoice(){
+    this.formExportInvoice.controls.email.setValue(
+      this.userModel.customerInvoice.email
+    );
+    this.formExportInvoice.controls.nameCustomer.setValue(
+      this.userModel.customerInvoice.fullName
+    );
+    this.formExportInvoice.controls.address.setValue(
+      this.userModel.customerInvoice.address
+    );
+    this.formExportInvoice.controls.phoneNumber.setValue(
+      this.userModel.customerInvoice.phoneNumber
+    );
+    this.formExportInvoice.controls.taxCode.setValue(
+      this.userModel.customerInvoice.taxCode
+    );
+    this.formExportInvoice.controls.nameCompany.setValue(
+      this.userModel.customerInvoice.companyName
+    );
+  }
+
 
   updateExportInvoice(event) {
     if (this.userModel && this.userModel.customerInvoice && event === true) {
-      this.formExportInvoice.controls.email.setValue(
-        this.userModel.customerInvoice.email
-      );
-      this.formExportInvoice.controls.nameCustomer.setValue(
-        this.userModel.customerInvoice.fullName
-      );
-      this.formExportInvoice.controls.address.setValue(
-        this.userModel.customerInvoice.address
-      );
-      this.formExportInvoice.controls.phoneNumber.setValue(
-        this.userModel.customerInvoice.phoneNumber
-      );
-      this.formExportInvoice.controls.taxCode.setValue(
-        this.userModel.customerInvoice.taxCode
-      );
-      this.formExportInvoice.controls.nameCompany.setValue(
-        this.userModel.customerInvoice.companyName
-      );
+      this.getDataExportInvoice()
     }
   }
 }
