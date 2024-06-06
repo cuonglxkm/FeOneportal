@@ -125,7 +125,7 @@ export class ListPaymentComponent implements OnInit{
 
   refreshCheckedStatus(): void {
     this.checked = this.listOfCurrentPageData.every(item => this.setOfCheckedId.has(item.id));
-    this.downloadList = this.listOfData.filter(data => this.setOfCheckedId.has(data.id) && !!data.invoiceIssuedId);
+    this.downloadList = this.listOfData.filter(data => this.setOfCheckedId.has(data.id) && !!data.eInvoiceCode);
     this.indeterminate = this.listOfCurrentPageData.some(item => this.setOfCheckedId.has(item.id)) && !this.checked;
   }
 
@@ -200,7 +200,7 @@ export class ListPaymentComponent implements OnInit{
   };
 
   downloadMany() {
-    this.downloadList.map(item => item.invoiceIssuedId).map((id) => {
+    this.downloadList.map(item => item.eInvoiceCode).map((id) => {
       this.serviceDownload(id)
     })
   }
