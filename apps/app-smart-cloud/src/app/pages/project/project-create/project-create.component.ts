@@ -66,7 +66,8 @@ export class ProjectCreateComponent implements OnInit {
   numberFileScnapsshot: any = 0;
   numberSecurityGroup: any = 0;
 
-  numberSnapshot:number =0;
+  numberSnapshothdd:number =0;
+  numberSnapshotssd:number =0;
 
 
   vCPU = 0;
@@ -137,8 +138,10 @@ export class ProjectCreateComponent implements OnInit {
     IpPublicUnit: 0,
     IpV6: 0,
     IpV6Unit: 0,
-    snapshot:0,
-    snapshotUnit:0,
+    snapshothdd:0,
+    snapshothddUnit:0,
+    snapshotssd:0,
+    snapshotssdUnit:0,
 
     backup: 0,
     backupUnit: 0,
@@ -221,7 +224,9 @@ export class ProjectCreateComponent implements OnInit {
 
     this.iconToggle = "icon_circle_minus"
     this.numOfMonth = this.form.controls['numOfMonth'].value;
+    
   }
+  offervCpu:number;
 
   calculateReal() {
     this.refreshValue();
@@ -245,6 +250,9 @@ export class ProjectCreateComponent implements OnInit {
       // if (( this.offerFlavor != undefined) || ( this.vCPU != 0 && this.ram != 0)) {
       // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
       console.log("offerFlavor", this.offerFlavor)
+
+     
+
       if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
         console.log("lstIp", lstIp)
         if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
@@ -267,7 +275,7 @@ export class ProjectCreateComponent implements OnInit {
           projectType: this.vpcType,
           // quotaKeypairCount: 0,// NON
           // quotaVolumeSnapshotCount: 0,//NON
-          quotaIpPublicCount: IPPublicNum,
+          quotaIpPublicCount: (this.selectIndexTab==0 && this.offerFlavor != null)  ? (IPPublicNum +1) :  IPPublicNum,
           quotaIpFloatingCount: IPFloating,
           quotaNetworkCount: this.numberNetwork,
           quotaRouterCount: this.numberRouter,
@@ -282,7 +290,8 @@ export class ProjectCreateComponent implements OnInit {
         
 
           gpuQuotas: this.gpuQuotasGobal,
-          quotaVolumeSnapshotInGb: this.numberSnapshot,
+          quotaVolumeSnapshotHddInGb: this.numberSnapshothdd,
+          quotaVolumeSnapshotSsdInGb:this.numberSnapshotssd,
 
           // typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
           // serviceType: 12,
@@ -361,117 +370,85 @@ export class ProjectCreateComponent implements OnInit {
   checkNumberInput(value: number, name: string): void {
     const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
     const numericValue = Number(value);
-    if (isNaN(numericValue) || numericValue % this.stepBlock !== 0 && numericValue <= this.maxBlock && numericValue >= this.minBlock) {
-      this.notification.warning('', messageStepNotification);
-      switch (name) {
-        case "hhd": {
-          this.hhd = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
-          break;
-        }
-        case "ssd": {
-          this.ssd = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
-          break;
-        }
-        case "backup": {
-          this.numberBackup = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
-          break;
-        }
-        case "fileSystem": {
-          this.numberFileSystem = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
-          break;
-        }
-        case "fileSnapshot": {
-          this.numberFileScnapsshot = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
-          break;
-        }
-        case "snapshot": {
-          this.numberSnapshot = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
-          break;
-        }
-      }
-    }
-    // else if(isNaN(numericValue)||numericValue < this.minBlock){
-    //   this.notification.warning(
-    //     '',
-    //     'Giá trị  quá nhỏ ');
-    //     switch (name){
-    //       case "hhd":{
-    //         this.hhd =  this.minBlock            
-    //         break;
-    //       }
-    //       case "ssd":{
-    //         this.ssd  =  this.minBlock         
-    //         break;
-    //       }
-    //       case "backup":{
-    //         this.numberBackup =  this.minBlock       
-    //         break;
-    //       }
-    //       case "fileSystem":{
-    //         this.numberFileSystem = this.minBlock        
-    //         break;
-    //       }
-    //       case "fileSnapshot":{
-    //         this.numberFileScnapsshot =  this.minBlock          
-    //         break;
-    //       }
-    //     }
-    // }
-    // else if( isNaN(numericValue)|| numericValue > this.maxBlock){
 
-    //   this.notification.warning(
-    //     '',
-    //     'Giá trị  quá lớn ');
-    //     switch (name){
-    //       case "hhd":{
-    //         this.hhd =  this.maxBlock            
-    //         break;
-    //       }
-    //       case "ssd":{
-    //         this.ssd  =  this.maxBlock         
-    //         break;
-    //       }
-    //       case "backup":{
-    //         this.numberBackup =  this.maxBlock       
-    //         break;
-    //       }
-    //       case "fileSystem":{
-    //         this.numberFileSystem = this.maxBlock        
-    //         break;
-    //       }
-    //       case "fileSnapshot":{
-    //         this.numberFileScnapsshot =  this.maxBlock          
-    //         break;
-    //       }
-    //     }
-    // }
-    // else if(isNaN(numericValue)|| numericValue% this.stepBlock == 0 && numericValue <= this.maxBlock && numericValue>=this.minBlock){
-    //   switch (name){
-    //     case "hhd":{
-    //       this.hhd =    numericValue        
+    if(isNaN(numericValue) ){
+      this.notification.warning('', messageStepNotification);
+      return;
+    }
+
+    let adjustedValue = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+
+
+    if (adjustedValue > this.maxBlock) {
+        adjustedValue = Math.floor(this.maxBlock / this.stepBlock) * this.stepBlock;
+    } else if (adjustedValue < this.minBlock) {
+        adjustedValue = this.minBlock;
+    }
+
+    if (numericValue !== adjustedValue) {
+        this.notification.warning('', messageStepNotification);
+    }
+
+    switch (name) {
+        case "hhd":
+            this.hhd = adjustedValue;
+            break;
+        case "ssd":
+            this.ssd = adjustedValue;
+            break;
+        case "backup":
+            this.numberBackup = adjustedValue;
+            break;
+        case "fileSystem":
+            this.numberFileSystem = adjustedValue;
+            break;
+        case "fileSnapshot":
+            this.numberFileScnapsshot = adjustedValue;
+            break;
+        case "snapshothdd":
+            this.numberSnapshothdd = adjustedValue;
+            break;
+        case "snapshotssd":
+            this.numberSnapshotssd = adjustedValue;
+            break;
+    }
+    if (numericValue !== adjustedValue) {
+      this[name] = adjustedValue;
+  }
+    // if (isNaN(numericValue) || numericValue % this.stepBlock !== 0 && numericValue <= this.maxBlock && numericValue >= this.minBlock) {
+    //   this.notification.warning('', messageStepNotification);
+    //   switch (name) {
+    //     case "hhd": {
+    //       this.hhd = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
     //       break;
     //     }
-    //     case "ssd":{
-    //       this.ssd  =  numericValue    
+    //     case "ssd": {
+    //       this.ssd = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
     //       break;
     //     }
-    //     case "backup":{
-    //       this.numberBackup =  numericValue    
+    //     case "backup": {
+    //       this.numberBackup = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
     //       break;
     //     }
-    //     case "fileSystem":{
-    //       this.numberFileSystem =numericValue  
+    //     case "fileSystem": {
+    //       this.numberFileSystem = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
     //       break;
     //     }
-    //     case "fileSnapshot":{
-    //       this.numberFileScnapsshot =  numericValue         
+    //     case "fileSnapshot": {
+    //       this.numberFileScnapsshot = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+    //       break;
+    //     }
+    //     case "snapshothdd": {
+    //       this.numberSnapshothdd = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+    //       break;
+    //     }
+    //     case "snapshotssd": {
+    //       this.numberSnapshotssd = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
     //       break;
     //     }
     //   }
     // }
-
-    // }
-
+    
 
     this.calculate(null);
   }
@@ -494,8 +471,11 @@ export class ProjectCreateComponent implements OnInit {
       (flavor) => flavor.id === event
     );
     this.selectedElementFlavor = 'flavor_' + event;
+    console.log("objeselectedElementFlavorct", this.selectedElementFlavor)
     this.calculate(null);
   }
+  
+
 
   initFlavors(): void {
     this.instancesService.getDetailProductByUniqueName('vpc-oneportal')
@@ -578,7 +558,7 @@ export class ProjectCreateComponent implements OnInit {
         quotaSSDInGb: this.ssd,
         quotaBackupVolumeInGb: this.numberBackup,
         quotaSecurityGroupCount: this.numberSecurityGroup,
-        quotaIpPublicCount: IPPublicNum,
+        quotaIpPublicCount: IPPublicNum +1 ,
         quotaIpFloatingCount: IPFloating,
         quotaIpv6Count: IPV6,
         projectType: this.vpcType,
@@ -593,7 +573,8 @@ export class ProjectCreateComponent implements OnInit {
         publicNetworkAddress: ipName,
       
         gpuQuotas: this.gpuQuotasGobal,
-        quotaVolumeSnapshotInGb: this.numberSnapshot,
+        quotaVolumeSnapshotHddInGb: this.numberSnapshothdd,
+        quotaVolumeSnapshotSsdInGb:this.numberSnapshotssd,
 
         typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
         serviceType: 12,
@@ -666,10 +647,15 @@ export class ProjectCreateComponent implements OnInit {
   initIP() {
     this.activeIP = true;
     this.trashIP = true;
+    // this.calculate(null)
   }
   deleteIP() {
     this.activeIP = false;
     this.trashIP = false;
+
+    this.ipConnectInternet='';
+
+
     this.price.IpPublic = 0;
     this.price.IpPublicUnit = 0;
     this.price.IpV6 = 0;
@@ -680,6 +666,7 @@ export class ProjectCreateComponent implements OnInit {
     this.numberIpFloating = 0;
     this.numberIpPublic = 0;
     this.numberIpv6 = 0;
+    this.calculate(null)
   }
 
   initBackup() {
@@ -700,12 +687,15 @@ export class ProjectCreateComponent implements OnInit {
   initLoadBalancer() {
     this.activeLoadBalancer = true;
     this.trashLoadBalancer = true;
+    this.loadBalancerId =this.listLoadbalancer[0].id;
+    this.findNameLoadBalance(this.loadBalancerId);
+    // this.calculate(null)
   }
   deleteLoadBalancer() {
     this.activeLoadBalancer = false;
     this.trashLoadBalancer = false;
     this.numberLoadBalancer = 0;
-    // this.loadBalancerId = '';
+    this.loadBalancerId =null;
     this.calculate(null)
   }
 
@@ -728,7 +718,7 @@ export class ProjectCreateComponent implements OnInit {
     this.siteToSiteId = this.listSiteToSite[1].id;
     this.findNameSiteToSite(this.siteToSiteId)
     
-    this.calculate(null)
+    // this.calculate(null)
   }
   deleteVpnSiteToSite() {
     this.activeSiteToSite = false;
@@ -741,7 +731,7 @@ export class ProjectCreateComponent implements OnInit {
     this.activeVpnGpu = true;
     this.trashVpnGpu = true;
     this.getCatelogOffer();
-    this.calculate(null);
+    // this.calculate(null);
 
   }
   deleteVpnGpu() {
@@ -754,13 +744,13 @@ export class ProjectCreateComponent implements OnInit {
   initSnapshot(){
     this.activeSnapshot = true;
     this.trashSnapshot = true;
-    this.calculate(null)
+    // this.calculate(null)
   }
 
   deleteSnapshot(){
     this.activeSnapshot = false;
     this.trashSnapshot = false;
-    this.numberSnapshot=0;
+    this.numberSnapshothdd=0;
     this.calculate(null)
   }
 
@@ -769,10 +759,11 @@ export class ProjectCreateComponent implements OnInit {
   }
 
   changeTab(event: any) {
+    this.refreshQuota()
     this.totalAmount = 0;
     this.totalPayment = 0;
     this.selectIndexTab = event.index;
-    this.calculateReal();
+    this.calculate(null);
   }
 
   loadListIpConnectInternet() {
@@ -813,7 +804,7 @@ export class ProjectCreateComponent implements OnInit {
             .subscribe((data: any) => {
               this.listLoadbalancer = data;
               console.log("listLoadbalancer ff", this.listLoadbalancer)
-              this.loadBalancerId = this.listLoadbalancer[0].id
+              // this.loadBalancerId = this.listLoadbalancer[0].id
             });
         }
       );
@@ -890,9 +881,13 @@ export class ProjectCreateComponent implements OnInit {
           }
         }
       }
-      else if(item.typeName == 'snapshot'){
-        this.price.snapshot = item.totalAmount.amount;
-        this.price.snapshotUnit = item.unitPrice.amount;
+      else if(item.typeName == 'snapshot-hdd'){
+        this.price.snapshothdd = item.totalAmount.amount;
+        this.price.snapshothddUnit = item.unitPrice.amount;
+      }
+      else if(item.typeName == 'snapshot-ssd'){
+        this.price.snapshotssd = item.totalAmount.amount;
+        this.price.snapshotssdUnit = item.unitPrice.amount;
       }
     }
     // this.price.fileStorage = fileStorage;
@@ -948,6 +943,10 @@ export class ProjectCreateComponent implements OnInit {
     this.price.IpPublicUnit = 0;
     this.price.IpV6 = 0;
     this.price.IpV6Unit = 0;
+    this.price.snapshothdd=0;
+    this.price.snapshothddUnit=0;
+    this.price.snapshotssd=0;
+    this.price.snapshotssdUnit=0;
   }
 
   // 
@@ -1068,6 +1067,15 @@ export class ProjectCreateComponent implements OnInit {
   isDisabled(index: number): boolean {
     let total = this.numbergpu.reduce((sum, current) => sum + current, 0);
     return total >= this.maxTotal && this.numbergpu[index] === 0;
+  }
+  refreshQuota(){
+    this.vCPU=0;
+    this.ram=0;
+    this.hhd=0;
+    this.ssd=0;
+    this.offerFlavor=null;
+   this.selectedElementFlavor=''
+    // this.ofer
   }
 
 }
