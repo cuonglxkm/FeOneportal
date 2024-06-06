@@ -32,8 +32,8 @@ export class ObjectObjectStorageService extends BaseService {
       '&pageSize=' + pageSize + '&currentPage=' + currentPage);
   }
 
-  getDataS3Key(search: any, pageSize: any, currentPage: any): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/keys/getpaging?pageSize=' + pageSize + '&pageNumber=' + currentPage);
+  getDataS3Key(search: string, pageSize: number, currentPage: number): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/keys/getpaging?pageSize=' + pageSize + '&pageNumber=' + currentPage + '&searchValueUser=' + search);
   }
 
   createS3Key(subUser: string) {

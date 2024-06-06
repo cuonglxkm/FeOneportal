@@ -5,7 +5,10 @@ import {
   Inject,
   OnInit,
 } from '@angular/core';
-import { AppValidator, UserModel } from '../../../../../../../libs/common-utils/src';
+import {
+  AppValidator,
+  UserModel,
+} from '../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -18,11 +21,18 @@ import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { InvoiceService } from '../../services/invoice.service';
-import { FormCreateUserInvoice, FormInitUserInvoice } from '../../models/invoice';
-
+import {
+  FormCreateUserInvoice,
+  FormInitUserInvoice,
+} from '../../models/invoice';
 
 class ServiceInfo {
   name: string;
@@ -40,7 +50,6 @@ class Discount {
   endDate: string;
 }
 
-
 @Component({
   selector: 'one-portal-payment-summary',
   templateUrl: './payment-summary.component.html',
@@ -51,7 +60,7 @@ export class PaymentSummaryComponent implements OnInit {
   listServiceInfo: ServiceInfo[] = [];
   userModel: UserModel = {};
   order: Order = new Order();
-  formInitUserInvoice: FormInitUserInvoice = new FormInitUserInvoice()
+  formInitUserInvoice: FormInitUserInvoice = new FormInitUserInvoice();
   acceptTerm: boolean = false;
   totalAmount: number = 0;
   promotion: number = 0;
@@ -60,17 +69,17 @@ export class PaymentSummaryComponent implements OnInit {
   returnPath: string;
   serviceType: string;
   isVisibleCustomerInvoice: boolean = false;
-  customerGroup: any
-  customerGroups: any
-  customerType: any
-  customerTypes: any
-  email: string
+  customerGroup: any;
+  customerGroups: any;
+  customerType: any;
+  customerTypes: any;
+  email: string;
   totalPayment: number;
-  totalVAT: number
-  formCreatUserInvoice: FormCreateUserInvoice = new FormCreateUserInvoice()
-  isExportInvoice: boolean = false
-  isCheckedExportInvoice: boolean = false
-  isLoadingUpdateInfo: boolean = false
+  totalVAT: number;
+  formCreatUserInvoice: FormCreateUserInvoice = new FormCreateUserInvoice();
+  isExportInvoice: boolean = false;
+  isCheckedExportInvoice: boolean = true;
+  isLoadingUpdateInfo: boolean = false;
   radioValue = 1;
   options = [
     { label: 'Khách hàng doanh nghiệp', value: 1 },
@@ -242,15 +251,15 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `File System - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
-            case 'sharesnapshot_extend':
-              serviceItem.name = `File System Snapshot - ${specificationObj.serviceName}`;
-              serviceItem.type = this.i18n.fanyi('app.button.extend');
-              break;
-              case 'mongodb_resize':
-                this.serviceType = 'mongodb';
-                serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
-                serviceItem.type = this.i18n.fanyi('app.text.upgrade');
-                break;
+          case 'sharesnapshot_extend':
+            serviceItem.name = `File System Snapshot - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
+            break;
+          case 'mongodb_resize':
+            this.serviceType = 'mongodb';
+            serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.text.upgrade');
+            break;
           default:
             serviceItem.name = '';
             break;
@@ -268,10 +277,10 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getUser()
+    this.getUser();
   }
 
-  getUser(){
+  getUser() {
     this.email = this.tokenService.get()?.email;
     const accessToken = this.tokenService.get()?.token;
 
@@ -287,7 +296,24 @@ export class PaymentSummaryComponent implements OnInit {
         next: (res) => {
           this.userModel = res;
           console.log(this.userModel);
-          
+          if (this.userModel && this.userModel.customerInvoice === null) {
+            this.isVisibleCustomerInvoice = true;
+            this.formCustomerInvoice.controls.email.setValue(
+              this.userModel.email
+            );
+            this.formCustomerInvoice.controls.nameCustomer.setValue(
+              this.userModel.fullName
+            );
+            this.formCustomerInvoice.controls.address.setValue(
+              this.userModel.address
+            );
+            this.formCustomerInvoice.controls.phoneNumber.setValue(
+              this.userModel.phoneNumber
+            );
+            this.getListCustomerGroup();
+          }else if(this.userModel && this.userModel.customerInvoice !== null){
+            this.getDataExportInvoice()
+          }
           this.cdr.detectChanges();
         },
         error: (error) => {
@@ -297,53 +323,72 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   formCustomerInvoice: FormGroup<{
-    nameCompany: FormControl<string>
-    email: FormControl<string>
-    phoneNumber: FormControl<string>
-    nameCustomer: FormControl<string>
-    taxCode: FormControl<string>
-    address: FormControl<string>
+    nameCompany: FormControl<string>;
+    email: FormControl<string>;
+    phoneNumber: FormControl<string>;
+    nameCustomer: FormControl<string>;
+    taxCode: FormControl<string>;
+    address: FormControl<string>;
   }> = this.fb.group({
     nameCompany: ['', Validators.required],
     email: ['', [Validators.required, AppValidator.validEmail]],
     phoneNumber: ['', [Validators.required, AppValidator.validPhoneNumber]],
-    nameCustomer: ['', [Validators.required, AppValidator.cannotContainSpecialCharactor]],
+    nameCustomer: [
+      '',
+      [Validators.required, AppValidator.cannotContainSpecialCharactor],
+    ],
     taxCode: ['', [Validators.required, Validators.pattern(/^[0-9-]+$/)]],
-    address: ['', Validators.required]
+    address: ['', Validators.required],
   });
 
   formExportInvoice: FormGroup<{
-    nameCompany: FormControl<string>
-    email: FormControl<string>
-    phoneNumber: FormControl<string>
-    nameCustomer: FormControl<string>
-    taxCode: FormControl<string>
-    address: FormControl<string>
+    nameCompany: FormControl<string>;
+    email: FormControl<string>;
+    phoneNumber: FormControl<string>;
+    nameCustomer: FormControl<string>;
+    taxCode: FormControl<string>;
+    address: FormControl<string>;
   }> = this.fb.group({
     nameCompany: ['', [Validators.required]],
     email: ['', [Validators.required, AppValidator.validEmail]],
     phoneNumber: ['', [Validators.required, AppValidator.validPhoneNumber]],
-    nameCustomer: ['', [Validators.required, AppValidator.cannotContainSpecialCharactor]],
+    nameCustomer: [
+      '',
+      [Validators.required, AppValidator.cannotContainSpecialCharactor],
+    ],
     taxCode: ['', [Validators.required, Validators.pattern(/^[0-9-]+$/)]],
-    address: ['', [Validators.required]]
+    address: ['', [Validators.required]],
   });
 
   changeOptionInvoices(value: string) {
     console.log(this.radioValue);
-    if(this.radioValue === 2){
-      this.formExportInvoice.controls.address.clearValidators()
-      this.formExportInvoice.controls.address.updateValueAndValidity()
-      this.formExportInvoice.controls.taxCode.clearValidators()
-      this.formExportInvoice.controls.taxCode.updateValueAndValidity()
-      this.formExportInvoice.controls.phoneNumber.clearValidators()
-      this.formExportInvoice.controls.phoneNumber.updateValueAndValidity()
-    }else{
-      this.formExportInvoice.controls.address.setValidators(Validators.required)
-      this.formExportInvoice.controls.address.updateValueAndValidity()
-      this.formExportInvoice.controls.taxCode.setValidators(Validators.pattern(/^[0-9-]+$/))
-      this.formExportInvoice.controls.taxCode.updateValueAndValidity()
-      this.formExportInvoice.controls.phoneNumber.setValidators([Validators.required, AppValidator.validPhoneNumber])
-      this.formExportInvoice.controls.phoneNumber.updateValueAndValidity()
+    if (this.radioValue === 2) {
+      this.formExportInvoice.controls.address.clearValidators();
+      this.formExportInvoice.controls.address.updateValueAndValidity();
+      this.formExportInvoice.controls.taxCode.clearValidators();
+      this.formExportInvoice.controls.taxCode.updateValueAndValidity();
+      this.formExportInvoice.controls.phoneNumber.clearValidators();
+      this.formExportInvoice.controls.phoneNumber.updateValueAndValidity();
+      this.formExportInvoice.controls.nameCompany.clearValidators();
+      this.formExportInvoice.controls.nameCompany.updateValueAndValidity();
+    } else {
+      this.formExportInvoice.controls.address.setValidators(
+        Validators.required
+      );
+      this.formExportInvoice.controls.address.updateValueAndValidity();
+      this.formExportInvoice.controls.taxCode.setValidators(
+        Validators.pattern(/^[0-9-]+$/)
+      );
+      this.formExportInvoice.controls.taxCode.updateValueAndValidity();
+      this.formExportInvoice.controls.phoneNumber.setValidators([
+        Validators.required,
+        AppValidator.validPhoneNumber,
+      ]);
+      this.formExportInvoice.controls.phoneNumber.updateValueAndValidity();
+      this.formExportInvoice.controls.nameCompany.setValidators([
+        Validators.required,
+      ]);
+      this.formExportInvoice.controls.nameCompany.updateValueAndValidity();
     }
   }
 
@@ -416,73 +461,85 @@ export class PaymentSummaryComponent implements OnInit {
   getListCustomerGroup() {
     this.userService.getCustomerGroup().subscribe({
       next: (data) => {
-        this.customerGroups = data
+        this.customerGroups = data;
 
         console.log(this.customerGroups);
-        this.customerGroup = data[0].id
-        let customerGroupFilter =  this.customerGroups.filter((item) => item.id === this.customerGroup)
-        this.customerTypes = customerGroupFilter[0].customerTypes
-        this.customerType = this.customerTypes[0].id
-        if(this.customerType === 1){
-          this.formCustomerInvoice.controls.taxCode.clearValidators()
-          this.formCustomerInvoice.controls.taxCode.updateValueAndValidity()
-        }else{
-          this.formCustomerInvoice.controls.taxCode.setValidators([Validators.required, Validators.pattern(/^[0-9-]+$/)])
+        this.customerGroup = data[0].id;
+        let customerGroupFilter = this.customerGroups.filter(
+          (item) => item.id === this.customerGroup
+        );
+        this.customerTypes = customerGroupFilter[0].customerTypes;
+        this.customerType = this.customerTypes[0].id;
+        if (this.customerType === 1) {
+          this.formCustomerInvoice.controls.taxCode.clearValidators();
+          this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+          this.formCustomerInvoice.controls.nameCompany.clearValidators();
+          this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
+        } else {
+          this.formCustomerInvoice.controls.taxCode.setValidators([
+            Validators.required,
+            Validators.pattern(/^[0-9-]+$/),
+          ]);
+          this.formCustomerInvoice.controls.nameCompany.setValidators([
+            Validators.required,
+          ]);
         }
-      }, 
+      },
       error: (e) => {
         this.notification.error(
           e.statusText,
           this.i18n.fanyi('Lấy danh sách thất bại')
         );
       },
-    })
+    });
   }
 
-  changeCustomerGroup(id){
+  changeCustomerGroup(id) {
     console.log(id);
-    
-    let customerGroupFilter = this.customerGroups.filter((item) => item.id === id)
-    this.customerTypes = customerGroupFilter[0].customerTypes
-    this.customerType = this.customerTypes[0].id
+
+    let customerGroupFilter = this.customerGroups.filter(
+      (item) => item.id === id
+    );
+    this.customerTypes = customerGroupFilter[0].customerTypes;
+    this.customerType = this.customerTypes[0].id;
     console.log(this.customerType);
-    
-    if(this.customerType === 1){
-      this.formCustomerInvoice.controls.taxCode.clearValidators()
-      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity()
-    }else{
-      this.formCustomerInvoice.controls.taxCode.setValidators([Validators.required, Validators.pattern(/^[0-9-]+$/)])
-      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity()
+
+    if (this.customerType === 1) {
+      this.formCustomerInvoice.controls.taxCode.clearValidators();
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+    } else {
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.required,
+        Validators.pattern(/^[0-9-]+$/),
+      ]);
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
     }
   }
 
-
-  initUserInvoice(){
-    this.formInitUserInvoice.Address = this.formExportInvoice.controls.address.value
-    this.formInitUserInvoice.CompanyName = this.formExportInvoice.controls.nameCompany.value
-    this.formInitUserInvoice.BuyerName = this.formExportInvoice.controls.nameCustomer.value
-    this.formInitUserInvoice.TaxCode = this.formExportInvoice.controls.taxCode.value
-    this.formInitUserInvoice.PhoneNumber = this.formExportInvoice.controls.phoneNumber.value
-    this.formInitUserInvoice.Email = this.formExportInvoice.controls.email.value
-    this.formInitUserInvoice.CustomerType = this.radioValue
+  initUserInvoice() {
+    this.formInitUserInvoice.Address =
+      this.formExportInvoice.controls.address.value;
+    this.formInitUserInvoice.CompanyName =
+      this.formExportInvoice.controls.nameCompany.value;
+    this.formInitUserInvoice.BuyerName =
+      this.formExportInvoice.controls.nameCustomer.value;
+    this.formInitUserInvoice.TaxCode =
+      this.formExportInvoice.controls.taxCode.value;
+    this.formInitUserInvoice.PhoneNumber =
+      this.formExportInvoice.controls.phoneNumber.value;
+    this.formInitUserInvoice.Email =
+      this.formExportInvoice.controls.email.value;
+    this.formInitUserInvoice.CustomerType = this.radioValue;
   }
-  payNow() {    
-    if(this.userModel && this.userModel.customerInvoice === null){
-      this.isVisibleCustomerInvoice = true
-      this.formCustomerInvoice.controls.email.setValue(this.userModel.email)
-      this.formCustomerInvoice.controls.nameCustomer.setValue(this.userModel.fullName)
-      this.formCustomerInvoice.controls.address.setValue(this.userModel.address)
-      this.formCustomerInvoice.controls.phoneNumber.setValue(this.userModel.phoneNumber)
-      this.getListCustomerGroup()
-    }else{
-      this.pay()
-    }
+  payNow() {
+    this.pay();
   }
-  
 
-  pay(){
-    this.initUserInvoice()
-    this.isCheckedExportInvoice === true ? this.order.invoiceInfo = JSON.stringify(this.formInitUserInvoice) : this.order.invoiceInfo = ""
+  pay() {
+    this.initUserInvoice();
+    this.isCheckedExportInvoice === true
+      ? (this.order.invoiceInfo = JSON.stringify(this.formInitUserInvoice))
+      : (this.order.invoiceInfo = '');
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.service
       .create(this.order)
@@ -511,58 +568,75 @@ export class PaymentSummaryComponent implements OnInit {
       });
   }
 
-  handleOkUpdateCustomerInvoice(){
-  //  this.pay()
-  this.isLoadingUpdateInfo = true
-   this.formCreatUserInvoice.companyName = this.formCustomerInvoice.controls.nameCompany.value
-   this.formCreatUserInvoice.address = this.formCustomerInvoice.controls.address.value
-   this.formCreatUserInvoice.phoneNumber = this.formCustomerInvoice.controls.phoneNumber.value
-   this.formCreatUserInvoice.fullName = this.formCustomerInvoice.controls.nameCustomer.value
-   this.formCreatUserInvoice.email = this.formCustomerInvoice.controls.email.value
-   this.formCreatUserInvoice.taxCode = this.formCustomerInvoice.controls.taxCode.value
-   this.formCreatUserInvoice.customerGroupId = this.customerGroup
-   this.formCreatUserInvoice.customerTypeId = this.customerType
-   this.formCreatUserInvoice.customerId = this.tokenService.get()?.userId
-   console.log(this.formCreatUserInvoice);
-   
+  handleOkUpdateCustomerInvoice() {
+    //  this.pay()
+    this.isLoadingUpdateInfo = true;
+    this.formCreatUserInvoice.companyName =
+      this.formCustomerInvoice.controls.nameCompany.value;
+    this.formCreatUserInvoice.address =
+      this.formCustomerInvoice.controls.address.value;
+    this.formCreatUserInvoice.phoneNumber =
+      this.formCustomerInvoice.controls.phoneNumber.value;
+    this.formCreatUserInvoice.fullName =
+      this.formCustomerInvoice.controls.nameCustomer.value;
+    this.formCreatUserInvoice.email =
+      this.formCustomerInvoice.controls.email.value;
+    this.formCreatUserInvoice.taxCode =
+      this.formCustomerInvoice.controls.taxCode.value;
+    this.formCreatUserInvoice.customerGroupId = this.customerGroup;
+    this.formCreatUserInvoice.customerTypeId = this.customerType;
+    this.formCreatUserInvoice.customerId = this.tokenService.get()?.userId;
+    console.log(this.formCreatUserInvoice);
+
     this.invoiceService.create(this.formCreatUserInvoice).subscribe({
       next: (data) => {
-        this.isLoadingUpdateInfo = false
+        this.isLoadingUpdateInfo = false;
         this.notification.success(
           this.i18n.fanyi('app.status.success'),
           this.i18n.fanyi('Cập nhật thông tin xuất hóa đơn thành công')
         );
-        this.isVisibleCustomerInvoice = false
-        this.getUser()
+        this.isVisibleCustomerInvoice = false;
+        this.getUser();
       },
       error: (e) => {
-        this.isLoadingUpdateInfo = false
+        this.isLoadingUpdateInfo = false;
         this.notification.error(
           e.statusText,
           this.i18n.fanyi('Cập nhật thông tin xuất hóa đơn thất bại')
         );
       },
-    })
-
+    });
   }
 
   navigateToCreate() {
     this.router.navigate([this.returnPath]);
   }
 
-  handleCancelUpdateCustomerInvoice(){
-    this.isVisibleCustomerInvoice = false
+  getDataExportInvoice(){
+    this.formExportInvoice.controls.email.setValue(
+      this.userModel.customerInvoice.email
+    );
+    this.formExportInvoice.controls.nameCustomer.setValue(
+      this.userModel.customerInvoice.fullName
+    );
+    this.formExportInvoice.controls.address.setValue(
+      this.userModel.customerInvoice.address
+    );
+    this.formExportInvoice.controls.phoneNumber.setValue(
+      this.userModel.customerInvoice.phoneNumber
+    );
+    this.formExportInvoice.controls.taxCode.setValue(
+      this.userModel.customerInvoice.taxCode
+    );
+    this.formExportInvoice.controls.nameCompany.setValue(
+      this.userModel.customerInvoice.companyName
+    );
   }
 
-  updateExportInvoice(event){ 
-    if(this.userModel && this.userModel.customerInvoice && event === true){
-      this.formExportInvoice.controls.email.setValue(this.userModel.customerInvoice.email)
-      this.formExportInvoice.controls.nameCustomer.setValue(this.userModel.customerInvoice.fullName)
-      this.formExportInvoice.controls.address.setValue(this.userModel.customerInvoice.address)
-      this.formExportInvoice.controls.phoneNumber.setValue(this.userModel.customerInvoice.phoneNumber)
-      this.formExportInvoice.controls.taxCode.setValue(this.userModel.customerInvoice.taxCode)
-      this.formExportInvoice.controls.nameCompany.setValue(this.userModel.customerInvoice.companyName)
+
+  updateExportInvoice(event) {
+    if (this.userModel && this.userModel.customerInvoice && event === true) {
+      this.getDataExportInvoice()
     }
   }
-
 }

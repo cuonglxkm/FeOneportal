@@ -16,6 +16,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-create-endpoint-group',
@@ -108,7 +110,8 @@ export class CreateEndpointGroupComponent implements OnInit {
     private fb: NonNullableFormBuilder,
     private notification: NzNotificationService,
     private endpointGroupService: EndpointGroupService,
-    private vpnSiteToSiteService: VpnSiteToSiteService
+    private vpnSiteToSiteService: VpnSiteToSiteService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   handleChangeType(event: any){
@@ -133,8 +136,8 @@ export class CreateEndpointGroupComponent implements OnInit {
     if (this.form.valid) {
       if(this.selectedType === 'subnet' && this.subnetId.length === 0){
         this.notification.warning(
-          'Cảnh báo',
-          'Vui lòng chọn subnet'
+          this.i18n.fanyi('app.status.warning'),
+          this.i18n.fanyi('app.endpoint-create.choose.subnet')
         );
         this.isLoading = false;
       }else{
@@ -144,16 +147,16 @@ export class CreateEndpointGroupComponent implements OnInit {
         (data) => {
           this.isLoading = false;
           this.notification.success(
-            'Thành công',
-            'Tạo mới Endpoint Group thành công'
+            this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.endpoint-create.success')
           );
           this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
         },
         (error) => {
           this.isLoading = false;
           this.notification.error(
-            'Thất bại',
-            'Tạo mới Endpoint Group thất bại'
+            this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.endpoint-create.fail')
           );
           console.log(error);
         }

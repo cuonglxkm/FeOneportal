@@ -2,7 +2,7 @@
 src="assets/imgs/delete.svg"
 style="cursor: pointer; width: 28px; height: 28px"
   nz-popover
-  [nzPopoverContent]="'Xóa'"
+  [nzPopoverContent]="'app.text.delete' |i18n"
   nzPopoverPlacement="bottom"
   (click)="showModal()"
 />
@@ -14,23 +14,22 @@ style="cursor: pointer; width: 28px; height: 28px"
   (nzOnCancel)="handleCancel()"
 >
   <ng-template #modalTitle>
-    <span class="text-modal-title">Xóa VPN Connection</span>
+    <span class="text-modal-title">{{'app.text.delete' |i18n}} VPN Connection</span>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="handleOk()">
       <nz-form-item>
         <nz-alert
           nzType="warning"
-          nzDescription="Quý khách có thực sự muốn xoá VPN Connections?"
+          [nzDescription]="'app.vpn-connection-delete.title' |i18n"
           nzShowIcon
           style="margin-bottom: 10px"
         >
         </nz-alert>
         <nz-form-label>
           <div>
-            <span
-              >Đế thực hiện xoá VPN Connection <b>{{nameVpnconnection}}</b>, vui lòng nhập tên VPN Connection để xác nhận.</span
-            >
+            <span [innerHTML]="'app.vpn-connection-delete.des' |i18n : {name: nameVpnconnection}"></span
+              >          
           </div>
         </nz-form-label>
         <nz-form-control [nzErrorTip]="nameErrorTpl">
@@ -38,11 +37,11 @@ style="cursor: pointer; width: 28px; height: 28px"
             nz-input
             class="input-custom"
             formControlName="name"
-            [placeholder]="'Nhập tên VPN Connection'"
+            [placeholder]="'app.vpn-connection-delete.input' |i18n "
           />
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Tên vpn connection không được để trống</ng-container>
-            <ng-container *ngIf="control.hasError('nameMismatch')">Tên không trùng khớp</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{'app.vpn-connection-delete.alert1' |i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('nameMismatch')">{{'app.delete.input.alert2' |i18n}}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
