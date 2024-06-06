@@ -82,7 +82,7 @@ export class SnapshotScheduleEditComponent implements OnInit {
   doGetDetailSnapshotSchedule(id: number, userId: number) {
     this.isLoading = true;
     this.snapshotService
-      .getDetailSnapshotSchedule(id, userId)
+      .getDetailSnapshotSchedule(id)
       .subscribe((data) => {
         if (data != null) {
           this.isLoading = false;

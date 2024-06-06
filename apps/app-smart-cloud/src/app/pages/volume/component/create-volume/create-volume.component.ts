@@ -3,7 +3,7 @@ import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { CreateVolumeRequestModel } from '../../../../shared/models/volume.model';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../../shared/services/snapshot-volume.service';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { InstancesService } from '../../../instances/instances.service';
@@ -94,6 +94,8 @@ export class CreateVolumeComponent implements OnInit {
   enableEncrypt: boolean = false;
   enableMultiAttach: boolean = false;
 
+  offerId: number;
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private volumeService: VolumeService,
@@ -107,6 +109,7 @@ export class CreateVolumeComponent implements OnInit {
     private notification: NzNotificationService,
     private configurationsService: ConfigurationsService,
     private orderService: OrderService,
+    private activatedRoute: ActivatedRoute
   ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
@@ -182,10 +185,10 @@ export class CreateVolumeComponent implements OnInit {
   getConfiguration() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueString = data.valueString;
-      this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
-      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
-      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
-    })
+      this.minStorage = Number.parseInt(this.valueString?.split('#')[0]);
+      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1]);
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2]);
+    });
   }
 
   regionChanged(region: RegionModel) {
@@ -211,8 +214,8 @@ export class CreateVolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volumes']);
   }
 
-  onSwitchSnapshot() {
-    this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
+  onSwitchSnapshot(value) {
+    this.isInitSnapshot = value
     console.log('snap shot', this.isInitSnapshot);
     if (this.isInitSnapshot) {
       this.validateForm.controls.snapshot.setValidators(Validators.required);
@@ -225,6 +228,22 @@ export class CreateVolumeComponent implements OnInit {
 
   snapshotSelectedChange(value: number) {
     this.snapshotSelected = value;
+    console.log('snapshot selected: ', this.snapshotSelected);
+    if (this.snapshotSelected != undefined) {
+      this.snapshotvlService.getDetailSnapshotSchedule(this.snapshotSelected).subscribe(data => {
+        console.log('data', data);
+        this.validateForm.controls.storage.setValidators([Validators.min(data.sizeInGB)])
+        this.validateForm.controls.storage.setValue(data.sizeInGB)
+        if(data.volumeType == 'hdd') {
+          this.selectedValueHDD = true
+          this.selectedValueSSD = false
+        }
+        if(data.volumeType == 'ssd') {
+          this.selectedValueSSD = true
+          this.selectedValueHDD = false
+        }
+      });
+    }
   }
 
   onChangeStatusSSD() {
@@ -235,8 +254,8 @@ export class CreateVolumeComponent implements OnInit {
     if (this.selectedValueSSD) {
       this.volumeCreate.volumeType = 'ssd';
       this.validateForm.controls.storage.reset();
-      this.validateForm.controls.storage.markAsDirty()
-      this.validateForm.controls.storage.updateValueAndValidity()
+      this.validateForm.controls.storage.markAsDirty();
+      this.validateForm.controls.storage.updateValueAndValidity();
       if (this.validateForm.get('storage').value <= 40) {
         this.iops = 400;
       } else {
@@ -252,8 +271,8 @@ export class CreateVolumeComponent implements OnInit {
     console.log('Selected option changed hdd:', this.selectedValueHDD);
     // this.iops = this.validateForm.get('storage').value * 10
     this.validateForm.controls.storage.reset();
-    this.validateForm.controls.storage.markAsDirty()
-    this.validateForm.controls.storage.updateValueAndValidity()
+    this.validateForm.controls.storage.markAsDirty();
+    this.validateForm.controls.storage.updateValueAndValidity();
     if (this.selectedValueHDD) {
       this.volumeCreate.volumeType = 'hdd';
       this.iops = 300;
@@ -262,16 +281,16 @@ export class CreateVolumeComponent implements OnInit {
 
   onChangeStatusEncrypt(value) {
     console.log('value change encrypt', value);
-    if(value == true) {
-      this.validateForm.controls.isEncryption.setValue(true)
-      this.validateForm.controls.isMultiAttach.setValue(false)
+    if (value == true) {
+      this.validateForm.controls.isEncryption.setValue(true);
+      this.validateForm.controls.isMultiAttach.setValue(false);
     }
   }
 
   onChangeStatusMultiAttach(value) {
-    if(value == true) {
-      this.validateForm.controls.isMultiAttach.setValue(true)
-      this.validateForm.controls.isEncryption.setValue(false)
+    if (value == true) {
+      this.validateForm.controls.isMultiAttach.setValue(true);
+      this.validateForm.controls.isEncryption.setValue(false);
     }
   }
 
@@ -282,7 +301,7 @@ export class CreateVolumeComponent implements OnInit {
       .subscribe((data) => {
         this.listInstances = data.records;
         this.listInstances = data.records.filter(item => item.taskState === 'ACTIVE' && item.status === 'KHOITAO');
-        console.log('list instance', this.listInstances);
+        // console.log('list instance', this.listInstances);
         this.cdr.detectChanges();
       });
   }
@@ -293,7 +312,7 @@ export class CreateVolumeComponent implements OnInit {
 
   timeSelectedChange(value) {
     this.timeSelected = value;
-    this.validateForm.controls.time.setValue(this.timeSelected)
+    this.validateForm.controls.time.setValue(this.timeSelected);
     console.log(this.timeSelected);
     this.getTotalAmount();
   }
@@ -375,8 +394,6 @@ export class CreateVolumeComponent implements OnInit {
   unitPrice = 0;
 
 
-
-
   changeValueStorage(value) {
     this.dataSubjectStorage.next(value);
   }
@@ -384,9 +401,9 @@ export class CreateVolumeComponent implements OnInit {
   onChangeValueStorage() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if((res % this.stepStorage) > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}))
-          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage))
+        if ((res % this.stepStorage) > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
         }
         console.log('total amount');
         this.getTotalAmount();
@@ -395,6 +412,7 @@ export class CreateVolumeComponent implements OnInit {
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -402,7 +420,7 @@ export class CreateVolumeComponent implements OnInit {
   navigateToPaymentSummary() {
     // this.getTotalAmount()
     this.volumeInit();
-    console.log('value', this.volumeCreate)
+    console.log('value', this.volumeCreate);
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
     request.customerId = this.volumeCreate.customerId;
     request.createdByUserId = this.volumeCreate.customerId;
@@ -419,7 +437,7 @@ export class CreateVolumeComponent implements OnInit {
       }
     ];
     this.orderService.validaterOrder(request).subscribe(data => {
-      if(data.success) {
+      if (data.success) {
         var returnPath: string = '/app-smart-cloud/volume/create';
         console.log('request', request);
         console.log('service name', this.volumeCreate.serviceName);
@@ -431,12 +449,12 @@ export class CreateVolumeComponent implements OnInit {
         this.errorList = data.data;
       }
     }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
-    })
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+    });
   }
 
   getTotalAmount() {
-    this.isLoadingAction = true
+    this.isLoadingAction = true;
     this.volumeInit();
     console.log('time', this.timeSelected);
     let itemPayment: ItemPayment = new ItemPayment();
@@ -451,7 +469,7 @@ export class CreateVolumeComponent implements OnInit {
     this.instanceService.getTotalAmount(dataPayment)
       .pipe(debounceTime(500))
       .subscribe((result) => {
-        this.isLoadingAction = false
+        this.isLoadingAction = false;
         console.log('thanh tien volume', result.data);
         this.orderItem = result.data;
         this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
@@ -462,45 +480,28 @@ export class CreateVolumeComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-    // this.customerId = this.tokenService.get()?.userId
     this.getConfiguration();
-
     this.onChangeValueStorage();
-
-    this.getListSnapshot();
-    this.getListInstance();
-
-
-    this.getListVolumes();
-
-    this.date = new Date();
     this.getTotalAmount();
-
-
-    // this.getCatalogOffer('MultiAttachment')
-    // this.getCatalogOffer('Encryption')
   }
 
   //
-  private getListSnapshot() {
+  getListSnapshot() {
     this.isLoadingAction = true;
     this.snapshotList = [];
-    let userId = this.tokenService.get()?.userId;
-    this.snapshotvlService
-      .getSnapshotVolumes(
-        9999,
-        1,
-        this.region,
-        this.project,
-        '',
-        '',
-        ''
-      )
-      .subscribe((data) => {
-        data.records.forEach((snapshot) => {
-          this.snapshotList.push({ label: snapshot.name, value: snapshot.id });
-        });
-        this.isLoadingAction = false;
+    this.snapshotvlService.getSnapshotVolumes(9999, 1, this.region, this.project, '', '', '').subscribe(data => {
+      this.isLoadingAction = false
+      console.log('data vl snapshot', data.records)
+      data?.records.forEach(item => {
+        this.snapshotList.push({ label: item.name , value: item.id });
       });
+      if (this.activatedRoute.snapshot.paramMap.get('snapshotId')) {
+        const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('snapshotId'));
+        if (this.snapshotList.find(x => x.value == idSnapshot)) {
+          this.onSwitchSnapshot(true);
+          this.snapshotSelected = idSnapshot;
+        }
+      }
+    });
   }
 }

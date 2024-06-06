@@ -306,7 +306,15 @@
               {{ remainingRAM }}/{{ infoVPC.cloudProject.quotaRamInGb }} GB RAM,
               {{ remainingVolume }}/{{ purchasedVolume }} GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
-              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span
+              ><span
+                *ngIf="
+                  infoVPC.cloudProject.gpuProjects.length != 0 &&
+                  instancesModel.volumeType != 0 &&
+                  isGpuConfig
+                "
+                >, {{ remainingGpu }}/{{ purchasedGpu }} GPU</span
+              >
             </span>
           </div>
           <div style="margin-bottom: 20px">
@@ -315,6 +323,13 @@
               {{ instancesModel.ram }} GB RAM, {{ instancesModel.storage }} GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
               <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+              <span
+                *ngIf="
+                  instancesModel.gpuCount != null &&
+                  instancesModel.gpuCount != 0
+                "
+                >, {{ instancesModel.gpuCount }} GPU ({{ gpuTypeNameAtIntial }})
+              </span>
             </span>
           </div>
           <div style="margin-bottom: 20px">
@@ -325,6 +340,9 @@
               {{ storage + instancesModel.storage }}GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
               <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+              <span *ngIf="instancesModel.volumeType != 0 && isGpuConfig"
+                >, {{ GPU + instancesModel.gpuCount }} GPU ({{ gpuTypeName }})
+              </span>
             </span>
           </div>
           <nz-tabset
@@ -478,6 +496,7 @@
               </div>
             </nz-tab>
             <nz-tab
+              *ngIf="instancesModel.volumeType != 0"
               [nzTitle]="'app.gpu.configuration' | i18n"
               (nzClick)="onClickGpuConfig()"
             >
@@ -624,6 +643,7 @@
                           [nzMin]="0"
                           [nzMax]="remainingGpu"
                           [(ngModel)]="GPU"
+                          (ngModelChange)="checkChangeConfig()"
                           [ngModelOptions]="{ standalone: true }"
                         ></nz-slider>
                         <div
@@ -646,6 +666,7 @@
                           [nzMin]="0"
                           [nzMax]="remainingGpu"
                           [(ngModel)]="GPU"
+                          (ngModelChange)="checkChangeConfig()"
                           (keydown)="onKeyDown($event)"
                           [ngModelOptions]="{ standalone: true }"
                           nzSize="large"
@@ -668,11 +689,12 @@
                     "
                     [nzShowSearch]="true"
                     [(ngModel)]="gpuOfferId"
+                    (ngModelChange)="changeGpuType($event); checkChangeConfig()"
                     [ngModelOptions]="{ standalone: true }"
                     nzSize="large"
                   >
                     <nz-option
-                      *ngFor="let i of listGPUType"
+                      *ngFor="let i of purchasedListGPUType"
                       [nzLabel]="i.offerName"
                       [nzValue]="i.id"
                     />
@@ -717,6 +739,9 @@
               >HDD</span
             >
             <span *ngIf="instancesModel.volumeType == 1">SSD</span>)
+          </div>
+          <div *ngIf="isGpuConfig" style="margin-top: 10px" class="text-label">
+            {{ instancesModel.gpuCount }} GPU ({{ gpuTypeName }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row>

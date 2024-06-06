@@ -317,6 +317,7 @@
   "app.object-storage": "Object Storage",
   "app.vpns2s": "VPN Site to Site",
   "app.backup-package": "gói backup",
+  "app.backup.volume": "backup volume",
   "app.instances": "Máy ảo",
   "app.ip-public": "Ip Public",
   "app.ip-loating": "Ip Floating",
@@ -2551,7 +2552,10 @@
   "volume.notification.resize.success": "Điều chỉnh Volume thành công.",
   "volume.notification.resize.fail": "Điều chỉnh Volume thất bại.",
   "volume.notification.access.denied": "Volume không tồn tại!",
-
+  "volume.iops.fix.hdd": "HDD IOPS cố định là 300",
+  "volume.iops.fix.ssd": "SSD IOPS tịnh tiến theo dung lượng Volume được tính theo công thức IOPS = Dung lượng * 10.",
+  "volume.iops.fix.ssd1": "Tuy nhiên IOPS có giá trị Min = 400 nên là đối với các Volume <= 40 GB thì IOPS luôn là 400,",
+  "volume.iops.fix.ssd2": "từ 41GB trở lên thì theo công thức IOPS = Dung lượng * 10",
 
   "volume.input.storage.vpc.required": "Vui lòng nhập dung lượng của gói Backup",
   "volume.unit-price": "Đơn giá",
@@ -2596,7 +2600,11 @@
   "app.backup.volume.confirm.delete": "Đế thực hiện xoá Backup Volume {{name}}, vui lòng nhập tên Backup để xác nhận.",
   "app.backup.volume.tooltip.type": "",
 
+  "app.backup.volume.notification.restore.success": "Yêu cầu khôi phục backup volume thành công.",
+  "app.backup.volume.notification.restore.fail": "Yêu cầu khôi phục backup volume thất bại. {{error}}",
+
   "app.backup.volume.restore.current.select.volume": "Chọn Volume restore",
+  "app.backup.volume.note.restore.new": "Khôi phục backup volume",
 
   "app.dashboard.subscription.service": "Dịch vụ",
   "app.dashboard.subscription.service.active": "Đang hoạt động",

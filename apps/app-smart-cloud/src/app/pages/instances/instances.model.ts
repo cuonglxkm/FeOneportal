@@ -226,7 +226,7 @@ export class InstanceCreate {
   keypairName: any;
   securityGroups: any;
   network: any;
-  volumeSize: number;
+  volumeSize: number = 0;
   isUsePrivateNetwork: boolean;
   ipPublic: any;
   password: any;
@@ -241,10 +241,10 @@ export class InstanceCreate {
   poolName: any;
   usedMss: boolean;
   customerUsingMss: any;
-  ram: number;
-  cpu: number;
+  ram: number = 0;
+  cpu: number = 0;
   volumeType: any;
-  gpuCount: any;
+  gpuCount: any = 0;
   gpuOfferId: any;
   gpuType: any;
   privateNetId: any;
@@ -592,4 +592,84 @@ export class CheckIPAddressModel {
   listCIDR: string[];
   networkId: string;
   regionId: number;
+}
+
+export class InfoVPCModel {
+  cloudProject: CloudProject;
+  cloudProjectResourceUsed: CloudProjectResourceUsed;
+  creationDate: string;
+  expirationDate: string;
+  userName: string;
+  userNameEncrypt: string;
+  password: string;
+  passwordEncrypt: string;
+}
+
+export class CloudProject {
+  id: number;
+  cloudIdentityId: number;
+  cloudProjectName: string;
+  description: string;
+  regionId: number;
+  regionText: string;
+  quotavCpu: number;
+  quotaRamInGb: number;
+  quotaHddInGb: number;
+  quotaSSDInGb: number;
+  quotaBackupVolumeInGb: number;
+  quotaSecurityGroupCount: number;
+  quotaKeypairCount: number;
+  quotaVolumeSnapshotInGb: number;
+  quotaIpPublicCount: number;
+  quotaIpFloatingCount: number;
+  quotaNetworkCount: number;
+  quotaRouterCount: number;
+  quotaLoadBalancerSDNCount: number;
+  offerId: number;
+  offerIdLBSDN: number;
+  vpnSiteToSiteOfferId: number;
+  quotaShareInGb: number;
+  quotaShareSnapshotInGb: number;
+  resourceStatus: string;
+  publicNetworkId: string;
+  publicNetworkAddress: string;
+  quotaIpv6Count: number;
+  type: string;
+  displayName: string;
+  cloudId: string;
+  gpuProjects: GpuProject[];
+}
+
+export class GpuProject {
+  id: number;
+  gpuOfferId: number;
+  gpuType: string;
+  gpuCount: number;
+  projectId: number;
+}
+
+export class CloudProjectResourceUsed {
+  serviceType: number;
+  cpu: number;
+  ram: number;
+  hdd: number;
+  ssd: number;
+  backup: number;
+  securityGroupCount: number;
+  keypairCount: number;
+  volumeSnapshotCount: number;
+  ipPublicCount: number;
+  ipFloatingCount: number;
+  networkCount: number;
+  routerCount: number;
+  loadBalancerSdnCount: number;
+  ipv6Count: number;
+  quotaShareInGb: number;
+  quotaShareSnapshotInGb: number;
+  gpuUsages: GpuUsage[];
+}
+
+export class GpuUsage {
+  gpuOfferId: number;
+  gpuCount: number;
 }

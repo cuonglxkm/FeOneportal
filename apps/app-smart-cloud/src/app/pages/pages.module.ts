@@ -249,6 +249,7 @@ import { SnapshotListComponent } from './snapshot/list/snapshot-list.component';
 import { SnapshotDeleteComponent } from './snapshot/delete/snapshot-delete.component';
 import { SnapshotEditComponent } from './snapshot/edit/snapshot-edit.component';
 import { RestoreBackupVmVpcComponent } from './backup-vm/restore-backup-vm-vpc/restore-backup-vm-vpc.component';
+import { RestoreBackupVolumeVpcComponent } from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -474,6 +475,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     SnapshotDeleteComponent,
     SnapshotEditComponent,
     RestoreBackupVmVpcComponent,
+    RestoreBackupVolumeVpcComponent,
   ],
   imports: [
     CommonModule,
