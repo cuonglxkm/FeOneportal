@@ -310,16 +310,16 @@ export class CreateFileSystemComponent implements OnInit {
       if (data != null) {
         if (data.code == 200) {
           this.isLoading = false;
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu tạo File System thành công.');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.create.success'));
           this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
         }
       } else {
         this.isLoading = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File System thất bại.');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
       }
     }, error => {
       this.isLoading = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu tạo File System thất bại.');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
     });
 
   }

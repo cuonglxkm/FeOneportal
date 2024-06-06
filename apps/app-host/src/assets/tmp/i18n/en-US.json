@@ -1022,6 +1022,8 @@
   "validation.snapshot.name.pattern": "Snapshot name is only allowed to use lowercase characters a-z, uppercase A-Z, numbers 0-9, hyphens (-) and underscores (_), can have spaces, minimum 1 character and maximum 255 characters.",
   "app.item.switch.file.system.snapshot": "-Select Snapshot-",
   "app.file.storage.snapshot.required.select": "Please select Snapshot File System for me",
+  "app.file.system.notification.require.create.success": "File System creation request successful.",
+  "app.file.system.notification.require.create.fail": "File System creation request failed.",
 
   "app.file.system.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR range allowed to access this filesystem",
   "app.file.system.access.to.create.success": "Create access rule success",
