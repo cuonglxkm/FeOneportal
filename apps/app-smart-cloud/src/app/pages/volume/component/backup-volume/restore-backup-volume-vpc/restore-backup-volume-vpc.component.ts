@@ -160,6 +160,7 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
   onSelectionChange(): void {
     console.log('Selected option:', this.selectedOption);
     if (this.selectedOption === 'current') {
+      this.validateForm.get('formNew').reset();
       this.validateForm.get('formNew').get('volumeName').clearValidators();
       this.validateForm.get('formNew').get('volumeName').updateValueAndValidity();
     } else if (this.selectedOption === 'new') {
