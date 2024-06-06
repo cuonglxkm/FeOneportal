@@ -162,6 +162,7 @@
               nzType="primary"
               [disabled]="!isEnable"
               (click)="extend()"
+              [nzLoading]="isLoadingCreate"
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               {{ 'app.button.create' | i18n }}
@@ -173,3 +174,7 @@
   </nz-col>
 </nz-row>
 </form>
+<one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />
