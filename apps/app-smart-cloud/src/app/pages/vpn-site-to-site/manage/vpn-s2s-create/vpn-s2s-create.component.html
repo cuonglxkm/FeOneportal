@@ -1,20 +1,18 @@
 <page-header
-[breadcrumb]="breadcrumb" [title]="'Tạo mới VPN site to site'"
+[breadcrumb]="breadcrumb" [title]="'app.vpns2s-create' | i18n"
 [action]="action"
 
 >
 <ng-template #breadcrumb>
   <nz-breadcrumb [nzSeparator]="separatorTemplate">
     <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+      <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
     </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Dịch vụ hạ tầng</a>
-    </nz-breadcrumb-item>
+    <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
     <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">VPN site to site</a>
     </nz-breadcrumb-item>
-    <nz-breadcrumb-item>Tạo mới VPN site to site</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'app.vpns2s-create' | i18n}}</nz-breadcrumb-item>
   </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -38,8 +36,8 @@
 <nz-row nzGutter="24" class="body-form">
   <nz-col nzSpan="16" class="left-content">
     <nz-card class="left-content-card">
-      <span class="text-card-header">Chọn gói VPN site to site</span>
-      <div class="header-content">Giá thuê bao gói VPN theo tháng (Chưa VAT)</div>
+      <span class="text-card-header">{{ 'app.vpns2s-create.choose.package' | i18n }}</span>
+      <div class="header-content">{{'app.vpns2s-extend.header' | i18n}}</div>
       <nz-table
         #ajaxTable3
         nzShowSizeChanger
@@ -50,9 +48,9 @@
       >
         <thead>
           <tr>
-            <th nzLeft>Tên gói</th>
+            <th nzLeft>{{'app.manage.site.to.site.name.package' | i18n}}</th>
             <th>Bandwidth (MB/S)</th>
-            <th>Giá (VND/tháng)</th>
+            <th>{{'app.vpns2s-extend.price' | i18n}}</th>
           </tr>
         </thead>
         <tbody>
@@ -105,13 +103,13 @@
      <nz-affix [nzOffsetTop]="72">
       <nz-card class="right-form">
         <div class="right-title">
-              <span class="text-card-header">Chi phí ước tính</span>
+              <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
         </div>
         
         <nz-row class="right-form-content-month" nzGutter="16">
           <nz-col nzSpan="16">
             <span class="text-value">
-              Chi phí <span>{{ validateForm.controls.time.value | number }}</span> tháng
+              {{'app.cost.n.month' | i18n: {numberMonth: validateForm.controls.time.value} }}
             </span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
@@ -145,8 +143,8 @@
         </nz-row>
         <nz-row class="right-form-content-total" nzGutter="16" >
           <nz-col nzSpan="16">
-            <span class="text-label">Tổng thanh toán</span><br />
-            <span class="text-note-italicized">(Đã bao gồm {{vatPer}}% VAT)</span>
+            <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
+            <span class="text-note-italicized">({{ 'app.include.vat' | i18n : {vat: vatPer} }})</span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value vat-money" nzAlign="right">
@@ -166,7 +164,7 @@
               (click)="extend()"
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              Khởi tạo
+              {{ 'app.button.create' | i18n }}
             </button>
           </nz-col>
         </nz-row>
