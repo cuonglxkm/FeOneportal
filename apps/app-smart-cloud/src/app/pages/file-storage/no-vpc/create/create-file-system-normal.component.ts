@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { FormSearchFileSystem, OrderCreateFileSystem } from '../../../../shared/models/file-system.model';
 import { SnapshotVolumeService } from '../../../../shared/services/snapshot-volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -60,11 +59,10 @@ export class CreateFileSystemNormalComponent implements OnInit {
     { value: 'SMB', label: 'SMB' }
   ];
 
-  isVisibleConfirm: boolean = false;
   isLoading: boolean = false;
-  isLoadingAction: boolean = false
+  isLoadingAction: boolean = false;
 
-  snapshotList: NzSelectOptionInterface[] = [];
+  snapshotList = [];
 
   snapshotSelected: number;
 
@@ -85,6 +83,10 @@ export class CreateFileSystemNormalComponent implements OnInit {
   stepStorage: number = 0;
   valueStringConfiguration: string = '';
   maxStorage: number = 0;
+
+  sizeSnapshot: number;
+
+  snapshotCloudId: string;
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
@@ -135,8 +137,13 @@ export class CreateFileSystemNormalComponent implements OnInit {
   }
 
   onSnapshotChangeSelected(value) {
-    this.snapshotSelected = value
-    console.log('selected', this.snapshotSelected)
+    this.snapshotSelected = value;
+    console.log('selected', this.snapshotSelected);
+    if (this.snapshotSelected != null) {
+      this.getDetailFileSystemSnapshot(this.snapshotSelected);
+      // this.validateForm.controls.storage.setValue(this.fileSystemSnapshotDetail?.)
+    }
+
   }
 
 
@@ -173,18 +180,32 @@ export class CreateFileSystemNormalComponent implements OnInit {
     formSearchFileSystemSnapshot.customerId = this.tokenService.get()?.userId;
     this.fileSystemSnapshotService.getFileSystemSnapshot(formSearchFileSystemSnapshot).subscribe(data => {
       data.records.forEach(snapshot => {
-        if(['available','KHOITAO'].includes(snapshot.status)) {
-          this.snapshotList.push({ label: snapshot.name + ' (' + snapshot.size + ' GB)', value: snapshot.snapshotId });
+        if (['available', 'KHOITAO'].includes(snapshot.status)) {
+          this.snapshotList?.push(snapshot);
         }
       });
-      if (this.activatedRoute.snapshot.paramMap.get('snapshotId')) {
+      if (this.activatedRoute.snapshot.paramMap.get('snapshotId') != undefined) {
         const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('snapshotId'));
-        if (this.snapshotList.find(x => x.value == idSnapshot)) {
+        console.log('listSnapshot: ', this.snapshotList);
+        if (this.snapshotList?.find(x => x.id == idSnapshot)) {
           this.snapshotSelectedChange(true);
           this.snapshotSelected = idSnapshot;
+          this.validateForm.controls.snapshot.setValue(this.snapshotSelected);
+          this.getDetailFileSystemSnapshot(idSnapshot);
         }
       }
+      this.getTotalAmount();
     });
+  }
+
+  getDetailFileSystemSnapshot(id) {
+    this.fileSystemSnapshotService.getFileSystemSnapshotById(id, this.project).subscribe(data => {
+      // console.log('data', data.cloudId);
+      this.snapshotCloudId = data.cloudId;
+      this.minStorage = data.sizeInGB
+      this.validateForm.controls.storage.setValue(data.sizeInGB)
+    });
+
   }
 
   getListFileSystem() {
@@ -215,10 +236,11 @@ export class CreateFileSystemNormalComponent implements OnInit {
     if (this.validateForm.controls.type.value == 1) {
       this.formCreate.shareType = 'generic_share_type';
     }
-    if (this.validateForm.controls.snapshot.value == null) {
-      this.formCreate.snapshotId = null;
-    } else {
-      this.formCreate.snapshotId = this.validateForm.controls.snapshot.value.toString();
+    if(this.validateForm.controls.snapshot.value != null) {
+      this.formCreate.snapshotId = this.validateForm.controls.snapshot.value;
+    }
+    if(this.snapshotCloudId != undefined) {
+      this.formCreate.snapshotCloudId = this.snapshotCloudId;
     }
     this.formCreate.isPublic = false;
     this.formCreate.shareGroupId = null;
@@ -260,7 +282,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
   }
 
   getTotalAmount() {
-    this.isLoadingAction = true
+    this.isLoadingAction = true;
     this.fileSystemInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -274,7 +296,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
     this.instanceService.getTotalAmount(dataPayment)
       .pipe(debounceTime(500))
       .subscribe((result) => {
-        this.isLoadingAction = false
+        this.isLoadingAction = false;
         console.log('thanh tien file system', result.data);
         this.orderItem = result.data;
         this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
@@ -283,12 +305,13 @@ export class CreateFileSystemNormalComponent implements OnInit {
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
   closePopupError() {
     this.isVisiblePopupError = false;
   }
 
   navigateToPayment() {
-    this.isLoadingAction = true
+    this.isLoadingAction = true;
     this.fileSystemInit();
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
     request.customerId = this.formCreate.customerId;
@@ -304,7 +327,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
       }
     ];
     this.orderService.validaterOrder(request).subscribe(data => {
-      this.isLoadingAction = false
+      this.isLoadingAction = false;
       if (data.success) {
         var returnPath: string = '/app-smart-cloud/file-storage/file-system/create/normal';
         console.log('request', request);
@@ -334,13 +357,13 @@ export class CreateFileSystemNormalComponent implements OnInit {
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
-    console.log('normal');
     this.project = regionAndProject.projectId;
 
     this.getListSnapshot();
+
     this.getListFileSystem();
     this.onChangeStorage();
-    this.getTotalAmount();
     this.getConfigurations();
+
   }
 }
