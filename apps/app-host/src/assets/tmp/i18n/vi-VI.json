@@ -45,7 +45,7 @@
   "service.status.error": "Lỗi",
   "service.status.restoring": "Restoring",
   "service.status.unknown": "Không xác định",
-  
+
 
   "form.clear.local.storage": "Làm sạch Local Storage",
   "form.account.information": "Thông tin tài khoản",
@@ -1632,7 +1632,7 @@
   "mongodb.monitoring.alert-1": "Click và kéo trên biểu đồ để ",
   "mongodb.monitoring.alert-2": " đến 1 vùng cụ thể. Double click vào biểu đồ để ",
   "mongodb.monitoring.alert-3": " về thời gian hiển thị ban đầu.",
-  
+
   "mongodb.create.title": "Khởi tạo MongoDB Cluster",
   "mongodb.create.name": "Tên MongoDB Cluster",
   "mongodb.create.name-placeholder": "Nhập tên MongoDB Cluster",
@@ -2985,6 +2985,8 @@
   "app.vpn.connection-create.deadpeer.tooltip": "Dead peer detection actions: Bộ đếm thời gian gửi gói tin kiểm tra trạng thái của 2 đầu tunnel bao gồm các trạng thái: hold, clear, disable, restart, restart-by-peer.",
   "app.vpn.connection-create.deadpeer.interval.tooltip": "Dead peer detection interval: Giá trị của khoảng thời bộ đếm thời gian Dead peer detection sẽ gửi gói tin kiểm tra.",
   "app.vpn.connection-create.deadpeer.timeout.tooltip": "Dead peer detection timeout: Thời gian xác định trạng thái là timeout khi không nhận được gói tin phản hồi trạng thái.",
+  "app.vpn.connection-create.initstate.tooltip": "Initiator state: Là trạng thái khởi tạo: bao gồm bi-directional và response-only.",
+  "vlan.title":"Mạng LAN (VLAN)",
   "app.vpn.connection-create.initstate.tooltip": "Initiator state: Là trạng thái khởi tạo: bao gồm bi-directional và response-only.",
   "app.ike.policy-detail": "Xem chi tiết IKE Policy",
   "app.ipsec.policy-detail": "Xem chi tiết Ipsec Policy",

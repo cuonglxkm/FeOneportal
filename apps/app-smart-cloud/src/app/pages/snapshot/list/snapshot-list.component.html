@@ -82,7 +82,16 @@
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
+            <td><a href="">{{data.name}}</a></td>
+            <td>x</td>
+            <td>x</td>
+            <td>x</td>
+            <td>x</td>
+            <td>x</td>
+            <td>{{data.startDate | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
             <td>
+              <img src="assets/imgs/edit-2.svg" alt="" nzTooltipTitle="{{'app.text.edit' | i18n}}"
+                   style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
               <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt="" style="margin-left: 5px; cursor:pointer;" />
               <nz-dropdown-menu #opMenu="nzDropdownMenu">
               <ul nz-menu>

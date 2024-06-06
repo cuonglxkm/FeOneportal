@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { TimeCommon } from '../../../shared/utils/common';
 import { Router } from '@angular/router';
+import { VolumeService } from '../../../shared/services/volume.service';
 
 @Component({
   selector: 'one-portal-snapshot-list',
@@ -14,14 +15,16 @@ export class SnapshotListComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   isBegin = false;
-  value: string;
+  value: string = '';
   searchDelay = new Subject<boolean>();
   isLoading = true;
   index = 1;
   size = 10;
   response: any;
+  status: any = '';
 
-  constructor(private router: Router,) {
+  constructor(private router: Router,
+              private service: VolumeService) {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
@@ -34,6 +37,7 @@ export class SnapshotListComponent implements OnInit{
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
       this.search(false);
     });
+    this.search(true);
   }
 
   regionChanged(region: RegionModel) {
@@ -49,7 +53,16 @@ export class SnapshotListComponent implements OnInit{
   }
 
   search(isBegin: boolean) {
-
+    this.isLoading = true;
+    this.service.serchSnapshot(this.size, this.index, this.region, this.project, this.value, this.status)
+      .pipe(finalize(() => {
+        this.isLoading = false;
+      }))
+      .subscribe(
+      data => {
+        this.response = data
+      }
+    );
   }
 
   onPageIndexChange($event: number) {
