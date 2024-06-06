@@ -18,7 +18,7 @@
   (nzOnCancel)="handleCancel()"
 >
   <ng-template #modalTitle>
-    <span class="text-modal-title">Chỉnh sửa thông tin VPN Service</span>
+    <span class="text-modal-title">{{'app.vpn.service.policy-edit' |i18n}}</span>
   </ng-template>
   <ng-template #modalContent>
     <form [formGroup]="validateForm" nz-form [nzLayout]="'vertical'">
@@ -28,12 +28,12 @@
             <nz-form-control [nzErrorTip]="nameErrorTpl">
               <nz-form-label>
                 <div>
-                  <span>Name</span>
+                  <span>{{'form.account.name' |i18n}}</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Tên của VPN Service, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
+                      'app.vpn.service-create.name.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -54,10 +54,10 @@
               />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')"
-                  >Tên VPN Service không được để trống</ng-container
+                  >{{'app.vpn.service-create.name.alert1' |i18n}}</ng-container
                 >
                 <ng-container *ngIf="control.hasError('pattern')"
-                  >Tên VPN Service chỉ chứa các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự</ng-container
+                  >{{'app.vpn.service-create.name.tooltip' |i18n}}</ng-container
                 >
               </ng-template>
             </nz-form-control>
@@ -73,7 +73,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'Router được tạo mặc định cho dịch vụ.'
+                        'app.vpn.service-create.router.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"

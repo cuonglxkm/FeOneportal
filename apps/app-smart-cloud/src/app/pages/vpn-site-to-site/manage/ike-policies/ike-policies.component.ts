@@ -105,7 +105,6 @@ export class IkePoliciesComponent {
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
       this.getData();
-      this.getData();
     this.searchDelay.pipe(debounceTime(1200)).subscribe(() => {
       this.getData();
     });

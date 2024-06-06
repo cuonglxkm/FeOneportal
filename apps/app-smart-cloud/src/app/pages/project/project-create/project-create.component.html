@@ -354,23 +354,24 @@
                         <nz-col style="padding-bottom: 5px" class="newClassFlavor text-center"
                           [class.initialClassFlavor]=" selectedElementFlavor === 'flavor_' + item.id">
                           <div style="position: relative;">
-                            <div >
+                            <div>
                               <p class="nameFlavor pt-3 mb-0 "
-                              [class.initialNameFlavor]="selectedElementFlavor === 'flavor_' + item.id">{{
-                              item.offerName
-                              }}</p>
-                            <div style="margin-top: -10px">
-                              <img style="width: 80%"
-                                [src]="selectedElementFlavor === 'flavor_' + item.id? 'assets/imgs/line2.svg': 'assets/imgs/line.svg'"
-                                alt="" />
+                                [class.initialNameFlavor]="selectedElementFlavor === 'flavor_' + item.id">{{
+                                item.offerName
+                                }}</p>
+                              <div style="margin-top: -10px">
+                                <img style="width: 80%"
+                                  [src]="selectedElementFlavor === 'flavor_' + item.id? 'assets/imgs/line2.svg': 'assets/imgs/line.svg'"
+                                  alt="" />
+                              </div>
+                              <span class="priceFlavor">{{ item.price.fixedPrice.amount | number:'1.0-0':'en-US'
+                                }}</span>
+                              <span> {{ "app.payment-detail.month" | i18n }}</span>
+                              <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
+                                <img src="assets/imgs/mostpop.svg">
+                              </div>
                             </div>
-                            <span class="priceFlavor">{{ item.price.fixedPrice.amount | number:'1.0-0':'en-US' }}</span>
-                            <span> {{ "app.payment-detail.month" | i18n }}</span>
-                            <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
-                              <img src="assets/imgs/mostpop.svg">
-                            </div>
-                            </div>
-                            
+
                           </div>
                         </nz-col>
                       </nz-row>
@@ -438,15 +439,17 @@
                       <tr>
                         <td width="50%">
                           {{ "volume.table.title.storage" | i18n }} HDD (GB)
-                          <nz-slider [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock"  [nzStep]="10" [(ngModel)]="hhd" [ngModelOptions]="{standalone: true}" 
-                            (ngModelChange)="calculate(null)"></nz-slider>
+                          <nz-slider [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" [nzStep]="stepBlock"
+                            [(ngModel)]="hhd" [ngModelOptions]="{standalone: true}"
+                            (ngModelChange)="onInputChange($event, 'hhd')"></nz-slider>
                         </td>
                         <td width="20%">
-                          <nz-input-number [(ngModel)]="hhd" name="hhd"
-                            (ngModelChange)="onInputChange($event, 'hhd')"  (keydown)="checkPossiblePress($event)" [ngModelOptions]="{standalone: true}" [nzMin]="minBlock"  id="number-hdd"
-                            [nzStep]="stepBlock" [nzMax]="maxBlock" nzSize="large" ></nz-input-number>   
-                              
-                               
+                          <nz-input-number [(ngModel)]="hhd" name="hhd" (ngModelChange)="onInputChange($event, 'hhd')"
+                            (keydown)="checkPossiblePress($event)" [ngModelOptions]="{standalone: true}"
+                            [nzMin]="minBlock" id="number-hdd" [nzStep]="stepBlock" [nzMax]="maxBlock"
+                            nzSize="large"></nz-input-number>
+
+
                         </td>
                         <td width="30%">
                           <div class="text-right">{{ price.hhd | formatPrice}} </div>
@@ -456,13 +459,14 @@
                       <tr>
                         <td width="50%">
                           {{ "volume.table.title.storage" | i18n }} SSD (GB)
-                          <nz-slider [nzMin]="minBlock" [nzMax]="maxBlock" [nzStep]="stepBlock" [(ngModel)]="ssd" (ngModelChange)="calculate(null)"
+                          <nz-slider [nzMin]="minBlock" [nzMax]="maxBlock" [nzStep]="stepBlock" [(ngModel)]="ssd"
+                            (ngModelChange)="onInputChange($event, 'ssd')"
                             [ngModelOptions]="{standalone: true}"></nz-slider>
                         </td>
                         <td width="20%">
                           <nz-input-number [(ngModel)]="ssd" (keydown)="checkPossiblePress($event)"
-                            [ngModelOptions]="{standalone: true}" (ngModelChange)="onInputChange($event, 'ssd')" [nzMin]="minBlock"
-                            [nzStep]="stepBlock" [nzMax]="maxBlock" nzSize="large"></nz-input-number>
+                            [ngModelOptions]="{standalone: true}" (ngModelChange)="onInputChange($event, 'ssd')"
+                            [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" nzSize="large"></nz-input-number>
                         </td>
                         <td width="30%">
                           <div class="text-right">{{ price.ssd | formatPrice}} </div>
@@ -596,11 +600,12 @@
           <div class="d-flex " style="justify-content: space-between; align-items: center;">
             <div style="align-items: center" class="d-flex"><span class="text-card-header">Dịch vụ bổ sung</span></div>
             <div>
-              <one-portal-svg-icon (click)="toggleBonusService()" [icon]="iconToggle" class="btn-view-service" ></one-portal-svg-icon>
+              <one-portal-svg-icon (click)="toggleBonusService()" [icon]="iconToggle"
+                class="btn-view-service"></one-portal-svg-icon>
               <!-- <button class="btn-view-service" (click)="toggleBonusService()" id="btn-view">{{messageToggleView}}</button> -->
             </div>
           </div>
-       
+
           <div *ngIf="activeBonusService">
             <div class="bonus-services">
               <div class="title-bonus-services">
@@ -617,30 +622,30 @@
               <div *ngIf="activeIP">
                 <nz-form-item>
                   <nz-form-label class="custom-label">Chọn dải IP kết nối Internet</nz-form-label>
-                
+
                   <nz-form-control>
                     <nz-input-group nzCompact>
                       <nz-select nzSize="large" [nzLoading]="loadingIpConnectInternet"
                         [nzDisabled]="disableIpConnectInternet"
-                        style="width: 60%; margin-left: -1px;border-radius: 10px;" 
+                        style="width: 60%; margin-left: -1px;border-radius: 10px;"
                         nzPlaceHolder="--{{'project.note40' | i18n}}--" [(ngModel)]="ipConnectInternet"
                         [ngModelOptions]="{standalone: true}" (ngModelChange)="openIpSubnet()">
-                        <nz-option nzLabel="Không sử dụng"
-                          nzValue="" />
+                        <nz-option nzLabel="Không sử dụng" nzValue="" />
                         <nz-option *ngFor="let i of listIpConnectInternet" [nzLabel]="i.displayName"
                           [nzValue]="i.networkId +'--'+ i.displayName" />
                       </nz-select>
                     </nz-input-group>
                   </nz-form-control>
 
-                </nz-form-item>   
-                <div >
+                </nz-form-item>
+                <div>
                   <nz-row *ngIf="ipConnectInternet != ''">
-                  <!-- <nz-row *ngIf="ipConnectInternet != null && ipConnectInternet != ''"> -->
+                    <!-- <nz-row *ngIf="ipConnectInternet != null && ipConnectInternet != ''"> -->
                     <nz-form-item style="width: 60%">
-                      <nz-form-label class="custom-label">{{ "app.order-detail.quantity" | i18n }} IP Floating</nz-form-label>
+                      <nz-form-label class="custom-label">{{ "app.order-detail.quantity" | i18n }} IP
+                        Floating</nz-form-label>
                       <nz-form-control>
-                        <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                        <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
                           (keydown)="checkPossiblePress($event)" [(ngModel)]="numberIpFloating"
                           (ngModelChange)="calculate(null)" [ngModelOptions]="{ standalone: true }"
                           nzSize="large"></nz-input-number>
@@ -648,15 +653,15 @@
                     </nz-form-item>
                     <nz-form-item style="width: 40%">
                       <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
-                        
+
                       </nz-form-label>
                       <nz-form-control>
                         <div class="centered">
-                          <p class="text-custom-price" >
-                            {{ price.IpFloating |formatPrice}} 
+                          <p class="text-custom-price">
+                            {{ price.IpFloating |formatPrice}}
                           </p>
-                          <p class=" text-price-unit" >
-                            {{ price.IpFloatingUnit |formatPrice}} 
+                          <p class=" text-price-unit">
+                            {{ price.IpFloatingUnit |formatPrice}}
                           </p>
                         </div>
                       </nz-form-control>
@@ -664,7 +669,8 @@
                   </nz-row>
                   <nz-row>
                     <nz-form-item style="width: 60%">
-                      <nz-form-label class="custom-label">{{ "app.order-detail.quantity" | i18n }} IP Public</nz-form-label>
+                      <nz-form-label class="custom-label">{{ "app.order-detail.quantity" | i18n }} IP
+                        Public</nz-form-label>
                       <nz-form-control>
                         <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
                           (keydown)="checkPossiblePress($event)" [(ngModel)]="numberIpPublic"
@@ -674,15 +680,15 @@
                     </nz-form-item>
                     <nz-form-item style="width: 40%">
                       <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
-                      
+
                       </nz-form-label>
                       <nz-form-control>
                         <div class="centered">
-                          <p class="text-custom-price" >
-                            {{ price.IpPublic |formatPrice}} 
+                          <p class="text-custom-price">
+                            {{ price.IpPublic |formatPrice}}
                           </p>
-                          <p class=" text-price-unit" >
-                            {{ price.IpPublicUnit |formatPrice }} 
+                          <p class=" text-price-unit">
+                            {{ price.IpPublicUnit |formatPrice }}
                           </p>
                         </div>
                       </nz-form-control>
@@ -693,27 +699,28 @@
                       <nz-form-label class="custom-label">{{ "app.order-detail.quantity" | i18n }} IPv6</nz-form-label>
                       <nz-form-control>
                         <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
-                          (keydown)="checkPossiblePress($event)" [(ngModel)]="numberIpv6" (ngModelChange)="calculate(null)"
-                          [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                          (keydown)="checkPossiblePress($event)" [(ngModel)]="numberIpv6"
+                          (ngModelChange)="calculate(null)" [ngModelOptions]="{ standalone: true }"
+                          nzSize="large"></nz-input-number>
                       </nz-form-control>
                     </nz-form-item>
                     <nz-form-item style="width: 40%">
                       <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
-                       
+
                       </nz-form-label>
                       <nz-form-control>
                         <div class="centered">
-                          <p class="text-custom-price" >
-                            {{ price.IpV6 |formatPrice}} 
+                          <p class="text-custom-price">
+                            {{ price.IpV6 |formatPrice}}
                           </p>
-                          <p class=" text-price-unit" >
-                            {{ price.IpV6Unit |formatPrice }} 
+                          <p class=" text-price-unit">
+                            {{ price.IpV6Unit |formatPrice }}
                           </p>
                         </div>
                       </nz-form-control>
                     </nz-form-item>
                   </nz-row>
-                </div> 
+                </div>
                 <!-- <div >
                   <nz-row *ngIf="ipConnectInternet != null && ipConnectInternet != ''">
                     <nz-form-item style="width: 50%">
@@ -794,7 +801,8 @@
                   </nz-row>
                 </div>        -->
               </div>
-              <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="Mua bổ sung IP giúp thuận tiện hơn trong quá trình sử dụng các dịch vụ của VNPT Cloud"
+              <nz-alert class="ant-alert-warning-custom" nzType="warning"
+                nzDescription="Mua bổ sung IP giúp thuận tiện hơn trong quá trình sử dụng các dịch vụ của VNPT Cloud"
                 nzShowIcon></nz-alert>
             </div>
             <div class="bonus-services">
@@ -814,28 +822,59 @@
                   <table>
                     <td style="width:60%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label">{{ "volume.table.title.storage" | i18n }} Dung lượng Snapshot (GB)</nz-form-label>
+                        <nz-form-label class="custom-label">Dung lượng HDD (GB)</nz-form-label>
                         <nz-form-control>
-                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" name="snapshot"
-                          (keydown)="checkPossiblePress($event)"
-                            [(ngModel)]="numberSnapshot"
-                            (ngModelChange)="onInputChange($event, 'snapshot')" [ngModelOptions]="{ standalone: true }"
-                            nzSize="large"></nz-input-number>
+                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="minBlock"
+                            [nzStep]="stepBlock" [nzMax]="maxBlock" name="snapshothdd"
+                            (keydown)="checkPossiblePress($event)" [(ngModel)]="numberSnapshothdd"
+                            (ngModelChange)="onInputChange($event, 'snapshothdd')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                         </nz-form-control>
                       </nz-form-item>
                     </td>
                     <td style="width:40%">
                       <nz-form-item>
                         <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
-                          
+
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
-                            <p class="text-custom-price" >
-                              {{ price.snapshot | formatPrice}} 
+                            <p class="text-custom-price">
+                              {{ price.snapshothdd | formatPrice}}
                             </p>
-                            <p class=" text-price-unit" >
-                              {{ price.snapshotUnit | formatPrice}} 
+                            <p class=" text-price-unit">
+                              {{ price.snapshothddUnit | formatPrice}}
+                            </p>
+                          </div>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </td>
+                  </table>
+                  <table>
+                    <td style="width:60%">
+                      <nz-form-item>
+                        <nz-form-label class="custom-label">Dung lượng SSD (GB)</nz-form-label>
+                        <nz-form-control>
+                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="minBlock"
+                            [nzStep]="stepBlock" [nzMax]="maxBlock" name="snapshotssd"
+                            (keydown)="checkPossiblePress($event)" [(ngModel)]="numberSnapshotssd"
+                            (ngModelChange)="onInputChange($event, 'snapshotssd')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </td>
+                    <td style="width:40%">
+                      <nz-form-item>
+                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                        </nz-form-label>
+                        <nz-form-control>
+                          <div class="centered">
+                            <p class="text-custom-price">
+                              {{ price.snapshotssd | formatPrice}}
+                            </p>
+                            <p class=" text-price-unit">
+                              {{ price.snapshotssdUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -844,8 +883,9 @@
                   </table>
                 </div>
               </div>
-              
-              <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="Giúp người dùng lưu lại trạng thái hiện tại của Volume/VM. Người dùng có thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM."
+
+              <nz-alert class="ant-alert-warning-custom" nzType="warning"
+                nzDescription="Giúp người dùng lưu lại trạng thái hiện tại của Volume/VM. Người dùng có thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM."
                 nzShowIcon></nz-alert>
             </div>
             <div class="bonus-services">
@@ -865,29 +905,29 @@
                   <table>
                     <td style="width:60%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label">{{ "volume.table.title.storage" | i18n }} Backup Volume/VM (GB)</nz-form-label>
+                        <nz-form-label class="custom-label">{{ "volume.table.title.storage" | i18n }} Backup Volume/VM
+                          (GB)</nz-form-label>
                         <nz-form-control>
                           <!-- (keydown)="checkPossiblePress($event)" -->
-                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" name="backup"
-                          (keydown)="checkPossiblePress($event)"
-                            [(ngModel)]="numberBackup"
-                            (ngModelChange)="onInputChange($event, 'backup')" [ngModelOptions]="{ standalone: true }"
-                            nzSize="large"></nz-input-number>
+                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="minBlock"
+                            [nzStep]="stepBlock" [nzMax]="maxBlock" name="backup" (keydown)="checkPossiblePress($event)"
+                            [(ngModel)]="numberBackup" (ngModelChange)="onInputChange($event, 'backup')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                         </nz-form-control>
                       </nz-form-item>
                     </td>
                     <td style="width:40%">
                       <nz-form-item>
                         <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
-                          
+
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
-                            <p class="text-custom-price" >
-                              {{ price.backup | formatPrice}} 
+                            <p class="text-custom-price">
+                              {{ price.backup | formatPrice}}
                             </p>
-                            <p class=" text-price-unit" >
-                              {{ price.backupUnit | formatPrice}} 
+                            <p class=" text-price-unit">
+                              {{ price.backupUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -896,11 +936,11 @@
                   </table>
                 </div>
               </div>
-              
+
               <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="{{'project.note47' | i18n}}"
                 nzShowIcon></nz-alert>
             </div>
-            
+
 
             <div class="bonus-services">
               <div class="title-bonus-services">
@@ -920,7 +960,7 @@
                     <td style="width:30%">
                       <nz-form-item>
                         <nz-form-label class="custom-label">{{ "app.order-detail.quantity" | i18n }}
-                         
+
                         </nz-form-label>
                         <nz-form-control>
                           <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
@@ -935,9 +975,8 @@
                         <nz-form-label class="custom-label">Chọn gói</nz-form-label>
                         <nz-form-control>
                           <nz-input-group nzCompact>
-                            <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false" 
-                              style="width: 100%; margin-left: -1px;border-radius: 10px;"
-                             [(ngModel)]="loadBalancerId"
+                            <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
+                              style="width: 100%; margin-left: -1px;border-radius: 10px;" [(ngModel)]="loadBalancerId"
                               [ngModelOptions]="{ standalone: true }" (ngModelChange)="findNameLoadBalance($event)">
                               <nz-option *ngFor="let i of listLoadbalancer" [nzLabel]="i.offerName" [nzValue]="i.id" />
                             </nz-select>
@@ -948,15 +987,15 @@
                     <td style="width:40%">
                       <nz-form-item>
                         <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
-                        
+
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
-                            <p class="text-custom-price" >
-                              {{ price.loadBalancer | formatPrice}} 
+                            <p class="text-custom-price">
+                              {{ price.loadBalancer | formatPrice}}
                             </p>
-                            <p class="text-price-unit" >
-                              {{ price.loadBalancerUnit | formatPrice}} 
+                            <p class="text-price-unit">
+                              {{ price.loadBalancerUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -986,14 +1025,14 @@
                   <table>
                     <td style="width:60%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label">{{ "volume.table.title.storage" | i18n }} File System (GB)</nz-form-label>
+                        <nz-form-label class="custom-label">{{ "volume.table.title.storage" | i18n }} File System
+                          (GB)</nz-form-label>
                         <nz-form-control>
                           <nz-row>
-                            <nz-input-number style="width: 100%;margin-left: -1px" [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock"
-                            (keydown)="checkPossiblePress($event)"
-                            [(ngModel)]="numberFileSystem"
-                              (ngModelChange)="onInputChange($event, 'fileSystem')" [ngModelOptions]="{ standalone: true }"
-                              nzSize="large"></nz-input-number>
+                            <nz-input-number style="width: 100%;margin-left: -1px" [nzMin]="minBlock"
+                              [nzStep]="stepBlock" [nzMax]="maxBlock" (keydown)="checkPossiblePress($event)"
+                              [(ngModel)]="numberFileSystem" (ngModelChange)="onInputChange($event, 'fileSystem')"
+                              [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                           </nz-row>
                         </nz-form-control>
                       </nz-form-item>
@@ -1001,15 +1040,15 @@
                     <td style="width:40%">
                       <nz-form-item>
                         <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
-                        
+
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
-                            <p class="text-custom-price" >
-                              {{ price.fileStorage  | formatPrice}} 
+                            <p class="text-custom-price">
+                              {{ price.fileStorage | formatPrice}}
                             </p>
-                            <p class="text-price-unit" >
-                              {{ price.fileStorageUnit  | formatPrice}} 
+                            <p class="text-price-unit">
+                              {{ price.fileStorageUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -1023,11 +1062,11 @@
                           Snapshot(GB)</nz-form-label>
                         <nz-form-control>
                           <nz-row>
-                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="minBlock" [nzMax]="maxBlock"
-                              [nzStep]="stepBlock"  [(ngModel)]="numberFileScnapsshot"
+                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="minBlock"
+                              [nzMax]="maxBlock" [nzStep]="stepBlock" [(ngModel)]="numberFileScnapsshot"
                               (keydown)="checkPossiblePress($event)"
-                              (ngModelChange)="onInputChange($event, 'fileSnapshot')" [ngModelOptions]="{ standalone: true }"
-                              nzSize="large"></nz-input-number>
+                              (ngModelChange)="onInputChange($event, 'fileSnapshot')"
+                              [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                           </nz-row>
                         </nz-form-control>
                       </nz-form-item>
@@ -1035,15 +1074,15 @@
                     <td style="width:40%">
                       <nz-form-item>
                         <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
-                        
+
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
-                            <p class="text-custom-price" >
-                              {{ price.filestorageSnapshot | formatPrice }} 
+                            <p class="text-custom-price">
+                              {{ price.filestorageSnapshot | formatPrice }}
                             </p>
-                            <p class="text-price-unit" >
-                              {{ price.filestorageSnapshotUnit  | formatPrice}} 
+                            <p class="text-price-unit">
+                              {{ price.filestorageSnapshotUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -1063,7 +1102,7 @@
                   (click)="deleteVpnSiteToSite()"></one-portal-svg-icon>
               </div>
               <div *ngIf="!activeSiteToSite">
-                <button  class="h-btn" nz-button nzType="default" (click)="initVpnSiteToSite()">
+                <button class="h-btn" nz-button nzType="default" (click)="initVpnSiteToSite()">
                   <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
                   i18n }}
                   VPN site to site
@@ -1077,8 +1116,7 @@
                         <nz-form-label class="custom-label">Chọn gói</nz-form-label>
                         <nz-form-control>
                           <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
-                            style="width: 100%;border-radius: 8px;" 
-                            [(ngModel)]="siteToSiteId"
+                            style="width: 100%;border-radius: 8px;" [(ngModel)]="siteToSiteId"
                             [ngModelOptions]="{ standalone: true }" (ngModelChange)="findNameSiteToSite($event)">
                             <nz-option *ngFor="let i of listSiteToSite" [nzLabel]="i.offerName" [nzValue]="i.id" />
                           </nz-select>
@@ -1088,15 +1126,15 @@
                     <td style="width:40%">
                       <nz-form-item>
                         <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
-                        
+
                         </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
-                            <p class="text-custom-price" >
-                              {{ price.siteToSite | formatPrice}} 
+                            <p class="text-custom-price">
+                              {{ price.siteToSite | formatPrice}}
                             </p>
-                            <p class="text-price-unit" >
-                              {{ price.siteToSiteUnit | formatPrice}} 
+                            <p class="text-price-unit">
+                              {{ price.siteToSiteUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -1157,27 +1195,27 @@
                   <table *ngFor="let typeCatelog of gpuQuotasGobal;let i = index;trackBy:trackById">
                     <td style="width:60%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label">Số lượng GPU (Type - {{typeCatelog?.GpuType}})</nz-form-label>
+                        <nz-form-label class="custom-label">Số lượng GPU (Type -
+                          {{typeCatelog?.GpuType}})</nz-form-label>
                         <nz-form-control>
-                          <nz-input-number  style="width: 100%; margin-left: -1px" nzMin="0" nzStep="1"  name="gpu"
+                          <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzStep="1" name="gpu"
                             [(ngModel)]="gpuQuotasGobal[i].GpuCount"
-                            (ngModelChange)="getValues(i,gpuQuotasGobal?.[i]?.GpuCount)" 
-
-                            [ngModelOptions]="{ standalone: true }"
-                            nzSize="large"
+                            (ngModelChange)="getValues(i,gpuQuotasGobal?.[i]?.GpuCount)"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"
                             [nzDisabled]="isDisabled(i)"></nz-input-number>
                         </nz-form-control>
                       </nz-form-item>
                     </td>
                     <td style="width:40%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND) </nz-form-label>
+                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                        </nz-form-label>
                         <nz-form-control>
                           <div class="centered">
-                            <p class="text-custom-price" >
+                            <p class="text-custom-price">
                               {{typeCatelog?.GpuPrice |formatPrice }}
                             </p>
-                            <p class="text-price-unit" >
+                            <p class="text-price-unit">
                               {{typeCatelog?.GpuPriceUnit |formatPrice }}
                             </p>
                           </div>
@@ -1187,8 +1225,9 @@
                   </table>
                 </div>
               </div>
-              <nz-alert class="ant-alert-warning-custom"  nzType="warning"
-                nzDescription="Giải pháp giúp tăng tốc độ xử lý cho nhiều tác vụ tính toán và đồ họa phức tạp, đồng thời cung cấp khả năng xử lý hiệu quả cho hàng ngàn luồng dữ liệu cùng lúc." nzShowIcon></nz-alert>
+              <nz-alert class="ant-alert-warning-custom" nzType="warning"
+                nzDescription="Giải pháp giúp tăng tốc độ xử lý cho nhiều tác vụ tính toán và đồ họa phức tạp, đồng thời cung cấp khả năng xử lý hiệu quả cho hàng ngàn luồng dữ liệu cùng lúc."
+                nzShowIcon></nz-alert>
             </div>
           </div>
         </nz-card>
@@ -1431,142 +1470,155 @@
         </div>       
       </nz-card> -->
       <div *ngIf="vpcType == '1'">
-        <one-portal-service-usage-period
-        [nameService]="'project'"  (valueChanged)="onChangeTime($event)" ></one-portal-service-usage-period>
+        <one-portal-service-usage-period [nameService]="'project'"
+          (valueChanged)="onChangeTime($event)"></one-portal-service-usage-period>
       </div>
-      
+
     </nz-col>
 
     <!---------------CARD-THÀNH TIỀN-------------->
     <!-- [nzLoading]="loadingCalculate" -->
     <nz-col nzSpan="8">
       <nz-affix [nzOffsetTop]="72">
-        <nz-card style="border-radius: 8px"  class="information-card card-border">
+        <nz-card style="border-radius: 8px" class="information-card card-border">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
           </div>
-          <div class="text-value">{{ 'project.note19' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">{{ this.form.controls['name'].value }}</div>
-          <div *ngIf="vpcType == '1'">
-            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div *ngIf="selectIndexTab == 1">
-              <!--        Gói cấu hình sẵn-->
-              <div class="text-value">{{ 'custom.config.package' | i18n }}</div>
-              <nz-row style="display: flex;justify-content: space-between;">
-                <div style="margin-top: 10px" class="text-label">{{ 'app.payment-detail.quantity' | i18n }} vCPU:</div>
-                <div style="margin-top: 10px" class="text-label">{{ vCPU }} vCPU</div>
-              </nz-row>
-              <nz-row style="display: flex;justify-content: space-between;">
-                <div style="margin-top: 10px" class="text-label">{{ 'app.payment-detail.quantity' | i18n }} RAM:</div>
-                <div style="margin-top: 10px" class="text-label">{{ ram }} GB</div>
-              </nz-row>
-              <nz-row style="display: flex;justify-content: space-between;">
-                <div style="margin-top: 10px" class="text-label">Dung lượng HDD:</div>
-                <div style="margin-top: 10px" class="text-label">{{ hhd }}GB</div>
-              </nz-row>
-              <nz-row style="display: flex;justify-content: space-between;">
-                <div style="margin-top: 10px" class="text-label">Dung lượng SSD:</div>
-                <div style="margin-top: 10px" class="text-label">{{ ssd }}GB</div>
-              </nz-row>
-             
+          <div class="card-money">
+            <div class="text-value">{{ 'project.note19' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">{{ this.form.controls['name'].value }}</div>
+            <div *ngIf="vpcType == '1'">
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              <div *ngIf="selectIndexTab == 1">
+                <!--        Gói cấu hình sẵn-->
+                <div class="text-value">{{ 'custom.config.package' | i18n }}</div>
+                <nz-row style="display: flex;justify-content: space-between;">
+                  <div style="margin-top: 10px" class="text-label">{{ 'app.payment-detail.quantity' | i18n }} vCPU:
+                  </div>
+                  <div style="margin-top: 10px" class="text-label">{{ vCPU }} vCPU</div>
+                </nz-row>
+                <nz-row style="display: flex;justify-content: space-between;">
+                  <div style="margin-top: 10px" class="text-label">{{ 'app.payment-detail.quantity' | i18n }} RAM:</div>
+                  <div style="margin-top: 10px" class="text-label">{{ ram }} GB</div>
+                </nz-row>
+                <nz-row style="display: flex;justify-content: space-between;">
+                  <div style="margin-top: 10px" class="text-label">Dung lượng HDD:</div>
+                  <div style="margin-top: 10px" class="text-label">{{ hhd }}GB</div>
+                </nz-row>
+                <nz-row style="display: flex;justify-content: space-between;">
+                  <div style="margin-top: 10px" class="text-label">Dung lượng SSD:</div>
+                  <div style="margin-top: 10px" class="text-label">{{ ssd }}GB</div>
+                </nz-row>
 
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              </div>
+              <!--        Gói cấu tùy chọn-->
+              <div *ngIf="selectIndexTab == 0">
+                <div class="text-value">{{ 'config.package' | i18n }}</div>
+                <div style="margin-top: 10px" class="text-label">{{ selectPackge }}</div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              </div>
+              <!--        Dịch vụ bổ sung-->
+              <div
+                *ngIf="numberSnapshotssd!=0||numberSnapshothdd!=0|| siteToSiteId || numberLoadBalancer != 0 || numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0"
+                class="text-value">{{
+                'service.bonus' | i18n }}
+              </div>
+              <!--        <div style="margin-top: 10px" class="text-label"></div>-->
+              <nz-row *ngIf="numberIpFloating != 0" style="display: flex;justify-content: space-between;">
+                <div style="margin-top: 10px" class="text-label">IP Floating:</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberIpFloating }}GB</div>
+              </nz-row>
+              <nz-row *ngIf="numberIpPublic != 0" style="display: flex;justify-content: space-between;">
+                <div style="margin-top: 10px" class="text-label">IP Public:</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberIpPublic }}GB</div>
+              </nz-row>
+              <nz-row *ngIf="numberIpv6 != 0" style="display: flex;justify-content: space-between;">
+                <div style="margin-top: 10px" class="text-label">IPv6:</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberIpv6 }}GB</div>
+              </nz-row>
+              <nz-row *ngIf="numberSnapshothdd != 0" style="display: flex;justify-content: space-between;">
+                <div style="margin-top: 10px" class="text-label">Dung lượng Snapshot - HDD:</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberSnapshothdd }}GB</div>
+              </nz-row>
+              <nz-row *ngIf="numberSnapshotssd != 0" style="display: flex;justify-content: space-between;">
+                <div style="margin-top: 10px" class="text-label">Dung lượng Snapshot - SSD:</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberSnapshotssd }}GB</div>
+              </nz-row>
+              <nz-row *ngIf="numberBackup != 0" style="display: flex;justify-content: space-between;">
+                <div style="margin-top: 10px" class="text-label">Backup:</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberBackup }}GB</div>
+              </nz-row>
+              <nz-row *ngIf="numberLoadBalancer != 0|| loadBalancerId" style="display: flex;justify-content: space-between;">
+                <div style="margin-top: 10px" class="text-label">Load Balancer:</div>
+                <div style="margin-top: 10px" class="text-label">{{loadBalancerName}}</div>
+              </nz-row>
+              <nz-row *ngIf="numberFileSystem != 0" style="display: flex;justify-content: space-between;">
+                <div style="margin-top: 10px" class="text-label">Dung lượng File System:</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberFileSystem }}GB</div>
+              </nz-row>
+              <nz-row *ngIf="numberFileSystem != 0" style="display: flex;justify-content: space-between;">
+                <div style="margin-top: 10px" class="text-label">Dung lượng File System Snapshot:</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberFileScnapsshot }}GB</div>
+              </nz-row>
+              <nz-row *ngIf="siteToSiteId " style="display: flex;justify-content: space-between;">
+                <div style="margin-top: 10px" class="text-label">VPN site to site:</div>
+                <div style="margin-top: 10px" class="text-label">{{ sitetositeName }}</div>
+              </nz-row>
+
+              <nz-row *ngFor="let gpu of gpuQuotasGobal" style="display: flex;justify-content: space-between;">
+                <div *ngIf="gpu.GpuCount !=0" style="margin-top: 10px" class="text-label">Số lượng GPU {{gpu.GpuType}}:
+                </div>
+                <div *ngIf="gpu.GpuCount !=0" style="margin-top: 10px" class="text-label">{{ gpu.GpuCount }}</div>
+              </nz-row>
+              <nz-divider
+                *ngIf="numberSnapshotssd!=0|| numberSnapshothdd!=0|| gpuQuotasGobal.length>0|| numberLoadBalancer != 0 ||loadBalancerId || numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0 || siteToSiteId"
+                style="margin: 10px 0" nzType="horizontal"></nz-divider>
+
             </div>
-            <!--        Gói cấu tùy chọn-->
-            <div *ngIf="selectIndexTab == 0">
-              <div class="text-value">{{ 'config.package' | i18n }}</div>
-              <div style="margin-top: 10px" class="text-label">{{ selectPackge }}</div>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            </div>
-            <!--        Dịch vụ bổ sung-->
-            <div *ngIf="numberSnapshot!=0|| siteToSiteId || numberLoadBalancer != 0 || numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0" class="text-value">{{
-              'service.bonus' | i18n }}
-            </div>
-            <!--        <div style="margin-top: 10px" class="text-label"></div>-->
-            <nz-row *ngIf="numberIpFloating != 0" style="display: flex;justify-content: space-between;">
-              <div style="margin-top: 10px" class="text-label">IP Floating:</div>
-              <div style="margin-top: 10px" class="text-label">{{ numberIpFloating }}GB</div>
-            </nz-row>
-            <nz-row *ngIf="numberIpPublic != 0" style="display: flex;justify-content: space-between;">
-              <div style="margin-top: 10px" class="text-label">IP Public:</div>
-              <div style="margin-top: 10px" class="text-label">{{ numberIpPublic }}GB</div>
-            </nz-row>
-            <nz-row *ngIf="numberIpv6 != 0" style="display: flex;justify-content: space-between;">
-              <div style="margin-top: 10px" class="text-label">IPv6:</div>
-              <div style="margin-top: 10px" class="text-label">{{ numberIpv6 }}GB</div>
-            </nz-row>
-            <nz-row *ngIf="numberSnapshot != 0" style="display: flex;justify-content: space-between;">
-              <div style="margin-top: 10px" class="text-label">Snapshot:</div>
-              <div style="margin-top: 10px" class="text-label">{{ numberSnapshot }}GB</div>
-            </nz-row>
-            <nz-row *ngIf="numberBackup != 0" style="display: flex;justify-content: space-between;">
-              <div style="margin-top: 10px" class="text-label">Backup:</div>
-              <div style="margin-top: 10px" class="text-label">{{ numberBackup }}GB</div>
-            </nz-row>
-            <nz-row *ngIf="numberLoadBalancer != 0" style="display: flex;justify-content: space-between;">
-              <div style="margin-top: 10px" class="text-label">Load Balancer:</div>
-              <div style="margin-top: 10px" class="text-label">{{loadBalancerName}}</div>
-            </nz-row>
-            <nz-row *ngIf="numberFileSystem != 0" style="display: flex;justify-content: space-between;">
-              <div style="margin-top: 10px" class="text-label">Dung lượng File System:</div>
-              <div style="margin-top: 10px" class="text-label">{{ numberFileSystem }}GB</div>
-            </nz-row>
-            <nz-row *ngIf="numberFileSystem != 0" style="display: flex;justify-content: space-between;">
-              <div style="margin-top: 10px" class="text-label">Dung lượng File System Snapshot:</div>
-              <div style="margin-top: 10px" class="text-label">{{ numberFileScnapsshot }}GB</div>
-            </nz-row>
-            <nz-row *ngIf="siteToSiteId " style="display: flex;justify-content: space-between;">
-              <div style="margin-top: 10px" class="text-label">VPN site to site:</div>
-              <div style="margin-top: 10px" class="text-label">{{ sitetositeName }}</div>
-            </nz-row>
-            
-            <nz-row *ngFor="let gpu of gpuQuotasGobal" style="display: flex;justify-content: space-between;">
-              <div *ngIf="gpu.GpuCount !=0" style="margin-top: 10px"  class="text-label">Số lượng GPU {{gpu.GpuType}}:</div>
-              <div *ngIf="gpu.GpuCount !=0" style="margin-top: 10px" class="text-label">{{ gpu.GpuCount }}</div>
-             
-              <!-- <nz-divider *ngIf="gpu.GpuCount !=0" style="margin: 10px 0" nzType="horizontal"></nz-divider> -->
-            </nz-row>
-            <nz-divider *ngIf="numberSnapshot!=0|| gpuQuotasGobal.length>0|| numberLoadBalancer != 0 || numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0 || siteToSiteId"
-              style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <nz-row style="margin-bottom: 10px" nzGutter="16">
-              <nz-col nzSpan="16">
-                <span class="text-value">{{ 'app.service.cost' | i18n }} {{ numOfMonth || 0 }}
-                  {{ 'app.month' | i18n }}</span>
-              </nz-col>
-              <nz-col class="text-right" nzSpan="8">
-                <span class="text-value" style="color: #0066b3" nzAlign="right">
-                  {{ totalAmount | formatPrice}}
-                  VND
-                </span>
-              </nz-col>
-            </nz-row>
-            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <nz-row style="margin-bottom: 10px" nzGutter="16">
-              <nz-col nzSpan="16">
-                <span class="text-value"> Chi phí VAT (10%)</span>
-              </nz-col>
-              <nz-col class="text-right" nzSpan="8">
-                <span class="text-value" style="color: #0066b3" nzAlign="right">
-                  {{ totalVAT | formatPrice}}
-                  VND
-                </span>
-              </nz-col>
-            </nz-row>
-            <nz-row style="
-            margin-bottom: 20px;
-            background-color: #cce9ff;
-            padding: 16px 0 16px 0;
-            border-radius: 8px;
-          " nzGutter="16">
-              <nz-col nzSpan="16">
-                <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
-                <span class="text-note-italicized">({{ 'app.payment-detail.vat' | i18n }})</span>
-              </nz-col>
-              <nz-col class="text-right" nzSpan="8">
-                <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | formatPrice}} VND</span>
-              </nz-col>
-            </nz-row>
+           
+
           </div>
+          <nz-row style="margin-bottom: 10px;padding-top:10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">{{ 'app.service.cost' | i18n }} {{ numOfMonth || 0 }}
+                {{ 'app.month' | i18n }}</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalAmount | formatPrice}}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value"> Chi phí VAT (10%)</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalVAT | formatPrice}}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="
+          margin-bottom: 20px;
+          background-color: #cce9ff;
+          padding: 16px 0 16px 0;
+          border-radius: 8px;
+        " nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
+              <span class="text-note-italicized">({{ 'app.payment-detail.vat' | i18n }})</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | formatPrice}}
+                VND</span>
+            </nz-col>
+          </nz-row>
           <nz-row>
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"

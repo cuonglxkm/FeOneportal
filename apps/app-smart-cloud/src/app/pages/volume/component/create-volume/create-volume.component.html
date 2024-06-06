@@ -11,7 +11,7 @@
         {{ 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title.breadcrumb.list' | i18n }}</a>
+        <a routerLink="/app-smart-cloud/volumes">Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/volume/create">{{ 'volume.button.create' | i18n }}</a>
@@ -119,7 +119,7 @@
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-radio-group formControlName="radio"
-                              [disabled]="isInitSnapshot">
+                              [nzDisabled]="isInitSnapshot">
                 <nz-row [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
                         style="margin-top: 10px">
                   <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">

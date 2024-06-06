@@ -67,6 +67,19 @@ export class PaymentService extends BaseService {
       }))
   }
 
+  exportInvoice(id: number) {
+    return this.http.get(this.baseUrl + `/invoices/export-einvoice/${id}`, { responseType: 'text' }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
+
 
   getPaymentById(id: number): Observable<any> {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.payments + `/${id}`).pipe(

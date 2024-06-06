@@ -7,7 +7,8 @@ import { Router } from '@angular/router';
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas'
 
 @Component({
   selector: 'one-portal-list-payment',
@@ -124,7 +125,7 @@ export class ListPaymentComponent implements OnInit{
 
   refreshCheckedStatus(): void {
     this.checked = this.listOfCurrentPageData.every(item => this.setOfCheckedId.has(item.id));
-    this.downloadList = this.listOfData.filter(data => this.setOfCheckedId.has(data.id) && !!data.invoiceIssuedId);
+    this.downloadList = this.listOfData.filter(data => this.setOfCheckedId.has(data.id) && !!data.eInvoiceCode);
     this.indeterminate = this.listOfCurrentPageData.some(item => this.setOfCheckedId.has(item.id)) && !this.checked;
   }
 
@@ -199,21 +200,37 @@ export class ListPaymentComponent implements OnInit{
   };
 
   downloadMany() {
-    this.downloadList.map(item => item.invoiceIssuedId).map((id) => {
+    this.downloadList.map(item => item.eInvoiceCode).map((id) => {
       this.serviceDownload(id)
     })
   }
 
   serviceDownload(id: number) {
-    this.paymentService.export(id).subscribe((data: Blob) => {
-      // const blob = new Blob([data], {type: 'application/docx' });
-      let downloadURL = window.URL.createObjectURL(data);
-      let link = document.createElement('a');
-      link.href = downloadURL;
-      link.download = 'invoice_' + id + '.docx'
-      link.click();
-    })
+    this.paymentService.exportInvoice(id).subscribe((data) => {
+      const element = document.createElement('div');
+      element.style.width = '268mm';
+      element.style.height = '371mm';
+      if (typeof data === 'string' && data.trim().length > 0) {
+        element.innerHTML = data;
+        
+        document.body.appendChild(element);
+        
+        html2canvas(element).then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+          pdf.save(`invoice_${id}.pdf`);
+          
+          document.body.removeChild(element);
+        });
+      } else {
+        console.log('error:', data);
+      }
+    }, (error) => {
+      console.log('error:', error);
+    });
   }
+  
 
 
   ngOnInit(): void {

@@ -38,6 +38,7 @@ export class VpcModel {
   loadBalancerPackageName: string;
   vpnSiteToSiteOfferName: string;
   loadbalancerOfferName:string;
+  gpuProjects:any;
 }
 
 export class TotalVpcResource {
