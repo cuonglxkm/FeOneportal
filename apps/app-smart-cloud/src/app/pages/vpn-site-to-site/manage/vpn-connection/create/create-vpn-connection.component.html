@@ -92,7 +92,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'IPsec Policy: Khách hàng chọn IPsec Policy đã tạo thành công ở mục IPsec Policies trước đó ( lựa chọn theo tên).'
+                        'app.vpn.connection-create.ipsec.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -131,7 +131,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'VPN Service: Khách hàng lựa chọn VPN Service đã tạo thành công trước đó ( lựa chọn theo tên ).'
+                        'app.vpn.connection-create.vpnservice.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -168,7 +168,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'Peer Remote IP VPN  Gateway  [bắt buộc]: Khách hàng nhập IP VPN Gateway ở đầu VPN tunnel phía Client, tương ứng với trường Peer gateway public IPv4/IPv6 Address or FQDN.'
+                        'app.vpn.connection-create.peerIP.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -181,16 +181,16 @@
                   nz-input
                   type="text"
                   required
-                  placeholder="Nhập Peer Remote IP"
+                  [placeholder]="'app.vpn.connection-create.peerIP.input' |i18n"
                   formControlName="peerRemoteIp"
                   class="input-custom"
                 />
                 <ng-template #peerRemoteIdErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
-                    >Peer Remote IP không được để trống</ng-container
+                    >{{'app.vpn.connection-create.peerIP.alert1' |i18n}}</ng-container
                   >
                   <ng-container *ngIf="control.hasError('pattern')"
-                    >Peer Remote IP không đúng định dạng</ng-container
+                    >{{'app.vpn.connection-create.peerIP.alert2' |i18n}}</ng-container
                   >
                 </ng-template>
               </nz-form-control>
@@ -206,7 +206,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'Local Endpoint Group (System Subnet) : Local subnet của người dùng'
+                        'app.vpn.connection-create.local.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -244,7 +244,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'Peer ID VPN Connection là ID của thiết bị đầu xa đang thực hiện kết nối. Nó có thể là các định dạng theo địa chỉ IP, tên miền, địa chỉ email hoặc distinguished name. Trong khi thiết lập kết thì cần đảm bảo đúng định dạng giữa 2 đầu VPN.'
+                        'app.vpn.connection-create.peerId.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -257,16 +257,16 @@
                   nz-input
                   type="text"
                   required
-                  placeholder="Nhập peer ID"
+                  [placeholder]="'app.vpn.connection-create.peerID.input' |i18n"
                   formControlName="peerId"
                   class="input-custom"
                 />
                 <ng-template #peerIdErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
-                    >Peer Id không được để trống</ng-container
+                    >{{'app.vpn.connection-create.peerId.alert1' |i18n}}</ng-container
                   >
                   <ng-container *ngIf="control.hasError('pattern')"
-                    >Peer Id không đúng định dạng</ng-container
+                    >{{'app.vpn.connection-create.peerId.alert2' |i18n}}</ng-container
                   >
                 </ng-template>
               </nz-form-control>
@@ -282,7 +282,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'IKE Policy: Khách hàng chọn IKE Policy đã tạo thành công ở mục IKE Policies trước đó ( lựa chọn theo tên).'
+                        'app.vpn.connection-create.ike.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -320,7 +320,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'Khách hàng lựa chọn remote Endpoint Group đã tạo.'
+                        'app.vpn.connection-create.remote.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -358,7 +358,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'Pre-Shared Key (PSK) String: Khách hàng nhập key chung giữa 2 tunnel để có thể dùng giải mã gói tin, Khách hàng tùy ý nhập key này.'
+                         'app.vpn.connection-create.prekey.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -378,7 +378,7 @@
                     style="height: 30px"
                     required
                     appTrim
-                    placeholder="Nhập pre -shared Key"
+                    [placeholder]="'app.vpn.connection-create.prekey.input' |i18n"
                     formControlName="preSharedKey"
                     class="input-custom"
                   />
@@ -395,7 +395,7 @@
                 </ng-template>
                 <ng-template #preShareKeyErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
-                    >Pre - Shared Key không được để trống</ng-container
+                    >{{'app.vpn.connection-create.prekey.alert' |i18n}}</ng-container
                   >
                 </ng-template>
               </nz-form-control>
@@ -406,7 +406,7 @@
     </nz-card>
 
     <nz-card style="border-radius: 8px">
-      <h2 class="custom-title">Thông tin Optional Parameter</h2>
+      <h2 class="custom-title">{{'app.information' |i18n}} Optional Parameter</h2>
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item>
@@ -418,7 +418,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Maximum Transmission Unit size for the connection: MTU là kích thước tối đa của gói tin truyền tải trong mạng.'
+                      'app.vpn.connection-create.maxtrans.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -448,7 +448,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Dead peer detection actions: Bộ đếm thời gian gửi gói tin kiểm tra trạng thái của 2 đầu tunnel bao gồm các trạng thái: hold, clear, disable, restart, restart-by-peer.'
+                      'app.vpn.connection-create.deadpeer.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -477,7 +477,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Dead peer detection interval: Giá trị của khoảng thời bộ đếm thời gian Dead peer detection sẽ gửi gói tin kiểm tra.'
+                      'app.vpn.connection-create.deadpeer.interval.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -506,7 +506,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Dead peer detection timeout: Thời gian xác định trạng thái là timeout khi không nhận được gói tin phản hồi trạng thái.'
+                      'app.vpn.connection-create.deadpeer.timeout.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -535,7 +535,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Initiator state: Là trạng thái khởi tạo: bao gồm bi-directional và response-only.'
+                      'app.vpn.connection-create.initstate.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -560,10 +560,10 @@
   <div nz-col [nzSpan]="7" class="gutter-row">
     <nz-card style="border-radius: 8px" class="card-border">
 
-        <h2 class="custom-title">Thông số cấu hình</h2>
+        <h2 class="custom-title">{{'app.config.parameters' |i18n}}</h2>
         <div style="margin-bottom: 50px">
           <div style="margin-bottom: 12px">
-            <h3 class="custom-subtitle">Name</h3>
+            <h3 class="custom-subtitle">{{'form.account.name' |i18n}}</h3>
             <span class="text-break">{{ form.value.name }}</span>
           </div>
           <div style="margin-bottom: 20px">
@@ -616,7 +616,7 @@
           [disabled]="form.invalid"
         >
           <img src="assets/imgs/wallet.svg" alt="" />
-          <span class="button-text-primary">Khởi tạo</span>
+          <span class="button-text-primary">{{'app.button.create' |i18n}}</span>
         </button>
       
     </nz-card>

@@ -71,7 +71,7 @@
     (nzPageIndexChange)="onPageIndexChange($event)"
     [nzTotal]="response?.totalCount"
     [nzFrontPagination]="false"
-    [nzLoading]="loading"
+    [nzLoading]="isLoading"
   >
     <thead>
       <tr>
@@ -105,7 +105,7 @@
             (click)="copyText(item.secretKey)"
           />
         </td>
-        <td>{{ item.subUser === null ? 'owner' : item.subUser }}</td>
+        <td>{{ item.subUser }}</td>
         <td>
           <div>
             <!---Gỡ------>

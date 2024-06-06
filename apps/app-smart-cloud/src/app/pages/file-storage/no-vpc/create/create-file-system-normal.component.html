@@ -181,12 +181,14 @@
                            nzSize="large"
                            [(ngModel)]="snapshotSelected"
                            [nzPlaceHolder]="'-Chọn Snapshot-'"
+                           (ngModelChange)="onSnapshotChangeSelected($event)"
                            [nzShowSearch]="false">
-                  <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
-                             [nzValue]="item.value"></nz-option>
+                  <nz-option *ngFor="let item of snapshotList"
+                             [nzLabel]="item.name + '(' + item.size + ' GB)'"
+                             [nzValue]="item.id"></nz-option>
                 </nz-select>
                 <ng-template #snapshotError let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng chọn Snapshot File System</ng-container>
+                  <ng-container *ngIf="control.hasError('required')">{{'app.file.storage.snapshot.required.select'|i18n}}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>

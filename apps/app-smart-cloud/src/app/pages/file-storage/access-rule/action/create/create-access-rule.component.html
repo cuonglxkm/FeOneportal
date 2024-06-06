@@ -22,9 +22,9 @@
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
             <ng-template #popoverAccessLevel>
-              <span>Mức độ cho phép truy cập vào tài nguyên<br>
-                                      <b>Read-only:</b> Chỉ đọc<br>
-                                      <b>Read-write:</b> Đọc và ghi</span>
+              <span>{{'app.access.rule.tooltip.access.level'|i18n}}<br>
+                                      <b>Read-only:</b> {{'app.access.rule.tooltip.access.level.read-only'|i18n}}<br>
+                                      <b>Read-write:</b> {{'app.access.rule.tooltip.access.level.read-write'|i18n}}</span>
             </ng-template>
           </div>
         </nz-form-label>
@@ -53,7 +53,7 @@
                    nz-input
                    class="input-custom"
                    formControlName="accessTo"
-                   [placeholder]="'Nhập Access To'"
+                   [placeholder]="'app.access.rule.placeholder'"
                    (keydown.enter)="focusOkButton($event)"/>
           </nz-input-group>
         </nz-form-control>
