@@ -131,4 +131,8 @@ export class OrderDetailComponent {
     this.projectId = project.id;
     this.router.navigate(['/app-smart-cloud/order/list'])
   }
+
+  pay(){
+    window.location.href = this.data.paymentUrl
+  }
 }

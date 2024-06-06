@@ -615,8 +615,7 @@
 <!-- Customer Invoice -->
 <nz-modal
   [(nzVisible)]="isVisibleCustomerInvoice"
-  nzTitle="Cập nhật thông tin xuất hóa đơn"
-  (nzOnCancel)="handleCancelUpdateCustomerInvoice()"
+  nzTitle="Cập nhật thông tin xuất hóa đơn" [nzCloseIcon]="false"
   nzWidth="1000px"
 >
   <form nz-form [formGroup]="formCustomerInvoice">
@@ -624,30 +623,35 @@
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="8" class="gutter-row">
           <nz-form-item>
-            <nz-form-control [nzErrorTip]="nameCompanyErrorTpl">
+            <nz-form-control [nzErrorTip]="nameCustomerErrorTpl">
               <nz-form-label nzFor="name">
                 <div style="margin-top: 15px">
-                  <span>Tên công ty/cá nhân</span>
+                  <span>Tên người mua</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </div>
               </nz-form-label>
               <input
                 nz-input
                 type="text"
-                placeholder="Nhập tên công ty/cá nhân"
-                formControlName="nameCompany"
+                placeholder="Nguyễn Văn Thế"
+                formControlName="nameCustomer"
                 class="input-custom"
                 appTrim
-                [maxlength]="100"
+                [maxlength]="50"
               />
-              <ng-template #nameCompanyErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')"
-                  >Tên công ty/cá nhân không được để trống</ng-container
-                >
-              </ng-template>
             </nz-form-control>
+            <ng-template #nameCustomerErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Tên người mua không được để trống</ng-container
+              >
+              <ng-container
+                *ngIf="control.hasError('containSpecialExceptComma')"
+                >Tên người mua không chứa ký tự đặc biệt</ng-container
+              >
+            </ng-template>
           </nz-form-item>
         </div>
+
         <div nz-col [nzSpan]="8" class="gutter-row">
           <nz-form-item>
             <nz-form-control [nzErrorTip]="emailErrorTpl">
@@ -704,36 +708,7 @@
             </ng-template>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="8" class="gutter-row">
-          <nz-form-item>
-            <nz-form-control [nzErrorTip]="nameCustomerErrorTpl">
-              <nz-form-label nzFor="name">
-                <div>
-                  <span>Tên người mua</span>
-                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                </div>
-              </nz-form-label>
-              <input
-                nz-input
-                type="text"
-                placeholder="Nguyễn Văn Thế"
-                formControlName="nameCustomer"
-                class="input-custom"
-                appTrim
-                [maxlength]="50"
-              />
-            </nz-form-control>
-            <ng-template #nameCustomerErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')"
-                >Tên người mua không được để trống</ng-container
-              >
-              <ng-container
-                *ngIf="control.hasError('containSpecialExceptComma')"
-                >Tên người mua không chứa ký tự đặc biệt</ng-container
-              >
-            </ng-template>
-          </nz-form-item>
-        </div>
+        
         <div nz-col [nzSpan]="8" class="gutter-row">
           <nz-form-item>
             <nz-form-control>
@@ -782,6 +757,34 @@
                   [nzValue]="data.id"
                 ></nz-option>
               </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="8" class="gutter-row">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="nameCompanyErrorTpl">
+              <nz-form-label nzFor="name">
+                <div >
+                  <span>Tên công ty</span>
+                  <ng-container *ngIf="customerType !== 1">
+                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                </ng-container>
+                </div>
+              </nz-form-label>
+              <input
+                nz-input
+                type="text"
+                placeholder="Công ty A"
+                formControlName="nameCompany"
+                class="input-custom"
+                appTrim
+                [maxlength]="100"
+              />
+              <ng-template #nameCompanyErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Tên công ty không được để trống</ng-container
+                >
+              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -842,23 +845,24 @@
             </ng-template>
           </nz-form-item>
         </div>
-        <nz-alert
-          class="mt-4"
-          style="width: 100%"
-          nzBanner
-          nzMessage="* Quý khách lưu ý:"
-          nzDescription="- Trước khi thực hiện xuất hóa đơn điện tử lần đầu, khách hàng hãy cập nhật thông tin hiển thị trên hóa đơn điện tử"
-        ></nz-alert>
+        <div class="user-alert">
+          <nz-alert
+            class="mt-4"
+            style="width: 100%"
+            nzBanner
+            [nzMessage]="updateUserTitle"
+            [nzDescription]="updateUserDesc"
+          ></nz-alert>
+          <ng-template #updateUserTitle>
+            <span class="text-label" style="color: #EA3829">* Quý khách lưu ý:</span>
+          </ng-template>
+          <ng-template #updateUserDesc>
+            <span class="text-label">- Trước khi thực hiện xuất hóa đơn điện tử lần đầu, khách hàng hãy cập nhật thông tin hiển thị trên hóa đơn điện tử</span>
+          </ng-template>
+        </div>
       </div>
     </ng-container>
     <div *nzModalFooter>
-      <button nz-button (click)="handleCancelUpdateCustomerInvoice()">
-        <img
-          style="padding-right: 10px; margin-top: -4px"
-          src="assets/imgs/cancel.svg"
-          alt=""
-        />{{ 'app.button.cancel' | i18n }}
-      </button>
       <button
         (click)="handleOkUpdateCustomerInvoice()"
         nz-button
