@@ -7,7 +7,8 @@ import { Router } from '@angular/router';
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas'
 
 @Component({
   selector: 'one-portal-list-payment',
@@ -205,15 +206,40 @@ export class ListPaymentComponent implements OnInit{
   }
 
   serviceDownload(id: number) {
-    this.paymentService.export(id).subscribe((data: Blob) => {
-      // const blob = new Blob([data], {type: 'application/docx' });
-      let downloadURL = window.URL.createObjectURL(data);
-      let link = document.createElement('a');
-      link.href = downloadURL;
-      link.download = 'invoice_' + id + '.docx'
-      link.click();
-    })
+    this.paymentService.exportInvoice(id).subscribe((data) => {
+      const element = document.createElement('div');
+      
+      if (typeof data === 'string' && data.trim().length > 0) {
+        element.innerHTML = data;
+        
+        document.body.appendChild(element);
+        
+        html2canvas(element).then(canvas => {
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF();
+          const aspectRatio = canvas.width / canvas.height;
+          let imgWidth = pdf.internal.pageSize.getWidth();
+          let imgHeight = imgWidth / aspectRatio;
+    
+          if (imgHeight > pdf.internal.pageSize.getHeight()) {
+            imgHeight = pdf.internal.pageSize.getHeight();
+            imgWidth = imgHeight * aspectRatio;
+          }
+          
+          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+          
+          pdf.save(`invoice_${id}.pdf`);
+          
+          document.body.removeChild(element);
+        });
+      } else {
+        console.log('error:', data);
+      }
+    }, (error) => {
+      console.log('error:', error);
+    });
   }
+  
 
 
   ngOnInit(): void {

@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormDeleteVpnConnection } from 'src/app/shared/models/vpn-connection';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
@@ -38,7 +40,8 @@ export class DeleteVpnConnectionComponent{
 
   constructor(private vpnConnectionService: VpnConnectionService,
               private notification: NzNotificationService,
-              private fb: NonNullableFormBuilder) {
+              private fb: NonNullableFormBuilder,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   showModal(){
@@ -65,14 +68,16 @@ export class DeleteVpnConnectionComponent{
           if(data) {
             this.isVisible = false
             this.isLoading =  false
-            this.notification.success('Thành công', 'Xoá VPN Connection thành công')
+            this.notification.success(this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.vpn-connection-delete.success'))
             this.validateForm.reset()
             this.onOk.emit(data)
           }
         }, error => {
           this.isVisible = false
           this.isLoading =  false
-          this.notification.error('Thất bại', 'Xoá VPN Connection thất bại')
+          this.notification.error(this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.vpn-connection-delete.fail'))
         })
       }
     }

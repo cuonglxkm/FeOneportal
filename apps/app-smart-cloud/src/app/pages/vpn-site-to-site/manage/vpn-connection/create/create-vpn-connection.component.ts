@@ -18,6 +18,8 @@ import { FormSearchEndpointGroup } from 'src/app/shared/models/endpoint-group';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 import { FormSearchVpnService } from 'src/app/shared/models/vpn-service';
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 
 @Component({
@@ -89,7 +91,8 @@ export class CreateVpnConnectionComponent implements OnInit{
     private ipsecPolicyService: IpsecPolicyService,
     private ikePolicyService: IkePolicyService,
     private endpointGroupService: EndpointGroupService,
-    private vpnServiceService: VpnServiceService
+    private vpnServiceService: VpnServiceService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   getDataIpsecPolices() {
@@ -264,16 +267,16 @@ export class CreateVpnConnectionComponent implements OnInit{
           (data) => {
             this.isLoading = false
             this.notification.success(
-              'Thành công',
-              'Tạo mới VPN Connection thành công'
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.vpn-connection-create.success')
             );
             this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
           },
           (error) => {
             this.isLoading = false
             this.notification.error(
-              'Thất bại',
-              'Tạo mới VPN Connection thất bại'
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.vpn-connection-create.fail')
             );
             console.log(error);
           }

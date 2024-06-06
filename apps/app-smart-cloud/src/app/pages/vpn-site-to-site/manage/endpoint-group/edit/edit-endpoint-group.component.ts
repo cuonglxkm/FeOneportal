@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormDetailEndpointGroup, FormEditEndpointGroup } from 'src/app/shared/models/endpoint-group';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
@@ -34,7 +36,8 @@ export class EditEndpointGroupComponent{
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
-              private endpointGroupService: EndpointGroupService
+              private endpointGroupService: EndpointGroupService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
               ) {
   }
 
@@ -73,12 +76,14 @@ export class EditEndpointGroupComponent{
 
     if(this.validateForm.valid){
       this.endpointGroupService.editEndpoinGroup(formEdit).subscribe(data => {
-        this.notification.success('Thành công', 'Cập nhật Endpoint Group thành công')
+        this.notification.success( this.i18n.fanyi('app.status.success'),
+        this.i18n.fanyi('app.endpoint-edit.success'))
           this.isVisible = false
           this.isLoading =  false
           this.onOk.emit(data)
       }, error => {
-        this.notification.error('Thất bại', 'Cập nhật Endpoint Group thất bại')
+        this.notification.error( this.i18n.fanyi('app.status.fail'),
+        this.i18n.fanyi('app.endpoint-edit.fail'))
         this.isVisible = false
         this.isLoading =  false
       })
