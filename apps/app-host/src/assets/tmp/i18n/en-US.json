@@ -3172,5 +3172,7 @@
   "app.vpn-connection-edit.success": "Edit VPN Connection sucessfully",
   "app.vpn-connection-edit.fail": "Edit VPN Connection failed",
   "app.vpn-connection-delete.success": "Delete VPN Connection sucessfully",
-  "app.vpn-connection-delete.fail": "Delete VPN Connection failed"
+  "app.vpn-connection-delete.fail": "Delete VPN Connection failed",
+
+  "app.router.name" : "Routers name"
 }
