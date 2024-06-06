@@ -973,9 +973,13 @@
   "app.access.rule.list": "Access Rule list",
   "app.button.access.rule.create": "Create new Access Rule",
   "app.button.access.rule.add": "Create new Access Rule",
+  "app.access.rule.placeholder": "Enter access rule",
+  "app.access.rule.tooltip.access.level": "Mức độ cho phép truy cập vào tài nguyên",
+  "app.access.rule.tooltip.access.level.read-only": "Read only",
+  "app.access.rule.tooltip.access.level.read-write": "Read write",
 
   "validation.access.to": "Access To cannot be left blank.",
-  "validation.access.to.pattern": "Access To is not in the correct format. Please enter an IP address in the format x.x.x.x or a CIDR in the format x.x.0.0/16 or x.x.0.0/24.",
+  "validation.access.to.pattern": "Access To is not in the correct format. Please enter an IP address in the format x.x.x.x or a CIDR in the format x.x.0.0/16 or x.x.x.0/24.",
   "validation.access.to.duplicate": "Access To đã tồn tại",
 
   "app.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR is granted access to this Filesystem",
@@ -1018,6 +1022,8 @@
   "validation.snapshot.name.pattern": "Snapshot name is only allowed to use lowercase characters a-z, uppercase A-Z, numbers 0-9, hyphens (-) and underscores (_), can have spaces, minimum 1 character and maximum 255 characters.",
   "app.item.switch.file.system.snapshot": "-Select Snapshot-",
   "app.file.storage.snapshot.required.select": "Please select Snapshot File System for me",
+  "app.file.system.notification.require.create.success": "File System creation request successful.",
+  "app.file.system.notification.require.create.fail": "File System creation request failed.",
 
   "app.file.system.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR range allowed to access this filesystem",
   "app.file.system.access.to.create.success": "Create access rule success",
