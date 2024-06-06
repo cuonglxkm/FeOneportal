@@ -71,7 +71,7 @@
               <span class="text-label"
                     style="width: 35%; margin-left: 2%;">{{ 'app.service.creation-date' | i18n }}</span>
               <span class="text-value-detail"
-                    style="margin-left: 2%;">{{ backupVolume?.creationDate | date: 'dd/MM/yyyy' }} </span>
+                    style="margin-left: 2%;">{{ backupVolume?.creationDate | date: 'HH:mm:ss dd/MM/yyyy' }} </span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
@@ -89,7 +89,7 @@
               <span class="text-label customSpan"
                     style="width: 35%; margin-left: 2%; color: #EA3829;">{{ 'app.service.expiration-date' | i18n }}</span>
               <span class="text-value-detail"
-                    style="margin-left: 2%; color: #EA3829;">{{ backupVolume?.expirationDate | date: 'dd/MM/yyyy' }}</span>
+                    style="margin-left: 2%; color: #EA3829;">{{ backupVolume?.expirationDate | date: 'HH:mm:ss dd/MM/yyyy' }}</span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">

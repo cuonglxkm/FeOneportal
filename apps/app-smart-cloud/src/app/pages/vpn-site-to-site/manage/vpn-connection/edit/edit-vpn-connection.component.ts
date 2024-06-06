@@ -12,6 +12,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormEditVpnConnection, VpnConnectionDetail } from 'src/app/shared/models/vpn-connection';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-edit-vpn-connection',
@@ -86,7 +88,8 @@ export class EditVpnConnectionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private fb: NonNullableFormBuilder,
     private notification: NzNotificationService,
-    private vpnConnectionService: VpnConnectionService
+    private vpnConnectionService: VpnConnectionService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   getData(): any {
@@ -128,16 +131,16 @@ export class EditVpnConnectionComponent implements OnInit {
           (data) => {
             this.isLoading = false
             this.notification.success(
-              'Thành công',
-              'Cập nhật VPN Connection thành công'
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.vpn-connection-edit.success')
             );
             this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
           },
           (error) => {
             this.isLoading = false
             this.notification.error(
-              'Thất bại',
-              'Cập nhật VPN Connection thất bại'
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.vpn-connection-edit.fail')
             );
             console.log(error);
           }

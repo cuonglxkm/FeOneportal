@@ -11,7 +11,8 @@ export class PaymentModel {
   paymentMethod: string
   paymentUrl: string
   statusTransitionHistory: StatusTransitionHistory[]
-  invoiceIssuedId: number
+  invoiceIssuedId: number;
+  eInvoiceCode: number;
 }
 
 export class StatusTransitionHistory {

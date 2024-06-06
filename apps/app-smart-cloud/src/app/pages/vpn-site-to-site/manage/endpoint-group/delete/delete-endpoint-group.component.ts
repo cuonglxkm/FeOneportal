@@ -5,7 +5,9 @@ import {
   NonNullableFormBuilder,
   Validators,
 } from '@angular/forms';
+import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormDeleteEndpointGroup } from 'src/app/shared/models/endpoint-group';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
@@ -38,7 +40,8 @@ export class DeleteEndpointGroupComponent {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService,
     private fb: NonNullableFormBuilder,
-    private endpointGroupService: EndpointGroupService
+    private endpointGroupService: EndpointGroupService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   nameEndpointGroupValidator(
@@ -77,8 +80,8 @@ export class DeleteEndpointGroupComponent {
               this.isVisible = false;
               this.isLoading = false;
               this.notification.success(
-                'Thành công',
-                'Xoá Endpoint Group thành công'
+                this.i18n.fanyi('app.status.success'),
+                this.i18n.fanyi('app.endpoint-delete.success')
               );
               this.validateForm.reset();
               this.onOk.emit(data);
@@ -89,15 +92,15 @@ export class DeleteEndpointGroupComponent {
               this.isVisible = false;
               this.isLoading = false;
               this.notification.error(
-                'Thất bại',
-                'Endpoint Group đang được sử dụng'
+                this.i18n.fanyi('app.status.fail'),
+                this.i18n.fanyi('app.endpoint-delete.fail2')
               );
             } else {
               this.isVisible = false;
               this.isLoading = false;
               this.notification.error(
-                'Thất bại',
-                'Xoá Endpoint Group thất bại'
+                this.i18n.fanyi('app.status.fail'),
+                this.i18n.fanyi('app.endpoint-delete.fail')
               );
             }
           }
