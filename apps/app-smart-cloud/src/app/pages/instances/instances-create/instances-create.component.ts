@@ -128,7 +128,6 @@ export class InstancesCreateComponent implements OnInit {
   user: any;
   ipPublicValue: number = 0;
   isUseIPv6: boolean = false;
-  isUseLAN: boolean = false;
   passwordVisible = false;
   password: string = '';
   numberMonth: number = 1;
@@ -977,9 +976,6 @@ export class InstancesCreateComponent implements OnInit {
       this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
     }
     if (
-      this.configGPU.CPU != 0 &&
-      this.configGPU.ram != 0 &&
-      this.configGPU.storage != 0 &&
       this.configGPU.GPU != 0 &&
       this.configGPU.gpuOfferId != 0 &&
       this.hdh != null
@@ -1038,13 +1034,7 @@ export class InstancesCreateComponent implements OnInit {
 
   onChangeTime(numberMonth: number) {
     this.numberMonth = numberMonth;
-    if (
-      this.hdh != null &&
-      (this.offerFlavor != null ||
-        (this.configCustom.vCPU != 0 &&
-          this.configCustom.ram != 0 &&
-          this.configCustom.capacity != 0))
-    ) {
+    if (this.hdh != null) {
       this.getTotalAmount();
     }
 
