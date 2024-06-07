@@ -144,7 +144,7 @@ export class SnapshotCreateComponent implements OnInit{
   }
 
   private loadVmList() {
-    this.instancesService.search(1 , 9999, this.region, this.project, '', '' , true, this.tokenService.get()?.userId)
+    this.instancesService.search(1 , 9999, this.region, this.project, '', 'KHOITAO' , true, this.tokenService.get()?.userId)
       .pipe(finalize(() => {
         this.vmLoading = false;
       }))
@@ -161,6 +161,14 @@ export class SnapshotCreateComponent implements OnInit{
       (this.selectedSnapshotType == 0 && this.selectedVolume == undefined) ||
       (this.selectedSnapshotType == 1 && this.selectedVM == undefined)) {
       this.disableCreate = true;
+    }
+
+    if (this.selectedSnapshotType == 0) {
+      this.validateForm.controls['quota'].setValue(this.selectedVolume.sizeInGB + 'GB');
+    } else if (this.selectedSnapshotType == 1 ) {
+      this.validateForm.controls['quota'].setValue('No value VM');
+    } else {
+      this.validateForm.controls['quota'].setValue('0GB');
     }
   }
 }

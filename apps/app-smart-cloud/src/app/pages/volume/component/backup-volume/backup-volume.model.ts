@@ -96,6 +96,8 @@ export class FormRestoreCurrentBackupVolume {
 export class FormRestoreNewBackupVolume {
   volumeBackupId: number
   volumeName: string
+  volumeSize: number
+  instanceToAttachId: number
   customerId: number
   userEmail: string
   actorEmail: string
