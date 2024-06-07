@@ -471,7 +471,7 @@ export class CreateVolumeComponent implements OnInit {
       this.isLoadingAction = false
       console.log('data vl snapshot', data.records)
       data?.records.forEach(item => {
-        if (['AVAILABLE', 'KHOITAO'].includes(item.resourceStatus) || ['AVAILABLE', 'KHOITAO'].includes(item.serviceStatus)) {
+        if ((['AVAILABLE', 'KHOITAO'].includes(item.resourceStatus) || ['AVAILABLE', 'KHOITAO'].includes(item.serviceStatus)) && !item.fromRootVolume) {
           this.snapshotList?.push(item);
         }
       });
