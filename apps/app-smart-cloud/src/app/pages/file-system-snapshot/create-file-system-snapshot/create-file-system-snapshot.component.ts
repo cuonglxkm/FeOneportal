@@ -109,15 +109,17 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   dataSubjectTime: Subject<any> = new Subject<any>();
 
   updateSelectedFileSystems(selectedFileSystem: number): void {
-    const selectedOption = this.response.records.find(
-      (option) => option.id === selectedFileSystem
-    );
-    if (selectedOption) {
-      this.selectedFileSystemName = selectedOption.name;
+    if(this.response && this.response.records){
+      const selectedOption = this.response.records.find(
+        (option) => option.id === selectedFileSystem
+      );
+      if (selectedOption) {
+        this.selectedFileSystemName = selectedOption.name;
+      }
+      this.fileSysId = selectedOption.id;
+      this.fileSysSize = selectedOption.size;
+      this.getTotalAmount();
     }
-    this.fileSysId = selectedOption.id;
-    this.fileSysSize = selectedOption.size;
-    this.getTotalAmount();
   }
 
   getListFileSystem() {
@@ -182,9 +184,6 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     private configurationsService: ConfigurationsService,
     private projectService: ProjectService
   ) {
-    this.form.get('time').valueChanges.subscribe((data) => {
-      this.getTotalAmount();
-    });
   }
 
   caculator(event) {

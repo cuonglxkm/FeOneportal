@@ -131,7 +131,7 @@ const APPINIT_PROVIDES = [
     ...I18NSERVICE_PROVIDES,
     ...APPINIT_PROVIDES,
     DatePipe,
-    ...AUTH_PROVIDES
+    // ...AUTH_PROVIDES
   ],
   bootstrap: [AppComponent],
 })
