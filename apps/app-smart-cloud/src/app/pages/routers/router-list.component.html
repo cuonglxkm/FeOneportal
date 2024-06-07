@@ -78,7 +78,7 @@
       <ng-template #prefixIconSearch>
         <img
           src="assets/imgs/search.svg"
-          alt=""      
+          alt=""
         />
       </ng-template>
     </div>
@@ -321,7 +321,7 @@
   (nzOnCancel)="handleCancelEdit()"
 >
   <form nz-form [formGroup]="formEdit">
-  <ng-container *nzModalContent>   
+  <ng-container *nzModalContent>
     <nz-form-item style="margin-bottom: 0;">
       <nz-form-control [nzErrorTip]="nameError">
         <nz-form-label nzFor="name"
@@ -350,7 +350,7 @@
         </ng-template>
       </nz-form-control>
     </nz-form-item>
-    <span class="text-label" 
+    <span class="text-label"
       >{{ 'app.select.network' | i18n }}
       <img
       style="padding-right: 10px; margin-top: -4px"
@@ -403,7 +403,7 @@
         *ngIf="isLoadingEditRouter === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
-        alt=""      
+        alt=""
       />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>

@@ -173,4 +173,12 @@ export class VolumeService extends BaseService {
   }
 
 
+  createSnapshot(data: any) {
+    return this.http.post<boolean>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots', Object.assign(data));
+  }
+
+  serchSnapshot(size: number, index: number, region: any, project: any, value: string, status: any) {
+    return this.http.get<boolean>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots?pageSize='+size+"&pageNumber="+index+"&regionId="+region+"&projectId="+project
+      +"&name="+value+"&volumeName="+value+"&status="+status);
+  }
 }
