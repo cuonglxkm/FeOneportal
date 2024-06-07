@@ -62,9 +62,9 @@
       </thead>
       <tbody>
         <tr *ngFor="let item of logTable.data; let i = index;">
-          <td>{{ item.userAction }}</td>
-          <td id="type">{{ item.resourceType }}</td>
-          <td>
+          <td class="content-table">{{ item.userAction }}</td>
+          <td class="content-table" id="type">{{ item.resourceType }}</td>
+          <td class="content-table">
             <ng-container *ngIf="item.resource.length <= 25; else truncateResourceTpl">
               {{ item.resource }}
             </ng-container>
@@ -77,8 +77,8 @@
               </ng-template>
             </ng-template>
           </td>
-          <td>{{ (item.operation | action2label) | i18n }}</td>
-          <td>
+          <td class="content-table">{{ (item.operation | action2label) | i18n }}</td>
+          <td class="content-table">
             <ng-container *ngIf="item.note?.length <= 30; else truncateValueTpl">
               {{ item.note }}
             </ng-container>
@@ -94,7 +94,7 @@
               </ng-template>
             </ng-template>
           </td>
-          <td class="center-align">{{ item.opTime | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+          <td class="center-align content-table">{{ item.opTime | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
         </tr>
       </tbody>
     </nz-table>

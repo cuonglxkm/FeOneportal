@@ -121,3 +121,6 @@ img {
   font-weight: 600;
 }
 
+[data-theme='dark'] :host ::ng-deep .content-table {
+  color: #DDDDDD;
+}
