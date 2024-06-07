@@ -43,7 +43,7 @@ export class SnapshotCreateComponent implements OnInit{
     {label : 'Snapshot máy ảo', value : 1},
   ]
   vmArray: any;
-  volumeArray: any;
+  volumeArray = [];
   snapshotPackageArray: any;
   vmLoading = true;
   volumeLoading = true;
@@ -132,7 +132,7 @@ export class SnapshotCreateComponent implements OnInit{
   }
 
   private loadVolumeList() {
-    this.volumeService.getVolumes(this.tokenService.get()?.userId,this.project, this.region, 9999, 1 , '', '')
+    this.volumeService.getVolumes(this.tokenService.get()?.userId,this.project, this.region, 9999, 1 , 'KHOITAO', '')
       .pipe(finalize(() => {
         this.volumeLoading = false;
       }))
@@ -144,13 +144,16 @@ export class SnapshotCreateComponent implements OnInit{
   }
 
   private loadVmList() {
-    this.instancesService.search(1 , 9999, this.region, this.project, '', 'KHOITAO' , true, this.tokenService.get()?.userId)
+    this.instancesService.search(1 , 9999, this.region, this.project, '', '' , true, this.tokenService.get()?.userId)
       .pipe(finalize(() => {
         this.vmLoading = false;
       }))
       .subscribe(
-      data => {
-        this.vmArray = data.records;
+        data => {
+          const rs = data.records.filter(item => {
+            return item.taskState === 'ACTIVE';
+          });
+        this.vmArray = rs;
       }
     )
   }
@@ -166,7 +169,7 @@ export class SnapshotCreateComponent implements OnInit{
     if (this.selectedSnapshotType == 0) {
       this.validateForm.controls['quota'].setValue(this.selectedVolume.sizeInGB + 'GB');
     } else if (this.selectedSnapshotType == 1 ) {
-      this.validateForm.controls['quota'].setValue('No value VM');
+      this.validateForm.controls['quota'].setValue(this.selectedVM.storage + 'GB');
     } else {
       this.validateForm.controls['quota'].setValue('0GB');
     }
