@@ -96,7 +96,7 @@
               <nz-dropdown-menu #opMenu="nzDropdownMenu">
               <ul nz-menu>
                 <li nz-menu-item >{{ 'app.text.edit' | i18n}}</li>
-                <li nz-menu-item >{{ 'volume.notification.request.create' | i18n}}</li>
+                <li nz-menu-item (click)="navigateToCreateVolume(data.id)">{{ 'volume.notification.request.create' | i18n}}</li>
                 <li nz-menu-item style="color: red">{{ 'app.delete' | i18n}}</li>
               </ul>
             </nz-dropdown-menu>

@@ -23,6 +23,8 @@ export class SnapshotListComponent implements OnInit{
   response: any;
   status: any = '';
 
+  typeVpc: number;
+
   constructor(private router: Router,
               private service: VolumeService) {
     let regionAndProject = getCurrentRegionAndProject();
@@ -46,6 +48,7 @@ export class SnapshotListComponent implements OnInit{
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
+    this.typeVpc = project?.type
   }
 
   navigateToCreate() {
@@ -71,5 +74,14 @@ export class SnapshotListComponent implements OnInit{
 
   onPageSizeChange($event: number) {
 
+  }
+
+
+  navigateToCreateVolume(idSnapshot) {
+    if(this.typeVpc == 1) {
+      this.router.navigate(['/app-smart-cloud/volume/vpc/create', {snapshotId: idSnapshot}])
+    } else {
+      this.router.navigate(['/app-smart-cloud/volume/create', {snapshotId: idSnapshot}])
+    }
   }
 }
