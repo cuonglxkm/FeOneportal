@@ -12,6 +12,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 })
 export class ListInboundComponent implements OnInit, OnChanges {
   @Input() securityGroupId?: string;
+  @Input() securityGroupName?: string;
   @Input() regionId: number
   @Input() projectId: number
 

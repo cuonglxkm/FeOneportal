@@ -84,10 +84,12 @@
           </div>
         </div>
         <one-portal-list-inbound [securityGroupId]="selectedSG?.id"
+                                 [securityGroupName]="selectedSG?.name"
                                  [regionId]="region"
                                  [projectId]="project" />
 
         <one-portal-list-outbound [securityGroupId]="selectedSG?.id"
+                                  [securityGroupName]="selectedSG?.name"
                                   [regionId]="region"
                                   [projectId]="project" />
         <nz-row>

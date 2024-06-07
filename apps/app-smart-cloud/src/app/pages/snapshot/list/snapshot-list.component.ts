@@ -50,6 +50,8 @@ export class SnapshotListComponent implements OnInit{
     description: ['', Validators.maxLength(255)],
   });
 
+  typeVpc: number;
+
   dataSelected: any;
   nameDelete = '';
   disableDelete = true;
@@ -82,6 +84,7 @@ export class SnapshotListComponent implements OnInit{
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.search(true)
+    this.typeVpc = project?.type
   }
 
   navigateToCreate() {
@@ -116,6 +119,16 @@ export class SnapshotListComponent implements OnInit{
   onPageSizeChange($event: number) {
     this.size = $event;
     this.search(false)
+
+  }
+
+
+  navigateToCreateVolume(idSnapshot) {
+    if(this.typeVpc == 1) {
+      this.router.navigate(['/app-smart-cloud/volume/vpc/create', {idSnapshot: idSnapshot}])
+    } else {
+      this.router.navigate(['/app-smart-cloud/volume/create', {idSnapshot: idSnapshot}])
+    }
   }
 
   handleCancel() {
