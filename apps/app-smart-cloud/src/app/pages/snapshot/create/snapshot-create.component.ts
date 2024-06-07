@@ -7,10 +7,8 @@ import { VolumeService } from '../../../shared/services/volume.service';
 import { InstancesService } from '../../instances/instances.service';
 import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
 import { FormSearchPackageSnapshot } from '../../../shared/models/package-snapshot.model';
-import { da, th } from 'date-fns/locale';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { finalize } from 'rxjs';
-import { isThisHour } from 'date-fns';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -142,10 +140,9 @@ export class SnapshotCreateComponent implements OnInit{
       }))
       .subscribe(
       data => {
-        const rs1 = data.records.filter(item => {
-          return item.serviceStatus === 'ACTIVE';
+        this.volumeArray = data?.records.filter(item => {
+          return item.serviceStatus === 'AVAILABLE';
         });
-        this.volumeArray = rs1;
         if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined || this.activatedRoute.snapshot.paramMap.get('volumeId') != null) {
           this.selectedSnapshotType = 0;
           this.selectedVolume = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId')))[0];
