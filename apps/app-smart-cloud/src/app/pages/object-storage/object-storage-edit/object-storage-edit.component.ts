@@ -145,6 +145,7 @@ export class ObjectStorageEditComponent implements OnInit {
   order: Order = new Order();
   orderItem: OrderItem[] = [];
   update() {
+    this.order = new Order();
     this.initObjectStorageResize();
     let specification = JSON.stringify(this.objectStorageResize);
     let orderItemOS = new OrderItem();

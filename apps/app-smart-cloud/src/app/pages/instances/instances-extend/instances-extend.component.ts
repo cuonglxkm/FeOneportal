@@ -220,6 +220,7 @@ export class InstancesExtendComponent implements OnInit {
   handleOkExtend(): void {
     this.isLoading = true;
     this.cdr.detectChanges();
+    this.order = new Order();
     this.instanceExtendInit();
     let specificationInstance = JSON.stringify(this.instanceExtend);
     let orderItemInstanceResize = new OrderItem();

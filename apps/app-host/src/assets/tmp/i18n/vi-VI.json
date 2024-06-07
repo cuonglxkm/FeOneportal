@@ -329,6 +329,7 @@
   "app.backup.volume": "backup volume",
   "app.alow.address.pair.list": "Danh sách Allow Address Pair",
   "app.create.alow.address.pair": "Tạo mới Allow Address Pair",
+  "app.delete.alow.address.pair": "Xóa Allow Address Pair",
   "app.instances": "Máy ảo",
   "app.ip-public": "Ip Public",
   "app.ip-loating": "Ip Floating",
@@ -387,6 +388,8 @@
   "app.alert.quota.vpc": "Quý khách đã sử dụng hết quota. Vui lòng bấm vào",
   "app.alert.quota.vpc.next": "để mở rộng quota",
   "app.alert.create.vpc.instance": "Quý khách chắn chắn muốn thực hiện khởi tạo máy ảo không?",
+  "app.alert.create.allow.address.pair": "Vui lòng cân nhắc thật kỹ trước khi click nút",
+  "app.alert.create.allow.address.pair.next": "Quý khách chắc chắn muốn thực hiện xóa Allowed Address Pair?",
 
   "app.tooltip.instance.name": "Tên máy ảo không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)",
   "app.tooltip.instances.from.snapshot": "Quý khách có thể tạo máy ảo từ một bản snapshot có sẵn để phục hồi máy ảo về trạng thái khi thực hiện tạo bản snapshot đó",
@@ -413,6 +416,12 @@
 
   "app.notify.get.list.port": "Lấy danh sách Port không thành công",
   "app.notify.get.list.instance": "Lấy danh sách máy ảo không thành công",
+  "app.notify.get.list.allow.address.pair": "Lấy danh sách Allow Address Pair không thành công",
+  "app.notify.create.allow.address.pair.success": "Tạo Allow Address Pair thành công",
+  "app.notify.create.allow.address.pair.fail": "Tạo Allow Address Pair không thành công",
+  "app.notify.delete.allow.address.pair.success": "Xóa Allow Address Pair thành công",
+  "app.notify.delete.allow.address.pair.fail": "Xóa Allow Address Pair không thành công",
+  "app.notify.create.allow.address.pair.warning": "Không thể thêm mới quá 10 Allow Address Pair",
   "app.notify.get.sg.of.instance.fail": "Lấy SecurityGroup của máy ảo không thành công",
   "app.notify.choose.os.required": "Vui lòng chọn hệ điều hành",
   "app.notify.choose.snapshot.required": "Vui lòng chọn Snapshot",
@@ -456,7 +465,7 @@
   "app.notify.amount.capacity.add": "Vượt quá quota dung lượng, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
   "app.notify.amount.ram.add": "Vượt quá quota RAM, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
   "app.notify.amount.cpu.add": "Vượt quá quota CPU, đã sử dụng {{num1}}/{{num2}} vCPU, cần cấp thêm {{num3}} vCPU",
-  "app.notify.amount.gpu.add": "Vượt quá quota chuyển đổi loại GPU, cần cấp thêm {{num}} GPU",
+  "app.notify.amount.gpu.add": "Không đủ quota chuyển đổi loại GPU, cần cấp thêm {{num}} GPU",
   "app.notify.create.instances.success": "Khởi tạo máy ảo {{name}} thành công",
   "app.notify.create.instances.fail": "Khởi tạo máy ảo {{name}} không thành công",
 
