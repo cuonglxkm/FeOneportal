@@ -1134,14 +1134,16 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleCreate"
-  nzTitle="Xác nhận khởi tạo máy ảo"
+  [nzTitle]="'app.instances.create.confirm' | i18n"
   (nzOnCancel)="handleCancelCreate()"
 >
   <div *nzModalContent>
-    Quý khách chắn chắn muốn thực hiện khởi tạo máy ảo không?<br />• Tên máy ảo:
-    {{ instanceCreate.serviceName }}<br />• Hệ điều hành: {{ nameImage }}<br />•
-    Gói cấu hình: {{ instanceCreate.cpu }} vCPU / {{ instanceCreate.ram }}GB RAM
-    / {{ instanceCreate.volumeSize }}GB {{ activeBlockHDD ? 'HDD' : 'SSD'
+    {{ 'app.alert.create.vpc.instance' | i18n }}<br />•
+    {{ 'app.instances.name' | i18n }}: {{ instanceCreate.serviceName }}<br />•
+    {{ 'app.instances.OS' | i18n }}: {{ nameImage }}<br />•
+    {{ 'app.configuration.package' | i18n }}: {{ instanceCreate.cpu }} vCPU /
+    {{ instanceCreate.ram }}GB RAM / {{ instanceCreate.volumeSize }}GB
+    {{ activeBlockHDD ? 'HDD' : 'SSD'
     }}<span *ngIf="isGpuConfig">
       / {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
     </span>
