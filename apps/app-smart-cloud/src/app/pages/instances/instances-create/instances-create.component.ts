@@ -454,6 +454,12 @@ export class InstancesCreateComponent implements OnInit {
     }
   }
 
+  changeSelectedSnapshot() {
+    this.minCapacity = this.listSnapshot.filter(
+      (e) => e.id == this.selectedSnapshot
+    )[0].sizeInGB;
+  }
+
   //#endregion
 
   //#region HDD hay SDD
@@ -713,7 +719,7 @@ export class InstancesCreateComponent implements OnInit {
     this.offerFlavor = this.listOfferFlavors.find(
       (flavor) => flavor.id === event
     );
-    if (this.hdh != null) {
+    if (this.hdh != null || this.selectedSnapshot != null) {
       this.getTotalAmount();
     }
     console.log(this.offerFlavor);
@@ -739,7 +745,7 @@ export class InstancesCreateComponent implements OnInit {
     gpuOfferId: number
   ) {
     let tempInstance: InstanceCreate = new InstanceCreate();
-    tempInstance.imageId = this.hdh;
+    tempInstance.imageId = this.hdh ? this.hdh : 0;
     tempInstance.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
     tempInstance.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
     tempInstance.offerId = 0;
@@ -818,7 +824,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 0, 1, 0, null);
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -835,7 +841,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 1, 0, 0, null);
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -880,7 +886,7 @@ export class InstancesCreateComponent implements OnInit {
           (this.configCustom.capacity % this.stepCapacity);
       }
       this.getUnitPrice(1, 0, 0, 0, null);
-      if (this.hdh != null) {
+      if (this.hdh != null || this.selectedSnapshot != null) {
         this.getTotalAmount();
       }
     });
@@ -911,7 +917,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 0, 1, 0, null);
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -928,7 +934,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 1, 0, 0, null);
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -945,7 +951,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(1, 0, 0, 0, null);
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -964,7 +970,7 @@ export class InstancesCreateComponent implements OnInit {
         if (this.configGPU.gpuOfferId != 0) {
           this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
         }
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -981,7 +987,7 @@ export class InstancesCreateComponent implements OnInit {
     if (
       this.configGPU.GPU != 0 &&
       this.configGPU.gpuOfferId != 0 &&
-      this.hdh != null
+      (this.hdh != null || this.selectedSnapshot != null)
     ) {
       this.getTotalAmount();
     }
@@ -1037,7 +1043,7 @@ export class InstancesCreateComponent implements OnInit {
 
   onChangeTime(numberMonth: number) {
     this.numberMonth = numberMonth;
-    if (this.hdh != null) {
+    if (this.hdh != null || this.selectedSnapshot != null) {
       this.getTotalAmount();
     }
 
@@ -1242,7 +1248,7 @@ export class InstancesCreateComponent implements OnInit {
 
   instanceInit() {
     this.instanceCreate.description = null;
-    this.instanceCreate.imageId = this.hdh;
+    this.instanceCreate.imageId = this.hdh ? this.hdh : 0;
     this.instanceCreate.iops = 0;
     this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
     this.instanceCreate.keypairName = this.selectedSSHKeyName;
