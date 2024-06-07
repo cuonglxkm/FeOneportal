@@ -146,6 +146,7 @@ export class ObjectStorageCreateComponent implements OnInit {
   order: Order = new Order();
 
   create() {
+    this.order = new Order();
     this.initObjectStorage();
     let specification = JSON.stringify(this.objectStorageCreate);
     let orderItemOS = new OrderItem();

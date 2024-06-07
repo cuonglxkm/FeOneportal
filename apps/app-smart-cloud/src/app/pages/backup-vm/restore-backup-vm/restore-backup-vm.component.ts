@@ -1194,6 +1194,7 @@ export class RestoreBackupVmComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
+          this.order = new Order();
           let specificationInstance = JSON.stringify(
             this.restoreInstanceBackup
           );

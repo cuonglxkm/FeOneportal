@@ -830,6 +830,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.isVisibleCreate = false;
     this.isLoading = true;
     this.cdr.detectChanges();
+    this.instanceInit();
     this.dataService
       .checkflavorforimage(
         this.hdh,
@@ -839,8 +840,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.instanceInit();
-
+          this.order = new Order();
           let specificationInstance = JSON.stringify(this.instanceCreate);
           let orderItemInstance = new OrderItem();
           orderItemInstance.orderItemQuantity = 1;

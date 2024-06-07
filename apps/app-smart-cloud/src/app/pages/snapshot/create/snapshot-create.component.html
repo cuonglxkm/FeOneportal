@@ -87,7 +87,7 @@
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips>
                   <nz-select nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}" nzAllowClear
-                             [(ngModel)]="selectedVolume" (ngModelChange)="checkDisable()" [ngModelOptions]="{ standalone: true }" nzSize="large">
+                             [(ngModel)]="selectedVolume" [disabled] = "volumeLoading" [nzLoading]="volumeLoading" (ngModelChange)="checkDisable()" [ngModelOptions]="{ standalone: true }" nzSize="large">
                     <nz-option *ngFor="let index of volumeArray" [nzValue]="index"
                                [nzLabel]="index.name"></nz-option>
                   </nz-select>
@@ -103,7 +103,7 @@
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips>
                   <nz-select nzPlaceHolder="{{'wan.label.instance.select' | i18n}}" nzAllowClear
-                             [(ngModel)]="selectedVM" (ngModelChange)="checkDisable()" [ngModelOptions]="{ standalone: true }" nzSize="large">
+                             [(ngModel)]="selectedVM" [disabled] = "vmLoading" [nzLoading]="vmLoading" (ngModelChange)="checkDisable()" [ngModelOptions]="{ standalone: true }" nzSize="large">
                     <nz-option *ngFor="let index of vmArray" [nzValue]="index"
                                [nzLabel]="index.name"></nz-option>
                   </nz-select>
@@ -136,7 +136,7 @@
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips>
-                  <nz-select [nzPlaceHolder]="'Chọn gói Snapshot'" nzAllowClear
+                  <nz-select [nzPlaceHolder]="'Chọn gói Snapshot'" nzAllowClear [disabled] = "snapshotPackageLoading" [nzLoading]="snapshotPackageLoading"
                                [(ngModel)]="selectedSnapshotPackage" (ngModelChange)="checkDisable()" [ngModelOptions]="{ standalone: true }" nzSize="large">
                     <nz-option *ngFor="let index of snapshotPackageArray" [nzValue]="index"
                                [nzLabel]="index.packageName"></nz-option>
@@ -157,6 +157,16 @@
               <input nz-input type="text" formControlName="quota" style="width: 95%;" nzSize="large">
             </nz-form-control>
           </nz-form-item>
+          <nz-alert  *ngIf="this.selectedSnapshotType == 0 && this.volumeArray.length == 0" nzBanner
+                     style="margin-bottom: 10px;"
+                     [nzMessage]="nzMessage"
+                     nzShowIcon></nz-alert>
+          <ng-template #nzMessage>
+            <div>
+              Quý khách chưa có gói Snapshot nào, để có thể sử dụng dịch vụ Snapshot, vui lòng tạo gói Snapshot
+              <a [routerLink]="'/app-smart-cloud/volume/create'">tại đây</a>
+            </div>
+          </ng-template>
           <nz-form-item>
             <nz-form-label>
               <span>{{ 'app.service.description' | i18n }}</span>

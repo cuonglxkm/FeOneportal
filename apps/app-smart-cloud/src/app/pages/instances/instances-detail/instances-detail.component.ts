@@ -40,8 +40,8 @@ export class InstancesDetailComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
-    private router: ActivatedRoute,
-    private route: Router,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
     private notification: NzNotificationService
   ) {}
 
@@ -64,7 +64,7 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   getData() {
-    this.router.paramMap.subscribe((param) => {
+    this.activatedRoute.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
         this.dataService.getById(this.id, true).subscribe({
@@ -133,15 +133,15 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   onReloadInstanceDetail(data: any) {
-    this.route.navigate(['/app-smart-cloud/instances']);
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   onRegionChange(region: RegionModel) {
-    this.route.navigate(['/app-smart-cloud/instances']);
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   userChangeProject() {
-    this.route.navigate(['/app-smart-cloud/instances']);
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   project: ProjectModel;
@@ -151,24 +151,24 @@ export class InstancesDetailComponent implements OnInit {
 
   navigateToEdit() {
     if (this.project.type == 1) {
-      this.route.navigate([
+      this.router.navigate([
         '/app-smart-cloud/instances/instances-edit-vpc/' + this.id,
       ]);
     } else {
-      this.route.navigate([
+      this.router.navigate([
         '/app-smart-cloud/instances/instances-edit/' + this.id,
       ]);
     }
   }
 
   navigateToChangeImage() {
-    this.route.navigate([
+    this.router.navigate([
       '/app-smart-cloud/instances/instances-edit-info/' + this.id,
     ]);
   }
 
   returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/instances']);
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   //Giám sát
