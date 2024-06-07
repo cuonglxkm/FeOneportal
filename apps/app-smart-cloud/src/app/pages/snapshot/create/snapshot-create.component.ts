@@ -150,10 +150,10 @@ export class SnapshotCreateComponent implements OnInit{
       }))
       .subscribe(
         data => {
-          const rs = data.records.filter(item => {
+          const rs1 = data.records.filter(item => {
             return item.taskState === 'ACTIVE';
           });
-        this.vmArray = rs;
+        this.vmArray = rs1;
       }
     )
   }
