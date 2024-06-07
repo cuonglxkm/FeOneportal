@@ -808,7 +808,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.cdr.detectChanges();
     this.dataService
       .checkflavorforimage(
-        Number.parseInt(this.backupVmModel?.systemInfoBackups[0].imageId),
+        this.backupVmModel?.systemInfoBackups[0].imageIdInt,
         this.restoreInstanceBackup.volumeSize,
         this.restoreInstanceBackup.ram,
         this.restoreInstanceBackup.cpu
