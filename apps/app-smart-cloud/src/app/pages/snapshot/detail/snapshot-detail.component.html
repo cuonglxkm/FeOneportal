@@ -1,0 +1,97 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Xem chi tiết Snapshot '" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+      <nz-breadcrumb-item>{{
+          'app.breadcrumb.home' | i18n
+        }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{
+          'app.breadcrumb.infrastructure.service' | i18n
+        }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Snapshot</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #separatorTemplate
+    ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card>
+    <span class="text-card-header">Thông tin Snapshot</span>
+    <form nz-form nzLayout="vertical">
+      <div class="customRow">
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Tên Snapshot:</span>
+              <span class="text-value-detail customSpan">{{data.name}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Dung lượng Snapshot:</span>
+              <span class="text-value-detail customSpan">{{data.sizeInGB}}GB</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Trạng thái:</span>
+              <span class="text-value-detail customSpan">{{data.resourceStatus}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Ngày khởi tạo: </span>
+              <span class="text-value-detail customSpan">{{data.startDate | date : 'HH:mm:ss dd/MM/yyyy'}}/s</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Loại Snapshot:</span>
+              <span class="text-value-detail customSpan">1</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Volume: </span>
+              <span class="text-value-detail customSpan">1/s</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Gói Snapshot:</span>
+              <span class="text-value-detail customSpan">1</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Dung lượng gói: </span>
+              <span class="text-value-detail customSpan">Unlimit</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+      </div>
+    </form>
+  </nz-card>
+</nz-content>
