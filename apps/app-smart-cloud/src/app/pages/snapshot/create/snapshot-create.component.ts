@@ -135,13 +135,25 @@ export class SnapshotCreateComponent implements OnInit{
   }
 
   private loadVolumeList() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.volumeService.getVolumes(this.tokenService.get()?.userId,this.project, this.region, 9999, 1 , 'KHOITAO', '')
       .pipe(finalize(() => {
         this.volumeLoading = false;
       }))
       .subscribe(
       data => {
-        this.volumeArray = data.records;
+        const rs1 = data.records.filter(item => {
+          return item.serviceStatus === 'ACTIVE';
+        });
+        this.volumeArray = rs1;
+        if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined || this.activatedRoute.snapshot.paramMap.get('volumeId') != null) {
+          this.selectedSnapshotType = 0;
+          this.selectedVolume = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId')))[0];
+        } else {
+          this.selectedVolume = null;
+          this.selectedSnapshotType = 1;
+        }
+        // this.volumeArray = data.records;
       }
     )
   }
