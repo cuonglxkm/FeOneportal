@@ -51,6 +51,9 @@ export class FileSystemSnapshotService extends BaseService {
     if (formSearch.currentPage != undefined || formSearch.currentPage != null) {
       params = params.append('currentPage', formSearch.currentPage)
     }
+    if (formSearch.name != undefined || formSearch.name != null) {
+      params = params.append('name', formSearch.name)
+    }
 
     return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/sharesnapshot/paging', {
       headers: this.getHeaders(),
