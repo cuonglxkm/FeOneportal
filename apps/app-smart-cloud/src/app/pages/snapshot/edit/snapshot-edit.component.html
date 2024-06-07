@@ -1,1 +1,105 @@
-<p>snapshot-edit works!</p>
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Xem chi tiết Snapshot '" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+      <nz-breadcrumb-item>{{
+          'app.breadcrumb.home' | i18n
+        }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{
+          'app.breadcrumb.infrastructure.service' | i18n
+        }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Snapshot</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #separatorTemplate
+    ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card>
+    <span class="text-card-header">{{ 'app.load.balancer.info' | i18n }}</span>
+    <form nz-form nzLayout="vertical">
+      <div class="customRow">
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.load.balancer.name' | i18n }}:</span>
+              <span class="text-value-detail customSpan">{{loadBalancer.name}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Gói dịch vụ</span>
+              <span class="text-value-detail customSpan">{{dataOffer?.offerName}}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Floating IP</span>
+              <span class="text-value-detail customSpan">{{loadBalancer.floatingIPAddress}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Max connection</span>
+              <span class="text-value-detail customSpan">{{dataOffer?.characteristicValues[0]?.charOptionValues[0]}}/s</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">VIP Address</span>
+              <span class="text-value-detail customSpan">{{loadBalancer.ipAddress}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Active connection</span>
+              <span class="text-value-detail customSpan">{{dataOffer?.characteristicValues[0]?.charOptionValues[0]}}/s</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.service.start.date' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{loadBalancer.createDate | date: 'dd/MM/yyyy'}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Data transfer</span>
+              <span class="text-value-detail customSpan">Unlimit</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.service.expiration-date' | i18n }}</span>
+              <span class="text-value-detail customSpan" style="color: red">{{loadBalancer.expiredDate | date: 'dd/MM/yyyy'}}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+      </div>
+    </form>
+  </nz-card>
+</nz-content>
