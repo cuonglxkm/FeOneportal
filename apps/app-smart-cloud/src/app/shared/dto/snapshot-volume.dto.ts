@@ -26,6 +26,7 @@ export class SnapshotVolumeDto {
   fromRootVolume: boolean;
   note: string;
   scheduleId: number;
+  volumeType: string;
 }
 
 export class Customer {
