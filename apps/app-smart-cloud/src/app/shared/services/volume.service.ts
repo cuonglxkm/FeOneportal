@@ -189,4 +189,8 @@ export class VolumeService extends BaseService {
   updateSnapshot(data : any) {
     return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots', Object.assign(data));
   }
+
+  getDetailSnapshot(id: string) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots/'+id);
+  }
 }

@@ -157,7 +157,7 @@
               <input nz-input type="text" formControlName="quota" style="width: 95%;" nzSize="large">
             </nz-form-control>
           </nz-form-item>
-          <nz-alert  *ngIf="this.selectedSnapshotType == 0 && this.volumeArray.length == 0" nzBanner
+          <nz-alert  *ngIf="this.selectedSnapshotType == 0 && this.volumeArray.length == 0 && volumeLoading == false" nzBanner
                      style="margin-bottom: 10px;"
                      [nzMessage]="nzMessage"
                      nzShowIcon></nz-alert>
