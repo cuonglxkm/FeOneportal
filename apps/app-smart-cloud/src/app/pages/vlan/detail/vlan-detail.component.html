@@ -71,7 +71,18 @@
             <td>{{ data.name }}</td>
             <td>{{ data.subnetAddressRequired }}</td>
             <td>{{ data.gatewayIp }}</td>
-            <td *ngIf="!networkName?.includes('pri_network')">
+            <td *ngIf="data.usedBy">
+              <img nz-popover src="assets/imgs/edit-2.svg" alt=""
+                   nzPopoverPlacement="bottom" (click)="navigateToEditSubnet(data.id)"
+                   style="cursor: pointer; margin-right: 16px;"
+                   nzPopoverContent="{{ 'app.text.edit' | i18n }}" disabled="true"/>
+              <img src="assets/imgs/delete.svg"
+                   style="height: 28px;width: 28px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
+                   nz-popover
+                   [nzPopoverContent]="'app.text.delete'|i18n"
+                   nzPopoverPlacement="bottom" disabled="true" />
+            </td>
+            <td *ngIf="!networkName?.includes('pri_network') && !data.usedBy">
               <img nz-popover src="assets/imgs/edit-2.svg" alt=""
                    nzPopoverPlacement="bottom" (click)="navigateToEditSubnet(data.id)"
                    style="cursor: pointer; margin-right: 16px;"
