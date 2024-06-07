@@ -135,15 +135,15 @@
                     </div>
                     <div nz-col [nzSpan]="16" class="description-info">
                       <ng-container *ngIf="detailCluster.apiEndpoint?.length <= 30; else truncateEndpointTpl">
-                        {{detailCluster.apiEndpoint}}
+                        <span>{{detailCluster.apiEndpoint}}</span>
                       </ng-container>
                       <ng-template #truncateEndpointTpl>
-                        <span [nzTooltipTitle]="apiEnpointTpl" nzTooltipPlacement="bottom" nz-tooltip>
-                          {{detailCluster.apiEndpoint | truncateLabel}}
+                        <span [nzPopoverContent]="apiEnpointTpl" nzPopoverPlacement="bottom" nz-popover>
+                          <span>{{detailCluster.apiEndpoint | truncateLabel}}</span>
                         </span>
 
                         <ng-template #apiEnpointTpl>
-                          <div style="width: fit-content">{{detailCluster.apiEndpoint}}</div>
+                          <div style="width: fit-content"><span>{{detailCluster.apiEndpoint}}</span></div>
                         </ng-template>
                       </ng-template>
 

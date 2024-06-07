@@ -227,10 +227,10 @@ label, span {
   overflow: hidden;
 }
 
-.carousel-div {
+/* .carousel-div {
   overflow:hidden;
   -webkit-mask: linear-gradient(90deg,#0000,#000 6% 94%,#0000)
-}
+} */
 
 .item {
   padding: 10px;

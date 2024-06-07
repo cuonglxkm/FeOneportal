@@ -499,24 +499,38 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
   template: `
   <style>
     .danger-color {color: #ea3829;}
+
+    span {
+      font-size: 16px;
+    }
+
+    /* dark theme */
+    [data-theme='dark'] :host ::ng-deep label, span, input, p {
+      font-size: 16px;
+    }
+
+    /* compact theme */
+    [data-theme='compact'] :host ::ng-deep label, span, input, p {
+      font-size: 14px;
+    }
   </style>
   <div nz-row>
     <div nz-col nzSpan="8">
-      {{label}}
+      <span>{{label}}</span>
     </div>
     <div nz-col nzSpan="16" style="font-weight: 600;"
       [ngClass]="type === 'danger' ? 'danger-color' : ''">
       <ng-container *ngIf="(value + '').length <= 30; else truncateValueTpl">
-        {{value}}
+        <span>{{value}}</span>
       </ng-container>
       <ng-template #truncateValueTpl>
         <div [nzPopoverContent]="contentTpl"
           nzPopoverPlacement="bottom" nz-popover>
-          {{value | truncateLabel}}
+          <span>{{value | truncateLabel}}</span>
         </div>
 
         <ng-template #contentTpl>
-          <div style="width: fit-content">{{value}}</div>
+          <div style="width: fit-content"><span>{{value}}</span></div>
         </ng-template>
       </ng-template>
     </div>
