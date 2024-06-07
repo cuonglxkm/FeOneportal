@@ -13,7 +13,6 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  AllowAddressPair,
   AllowAddressPairCreateOrDeleteForm,
   AllowAddressPairSearchForm,
 } from '../../../shared/models/allow-address-pair';
@@ -22,7 +21,6 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ipValidator } from '../../file-storage/access-rule/action/create/create-access-rule.component';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
-import { error } from 'console';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
@@ -113,6 +111,7 @@ export class CreateAllowAddressPairComponent implements OnInit {
     this.formSearch.pageSize = 100;
     this.formSearch.currentPage = 1;
     this.formSearch.search = null;
+    this.listIpAddressCidr = [];
     this.getAllowAddressPair(this.formSearch);
   }
 

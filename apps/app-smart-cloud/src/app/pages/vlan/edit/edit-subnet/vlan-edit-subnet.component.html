@@ -104,7 +104,7 @@
               </label>
             </div>
             <div nz-col nzSpan="12">
-              <label nz-checkbox formControlName="enableDhcp" (nzCheckedChange)="onChangeClickDisableDhcp($event)" >
+              <label nz-checkbox formControlName="enableDhcp" (nzCheckedChange)="onChangeClickDisableDhcp($event)" [nzDisabled]="subnet.usedBy != null"  >
                 <nz-space [nzSize]="4" nzAlign="center">
                   <span *nzSpaceItem class="text-value">DHCP</span>
                   <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note32' | i18n }}"
