@@ -88,14 +88,12 @@
           <span *ngSwitchCase="'rw'">Read-Write</span>
         </td>
         <td>{{ data.state }}</td>
-        <td>{{ data.created_at }}</td>
+        <td>{{ data.created_at | date:'HH:mm:ss dd/MM/yyyy' }}</td>
         <td>
           <one-portal-delete-access-rule *ngIf="data.state == 'active'"
                                          [region]="region"
                                          [project]="project"
-                                         [shareRuleId]="data.id"
                                          [shareCloudId]="data.shareId"
-                                         [accessTo]="data.access_to"
                                          (onOk)="handleDeleteOk()" />
         </td>
       </tr>

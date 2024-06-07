@@ -39,7 +39,7 @@
                      (input)="changeInputChangeSubnet($event)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
+              <img src="assets/imgs/search.svg" alt="" />
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;" *ngIf="!networkName?.includes('pri_network')">
@@ -103,8 +103,7 @@
                      (input)="changeInputChangePort($event)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"
-                   nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
+              <img src="assets/imgs/search.svg" alt="" />
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
