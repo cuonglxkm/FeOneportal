@@ -100,9 +100,9 @@ export class SnapshotListComponent implements OnInit{
 
   navigateToCreateVolume(idSnapshot) {
     if(this.typeVpc == 1) {
-      this.router.navigate(['/app-smart-cloud/volume/vpc/create', {snapshotId: idSnapshot}])
+      this.router.navigate(['/app-smart-cloud/volume/vpc/create', {idSnapshot: idSnapshot}])
     } else {
-      this.router.navigate(['/app-smart-cloud/volume/create', {snapshotId: idSnapshot}])
+      this.router.navigate(['/app-smart-cloud/volume/create', {idSnapshot: idSnapshot}])
     }
   }
 }
