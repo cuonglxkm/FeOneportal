@@ -7,6 +7,9 @@ import { Router } from '@angular/router';
 import { VolumeService } from '../../../shared/services/volume.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { data } from 'vis-network';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'one-portal-snapshot-list',
@@ -31,9 +34,31 @@ export class SnapshotListComponent implements OnInit{
     {label : this.i18n.fanyi('app.suspend'), value : 'TAMNGUNG'},
     {label : this.i18n.fanyi('app.button.cancel'), value : 'HUY'},
   ];
+  isVisibleDelete = false;
+  modalStyle = {
+    'padding': '20px',
+    'border-radius': '10px',
+    'width': '600px',
+  };
+  validateForm: FormGroup<{
+    name: FormControl<string>
+    description: FormControl<string>
+  }> = this.fb.group({
+    name: ['', [Validators.required,
+      Validators.pattern(/^[a-zA-Z0-9_]*$/),
+      Validators.maxLength(50)]],
+    description: ['', Validators.maxLength(255)],
+  });
 
+  dataSelected: any;
+  nameDelete = '';
+  disableDelete = true;
+  loadingDelete = false;
+  isVisibleEdit: boolean;
   constructor(private router: Router,
+              private fb: NonNullableFormBuilder,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private notification: NzNotificationService,
               private service: VolumeService) {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -91,5 +116,83 @@ export class SnapshotListComponent implements OnInit{
   onPageSizeChange($event: number) {
     this.size = $event;
     this.search(false)
+  }
+
+  handleCancel() {
+    this.isVisibleDelete = false;
+    this.isVisibleEdit = false;
+    this.nameDelete = '';
+    this.dataSelected = null;
+  }
+
+  enableDelete(data: any) {
+    this.dataSelected = data;
+    this.isVisibleDelete = true;
+  }
+
+  openIpDeleteCf() {
+    if (this.disableDelete == false) {
+      this.openIpDelete();
+    }
+  }
+
+  confirmNameDelete($event: any) {
+    if ($event == this.dataSelected.name) {
+      this.disableDelete = false;
+    } else {
+      this.disableDelete = true;
+    }
+  }
+
+  openIpDelete() {
+    this.loadingDelete = true;
+    this.service.deleteSnapshot(this.dataSelected.id)
+      .pipe(finalize(() => {
+        this.loadingDelete = false;
+        this.handleCancel();
+      }))
+      .subscribe(
+      data => {
+        this.notification.success(this.i18n.fanyi('app.status.success'), 'success');
+        this.search(true);
+      },
+      error => {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'fail');
+      }
+    )
+  }
+
+  enableEdit(data: any) {
+    this.dataSelected = data;
+    this.isVisibleEdit = true;
+    this.validateForm.controls['name'].setValue(data.name);
+    this.validateForm.controls['description'].setValue(data.description);
+  }
+
+  updateSnapshot() {
+    this.loadingDelete = true;
+    const data = {
+      id : this.dataSelected.id,
+      name : this.validateForm.controls['name'].value,
+      description : this.validateForm.controls['description'].value,
+    }
+    this.service.updateSnapshot(data)
+      .pipe(finalize(() => {
+        this.loadingDelete = false;
+        this.handleCancel();
+      }))
+      .subscribe(
+        data => {
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'success');
+          this.search(true);
+        },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'fail');
+        }
+      )
+  }
+
+  navigateCreateVl() {
+    this.router.navigate(['/app-smart-cloud/volume/create'])
   }
 }
