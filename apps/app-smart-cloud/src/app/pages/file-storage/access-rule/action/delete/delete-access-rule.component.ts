@@ -45,7 +45,6 @@ export class DeleteAccessRuleComponent {
   handleOk() {
     this.isLoading = true;
     this.accessRuleService.deleteAccessRule(this.shareRuleId, this.region, this.project, this.shareCloudId, this.accessTo).subscribe(data => {
-
       this.isVisible = false;
       this.isLoading = false;
       //this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.access.to.delete.success'));

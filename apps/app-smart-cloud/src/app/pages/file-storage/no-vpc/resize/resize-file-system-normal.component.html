@@ -66,27 +66,6 @@
                     <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.shareProto"  [disabled]="true" />
                   </nz-form-control>
                 </nz-form-item>
-                <nz-form-item>
-                  <div style="display: flex;">
-                    <nz-switch [nzDisabled]="true" formControlName="snapshot" ></nz-switch>
-                    <span style="margin-left: 10px; margin-top: 1px;" class="text-label">{{ 'app.file.system.create.from.snapshot' | i18n }}</span>
-                  </div>
-                </nz-form-item>
-                <nz-form-item *ngIf="validateForm.controls.snapshot.value === true">
-                  <nz-form-label>
-                    <div>
-                      <span>Snapshot (</span>
-                      <span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                      <img nz-popover
-                           [nzPopoverContent]="'app.snapshot.file.system' | i18n"
-                           nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                           src="assets/imgs/pajamas_question.svg" alt="" />
-                    </div>
-                  </nz-form-label>
-                  <nz-form-control nzDisableAutoTips>
-                    <input nz-input class="input-custom" />
-                  </nz-form-control>
-                </nz-form-item>
               </nz-col>
               <nz-col nzSpan="12">
                 <nz-form-item>

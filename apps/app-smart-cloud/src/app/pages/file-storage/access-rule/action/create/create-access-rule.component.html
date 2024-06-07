@@ -3,7 +3,6 @@
   <span class="button-text-primary">{{ 'app.button.access.rule.add' | i18n }}</span>
 </button>
 <nz-modal [(nzVisible)]="isVisible"
-          nzCentered
           [nzTitle]="modalTitle"
           [nzContent]="modalContent"
           [nzFooter]="null"
@@ -69,8 +68,9 @@
             <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
           </button>
           <nz-form-control *nzSpaceItem>
-            <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new"
-                    [disabled]="!validateForm.valid"><span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
+            <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new" (click)="submitForm()"
+                    [disabled]="!validateForm.valid">
+              <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
             </button>
           </nz-form-control>
         </nz-space>
