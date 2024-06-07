@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'app.load.balancer.manage' | i18n" xmlns="http://www.w3.org/1999/html">
+             [title]="'Snapshot'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
@@ -14,7 +14,7 @@
         }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
+        <a routerLink="/app-smart-cloud/snapshot">Snapshot</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -38,7 +38,10 @@
         <nz-row nzJustify="space-between">
           <nz-col nzSpan="12">
             <!--            <span class="text-card-header">{{ 'app.load.balancer.list' | i18n }}</span>-->
-            <nz-input-group style="width: 350px; margin-right: 15px;" [nzPrefix]="prefixIconSearch" nzSize="large">
+            <nz-select [(ngModel)]="status" (ngModelChange)="search(false)" nzSize="large" style="width: 200px">
+              <nz-option *ngFor="let p of listStatus" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
+            </nz-select>
+            <nz-input-group style="width: 350px; margin-left: 15px;" [nzPrefix]="prefixIconSearch" nzSize="large">
               <input name="name"
                      nz-input
                      [(ngModel)]="value"
@@ -53,7 +56,7 @@
           <nz-col nzSpan="12" style="flex:none;">
             <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
-              <span class="button-text-primary">{{ 'app.button.load.balancer.create' | i18n }}</span>
+              <span class="button-text-primary">Tạo mới Snapshot</span>
             </button>
           </nz-col>
         </nz-row>
@@ -109,7 +112,7 @@
         <result>
           <nz-row>
             <nz-col class="text-center" style="width: 100%">
-              <img src="/assets/imgs/load-balancer-blank.png" alt="" />
+              <img src="/assets/imgs/init-snapshot.svg" alt="" />
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">

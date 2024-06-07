@@ -69,6 +69,7 @@ export class PaymentSummaryComponent implements OnInit {
   returnPath: string;
   serviceType: string;
   isVisibleCustomerInvoice: boolean = false;
+  isVisibleConfirm: boolean = false;
   customerGroup: any;
   customerGroups: any;
   customerType: any;
@@ -569,7 +570,15 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   handleOkUpdateCustomerInvoice() {
-    //  this.pay()
+    this.isVisibleConfirm = true
+    
+  }
+
+  handleCancelConfirm(){
+    this.isVisibleConfirm = false
+  }
+
+  handleOk(){
     this.isLoadingUpdateInfo = true;
     this.formCreatUserInvoice.companyName =
       this.formCustomerInvoice.controls.nameCompany.value;
@@ -595,6 +604,7 @@ export class PaymentSummaryComponent implements OnInit {
           this.i18n.fanyi('app.status.success'),
           this.i18n.fanyi('Cập nhật thông tin xuất hóa đơn thành công')
         );
+        this.isVisibleConfirm = false;
         this.isVisibleCustomerInvoice = false;
         this.getUser();
       },
