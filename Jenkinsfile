@@ -9,8 +9,8 @@ pipeline {
     environment {
         registry = "registry.onsmartcloud.com"
         registryCredential = "cloud-harbor-id"
-        k8sCred = "k8s-cred"
-        ENV = "test"
+        k8sCred = "k8s-dev-cred"
+        ENV = "dev"
         AUTOTEST_BRANCH = "autotest-"
         AUTOTEST_AGENT = "window-agent"
     }
