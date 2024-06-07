@@ -182,8 +182,6 @@ export class VolumeService extends BaseService {
       +"&name="+value+"&status="+status);
   }
 
-  deteleSn
-
   deleteSnapshot(id : any) {
     return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots/'+id);
   }
