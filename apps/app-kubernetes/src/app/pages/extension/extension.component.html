@@ -317,7 +317,7 @@
         <div nz-row class="mt-5" [nzGutter]="16" nzJustify="center">
           <div nz-col [nzSpan]="12">
             <button nz-button nzType="default" nzBlock class="border-button" (click)="showModalCancelExtend()"
-              [disabled]="isSubmitting">
+              [disabled]="isSubmitting" nzSize="large">
               <span nz-icon nzType="close" nzTheme="outline"></span>
               {{ 'app.button.cancel' | i18n }}
             </button>
@@ -325,7 +325,7 @@
 
           <div nz-col [nzSpan]="12">
             <button nz-button nzType="primary" nzBlock class="border-button" (click)="onExtendService()" [disabled]="isSubmitting || this.extendMonth == null || this.extendMonth == undefined
-                || (detailCluster?.serviceStatus != 2 && detailCluster?.serviceStatus != 3) || statusInput != null">
+                || (detailCluster?.serviceStatus != 2 && detailCluster?.serviceStatus != 3) || statusInput != null" nzSize="large">
               <span nz-icon>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path

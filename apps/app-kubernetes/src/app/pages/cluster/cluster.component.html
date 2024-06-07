@@ -294,7 +294,8 @@
           </div>
 
           <ng-container *ngIf="!isUsingPackConfig">
-            <button nz-button nzType="default" class="border-button" (click)="addWorkerGroup()">
+            <button nz-button nzType="default" class="border-button" (click)="addWorkerGroup()"
+              nzSize="large" [nz-tooltip]="'app.cluster.add-wg' | i18n">
               <span nz-icon>
                 <svg viewBox="64 64 896 896" focusable="false">
                   <path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z" />
@@ -327,7 +328,7 @@
                 </button>
                 <div class="small-description">
                   <small>{{ 'app.cluster.vpc-network-description-1' | i18n }}
-                    <a routerLink="/app-smart-cloud/vlan/network/list" target="_blank">{{ 'app.cluster.vpc-network-description-2' | i18n }}</a>
+                    <a [routerLink]="['/app-kubernetes']" target="_blank">{{ 'app.cluster.vpc-network-description-2' | i18n }}</a>
                   </small>
                 </div>
               </nz-form-control>
@@ -632,14 +633,14 @@
           <div nz-row class="mt-5" [nzGutter]="16" nzJustify="center">
             <div nz-col [nzSpan]="12">
               <button nz-button nzType="default" nzBlock class="border-button" (click)="handleShowModalCancelCreate()"
-                [disabled]="isSubmitting">
+                [disabled]="isSubmitting" nzSize="large">
                 <span nz-icon nzType="close" nzTheme="outline"></span>
                 {{ 'app.cluster.cancel' | i18n }}
               </button>
             </div>
 
             <div nz-col [nzSpan]="12">
-              <button nz-button nzType="primary" nzBlock class="border-button" (click)="validateClusterInfo()"
+              <button nz-button nzType="primary" nzBlock class="border-button" (click)="validateClusterInfo()" nzSize="large"
                 [disabled]="myform.invalid || isSubmitting || (isUsingPackConfig && !chooseItem) || isCalculating">
                 <ng-container *ngIf="isSubmitting; else paymentIconTpl">
                   <span nz-icon [nzType]="'loading'"></span>

@@ -120,3 +120,33 @@ img {
   cursor: pointer;
   width: fit-content;
 }
+
+/* dark theme */
+[data-theme='dark'] :host ::ng-deep .description-content {
+  width: 55%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+  color: #DDDDDD;
+}
+
+[data-theme='dark'] :host ::ng-deep .content-table {
+  color: #DDDDDD;
+}
+
+/* compact theme */
+[data-theme='compact'] :host ::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 8px;
+}
+
+[data-theme='compact'] :host ::ng-deep .ant-input-affix-wrapper {
+  border-radius: 8px;
+}
+
+[data-theme='compact'] :host ::ng-deep label, span, input {
+  font-size: 16px;
+}
+
+[data-theme='compact'] :host ::ng-deep label, span, input {
+  font-size: 16px;
+}
