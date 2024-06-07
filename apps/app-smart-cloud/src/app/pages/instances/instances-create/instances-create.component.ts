@@ -444,7 +444,10 @@ export class InstancesCreateComponent implements OnInit {
         .getSnapshotVolumes(9999, 1, this.region, this.projectId, '', '', '')
         .subscribe((data: any) => {
           this.listSnapshot = data.records.filter(
-            (e: any) => e.fromRootVolume == true
+            (e: any) =>
+              e.fromRootVolume == true &&
+              (e.resourceStatus.toUpperCase() == 'AVAILABLE' ||
+                e.resourceStatus.toUpperCase() == 'IN-USE')
           );
           console.log('list snapshot volume root', this.listSnapshot);
         });
@@ -1255,7 +1258,7 @@ export class InstancesCreateComponent implements OnInit {
     }
     this.instanceCreate.ipPublic = this.ipPublicValue;
     this.instanceCreate.password = this.password;
-    this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
+    this.instanceCreate.snapshotId = this.selectedSnapshot;
     this.instanceCreate.encryption = false;
     this.instanceCreate.isUseIPv6 = this.isUseIPv6;
     this.instanceCreate.addRam = 0;

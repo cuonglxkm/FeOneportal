@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { VolumeService } from '../../../shared/services/volume.service';
@@ -14,6 +14,7 @@ import { isThisHour } from 'date-fns';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { LoadingService } from '@delon/abc/loading';
 
 @Component({
   selector: 'one-portal-snapshot-create',
@@ -60,6 +61,8 @@ export class SnapshotCreateComponent implements OnInit{
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService,
               private instancesService: InstancesService,
+              private activatedRoute: ActivatedRoute,
+              private loadingSrv: LoadingService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private fb: NonNullableFormBuilder,) {
   }
@@ -144,8 +147,10 @@ export class SnapshotCreateComponent implements OnInit{
   }
 
   private loadVmList() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.instancesService.search(1 , 9999, this.region, this.project, '', '' , true, this.tokenService.get()?.userId)
       .pipe(finalize(() => {
+        this.loadingSrv.close();
         this.vmLoading = false;
       }))
       .subscribe(
@@ -154,6 +159,13 @@ export class SnapshotCreateComponent implements OnInit{
             return item.taskState === 'ACTIVE';
           });
         this.vmArray = rs1;
+        if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
+          this.selectedSnapshotType = 1;
+          this.selectedVM = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId')))[0];
+        } else {
+          this.selectedVM = null;
+          this.selectedSnapshotType = 0;
+        }
       }
     )
   }
