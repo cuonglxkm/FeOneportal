@@ -99,10 +99,10 @@
                 <nz-form-control [nzErrorTip]="companyNameErrorTpl">
                   <nz-form-label nzFor="name">
                     <div>
-                      <ng-container *ngIf="radioValue === 1">
                       <span>Tên đơn vị</span>
+                        <ng-container *ngIf="radioValue === 1">
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     </ng-container>
-                      (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     </div>
                   </nz-form-label>
                   <input

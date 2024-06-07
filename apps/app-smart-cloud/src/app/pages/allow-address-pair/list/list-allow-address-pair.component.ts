@@ -12,6 +12,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import Pagination from "../../../shared/models/pagination";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 
 @Component({
@@ -169,6 +170,36 @@ export class ListAllowAddressPairComponent implements OnInit {
     this.formSearch.customerId = this.userId
     this.portId = this.route.snapshot.paramMap.get('portId')
     this.instanceId = this.route.snapshot.paramMap.get('instanceId')
+  }
+
+  dataSubjectSearchParam: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
+  changeSearchParam(value: string) {
+    this.enterPressed = false;
+    this.dataSubjectSearchParam.next(value);
+  }
+
+  onChangeSearchParam() {
+    this.searchSubscription = this.dataSubjectSearchParam
+      .pipe(debounceTime(700))
+      .subscribe((res) => {
+        if (!this.enterPressed) {
+          this.search();
+        }
+      });
+  }
+
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    this.search();
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   search() {
