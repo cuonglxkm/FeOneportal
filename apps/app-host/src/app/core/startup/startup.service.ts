@@ -81,7 +81,7 @@ export class StartupService {
           
           
           this.regionProjectService.getCoreData(baseUrl);
-          //this.checkPermissionAction(this.menuService['data']);
+          this.checkPermissionAction(this.menuService['data']);
           
           // if (checkData) {
           //   let json = {
