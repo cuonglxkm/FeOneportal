@@ -1942,6 +1942,7 @@
   "app.cluster.subnet-description": "Choose a subnet for this cluster.",
   "app.cluster.title-cancel": "Payment processing in progress",
   "app.cluster.cancel-desciption-1": "Your payment is being processed. If you leave this page, the transaction will be canceled.",
+  "app.cluster.cancel-description-11": "Changes have not been saved.",
   "app.cluster.cancel-desciption-2": "Are you sure you want to leave this page?",
   "app.cluster.upgrade-note": "Customers can only upgrade configurations to higher levels than the current usage level.",
   "app.cluster.warning-upgrade-1": "Changing the configuration or version may cause temporary service disruptions and prevent cluster configuration changes.",

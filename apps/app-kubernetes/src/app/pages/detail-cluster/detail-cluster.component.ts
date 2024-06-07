@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
@@ -64,6 +64,16 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
   listOfVolumeType: VolumeTypeModel[];
 
   listOfCurrentWorkerGroup: WorkerGroupModel[];
+
+  @HostListener('window:unload', ['$event'])
+  async unloadHandler(event) {
+    this.ngOnDestroy();
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  async beforeUnloadHandler(event) {
+    this.ngOnDestroy();
+  }
 
   constructor(
     private router: Router,
