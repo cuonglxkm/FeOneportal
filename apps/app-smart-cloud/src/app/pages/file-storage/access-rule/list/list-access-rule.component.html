@@ -4,6 +4,7 @@
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a
@@ -94,6 +95,8 @@
                                          [region]="region"
                                          [project]="project"
                                          [shareCloudId]="data.shareId"
+                                         [accessTo]="data.access_to"
+                                         [shareRuleId]="data.id"
                                          (onOk)="handleDeleteOk()" />
         </td>
       </tr>

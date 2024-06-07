@@ -141,7 +141,7 @@ export class ListAccessRuleComponent implements OnInit, OnDestroy{
   }
 
   handleDeleteOk() {
-   this.getListAccessRule(true)
+   setTimeout(() => {this.getListAccessRule(true)}, 500)
   }
 
   id: number
