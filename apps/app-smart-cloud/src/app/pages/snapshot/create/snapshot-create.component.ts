@@ -145,7 +145,7 @@ export class SnapshotCreateComponent implements OnInit{
         });
         if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined || this.activatedRoute.snapshot.paramMap.get('volumeId') != null) {
           this.selectedSnapshotType = 0;
-          this.selectedVolume = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId')))[0];
+          this.selectedVolume = this.volumeArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId')))[0];
         } else {
           this.selectedVolume = null;
           this.selectedSnapshotType = 1;
