@@ -13,9 +13,12 @@
           'app.instances' | i18n
         }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{
-        'app.instances.create' | i18n
-      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a
+          [routerLink]="['/app-smart-cloud/instances/instances-create-vpc']"
+          >{{ 'app.instances.create' | i18n }}</a
+        ></nz-breadcrumb-item
+      >
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
