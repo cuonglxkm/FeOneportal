@@ -326,6 +326,8 @@ export class Order {
   createdByUserId: number;
   couponCode: string;
   note: string;
+  totalPayment?: number;
+  totalVAT?: number;
   orderItems: any[];
   invoiceInfo?: string;
 }
