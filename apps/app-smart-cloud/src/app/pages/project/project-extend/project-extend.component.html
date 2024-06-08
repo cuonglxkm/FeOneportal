@@ -48,8 +48,7 @@
                     <span class="label-fontsize">Gói Load Balancer SDN:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold ">{{data?.type == 'VPC' ? data?.loadbalancerOfferName: '-'
-                      }}</span>
+                    <span class="label-fontsize font-bold ">{{data?.type == 'VPC' ? (data?.loadbalancerOfferName==null ? '-':data?.loadbalancerOfferName) : '-' }}</span>
                   </div>
                 </div>
                 <!-- <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -79,7 +78,7 @@
                     <span class="label-fontsize">Dải IP Kết nối Internet:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? data?.publicNetworkAddress
+                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? (data?.publicNetworkAddress=="" ? '-': data?.publicNetworkAddress)
                       :'-'}}</span>
                   </div>
                 </div>
@@ -88,7 +87,7 @@
                     <span class="label-fontsize">Gói VPN Site to Site:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? data?.vpnSiteToSiteOfferName
+                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? (data?.vpnSiteToSiteOfferName==null? '-':data?.vpnSiteToSiteOfferName)
                       :'-'}}</span>
                   </div>
                 </div>

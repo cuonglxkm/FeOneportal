@@ -39,6 +39,8 @@ export class VpcModel {
   vpnSiteToSiteOfferName: string;
   loadbalancerOfferName:string;
   gpuProjects:any;
+  quotaVolumeSnapshotHddInGb:number;
+  quotaVolumeSnapshotSsdInGb:number;
 }
 
 export class TotalVpcResource {

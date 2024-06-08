@@ -164,7 +164,7 @@ export class ProjectListComponent implements OnInit {
     this.nameDelete = '';
     this.isVisibleDelete = false;
     this.isVisibleDeleteProject = false;
-    debugger
+    // debugger
     this.isVisibleEditNormal = false;
     this.disableDelete = true;
   }
