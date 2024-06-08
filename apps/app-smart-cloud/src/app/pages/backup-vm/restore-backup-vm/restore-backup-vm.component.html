@@ -205,12 +205,12 @@
                       [tabIndex]="0"
                       style="cursor: pointer"
                       (click)="
-                        onInputFlavors(item.id);
-                        selectElementInputFlavors('flavor_' + item.id)
+                        selectElementInputFlavors('flavor_' + item.id);
+                        onInputFlavors(item.id)
                       "
                       (keyup.enter)="
-                        onInputFlavors(item.id);
-                        selectElementInputFlavors('flavor_' + item.id)
+                        selectElementInputFlavors('flavor_' + item.id);
+                        onInputFlavors(item.id)
                       "
                       [id]="'flavor_' + item.id"
                     >
@@ -288,12 +288,12 @@
                       [tabIndex]="0"
                       style="cursor: pointer"
                       (click)="
-                        onInputFlavors(item.id);
-                        selectElementInputFlavors('flavor_' + item.id)
+                        selectElementInputFlavors('flavor_' + item.id);
+                        onInputFlavors(item.id)
                       "
                       (keyup.enter)="
-                        onInputFlavors(item.id);
-                        selectElementInputFlavors('flavor_' + item.id)
+                        selectElementInputFlavors('flavor_' + item.id);
+                        onInputFlavors(item.id)
                       "
                       [id]="'flavor_' + item.id"
                     >
@@ -703,11 +703,14 @@
                       class="input-custom"
                       nz-input
                       formControlName="name"
-                      [(ngModel)]="restoreInstanceBackup.instanceName"
+                      [(ngModel)]="restoreInstanceBackup.serviceName"
                       (ngModelChange)="changeName($event)"
                       [placeholder]="'app.input.name' | i18n"
                       [maxlength]="50"
                     />
+                    <div *ngIf="isExistName" style="color: #ff4d4f">
+                      {{ 'validation.exist.instance.name' | i18n }}
+                    </div>
                     <ng-template #nameErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')"
                         >{{ 'validation.info.required' | i18n }}
@@ -1165,7 +1168,9 @@
             }}</span>
           </div>
           <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label"></div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.serviceName }}
+          </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
@@ -1173,36 +1178,20 @@
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.text.package' | i18n }}</div>
-          <div
-            *ngIf="instanceCreate.cpu"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.cpu }} CPUs
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.cpu }} CPUs
           </div>
-          <div
-            *ngIf="instanceCreate.ram"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.ram }} GB RAM
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.ram }} GB RAM
           </div>
-          <div
-            *ngIf="instanceCreate.volumeSize"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.volumeSize }} GB Root Disk (<span>{{
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.volumeSize }} GB Root Disk (<span>{{
               activeBlockHDD ? 'HDD' : 'SSD'
             }}</span
             >)
           </div>
-          <div
-            *ngIf="instanceCreate.gpuCount"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
+          <div *ngIf="isGpuConfig" style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.gpuCount }} GPU ({{ gpuTypeName }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.setting' | i18n }}</div>
@@ -1216,7 +1205,11 @@
                 {{ 'app.cost.n.month' | i18n : { numberMonth: numberMonth } }}
               </span>
             </nz-col>
-            <nz-col class="text-right" nzSpan="8"> </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalAmount | number }} VND
+              </span>
+            </nz-col>
           </nz-row>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
@@ -1227,7 +1220,7 @@
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
-                VND
+                {{ totalVAT | number }} VND
               </span>
             </nz-col>
           </nz-row>
@@ -1249,7 +1242,7 @@
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #ea3829" nzAlign="right">
-                VND
+                {{ totalincludesVAT | number : '1.0-0' }} VND
               </span>
             </nz-col>
           </nz-row>
@@ -1260,11 +1253,21 @@
                 nz-button
                 nzSize="large"
                 nzType="primary"
+                [nzLoading]="isLoading"
+                (click)="restore()"
+                [disabled]="
+                  formNew.invalid || isExistName || totalincludesVAT == 0
+                "
               >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
-                <span [style.color]="formCurrent.invalid ? 'gray' : 'white'">{{
-                  'app.button.create' | i18n
-                }}</span>
+                <span
+                  [style.color]="
+                    formNew.invalid || isExistName || totalincludesVAT == 0
+                      ? 'gray'
+                      : 'white'
+                  "
+                  >{{ 'app.restore' | i18n }}</span
+                >
               </button>
             </nz-col>
           </nz-row>
@@ -1311,7 +1314,7 @@
                 nzType="primary"
               >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
-                <span>{{ 'app.button.create' | i18n }}</span>
+                <span>{{ 'app.restore' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>
@@ -1320,3 +1323,8 @@
     </div>
   </div>
 </div>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>

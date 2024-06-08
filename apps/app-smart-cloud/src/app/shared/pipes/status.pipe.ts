@@ -32,6 +32,8 @@ export class ServiceStatusPipe implements PipeTransform {
         return new StatusModel("#e67300", this.i18n.fanyi('service.status.expired'));
       case "VIOLATION":
         return new StatusModel("#e67300", this.i18n.fanyi('service.status.violation'));
+      case "RESTORING": 
+        return new StatusModel("#513FE7", this.i18n.fanyi('service.status.restoring'));
       default:
         return new StatusModel("#4c4f67", this.i18n.fanyi('service.status.unknown'));
     }

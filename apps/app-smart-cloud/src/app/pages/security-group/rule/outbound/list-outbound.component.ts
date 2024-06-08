@@ -12,6 +12,7 @@ import SecurityGroupRule, { RuleSearchCondition } from '../../../../shared/model
 })
 export class ListOutboundComponent implements OnInit, OnChanges{
   @Input() securityGroupId?: string;
+  @Input() securityGroupName?: string;
   @Input() regionId: number
   @Input() projectId: number
 

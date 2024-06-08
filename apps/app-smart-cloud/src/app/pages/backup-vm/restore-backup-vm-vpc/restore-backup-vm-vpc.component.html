@@ -211,7 +211,7 @@
                             [nzMin]="minCapacity"
                             [nzMax]="remainingVolume"
                             [nzStep]="stepCapacity"
-                            [(ngModel)]="instanceCreate.volumeSize"
+                            [(ngModel)]="restoreInstanceBackup.volumeSize"
                             (ngModelChange)="changeCapacity($event)"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
@@ -235,7 +235,7 @@
                             [nzMin]="minCapacity"
                             [nzMax]="maxCapacity"
                             [nzStep]="stepCapacity"
-                            [(ngModel)]="instanceCreate.volumeSize"
+                            [(ngModel)]="restoreInstanceBackup.volumeSize"
                             (ngModelChange)="changeCapacity($event)"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
@@ -252,10 +252,8 @@
                           <nz-slider
                             [nzMin]="0"
                             [nzMax]="remainingRAM"
-                            [(ngModel)]="instanceCreate.ram"
-                            (ngModelChange)="
-                              checkValidConfig(); changeRam($event)
-                            "
+                            [(ngModel)]="restoreInstanceBackup.ram"
+                            (ngModelChange)="checkValidConfig()"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
                           <div
@@ -277,10 +275,8 @@
                           <nz-input-number
                             [nzMin]="0"
                             [nzMax]="remainingRAM"
-                            [(ngModel)]="instanceCreate.ram"
-                            (ngModelChange)="
-                              checkValidConfig(); changeRam($event)
-                            "
+                            [(ngModel)]="restoreInstanceBackup.ram"
+                            (ngModelChange)="checkValidConfig()"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
                             nzSize="large"
@@ -296,10 +292,8 @@
                           <nz-slider
                             [nzMin]="0"
                             [nzMax]="remainingVCPU"
-                            [(ngModel)]="instanceCreate.cpu"
-                            (ngModelChange)="
-                              checkValidConfig(); changeVCPU($event)
-                            "
+                            [(ngModel)]="restoreInstanceBackup.cpu"
+                            (ngModelChange)="checkValidConfig()"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
                           <div
@@ -321,10 +315,8 @@
                           <nz-input-number
                             [nzMin]="0"
                             [nzMax]="remainingVCPU"
-                            [(ngModel)]="instanceCreate.cpu"
-                            (ngModelChange)="
-                              checkValidConfig(); changeVCPU($event)
-                            "
+                            [(ngModel)]="restoreInstanceBackup.cpu"
+                            (ngModelChange)="checkValidConfig()"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
                             nzSize="large"
@@ -357,7 +349,7 @@
                           <nz-slider
                             [nzMin]="0"
                             [nzMax]="remainingVCPU"
-                            [(ngModel)]="instanceCreate.cpu"
+                            [(ngModel)]="restoreInstanceBackup.cpu"
                             (ngModelChange)="checkValidConfig()"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
@@ -380,7 +372,7 @@
                           <nz-input-number
                             [nzMin]="0"
                             [nzMax]="remainingVCPU"
-                            [(ngModel)]="instanceCreate.cpu"
+                            [(ngModel)]="restoreInstanceBackup.cpu"
                             (ngModelChange)="checkValidConfig()"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
@@ -397,7 +389,7 @@
                           <nz-slider
                             [nzMin]="0"
                             [nzMax]="remainingRAM"
-                            [(ngModel)]="instanceCreate.ram"
+                            [(ngModel)]="restoreInstanceBackup.ram"
                             (ngModelChange)="checkValidConfig()"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
@@ -420,7 +412,7 @@
                           <nz-input-number
                             [nzMin]="0"
                             [nzMax]="remainingRAM"
-                            [(ngModel)]="instanceCreate.ram"
+                            [(ngModel)]="restoreInstanceBackup.ram"
                             (ngModelChange)="checkValidConfig()"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
@@ -440,7 +432,7 @@
                             [nzMin]="minCapacity"
                             [nzMax]="remainingVolume"
                             [nzStep]="stepCapacity"
-                            [(ngModel)]="instanceCreate.volumeSize"
+                            [(ngModel)]="restoreInstanceBackup.volumeSize"
                             (ngModelChange)="checkValidConfig()"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
@@ -464,7 +456,7 @@
                             [nzMin]="minCapacity"
                             [nzMax]="remainingVolume"
                             [nzStep]="stepCapacity"
-                            [(ngModel)]="instanceCreate.volumeSize"
+                            [(ngModel)]="restoreInstanceBackup.volumeSize"
                             (ngModelChange)="checkValidConfig()"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
@@ -483,7 +475,7 @@
                           <nz-slider
                             [nzMin]="0"
                             [nzMax]="remainingGpu"
-                            [(ngModel)]="instanceCreate.gpuCount"
+                            [(ngModel)]="restoreInstanceBackup.gpuCount"
                             (ngModelChange)="checkValidConfig()"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
@@ -506,7 +498,7 @@
                           <nz-input-number
                             [nzMin]="0"
                             [nzMax]="remainingGpu"
-                            [(ngModel)]="instanceCreate.gpuCount"
+                            [(ngModel)]="restoreInstanceBackup.gpuCount"
                             (ngModelChange)="checkValidConfig()"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
@@ -529,12 +521,12 @@
                         '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
                       "
                       [nzShowSearch]="true"
-                      [(ngModel)]="instanceCreate.gpuOfferId"
+                      [(ngModel)]="restoreInstanceBackup.gpuTypeOfferId"
                       [ngModelOptions]="{ standalone: true }"
                       nzSize="large"
                     >
                       <nz-option
-                        *ngFor="let i of listGPUType"
+                        *ngFor="let i of purchasedListGPUType"
                         [nzLabel]="i.offerName"
                         [nzValue]="i.id"
                       />
@@ -572,7 +564,7 @@
                       class="input-custom"
                       nz-input
                       formControlName="name"
-                      [(ngModel)]="instanceCreate.serviceName"
+                      [(ngModel)]="restoreInstanceBackup.serviceName"
                       (ngModelChange)="changeName($event)"
                       [placeholder]="'app.input.name' | i18n"
                       [maxlength]="50"
@@ -1016,7 +1008,9 @@
             }}</span>
           </div>
           <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label"></div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.serviceName }}
+          </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
@@ -1024,36 +1018,20 @@
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.text.package' | i18n }}</div>
-          <div
-            *ngIf="instanceCreate.cpu"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.cpu }} CPUs
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.cpu }} CPUs
           </div>
-          <div
-            *ngIf="instanceCreate.ram"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.ram }} GB RAM
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.ram }} GB RAM
           </div>
-          <div
-            *ngIf="instanceCreate.volumeSize"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.volumeSize }} GB Root Disk (<span>{{
-              instanceCreate.volumeType | uppercase
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.volumeSize }} GB Root Disk (<span>{{
+              activeBlockHDD ? 'HDD' : 'SSD'
             }}</span
             >)
           </div>
-          <div
-            *ngIf="instanceCreate.gpuCount"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
+          <div *ngIf="isGpuConfig" style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.gpuCount }} GPU ({{ gpuTypeName }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">
@@ -1071,10 +1049,15 @@
                 nz-button
                 nzSize="large"
                 nzType="primary"
+                [nzLoading]="isLoading"
+                (click)="restore()"
+                [disabled]="
+                  formNew.invalid || isExistName || totalincludesVAT == 0
+                "
               >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
                 <span [style.color]="formCurrent.invalid ? 'gray' : 'white'">{{
-                  'app.button.create' | i18n
+                  'app.restore' | i18n
                 }}</span>
               </button>
             </nz-col>
@@ -1122,7 +1105,7 @@
                 nzType="primary"
               >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
-                <span>{{ 'app.button.create' | i18n }}</span>
+                <span>{{ 'app.restore' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>

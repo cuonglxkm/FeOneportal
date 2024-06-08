@@ -128,7 +128,6 @@ export class InstancesCreateComponent implements OnInit {
   user: any;
   ipPublicValue: number = 0;
   isUseIPv6: boolean = false;
-  isUseLAN: boolean = false;
   passwordVisible = false;
   password: string = '';
   numberMonth: number = 1;
@@ -445,11 +444,20 @@ export class InstancesCreateComponent implements OnInit {
         .getSnapshotVolumes(9999, 1, this.region, this.projectId, '', '', '')
         .subscribe((data: any) => {
           this.listSnapshot = data.records.filter(
-            (e: any) => e.fromRootVolume == true
+            (e: any) =>
+              e.fromRootVolume == true &&
+              (e.resourceStatus.toUpperCase() == 'AVAILABLE' ||
+                e.resourceStatus.toUpperCase() == 'IN-USE')
           );
           console.log('list snapshot volume root', this.listSnapshot);
         });
     }
+  }
+
+  changeSelectedSnapshot() {
+    this.minCapacity = this.listSnapshot.filter(
+      (e) => e.id == this.selectedSnapshot
+    )[0].sizeInGB;
   }
 
   //#endregion
@@ -711,7 +719,7 @@ export class InstancesCreateComponent implements OnInit {
     this.offerFlavor = this.listOfferFlavors.find(
       (flavor) => flavor.id === event
     );
-    if (this.hdh != null) {
+    if (this.hdh != null || this.selectedSnapshot != null) {
       this.getTotalAmount();
     }
     console.log(this.offerFlavor);
@@ -737,7 +745,7 @@ export class InstancesCreateComponent implements OnInit {
     gpuOfferId: number
   ) {
     let tempInstance: InstanceCreate = new InstanceCreate();
-    tempInstance.imageId = this.hdh;
+    tempInstance.imageId = this.hdh ? this.hdh : 0;
     tempInstance.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
     tempInstance.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
     tempInstance.offerId = 0;
@@ -816,7 +824,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 0, 1, 0, null);
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -833,7 +841,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 1, 0, 0, null);
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -878,7 +886,7 @@ export class InstancesCreateComponent implements OnInit {
           (this.configCustom.capacity % this.stepCapacity);
       }
       this.getUnitPrice(1, 0, 0, 0, null);
-      if (this.hdh != null) {
+      if (this.hdh != null || this.selectedSnapshot != null) {
         this.getTotalAmount();
       }
     });
@@ -909,7 +917,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 0, 1, 0, null);
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -926,7 +934,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(0, 1, 0, 0, null);
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -943,7 +951,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((res) => {
         this.getUnitPrice(1, 0, 0, 0, null);
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -962,7 +970,7 @@ export class InstancesCreateComponent implements OnInit {
         if (this.configGPU.gpuOfferId != 0) {
           this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
         }
-        if (this.hdh != null) {
+        if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
         }
       });
@@ -977,12 +985,9 @@ export class InstancesCreateComponent implements OnInit {
       this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
     }
     if (
-      this.configGPU.CPU != 0 &&
-      this.configGPU.ram != 0 &&
-      this.configGPU.storage != 0 &&
       this.configGPU.GPU != 0 &&
       this.configGPU.gpuOfferId != 0 &&
-      this.hdh != null
+      (this.hdh != null || this.selectedSnapshot != null)
     ) {
       this.getTotalAmount();
     }
@@ -1038,13 +1043,7 @@ export class InstancesCreateComponent implements OnInit {
 
   onChangeTime(numberMonth: number) {
     this.numberMonth = numberMonth;
-    if (
-      this.hdh != null &&
-      (this.offerFlavor != null ||
-        (this.configCustom.vCPU != 0 &&
-          this.configCustom.ram != 0 &&
-          this.configCustom.capacity != 0))
-    ) {
+    if (this.hdh != null || this.selectedSnapshot != null) {
       this.getTotalAmount();
     }
 
@@ -1249,7 +1248,7 @@ export class InstancesCreateComponent implements OnInit {
 
   instanceInit() {
     this.instanceCreate.description = null;
-    this.instanceCreate.imageId = this.hdh;
+    this.instanceCreate.imageId = this.hdh ? this.hdh : 0;
     this.instanceCreate.iops = 0;
     this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
     this.instanceCreate.keypairName = this.selectedSSHKeyName;
@@ -1265,7 +1264,7 @@ export class InstancesCreateComponent implements OnInit {
     }
     this.instanceCreate.ipPublic = this.ipPublicValue;
     this.instanceCreate.password = this.password;
-    this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
+    this.instanceCreate.snapshotId = this.selectedSnapshot;
     this.instanceCreate.encryption = false;
     this.instanceCreate.isUseIPv6 = this.isUseIPv6;
     this.instanceCreate.addRam = 0;
@@ -1502,6 +1501,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
+          this.order = new Order();
           let specificationInstance = JSON.stringify(this.instanceCreate);
           let orderItemInstance = new OrderItem();
           orderItemInstance.orderItemQuantity = 1;
@@ -1513,7 +1513,7 @@ export class InstancesCreateComponent implements OnInit {
           console.log('order instance', orderItemInstance);
 
           this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
-            if (e.type != '' && e.capacity != 0) {
+            if (e.type != '' && e.capacity > 0) {
               this.volumeInit(e);
               let specificationVolume = JSON.stringify(this.volumeCreate);
               let orderItemVolume = new OrderItem();
@@ -1562,6 +1562,16 @@ export class InstancesCreateComponent implements OnInit {
           this.order.customerId = this.tokenService.get()?.userId;
           this.order.createdByUserId = this.tokenService.get()?.userId;
           this.order.note = 'tạo vm';
+          this.order.totalVAT =
+            this.totalVAT +
+            this.totalVATVolume +
+            this.totalVATIPv4 +
+            this.totalVATIPv6;
+          this.order.totalPayment =
+            this.totalincludesVAT +
+            this.totalPaymentVolume +
+            this.totalPaymentIPv4 +
+            this.totalPaymentIPv6;
           this.order.orderItems = this.orderItem;
 
           this.orderService
@@ -1810,6 +1820,7 @@ export class InstancesCreateComponent implements OnInit {
         debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
+        this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
         this.totalAmountIPv4 = 0;
         this.totalVATIPv4 = 0;
         this.totalPaymentIPv4 = 0;
@@ -1832,29 +1843,32 @@ export class InstancesCreateComponent implements OnInit {
                 let dataPayment: DataPayment = new DataPayment();
                 dataPayment.orderItems = [itemPayment];
                 dataPayment.projectId = this.projectId;
-                this.dataService.getPrices(dataPayment).subscribe((result) => {
-                  console.log('thanh tien ipv4', result);
-                  e.price =
-                    Number.parseFloat(result.data.totalAmount.amount) /
-                    this.numberMonth;
-                  this.totalAmountIPv4 += Number.parseFloat(
-                    result.data.totalAmount.amount
-                  );
-                  e.VAT =
-                    Number.parseFloat(result.data.totalVAT.amount) /
-                    this.numberMonth;
-                  this.totalVATIPv4 += Number.parseFloat(
-                    result.data.totalVAT.amount
-                  );
-                  e.priceAndVAT =
-                    Number.parseFloat(result.data.totalPayment.amount) /
-                    this.numberMonth;
-                  this.totalPaymentIPv4 += Number.parseFloat(
-                    result.data.totalPayment.amount
-                  );
-                  this.isLoading = false;
-                  this.cdr.detectChanges();
-                });
+                this.dataService
+                  .getPrices(dataPayment)
+                  .pipe(finalize(() => this.loadingSrv.close()))
+                  .subscribe((result) => {
+                    console.log('thanh tien ipv4', result);
+                    e.price =
+                      Number.parseFloat(result.data.totalAmount.amount) /
+                      this.numberMonth;
+                    this.totalAmountIPv4 += Number.parseFloat(
+                      result.data.totalAmount.amount
+                    );
+                    e.VAT =
+                      Number.parseFloat(result.data.totalVAT.amount) /
+                      this.numberMonth;
+                    this.totalVATIPv4 += Number.parseFloat(
+                      result.data.totalVAT.amount
+                    );
+                    e.priceAndVAT =
+                      Number.parseFloat(result.data.totalPayment.amount) /
+                      this.numberMonth;
+                    this.totalPaymentIPv4 += Number.parseFloat(
+                      result.data.totalPayment.amount
+                    );
+                    this.isLoading = false;
+                    this.cdr.detectChanges();
+                  });
               });
           }
         });

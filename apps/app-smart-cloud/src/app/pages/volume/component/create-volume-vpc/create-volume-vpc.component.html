@@ -11,7 +11,7 @@
         {{ 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title.breadcrumb.list' | i18n }}</a>
+        <a routerLink="/app-smart-cloud/volumes">Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/volume/create">{{ 'volume.button.create' | i18n }}</a>
@@ -88,18 +88,20 @@
               <nz-form-control nzDisableAutoTips [nzErrorTip]="snapshotErrorTpl">
                 <nz-select nzSize="large"
                            formControlName="snapshot"
-                           [nzPlaceHolder]="'volume.action.type.volume.select'|i18n"
+                           id="snapshot"
+                           [nzPlaceHolder]="'volume.action.snapshot.select' | i18n"
                            [nzShowSearch]="false"
                            [(ngModel)]="snapshotSelected"
                            (ngModelChange)="snapshotSelectedChange($event)"
                            style="width: 100%;">
-                  <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
-                             [nzValue]="item.value"></nz-option>
-                  <ng-template #snapshotErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">{{ 'volume.tooltip.required.snapshot'|i18n }}
-                    </ng-container>
-                  </ng-template>
+                  <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.name + ' (' + item.sizeInGB +' GB)'"
+                             [nzValue]="item.id"></nz-option>
                 </nz-select>
+                <ng-template #snapshotErrorTpl let-control>
+                  <ng-container
+                    *ngIf="control.hasError('required')">{{ 'volume.notification.input.select.snapshot'|i18n }}
+                  </ng-container>
+                </ng-template>
               </nz-form-control>
             </nz-form-item>
           </div>

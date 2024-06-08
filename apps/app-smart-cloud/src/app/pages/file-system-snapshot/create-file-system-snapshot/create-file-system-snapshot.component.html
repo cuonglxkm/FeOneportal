@@ -83,7 +83,7 @@
           </nz-form-control>
         </nz-form-item>
         <nz-row nzGutter="40">
-          <nz-col nzSpan="12">
+          <nz-col [nzSpan]="typeVpc === 0 ? '24' : '12'">
             <nz-form-item>
               <nz-form-control [nzErrorTip]="nameErrorTpl">
                 <nz-form-label nzFor="name">
@@ -123,7 +123,7 @@
               </nz-form-control>
             </nz-form-item>
           </nz-col>
-          <nz-col nzSpan="12">
+          <nz-col *ngIf="typeVpc === 1" nzSpan="12">
             <nz-row>
               <nz-col nzSpan="18">
                 <span class="text-label">{{'app.file.system.total.size'|i18n}}:</span>

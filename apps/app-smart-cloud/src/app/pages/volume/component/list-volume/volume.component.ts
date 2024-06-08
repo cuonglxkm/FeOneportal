@@ -238,7 +238,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
   }
 
   navigateToSnapshot(idVolume: number) {
-    this.router.navigate(['/app-smart-cloud/', {volumeId: idVolume}])
+    this.router.navigate(['/app-smart-cloud/snapshot/create', {volumeId: idVolume}])
   }
 
   ngOnInit() {

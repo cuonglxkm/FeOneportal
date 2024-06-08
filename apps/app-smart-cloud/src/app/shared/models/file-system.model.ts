@@ -68,7 +68,8 @@ export class OrderCreateFileSystem {
   displayName: string;
   displayDescription: string;
   shareType: string;
-  snapshotId: string;
+  snapshotId: number;
+  snapshotCloudId: string;
   isPublic: false;
   shareGroupId: string;
   metadata: string;

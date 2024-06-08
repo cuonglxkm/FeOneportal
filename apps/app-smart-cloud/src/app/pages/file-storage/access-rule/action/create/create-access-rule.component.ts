@@ -73,7 +73,7 @@ export class CreateAccessRuleComponent implements AfterViewInit{
   isLoading: boolean = false;
   listAccessTo: string[] = []
   listAccessRule: AccessRule[] = []
-  listNetwork: NetWorkModel[] = [];
+  listNetwork: NetWorkModel[] = []
   validateForm: FormGroup<{
     accessTo: FormControl<string>
     accessLevel: FormControl<string>
@@ -139,9 +139,10 @@ export class CreateAccessRuleComponent implements AfterViewInit{
         })
     })
   }
+
   submitForm() {
+    this.isLoading = true;
     if (this.validateForm.valid) {
-      this.isLoading = true;
       let formCreate = new FormCreateAccessRule();
       formCreate.shareId = this.shareCloudId;
       formCreate.access_type = 'ip';
@@ -151,21 +152,16 @@ export class CreateAccessRuleComponent implements AfterViewInit{
       formCreate.vpcId = this.project;
       formCreate.regionId = this.region;
       formCreate.customerId = this.tokenService.get()?.userId;
-
+      this.isVisible = false;
       this.accessRuleService.createAccessRule(formCreate).subscribe(data => {
-        this.isVisible = false;
+        // this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.access.to.create.success'));
         this.isLoading = false;
-        //this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.access.to.create.success'));
-        this.onOk.emit(this.isVisible);
-
       }, error => {
-        this.isVisible = false;
-        this.isLoading = false;
         this.notification.error(this.i18n.fanyi('app.status.fail'),  error.error.detail);
+        this.isLoading = false;
       });
       this.validateForm.reset();
     }
-
+    this.onOk.emit();
   }
-
 }

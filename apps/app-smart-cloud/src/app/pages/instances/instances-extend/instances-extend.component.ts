@@ -220,6 +220,7 @@ export class InstancesExtendComponent implements OnInit {
   handleOkExtend(): void {
     this.isLoading = true;
     this.cdr.detectChanges();
+    this.order = new Order();
     this.instanceExtendInit();
     let specificationInstance = JSON.stringify(this.instanceExtend);
     let orderItemInstanceResize = new OrderItem();
@@ -233,6 +234,8 @@ export class InstancesExtendComponent implements OnInit {
     this.order.customerId = this.customerId;
     this.order.createdByUserId = this.customerId;
     this.order.note = 'instance extend';
+    this.totalVAT = this.totalVAT;
+    this.totalincludesVAT = this.totalincludesVAT;
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 

@@ -668,13 +668,6 @@ export class InstancesCreateVpcComponent implements OnInit {
   }
   //#endregion
 
-  selectedElementFlavor: string = null;
-  selectElementInputFlavors(id: string) {
-    this.selectedElementFlavor = id;
-  }
-
-  //#endregion
-
   //#region selectedPasswordOrSSHkey
   listSSHKey: SHHKeyModel[] = [];
   activeBlockPassword: boolean = true;
@@ -837,6 +830,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.isVisibleCreate = false;
     this.isLoading = true;
     this.cdr.detectChanges();
+    this.instanceInit();
     this.dataService
       .checkflavorforimage(
         this.hdh,
@@ -846,8 +840,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.instanceInit();
-
+          this.order = new Order();
           let specificationInstance = JSON.stringify(this.instanceCreate);
           let orderItemInstance = new OrderItem();
           orderItemInstance.orderItemQuantity = 1;
@@ -872,7 +865,7 @@ export class InstancesCreateVpcComponent implements OnInit {
                       this.notification.success(
                         '',
                         this.i18n.fanyi(
-                          'app.notify.success.instances.order.create'
+                          'app.notify.create.instances.success', {name: this.instanceCreate.serviceName}
                         )
                       );
                       this.router.navigate(['/app-smart-cloud/instances']);
@@ -881,7 +874,7 @@ export class InstancesCreateVpcComponent implements OnInit {
                       this.notification.error(
                         e.statusText,
                         this.i18n.fanyi(
-                          'app.notify.fail.instances.order.create'
+                          'app.notify.create.instances.fail', {name: this.instanceCreate.serviceName}
                         )
                       );
                     },

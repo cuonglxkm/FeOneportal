@@ -886,6 +886,7 @@ export class InstancesEditComponent implements OnInit {
       );
       return;
     }
+    this.order = new Order();
     this.instanceResizeInit();
     let specificationInstance = JSON.stringify(this.instanceResize);
     let orderItemInstanceResize = new OrderItem();
@@ -899,6 +900,8 @@ export class InstancesEditComponent implements OnInit {
     this.order.customerId = this.userId;
     this.order.createdByUserId = this.userId;
     this.order.note = 'instance resize';
+    this.totalVAT = this.totalVAT;
+    this.totalincludesVAT = this.totalincludesVAT;
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 
