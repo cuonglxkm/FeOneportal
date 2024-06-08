@@ -132,6 +132,7 @@ export class SnapshotCreateComponent implements OnInit{
     )
   }
 
+  idVolume: number;
   private loadVolumeList() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.volumeService.getVolumes(this.tokenService.get()?.userId,this.project, this.region, 9999, 1 , 'KHOITAO', '')
@@ -141,11 +142,16 @@ export class SnapshotCreateComponent implements OnInit{
       .subscribe(
       data => {
         this.volumeArray = data?.records.filter(item => {
-          return item.serviceStatus === 'AVAILABLE';
+          return ['AVAILABLE', 'IN-USE'].includes(item?.serviceStatus);
         });
-        if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined || this.activatedRoute.snapshot.paramMap.get('volumeId') != null) {
+        if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined) {
+          this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId'))
+          console.log('id volume', this.idVolume)
           this.selectedSnapshotType = 0;
-          this.selectedVolume = this.volumeArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId')))[0];
+          console.log('volume array',this.volumeArray)
+          this.selectedVolume = this.volumeArray?.filter(e => e.id == this.idVolume)[0]
+          console.log('selected volume', this.selectedVolume)
+          this.checkDisable()
         } else {
           this.selectedVolume = null;
           this.selectedSnapshotType = 1;
@@ -188,7 +194,7 @@ export class SnapshotCreateComponent implements OnInit{
     }
 
     if (this.selectedSnapshotType == 0) {
-      this.validateForm.controls['quota'].setValue(this.selectedVolume.sizeInGB + 'GB');
+      this.validateForm.controls['quota'].setValue(this.selectedVolume?.sizeInGB + 'GB');
     } else if (this.selectedSnapshotType == 1 ) {
       this.validateForm.controls['quota'].setValue(this.selectedVM.storage + 'GB');
     } else {
