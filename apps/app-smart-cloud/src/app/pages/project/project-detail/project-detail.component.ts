@@ -30,6 +30,7 @@ export class ProjectDetailComponent implements OnInit{
   percentIPFloating: number = 0;
   percentBackup: number = 0;
   loading = true;
+  todayNow:Date;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private service: VpcService,
@@ -43,6 +44,7 @@ export class ProjectDetailComponent implements OnInit{
     this.regionId = regionAndProject.regionId;
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getData(id);
+   
   }
 
   onRegionChange(region: RegionModel) {
@@ -51,6 +53,8 @@ export class ProjectDetailComponent implements OnInit{
   }
 
   private getData(id: any) {
+    let datenow :Date;
+    console.log("888",typeof datenow)
     this.loading = true;
     this.service.getDetail(id)
       .subscribe(
@@ -113,4 +117,5 @@ export class ProjectDetailComponent implements OnInit{
   extend() {
     this.router.navigate(['/app-smart-cloud/project/extend/' + this.activatedRoute.snapshot.paramMap.get('id')])
   }
+  par
 }
