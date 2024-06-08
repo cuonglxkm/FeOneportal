@@ -56,6 +56,7 @@ export interface SystemInfoBackup {
   flavorName: string,
   osName: string,
   imageId: string
+  imageIdInt: number
 }
 
 export interface SecurityGroupBackup {

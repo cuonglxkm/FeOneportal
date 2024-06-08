@@ -1556,6 +1556,16 @@ export class InstancesCreateComponent implements OnInit {
           this.order.customerId = this.tokenService.get()?.userId;
           this.order.createdByUserId = this.tokenService.get()?.userId;
           this.order.note = 'tạo vm';
+          this.order.totalVAT =
+            this.totalVAT +
+            this.totalVATVolume +
+            this.totalVATIPv4 +
+            this.totalVATIPv6;
+          this.order.totalPayment =
+            this.totalincludesVAT +
+            this.totalPaymentVolume +
+            this.totalPaymentIPv4 +
+            this.totalPaymentIPv6;
           this.order.orderItems = this.orderItem;
 
           this.orderService
