@@ -7,10 +7,8 @@ import { VolumeService } from '../../../shared/services/volume.service';
 import { InstancesService } from '../../instances/instances.service';
 import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
 import { FormSearchPackageSnapshot } from '../../../shared/models/package-snapshot.model';
-import { da, th } from 'date-fns/locale';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { finalize } from 'rxjs';
-import { isThisHour } from 'date-fns';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -134,14 +132,31 @@ export class SnapshotCreateComponent implements OnInit{
     )
   }
 
+  idVolume: number;
   private loadVolumeList() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.volumeService.getVolumes(this.tokenService.get()?.userId,this.project, this.region, 9999, 1 , 'KHOITAO', '')
       .pipe(finalize(() => {
         this.volumeLoading = false;
       }))
       .subscribe(
       data => {
-        this.volumeArray = data.records;
+        this.volumeArray = data?.records.filter(item => {
+          return ['AVAILABLE', 'IN-USE'].includes(item?.serviceStatus);
+        });
+        if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined) {
+          this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId'))
+          console.log('id volume', this.idVolume)
+          this.selectedSnapshotType = 0;
+          console.log('volume array',this.volumeArray)
+          this.selectedVolume = this.volumeArray?.filter(e => e.id == this.idVolume)[0]
+          console.log('selected volume', this.selectedVolume)
+          this.checkDisable()
+        } else {
+          this.selectedVolume = null;
+          this.selectedSnapshotType = 1;
+        }
+        // this.volumeArray = data.records;
       }
     )
   }
@@ -179,7 +194,7 @@ export class SnapshotCreateComponent implements OnInit{
     }
 
     if (this.selectedSnapshotType == 0) {
-      this.validateForm.controls['quota'].setValue(this.selectedVolume.sizeInGB + 'GB');
+      this.validateForm.controls['quota'].setValue(this.selectedVolume?.sizeInGB + 'GB');
     } else if (this.selectedSnapshotType == 1 ) {
       this.validateForm.controls['quota'].setValue(this.selectedVM.storage + 'GB');
     } else {
