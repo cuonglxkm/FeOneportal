@@ -292,6 +292,8 @@ export class RestoreBackupVolumeComponent implements OnInit {
   volumeInit() {
     this.volumeRestoreNew.volumeBackupId = this.idBackupVolume
     this.volumeRestoreNew.volumeName = this.validateForm.get('formNew').get('volumeName').value
+    this.volumeRestoreNew.volumeSize = this.validateForm.get('formNew').get('storage').value
+    this.volumeRestoreNew.instanceToAttachId = this.volumeDetail?.attachedInstances[0].instanceId;
     this.volumeRestoreNew.customerId = this.tokenService.get()?.userId
     this.volumeRestoreNew.userEmail = this.tokenService.get()?.email
     this.volumeRestoreNew.actorEmail = this.tokenService.get()?.email

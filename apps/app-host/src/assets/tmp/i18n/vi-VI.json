@@ -132,6 +132,7 @@
   "app.end": "Kết thúc",
   "app.estimated.cost": "Chi phí ước tính",
   "app.estimated.storage": "Chi phí tăng dung lượng",
+  "app.fee.extend": "Chi phí điều chỉnh",
   "app.cost.a.month": "Chi phí 1 tháng",
   "app.cost.vat": "Chi phí VAT (10%)",
   "app.cost.n.month": "Chi phí {{numberMonth}} tháng",
