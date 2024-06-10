@@ -18,6 +18,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { KubernetesConstant } from 'apps/app-kubernetes/src/app/constants/kubernetes.constant';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 export function integerInRangeValidator(min: number, max: number): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -110,7 +112,8 @@ export class FormRuleComponent implements OnInit {
               private notification: NzNotificationService,
               private cdr: ChangeDetectorRef,
               private router: Router,
-              private shareService: ShareService) {
+              private shareService: ShareService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.validateForm.controls.remoteIpPrefix.setValidators([Validators.required, AppValidator.ipWithCIDRValidator])
     this.validateForm.controls.portRangeMin.setValidators([Validators.required, Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/), integerInRangeValidator(1, 65535)])
     this.validateForm.controls.portRangeMax.setValidators([Validators.required, Validators.pattern(/^[1-9]\d{0,4}$|^[1-5]\d{4}$|^6[0-4]\d{3}$|^65[0-4]\d{2}$|^655[0-2]\d$|^6553[0-5]$/), integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin')])
@@ -304,7 +307,7 @@ export class FormRuleComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.isLoading = false;
-          this.notification.success('', 'Tạo mới thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('sg.create.success'));
           this.onOk.emit(data);
 
           // save log

@@ -30,13 +30,13 @@
   <tbody>
     <ng-container *ngFor="let item of ruleTable.data; let i = index;">
       <tr>
-        <td class="right-align">{{ i + 1 }}</td>
-        <td>{{item.etherType}}</td>
-        <td>{{item.protocol | protocol2label}}</td>
-        <td>{{item.portRange}}</td>
-        <td>{{item.remoteIpPrefix}}</td>
-        <td>{{item.remoteGroupName}}</td>
-        <td>
+        <td class="right-align content-table">{{ i + 1 }}</td>
+        <td class="content-table">{{item.etherType}}</td>
+        <td class="content-table">{{item.protocol | protocol2label}}</td>
+        <td class="content-table">{{item.portRange}}</td>
+        <td class="content-table">{{item.remoteIpPrefix}}</td>
+        <td class="content-table">{{item.remoteGroupName}}</td>
+        <td class="content-table">
           <ng-container *ngIf="item | canDelRule; else cannotDelRuleTpl">
             <div class="center-align">
               <one-portal-delete-outbound
