@@ -1170,7 +1170,7 @@
   "app.payment-detail.invoiceCode": "Invoice code",
   "app.payment-detail.serviceInformation": "Service Information",
   "app.payment-detail.serviceName": "Service name",
-  "app.payment-detail.price": "Price (VND)",
+  "app.payment-detail.price": "Price (VND/month)",
   "app.payment-detail.remain": "Duration (month)",
   "app.payment-detail.quantity": "Quantity",
   "app.payment-detail.totalPrice": "Total Price (VND)",

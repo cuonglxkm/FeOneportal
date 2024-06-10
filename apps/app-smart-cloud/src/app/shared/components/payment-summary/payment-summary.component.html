@@ -50,7 +50,7 @@
           <nz-radio-group
             [ngModelOptions]="{ standalone: true }"
             [(ngModel)]="radioValue"
-            (ngModelChange)="changeOptionInvoices($event)"
+            (ngModelChange)="changeOptionInvoices($event)" 
             class="mb-5"
           >
             <ng-container *ngFor="let item of options">
@@ -721,8 +721,6 @@
                 </div>
               </nz-form-label>
               <nz-select
-                nzShowSearch
-                nzAllowClear
                 [(ngModel)]="customerGroup"
                 [ngModelOptions]="{ standalone: true }"
                 (ngModelChange)="changeCustomerGroup($event)"
@@ -747,10 +745,9 @@
                 </div>
               </nz-form-label>
               <nz-select
-                nzShowSearch
-                nzAllowClear
                 [(ngModel)]="customerType"
                 [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="changeCustomerType($event)"
                 class="input-select-custom"
               >
                 <nz-option
@@ -768,7 +765,7 @@
               <nz-form-label nzFor="name">
                 <div >
                   <span>Tên công ty</span>
-                  <ng-container *ngIf="customerType !== 1">
+                  <ng-container *ngIf="customerType !== 1 && customerType !== 2">
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </ng-container>
                 </div>
@@ -776,7 +773,7 @@
               <input
                 nz-input
                 type="text"
-                placeholder="Công ty A"
+                placeholder="Nhập tên công ty"
                 formControlName="nameCompany"
                 class="input-custom"
                 appTrim
@@ -796,7 +793,7 @@
               <nz-form-label nzFor="name">
                 <div>
                   <span>Mã số thuế</span>
-                  <ng-container *ngIf="customerType !== 1">
+                  <ng-container *ngIf="customerType !== 1 && customerType !== 2">
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                   </ng-container>
                 </div>

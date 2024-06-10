@@ -279,6 +279,7 @@ export class PaymentSummaryComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUser();
+
   }
 
   getUser() {
@@ -312,8 +313,16 @@ export class PaymentSummaryComponent implements OnInit {
               this.userModel.phoneNumber
             );
             this.getListCustomerGroup();
-          }else if(this.userModel && this.userModel.customerInvoice !== null){
-            this.getDataExportInvoice()
+          } else if (
+            this.userModel &&
+            this.userModel.customerInvoice !== null
+          ) {
+            if(this.userModel.customerInvoice.customerGroupId === 1){
+              this.radioValue = 2
+            }else{
+              this.radioValue = 1
+            }
+            this.getDataExportInvoice();
           }
           this.cdr.detectChanges();
         },
@@ -366,9 +375,13 @@ export class PaymentSummaryComponent implements OnInit {
     if (this.radioValue === 2) {
       this.formExportInvoice.controls.address.clearValidators();
       this.formExportInvoice.controls.address.updateValueAndValidity();
-      this.formExportInvoice.controls.taxCode.clearValidators();
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.pattern(/^[0-9-]+$/),
+      ]);
       this.formExportInvoice.controls.taxCode.updateValueAndValidity();
-      this.formExportInvoice.controls.phoneNumber.clearValidators();
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        AppValidator.validPhoneNumber,
+      ]);
       this.formExportInvoice.controls.phoneNumber.updateValueAndValidity();
       this.formExportInvoice.controls.nameCompany.clearValidators();
       this.formExportInvoice.controls.nameCompany.updateValueAndValidity();
@@ -472,7 +485,9 @@ export class PaymentSummaryComponent implements OnInit {
         this.customerTypes = customerGroupFilter[0].customerTypes;
         this.customerType = this.customerTypes[0].id;
         if (this.customerType === 1) {
-          this.formCustomerInvoice.controls.taxCode.clearValidators();
+          this.formCustomerInvoice.controls.taxCode.setValidators([
+            Validators.pattern(/^[0-9-]+$/),
+          ]);
           this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
           this.formCustomerInvoice.controls.nameCompany.clearValidators();
           this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
@@ -506,14 +521,43 @@ export class PaymentSummaryComponent implements OnInit {
     console.log(this.customerType);
 
     if (this.customerType === 1) {
-      this.formCustomerInvoice.controls.taxCode.clearValidators();
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.pattern(/^[0-9-]+$/),
+      ]);
       this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.clearValidators();
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
     } else {
       this.formCustomerInvoice.controls.taxCode.setValidators([
         Validators.required,
         Validators.pattern(/^[0-9-]+$/),
       ]);
       this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.setValidators([
+        Validators.required,
+      ]);
+    }
+  }
+
+  changeCustomerType(id) {
+    console.log(this.customerType);
+
+    if (id === 1 || id === 2) {
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.pattern(/^[0-9-]+$/),
+      ]);
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.clearValidators();
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
+    } else {
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.required,
+        Validators.pattern(/^[0-9-]+$/),
+      ]);
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.setValidators([
+        Validators.required,
+      ]);
     }
   }
 
@@ -570,15 +614,14 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   handleOkUpdateCustomerInvoice() {
-    this.isVisibleConfirm = true
-    
+    this.isVisibleConfirm = true;
   }
 
-  handleCancelConfirm(){
-    this.isVisibleConfirm = false
+  handleCancelConfirm() {
+    this.isVisibleConfirm = false;
   }
 
-  handleOk(){
+  handleOk() {
     this.isLoadingUpdateInfo = true;
     this.formCreatUserInvoice.companyName =
       this.formCustomerInvoice.controls.nameCompany.value;
@@ -622,7 +665,7 @@ export class PaymentSummaryComponent implements OnInit {
     this.router.navigate([this.returnPath]);
   }
 
-  getDataExportInvoice(){
+  getDataExportInvoice() {
     this.formExportInvoice.controls.email.setValue(
       this.userModel.customerInvoice.email
     );
@@ -643,10 +686,9 @@ export class PaymentSummaryComponent implements OnInit {
     );
   }
 
-
   updateExportInvoice(event) {
     if (this.userModel && this.userModel.customerInvoice && event === true) {
-      this.getDataExportInvoice()
+      this.getDataExportInvoice();
     }
   }
 }

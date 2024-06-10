@@ -1064,7 +1064,7 @@
   "app.payment-detail.invoiceCode": "Mã hóa đơn",
   "app.payment-detail.serviceInformation": "Thông tin dịch vụ",
   "app.payment-detail.serviceName": "Dịch vụ",
-  "app.payment-detail.price": "Đơn giá (VND)",
+  "app.payment-detail.price": "Đơn giá (VND/tháng)",
   "app.payment-detail.remain": "Thời hạn (Tháng)",
   "app.payment-detail.quantity": "Số lượng",
   "app.payment-detail.totalPrice": "Số tiền (VND)",
