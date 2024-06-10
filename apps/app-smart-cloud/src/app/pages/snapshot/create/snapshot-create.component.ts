@@ -23,7 +23,6 @@ export class SnapshotCreateComponent implements OnInit,OnChanges{
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   orderItem: any;
-  loadingCaCulate = false;
 
   validateForm: FormGroup<{
     name: FormControl<string>
@@ -53,6 +52,7 @@ export class SnapshotCreateComponent implements OnInit,OnChanges{
   selectedSnapshotPackage : any;
   projectType = 0;
   @Input() snapshotTypeCreate : any = 0; // VM:2 Volume:1 none:0
+  loadingCreate: boolean;
 
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
@@ -87,6 +87,7 @@ export class SnapshotCreateComponent implements OnInit,OnChanges{
   }
 
   navigateToPaymentSummary() {
+    this.loadingCreate = true;
     const data = {
       name: this.validateForm.controls['name'].value,
       description: this.validateForm.controls['description'].value,
@@ -98,7 +99,11 @@ export class SnapshotCreateComponent implements OnInit,OnChanges{
       forceCreate: true,
       snapshotPackageId: this.selectedSnapshotPackage?.id,
     }
-    this.volumeService.createSnapshot(data).subscribe(
+    this.volumeService.createSnapshot(data)
+      .pipe(finalize(() => {
+        this.loadingCreate = false;
+      }))
+      .subscribe(
       data => {
         this.notification.success(this.i18n.fanyi("app.status.success"),'Tạo thành công')
         this.router.navigate(['/app-smart-cloud/snapshot'])
@@ -190,7 +195,7 @@ export class SnapshotCreateComponent implements OnInit,OnChanges{
 
   checkDisable() {
     this.disableCreate = false;
-    if ((this.selectedSnapshotPackage == undefined && this.snapshotTypeCreate == undefined && this.projectType != 1) ||
+    if ((this.selectedSnapshotPackage == undefined && this.projectType != 1) ||
       (this.selectedSnapshotType == 0 && this.selectedVolume == undefined) ||
       (this.selectedSnapshotType == 1 && this.selectedVM == undefined)) {
       this.disableCreate = true;

@@ -16,6 +16,7 @@ export class SnapshotDetailComponent {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   data: any;
+  id: any
 
   constructor(@Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private router: Router,
@@ -26,6 +27,7 @@ export class SnapshotDetailComponent {
 
   ngOnInit() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.id = id;
     this.loadData(id);
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId

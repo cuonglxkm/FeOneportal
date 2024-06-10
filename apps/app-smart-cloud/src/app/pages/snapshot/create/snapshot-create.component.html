@@ -190,8 +190,24 @@
                 </nz-form-item>
               </div>
             </nz-row>
+            <nz-form-item *ngIf="projectType == 0">
+              <nz-form-label>
+                <span>Chọn gói Snapshot (<span style="color: red;">*</span>)</span>
+                <img nz-popover
+                     [nzPopoverContent]="'Chọn gói Snapshot để sử dụng dịch vụ Snapshot, nếu chưa có, vui lòng khởi tạo gói Snapshot tại Quản lý gói Snapshot'"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </nz-form-label>
+              <nz-form-control nzDisableAutoTips>
+                <nz-select [nzPlaceHolder]="'Chọn gói Snapshot'" nzAllowClear [disabled] = "snapshotPackageLoading" [nzLoading]="snapshotPackageLoading"
+                           [(ngModel)]="selectedSnapshotPackage" style="width: 100%" (ngModelChange)="checkDisable()" [ngModelOptions]="{ standalone: true }" nzSize="large">
+                  <nz-option *ngFor="let index of snapshotPackageArray" [nzValue]="index"
+                             [nzLabel]="index.packageName"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
           </div>
-          <div *ngIf="snapshotTypeCreate == 2">
+          <div *ngIf="snapshotTypeCreate == 0">
             <nz-row>
               <div nz-col nzSpan="12">
                 <nz-form-item>
@@ -226,6 +242,22 @@
                 </nz-form-item>
               </div>
             </nz-row>
+            <nz-form-item *ngIf="projectType == 0">
+              <nz-form-label>
+                <span>Chọn gói Snapshot (<span style="color: red;">*</span>)</span>
+                <img nz-popover
+                     [nzPopoverContent]="'Chọn gói Snapshot để sử dụng dịch vụ Snapshot, nếu chưa có, vui lòng khởi tạo gói Snapshot tại Quản lý gói Snapshot'"
+                     nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
+              </nz-form-label>
+              <nz-form-control nzDisableAutoTips>
+                <nz-select [nzPlaceHolder]="'Chọn gói Snapshot'" nzAllowClear [disabled] = "snapshotPackageLoading" [nzLoading]="snapshotPackageLoading"
+                           [(ngModel)]="selectedSnapshotPackage" style="width: 100%" (ngModelChange)="checkDisable()" [ngModelOptions]="{ standalone: true }" nzSize="large">
+                  <nz-option *ngFor="let index of snapshotPackageArray" [nzValue]="index"
+                             [nzLabel]="index.packageName"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
           </div>
           <nz-alert  *ngIf="this.snapshotTypeCreate == 2 && this.selectedSnapshotType == 0 && this.volumeArray.length == 0 && volumeLoading == false" nzBanner
                      style="margin-bottom: 10px;"
@@ -273,10 +305,10 @@
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <nz-row>
               <nz-col style="width: 100%">
-                <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()" [nzLoading]="loadingCaCulate"
-                        [disabled]="validateForm.invalid || disableCreate">
+                <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()" [nzLoading]="loadingCreate"
+                        [disabled]="validateForm.invalid || disableCreate || loadingCreate">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                  <span [style.color]="validateForm.invalid || disableCreate? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+                  <span [style.color]="validateForm.invalid || disableCreate || loadingCreate? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
                 </button>
               </nz-col>
             </nz-row>
