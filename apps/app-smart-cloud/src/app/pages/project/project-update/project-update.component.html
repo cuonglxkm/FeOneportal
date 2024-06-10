@@ -354,9 +354,11 @@
       <nz-card>
         <span class="text-card-header ">Thông tin cấu hình</span>
         <div class="text-label mb-3 mt-3">{{ 'project.note38' | i18n }}: VPC01 ({{vCPUOld}} vCPU, {{ramOld}}GB RAM,
-          {{hhdOld}}GB HDD, {{ssdOld}}GB SSD)</div>
-        <div class="text-label" style="margin-bottom: 20px">{{ 'project.note39' | i18n }}: ({{vCPUOld+vCPU}} vCPU, {{ramOld+ram}}GB
+          {{hhdOld}}GB HDD, {{ssdOld}}GB SSD, {{ipPublicOffer}} IP)</div>
+        <div *ngIf="offerIdOld ==null || offerIdOld==0" class="text-label" style="margin-bottom: 20px">{{ 'project.note39' | i18n }}: ({{vCPUOld+vCPU}} vCPU, {{ramOld+ram}}GB
           RAM, {{hhdOld+hhd}}GB HDD, {{ssdOld+ssd}}GB SSD) </div>
+          <div *ngIf="offerIdOld !=0" class="text-label" style="margin-bottom: 20px">{{ 'project.note39' | i18n }}: ({{vCPUOld+vCPU}} vCPU, {{ramOld+ram}}GB
+            RAM, {{hhdOld+hhd}}GB HDD, {{ssdOld+ssd}}GB SSD, {{ipPublicOffer +numberIpPublic}} IP) </div>
 
         <div>
           <nz-tabset nzCentered nzSize="large"  (nzSelectChange)="changeTab($event)">
@@ -629,7 +631,7 @@
                 (click)="deleteIP()"></one-portal-svg-icon>
             </div>
             <p class="label-fontsize label-color">Số lượng IP Floating hiện tại: {{ipFloatingOld}}GB</p>
-            <p class="label-fontsize label-color">Số lượng IP Public hiện tại: {{ipPublicOld}}GB</p>
+            <p class="label-fontsize label-color">Số lượng IP Public hiện tại: {{ipPublicAddOld}}GB</p>
             <p class="label-fontsize label-color">Số lượng IP Pv6 hiện tại: {{ipv6Old}}GB</p>
             <div *ngIf="!activeIP">
               <button class="h-btn" nz-button nzType="default" (click)="initIP()">

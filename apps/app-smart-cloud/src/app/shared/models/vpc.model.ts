@@ -41,6 +41,13 @@ export class VpcModel {
   gpuProjects:any;
   quotaVolumeSnapshotHddInGb:number;
   quotaVolumeSnapshotSsdInGb:number;
+  offerDetail:{
+    vCpu:number,
+    ram:number,
+    hdd:number,
+    ssd:number,
+    ipPublic:number
+  }
 }
 
 export class TotalVpcResource {

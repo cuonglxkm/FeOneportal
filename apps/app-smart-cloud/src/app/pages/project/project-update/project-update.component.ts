@@ -106,12 +106,18 @@ export class ProjectUpdateComponent implements OnInit {
   activeSnapshot= false;
   trashSnapshot = false;
 
+  offerIdOld:number=0;
   vCPUOld = 0;
   ramOld = 0;
   hhdOld = 0;
   ssdOld = 0;
   ipv6Old :number=0;
   ipPublicOld:number =0;
+
+  ipPublicTotal:number =0;
+  ipPublicAddOld:number=0;
+  ipPublicOffer:number=0;
+
   ipFloatingOld:number=0;
   backupOld:number=0;
   snapshothddOld:number=0;
@@ -270,7 +276,7 @@ export class ProjectUpdateComponent implements OnInit {
               const checkOfferById = this.listOfferFlavors.find((offer:OfferItem)=>
                 offer.id === this.data?.offerId 
               )             
-              const charName = checkOfferById.characteristicValues.find((typeName)=>typeName.charName==='VolumeType')
+              const charName = checkOfferById?.characteristicValues.find((typeName)=>typeName.charName==='VolumeType')
               const typeName = charName?.charOptionValues?.[0]
              this.listOfferByTypeName = this.listOfferFlavors.filter((e:OfferItem)=> 
               e.characteristicValues.find((charName)=>charName.charName==='VolumeType')?.charOptionValues?.[0]==typeName
@@ -343,7 +349,7 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaHddInGb: this.hhd +this.hhdOld,
         newQuotaSsdInGb: this.ssd +this.ssdOld,
 
-        newQuotaIpPublicCount:this.numberIpPublic + this.ipPublicOld,
+        newQuotaIpPublicCount:this.selectIndexTab==0? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
         newQuotaIpFloatingCount: this.numberIpFloating + this.ipFloatingOld,
         newQuotaIpv6Count:this.numberIpv6 + this.ipv6Old,
         newQuotaBackupVolumeInGb: this.numberBackup + this.backupOld,
@@ -365,7 +371,8 @@ export class ProjectUpdateComponent implements OnInit {
         serviceType: 1,
         serviceInstanceId: this.data.id,
         customerId: this.tokenService.get()?.userId,
-        newOfferId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? this.data.offerId : this.offerFlavor.id) : 0,
+        newOfferId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,  
+        // newOfferId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? this.data.offerId : this.offerFlavor.id) : 0,
         actionType: 12,
         regionId: this.regionId,
         serviceName: this.form.controls['name'].value
@@ -462,7 +469,7 @@ export class ProjectUpdateComponent implements OnInit {
           this.hhdOld =  data.quotaHddInGb;
           this.ssdOld =  data.quotaSSDInGb;
           this.ipv6Old = data.quotaIpv6Count;
-          this.ipPublicOld = data.quotaIpPublicCount;
+
           this.ipFloatingOld = data.quotaIpFloatingCount;
           this.backupOld = data.quotaBackupVolumeInGb;
          this.loadBalancerOld = data.quotaLoadBalancerSDNCount;
@@ -474,9 +481,13 @@ export class ProjectUpdateComponent implements OnInit {
           this.snapshothddOld = data.quotaVolumeSnapshotHddInGb;
           this.snapshotssdOld = data.quotaVolumeSnapshotSsdInGb;
 
-          this.numberNetwork = data.quotaNetworkCount
-          this.numberRouter = data.quotaRouterCount
-          this.numberSecurityGroup = data.quotaSecurityGroupCount
+          this.numberNetwork = data.quotaNetworkCount;
+          this.numberRouter = data.quotaRouterCount;
+          this.numberSecurityGroup = data.quotaSecurityGroupCount;
+          this.ipPublicOffer = data.offerDetail?.ipPublic;
+          this.ipPublicTotal= data.quotaIpPublicCount;
+          this.ipPublicAddOld =  this.ipPublicTotal - this.ipPublicOffer;
+          this.offerIdOld = data.offerId
 
           // if (data.offerId != null) {
           //   this.selectIndexTab = 0;
@@ -678,7 +689,8 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaSsdInGb: this.ssd +this.ssdOld,
        
 
-        newQuotaIpPublicCount:this.numberIpPublic + this.ipPublicOld,
+        // newQuotaIpPublicCount:this.numberIpPublic,
+        newQuotaIpPublicCount:this.selectIndexTab==0? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
         newQuotaIpFloatingCount: this.numberIpFloating + this.ipFloatingOld,
         newQuotaIpv6Count:this.numberIpv6 + this.ipv6Old,
         newQuotaBackupVolumeInGb: this.numberBackup + this.backupOld,
@@ -713,7 +725,7 @@ export class ProjectUpdateComponent implements OnInit {
         serviceType: 12,
         serviceInstanceId: this.data?.id,
         customerId: this.tokenService.get()?.userId,
-        offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
+        newOfferId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
         // newOfferId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? this.data?.offerId : this.offerFlavor.id) : 0,
         actionType: 4,
         regionId: this.regionId,
@@ -738,7 +750,7 @@ export class ProjectUpdateComponent implements OnInit {
           data => {
             console.log("totalmont",data )
             this.total = data;
-            this.totalAmount = this.total.data.totalAmount.amount;
+            // this.totalAmount = this.total.data.totalAmount.amount;
             this.totalPayment = this.total.data.totalPayment.amount;
             this.totalVAT = this.total.data.totalVAT.amount;
             this.getPriceEachComponent(data.data);
