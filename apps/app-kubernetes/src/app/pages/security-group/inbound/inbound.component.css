@@ -23,3 +23,7 @@
   cursor: no-drop;
   text-align: center;
 }
+
+[data-theme='dark'] :host ::ng-deep .content-table {
+  color: #DDDDDD;
+}
