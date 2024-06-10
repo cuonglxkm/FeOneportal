@@ -464,6 +464,7 @@
   "app.notify.amount.capacity": "Số lượng phải chia hết cho {{number}}",
   "app.notify.amount.capacity1": "Số lượng dung lượng phải chia hết cho 10",
   "app.notify.amount.capacity.add": "Vượt quá quota dung lượng, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
+  "app.notify.amount.capacity.snapshot": "Vui lòng nhập vào giá trị lớn hơn hoặc bằng {{num}}",
   "app.notify.amount.ram.add": "Vượt quá quota RAM, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
   "app.notify.amount.cpu.add": "Vượt quá quota CPU, đã sử dụng {{num1}}/{{num2}} vCPU, cần cấp thêm {{num3}} vCPU",
   "app.notify.amount.gpu.add": "Không đủ quota chuyển đổi loại GPU, cần cấp thêm {{num}} GPU",
