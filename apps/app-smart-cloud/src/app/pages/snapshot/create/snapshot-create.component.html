@@ -300,8 +300,8 @@
             <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
             <div style="margin-top: 10px" class="text-label">{{validateForm.controls['quota'].value}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div style="margin-top: 10px" class="text-value">Gói Snapshot</div>
-            <div style="margin-top: 10px" class="text-label">{{selectedSnapshotPackage?.packageName}}</div>
+            <div *ngIf="projectType == 0" style="margin-top: 10px" class="text-value">Gói Snapshot</div>
+            <div *ngIf="projectType == 0" style="margin-top: 10px" class="text-label">{{selectedSnapshotPackage?.packageName}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <nz-row>
               <nz-col style="width: 100%">
