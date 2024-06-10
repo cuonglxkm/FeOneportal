@@ -154,7 +154,7 @@ export class OrderDetailComponent {
 
   projectChange(project: ProjectModel) {
     this.projectId = project.id;
-    this.router.navigate(['/app-smart-cloud/order/list'])
+    this.router.navigate(['/app-smart-cloud/order'])
   }
 
   pay(){

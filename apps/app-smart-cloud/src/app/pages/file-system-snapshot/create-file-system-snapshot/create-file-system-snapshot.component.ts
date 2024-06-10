@@ -329,7 +329,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
                       this.i18n.fanyi('app.file.snapshot.create.success')
                     );
                     this.router.navigate([
-                      '/app-smart-cloud/file-system-snapshot/list',
+                      '/app-smart-cloud/file-system-snapshot',
                     ]);
                   }
                 } else {
@@ -379,7 +379,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -388,6 +388,6 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   }
 
   userChangeProject(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot']);
   }
 }
