@@ -270,7 +270,9 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
   //restore new
   volumeInit() {
     this.volumeRestoreNew.volumeBackupId = this.idBackupVolume;
-    //this.volumeRestoreNew.volumeName = this.validateForm.get('formNew').get('volumeName').value;
+    // this.volumeRestoreNew.volumeName = this.validateForm.get('formNew').get('volumeName').value;
+    this.volumeRestoreNew.volumeSize = this.validateForm.get('formNew').get('storage').value
+    this.volumeRestoreNew.instanceToAttachId = this.volumeDetail?.attachedInstances[0].instanceId;
     this.volumeRestoreNew.serviceName = this.validateForm.get('formNew').get('volumeName').value;
     this.volumeRestoreNew.volumeSize = this.validateForm.get('formNew').get('storage').value;
     this.volumeRestoreNew.instanceToAttachId = this.instanceSelected;

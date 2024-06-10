@@ -57,22 +57,14 @@
           style="width: 100%"
         />
       </div>
-      <div *ngIf="!isActiveGoogleAuthenticator" class="d-flex mt-7 align-items-center gap-3 mb-4">
-        <span class="fa-text"
-          >{{ 'app.security.create.authentiactor' | i18n }}
-          <span (click)="handleOpenGoogleAuthen()" class="create-text">{{
-            'app.button.create' | i18n
-          }}</span></span
-        >
+      <div class="d-flex mt-7 align-items-center gap-3 mb-4">
+        <nz-switch
+          [ngModel]="toggleSwitchGoogleAuthenticator"
+          (ngModelChange)="handleChangeSwitchGoogleAuthenticator($event)"
+        ></nz-switch>
+        <span class="fa-text">{{ 'app.security.authentiactor' | i18n }}</span>
       </div>
       <div *ngIf="isActiveGoogleAuthenticator" class="mt-7 mb-4">
-        <div class="d-flex align-items-center gap-4 mb-8">
-          <nz-switch
-            [ngModel]="toggleSwitchGoogleAuthenticator"
-            (ngModelChange)="handleChangeSwitchGoogleAuthenticator($event)"
-          ></nz-switch>
-          <span class="fa-text">{{ 'app.security.authentiactor' | i18n }}</span>
-        </div>
         <div (click)="handleRecreateGoogleAuthen()" class="d-flex align-items-center gap-10 mb-4 recreate-text">
           <span style="font-size: 20px;" nz-icon nzType="sync" nzTheme="outline"></span>
           <span class="fa-text">{{ 'app.security.recreate' | i18n }}</span>
@@ -184,7 +176,8 @@
         >
         <span class="fa-text d-block mt-1">3. Chọn Quét mã vạch</span>
         <div class="d-flex justify-content-center">
-          <img width="150" height="150" src="assets/imgs/qr.png" alt="" />
+          <qrcode [qrdata]="authenticatorKey" [width]="150" [height]="150" [errorCorrectionLevel]="'M'"></qrcode>
+          <!-- <img width="150" height="150" src="assets/imgs/qr.png" alt="" /> -->
         </div>
       </div>
 
@@ -215,7 +208,7 @@
           alt=""
         />{{ 'app.button.cancel' | i18n }}
       </button>
-      <button class="btn-bg" nz-button nzType="primary" (click)="handleOkEdit()">
+      <button class="btn-bg" nz-button nzType="primary" (click)="handleSubmitGoogleAuthenticator()">
         <img
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/confirm.svg"
@@ -267,7 +260,7 @@
           alt=""
         />{{ 'app.button.cancel' | i18n }}
       </button>
-      <button style="background-color: #0074CC;" nz-button nzType="primary" (click)="handleOkEdit()">
+      <button style="background-color: #0074CC;" nz-button nzType="primary" (click)="handleSubmitRecreateGoogleAuthenticator()">
         <img
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/confirm.svg"

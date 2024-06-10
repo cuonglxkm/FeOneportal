@@ -15,6 +15,7 @@ export const environment = {
   },
   baseUrl: 'https://api-dev.onsmartcloud.com',
   //baseUrl: 'http://localhost:3000',
+  issuer: 'https://identity-dev.onsmartcloud.com',
   unitOfMeasureVpn: 'vpns2s',
   // modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;
