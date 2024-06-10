@@ -44,6 +44,8 @@ export class ProjectDetailComponent implements OnInit{
     this.regionId = regionAndProject.regionId;
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getData(id);
+    this.todayNow = new Date();
+    this.checkExpireDate()
    
   }
 
@@ -51,16 +53,33 @@ export class ProjectDetailComponent implements OnInit{
     this.regionId = region.regionId;
     this.router.navigate(['/app-smart-cloud/project'])
   }
-
+isAdjust:boolean= true;
   private getData(id: any) {
-    let datenow :Date;
-    console.log("888",typeof datenow)
+   
     this.loading = true;
     this.service.getDetail(id)
       .subscribe(
       data => {
         this.data = data;
         console.log("huuu", this.data)
+        // const today = this.parseDate(this.todayNow);
+        // console.log("today", this.todayNow)
+        //  const expireDate = this.parseDate(this.data?.expireDate);
+        // const expireDate: string = this.getCurrentDateTime(this.data?.expireDate);
+        // 
+        const expireDate1 = new Date(this.data?.expireDate)
+        console.log("expireDate", expireDate1)
+        const expireDateTime:string = this.getCurrentDateTime(expireDate1);
+        console.log("expireDateTime", expireDateTime)
+        const currentDateTime: string = this.getCurrentDateTime(this.todayNow);
+        console.log("currentDateTime",currentDateTime); // Output: "15:30:45 06/09/2024"
+
+        if(expireDateTime<currentDateTime){
+          this.isAdjust= false
+        }
+        else{
+          this.isAdjust= true
+        }
       }
     )
 
@@ -71,6 +90,7 @@ export class ProjectDetailComponent implements OnInit{
       .subscribe(
       data => {
         this.dataTotal = data;
+       
       }
     )
   }
@@ -117,5 +137,39 @@ export class ProjectDetailComponent implements OnInit{
   extend() {
     this.router.navigate(['/app-smart-cloud/project/extend/' + this.activatedRoute.snapshot.paramMap.get('id')])
   }
-  par
+  parseDate(dateInput:string | Date):Date{
+    if(dateInput instanceof Date){
+      return dateInput;
+    }
+    else{
+      const [time, date] = dateInput.split(' ');
+      const [hours, minutes, seconds] = time.split(':').map(Number);
+      const [day, month, year] = date.split('/').map(Number);
+      return new Date(year, month - 1, day, hours, minutes, seconds);
+    }
+    
+  }
+  checkExpireDate(){
+//  const today = this.parseDate(this.todayNow);
+ console.log("today", this.todayNow)
+//   const expireDate = this.parseDate(this.data?.expireDate);
+//   console.log("expireDate",expireDate)
+console.log("this.data?.expireDate",this.data?.expireDate)
+
+  }
+ 
+   getCurrentDateTime( date:any): string {
+   
+    const options: Intl.DateTimeFormatOptions = {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    };
+    return date.toLocaleString('en-US', options);
+}
+
+
 }
