@@ -44,7 +44,7 @@ export class InboundComponent implements OnInit {
     this.isLoadingInbound = false;
     this.total = 0;
     this.pageIndex = 1;
-    this.pageSize = 5;
+    this.pageSize = 10;
 
     this.shareService.$securityGroupData.subscribe((sgData: SecurityGroupData) => {
       this.projectId = sgData.projectId;

@@ -643,7 +643,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'order/list',
+    path: 'order',
     component: OrderListComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -906,7 +906,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'file-system-snapshot/list',
+    path: 'file-system-snapshot',
     component: FileSystemSnapshotComponent,
     canActivate: [PermissionGuard],
     data: {

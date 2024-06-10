@@ -8,5 +8,5 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://idg-api-gw.onsmartcloud.com',
+  baseUrl: 'https://idg-api-gw-dev.onsmartcloud.com',
 } as Environment;
