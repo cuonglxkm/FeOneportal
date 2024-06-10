@@ -124,7 +124,7 @@
 </nz-card>
 
 <!--Xóa VPC-->
-<nz-modal [(nzVisible)]="isVisibleDeleteProject" nzTitle="{{ 'project.note21' | i18n }}" [nzStyle]="modalStyle">
+<nz-modal [(nzVisible)]="isVisibleDeleteProject" nzTitle="{{ 'project.note21' | i18n }}" [nzStyle]="modalStyle" (nzOnCancel)="handleCancel()">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
               [nzDescription]="alertOK"
@@ -147,7 +147,7 @@
 </nz-modal>
 
 <!--Xóa thường-->
-<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="{{ 'project.note22' | i18n }}" [nzStyle]="modalStyle">
+<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="{{ 'project.note22' | i18n }}" [nzStyle]="modalStyle" (nzOnCancel)="handleCancel()">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
               [nzDescription]="alertDeleteOK"

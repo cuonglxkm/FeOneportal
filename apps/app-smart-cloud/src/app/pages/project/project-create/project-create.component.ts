@@ -179,7 +179,7 @@ export class ProjectCreateComponent implements OnInit {
   numbergpu: number[] = [];
   maxTotal: number = 8;
 
-  isRequired:boolean=true;
+  isRequired: boolean = true;
 
   isLoading = false;
   isVisiblePopupError: boolean = false;
@@ -268,9 +268,10 @@ export class ProjectCreateComponent implements OnInit {
         console.log("lstIp", lstIp)
         if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
           let listString = lstIp[1].split(' ');
+          console.log("listString", listString)
           if (listString.length == 3) {
             ipName = listString[2].trim();
-            console.log("ipName",ipName)
+            console.log("ipName", ipName)
           }
         }
 
@@ -527,44 +528,55 @@ export class ProjectCreateComponent implements OnInit {
 
       const expiredDate = new Date();
       expiredDate.setDate(expiredDate.getDate() + Number(numOfMonth) * 30);
-      requestBody = {
-        quotavCpu: this.vCPU,
-        quotaRamInGb: this.ram,
-        quotaHddInGb: this.hhd,
-        quotaSSDInGb: this.ssd,
-        quotaBackupVolumeInGb: this.numberBackup,
-        quotaSecurityGroupCount: this.numberSecurityGroup,
-        quotaIpPublicCount: this.numberIpPublic,
-        quotaIpFloatingCount: IPFloating,
-        quotaIpv6Count: IPV6,
-        projectType: this.vpcType,
-        quotaNetworkCount: this.numberNetwork,
-        quotaRouterCount: this.numberRouter,
-        quotaLoadBalancerSDNCount: this.numberLoadBalancer,
-        loadBalancerOfferId: this.loadBalancerId,
-        vpnSiteToSiteOfferId: this.siteToSiteId,
-        quotaShareInGb: this.numberFileSystem,
-        quotaShareSnapshotInGb: this.numberFileScnapsshot,
-        publicNetworkId: ip,
-        publicNetworkAddress: ipName,
+      if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
+        console.log("lstIp", lstIp)
+        if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
+          let listString = lstIp[1].split(' ');
+          console.log("listString", listString)
+          if (listString.length == 3) {
+            ipName = listString[2].trim();
+            console.log("ipName", ipName)
+          }
+        }
+        requestBody = {
+          quotavCpu: this.vCPU,
+          quotaRamInGb: this.ram,
+          quotaHddInGb: this.hhd,
+          quotaSSDInGb: this.ssd,
+          quotaBackupVolumeInGb: this.numberBackup,
+          quotaSecurityGroupCount: this.numberSecurityGroup,
+          quotaIpPublicCount: this.numberIpPublic,
+          quotaIpFloatingCount: IPFloating,
+          quotaIpv6Count: IPV6,
+          projectType: this.vpcType,
+          quotaNetworkCount: this.numberNetwork,
+          quotaRouterCount: this.numberRouter,
+          quotaLoadBalancerSDNCount: this.numberLoadBalancer,
+          loadBalancerOfferId: this.loadBalancerId,
+          vpnSiteToSiteOfferId: this.siteToSiteId,
+          quotaShareInGb: this.numberFileSystem,
+          quotaShareSnapshotInGb: this.numberFileScnapsshot,
+          publicNetworkId: ip,
+          publicNetworkAddress: ipName,
 
-        gpuQuotas: this.gpuQuotasGobal,
-        quotaVolumeSnapshotHddInGb: this.numberSnapshothdd,
-        quotaVolumeSnapshotSsdInGb: this.numberSnapshotssd,
+          gpuQuotas: this.gpuQuotasGobal,
+          quotaVolumeSnapshotHddInGb: this.numberSnapshothdd,
+          quotaVolumeSnapshotSsdInGb: this.numberSnapshotssd,
 
-        typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
-        serviceType: 12,
-        serviceInstanceId: 0,
-        customerId: this.tokenService.get()?.userId,
-        offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
-        actionType: 0,
-        regionId: this.regionId,
-        serviceName: this.form.controls['name'].value,
-        // serviceName:'',
-        description: this.form.controls['description'].value,
-        createDate: new Date(),
-        expireDate: expiredDate
-      };
+          typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
+          serviceType: 12,
+          serviceInstanceId: 0,
+          customerId: this.tokenService.get()?.userId,
+          offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
+          actionType: 0,
+          regionId: this.regionId,
+          serviceName: this.form.controls['name'].value,
+          // serviceName:'',
+          description: this.form.controls['description'].value,
+          createDate: new Date(),
+          expireDate: expiredDate
+        };
+      }
     } else {
       requestBody = {
         projectType: this.vpcType,
@@ -1077,11 +1089,11 @@ export class ProjectCreateComponent implements OnInit {
     // this.ofer
   }
 
- checkRequired(){
-    if(this.hhd !=0 || this.ssd){
+  checkRequired() {
+    if (this.hhd != 0 || this.ssd) {
       this.isRequired = false;
     }
-    else{
+    else {
       this.isRequired = true;
     }
   }
