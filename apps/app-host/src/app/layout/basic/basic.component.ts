@@ -96,11 +96,13 @@ import { environment } from '@env/environment';
       <footer
         style="display: flex; align-items: center; justify-content: center;"
       >
-        Powered by
-        <img style="margin-left: 10px" src="assets/imgs/logo-vnpt.svg" alt="" />
+        <a href="https://vnpt.com.vn/" target="_blank">
+          Powered by
+          <img style="margin-left: 10px" src="assets/imgs/logo-vnpt.svg" alt="" />
+        </a>
       </footer>
     </layout-default>
-    
+
     <setting-drawer *ngIf="showSettingDrawer" />
     <theme-btn />
   `,

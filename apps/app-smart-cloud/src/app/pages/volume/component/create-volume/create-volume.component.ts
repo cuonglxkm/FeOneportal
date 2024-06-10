@@ -490,11 +490,22 @@ export class CreateVolumeComponent implements OnInit {
     });
   }
 
+  getDetailVolume(idVolume) {
+    this.volumeService.getVolumeById(idVolume).subscribe(data => {
+      this.onChangeStatusEncrypt(data.isEncryption)
+      this.onChangeStatusMultiAttach(data.isMultiAttach)
+      console.log('instance', data?.attachedInstances[0].instanceId)
+      this.instanceSelectedChange(data?.attachedInstances[0].instanceId)
+      this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0].instanceId)
+    })
+  }
+
   getDetailSnapshotVolume(id) {
     this.snapshotvlService.getDetailSnapshotSchedule(id).subscribe(data => {
       console.log('data', data);
       this.validateForm.controls.storage.setValue(data.sizeInGB)
       this.minStorage = data.sizeInGB
+      this.getDetailVolume(data.volumeId)
       if(data.volumeType == 'hdd') {
         this.selectedValueHDD = true
         this.selectedValueSSD = false

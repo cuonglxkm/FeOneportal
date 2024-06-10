@@ -115,6 +115,7 @@ export class EditInfoComponent implements OnInit {
   }
 
   back2detail() {
-    this.router.navigate(['/app-kubernetes/' + this.serviceOrderCode]);
+    window.history.back();
+    // this.router.navigate(['/app-kubernetes/' + this.serviceOrderCode]);
   }
 }

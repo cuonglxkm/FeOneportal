@@ -122,7 +122,7 @@
                                  (ngModelChange)="volumeSelectedChange($event)">
                         <nz-option *ngFor="let data of listVolumes"
                                    [nzValue]="data.id"
-                                   [nzLabel]="data.name"></nz-option>
+                                   [nzLabel]="data.name + '(' + data.sizeInGB + ' GB)'"></nz-option>
                       </nz-select>
                     </nz-form-control>
                   </nz-form-item>

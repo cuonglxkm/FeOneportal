@@ -12,7 +12,7 @@ export class KubernetesConstant {
 
   public static CLUSTER_EXTEND_TYPE = 'k8s_extend';
 
-  public static DEFAULT_VOLUME_TYPE = "ceph_ssd";
+  public static DEFAULT_VOLUME_TYPE = "idg-shoot-ssd";
 
   public static DEFAULT_NETWORK_TYPE = "calico";
 
