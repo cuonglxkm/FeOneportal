@@ -198,3 +198,7 @@
     </nz-col>
   </nz-row>
 </form>
+<one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />

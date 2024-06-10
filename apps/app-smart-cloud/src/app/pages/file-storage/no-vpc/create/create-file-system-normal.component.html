@@ -181,12 +181,14 @@
                            nzSize="large"
                            [(ngModel)]="snapshotSelected"
                            [nzPlaceHolder]="'-Chọn Snapshot-'"
+                           (ngModelChange)="onSnapshotChangeSelected($event)"
                            [nzShowSearch]="false">
-                  <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
-                             [nzValue]="item.value"></nz-option>
+                  <nz-option *ngFor="let item of snapshotList"
+                             [nzLabel]="item.name + '(' + item.size + ' GB)'"
+                             [nzValue]="item.id"></nz-option>
                 </nz-select>
                 <ng-template #snapshotError let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng chọn Snapshot File System</ng-container>
+                  <ng-container *ngIf="control.hasError('required')">{{'app.file.storage.snapshot.required.select'|i18n}}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -327,8 +329,9 @@
               </nz-row>
               <nz-row>
                 <nz-col style="width: 100%">
-                  <button style="width: 100%" nz-button nzSize="large" nzType="primary"
-                          [disabled]="validateForm.invalid || (validateForm.controls.storage.value === 0)" (click)="navigateToPayment()">
+                  <button style="width: 100%" nz-button nzSize="large" nzType="primary" [nzLoading]="isLoadingAction"
+                          [disabled]="validateForm.invalid || (validateForm.controls.storage.value === 0)"
+                          (click)="navigateToPayment()">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
                   </button>
@@ -340,4 +343,8 @@
       </nz-row>
     </form>
   </nz-content>
+  <one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />
 </nz-spin>

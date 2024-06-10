@@ -340,10 +340,11 @@
             </nz-row>
             <nz-row>
               <nz-col style="width: 100%">
-                <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
+                <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()" [nzLoading]="loadingCaCulate"
                         [disabled]="(enableInternetFacing == true && validateForm.invalid) ||
                       (enableInternal == true && (validateForm.controls['name'].invalid || validateForm.controls['subnet'].invalid) ) ||
-                      (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '')">
+                      (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '') ||
+                      loadingCaCulate">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                   <span [style.color]="(enableInternetFacing == true && validateForm.invalid) ||
                       (enableInternal == true && (validateForm.controls['name'].invalid || validateForm.controls['subnet'].invalid) ) ||

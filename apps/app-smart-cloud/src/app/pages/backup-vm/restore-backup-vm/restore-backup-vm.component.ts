@@ -18,6 +18,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import {
   BackupVm,
   RestoreFormCurrent,
+  RestoreInstanceBackup,
   SecurityGroupBackup,
   VolumeBackup,
 } from '../../../shared/models/backup-vm';
@@ -93,24 +94,11 @@ export class RestoreBackupVmComponent implements OnInit {
   idBackup: number;
 
   backupVmModel: BackupVm;
-  projectDetail: SizeInCloudProject;
   backupPackage: PackageBackupModel;
   listExternalAttachVolume: VolumeBackup[] = [];
   listSecurityGroupBackups: SecurityGroupBackup[] = [];
 
   selectedOption: string = 'current';
-  typeVpc: number;
-
-  nameSecurityGroup = [];
-  nameSecurityGroupText: string[];
-
-  nameFlavorText: string[];
-  nameFlavor = [];
-
-  nameVolumeBackupAttach = [];
-  nameVolumeBackupAttachName: string[];
-  nameVolumeBackupAttachNameUnique: string;
-
   isLoadingCurrent: boolean = false;
   isLoadingNew: boolean = false;
 
@@ -206,9 +194,7 @@ export class RestoreBackupVmComponent implements OnInit {
     );
     this.getConfigurations();
     this.getVolumeUnitMoney();
-    this.initFlavors();
     this.getListGpuType();
-    this.getProjectVpc(this.project);
     this.getAllIPPublic();
     this.getListNetwork();
     this.onChangeCapacity();
@@ -225,8 +211,6 @@ export class RestoreBackupVmComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
-    this.typeVpc = project?.type;
-    // this.router.navigate(['/app-smart-cloud/backup-vm'])
   }
 
   userChanged(project: ProjectModel) {
@@ -258,84 +242,54 @@ export class RestoreBackupVmComponent implements OnInit {
 
   configCustom: ConfigCustom = new ConfigCustom();
   configGPU: ConfigGPU = new ConfigGPU();
-  instanceCreate: InstanceCreate = new InstanceCreate();
+  restoreInstanceBackup: RestoreInstanceBackup = new RestoreInstanceBackup();
 
   instanceInit() {
-    this.instanceCreate.description = null;
-    // this.instanceCreate.imageId = this.hdh;
-    this.instanceCreate.iops = 0;
-    // this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
-    this.instanceCreate.keypairName = this.validateForm
-      .get('formNew')
-      .get('keypair').value;
-    this.instanceCreate.securityGroups = this.validateForm
-      .get('formNew')
-      .get('securityGroupIds').value;
-    this.instanceCreate.network = null;
-    this.instanceCreate.isUsePrivateNetwork =
+    this.restoreInstanceBackup.instanceBackupId = this.backupVmModel?.id;
+    this.restoreInstanceBackup.volumeBackupIds = [];
+    this.restoreInstanceBackup.keypairName = this.selectedSSHKeyName;
+    this.restoreInstanceBackup.securityGroups = this.selectedSecurityGroup;
+    this.restoreInstanceBackup.isUsePrivateNetwork =
       this.validateForm.get('formNew').get('vlan').value == '' ? false : true;
     if (this.validateForm.get('formNew').get('vlan').value != '') {
-      this.instanceCreate.privateNetId = this.validateForm
+      this.restoreInstanceBackup.privateNetId = this.validateForm
         .get('formNew')
         .get('vlan').value;
     }
     if (this.port != '') {
-      this.instanceCreate.privatePortId = this.port;
+      this.restoreInstanceBackup.privatePortId = this.port;
     }
-    this.instanceCreate.ipPublic = this.validateForm
+    this.restoreInstanceBackup.ipPublic = this.validateForm
       .get('formNew')
       .get('ipPublic').value;
-    this.instanceCreate.password = this.validateForm
+    this.restoreInstanceBackup.password = this.validateForm
       .get('formNew')
       .get('password').value;
-    // this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
-    this.instanceCreate.encryption = false;
-    // this.instanceCreate.isUseIPv6 = this.isUseIPv6;
-    this.instanceCreate.addRam = 0;
-    this.instanceCreate.addCpu = 0;
-    this.instanceCreate.addBttn = 0;
-    this.instanceCreate.addBtqt = 0;
-    this.instanceCreate.poolName = null;
-    this.instanceCreate.usedMss = false;
-    this.instanceCreate.customerUsingMss = null;
-    // if (this.isCustomconfig) {
-    this.instanceCreate.offerId = 0;
-    this.instanceCreate.flavorId = 0;
-    this.instanceCreate.ram = this.configCustom.ram;
-    this.instanceCreate.cpu = this.configCustom.vCPU;
-    this.instanceCreate.volumeSize = this.configCustom.capacity;
-    // }
-    // this.instanceCreate.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
-    this.instanceCreate.projectId = this.project;
-    this.instanceCreate.oneSMEAddonId = null;
-    this.instanceCreate.serviceType = 1;
-    this.instanceCreate.serviceInstanceId = 0;
-    // this.instanceCreate.customerId = this.tokenService.get()?.userId;
-
-    // let currentDate = new Date();
-    // let lastDate = new Date();
-    // lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
-    // this.instanceCreate.createDate = currentDate.toISOString().substring(0, 19);
-    // this.instanceCreate.expireDate = lastDate.toISOString().substring(0, 19);
-
-    this.instanceCreate.saleDept = null;
-    this.instanceCreate.saleDeptCode = null;
-    this.instanceCreate.contactPersonEmail = null;
-    this.instanceCreate.contactPersonPhone = null;
-    this.instanceCreate.contactPersonName = null;
-    this.instanceCreate.note = null;
-    this.instanceCreate.createDateInContract = null;
-    this.instanceCreate.am = null;
-    this.instanceCreate.amManager = null;
-    this.instanceCreate.isTrial = false;
-    this.instanceCreate.couponCode = null;
-    this.instanceCreate.dhsxkd_SubscriptionId = null;
-    this.instanceCreate.dSubscriptionNumber = null;
-    this.instanceCreate.dSubscriptionType = null;
-    this.instanceCreate.oneSME_SubscriptionId = null;
-    this.instanceCreate.regionId = this.region;
-    // this.instanceCreate.userEmail = this.tokenService.get()['email'];
-    // this.instanceCreate.actorEmail = this.tokenService.get()['email'];
+    this.restoreInstanceBackup.encryption = false;
+    this.restoreInstanceBackup.offerId = 0;
+    this.restoreInstanceBackup.ram = this.configCustom.ram;
+    this.restoreInstanceBackup.cpu = this.configCustom.vCPU;
+    this.restoreInstanceBackup.volumeSize = this.configCustom.capacity;
+    this.restoreInstanceBackup.projectId = this.project;
+    this.restoreInstanceBackup.oneSMEAddonId = null;
+    this.restoreInstanceBackup.serviceType = 1;
+    this.restoreInstanceBackup.serviceInstanceId = 0;
+    this.restoreInstanceBackup.saleDept = null;
+    this.restoreInstanceBackup.saleDeptCode = null;
+    this.restoreInstanceBackup.contactPersonEmail = null;
+    this.restoreInstanceBackup.contactPersonPhone = null;
+    this.restoreInstanceBackup.contactPersonName = null;
+    this.restoreInstanceBackup.note = null;
+    this.restoreInstanceBackup.createDateInContract = null;
+    this.restoreInstanceBackup.am = null;
+    this.restoreInstanceBackup.amManager = null;
+    this.restoreInstanceBackup.isTrial = false;
+    this.restoreInstanceBackup.couponCode = null;
+    this.restoreInstanceBackup.dhsxkd_SubscriptionId = null;
+    this.restoreInstanceBackup.dSubscriptionNumber = null;
+    this.restoreInstanceBackup.dSubscriptionType = null;
+    this.restoreInstanceBackup.oneSME_SubscriptionId = null;
+    this.restoreInstanceBackup.regionId = this.region;
   }
 
   totalAmount: number = 0;
@@ -348,7 +302,9 @@ export class RestoreBackupVmComponent implements OnInit {
     this.instanceInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
-    itemPayment.specificationString = JSON.stringify(this.instanceCreate);
+    itemPayment.specificationString = JSON.stringify(
+      this.restoreInstanceBackup
+    );
     itemPayment.specificationType = 'instance_create';
     itemPayment.serviceDuration = 1;
     itemPayment.sortItem = 0;
@@ -376,6 +332,19 @@ export class RestoreBackupVmComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
+        if (
+          this.backupVmModel?.volumeBackups
+            .filter((e) => e.isBootable == true)[0]
+            .typeName.toUpperCase()
+            .includes('HDD')
+        ) {
+          this.activeBlockHDD = true;
+          this.activeBlockSSD = false;
+        } else {
+          this.activeBlockHDD = false;
+          this.activeBlockSSD = true;
+        }
+        this.initFlavors();
 
         this.listExternalAttachVolume =
           this.backupVmModel?.volumeBackups.filter(
@@ -408,32 +377,6 @@ export class RestoreBackupVmComponent implements OnInit {
             this.selectedSecurityGroup.push(e.sgName);
           }
         });
-
-        this.backupVmModel?.securityGroupBackups.forEach((item) => {
-          this.nameSecurityGroup?.push(item.sgName);
-        });
-
-        this.backupVmModel?.systemInfoBackups.forEach((item) => {
-          this.nameFlavor?.push(item.osName);
-        });
-
-        this.backupVmModel?.volumeBackups.forEach((item) => {
-          if (item.isBootable == false) {
-            this.nameVolumeBackupAttach?.push(item.name);
-          }
-        });
-
-        this.nameSecurityGroupText = Array.from(
-          new Set(this.nameSecurityGroup)
-        );
-
-        this.nameVolumeBackupAttachName = Array.from(
-          new Set(this.nameVolumeBackupAttach)
-        );
-        this.nameVolumeBackupAttachNameUnique =
-          this.nameVolumeBackupAttachName.join('\n');
-        console.log('name', this.nameVolumeBackupAttachName);
-        console.log('unique', this.nameVolumeBackupAttachNameUnique);
 
         this.getBackupPackage(this.backupVmModel?.backupPacketId);
         this.cdr.detectChanges();
@@ -494,12 +437,6 @@ export class RestoreBackupVmComponent implements OnInit {
         );
       }
     );
-  }
-
-  getProjectVpc(id) {
-    this.projectService.getProjectVpc(id).subscribe((data) => {
-      this.projectDetail = data;
-    });
   }
 
   getBackupPackage(value) {
@@ -731,7 +668,7 @@ export class RestoreBackupVmComponent implements OnInit {
     ram: number,
     cpu: number,
     gpu: number,
-    gpuTypeOfferId: number
+    gpuOfferId: number
   ) {
     let tempInstance: InstanceCreate = new InstanceCreate();
     tempInstance.imageId = this.hdh;
@@ -743,7 +680,7 @@ export class RestoreBackupVmComponent implements OnInit {
     tempInstance.ram = ram;
     tempInstance.cpu = cpu;
     tempInstance.gpuCount = gpu;
-    tempInstance.gpuTypeOfferId = gpuTypeOfferId;
+    tempInstance.gpuOfferId = gpuOfferId;
     if (this.configGPU.gpuOfferId) {
       tempInstance.gpuType = this.listGPUType.filter(
         (e) => e.id == this.configGPU.gpuOfferId
@@ -877,7 +814,7 @@ export class RestoreBackupVmComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
-      if (res > this.maxCapacity - this.surplus) {
+      if (res > this.maxCapacity) {
         this.configCustom.capacity = this.maxCapacity - this.surplus;
         this.cdr.detectChanges();
       }
@@ -1069,7 +1006,7 @@ export class RestoreBackupVmComponent implements OnInit {
   getVolumeUnitMoney() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.catalogService
-      .getCatalogOffer(2, this.region, null, null)
+      .getCatalogOffer(null, this.region, null, 'volume-hdd')
       .subscribe((data) => {
         let offer = data.find(
           (offer) => offer.status.toUpperCase() == 'ACTIVE'
@@ -1110,7 +1047,7 @@ export class RestoreBackupVmComponent implements OnInit {
       });
 
     this.catalogService
-      .getCatalogOffer(114, this.region, null, null)
+      .getCatalogOffer(null, this.region, null, 'volume-ssd')
       .subscribe((data) => {
         let offer = data.find(
           (offer) => offer.status.toUpperCase() == 'ACTIVE'

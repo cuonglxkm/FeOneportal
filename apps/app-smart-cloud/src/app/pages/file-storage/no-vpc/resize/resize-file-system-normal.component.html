@@ -242,7 +242,8 @@
                 <nz-col style="width: 100%">
                   <button style="width: 100%" nz-button nzSize="large" nzType="primary"
                           [disabled]="!validateForm.valid || (storage == 0)"
-                          (click)="navigateToPaymentSummary()">
+                          (click)="navigateToPaymentSummary()"
+                          [nzLoading]="isLoadingAction">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.resize' | i18n }}</span>
                   </button>
@@ -255,4 +256,8 @@
 
     </form>
   </nz-content>
+  <one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />
 </nz-spin>

@@ -76,6 +76,7 @@
     "ng2-pdf-viewer": "^10.0.0",
     "ngx-clipboard": "^16.0.0",
     "ngx-color-picker": "^13.0.0",
+    "ngx-cookie-service": "^18.0.0",
     "ngx-echarts": "^15.0.1",
     "ngx-json-viewer": "^3.2.1",
     "ngx-owl-carousel-o": "16.0.0",

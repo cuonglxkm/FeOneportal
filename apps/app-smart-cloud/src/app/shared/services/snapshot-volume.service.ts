@@ -21,7 +21,7 @@ export class SnapshotVolumeService extends BaseService {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
-      user_root_id: this.tokenService.get()?.userId,
+      'User-Root-Id': this.tokenService.get()?.userId,
     }),
   };
   //API GW
@@ -70,11 +70,8 @@ export class SnapshotVolumeService extends BaseService {
       );
   }
 
-  getDetailSnapshotSchedule(id: number, customerId: number): Observable<any> {
-    return this.http.get<any>(
-      this.urlSnapshotVl + '/schedule/' + id + '?customerId=' + customerId,
-      this.httpOptions
-    );
+  getDetailSnapshotSchedule(id): Observable<any> {
+    return this.http.get<SnapshotVolumeDto>(this.baseUrl + this.ENDPOINT.provisions + `/vlsnapshots/${id}`, this.httpOptions);
   }
 
   getListSchedule(

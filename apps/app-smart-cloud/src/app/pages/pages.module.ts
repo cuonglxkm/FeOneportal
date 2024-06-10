@@ -234,9 +234,22 @@ import { DeleteSslCertComponent } from './ssl-cert/delete/delete-ssl-cert.compon
 import { TrimDirective } from './file-storage/TrimDirective';
 import { DeleteBackupVolumeComponent } from './volume/component/backup-volume/delete-backup-volume/delete-backup-volume.component';
 import { RestoreBackupVmComponent } from './backup-vm/restore-backup-vm/restore-backup-vm.component';
-import { NguCarousel, NguCarouselDefDirective, NguCarouselNextDirective, NguCarouselPrevDirective, NguItemComponent, NguTileComponent } from '@ngu/carousel';
+import {
+  NguCarousel,
+  NguCarouselDefDirective,
+  NguCarouselNextDirective,
+  NguCarouselPrevDirective,
+  NguItemComponent,
+  NguTileComponent,
+} from '@ngu/carousel';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { UpdateBackupPackageComponent } from './backup-package/update/update-backup-package.component';
+import { SnapshotCreateComponent } from './snapshot/create/snapshot-create.component';
+import { SnapshotListComponent } from './snapshot/list/snapshot-list.component';
+import { SnapshotDeleteComponent } from './snapshot/delete/snapshot-delete.component';
+import { SnapshotEditComponent } from './snapshot/edit/snapshot-edit.component';
+import { RestoreBackupVmVpcComponent } from './backup-vm/restore-backup-vm-vpc/restore-backup-vm-vpc.component';
+import { RestoreBackupVolumeVpcComponent } from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -455,6 +468,14 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DeleteBackupVolumeComponent,
     RestoreBackupVmComponent,
     UpdateBackupPackageComponent,
+    SnapshotCreateComponent,
+    SnapshotCreateComponent,
+    SnapshotCreateComponent,
+    SnapshotListComponent,
+    SnapshotDeleteComponent,
+    SnapshotEditComponent,
+    RestoreBackupVmVpcComponent,
+    RestoreBackupVolumeVpcComponent,
   ],
   imports: [
     CommonModule,

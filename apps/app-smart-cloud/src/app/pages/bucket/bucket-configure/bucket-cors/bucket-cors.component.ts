@@ -11,12 +11,13 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { id } from 'date-fns/locale';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize, Subject } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import {
   BucketCors,
   BucketCorsCreate,
 } from 'src/app/shared/models/bucket.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 class HeaderName {
   id: number = 0;
@@ -34,6 +35,9 @@ export class BucketCorsComponent implements OnInit {
   value: string = '';
   listBucketCors: BucketCors[] = [];
   listHeaderName: HeaderName[] = [];
+  pageSize: number = 10;
+  pageNumber: number = 1;
+  total: number;
   loading: boolean = true;
   domain: string;
   get: boolean = false;
@@ -55,11 +59,43 @@ export class BucketCorsComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchBucketCors();
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+      this.searchBucketCors();
+    });
   }
+  // searchBucketCors() {
+  //   this.loading = true;
+  //   this.bucketService
+  //     .getListBucketCORS(this.bucketName)
+  //     .pipe(
+  //       finalize(() => {
+  //         this.loading = false;
+  //         this.cdr.detectChanges();
+  //       })
+  //     )
+  //     .subscribe({
+  //       next: (data) => {
+  //         this.listBucketCors = data;
+  //       },
+  //       error: (e) => {
+  //         this.listBucketCors = [];
+  //         this.notification.error(
+  //           this.i18n.fanyi('app.status.fail'),
+  //           this.i18n.fanyi('app.get.bucket.cors.fail')
+  //         );
+  //       },
+  //     });
+  // }
+
   searchBucketCors() {
     this.loading = true;
     this.bucketService
-      .getListBucketCORS(this.bucketName)
+      .getListPagingBucketCORS(
+        this.bucketName,
+        this.pageNumber,
+        this.pageSize,
+        this.value.trim()
+      )
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -68,7 +104,10 @@ export class BucketCorsComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.listBucketCors = data;
+          this.listBucketCors = data.records;
+          console.log(this.listBucketCors);
+
+          this.total = data.totalCount;
         },
         error: (e) => {
           this.listBucketCors = [];

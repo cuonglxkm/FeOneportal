@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, throwError } from 'rxjs';
 import {
   BackupVolume,
-  CreateBackupVolumeOrderData,
+  CreateBackupVolumeOrderData, FormOrderRestoreBackupVolume,
+  FormRestoreCurrentBackupVolume, FormRestoreNewBackupVolume,
   FormUpdateBackupVolume
 } from '../../pages/volume/component/backup-volume/backup-volume.model';
 import { BaseService } from './base.service';
@@ -21,7 +22,7 @@ export class BackupVolumeService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'user_root_id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   };
@@ -29,22 +30,6 @@ export class BackupVolumeService extends BaseService {
   constructor(private http: HttpClient,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
-  }
-
-  // get all
-  getbackupVolumeKeys(projectId: any, regionId: any, page: any, size: any, search: any, status: any): Observable<BaseResponse<BackupVolume[]>> {
-    let param = new HttpParams();
-    if (search != undefined || search != null) param = param.append('volumeBackupName', search);
-    if (status != undefined || status != null) param = param.append('status', status);
-    param = param.append('projectId', projectId);
-    param = param.append('regionId', regionId);
-    param = param.append('pageSize', size);
-    param = param.append('currentPage', page);
-
-    return this.http.get<BaseResponse<BackupVolume[]>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes', {
-      headers: this.httpOptions.headers,
-      params: param
-    });
   }
 
   //getAll
@@ -62,8 +47,8 @@ export class BackupVolumeService extends BaseService {
   }
 
   //delete
-  deleteVolume(id: any) {
-    return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + `/backups/volumes/${id}`)
+  deleteVolume(idBackupVolume) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/volumes/${idBackupVolume}`)
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -74,11 +59,6 @@ export class BackupVolumeService extends BaseService {
         return throwError(error);
       }));
     ;
-  }
-
-  //restore
-  restoreVolume(data: any): Observable<HttpResponse<any>> {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes/restore', data, this.httpOptions);
   }
 
   //create
@@ -112,6 +92,34 @@ export class BackupVolumeService extends BaseService {
   //update
   updateBackupVolume(formUpdate: FormUpdateBackupVolume) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes', Object.assign(formUpdate))
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
+  }
+
+  //restore current
+  restoreBackupVolumeCurrent(formRestoreCurrent: FormRestoreCurrentBackupVolume) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes/restore', Object.assign(formRestoreCurrent))
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
+  }
+
+  //restore new
+  restoreBackupVolumeNew(formRestoreNew: FormOrderRestoreBackupVolume) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.orders, Object.assign(formRestoreNew))
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

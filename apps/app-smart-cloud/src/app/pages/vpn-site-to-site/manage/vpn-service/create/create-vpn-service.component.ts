@@ -9,6 +9,8 @@ import { FormCreateVpnService } from 'src/app/shared/models/vpn-service';
 import { VpnSiteToSiteDTO } from 'src/app/shared/models/vpn-site-to-site';
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 
 @Component({
@@ -72,6 +74,7 @@ export class CreateVpnServiceComponent implements OnInit{
     private notification: NzNotificationService,
     private vpnSiteToSiteService: VpnSiteToSiteService,
     private vpnServiceService: VpnServiceService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   handleCreate() {
@@ -85,16 +88,16 @@ export class CreateVpnServiceComponent implements OnInit{
           (data) => {
             this.isLoading = false
             this.notification.success(
-              'Thành công',
-              'Tạo mới VPN Service thành công'
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.vpn-service-create.success')
             );
             this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
           },
           (error) => {
             this.isLoading = false
             this.notification.error(
-              'Thất bại',
-              'Tạo mới VPN Service thất bại'
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.vpn-service-create.fail')
             );
             console.log(error);
           }

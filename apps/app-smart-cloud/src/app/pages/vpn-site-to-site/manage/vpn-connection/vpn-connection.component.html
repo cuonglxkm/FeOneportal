@@ -1,5 +1,5 @@
 <div style="display: flex; flex-direction: column">
-  <span class="text-card-header mb-4">Danh sách VPN Connections</span>
+  <span class="text-card-header mb-4">{{'app.list' |i18n}} VPN Connections</span>
   <nz-row class="d-flex justify-content-between">
     <nz-col>
       <nz-input-group
@@ -9,7 +9,7 @@
       >
         <input
           nz-input
-          placeholder="Tìm kiếm theo tên"
+          [placeholder]="'app.file.system.placeholder.search' |i18n"
           [(ngModel)]="value"
           #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
         />
@@ -17,9 +17,7 @@
       <ng-template #prefixIconSearch>
         <img
           src="assets/imgs/search.svg"
-          alt=""
-          style="cursor: pointer"
-          
+          alt=""       
         />
       </ng-template>
     </nz-col>
@@ -33,7 +31,7 @@
         nzSize="large"
       >
         <i nz-icon nzType="plus"></i>
-        <span class="button-text-primary">Tạo mới VPN Connection</span>
+        <span class="button-text-primary">{{'app.label.create' |i18n}} VPN Connection</span>
       </button>
     </nz-col>
   </nz-row>
@@ -52,14 +50,14 @@
 >
   <thead>
     <tr>
-      <th>Name</th>
+      <th>{{'form.account.name' |i18n}}</th>
       <th>Local</th>
       <th>Remote</th>
       <th>VPN Service</th>
       <th>IKE Policy</th>
       <th>IPsec Policy</th>
-      <th>Status</th>
-      <th nzAlign="center">Actions</th>
+      <th>{{'app.payment.status' |i18n}}</th>
+      <th nzAlign="center">{{'app.action-history.operation' |i18n}}</th>
     </tr>
   </thead>
   <tbody>
@@ -130,7 +128,7 @@
             [routerLink]="[
               '/app-smart-cloud/vpn-site-to-site/vpn-connection/edit/' + data.id
             ]"
-            [nzPopoverContent]="'Sửa'"
+            [nzPopoverContent]="'app.manage.site.to.site.edit' |i18n"
             nz-popover
             nzPopoverPlacement="bottom"
           />

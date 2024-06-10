@@ -144,7 +144,7 @@ export class ExtendIpFloatingComponent implements OnInit{
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: 'ip_extend',
-          price: this.total.data.totalAmount.amount / Number(this.numOfMonth),
+          price: this.total.data.totalAmount.amount,
           serviceDuration: this.numOfMonth
         }
       ]
@@ -223,5 +223,10 @@ export class ExtendIpFloatingComponent implements OnInit{
     } else {
       this.total = undefined;
     }
+  }
+
+  onChangeTime($event: any) {
+    this.numOfMonth = $event;
+    this.caculator();
   }
 }

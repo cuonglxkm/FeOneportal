@@ -445,7 +445,7 @@
                     <tr>
                       <th>{{ 'app.resource' | i18n }}</th>
                       <th>{{ 'app.amount' | i18n }}</th>
-                      <th>{{ 'app.money.price' | i18n }}</th>
+                      <th>{{ 'app.money.price' | i18n }} (VND)</th>
                     </tr>
                   </thead>
                   <tbody class="ant-table-tbody">
@@ -479,10 +479,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ volumeIntoMoney | number }} VND </label
+                          {{ volumeIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ volumeUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ volumeUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -515,10 +515,10 @@
 
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ ramIntoMoney | number }} VND </label
+                          {{ ramIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ ramUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ ramUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -550,10 +550,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ cpuIntoMoney | number }} VND </label
+                          {{ cpuIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ cpuUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ cpuUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -572,7 +572,7 @@
                     <tr>
                       <th>{{ 'app.resource' | i18n }}</th>
                       <th>{{ 'app.amount' | i18n }}</th>
-                      <th>{{ 'app.money.price' | i18n }}</th>
+                      <th>{{ 'app.money.price' | i18n }} (VND)</th>
                     </tr>
                   </thead>
                   <tbody class="ant-table-tbody">
@@ -603,10 +603,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ cpuIntoMoney | number }} VND </label
+                          {{ cpuIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ cpuUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ cpuUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -639,10 +639,10 @@
 
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ ramIntoMoney | number }} VND </label
+                          {{ ramIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ ramUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ ramUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -677,10 +677,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ volumeIntoMoney | number }} VND </label
+                          {{ volumeIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ volumeUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ volumeUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -713,10 +713,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ gpuIntoMoney | number }} VND </label
+                          {{ gpuIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ gpuUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ gpuUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -857,6 +857,7 @@
                 nz-button
                 nzSize="large"
                 nzType="primary"
+                [nzLoading]="isLoading"
                 (click)="readyEdit()"
                 [disabled]="totalAmount == 0"
               >

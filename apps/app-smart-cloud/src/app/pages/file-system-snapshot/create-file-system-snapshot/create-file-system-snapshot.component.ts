@@ -38,6 +38,7 @@ import { CreateVolumeRequestModel } from 'src/app/shared/models/volume.model';
 import { addDays } from 'date-fns';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
@@ -71,6 +72,16 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
   timeSelected: any
+  storageBuyVpc: number;
+  storageUsed: number
+  storageRemaining: number;
+
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
 
   formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot =
     new FormCreateFileSystemSnapShot();
@@ -155,6 +166,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     this.project = regionAndProject.projectId;
     this.getListFileSystem();
     this.getConfigurations();
+    this.getStorageBuyVpc()
   }
 
   constructor(
@@ -167,7 +179,8 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private instanceService: InstancesService,
     private orderService: OrderService,
-    private configurationsService: ConfigurationsService
+    private configurationsService: ConfigurationsService,
+    private projectService: ProjectService
   ) {
     this.form.get('time').valueChanges.subscribe((data) => {
       this.getTotalAmount();
@@ -253,6 +266,17 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       });
   }
 
+  getStorageBuyVpc() {
+    this.isLoading = true
+    this.projectService.getProjectVpc(this.project).subscribe(data => {
+      this.storageBuyVpc = data.cloudProject?.quotaShareInGb
+      this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
+      this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
+      console.log('share remaining', this.storageRemaining)
+      this.isLoading = false
+    })
+  }
+
   handleCreateFSS() {
     this.fileSystemSnapshotInit();
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
@@ -271,6 +295,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     if (this.typeVpc === 0) {
       this.orderService.validaterOrder(request).subscribe({
         next: (data) => {
+          if (data.success) {
           var returnPath: string =
             '/app-smart-cloud/file-system-snapshot/create';
           console.log('request', request);
@@ -278,68 +303,65 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
           this.router.navigate(['/app-smart-cloud/order/cart'], {
             state: { data: request, path: returnPath },
           });
+        }else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
         },
         error: (e) => {
-          if(e.error.type === 'Exception'){
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              e.error.message,
+              e.error.detail
             );
-          }else{
-            this.notification.error(
-              this.i18n.fanyi('app.status.fail'),
-              'Yêu cầu tạo File System Snapshot thất bại.'
-            );
-          }
         },
       });
     } else {
       this.isLoadingCreateFSS = true;
       this.orderService.validaterOrder(request).subscribe({
         next: (data) => {
-          this.instanceService.create(request).subscribe(
-            (data) => {
-              if (data != null) {
-                if (data.code == 200) {
+          if (data.success) {
+            this.instanceService.create(request).subscribe(
+              (data) => {
+                if (data != null) {
+                  if (data.code == 200) {
+                    this.isLoadingCreateFSS = false;
+                    this.notification.success(
+                      this.i18n.fanyi('app.status.success'),
+                      this.i18n.fanyi('app.file.snapshot.create.success')
+                    );
+                    this.router.navigate([
+                      '/app-smart-cloud/file-system-snapshot/list',
+                    ]);
+                  }
+                } else {
                   this.isLoadingCreateFSS = false;
-                  this.notification.success(
-                    this.i18n.fanyi('app.status.success'),
-                    'Yêu cầu tạo File System Snapshot thành công.'
+                  this.notification.error(
+                    this.i18n.fanyi('app.status.fail'),
+                    this.i18n.fanyi('app.file.snapshot.create.fail')
                   );
-                  this.router.navigate([
-                    '/app-smart-cloud/file-system-snapshot/list',
-                  ]);
                 }
-              } else {
+              },
+              (error) => {
                 this.isLoadingCreateFSS = false;
                 this.notification.error(
                   this.i18n.fanyi('app.status.fail'),
-                  'Yêu cầu tạo File System Snapshot thất bại.'
+                  this.i18n.fanyi('app.file.snapshot.create.fail')
                 );
               }
-            },
-            (error) => {
-              this.isLoadingCreateFSS = false;
-              this.notification.error(
-                this.i18n.fanyi('app.status.fail'),
-                'Yêu cầu tạo File System Snapshot thất bại.'
-              );
-            }
-          );
+            );
+            
+          }else{
+            this.isVisiblePopupError = true;
+            this.errorList = data.data;
+            this.isLoadingCreateFSS = false;
+          }
         },
         error: (e) => {
           this.isLoadingCreateFSS = false;
-          if(e.error.type === 'Exception'){
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              e.error.message,
+              e.error.detail
             );
-          }else{
-            this.notification.error(
-              this.i18n.fanyi('app.status.fail'),
-              'Yêu cầu tạo File System Snapshot thất bại.'
-            );
-          }
         },
       });
     }

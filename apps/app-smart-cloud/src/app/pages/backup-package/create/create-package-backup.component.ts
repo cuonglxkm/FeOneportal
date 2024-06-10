@@ -45,6 +45,7 @@ export class CreatePackageBackupComponent implements OnInit {
   storage: number = 1
 
   isLoading: boolean = false
+  isLoadingAction: boolean = false
 
   timeSelected: any;
 
@@ -172,7 +173,14 @@ export class CreatePackageBackupComponent implements OnInit {
     this.formCreateBackupPackage.actorEmail = this.tokenService.get()?.email;
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   navigateToPaymentSummary() {
+    this.isLoadingAction = true
     this.getTotalAmount()
     if (this.validateForm.valid) {
       let request: BackupPackageRequestModel = new BackupPackageRequestModel()
@@ -189,10 +197,14 @@ export class CreatePackageBackupComponent implements OnInit {
         }
       ]
       this.orderService.validaterOrder(request).subscribe(data => {
+        this.isLoadingAction = false
         if(data.success) {
           var returnPath: string = '/app-smart-cloud/backup/packages/create'
           console.log('request', request)
           this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
         }
       }, error => {
         console.log('error', error)
@@ -204,6 +216,7 @@ export class CreatePackageBackupComponent implements OnInit {
   }
 
   getTotalAmount() {
+    this.isLoadingAction = true
     this.packageBackupInit()
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -215,6 +228,7 @@ export class CreatePackageBackupComponent implements OnInit {
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
+      this.isLoadingAction = false
       this.orderItem = result.data
       this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount
     });

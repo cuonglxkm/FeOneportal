@@ -163,7 +163,7 @@
                         *ngIf="control.hasError('pattern')">{{ 'app.file.system.error.pattern.storage' | i18n }}
                       </ng-container>
                       <ng-container *ngIf="control.hasError('notEnough') || control.hasError('outOfStorage')">
-                        {{ 'app.alert.quota.vpc' | i18n }}<a [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a>{{ 'app.alert.quota.vpc.next' | i18n }}
+                        {{ 'app.alert.quota.vpc' | i18n }} <a [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a> {{ 'app.alert.quota.vpc.next' | i18n }}
                       </ng-container>
                     </ng-template>
                   </nz-form-control>
@@ -196,7 +196,12 @@
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </nz-col>
                   <nz-col nzSpan="10">
-                    <span class="text-label">{{ storageBuyVpc }} (GB)</span>
+                    <span class="text-label">
+                      <nz-row style="text-align: right;">
+                        <nz-col nzSpan="4">{{ storageBuyVpc }}</nz-col>
+                        <nz-col nzSpan="4">(GB)</nz-col>
+                      </nz-row>
+                    </span>
                   </nz-col>
                 </nz-row>
                 <nz-row>
@@ -204,7 +209,12 @@
                     <span class="text-label">{{'app.backup.package.storage.used'|i18n}}:</span>
                   </nz-col>
                   <nz-col nzSpan="10">
-                    <span class="text-label">{{ storageUsed }} (GB)</span>
+                    <span class="text-label">
+                      <nz-row style="text-align: right;">
+                        <nz-col nzSpan="4">{{ storageUsed }}</nz-col>
+                        <nz-col nzSpan="4">(GB)</nz-col>
+                      </nz-row>
+                    </span>
                   </nz-col>
                 </nz-row>
                 <nz-row>
@@ -212,7 +222,12 @@
                     <span class="text-label">{{'Dung lượng còn lại'|i18n}}:</span>
                   </nz-col>
                   <nz-col nzSpan="10">
-                    <span class="text-label">{{ storageRemaining }} (GB)</span>
+                    <span class="text-label">
+                      <nz-row style="text-align: right;">
+                        <nz-col nzSpan="4">{{ storageRemaining }}</nz-col>
+                        <nz-col nzSpan="4">(GB)</nz-col>
+                      </nz-row>
+                    </span>
                   </nz-col>
                 </nz-row>
               </nz-col>
@@ -233,9 +248,11 @@
                            nzSize="large"
                            [(ngModel)]="snapshotSelected"
                            [nzPlaceHolder]="'app.item.switch.file.system.snapshot'|i18n"
+                           (ngModelChange)="onSnapshotChangeSelected($event)"
                            [nzShowSearch]="false" style="width: 100%;">
-                  <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
-                             [nzValue]="item.value"></nz-option>
+                  <nz-option *ngFor="let item of snapshotList"
+                             [nzLabel]="item.name + '(' + item.size + ' GB)'"
+                             [nzValue]="item.id"></nz-option>
                 </nz-select>
                 <ng-template #snapshotError let-control>
                   <ng-container *ngIf="control.hasError('required')">{{'app.file.storage.snapshot.required.select'|i18n}}</ng-container>

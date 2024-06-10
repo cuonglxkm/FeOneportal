@@ -65,40 +65,9 @@
             </nz-form-control>
           </nz-form-item>
         </nz-card>
-        <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">{{ 'app.extension.info' | i18n }}</span>
-          <nz-row style="margin-top: 20px;">
-            <nz-col nzSpan="12">
-              <span class="text-label" style="color: #F50000;">{{ 'app.service.start.date' | i18n }}: {{ loadBalancer.createDate | date:'HH:mm:ss dd/MM/yyyy' }}</span>
-            </nz-col>
-            <nz-col nzSpan="12">
-              <span class="text-label" style="color: #F50000;">{{ 'app.service.expiration-date' | i18n }}: {{ loadBalancer.expiredDate | date:'HH:mm:ss dd/MM/yyyy' }} </span>
-            </nz-col>
-          </nz-row>
-          <nz-form-item style="margin-top: 10px;">
-            <nz-form-label nzFor="time">
-              <span class="text-label">{{ 'app.months.for.extend' | i18n }}</span>
-            </nz-form-label>
-            <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
-              <nz-input-number style="width:100%; margin-left: 0;" [nzAutoFocus]="true" class="input-custom"
-                               formControlName="time"
-                               nzMin="1" nzMax="100" nzStep="1" />
-              <ng-template #timeErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">{{ 'app.more.0.less.100' | i18n }}</ng-container>
-                <ng-container *ngIf="control.hasError('max') || control.hasError('min') || control.hasError('pattern')">
-                  {{ 'app.more.0.less.100' | i18n }}
-                </ng-container>
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-row>
-            <nz-col>
-              <nz-form-label>
-                <span style="color: #F50000;">{{ 'app.expected.expiry.date' | i18n }}: {{ estimateExpireDate | date: 'dd/MM/yyyy'}} </span>
-              </nz-form-label>
-            </nz-col>
-          </nz-row>
-        </nz-card>
+          <one-portal-service-time-extend *ngIf="loadBalancer != undefined" [createDate]="loadBalancer.createDate"
+                                          [expiredDate]="loadBalancer.expiredDate"
+                                          (valueChanged)="onChangeTime($event)"/>
       </form>
     </nz-col>
     <nz-col nzSpan="8">
@@ -174,10 +143,10 @@
           </nz-row>
           <nz-row>
             <nz-col style="width: 100%">
-              <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
-                      [disabled]="validateForm.invalid">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()" [nzLoading]="loadingCaCulate"
+                      [disabled]="validateForm.invalid || loadingCaCulate">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;"/>
-                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.extend' | i18n }}</span>
+                <span [style.color]="validateForm.invalid || loadingCaCulate ? 'gray' : 'white'">{{ 'app.button.extend' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>
