@@ -1572,59 +1572,65 @@
               'app.estimated.cost' | i18n
             }}</span>
           </div>
-          <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ instanceCreate.serviceName }}
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">{{ nameHdh }}</div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'app.text.package' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ instanceCreate.cpu }} CPUs
-          </div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ instanceCreate.ram }} GB RAM
-          </div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ instanceCreate.volumeSize }} GB Root Disk (<span>{{
-              activeBlockHDD ? 'HDD' : 'SSD'
-            }}</span
-            >)
-          </div>
-          <div *ngIf="isGpuConfig" style="margin-top: 10px" class="text-label">
-            {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'service.bonus' | i18n }}</div>
-          <div
-            *ngIf="externalVolumeHdd > 0"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ externalVolumeHdd }} GB Data Disk (HDD)
-          </div>
-          <div
-            *ngIf="externalVolumeSsd > 0"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ externalVolumeSsd }} GB Data Disk (SSD)
-          </div>
-          <div
-            *ngIf="numberOfIpv4 > 0"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ numberOfIpv4 }} IPv4
-          </div>
-          <div
-            *ngIf="numberOfIpv6 > 0"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ numberOfIpv6 }} IPv6
+          <div class="card-money">
+            <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">
+              {{ instanceCreate.serviceName }}
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">{{ nameHdh }}</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">{{ 'app.text.package' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">
+              {{ instanceCreate.cpu }} CPUs
+            </div>
+            <div style="margin-top: 10px" class="text-label">
+              {{ instanceCreate.ram }} GB RAM
+            </div>
+            <div style="margin-top: 10px" class="text-label">
+              {{ instanceCreate.volumeSize }} GB Root Disk (<span>{{
+                activeBlockHDD ? 'HDD' : 'SSD'
+              }}</span
+              >)
+            </div>
+            <div
+              *ngIf="isGpuConfig"
+              style="margin-top: 10px"
+              class="text-label"
+            >
+              {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">{{ 'service.bonus' | i18n }}</div>
+            <div
+              *ngIf="externalVolumeHdd > 0"
+              style="margin-top: 10px"
+              class="text-label"
+            >
+              {{ externalVolumeHdd }} GB Data Disk (HDD)
+            </div>
+            <div
+              *ngIf="externalVolumeSsd > 0"
+              style="margin-top: 10px"
+              class="text-label"
+            >
+              {{ externalVolumeSsd }} GB Data Disk (SSD)
+            </div>
+            <div
+              *ngIf="numberOfIpv4 > 0"
+              style="margin-top: 10px"
+              class="text-label"
+            >
+              {{ numberOfIpv4 }} IPv4
+            </div>
+            <div
+              *ngIf="numberOfIpv6 > 0"
+              style="margin-top: 10px"
+              class="text-label"
+            >
+              {{ numberOfIpv6 }} IPv6
+            </div>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
