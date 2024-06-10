@@ -91,6 +91,10 @@ img {
   border-radius: 4px;
 }
 
+.content {
+  font-size: 16px;
+}
+
 .description-title {
   font-weight: 600;
   font-size: 28px;
@@ -147,10 +151,11 @@ img {
   border-radius: 8px;
 }
 
-[data-theme='compact'] :host ::ng-deep label, span, input {
-  font-size: 16px;
+[data-theme='compact'] :host ::ng-deep .content {
+  font-size: 14px;
 }
 
-[data-theme='compact'] :host ::ng-deep label, span, input {
-  font-size: 16px;
+[data-theme='compact'] :host ::ng-deep .header-table {
+  font-weight: 600;
+  background-color: #E2EEFC;
 }

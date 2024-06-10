@@ -84,6 +84,10 @@ textarea,
   border-radius: 8px;
 }
 
+.content {
+  font-size: 16px;
+}
+
 .warning-description {
   font-size: 14px;
 }
@@ -120,7 +124,7 @@ textarea,
   border-radius: 8px;
 }
 
-[data-theme='dark'] :host ::ng-deep label, span {
+[data-theme='compact'] :host ::ng-deep .content {
   font-size: 16px;
 }
 
@@ -138,7 +142,7 @@ textarea,
   border-radius: 8px;
 }
 
-[data-theme='compact'] :host ::ng-deep label, span, input, p {
+[data-theme='compact'] :host ::ng-deep .content {
   font-size: 14px;
 }
 

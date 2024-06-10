@@ -5,8 +5,8 @@
     <nz-table [nzTemplateMode]="true">
       <tbody>
         <tr>
-          <td class="w-20 content-table">ID:</td>
-          <td class="content-table">
+          <td class="w-20 content-table content">ID:</td>
+          <td class="content-table content">
             <ng-container *ngIf="selectedSG; else loadingSGIdTpl">
               <span class="weight-600">{{selectedSG.id}}</span>
               <!-- <button nz-button nzType="text" (click)="handleCopyIDGroup()" class="action-icon borderless"
@@ -25,8 +25,8 @@
           </td>
         </tr>
         <tr>
-          <td class="w-20 content-table">{{ 'app.cluster.sg-name' | i18n }}</td>
-          <td class="weight-600 content-table">
+          <td class="w-20 content-table content">{{ 'app.cluster.sg-name' | i18n }}</td>
+          <td class="weight-600 content-table content">
             <ng-container *ngIf="detailCluster && detailCluster.securityGroupName; else loadingSGNameTpl">
               {{detailCluster.securityGroupName}}
             </ng-container>
@@ -36,8 +36,8 @@
           </td>
         </tr>
         <tr>
-          <td class="w-20 content-table">{{ 'app.text.created-date' | i18n }}:</td>
-          <td class="content-table">{{detailCluster?.createdDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+          <td class="w-20 content-table content">{{ 'app.text.created-date' | i18n }}:</td>
+          <td class="content-table content">{{detailCluster?.createdDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
         </tr>
       </tbody>
     </nz-table>
@@ -48,14 +48,14 @@
           <one-portal-inbound [listOfInbound]="listOfInbound" (deletedInbound)="saveLogSG($event)"></one-portal-inbound>
         </nz-tab>
         <ng-template #inboundTitleTpl>
-          <label>Inbound</label>
+          <label class="content">Inbound</label>
         </ng-template>
 
         <nz-tab [nzTitle]="outboundTitleTpl">
           <one-portal-outbound [listOfOutbound]="listOfOutbound" (deletedOutbound)="saveLogSG($event)"></one-portal-outbound>
         </nz-tab>
         <ng-template #outboundTitleTpl>
-          <label>Outbound</label>
+          <label class="content">Outbound</label>
         </ng-template>
       </nz-tabset>
     </div>

@@ -27,7 +27,7 @@
   display: flex;
 }
 
-.padtop-30 {
+.expire-info {
   padding-top: 30px;
 }
 
@@ -183,7 +183,7 @@ h3 {
   font-weight: 600;
 }
 
-label, span {
+.content {
   font-size: 16px;
 }
 
@@ -413,7 +413,7 @@ label, span {
   border-radius: 8px;
 }
 
-[data-theme='dark'] :host ::ng-deep label, span, input, p {
+[data-theme='dark'] ::ng-deep .content {
   font-size: 16px;
 }
 
@@ -440,6 +440,14 @@ label, span {
   border-radius: 8px;
 }
 
-[data-theme='compact'] :host ::ng-deep label, span, input, p {
+[data-theme='compact'] :host ::ng-deep .content {
   font-size: 14px;
+}
+
+[data-theme='compact'] :host ::ng-deep .ant-form label {
+  font-size: 14px;
+}
+
+[data-theme='compact'] :host ::ng-deep .expire-info {
+  padding-top: 20px;
 }

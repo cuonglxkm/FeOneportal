@@ -163,3 +163,12 @@ img {
   font-size: 18px;
   font-weight: 600;
 }
+
+[data-theme='compact'] :host ::ng-deep .content {
+  font-size: 14px;
+}
+
+[data-theme='compact'] :host ::ng-deep .header-table {
+  font-weight: 600;
+  background-color: #E2EEFC;
+}
