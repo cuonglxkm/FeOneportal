@@ -769,7 +769,9 @@ export class InstancesCreateComponent implements OnInit {
         });
         if (this.isSnapshot) {
           this.listOfferFlavors = this.listOfferFlavors.filter(
-            (e) => Number.parseInt(e.description.split(' ')[7]) > 2
+            (e) =>
+              Number.parseInt(e.description.split(' ')[7]) >=
+              this.sizeSnapshotVL
           );
         }
         this.listOfferFlavors = this.listOfferFlavors.sort(
