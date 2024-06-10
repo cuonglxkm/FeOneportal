@@ -201,7 +201,7 @@ export class CreateVolumeComponent implements OnInit {
     this.typeVPC = project.type;
 
 
-    this.getListSnapshot();
+    // this.getListSnapshot();
     this.getListInstance();
 
     this.getCatalogOffer('MultiAttachment');
@@ -230,21 +230,11 @@ export class CreateVolumeComponent implements OnInit {
     this.snapshotSelected = value;
     console.log('snapshot selected: ', this.snapshotSelected);
     if (this.snapshotSelected != undefined) {
-      this.snapshotvlService.getDetailSnapshotSchedule(this.snapshotSelected).subscribe(data => {
-        console.log('data', data);
-        this.validateForm.controls.storage.setValidators([Validators.min(data.sizeInGB)])
-        this.validateForm.controls.storage.setValue(data.sizeInGB)
-        if(data.volumeType == 'hdd') {
-          this.selectedValueHDD = true
-          this.selectedValueSSD = false
-        }
-        if(data.volumeType == 'ssd') {
-          this.selectedValueSSD = true
-          this.selectedValueHDD = false
-        }
-      });
+      this.getDetailSnapshotVolume(this.snapshotSelected);
     }
   }
+
+
 
   onChangeStatusSSD() {
     this.selectedValueSSD = true;
@@ -388,8 +378,6 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.actorEmail = this.tokenService.get()?.email;
   }
 
-  totalAmountVolume = 0;
-  totalAmountVolumeVAT = 0;
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
 
@@ -456,7 +444,7 @@ export class CreateVolumeComponent implements OnInit {
   getTotalAmount() {
     this.isLoadingAction = true;
     this.volumeInit();
-    console.log('time', this.timeSelected);
+    // console.log('time', this.timeSelected);
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.volumeCreate);
@@ -470,39 +458,75 @@ export class CreateVolumeComponent implements OnInit {
       .pipe(debounceTime(500))
       .subscribe((result) => {
         this.isLoadingAction = false;
-        console.log('thanh tien volume', result.data);
+        // console.log('thanh tien volume', result.data);
         this.orderItem = result.data;
         this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
       });
+  }
+
+  getListSnapshot() {
+    this.isLoadingAction = true;
+    // this.snapshotList = [];
+    this.snapshotvlService.getSnapshotVolumes(9999, 1, this.region, this.project, '', '', '').subscribe(data => {
+      this.isLoadingAction = false
+      console.log('data vl snapshot', data.records)
+      data?.records.forEach(item => {
+        if ((['AVAILABLE', 'KHOITAO'].includes(item.resourceStatus) || ['AVAILABLE', 'KHOITAO'].includes(item.serviceStatus)) && !item.fromRootVolume) {
+          this.snapshotList?.push(item);
+        }
+      });
+      if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
+        // console.log('here',this.activatedRoute.snapshot.paramMap.get('idSnapshot'))
+        const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idSnapshot'));
+        console.log('list snapshot', this.snapshotList?.find(x => x.id == idSnapshot))
+        if (this.snapshotList?.find(x => x.id == idSnapshot)) {
+          // console.log('here 1:')
+          this.onSwitchSnapshot(true);
+          this.snapshotSelected = idSnapshot;
+          this.validateForm.controls.snapshot.setValue(this.snapshotSelected);
+          this.getDetailSnapshotVolume(idSnapshot);
+        }
+      }
+    });
+  }
+
+  getDetailVolume(idVolume) {
+    this.volumeService.getVolumeById(idVolume).subscribe(data => {
+      this.onChangeStatusEncrypt(data.isEncryption)
+      this.onChangeStatusMultiAttach(data.isMultiAttach)
+      console.log('instance', data?.attachedInstances[0].instanceId)
+      this.instanceSelectedChange(data?.attachedInstances[0].instanceId)
+      this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0].instanceId)
+    })
+  }
+
+  getDetailSnapshotVolume(id) {
+    this.snapshotvlService.getDetailSnapshotSchedule(id).subscribe(data => {
+      console.log('data', data);
+      this.validateForm.controls.storage.setValue(data.sizeInGB)
+      this.minStorage = data.sizeInGB
+      this.getDetailVolume(data.volumeId)
+      if(data.volumeType == 'hdd') {
+        this.selectedValueHDD = true
+        this.selectedValueSSD = false
+      }
+      if(data.volumeType == 'ssd') {
+        this.selectedValueSSD = true
+        this.selectedValueHDD = false
+      }
+    });
   }
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.getListSnapshot();
     this.getConfiguration();
     this.onChangeValueStorage();
     this.getTotalAmount();
   }
 
   //
-  getListSnapshot() {
-    this.isLoadingAction = true;
-    this.snapshotList = [];
-    this.snapshotvlService.getSnapshotVolumes(9999, 1, this.region, this.project, '', '', '').subscribe(data => {
-      this.isLoadingAction = false
-      console.log('data vl snapshot', data.records)
-      data?.records.forEach(item => {
-        this.snapshotList?.push(item);
-      });
-      if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
-        console.log('here',this.activatedRoute.snapshot.paramMap.get('idSnapshot'))
-        const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idSnapshot'));
-        if (this.snapshotList?.find(x => x.id == idSnapshot)) {
-          this.onSwitchSnapshot(true);
-          this.snapshotSelected = idSnapshot;
-        }
-      }
-    });
-  }
+
 }

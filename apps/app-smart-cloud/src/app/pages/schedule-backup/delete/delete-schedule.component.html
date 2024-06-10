@@ -1,11 +1,8 @@
-<span nz-icon
-      nzType="delete"
-      nzTheme="outline"
-      nz-popover
-      nzPopoverContent="{{'app.delete' | i18n}}"
-      nzPopoverPlacement="bottom"
-      style="color: #0066B3; margin-right: 10px; cursor: pointer;"
-      (click)="showModal()"></span>
+<img src="assets/imgs/delete.svg" alt=""
+     style="width: 30px; height: 30px; cursor: pointer; margin-left: 5px;"
+     (click)="showModal()"
+     nz-popover nzPopoverPlacement="bottom"
+     [nzPopoverContent]="'app.text.delete'|i18n" />
 <nz-modal [(nzVisible)]="isVisible" nzTitle="{{'schedule.backup.confirm.remove' | i18n}}"
           (nzOnCancel)="handleCancel()" nzCentered>
   <div *nzModalTitle>

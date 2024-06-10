@@ -87,6 +87,7 @@ export class Subnet {
   regionText: string
   networkAddress: string
   subnets: Subnet[]
+  usedBy: string
 }
 
 export class allocationPool {

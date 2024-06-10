@@ -455,6 +455,7 @@ export class InstancesEditVpcComponent implements OnInit {
       );
       return;
     }
+    this.order = new Order();
     this.instanceResizeInit();
     let specificationInstance = JSON.stringify(this.instanceResize);
     let orderItemInstanceResize = new OrderItem();

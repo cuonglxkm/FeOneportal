@@ -843,9 +843,7 @@ export class InstancesComponent implements OnInit {
         '/app-smart-cloud/backup-vm/create/vpc',
         { instanceId: id },
       ]);
-    }
-
-    if (this.typeVpc == 0) {
+    } else {
       this.router.navigate([
         '/app-smart-cloud/backup-vm/create/no-vpc',
         { instanceId: id },
@@ -856,6 +854,13 @@ export class InstancesComponent implements OnInit {
   createBackupSchedule(id: number) {
     this.router.navigate([
       '/app-smart-cloud/schedule/backup/create',
+      { instanceId: id },
+    ], { queryParams: { snapshotTypeCreate: 1 } });
+  }
+
+  createSnapshot(id: number) {
+    this.router.navigate([
+      '/app-smart-cloud/snapshot/create',
       { instanceId: id },
     ]);
   }

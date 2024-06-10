@@ -1,30 +1,28 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { VolumeService } from '../../../shared/services/volume.service';
 import { InstancesService } from '../../instances/instances.service';
 import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
 import { FormSearchPackageSnapshot } from '../../../shared/models/package-snapshot.model';
-import { da, th } from 'date-fns/locale';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { finalize } from 'rxjs';
-import { isThisHour } from 'date-fns';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { LoadingService } from '@delon/abc/loading';
 
 @Component({
   selector: 'one-portal-snapshot-create',
   templateUrl: './snapshot-create.component.html',
   styleUrls: ['./snapshot-create.component.less'],
 })
-export class SnapshotCreateComponent implements OnInit{
+export class SnapshotCreateComponent implements OnInit,OnChanges{
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   orderItem: any;
-  loadingCaCulate = false;
 
   validateForm: FormGroup<{
     name: FormControl<string>
@@ -43,23 +41,27 @@ export class SnapshotCreateComponent implements OnInit{
     {label : 'Snapshot máy ảo', value : 1},
   ]
   vmArray: any;
-  volumeArray: any;
+  volumeArray = [];
   snapshotPackageArray: any;
   vmLoading = true;
   volumeLoading = true;
   snapshotPackageLoading = true;
-
   selectedSnapshotType = 0;
   selectedVolume : any;
   selectedVM : any;
   selectedSnapshotPackage : any;
   projectType = 0;
+  @Input() snapshotTypeCreate : any = 0; // VM:2 Volume:1 none:0
+  loadingCreate: boolean;
+
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
               private volumeService: VolumeService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService,
               private instancesService: InstancesService,
+              private activatedRoute: ActivatedRoute,
+              private loadingSrv: LoadingService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private fb: NonNullableFormBuilder,) {
   }
@@ -68,6 +70,7 @@ export class SnapshotCreateComponent implements OnInit{
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    // this.projectType = regionAndProject.type;
     this.loadSnapshotPackage();
     this.loadVolumeList();
     this.loadVmList();
@@ -80,9 +83,11 @@ export class SnapshotCreateComponent implements OnInit{
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
+    this.projectType = project?.type;
   }
 
   navigateToPaymentSummary() {
+    this.loadingCreate = true;
     const data = {
       name: this.validateForm.controls['name'].value,
       description: this.validateForm.controls['description'].value,
@@ -92,11 +97,15 @@ export class SnapshotCreateComponent implements OnInit{
       projectId: this.project,
       scheduleId: null,
       forceCreate: true,
-      snapshotPackageId: this.selectedSnapshotPackage.id,
+      snapshotPackageId: this.selectedSnapshotPackage?.id,
     }
-    this.volumeService.createSnapshot(data).subscribe(
+    this.volumeService.createSnapshot(data)
+      .pipe(finalize(() => {
+        this.loadingCreate = false;
+      }))
+      .subscribe(
       data => {
-        this.notification.error(this.i18n.fanyi("app.status.success"),'Tạo thành công')
+        this.notification.success(this.i18n.fanyi("app.status.success"),'Tạo thành công')
         this.router.navigate(['/app-smart-cloud/snapshot'])
       },
       error => {
@@ -131,36 +140,81 @@ export class SnapshotCreateComponent implements OnInit{
     )
   }
 
+  idVolume: number;
   private loadVolumeList() {
-    this.volumeService.getVolumes(this.tokenService.get()?.userId,this.project, this.region, 9999, 1 , '', '')
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.volumeService.getVolumes(this.tokenService.get()?.userId,this.project, this.region, 9999, 1 , 'KHOITAO', '')
       .pipe(finalize(() => {
         this.volumeLoading = false;
       }))
       .subscribe(
       data => {
-        this.volumeArray = data.records;
+        this.volumeArray = data?.records.filter(item => {
+          return ['AVAILABLE', 'IN-USE'].includes(item?.serviceStatus);
+        });
+        if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined) {
+          this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId'))
+          console.log('id volume', this.idVolume)
+          // this.selectedSnapshotType = 0;
+          console.log('volume array',this.volumeArray)
+          this.selectedVolume = this.volumeArray?.filter(e => e.id == this.idVolume)[0]
+          console.log('selected volume', this.selectedVolume)
+          this.checkDisable()
+        } else {
+          this.selectedVolume = null;
+          // this.selectedSnapshotType = 1;
+        }
+        // this.volumeArray = data.records;
       }
     )
   }
 
   private loadVmList() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.instancesService.search(1 , 9999, this.region, this.project, '', '' , true, this.tokenService.get()?.userId)
       .pipe(finalize(() => {
+        this.loadingSrv.close();
         this.vmLoading = false;
       }))
       .subscribe(
-      data => {
-        this.vmArray = data.records;
+        data => {
+          const rs1 = data.records.filter(item => {
+            return item.taskState === 'ACTIVE';
+          });
+        this.vmArray = rs1;
+        if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
+          // this.selectedSnapshotType = 1;
+          this.selectedVM = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId')))[0];
+        } else {
+          this.selectedVM = null;
+          // this.selectedSnapshotType = 0;
+        }
       }
     )
   }
 
   checkDisable() {
     this.disableCreate = false;
-    if (this.selectedSnapshotPackage == undefined ||
+    if ((this.selectedSnapshotPackage == undefined && this.projectType != 1) ||
       (this.selectedSnapshotType == 0 && this.selectedVolume == undefined) ||
       (this.selectedSnapshotType == 1 && this.selectedVM == undefined)) {
       this.disableCreate = true;
+    }
+
+    if (this.selectedSnapshotType == 0) {
+      this.validateForm.controls['quota'].setValue(this.selectedVolume?.sizeInGB + 'GB');
+    } else if (this.selectedSnapshotType == 1 ) {
+      this.validateForm.controls['quota'].setValue(this.selectedVM.storage + 'GB');
+    } else {
+      this.validateForm.controls['quota'].setValue('0GB');
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.snapshotTypeCreate && changes.snapshotTypeCreate.previousValue == undefined) {
+      if (this.snapshotTypeCreate != undefined) {
+        this.selectedSnapshotType = this.snapshotTypeCreate;
+      }
     }
   }
 }

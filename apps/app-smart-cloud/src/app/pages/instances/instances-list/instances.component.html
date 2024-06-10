@@ -8,7 +8,11 @@
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{ 'app.instances' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/app-smart-cloud/instances']">{{
+          'app.instances' | i18n
+        }}</a></nz-breadcrumb-item
+      >
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -272,6 +276,19 @@
           />
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
+              <li
+                *ngIf="
+                  data.status.toUpperCase() == 'KHOITAO' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
+                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  data.taskState.toUpperCase() != 'ERROR' &&
+                  data.taskState.toUpperCase() != 'POWERING-OFF'
+                "
+                nz-menu-item
+                (click)="createSnapshot(data.id)"
+              >
+                {{ 'app.snapshot.create' | i18n }}
+              </li>
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&

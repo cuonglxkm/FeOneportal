@@ -156,6 +156,7 @@ export class ObjectStorageExtendComponent implements OnInit {
   order: Order = new Order();
   orderItem: OrderItem[] = [];
   extend() {
+    this.order = new Order();
     this.initobjectStorageExtend();
     let specification = JSON.stringify(this.objectStorageExtend);
     let orderItemOS = new OrderItem();

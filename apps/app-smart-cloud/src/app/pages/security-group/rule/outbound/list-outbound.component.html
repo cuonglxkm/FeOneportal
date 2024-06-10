@@ -45,11 +45,13 @@
             <td nzAlign="center" nzBreakWord>{{ data.portRange }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.remoteIpPrefix }}</td>
             <td nzAlign="center" nzBreakWord>
-              <one-portal-delete-outbound [idOutbound]="data.id"
+              <div *ngIf="!(securityGroupName?.startsWith('shoot'))">
+                <one-portal-delete-outbound [idOutbound]="data.id"
                                           [nameRule]="data.remoteIp"
                                           [region]="regionId"
                                           [project]="projectId"
                                           (onOk)="handleOkDeleteOutbound()" />
+              </div>
             </td>
           </tr>
           </tbody>

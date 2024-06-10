@@ -47,7 +47,7 @@
     "angular-animations": "^0.11.0",
     "angular-json-editor": "^0.2.1",
     "angular-jsoneditor": "^0.0.2",
-    "angularx-qrcode": "^15.0.1",
+    "angularx-qrcode": "16.0.2",
     "antd-css-utilities": "^2.0.4",
     "apexcharts": "^3.45.2",
     "cidr-tools": "^9.1.1",
