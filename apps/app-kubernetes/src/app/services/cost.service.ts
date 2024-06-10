@@ -15,8 +15,6 @@ export class CostService extends BaseService {
     super();
   }
 
-  baseUrl: string = "https://api-dev.onsmartcloud.com";
-
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -26,7 +24,7 @@ export class CostService extends BaseService {
   }
 
   getTotalAmount(data: OrderPayment) {
-    return this.http.post(`${this.baseUrl}/orders/totalamount`, data, { headers: this.getHeaders() });
+    return this.http.post(`${this.baseSCUrl}/orders/totalamount`, data, { headers: this.getHeaders() });
   }
 
 }
