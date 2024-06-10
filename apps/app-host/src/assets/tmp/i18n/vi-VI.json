@@ -43,7 +43,7 @@
   "service.status.violation": "Vi phạm điều khoản",
   "service.status.deleting": "Đang xóa",
   "service.status.error": "Lỗi",
-  "service.status.restoring": "Restoring",
+  "service.status.restoring": "Đang khôi phục",
   "service.status.unknown": "Không xác định",
 
 
