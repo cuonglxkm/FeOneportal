@@ -349,30 +349,42 @@ export class ClusterComponent implements OnInit {
     this.vatCost = 0;
     this.totalCpu = 0; this.totalRam = 0; this.totalStorage = 0;
 
-    const wg = this.myform.get('workerGroup').value;
-    for (let i = 0; i < wg.length; i++) {
-      const cpu = wg[i].cpu ? wg[i].cpu : 0;
-      const ram = wg[i].ram ? wg[i].ram : 0;
-      const storage = +wg[i].volumeStorage ? +wg[i].volumeStorage : 0;
-      const autoScale = wg[i].autoScalingWorker;
-      let nodeNumber: number;
-      if (autoScale) {
-        // TODO: ...
-
-      } else {
-        nodeNumber = wg[i].nodeNumber ? wg[i].nodeNumber : 0;
-      }
-
-      this.totalCpu += nodeNumber * cpu;
-      this.totalRam += nodeNumber * ram;
-      this.totalStorage += nodeNumber * storage;
-    }
-
     const usageTime = this.myform.get('usageTime').value;
     if (!usageTime) return;
 
-    if (this.totalRam > 0 && this.totalStorage > 0 && this.totalCpu > 0)
-      this.onHandleGetTotalAmount();
+    if (this.chooseItem) {
+
+      this.volumePrice = 0;
+      this.workerCostPerMonth = this.chooseItem.price;
+      this.workerPrice = this.chooseItem.price * Number(usageTime);
+
+      this.vatCost = (this.workerPrice + this.volumePrice) * this.vatPercent;
+      this.totalPrice = this.workerPrice + this.volumePrice + this.vatCost;
+      this.offerId = this.chooseItem.offerId;
+
+    } else {
+      const wg = this.myform.get('workerGroup').value;
+      for (let i = 0; i < wg.length; i++) {
+        const cpu = wg[i].cpu ? wg[i].cpu : 0;
+        const ram = wg[i].ram ? wg[i].ram : 0;
+        const storage = +wg[i].volumeStorage ? +wg[i].volumeStorage : 0;
+        const autoScale = wg[i].autoScalingWorker;
+        let nodeNumber: number;
+        if (autoScale) {
+          // TODO: ...
+
+        } else {
+          nodeNumber = wg[i].nodeNumber ? wg[i].nodeNumber : 0;
+        }
+
+        this.totalCpu += nodeNumber * cpu;
+        this.totalRam += nodeNumber * ram;
+        this.totalStorage += nodeNumber * storage;
+      }
+
+      if (this.totalRam > 0 && this.totalStorage > 0 && this.totalCpu > 0)
+        this.onHandleGetTotalAmount();
+    }
 
     // this.workerCostPerMonth = this.priceOfCpu * this.totalCpu + this.priceOfRam * this.totalRam + this.priceOfSsd * this.totalStorage;
     // this.workerPrice = usageTime * this.workerCostPerMonth;
