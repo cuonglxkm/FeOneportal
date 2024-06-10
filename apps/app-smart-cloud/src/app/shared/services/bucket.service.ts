@@ -38,8 +38,24 @@ export class BucketService extends BaseService {
     );
   }
 
+  getUserById(id: number): Observable<any> {
+    let url_ = `/object-storage/id?id=${id}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
   deleteBucket(bucketName: string) {
-    let url_ = `/object-storage/Bucket/Delete/?bucketName=${bucketName}`;
+    let url_ = `/object-storage/Bucket/Delete?bucketName=${bucketName}`;
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+    });
+  }
+
+  deleteOS(id: number) {
+    let url_ = `/object-storage/user/${id}`;
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
       headers: this.httpOptions.headers,
       responseType: 'text',

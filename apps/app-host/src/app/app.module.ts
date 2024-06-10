@@ -18,7 +18,7 @@ import { JsonSchemaModule, SharedModule } from './shared';
 import { CoreModule } from './core/core.module';
 
 import { DefaultInterceptor, I18NService } from './core';
-import { CookieStorageStore, DA_STORE_TOKEN, MemoryStore, SimpleInterceptor } from '@delon/auth';
+import { DA_STORE_TOKEN, SimpleInterceptor, CookieStorageStore, SessionStorageStore  } from '@delon/auth';
 
 import { DatePipe, registerLocaleData } from '@angular/common';
 import {
@@ -72,7 +72,7 @@ const INTERCEPTOR_PROVIDES = [
 ];
 
 const AUTH_PROVIDES = [
-  { provide: DA_STORE_TOKEN, useClass: MemoryStore }
+    { provide: DA_STORE_TOKEN, useClass: CookieStorageStore }
 ]
 // #endregion
 const FORM_MODULES = [JsonSchemaModule];

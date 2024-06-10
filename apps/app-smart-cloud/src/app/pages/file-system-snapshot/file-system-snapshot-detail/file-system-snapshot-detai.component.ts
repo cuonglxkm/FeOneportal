@@ -38,7 +38,7 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
   }
 
   onRegionChange(region: RegionModel) {
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list'])
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot'])
   }
 
   onProjectChange(project: ProjectModel) {
@@ -47,7 +47,7 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
   }
 
   userChangeProject(project: ProjectModel){
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list'])
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot'])
   }
 
   getFileSystemSnapshotById(id) {
@@ -60,7 +60,7 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
       } else {
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.storage.not.exist'));
         this.router.navigate([
-          '/app-smart-cloud/file-system-snapshot/list',
+          '/app-smart-cloud/file-system-snapshot',
         ]);
       }
       this.isLoading = false;
