@@ -1647,34 +1647,30 @@ export class InstancesCreateComponent implements OnInit {
 
           this.listOfDataIPv4.forEach((e: Network) => {
             if (e.ip != '' && e.amount > 0) {
-              for (let i = 0; i < e.amount; ++i) {
-                this.ipInit(e, false);
-                let specificationIP = JSON.stringify(this.ipCreate);
-                let orderItemIP = new OrderItem();
-                orderItemIP.orderItemQuantity = 1;
-                orderItemIP.specification = specificationIP;
-                orderItemIP.specificationType = 'ip_create';
-                orderItemIP.price = (e.price / e.amount) * this.numberMonth;
-                orderItemIP.serviceDuration = this.numberMonth;
-                this.orderItem.push(orderItemIP);
-              }
+              this.ipInit(e, false);
+              let specificationIP = JSON.stringify(this.ipCreate);
+              let orderItemIP = new OrderItem();
+              orderItemIP.orderItemQuantity = e.amount;
+              orderItemIP.specification = specificationIP;
+              orderItemIP.specificationType = 'ip_create';
+              orderItemIP.price = e.price * this.numberMonth;
+              orderItemIP.serviceDuration = this.numberMonth;
+              this.orderItem.push(orderItemIP);
             }
           });
 
           this.listOfDataIPv6.forEach((e: Network) => {
             if (e.ip != '' && e.amount > 0) {
-              for (let i = 0; i < e.amount; ++i) {
-                this.ipInit(e, true);
-                this.ipCreate.useIPv6 = true;
-                let specificationIP = JSON.stringify(this.ipCreate);
-                let orderItemIP = new OrderItem();
-                orderItemIP.orderItemQuantity = 1;
-                orderItemIP.specification = specificationIP;
-                orderItemIP.specificationType = 'ip_create';
-                orderItemIP.price = (e.price / e.amount) * this.numberMonth;
-                orderItemIP.serviceDuration = this.numberMonth;
-                this.orderItem.push(orderItemIP);
-              }
+              this.ipInit(e, true);
+              this.ipCreate.useIPv6 = true;
+              let specificationIP = JSON.stringify(this.ipCreate);
+              let orderItemIP = new OrderItem();
+              orderItemIP.orderItemQuantity = e.amount;
+              orderItemIP.specification = specificationIP;
+              orderItemIP.specificationType = 'ip_create';
+              orderItemIP.price = e.price* this.numberMonth;
+              orderItemIP.serviceDuration = this.numberMonth;
+              this.orderItem.push(orderItemIP);
             }
           });
 
