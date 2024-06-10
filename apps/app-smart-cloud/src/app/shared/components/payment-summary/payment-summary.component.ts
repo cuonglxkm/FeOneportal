@@ -83,8 +83,8 @@ export class PaymentSummaryComponent implements OnInit {
   isLoadingUpdateInfo: boolean = false;
   radioValue = 1;
   options = [
-    { label: 'Khách hàng doanh nghiệp', value: 1 },
-    { label: 'Khách hàng cá nhân', value: 2 },
+    { label: this.i18n.fanyi('app.invoice.export.customer1'), value: 1 },
+    { label: this.i18n.fanyi('app.invoice.export.customer2'), value: 2 },
   ];
 
   constructor(
@@ -645,7 +645,7 @@ export class PaymentSummaryComponent implements OnInit {
         this.isLoadingUpdateInfo = false;
         this.notification.success(
           this.i18n.fanyi('app.status.success'),
-          this.i18n.fanyi('Cập nhật thông tin xuất hóa đơn thành công')
+          this.i18n.fanyi('app.invoice.pop-up.update.success')
         );
         this.isVisibleConfirm = false;
         this.isVisibleCustomerInvoice = false;
@@ -654,8 +654,8 @@ export class PaymentSummaryComponent implements OnInit {
       error: (e) => {
         this.isLoadingUpdateInfo = false;
         this.notification.error(
-          e.statusText,
-          this.i18n.fanyi('Cập nhật thông tin xuất hóa đơn thất bại')
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.invoice.pop-up.update.fail')
         );
       },
     });

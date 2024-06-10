@@ -3104,5 +3104,38 @@
 
   "app.router.name" : "Tên Router",
 
-  "app.load.listener.name" : "Tên listener"
+  "app.load.listener.name" : "Tên listener",
+
+  "app.invoice.pop-up.update.title": "Cập nhật thông tin xuất hóa đơn",
+  "app.invoice.pop-up.update.customer": "Tên người mua",
+  "app.invoice.pop-up.update.customer.alert1": "Tên người mua không được để trống",
+  "app.invoice.pop-up.update.customer.alert2": "Tên người mua không chứa ký tự đặc biệt",
+  "app.invoice.pop-up.update.email": "Email nhận hóa đơn",
+  "app.invoice.pop-up.update.email.alert1": "Email không được để trống",
+  "app.invoice.pop-up.update.email.alert2": "Email sai định dạng",
+  "app.invoice.pop-up.update.phone.alert1": "Số điện thoại không được để trống",
+  "app.invoice.pop-up.update.customerGroup": "Nhóm khách hàng",
+  "app.invoice.pop-up.update.customerType": "Loại khách hàng",
+  "app.invoice.pop-up.update.company": "Tên công ty",
+  "app.invoice.pop-up.update.company.alert": "Tên công ty không được để trống",
+  "app.invoice.pop-up.update.company.placeholder": "Nhập tên công ty",
+  "app.invoice.pop-up.update.tax": "Mã số thuế",
+  "app.invoice.pop-up.update.tax.alert1": "Mã số thuế không được để trống",
+  "app.invoice.pop-up.update.tax.alert2": "Mã số thuế chỉ cho nhập số và dấu gạch ngang",
+  "app.invoice.pop-up.update.address": "Địa chỉ chi tiết",
+  "app.invoice.pop-up.update.address.alert": "Địa chỉ không được để trống",
+  "app.invoice.pop-up.update.warning.title": "* Quý khách lưu ý:",
+  "app.invoice.pop-up.update.warning.des": "- Trước khi thực hiện xuất hóa đơn điện tử lần đầu, khách hàng hãy cập nhật thông tin hiển thị trên hóa đơn điện tử:",
+  "app.invoice.pop-up.update.confirm.title": "Xác nhận lưu thông tin xuất hóa đơn",
+  "app.invoice.pop-up.update.confirm.des": "Bạn có muốn lưu thông tin khách hàng cho lần xuất hóa đơn sau không?",
+  "app.invoice.pop-up.update.confirm.des2": "Bạn hãy thực hiện nhấn <b>Xác nhận</b> để lưu thông tin",
+  "app.invoice.pop-up.update.success": "Cập nhật thông tin xuất hóa đơn thành công",
+  "app.invoice.pop-up.update.fail": "Cập nhật thông tin xuất hóa đơn thất bại",
+  "app.invoice.export": "Xuất hóa đơn",
+  "app.invoice.export.company": "Tên đơn vị",
+  "app.invoice.export.company.alert": "Tên đơn vị không được để trống",
+  "app.invoice.export.customer1": "Khách hàng doanh nghiệp",
+  "app.invoice.export.customer2": "Khách hàng cá nhân",
+  "app.vpn-connection.create.fail": "Kiểm tra lại Router Interface! Vui lòng thêm Router Interface với Subnet giống trong Endpoint Group!"
+
 }

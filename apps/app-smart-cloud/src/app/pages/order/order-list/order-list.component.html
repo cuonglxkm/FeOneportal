@@ -64,7 +64,7 @@
           <a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a>
         </td>
         <!-- <td>{{ data.note }}</td> -->
-        <td>{{ data?.orderItems[0] }}</td>
+        <td><div *ngFor="let item of data?.orderItems">{{ item }}</div></td>
       
         <td>{{ data.orderDate | date : 'HH:mm:ss dd/MM/YYYY' }}</td>
         <td [ngStyle]="{
