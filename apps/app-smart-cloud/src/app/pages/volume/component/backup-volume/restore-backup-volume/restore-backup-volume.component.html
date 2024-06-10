@@ -63,7 +63,7 @@
                   <nz-form-control>
                     <input *ngIf="typeVpc == 1" nz-input class="input-custom"
                            [value]="projectDetail?.cloudProject?.quotaBackupVolumeInGb" [disabled]="true" />
-                    <input *ngIf="typeVpc == 0" nz-input class="input-custom" [value]="backupPackageDetail?.sizeInGB"
+                    <input *ngIf="typeVpc == 0 || typeVpc == 2" nz-input class="input-custom" [value]="backupPackageDetail?.sizeInGB"
                            [disabled]="true" />
                   </nz-form-control>
                 </nz-form-item>
@@ -82,7 +82,7 @@
                 </nz-form-item>
               </nz-col>
             </nz-row>
-            <nz-form-item *ngIf="typeVpc == 0">
+            <nz-form-item *ngIf="typeVpc == 0 || typeVpc == 2">
               <nz-form-label>
                 <span style="color: #FF0000;">{{ 'app.service.expiration-date' | i18n }}
                   : {{ backupPackageDetail?.expirationDate | date: 'HH:mm:ss dd/MM/yyyy' }}</span>
@@ -122,7 +122,7 @@
                                  (ngModelChange)="volumeSelectedChange($event)">
                         <nz-option *ngFor="let data of listVolumes"
                                    [nzValue]="data.id"
-                                   [nzLabel]="data.name"></nz-option>
+                                   [nzLabel]="data.name + '(' + data.sizeInGB + ' GB)'"></nz-option>
                       </nz-select>
                     </nz-form-control>
                   </nz-form-item>

@@ -87,7 +87,7 @@
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips>
                   <nz-select nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}" nzAllowClear
-                             [(ngModel)]="selectedVolume" [disabled] = "volumeLoading" [nzLoading]="volumeLoading" (ngModelChange)="checkDisable()" [ngModelOptions]="{ standalone: true }" nzSize="large">
+                             [(ngModel)]="selectedVolume" [disabled]="volumeLoading" [nzLoading]="volumeLoading" (ngModelChange)="checkDisable()" [ngModelOptions]="{ standalone: true }" nzSize="large">
                     <nz-option *ngFor="let index of volumeArray" [nzValue]="index"
                                [nzLabel]="index.name"></nz-option>
                   </nz-select>

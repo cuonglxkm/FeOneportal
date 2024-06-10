@@ -74,4 +74,16 @@ export class VpcService extends BaseService {
   updateVpc(request: any, id: any) {
     return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/" + id, request, this.httpOptions);
   }
+  createIpPublic(IP: any): Observable<any>  {
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.httpOptions);
+  }
+  getStepBlock(name:string): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.configurations + '?name=' +name);
+  }
+  getTotalAmount(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
+      data
+    );
+  }
 }

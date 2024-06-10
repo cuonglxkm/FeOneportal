@@ -1187,7 +1187,7 @@ export class RestoreBackupVmComponent implements OnInit {
     this.instanceInit();
     this.dataService
       .checkflavorforimage(
-        Number.parseInt(this.backupVmModel?.systemInfoBackups[0].imageId),
+        this.backupVmModel?.systemInfoBackups[0].imageIdInt,
         this.restoreInstanceBackup.volumeSize,
         this.restoreInstanceBackup.ram,
         this.restoreInstanceBackup.cpu

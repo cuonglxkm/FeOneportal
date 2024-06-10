@@ -125,6 +125,7 @@
                 [nzPlaceHolder]="'-- ' + ('app.choose.snapshot' | i18n) + ' --'"
                 [nzShowSearch]="true"
                 [(ngModel)]="selectedSnapshot"
+                (ngModelChange)="changeSelectedSnapshot()"
                 [ngModelOptions]="{ standalone: true }"
                 nzSize="large"
               >

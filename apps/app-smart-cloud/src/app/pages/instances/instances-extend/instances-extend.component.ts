@@ -234,6 +234,8 @@ export class InstancesExtendComponent implements OnInit {
     this.order.customerId = this.customerId;
     this.order.createdByUserId = this.customerId;
     this.order.note = 'instance extend';
+    this.totalVAT = this.totalVAT;
+    this.totalincludesVAT = this.totalincludesVAT;
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 
