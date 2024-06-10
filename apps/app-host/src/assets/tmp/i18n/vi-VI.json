@@ -3101,7 +3101,7 @@
   "app.vpn-connection-delete.success": "Xóa VPN Connection thành công",
   "app.vpn-connection-delete.fail": "Xóa VPN Connection thất bại",
 
-  "app.router.name" : "Tên Routers",
+  "app.router.name" : "Tên Router",
 
   "app.load.listener.name" : "Tên listener"
 }

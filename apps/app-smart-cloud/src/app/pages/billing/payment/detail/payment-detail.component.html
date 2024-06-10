@@ -37,7 +37,7 @@
       <div nz-col nzSpan="12">
         <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.customerName" | i18n}}:</span>
-          <span class="fw-600">{{ (userModel$ | async)?.name === '' ? '-' : (userModel$ | async)?.name}}</span>
+          <span class="fw-600">{{ (userModel$ | async)?.fullName === '' ? '-' : (userModel$ | async)?.fullName}}</span>
         </nz-row>
         <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.phone" | i18n}}:</span>
@@ -67,7 +67,7 @@
         </nz-row>
         <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.invoiceCode" | i18n}}:</span>
-          <span class="fw-600" style="color: #248FCC;">{{ payment.invoiceIssuedId === 0 ? '-' : payment.invoiceIssuedId  }}</span>
+          <span class="fw-600" style="color: #248FCC;">{{ payment.eInvoiceCode === null ? '-' : payment.eInvoiceCode  }}</span>
         </nz-row>
       </div>
     </nz-row>
@@ -170,8 +170,9 @@
             </td>
           </tr>
         </nz-table>
-        <div *ngIf="payment.paymentLatestStatus == 'PAID'" style="margin-top: 20px;">
-          <button style="width: 100%; border: none" nz-button (click)="download(payment.invoiceIssuedId)"><one-portal-svg-icon [icon]="'icon_download_pdf'" class="icon-padding-right"></one-portal-svg-icon> {{"app.payment-detail.downloadPdf" | i18n}}</button>
+        <div (click)="download(payment.eInvoiceCode)" *ngIf="payment.paymentLatestStatus == 'PAID'" style="margin-top: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center;">
+          <span style="border: none" nz-button><one-portal-svg-icon [icon]="'icon_download_pdf'" class="icon-padding-right"></one-portal-svg-icon> </span>
+          <span class="text-label" style="color: #0066B0">{{"app.payment-detail.downloadPdf" | i18n}}</span>
         </div>
         <div *ngIf="payment.paymentLatestStatus == 'FAILED'" style="margin-top: 20px;">
           <button style="width: 100%" nz-button><span nz-icon nzType="shop" nzTheme="outline"></span>Mua lại</button>

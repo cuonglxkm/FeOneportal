@@ -15,7 +15,8 @@ import { PaymentModel } from 'src/app/shared/models/payment.model';
 import { Observable, pipe, shareReplay, tap } from 'rxjs';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { OrderDTOSonch } from 'src/app/shared/models/order.model';
-
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas'
 class ServiceInfo {
   name: string;
   price: number;
@@ -86,13 +87,28 @@ export class PaymentDetailComponent implements OnInit {
   }
 
   download(id: number) {
-    this.service.export(id).subscribe((data: Blob) => {
-      // const blob = new Blob([data], {type: 'application/docx' });
-      let downloadURL = window.URL.createObjectURL(data);
-      let link = document.createElement('a');
-      link.href = downloadURL;
-      link.download = 'invoice_' + id + '.docx';
-      link.click();
+    this.service.exportInvoice(id).subscribe((data) => {
+      const element = document.createElement('div');
+      element.style.width = '268mm';
+      element.style.height = '371mm';
+      if (typeof data === 'string' && data.trim().length > 0) {
+        element.innerHTML = data;
+        
+        document.body.appendChild(element);
+        
+        html2canvas(element).then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+          pdf.save(`invoice_${id}.pdf`);
+          
+          document.body.removeChild(element);
+        });
+      } else {
+        console.log('error:', data);
+      }
+    }, (error) => {
+      console.log('error:', error);
     });
   }
 

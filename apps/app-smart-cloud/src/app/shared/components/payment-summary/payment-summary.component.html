@@ -251,7 +251,7 @@
                 >{{ 'app.payment-detail.customerName' | i18n }}:</span
               >
               <span nz-col nzSpan="20" class="text-16">{{
-                userModel.name || ''
+                userModel.fullName === '' ? '-' : userModel.fullName
               }}</span>
             </nz-row>
             <nz-row style="height: 50px">
