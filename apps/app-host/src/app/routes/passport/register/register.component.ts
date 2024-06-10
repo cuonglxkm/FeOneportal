@@ -152,6 +152,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   // #endregion
 
   submit(): void {
+    console.log('submit register')
     this.error = '';
     Object.keys(this.form.controls).forEach((key) => {
       const control = (this.form.controls as NzSafeAny)[key] as AbstractControl;

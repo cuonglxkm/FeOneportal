@@ -271,7 +271,6 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       this.storageBuyVpc = data.cloudProject?.quotaShareInGb
       this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
       this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
-      console.log('share remaining', this.storageRemaining)
       this.isLoading = false
     })
   }
@@ -297,8 +296,6 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
           if (data.success) {
           var returnPath: string =
             '/app-smart-cloud/file-system-snapshot/create';
-          console.log('request', request);
-          console.log('service name', this.formCreate.serviceName);
           this.router.navigate(['/app-smart-cloud/order/cart'], {
             state: { data: request, path: returnPath },
           });
@@ -329,7 +326,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
                       this.i18n.fanyi('app.file.snapshot.create.success')
                     );
                     this.router.navigate([
-                      '/app-smart-cloud/file-system-snapshot/list',
+                      '/app-smart-cloud/file-system-snapshot',
                     ]);
                   }
                 } else {
@@ -379,7 +376,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -388,6 +385,6 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   }
 
   userChangeProject(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot']);
   }
 }

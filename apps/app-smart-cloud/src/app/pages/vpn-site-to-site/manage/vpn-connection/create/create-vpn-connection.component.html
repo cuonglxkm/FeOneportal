@@ -388,8 +388,7 @@
                   <span
                     nz-icon
                     [nzType]="preSharedKeyVisible ? 'eye-invisible' : 'eye'"
-                    (click)="preSharedKeyVisible = !preSharedKeyVisible"
-                    appTrim
+                    (click)="preSharedKeyVisible = !preSharedKeyVisible"                   
                     style="cursor: pointer"
                   ></span>
                 </ng-template>
@@ -593,11 +592,7 @@
           <div style="margin-bottom: 20px">
             <h3 class="custom-subtitle">Remote Local Subnet</h3>
             <span>{{ selectedRemoteEndpointGroupName }}</span>
-          </div>
-          <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Pre - Shared Key (PSK) string</h3>
-            <span class="text-break">{{ form.value.preSharedKey }}</span>
-          </div>
+          </div>      
         </div>
         <button
           (click)="handleCreate()"
