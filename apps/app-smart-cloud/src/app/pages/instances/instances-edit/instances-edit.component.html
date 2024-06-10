@@ -816,6 +816,19 @@
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
               <span class="text-value">
+                {{ 'app.fee.resize' | i18n }}
+              </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalAmount | number }}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">
                 {{ 'app.cost.vat' | i18n }}
               </span>
             </nz-col>
