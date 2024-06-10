@@ -33,7 +33,9 @@
               nz-checkbox
               [(ngModel)]="isCheckedExportInvoice"
               (ngModelChange)="updateExportInvoice($event)"
-              >Xuất hóa đơn</span
+              >{{
+                'app.invoice.export' | i18n
+              }}</span
             >
           </div>
         </div>
@@ -45,12 +47,14 @@
           "
         >
           <div style="margin-bottom: 20px">
-            <span class="text-label fw-600">Nhóm khách hàng</span>
+            <span class="text-label fw-600">{{
+              'app.invoice.pop-up.update.customerGroup' | i18n
+            }}</span>
           </div>
           <nz-radio-group
             [ngModelOptions]="{ standalone: true }"
             [(ngModel)]="radioValue"
-            (ngModelChange)="changeOptionInvoices($event)"
+            (ngModelChange)="changeOptionInvoices($event)" 
             class="mb-5"
           >
             <ng-container *ngFor="let item of options">
@@ -69,7 +73,9 @@
                 <nz-form-control [nzErrorTip]="nameCustomerErrorTpl">
                   <nz-form-label nzFor="name">
                     <div>
-                      <span>Tên người mua</span>
+                      <span>{{
+                        'app.invoice.pop-up.update.customer' | i18n
+                      }}</span>
                       (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     </div>
                   </nz-form-label>
@@ -85,11 +91,15 @@
                 </nz-form-control>
                 <ng-template #nameCustomerErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
-                    >Tên người mua không được để trống</ng-container
+                    >{{
+                      'app.invoice.pop-up.update.customer.alert1' | i18n
+                    }}</ng-container
                   >
                   <ng-container
                     *ngIf="control.hasError('containSpecialExceptComma')"
-                    >Tên người mua không chứa ký tự đặc biệt</ng-container
+                    >{{
+                      'app.invoice.pop-up.update.customer.alert2' | i18n
+                    }}</ng-container
                   >
                 </ng-template>
               </nz-form-item>
@@ -99,7 +109,9 @@
                 <nz-form-control [nzErrorTip]="companyNameErrorTpl">
                   <nz-form-label nzFor="name">
                     <div>
-                      <span>Tên đơn vị</span>
+                      <span>{{
+                        'app.invoice.export.company' | i18n
+                      }}</span>
                         <ng-container *ngIf="radioValue === 1">
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     </ng-container>
@@ -117,7 +129,9 @@
                 </nz-form-control>
                 <ng-template #companyNameErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
-                    >Tên đơn vị không được để trống</ng-container
+                    >{{
+                      'app.invoice.export.company.alert' | i18n
+                    }}</ng-container
                   >
                 </ng-template>
               </nz-form-item>
@@ -127,7 +141,9 @@
                 <nz-form-control [nzErrorTip]="taxCodeErrorTpl">
                   <nz-form-label nzFor="name">
                     <div>
-                      <span>Mã số thuế</span>
+                      <span>{{
+                        'app.invoice.pop-up.update.tax' | i18n
+                      }}</span>
                       <ng-container *ngIf="radioValue === 1">
                         (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                       </ng-container>
@@ -145,10 +161,14 @@
                 </nz-form-control>
                 <ng-template #taxCodeErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
-                    >Mã số thuế không được để trống</ng-container
+                    >{{
+                      'app.invoice.pop-up.update.tax.alert1' | i18n
+                    }}</ng-container
                   >
                   <ng-container *ngIf="control.hasError('pattern')"
-                    >Mã số thuế chỉ cho nhập số và dấu gạch ngang</ng-container
+                    >{{
+                      'app.invoice.pop-up.update.tax.alert2' | i18n
+                    }}</ng-container
                   >
                 </ng-template>
               </nz-form-item>
@@ -158,7 +178,9 @@
                 <nz-form-control [nzErrorTip]="addressErrorTpl">
                   <nz-form-label nzFor="name">
                     <div>
-                      <span>Địa chỉ</span>
+                      <span>{{
+                        'app.order-detail.address' | i18n
+                      }}</span>
                       <ng-container *ngIf="radioValue === 1">
                         (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                       </ng-container>
@@ -176,7 +198,9 @@
                 </nz-form-control>
                 <ng-template #addressErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
-                    >Địa chỉ không được để trống</ng-container
+                    >{{
+                      'app.invoice.pop-up.update.address.alert' | i18n
+                    }}</ng-container
                   >
                 </ng-template>
               </nz-form-item>
@@ -186,7 +210,9 @@
                 <nz-form-control [nzErrorTip]="phoneErrorTpl">
                   <nz-form-label nzFor="name">
                     <div>
-                      <span>Số điện thoại</span>
+                      <span>{{
+                        'form.account.phone' | i18n
+                      }}</span>
                       <ng-container *ngIf="radioValue === 1">
                         (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                       </ng-container>
@@ -204,7 +230,9 @@
                 </nz-form-control>
                 <ng-template #phoneErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
-                    >Số điện thoại không được để trống</ng-container
+                    >{{
+                      'app.invoice.pop-up.update.phone.alert1' | i18n
+                    }}</ng-container
                   >
                   <ng-container *ngIf="control.hasError('validPhoneNumber')">{{
                     'validation.phone-number.wrong-format' | i18n
@@ -233,10 +261,14 @@
                 </nz-form-control>
                 <ng-template #emailErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
-                    >Email không được để trống</ng-container
+                    >{{
+                      'app.invoice.pop-up.update.email.alert1' | i18n
+                    }}</ng-container
                   >
                   <ng-container *ngIf="control.hasError('validEmail')"
-                    >Email sai định dạng</ng-container
+                    >{{
+                      'app.invoice.pop-up.update.email.alert2' | i18n
+                    }}</ng-container
                   >
                 </ng-template>
               </nz-form-item>
@@ -251,7 +283,7 @@
                 >{{ 'app.payment-detail.customerName' | i18n }}:</span
               >
               <span nz-col nzSpan="20" class="text-16">{{
-                userModel.name || ''
+                userModel.fullName === '' ? '-' : userModel.fullName
               }}</span>
             </nz-row>
             <nz-row style="height: 50px">
@@ -617,7 +649,7 @@
 <!-- Customer Invoice -->
 <nz-modal
   [(nzVisible)]="isVisibleCustomerInvoice"
-  nzTitle="Cập nhật thông tin xuất hóa đơn" [nzCloseIcon]="false"
+  [nzTitle]="'app.invoice.pop-up.update.title' | i18n" [nzCloseIcon]="false"
   nzWidth="1000px"
 >
   <form nz-form [formGroup]="formCustomerInvoice">
@@ -628,7 +660,7 @@
             <nz-form-control [nzErrorTip]="nameCustomerErrorTpl">
               <nz-form-label nzFor="name">
                 <div style="margin-top: 15px">
-                  <span>Tên người mua</span>
+                  <span>{{ 'app.invoice.pop-up.update.customer' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </div>
               </nz-form-label>
@@ -644,11 +676,11 @@
             </nz-form-control>
             <ng-template #nameCustomerErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >Tên người mua không được để trống</ng-container
+                >{{ 'app.invoice.pop-up.update.customer.alert1' | i18n }}</ng-container
               >
               <ng-container
                 *ngIf="control.hasError('containSpecialExceptComma')"
-                >Tên người mua không chứa ký tự đặc biệt</ng-container
+                >{{ 'app.invoice.pop-up.update.customer.alert2' | i18n }}</ng-container
               >
             </ng-template>
           </nz-form-item>
@@ -659,7 +691,7 @@
             <nz-form-control [nzErrorTip]="emailErrorTpl">
               <nz-form-label nzFor="name">
                 <div style="margin-top: 15px">
-                  <span>Email nhận hóa đơn</span>
+                  <span>{{ 'app.invoice.pop-up.update.email' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </div>
               </nz-form-label>
@@ -674,10 +706,10 @@
             </nz-form-control>
             <ng-template #emailErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >Email không được để trống</ng-container
+                >{{ 'app.invoice.pop-up.update.email.alert1' | i18n }}</ng-container
               >
               <ng-container *ngIf="control.hasError('validEmail')"
-                >Email sai định dạng</ng-container
+                >{{ 'app.invoice.pop-up.update.email.alert2' | i18n }}</ng-container
               >
             </ng-template>
           </nz-form-item>
@@ -687,7 +719,7 @@
             <nz-form-control [nzErrorTip]="phoneErrorTpl">
               <nz-form-label nzFor="name">
                 <div style="margin-top: 15px">
-                  <span>Số điện thoại</span>
+                  <span>{{ 'form.account.phone' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </div>
               </nz-form-label>
@@ -702,7 +734,7 @@
             </nz-form-control>
             <ng-template #phoneErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >Số điện thoại không được để trống</ng-container
+                >{{ 'app.invoice.pop-up.update.phone.alert1' | i18n }}</ng-container
               >
               <ng-container *ngIf="control.hasError('validPhoneNumber')">{{
                 'validation.phone-number.wrong-format' | i18n
@@ -716,13 +748,11 @@
             <nz-form-control>
               <nz-form-label nzFor="name">
                 <div>
-                  <span>Nhóm khách hàng</span>
+                  <span>{{ 'app.invoice.pop-up.update.customerGroup' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </div>
               </nz-form-label>
               <nz-select
-                nzShowSearch
-                nzAllowClear
                 [(ngModel)]="customerGroup"
                 [ngModelOptions]="{ standalone: true }"
                 (ngModelChange)="changeCustomerGroup($event)"
@@ -742,15 +772,14 @@
             <nz-form-control [nzErrorTip]="lifeTimeValueErrorTpl">
               <nz-form-label nzFor="name">
                 <div>
-                  <span>Loại khách hàng</span>
+                  <span>{{ 'app.invoice.pop-up.update.customerType' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </div>
               </nz-form-label>
               <nz-select
-                nzShowSearch
-                nzAllowClear
                 [(ngModel)]="customerType"
                 [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="changeCustomerType($event)"
                 class="input-select-custom"
               >
                 <nz-option
@@ -767,8 +796,8 @@
             <nz-form-control [nzErrorTip]="nameCompanyErrorTpl">
               <nz-form-label nzFor="name">
                 <div >
-                  <span>Tên công ty</span>
-                  <ng-container *ngIf="customerType !== 1">
+                  <span>{{ 'app.invoice.pop-up.update.company' | i18n }}</span>
+                  <ng-container *ngIf="customerType !== 1 && customerType !== 2">
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </ng-container>
                 </div>
@@ -776,7 +805,7 @@
               <input
                 nz-input
                 type="text"
-                placeholder="Công ty A"
+                [placeholder]="'app.invoice.pop-up.update.company.placeholder' | i18n"
                 formControlName="nameCompany"
                 class="input-custom"
                 appTrim
@@ -784,7 +813,7 @@
               />
               <ng-template #nameCompanyErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')"
-                  >Tên công ty không được để trống</ng-container
+                  >{{ 'app.invoice.pop-up.update.company.alert' | i18n }}</ng-container
                 >
               </ng-template>
             </nz-form-control>
@@ -795,8 +824,8 @@
             <nz-form-control [nzErrorTip]="taxCodeErrorTpl">
               <nz-form-label nzFor="name">
                 <div>
-                  <span>Mã số thuế</span>
-                  <ng-container *ngIf="customerType !== 1">
+                  <span>{{ 'app.invoice.pop-up.update.tax' | i18n }}</span>
+                  <ng-container *ngIf="customerType !== 1 && customerType !== 2">
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                   </ng-container>
                 </div>
@@ -813,10 +842,10 @@
             </nz-form-control>
             <ng-template #taxCodeErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >Mã số thuế không được để trống</ng-container
+                >{{ 'app.invoice.pop-up.update.tax.alert1' | i18n }}</ng-container
               >
               <ng-container *ngIf="control.hasError('pattern')"
-                >Mã số thuế chỉ cho nhập số và dấu gạch ngang</ng-container
+                >{{ 'app.invoice.pop-up.update.tax.alert2' | i18n }}</ng-container
               >
             </ng-template>
           </nz-form-item>
@@ -826,7 +855,7 @@
             <nz-form-control [nzErrorTip]="addressErrorTpl">
               <nz-form-label nzFor="name">
                 <div>
-                  <span>Địa chỉ chi tiết</span>
+                  <span>{{ 'app.invoice.pop-up.update.address' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 </div>
               </nz-form-label>
@@ -842,7 +871,7 @@
             </nz-form-control>
             <ng-template #addressErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >Địa chỉ không được để trống</ng-container
+                >{{ 'app.invoice.pop-up.update.address.alert' | i18n }}</ng-container
               >
             </ng-template>
           </nz-form-item>
@@ -856,10 +885,10 @@
             [nzDescription]="updateUserDesc"
           ></nz-alert>
           <ng-template #updateUserTitle>
-            <span class="text-label" style="color: #EA3829">* Quý khách lưu ý:</span>
+            <span class="text-label" style="color: #EA3829">{{ 'app.invoice.pop-up.update.warning.title' | i18n }}</span>
           </ng-template>
           <ng-template #updateUserDesc>
-            <span class="text-label">- Trước khi thực hiện xuất hóa đơn điện tử lần đầu, khách hàng hãy cập nhật thông tin hiển thị trên hóa đơn điện tử</span>
+            <span class="text-label">{{ 'app.invoice.pop-up.update.warning.des' | i18n }}</span>
           </ng-template>
         </div>
       </div>
@@ -893,21 +922,21 @@
   (nzOnCancel)="handleCancelConfirm()"
 >
   <ng-template #modalTitle>
-    <span class="text-modal-title">Xác nhận lưu thông tin xuất hóa đơn</span>
+    <span class="text-modal-title">{{ 'app.invoice.pop-up.update.confirm.title' | i18n }}</span>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm">
       <nz-form-item>
         <nz-alert
           nzType="warning"
-          nzDescription="Bạn có muốn lưu thông tin khách hàng cho lần xuất hóa đơn sau không?"
+          [nzDescription]="'app.invoice.pop-up.update.confirm.des' | i18n"
           nzShowIcon
           style="margin-bottom: 10px"
         >
         </nz-alert>
         <nz-form-label>
           <div>
-            <span>Bạn hãy thực hiện nhấn <b>Xác nhận</b> để lưu thông tin</span
+            <span [innerHTML]="'app.invoice.pop-up.update.confirm.des2' | i18n"></span
               >          
           </div>
         </nz-form-label>

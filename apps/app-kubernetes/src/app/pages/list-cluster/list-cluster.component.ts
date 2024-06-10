@@ -14,6 +14,7 @@ import { ProjectModel } from '../../shared/models/project.model';
 import { NotificationConstant } from '../../constants/notification.constant';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../core/i18n/i18n.service';
+import { NzI18nService } from 'ng-zorro-antd/i18n';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -57,13 +58,13 @@ export class ListClusterComponent implements OnInit, OnDestroy {
 
   baseUrl = environment['baseUrl'];
 
-  @HostListener('window:unload', [ '$event' ])
-  unloadHandler(event) {
+  @HostListener('window:unload', ['$event'])
+  async unloadHandler(event) {
     this.ngOnDestroy();
   }
 
-  @HostListener('window:beforeunload', [ '$event' ])
-  beforeUnloadHandler(event) {
+  @HostListener('window:beforeunload', ['$event'])
+  async beforeUnloadHandler(event) {
     this.ngOnDestroy();
   }
 
@@ -125,7 +126,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
           const cluster: KubernetesCluster = new KubernetesCluster(item);
           this.listOfClusters.push(cluster);
 
-          // get cluster is in-progress (initialing, deleting, upgrading,...)
+          // get cluster is in-progress (initialing, deleting, upgrading, restoring...)
           if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) listOfClusterInProgress.push(cluster);
         });
         this.total = r.data.total;
@@ -146,6 +147,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
 
               switch (cluster.serviceStatus) {
                 case 1: // initialing
+                case 5: // restoring
                 case 6: // upgrading
                   progressObs = this.viewProgressCluster(cluster.regionId, cluster.namespace,
                     cluster.serviceOrderCode, KubernetesConstant.CREATE_ACTION);
@@ -398,6 +400,10 @@ export class ListClusterComponent implements OnInit, OnDestroy {
       });
   }
 
+  getDefaultLanguage() {
+    return this.i18n.defaultLang;
+  }
+
   // websocket
   private openWs() {
     // list topic subscribe
@@ -409,10 +415,12 @@ export class ListClusterComponent implements OnInit, OnDestroy {
         try {
           const notificationMessage = JSON.parse(noti.body);
           if (notificationMessage.content && notificationMessage.content?.length > 0) {
+            const jsonMsg: any[] = notificationMessage.content;
+            let msg = jsonMsg.find((noti: any) => noti.lang == this.getDefaultLanguage());
             if (notificationMessage.status == NotificationConstant.NOTI_SUCCESS) {
               this.notificationService.success(
                 this.i18n.fanyi('app.status.success'),
-                notificationMessage.content);
+                msg?.content);
 
               // refresh page
               this.searchCluster();
@@ -420,7 +428,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
             } else {
               this.notificationService.error(
                 this.i18n.fanyi('app.status.fail'),
-                notificationMessage.content);
+                msg?.content);
             }
           }
         } catch (ex) {

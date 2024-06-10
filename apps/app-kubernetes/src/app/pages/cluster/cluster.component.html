@@ -238,7 +238,7 @@
                   <nz-form-item>
                     <nz-form-label nzFor="volume">{{ 'app.cluster.storage' | i18n }} (<span class="required-color">*</span>)</nz-form-label>
                     <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
-                      <input type="text" nz-input [placeHolder]="'cluster.placeholder.storage' | i18n" formControlName="volumeStorage" (ngModelChange)="onCalculatePrice()"
+                      <input type="text" nz-input [placeholder]="'cluster.placeholder.storage' | i18n" formControlName="volumeStorage" (ngModelChange)="onCalculatePrice()"
                         id="volume" (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" nzSize="large" [ngClass]="{'default-pack': isUsingPackConfig==true}" />
                     </nz-form-control>
                     <ng-template #volumeStorageErrorTpl let-control>
@@ -294,7 +294,8 @@
           </div>
 
           <ng-container *ngIf="!isUsingPackConfig">
-            <button nz-button nzType="default" class="border-button" (click)="addWorkerGroup()">
+            <button nz-button nzType="default" class="border-button" (click)="addWorkerGroup()"
+              nzSize="large" [nz-tooltip]="'app.cluster.add-wg' | i18n">
               <span nz-icon>
                 <svg viewBox="64 64 896 896" focusable="false">
                   <path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z" />
@@ -327,7 +328,7 @@
                 </button>
                 <div class="small-description">
                   <small>{{ 'app.cluster.vpc-network-description-1' | i18n }}
-                    <a routerLink="/app-smart-cloud/vlan/network/list" target="_blank">{{ 'app.cluster.vpc-network-description-2' | i18n }}</a>
+                    <a [routerLink]="['/app-smart-cloud/vlan/network/list']" target="_blank">{{ 'app.cluster.vpc-network-description-2' | i18n }}</a>
                   </small>
                 </div>
               </nz-form-control>
@@ -339,7 +340,7 @@
               <nz-form-label nzFor="subnet">Subnet (<span class="required-color">*</span>)</nz-form-label>
               <nz-form-control [nzErrorTip]="errorSubnetTpl">
                 <nz-select nzShowSearch [nzPlaceHolder]="'app.choose.subnet' | i18n" formControlName="subnet" id="subnet" class="w-85" nzSize="large"
-                  (ngModelChange)="checkOverLapseIP(); onSelectSubnet($event)">
+                  (ngModelChange)="checkOverLapseIP(); onSelectSubnet($event); checkOverlapPodCidr();">
                   <ng-container *ngFor="let item of listOfSubnets">
                     <ng-container *ngIf="item.enableDhcp; else disableSubnetTpl">
                       <nz-option [nzLabel]="item.subnetAddressRequired"
@@ -543,109 +544,104 @@
         <h3 class="mb-3">{{ 'app.service.price-title' | i18n }}</h3>
 
         <div>
-          <div nz-row [nzGutter]="8">
-            <div nz-col [nzSpan]="12">
-              <div class="ml-3"><label class="weight-600">{{ 'app.cluster.worker-cost' | i18n }}</label></div>
-            </div>
+          <div class="ml-3"><label class="weight-600">{{ 'app.order.name.service' | i18n }}</label></div>
+          <div class="ml-3"><label>{{clusterName}}</label></div>
 
-            <div nz-col [nzSpan]="12">
-              <div class="price-style price-color mr-3">{{(workerPrice ? workerPrice: 0) | number: '1.0-0'}} VND</div>
-              <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
-            </div>
-          </div>
+          <nz-divider class="divider-style"></nz-divider>
+
+          <div class="ml-3"><label class="weight-600">{{ 'app.text.version' | i18n }}</label></div>
+          <div class="ml-3"><label>{{kubernetesVersion}}</label></div>
 
           <nz-divider class="divider-style"></nz-divider>
 
           <div nz-row [nzGutter]="8">
             <div nz-col [nzSpan]="12">
-              <div class="ml-3"><label class="weight-600">{{ 'app.cluster.vat-cost-2' | i18n : {vat: '10'} }}</label></div>
+              <div class="ml-3"><label class="weight-600">{{ 'app.cost.month' | i18n : { month: usageTime } }}</label></div>
             </div>
 
             <div nz-col [nzSpan]="12">
-              <div class="price-style price-color mr-3">{{(vatCost ? vatCost: 0) | number: '1.0-0'}} VND</div>
-              <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
+              <div class="price-style price-color mr-3">
+                <ng-container *ngIf="isCalculating; else workerPriceTpl">
+                  <span nz-icon [nzType]="'loading'"></span>
+                </ng-container>
+                <ng-template #workerPriceTpl>
+                  {{(workerPrice && workerPrice >= 0 ? workerPrice: 0) | number: '1.0-0'}} VND
+                </ng-template>
+              </div>
             </div>
           </div>
-
-          <nz-divider class="divider-style"></nz-divider>
 
           <ng-container *ngIf="isChangeInfo">
+            <nz-divider class="divider-style"></nz-divider>
             <ng-container *ngIf="chooseItem; else customPackSummaryTpl">
-              <div nz-row [nzGutter]="8">
-                <div nz-col [nzSpan]="12">
-                  <div class="ml-3 mb-3"><label class="weight-600">{{ 'app.text.package' | i18n }}: <b>{{chooseItem.packName}}</b></label></div>
-                </div>
-
-                <div nz-col [nzSpan]="12">
-                  <div class="mr-3 summary-info">
-                    {{chooseItem.cpu}}vCPU / {{chooseItem.ram}}GB / {{chooseItem.rootStorage}}GB {{chooseItem.rootStorageName}}
-                  </div>
-                </div>
+              <div class="ml-3">
+                <label class="weight-600">{{ 'app.text.package' | i18n }}: <b>{{chooseItem.packName}}</b></label>
+                <div class="summary-info">{{chooseItem.cpu}}vCPU</div>
+                <div class="summary-info">{{chooseItem.ram}}GB</div>
+                <div class="summary-info">{{chooseItem.rootStorage}}GB {{chooseItem.rootStorageName}}</div>
               </div>
+
             </ng-container>
             <ng-template #customPackSummaryTpl>
-              <div nz-row [nzGutter]="8">
-                <div nz-col [nzSpan]="12">
-                  <div class="ml-3 mb-3"><label class="weight-600">{{ 'app.cluster.wg-info' | i18n }}</label></div>
-                </div>
-
-                <div nz-col [nzSpan]="12">
-                  <ng-container *ngFor="let control of listFormWorkerGroup.controls; let i = index;">
-                    <div class="mr-3 mb-3 summary-info">
-                      <ng-container *ngIf="control.get('workerGroupName').value && control.get('cpu').value
-                        && control.get('ram').value && control.get('volumeStorage').value; else noneConfigTpl">
-                        <div class="mb-3">
-                          {{control.get('workerGroupName')?.value}}
-                          / {{control.get('cpu')?.value}}vCPU
-                          / {{control.get('ram')?.value}}GB
-                          / {{control.get('volumeStorage')?.value}}GB
-                          {{control.get('volumeTypeName')?.value}}
-                        </div>
-                      </ng-container>
-                      <ng-template #noneConfigTpl></ng-template>
-                    </div>
-                  </ng-container>
-                </div>
+              <div class="ml-3">
+                <label class="weight-600">{{ 'app.text.package' | i18n }}: {{ 'mongodb.db.optional' | i18n }}</label>
+                <div class="summary-info">{{totalCpu}}vCPU</div>
+                <div class="summary-info">{{totalRam}}GB</div>
+                <div class="summary-info">{{totalStorage}}GB</div>
               </div>
             </ng-template>
           </ng-container>
 
-          <!-- <nz-divider class="divider-style"></nz-divider> -->
+          <nz-divider class="divider-style"></nz-divider>
 
-          <!-- <div nz-row [nzGutter]="8"> -->
-            <!-- <div nz-col [nzSpan]="12">
-              <div class="mt-3 ml-3"><label class="weight-600">Chi phí volume</label></div>
+          <div nz-row [nzGutter]="8">
+            <div nz-col [nzSpan]="12">
+              <div class="ml-3"><label class="weight-600">
+                {{ 'app.cluster.vat-cost-2' | i18n : {vat: vatPercent ? vatPercent * 100 : 10} }}</label>
+              </div>
             </div>
 
             <div nz-col [nzSpan]="12">
-              <div class="price-style price-color mt-3 mr-3">{{(volumePrice ? volumePrice: 0) | number: '1.0-0'}} VNĐ</div>
-              <div class="price-style unit-color mr-3">VNĐ/tháng</div>
+              <div class="price-style price-color mr-3">
+                <ng-container *ngIf="isCalculating; else vatPriceTpl">
+                  <span nz-icon [nzType]="'loading'"></span>
+                </ng-container>
+                <ng-template #vatPriceTpl>
+                  {{(vatCost && vatCost >= 0 ? vatCost: 0) | number: '1.0-0'}} VND
+                </ng-template>
+              </div>
             </div>
-          </div> -->
+          </div>
 
           <div nz-row [nzGutter]="8" class="mt-5 price-panel">
             <div nz-col [nzSpan]="12">
               <div class="mt-3 ml-3"><label>{{ 'app.service.price-title' | i18n }}</label></div>
-              <div class="mt-1 ml-3 mb-3 unit-color"><i>({{ 'app.cluster.vat-cost-1' | i18n : {vat: '10'} }})</i></div>
+              <div class="mt-1 ml-3 mb-3 unit-color"><i>({{ 'app.cluster.vat-cost-1' | i18n : {vat: vatPercent ? vatPercent * 100 : 10} }})</i></div>
             </div>
             <div nz-col [nzSpan]="12">
-              <div class="price-style total-color mt-3 mr-3">{{(totalPrice? totalPrice: 0) | number: '1.0-0'}} VND</div>
-              <div class="price-style unit-color mr-3">{{ 'app.cluster.unit-price-2' | i18n }}</div>
+              <div class="price-style total-color mt-3 mr-3">
+                <ng-container *ngIf="isCalculating; else totalPriceTpl">
+                  <span nz-icon [nzType]="'loading'"></span>
+                </ng-container>
+                <ng-template #totalPriceTpl>
+                  {{(totalPrice && totalPrice >= 0 ? totalPrice: 0) | number: '1.0-0'}} VND
+                </ng-template>
+              </div>
             </div>
           </div>
 
           <div nz-row class="mt-5" [nzGutter]="16" nzJustify="center">
             <div nz-col [nzSpan]="12">
               <button nz-button nzType="default" nzBlock class="border-button" (click)="handleShowModalCancelCreate()"
-                [disabled]="isSubmitting">
+                [disabled]="isSubmitting" nzSize="large">
                 <span nz-icon nzType="close" nzTheme="outline"></span>
                 {{ 'app.cluster.cancel' | i18n }}
               </button>
             </div>
 
             <div nz-col [nzSpan]="12">
-              <button nz-button nzType="primary" nzBlock class="border-button" (click)="validateClusterInfo()"
-                [disabled]="myform.invalid || isSubmitting || (isUsingPackConfig && !chooseItem)">
+              <button nz-button nzType="primary" nzBlock class="border-button" (click)="validateClusterInfo()" nzSize="large"
+                [disabled]="myform.invalid || isSubmitting || (isUsingPackConfig && !chooseItem) || isCalculating">
                 <ng-container *ngIf="isSubmitting; else paymentIconTpl">
                   <span nz-icon [nzType]="'loading'"></span>
                 </ng-container>
@@ -664,172 +660,6 @@
           </div>
 
         </div>
-
-        <!-- <nz-tabset>
-          <nz-tab [nzTitle]="titleSummaryTpl">
-            <div nz-row [nzGutter]="8">
-              <div nz-col [nzSpan]="12">
-                <div class="ml-3"><label>Tên cluster</label></div>
-              </div>
-              <div nz-col [nzSpan]="12">
-                <div class="price-style mr-3">{{clusterName}}</div>
-              </div>
-            </div>
-
-            <div nz-row [nzGutter]="8">
-              <div nz-col [nzSpan]="12">
-                <div class="mt-3 ml-3"><label>Phiên bản Kubernetes</label></div>
-              </div>
-              <div nz-col [nzSpan]="12">
-                <div class="price-style mt-3 mr-3">{{kubernetesVersion}}</div>
-              </div>
-            </div>
-
-            <div nz-row [nzGutter]="8">
-              <div nz-col [nzSpan]="12">
-                <div class="mt-3 ml-3"><label>Khu vực</label></div>
-              </div>
-              <div nz-col [nzSpan]="12">
-                <div class="price-style mt-3 mr-3">{{regionName}}</div>
-              </div>
-            </div>
-
-            <nz-divider class="divider-style"></nz-divider>
-            <h3>Cấu hình worker group</h3>
-
-            <div class="scroll scrollbar">
-              <ng-container *ngFor="let control of listFormWorkerGroup.controls; let i = index;">
-                <div nz-row [nzGutter]="8">
-                  <div nz-col [nzSpan]="12">
-                    <div class="ml-3"><label>Tên nhóm worker</label></div>
-                  </div>
-                  <div nz-col [nzSpan]="12">
-                    <div class="price-style mr-3">{{control.get('workerGroupName').value}}</div>
-                  </div>
-                </div>
-
-                <div nz-row [nzGutter]="8">
-                  <div nz-col [nzSpan]="12">
-                    <div class="mt-3 ml-3"><label>Số node</label></div>
-                  </div>
-                  <div nz-col [nzSpan]="12">
-                    <div class="price-style mt-3 mr-3">{{control.get('nodeNumber').value}}</div>
-                  </div>
-                </div>
-
-                <ng-container *ngIf="isAutoScaleEnable">
-                  <div nz-row [nzGutter]="8">
-                    <div nz-col [nzSpan]="12">
-                      <div class="mt-3 ml-3"><label>Số node tối thiểu</label></div>
-                    </div>
-                    <div nz-col [nzSpan]="12">
-                      <div class="price-style mt-3 mr-3">{{control.get('minimumNode').value}}</div>
-                    </div>
-                  </div>
-                  <div nz-row [nzGutter]="8">
-                    <div nz-col [nzSpan]="12">
-                      <div class="mt-3 ml-3"><label>Số node tối đa</label></div>
-                    </div>
-                    <div nz-col [nzSpan]="12">
-                      <div class="price-style mt-3 mr-3">{{control.get('maximumNode').value}}</div>
-                    </div>
-                  </div>
-                </ng-container>
-
-                <div nz-row [nzGutter]="8">
-                  <div nz-col [nzSpan]="12">
-                    <div class="mt-3 ml-3"><label>Cấu hình</label></div>
-                  </div>
-                  <div nz-col [nzSpan]="12">
-                    <div class="price-style mt-3 mr-3">{{control.get('configType').value}}</div>
-                  </div>
-                </div>
-
-                <div nz-row [nzGutter]="8">
-                  <div nz-col [nzSpan]="12">
-                    <div class="mt-3 ml-3"><label>Ổ cứng (GB)</label></div>
-                  </div>
-                  <div nz-col [nzSpan]="12">
-                    <div class="price-style mt-3 mr-3">{{control.get('volumeStorage').value}}</div>
-                  </div>
-                </div>
-
-                <div nz-row [nzGutter]="8">
-                  <div nz-col [nzSpan]="12">
-                    <div class="mt-3 ml-3"><label>Loại ổ cứng</label></div>
-                  </div>
-                  <div nz-col [nzSpan]="12">
-                    <div class="price-style mt-3 mr-3">
-                      {{control.get('volumeType').value === DEFAULT_VOLUME_TYPE ? 'Premium-HDD1' : 'Premium-SSD1'}}
-                    </div>
-                  </div>
-                </div>
-
-                <ng-container *ngIf="i != (listFormWorkerGroup.controls.length - 1)">
-                  <nz-divider nzDashed class="divider-style"></nz-divider>
-                </ng-container>
-              </ng-container>
-            </div>
-
-            <nz-divider class="divider-style"></nz-divider>
-            <h3>Cấu hình network</h3>
-            <div nz-row [nzGutter]="8">
-              <div nz-col [nzSpan]="12">
-                <div class="ml-3"><label>Loại network</label></div>
-              </div>
-              <div nz-col [nzSpan]="12">
-                <div class="price-style mr-3">{{networkType == 'calico' ? 'Calico' : 'Cilium'}}</div>
-              </div>
-            </div>
-            <div nz-row [nzGutter]="8">
-              <div nz-col [nzSpan]="12">
-                <div class="mt-3 ml-3"><label>Pod CIDR</label></div>
-              </div>
-              <div nz-col [nzSpan]="12">
-                <div class="price-style mt-3 mr-3">{{cidr}}</div>
-              </div>
-            </div>
-            <div nz-row [nzGutter]="8">
-              <div nz-col [nzSpan]="12">
-                <div class="mt-3 ml-3"><label>Service CIDR</label></div>
-              </div>
-              <div nz-col [nzSpan]="12">
-                <div class="price-style mt-3 mr-3">{{serviceCidr}}</div>
-              </div>
-            </div>
-            <div nz-row [nzGutter]="8">
-              <div nz-col [nzSpan]="12">
-                <div class="mt-3 ml-3"><label>Mạng VPC</label></div>
-              </div>
-              <div nz-col [nzSpan]="12">
-                <div class="price-style mt-3 mr-3">{{vpcNetwork}}</div>
-              </div>
-            </div>
-            <div nz-row [nzGutter]="8">
-              <div nz-col [nzSpan]="12">
-                <div class="mt-3 ml-3"><label>Subnet</label></div>
-              </div>
-              <div nz-col [nzSpan]="12">
-                <div class="price-style mt-3 mr-3">{{subnet}}</div>
-              </div>
-            </div>
-
-            <nz-divider class="divider-style"></nz-divider>
-            <div nz-row [nzGutter]="8">
-              <div nz-col [nzSpan]="12">
-                <div class="mt-3 ml-3"><label>Thời gian sử dụng (tháng)</label></div>
-              </div>
-              <div nz-col [nzSpan]="12">
-                <div class="price-style mt-3 mr-3">{{usageTime}}</div>
-              </div>
-            </div>
-
-
-          </nz-tab>
-          <ng-template #titleSummaryTpl>
-            <label>Tóm tắt</label>
-          </ng-template>
-        </nz-tabset> -->
       </nz-card>
     </nz-affix>
   </div>

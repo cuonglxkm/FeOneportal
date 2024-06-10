@@ -33,8 +33,9 @@ export class BucketListComponent implements OnInit {
   total: number;
   value: string = '';
   loading: boolean = true;
+  isLoadingDeleteOS: boolean = false;
   searchDelay = new Subject<boolean>();
-
+  user: any
   constructor(
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private bucketService: BucketService,
@@ -91,9 +92,8 @@ export class BucketListComponent implements OnInit {
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
-          this.objectStorage = data;
-          this.search();
-          
+          this.user = data;
+          this.getUserById(this.user.id);
         },
         error: (e) => {
           this.notification.error(
@@ -103,6 +103,25 @@ export class BucketListComponent implements OnInit {
         },
       });
   }
+
+  private getUserById(id: number) {
+    this.bucketService
+      .getUserById(id)
+      .subscribe({
+        next: (data) => {
+          this.objectStorage = data;
+          console.log(this.objectStorage);
+        },
+        error: (e) => {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.getObject.fail')
+          );
+        },
+      });
+  }
+  
+
 
   search() {
     this.loading = true;
@@ -161,7 +180,9 @@ export class BucketListComponent implements OnInit {
     ]);
   }
 
-  deleteObjectStorage() {}
+  deleteObjectStorage() {
+    this.isVisibleDeleteOS = true
+  }
 
   isVisibleDeleteBucket: boolean = false;
   bucketDeleteName: string;
@@ -222,24 +243,24 @@ export class BucketListComponent implements OnInit {
   }
 
   handleOkDeleteOS() {
-    this.isVisibleDeleteOS = false;
-    this.notification.success(
-      this.i18n.fanyi('app.status.fail'),
-      this.i18n.fanyi('router.nofitacation.remove.sucess')
-    );
-
-    // this.dataService
-    //   .deleteRouter(this.cloudId, this.region, this.projectId)
-    //   .subscribe({
-    //     next: (data) => {
-    //       console.log(data);
-    //       this.notification.success('', 'Xóa Router thành công');
-    //       this.reloadTable();
-    //     },
-    //     error: (error) => {
-    //       console.log(error.error);
-    //       this.notification.error('', 'Xóa Router không thành công');
-    //     },
-    //   });
+    this.isLoadingDeleteOS = true;
+    this.bucketService
+      .deleteOS(this.user.id)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.notification.success('', 'Xóa Object Storage thành công');
+          this.isVisibleDeleteOS = false;
+          this.isLoadingDeleteOS = false;
+          this.hasObjectStorageInfo();
+          this.cdr.detectChanges()
+        },
+        error: (error) => {
+          console.log(error.error);
+          this.notification.error('', 'Xóa Object Storage không thành công');
+          this.isLoadingDeleteOS = false;
+          this.cdr.detectChanges()
+        },
+      });
   }
 }
