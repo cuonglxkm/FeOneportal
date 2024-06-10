@@ -571,6 +571,7 @@
   "app.notify.amount.capacity": "The quantity must be divisible by {{number}}",
   "app.notify.amount.capacity1": "The amount of capacity must be divisible by 10",
   "app.notify.amount.capacity.add": "Exceeded capacity quota, used {{num1}}/{{num2}} GB, need to allocate an additional {{num3}} GB",
+  "app.notify.amount.capacity.snapshot": "Please enter a value greater than or equal to {{num}}",
   "app.notify.amount.ram.add": "Exceeded RAM quota, used {{num1}}/{{num2}} GB, need to allocate an additional {{num3}} GB",
   "app.notify.amount.cpu.add": "Exceeded CPU quota, used {{num1}}/{{num2}} vCPU, need to allocate an additional {{num3}} vCPU",
   "app.notify.amount.gpu.add": "Insufficient GPU type conversion quota, need to allocate an additional {{num}} GPUs",

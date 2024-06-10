@@ -179,7 +179,9 @@ export class InstancesCreateComponent implements OnInit {
     if (this.reloadCarousel) {
       this.reloadCarousel = false;
       setTimeout(() => {
-        this.myCarouselImage.reset();
+        if (!this.isSnapshot) {
+          this.myCarouselImage.reset();
+        }
         this.myCarouselFlavor.reset();
       }, 100);
     }
@@ -235,7 +237,6 @@ export class InstancesCreateComponent implements OnInit {
     this.initIpSubnet();
     this.initFlavors();
     this.getListGpuType();
-    this.initSnapshot();
     this.getAllIPPublic();
     this.getAllImageType();
     this.getAllSecurityGroup();
@@ -431,17 +432,16 @@ export class InstancesCreateComponent implements OnInit {
   //#region  Snapshot
   isSnapshot: boolean = false;
   listSnapshot: SnapshotVolumeDto[] = [];
-  size: number;
+  sizeSnapshotVL: number;
   status: string;
 
   initSnapshot(): void {
     this.selectedSnapshot = null;
-    for (let i = 0; i < this.listSelectedImage.length; ++i) {
-      this.listSelectedImage[i] = 0;
-    }
     if (this.isSnapshot) {
+      this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
       this.snapshotVLService
         .getSnapshotVolumes(9999, 1, this.region, this.projectId, '', '', '')
+        .pipe(finalize(() => this.loadingSrv.close()))
         .subscribe((data: any) => {
           this.listSnapshot = data.records.filter(
             (e: any) =>
@@ -449,15 +449,71 @@ export class InstancesCreateComponent implements OnInit {
               (e.resourceStatus.toUpperCase() == 'AVAILABLE' ||
                 e.resourceStatus.toUpperCase() == 'IN-USE')
           );
+          this.selectedSnapshot = this.listSnapshot[0].id;
+          this.sizeSnapshotVL = this.listSnapshot[0].sizeInGB;
+          this.listOfferFlavors = [];
+          this.initFlavors();
+          this.activeBlockHDD = !this.activeBlockHDD;
+          this.activeBlockSSD = !this.activeBlockSSD;
+          setTimeout(() => {
+            this.activeBlockHDD = !this.activeBlockHDD;
+            this.activeBlockSSD = !this.activeBlockSSD;
+          }, 1);
+          this.resetConfigPackage();
+          this.cdr.detectChanges();
           console.log('list snapshot volume root', this.listSnapshot);
         });
+    } else {
+      this.listOfferFlavors = [];
+      this.initFlavors();
+      this.resetConfigPackage();
     }
   }
 
   changeSelectedSnapshot() {
-    this.minCapacity = this.listSnapshot.filter(
+    this.sizeSnapshotVL = this.listSnapshot.filter(
       (e) => e.id == this.selectedSnapshot
     )[0].sizeInGB;
+    this.listOfferFlavors = [];
+    this.initFlavors();
+    this.activeBlockHDD = !this.activeBlockHDD;
+    this.activeBlockSSD = !this.activeBlockSSD;
+    setTimeout(() => {
+      this.activeBlockHDD = !this.activeBlockHDD;
+      this.activeBlockSSD = !this.activeBlockSSD;
+    }, 1);
+    this.resetConfigPackage();
+    this.cdr.detectChanges();
+  }
+
+  resetConfigPackage() {
+    if (this.isPreConfigPackage) {
+      this.offerFlavor = null;
+      this.selectedElementFlavor = null;
+      this.totalAmount = 0;
+      this.totalVAT = 0;
+      this.totalincludesVAT = 0;
+    } else if (
+      this.isCustomconfig &&
+      this.configCustom.capacity <= this.sizeSnapshotVL
+    ) {
+      this.configCustom.capacity =
+        this.sizeSnapshotVL < this.stepCapacity
+          ? this.stepCapacity
+          : this.sizeSnapshotVL;
+      this.getUnitPrice(1, 0, 0, 0, null);
+      this.getTotalAmount();
+    } else if (
+      this.isGpuConfig &&
+      this.configGPU.storage <= this.sizeSnapshotVL
+    ) {
+      this.configGPU.storage =
+        this.sizeSnapshotVL < this.stepCapacity
+          ? this.stepCapacity
+          : this.sizeSnapshotVL;
+      this.getUnitPrice(1, 0, 0, 0, null);
+      this.getTotalAmount();
+    }
   }
 
   //#endregion
@@ -470,39 +526,23 @@ export class InstancesCreateComponent implements OnInit {
     if (!this.disableHDD) {
       this.activeBlockHDD = true;
       this.activeBlockSSD = false;
-      this.offerFlavor = null;
-      this.selectedElementFlavor = null;
-      this.totalAmount = 0;
-      this.totalVAT = 0;
-      this.totalincludesVAT = 0;
-      this.getUnitPrice(1, 0, 0, 0, null);
-      if (
-        this.isCustomconfig &&
-        this.configCustom.vCPU != 0 &&
-        this.configCustom.ram != 0 &&
-        this.configCustom.capacity != 0
-      ) {
-        this.getTotalAmount();
-      }
-      this.listOfferFlavors = [];
-      this.initFlavors();
+      this.resetConfig();
     }
   }
   initSSD(): void {
     this.activeBlockHDD = false;
     this.activeBlockSSD = true;
+    this.resetConfig();
+  }
+
+  resetConfig() {
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
     this.totalAmount = 0;
     this.totalVAT = 0;
     this.totalincludesVAT = 0;
-    this.getUnitPrice(1, 0, 0, 0, null);
-    if (
-      this.isCustomconfig &&
-      this.configCustom.vCPU != 0 &&
-      this.configCustom.ram != 0 &&
-      this.configCustom.capacity != 0
-    ) {
+    if (this.isCustomconfig || this.isGpuConfig) {
+      this.getUnitPrice(1, 0, 0, 0, null);
       this.getTotalAmount();
     }
     this.listOfferFlavors = [];
@@ -548,6 +588,17 @@ export class InstancesCreateComponent implements OnInit {
     this.selectedElementFlavor = null;
     this.configGPU = new ConfigGPU();
     this.configCustom = new ConfigCustom();
+    if (this.isSnapshot && this.isCustomconfig) {
+      this.configCustom.capacity =
+        this.sizeSnapshotVL < this.stepCapacity
+          ? this.stepCapacity
+          : this.sizeSnapshotVL;
+    } else if (this.isSnapshot && this.isGpuConfig) {
+      this.configGPU.storage =
+        this.sizeSnapshotVL < this.stepCapacity
+          ? this.stepCapacity
+          : this.sizeSnapshotVL;
+    }
     this.volumeUnitPrice = 0;
     this.volumeIntoMoney = 0;
     this.ramUnitPrice = 0;
@@ -562,6 +613,15 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.ram = 0;
     this.instanceCreate.cpu = 0;
     this.instanceCreate.volumeSize = 0;
+    if (this.isSnapshot && this.isCustomconfig) {
+      this.instanceCreate.volumeSize = this.configCustom.capacity;
+      this.getUnitPrice(1, 0, 0, 0, null);
+      this.getTotalAmount();
+    } else if (this.isSnapshot && this.isGpuConfig) {
+      this.instanceCreate.volumeSize = this.configGPU.storage;
+      this.getUnitPrice(1, 0, 0, 0, null);
+      this.getTotalAmount();
+    }
     this.instanceCreate.gpuCount = 0;
   }
   //#endregion
@@ -707,6 +767,11 @@ export class InstancesCreateComponent implements OnInit {
             }
           });
         });
+        if (this.isSnapshot) {
+          this.listOfferFlavors = this.listOfferFlavors.filter(
+            (e) => Number.parseInt(e.description.split(' ')[7]) > 2
+          );
+        }
         this.listOfferFlavors = this.listOfferFlavors.sort(
           (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
         );
@@ -745,7 +810,7 @@ export class InstancesCreateComponent implements OnInit {
     gpuOfferId: number
   ) {
     let tempInstance: InstanceCreate = new InstanceCreate();
-    tempInstance.imageId = this.hdh ? this.hdh : 0;
+    tempInstance.imageId = this.isSnapshot ? 0 : this.hdh;
     tempInstance.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
     tempInstance.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
     tempInstance.offerId = 0;
@@ -870,7 +935,7 @@ export class InstancesCreateComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
-      if (res > this.maxCapacity) {
+      if (this.configCustom.capacity > this.maxCapacity) {
         this.configCustom.capacity = this.maxCapacity - this.surplus;
         this.cdr.detectChanges();
       }
@@ -884,6 +949,25 @@ export class InstancesCreateComponent implements OnInit {
         this.configCustom.capacity =
           this.configCustom.capacity -
           (this.configCustom.capacity % this.stepCapacity);
+        if (this.isSnapshot) {
+          this.configCustom.capacity =
+            this.sizeSnapshotVL < this.stepCapacity
+              ? this.stepCapacity
+              : this.sizeSnapshotVL;
+        }
+      }
+      if (this.isSnapshot && this.configCustom.capacity < this.sizeSnapshotVL) {
+        this.notification.warning(
+          '',
+          this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
+            num: this.sizeSnapshotVL,
+          })
+        );
+        this.configCustom.capacity =
+          this.sizeSnapshotVL < this.stepCapacity
+            ? this.stepCapacity
+            : this.sizeSnapshotVL;
+        this.cdr.detectChanges();
       }
       this.getUnitPrice(1, 0, 0, 0, null);
       if (this.hdh != null || this.selectedSnapshot != null) {
@@ -950,6 +1034,39 @@ export class InstancesCreateComponent implements OnInit {
         debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
+        if (this.configGPU.storage > this.maxCapacity) {
+          this.configGPU.storage = this.maxCapacity - this.surplus;
+          this.cdr.detectChanges();
+        }
+        if (this.configGPU.storage % this.stepCapacity > 0) {
+          this.notification.warning(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity', {
+              number: this.stepCapacity,
+            })
+          );
+          this.configGPU.storage =
+            this.configGPU.storage -
+            (this.configGPU.storage % this.stepCapacity);
+          if (this.isSnapshot) {
+            this.configGPU.storage =
+              this.sizeSnapshotVL < this.stepCapacity
+                ? this.stepCapacity
+                : this.sizeSnapshotVL;
+          }
+        }
+        if (this.isSnapshot && this.configGPU.storage < this.sizeSnapshotVL) {
+          this.notification.warning(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
+              num: this.sizeSnapshotVL,
+            })
+          );
+          this.configGPU.storage =
+            this.sizeSnapshotVL < this.stepCapacity
+              ? this.stepCapacity
+              : this.sizeSnapshotVL;
+        }
         this.getUnitPrice(1, 0, 0, 0, null);
         if (this.hdh != null || this.selectedSnapshot != null) {
           this.getTotalAmount();
@@ -1248,7 +1365,7 @@ export class InstancesCreateComponent implements OnInit {
 
   instanceInit() {
     this.instanceCreate.description = null;
-    this.instanceCreate.imageId = this.hdh ? this.hdh : 0;
+    this.instanceCreate.imageId = this.isSnapshot ? 0 : this.hdh;
     this.instanceCreate.iops = 0;
     this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
     this.instanceCreate.keypairName = this.selectedSSHKeyName;
@@ -1432,7 +1549,7 @@ export class InstancesCreateComponent implements OnInit {
   }
   save(): void {
     this.isLoading = true;
-    if (!this.isSnapshot && this.hdh == null) {
+    if (!this.isSnapshot && (this.hdh == null || this.hdh == 0)) {
       this.notification.error(
         '',
         this.i18n.fanyi('app.notify.choose.os.required')
