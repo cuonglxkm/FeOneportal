@@ -330,7 +330,9 @@ export class InstancesComponent implements OnInit {
         next: (data) => {
           this.listPort = data.filter((e) => e.attachedDeviceId == '');
           this.portLoading = false;
-          this.instanceAction.portId = this.listPort[0].id;
+          if (this.listPort.length != 0) {
+            this.instanceAction.portId = this.listPort[0].id;
+          }
         },
         error: (e) => {
           this.notification.error(
@@ -852,10 +854,10 @@ export class InstancesComponent implements OnInit {
   }
 
   createBackupSchedule(id: number) {
-    this.router.navigate([
-      '/app-smart-cloud/schedule/backup/create',
-      { instanceId: id },
-    ], { queryParams: { snapshotTypeCreate: 1 } });
+    this.router.navigate(
+      ['/app-smart-cloud/schedule/backup/create', { instanceId: id }],
+      { queryParams: { snapshotTypeCreate: 1 } }
+    );
   }
 
   createSnapshot(id: number) {

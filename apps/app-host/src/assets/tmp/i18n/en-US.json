@@ -2126,7 +2126,7 @@
   "app.cluster.remain-cost": "Remaining cost",
   "app.cluster.total-cost": "Total amount",
   "app.cluster.created-date": "Service initialization date",
-  "app.fee.extend": "Adjustment Cost",
+  "app.fee.resize": "Adjustment Cost",
   "app.cluster.vat-cost-1": "Including {{vat}}% VAT",
   "app.cluster.vat-cost-2": "VAT Cost ({{vat}}%)",
   "app.cost.month": "Cost {{month}} month(s)",
