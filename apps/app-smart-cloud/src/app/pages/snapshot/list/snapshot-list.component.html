@@ -109,19 +109,18 @@
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
               <span class="text-intro-title"
-                    style="color: #0066b3">Load Balancer<br>{{ 'app.load.balancing.service' | i18n }}</span>
+                    style="color: #0066b3">Snapshot</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">{{ 'app.load.balancing.intro' | i18n }}<br>
-                  {{ 'app.load.balancing.intro.next' | i18n }}</span>
+                <span class="text-intro-desc">Giúp người dùng lưu lại trạng thái hiện tại của Volume/VM.<br> Người dùng có thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM.</span>
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()"
                   nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            {{ 'app.button.load.balancer.create' | i18n }}
+            Khởi tạo snapshot
           </button>
         </result>
       </ng-container>
