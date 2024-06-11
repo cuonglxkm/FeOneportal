@@ -375,11 +375,11 @@ export class PaymentSummaryComponent implements OnInit {
     if (this.radioValue === 2) {
       this.formExportInvoice.controls.address.clearValidators();
       this.formExportInvoice.controls.address.updateValueAndValidity();
-      this.formCustomerInvoice.controls.taxCode.setValidators([
+      this.formExportInvoice.controls.taxCode.setValidators([
         Validators.pattern(/^[0-9-]+$/),
       ]);
       this.formExportInvoice.controls.taxCode.updateValueAndValidity();
-      this.formCustomerInvoice.controls.taxCode.setValidators([
+      this.formExportInvoice.controls.phoneNumber.setValidators([
         AppValidator.validPhoneNumber,
       ]);
       this.formExportInvoice.controls.phoneNumber.updateValueAndValidity();
@@ -390,8 +390,10 @@ export class PaymentSummaryComponent implements OnInit {
         Validators.required
       );
       this.formExportInvoice.controls.address.updateValueAndValidity();
-      this.formExportInvoice.controls.taxCode.setValidators(
+      this.formExportInvoice.controls.taxCode.setValidators([
+        Validators.required,
         Validators.pattern(/^[0-9-]+$/)
+      ]
       );
       this.formExportInvoice.controls.taxCode.updateValueAndValidity();
       this.formExportInvoice.controls.phoneNumber.setValidators([
