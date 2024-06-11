@@ -9,6 +9,9 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/instances']">{{
           'app.instances' | i18n
         }}</a>
@@ -127,6 +130,7 @@
                 [nzPlaceHolder]="'-- ' + ('app.choose.snapshot' | i18n) + ' --'"
                 [nzShowSearch]="true"
                 [(ngModel)]="selectedSnapshot"
+                (ngModelChange)="changeSelectedSnapshot()"
                 [ngModelOptions]="{ standalone: true }"
                 nzSize="large"
               >

@@ -29,7 +29,7 @@ export class SnapshotListComponent implements OnInit{
   status: any = '';
   listStatus = [
     {label : this.i18n.fanyi('app.status.all'), value : ''},
-    {label : this.i18n.fanyi('app.button.create'), value : 'KHOITAO'},
+    {label : this.i18n.fanyi('service.status.active'), value : 'KHOITAO'},
     {label : this.i18n.fanyi('service.status.init'), value : 'DANGKHOITAO'},
     {label : this.i18n.fanyi('app.suspend'), value : 'TAMNGUNG'},
     {label : this.i18n.fanyi('app.button.cancel'), value : 'HUY'},
