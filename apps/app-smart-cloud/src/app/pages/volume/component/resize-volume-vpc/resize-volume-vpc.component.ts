@@ -159,7 +159,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
 
   getVolumeById(idVolume: number) {
     this.isLoading = true;
-    this.volumeService.getVolumeById(idVolume).subscribe(data => {
+    this.volumeService.getVolumeById(idVolume, this.project).subscribe(data => {
       this.isLoading = false;
       this.volumeInfo = data;
       this.oldSize = data.sizeInGB;

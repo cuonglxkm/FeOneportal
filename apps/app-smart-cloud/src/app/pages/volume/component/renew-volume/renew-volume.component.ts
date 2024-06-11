@@ -92,7 +92,7 @@ export class RenewVolumeComponent implements OnInit {
 
   getVolumeById(id) {
     this.isLoading = true;
-    this.volumeService.getVolumeById(id).subscribe(data => {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
       this.isLoading = false;
       this.volumeInfo = data;
 

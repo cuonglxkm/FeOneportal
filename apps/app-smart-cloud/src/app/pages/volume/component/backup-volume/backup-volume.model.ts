@@ -29,6 +29,7 @@ export interface BackupVolume {
   vpcName: string
   customerEmail: string
   backupPackageName: string
+  volumeType: string
 }
 
 export class FormCreateBackupVolume {

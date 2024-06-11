@@ -54,8 +54,8 @@ export class VolumeService extends BaseService {
       }))
   }
 
-  getVolumeById(volumeId: number) {
-    return this.http.get<VolumeDTO>(this.baseUrl+this.ENDPOINT.provisions + `/volumes/${volumeId}`)
+  getVolumeById(volumeId: number, projectId: number) {
+    return this.http.get<VolumeDTO>(this.baseUrl+this.ENDPOINT.provisions + `/volumes/${volumeId}?projectId=${projectId}`)
   }
 
   getListVM(userId: number, regionId: number): Observable<GetAllVmModel> {

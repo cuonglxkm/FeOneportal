@@ -206,7 +206,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   getDetailVolume(idVolume) {
-    this.volumeService.getVolumeById(idVolume).subscribe(data => {
+    this.volumeService.getVolumeById(idVolume, this.project).subscribe(data => {
       this.onChangeStatusEncrypt(data.isEncryption)
       this.onChangeStatusMultiAttach(data.isMultiAttach)
       console.log('instance', data?.attachedInstances[0].instanceId)

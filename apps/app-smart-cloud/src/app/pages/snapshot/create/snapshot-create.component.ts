@@ -282,7 +282,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       if (this.selectedSnapshotType == 0) {
         this.quotaType = this.selectedVolume.volumeType;
       } else {
-        this.vlService.getVolumeById(this.selectedVM.volumeRootId).subscribe(
+        this.vlService.getVolumeById(this.selectedVM.volumeRootId, this.project).subscribe(
           data => {
             this.quotaType = data.volumeType;
           }

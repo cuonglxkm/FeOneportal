@@ -94,7 +94,7 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
   }
 
   getDataByVolumeId(id) {
-    this.volumeService.getVolumeById(id).subscribe(data => {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
       this.volumeInfo = data
     })
   }
