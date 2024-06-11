@@ -3039,7 +3039,7 @@
   "schedule.backup.label.name": "Schedule backup name",
   "schedule.backup.confirm.remove": "Confirm delete backup schedule",
   "schedule.backup.alert.remove": "Are you sure you want to delete the backup schedule?",
-  "schedule.backup.volume.select": "Select volume",
+  "schedule.backup.volume.select": "Select Volume",
   "schedule.backup.name.empty": "Backup schedule name cannot be empty",
   "schedule.backup.blank1": "Set Backup Schedule - Automatic Backup",
   "schedule.backup.blank2": "A solution to help administrators schedule backups, set times in advance when needed. Helps easily manage time and product development work",

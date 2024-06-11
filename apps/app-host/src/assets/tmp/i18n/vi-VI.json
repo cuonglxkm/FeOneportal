@@ -2938,7 +2938,7 @@
   "schedule.backup.label.name": "Tên lịch backup",
   "schedule.backup.confirm.remove": "Xác nhận xóa lịch backup",
   "schedule.backup.alert.remove": "Quý khách có chắc chắn muốn xóa lịch backup",
-  "schedule.backup.volume.select": "Chọn volume",
+  "schedule.backup.volume.select": "Chọn Volume",
   "schedule.backup.name.empty": "Tên lịch Backup không được để trống",
   "schedule.backup.blank1": "Đặt lịch Backup - Tự động sao lưu",
   "schedule.backup.blank2": "Giải pháp giúp nhà quản trị hẹn lịch sao lưu, hẹn trước thời gian khi cần thiết. Giúp dễ dàng quản lý thời gian, công việc phát triển sản phẩm",
