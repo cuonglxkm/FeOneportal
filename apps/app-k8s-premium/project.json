@@ -1,0 +1,108 @@
+{
+  "name": "app-k8s-premium",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "one-portal",
+  "sourceRoot": "apps/app-k8s-premium/src",
+  "tags": ["app-k8s-premium"],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:webpack-browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/app-k8s-premium",
+        "index": "apps/app-k8s-premium/src/index.html",
+        "main": "apps/app-k8s-premium/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/app-k8s-premium/tsconfig.app.json",
+        "assets": [
+          "apps/app-k8s-premium/src/favicon.ico",
+          "apps/app-k8s-premium/src/assets"
+        ],
+        "styles": ["apps/app-k8s-premium/src/styles.less"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/app-k8s-premium/webpack.config.ts"
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/app-k8s-premium/webpack.prod.config.ts"
+          }
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@nx/angular:webpack-dev-server",
+      "options": {
+        "port": 4208,
+        "publicHost": "http://localhost:4208"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "app-k8s-premium:build:production"
+        },
+        "development": {
+          "browserTarget": "app-k8s-premium:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "app-k8s-premium:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/app-k8s-premium/**/*.ts",
+          "apps/app-k8s-premium/**/*.html"
+        ]
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "buildTarget": "app-k8s-premium:build",
+        "port": 4208,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "app-k8s-premium:build:development"
+        },
+        "production": {
+          "buildTarget": "app-k8s-premium:build:production"
+        }
+      }
+    }
+  }
+}
