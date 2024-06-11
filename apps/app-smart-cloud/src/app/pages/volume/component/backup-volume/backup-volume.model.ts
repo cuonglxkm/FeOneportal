@@ -9,7 +9,9 @@ export interface BackupVolume {
   customerId: number
   scheduleId: number
   instanceBackupId: number
-  isBootable: true
+  isBootable: boolean
+  isEncryption: boolean
+  isMultiAttach: boolean
   iops: number
   offerId: number
   cloudIdentity: number

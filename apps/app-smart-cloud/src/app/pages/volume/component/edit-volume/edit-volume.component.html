@@ -140,17 +140,17 @@
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-            <nz-form-item style="margin-bottom: 0;">
-              <nz-form-label>
-                <div>
-                  {{'volume.unit-price'|i18n}}: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                   {{ orderItem?.orderItemPrices[0]?.unitPrice.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPrice.currency }}/ GB/ {{'app.month'|i18n}}</span>
-                  <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                   0 VND/ GB/ {{'app.month'|i18n}}
-                </span>
-                </div>
-              </nz-form-label>
-            </nz-form-item>
+<!--            <nz-form-item style="margin-bottom: 0;">-->
+<!--              <nz-form-label>-->
+<!--                <div>-->
+<!--                  {{'volume.unit-price'|i18n}}: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">-->
+<!--                   {{ orderItem?.orderItemPrices[0]?.unitPrice.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPrice.currency }}/ GB/ {{'app.month'|i18n}}</span>-->
+<!--                  <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">-->
+<!--                   0 VND/ GB/ {{'app.month'|i18n}}-->
+<!--                </span>-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--            </nz-form-item>-->
             <nz-form-item style="margin-bottom: 0;">
               <nz-form-label>
                 <span>{{'app.adjust.date'|i18n}}: {{ dateEdit | date: 'dd/MM/yyyy' }}</span>

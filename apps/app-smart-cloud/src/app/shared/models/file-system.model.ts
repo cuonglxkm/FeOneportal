@@ -114,6 +114,8 @@ export class CreateFileSystemRequestModel {
   createdByUserId: number;
   note: string;
   couponCode: string;
+  totalPayment: number;
+  totalVAT: number;
   orderItems: [
     {
       orderItemQuantity: number;
@@ -144,6 +146,8 @@ export class ResizeFileSystemRequestModel {
   createdByUserId: number;
   note: string;
   couponCode: string;
+  totalPayment: number;
+  totalVAT: number;
   orderItems: [
     {
       orderItemQuantity: number

@@ -111,6 +111,8 @@ export class ExtendBackupPackageComponent implements OnInit {
     request.customerId = this.formExtendBackupPackage.customerId;
     request.createdByUserId = this.formExtendBackupPackage.customerId;
     request.note = this.i18n.fanyi('app.backup.package.breadcrumb.extend');
+    request.totalPayment = this.orderItem?.totalPayment?.amount
+    request.totalVAT = this.orderItem?.totalVAT?.amount
     request.orderItems = [
       {
         orderItemQuantity: 1,
