@@ -62,7 +62,6 @@
     "highcharts": "^11.4.0",
     "html2canvas": "^1.4.1",
     "humps": "^2.0.1",
-    "js-cookie": "^3.0.5",
     "json-server": "^0.17.3",
     "jsoneditor": "^9.10.4",
     "jsonwebtoken": "^9.0.0",

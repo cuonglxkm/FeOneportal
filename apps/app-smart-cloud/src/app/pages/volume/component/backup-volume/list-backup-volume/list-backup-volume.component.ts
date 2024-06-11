@@ -194,6 +194,8 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
           case "EXTENDED":
           case "DELETING":
           case "DELETED":
+          case "RESTORING":
+          case "RESTORED":
             this.getListBackupVolumes(false);
           break;
           }

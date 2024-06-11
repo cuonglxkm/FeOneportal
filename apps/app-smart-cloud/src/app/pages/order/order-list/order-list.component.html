@@ -4,7 +4,7 @@
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{"app.breadcrumb.home" | i18n}}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/order/list']">{{"app.breadcrumb.order" | i18n}}</a></nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/order']">{{"app.breadcrumb.order" | i18n}}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
@@ -64,7 +64,7 @@
           <a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a>
         </td>
         <!-- <td>{{ data.note }}</td> -->
-        <td>{{ data?.orderItems[0] }}</td>
+        <td><div *ngFor="let item of data?.orderItems">{{ item }}</div></td>
       
         <td>{{ data.orderDate | date : 'HH:mm:ss dd/MM/YYYY' }}</td>
         <td [ngStyle]="{
