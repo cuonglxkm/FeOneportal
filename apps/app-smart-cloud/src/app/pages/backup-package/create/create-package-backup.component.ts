@@ -186,7 +186,9 @@ export class CreatePackageBackupComponent implements OnInit {
       let request: BackupPackageRequestModel = new BackupPackageRequestModel()
       request.customerId = this.formCreateBackupPackage.customerId;
       request.createdByUserId = this.formCreateBackupPackage.customerId;
-      request.note = 'tạo gói backup';
+      request.note = this.i18n.fanyi('app.backup.package.breadcrumb.create.backup.package');
+      request.totalPayment = this.orderItem?.totalPayment?.amount
+      request.totalVAT = this.orderItem?.totalVAT?.amount
       request.orderItems = [
         {
           orderItemQuantity: 1,

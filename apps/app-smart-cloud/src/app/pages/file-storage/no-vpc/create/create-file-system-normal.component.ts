@@ -1,6 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { FormSearchFileSystem, OrderCreateFileSystem } from '../../../../shared/models/file-system.model';
+import {
+  CreateFileSystemRequestModel,
+  FormSearchFileSystem,
+  OrderCreateFileSystem
+} from '../../../../shared/models/file-system.model';
 import { SnapshotVolumeService } from '../../../../shared/services/snapshot-volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
@@ -313,10 +317,12 @@ export class CreateFileSystemNormalComponent implements OnInit {
   navigateToPayment() {
     this.isLoadingAction = true;
     this.fileSystemInit();
-    let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
+    let request: CreateFileSystemRequestModel = new CreateFileSystemRequestModel();
     request.customerId = this.formCreate.customerId;
     request.createdByUserId = this.formCreate.customerId;
     request.note = 'tạo file system';
+    request.totalPayment = this.orderItem?.totalPayment?.amount
+    request.totalVAT = this.orderItem?.totalVAT?.amount
     request.orderItems = [
       {
         orderItemQuantity: 1,

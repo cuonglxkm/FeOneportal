@@ -168,6 +168,8 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     request.customerId = this.resizeFileSystem.customerId;
     request.createdByUserId = this.resizeFileSystem.customerId;
     request.note = 'Điều chỉnh dung lượng File System';
+    request.totalPayment = this.orderItem?.totalPayment?.amount
+    request.totalVAT = this.orderItem?.totalVAT?.amount
     request.orderItems = [
       {
         orderItemQuantity: 1,

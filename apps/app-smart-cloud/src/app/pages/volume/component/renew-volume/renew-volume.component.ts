@@ -182,6 +182,8 @@ export class RenewVolumeComponent implements OnInit {
     request.customerId = this.extendsDto.customerId;
     request.createdByUserId = this.extendsDto.customerId;
     request.note = this.i18n.fanyi('volume.note.extend');
+    request.totalPayment = this.orderItem?.totalPayment?.amount
+    request.totalVAT = this.orderItem?.totalVAT?.amount
     request.orderItems = [
       {
         orderItemQuantity: 1,

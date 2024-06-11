@@ -144,6 +144,8 @@ export class EditVolumeComponent implements OnInit {
       request.customerId = this.volumeEdit.customerId;
       request.createdByUserId = this.volumeEdit.customerId;
       request.note = 'update volume';
+      request.totalPayment = this.orderItem?.totalPayment?.amount
+      request.totalVAT = this.orderItem?.totalVAT?.amount
       request.orderItems = [
         {
           orderItemQuantity: 1,
@@ -373,6 +375,8 @@ export class EditVolumeComponent implements OnInit {
     request.customerId = this.volumeEdit.customerId;
     request.createdByUserId = this.volumeEdit.customerId;
     request.note = 'update volume';
+    request.totalPayment = this.orderItem?.totalPayment?.amount
+    request.totalVAT = this.orderItem?.totalVAT?.amount
     request.orderItems = [
       {
         orderItemQuantity: 1,
