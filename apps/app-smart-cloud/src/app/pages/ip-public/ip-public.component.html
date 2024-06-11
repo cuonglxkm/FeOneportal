@@ -87,7 +87,7 @@
                    nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gia hạn Ip Pulbic', item)"/>
               <!----Xóa---->
-              <img *ngIf="projectType != 0" src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
+              <img *ngIf="projectType == 0" src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
                    nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Xóa', item)"/>
             </div>

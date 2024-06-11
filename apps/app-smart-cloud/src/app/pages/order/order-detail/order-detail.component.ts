@@ -1,15 +1,16 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { OrderService } from '../../../shared/services/order.service';
 import { OrderDTOSonch } from '../../../shared/models/order.model';
-import { finalize } from 'rxjs';
+import { finalize, Observable, shareReplay, tap } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NotificationService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { NotificationService, ProjectModel, RegionModel, UserModel } from '../../../../../../../libs/common-utils/src';
 import {getCurrentRegionAndProject} from "@shared";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'one-portal-order-detail',
@@ -24,6 +25,8 @@ export class OrderDetailComponent {
   currentStep = 1;
   titleStepFour: string = this.i18n.fanyi("app.order.status.Installed");;
   serviceName: string
+  userModel$: Observable<UserModel>;
+  userModel: UserModel
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -32,6 +35,8 @@ export class OrderDetailComponent {
     private cdr: ChangeDetectorRef,
     private notificationService: NotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -39,6 +44,7 @@ export class OrderDetailComponent {
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.getUser()
     const url = this.id.split('-');
     if (url.length > 1) {
       this.service
@@ -123,13 +129,32 @@ export class OrderDetailComponent {
     });
   }
 
+  getUser(){
+    let email = this.tokenService.get()?.email;
+  const accessToken = this.tokenService.get()?.token;
+
+  let baseUrl = environment['baseUrl'];
+  this.userModel$ = this.http.get<UserModel>(`${baseUrl}/users/${email}`, {
+    headers: new HttpHeaders({
+      Authorization: 'Bearer ' + accessToken,
+    }),
+  }).pipe(
+    tap(user => {
+      this.userModel = user;
+      console.log(this.userModel);
+      
+    }),
+    shareReplay(1) 
+  );
+  }
+
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
   }
 
   projectChange(project: ProjectModel) {
     this.projectId = project.id;
-    this.router.navigate(['/app-smart-cloud/order/list'])
+    this.router.navigate(['/app-smart-cloud/order'])
   }
 
   pay(){
