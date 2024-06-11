@@ -1,14 +1,14 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Chi tiết Snapshot '" xmlns="http://www.w3.org/1999/html">
+             [title]="'Chi tiết Snapshot Volume'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot/detail/{{id}}">Chi tiết Snapshot</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot Volume</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot/detail/{{id}}">Chi tiết Snapshot Volume</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
     ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -26,9 +26,9 @@
 </page-header>
 <nz-content>
   <nz-card>
-    <span class="text-card-header">Thông tin Snapshot</span>
-    <form nz-form nzLayout="vertical">
-      <div class="customRow">
+    <span class="text-card-header">Thông tin Snapshot Volume</span>
+    <form [formGroup]="validateForm" nz-form nzLayout="vertical">
+      <div class="customRow" style="margin-top: 15px;">
         <nz-row>
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
@@ -47,13 +47,16 @@
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Trạng thái:</span>
-              <span class="text-value-detail customSpan">{{data.resourceStatus}}</span>
+              <ng-container *ngIf="data.serviceStatus | ServiceStatusPipe as statusModel">
+                <span nzBreakWord  [ngStyle]="{ color: statusModel.color }" class="text-value-detail customSpan">{{statusModel.status}}</span>
+<!--                <td >{{  }}</td>-->
+              </ng-container>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Ngày khởi tạo: </span>
-              <span class="text-value-detail customSpan">{{data.startDate | date : 'HH:mm:ss dd/MM/yyyy'}}/s</span>
+              <span class="text-value-detail customSpan">{{data.startDate | date : 'HH:mm:ss dd/MM/yyyy'}}</span>
             </nz-row>
           </nz-col>
         </nz-row>
@@ -61,31 +64,44 @@
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Loại Snapshot:</span>
-              <span class="text-value-detail customSpan">1</span>
+              <span class="text-value-detail customSpan">{{data.fromRootVolume == true ? 'Snapshot VM' : 'Snapshot Volume'}}</span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Volume: </span>
-              <span class="text-value-detail customSpan">1/s</span>
+              <span class="text-value-detail customSpan">{{data.volumeName}}</span>
             </nz-row>
           </nz-col>
         </nz-row>
-        <nz-row style="background-color: #e2e2e9">
+        <nz-row *ngIf="typeProject == 0" style="background-color: #e2e2e9">
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Gói Snapshot:</span>
-              <span class="text-value-detail customSpan">1</span>
+              <span class="text-value-detail customSpan">{{packageSnap?.packageName}}</span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Dung lượng gói: </span>
-              <span class="text-value-detail customSpan">Unlimit</span>
+              <span class="text-value-detail customSpan">{{packageSnap?.totalSize}} GB</span>
             </nz-row>
           </nz-col>
         </nz-row>
       </div>
+
+      <nz-form-item>
+        <nz-form-label>
+          <span>{{ 'app.service.description' | i18n }}</span>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+              <textarea nz-input class="input-custom" formControlName="description" [maxLength]="255"
+                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+          <ng-template #descriptionErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
     </form>
   </nz-card>
 </nz-content>

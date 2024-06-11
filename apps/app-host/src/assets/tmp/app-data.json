@@ -114,14 +114,9 @@
                   "action": "volume:List"
                 },
                 {
-                  "text": "Snapshot",
+                  "text": "Snapshot Volume",
                   "link": "/app-smart-cloud/snapshot",
                   "action": "snapshot:List"
-                },
-                {
-                  "text": "Snapshot Volume",
-                  "link": "/app-smart-cloud/snapshotvls",
-                  "action": "volumesnapshot:List"
                 },
                 {
                   "text": "Lịch Snapshot",
