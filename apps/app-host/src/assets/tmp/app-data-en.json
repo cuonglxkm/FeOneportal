@@ -293,17 +293,22 @@
             "children": [
               {
                 "text": "Kubernetes",
-                "icon": "anticon-team",
+                "icon": "anticon-profile",
                 "link": "/app-kubernetes"
               },
               {
+                "text": "K8s Premium",
+                "icon": "anticon-profile",
+                "link": "/app-k8s-premium"
+              },
+              {
                 "text": "Kafka",
-                "icon": "anticon-team",
+                "icon": "anticon-profile",
                 "link": "/app-kafka"
               },
               {
                 "text": "MongoDB Replicaset",
-                "icon": "anticon-team",
+                "icon": "anticon-profile",
                 "link": "/app-mongodb-replicaset"
               }
             ]
