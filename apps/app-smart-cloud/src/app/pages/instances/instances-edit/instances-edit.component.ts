@@ -886,7 +886,7 @@ export class InstancesEditComponent implements OnInit {
       );
       return;
     }
-    this.order = new Order();
+    this.orderItem = [];
     this.instanceResizeInit();
     let specificationInstance = JSON.stringify(this.instanceResize);
     let orderItemInstanceResize = new OrderItem();

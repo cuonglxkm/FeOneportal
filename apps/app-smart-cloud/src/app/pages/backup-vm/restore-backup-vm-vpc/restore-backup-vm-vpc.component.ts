@@ -816,7 +816,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.instanceInit();
-          this.order = new Order();
+          this.orderItem = [];
           let specificationInstance = JSON.stringify(
             this.restoreInstanceBackup
           );
