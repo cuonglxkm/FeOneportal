@@ -496,9 +496,11 @@ export class PaymentSummaryComponent implements OnInit {
             Validators.required,
             Validators.pattern(/^[0-9-]+$/),
           ]);
+          this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
           this.formCustomerInvoice.controls.nameCompany.setValidators([
             Validators.required,
           ]);
+          this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
         }
       },
       error: (e) => {
@@ -536,6 +538,7 @@ export class PaymentSummaryComponent implements OnInit {
       this.formCustomerInvoice.controls.nameCompany.setValidators([
         Validators.required,
       ]);
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
     }
   }
 
@@ -558,6 +561,7 @@ export class PaymentSummaryComponent implements OnInit {
       this.formCustomerInvoice.controls.nameCompany.setValidators([
         Validators.required,
       ]);
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
     }
   }
 
