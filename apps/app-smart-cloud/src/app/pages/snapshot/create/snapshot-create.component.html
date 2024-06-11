@@ -1,14 +1,14 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Khởi tạo Snapshot'" xmlns="http://www.w3.org/1999/html">
+             [title]="'Khởi tạo Snapshot Volume'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot/create">Khởi tạo Snapshot</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot Volume</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot/create">Khởi tạo Snapshot Volume</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
     ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -29,7 +29,16 @@
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông tin Snapshot</span>
+          <span class="text-card-header">Thông tin Snapshot Volume</span>
+          <nz-alert  nzBanner
+                     style="margin-bottom: 10px;margin-top: 15px"
+                     [nzMessage]="nzMessage"
+                     nzShowIcon></nz-alert>
+          <ng-template #nzMessage>
+            <div>
+              Dung lượng Snapshot {{selectedSnapshotType == 1 ? 'Volume' : 'Máy ảo'}} đã dùng: 2 GB / 8 GB. Quý khách còn lại 6 GB dung lượng Snapshot
+            </div>
+          </ng-template>
           <nz-form-item style="margin-top: 15px;">
             <nz-form-label>
               <span> {{ 'app.snapshot.name' | i18n }} (<span style="color: red;">*</span>) </span>
@@ -300,9 +309,11 @@
             <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
             <div style="margin-top: 10px" class="text-label">{{validateForm.controls['quota'].value}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div *ngIf="projectType == 0" style="margin-top: 10px" class="text-value">Gói Snapshot</div>
-            <div *ngIf="projectType == 0" style="margin-top: 10px" class="text-label">{{selectedSnapshotPackage?.packageName}}</div>
-            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div *ngIf="projectType == 0">
+              <div style="margin-top: 10px" class="text-value">Gói Snapshot</div>
+              <div style="margin-top: 10px" class="text-label">{{selectedSnapshotPackage?.packageName}}</div>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            </div>
             <nz-row>
               <nz-col style="width: 100%">
                 <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()" [nzLoading]="loadingCreate"

@@ -1,13 +1,13 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Snapshot'" xmlns="http://www.w3.org/1999/html">
+             [title]="'Snapshot Volume'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot Volume</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
     ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -38,7 +38,7 @@
                      nz-input
                      [(ngModel)]="value"
                      (ngModelChange)="searchDelay.next(false)"
-                     [placeholder]="'app.load.balancer.search' | i18n"
+                     [placeholder]="'menu.search' | i18n"
                      (keydown.enter)="search(false)"/>
             </nz-input-group>
             <ng-template #prefixIconSearch>
@@ -78,11 +78,13 @@
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
             <td><a href="/app-smart-cloud/snapshot/detail/{{data.id}}">{{data.name}}</a></td>
-            <td>x</td>
-            <td>x</td>
-            <td>x</td>
-            <td>x</td>
-            <td>x</td>
+            <td><a href="/app-smart-cloud/snapshot/packages/detail/{{data.snapshotPackageId}}">{{data.packageName}}</a></td>
+            <td style="text-align: right">{{data.sizeInGB}}</td>
+            <td>{{data.volumeName}}</td>
+            <td>{{data.fromRootVolume == true ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
+            <ng-container *ngIf="data.serviceStatus | ServiceStatusPipe as statusModel">
+              <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">{{ statusModel.status }}</td>
+            </ng-container>
             <td>{{data.startDate | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
             <td>
               <img (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt="" nzTooltipTitle="{{'app.text.edit' | i18n}}"
