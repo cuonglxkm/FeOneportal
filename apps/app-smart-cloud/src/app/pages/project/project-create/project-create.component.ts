@@ -290,7 +290,8 @@ export class ProjectCreateComponent implements OnInit {
           // quotaVolumeSnapshotCount: 0,//NON
           // quotaIpPublicCount: (this.selectIndexTab==0 && this.offerFlavor != null)  ? (IPPublicNum +1) :  IPPublicNum,
           quotaIpPublicCount: this.numberIpPublic,
-          quotaIpFloatingCount: IPFloating,
+          quotaIpFloatingCount: this.numberIpFloating,
+          quotaIpv6Count: this.numberIpv6,
           quotaNetworkCount: this.numberNetwork,
           quotaRouterCount: this.numberRouter,
           quotaLoadBalancerSDNCount: this.numberLoadBalancer,
@@ -543,11 +544,13 @@ export class ProjectCreateComponent implements OnInit {
           quotaRamInGb: this.ram,
           quotaHddInGb: this.hhd,
           quotaSSDInGb: this.ssd,
+
           quotaBackupVolumeInGb: this.numberBackup,
           quotaSecurityGroupCount: this.numberSecurityGroup,
           quotaIpPublicCount: this.numberIpPublic,
-          quotaIpFloatingCount: IPFloating,
-          quotaIpv6Count: IPV6,
+          quotaIpFloatingCount: this.numberIpFloating,
+          quotaIpv6Count: this.numberIpv6,
+          
           projectType: this.vpcType,
           quotaNetworkCount: this.numberNetwork,
           quotaRouterCount: this.numberRouter,

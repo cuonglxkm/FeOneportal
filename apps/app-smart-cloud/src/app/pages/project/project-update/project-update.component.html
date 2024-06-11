@@ -422,7 +422,7 @@
                   <tbody class="ant-table-tbody">
                     <tr>
                       <td width="60%">
-                        VCPU (<span class="text-red">*</span>)
+                        VCPU 
                         <nz-slider [nzMin]="0" [nzStep]="1" [nzMax]="1000" [(ngModel)]="vCPU"  (ngModelChange)="calculate()"
                           [ngModelOptions]="{standalone: true}"></nz-slider>
                       </td>
@@ -438,7 +438,7 @@
                     </tr>
                     <tr>
                       <td width="60%">
-                        RAM (GB) (<span class="text-red">*</span>)
+                        RAM (GB) 
                         <nz-slider [nzMin]="0" [nzMax]="1000" [(ngModel)]="ram" [nzStep]="1"
                           [ngModelOptions]="{standalone: true}"></nz-slider>
                       </td>
@@ -630,9 +630,9 @@
               <one-portal-svg-icon *ngIf="trashIP" [icon]="'icon_trash'" class="icon-trash"
                 (click)="deleteIP()"></one-portal-svg-icon>
             </div>
-            <p class="label-fontsize label-color">Số lượng IP Floating hiện tại: {{ipFloatingOld}}GB</p>
-            <p class="label-fontsize label-color">Số lượng IP Public hiện tại: {{ipPublicAddOld}}GB</p>
-            <p class="label-fontsize label-color">Số lượng IP Pv6 hiện tại: {{ipv6Old}}GB</p>
+            <p class="label-fontsize label-color">Số lượng IP Floating hiện tại: {{ipFloatingOld}}</p>
+            <p class="label-fontsize label-color">Số lượng IP Public hiện tại: {{ipPublicAddOld}}</p>
+            <p class="label-fontsize label-color">Số lượng IP Pv6 hiện tại: {{ipv6Old}}</p>
             <div *ngIf="!activeIP">
               <button class="h-btn" nz-button nzType="default" (click)="initIP()">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
@@ -645,23 +645,37 @@
               
                 <nz-form-control>
                   <nz-input-group nzCompact>
-                    <nz-select nzSize="large" [nzLoading]="loadingIpConnectInternet"
+                    <!-- <nz-select nzSize="large" [nzLoading]="loadingIpConnectInternet"
                       [nzDisabled]="disableIpConnectInternet"
                       style="width: 60%; margin-left: -1px;border-radius: 10px;" 
                       nzPlaceHolder="--{{'project.note40' | i18n}}--" [(ngModel)]="ipConnectInternet"
                       [ngModelOptions]="{standalone: true}" >
-                      <!-- (ngModelChange)="openIpSubnet()" -->
+                     
                       <nz-option nzLabel="Không sử dụng"
                         nzValue="" />
                       <nz-option *ngFor="let i of listIpConnectInternet" [nzLabel]="i.displayName"
                         [nzValue]="i.networkId +'--'+ i.displayName" />
+                       
+                    </nz-select> -->
+                    <nz-select nzSize="large" [nzLoading]="loadingIpConnectInternet"
+                      [nzDisabled]="disableIpConnectInternet"
+                      style="width: 60%; margin-left: -1px;border-radius: 10px;" 
+                      nzPlaceHolder="--{{'project.note40' | i18n}}--" [(ngModel)]="ipNetworkAddress"
+                      [ngModelOptions]="{standalone: true}" >
+                      <!-- (ngModelChange)="openIpSubnet()" -->
+                      <nz-option [nzDisabled]="ipNetworkAddress!=''"  nzLabel="Không sử dụng" 
+                        nzValue="" />
+                      <!-- <nz-option *ngFor="let i of listIpConnectInternet" [nzLabel]="i.displayName"
+                        [nzValue]="i.networkId +'--'+ i.displayName" /> -->
+                        <nz-option *ngFor="let i of listIpConnectInternet" [nzLabel]="i.displayName"
+                        [nzValue]="i.cidr" />
                     </nz-select>
                   </nz-input-group>
                 </nz-form-control>
 
               </nz-form-item>   
               <div >
-                <nz-row *ngIf="ipConnectInternet != ''">
+                <nz-row *ngIf="ipNetworkAddress != ''">
                 <!-- <nz-row *ngIf="ipConnectInternet != null && ipConnectInternet != ''"> -->
                   <nz-form-item style="width: 60%">
                     <nz-form-label class="custom-label">{{ "app.order-detail.quantity" | i18n }} IP Floating</nz-form-label>
@@ -1481,7 +1495,7 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         </div>
         <!--        Dịch vụ bổ sung-->
-        <div *ngIf="siteToSiteId||numberSnapshotssd!=0||numberSnapshothdd!=0||numberLoadBalancer != 0 ||siteToSiteId|| numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0" class="text-value">{{
+        <div *ngIf="siteToSiteId != data?.vpnSiteToSiteOfferId||numberSnapshotssd!=0||numberSnapshothdd!=0||numberLoadBalancer != 0 ||siteToSiteId|| numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0" class="text-value">{{
           'service.bonus' | i18n }}
         </div>
         <nz-row *ngIf="numberIpFloating != 0" style="display: flex;justify-content: space-between;">
@@ -1521,7 +1535,7 @@
           <div style="margin-top: 10px" class="text-label">{{ numberFileScnapsshot }}GB</div>
           
         </nz-row>
-        <nz-row *ngIf="siteToSiteId " style="display: flex;justify-content: space-between;">
+        <nz-row *ngIf="siteToSiteId != data?.vpnSiteToSiteOfferId" style="display: flex;justify-content: space-between;">
           <div style="margin-top: 10px" class="text-label">VPN site to site:</div>
           <div style="margin-top: 10px" class="text-label">{{ sitetositeName }}</div>
         </nz-row>
@@ -1573,10 +1587,10 @@
         <nz-row>
           <nz-col style="width: 100%">
             <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="updateVpc()"
-              [disabled]="(((selectIndexTab == 0 ||(selectIndexTab==1 && (vCPU==0&& ram==0 && hhd==0 && ssd==0))) && (numberIpPublic==0 && numberIpFloating==0 && numberIpv6==0 && numberBackup==0 && numberSnapshothdd==0 && numberSnapshotssd==0 && numberFileScnapsshot==0 && numberFileSystem==0 && numberLoadBalancer==0 && !siteToSiteId )) ) || disisable == true">
+              [disabled]="(((selectIndexTab == 0 ||(selectIndexTab==1 && (vCPU==0&& ram==0 && hhd==0 && ssd==0))) && (numberIpPublic==0 && numberIpFloating==0 && numberIpv6==0 && numberBackup==0 && numberSnapshothdd==0 && numberSnapshotssd==0 && numberFileScnapsshot==0 && numberFileSystem==0 && numberLoadBalancer==0 && !siteToSiteId ) || totalPayment ==0) ) || disisable == true">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               <span
-                [style.color]="(((selectIndexTab == 0 ||(selectIndexTab==1 && (vCPU==0&& ram==0 && hhd==0 && ssd==0))) && (numberIpPublic==0 && numberIpFloating==0 && numberIpv6==0 && numberBackup==0 && numberSnapshothdd==0 && numberSnapshotssd==0 && numberFileScnapsshot==0 && numberFileSystem==0 && numberLoadBalancer==0 && !siteToSiteId )) ) || disisable == true ? 'gray' : 'white'">Điều chỉnh</span>
+                [style.color]="(((selectIndexTab == 0 ||(selectIndexTab==1 && (vCPU==0&& ram==0 && hhd==0 && ssd==0))) && (numberIpPublic==0 && numberIpFloating==0 && numberIpv6==0 && numberBackup==0 && numberSnapshothdd==0 && numberSnapshotssd==0 && numberFileScnapsshot==0 && numberFileSystem==0 && numberLoadBalancer==0 && !siteToSiteId ) || totalPayment ==0) ) || disisable == true ? 'gray' : 'white'">Điều chỉnh</span>
             </button>
           </nz-col>
         </nz-row>
@@ -1587,3 +1601,8 @@
 
 
 </form>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>

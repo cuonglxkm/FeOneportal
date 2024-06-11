@@ -43,7 +43,7 @@
   "service.status.violation": "Vi phạm điều khoản",
   "service.status.deleting": "Đang xóa",
   "service.status.error": "Lỗi",
-  "service.status.restoring": "Restoring",
+  "service.status.restoring": "Đang khôi phục",
   "service.status.unknown": "Không xác định",
 
 
@@ -132,7 +132,7 @@
   "app.end": "Kết thúc",
   "app.estimated.cost": "Chi phí ước tính",
   "app.estimated.storage": "Chi phí tăng dung lượng",
-  "app.fee.extend": "Chi phí điều chỉnh",
+  "app.fee.resize": "Chi phí điều chỉnh",
   "app.cost.a.month": "Chi phí 1 tháng",
   "app.cost.vat": "Chi phí VAT (10%)",
   "app.cost.n.month": "Chi phí {{numberMonth}} tháng",
@@ -2724,6 +2724,7 @@
   "app.backup.package.delete.modal.alert.backupvl": "Các bản backup Volume của gói backup này cũng sẽ bị xóa.",
   "app.backup.package.delete.modal.alert.backup.schedule": "Các lịch backup tự động được tạo từ Gói backup này cũng sẽ bị xóa.",
   "app.backup.package.edit.title": "Chỉnh sửa thông tin gói Backup",
+  "app.backup.package.resize": "điều chỉnh gói backup",
 
   "app.tooltip.backup.package.name": "Tên gói backup của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.",
   "app.tooltip.backup.package.storage": "Dung lượng của gói backup",
@@ -2910,11 +2911,11 @@
   "schedule.backup.note1": "Đặt lịch Backup - Tự động sao lưu",
   "schedule.backup.note2": "Giải pháp giúp nhà quản trị hẹn lịch sao lưu, hẹn trước thời gian khi cần thiết. Giúp dễ dàng quản lý thời gian, công việc phát triển sản phẩm",
   "schedule.backup.label.edit": "Điều chỉnh Backup",
-  "schedule.backup.validate1": "Tên gồm 255 ký tự viết liền không dấu cách",
+  "schedule.backup.validate1": "Tên gồm 50 ký tự viết liền không dấu cách",
   "schedule.backup.validate2": "Tên không chứa ký tự đặc biệt ngoại trừ dấu _",
   "schedule.backup.validate3": "Tên không được trùng với tên lịch đã có",
   "schedule.backup.number.save": "Số bản lưu trữ backup",
-  "schedule.backup.validate4": "Cho phép nhập tối đa 500 kí tự",
+  "schedule.backup.validate4": "Cho phép nhập tối đa 255 kí tự",
   "schedule.backup.mode": "Chế độ Backup",
   "schedule.backup.time.select": "Chọn thời gian",
   "schedule.backup.0.to.24": "Vui lòng nhập số lớn hơn 0 và nhỏ hơn 24",
@@ -2934,7 +2935,13 @@
   "schedule.backup.health": "Khôi phục",
   "schedule.backup.action3": "Xác nhận tạm dừng lịch backup",
   "schedule.backup.action4": "Quý khách có chắc chắn muốn tạm dừng lịch backup",
+  "schedule.backup.tooltip.name": "Tên lịch backup. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt.",
+  "schedule.backup.require.max.backup": "Vui lòng chọn số bản ghi backup",
+
+
+
   "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",
+
   "app.validate.order.fail": "Lỗi khi kiểm tra order",
 
 

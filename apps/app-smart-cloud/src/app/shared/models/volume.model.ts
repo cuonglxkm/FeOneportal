@@ -30,6 +30,8 @@ export class EditSizeVolumeModel{
   customerId: number;
   createdByUserId: number;
   note: string;
+  totalPayment: number;
+  totalVAT: number;
   orderItems: [
     {
       orderItemQuantity: number;

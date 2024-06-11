@@ -22,7 +22,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 export class ScheduleBackupVmComponent implements OnInit {
   @Input() region: number;
   @Input() project: number;
-  @Input() instanceId: number;
+  @Input() instanceId?: number;
 
   isLoading: boolean = false;
   validateForm: FormGroup<{
@@ -298,10 +298,13 @@ export class ScheduleBackupVmComponent implements OnInit {
 
   instanceName: string
   getInstanceById() {
-    this.validateForm.get('instanceId').setValue(this.instanceId)
-    this.instanceService.getInstanceById(this.instanceId).subscribe(data => {
-      this.instanceName = data.name
-    })
+    if(this.instanceId != undefined) {
+      this.validateForm.get('instanceId').setValue(this.instanceId)
+      this.instanceService.getInstanceById(this.instanceId).subscribe(data => {
+        this.instanceName = data.name
+      })
+    }
+
   }
 
   getListScheduleBackup() {
@@ -320,6 +323,8 @@ export class ScheduleBackupVmComponent implements OnInit {
       });
     });
   }
+
+
 
   ngOnInit(): void {
     this.getListScheduleBackup();
