@@ -866,7 +866,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.order = new Order();
+          this.orderItem = [];
           let specificationInstance = JSON.stringify(this.instanceCreate);
           let orderItemInstance = new OrderItem();
           orderItemInstance.orderItemQuantity = 1;
