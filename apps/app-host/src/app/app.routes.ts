@@ -4,6 +4,13 @@ import { loadRemoteModule } from '@nx/angular/mf';
 
 export const appRoutes: Route[] = [
   {
+    path: 'app-k8s-premium',
+    loadChildren: () =>
+      loadRemoteModule('app-k8s-premium', './Module').then(
+        (m) => m.RemoteEntryModule
+      ),
+  },
+  {
     path: 'app-mongodb-replicaset',
     loadChildren: () =>
       loadRemoteModule('app-mongodb-replicaset', './Module').then(
