@@ -549,7 +549,12 @@ export class ProjectUpdateComponent implements OnInit {
       
         this.orderService
           .validaterOrder(request)
-          .pipe(finalize(() => (this.isLoading = false)))
+          .pipe(
+            finalize(() => {
+              this.isLoading = false;
+              this.cdr.detectChanges();
+            })
+          )
           .subscribe({
             next: (result) => {
               if (result.success) {

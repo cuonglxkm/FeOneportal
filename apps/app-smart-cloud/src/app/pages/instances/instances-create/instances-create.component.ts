@@ -1700,7 +1700,12 @@ export class InstancesCreateComponent implements OnInit {
 
             this.orderService
               .validaterOrder(this.order)
-              .pipe(finalize(() => (this.isLoading = false)))
+              .pipe(
+                finalize(() => {
+                  this.isLoading = false;
+                  this.cdr.detectChanges();
+                })
+              )
               .subscribe({
                 next: (result) => {
                   if (result.success) {
@@ -1723,6 +1728,8 @@ export class InstancesCreateComponent implements OnInit {
               });
           },
           error: (e) => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
             let numbers: number[] = [];
             const regex = /\d+/g;
             const matches = e.error.match(regex);
@@ -1811,7 +1818,12 @@ export class InstancesCreateComponent implements OnInit {
 
       this.orderService
         .validaterOrder(this.order)
-        .pipe(finalize(() => (this.isLoading = false)))
+        .pipe(
+          finalize(() => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          })
+        )
         .subscribe({
           next: (result) => {
             if (result.success) {

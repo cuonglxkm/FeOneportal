@@ -629,7 +629,12 @@ export class ProjectCreateComponent implements OnInit {
     } else {
       this.orderService
         .validaterOrder(request)
-        .pipe(finalize(() => (this.isLoading = false)))
+        .pipe(
+                finalize(() => {
+                  this.isLoading = false;
+                  this.cdr.detectChanges();
+                })
+              )
         .subscribe({
           next: (result) => {
             if (result.success) {
