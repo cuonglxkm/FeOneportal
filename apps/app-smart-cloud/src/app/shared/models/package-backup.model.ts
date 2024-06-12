@@ -45,7 +45,9 @@ export class BackupPackageRequestModel {
   customerId: number;
   createdByUserId: number;
   note: string;
-  couponCode: string
+  couponCode: string;
+  totalPayment: number;
+  totalVAT: number;
   orderItems: [
     {
       orderItemQuantity: number;

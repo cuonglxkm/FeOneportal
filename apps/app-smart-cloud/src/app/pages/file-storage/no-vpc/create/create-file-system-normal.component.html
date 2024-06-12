@@ -145,6 +145,7 @@
                     <ng-template #storageErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
                       <ng-container *ngIf="control.hasError('pattern')">{{ 'app.file.system.error.pattern.storage' | i18n }}</ng-container>
+                      <ng-container *ngIf="control.hasError('outOfStorageSnapshot')">{{'app.file.system.not.enough.quota.snapshot'|i18n: {name: snapshot.sizeInGB + 'GB'} }}</ng-container>
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
@@ -184,7 +185,7 @@
                            (ngModelChange)="onSnapshotChangeSelected($event)"
                            [nzShowSearch]="false">
                   <nz-option *ngFor="let item of snapshotList"
-                             [nzLabel]="item.name + '(' + item.size + ' GB)'"
+                             [nzLabel]="item.name + ' (' + item.size + ' GB)'"
                              [nzValue]="item.id"></nz-option>
                 </nz-select>
                 <ng-template #snapshotError let-control>

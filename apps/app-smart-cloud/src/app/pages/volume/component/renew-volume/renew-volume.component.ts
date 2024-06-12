@@ -92,7 +92,7 @@ export class RenewVolumeComponent implements OnInit {
 
   getVolumeById(id) {
     this.isLoading = true;
-    this.volumeService.getVolumeById(id).subscribe(data => {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
       this.isLoading = false;
       this.volumeInfo = data;
 
@@ -182,6 +182,8 @@ export class RenewVolumeComponent implements OnInit {
     request.customerId = this.extendsDto.customerId;
     request.createdByUserId = this.extendsDto.customerId;
     request.note = this.i18n.fanyi('volume.note.extend');
+    request.totalPayment = this.orderItem?.totalPayment?.amount
+    request.totalVAT = this.orderItem?.totalVAT?.amount
     request.orderItems = [
       {
         orderItemQuantity: 1,

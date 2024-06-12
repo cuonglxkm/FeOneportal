@@ -207,7 +207,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
     this.volumeAttachSelected = [];
     if (value.length >= 1) {
       value.forEach(item => {
-        this.volumeService.getVolumeById(item).subscribe(data => {
+        this.volumeService.getVolumeById(item, this.project).subscribe(data => {
           this.volumeAttachSelected?.push(data);
           this.sizeOfVlAttach += data?.sizeInGB;
         });

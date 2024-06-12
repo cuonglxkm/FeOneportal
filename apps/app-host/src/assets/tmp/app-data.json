@@ -114,14 +114,9 @@
                   "action": "volume:List"
                 },
                 {
-                  "text": "Snapshot",
+                  "text": "Snapshot Volume",
                   "link": "/app-smart-cloud/snapshot",
                   "action": "snapshot:List"
-                },
-                {
-                  "text": "Snapshot Volume",
-                  "link": "/app-smart-cloud/snapshotvls",
-                  "action": "volumesnapshot:List"
                 },
                 {
                   "text": "Lịch Snapshot",
@@ -298,17 +293,22 @@
           "children": [
             {
               "text": "Kubernetes",
-              "icon": "anticon-team",
+              "icon": "anticon-profile",
               "link": "/app-kubernetes"
             },
             {
+              "text": "K8s Premium",
+              "icon": "anticon-profile",
+              "link": "/app-k8s-premium"
+            },
+            {
               "text": "Kafka",
-              "icon": "anticon-team",
+              "icon": "anticon-profile",
               "link": "/app-kafka"
             },
             {
               "text": "MongoDB Replicaset",
-              "icon": "anticon-team",
+              "icon": "anticon-profile",
               "link": "/app-mongodb-replicaset"
             }
           ]

@@ -4,13 +4,12 @@
       style="color: #0066B3; margin-right: 10px; cursor: pointer;"
       (click)="showModal()"></span>
 <nz-modal [(nzVisible)]="isVisible"
-          nzTitle="{{'hedule.backup.action1' | i18n}}"
-          (nzOnCancel)="handleCancel()" nzCentered>
+          (nzOnCancel)="handleCancel()">
   <div *nzModalTitle>
-    <p class="text-h5"><b>{{'hedule.backup.action1' | i18n}}</b></p>
+    <p class="text-h5"><b>{{'schedule.backup.action1' | i18n}}</b></p>
   </div>
   <div *nzModalContent>
-    <p class="text-p">{{'hedule.backup.action2' | i18n}}</p>
+    <p class="text-p">{{'schedule.backup.action2' | i18n}}</p>
   </div>
   <div *nzModalFooter>
     <button nz-button nzType="default" (click)="handleCancel()"

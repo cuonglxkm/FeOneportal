@@ -105,7 +105,6 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
               private cdr: ChangeDetectorRef,
               private configurationsService: ConfigurationsService,
               private instanceService: InstancesService,
-              private orderService: OrderService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
@@ -221,7 +220,7 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
   }
 
   getVolumeDetail(id) {
-    this.volumeService.getVolumeById(id).subscribe(data => {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
       this.volumeDetail = data;
     });
   }

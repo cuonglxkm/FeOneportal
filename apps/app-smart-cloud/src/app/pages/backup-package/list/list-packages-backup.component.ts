@@ -59,7 +59,7 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
 
   options = [
     { label: this.i18n.fanyi('app.status.all'), value: '' },
-    { label: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
+    { label: this.i18n.fanyi('app.status.running'), value: 'AVAILABLE' },
     { label: this.i18n.fanyi('app.status.error'), value: 'ERROR' },
     { label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED' }
   ];
