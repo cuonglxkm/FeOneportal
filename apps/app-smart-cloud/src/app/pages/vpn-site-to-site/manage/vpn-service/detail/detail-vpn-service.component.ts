@@ -33,7 +33,7 @@ ngOnInit(): void {
   }
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -41,7 +41,7 @@ ngOnInit(): void {
   }
 
   userChangeProject(){
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   getVpnServiceById(id) {

@@ -11,6 +11,7 @@ import { FormCreateSslCert } from 'src/app/shared/models/ssl-cert.model';
 import { SSLCertService } from 'src/app/shared/services/ssl-cert.service';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { differenceInCalendarDays } from 'date-fns';
+import { NAME_REGEX } from 'src/app/shared/constants/constants';
 
 
 @Component({
@@ -47,7 +48,7 @@ export class CreateSslCertComponent implements OnInit{
     passphrase: FormControl<string>
   }> = this.fb.group({
     privateKey: ['', Validators.required],
-    certName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]{0,49}$/)]],
+    certName: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
     publicKey: ['', Validators.required],
     passphrase: [''],
   });

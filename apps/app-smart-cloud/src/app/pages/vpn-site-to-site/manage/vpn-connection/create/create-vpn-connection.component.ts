@@ -34,6 +34,7 @@ import { FormSearchVpnService } from 'src/app/shared/models/vpn-service';
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NAME_SPECIAL_REGEX, PEER_VPN_REGEX } from 'src/app/shared/constants/constants';
 
 @Component({
   selector: 'one-portal-create-vpn-connection',
@@ -260,7 +261,7 @@ export class CreateVpnConnectionComponent implements OnInit {
         '',
         [
           Validators.required,
-          Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/),
+          Validators.pattern(NAME_SPECIAL_REGEX),
         ],
       ],
       peerRemoteIp: [
@@ -268,7 +269,7 @@ export class CreateVpnConnectionComponent implements OnInit {
         [
           Validators.required,
           Validators.pattern(
-            /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+            PEER_VPN_REGEX
           ),
         ],
       ],
@@ -277,7 +278,7 @@ export class CreateVpnConnectionComponent implements OnInit {
         [
           Validators.required,
           Validators.pattern(
-            /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+            PEER_VPN_REGEX
           ),
         ],
       ],
@@ -331,7 +332,7 @@ export class CreateVpnConnectionComponent implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.vpn-connection-create.success')
           );
-          this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+          this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
         },
         (error) => {
           this.isLoading = false;
@@ -353,7 +354,7 @@ export class CreateVpnConnectionComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -361,6 +362,6 @@ export class CreateVpnConnectionComponent implements OnInit {
   }
 
   userChangeProject() {
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 }
