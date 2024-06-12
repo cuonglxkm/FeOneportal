@@ -14,7 +14,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { CatalogService } from '../../../../shared/services/catalog.service';
-import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel, storageValidator } from '../../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
@@ -218,8 +218,11 @@ export class CreateVolumeVpcComponent implements OnInit {
   getDetailSnapshotVolume(id) {
     this.snapshotvlService.getDetailSnapshotSchedule(id).subscribe(data => {
       console.log('data', data);
+      this.snapshot = data
       this.validateForm.controls.storage.setValue(data.sizeInGB)
-      this.minStorage = data.sizeInGB
+      // this.minStorage = data.sizeInGB
+      this.validateForm.controls.storage.setValidators([storageValidator(data.sizeInGB)]);
+      this.validateForm.controls.storage.updateValueAndValidity();
       this.getDetailVolume(data.volumeId)
       if(data.volumeType == 'hdd') {
         this.selectedValueHDD = true
@@ -414,6 +417,9 @@ export class CreateVolumeVpcComponent implements OnInit {
     } else {
       this.validateForm.controls.snapshot.clearValidators();
       this.validateForm.controls.snapshot.updateValueAndValidity();
+
+      this.validateForm.controls.storage.clearValidators();
+      this.validateForm.controls.storage.updateValueAndValidity();
     }
   }
 

@@ -5,14 +5,21 @@ import { VolumeService } from '../../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../../shared/services/snapshot-volume.service';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import { InstancesService } from '../../../instances/instances.service';
 import { DataPayment, InstancesModel, ItemPayment, VolumeCreate } from '../../../instances/instances.model';
 import { OrderItem } from 'src/app/shared/models/price';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { debounceTime, Subject } from 'rxjs';
-import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel, storageValidator } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -95,6 +102,8 @@ export class CreateVolumeComponent implements OnInit {
   enableMultiAttach: boolean = false;
 
   offerId: number;
+
+  // snapshot: any;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -222,6 +231,9 @@ export class CreateVolumeComponent implements OnInit {
     } else {
       this.validateForm.controls.snapshot.clearValidators();
       this.validateForm.controls.snapshot.updateValueAndValidity();
+
+      this.validateForm.controls.storage.clearValidators();
+      this.validateForm.controls.storage.updateValueAndValidity();
     }
 
   }
@@ -502,9 +514,12 @@ export class CreateVolumeComponent implements OnInit {
 
   getDetailSnapshotVolume(id) {
     this.snapshotvlService.getDetailSnapshotSchedule(id).subscribe(data => {
+      this.snapshot = data;
       console.log('data', data);
       this.validateForm.controls.storage.setValue(data.sizeInGB)
-      this.minStorage = data.sizeInGB
+      this.validateForm.controls.storage.setValidators([storageValidator(data.sizeInGB)]);
+      this.validateForm.controls.storage.updateValueAndValidity();
+      // this.minStorage = data.sizeInGB
       this.getDetailVolume(data.volumeId)
       if(data.volumeType == 'hdd') {
         this.selectedValueHDD = true
