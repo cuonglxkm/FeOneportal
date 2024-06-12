@@ -320,11 +320,18 @@ export class RouterListComponent implements OnInit {
             this.getDataList(true);
           },
           error: (e) => {
-            this.notification.error(
-              e.statusText,
-              this.i18n.fanyi('router.nofitacation.remove.fail')
-            );
-            this.isLoadingDeleteRouter = false
+            if(e.error.detail.includes('Vui lòng không xóa Router vì')){
+              this.notification.error(
+                this.i18n.fanyi('app.status.fail'),
+                this.i18n.fanyi('router.nofitacation.remove.fail1')
+              );
+            } else{
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('router.nofitacation.remove.fail')
+              );
+              this.isLoadingDeleteRouter = false
+            }            
           },
         });
   }

@@ -2230,6 +2230,7 @@
   "router.nofitacation.interface.remove.success": "Xóa Router Interface thành công",
   "router.nofitacation.interface.remove.fail": "Xóa Router Interface không thành công",
   "router.nofitacation.interface.remove.fail1": "Vui lòng không xóa Router Interface vì quý khách đang sử dụng dịch vụ File Storage",
+  "router.nofitacation.remove.fail1": "Vui lòng không xóa Router vì quý khách đang sử dụng dịch vụ File Storage",
   "router.nofitacation.static.remove.success": "Xóa Static Route thành công",
   "wan.label.ip.wan.management": "Quản lý IP kết nối WAN",
   "wan.alert.ip.wan": "Dải IP kết nối WAN",
