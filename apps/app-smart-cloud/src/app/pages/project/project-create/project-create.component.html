@@ -2,7 +2,7 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">{{ 'project.note1' | i18n }}</a>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">Quản lý VPC</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'project.create' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -69,7 +69,7 @@
                           </label>
                         </ng-template>
                         <ng-template #nzTitleselectedHDDorSSD1>
-                          <b>{{ 'project.note5' | i18n }}</b>
+                          <b>VPC mặc định</b>
                         </ng-template>
                         <ng-template #nzDescriptionselectedHDDorSSD1>
                           <ellipsis class="text-custom">
@@ -102,7 +102,7 @@
                           <label nz-radio nzValue="1"></label>
                         </ng-template>
                         <ng-template #nzTitleselectedHDDorSSD2>
-                          <b>{{ 'project.note4' | i18n }}</b>
+                          <b>VPC tuỳ biến</b>
                         </ng-template>
                         <ng-template #nzDescriptionselectedHDDorSSD2>
                           <ellipsis class="text-custom">
