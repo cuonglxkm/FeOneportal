@@ -38,7 +38,7 @@ export class RestoreBackupVolumeComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  isLoading: boolean = true;
+  isLoading: boolean = false;
 
   idBackupVolume: number;
 
@@ -219,7 +219,9 @@ export class RestoreBackupVolumeComponent implements OnInit {
         this.isLoading = false;
         data.records.forEach(item => {
           this.nameList?.push(item.name);
-          if (item.sizeInGB >= this.backupVolume?.size) {
+          if (item.sizeInGB >= this.backupVolume?.size
+            && this.backupVolume?.volumeType === item.volumeType
+            && this.backupVolume?.isEncryption === item.isEncryption) {
             this.listVolumes?.push(item);
           }
         });
@@ -233,7 +235,7 @@ export class RestoreBackupVolumeComponent implements OnInit {
   }
 
   getVolumeDetail(id) {
-    this.volumeService.getVolumeById(id).subscribe(data => {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
       this.volumeDetail = data;
     });
   }
@@ -293,7 +295,7 @@ export class RestoreBackupVolumeComponent implements OnInit {
     this.volumeRestoreNew.volumeBackupId = this.idBackupVolume
     this.volumeRestoreNew.volumeName = this.validateForm.get('formNew').get('volumeName').value
     this.volumeRestoreNew.volumeSize = this.validateForm.get('formNew').get('storage').value
-    this.volumeRestoreNew.instanceToAttachId = this.volumeDetail?.attachedInstances[0].instanceId;
+    this.volumeRestoreNew.instanceToAttachId = this.volumeDetail?.attachedInstances[0]?.instanceId;
     this.volumeRestoreNew.customerId = this.tokenService.get()?.userId
     this.volumeRestoreNew.userEmail = this.tokenService.get()?.email
     this.volumeRestoreNew.actorEmail = this.tokenService.get()?.email
@@ -355,6 +357,7 @@ export class RestoreBackupVolumeComponent implements OnInit {
   }
 
   navigateToPaymentSummary() {
+    this.isLoadingAction = true
     this.volumeInit();
     console.log('value', this.volumeRestoreNew)
     let request: FormOrderRestoreBackupVolume = new FormOrderRestoreBackupVolume();
@@ -371,7 +374,9 @@ export class RestoreBackupVolumeComponent implements OnInit {
       }
     ];
     this.orderService.validaterOrder(request).subscribe(data => {
+      this.isLoadingAction = false
       if(data.success) {
+
         var returnPath: string = '/app-smart-cloud/backup-volume/restore/' + this.idBackupVolume;
         console.log('request', request);
         console.log('service name', this.volumeRestoreNew.serviceName);
@@ -383,6 +388,7 @@ export class RestoreBackupVolumeComponent implements OnInit {
         this.errorList = data.data;
       }
     }, error => {
+      this.isLoadingAction = false
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
     })
   }

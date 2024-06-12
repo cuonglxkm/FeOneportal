@@ -89,7 +89,7 @@
           ]
         },
         {
-          "text": "Quản lý dự án",
+          "text": "Quản lý VPC",
           "icon": "anticon-profile",
           "link": "/app-smart-cloud/project",
           "action": "project:List"
@@ -114,14 +114,9 @@
                   "action": "volume:List"
                 },
                 {
-                  "text": "Snapshot",
+                  "text": "Snapshot Volume",
                   "link": "/app-smart-cloud/snapshot",
                   "action": "snapshot:List"
-                },
-                {
-                  "text": "Snapshot Volume",
-                  "link": "/app-smart-cloud/snapshotvls",
-                  "action": "volumesnapshot:List"
                 },
                 {
                   "text": "Lịch Snapshot",
@@ -286,7 +281,7 @@
             },
             {
               "text": "VPN Site to Site",
-              "link": "/app-smart-cloud/vpn-site-to-site/manage",
+              "link": "/app-smart-cloud/vpn-site-to-site",
               "icon": "anticon-profile",
               "action": "vpnsitetosites:List"
             }
@@ -331,13 +326,8 @@
               "icon": "anticon-team"
             }
           ]
-        },
-        {
-          "text": "Operation History",
-          "icon": "anticon-edit",
-          "link": "/app-smart-cloud/operation-history"
-
         }
+        
       ]
     }
   ]

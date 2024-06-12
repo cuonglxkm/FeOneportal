@@ -111,15 +111,15 @@
                          style="cursor: pointer; margin-left: 5px; margin-top: 2px;"
                          [nzPopoverContent]="'app.text.edit' | i18n" />
                     <one-portal-stop-schedule [id]="data.id" (onOk)="handlePausedOk()"/>
-                    <one-portal-delete-schedule [id]="data.id" (onOk)="handleDeletedOk()"/>
+                    <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
                   <div *ngSwitchCase="'DISABLED'">
                     <one-portal-restore-schedule [id]="data.id" (onOk)="handleRestoredOk()"/>
-                    <one-portal-delete-schedule [id]="data.id" (onOk)="handleDeletedOk()"/>
+                    <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
                   <div *ngSwitchCase="'PAUSED'">
                     <one-portal-replay-schedule [id]="data.id" (onOk)="handlePlaydOk()"/>
-                    <one-portal-delete-schedule [id]="data.id" (onOk)="handleDeletedOk()"/>
+                    <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
                 </div>
               </td>

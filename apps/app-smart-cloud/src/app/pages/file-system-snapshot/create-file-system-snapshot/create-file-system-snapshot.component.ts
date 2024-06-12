@@ -39,6 +39,7 @@ import { addDays } from 'date-fns';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { NAME_SNAPSHOT_REGEX } from 'src/app/shared/constants/constants';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
@@ -99,7 +100,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^(?! *$)[a-zA-Z0-9-_ ]{1,255}$/),
+        Validators.pattern(NAME_SNAPSHOT_REGEX),
       ],
     ],
     description: [''],

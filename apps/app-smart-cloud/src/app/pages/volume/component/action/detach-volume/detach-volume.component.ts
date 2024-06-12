@@ -66,7 +66,7 @@ export class DetachVolumeComponent {
   }
 
   getListVmInVolume() {
-    this.volumeService.getVolumeById(this.volumeId)
+    this.volumeService.getVolumeById(this.volumeId, this.project)
       .pipe(debounceTime(300))
       .subscribe(response => {
         if (response != null) {

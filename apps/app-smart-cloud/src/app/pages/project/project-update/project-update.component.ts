@@ -64,6 +64,8 @@ export class ProjectUpdateComponent implements OnInit {
   ssd = 0;
 
   ipConnectInternet = '';
+  ipNetworkAddress:string='';
+  ipNetworkId:string='';
   numberIpFloating: number = 0;
   numberIpPublic: number = 0;
   numberIpv6: number = 0;
@@ -121,7 +123,7 @@ export class ProjectUpdateComponent implements OnInit {
   ipPublicAddOld:number=0;
   ipPublicOffer:number=0;
 
-  ipNetworkAddress:string='';
+  ipNetworkAddressOld:string='';
 
   ipFloatingOld:number=0;
   backupOld:number=0;
@@ -138,7 +140,8 @@ export class ProjectUpdateComponent implements OnInit {
   loadbalancerOfferNameOld:string='';
   gpuOld:any;
 
-
+  ipOld:string='';
+  ipNameOld:string='';
   
 
 
@@ -193,6 +196,8 @@ export class ProjectUpdateComponent implements OnInit {
 
 
   listTypeCatelogOffer:any;
+  disableIpConnectInternet:boolean= true;
+  loadingIpConnectInternet:boolean = true;
 
   isLoading = false;
   isVisiblePopupError: boolean = false;
@@ -253,27 +258,39 @@ export class ProjectUpdateComponent implements OnInit {
     // this.getOffer();
    
   }
+  openIpSubnet(){
+  //  console.log("selectedIp", selectedIp)
+  //  let network = selectedIp.split('&&--')
+  //  if(network !=null && network != undefined){
+  //   this.ipNetworkAddress = network[1];
+  //   console.log("ipNetworkAddress 1111", this.ipNetworkAddress)
+  //   this.ipNetworkId = network[0];
+  //   console.log("ipNetworkAddress 1111", this.ipNetworkAddress)
+  //  }
+   
+  //  console.log("this.ipNetworkId 000", this.ipNetworkId)
+   this.calculate()
+  }
   private calculateReal() {
     this.refreshValue();
-
-
+    console.log("this.ipConnectInternet",this.ipConnectInternet)
     let lstIp = this.ipConnectInternet?.split('--');
     let ip = '';
     let ipName = '';
     if (lstIp != null && lstIp != undefined) {
       ip = lstIp[0];
+      console.log("ip",ip)
     }
-    // let IPPublicNum = this.numberIpPublic;
-    let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
-    let IPV6 = this.numberIpv6;
 
-    let ipNetworkAddress = this.ipNetworkAddress !=null && this.ipNetworkAddress !=''? this.ipNetworkAddress : '';
+    let IPFloating = this.ipNetworkAddress !=null ? this.numberIpFloating + this.ipFloatingOld : this.ipFloatingOld;
+  
 
-    // let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : this.data.quotaIpPublicCount;
-    // let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : this.data.quotaIpFloatingCount;
-    // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : this.data.quotaIpv6Count;
     if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 ||(this.vCPU != 0 && this.ram != 0) )) {
       this.loadingCalculate = true;
+      if (lstIp != null && lstIp != undefined ) {
+        ipName = lstIp[1];
+        console.log("ipName", ipName)
+      }
       const requestBody =
       {
 
@@ -282,9 +299,11 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaHddInGb: this.hhd +this.hhdOld,
         newQuotaSsdInGb: this.ssd +this.ssdOld,
        
-        newPublicNetworkId: ipNetworkAddress,
+        newPublicNetworkId:(this.ipOld !='' && this.ipNameOld!='')? ip : this.ipOld,
+        newPublicNetworkAddress:(this.ipOld !='' && this.ipNameOld!='')? ipName : this.ipNameOld,
+
         newQuotaIpPublicCount:this.selectIndexTab==0? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
-        newQuotaIpFloatingCount: this.numberIpFloating + this.ipFloatingOld,
+        newQuotaIpFloatingCount: IPFloating,
         newQuotaIpv6Count:this.numberIpv6 + this.ipv6Old,
 
         newQuotaVolumeSnapshotHddInGb: this.numberSnapshothdd +this.snapshothddOld,
@@ -452,11 +471,21 @@ export class ProjectUpdateComponent implements OnInit {
     // let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : this.data.quotaIpPublicCount;
     // let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : this.data.quotaIpFloatingCount;
     // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : this.data.quotaIpv6Count;
-    let ipNetworkAddress = this.ipNetworkAddress !=null && this.ipNetworkAddress !=''? this.ipNetworkAddress : '';
-
+    // let ipNetworkAddress = this.ipNetworkAddress !=null && this.ipNetworkAddress !=''? this.ipNetworkAddress : '';
+    let lstIp = this.ipNetworkAddress?.split('--');
+    let ip = '';
+    let ipName = '';
+    if (lstIp != null && lstIp != undefined) {
+      ip = lstIp[0];
+      console.log("ip",ip)
+    }
 
     if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 ||(this.vCPU != 0 && this.ram != 0) )) {
       this.loadingCalculate = true;
+      if (lstIp != null && lstIp != undefined ) {
+        ipName = lstIp[1];
+        console.log("ipName", ipName)
+      }
       const requestBody =
       {
         newQuotavCpu: this.vCPU + this.vCPUOld,
@@ -464,7 +493,9 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaHddInGb: this.hhd +this.hhdOld,
         newQuotaSsdInGb: this.ssd +this.ssdOld,
 
-        newPublicNetworkId: ipNetworkAddress,
+        newPublicNetworkId:(this.ipOld !='' && this.ipNameOld!='')? ip : this.ipOld,
+        newPublicNetworkAddress:(this.ipOld !='' && this.ipNameOld!='')? ipName : this.ipNameOld,
+
         newQuotaIpPublicCount:this.selectIndexTab==0? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
         newQuotaIpFloatingCount: this.numberIpFloating + this.ipFloatingOld,
         newQuotaIpv6Count:this.numberIpv6 + this.ipv6Old,
@@ -557,27 +588,39 @@ export class ProjectUpdateComponent implements OnInit {
   }
 
   loadListIpConnectInternet() {
-    this.instancesService.getAllIPSubnet(this.regionId)
+    this.loadingIpConnectInternet = true;
+    this.disableIpConnectInternet = true;
+    this.instancesService.getAllIPSubnet(this.regionId).pipe(finalize(()=>{
+      this.disableIpConnectInternet = false;
+        this.loadingIpConnectInternet = false;
+    }))
       .subscribe(
         data => {
           console.log("getAllIPSubnet", data)
-          this.listIpConnectInternet = data;
+          this.listIpConnectInternet = data
+
           // const IpConnectInternet = data.find((item:any) => item.networkId === this.data.publicNetworkId);
-          // console.log("object IpConnectInternet", IpConnectInternet)
-          // this.ipNetworkAddress = IpConnectInternet != undefined ? IpConnectInternet.cidr : '';
+          // this.listIpConnectInternet = IpConnectInternet
           // this.ipConnectInternet = IpConnectInternet != undefined ? IpConnectInternet.displayName : 'No Ip Connect Internet';
-          console.log(" this.ipConnectInternet",  this.ipConnectInternet)
+
+          // this.listIpConnectInternet = data;
+          // const IpConnectInternet = data.find((item:any) => item.networkId === this.data.publicNetworkId);
+     
+          // this.ipNetworkAddress =IpConnectInternet? IpConnectInternet.displayName : '';
+          // console.log("object ipNetworkAddress",this.ipNetworkAddress)
+         
+          // this.ipConnectInternet  = IpConnectInternet ? IpConnectInternet.displayName : 'No Ip Connect Internet';
+
         }
       )
   }
 
   // loadListIpConnectInternet() {
-  //   // this.loadingIpConnectInternet = true;
-  //   // this.disableIpConnectInternet = true;
+  
   //   this.instancesService.getAllIPSubnet(this.regionId)
   //     .pipe(finalize(() => {
-  //       // this.disableIpConnectInternet = false;
-  //       // this.loadingIpConnectInternet = false;
+  //       this.disableIpConnectInternet = false;
+        
   //     }))
   //     .subscribe(
   //       data => {
@@ -621,7 +664,9 @@ export class ProjectUpdateComponent implements OnInit {
           this.hhdOld =  data.quotaHddInGb;
           this.ssdOld =  data.quotaSSDInGb;
 
-          this.ipNetworkAddress = data.publicNetworkAddress;
+          this.ipConnectInternet =(data.publicNetworkId && data.publicNetworkAddress )? data.publicNetworkId + '--' + data.publicNetworkAddress : '';
+          this.ipOld =  data.publicNetworkId;
+          this.ipNameOld = data.publicNetworkAddress;
 
           this.ipv6Old = data.quotaIpv6Count;
           this.ipFloatingOld = data.quotaIpFloatingCount;
@@ -1084,16 +1129,11 @@ export class ProjectUpdateComponent implements OnInit {
   initIP() {
     this.activeIP = true;
     this.trashIP = true;
-    if(this.ipNetworkAddress !=''){
-      this.ipNetworkAddress = this.data?.publicNetworkAddress
-      console.log("ipNetworkAddress123456", this.ipNetworkAddress)
-    
-    }
-    else{
-      this.ipNetworkAddress ='';
-     
-    }
-    console.log("ipNetworkAddress123", this.ipNetworkAddress)
+    this.loadListIpConnectInternet();
+    // if(this.ipNetworkAddress!=''){
+    //   this.ipNetworkAddress =this.data?.publicNetworkAddress
+    // }
+   
    
   }
   deleteIP() {
@@ -1102,7 +1142,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.numberIpPublic = 0;
     this.numberIpv6 =0;
     this.numberIpFloating=0;
-    this.ipNetworkAddress = this.data?.publicNetworkAddress
+    // this.ipNetworkAddress = this.data?.publicNetworkAddress
 
     this.calculate()
   }

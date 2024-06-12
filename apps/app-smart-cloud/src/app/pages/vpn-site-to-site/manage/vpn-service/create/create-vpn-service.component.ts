@@ -11,6 +11,7 @@ import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NAME_SPECIAL_REGEX } from 'src/app/shared/constants/constants';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class CreateVpnServiceComponent implements OnInit{
   form: FormGroup<{
     name: FormControl<string>;
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/)]],
+    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
   });
 
 
@@ -91,7 +92,7 @@ export class CreateVpnServiceComponent implements OnInit{
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.vpn-service-create.success')
             );
-            this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
           },
           (error) => {
             this.isLoading = false
@@ -108,7 +109,7 @@ export class CreateVpnServiceComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -116,6 +117,6 @@ export class CreateVpnServiceComponent implements OnInit{
   }
 
   userChangeProject(){
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 }

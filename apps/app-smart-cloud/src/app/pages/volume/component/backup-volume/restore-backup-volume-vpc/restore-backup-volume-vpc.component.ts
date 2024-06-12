@@ -220,7 +220,7 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
   }
 
   getVolumeDetail(id) {
-    this.volumeService.getVolumeById(id).subscribe(data => {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
       this.volumeDetail = data;
     });
   }

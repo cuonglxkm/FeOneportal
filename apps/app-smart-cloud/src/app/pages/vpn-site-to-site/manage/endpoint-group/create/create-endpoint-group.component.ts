@@ -18,6 +18,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../../libs/commo
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { CIDR_REGEX } from 'src/app/shared/constants/constants';
 
 @Component({
   selector: 'one-portal-create-endpoint-group',
@@ -60,7 +61,7 @@ export class CreateEndpointGroupComponent implements OnInit {
         Validators.required,
         Validators.pattern(
           new RegExp(
-            '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24(,\\s*((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24)*$'
+            CIDR_REGEX
         )
         ),
       ],
@@ -123,11 +124,16 @@ export class CreateEndpointGroupComponent implements OnInit {
     if(event === 'cidr'){
       this.listCidrInfo = []
       this.subnetId = [];
+      this.form.controls.endpointsCidr.reset();
       this.form.controls.endpointsCidr.setValidators([
         Validators.required,
+        Validators.pattern(
+          new RegExp(
+            '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24(,\\s*((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24)*$'
+        )
+        ),
       ]);
-      this.form.controls.endpointsCidr.markAsPristine();
-    this.form.controls.endpointsCidr.reset();
+      this.form.controls.endpointsCidr.updateValueAndValidity();
     }
   }
 
@@ -150,7 +156,7 @@ export class CreateEndpointGroupComponent implements OnInit {
             this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.endpoint-create.success')
           );
-          this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+          this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
         },
         (error) => {
           this.isLoading = false;
@@ -193,7 +199,7 @@ export class CreateEndpointGroupComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -201,7 +207,7 @@ export class CreateEndpointGroupComponent implements OnInit {
   }
 
   userChangeProject(){
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
 }
