@@ -506,7 +506,7 @@ export class CreateScheduleBackupComponent implements OnInit {
       formCreateSchedule1.description = this.validateForm.get('formVolume').get('description').value;
       formCreateSchedule1.maxBackup = this.validateForm.get('formVolume').get('maxBackup').value;
       formCreateSchedule1.mode = this.modeSelected;
-      formCreateSchedule1.serviceType = 1;
+      formCreateSchedule1.serviceType = 2;
       formCreateSchedule1.volumeId = this.validateForm.get('formVolume').get('volumeId').value;
       formCreateSchedule1.backupPacketId = this.validateForm.get('formVolume').get('backupPackage').value;
       formCreateSchedule1.runtime = this.datepipe.transform(this.validateForm.get('formVolume').get('times').value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');

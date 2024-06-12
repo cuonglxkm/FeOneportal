@@ -1,11 +1,8 @@
-<span nz-icon
-      nzType="pause-circle"
-      nzTheme="outline"
-      nz-popover
-      nzPopoverContent="{{'app.status.suspend' | i18n}}"
-      nzPopoverPlacement="bottom"
-      style="color: #0066B3; margin-left: 10px; cursor: pointer;"
-      (click)="showModal()"></span>
+<img src="assets/imgs/pause-circle.svg" alt=""
+     style="cursor: pointer; margin-left: 5px;"
+     (click)="showModal()"
+     nz-popover nzPopoverPlacement="bottom"
+     [nzPopoverContent]="'app.status.suspend'|i18n" />
 <nz-modal [(nzVisible)]="isVisible" nzTitle="{{'schedule.backup.action3' | i18n}}"
           (nzOnCancel)="handleCancel()" nzCentered>
   <div *nzModalTitle>
