@@ -34,6 +34,10 @@ export class ServiceStatusPipe implements PipeTransform {
         return new StatusModel("#e67300", this.i18n.fanyi('service.status.violation'));
       case "RESTORING": 
         return new StatusModel("#513FE7", this.i18n.fanyi('service.status.restoring'));
+      case "DISABLED": 
+        return new StatusModel("#EA3829", this.i18n.fanyi('service.status.disabled'));
+      case "PAUSED": 
+        return new StatusModel("#E67300", this.i18n.fanyi('service.status.paused'));
       default:
         return new StatusModel("#4c4f67", this.i18n.fanyi('service.status.unknown'));
     }

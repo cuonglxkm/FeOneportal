@@ -30,7 +30,7 @@
               alt="" /></nz-form-label>
           <nz-form-control [nzErrorTip]="nameErrorTpl">
             <input nz-input placeholder="{{ 'project.note33' | i18n }}" style="width: 100%" formControlName="name"
-              maxlength="20" class="custom-input">
+              maxlength="50" class="custom-input">
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }} </ng-container>
               <ng-container *ngIf="control.hasError('pattern')">{{'validation.project.required.name'|i18n}}

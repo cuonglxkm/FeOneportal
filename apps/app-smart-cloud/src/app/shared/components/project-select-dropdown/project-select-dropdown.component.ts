@@ -44,7 +44,6 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   loadProjects(reload: boolean) {
     if (this.regionId == null)
       return;
-    
     if (localStorage.getItem('projects') && reload == false) {
       this.listProject = JSON.parse(localStorage.getItem('projects'));
       if (this.listProject.length > 0) {
@@ -65,6 +64,7 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
       this.projectService.getByRegion(this.regionId).subscribe(data => {
         // console.log(data);
         this.listProject = data;
+        
         if (this.listProject.length > 0) {
           if (localStorage.getItem('projectId') != null) {
             this.selectedProject = this.listProject.find(item =>
@@ -94,6 +94,7 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
       this.loadProjects(false);
     }
     else {
+      this.selectedProject = null
       this.loadProjects(true);
     }
   }

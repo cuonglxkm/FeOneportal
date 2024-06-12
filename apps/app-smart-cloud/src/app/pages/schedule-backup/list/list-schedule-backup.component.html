@@ -75,36 +75,35 @@
                     (nzPageIndexChange)="onPageIndexChange($event)">
             <thead>
             <tr>
-              <th nzLeft>{{'app.name' | i18n}}</th>
-              <th nzBreakWord>{{'schedule.backup.model.backup' | i18n}}</th>
+              <th>{{'app.name' | i18n}}</th>
+              <th>{{'schedule.backup.model.backup' | i18n}}</th>
 <!--              <th nzBreakWord>{{'app.backup.volume.backup.package' | i18n}}</th>-->
-              <th nzBreakWord>{{'app.maximum.number.of.record' | i18n}}</th>
-              <th nzBreakWord>{{'app.order.status' | i18n}}</th>
-              <th nzBreakWord>{{'schedule.backup.next.step' | i18n}}</th>
-              <th nzBreakWord>{{'app.payment.createDate' | i18n}}</th>
-              <th nzBreakWord>{{'app.action-history.operation' | i18n}}</th>
+              <th>{{'app.maximum.number.of.record' | i18n}}</th>
+              <th>{{'app.order.status' | i18n}}</th>
+              <th>{{'schedule.backup.next.step' | i18n}}</th>
+              <th>{{'app.payment.createDate' | i18n}}</th>
+              <th>{{'app.action-history.operation' | i18n}}</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let data of tableScheduleBackup.data">
-              <td nzLeft>{{ data.name }}</td>
-              <td nzBreakWord>
+              <td>{{ data.name }}</td>
+              <td>
                 <span *ngIf="data.serviceType === 1">VM - {{ data.serviceName }}</span>
                 <span *ngIf="data.serviceType === 2">Volume - {{ data.serviceName }}</span>
               </td>
 <!--              <td nzBreakWord>{{ data.backupPackageName }}</td>-->
-              <td nzBreakWord nzAlign="right">{{ data.maxBackup }}</td>
+              <td nzAlign="right">{{ data.maxBackup }}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-                <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">
-                  {{statusModel.status}}
-<!--                  <br><span>{{data.warningMessage}}</span>-->
+                <td nzAlign="left">
+                  <span [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</span>
+                  <br><span>{{data.warningMessage}}</span>
                 </td>
               </ng-container>
-              <td nzBreakWord>{{ data.nextRuntime | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
-              <td nzBreakWord>{{ data.createdAt | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
-              <td nzBreakWord>
-                <div [ngSwitch]="data.status">
-                  <div *ngSwitchCase="'ACTIVE'">
+              <td>{{ data.nextRuntime | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
+              <td>{{ data.createdAt | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
+              <td>
+                  <div *ngIf="data.status === 'ACTIVE'">
                     <img nz-popover src="assets/imgs/edit-2.svg" alt=""
                          nzPopoverPlacement="bottom"
                          (click)="navigateToEdit(data.serviceType, data.id)"
@@ -113,15 +112,14 @@
                     <one-portal-stop-schedule [id]="data.id" (onOk)="handlePausedOk()"/>
                     <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
-                  <div *ngSwitchCase="'DISABLED'">
+                  <div *ngIf="data.status === 'DISABLED'">
                     <one-portal-restore-schedule [id]="data.id" (onOk)="handleRestoredOk()"/>
                     <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
-                  <div *ngSwitchCase="'PAUSED'">
+                  <div *ngIf="data.status === 'PAUSED'">
                     <one-portal-replay-schedule [id]="data.id" (onOk)="handlePlaydOk()"/>
                     <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
-                </div>
               </td>
             </tr>
             </tbody>
@@ -136,20 +134,20 @@
                     [nzLoading]="loadingCapacity" style="margin-top: 15px;">
             <thead>
             <tr>
-              <th nzLeft>{{'app.backup.package.name' | i18n}}</th>
-              <th nzBreakWord>{{'app.service.expiration-date' | i18n}}</th>
-              <th nzBreakWord>{{'app.capacity' | i18n}} (GB)</th>
-              <th nzBreakWord>{{'volume.used' | i18n}} (GB)</th>
-              <th nzBreakWord>{{'volume.remaining' | i18n}} (GB)</th>
+              <th>{{'app.backup.package.name' | i18n}}</th>
+              <th>{{'app.service.expiration-date' | i18n}}</th>
+              <th>{{'app.capacity' | i18n}} (GB)</th>
+              <th>{{'volume.used' | i18n}} (GB)</th>
+              <th>{{'volume.remaining' | i18n}} (GB)</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let i of tableScheduleCapacityBackup.data">
-              <td nzLeft>{{ i.packageName }}</td>
-              <td nzBreakWord>{{ i.expirationDate | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
-              <td nzBreakWord nzAlign="right">{{ i.totalCapacity }}</td>
-              <td nzBreakWord nzAlign="right">{{ i.usedCapacity }}</td>
-              <td nzBreakWord nzAlign="right">{{ i.remainingCapacity }}</td>
+              <td>{{ i.packageName }}</td>
+              <td>{{ i.expirationDate | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
+              <td nzAlign="right">{{ i.totalCapacity }}</td>
+              <td nzAlign="right">{{ i.usedCapacity }}</td>
+              <td nzAlign="right">{{ i.remainingCapacity }}</td>
             </tr>
             </tbody>
           </nz-table>
