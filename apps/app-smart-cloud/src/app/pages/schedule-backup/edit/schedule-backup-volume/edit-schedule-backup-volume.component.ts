@@ -53,7 +53,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
   formEdit: FormEditSchedule = new FormEditSchedule()
 
   validateForm: FormGroup<{
-    backupMode: FormControl<string>
+    backupMode: FormControl<number>
     name: FormControl<string>
     description: FormControl<string>
     months: FormControl<number>
@@ -63,7 +63,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
     daysOfWeek: FormControl<string>
     daysOfWeekMultiple: FormControl<string[]>
   }> = this.fb.group({
-    backupMode: ['4', [Validators.required]],
+    backupMode: [4, [Validators.required]],
     name: [null as string, [Validators.required,
       Validators.pattern(/^[a-zA-Z0-9_]{1,255}$/),
       this.validateSpecialCharacters.bind(this), this.duplicateNameValidator.bind(this)]],
@@ -123,7 +123,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
 
   }
 
-  modeChange(value: string) {
+  modeChange(value) {
     this.validateForm.controls.daysOfWeek.clearValidators();
     this.validateForm.controls.daysOfWeek.markAsPristine();
     this.validateForm.controls.daysOfWeek.reset();
@@ -143,15 +143,15 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
     this.validateForm.controls.date.clearValidators();
     this.validateForm.controls.date.markAsPristine();
     this.validateForm.controls.date.reset();
-    if (value === '1') {
-      this.modeType = '1'
-    } else if (value === '2') {
-      this.modeType = '2'
+    if (value === 1) {
+      this.modeType = 1
+    } else if (value === 2) {
+      this.modeType = 2
       this.validateForm.controls.daysOfWeekMultiple.clearValidators();
       this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
       this.validateForm.controls.daysOfWeekMultiple.reset();
-    } else if (value === '3') {
-      this.modeType = '3'
+    } else if (value === 3) {
+      this.modeType = 3
 
       this.validateForm.controls.numberOfWeek.setValidators([Validators.required]);
       this.validateForm.controls.numberOfWeek.markAsDirty();
@@ -160,8 +160,8 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
       this.validateForm.controls.daysOfWeek.setValidators([Validators.required]);
       this.validateForm.controls.daysOfWeek.markAsDirty();
       this.validateForm.controls.daysOfWeek.reset();
-    } else if (value === '4') {
-      this.modeType = '4'
+    } else if (value === 4) {
+      this.modeType = 4
       this.validateForm.controls.months.setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
       this.validateForm.controls.months.markAsDirty();
       this.validateForm.controls.months.reset();
@@ -184,9 +184,9 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
   getData(): FormEditSchedule {
     this.validateForm.get('backupMode').valueChanges.subscribe(data => {
       if(data != this.validateForm.get('backupMode').value) {
-        this.formEdit.mode = parseInt(data,10)
+        this.formEdit.mode = data
       } else {
-        this.formEdit.mode = parseInt(this.validateForm.controls.backupMode.value, 10)
+        this.formEdit.mode = this.validateForm.controls.backupMode.value
       }
     })
     this.validateForm.get('name').valueChanges.subscribe(data => {
@@ -224,7 +224,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
     this.formEdit.name = this.validateForm.controls.name.getRawValue();
     this.formEdit.description = this.validateForm.controls.description.getRawValue();
     this.formEdit.scheduleId = this.idSchedule;
-    this.formEdit.mode = parseInt(this.validateForm.controls.backupMode.getRawValue(), 10)
+    this.formEdit.mode = this.validateForm.controls.backupMode.getRawValue()
     this.formEdit.runtime = this.datepipe.transform(this.validateForm.controls.times.value,'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
     if(this.formEdit.mode === 3) {
       this.formEdit.intervalWeek = this.validateForm.controls.numberOfWeek.value
@@ -268,7 +268,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
     this.scheduleService.detail(customerId, id).subscribe(data => {
       this.backupSchedule = data
       this.isLoading = false
-      this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode.toString())
+      this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode)
       this.validateForm.controls.times.setValue(this.backupSchedule?.runtime)
       this.validateForm.controls.name.setValue(this.backupSchedule?.name)
       this.validateForm.controls.description.setValue(this.backupSchedule?.description)
