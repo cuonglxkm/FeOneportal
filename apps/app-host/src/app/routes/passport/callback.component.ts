@@ -124,11 +124,7 @@ export class CallbackComponent implements OnInit {
       )
       .subscribe({
         next: (response) => {
-          console.log(response);
-
-          const url = window.location;
-          console.log(window.location.hostname);
-          
+          const url = window.location;  
           if (url.hostname === 'oneportal-dev.onsmartcloud.com' || url.hostname === 'vnptcloud.onsmartcloud.com' || url.hostname === 'oneportal.onsmartcloud.com') {
              this.cookieService.set('TOKEN_USER', response.token || '', response.exp, '/', '.onsmartcloud.com', true);
           }

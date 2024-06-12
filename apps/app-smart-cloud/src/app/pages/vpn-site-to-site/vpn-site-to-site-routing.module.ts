@@ -22,7 +22,7 @@ import { PermissionGuard } from "src/app/shared/guard/PermissionGuard";
 
 const routes: Routes = [
   {
-    path: 'manage',
+    path: '',
     component: VpnSiteToSiteManage,
   },
   {

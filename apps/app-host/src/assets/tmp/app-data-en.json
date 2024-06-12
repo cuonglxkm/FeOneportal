@@ -43,7 +43,7 @@
                   {
                     "text": "Order",
                     "icon": "anticon-dashboard",
-                    "link": "/app-smart-cloud/order/list",
+                    "link": "/app-smart-cloud/order",
                     "action": "order:List"
                   }
                 ]
@@ -269,7 +269,7 @@
                   },
                   {
                     "text": "File System Snapshot",
-                    "link": "/app-smart-cloud/file-system-snapshot/list",
+                    "link": "/app-smart-cloud/file-system-snapshot",
                     "action": "fileStorages:GetListShareSnapshotFileStorage"
                   },
                   {
@@ -281,7 +281,7 @@
               },
               {
                 "text": "VPN Site to Site",
-                "link": "/app-smart-cloud/vpn-site-to-site/manage",
+                "link": "/app-smart-cloud/vpn-site-to-site",
                 "icon": "anticon-profile",
                 "action": "vpnsitetosites:List"
               }

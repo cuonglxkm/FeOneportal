@@ -12,7 +12,7 @@
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}   
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']"
           >VPN site to site</a
         ></nz-breadcrumb-item
       >
@@ -120,7 +120,7 @@
             [nzMessage]="vpnServiceMessage"
           ></nz-alert>
           <ng-template #vpnServiceMessage>
-            <div class="text-label">{{'app.vpn.service-create.message.alert1' |i18n}} Router.</div>
+            <div class="text-label">{{'app.vpn.service-create.message.alert1' |i18n}}</div>
             <div class="text-label">{{'app.vpn.service-create.message.alert2' |i18n}}</div>
           </ng-template>
         </div>
