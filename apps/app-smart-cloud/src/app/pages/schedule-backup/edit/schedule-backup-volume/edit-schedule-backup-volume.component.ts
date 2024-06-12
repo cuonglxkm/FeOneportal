@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {BackupSchedule, FormEditSchedule, FormSearchScheduleBackup} from "../../../../shared/models/schedule.model";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -9,13 +9,14 @@ import {DatePipe} from "@angular/common";
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-extend-schedule-backup-volume',
   templateUrl: './edit-schedule-backup-volume.component.html',
   styleUrls: ['./edit-schedule-backup-volume.component.less'],
 })
-export class EditScheduleBackupVolumeComponent {
+export class EditScheduleBackupVolumeComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   modeType: any = '4'
@@ -88,12 +89,17 @@ export class EditScheduleBackupVolumeComponent {
   }
 
   regionChanged(region: RegionModel) {
-    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
+    this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
 
   }
 
+  userChanged(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
+  }
+
   projectChanged(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
+    this.project = project.id;
   }
 
   validateSpecialCharacters(control) {
@@ -304,6 +310,10 @@ export class EditScheduleBackupVolumeComponent {
   }
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
+
     this.isLoading = true
     this.customerId = this.tokenService.get()?.userId
 

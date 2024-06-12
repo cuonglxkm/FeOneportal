@@ -1,8 +1,8 @@
-<span nz-icon nzType="redo" nzTheme="outline" nz-popover
-      nzPopoverContent="{{'schedule.backup.health' | i18n}}"
-      nzPopoverPlacement="bottom"
-      style="color: #0066B3; margin-right: 10px; cursor: pointer;"
-      (click)="showModal()"></span>
+<img src="assets/imgs/rotate-right.svg" alt=""
+     style="cursor: pointer; margin-left: 5px;"
+     (click)="showModal()"
+     nz-popover nzPopoverPlacement="bottom"
+     [nzPopoverContent]="'schedule.backup.health'|i18n" />
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()">
   <div *nzModalTitle>
