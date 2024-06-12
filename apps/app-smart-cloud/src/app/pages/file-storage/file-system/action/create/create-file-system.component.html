@@ -165,6 +165,7 @@
                       <ng-container *ngIf="control.hasError('notEnough') || control.hasError('outOfStorage')">
                         {{ 'app.alert.quota.vpc' | i18n }} <a [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a> {{ 'app.alert.quota.vpc.next' | i18n }}
                       </ng-container>
+                      <ng-container *ngIf="control.hasError('outOfStorageSnapshot')">{{'app.file.system.not.enough.quota.snapshot'|i18n: {name: snapshot.sizeInGB + 'GB'} }}</ng-container>
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
@@ -251,7 +252,7 @@
                            (ngModelChange)="onSnapshotChangeSelected($event)"
                            [nzShowSearch]="false" style="width: 100%;">
                   <nz-option *ngFor="let item of snapshotList"
-                             [nzLabel]="item.name + '(' + item.size + ' GB)'"
+                             [nzLabel]="item.name + ' (' + item.size + ' GB)'"
                              [nzValue]="item.id"></nz-option>
                 </nz-select>
                 <ng-template #snapshotError let-control>

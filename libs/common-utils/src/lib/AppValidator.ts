@@ -459,3 +459,15 @@ export function ipAddressValidatorRouter(subnetIP: string): ValidatorFn {
 
 
 
+// Validator function để kiểm tra nếu storage nhỏ hơn sizeInGB
+export function storageValidator(sizeInGB: number): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
+    // Kiểm tra nếu storage nhỏ hơn sizeInGB
+    return value < sizeInGB ? { 'outOfStorageSnapshot': true } : null;
+  };
+}
+
+
+
+
