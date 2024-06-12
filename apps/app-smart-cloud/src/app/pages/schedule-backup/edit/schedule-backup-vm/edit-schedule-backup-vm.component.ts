@@ -27,18 +27,18 @@ export class EditScheduleBackupVmComponent implements OnInit {
     { label: this.i18n.fanyi('schedule.backup.label.each.month'), value: 4 }
   ];
   numberOfWeek = [
-    { label: '1 ' + this.i18n.fanyi('app.Week'), value: 1 },
-    { label: '2 ' + this.i18n.fanyi('app.Week'), value: 2 },
-    { label: '3 ' + this.i18n.fanyi('app.Week'), value: 3 }
+    { label: '1 ' + this.i18n.fanyi('app.Week'), value: '1' },
+    { label: '2 ' + this.i18n.fanyi('app.Week'), value: '2' },
+    { label: '3 ' + this.i18n.fanyi('app.Week'), value: '3' }
   ];
   daysOfWeek = [
-    { label: this.i18n.fanyi('schedule.backup.monday'), value: 1 },
-    { label: this.i18n.fanyi('schedule.backup.tuesday'), value: 2 },
-    { label: this.i18n.fanyi('schedule.backup.wednesday'), value: 3 },
-    { label: this.i18n.fanyi('schedule.backup.thursday'), value: 4 },
-    { label: this.i18n.fanyi('schedule.backup.friday'), value: 5 },
-    { label: this.i18n.fanyi('schedule.backup.saturday'), value: 6 },
-    { label: this.i18n.fanyi('schedule.backup.sunday'), value: 7 }
+    { label: this.i18n.fanyi('schedule.backup.monday'), value: '1' },
+    { label: this.i18n.fanyi('schedule.backup.tuesday'), value: '2' },
+    { label: this.i18n.fanyi('schedule.backup.wednesday'), value: '3' },
+    { label: this.i18n.fanyi('schedule.backup.thursday'), value: '4' },
+    { label: this.i18n.fanyi('schedule.backup.friday'), value: '5' },
+    { label: this.i18n.fanyi('schedule.backup.saturday'), value: '6' },
+    { label: this.i18n.fanyi('schedule.backup.sunday'), value: '7' }
   ];
   isLoading: boolean = false;
   numberOfWeekChangeSelected: string;
@@ -66,11 +66,11 @@ export class EditScheduleBackupVmComponent implements OnInit {
     backupMode: [4, [Validators.required]],
     name: [null as string, [Validators.required,
       Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]],
-    description: [null as string, [Validators.maxLength(700)]],
+    description: [null as string, [Validators.maxLength(255)]],
     months: [1, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
     times: [new Date(), [Validators.required]],
-    numberOfWeek: [null as number],
-    date: [1, [Validators.required]],
+    numberOfWeek: [1],
+    date: [1, [Validators.required, Validators.pattern(/^[1-9]|[12][0-9]|3[01]*$/)]],
     daysOfWeek: [''],
     daysOfWeekMultiple: [[] as string[]]
   });
@@ -123,7 +123,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
 
     this.validateForm.controls.numberOfWeek.clearValidators();
     this.validateForm.controls.numberOfWeek.markAsPristine();
-    this.validateForm.controls.numberOfWeek.reset();
+    this.validateForm.controls.months.reset();
 
     this.validateForm.controls.months.clearValidators();
     this.validateForm.controls.months.markAsPristine();
@@ -144,20 +144,21 @@ export class EditScheduleBackupVmComponent implements OnInit {
     } else if (value === 3) {
       this.modeType = 3;
 
+      this.validateForm.controls.daysOfWeek.setValue('1');
+      this.numberOfWeekChangeSelected = '1'
+
       this.validateForm.controls.daysOfWeek.setValidators([Validators.required]);
       this.validateForm.controls.daysOfWeek.markAsDirty();
-      this.validateForm.controls.daysOfWeek.reset();
 
       this.validateForm.controls.numberOfWeek.setValidators([Validators.required]);
       this.validateForm.controls.numberOfWeek.markAsDirty();
-      this.validateForm.controls.numberOfWeek.reset();
     } else if (value === 4) {
       this.modeType = 4;
       this.validateForm.controls.months.setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
       this.validateForm.controls.months.markAsDirty();
       this.validateForm.controls.months.reset();
 
-      this.validateForm.controls.date.setValidators([Validators.required]);
+      this.validateForm.controls.date.setValidators([Validators.required, Validators.pattern(/^[1-9]|[12][0-9]|3[01]*$/)]);
       this.validateForm.controls.date.markAsDirty();
       this.validateForm.controls.date.reset();
     }

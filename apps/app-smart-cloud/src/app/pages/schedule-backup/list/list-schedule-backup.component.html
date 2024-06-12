@@ -103,8 +103,7 @@
               <td>{{ data.nextRuntime | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
               <td>{{ data.createdAt | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
               <td>
-                <div [ngSwitch]="data.status">
-                  <div *ngSwitchCase="'ACTIVE'">
+                  <div *ngIf="data.status === 'ACTIVE'">
                     <img nz-popover src="assets/imgs/edit-2.svg" alt=""
                          nzPopoverPlacement="bottom"
                          (click)="navigateToEdit(data.serviceType, data.id)"
@@ -113,15 +112,14 @@
                     <one-portal-stop-schedule [id]="data.id" (onOk)="handlePausedOk()"/>
                     <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
-                  <div *ngSwitchCase="'DISABLED'">
+                  <div *ngIf="data.status === 'DISABLED'">
                     <one-portal-restore-schedule [id]="data.id" (onOk)="handleRestoredOk()"/>
                     <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
-                  <div *ngSwitchCase="'PAUSED'">
+                  <div *ngIf="data.status === 'PAUSED'">
                     <one-portal-replay-schedule [id]="data.id" (onOk)="handlePlaydOk()"/>
                     <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
-                </div>
               </td>
             </tr>
             </tbody>
