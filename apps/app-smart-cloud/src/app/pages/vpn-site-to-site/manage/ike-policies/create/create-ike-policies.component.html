@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'app.ike.policy-create' |i18n"
+  [title]="'app.ike.policy-create' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
@@ -9,14 +9,16 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        {{ 'app.breadcrumb.infrastructure.service' | i18n }}   
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']"
           >VPN site to site</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>{{'app.ike.policy-create' |i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.ike.policy-create' | i18n
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -26,13 +28,13 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="region"
-      (valueChanged)="onProjectChange($event)"
-      (userChanged)="userChangeProject($event)"
-    ></project-select-dropdown>
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+        (userChanged)="userChangeProject($event)"
+      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -40,18 +42,20 @@
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="17" class="gutter-row">
     <nz-card style="border-radius: 8px">
-      <h2 class="custom-title">{{'app.information' |i18n}} IKE Policy</h2>
+      <h2 class="custom-title">{{ 'app.information' | i18n }} IKE Policy</h2>
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item class="mb-5">
               <nz-form-control [nzErrorTip]="nameErrorTpl">
-                <nz-form-label nzFor="name">{{'form.account.name' |i18n}}</nz-form-label>
+                <nz-form-label nzFor="name">{{
+                  'form.account.name' | i18n
+                }}</nz-form-label>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 <img
                   nz-popover
                   [nzPopoverContent]="
-                    'app.ike.policy-create.name.tooltip' |i18n
+                    'app.ike.policy-create.name.tooltip' | i18n
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -62,19 +66,19 @@
                   nz-input
                   type="text"
                   appTrim
-                  [placeholder]="'app.input.name' |i18n"
+                  [placeholder]="'app.input.name' | i18n"
                   formControlName="name"
                   class="input-custom"
                   [maxlength]="50"
                   minlength="1"
                 />
                 <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >{{'app.ike.policy-create.name.alert1' |i18n}}</ng-container
-                  >
-                  <ng-container *ngIf="control.hasError('pattern')"
-                    >{{'app.ike.policy-create.name.alert2' |i18n}}</ng-container
-                  >
+                  <ng-container *ngIf="control.hasError('required')">{{
+                    'app.ike.policy-create.name.alert1' | i18n
+                  }}</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">{{
+                    'app.ike.policy-create.name.alert2' | i18n
+                  }}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -87,7 +91,7 @@
                 <img
                   nz-popover
                   [nzPopoverContent]="
-                    'app.ike.policy-create.Authorization.tooltip' |i18n
+                    'app.ike.policy-create.Authorization.tooltip' | i18n
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -96,8 +100,6 @@
                 />
                 <nz-select
                   class="input-select-custom"
-                  nzShowSearch
-                  nzAllowClear
                   [(ngModel)]="ikePolicyModel.authorizationAlgorithm"
                   [ngModelOptions]="{ standalone: true }"
                 >
@@ -118,7 +120,7 @@
                 <img
                   nz-popover
                   [nzPopoverContent]="
-                    'app.ike.policy-create.Encryption.tooltip' |i18n
+                    'app.ike.policy-create.Encryption.tooltip' | i18n
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -126,9 +128,7 @@
                   alt=""
                 />
                 <nz-select
-                  nzShowSearch
                   class="input-select-custom"
-                  nzAllowClear
                   [(ngModel)]="ikePolicyModel.encryptionAlgorithm"
                   [ngModelOptions]="{ standalone: true }"
                 >
@@ -150,7 +150,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'app.ike.policy-create.version.tooltip' |i18n
+                      'app.ike.policy-create.version.tooltip' | i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -159,9 +159,7 @@
                   />
                 </div>
                 <nz-select
-                  nzShowSearch
                   class="input-select-custom"
-                  nzAllowClear
                   [(ngModel)]="ikePolicyModel.ikeVersion"
                   [ngModelOptions]="{ standalone: true }"
                 >
@@ -182,7 +180,7 @@
                 <img
                   nz-popover
                   [nzPopoverContent]="
-                    'app.ike.policy-create.lifetime.tooltip' |i18n
+                    'app.ike.policy-create.lifetime.tooltip' | i18n
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -190,9 +188,7 @@
                   alt=""
                 />
                 <nz-select
-                  nzShowSearch
                   class="input-select-custom"
-                  nzAllowClear
                   [(ngModel)]="ikePolicyModel.lifetimeUnit"
                   [ngModelOptions]="{ standalone: true }"
                 >
@@ -213,7 +209,7 @@
                 <img
                   nz-popover
                   [nzPopoverContent]="
-                     'app.ike.policy-create.lifetime.value.tooltip' |i18n
+                    'app.ike.policy-create.lifetime.value.tooltip' | i18n
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -250,7 +246,7 @@
                 <img
                   nz-popover
                   [nzPopoverContent]="
-                    'app.ike.policy-create.pfs.tooltip' |i18n
+                    'app.ike.policy-create.pfs.tooltip' | i18n
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -258,9 +254,7 @@
                   alt=""
                 />
                 <nz-select
-                  nzShowSearch
                   class="input-select-custom"
-                  nzAllowClear
                   [(ngModel)]="ikePolicyModel.perfectForwardSecrey"
                   [ngModelOptions]="{ standalone: true }"
                 >
@@ -283,7 +277,7 @@
                 <img
                   nz-popover
                   [nzPopoverContent]="
-                    'app.ike.policy-create.Negotiation.tooltip' |i18n
+                    'app.ike.policy-create.Negotiation.tooltip' | i18n
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -291,9 +285,7 @@
                   alt=""
                 />
                 <nz-select
-                  nzShowSearch
                   class="input-select-custom"
-                  nzAllowClear
                   [(ngModel)]="ikePolicyModel.ikePhase1NegotiationMode"
                   [ngModelOptions]="{ standalone: true }"
                 >
@@ -312,10 +304,13 @@
   </div>
   <div nz-col [nzSpan]="7" class="gutter-row">
     <nz-card style="border-radius: 8px" class="card-border">
-      <h2 class="custom-title">{{'app.config.parameters' |i18n}}</h2>
-      <div style="overflow-y: auto; height: 332px; margin-bottom: 16px" class="parameter-ike">
+      <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
+      <div
+        style="overflow-y: auto; height: 332px; margin-bottom: 16px"
+        class="parameter-ike"
+      >
         <div style="margin-bottom: 12px">
-          <h3 class="custom-subtitle">{{'form.account.name' |i18n}}</h3>
+          <h3 class="custom-subtitle">{{ 'form.account.name' | i18n }}</h3>
           <span class="text-break">{{ form.value.name }}</span>
         </div>
         <div style="margin-bottom: 20px">
@@ -364,7 +359,9 @@
         [nzLoading]="isLoading"
       >
         <img src="assets/imgs/wallet.svg" alt="" />
-        <span class="button-text-primary">{{'app.button.create' |i18n}}</span>
+        <span class="button-text-primary">{{
+          'app.button.create' | i18n
+        }}</span>
       </button>
     </nz-card>
   </div>

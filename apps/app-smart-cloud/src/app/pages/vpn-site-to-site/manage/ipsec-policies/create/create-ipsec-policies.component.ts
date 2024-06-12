@@ -9,6 +9,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../../libs/commo
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NAME_SPECIAL_REGEX } from 'src/app/shared/constants/constants';
 
 
 @Component({
@@ -66,7 +67,7 @@ export class CreateIpsecPoliciesComponent implements OnInit{
     name: FormControl<string>;
     lifeTimeValue: FormControl<number>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/)]],
+    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
     lifeTimeValue: [3600, [Validators.required, Validators.min(60)]]
   });
 
@@ -120,7 +121,7 @@ export class CreateIpsecPoliciesComponent implements OnInit{
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.ipsec.policy-create.success')
             );
-            this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
           },
           (error) => {
             this.isLoading = false
@@ -137,7 +138,7 @@ export class CreateIpsecPoliciesComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -145,6 +146,6 @@ export class CreateIpsecPoliciesComponent implements OnInit{
   }
 
   userChangeProject(){
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 }

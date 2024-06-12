@@ -281,7 +281,7 @@
             },
             {
               "text": "VPN Site to Site",
-              "link": "/app-smart-cloud/vpn-site-to-site/manage",
+              "link": "/app-smart-cloud/vpn-site-to-site",
               "icon": "anticon-profile",
               "action": "vpnsitetosites:List"
             }

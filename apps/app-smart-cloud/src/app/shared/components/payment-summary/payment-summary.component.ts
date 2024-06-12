@@ -33,6 +33,7 @@ import {
   FormCreateUserInvoice,
   FormInitUserInvoice,
 } from '../../models/invoice';
+import { TAX_CODE_REGEX } from '../../constants/constants';
 
 class ServiceInfo {
   name: string;
@@ -261,6 +262,18 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.text.upgrade');
             break;
+          case 'vpc_create':
+            serviceItem.name = `VPC - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
+            break;
+          case 'vpc_resize':
+            serviceItem.name = `VPC - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
+            break;
+          case 'vpc_extend':
+            serviceItem.name = `VPC - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
+            break;
           default:
             serviceItem.name = '';
             break;
@@ -279,7 +292,6 @@ export class PaymentSummaryComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUser();
-
   }
 
   getUser() {
@@ -317,10 +329,10 @@ export class PaymentSummaryComponent implements OnInit {
             this.userModel &&
             this.userModel.customerInvoice !== null
           ) {
-            if(this.userModel.customerInvoice.customerGroupId === 1){
-              this.radioValue = 2
-            }else{
-              this.radioValue = 1
+            if (this.userModel.customerInvoice.customerGroupId === 1) {
+              this.radioValue = 2;
+            } else {
+              this.radioValue = 1;
             }
             this.getDataExportInvoice();
           }
@@ -347,7 +359,7 @@ export class PaymentSummaryComponent implements OnInit {
       '',
       [Validators.required, AppValidator.cannotContainSpecialCharactor],
     ],
-    taxCode: ['', [Validators.required, Validators.pattern(/^[0-9-]+$/)]],
+    taxCode: ['', [Validators.required, Validators.pattern(TAX_CODE_REGEX)]],
     address: ['', Validators.required],
   });
 
@@ -359,15 +371,15 @@ export class PaymentSummaryComponent implements OnInit {
     taxCode: FormControl<string>;
     address: FormControl<string>;
   }> = this.fb.group({
-    nameCompany: ['', [Validators.required]],
+    nameCompany: [''],
     email: ['', [Validators.required, AppValidator.validEmail]],
-    phoneNumber: ['', [Validators.required, AppValidator.validPhoneNumber]],
+    phoneNumber: ['', [AppValidator.validPhoneNumber]],
     nameCustomer: [
       '',
       [Validators.required, AppValidator.cannotContainSpecialCharactor],
     ],
-    taxCode: ['', [Validators.required, Validators.pattern(/^[0-9-]+$/)]],
-    address: ['', [Validators.required]],
+    taxCode: ['', [Validators.pattern(TAX_CODE_REGEX)]],
+    address: [''],
   });
 
   changeOptionInvoices(value: string) {
@@ -376,7 +388,7 @@ export class PaymentSummaryComponent implements OnInit {
       this.formExportInvoice.controls.address.clearValidators();
       this.formExportInvoice.controls.address.updateValueAndValidity();
       this.formExportInvoice.controls.taxCode.setValidators([
-        Validators.pattern(/^[0-9-]+$/),
+        Validators.pattern(TAX_CODE_REGEX),
       ]);
       this.formExportInvoice.controls.taxCode.updateValueAndValidity();
       this.formExportInvoice.controls.phoneNumber.setValidators([
@@ -392,9 +404,8 @@ export class PaymentSummaryComponent implements OnInit {
       this.formExportInvoice.controls.address.updateValueAndValidity();
       this.formExportInvoice.controls.taxCode.setValidators([
         Validators.required,
-        Validators.pattern(/^[0-9-]+$/)
-      ]
-      );
+        Validators.pattern(TAX_CODE_REGEX),
+      ]);
       this.formExportInvoice.controls.taxCode.updateValueAndValidity();
       this.formExportInvoice.controls.phoneNumber.setValidators([
         Validators.required,
@@ -478,17 +489,17 @@ export class PaymentSummaryComponent implements OnInit {
     this.userService.getCustomerGroup().subscribe({
       next: (data) => {
         this.customerGroups = data;
-
-        console.log(this.customerGroups);
         this.customerGroup = data[0].id;
         let customerGroupFilter = this.customerGroups.filter(
           (item) => item.id === this.customerGroup
         );
         this.customerTypes = customerGroupFilter[0].customerTypes;
         this.customerType = this.customerTypes[0].id;
+        console.log(this.customerType);
+        
         if (this.customerType === 1) {
           this.formCustomerInvoice.controls.taxCode.setValidators([
-            Validators.pattern(/^[0-9-]+$/),
+            Validators.pattern(TAX_CODE_REGEX),
           ]);
           this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
           this.formCustomerInvoice.controls.nameCompany.clearValidators();
@@ -496,7 +507,7 @@ export class PaymentSummaryComponent implements OnInit {
         } else {
           this.formCustomerInvoice.controls.taxCode.setValidators([
             Validators.required,
-            Validators.pattern(/^[0-9-]+$/),
+            Validators.pattern(TAX_CODE_REGEX),
           ]);
           this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
           this.formCustomerInvoice.controls.nameCompany.setValidators([
@@ -526,7 +537,7 @@ export class PaymentSummaryComponent implements OnInit {
 
     if (this.customerType === 1) {
       this.formCustomerInvoice.controls.taxCode.setValidators([
-        Validators.pattern(/^[0-9-]+$/),
+        Validators.pattern(TAX_CODE_REGEX),
       ]);
       this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
       this.formCustomerInvoice.controls.nameCompany.clearValidators();
@@ -534,7 +545,7 @@ export class PaymentSummaryComponent implements OnInit {
     } else {
       this.formCustomerInvoice.controls.taxCode.setValidators([
         Validators.required,
-        Validators.pattern(/^[0-9-]+$/),
+        Validators.pattern(TAX_CODE_REGEX),
       ]);
       this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
       this.formCustomerInvoice.controls.nameCompany.setValidators([
@@ -549,7 +560,7 @@ export class PaymentSummaryComponent implements OnInit {
 
     if (id === 1 || id === 2) {
       this.formCustomerInvoice.controls.taxCode.setValidators([
-        Validators.pattern(/^[0-9-]+$/),
+        Validators.pattern(TAX_CODE_REGEX),
       ]);
       this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
       this.formCustomerInvoice.controls.nameCompany.clearValidators();
@@ -557,7 +568,7 @@ export class PaymentSummaryComponent implements OnInit {
     } else {
       this.formCustomerInvoice.controls.taxCode.setValidators([
         Validators.required,
-        Validators.pattern(/^[0-9-]+$/),
+        Validators.pattern(TAX_CODE_REGEX),
       ]);
       this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
       this.formCustomerInvoice.controls.nameCompany.setValidators([
