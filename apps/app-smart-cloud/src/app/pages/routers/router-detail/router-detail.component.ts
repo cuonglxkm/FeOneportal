@@ -276,7 +276,7 @@ export class RouterDetailComponent implements OnInit {
           
           this.isLoadingRouterInterface = false;
           this.cdr.detectChanges();
-          if (error.status === 400) {
+          if (error.error.detail.includes('CIDR của subnet vừa chọn')) {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.alert.cidr.wrong')
