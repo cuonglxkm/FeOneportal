@@ -44,6 +44,8 @@
   "service.status.deleting": "Đang xóa",
   "service.status.error": "Lỗi",
   "service.status.restoring": "Đang khôi phục",
+  "service.status.disabled": "Gián đoạn",
+  "service.status.paused": "Tạm dừng",
   "service.status.unknown": "Không xác định",
 
 
