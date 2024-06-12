@@ -51,7 +51,12 @@ export class HeaderUserComponent {
   logout(): void {
     sessionStorage.clear();
     this.cookieService.delete('TOKEN_USER', "/",".onsmartcloud.com",true,"None");
-    localStorage.clear();
+    localStorage.removeItem('UserRootId');
+    localStorage.removeItem('ShareUsers');
+    localStorage.removeItem('PermissionOPA');
+    localStorage.removeItem('user');
+    localStorage.removeItem('_token');
+    localStorage.removeItem('projects');
     this.tokenService.clear();
     this.router.navigateByUrl(this.tokenService.login_url!);
   }
