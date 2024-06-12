@@ -12,7 +12,7 @@
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}   
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']"
           >VPN site to site</a
         ></nz-breadcrumb-item
       >
@@ -101,8 +101,6 @@
             </nz-form-label>
             <nz-select
               class="input-select-custom"
-              nzShowSearch
-              nzAllowClear
               [(ngModel)]="selectedType"
               [ngModelOptions]="{ standalone: true }"
               (ngModelChange)="handleChangeType($event)"
@@ -135,13 +133,13 @@
               </div>
             </nz-form-label>
             <nz-checkbox-wrapper
-              *ngIf="selectedType == 'subnet' && listSubnets.length !== 0"
+              *ngIf="selectedType == 'subnet' && listSubnets && listSubnets.length !== 0"
               style="width: 100%"
               (nzOnChange)="log($event)"
             >
               <div *ngIf="selectedType == 'subnet'">
                 <div *ngFor="let item of listSubnets">
-                  <div [ngModel]="checked" [nzValue]="item.cidr" nz-checkbox>
+                  <div class="text-label" [ngModel]="checked" [nzValue]="item.cidr" [ngModelOptions]="{ standalone: true }"  nz-checkbox>
                     {{ item.cidr }}
                   </div>
                 </div>
@@ -165,7 +163,7 @@
                 <span nzFor="name">External Systems CIDRs </span>
                 <img
                   nz-popover
-                  nzPopoverContent="
+                  [nzPopoverContent]="
                   'app.endpoint-create.cidr.tooltip' |i18n
                   "
                   nzPopoverPlacement="bottom"

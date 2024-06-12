@@ -355,7 +355,9 @@ export class InstancesEditVpcComponent implements OnInit {
       if (this.remainingGpu < 0) {
         this.notification.warning(
           '',
-          this.i18n.fanyi('app.notify.amount.gpu.add', { num: Math.abs(this.remainingGpu)})
+          this.i18n.fanyi('app.notify.amount.gpu.add', {
+            num: Math.abs(this.remainingGpu),
+          })
         );
         this.remainingGpu = 0;
         this.disableUpdate = true;
@@ -472,7 +474,12 @@ export class InstancesEditVpcComponent implements OnInit {
 
     this.orderService
       .validaterOrder(this.order)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (result) => {
           if (result.success) {

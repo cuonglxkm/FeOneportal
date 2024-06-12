@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { SnapshotVolumeDto } from '../../../shared/dto/snapshot-volume.dto';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
@@ -7,7 +7,10 @@ import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
-import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import {
+  ProjectModel,
+  RegionModel,
+} from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'app-snapshot-volume-list',
@@ -41,7 +44,8 @@ export class SnapshotVolumeListComponent implements OnInit {
     private snapshotVlService: SnapshotVolumeService,
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -90,7 +94,12 @@ export class SnapshotVolumeListComponent implements OnInit {
         this.nameSearch,
         this.snapshotStatusSearch
       )
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (data) => {
           this.listSnapshot = data.records;

@@ -4,6 +4,7 @@ import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NAME_SPECIAL_REGEX } from 'src/app/shared/constants/constants';
 import { FormDeleteVpnService, FormEditVpnService } from 'src/app/shared/models/vpn-service';
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
 
@@ -28,7 +29,7 @@ export class EditVpnServiceComponent{
   validateForm: FormGroup<{
     name: FormControl<string>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/)]]
+    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]]
   });
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,

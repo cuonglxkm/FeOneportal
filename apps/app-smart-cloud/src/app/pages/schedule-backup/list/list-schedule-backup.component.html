@@ -95,8 +95,8 @@
 <!--              <td nzBreakWord>{{ data.backupPackageName }}</td>-->
               <td nzAlign="right">{{ data.maxBackup }}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-                <td nzAlign="left" [ngStyle]="{color: statusModel.color}">
-                  {{statusModel.status}}
+                <td nzAlign="left">
+                  <span [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</span>
                   <br><span>{{data.warningMessage}}</span>
                 </td>
               </ng-container>

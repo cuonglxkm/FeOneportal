@@ -1,8 +1,8 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" title="{{ 'project.note1' | i18n }}">
+<page-header [breadcrumb]="breadcrumb" [action]="action" title="Quản lý VPC">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">{{ 'project.note1' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">Quản lý VPC</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
@@ -40,7 +40,7 @@
              [nzXXl]="12">
           <button nz-button nzType="primary" (click)="createProject()" nzSize="large">
             <img style="padding-right: 10px;" src="assets/imgs/add_white.svg" alt="" />
-            <span class="button-text-primary">Tạo mới dự án</span>
+            <span class="button-text-primary">Tạo mới VPC</span>
           </button>
         </div>
       </div>

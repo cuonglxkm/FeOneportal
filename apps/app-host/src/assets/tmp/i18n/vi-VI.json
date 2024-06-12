@@ -44,6 +44,8 @@
   "service.status.deleting": "Đang xóa",
   "service.status.error": "Lỗi",
   "service.status.restoring": "Đang khôi phục",
+  "service.status.disabled": "Gián đoạn",
+  "service.status.paused": "Tạm dừng",
   "service.status.unknown": "Không xác định",
 
 
@@ -957,7 +959,7 @@
   "validation.snapshot.info.required": "Vui lòng nhập tên File System Snapshot",
   "validation.snapshot.name.pattern": "Tên Snapshot chỉ được phép dùng các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.",
   "app.file.system.confirm.create": "Quý khách chắn chắn muốn thực hiện khởi tạo File System không?",
-  "app.checkRouter.file.system": "Vui lòng kiểm tra Router và add Interface Router để sử dụng dịch vụ!",
+  "app.checkRouter.file.system": "Vui lòng kiểm tra Router và thêm Interface Router để sử dụng dịch vụ!",
   "app.checkRouter.file.system.noGateway": "Kiểm tra lại Router Interface! Vui lòng thêm gateway của dải pri_network",
 
   "app.file.system.tooltip.access.to": "Địa chỉ IP cụ thể (địa chỉ IP của Máy ảo) hoặc CIDR được quyền truy cập tới File System này",
@@ -2230,6 +2232,7 @@
   "router.nofitacation.interface.remove.success": "Xóa Router Interface thành công",
   "router.nofitacation.interface.remove.fail": "Xóa Router Interface không thành công",
   "router.nofitacation.interface.remove.fail1": "Vui lòng không xóa Router Interface vì quý khách đang sử dụng dịch vụ File Storage",
+  "router.nofitacation.remove.fail1": "Vui lòng không xóa Router vì quý khách đang sử dụng dịch vụ File Storage",
   "router.nofitacation.static.remove.success": "Xóa Static Route thành công",
   "wan.label.ip.wan.management": "Quản lý IP kết nối WAN",
   "wan.alert.ip.wan": "Dải IP kết nối WAN",

@@ -271,7 +271,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
   changePackageSnapshot() {
     // TODO get quota
-    if (this.projectType == 0 && this.selectedSnapshotPackage != undefined) {
+    if (this.projectType != 1 && this.selectedSnapshotPackage != undefined) {
       this.checkDisable();
     }
   }

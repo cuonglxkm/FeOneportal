@@ -421,6 +421,8 @@
   "service.status.deleting": "Deleting",
   "service.status.error": "Error",
   "service.status.restoring": "Restoring",
+  "service.status.disabled": "Disabled",
+  "service.status.paused": "Paused",
   "service.status.unknown": "Unknown ",
 
 

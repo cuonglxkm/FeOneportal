@@ -242,7 +242,10 @@ export class ProjectCreateComponent implements OnInit {
   calculateReal() {
     this.refreshValue();
     if (this.vpcType == '1') {
+      console.log("ipConnectInternet 123", this.ipConnectInternet)
+      console.log("ipConnectInternet 123", this.ipConnectInternet?.split('--'))
       let lstIp = this.ipConnectInternet?.split('--');
+      console.log("lstIp 123", lstIp)
       let ip = '';
       let ipName = '';
       if (lstIp != null && lstIp != undefined) {
@@ -267,6 +270,7 @@ export class ProjectCreateComponent implements OnInit {
       if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
         console.log("lstIp", lstIp)
         if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
+          console.log("lstIp 567", lstIp)
           let listString = lstIp[1].split(' ');
           console.log("listString", listString)
           if (listString.length == 3) {
@@ -625,7 +629,12 @@ export class ProjectCreateComponent implements OnInit {
     } else {
       this.orderService
         .validaterOrder(request)
-        .pipe(finalize(() => (this.isLoading = false)))
+        .pipe(
+                finalize(() => {
+                  this.isLoading = false;
+                  this.cdr.detectChanges();
+                })
+              )
         .subscribe({
           next: (result) => {
             if (result.success) {

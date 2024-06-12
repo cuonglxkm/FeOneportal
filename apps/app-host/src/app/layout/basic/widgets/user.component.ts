@@ -77,7 +77,6 @@ export class HeaderUserComponent {
     console.log('logout host');
     sessionStorage.clear();
     this.cookieService.delete('TOKEN_USER', "/",".onsmartcloud.com",true,"None");
-    localStorage.clear();
     this.tokenService.clear();
     // this.httpClient.get(environment['sso'].issuer
     //   + `/connect/logout?post_logout_redirect_uri=${decodeURIComponent(environment['sso'].logout_callback)}`/* + '/logout'*/)
@@ -86,8 +85,11 @@ export class HeaderUserComponent {
     //   }, error => {
     //     console.log(error)
     //   });
-
     localStorage.removeItem('UserRootId');
+    localStorage.removeItem('ShareUsers');
+    localStorage.removeItem('PermissionOPA');
+    localStorage.removeItem('user');
+    localStorage.removeItem('_token');
     localStorage.removeItem('projects');
 
     window.location.href =
