@@ -120,7 +120,7 @@ export class ProjectExtendComponent implements OnInit{
   extendVpc() {
     const requestBody = {
       regionId: this.regionId,
-      serviceName: null,
+      serviceName: this.data && this.data.displayName,
       customerId: this.tokenService.get()?.userId,
       typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       serviceType: 12,
