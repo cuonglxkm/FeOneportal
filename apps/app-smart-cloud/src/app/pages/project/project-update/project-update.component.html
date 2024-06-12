@@ -733,8 +733,8 @@
                     </nz-form-control>
                   </nz-form-item>
                   <nz-form-item style="width: 40%">
-                    <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá
-                      ({{ "app.payment-detail.month" | i18n }})
+                    <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+                      
                     </nz-form-label>
                     <nz-form-control>
                       <div class="centered">
@@ -974,7 +974,7 @@
               <one-portal-svg-icon *ngIf="trashLoadBalancer" [icon]="'icon_trash'" class="icon-trash"
                 (click)="deleteLoadBalancer()"></one-portal-svg-icon>
             </div>
-            <p class="label-fontsize label-color" *ngIf="loadBalancerOld!=0"> Số lượng Load Balancer hiện tại: {{loadBalancerOld}} GB - Gói: {{loadbalancerOfferNameOld}}</p>
+            <p class="label-fontsize label-color" *ngIf="loadBalancerOld!=0 && loadbalancerOfferNameOld!=null"> Số lượng Load Balancer hiện tại: {{loadBalancerOld}} GB - Gói: {{loadbalancerOfferNameOld}}</p>
             <div *ngIf="!activeLoadBalancer">
               <button class="h-btn" nz-button nzType="default" (click)="initLoadBalancer()">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
@@ -1131,7 +1131,7 @@
               <one-portal-svg-icon *ngIf="trashVpnSiteToSite" [icon]="'icon_trash'" class="icon-trash"
                 (click)="deleteVpnSiteToSite()"></one-portal-svg-icon>
             </div>
-            <p class="label-fontsize label-color"  *ngIf="vpnSiteToSiteOfferId">  Gói VPN site to site : {{vpnsitetositeNameOld}}</p>
+            <p class="label-fontsize label-color"  *ngIf="siteToSiteId">  Gói VPN site to site : {{vpnsitetositeNameOld}}</p>
 
             <div *ngIf="!activeSiteToSite">
               <button class="h-btn" nz-button nzType="default" (click)="initVpnSiteToSite()">
