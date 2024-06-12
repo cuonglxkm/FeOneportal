@@ -14,6 +14,12 @@ import { InstancesModel } from '../../instances/instances.model';
 import { BackupSchedule, FormCreateSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
 import { ScheduleService } from '../../../shared/services/schedule.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { PackageBackupService } from '../../../shared/services/package-backup.service';
+import { PackageBackupModel } from '../../../shared/models/package-backup.model';
+import { BackupVolumeService } from '../../../shared/services/backup-volume.service';
+import { VolumeDTO } from '../../../shared/dto/volume.dto';
+import { BackupVolume } from '../../volume/component/backup-volume/backup-volume.model';
+import { VolumeService } from '../../../shared/services/volume.service';
 
 @Component({
   selector: 'one-portal-create-schedule-backup',
@@ -30,66 +36,79 @@ export class CreateScheduleBackupComponent implements OnInit {
   selectedOption: string = 'instance';
 
   validateForm = new FormGroup({
-    maxBackup: new FormControl(1, {
-      nonNullable: true,
-      validators: [Validators.required, Validators.pattern(/^[0-9]*$/)]
-    }),
-    description: new FormControl('', {
-      validators: [Validators.maxLength(255)]
-    }),
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]
-    }),
-    mode: new FormControl(null as number),
-    backupPackage: new FormControl(null as number, {
-      nonNullable: true,
-      validators: [Validators.required]
-    }),
-    months: new FormControl(1, {
-      nonNullable: true,
-      validators: [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]
-    }),
-    times: new FormControl(new Date(), {
-      nonNullable: true,
-      validators: [Validators.required]
-    }),
-    numberOfWeek: new FormControl(null as number),
-    date: new FormControl(1, {
-      nonNullable: true,
-      validators: [Validators.required, Validators.pattern(/^[1-9]|[12][0-9]|3[01]*$/)]
-    }),
-    volumeToBackupIds: new FormControl([] as number[]),
-    daysOfWeek: new FormControl(null as string),
-    daysOfWeekMultiple:new FormControl([] as string[]),
     formInstance: new FormGroup({
       instanceId: new FormControl(null as number, {
         nonNullable: true,
         validators: [Validators.required]
       }),
-      volumeToBackupIds: new FormControl(null as number[])
-    }),
-    formVolume: new FormGroup({
-      volumeName: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required]
-      }),
-      storage: new FormControl(0, {
+      volumeToBackupIds: new FormControl(null as number[]),
+      maxBackup: new FormControl(1, {
         nonNullable: true,
         validators: [Validators.required, Validators.pattern(/^[0-9]*$/)]
       }),
-      instanceId: new FormControl(null as number),
-      time: new FormControl(1, {
+      description: new FormControl('', {
+        validators: [Validators.maxLength(255)]
+      }),
+      name: new FormControl(null as string, {
+        nonNullable: true,
+        validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]
+      }),
+      mode: new FormControl(null as number),
+      backupPackage: new FormControl(null as number, {
         nonNullable: true,
         validators: [Validators.required]
-      })
+      }),
+      months: new FormControl(1, {
+        validators: [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]
+      }),
+      times: new FormControl(new Date(), {
+        validators: [Validators.required]
+      }),
+      numberOfWeek: new FormControl(null as number),
+      date: new FormControl(1, {
+        validators: [Validators.required, Validators.pattern(/^[1-9]|[12][0-9]|3[01]*$/)]
+      }),
+      daysOfWeek: new FormControl(null as string),
+      daysOfWeekMultiple: new FormControl([] as string[])
+    }),
+    formVolume: new FormGroup({
+      volumeId: new FormControl(null as number, {
+        validators: [Validators.required]
+      }),
+      maxBackup: new FormControl(1, {
+        nonNullable: true,
+        validators: [Validators.required, Validators.pattern(/^[0-9]*$/)]
+      }),
+      description: new FormControl('', {
+        validators: [Validators.maxLength(255)]
+      }),
+      name: new FormControl(null as string, {
+        nonNullable: true,
+        validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]
+      }),
+      mode: new FormControl(null as number),
+      backupPackage: new FormControl(null as number, {
+        nonNullable: true,
+        validators: [Validators.required]
+      }),
+      months: new FormControl(1, {
+        validators: [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]
+      }),
+      times: new FormControl(new Date(), {
+        validators: [Validators.required]
+      }),
+      numberOfWeek: new FormControl(null as number),
+      date: new FormControl(1, {
+        validators: [Validators.required, Validators.pattern(/^[1-9]|[12][0-9]|3[01]*$/)]
+      }),
+      daysOfWeek: new FormControl(null as string),
+      daysOfWeekMultiple: new FormControl([] as string[])
     })
   });
 
 
   id: number;
 
-  backupVmId: number;
   volumeId: number;
   instanceId: number;
 
@@ -111,6 +130,12 @@ export class CreateScheduleBackupComponent implements OnInit {
   daySelected: any;
 
   lstBackupSchedules: BackupSchedule[];
+
+  listVolume: VolumeDTO[] = [];
+  listVolumeNotUseUnique: VolumeDTO[] = [];
+  backupVolumeList: BackupVolume[];
+  volumeSelected: any;
+  volumeName: string;
 
   modes = [
     { label: this.i18n.fanyi('schedule.backup.label.each.day'), value: 1 },
@@ -145,6 +170,9 @@ export class CreateScheduleBackupComponent implements OnInit {
               private datepipe: DatePipe,
               private notification: NzNotificationService,
               private backupScheduleService: ScheduleService,
+              private backupPackageService: PackageBackupService,
+              private backupVolumeService: BackupVolumeService,
+              private volumeService: VolumeService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
@@ -176,24 +204,38 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   onSelectionChange(): void {
     console.log('Selected option:', this.selectedOption);
+    this.getBackupPackage();
     if (this.selectedOption === 'instance') {
       this.validateForm.get('formVolume').clearValidators();
       this.validateForm.get('formVolume').updateValueAndValidity();
       this.validateForm.get('formVolume').reset();
-    } else if (this.selectedOption === 'volume') {
-      this.validateForm.clearValidators();
-      this.validateForm.updateValueAndValidity();
-      this.validateForm.reset();
     }
+    if (this.selectedOption === 'volume') {
+      this.validateForm.get('formInstance').clearValidators();
+      this.validateForm.get('formInstance').updateValueAndValidity();
+      this.validateForm.get('formInstance').reset();
+    }
+    this.modeSelected = 1;
     this.cdr.detectChanges();
   }
 
   selectInstanceChange(value) {
-    console.log('value instance select', value)
-    this.instanceSelected = value
-    const find = this.listInstanceNotUse?.find(x => x.id === this.instanceSelected)
-    this.instanceName = find.name
-    // this.getVolumeInstanceAttachment(value);
+    console.log('value instance select', value);
+    if (value != undefined) {
+      this.instanceSelected = value;
+      const find = this.listInstanceNotUse?.find(x => x.id === this.instanceSelected);
+      this.instanceName = find?.name;
+      this.getVolumeInstanceAttachment(value);
+    }
+  }
+
+  selectVolumeChange(value) {
+    console.log('value volume selected', value);
+    if (value != undefined) {
+      this.volumeSelected = value;
+      const find = this.listVolumeNotUseUnique?.find(x => x.id === this.volumeSelected);
+      this.volumeName = find?.name;
+    }
   }
 
   getVolumeInstanceAttachment(id: number) {
@@ -212,22 +254,23 @@ export class CreateScheduleBackupComponent implements OnInit {
     formSearchBackup.pageSize = 10000000;
     formSearchBackup.currentPage = 1;
     formSearchBackup.customerId = customerId;
-    this.instanceService.search(1, 10000000, this.region, this.project, '', '', true, customerId)
+    this.instanceService.search(1, 9999, this.region, this.project, '', '', true, customerId)
       .subscribe(data => {
         this.isLoading = false;
-        this.listInstance = data?.records.filter(value => (value.taskState == 'ACTIVE'));
+        this.listInstance = data?.records.filter(value => (value?.taskState == 'ACTIVE'));
 
         this.backupVmService.search(formSearchBackup).subscribe(data2 => {
           this.listBackupVM = data2?.records;
-          const idSet = new Set(this.listBackupVM.map(item => item.instanceId));
+          const idSet = new Set(this.listBackupVM?.map(item => item.instanceId));
           const idSetUnique = Array.from(new Set(idSet));
           this.listInstance?.forEach(item1 => {
             if (!idSetUnique.includes(item1.id)) {
-                this.listInstanceNotUse?.push(item1);
+              this.listInstanceNotUse?.push(item1);
             }
           });
-          console.log('list instance', this.listInstanceNotUse)
-          this.instanceSelected = this.listInstanceNotUse[0]?.id
+          console.log('list instance', this.listInstanceNotUse);
+          this.instanceSelected = this.listInstanceNotUse[0]?.id;
+          this.cdr.detectChanges();
         });
 
       });
@@ -242,60 +285,146 @@ export class CreateScheduleBackupComponent implements OnInit {
     }
   }
 
+  getListVolume() {
+    this.backupVolumeService.getListBackupVolume(this.region, this.project, null, null, 9999, 1).subscribe(data => {
+      this.backupVolumeList = data?.records;
+      console.log('backup volume', this.backupVolumeList);
+      this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, null, null).subscribe(data2 => {
+        console.log('list volume', data2.records);
+        this.listVolume = data2.records;
+        const idSetVolume = Array.from(new Set(new Set(data2.records?.map(x => x.id))));
+        const idSetUnique = Array.from(new Set(new Set(this.backupVolumeList?.map(y => y.volumeId))));
+
+        console.log('idSetUnique', idSetUnique);
+        console.log('idSetVolume', idSetVolume);
+
+        const uniqueElements = idSetVolume.filter(id => !idSetUnique.includes(id));
+        console.log('uniqueElements', uniqueElements);
+
+        this.listVolume?.forEach(item => {
+          uniqueElements.forEach(item2 => {
+            if (item.id === item2) {
+              this.listVolumeNotUseUnique?.push(item);
+            }
+          });
+        });
+        this.listVolumeNotUseUnique.push();
+        console.log('list volume', this.listVolumeNotUseUnique);
+        this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
+        this.cdr.detectChanges();
+      });
+    });
+  }
+
+  getVolumeById(id) {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
+      this.volumeName = data.name;
+    });
+  }
+
   modeChange(value) {
-    console.log('mode change', value)
-    this.modeSelected = value;
+    if (value != undefined) {
+      console.log('mode change', value);
+      this.modeSelected = value;
+      if (this.selectedOption == 'instance') {
+        this.validateForm.get('formInstance').get('daysOfWeek').clearValidators();
+        this.validateForm.get('formInstance').get('daysOfWeek').markAsPristine();
+        this.validateForm.get('formInstance').get('daysOfWeek').reset();
 
-    this.validateForm.get('daysOfWeek').clearValidators();
-    this.validateForm.get('daysOfWeek').markAsPristine();
-    this.validateForm.get('daysOfWeek').reset();
+        this.validateForm.get('formInstance').get('daysOfWeekMultiple').clearValidators();
+        this.validateForm.get('formInstance').get('daysOfWeekMultiple').markAsPristine();
+        this.validateForm.get('formInstance').get('daysOfWeekMultiple').reset();
 
-    this.validateForm.get('daysOfWeekMultiple').clearValidators();
-    this.validateForm.get('daysOfWeekMultiple').markAsPristine();
-    this.validateForm.get('daysOfWeekMultiple').reset();
+        this.validateForm.get('formInstance').get('numberOfWeek').clearValidators();
+        this.validateForm.get('formInstance').get('numberOfWeek').markAsPristine();
+        this.validateForm.get('formInstance').get('numberOfWeek').reset();
 
-    this.validateForm.get('numberOfWeek').clearValidators();
-    this.validateForm.get('numberOfWeek').markAsPristine();
-    this.validateForm.get('numberOfWeek').reset();
+        this.validateForm.get('formInstance').get('months').clearValidators();
+        this.validateForm.get('formInstance').get('months').markAsPristine();
+        this.validateForm.get('formInstance').get('months').reset();
 
-    this.validateForm.get('months').clearValidators();
-    this.validateForm.get('months').markAsPristine();
-    this.validateForm.get('months').reset();
+        this.validateForm.get('formInstance').get('date').clearValidators();
+        this.validateForm.get('formInstance').get('date').markAsPristine();
+        this.validateForm.get('formInstance').get('date').reset();
 
-    this.validateForm.get('date').clearValidators();
-    this.validateForm.get('date').markAsPristine();
-    this.validateForm.get('date').reset();
+        if (this.modeSelected == 4) {
+          this.setInitialValues();
 
-    if(this.modeSelected == 4) {
-      this.validateForm.get('months').setValue(1)
-      this.validateForm.get('date').setValue(1)
-      console.log('months', this.validateForm.get('months').value)
-      console.log('date', this.validateForm.get('date').value)
+          this.validateForm.get('formInstance').get('months').clearValidators();
+          this.validateForm.get('formInstance').get('months').setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
+          this.validateForm.get('formInstance').get('months').markAsDirty();
 
-      this.validateForm.get('months').setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
-      this.validateForm.get('months').markAsDirty();
-      this.validateForm.get('months').reset();
+          this.validateForm.get('formInstance').get('date').clearValidators();
+          this.validateForm.get('formInstance').get('date').setValidators([Validators.required, Validators.pattern(/^[1-9]|[12][0-9]|3[01]*$/)]);
+          this.validateForm.get('formInstance').get('date').markAsDirty();
+        }
+        if (this.modeSelected == 3) {
+          this.numberOfWeekChangeSelected = 1;
+          this.daySelected = 1;
 
-      this.validateForm.get('date').setValidators([Validators.required, Validators.pattern(/^[1-9]|[12][0-9]|3[01]*$/)]);
-      this.validateForm.get('date').markAsDirty();
-      this.validateForm.get('date').reset();
-    }
-    if(this.modeSelected == 3) {
-      this.numberOfWeekChangeSelected = 1;
-      this.daySelected = 1;
+          this.validateForm.get('formInstance').get('daysOfWeek').clearValidators();
+          this.validateForm.get('formInstance').get('daysOfWeek').setValidators([Validators.required]);
+          this.validateForm.get('formInstance').get('daysOfWeek').markAsDirty();
 
-      this.validateForm.get('daysOfWeek').setValidators([Validators.required]);
-      this.validateForm.get('daysOfWeek').markAsDirty();
-      this.validateForm.get('daysOfWeek').reset();
+          this.validateForm.get('formInstance').get('numberOfWeek').clearValidators();
+          this.validateForm.get('formInstance').get('numberOfWeek').setValidators([Validators.required]);
+          this.validateForm.get('formInstance').get('numberOfWeek').markAsDirty();
+        }
+        if (this.modeSelected == 2) {
+          this.validateForm.get('formInstance').get('daysOfWeekMultiple').clearValidators();
+          this.validateForm.get('formInstance').get('daysOfWeekMultiple').setValidators([Validators.required]);
+          this.validateForm.get('formInstance').get('daysOfWeekMultiple').markAsDirty();
+        }
+      } else {
+        this.validateForm.get('formVolume').get('daysOfWeek').clearValidators();
+        this.validateForm.get('formVolume').get('daysOfWeek').markAsPristine();
+        this.validateForm.get('formVolume').get('daysOfWeek').reset();
 
-      this.validateForm.get('numberOfWeek').setValidators([Validators.required]);
-      this.validateForm.get('numberOfWeek').markAsDirty();
-      this.validateForm.get('numberOfWeek').reset();
-    }
-    if(this.modeSelected == 2) {
-      this.validateForm.get('daysOfWeekMultiple').setValidators([Validators.required]);
-      this.validateForm.get('daysOfWeekMultiple').markAsDirty();
-      this.validateForm.get('daysOfWeekMultiple').reset();
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').clearValidators();
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').markAsPristine();
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').reset();
+
+        this.validateForm.get('formVolume').get('numberOfWeek').clearValidators();
+        this.validateForm.get('formVolume').get('numberOfWeek').markAsPristine();
+        this.validateForm.get('formVolume').get('numberOfWeek').reset();
+
+        this.validateForm.get('formVolume').get('months').clearValidators();
+        this.validateForm.get('formVolume').get('months').markAsPristine();
+        this.validateForm.get('formVolume').get('months').reset();
+
+        this.validateForm.get('formVolume').get('date').clearValidators();
+        this.validateForm.get('formVolume').get('date').markAsPristine();
+        this.validateForm.get('formVolume').get('date').reset();
+
+        if (this.modeSelected == 4) {
+          this.setInitialValues();
+
+          this.validateForm.get('formVolume').get('months').clearValidators();
+          this.validateForm.get('formVolume').get('months').setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
+          this.validateForm.get('formVolume').get('months').markAsDirty();
+
+          this.validateForm.get('formVolume').get('date').clearValidators();
+          this.validateForm.get('formVolume').get('date').setValidators([Validators.required, Validators.pattern(/^[1-9]|[12][0-9]|3[01]*$/)]);
+          this.validateForm.get('formVolume').get('date').markAsDirty();
+        }
+        if (this.modeSelected == 3) {
+          this.numberOfWeekChangeSelected = 1;
+          this.daySelected = 1;
+
+          this.validateForm.get('formVolume').get('daysOfWeek').clearValidators();
+          this.validateForm.get('formVolume').get('daysOfWeek').setValidators([Validators.required]);
+          this.validateForm.get('formVolume').get('daysOfWeek').markAsDirty();
+
+          this.validateForm.get('formVolume').get('numberOfWeek').clearValidators();
+          this.validateForm.get('formVolume').get('numberOfWeek').setValidators([Validators.required]);
+          this.validateForm.get('formVolume').get('numberOfWeek').markAsDirty();
+        }
+        if (this.modeSelected == 2) {
+          this.validateForm.get('formVolume').get('daysOfWeekMultiple').clearValidators();
+          this.validateForm.get('formVolume').get('daysOfWeekMultiple').setValidators([Validators.required]);
+          this.validateForm.get('formVolume').get('daysOfWeekMultiple').markAsDirty();
+        }
+      }
     }
   }
 
@@ -305,12 +434,15 @@ export class CreateScheduleBackupComponent implements OnInit {
       console.log('backup packages: ', data.records);
       this.backupPackageList = data?.records;
       this.isLoading = false;
-      this.backupPackageSelected = this.backupPackageList[0]?.id
+      this.backupPackageSelected = this.backupPackageList[0]?.id;
     });
   }
 
   onChangeBackupPackage(value) {
     this.backupPackageSelected = value;
+    if (this.backupPackageSelected != undefined) {
+      this.getBackupPackageDetail(this.backupPackageSelected);
+    }
   }
 
   numberOfWeekChange(value: string) {
@@ -318,43 +450,88 @@ export class CreateScheduleBackupComponent implements OnInit {
   }
 
   dayOfWeekChange(value) {
-    this.daySelected = value
+    this.daySelected = value;
+  }
+
+  backupPackageDetail = new PackageBackupModel();
+
+  getBackupPackageDetail(id) {
+    this.backupPackageService.detail(id).subscribe(data => {
+      this.backupPackageDetail = data;
+    });
   }
 
   doCreateScheduleBackup() {
-    let formCreateSchedule = new FormCreateSchedule();
-    formCreateSchedule.customerId = this.tokenService.get()?.userId;
-    formCreateSchedule.name = this.validateForm.controls.name.value;
-    formCreateSchedule.description = this.validateForm.controls.description.value;
-    formCreateSchedule.maxBackup = this.validateForm.controls.maxBackup.value;
-    formCreateSchedule.mode = this.modeSelected;
-    formCreateSchedule.serviceType = 1;
-    if(this.selectedOption == 'instance') {
-      formCreateSchedule.instanceId = this.validateForm.get('formInstance').get('instanceId').value
-      formCreateSchedule.listAttachedVolume = this.validateForm.get('formInstance').get('volumeToBackupIds').value
+
+    console.log('click', this.validateForm.get('formInstance').valid);
+
+    if (this.selectedOption == 'instance') {
+      this.isLoadingAction = true
+      let formCreateSchedule = new FormCreateSchedule();
+      formCreateSchedule.customerId = this.tokenService.get()?.userId;
+      formCreateSchedule.name = this.validateForm.get('formInstance').get('name').value;
+      formCreateSchedule.description = this.validateForm.get('formInstance').get('description').value;
+      formCreateSchedule.maxBackup = this.validateForm.get('formInstance').get('maxBackup').value;
+      formCreateSchedule.mode = this.modeSelected;
+      formCreateSchedule.serviceType = 1;
+      formCreateSchedule.instanceId = this.validateForm.get('formInstance').get('instanceId').value;
+      formCreateSchedule.listAttachedVolume = this.validateForm.get('formInstance').get('volumeToBackupIds').value;
+      formCreateSchedule.backupPacketId = this.validateForm.get('formInstance').get('backupPackage').value;
+      formCreateSchedule.runtime = this.datepipe.transform(this.validateForm.get('formInstance').get('times').value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
+      if (formCreateSchedule.mode === 3) {
+        formCreateSchedule.intervalWeek = this.validateForm.get('formInstance').get('numberOfWeek').value;
+        formCreateSchedule.dayOfWeek = this.validateForm.get('formInstance').get('daysOfWeek').value;
+      }
+      if (formCreateSchedule.mode === 2) {
+        formCreateSchedule.daysOfWeek = this.validateForm.get('formInstance').get('daysOfWeekMultiple').value;
+      }
+      if (formCreateSchedule.mode === 4) {
+        formCreateSchedule.intervalMonth = this.validateForm.get('formInstance').get('months').value;
+        formCreateSchedule.dayOfMonth = this.validateForm.get('formInstance').get('date').value;
+      }
+      this.backupScheduleService.create(formCreateSchedule).subscribe(data => {
+        this.isLoadingAction = false
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.notify.create.success'));
+        this.nameList = [];
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
+      }, error => {
+        this.isLoadingAction = false
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.notify.create.fail') + '. ' + error.error.detail);
+      });
     } else {
-      formCreateSchedule.volumeId = this.validateForm.get('formVolume').get('volumeId').value
+      this.isLoadingAction = true
+      let formCreateSchedule1 = new FormCreateSchedule();
+      formCreateSchedule1.customerId = this.tokenService.get()?.userId;
+      formCreateSchedule1.name = this.validateForm.get('formVolume').get('name').value;
+      formCreateSchedule1.description = this.validateForm.get('formVolume').get('description').value;
+      formCreateSchedule1.maxBackup = this.validateForm.get('formVolume').get('maxBackup').value;
+      formCreateSchedule1.mode = this.modeSelected;
+      formCreateSchedule1.serviceType = 1;
+      formCreateSchedule1.volumeId = this.validateForm.get('formVolume').get('volumeId').value;
+      formCreateSchedule1.backupPacketId = this.validateForm.get('formVolume').get('backupPackage').value;
+      formCreateSchedule1.runtime = this.datepipe.transform(this.validateForm.get('formVolume').get('times').value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
+      if (formCreateSchedule1.mode === 3) {
+        formCreateSchedule1.intervalWeek = this.validateForm.get('formVolume').get('numberOfWeek').value;
+        formCreateSchedule1.dayOfWeek = this.validateForm.get('formVolume').get('daysOfWeek').value;
+      }
+      if (formCreateSchedule1.mode === 2) {
+        formCreateSchedule1.daysOfWeek = this.validateForm.get('formVolume').get('daysOfWeekMultiple').value;
+      }
+      if (formCreateSchedule1.mode === 4) {
+        formCreateSchedule1.intervalMonth = this.validateForm.get('formVolume').get('months').value;
+        formCreateSchedule1.dayOfMonth = this.validateForm.get('formVolume').get('date').value;
+      }
+      this.backupScheduleService.create(formCreateSchedule1).subscribe(data => {
+        this.isLoadingAction = false
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.volume.notify.create.success'));
+        this.nameList = [];
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
+      }, error => {
+        this.isLoadingAction = false
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.volume.notify.create.fail') + '. ' + error.error.detail);
+      });
     }
-    formCreateSchedule.backupPacketId = this.validateForm.controls.backupPackage.value
-    formCreateSchedule.runtime = this.datepipe.transform(this.validateForm.controls.times.value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
-    if (formCreateSchedule.mode === 3) {
-      formCreateSchedule.intervalWeek = this.validateForm.controls.numberOfWeek.value;
-      formCreateSchedule.dayOfWeek = this.validateForm.controls.daysOfWeek.value;
-    }
-    if (formCreateSchedule.mode === 2) {
-      formCreateSchedule.daysOfWeek = this.validateForm.controls.daysOfWeekMultiple.value;
-    }
-    if (formCreateSchedule.mode === 4) {
-      formCreateSchedule.intervalMonth = this.validateForm.controls.months.value;
-      formCreateSchedule.dayOfMonth = this.validateForm.controls.date.value;
-    }
-    this.backupScheduleService.create(formCreateSchedule).subscribe(data => {
-      this.notification.success(this.i18n.fanyi("app.status.success") ,this.i18n.fanyi("schedule.backup.notify.create.success"));
-      this.nameList = [];
-      this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
-    }, error => {
-      this.notification.error(this.i18n.fanyi("app.status.fail") ,this.i18n.fanyi("schedule.backup.notify.create.fail") + '. ' + error.error.detail);
-    });
+
   }
 
   getListScheduleBackup() {
@@ -365,10 +542,23 @@ export class CreateScheduleBackupComponent implements OnInit {
     this.backupScheduleService.search(formSearch).subscribe(data => {
       this.lstBackupSchedules = data.records;
       this.lstBackupSchedules?.forEach(item => {
-          this.nameList?.push(item.name);
+        this.nameList?.push(item.name);
       });
     });
   }
+
+  setInitialValues(): void {
+    if (this.selectedOption == 'instance') {
+      this.validateForm.get('formInstance').get('months').setValue(1);
+      this.validateForm.get('formInstance').get('date').setValue(1);
+    } else {
+      this.validateForm.get('formVolume').get('months').setValue(1);
+      this.validateForm.get('formVolume').get('date').setValue(1);
+    }
+    this.cdr.detectChanges();
+  }
+
+
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -376,10 +566,13 @@ export class CreateScheduleBackupComponent implements OnInit {
 
     this.modeSelected = 1;
 
+    this.setInitialValues();
+
     this.getListInstances();
     this.getInstanceById();
     this.getBackupPackage();
     this.getListScheduleBackup();
+    this.getListVolume();
   }
 
 

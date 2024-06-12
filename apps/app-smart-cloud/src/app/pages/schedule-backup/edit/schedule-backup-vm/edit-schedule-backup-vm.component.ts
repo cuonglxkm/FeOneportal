@@ -88,12 +88,12 @@ export class EditScheduleBackupVmComponent implements OnInit {
     }
 
     regionChanged(region: RegionModel) {
-        this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
+        // this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
 
     }
 
     projectChanged(project: ProjectModel) {
-      this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
+      // this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
     }
 
     validateSpecialCharacters(control) {

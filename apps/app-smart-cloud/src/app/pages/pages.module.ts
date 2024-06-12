@@ -75,11 +75,9 @@ import { PrettyPrintPipe } from './iam/user-group/create/pretty-print.pipe';
 import { BlankScheduleBackupComponent } from './schedule-backup/blank/blank-schedule-backup.component';
 import { ListScheduleBackupComponent } from './schedule-backup/list/list-schedule-backup.component';
 import { CreateScheduleBackupComponent } from './schedule-backup/create/create-schedule-backup.component';
-import { ScheduleBackupVmComponent } from './schedule-backup/create/backup-vm/schedule-backup-vm.component';
-import { ScheduleBackupVolumeComponent } from './schedule-backup/create/backup-volume/schedule-backup-volume.component';
 import { EditScheduleBackupVolumeComponent } from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
 import { EditScheduleBackupVmComponent } from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
-import { DeleteScheduleComponent } from './schedule-backup/delete/delete-schedule.component';
+import { DeleteScheduleComponent } from './schedule-backup/action/delete/delete-schedule.component';
 import { SnapshotScheduleListComponent } from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
 import { SnapshotScheduleCreateComponent } from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
 import { SnapshotScheduleDetailComponent } from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
@@ -311,8 +309,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     BlankScheduleBackupComponent,
     ListScheduleBackupComponent,
     CreateScheduleBackupComponent,
-    ScheduleBackupVmComponent,
-    ScheduleBackupVolumeComponent,
     EditScheduleBackupVolumeComponent,
     EditScheduleBackupVmComponent,
     DeleteScheduleComponent,

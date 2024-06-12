@@ -79,13 +79,13 @@ export class HeaderUserComponent {
     this.cookieService.delete('TOKEN_USER', "/",".onsmartcloud.com",true,"None");
     localStorage.clear();
     this.tokenService.clear();
-    this.httpClient.get(environment['sso'].issuer
-      + `/connect/logout?post_logout_redirect_uri=${decodeURIComponent(environment['sso'].logout_callback)}`/* + '/logout'*/)
-      .subscribe(data => {
-        console.log(data)
-      }, error => {
-        console.log(error)
-      });
+    // this.httpClient.get(environment['sso'].issuer
+    //   + `/connect/logout?post_logout_redirect_uri=${decodeURIComponent(environment['sso'].logout_callback)}`/* + '/logout'*/)
+    //   .subscribe(data => {
+    //     console.log(data)
+    //   }, error => {
+    //     console.log(error)
+    //   });
 
     localStorage.removeItem('UserRootId');
     localStorage.removeItem('projects');

@@ -113,7 +113,7 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
   volumeInfo: VolumeDTO = new VolumeDTO()
 
   getDataByVolumeId(id) {
-    this.volumeService.getVolumeById(id).subscribe(data => {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
       this.volumeInfo = data
     })
   }

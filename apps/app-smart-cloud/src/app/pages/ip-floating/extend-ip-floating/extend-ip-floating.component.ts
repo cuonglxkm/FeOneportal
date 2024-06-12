@@ -69,25 +69,7 @@ export class ExtendIpFloatingComponent implements OnInit{
   }
 
   openPopupExtend() {
-    const modal: NzModalRef = this.modalService.create({
-      nzTitle: 'Gia hạn IP Public',
-      nzContent: PopupExtendVolumeComponent,
-      nzFooter: [
-        {
-          label: 'Hủy',
-          type: 'default',
-          onClick: () => modal.destroy()
-        },
-        {
-          label: 'Đồng ý',
-          type: 'primary',
-          onClick: () => {
-            this.router.navigate(['/app-smart-cloud/ip-public/extend/' + this.ipInfo.id]);
-            modal.destroy();
-          }
-        }
-      ]
-    });
+    this.router.navigate(['/app-smart-cloud/ip-public/extend/' + this.ipInfo.id]);
   }
 
 
