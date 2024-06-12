@@ -117,7 +117,7 @@
                 </nz-form-item>
               </div>
             </nz-row>
-            <nz-row  *ngIf="projectType == 0">
+            <nz-row  *ngIf="projectType != 1">
               <div nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label>
@@ -199,7 +199,7 @@
                 </nz-form-item>
               </div>
             </nz-row>
-            <nz-form-item *ngIf="projectType == 0">
+            <nz-form-item *ngIf="projectType != 1">
               <nz-form-label>
                 <span>Chọn gói Snapshot (<span style="color: red;">*</span>)</span>
                 <img nz-popover
@@ -251,7 +251,7 @@
                 </nz-form-item>
               </div>
             </nz-row>
-            <nz-form-item *ngIf="projectType == 0">
+            <nz-form-item *ngIf="projectType != 1">
               <nz-form-label>
                 <span>Chọn gói Snapshot (<span style="color: red;">*</span>)</span>
                 <img nz-popover
@@ -309,7 +309,7 @@
             <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
             <div style="margin-top: 10px" class="text-label">{{validateForm.controls['quota'].value}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div *ngIf="projectType == 0">
+            <div *ngIf="projectType != 1">
               <div style="margin-top: 10px" class="text-value">Gói Snapshot</div>
               <div style="margin-top: 10px" class="text-label">{{selectedSnapshotPackage?.packageName}}</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
