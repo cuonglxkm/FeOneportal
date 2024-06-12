@@ -971,6 +971,8 @@
   "app.file.system.placeholder.search": "Tìm kiếm theo tên",
   "app.file.system.error.pattern.storage": "Vui lòng nhập số nguyên dương.",
   "app.file.system.not.enough.quota": "Dung lượng vượt quá dung lượng hiện có, xin vui lòng thử lại",
+  "app.file.system.not.enough.quota.snapshot": "Dung lượng nhập vào không được nhỏ hơn dung lượng Snapshot đã chọn là {{name}}",
+
 
   "app.note.delete.file.system": "Để thực hiện xóa File System {{name}}, vui lòng nhập tên File System để xác nhận",
   "app.alert.delete.file.system": "Bạn đang thực hiện xóa File System. Quý khách lưu ý khi xóa File System sẽ đồng thời xóa các Snapshot của File System đó.",
@@ -999,7 +1001,7 @@
   "app.choose.day.perform.snapshot": "Chọn ngày thực hiện Snapshot",
   "app.snapshot.execution.day": "Ngày thực hiện Snapshot trong tháng",
 
-  "validation.correct.file.system.name": "Vui lòng nhập đúng tên File System",
+  "validation.correct.file.system.name": "Vui lòng nhập đúngđúng tên File System",
   "validation.file.system.name.pattern": "Không được chứa dấu tiếng việt và ký tự đặc biệt(trừ _, -, và có thể có khoảng trắng)",
   "validation.file.system.type.required": "Vui lòng chọn loại File System",
   "validation.file.system.description.maxlength": "Cho phép nhập tối đa 700 ký tự",
@@ -2939,7 +2941,7 @@
   "schedule.backup.select.date": "Vui lòng chọn thứ",
   "schedule.backup.select.volume.backup": "Chọn Volume gắn ngoài cần backup",
   "schedule.backup.label.name": "Tên lịch backup",
-  "schedule.backup.confirm.remove": "Xác nhận xóa lịch backup",
+  "schedule.backup.confirm.remove": "Xóa lịch backup",
   "schedule.backup.alert.remove": "Quý khách có chắc chắn muốn xóa lịch backup",
   "schedule.backup.volume.select": "Chọn Volume",
   "schedule.backup.name.empty": "Tên lịch Backup không được để trống",
@@ -2952,7 +2954,9 @@
   "schedule.backup.action4": "Quý khách có chắc chắn muốn tạm dừng lịch backup",
   "schedule.backup.tooltip.name": "Tên lịch backup. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt.",
   "schedule.backup.require.max.backup": "Vui lòng chọn số bản ghi backup",
-
+  "schedule.backup.alert.delete": "Quý khách đang thực hiện xóa lịch backup {{name}} ? Vui lòng xác nhận trước khi xóa",
+  "schedule.backup.confirm.delete": "Đế thực hiện xoá lịch Backup {{name}}, vui lòng nhập tên lịch Backup để xác nhận.",
+  "schedule.backup.confirm.input.name": "Vui lòng nhập đúng tên Backup",
 
 
   "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",

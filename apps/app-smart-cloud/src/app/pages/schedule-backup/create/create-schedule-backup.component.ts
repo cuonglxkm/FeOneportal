@@ -462,10 +462,12 @@ export class CreateScheduleBackupComponent implements OnInit {
   }
 
   doCreateScheduleBackup() {
-    this.isLoadingAction = true
+
     console.log('click', this.validateForm.get('formInstance').valid);
-    let formCreateSchedule = new FormCreateSchedule();
+
     if (this.selectedOption == 'instance') {
+      this.isLoadingAction = true
+      let formCreateSchedule = new FormCreateSchedule();
       formCreateSchedule.customerId = this.tokenService.get()?.userId;
       formCreateSchedule.name = this.validateForm.get('formInstance').get('name').value;
       formCreateSchedule.description = this.validateForm.get('formInstance').get('description').value;
@@ -488,38 +490,44 @@ export class CreateScheduleBackupComponent implements OnInit {
         formCreateSchedule.dayOfMonth = this.validateForm.get('formInstance').get('date').value;
       }
       this.backupScheduleService.create(formCreateSchedule).subscribe(data => {
+        this.isLoadingAction = false
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.notify.create.success'));
         this.nameList = [];
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
+        this.isLoadingAction = false
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.notify.create.fail') + '. ' + error.error.detail);
       });
     } else {
-      formCreateSchedule.customerId = this.tokenService.get()?.userId;
-      formCreateSchedule.name = this.validateForm.get('formVolume').get('name').value;
-      formCreateSchedule.description = this.validateForm.get('formVolume').get('description').value;
-      formCreateSchedule.maxBackup = this.validateForm.get('formVolume').get('maxBackup').value;
-      formCreateSchedule.mode = this.modeSelected;
-      formCreateSchedule.serviceType = 1;
-      formCreateSchedule.volumeId = this.validateForm.get('formVolume').get('volumeId').value;
-      formCreateSchedule.backupPacketId = this.validateForm.get('formVolume').get('backupPackage').value;
-      formCreateSchedule.runtime = this.datepipe.transform(this.validateForm.get('formVolume').get('times').value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
-      if (formCreateSchedule.mode === 3) {
-        formCreateSchedule.intervalWeek = this.validateForm.get('formVolume').get('numberOfWeek').value;
-        formCreateSchedule.dayOfWeek = this.validateForm.get('formVolume').get('daysOfWeek').value;
+      this.isLoadingAction = true
+      let formCreateSchedule1 = new FormCreateSchedule();
+      formCreateSchedule1.customerId = this.tokenService.get()?.userId;
+      formCreateSchedule1.name = this.validateForm.get('formVolume').get('name').value;
+      formCreateSchedule1.description = this.validateForm.get('formVolume').get('description').value;
+      formCreateSchedule1.maxBackup = this.validateForm.get('formVolume').get('maxBackup').value;
+      formCreateSchedule1.mode = this.modeSelected;
+      formCreateSchedule1.serviceType = 1;
+      formCreateSchedule1.volumeId = this.validateForm.get('formVolume').get('volumeId').value;
+      formCreateSchedule1.backupPacketId = this.validateForm.get('formVolume').get('backupPackage').value;
+      formCreateSchedule1.runtime = this.datepipe.transform(this.validateForm.get('formVolume').get('times').value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
+      if (formCreateSchedule1.mode === 3) {
+        formCreateSchedule1.intervalWeek = this.validateForm.get('formVolume').get('numberOfWeek').value;
+        formCreateSchedule1.dayOfWeek = this.validateForm.get('formVolume').get('daysOfWeek').value;
       }
-      if (formCreateSchedule.mode === 2) {
-        formCreateSchedule.daysOfWeek = this.validateForm.get('formVolume').get('daysOfWeekMultiple').value;
+      if (formCreateSchedule1.mode === 2) {
+        formCreateSchedule1.daysOfWeek = this.validateForm.get('formVolume').get('daysOfWeekMultiple').value;
       }
-      if (formCreateSchedule.mode === 4) {
-        formCreateSchedule.intervalMonth = this.validateForm.get('formVolume').get('months').value;
-        formCreateSchedule.dayOfMonth = this.validateForm.get('formVolume').get('date').value;
+      if (formCreateSchedule1.mode === 4) {
+        formCreateSchedule1.intervalMonth = this.validateForm.get('formVolume').get('months').value;
+        formCreateSchedule1.dayOfMonth = this.validateForm.get('formVolume').get('date').value;
       }
-      this.backupScheduleService.create(formCreateSchedule).subscribe(data => {
+      this.backupScheduleService.create(formCreateSchedule1).subscribe(data => {
+        this.isLoadingAction = false
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.volume.notify.create.success'));
         this.nameList = [];
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
+        this.isLoadingAction = false
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.volume.notify.create.fail') + '. ' + error.error.detail);
       });
     }

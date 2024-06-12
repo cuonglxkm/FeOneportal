@@ -1077,6 +1077,7 @@
   "app.file.system.placeholder.search": "Search by name",
   "app.file.system.error.pattern.storage": "Please enter a positive integer.",
   "app.file.system.not.enough.quota": "Capacity exceeds the available capacity, please try again.",
+  "app.file.system.not.enough.quota.snapshot": "The input size cannot be smaller than the size of the selected Snapshot, which is {{name}}.",
 
   "app.note.delete.file.system": "To delete the {{name}} File System, please enter the File System name to confirm",
   "app.alert.delete.file.system": "You are currently deleting the File System.<br> To successfully delete the File System, please note that you need to delete all Snapshots associated with that File System",
@@ -3053,6 +3054,10 @@
   "schedule.backup.action4": "Are you sure you want to suspend the backup schedule?",
   "schedule.backup.tooltip.name": "The name of the backup schedule. Do not include special characters, spaces, or Vietnamese diacritics.",
   "schedule.backup.require.max.backup": "Please select the number of backup records.",
+  "schedule.backup.alert.delete": "Are you about to delete the backup schedule {{name}}? Please confirm before proceeding.",
+  "schedule.backup.confirm.delete": "To delete the backup schedule {{name}}, please enter the name of the backup schedule to confirm.",
+  "schedule.backup.confirm.input.name": "Please enter the correct backup name.",
+
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
   "app.validate.order.fail": "Fail to validate order",
