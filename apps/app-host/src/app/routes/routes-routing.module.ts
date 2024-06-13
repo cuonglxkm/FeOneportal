@@ -68,6 +68,13 @@ const routes: Routes = [
             (m) => m.RemoteEntryModule
           ),
       },
+      {
+        path: 'app-ecr',
+        loadChildren: () =>
+          loadRemoteModule('app-ecr', './Module').then(
+            (m) => m.RemoteEntryModule
+          ),
+      },
     ]
   },
   // Blak Layout 空白布局

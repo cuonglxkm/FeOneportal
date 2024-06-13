@@ -310,6 +310,11 @@
                 "text": "MongoDB Replicaset",
                 "icon": "anticon-profile",
                 "link": "/app-mongodb-replicaset"
+              },
+              {
+                "text": "Elastic Container Registry",
+                "icon": "anticon-profile",
+                "link": "/app-ecr"
               }
             ]
           },

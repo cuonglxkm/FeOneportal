@@ -1,0 +1,102 @@
+{
+  "name": "app-ecr",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "one-portal",
+  "sourceRoot": "apps/app-ecr/src",
+  "tags": ["app-ecr"],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:webpack-browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/app-ecr",
+        "index": "apps/app-ecr/src/index.html",
+        "main": "apps/app-ecr/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/app-ecr/tsconfig.app.json",
+        "assets": ["apps/app-ecr/src/favicon.ico", "apps/app-ecr/src/assets"],
+        "styles": ["apps/app-ecr/src/styles.css"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/app-ecr/webpack.config.ts"
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/app-ecr/webpack.prod.config.ts"
+          }
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@nx/angular:webpack-dev-server",
+      "options": {
+        "port": 4208,
+        "publicHost": "http://localhost:4208"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "app-ecr:build:production"
+        },
+        "development": {
+          "browserTarget": "app-ecr:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "app-ecr:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/app-ecr/**/*.ts", "apps/app-ecr/**/*.html"]
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "buildTarget": "app-ecr:build",
+        "port": 4208,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "app-ecr:build:development"
+        },
+        "production": {
+          "buildTarget": "app-ecr:build:production"
+        }
+      }
+    }
+  }
+}
