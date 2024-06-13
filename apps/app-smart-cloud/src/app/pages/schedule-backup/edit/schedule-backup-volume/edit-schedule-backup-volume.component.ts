@@ -21,10 +21,10 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
   project = JSON.parse(localStorage.getItem('projectId'));
   modeType: any = '4'
   mode = [
-    {label: this.i18n.fanyi("schedule.backup.label.each.day"), value: '1'},
-    {label: this.i18n.fanyi("schedule.backup.label.each.number.day"), value: '2'},
-    {label: this.i18n.fanyi("schedule.backup.label.each.week"), value: '3'},
-    {label: this.i18n.fanyi("schedule.backup.label.each.month"), value: '4'}
+    {label: this.i18n.fanyi("schedule.backup.label.each.day"), value: 1},
+    {label: this.i18n.fanyi("schedule.backup.label.each.number.day"), value: 2},
+    {label: this.i18n.fanyi("schedule.backup.label.each.week"), value: 3},
+    {label: this.i18n.fanyi("schedule.backup.label.each.month"), value: 4}
   ]
   numberOfWeek = [
     {label: '1 ' + this.i18n.fanyi("app.Week"), value: '1'},
@@ -65,8 +65,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
   }> = this.fb.group({
     backupMode: [4, [Validators.required]],
     name: [null as string, [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9_]{1,255}$/),
-      this.validateSpecialCharacters.bind(this), this.duplicateNameValidator.bind(this)]],
+      Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]],
     description: [null as string, [Validators.maxLength(700)]],
     months: [1, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
     times: [new Date(), [Validators.required]],
@@ -76,6 +75,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
     daysOfWeekMultiple: [[] as string[]],
   })
 
+  isLoadingAction: boolean = false
 
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
@@ -102,16 +102,6 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
     this.project = project.id;
   }
 
-  validateSpecialCharacters(control) {
-    const value = control.value;
-
-    if (/[^a-zA-Z0-9_]/.test(value)) {
-      return {invalidCharacters: true};
-    } else {
-      return null;
-    }
-  }
-
   duplicateNameValidator(control) {
     const value = control.value;
     // Check if the input name is already in the list
@@ -120,7 +110,6 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
     } else {
       return null;
     }
-
   }
 
   modeChange(value) {
@@ -172,13 +161,9 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
     }
   }
 
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
-  }
-
   numberOfWeekChange(value: string) {
     this.numberOfWeekChangeSelected = value
-    console.log('weeek', this.numberOfWeekChangeSelected)
+    console.log('week', this.numberOfWeekChangeSelected)
   }
 
   getData(): FormEditSchedule {
@@ -203,13 +188,6 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
         this.formEdit.description =  this.validateForm.controls.description.value
       }
     })
-    // this.validateForm.get('months').valueChanges.subscribe(data => {
-    //   if(data != this.validateForm.get('months').value) {
-    //     this.formEdit.intervalMonth = data;
-    //   } else {
-    //     this.formEdit.intervalMonth =  this.validateForm.controls.months.getRawValue();
-    //   }
-    // })
     this.validateForm.get('times').valueChanges.subscribe(data => {
       if(data != this.validateForm.get('times').value) {
         this.formEdit.runtime = data
@@ -242,13 +220,16 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
 
 
   submitForm() {
+    this.isLoadingAction = true;
     if (this.validateForm.valid) {
       console.log(this.validateForm.getRawValue())
       this.formEdit = this.getData()
       this.scheduleService.edit(this.formEdit).subscribe(data => {
+        this.isLoadingAction = false
         this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("schedule.backup.notify.edit.volume.success"))
         this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
       }, error => {
+        this.isLoadingAction = false
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("schedule.backup.notify.edit.volume.fail"))
       })
     } else {

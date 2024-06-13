@@ -11,8 +11,9 @@
         Backup
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/schedule/backup/list">{{'schedule.backup.title.job' | i18n}}</a>
+        <a routerLink="/app-smart-cloud/schedule/backup/list">{{ 'schedule.backup.title.job' | i18n }}</a>
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'schedule.backup.title.edit' | i18n }}</nz-breadcrumb-item>
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
     </nz-breadcrumb>
   </ng-template>
@@ -33,7 +34,7 @@
         <nz-col nzSpan="16">
           <nz-card style="border-radius: 8px;">
             <span class="text-card-header">{{ 'schedule.backup.label.edit' | i18n }}</span>
-            <div style="display: block; margin-top: 25px;">
+            <div style="display: grid; margin-top: 25px;">
               <label nz-radio nzValue="VM"
                      class="text-label"
                      [nzDisabled]="true">Backup VM</label>
@@ -463,6 +464,7 @@
                 <nz-col style="width: 100%">
                   <button style="width: 100%" nz-button nzSize="large" nzType="primary"
                           [disabled]="validateForm.invalid"
+                          [nzLoading]="isLoadingAction"
                           (click)="submitForm()">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">
