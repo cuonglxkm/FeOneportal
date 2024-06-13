@@ -12,20 +12,24 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   providedIn: 'root'
 })
 export class DashboardService extends BaseService {
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
+    })
+  };
+
   constructor(private http: HttpClient,
               private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
 
-  private getHeaders() {
-    return new HttpHeaders({
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId
-    })
-  }
-
   getSubscriptionsDashboard() {
-    return this.http.get<SubscriptionsDashboard>(this.baseUrl + this.ENDPOINT.subscriptions + '/dashboard')
+    return this.http.get<SubscriptionsDashboard>(this.baseUrl + this.ENDPOINT.subscriptions + '/dashboard', {
+      headers: this.httpOptions.headers
+    })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -40,7 +44,9 @@ export class DashboardService extends BaseService {
   }
 
   getSubscriptionsNearExpire(pageSize: number, pageIndex: number) {
-    return this.http.get<BaseResponse<SubscriptionsNearExpire[]>>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}`)
+    return this.http.get<BaseResponse<SubscriptionsNearExpire[]>>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}`, {
+      headers: this.httpOptions.headers
+    })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -55,7 +61,9 @@ export class DashboardService extends BaseService {
   }
 
   paymentCostUse(pageSize: number, pageIndex: number) {
-    return this.http.get<BaseResponse<PaymentCostUse[]>>(this.baseUrl + this.ENDPOINT.payments + `/cost-use?pageSize=${pageSize}&pageNumber=${pageIndex}`)
+    return this.http.get<BaseResponse<PaymentCostUse[]>>(this.baseUrl + this.ENDPOINT.payments + `/cost-use?pageSize=${pageSize}&pageNumber=${pageIndex}`, {
+      headers: this.httpOptions.headers
+    })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -70,7 +78,7 @@ export class DashboardService extends BaseService {
   }
 
   getHeader() {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.subscriptions + `/header`, { headers: this.getHeaders()} )
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.subscriptions + `/header`, { headers: this.httpOptions.headers} )
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -81,6 +89,6 @@ export class DashboardService extends BaseService {
           console.error('Resource not found');
         }
         return throwError(error);
-    })); 
+    }));
   }
 }

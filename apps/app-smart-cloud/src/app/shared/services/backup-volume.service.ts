@@ -42,13 +42,24 @@ export class BackupVolumeService extends BaseService {
     if (pageSize != undefined || pageSize != null) param = param.append('pageSize', pageSize);
     if (currentPage != undefined || currentPage != null) param = param.append('currentPage', currentPage);
     return this.http.get<BaseResponse<BackupVolume[]>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes', {
-      params: param
-    });
+      params: param,
+      headers: this.httpOptions.headers
+    }).pipe(catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        console.error('login');
+      } else if (error.status === 404) {
+        // Handle 404 Not Found error
+        console.error('Resource not found');
+      }
+      return throwError(error);
+    }));;
   }
 
   //delete
   deleteVolume(idBackupVolume) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/volumes/${idBackupVolume}`)
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/volumes/${idBackupVolume}`, {
+      headers: this.httpOptions.headers
+    })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -63,7 +74,9 @@ export class BackupVolumeService extends BaseService {
 
   //create
   createBackupVolume(data: CreateBackupVolumeOrderData) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.orders, Object.assign(data))
+    return this.http.post(this.baseUrl + this.ENDPOINT.orders, Object.assign(data), {
+      headers: this.httpOptions.headers
+    })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -77,7 +90,9 @@ export class BackupVolumeService extends BaseService {
 
   //detail
   detail(id) {
-    return this.http.get<BackupVolume>(this.baseUrl + this.ENDPOINT.provisions + `/backups/volumes/${id}`)
+    return this.http.get<BackupVolume>(this.baseUrl + this.ENDPOINT.provisions + `/backups/volumes/${id}`, {
+      headers: this.httpOptions.headers
+    })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -91,7 +106,9 @@ export class BackupVolumeService extends BaseService {
 
   //update
   updateBackupVolume(formUpdate: FormUpdateBackupVolume) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes', Object.assign(formUpdate))
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes', Object.assign(formUpdate), {
+      headers: this.httpOptions.headers
+    })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -105,7 +122,9 @@ export class BackupVolumeService extends BaseService {
 
   //restore current
   restoreBackupVolumeCurrent(formRestoreCurrent: FormRestoreCurrentBackupVolume) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes/restore', Object.assign(formRestoreCurrent))
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes/restore', Object.assign(formRestoreCurrent), {
+      headers: this.httpOptions.headers
+    })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -119,7 +138,9 @@ export class BackupVolumeService extends BaseService {
 
   //restore new
   restoreBackupVolumeNew(formRestoreNew: FormOrderRestoreBackupVolume) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.orders, Object.assign(formRestoreNew))
+    return this.http.post(this.baseUrl + this.ENDPOINT.orders, Object.assign(formRestoreNew), {
+      headers: this.httpOptions.headers
+    })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
