@@ -22,20 +22,16 @@ export class PolicyService  {
 
   }
 
-  async getUserPermissions() {
+  getUserPermissions(): Observable<any> {
     localStorage.removeItem('PermissionOPA')
-    var result = await this.http.get<any>(environment.baseUrl + '/iam/permissions/user', this.httpOptions).toPromise();
-    return result;
+    //debugger;
+    return this.http.get<any>(environment.baseUrl + '/iam/permissions/user', this.httpOptions);
   }
 
   async hasPermission(action: string): Promise<boolean> {
     if (localStorage.getItem('PermissionOPA') != null) {
       var permission = JSON.parse(localStorage.getItem('PermissionOPA') || '{}');
       return this.isPermission(action, permission);
-    } else if(localStorage?.getItem('UserRootId')) {
-      var permissions = await this.getUserPermissions();
-      localStorage.setItem('PermissionOPA', JSON.stringify(permissions));
-      return this.isPermission(action, permissions);
     } else {
       return true;
     }
