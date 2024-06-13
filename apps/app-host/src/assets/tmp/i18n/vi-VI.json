@@ -1154,6 +1154,9 @@
   "app.order.createDate": "Ngày tạo",
   "app.button.createNew": "Tạo mới",
 
+  "app.order.cancel.title": "Xác nhận Hủy đơn hàng",
+  "app.order.cancel.des": "Quý khách có chắc chắn muốn <b>Hủy đơn hàng</b>?",
+  "app.order.cancel.des2": "Xác nhận Hủy đơn hàng",
 
   "app.users.listUser": "Danh sách Users",
   "app.users.detail": "Chi tiết User",
@@ -3150,6 +3153,12 @@
   "app.invoice.pop-up.update.company": "Tên công ty",
   "app.invoice.pop-up.update.company.alert": "Tên công ty không được để trống",
   "app.invoice.pop-up.update.company.placeholder": "Nhập tên công ty",
+  "app.invoice.pop-up.update.buyer.placeholder": "Nhập tên người mua",
+  "app.invoice.pop-up.update.email.placeholder": "Nhập email nhận hóa đơn",
+  "app.invoice.pop-up.update.phone.placeholder": "Nhập số điện thoại",
+  "app.invoice.pop-up.update.tax.placeholder": "Nhập mã số thuế",
+  "app.invoice.pop-up.update.address.placeholder": "Nhập địa chỉ chi tiết",
+  "app.invoice.pop-up.update.unit.placeholder": "Nhập tên đơn vị",
   "app.invoice.pop-up.update.tax": "Mã số thuế",
   "app.invoice.pop-up.update.tax.alert1": "Mã số thuế không được để trống",
   "app.invoice.pop-up.update.tax.alert2": "Mã số thuế chỉ cho nhập số và dấu gạch ngang",

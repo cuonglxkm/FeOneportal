@@ -15,7 +15,7 @@ import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
 import { Order, OrderItem } from 'src/app/pages/instances/instances.model';
 import { InstancesService } from 'src/app/pages/instances/instances.service';
-import { finalize, filter } from 'rxjs';
+import { finalize } from 'rxjs';
 import { PaymentSummaryService } from '../../services/payment-summary.service';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -32,7 +32,6 @@ import { InvoiceService } from '../../services/invoice.service';
 import {
   FormCreateUserInvoice,
   FormInitUserInvoice,
-  FormUpdateUserInvoice,
 } from '../../models/invoice';
 import { TAX_CODE_REGEX } from '../../constants/constants';
 
@@ -72,8 +71,6 @@ export class PaymentSummaryComponent implements OnInit {
   serviceType: string;
   isVisibleCustomerInvoice: boolean = false;
   isVisibleConfirm: boolean = false;
-  isInitializing: boolean = false;
-  isFormChanged: boolean = false;
   customerGroup: any;
   customerGroups: any;
   customerType: any;
@@ -82,7 +79,6 @@ export class PaymentSummaryComponent implements OnInit {
   totalPayment: number;
   totalVAT: number;
   formCreatUserInvoice: FormCreateUserInvoice = new FormCreateUserInvoice();
-  formUpdateUserInvoice: FormUpdateUserInvoice = new FormUpdateUserInvoice();
   isExportInvoice: boolean = false;
   isCheckedExportInvoice: boolean = true;
   isLoadingUpdateInfo: boolean = false;
@@ -124,9 +120,12 @@ export class PaymentSummaryComponent implements OnInit {
       this.totalVAT = myOrder.totalVAT;
       console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
+        console.log(e);
 
         var serviceItem = new ServiceInfo();
         const specificationObj = JSON.parse(e.specification);
+        console.log(specificationObj);
+
         switch (e.specificationType) {
           case 'instance_create':
             serviceItem.name =
@@ -293,11 +292,6 @@ export class PaymentSummaryComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUser();
-    this.formExportInvoice.valueChanges.subscribe(() => {
-      if (!this.isInitializing) {
-        this.isFormChanged = true;
-      }
-    });
   }
 
   getUser() {
@@ -389,6 +383,7 @@ export class PaymentSummaryComponent implements OnInit {
   });
 
   changeOptionInvoices(value: string) {
+    console.log(this.radioValue);
     if (this.radioValue === 2) {
       this.formExportInvoice.controls.address.clearValidators();
       this.formExportInvoice.controls.address.updateValueAndValidity();
@@ -531,6 +526,8 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   changeCustomerGroup(id) {
+    console.log(id);
+
     let customerGroupFilter = this.customerGroups.filter(
       (item) => item.id === id
     );
@@ -597,11 +594,7 @@ export class PaymentSummaryComponent implements OnInit {
     this.formInitUserInvoice.CustomerType = this.radioValue;
   }
   payNow() {
-    if (this.isFormChanged) {
-      this.isVisibleConfirm = true;
-    } else {
-      this.pay();
-    }
+    this.pay();
   }
 
   pay() {
@@ -638,6 +631,14 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   handleOkUpdateCustomerInvoice() {
+    this.isVisibleConfirm = true;
+  }
+
+  handleCancelConfirm() {
+    this.isVisibleConfirm = false;
+  }
+
+  handleOk() {
     this.isLoadingUpdateInfo = true;
     this.formCreatUserInvoice.companyName =
       this.formCustomerInvoice.controls.nameCompany.value;
@@ -663,6 +664,7 @@ export class PaymentSummaryComponent implements OnInit {
           this.i18n.fanyi('app.status.success'),
           this.i18n.fanyi('app.invoice.pop-up.update.success')
         );
+        this.isVisibleConfirm = false;
         this.isVisibleCustomerInvoice = false;
         this.getUser();
       },
@@ -676,46 +678,11 @@ export class PaymentSummaryComponent implements OnInit {
     });
   }
 
-  handleCancelConfirm() {
-    this.isVisibleConfirm = false;
-  }
-
-  handleOk() {
-    this.formUpdateUserInvoice.address =
-    this.formExportInvoice.controls.address.value;
-  this.formUpdateUserInvoice.companyName =
-    this.formExportInvoice.controls.nameCompany.value;
-  this.formUpdateUserInvoice.fullName =
-    this.formExportInvoice.controls.nameCustomer.value;
-  this.formUpdateUserInvoice.taxCode =
-    this.formExportInvoice.controls.taxCode.value;
-  this.formUpdateUserInvoice.phoneNumber =
-    this.formExportInvoice.controls.phoneNumber.value;
-  this.formUpdateUserInvoice.email =
-    this.formExportInvoice.controls.email.value;
-  this.formUpdateUserInvoice.customerGroupId = this.radioValue === 1 ? 2 : 1;
-  this.formUpdateUserInvoice.customerTypeId = this.radioValue === 1 ? 3 : 1;
-  this.formUpdateUserInvoice.customerId = this.tokenService.get()?.userId;
-  this.formUpdateUserInvoice.id = this.userModel.customerInvoice.id;
-  this.invoiceService.updateInvoice(this.formUpdateUserInvoice).subscribe({
-    next: (data) => {
-      this.pay()
-    },
-    error: (e) => {
-      this.notification.error(
-        this.i18n.fanyi('app.status.fail'),
-        this.i18n.fanyi('app.invoice.pop-up.update.fail')
-      );
-    },
-  });
-  }
-
   navigateToCreate() {
     this.router.navigate([this.returnPath]);
   }
 
   getDataExportInvoice() {
-    this.isInitializing = true;
     this.formExportInvoice.controls.email.setValue(
       this.userModel.customerInvoice.email
     );
@@ -734,7 +701,6 @@ export class PaymentSummaryComponent implements OnInit {
     this.formExportInvoice.controls.nameCompany.setValue(
       this.userModel.customerInvoice.companyName
     );
-    this.isInitializing = false;
   }
 
   updateExportInvoice(event) {
