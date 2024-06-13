@@ -649,10 +649,19 @@ justify-content: space-between;
 .sidebar-nav__item-link {
   gap: 0.5em;
   display: flex;
+  height: 45px;
 }
 
 .sidebar-nav__item-text {
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.sidebar-nav__floating-show {
+  max-height: 90%;
+  overflow-y: auto;
+  padding-right: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: auto;
 }
