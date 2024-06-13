@@ -21,6 +21,7 @@ export class ProjectExtendComponent implements OnInit{
   regionId: any;
   listOfData = [{}];
   data: VpcModel;
+  projectDetail:VpcModel;
   dataTotal: TotalVpcResource;
   percentCpu: number = 0;
   percentRam: number = 0;
@@ -69,8 +70,8 @@ export class ProjectExtendComponent implements OnInit{
       .pipe(finalize(() => {this.loading = false;}))
       .subscribe(
         data => {
-          this.data = data;
-          console.log("dtaaaa", this.data)
+          this.data  = data;
+          console.log("dtaaaa", this.projectDetail)
           this.expiredDate = data.expireDate;
           this.today = data.createDate;
           const expiredDateOld = new Date(this.expiredDate);

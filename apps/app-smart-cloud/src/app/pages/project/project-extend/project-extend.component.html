@@ -142,17 +142,16 @@
         </nz-table>
       </nz-card> -->
       <nz-card class="text-label" nzTitle="" style="border-radius: 8px;" [nzLoading]="loading">
-        <div style="margin-bottom: 20px">
+        <one-portal-service-time-extend *ngIf="data"  [createDate]="data?.createDate"
+        [expiredDate]="data?.expireDate"  (valueChanged)="onChangeTime($event)"></one-portal-service-time-extend>
+        <!-- <div style="margin-bottom: 20px">
           <span class="text-card-header">{{'app.extension.info' | i18n}}</span>
         </div>
         <nz-row style="margin-bottom: 15px">
           <div nz-col nzSpan="12" style="color: red;">{{'app.service.start.date' | i18n}}:  {{ today | date : 'dd/MM/yyyy' }}</div>
           <div nz-col nzSpan="12" style="color: red;">Ngày hết hạn:  {{ expiredDate | date : 'dd/MM/yyyy' }}</div>
         </nz-row>
-        <!-- <nz-row style="margin-bottom: 15px">
-          <div nz-col nzSpan="7"></div>
-          <div nz-col nzSpan="17" style="font-weight: bold;"></div>
-        </nz-row> -->
+     
         <nz-form-item style="margin-bottom: 5px" class="mt-5">
           <nz-form-label>Số tháng cần gia hạn thêm (<span style="color: red;">*</span>)
           </nz-form-label>
@@ -167,7 +166,7 @@
           <div class="text-custom-time label-fontsize" style="color: red;">
             Ngày hết hạn dự kiến: {{ expiredDateOld   | date : 'dd/MM/yyyy' }}
           </div>
-        </nz-form-item>
+        </nz-form-item> -->
       </nz-card>
     </nz-col>
 

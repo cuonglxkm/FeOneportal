@@ -262,6 +262,7 @@ export class ProjectUpdateComponent implements OnInit {
    this.calculate()
   }
   private calculateReal() {
+
     this.refreshValue();
     console.log("this.ipConnectInternet",this.ipConnectInternet)
     console.log("ipOld", this.ipOld);
@@ -296,12 +297,11 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaHddInGb: this.hhd +this.hhdOld,
         newQuotaSsdInGb: this.ssd +this.ssdOld,
        
-        newPublicNetworkId:this.ipConnectInternet !='' ? (ip!='' ? ip: '') : this.ipOld, 
-        newPublicNetworkAddress:this.ipConnectInternet !='' ? (( ipName!='' && ipName != undefined) ? ipName: '') : this.ipNameOld,
-        newQuotaIpPublicCount: this.data.offerId !=null ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
+        newPublicNetworkId:this.ipConnectInternet ? (ip ? ip: '') : this.ipOld, 
+        newPublicNetworkAddress:this.ipConnectInternet ? (( ipName!='' && ipName != undefined) ? ipName: '') : this.ipNameOld,
+        newQuotaIpPublicCount: this.data?.offerId   ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
 
-        // newQuotaIpPublicCount:this.selectIndexTab==0? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
-        // newQuotaIpFloatingCount: this.ipConnectInternet !='' ? (ip!='' && ipName!='' && ipName!= undefined ? this.numberIpFloating: 0) : this.ipOld, 
+      
         newQuotaIpFloatingCount:this.numberIpFloating + this.ipFloatingOld,
         newQuotaIpv6Count:this.numberIpv6 + this.ipv6Old,
 
@@ -324,22 +324,7 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
         newQuotaRouterCount: this.numberRouter,
-        // newQuotaKeypairCount: 0,// NON
-        // newQuotaVolumeSnapshotCount: 0,//NON
-        // newQuotaIpPublicCount: this.selectIndexTab == 0 ? 1 : IPPublicNum,
-        // newQuotaIpFloatingCount: this.selectIndexTab == 0 ? 0 : IPFloating,
-     
-        // newQuotaLoadBalancerSdnCount: this.numberLoadBalancer,
-        // newLoadBalancerOfferId: this.loadBalancerId, //NON
        
-        // newQuotaShareInGb: this.numberFileSystem,
-        // newQuotaShareSnapshotInGb: this.numberFileScnapsshot,
-        // newQuotaIpv6Count: this.selectIndexTab == 0 ? 1 : IPV6,
-      
-
-       
-        
-      
 
         typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
         serviceType: 12,
@@ -467,20 +452,26 @@ export class ProjectUpdateComponent implements OnInit {
   }
 
   updateVpc() {
-    // let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : this.data.quotaIpPublicCount;
-    // let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : this.data.quotaIpFloatingCount;
-    // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : this.data.quotaIpv6Count;
-    // let ipNetworkAddress = this.ipNetworkAddress !=null && this.ipNetworkAddress !=''? this.ipNetworkAddress : '';
-    let lstIp = this.ipNetworkAddress?.split('--');
+    
+    console.log("this.ipConnectInternet update",this.ipConnectInternet)
+    console.log("ipOld update", this.ipOld);
+    console.log("ipNameOld update", this.ipNameOld)
+    console.log("floating old update", this.ipFloatingOld)
+    console.log("IP floating update", this.numberIpFloating)
+    let lstIp = this.ipConnectInternet?.split('--');
     let ip = '';
     let ipName = '';
     if (lstIp != null && lstIp != undefined) {
       ip = lstIp[0];
       console.log("ip",ip)
     }
-    this.numberIpFloating = this.ipConnectInternet !='' ? this.numberIpFloating :0
 
-    if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 ||(this.vCPU != 0 && this.ram != 0) )) {
+    // let IPFloating = this.ipNetworkAddress !=null ? this.numberIpFloating + this.ipFloatingOld : this.ipFloatingOld;
+    this.numberIpFloating = this.ipConnectInternet !='' ? this.numberIpFloating :0
+    console.log("object ipFloating",this.numberIpFloating)
+  
+
+    if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 ||(this.vCPU != 0 && this.ram != 0) )) {
       this.loadingCalculate = true;
       if (lstIp != null && lstIp != undefined ) {
         ipName = lstIp[1];
@@ -493,11 +484,9 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaHddInGb: this.hhd +this.hhdOld,
         newQuotaSsdInGb: this.ssd +this.ssdOld,
 
-        newPublicNetworkId:this.ipConnectInternet !='' ? (ip!='' ? ip: '') : this.ipOld, 
-        newPublicNetworkAddress:this.ipConnectInternet !='' ? (( ipName!='' && ipName != undefined) ? ipName: '') : this.ipNameOld,
-
-        newQuotaIpPublicCount: this.data.offerId !=null ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
-        // newQuotaIpPublicCount:this.selectIndexTab==0? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
+        newPublicNetworkId:this.ipConnectInternet ? (ip ? ip: '') : this.ipOld, 
+        newPublicNetworkAddress:this.ipConnectInternet ? (( ipName!='' && ipName != undefined) ? ipName: '') : this.ipNameOld,
+        newQuotaIpPublicCount: this.data?.offerId   ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
         newQuotaIpFloatingCount:this.numberIpFloating + this.ipFloatingOld,
         newQuotaIpv6Count:this.numberIpv6 + this.ipv6Old,
 
@@ -600,35 +589,10 @@ export class ProjectUpdateComponent implements OnInit {
           console.log("getAllIPSubnet", data)
           this.listIpConnectInternet = data
 
-          // const IpConnectInternet = data.find((item:any) => item.networkId === this.data.publicNetworkId);
-          // this.listIpConnectInternet = IpConnectInternet
-          // this.ipConnectInternet = IpConnectInternet != undefined ? IpConnectInternet.displayName : 'No Ip Connect Internet';
-
-          // this.listIpConnectInternet = data;
-          // const IpConnectInternet = data.find((item:any) => item.networkId === this.data.publicNetworkId);
-     
-          // this.ipNetworkAddress =IpConnectInternet? IpConnectInternet.displayName : '';
-          // console.log("object ipNetworkAddress",this.ipNetworkAddress)
-         
-          // this.ipConnectInternet  = IpConnectInternet ? IpConnectInternet.displayName : 'No Ip Connect Internet';
 
         }
       )
   }
-
-  // loadListIpConnectInternet() {
-  
-  //   this.instancesService.getAllIPSubnet(this.regionId)
-  //     .pipe(finalize(() => {
-  //       this.disableIpConnectInternet = false;
-        
-  //     }))
-  //     .subscribe(
-  //       data => {
-  //         this.listIpConnectInternet = data;
-  //       }
-  //     );
-  // }
 
 
   // getDetailTest
@@ -655,10 +619,7 @@ export class ProjectUpdateComponent implements OnInit {
           this.form.controls['description'].setValue(data.description);
           this.today = this.data.createDate;
           this.expiredDate = this.data.expireDate;
-          // this.vCPUOld = this.vCPU = data.quotavCpu;
-          // this.ramOld = this.ram = data.quotaRamInGb;
-          // this.hhdOld = this.hhd = data.quotaHddInGb;
-          // this.ssdOld = this.ssd = data.quotaSSDInGb;
+         
 
           this.vCPUOld =  data.quotavCpu;
           this.ramOld =  data.quotaRamInGb;
@@ -701,38 +662,7 @@ export class ProjectUpdateComponent implements OnInit {
           // this.ipPublicAddOld
           this.offerIdOld = data.offerId
 
-          // if (data.offerId != null) {
-          //   this.selectIndexTab = 0;
-          // } else {
-          //   this.selectIndexTab = 1;
-          // }
-
-          // this.numberNetwork = data.quotaNetworkCount
-          // this.numberRouter = data.quotaRouterCount
-          // this.numberSecurityGroup = data.quotaSecurityGroupCount
-          // this.numberBackup = data.quotaBackupVolumeInGb;
-          // this.numberLoadBalancer = data.quotaLoadBalancerSDNCount;
-          // this.numberFileSystem = data.quotaShareInGb;
-          // this.numberFileScnapsshot = data.quotaShareSnapshotInGb;
-          // this.numberIpFloating = data.quotaIpFloatingCount;
-          // this.numberIpPublic = data.quotaIpPublicCount;
-          // this.numberIpv6 = data.quotaIpv6Count;
-          // this.siteToSiteId = data.vpnSiteToSiteOfferId;
-          // this.loadBalancerId = data.offerIdLBSDN;
-          // if (data.quotaLoadBalancerSDNCount > 0) {
-          //   this.activeLoadBalancer = true;
-          // }
-          // if (data.quotaBackupVolumeInGb > 0) {
-          //   this.activeBackup = true;
-          // }
-          // if (data.quotaShareInGb > 0) {
-          //   this.activeFileStorage = true;
-          // }
-          // if (data.vpnSiteToSiteOfferId != null) {
-          //   this.activeSiteToSite = true;
-          // }
-          // console.log("this.data?.offerId", this.data.offerId)
-          // this.checkConfigPackage(this.data?.offerId)
+         
           
         }
       )
