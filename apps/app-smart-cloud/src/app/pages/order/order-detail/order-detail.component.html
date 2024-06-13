@@ -6,7 +6,7 @@
           'app.breadcrumb.home' | i18n
           }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/order/list']">{{
+        <a [routerLink]="['/app-smart-cloud/order']">{{
           'app.breadcrumb.order' | i18n
           }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
@@ -297,7 +297,7 @@
             {{ 'app.order-detail.cancelOrder' | i18n }}
           </button>
 
-          <button class="mt-3" nz-button style="width: 100%; border: none" [routerLink]="'/app-smart-cloud/order/list'"
+          <button class="mt-3" nz-button style="width: 100%; border: none" [routerLink]="'/app-smart-cloud/order'"
             *ngIf="
               (data?.statusCode != 4 && data?.statusCode < 2) ||
               (data?.statusCode === 5 && titleStepFour != 'Sự cố')
