@@ -50,7 +50,7 @@ small {
   color: #ea3829;
 }
 
-input, .border-button, .border-card {
+input, .border-button, .border-radius-card {
   border-radius: 8px;
 }
 

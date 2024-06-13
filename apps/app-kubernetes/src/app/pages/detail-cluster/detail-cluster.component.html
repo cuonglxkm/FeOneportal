@@ -50,7 +50,7 @@
 
   <form nz-form [formGroup]="upgradeForm">
     <!-- Thông tin chung -->
-    <nz-card class="border-card">
+    <nz-card class="border-radius-card">
       <h3>{{ 'app.cluster.overall' | i18n }}</h3>
       <div nz-row>
         <div nz-col [nzSpan]="24" class="detailtable">
@@ -260,7 +260,7 @@
     </nz-card>
 
     <!-- Thông tin worker group -->
-    <nz-card class="border-card">
+    <nz-card class="border-radius-card">
       <h3>{{ 'app.cluster.worker-group' | i18n }}</h3>
       <div formArrayName="workerGroup" *ngFor="let control of listFormWorkerGroupUpgrade.controls; let i = index;">
         <ng-container [formGroupName]="i">
@@ -561,7 +561,7 @@
     </nz-card>
 
     <!-- Thông tin network -->
-    <nz-card class="border-card">
+    <nz-card class="border-radius-card">
       <h3>{{ 'app.cluster.network' | i18n }}</h3>
       <div nz-row>
         <div nz-col [nzSpan]="24" class="detailtable">
@@ -589,7 +589,7 @@
     </nz-card>
 
     <!-- Thông tin volume -->
-    <!-- <nz-card class="border-card">
+    <!-- <nz-card class="border-radius-card">
       <h3>Thông tin volume persistent</h3>
       <div nz-row>
         <div nz-col [nzSpan]="24" class="detailtable">
@@ -651,7 +651,7 @@
     </nz-card> -->
 
     <!-- Thông tin SSH -->
-    <nz-card class="border-card">
+    <nz-card class="border-radius-card">
       <h3>SSH Key</h3>
       <div nz-row>
         <div nz-col [nzSpan]="12" class="detailtable">
@@ -720,7 +720,7 @@
 </ng-container>
 
 <ng-template #loadingTpl>
-  <nz-card class="border-card">
+  <nz-card class="border-radius-card">
     <nz-table [nzTemplateMode]="true" [nzLoading]="true">
     </nz-table>
   </nz-card>

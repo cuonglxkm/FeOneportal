@@ -26,7 +26,7 @@
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="16" class="gutter-row">
     <form nz-form [formGroup]="myform" nzLayout="vertical" nzLabelAlign="left">
-      <nz-card class="border-card">
+      <nz-card class="border-radius-card">
         <h3>{{ 'app.cluster.overall' | i18n }}</h3>
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
@@ -310,7 +310,7 @@
       </nz-card>
 
       <!-- network -->
-      <nz-card class="border-card">
+      <nz-card class="border-radius-card">
         <h3>{{ 'app.cluster.network-config' | i18n }}</h3>
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
@@ -461,7 +461,7 @@
       </nz-card>
 
       <!-- volume -->
-      <!-- <nz-card class="border-card">
+      <!-- <nz-card class="border-radius-card">
         <h3>Cấu hình persistent volume</h3>
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
@@ -498,7 +498,7 @@
       </nz-card> -->
 
       <!-- usage time -->
-      <nz-card class="border-card">
+      <nz-card class="border-radius-card">
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12" class="box-duration">
             <nz-form-item>
@@ -540,7 +540,7 @@
   <!-- payment -->
   <div nz-col [nzSpan]="8" class="gutter-row">
     <nz-affix [nzOffsetTop]="72">
-      <nz-card class="border-card price-card">
+      <nz-card class="border-radius-card price-card">
         <h3 class="mb-3">{{ 'app.service.price-title' | i18n }}</h3>
 
         <div>

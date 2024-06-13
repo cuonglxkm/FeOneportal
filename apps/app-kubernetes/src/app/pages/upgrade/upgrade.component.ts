@@ -617,6 +617,9 @@ export class UpgradeComponent implements OnInit {
     this.vatCost = 0;
     this.newConfigCost = 0;
     this.upgradeCost = 0;
+    this.newTotalCpu = 0;
+    this.newTotalRam = 0;
+    this.newTotalStorage = 0;
   }
 
   // validate duplicate worker group name
