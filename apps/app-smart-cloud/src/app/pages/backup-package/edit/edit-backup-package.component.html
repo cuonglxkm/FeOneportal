@@ -77,28 +77,9 @@
                           disabled="true"></textarea>
               </nz-form-control>
             </nz-form-item>
-            <nz-row>
-              <nz-col nzSpan="8">
-                <nz-form-item>
-                  <nz-form-label>
-                    <div>
-                      <span>{{ 'app.backup.package.create.date'|i18n }}
-                        : {{ packageBackupModel?.creationDate | date: 'dd/MM/yyyy' }}</span>
-                    </div>
-                  </nz-form-label>
-                </nz-form-item>
-              </nz-col>
-              <nz-col nzSpan="8">
-                <nz-form-item>
-                  <nz-form-label>
-                    <div>
-                      <span style="color: #FC1010;">{{ 'app.backup.package.expire.date'|i18n }}
-                        : {{ packageBackupModel?.expirationDate | date: 'dd/MM/yyyy' }}</span>
-                    </div>
-                  </nz-form-label>
-                </nz-form-item>
-              </nz-col>
-            </nz-row>
+            <one-portal-time-used-resize [nameService]="'app.backup-package'|i18n"
+                                         [expireDate]="packageBackupModel?.expirationDate"
+                                         [createDate]="packageBackupModel?.creationDate" />
           </nz-card>
           <nz-card style="border-radius: 8px;" *ngIf="packageBackupModel">
             <span class="text-card-header">{{ 'app.adjust.info'|i18n }}</span>
@@ -125,7 +106,7 @@
                                  [nzMin]="minStorage"
                                  [nzStep]="stepStorage"
                                  [nzMax]="maxStorage"
-                                 (ngModelChange)="changeValueStorage($event)"/>
+                                 (ngModelChange)="changeValueStorage($event)" />
                 <ng-template #storageErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">{{ 'app.backup.package.storage.required'|i18n }}
                   </ng-container>
@@ -136,23 +117,17 @@
             </nz-form-item>
             <nz-form-item>
               <nz-form-label>
-                <div>
                 <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                  <span>{{ 'volume.unit-price'|i18n }}
-                    : </span> {{ orderItem?.orderItemPrices[0]?.unitPricePerHour.amount | number}} {{ orderItem?.orderItemPrices[0]?.unitPricePerHour.currency }}
-                  / GB/ {{ 'app.hour'|i18n }}
+                  <span>{{ 'volume.unit-price'|i18n }}: </span> {{ orderItem?.orderItemPrices[0]?.unitPrice.amount | number }} {{ orderItem?.orderItemPrices[0]?.unitPrice.currency }}/ GB/ {{ 'app.month'|i18n }}
                 </span>
-                  <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                  <span>{{ 'volume.unit-price'|i18n }}: </span> 0 VND/ GB/ {{ 'app.hour'|i18n }}
+                <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
+                  <span>{{ 'volume.unit-price'|i18n }}: </span> 0 VND/ GB/ {{ 'app.month'|i18n }}
                 </span>
-                </div>
               </nz-form-label>
             </nz-form-item>
             <nz-form-item>
               <nz-form-label>
-                <div>
                   <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">{{ 'app.adjust.date'|i18n }}: {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
-                </div>
               </nz-form-label>
             </nz-form-item>
           </nz-card>
@@ -169,9 +144,20 @@
                 {{ packageBackupModel?.packageName }}
               </div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <div class="text-value">{{ 'app.backup.package.storage'|i18n }}</div>
+              <div class="text-value">{{ 'app.info.backup.vm.total.storage'|i18n }}</div>
               <div style="margin-top: 10px" class="text-label">{{ formUpdateBackupPackageModel?.newSize }} GB</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              <nz-row style="margin-bottom: 10px" nzGutter="16">
+                <nz-col nzSpan="16">
+                  <span class="text-value">{{ 'app.fee.resize' | i18n }}</span>
+                </nz-col>
+                <nz-col class="text-right" nzSpan="8">
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
+                  {{orderItem?.totalAmount?.amount | number }} {{orderItem?.totalAmount?.currency}}
+                </span>
+                </nz-col>
+              </nz-row>
               <nz-row style="margin-bottom: 10px" nzGutter="16">
                 <nz-col nzSpan="16">
                   <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
