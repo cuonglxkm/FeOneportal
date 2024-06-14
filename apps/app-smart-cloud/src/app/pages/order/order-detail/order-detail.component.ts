@@ -26,6 +26,7 @@ export class OrderDetailComponent {
   titleStepFour: string = this.i18n.fanyi("app.order.status.Installed");;
   serviceName: string
   isVisibleConfirm: boolean = false;
+  isLoadingCancelOrder: boolean = false;
   userModel$: Observable<UserModel>;
   userModel: UserModel
   constructor(
@@ -73,7 +74,7 @@ export class OrderDetailComponent {
               if(this.serviceName.includes('Máy ảo')){
                 this.serviceName = 'VM'
               }
-            });          
+            });       
           },
           error: (e) => {
             this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
@@ -128,6 +129,15 @@ export class OrderDetailComponent {
         this.cdr.detectChanges();
       }
     });
+
+    this.notificationService.connection.on('UpdateStatePayment', (data) => {
+      if(data && data["serviceId"] && Number(data["serviceId"]) == this.data.paymentId){
+        this.data.paymentCode = "";
+        this.data.paymentId = 0;
+        this.data.paymentUrl = "";
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   getUser(){
@@ -168,5 +178,21 @@ export class OrderDetailComponent {
 
   cancelOrder(){
     this.isVisibleConfirm = true;
+  }
+
+  handleOk(){
+    this.isLoadingCancelOrder = true;
+    this.service.cancelOrder(this.data.id).subscribe({
+      next: (data) => {
+        this.isVisibleConfirm = false;
+        this.isLoadingCancelOrder = false
+        this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.order-detail.cancelOrder.success"));
+        this.router.navigate(['/app-smart-cloud/order'])
+      },
+      error: (e) => {
+        this.isLoadingCancelOrder = false
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.order-detail.cancelOrder.fail"));
+      },
+    })
   }
 }
