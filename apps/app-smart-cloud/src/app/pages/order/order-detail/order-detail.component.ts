@@ -129,6 +129,15 @@ export class OrderDetailComponent {
         this.cdr.detectChanges();
       }
     });
+
+    this.notificationService.connection.on('UpdateStatePayment', (data) => {
+      if(data && data["serviceId"] && Number(data["serviceId"]) == this.data.paymentId){
+        this.data.paymentCode = "";
+        this.data.paymentId = 0;
+        this.data.paymentUrl = "";
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   getUser(){

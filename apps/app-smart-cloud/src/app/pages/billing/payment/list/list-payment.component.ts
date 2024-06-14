@@ -241,6 +241,7 @@ export class ListPaymentComponent implements OnInit{
       this.notificationService.initiateSignalrConnection();
     }
     this.notificationService.connection.on('UpdateStatePayment', (data) => {
+      debugger
       this.getListInvoices();
     });
   }

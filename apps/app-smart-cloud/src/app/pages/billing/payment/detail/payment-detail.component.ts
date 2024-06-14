@@ -7,7 +7,8 @@ import {
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { NotificationService, UserModel } from '../../../../../../../../libs/common-utils/src';
 import { environment } from '@env/environment';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -16,7 +17,6 @@ import { OrderDetailDTO } from 'src/app/shared/models/order.model';
 import { PaymentModel } from 'src/app/shared/models/payment.model';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { PaymentService } from 'src/app/shared/services/payment.service';
-import { UserModel } from '../../../../../../../../libs/common-utils/src';
 class ServiceInfo {
   name: string;
   price: number;
@@ -47,6 +47,7 @@ export class PaymentDetailComponent implements OnInit {
     private http: HttpClient,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private orderService: OrderService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -68,9 +69,18 @@ export class PaymentDetailComponent implements OnInit {
     );
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.orderNumber = this.activatedRoute.snapshot.paramMap.get('orderNumber');
-    
     this.getPaymentDetail();
-    this.getOrderDetail()
+    this.getOrderDetail();
+
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+    this.notificationService.connection.on('UpdateStatePayment', (data) => {
+      if(data && data["serviceId"] && Number(data["serviceId"]) == this.id){
+        this.getPaymentDetail();
+        this.getOrderDetail();
+      }
+    });
   }
 
   getPaymentDetail() {
