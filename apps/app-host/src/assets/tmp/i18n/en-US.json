@@ -2854,6 +2854,7 @@
   "app.backup.package.delete.modal.alert.backupvl": "The Volume backups associated with this backup package will also be deleted.",
   "app.backup.package.delete.modal.alert.backup.schedule": "The automatic backup schedules created from this backup package will also be deleted.",
   "app.backup.package.edit.title": "Edit Backup Package Information",
+  "app.backup.package.intro.desc": "Unlimited backup solution with flexible scalability according to demand. Meets the needs for backing up virtual servers and block storage on the VNPT Cloud infrastructure.",
 
   "app.tooltip.backup.package.name": "The name of the customer's backup package. It should not contain special characters, spaces, or Vietnamese characters. Maximum 50 characters.",
   "app.tooltip.backup.package.storage": "The default minimum capacity is 1, with no maximum capacity limit.",
