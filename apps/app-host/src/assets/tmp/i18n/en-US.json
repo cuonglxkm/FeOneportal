@@ -1335,6 +1335,10 @@
   "app.button.addUser": "Add User",
   "app.button.createNew": "Create",
 
+  "app.order.cancel.title": "Confirm cancel order",
+  "app.order.cancel.des": "Are you sure you want to <b>Cancel order</b>?",
+  "app.order.cancel.des2": "Please consider carefully before clicking the Confirm button.",
+
   "app.breadcrumb.user-detail": "User Detail",
   "app.user-detail.mainInfo": "User's main information",
   "app.user-detail.additionalInformation": "Additional Information",
@@ -3247,6 +3251,12 @@
   "app.invoice.pop-up.update.company": "Company name",
   "app.invoice.pop-up.update.company.alert": "Company name cannot be blank",
   "app.invoice.pop-up.update.company.placeholder": "Enter the company name",
+  "app.invoice.pop-up.update.buyer.placeholder": "Enter buyer name",
+  "app.invoice.pop-up.update.email.placeholder": "Enter email",
+  "app.invoice.pop-up.update.phone.placeholder": "Enter phone number",
+  "app.invoice.pop-up.update.tax.placeholder": "Enter tax code",
+  "app.invoice.pop-up.update.address.placeholder": "Enter address",
+  "app.invoice.pop-up.update.unit.placeholder": "Enter unit",
   "app.invoice.pop-up.update.tax": "Tax code",
   "app.invoice.pop-up.update.tax.alert1": "Tax code cannot be left blank",
   "app.invoice.pop-up.update.tax.alert2": "Tax codes only allow entering numbers and hyphens",

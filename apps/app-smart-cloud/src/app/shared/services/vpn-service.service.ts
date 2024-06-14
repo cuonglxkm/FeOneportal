@@ -53,7 +53,7 @@ export class VpnServiceService extends BaseService {
 
   getVpnServiceById(id: number, vpcid: number, region: number){
     return this.http.get<VPNServiceDetail>(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/vpnservice/${id}?projectId=${vpcid}&regionId=${region}`).pipe(
+      `/vpn-sitetosite/vpnservice/${id}?projectId=${vpcid}&regionId=${region}`, {headers: this.getHeaders()}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

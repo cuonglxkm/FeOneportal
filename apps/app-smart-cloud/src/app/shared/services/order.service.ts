@@ -228,14 +228,14 @@ export class OrderService extends BaseService {
   getTotalAmount(data: any): Observable<any> {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + '/totalamount',
-      data
+      data, this.httpOptions
     );
   }
 
   validaterOrder(data: any): Observable<any> {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + '/validate',
-      data
+      data, this.httpOptions
     );
   }
 }

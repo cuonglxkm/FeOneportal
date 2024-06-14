@@ -71,7 +71,7 @@ export class VpnConnectionService extends BaseService {
   }
 
   deleteVpnConnection(formDelete: FormDeleteVpnConnection) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/vpnconnection/${formDelete.id}?projectId=${formDelete.projectId}&regionId=${formDelete.regionId}`).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/vpnconnection/${formDelete.id}?projectId=${formDelete.projectId}&regionId=${formDelete.regionId}`, {headers: this.getHeaders()}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -85,7 +85,7 @@ export class VpnConnectionService extends BaseService {
 
   edit(formEdit: FormEditVpnConnection) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/vpnconnection`,
-      Object.assign(formEdit)).pipe(
+      Object.assign(formEdit), {headers: this.getHeaders()}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
         } else if (error.status === 404) {
