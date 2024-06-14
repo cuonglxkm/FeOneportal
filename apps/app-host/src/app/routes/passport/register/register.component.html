@@ -17,8 +17,8 @@
   />
   <nz-form-item>
     <nz-form-control [nzErrorTip]="mailErrorTip">
-      <nz-form-label [nzRequired]="true" [nzSm]="8" [nzXs]="24"
-        >Email đăng ký
+      <nz-form-label [nzSm]="8" [nzXs]="24"
+        >Email đăng ký (<span style="color: red;">*</span>)
       </nz-form-label>
       <nz-input-group nzSize="large" nzAddonBeforeIcon="user">
         <input
@@ -40,8 +40,8 @@
 
   <nz-form-item>
     <nz-form-control [nzErrorTip]="passErrorTpl">
-      <nz-form-label [nzRequired]="true" [nzSm]="6" [nzXs]="24"
-        >Mật khẩu</nz-form-label
+      <nz-form-label [nzSm]="6" [nzXs]="24"
+        >Mật khẩu(<span style="color: red;">*</span>)</nz-form-label
       >
       <nz-input-group
         nzSize="large"
@@ -52,12 +52,13 @@
         [(nzPopoverVisible)]="visible"
         nzPopoverOverlayClassName="register-password-cdk"
         [nzPopoverOverlayStyle]="{ 'width.px': 240 }"
+        [nzSuffix]="suffixTemplate"
       >
         <input
           nz-input
-          type="password"
+          [type]="passwordVisible ? 'text' : 'password'"
           formControlName="password"
-          placeholder="Password"
+          placeholder="Nhập mật khẩu"
         />
       </nz-input-group>
       <ng-template #passErrorTpl let-control>
@@ -72,13 +73,13 @@
   </nz-form-item>
   <nz-form-item>
     <nz-form-control [nzErrorTip]="confirmErrorTip">
-      <nz-form-label [nzRequired]="true">Nhập lại mật mật khẩu</nz-form-label>
-      <nz-input-group nzSize="large" nzAddonBeforeIcon="lock">
+      <nz-form-label>Nhập lại mật khẩu(<span style="color: red;">*</span>)</nz-form-label>
+      <nz-input-group nzSize="large" nzAddonBeforeIcon="lock" [nzSuffix]="suffixTemplate1">
         <input
           nz-input
-          type="password"
+          [type]="passwordVisible1 ? 'text' : 'password'"
           formControlName="confirm"
-          placeholder="Nhập lại mật mật khẩu"
+          placeholder="Nhập lại mật khẩu"
         />
       </nz-input-group>
       <ng-template #confirmErrorTip let-i>
@@ -130,8 +131,8 @@
     <div nz-col nzSpan="12">
       <nz-form-item>
         <nz-form-control [nzErrorTip]="nameErrorTip">
-          <nz-form-label [nzRequired]="true" [nzSm]="6" [nzXs]="24"
-            >Tên</nz-form-label
+          <nz-form-label [nzSm]="6" [nzXs]="24"
+            >Tên(<span style="color: red;">*</span>)</nz-form-label
           >
           <nz-input-group nzSize="large">
             <input
@@ -151,8 +152,8 @@
     <div nz-col nzSpan="12">
       <nz-form-item>
         <nz-form-control [nzErrorTip]="lastNameErrorTip">
-          <nz-form-label [nzRequired]="true" [nzSm]="6" [nzXs]="24"
-            >Họ</nz-form-label
+          <nz-form-label [nzSm]="6" [nzXs]="24"
+            >Họ(<span style="color: red;">*</span>)</nz-form-label
           >
           <nz-input-group nzSize="large">
             <input nz-input formControlName="lastName" placeholder="Nhập họ" />
@@ -169,7 +170,7 @@
 
   <nz-form-item>
     <nz-form-control [nzErrorTip]="provinceErrorTip">
-      <nz-form-label [nzRequired]="true">Chọn Tỉnh/Thành</nz-form-label>
+      <nz-form-label>Chọn Tỉnh/Thành(<span style="color: red;">*</span>)</nz-form-label>
       <nz-input-group nzSize="large">
         <nz-select
           nzSize="large"
@@ -195,7 +196,7 @@
 
   <nz-form-item>
     <nz-form-control [nzErrorTip]="mobileErrorTip">
-      <nz-form-label [nzRequired]="true">Số điện thoại</nz-form-label>
+      <nz-form-label>Số điện thoại(<span style="color: red;">*</span>)</nz-form-label>
       <nz-input-group nzSize="large">
         <!--              <nz-input-group nzSize="large" [nzAddOnBefore]="addOnBeforeTemplate">-->
         <!--                <ng-template #addOnBeforeTemplate>-->
@@ -204,7 +205,7 @@
         <!--&lt;!&ndash;                    <nz-option [nzLabel]="'+87'" [nzValue]="'+87'"/>&ndash;&gt;-->
         <!--                  </nz-select>-->
         <!--                </ng-template>-->
-        <input formControlName="mobile" nz-input placeholder="Số điện thoại" />
+        <input formControlName="mobile" nz-input placeholder="Nhập số điện thoại" />
       </nz-input-group>
       <ng-template #mobileErrorTip let-i>
         <ng-container *ngIf="i.hasError('required')"
@@ -266,7 +267,32 @@
   <nz-form-item style="margin-top: 30px; justify-content: center">
     <a class="login" routerLink="/passport/login">
       <span style="color: #555555">Bạn đã có tài khoản,</span>
-      {{ 'app.register.sign-in' | i18n }}</a
-    >
+      {{ 'app.register.sign-in' | i18n }}
+    </a>
   </nz-form-item>
+
+  <ng-template #suffixTemplate>
+    <img
+      style="margin-top: -4px"
+      [src]="
+                        passwordVisible
+                          ? 'assets/imgs/eye-close.svg'
+                          : 'assets/imgs/eye1.svg'
+                      "
+      alt=""
+      (click)="passwordVisible = !passwordVisible"
+    />
+  </ng-template>
+  <ng-template #suffixTemplate1>
+    <img
+      style="margin-top: -4px"
+      [src]="
+                        passwordVisible1
+                          ? 'assets/imgs/eye-close.svg'
+                          : 'assets/imgs/eye1.svg'
+                      "
+      alt=""
+      (click)="passwordVisible1 = !passwordVisible1"
+    />
+  </ng-template>
 </form>
