@@ -160,6 +160,7 @@
   "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 20 characters, may contain _ (special characters: @, #, $, %, &, *, +, -, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
   "form.account.information": "Account Information",
   "form.account.update.information":"Update account information",
+  "form.account.update.invoice":"Update invoicing information",
   "form.account.surname": "Surname",
   "form.account.name": "Name",
   "form.account.phone": "Phone Number",
@@ -1238,6 +1239,8 @@
 
   "app.breadcrumb.order-detail": "Order Detail",
   "app.order-detail.order": "Order",
+  "app.order-detail.order.new": "Place an order",
+  "app.order-detail.Cancelled": "Canceled",
   "app.order-detail.customerName": "Customer Name",
   "app.order-detail.phone": "Phone number",
   "app.order-detail.address": "Address",
@@ -1256,6 +1259,8 @@
   "app.order-detail.vat": "Includes 10% VAT",
   "app.order-detail.pay": "Pay",
   "app.order-detail.cancelOrder": "Cancel order",
+  "app.order-detail.cancelOrder.success": "Cancel order successfully",
+  "app.order-detail.cancelOrder.fail": "Cancel order failed",
   "app.order-detail.back": "Back",
   "app.order-detail.repurchase": "Repurchase",
 

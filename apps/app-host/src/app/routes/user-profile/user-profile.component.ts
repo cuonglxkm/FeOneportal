@@ -3,6 +3,7 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
+  NonNullableFormBuilder,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
@@ -17,6 +18,8 @@ import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { environment } from '@env/environment';
+import { FormUpdateUserInvoice } from '../../../../../app-smart-cloud/src/app/shared/models/invoice';
+import { InvoiceService } from '../../../../../app-smart-cloud/src/app/shared/services/invoice.service';
 
 @Component({
   selector: 'one-portal-user-profile',
@@ -28,9 +31,24 @@ export class UserProfileComponent implements OnInit {
     public http: HttpClient,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     public notification: NzNotificationService,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private fb: NonNullableFormBuilder,
+    private invoiceService: InvoiceService
   ) {}
 
+  ngOnInit(): void {
+    this.loadUserProfile();
+  }
+  tabSelect = 0
+  customerGroup: any;
+  customerGroups: any;
+  customerType: any;
+  customerTypes: any;
+  isLoadingUpdateInfo: any = false;
+  email: string;
+  isTabInvoice = true;
+  formHandleUserInvoice: FormUpdateUserInvoice = new FormUpdateUserInvoice();
+  userModel: UserModel = {};
   form = new FormGroup({
     name: new FormControl('', {
       validators: [
@@ -76,24 +94,291 @@ export class UserProfileComponent implements OnInit {
     return {};
   };
 
-  userModel: UserModel = {};
+  formCustomerInvoice: FormGroup<{
+    nameCompany: FormControl<string>;
+    email: FormControl<string>;
+    phoneNumber: FormControl<string>;
+    nameCustomer: FormControl<string>;
+    taxCode: FormControl<string>;
+    address: FormControl<string>;
+  }> = this.fb.group({
+    nameCompany: ['', Validators.required],
+    email: ['', [Validators.required, AppValidator.validEmail]],
+    phoneNumber: ['', [Validators.required, AppValidator.validPhoneNumber]],
+    nameCustomer: [
+      '',
+      [Validators.required, AppValidator.cannotContainSpecialCharactor],
+    ],
+    taxCode: ['', [Validators.required, Validators.pattern(/^[0-9-]+$/)]],
+    address: ['', Validators.required],
+  });
 
+  selectedIndexChange(event){ 
+    this.tabSelect = event
+
+    if(this.tabSelect === 1 && this.isTabInvoice){
+      this.getUser()
+      this.isTabInvoice = false
+    }
+    
+  }
   submitForm(): void {
     console.log('submitForm');
     this.updateProfile();
   }
 
-  ngOnInit(): void {
-    // this.form.controls['customer_code'].disable();
-    // this.form.controls['contract_code'].disable();
-    // this.form.controls['email'].disable();
-    this.loadUserProfile();
+  changeCustomerGroup(id) {
+    console.log(id);
+
+    const customerGroupFilter = this.customerGroups.filter(
+      (item) => item.id === id
+    );
+    this.customerTypes = customerGroupFilter[0].customerTypes;
+    this.customerType = this.customerTypes[0].id;
+    console.log(this.customerType);
+
+    if (this.customerType === 1) {
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.pattern(/^[0-9-]+$/),
+      ]);
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.clearValidators();
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
+    } else {
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.required,
+        Validators.pattern(/^[0-9-]+$/),
+      ]);
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.setValidators([
+        Validators.required,
+      ]);
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
+    }
+  }
+
+  getUser() {
+    this.email = this.tokenService.get()?.email;
+    const accessToken = this.tokenService.get()?.token;
+
+    const baseUrl = environment['baseUrl'];
+    this.http
+      .get<UserModel>(`${baseUrl}/users/${this.tokenService.get()?.email}`, {
+        headers: new HttpHeaders({
+          Authorization: 'Bearer ' + accessToken,
+        }),
+        context: new HttpContext().set(ALLOW_ANONYMOUS, true),
+      })
+      .subscribe({
+        next: (res) => {
+          this.userModel = res;
+          if (this.userModel && this.userModel.customerInvoice === null) {
+            this.formCustomerInvoice.controls.email.setValue(
+              this.userModel.email || ''
+            );
+            this.formCustomerInvoice.controls.nameCustomer.setValue(
+              this.userModel.fullName || ''
+            );
+            this.formCustomerInvoice.controls.address.setValue(
+              this.userModel.address || ''
+            );
+            this.formCustomerInvoice.controls.phoneNumber.setValue(
+              this.userModel.phoneNumber || ''
+            );
+            this.getListCustomerGroup();
+          } else if (
+            this.userModel &&
+            this.userModel.customerInvoice !== null
+          ) {
+            this.formCustomerInvoice.controls.email.setValue(
+              this.userModel.customerInvoice.email
+            );
+            this.formCustomerInvoice.controls.nameCustomer.setValue(
+              this.userModel.customerInvoice.fullName
+            );
+            this.formCustomerInvoice.controls.address.setValue(
+              this.userModel.customerInvoice.address
+            );
+            this.formCustomerInvoice.controls.phoneNumber.setValue(
+              this.userModel.customerInvoice.phoneNumber
+            );
+            this.formCustomerInvoice.controls.taxCode.setValue(
+              this.userModel.customerInvoice.taxCode
+            );
+            this.formCustomerInvoice.controls.nameCompany.setValue(
+              this.userModel.customerInvoice.companyName
+            );
+            this.getListCustomerGroup();
+          }
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+  }
+
+  getListCustomerGroup() {
+    const baseUrl = environment['baseUrl'];
+    this.http
+      .get<any>(`${baseUrl}/users/customer-group`, this.httpOptions)
+      .subscribe({
+        next: (data) => {
+          if (this.userModel && this.userModel.customerInvoice !== null) {
+            this.customerGroup = this.userModel.customerInvoice.customerGroupId;
+            this.customerGroups = data;
+            const customerGroupFilter = this.customerGroups.filter(
+              (item) => item.id === this.customerGroup
+            );
+            this.customerTypes = customerGroupFilter[0].customerTypes;
+            this.customerType = this.userModel.customerInvoice.customerTypeId;
+          } else if (
+            this.userModel &&
+            this.userModel.customerInvoice === null
+          ) {
+            this.customerGroups = data;
+            this.customerGroup = data[0].id;
+            const customerGroupFilter = this.customerGroups.filter(
+              (item) => item.id === this.customerGroup
+            );
+            this.customerTypes = customerGroupFilter[0].customerTypes;
+            this.customerType = this.customerTypes[0].id;
+          }
+          if (this.customerType === 1) {
+            this.formCustomerInvoice.controls.taxCode.setValidators([
+              Validators.pattern(/^[0-9-]+$/),
+            ]);
+            this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+            this.formCustomerInvoice.controls.nameCompany.clearValidators();
+            this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
+          } else {
+            this.formCustomerInvoice.controls.taxCode.setValidators([
+              Validators.required,
+              Validators.pattern(/^[0-9-]+$/),
+            ]);
+            this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+            this.formCustomerInvoice.controls.nameCompany.setValidators([
+              Validators.required,
+            ]);
+            this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
+          }
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('Lấy danh sách thất bại')
+          );
+        },
+      });
+  }
+
+  changeCustomerType(id) {
+    console.log(this.customerType);
+
+    if (id === 1 || id === 2) {
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.pattern(/^[0-9-]+$/),
+      ]);
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.clearValidators();
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
+    } else {
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.required,
+        Validators.pattern(/^[0-9-]+$/),
+      ]);
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.setValidators([
+        Validators.required,
+      ]);
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
+    }
+  }
+
+  handleOkUpdateCustomerInvoice() {
+    if (this.userModel && this.userModel.customerInvoice === null) {
+      this.isLoadingUpdateInfo = true;
+      this.formHandleUserInvoice.companyName =
+        this.formCustomerInvoice.controls.nameCompany.value;
+      this.formHandleUserInvoice.address =
+        this.formCustomerInvoice.controls.address.value;
+      this.formHandleUserInvoice.phoneNumber =
+        this.formCustomerInvoice.controls.phoneNumber.value;
+      this.formHandleUserInvoice.fullName =
+        this.formCustomerInvoice.controls.nameCustomer.value;
+      this.formHandleUserInvoice.email =
+        this.formCustomerInvoice.controls.email.value;
+      this.formHandleUserInvoice.taxCode =
+        this.formCustomerInvoice.controls.taxCode.value;
+      this.formHandleUserInvoice.customerGroupId = this.customerGroup;
+      this.formHandleUserInvoice.customerTypeId = this.customerType;
+      this.formHandleUserInvoice.customerId = this.tokenService.get()?.userId;
+      console.log(this.formHandleUserInvoice);
+  
+      this.invoiceService.createInvoice(this.formHandleUserInvoice).subscribe({
+        next: (data) => {
+          this.isLoadingUpdateInfo = false;
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.invoice.pop-up.update.success')
+          );
+          this.getUser();
+        },
+        error: (e) => {
+          this.isLoadingUpdateInfo = false;
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.invoice.pop-up.update.fail')
+          );
+        },
+      });
+    }else if(this.userModel && this.userModel.customerInvoice !== null){
+      this.isLoadingUpdateInfo = true;
+      this.formHandleUserInvoice.companyName =
+        this.formCustomerInvoice.controls.nameCompany.value;
+      this.formHandleUserInvoice.address =
+        this.formCustomerInvoice.controls.address.value;
+      this.formHandleUserInvoice.phoneNumber =
+        this.formCustomerInvoice.controls.phoneNumber.value;
+      this.formHandleUserInvoice.fullName =
+        this.formCustomerInvoice.controls.nameCustomer.value;
+      this.formHandleUserInvoice.email =
+        this.formCustomerInvoice.controls.email.value;
+      this.formHandleUserInvoice.taxCode =
+        this.formCustomerInvoice.controls.taxCode.value;
+      this.formHandleUserInvoice.customerGroupId = this.customerGroup;
+      this.formHandleUserInvoice.customerTypeId = this.customerType;
+      this.formHandleUserInvoice.customerId = this.tokenService.get()?.userId;
+      this.formHandleUserInvoice.id = this.userModel.customerInvoice.id;
+      console.log(this.formHandleUserInvoice);
+  
+      this.invoiceService.updateInvoice(this.formHandleUserInvoice).subscribe({
+        next: (data) => {
+          this.isLoadingUpdateInfo = false;
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.invoice.pop-up.update.success')
+          );
+          this.getUser();
+        },
+        error: (e) => {
+          this.isLoadingUpdateInfo = false;
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.invoice.pop-up.update.fail')
+          );
+        },
+      });
+    }
   }
 
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'User-Root-Id': this.tokenService.get()?.userId,
+      'User-Root-Id':
+        localStorage?.getItem('UserRootId') &&
+        Number(localStorage?.getItem('UserRootId')) > 0
+          ? Number(localStorage?.getItem('UserRootId'))
+          : this.tokenService?.get()?.userId,
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
     }),
   };

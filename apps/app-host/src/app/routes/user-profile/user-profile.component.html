@@ -1,9 +1,9 @@
 <page-header [title]="'menu.account.center' | i18n" />
 
 <nz-card>
-  <div class="text-card-header" style="margin-bottom: 20px">
-    {{ 'form.account.update.information' | i18n }}
-  </div>
+  <nz-tabset nzSelectedIndex nzSize="large" [nzSelectedIndex]="tabSelect" (nzSelectedIndexChange)="selectedIndexChange($event)">
+    <nz-tab [nzTitle]="'form.account.update.information' | i18n" class="label-fontsize">
+      <ng-template nz-tab>
   <form nz-form [formGroup]="form" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
     <nz-row nzGutter="16">
       <nz-col nzLg="6" nzMd="6" nzSm="24">
@@ -124,4 +124,271 @@
       </div>
     </div>
   </form>
+</ng-template>
+</nz-tab>
+<nz-tab [nzTitle]="'form.account.update.invoice' | i18n" class="label-fontsize" >
+  <ng-template nz-tab>
+    <form nz-form [formGroup]="formCustomerInvoice">
+        <div nz-row [nzGutter]="32">
+          <div nz-col [nzSpan]="8" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="nameCustomerErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px">
+                    <span>{{ 'app.invoice.pop-up.update.customer' | i18n }}</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  </div>
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  [placeholder]="'app.invoice.pop-up.update.buyer.placeholder' | i18n"
+                  formControlName="nameCustomer"
+                  class="input-custom"
+                  appTrim
+                  [maxlength]="50"
+                />
+              </nz-form-control>
+              <ng-template #nameCustomerErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >{{ 'app.invoice.pop-up.update.customer.alert1' | i18n }}</ng-container
+                >
+                <ng-container
+                  *ngIf="control.hasError('containSpecialExceptComma')"
+                  >{{ 'app.invoice.pop-up.update.customer.alert2' | i18n }}</ng-container
+                >
+              </ng-template>
+            </nz-form-item>
+          </div>
+  
+          <div nz-col [nzSpan]="8" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="emailErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px">
+                    <span>{{ 'app.invoice.pop-up.update.email' | i18n }}</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  </div>
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  class="input-custom"
+                  [maxlength]="50"
+                  [placeholder]="'app.invoice.pop-up.update.email.placeholder' | i18n"
+                  formControlName="email"
+                />
+              </nz-form-control>
+              <ng-template #emailErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >{{ 'app.invoice.pop-up.update.email.alert1' | i18n }}</ng-container
+                >
+                <ng-container *ngIf="control.hasError('validEmail')"
+                  >{{ 'app.invoice.pop-up.update.email.alert2' | i18n }}</ng-container
+                >
+              </ng-template>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="phoneErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px">
+                    <span>{{ 'form.account.phone' | i18n }}</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  </div>
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  [placeholder]="'app.invoice.pop-up.update.phone.placeholder' | i18n"
+                  class="input-custom"
+                  [maxlength]="10"
+                  formControlName="phoneNumber"
+                />
+              </nz-form-control>
+              <ng-template #phoneErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >{{ 'app.invoice.pop-up.update.phone.alert1' | i18n }}</ng-container
+                >
+                <ng-container *ngIf="control.hasError('validPhoneNumber')">{{
+                  'validation.phone-number.wrong-format' | i18n
+                }}</ng-container>
+              </ng-template>
+            </nz-form-item>
+          </div>
+          
+          <div nz-col [nzSpan]="8" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>{{ 'app.invoice.pop-up.update.customerGroup' | i18n }}</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  </div>
+                </nz-form-label>
+                <nz-select
+                  [(ngModel)]="customerGroup"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="changeCustomerGroup($event)"
+                  class="input-select-custom"
+                >
+                  <nz-option
+                    *ngFor="let data of customerGroups"
+                    [nzLabel]="data.name"
+                    [nzValue]="data.id"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>{{ 'app.invoice.pop-up.update.customerType' | i18n }}</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  </div>
+                </nz-form-label>
+                <nz-select
+                  [(ngModel)]="customerType"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="changeCustomerType($event)"
+                  class="input-select-custom"
+                >
+                  <nz-option
+                    *ngFor="let data of customerTypes"
+                    [nzLabel]="data.name"
+                    [nzValue]="data.id"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="nameCompanyErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div >
+                    <span>{{ 'app.invoice.pop-up.update.company' | i18n }}</span>
+                    <ng-container *ngIf="customerType !== 1 && customerType !== 2">
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  </ng-container>
+                  </div>
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  [placeholder]="'app.invoice.pop-up.update.company.placeholder' | i18n"
+                  formControlName="nameCompany"
+                  class="input-custom"
+                  appTrim
+                  [maxlength]="100"
+                />
+                <ng-template #nameCompanyErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')"
+                    >{{ 'app.invoice.pop-up.update.company.alert' | i18n }}</ng-container
+                  >
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="taxCodeErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>{{ 'app.invoice.pop-up.update.tax' | i18n }}</span>
+                    <ng-container *ngIf="customerType !== 1 && customerType !== 2">
+                      (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                    </ng-container>
+                  </div>
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  [placeholder]="'app.invoice.pop-up.update.tax.placeholder' | i18n"
+                  formControlName="taxCode"
+                  class="input-custom"
+                  appTrim
+                  [maxlength]="15"
+                />
+              </nz-form-control>
+              <ng-template #taxCodeErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >{{ 'app.invoice.pop-up.update.tax.alert1' | i18n }}</ng-container
+                >
+                <ng-container *ngIf="control.hasError('pattern')"
+                  >{{ 'app.invoice.pop-up.update.tax.alert2' | i18n }}</ng-container
+                >
+              </ng-template>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="16" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="addressErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>{{ 'app.invoice.pop-up.update.address' | i18n }}</span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  </div>
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  [placeholder]="'app.invoice.pop-up.update.address.placeholder' | i18n"
+                  class="input-custom"
+                  formControlName="address"
+                  appTrim
+                  [maxlength]="100"
+                />
+              </nz-form-control>
+              <ng-template #addressErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >{{ 'app.invoice.pop-up.update.address.alert' | i18n }}</ng-container
+                >
+              </ng-template>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="24" class="gutter-row" class="user-alert">
+            <nz-alert
+              class="mt-4"
+              style="width: 100%"
+              nzBanner
+              [nzMessage]="updateUserTitle"
+              [nzDescription]="updateUserDesc"
+            ></nz-alert>
+            <ng-template #updateUserTitle>
+              <span class="text-label" style="color: #EA3829">{{ 'app.invoice.pop-up.update.warning.title' | i18n }}</span>
+            </ng-template>
+            <ng-template #updateUserDesc>
+              <span class="text-label">{{ 'app.invoice.pop-up.update.warning.des' | i18n }}</span>
+            </ng-template>
+          </div>
+        </div>
+        <div class="mt-6 d-flex justify-content-end gap-2">
+          <button type="button" nz-button routerLink="/">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{
+            'app.button.cancel' | i18n }}
+          </button>
+          <button
+            (click)="handleOkUpdateCustomerInvoice()"
+            nz-button
+            nzType="primary"
+            [nzLoading]="isLoadingUpdateInfo"
+            [disabled]="formCustomerInvoice.invalid"
+          >
+            <img
+              *ngIf="isLoadingUpdateInfo === false"
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/confirm.svg"
+              alt=""
+            />{{ 'app.button.update' | i18n }}
+          </button>
+        </div>
+    </form>
+  </ng-template>
+</nz-tab> 
+</nz-tabset>
 </nz-card>

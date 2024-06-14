@@ -50,8 +50,9 @@
 
 
   "form.clear.local.storage": "Làm sạch Local Storage",
-  "form.account.information": "Thông tin tài khoản",
-  "form.account.update.information":"Cập nhật thông tin tài khoản",
+  "form.account.information": "Thông tin cá nhân",
+  "form.account.update.information":"Cập nhật thông tin cá nhân",
+  "form.account.update.invoice":"Cập nhật thông tin xuất hóa đơn",
   "form.account.surname": "Họ",
   "form.account.name": "Tên",
   "form.account.phone": "Số điện thoại",
@@ -1132,6 +1133,8 @@
 
   "app.breadcrumb.order-detail": "Chi tiết đơn hàng",
   "app.order-detail.order": "Đơn hàng",
+  "app.order-detail.order.new": "Đặt đơn",
+  "app.order-detail.Cancelled": "Đã hủy",
   "app.order-detail.customerName": "Tên khách hàng",
   "app.order-detail.phone": "Số điện thoại",
   "app.order-detail.address": "Địa chỉ",
@@ -1150,6 +1153,8 @@
   "app.order-detail.vat": "Đã bao gồm 10% VAT",
   "app.order-detail.pay": "Thanh toán",
   "app.order-detail.cancelOrder": "Hủy đơn hàng",
+  "app.order-detail.cancelOrder.success": "Hủy đơn hàng thành công",
+  "app.order-detail.cancelOrder.fail": "Hủy đơn hàng thất bại",
   "app.order-detail.back": "Quay lại",
   "app.order-detail.repurchase": "Mua lại",
   "app.order.createDate": "Ngày tạo",
