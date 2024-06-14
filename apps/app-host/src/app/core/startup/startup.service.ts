@@ -83,7 +83,7 @@ export class StartupService {
           this.regionProjectService.getCoreData(baseUrl);
           if (localStorage?.getItem('PermissionOPA')){
             this.checkPermissionAction(this.menuService['data']);
-          } else {
+          } else if (localStorage?.getItem('UserRootId')) {
             this.policyService.getUserPermissions().pipe().subscribe( (permission) => {
               localStorage.setItem('PermissionOPA', JSON.stringify(permission));
               this.checkPermissionAction(this.menuService['data']);

@@ -3,13 +3,21 @@
      (click)="showModal()"
      nz-popover nzPopoverPlacement="bottom"
      [nzPopoverContent]="'app.status.suspend'|i18n" />
-<nz-modal [(nzVisible)]="isVisible" nzTitle="{{'schedule.backup.action3' | i18n}}"
-          (nzOnCancel)="handleCancel()" nzCentered>
+<nz-modal [(nzVisible)]="isVisible" [nzAutofocus]="undefined"
+          (nzOnCancel)="handleCancel()">
   <div *nzModalTitle>
     <span class="text-modal-title">{{'schedule.backup.action3' | i18n}}</span>
   </div>
   <div *nzModalContent>
-    <span class="text-label">{{'schedule.backup.action4' | i18n}}</span>
+    <nz-alert nzBanner
+              nzShowIcon
+              style="margin-bottom: 5px;"
+              [nzDescription]="contentTemplate">
+    </nz-alert>
+    <ng-template #contentTemplate>
+      <span class="text-label"
+            [innerHTML]="'schedule.backup.action4' | i18n: {name: nameScheduleBackup}"></span>
+    </ng-template>
   </div>
   <div *nzModalFooter>
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
@@ -18,6 +26,7 @@
     <button nz-button nzType="primary"
             (click)="handleOk()"
             [nzLoading]="isLoading"
+            appAutofocus
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm' | i18n}}
     </button>

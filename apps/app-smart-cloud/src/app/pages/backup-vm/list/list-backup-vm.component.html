@@ -96,8 +96,8 @@
             <td nzBreakWord> {{ data.instanceName }}</td>
             <td nzBreakWord nzAlign="right">{{ data.size }}</td>
             <td nzBreakWord *ngIf="typeVPC==0">{{ data.backupPackageName }}</td>
-            <td nzBreakWord>{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
-            <td nzBreakWord>{{ data.expirationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
+            <td nzBreakWord>{{ data.creationDate | date: "dd/MM/yyyy" }}</td>
+            <td nzBreakWord>{{ data.expirationDate | date: "dd/MM/yyyy" }}</td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
               <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
             </ng-container>

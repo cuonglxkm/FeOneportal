@@ -150,6 +150,8 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   // }
 
   // #endregion
+  passwordVisible = false;
+  passwordVisible1 = false;
 
   submit(): void {
     console.log('submit register')

@@ -32,7 +32,8 @@ export class OrderDTOSonch{
   vat: PaymentInfoDTO;
   paymentMethod: any; //Thanh toán tr? tru?c
   orderItems: ItemDTO[];
-  paymentUrl: string
+  paymentUrl: string;
+  paymentId: number;
 }
 
 export class ItemDTO{

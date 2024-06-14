@@ -38,7 +38,7 @@ export class IkePolicyService extends BaseService {
 
   getIkePolicyById(id: number, vpcid: number, region: number){
     return this.http.get<IKEPolicyModel>(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/ikepolicy/${id}?projectId=${vpcid}&regionId=${region}`).pipe(
+      `/vpn-sitetosite/ikepolicy/${id}?projectId=${vpcid}&regionId=${region}`, {headers: this.getHeaders()}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -79,7 +79,7 @@ export class IkePolicyService extends BaseService {
   }
   getIKEPoliciesById(id: number, vpcid: number, region: number){
     return this.http.get<IKEPolicyModel>(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/ikepolicy/${id}?projectId=${vpcid}&regionId=${region}`).pipe(
+      `/vpn-sitetosite/ikepolicy/${id}?projectId=${vpcid}&regionId=${region}`, {headers: this.getHeaders()}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -93,7 +93,7 @@ export class IkePolicyService extends BaseService {
 
   deleteIkePolicy(formDelete: FormDeleteIKEPolicy) {
     console.log("form Delete",formDelete)
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ikepolicy/${formDelete.cloudId}?vpcId=${formDelete.projectId}&regionId=${formDelete.regionId}`).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ikepolicy/${formDelete.cloudId}?vpcId=${formDelete.projectId}&regionId=${formDelete.regionId}`, {headers: this.getHeaders()}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -108,7 +108,7 @@ export class IkePolicyService extends BaseService {
   edit(id: string, formEdit: IKEPolicyModel) {
     console.log("data extend ike---", formEdit);
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ikepolicy/update`,
-      Object.assign(formEdit)).pipe(
+      Object.assign(formEdit), {headers: this.getHeaders()}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
         } else if (error.status === 404) {
