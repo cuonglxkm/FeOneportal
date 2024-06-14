@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, HostListener, Inject, NgZone, OnDestroy, 
 import { Router } from '@angular/router';
 import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { EMPTY, Observable, Subscription, catchError, combineLatest, defaultIfEmpty, finalize, interval, map, merge, of, take, takeUntil, throwError, timeout, timeoutWith } from 'rxjs';
+import { EMPTY, Observable, Subscription, catchError, combineLatest, defaultIfEmpty, finalize, interval, merge, of, take, takeUntil, throwError, timeout, timeoutWith } from 'rxjs';
 import { environment } from '@env/environment';
 import { KubernetesCluster } from '../../model/cluster.model';
 import { ClusterStatus } from '../../model/status.model';
@@ -40,7 +40,6 @@ export class ListClusterComponent implements OnInit, OnDestroy {
 
   // input confirm delete modal
   deleteClusterName: string;
-  progressOfClusters = [];
 
   // for progress
   listOfProgress: number[];
@@ -120,7 +119,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.listOfClusters = [];
-        // let progress: Array<Observable<any>> = [];
+        let progress: Array<Observable<any>> = [];
         let listOfClusterInProgress = [];
 
         r.data?.content.forEach(item => {
@@ -138,83 +137,110 @@ export class ListClusterComponent implements OnInit, OnDestroy {
           this.listOfClusters.length == 0 ? this.isShowIntroductionPage = true : this.isShowIntroductionPage = false;
         }
 
+        // case user refresh page and have mulitple cluster and is in-progress
         if (listOfClusterInProgress.length > 0) {
           for (let i = 0; i < this.listOfClusters.length; i++) {
             let cluster: KubernetesCluster = this.listOfClusters[i];
 
+            let progressObs: Observable<any>;
             if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) {
+
               switch (cluster.serviceStatus) {
                 case 1: // initialing
                 case 5: // restoring
                 case 6: // upgrading
-                  this.viewProgressCluster(cluster.regionId, cluster.namespace, cluster.serviceOrderCode, KubernetesConstant.CREATE_ACTION)
-                  .pipe(
-                    timeout(5000),
-                    catchError(() => of(0))
-                  )
-                  .subscribe((r: any) => {
-                    let p = this.progressOfClusters.find(item => item.key_name == r.key_name);
-                    if (p != null) {
-                      p.current_value = r.current_value;
-                    } else {
-                      this.progressOfClusters = [...this.progressOfClusters,
-                        {
-                          key_name: r.key_name,
-                          current_value: r.current_value
-                        }
-                      ]
-                    }
-                  });
+                  progressObs = this.viewProgressCluster(cluster.regionId, cluster.namespace,
+                    cluster.serviceOrderCode, KubernetesConstant.CREATE_ACTION);
                   break;
-
                 case 7: // deleting
-                  this.viewProgressCluster(cluster.regionId, cluster.namespace, cluster.serviceOrderCode, KubernetesConstant.DELETE_ACTION)
-                  .pipe(
-                    timeout(5000),
-                    catchError(() => of(0))
-                  ).subscribe((r: any) => {
-                    let p = this.progressOfClusters.find(item => item.key_name == r.key_name);
-                    if (p != null) {
-                      p.current_value = r.current_value;
-                    } else {
-                      this.progressOfClusters = [...this.progressOfClusters,
-                        {
-                          key_name: r.key_name,
-                          current_value: r.current_value
-                        }
-                      ]
-                    }
-                  });
+                  progressObs = this.viewProgressCluster(cluster.regionId, cluster.namespace,
+                    cluster.serviceOrderCode, KubernetesConstant.DELETE_ACTION);
                   break;
-
                 default:
-                  new Observable(_ => _.complete()).pipe(defaultIfEmpty(0));
+                  progressObs = new Observable(_ => _.complete()).pipe(defaultIfEmpty(0));
               }
-            }
-          }
 
-          this.progressOfClusters = this.progressOfClusters.filter(item => item.current_value == 100);
-        } else {
-          this.progressOfClusters = [];
+            } else {
+              progressObs = new Observable(_ => _.complete()).pipe(defaultIfEmpty(0));
+            }
+            progress.push(progressObs);
+          }
         }
+
+        let progressFromLocal: string = localStorage.getItem('mapProgress');
+        if (progressFromLocal) {
+          this.mapProgress = new Map(JSON.parse(progressFromLocal));
+        } else {
+          this.mapProgress = new Map<string, number>();
+        }
+
+        // progress.forEach(p => {
+        //   p.pipe(
+        //     timeout(5000),
+        //     catchError(() => of(0))
+        //   ).subscribe((r: any) => {
+        //     let key = r.data.key;
+        //     let currentValue = r.data.progress;
+        //     let previousValue = this.mapProgress.get(key);
+        //     if (previousValue && currentValue <= previousValue) {
+        //       this.mapProgress.set(key, previousValue);
+        //     } else {
+        //       this.mapProgress.set(key, currentValue);
+        //     }
+        //   });
+        // });
+
+        this.unsubscribeObs(this.eventSources);
+        this.subscription = combineLatest(progress)
+        .subscribe(data => {
+          this.listOfProgress = data;
+
+          // let progressFromLocal: string = localStorage.getItem('mapProgress');
+
+          // if (progressFromLocal) {
+          //   this.mapProgress = new Map(JSON.parse(progressFromLocal));
+          // } else {
+          //   this.mapProgress = new Map<string, number>();
+          // }
+
+          // for (let i = 0; i < this.listOfProgress.length; i++) {
+          //   let currentProgress = this.listOfProgress[i];
+          //   const cluster = this.listOfClusters[i];
+          //   let keyObj = cluster.namespace + ';' + cluster.clusterName;
+
+          //   if (currentProgress == 100) {
+          //     this.mapProgress.delete(keyObj);
+          //   } else {
+          //     let previousValue = this.mapProgress.get(keyObj);
+          //     if (previousValue && currentProgress <= previousValue) {
+          //       this.mapProgress.set(keyObj, previousValue);
+          //     } else {
+          //       this.mapProgress.set(keyObj, currentProgress);
+          //     }
+          //   }
+          // }
+
+          // localStorage.setItem('mapProgress', JSON.stringify(Array.from(this.mapProgress.entries())));
+          this.ref.detectChanges();
+        });
       }
     });
   }
 
   viewProgressCluster(regionId: number, namespace: string, serviceOrderCode: string, action: string) {
     return new Observable(observable => {
-      let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress2/${regionId}/${namespace}/${serviceOrderCode}/${action}`);
+      let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${regionId}/${namespace}/${serviceOrderCode}/${action}`);
       this.eventSources.push(source);
       source.onmessage = event => {
         this.zone.run(() => {
-          let data: {key_name: string, current_value: number} = JSON.parse(event.data);
+          let data: number = Number(event.data);
           observable.next(data);
 
-          if (data.current_value == 100) {  // complete
+          if (data == 100) {          // complete
             observable.complete();
             source.close();
 
-            this.searchCluster();           // refresh page
+            this.searchCluster();     // refresh page
           }
         });
       }

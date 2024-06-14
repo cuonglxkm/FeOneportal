@@ -22,14 +22,14 @@ export class ProjectService extends BaseService {
 
   getByRegion(regionId: number) {
     return this.http.get<ProjectModel[]>
-    (this.baseSCUrl + this.ENDPOINT.provisions  + `/projects?regionId=${regionId}`, {
+    (this.baseUrl + this.ENDPOINT.provisions  + `/projects?regionId=${regionId}`, {
       headers: this.getHeaders()
     });
   }
 
   getByProjectId(id: number) {
     return this.http.get<SizeInCloudProject>
-    (this.baseSCUrl + this.ENDPOINT.provisions  + `/projects/${id}`, {
+    (this.baseUrl + this.ENDPOINT.provisions  + `/projects/${id}`, {
       headers: this.getHeaders()
     });
   }
