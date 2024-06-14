@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { concatMap, finalize, takeWhile } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import {
   CheckIPAddressModel,

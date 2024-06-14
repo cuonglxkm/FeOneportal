@@ -13,6 +13,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 })
 export class ReplayScheduleComponent {
   @Input() id: number
+  @Input() nameScheduleBackup: string
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
 
@@ -36,6 +37,7 @@ export class ReplayScheduleComponent {
   }
 
   handleOk() {
+    this.isLoading = true
     let formAction = new FormAction()
     formAction.scheduleId = this.id
     formAction.customerId = this.tokenService.get()?.userId
