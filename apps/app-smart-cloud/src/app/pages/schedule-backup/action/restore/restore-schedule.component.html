@@ -3,21 +3,32 @@
      (click)="showModal()"
      nz-popover nzPopoverPlacement="bottom"
      [nzPopoverContent]="'schedule.backup.health'|i18n" />
-<nz-modal [(nzVisible)]="isVisible"
+<nz-modal [(nzVisible)]="isVisible" [nzAutofocus]="undefined"
           (nzOnCancel)="handleCancel()">
   <div *nzModalTitle>
-    <p class="text-h5"><b>{{'schedule.backup.action1' | i18n}}</b></p>
+    <span class="text-modal-title">{{'schedule.backup.action1' | i18n}}</span>
   </div>
   <div *nzModalContent>
-    <p class="text-p">{{'schedule.backup.action2' | i18n}}</p>
+    <nz-alert nzBanner
+              nzShowIcon
+              style="margin-bottom: 5px;"
+              [nzDescription]="contentTemplate">
+    </nz-alert>
+    <ng-template #contentTemplate>
+      <span class="text-label"
+            [innerHTML]="'schedule.backup.action2' | i18n: {name: nameScheduleBackup}"></span>
+    </ng-template>
   </div>
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancel()"
-            class="button-cancel">{{'app.button.cancel' | i18n}}
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOk()"
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
             [nzLoading]="isLoading"
-            class="button-ok">{{'app.button.agree' | i18n}}
+            appAutofocus
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm' | i18n}}
     </button>
   </div>
 </nz-modal>

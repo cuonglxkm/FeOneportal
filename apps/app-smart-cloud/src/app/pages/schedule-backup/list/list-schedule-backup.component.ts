@@ -26,7 +26,7 @@ export class ListScheduleBackupComponent implements OnInit {
 
   status = [
     { label: this.i18n.fanyi("app.status.all"), value: 'all' },
-    { label: this.i18n.fanyi("service.status.active"), value: 'AVAILABLE' },
+    { label: this.i18n.fanyi("service.status.active"), value: 'ACTIVE' },
     { label: this.i18n.fanyi("app.status.not.done"), value: 'DISABLED' },
     { label: this.i18n.fanyi("app.status.suspend"), value: 'PAUSED' }
   ];

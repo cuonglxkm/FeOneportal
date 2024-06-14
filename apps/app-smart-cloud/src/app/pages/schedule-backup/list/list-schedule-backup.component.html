@@ -97,7 +97,7 @@
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
                 <td nzAlign="left">
                   <span [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</span>
-                  <br><span>{{data.warningMessage}}</span>
+<!--                  <br><span>{{data.warningMessage}}</span>-->
                 </td>
               </ng-container>
               <td>{{ data.nextRuntime | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
@@ -109,15 +109,15 @@
                          (click)="navigateToEdit(data.serviceType, data.id)"
                          style="cursor: pointer; margin-left: 5px; margin-top: 2px;"
                          [nzPopoverContent]="'app.text.edit' | i18n" />
-                    <one-portal-stop-schedule [id]="data.id" (onOk)="handlePausedOk()"/>
+                    <one-portal-stop-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handlePausedOk()"/>
                     <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
                   <div *ngIf="data.status === 'DISABLED'">
-                    <one-portal-restore-schedule [id]="data.id" (onOk)="handleRestoredOk()"/>
+                    <one-portal-restore-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleRestoredOk()"/>
                     <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
                   <div *ngIf="data.status === 'PAUSED'">
-                    <one-portal-replay-schedule [id]="data.id" (onOk)="handlePlaydOk()"/>
+                    <one-portal-replay-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handlePlaydOk()"/>
                     <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
                   </div>
               </td>
