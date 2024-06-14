@@ -5,9 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ProgressPipe implements PipeTransform {
 
-  transform(clusterName: string, namespace: string, mapProgress: Map<string, number>): number {
+  transform(clusterName: string, namespace: string, progressOfClusters: {key_name: string, current_value: number}[]): number {
     let keyObj = namespace + ';' + clusterName;
-    return mapProgress?.get(keyObj);
+    return progressOfClusters.find(item => item.key_name == keyObj)?.current_value;
   }
 
 }
