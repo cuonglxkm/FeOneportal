@@ -13,7 +13,7 @@ export class OrderDTO{
   resultNote: any;
 }
 
-export class OrderDTOSonch{
+export class OrderDetailDTO{
   id: any;
   orderCode: any;
   customerId: any;

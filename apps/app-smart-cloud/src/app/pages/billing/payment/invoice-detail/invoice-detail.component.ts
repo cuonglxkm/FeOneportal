@@ -1,23 +1,21 @@
-import { HttpClient } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   Inject,
   OnInit,
-  SecurityContext,
+  SecurityContext
 } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { LoadingService } from '@delon/abc/loading';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { finalize, Observable } from 'rxjs';
-import { OrderDTOSonch } from 'src/app/shared/models/order.model';
+import { OrderDetailDTO } from 'src/app/shared/models/order.model';
 import { PaymentModel } from 'src/app/shared/models/payment.model';
 import { PaymentService } from 'src/app/shared/services/payment.service';
 import { UserModel } from '../../../../../../../../libs/common-utils/src';
-import { LoadingService } from '@delon/abc/loading';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 class ServiceInfo {
   name: string;
   price: number;
@@ -35,7 +33,7 @@ class ServiceInfo {
 export class InvoiceDetailComponent implements OnInit {
   payment: PaymentModel = new PaymentModel();
   serviceInfo: ServiceInfo = new ServiceInfo();
-  data: OrderDTOSonch;
+  data: OrderDetailDTO;
   userModel$: Observable<UserModel>;
   id: number;
   userModel: UserModel;

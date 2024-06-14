@@ -1,16 +1,16 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { OrderService } from '../../../shared/services/order.service';
-import { OrderDTOSonch } from '../../../shared/models/order.model';
-import { finalize, Observable, shareReplay, tap } from 'rxjs';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NotificationService, ProjectModel, RegionModel, UserModel } from '../../../../../../../libs/common-utils/src';
-import {getCurrentRegionAndProject} from "@shared";
-import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { I18NService } from '@core';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { environment } from '@env/environment';
+import { getCurrentRegionAndProject } from "@shared";
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize, Observable, shareReplay, tap } from 'rxjs';
+import { NotificationService, ProjectModel, RegionModel, UserModel } from '../../../../../../../libs/common-utils/src';
+import { OrderDetailDTO } from '../../../shared/models/order.model';
+import { OrderService } from '../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-order-detail',
@@ -21,7 +21,7 @@ export class OrderDetailComponent {
   id: any;
   regionId: any;
   projectId: any;
-  data: OrderDTOSonch;
+  data: OrderDetailDTO;
   currentStep = 1;
   titleStepFour: string = this.i18n.fanyi("app.order.status.Installed");;
   serviceName: string
