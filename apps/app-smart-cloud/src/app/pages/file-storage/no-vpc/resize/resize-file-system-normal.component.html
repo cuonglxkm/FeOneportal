@@ -5,7 +5,7 @@
       <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
        <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{'app.file.system.manage'|i18n}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a (click)="navigateToDetail()">{{'app.file.system.detail' | i18n}}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/'+idFileSystem +'/resize'">{{ 'app.file.system.resize' | i18n }}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -64,27 +64,6 @@
                   </nz-form-label>
                   <nz-form-control>
                     <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem?.shareProto"  [disabled]="true" />
-                  </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <div style="display: flex;">
-                    <nz-switch [nzDisabled]="true" formControlName="snapshot" ></nz-switch>
-                    <span style="margin-left: 10px; margin-top: 1px;" class="text-label">{{ 'app.file.system.create.from.snapshot' | i18n }}</span>
-                  </div>
-                </nz-form-item>
-                <nz-form-item *ngIf="validateForm.controls.snapshot.value === true">
-                  <nz-form-label>
-                    <div>
-                      <span>Snapshot (</span>
-                      <span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                      <img nz-popover
-                           [nzPopoverContent]="'app.snapshot.file.system' | i18n"
-                           nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                           src="assets/imgs/pajamas_question.svg" alt="" />
-                    </div>
-                  </nz-form-label>
-                  <nz-form-control nzDisableAutoTips>
-                    <input nz-input class="input-custom" />
                   </nz-form-control>
                 </nz-form-item>
               </nz-col>
@@ -210,6 +189,17 @@
                 <span class="text-label">{{ resizeFileSystem?.size }} GB</span>
               </div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              <nz-row style="margin-bottom: 10px" nzGutter="16">
+                <nz-col nzSpan="16">
+                  <span class="text-value">{{ 'app.fee.resize' | i18n }}</span>
+                </nz-col>
+                <nz-col class="text-right" nzSpan="8">
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
+                  {{orderItem?.totalAmount?.amount | number }} {{orderItem?.totalAmount?.currency}}
+                </span>
+                </nz-col>
+              </nz-row>
               <nz-row style="margin-bottom: 10px" nzGutter="16">
                 <nz-col nzSpan="16">
                   <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>

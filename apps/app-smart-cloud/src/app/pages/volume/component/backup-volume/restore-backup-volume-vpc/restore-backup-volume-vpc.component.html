@@ -6,7 +6,7 @@
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
       <nz-breadcrumb-item><a
-        [routerLink]="'/app-smart-cloud/backup-volume'">{{ 'app.breadcrumb.list.backup.volume'|i18n }}</a>
+        [routerLink]="'/app-smart-cloud/backup-volume'">Backup Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.list.backup.volume.restore'|i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -122,7 +122,7 @@
                                  (ngModelChange)="volumeSelectedChange($event)">
                         <nz-option *ngFor="let data of listVolumes"
                                    [nzValue]="data.id"
-                                   [nzLabel]="data.name"></nz-option>
+                                   [nzLabel]="data.name + '(' + data.sizeInGB + ' GB)'"></nz-option>
                       </nz-select>
                     </nz-form-control>
                   </nz-form-item>
@@ -225,6 +225,12 @@
                   </nz-form-item>
                 </nz-col>
               </nz-row>
+              <div>
+                <label class="text-label" nz-checkbox [nzChecked]="backupVolume?.isEncryption" nzDisabled style="font-size: 16px;">{{ 'volume.info.type.encrypt'|i18n }}</label>
+              </div>
+              <div style="margin-top: 15px;">
+                <label  class="text-label" nz-checkbox [nzChecked]="backupVolume?.isMultiAttach" nzDisabled style="font-size: 16px;">{{ 'volume.info.type.multiAttach'|i18n }}</label>
+              </div>
             </div>
           </nz-card>
         </nz-col>

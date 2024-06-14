@@ -12,7 +12,7 @@
         {{ 'app.breadcrumb.block.storage' | i18n}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title.breadcrumb.list' | i18n}}</a>
+        <a routerLink="/app-smart-cloud/volumes">Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/volume/detail/{{volumeId}}">{{ 'volume.title.detail' | i18n}}</a>
@@ -140,17 +140,17 @@
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-            <nz-form-item style="margin-bottom: 0;">
-              <nz-form-label>
-                <div>
-                  {{'volume.unit-price'|i18n}}: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }}/ GB/ {{'app.hour'|i18n}}</span>
-                  <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                   0 VND/ GB/ {{'app.hour'|i18n}}
-                </span>
-                </div>
-              </nz-form-label>
-            </nz-form-item>
+<!--            <nz-form-item style="margin-bottom: 0;">-->
+<!--              <nz-form-label>-->
+<!--                <div>-->
+<!--                  {{'volume.unit-price'|i18n}}: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">-->
+<!--                   {{ orderItem?.orderItemPrices[0]?.unitPrice.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPrice.currency }}/ GB/ {{'app.month'|i18n}}</span>-->
+<!--                  <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">-->
+<!--                   0 VND/ GB/ {{'app.month'|i18n}}-->
+<!--                </span>-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--            </nz-form-item>-->
             <nz-form-item style="margin-bottom: 0;">
               <nz-form-label>
                 <span>{{'app.adjust.date'|i18n}}: {{ dateEdit | date: 'dd/MM/yyyy' }}</span>
@@ -182,6 +182,17 @@
               <div class="text-value">{{'volume.table.title.iops'|i18n}}</div>
               <div style="margin-top: 10px" class="text-label">{{ volumeEdit?.iops }}</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              <nz-row style="margin-bottom: 10px" nzGutter="16">
+                <nz-col nzSpan="16">
+                  <span class="text-value">{{ 'app.fee.resize' | i18n }}</span>
+                </nz-col>
+                <nz-col class="text-right" nzSpan="8">
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
+                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
+                  {{orderItem?.totalAmount?.amount | number }} {{orderItem?.totalAmount?.currency}}
+                </span>
+                </nz-col>
+              </nz-row>
               <nz-row style="margin-bottom: 10px" nzGutter="16">
                 <nz-col nzSpan="16">
                   <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>

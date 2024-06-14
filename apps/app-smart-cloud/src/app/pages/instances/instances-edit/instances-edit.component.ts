@@ -886,6 +886,7 @@ export class InstancesEditComponent implements OnInit {
       );
       return;
     }
+    this.orderItem = [];
     this.instanceResizeInit();
     let specificationInstance = JSON.stringify(this.instanceResize);
     let orderItemInstanceResize = new OrderItem();
@@ -899,12 +900,19 @@ export class InstancesEditComponent implements OnInit {
     this.order.customerId = this.userId;
     this.order.createdByUserId = this.userId;
     this.order.note = 'instance resize';
+    this.totalVAT = this.totalVAT;
+    this.totalincludesVAT = this.totalincludesVAT;
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 
     this.orderService
       .validaterOrder(this.order)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (result) => {
           if (result.success) {

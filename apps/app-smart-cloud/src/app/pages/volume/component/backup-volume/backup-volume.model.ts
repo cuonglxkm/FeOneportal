@@ -9,7 +9,9 @@ export interface BackupVolume {
   customerId: number
   scheduleId: number
   instanceBackupId: number
-  isBootable: true
+  isBootable: boolean
+  isEncryption: boolean
+  isMultiAttach: boolean
   iops: number
   offerId: number
   cloudIdentity: number
@@ -27,6 +29,7 @@ export interface BackupVolume {
   vpcName: string
   customerEmail: string
   backupPackageName: string
+  volumeType: string
 }
 
 export class FormCreateBackupVolume {
@@ -96,6 +99,8 @@ export class FormRestoreCurrentBackupVolume {
 export class FormRestoreNewBackupVolume {
   volumeBackupId: number
   volumeName: string
+  volumeSize: number
+  instanceToAttachId: number
   customerId: number
   userEmail: string
   actorEmail: string

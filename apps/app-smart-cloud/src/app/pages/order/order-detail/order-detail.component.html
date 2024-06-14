@@ -95,7 +95,7 @@
         <nz-col nzSpan="7">
           <nz-form-item>
             <h3 style="font-weight: 600; font-size: 16px">
-              {{ data?.customerName === '' ? '-' : data?.customerName }}
+              {{ (userModel$ | async)?.fullName === '' ? '-' : (userModel$ | async)?.fullName}}
             </h3>
             <h3 style="color: white">.</h3>
           </nz-form-item>

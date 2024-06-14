@@ -173,7 +173,9 @@ export class EditBackupPackageComponent implements OnInit {
     let request: BackupPackageRequestModel = new BackupPackageRequestModel();
     request.customerId = this.formUpdateBackupPackageModel.customerId;
     request.createdByUserId = this.formUpdateBackupPackageModel.customerId;
-    request.note = 'cập nhật gói backup';
+    request.note = this.i18n.fanyi('app.backup.package.resize');
+    request.totalPayment = this.orderItem?.totalPayment?.amount
+    request.totalVAT = this.orderItem?.totalVAT?.amount
     request.orderItems = [
       {
         orderItemQuantity: 1,

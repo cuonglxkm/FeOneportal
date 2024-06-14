@@ -75,11 +75,9 @@ import { PrettyPrintPipe } from './iam/user-group/create/pretty-print.pipe';
 import { BlankScheduleBackupComponent } from './schedule-backup/blank/blank-schedule-backup.component';
 import { ListScheduleBackupComponent } from './schedule-backup/list/list-schedule-backup.component';
 import { CreateScheduleBackupComponent } from './schedule-backup/create/create-schedule-backup.component';
-import { ScheduleBackupVmComponent } from './schedule-backup/create/backup-vm/schedule-backup-vm.component';
-import { ScheduleBackupVolumeComponent } from './schedule-backup/create/backup-volume/schedule-backup-volume.component';
 import { EditScheduleBackupVolumeComponent } from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
 import { EditScheduleBackupVmComponent } from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
-import { DeleteScheduleComponent } from './schedule-backup/delete/delete-schedule.component';
+import { DeleteScheduleComponent } from './schedule-backup/action/delete/delete-schedule.component';
 import { SnapshotScheduleListComponent } from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
 import { SnapshotScheduleCreateComponent } from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
 import { SnapshotScheduleDetailComponent } from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
@@ -246,10 +244,10 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
 import { UpdateBackupPackageComponent } from './backup-package/update/update-backup-package.component';
 import { SnapshotCreateComponent } from './snapshot/create/snapshot-create.component';
 import { SnapshotListComponent } from './snapshot/list/snapshot-list.component';
-import { SnapshotDeleteComponent } from './snapshot/delete/snapshot-delete.component';
-import { SnapshotEditComponent } from './snapshot/edit/snapshot-edit.component';
 import { RestoreBackupVmVpcComponent } from './backup-vm/restore-backup-vm-vpc/restore-backup-vm-vpc.component';
 import { RestoreBackupVolumeVpcComponent } from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
+import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.component';
+import { QRCodeModule } from 'angularx-qrcode';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -311,8 +309,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     BlankScheduleBackupComponent,
     ListScheduleBackupComponent,
     CreateScheduleBackupComponent,
-    ScheduleBackupVmComponent,
-    ScheduleBackupVolumeComponent,
     EditScheduleBackupVolumeComponent,
     EditScheduleBackupVmComponent,
     DeleteScheduleComponent,
@@ -472,10 +468,10 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     SnapshotCreateComponent,
     SnapshotCreateComponent,
     SnapshotListComponent,
-    SnapshotDeleteComponent,
-    SnapshotEditComponent,
     RestoreBackupVmVpcComponent,
     RestoreBackupVolumeVpcComponent,
+    SnapshotDetailComponent,
+    SnapshotDetailComponent,
   ],
   imports: [
     CommonModule,
@@ -512,6 +508,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NguCarouselNextDirective,
     NguCarouselPrevDirective,
     NguItemComponent,
+    QRCodeModule
   ],
 })
 export class PagesModule {}

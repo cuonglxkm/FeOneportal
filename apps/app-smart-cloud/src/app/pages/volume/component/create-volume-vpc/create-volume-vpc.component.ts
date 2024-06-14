@@ -14,10 +14,11 @@ import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { CatalogService } from '../../../../shared/services/catalog.service';
-import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel, storageValidator } from '../../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -97,7 +98,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   typeMultiple: boolean;
   typeEncrypt: boolean;
 
-  snapshotList: NzSelectOptionInterface[] = [];
+  snapshotList = [];
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -165,7 +166,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.project = project.id;
 
 
-    this.getListSnapshot();
+    // this.getListSnapshot();
     this.getListInstance();
 
     this.getCatalogOffer('MultiAttachment');
@@ -180,21 +181,58 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   getListSnapshot() {
     this.isLoadingAction = true;
-    this.snapshotList = [];
-    this.snapshotvlService.getSnapshotVolumes(9999, 1, this.region, this.project, '', '', '')
-      .subscribe((data) => {
-        console.log('data vl snapshot', data.records);
-        data?.records.forEach(item => {
-          this.snapshotList.push({ label: item.name, value: item.id });
-        });
-        if (this.activatedRoute.snapshot.paramMap.get('snapshotId')) {
-          const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('snapshotId'));
-          if (this.snapshotList.find(x => x.value == idSnapshot)) {
-            this.onSwitchSnapshot(true);
-            this.snapshotSelected = idSnapshot;
-          }
+    // this.snapshotList = [];
+    this.snapshotvlService.getSnapshotVolumes(9999, 1, this.region, this.project, '', '', '').subscribe(data => {
+      this.isLoadingAction = false
+      console.log('data vl snapshot', data.records)
+      data?.records.forEach(item => {
+        if ((['AVAILABLE', 'KHOITAO'].includes(item.resourceStatus) || ['AVAILABLE', 'KHOITAO'].includes(item.serviceStatus)) && !item.fromRootVolume) {
+          this.snapshotList?.push(item);
         }
       });
+      if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
+        // console.log('here',this.activatedRoute.snapshot.paramMap.get('idSnapshot'))
+        const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idSnapshot'));
+        console.log('list snapshot', this.snapshotList?.find(x => x.id == idSnapshot))
+        if (this.snapshotList?.find(x => x.id == idSnapshot)) {
+          // console.log('here 1:')
+          this.onSwitchSnapshot(true);
+          this.snapshotSelected = idSnapshot;
+          this.validateForm.controls.snapshot.setValue(this.snapshotSelected);
+          this.getDetailSnapshotVolume(idSnapshot);
+        }
+      }
+    });
+  }
+
+  getDetailVolume(idVolume) {
+    this.volumeService.getVolumeById(idVolume, this.project).subscribe(data => {
+      this.onChangeStatusEncrypt(data.isEncryption)
+      this.onChangeStatusMultiAttach(data.isMultiAttach)
+      console.log('instance', data?.attachedInstances[0].instanceId)
+      this.instanceSelectedChange(data?.attachedInstances[0].instanceId)
+      this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0].instanceId)
+    })
+  }
+
+  getDetailSnapshotVolume(id) {
+    this.snapshotvlService.getDetailSnapshotSchedule(id).subscribe(data => {
+      console.log('data', data);
+      this.snapshot = data
+      this.validateForm.controls.storage.setValue(data.sizeInGB)
+      // this.minStorage = data.sizeInGB
+      this.validateForm.controls.storage.setValidators([storageValidator(data.sizeInGB)]);
+      this.validateForm.controls.storage.updateValueAndValidity();
+      this.getDetailVolume(data.volumeId)
+      if(data.volumeType == 'hdd') {
+        this.selectedValueHDD = true
+        this.selectedValueSSD = false
+      }
+      if(data.volumeType == 'ssd') {
+        this.selectedValueSSD = true
+        this.selectedValueHDD = false
+      }
+    });
   }
 
   getCatalogOffer(type) {
@@ -313,6 +351,10 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
+    this.getListSnapshot()
     this.getConfiguration();
     if (this.selectedValueHDD) {
       this.iops = 300;
@@ -375,6 +417,9 @@ export class CreateVolumeVpcComponent implements OnInit {
     } else {
       this.validateForm.controls.snapshot.clearValidators();
       this.validateForm.controls.snapshot.updateValueAndValidity();
+
+      this.validateForm.controls.storage.clearValidators();
+      this.validateForm.controls.storage.updateValueAndValidity();
     }
   }
 
@@ -383,19 +428,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.snapshotSelected = value;
     console.log('snapshot selected: ', this.snapshotSelected);
     if (this.snapshotSelected != undefined) {
-      this.snapshotvlService.getDetailSnapshotSchedule(this.snapshotSelected).subscribe(data => {
-        console.log('data', data);
-        this.validateForm.controls.storage.setValidators([Validators.min(data.sizeInGB)])
-        this.validateForm.controls.storage.setValue(data.sizeInGB)
-        if(data.volumeType == 'hdd') {
-          this.selectedValueHDD = true
-          this.selectedValueSSD = false
-        }
-        if(data.volumeType == 'ssd') {
-          this.selectedValueSSD = true
-          this.selectedValueHDD = false
-        }
-      });
+      this.getDetailSnapshotVolume(this.snapshotSelected)
     }
   }
 

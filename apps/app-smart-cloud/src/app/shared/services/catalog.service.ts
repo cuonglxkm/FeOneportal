@@ -1,14 +1,24 @@
 import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import { OfferDetail, Product } from '../models/catalog.model';
+import { catchError } from 'rxjs/internal/operators/catchError';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class CatalogService extends BaseService {
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
+    })
+  };
+
   constructor(public http: HttpClient,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
@@ -21,15 +31,44 @@ export class CatalogService extends BaseService {
     if(unitOfMeasure != undefined || unitOfMeasure != null) param = param.append('unitOfMeasure', unitOfMeasure)
     if(unitOfMeasureProduct != undefined || unitOfMeasureProduct != null) param = param.append('unitOfMeasureProduct', unitOfMeasureProduct)
     return this.http.get<OfferDetail[]>(this.baseUrl + this.ENDPOINT.catalogs + '/offers', {
-      params: param
-    })
+      params: param,
+      headers: this.httpOptions.headers
+    }).pipe(catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        console.error('login');
+      } else if (error.status === 404) {
+        // Handle 404 Not Found error
+        console.error('Resource not found');
+      }
+      return throwError(error);
+    }));
   }
 
   getDetailOffer(id: number) {
-    return this.http.get<OfferDetail>(this.baseUrl + this.ENDPOINT.catalogs + `/offers/${id}`)
+    return this.http.get<OfferDetail>(this.baseUrl + this.ENDPOINT.catalogs + `/offers/${id}`, {
+      headers: this.httpOptions.headers
+    }).pipe(catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        console.error('login');
+      } else if (error.status === 404) {
+        // Handle 404 Not Found error
+        console.error('Resource not found');
+      }
+      return throwError(error);
+    }));
   }
 
   searchProduct(uniqueName: string) {
-    return this.http.get<Product[]>(this.baseUrl + this.ENDPOINT.catalogs + `/products?uniqueName=${uniqueName}&containsSearch=true`)
+    return this.http.get<Product[]>(this.baseUrl + this.ENDPOINT.catalogs + `/products?uniqueName=${uniqueName}&containsSearch=true`, {
+      headers: this.httpOptions.headers
+    }).pipe(catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        console.error('login');
+      } else if (error.status === 404) {
+        // Handle 404 Not Found error
+        console.error('Resource not found');
+      }
+      return throwError(error);
+    }));
   }
 }

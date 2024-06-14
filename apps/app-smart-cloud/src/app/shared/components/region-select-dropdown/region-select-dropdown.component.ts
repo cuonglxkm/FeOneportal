@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import { RegionModel, RegionCoreService } from '../../../../../../../libs/common-utils/src';
+import { RegionModel, RegionCoreService, CoreDataService } from '../../../../../../../libs/common-utils/src';
 import {environment} from '@env/environment';
 
 @Component({
@@ -15,7 +15,7 @@ export class RegionSelectDropdownComponent implements OnInit {
   selectedRegion: RegionModel;
   listRegion: RegionModel[] = []
 
-  constructor(private regionService: RegionCoreService) {
+  constructor(private regionService: RegionCoreService, private coreDataService: CoreDataService) {
   }
 
   ngOnInit() {
@@ -48,7 +48,9 @@ export class RegionSelectDropdownComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
+    let baseUrl = environment['baseUrl'];
     localStorage.setItem('regionId', JSON.stringify(region.regionId))
+    this.coreDataService.getProjects(baseUrl, region.regionId);
     localStorage.removeItem('projectId')
     this.valueChanged.emit(region);
   }

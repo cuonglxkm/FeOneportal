@@ -42,7 +42,7 @@
               [placeholder]="'app.payment.searchPlaceHolder' | i18n" />
           </nz-input-group>
           <ng-template #prefixIconSearch>
-            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+            <img src="assets/imgs/search.svg" alt="" />
           </ng-template>
         </div>
       </nz-space>
@@ -72,8 +72,8 @@
           <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)" nzLeft></td>
           <td nzLeft><a (click)="getPaymentDetail(data)">{{data.paymentNumber}}</a></td>
           <td nzBreakWord><a (click)="getOrderDetail(data.orderNumber)">{{data.orderNumber}}</a></td>
-          <td nzBreakWord>{{data.amount | number}}</td>
-          <td nzBreakWord>{{data.createdDate | date: 'dd/MM/yyyy'}}</td>
+          <td nzAlign="right" nzBreakWord>{{data.totalAmount | number}}</td>
+          <td nzAlign="center" nzBreakWord>{{data.createdDate | date: 'dd/MM/yyyy'}}</td>
           <td *ngIf="data.paymentLatestStatus === 'PAID'" class="paid" nzBreakWord>
             {{"app.payment.status.paid" | i18n}}
           </td>

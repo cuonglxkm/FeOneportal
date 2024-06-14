@@ -70,6 +70,7 @@ export class CoreDataService {
 
         this.regionService.getAll(baseUrl).subscribe({
             next : (data) => {
+                
                 if (!data) {
                     this.router.navigateByUrl(`/exception/500`)
                 }
@@ -107,6 +108,7 @@ export class CoreDataService {
 
         this.projectService.getByRegion(baseUrl, regionId).subscribe({
             next: (data) => {
+                console.log(data);
                 
                 if (!data) {
                     this.router.navigateByUrl(`/exception/500`)

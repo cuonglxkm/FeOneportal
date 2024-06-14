@@ -178,6 +178,8 @@ export class ExtendFileSystemNormalComponent implements OnInit {
     request.customerId = this.extendFileSystem.customerId;
     request.createdByUserId = this.extendFileSystem.customerId;
     request.note = 'Gia hạn File System';
+    request.totalPayment = this.orderItem?.totalPayment?.amount
+    request.totalVAT = this.orderItem?.totalVAT?.amount
     request.orderItems = [
       {
         orderItemQuantity: 1,

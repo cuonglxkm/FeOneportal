@@ -56,6 +56,7 @@ export interface SystemInfoBackup {
   flavorName: string,
   osName: string,
   imageId: string
+  imageIdInt: number
 }
 
 export interface SecurityGroupBackup {
@@ -198,14 +199,14 @@ export class RestoreInstanceBackup {
   subnetCloudId: any
   offerFlavorId: number
   keypairName: any
-  volumeSize: number
+  volumeSize: number = 0
   isUsePrivateNetwork: boolean
   ipPublic: any
   password: any
   encryption: boolean
-  ram: number
-  cpu: number
-  gpuCount: any
+  ram: number = 0
+  cpu: number = 0
+  gpuCount: any = 0
   gpuTypeOfferId: any
   privateNetId: any
   privatePortId: any

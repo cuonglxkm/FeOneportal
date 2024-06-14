@@ -1,10 +1,11 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action"
+  <page-header [breadcrumb]="breadcrumb" [action]="action"
              [title]="'app.file.system.extend' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/'+idFileSystem">{{ 'app.file.system.detail' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/'+ idFileSystem +'/extend'">{{ 'app.file.system.extend' | i18n }}</a>

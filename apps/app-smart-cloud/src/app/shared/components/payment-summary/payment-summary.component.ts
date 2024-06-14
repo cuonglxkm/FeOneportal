@@ -33,6 +33,7 @@ import {
   FormCreateUserInvoice,
   FormInitUserInvoice,
 } from '../../models/invoice';
+import { TAX_CODE_REGEX } from '../../constants/constants';
 
 class ServiceInfo {
   name: string;
@@ -69,6 +70,7 @@ export class PaymentSummaryComponent implements OnInit {
   returnPath: string;
   serviceType: string;
   isVisibleCustomerInvoice: boolean = false;
+  isVisibleConfirm: boolean = false;
   customerGroup: any;
   customerGroups: any;
   customerType: any;
@@ -82,8 +84,8 @@ export class PaymentSummaryComponent implements OnInit {
   isLoadingUpdateInfo: boolean = false;
   radioValue = 1;
   options = [
-    { label: 'Khách hàng doanh nghiệp', value: 1 },
-    { label: 'Khách hàng cá nhân', value: 2 },
+    { label: this.i18n.fanyi('app.invoice.export.customer1'), value: 1 },
+    { label: this.i18n.fanyi('app.invoice.export.customer2'), value: 2 },
   ];
 
   constructor(
@@ -260,6 +262,18 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.text.upgrade');
             break;
+          case 'vpc_create':
+            serviceItem.name = `VPC - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
+            break;
+          case 'vpc_resize':
+            serviceItem.name = `VPC - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
+            break;
+          case 'vpc_extend':
+            serviceItem.name = `VPC - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
+            break;
           default:
             serviceItem.name = '';
             break;
@@ -311,8 +325,16 @@ export class PaymentSummaryComponent implements OnInit {
               this.userModel.phoneNumber
             );
             this.getListCustomerGroup();
-          }else if(this.userModel && this.userModel.customerInvoice !== null){
-            this.getDataExportInvoice()
+          } else if (
+            this.userModel &&
+            this.userModel.customerInvoice !== null
+          ) {
+            if (this.userModel.customerInvoice.customerGroupId === 1) {
+              this.radioValue = 2;
+            } else {
+              this.radioValue = 1;
+            }
+            this.getDataExportInvoice();
           }
           this.cdr.detectChanges();
         },
@@ -337,7 +359,7 @@ export class PaymentSummaryComponent implements OnInit {
       '',
       [Validators.required, AppValidator.cannotContainSpecialCharactor],
     ],
-    taxCode: ['', [Validators.required, Validators.pattern(/^[0-9-]+$/)]],
+    taxCode: ['', [Validators.required, Validators.pattern(TAX_CODE_REGEX)]],
     address: ['', Validators.required],
   });
 
@@ -349,15 +371,15 @@ export class PaymentSummaryComponent implements OnInit {
     taxCode: FormControl<string>;
     address: FormControl<string>;
   }> = this.fb.group({
-    nameCompany: ['', [Validators.required]],
+    nameCompany: [''],
     email: ['', [Validators.required, AppValidator.validEmail]],
-    phoneNumber: ['', [Validators.required, AppValidator.validPhoneNumber]],
+    phoneNumber: ['', [AppValidator.validPhoneNumber]],
     nameCustomer: [
       '',
       [Validators.required, AppValidator.cannotContainSpecialCharactor],
     ],
-    taxCode: ['', [Validators.required, Validators.pattern(/^[0-9-]+$/)]],
-    address: ['', [Validators.required]],
+    taxCode: ['', [Validators.pattern(TAX_CODE_REGEX)]],
+    address: [''],
   });
 
   changeOptionInvoices(value: string) {
@@ -365,9 +387,13 @@ export class PaymentSummaryComponent implements OnInit {
     if (this.radioValue === 2) {
       this.formExportInvoice.controls.address.clearValidators();
       this.formExportInvoice.controls.address.updateValueAndValidity();
-      this.formExportInvoice.controls.taxCode.clearValidators();
+      this.formExportInvoice.controls.taxCode.setValidators([
+        Validators.pattern(TAX_CODE_REGEX),
+      ]);
       this.formExportInvoice.controls.taxCode.updateValueAndValidity();
-      this.formExportInvoice.controls.phoneNumber.clearValidators();
+      this.formExportInvoice.controls.phoneNumber.setValidators([
+        AppValidator.validPhoneNumber,
+      ]);
       this.formExportInvoice.controls.phoneNumber.updateValueAndValidity();
       this.formExportInvoice.controls.nameCompany.clearValidators();
       this.formExportInvoice.controls.nameCompany.updateValueAndValidity();
@@ -376,9 +402,10 @@ export class PaymentSummaryComponent implements OnInit {
         Validators.required
       );
       this.formExportInvoice.controls.address.updateValueAndValidity();
-      this.formExportInvoice.controls.taxCode.setValidators(
-        Validators.pattern(/^[0-9-]+$/)
-      );
+      this.formExportInvoice.controls.taxCode.setValidators([
+        Validators.required,
+        Validators.pattern(TAX_CODE_REGEX),
+      ]);
       this.formExportInvoice.controls.taxCode.updateValueAndValidity();
       this.formExportInvoice.controls.phoneNumber.setValidators([
         Validators.required,
@@ -462,27 +489,31 @@ export class PaymentSummaryComponent implements OnInit {
     this.userService.getCustomerGroup().subscribe({
       next: (data) => {
         this.customerGroups = data;
-
-        console.log(this.customerGroups);
         this.customerGroup = data[0].id;
         let customerGroupFilter = this.customerGroups.filter(
           (item) => item.id === this.customerGroup
         );
         this.customerTypes = customerGroupFilter[0].customerTypes;
         this.customerType = this.customerTypes[0].id;
+        console.log(this.customerType);
+        
         if (this.customerType === 1) {
-          this.formCustomerInvoice.controls.taxCode.clearValidators();
+          this.formCustomerInvoice.controls.taxCode.setValidators([
+            Validators.pattern(TAX_CODE_REGEX),
+          ]);
           this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
           this.formCustomerInvoice.controls.nameCompany.clearValidators();
           this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
         } else {
           this.formCustomerInvoice.controls.taxCode.setValidators([
             Validators.required,
-            Validators.pattern(/^[0-9-]+$/),
+            Validators.pattern(TAX_CODE_REGEX),
           ]);
+          this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
           this.formCustomerInvoice.controls.nameCompany.setValidators([
             Validators.required,
           ]);
+          this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
         }
       },
       error: (e) => {
@@ -505,14 +536,45 @@ export class PaymentSummaryComponent implements OnInit {
     console.log(this.customerType);
 
     if (this.customerType === 1) {
-      this.formCustomerInvoice.controls.taxCode.clearValidators();
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.pattern(TAX_CODE_REGEX),
+      ]);
       this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.clearValidators();
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
     } else {
       this.formCustomerInvoice.controls.taxCode.setValidators([
         Validators.required,
-        Validators.pattern(/^[0-9-]+$/),
+        Validators.pattern(TAX_CODE_REGEX),
       ]);
       this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.setValidators([
+        Validators.required,
+      ]);
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
+    }
+  }
+
+  changeCustomerType(id) {
+    console.log(this.customerType);
+
+    if (id === 1 || id === 2) {
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.pattern(TAX_CODE_REGEX),
+      ]);
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.clearValidators();
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
+    } else {
+      this.formCustomerInvoice.controls.taxCode.setValidators([
+        Validators.required,
+        Validators.pattern(TAX_CODE_REGEX),
+      ]);
+      this.formCustomerInvoice.controls.taxCode.updateValueAndValidity();
+      this.formCustomerInvoice.controls.nameCompany.setValidators([
+        Validators.required,
+      ]);
+      this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
     }
   }
 
@@ -569,7 +631,14 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   handleOkUpdateCustomerInvoice() {
-    //  this.pay()
+    this.isVisibleConfirm = true;
+  }
+
+  handleCancelConfirm() {
+    this.isVisibleConfirm = false;
+  }
+
+  handleOk() {
     this.isLoadingUpdateInfo = true;
     this.formCreatUserInvoice.companyName =
       this.formCustomerInvoice.controls.nameCompany.value;
@@ -593,16 +662,17 @@ export class PaymentSummaryComponent implements OnInit {
         this.isLoadingUpdateInfo = false;
         this.notification.success(
           this.i18n.fanyi('app.status.success'),
-          this.i18n.fanyi('Cập nhật thông tin xuất hóa đơn thành công')
+          this.i18n.fanyi('app.invoice.pop-up.update.success')
         );
+        this.isVisibleConfirm = false;
         this.isVisibleCustomerInvoice = false;
         this.getUser();
       },
       error: (e) => {
         this.isLoadingUpdateInfo = false;
         this.notification.error(
-          e.statusText,
-          this.i18n.fanyi('Cập nhật thông tin xuất hóa đơn thất bại')
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.invoice.pop-up.update.fail')
         );
       },
     });
@@ -612,7 +682,7 @@ export class PaymentSummaryComponent implements OnInit {
     this.router.navigate([this.returnPath]);
   }
 
-  getDataExportInvoice(){
+  getDataExportInvoice() {
     this.formExportInvoice.controls.email.setValue(
       this.userModel.customerInvoice.email
     );
@@ -633,10 +703,9 @@ export class PaymentSummaryComponent implements OnInit {
     );
   }
 
-
   updateExportInvoice(event) {
     if (this.userModel && this.userModel.customerInvoice && event === true) {
-      this.getDataExportInvoice()
+      this.getDataExportInvoice();
     }
   }
 }

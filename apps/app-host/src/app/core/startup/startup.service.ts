@@ -81,7 +81,14 @@ export class StartupService {
           
           
           this.regionProjectService.getCoreData(baseUrl);
-          //this.checkPermissionAction(this.menuService['data']);
+          if (localStorage?.getItem('PermissionOPA')){
+            this.checkPermissionAction(this.menuService['data']);
+          } else {
+            this.policyService.getUserPermissions().pipe().subscribe( (permission) => {
+              localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+              this.checkPermissionAction(this.menuService['data']);
+            });
+          }
           
           // if (checkData) {
           //   let json = {

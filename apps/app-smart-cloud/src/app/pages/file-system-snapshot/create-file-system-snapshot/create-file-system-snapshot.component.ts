@@ -39,6 +39,7 @@ import { addDays } from 'date-fns';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { NAME_SNAPSHOT_REGEX } from 'src/app/shared/constants/constants';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
@@ -99,7 +100,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^(?! *$)[a-zA-Z0-9-_ ]{1,255}$/),
+        Validators.pattern(NAME_SNAPSHOT_REGEX),
       ],
     ],
     description: [''],
@@ -109,15 +110,17 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   dataSubjectTime: Subject<any> = new Subject<any>();
 
   updateSelectedFileSystems(selectedFileSystem: number): void {
-    const selectedOption = this.response.records.find(
-      (option) => option.id === selectedFileSystem
-    );
-    if (selectedOption) {
-      this.selectedFileSystemName = selectedOption.name;
+    if(this.response && this.response.records){
+      const selectedOption = this.response.records.find(
+        (option) => option.id === selectedFileSystem
+      );
+      if (selectedOption) {
+        this.selectedFileSystemName = selectedOption.name;
+      }
+      this.fileSysId = selectedOption.id;
+      this.fileSysSize = selectedOption.size;
+      this.getTotalAmount();
     }
-    this.fileSysId = selectedOption.id;
-    this.fileSysSize = selectedOption.size;
-    this.getTotalAmount();
   }
 
   getListFileSystem() {
@@ -182,9 +185,6 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     private configurationsService: ConfigurationsService,
     private projectService: ProjectService
   ) {
-    this.form.get('time').valueChanges.subscribe((data) => {
-      this.getTotalAmount();
-    });
   }
 
   caculator(event) {
@@ -272,7 +272,6 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       this.storageBuyVpc = data.cloudProject?.quotaShareInGb
       this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
       this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
-      console.log('share remaining', this.storageRemaining)
       this.isLoading = false
     })
   }
@@ -298,8 +297,6 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
           if (data.success) {
           var returnPath: string =
             '/app-smart-cloud/file-system-snapshot/create';
-          console.log('request', request);
-          console.log('service name', this.formCreate.serviceName);
           this.router.navigate(['/app-smart-cloud/order/cart'], {
             state: { data: request, path: returnPath },
           });
@@ -330,7 +327,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
                       this.i18n.fanyi('app.file.snapshot.create.success')
                     );
                     this.router.navigate([
-                      '/app-smart-cloud/file-system-snapshot/list',
+                      '/app-smart-cloud/file-system-snapshot',
                     ]);
                   }
                 } else {
@@ -380,7 +377,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -389,6 +386,6 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   }
 
   userChangeProject(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot']);
   }
 }

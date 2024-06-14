@@ -9,6 +9,9 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/instances']">{{
           'app.instances' | i18n
         }}</a>
@@ -311,7 +314,7 @@
                 *ngIf="
                   infoVPC.cloudProject.gpuProjects.length != 0 &&
                   instancesModel.volumeType != 0 &&
-                  isGpuConfig
+                  isGpuConfig && remainingGpu > 0
                 "
                 >, {{ remainingGpu }}/{{ purchasedGpu }} GPU</span
               >
@@ -647,7 +650,7 @@
                           [ngModelOptions]="{ standalone: true }"
                         ></nz-slider>
                         <div
-                          *ngIf="remainingGpu == 0"
+                          *ngIf="remainingGpu <= 0"
                           style="font-size: 14px; color: #ff4d4f"
                         >
                           {{ 'app.alert.quota.vpc' | i18n }}
@@ -753,7 +756,7 @@
                 nzType="primary"
                 [nzLoading]="isLoading"
                 (click)="update()"
-                [disabled]="!isChange"
+                [disabled]="!isChange && disableUpdate"
               >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
                 <span>{{ 'app.button.resize' | i18n }}</span>

@@ -1,6 +1,17 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { FormSearchFileSystem, OrderCreateFileSystem } from '../../../../shared/models/file-system.model';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+import {
+  CreateFileSystemRequestModel,
+  FormSearchFileSystem,
+  OrderCreateFileSystem
+} from '../../../../shared/models/file-system.model';
 import { SnapshotVolumeService } from '../../../../shared/services/snapshot-volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
@@ -10,8 +21,12 @@ import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { debounceTime, Subject } from 'rxjs';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
-import { CreateVolumeRequestModel } from '../../../../shared/models/volume.model';
-import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import {
+  AppValidator,
+  ProjectModel,
+  RegionModel,
+  storageValidator
+} from '../../../../../../../../libs/common-utils/src';
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -19,6 +34,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 import { OrderService } from '../../../../shared/services/order.service';
+
+
 
 @Component({
   selector: 'one-portal-create-file-system-normal',
@@ -88,6 +105,8 @@ export class CreateFileSystemNormalComponent implements OnInit {
 
   snapshotCloudId: string;
 
+  snapshot: any;
+
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -133,6 +152,9 @@ export class CreateFileSystemNormalComponent implements OnInit {
     } else {
       this.validateForm.controls.snapshot.clearValidators();
       this.validateForm.controls.snapshot.updateValueAndValidity();
+
+      this.validateForm.controls.storage.clearValidators();
+      this.validateForm.controls.storage.updateValueAndValidity();
     }
   }
 
@@ -201,9 +223,12 @@ export class CreateFileSystemNormalComponent implements OnInit {
   getDetailFileSystemSnapshot(id) {
     this.fileSystemSnapshotService.getFileSystemSnapshotById(id, this.project).subscribe(data => {
       // console.log('data', data.cloudId);
+      this.snapshot = data;
       this.snapshotCloudId = data.cloudId;
-      this.minStorage = data.sizeInGB
-      this.validateForm.controls.storage.setValue(data.sizeInGB)
+      // this.minStorage = data.sizeInGB;
+      this.validateForm.controls.storage.setValue(data.sizeInGB);
+      this.validateForm.controls.storage.setValidators([storageValidator(data.sizeInGB)]);
+      this.validateForm.controls.storage.updateValueAndValidity();
     });
 
   }
@@ -236,10 +261,10 @@ export class CreateFileSystemNormalComponent implements OnInit {
     if (this.validateForm.controls.type.value == 1) {
       this.formCreate.shareType = 'generic_share_type';
     }
-    if(this.validateForm.controls.snapshot.value != null) {
+    if (this.validateForm.controls.snapshot.value != null) {
       this.formCreate.snapshotId = this.validateForm.controls.snapshot.value;
     }
-    if(this.snapshotCloudId != undefined) {
+    if (this.snapshotCloudId != undefined) {
       this.formCreate.snapshotCloudId = this.snapshotCloudId;
     }
     this.formCreate.isPublic = false;
@@ -313,10 +338,12 @@ export class CreateFileSystemNormalComponent implements OnInit {
   navigateToPayment() {
     this.isLoadingAction = true;
     this.fileSystemInit();
-    let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
+    let request: CreateFileSystemRequestModel = new CreateFileSystemRequestModel();
     request.customerId = this.formCreate.customerId;
     request.createdByUserId = this.formCreate.customerId;
     request.note = 'tạo file system';
+    request.totalPayment = this.orderItem?.totalPayment?.amount;
+    request.totalVAT = this.orderItem?.totalVAT?.amount;
     request.orderItems = [
       {
         orderItemQuantity: 1,

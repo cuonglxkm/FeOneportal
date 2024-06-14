@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {PaymentModel, PaymentSearch} from "../../../../shared/models/payment.model";
-import {BaseResponse, ProjectModel, RegionModel} from "../../../../../../../../libs/common-utils/src";
+import {BaseResponse, NotificationService, ProjectModel, RegionModel} from "../../../../../../../../libs/common-utils/src";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {PaymentService} from "../../../../shared/services/payment.service";
 import { Router } from '@angular/router';
@@ -58,7 +58,8 @@ export class ListPaymentComponent implements OnInit{
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private paymentService: PaymentService, private router: Router,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private notificationService: NotificationService
             ) {
   }
 
@@ -236,6 +237,12 @@ export class ListPaymentComponent implements OnInit{
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId
     // this.getListInvoices()
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+    this.notificationService.connection.on('UpdateStatePayment', (data) => {
+      this.getListInvoices();
+    });
   }
 
   getPaymentDetail(data: any) {

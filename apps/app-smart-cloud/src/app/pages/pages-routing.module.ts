@@ -160,6 +160,7 @@ import { RestoreBackupVmVpcComponent } from './backup-vm/restore-backup-vm-vpc/r
 import {
   RestoreBackupVolumeVpcComponent
 } from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
+import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
@@ -642,7 +643,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'order/list',
+    path: 'order',
     component: OrderListComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -905,7 +906,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'file-system-snapshot/list',
+    path: 'file-system-snapshot',
     component: FileSystemSnapshotComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1243,6 +1244,10 @@ const routes: Routes = [
   {
     path: 'snapshot',
     component: SnapshotListComponent,
+  },
+  {
+    path: 'snapshot/detail/:id',
+    component: SnapshotDetailComponent,
   }
 ];
 

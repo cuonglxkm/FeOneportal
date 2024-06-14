@@ -9,6 +9,9 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/instances']">{{
           'app.instances' | i18n
         }}</a>
@@ -360,12 +363,12 @@
                     [tabIndex]="0"
                     style="cursor: pointer"
                     (click)="
-                      onInputFlavors(item.id);
-                      selectElementInputFlavors('flavor_' + item.id)
+                      selectElementInputFlavors('flavor_' + item.id);
+                      onInputFlavors(item.id)
                     "
                     (keyup.enter)="
-                      onInputFlavors(item.id);
-                      selectElementInputFlavors('flavor_' + item.id)
+                      selectElementInputFlavors('flavor_' + item.id);
+                      onInputFlavors(item.id)
                     "
                     [id]="'flavor_' + item.id"
                   >
@@ -813,6 +816,19 @@
             {{ instanceResize.gpuType | uppercase }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">
+                {{ 'app.fee.resize' | i18n }}
+              </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalAmount | number }}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
               <span class="text-value">

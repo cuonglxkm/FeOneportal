@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'app.vpn.connection-create' |i18n"
+  [title]="'app.vpn.connection-create' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
@@ -9,14 +9,16 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        {{ 'app.breadcrumb.infrastructure.service' | i18n }}   
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']"
           >VPN site to site</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>{{'app.vpn.connection-create' |i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.vpn.connection-create' | i18n
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -25,13 +27,13 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="region"
-      (valueChanged)="onProjectChange($event)"
-      (userChanged)="userChangeProject($event)"
-    ></project-select-dropdown>
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+        (userChanged)="userChangeProject($event)"
+      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -39,20 +41,22 @@
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="17" class="gutter-row">
     <nz-card style="border-radius: 8px">
-      <h2 class="custom-title">{{'app.information' |i18n}} VPN Connection</h2>
+      <h2 class="custom-title">
+        {{ 'app.information' | i18n }} VPN Connection
+      </h2>
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control [nzErrorTip]="nameErrorTpl">
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px;">
-                    <span>{{'form.account.name' |i18n}}</span>
+                  <div style="margin-top: 15px">
+                    <span>{{ 'form.account.name' | i18n }}</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'app.vpn.connection-create.name.tooltip' |i18n
+                        'app.vpn.connection-create.name.tooltip' | i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -67,17 +71,17 @@
                   required
                   appTrim
                   [maxlength]="50"
-                  [placeholder]="'app.input.name' |i18n"
+                  [placeholder]="'app.input.name' | i18n"
                   formControlName="name"
                   class="input-custom"
                 />
                 <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >{{'app.vpn.connection-create.name.alert' |i18n}}</ng-container
-                  >
-                  <ng-container *ngIf="control.hasError('pattern')"
-                    >{{'app.vpn.connection-create.name.tooltip' |i18n}}</ng-container
-                  >
+                  <ng-container *ngIf="control.hasError('required')">{{
+                    'app.vpn.connection-create.name.alert' | i18n
+                  }}</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">{{
+                    'app.vpn.connection-create.name.tooltip' | i18n
+                  }}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -86,13 +90,13 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px;">
+                  <div style="margin-top: 15px">
                     <span>IPsec Policy</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'app.vpn.connection-create.ipsec.tooltip' |i18n
+                        'app.vpn.connection-create.ipsec.tooltip' | i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -102,8 +106,6 @@
                   </div>
                 </nz-form-label>
                 <nz-select
-                  nzShowSearch
-                  nzAllowClear
                   [(ngModel)]="selectedIpsecPolicy"
                   formControlName="ipsecpolicyId"
                   [ngModelOptions]="{ standalone: true }"
@@ -131,7 +133,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'app.vpn.connection-create.vpnservice.tooltip' |i18n
+                        'app.vpn.connection-create.vpnservice.tooltip' | i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -141,8 +143,6 @@
                   </div>
                 </nz-form-label>
                 <nz-select
-                  nzShowSearch
-                  nzAllowClear
                   [(ngModel)]="selectedVpnService"
                   formControlName="vpnServiceId"
                   class="input-select-custom"
@@ -168,7 +168,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'app.vpn.connection-create.peerIP.tooltip' |i18n
+                        'app.vpn.connection-create.peerIP.tooltip' | i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -181,17 +181,19 @@
                   nz-input
                   type="text"
                   required
-                  [placeholder]="'app.vpn.connection-create.peerIP.input' |i18n"
+                  [placeholder]="
+                    'app.vpn.connection-create.peerIP.input' | i18n
+                  "
                   formControlName="peerRemoteIp"
                   class="input-custom"
                 />
                 <ng-template #peerRemoteIdErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >{{'app.vpn.connection-create.peerIP.alert1' |i18n}}</ng-container
-                  >
-                  <ng-container *ngIf="control.hasError('pattern')"
-                    >{{'app.vpn.connection-create.peerIP.alert2' |i18n}}</ng-container
-                  >
+                  <ng-container *ngIf="control.hasError('required')">{{
+                    'app.vpn.connection-create.peerIP.alert1' | i18n
+                  }}</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">{{
+                    'app.vpn.connection-create.peerIP.alert2' | i18n
+                  }}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -206,7 +208,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'app.vpn.connection-create.local.tooltip' |i18n
+                        'app.vpn.connection-create.local.tooltip' | i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -216,8 +218,6 @@
                   </div>
                 </nz-form-label>
                 <nz-select
-                  nzShowSearch
-                  nzAllowClear
                   formControlName="localEndpointGroup"
                   [(ngModel)]="selectedLocalEndpointGroup"
                   [ngModelOptions]="{ standalone: true }"
@@ -244,7 +244,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'app.vpn.connection-create.peerId.tooltip' |i18n
+                        'app.vpn.connection-create.peerId.tooltip' | i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -257,17 +257,19 @@
                   nz-input
                   type="text"
                   required
-                  [placeholder]="'app.vpn.connection-create.peerID.input' |i18n"
+                  [placeholder]="
+                    'app.vpn.connection-create.peerID.input' | i18n
+                  "
                   formControlName="peerId"
                   class="input-custom"
                 />
                 <ng-template #peerIdErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >{{'app.vpn.connection-create.peerId.alert1' |i18n}}</ng-container
-                  >
-                  <ng-container *ngIf="control.hasError('pattern')"
-                    >{{'app.vpn.connection-create.peerId.alert2' |i18n}}</ng-container
-                  >
+                  <ng-container *ngIf="control.hasError('required')">{{
+                    'app.vpn.connection-create.peerId.alert1' | i18n
+                  }}</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">{{
+                    'app.vpn.connection-create.peerId.alert2' | i18n
+                  }}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -282,7 +284,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'app.vpn.connection-create.ike.tooltip' |i18n
+                        'app.vpn.connection-create.ike.tooltip' | i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -292,8 +294,6 @@
                   </div>
                 </nz-form-label>
                 <nz-select
-                  nzShowSearch
-                  nzAllowClear
                   formControlName="ikepolicyId"
                   [(ngModel)]="selectedIkePolicy"
                   [ngModelOptions]="{ standalone: true }"
@@ -320,7 +320,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'app.vpn.connection-create.remote.tooltip' |i18n
+                        'app.vpn.connection-create.remote.tooltip' | i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -330,8 +330,6 @@
                   </div>
                 </nz-form-label>
                 <nz-select
-                  nzShowSearch
-                  nzAllowClear
                   formControlName="remoteEndpointGroup"
                   [(ngModel)]="selectedRemoteEndpointGroup"
                   [ngModelOptions]="{ standalone: true }"
@@ -351,14 +349,14 @@
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control [nzErrorTip]="preShareKeyErrorTpl">
-                <nz-form-label nzFor="name" >
+                <nz-form-label nzFor="name">
                   <div>
                     <span>Pre - Shared Key (PSK) string</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                         'app.vpn.connection-create.prekey.tooltip' |i18n
+                        'app.vpn.connection-create.prekey.tooltip' | i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -378,7 +376,9 @@
                     style="height: 30px"
                     required
                     appTrim
-                    [placeholder]="'app.vpn.connection-create.prekey.input' |i18n"
+                    [placeholder]="
+                      'app.vpn.connection-create.prekey.input' | i18n
+                    "
                     formControlName="preSharedKey"
                     class="input-custom"
                   />
@@ -389,14 +389,13 @@
                     nz-icon
                     [nzType]="preSharedKeyVisible ? 'eye-invisible' : 'eye'"
                     (click)="preSharedKeyVisible = !preSharedKeyVisible"
-                    appTrim
                     style="cursor: pointer"
                   ></span>
                 </ng-template>
                 <ng-template #preShareKeyErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >{{'app.vpn.connection-create.prekey.alert' |i18n}}</ng-container
-                  >
+                  <ng-container *ngIf="control.hasError('required')">{{
+                    'app.vpn.connection-create.prekey.alert' | i18n
+                  }}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -406,7 +405,9 @@
     </nz-card>
 
     <nz-card style="border-radius: 8px">
-      <h2 class="custom-title">{{'app.information' |i18n}} Optional Parameter</h2>
+      <h2 class="custom-title">
+        {{ 'app.information' | i18n }} Optional Parameter
+      </h2>
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item>
@@ -418,7 +419,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'app.vpn.connection-create.maxtrans.tooltip' |i18n
+                      'app.vpn.connection-create.maxtrans.tooltip' | i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -448,7 +449,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'app.vpn.connection-create.deadpeer.tooltip' |i18n
+                      'app.vpn.connection-create.deadpeer.tooltip' | i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -477,7 +478,8 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'app.vpn.connection-create.deadpeer.interval.tooltip' |i18n
+                      'app.vpn.connection-create.deadpeer.interval.tooltip'
+                        | i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -506,7 +508,8 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'app.vpn.connection-create.deadpeer.timeout.tooltip' |i18n
+                      'app.vpn.connection-create.deadpeer.timeout.tooltip'
+                        | i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -535,7 +538,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'app.vpn.connection-create.initstate.tooltip' |i18n
+                      'app.vpn.connection-create.initstate.tooltip' | i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -559,66 +562,62 @@
   </div>
   <div nz-col [nzSpan]="7" class="gutter-row">
     <nz-card style="border-radius: 8px" class="card-border">
-
-        <h2 class="custom-title">{{'app.config.parameters' |i18n}}</h2>
-        <div style="margin-bottom: 50px">
-          <div style="margin-bottom: 12px">
-            <h3 class="custom-subtitle">{{'form.account.name' |i18n}}</h3>
-            <span class="text-break">{{ form.value.name }}</span>
-          </div>
-          <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">IKE Policy</h3>
-            <span class="text-break">{{ selectedIkePolicyName }}</span>
-          </div>
-          <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">IPsec Policy</h3>
-            <span class="text-break">{{ selectedIpsecPolicyName }}</span>
-          </div>
-          <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">VPN Service</h3>
-            <span class="text-break">{{ selectedVpnServiceName }}</span>
-          </div>
-          <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Peer Remote IP VPN Gateway</h3>
-            <span>{{ form.value.peerRemoteIp }}</span>
-          </div>
-          <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Peer ID VPN Connections</h3>
-            <span>{{ form.value.peerId }}</span>
-          </div>
-          <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Local System Subnet</h3>
-            <span>{{ selectedLocalEndpointGroupName }}</span>
-          </div>
-          <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Remote Local Subnet</h3>
-            <span>{{ selectedRemoteEndpointGroupName }}</span>
-          </div>
-          <div style="margin-bottom: 20px">
-            <h3 class="custom-subtitle">Pre - Shared Key (PSK) string</h3>
-            <span class="text-break">{{ form.value.preSharedKey }}</span>
-          </div>
+      <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
+      <div style="margin-bottom: 50px">
+        <div style="margin-bottom: 12px">
+          <h3 class="custom-subtitle">{{ 'form.account.name' | i18n }}</h3>
+          <span class="text-break">{{ form.value.name }}</span>
         </div>
-        <button
-          (click)="handleCreate()"
-          nz-button
-          nzType="primary"
-          style="
-            border: none;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            justify-content: center;
-          "
-          nzSize="large"
-          [nzLoading]="isLoading"
-          [disabled]="form.invalid"
-        >
-          <img src="assets/imgs/wallet.svg" alt="" />
-          <span class="button-text-primary">{{'app.button.create' |i18n}}</span>
-        </button>
-      
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">IKE Policy</h3>
+          <span class="text-break">{{ selectedIkePolicyName }}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">IPsec Policy</h3>
+          <span class="text-break">{{ selectedIpsecPolicyName }}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">VPN Service</h3>
+          <span class="text-break">{{ selectedVpnServiceName }}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Peer Remote IP VPN Gateway</h3>
+          <span>{{ form.value.peerRemoteIp }}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Peer ID VPN Connections</h3>
+          <span>{{ form.value.peerId }}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Local System Subnet</h3>
+          <span>{{ selectedLocalEndpointGroupName }}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Remote Local Subnet</h3>
+          <span>{{ selectedRemoteEndpointGroupName }}</span>
+        </div>
+      </div>
+      <button
+        (click)="handleCreate()"
+        nz-button
+        nzType="primary"
+        style="
+          border: none;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          justify-content: center;
+        "
+        nzSize="large"
+        [nzLoading]="isLoading"
+        [disabled]="form.invalid"
+      >
+        <img src="assets/imgs/wallet.svg" alt="" />
+        <span class="button-text-primary">{{
+          'app.button.create' | i18n
+        }}</span>
+      </button>
     </nz-card>
   </div>
 </div>

@@ -3,14 +3,14 @@ def imageTag
 def appName
 
 pipeline {
-
+    
     agent { label 'worker-6-agent||jenkins-oneportal' }
 
     environment {
         registry = "registry.onsmartcloud.com"
         registryCredential = "cloud-harbor-id"
-        k8sCredential = "k8s-oneportal-stag"
-        ENV = "dev"
+        k8sCredential = "k8s-cred"
+        ENV = "test"
     }
     stages {
 

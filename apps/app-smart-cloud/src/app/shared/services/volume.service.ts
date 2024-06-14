@@ -19,6 +19,13 @@ import { BaseResponse } from '../../../../../../libs/common-utils/src';
   providedIn: 'root'
 })
 export class VolumeService extends BaseService {
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      Authorization: 'Bearer ' + this.tokenService.get()?.token,
+    }),
+  };
 
   //API GW
   private urlVolumeGW = this.baseUrl + this.ENDPOINT.provisions + '/volumes';
@@ -41,7 +48,8 @@ export class VolumeService extends BaseService {
     if(currentPage != undefined || currentPage != null) param = param.append('currentPage', currentPage)
 
     return this.http.get<BaseResponse<VolumeDTO[]>>(this.baseUrl + this.ENDPOINT.provisions + '/volumes', {
-      params: param
+      params: param,
+      headers: this.httpOptions.headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -54,8 +62,19 @@ export class VolumeService extends BaseService {
       }))
   }
 
-  getVolumeById(volumeId: number) {
-    return this.http.get<VolumeDTO>(this.baseUrl+this.ENDPOINT.provisions + `/volumes/${volumeId}`)
+  getVolumeById(volumeId: number, projectId: number) {
+    return this.http.get<VolumeDTO>(this.baseUrl+this.ENDPOINT.provisions + `/volumes/${volumeId}?projectId=${projectId}`, {
+      headers: this.httpOptions.headers
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   getListVM(userId: number, regionId: number): Observable<GetAllVmModel> {
@@ -66,37 +85,30 @@ export class VolumeService extends BaseService {
     if (userId != null){
       url += '&userId='+userId;
     }
-    return this.http.get<GetAllVmModel>(url).pipe(
+    return this.http.get<GetAllVmModel>(url, {headers: this.httpOptions.headers}).pipe(
       catchError(this.handleError<GetAllVmModel>('get all-vms error'))
     );
   }
 
   createNewVolume(request: CreateVolumeRequestModel): Observable<CreateVolumeResponseModel> {
-    const token = this.tokenService.get()?.token;
-    var reqHeader = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token,
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId
-    });
-    return this.http.post<CreateVolumeResponseModel>(this.urlOrderGW, request,{headers: reqHeader})
-
+    return this.http.post<CreateVolumeResponseModel>(this.urlOrderGW, request,{headers: this.httpOptions.headers})
   }
 
   editSizeVolume(request: EditSizeVolumeModel): Observable<any> {
-    return this.http.post<any>(this.urlOrderGW, request)
+    return this.http.post<any>(this.urlOrderGW, request, {headers: this.httpOptions.headers})
   }
 
   deleteVolume(idVolume: number): Observable<boolean> {
-    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume)
+    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume, {headers: this.httpOptions.headers})
   }
 
   addVolumeToVm(request: AddVolumetoVmModel) {
-    return this.http.post<boolean>(this.urlVolumeGW + '/attach', Object.assign(request))
+    return this.http.post<boolean>(this.urlVolumeGW + '/attach', Object.assign(request), {headers: this.httpOptions.headers})
   }
 
 
   detachVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
-    return this.http.post<boolean>(this.urlVolumeGW + '/detach', Object.assign(request)).pipe(
+    return this.http.post<boolean>(this.urlVolumeGW + '/detach', Object.assign(request),{headers: this.httpOptions.headers}).pipe(
       catchError(this.handleError<boolean>('Add Volume to VM error.'))
     );
   }
@@ -108,13 +120,13 @@ export class VolumeService extends BaseService {
   // }
 
   extendsVolume(request: EditSizeVolumeModel): Observable<any>{
-    return this.http.post<any>(this.urlOrderGW, Object.assign(request)).pipe(
+    return this.http.post<any>(this.urlOrderGW, Object.assign(request),{headers: this.httpOptions.headers}).pipe(
       catchError(this.handleError<any>('Extends size volume error.'))
     );
   }
 
   updateVolume(request: EditTextVolumeModel) {
-    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + `/volumes/${request.volumeId}`, Object.assign(request))
+    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + `/volumes/${request.volumeId}`, Object.assign(request), {headers: this.httpOptions.headers})
   }
 
   constructor(private http: HttpClient,
@@ -173,4 +185,28 @@ export class VolumeService extends BaseService {
   }
 
 
+  createSnapshot(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots', Object.assign(data));
+  }
+
+  serchSnapshot(size: number, index: number, region: any, project: any, value: string, status: any) {
+    return this.http.get<boolean>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots?pageSize='+size+"&pageNumber="+index+"&regionId="+region+"&projectId="+project
+      +"&name="+value+"&status="+status);
+  }
+
+  deleteSnapshot(id : any) {
+    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots/'+id);
+  }
+
+  updateSnapshot(data : any) {
+    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots', Object.assign(data));
+  }
+
+  getDetailSnapshot(id: string) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots/'+id);
+  }
+
+  getDetailPackageSnapshot(snapshotPackageId) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/snapshots/packages/'+snapshotPackageId);
+  }
 }

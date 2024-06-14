@@ -11,7 +11,7 @@
         {{ 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title.breadcrumb.list' | i18n }}</a>
+        <a routerLink="/app-smart-cloud/volumes">Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/volume/create">{{ 'volume.button.create' | i18n }}</a>
@@ -88,18 +88,20 @@
               <nz-form-control nzDisableAutoTips [nzErrorTip]="snapshotErrorTpl">
                 <nz-select nzSize="large"
                            formControlName="snapshot"
-                           [nzPlaceHolder]="'volume.action.type.volume.select'|i18n"
+                           id="snapshot"
+                           [nzPlaceHolder]="'volume.action.snapshot.select' | i18n"
                            [nzShowSearch]="false"
                            [(ngModel)]="snapshotSelected"
                            (ngModelChange)="snapshotSelectedChange($event)"
                            style="width: 100%;">
-                  <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
-                             [nzValue]="item.value"></nz-option>
-                  <ng-template #snapshotErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">{{ 'volume.tooltip.required.snapshot'|i18n }}
-                    </ng-container>
-                  </ng-template>
+                  <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.name + ' (' + item.sizeInGB +' GB)'"
+                             [nzValue]="item.id"></nz-option>
                 </nz-select>
+                <ng-template #snapshotErrorTpl let-control>
+                  <ng-container
+                    *ngIf="control.hasError('required')">{{ 'volume.notification.input.select.snapshot'|i18n }}
+                  </ng-container>
+                </ng-template>
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -198,6 +200,7 @@
                   {{ 'app.alert.quota.vpc' | i18n }} <a
                   [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a> {{ 'app.alert.quota.vpc.next' | i18n }}
                 </ng-container>
+                <ng-container *ngIf="control.hasError('outOfStorageSnapshot')">{{'app.file.system.not.enough.quota.snapshot'|i18n: {name: snapshot.sizeInGB + 'GB'} }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -223,6 +226,7 @@
             <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
               <label *ngIf="typeEncrypt == true"
                      nz-checkbox
+                     [nzDisabled]="isInitSnapshot"
                      formControlName="isEncryption" (nzCheckedChange)="onChangeStatusEncrypt($event)">
                 {{ 'volume.info.type.encrypt' |i18n }}
                 <img nz-popover
@@ -235,6 +239,7 @@
               <label *ngIf="typeMultiple == true"
                      nz-checkbox
                      style="margin-top: 10px;"
+                     [nzDisabled]="isInitSnapshot"
                      formControlName="isMultiAttach" (nzCheckedChange)="onChangeStatusMultiAttach($event)">
                 {{ 'volume.info.type.multiAttach' |i18n }}
                 <img nz-popover

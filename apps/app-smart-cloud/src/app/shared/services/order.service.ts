@@ -19,7 +19,7 @@ export class OrderService extends BaseService {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
-      'User-Root-Id': this.tokenService.get()?.userId,
+      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
     }),
   };
 
@@ -60,7 +60,7 @@ export class OrderService extends BaseService {
       status
     );
     return this.http
-      .get<BaseResponse<OrderDTO[]>>(urlResult)
+      .get<BaseResponse<OrderDTO[]>>(urlResult, this.httpOptions)
       .pipe(
         catchError(
           this.handleError<BaseResponse<OrderDTO[]>>('get order-list error')

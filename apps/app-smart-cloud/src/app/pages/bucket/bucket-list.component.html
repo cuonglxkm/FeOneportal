@@ -259,12 +259,12 @@
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateDescriptionGanVLAN>
-      <div>
+      <div class="text-label">
         {{ 'app.alert.delete.instance.warn' | i18n }}
         <b>{{ 'app.alert.delete.instance.warn.next' | i18n }}</b>
       </div>
     </ng-template>
-    <div>{{ 'app.alert.delete.object.storage' | i18n }}</div>
+    <div class="text-label mt-3">{{ 'app.alert.delete.object.storage' | i18n }}</div>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDeleteOS()">
@@ -274,8 +274,9 @@
         alt=""
       />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkDeleteOS()">
+    <button nz-button nzType="primary" (click)="handleOkDeleteOS()" [nzLoading]="isLoadingDeleteOS">
       <img
+        *ngIf="isLoadingDeleteOS === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""

@@ -92,40 +92,50 @@ export class SecurityComponent implements OnInit {
 
   handleChangeSwitch(event){
     this.toggleSwitch = event
-    if (this.toggleSwitch == true) {
+    this.isVisibleUpdate = true;
+    console.log(this.toggleSwitch);
+  }
+
+  handleChangeSwitchGoogleAuthenticator(event){
+    this.toggleSwitchGoogleAuthenticator = event
+    if (this.toggleSwitchGoogleAuthenticator == true) {
       this.service.authenticatorKey().subscribe((data: any) => {
         this.authenticatorKey = data.key;
-        this.isVisibleUpdate = true;
+        this.isVisibleUpdateGoogleAuthenticator = true;
       }, error => {
-        this.toggleSwitch = false;
+        this.toggleSwitchGoogleAuthenticator = false;
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
       });
     }
     
-    console.log(this.toggleSwitch);
-  }
+    console.log(this.toggleSwitchGoogleAuthenticator);
+  }  
 
   handleUpdate(){
     
   }
 
   handleRecreateGoogleAuthen(){
-    this.isVisibleReCreateGoogleAuthenticator = true
+    this.service.authenticatorKey().subscribe((data: any) => {
+        this.authenticatorKey = data.key;
+        this.isVisibleReCreateGoogleAuthenticator = true
+        this.isVisibleUpdate = true;
+      }, error => {
+        this.toggleSwitch = false;
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
+      });
   }
 
   handleCancelRecreateGoogleAuthenticator(){
     this.isVisibleReCreateGoogleAuthenticator = false
   }
 
-  handleChangeSwitchGoogleAuthenticator(event){
-
-  }  
-
   handleOpenGoogleAuthen(){
     this.isVisibleUpdateGoogleAuthenticator = true
   }
 
   handleCancelGoogleAuthenticator(){
-    this.isVisibleUpdateGoogleAuthenticator = false
+    this.isVisibleUpdateGoogleAuthenticator = false;
+    this.toggleSwitchGoogleAuthenticator = !this.isActiveGoogleAuthenticator;
   }
 }

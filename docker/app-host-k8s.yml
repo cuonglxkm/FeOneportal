@@ -31,6 +31,8 @@ spec:
               value: https://appkafka-dev.onsmartcloud.com
             - name: APP_MONGODB_REPLICASET_URL
               value: https://appmongodb-dev.onsmartcloud.com
+            - name: APP_K8S_PREMIUM_URL
+              value: https://appk8spre-dev.onsmartcloud.com
             - name: BASE_URL
               value: https://api-dev.onsmartcloud.com
             - name: ISSUER

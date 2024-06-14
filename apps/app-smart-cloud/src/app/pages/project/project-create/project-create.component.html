@@ -2,7 +2,7 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">{{ 'project.note1' | i18n }}</a>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">Quản lý VPC</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'project.create' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -30,7 +30,7 @@
               alt="" /></nz-form-label>
           <nz-form-control [nzErrorTip]="nameErrorTpl">
             <input nz-input placeholder="{{ 'project.note33' | i18n }}" style="width: 100%" formControlName="name"
-              maxlength="20" class="custom-input">
+              maxlength="50" class="custom-input">
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }} </ng-container>
               <ng-container *ngIf="control.hasError('pattern')">{{'validation.project.required.name'|i18n}}
@@ -69,7 +69,7 @@
                           </label>
                         </ng-template>
                         <ng-template #nzTitleselectedHDDorSSD1>
-                          <b>{{ 'project.note5' | i18n }}</b>
+                          <b>VPC mặc định</b>
                         </ng-template>
                         <ng-template #nzDescriptionselectedHDDorSSD1>
                           <ellipsis class="text-custom">
@@ -102,7 +102,7 @@
                           <label nz-radio nzValue="1"></label>
                         </ng-template>
                         <ng-template #nzTitleselectedHDDorSSD2>
-                          <b>{{ 'project.note4' | i18n }}</b>
+                          <b>VPC tuỳ biến</b>
                         </ng-template>
                         <ng-template #nzDescriptionselectedHDDorSSD2>
                           <ellipsis class="text-custom">
@@ -438,7 +438,11 @@
                       </tr>
                       <tr>
                         <td width="50%">
-                          {{ "volume.table.title.storage" | i18n }} HDD (GB)
+                          <div class="d-flex">
+                            {{ "volume.table.title.storage" | i18n }} HDD (GB) 
+                            <p *ngIf="isRequired" class="ml-1 required"> (<span class="red-color">*</span>)</p>
+                          </div>
+                         
                           <nz-slider [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" [nzStep]="stepBlock"
                             [(ngModel)]="hhd" [ngModelOptions]="{standalone: true}"
                             (ngModelChange)="onInputChange($event, 'hhd')"></nz-slider>
@@ -457,8 +461,12 @@
                         </td>
                       </tr>
                       <tr>
-                        <td width="50%">
-                          {{ "volume.table.title.storage" | i18n }} SSD (GB)
+                        <td width="50%" >
+                          <div class="d-flex">
+                            {{ "volume.table.title.storage" | i18n }} SSD (GB)
+                            <p *ngIf="isRequired" class="ml-1 required"> (<span class="red-color">*</span>)</p>
+                          </div>
+                  
                           <nz-slider [nzMin]="minBlock" [nzMax]="maxBlock" [nzStep]="stepBlock" [(ngModel)]="ssd"
                             (ngModelChange)="onInputChange($event, 'ssd')"
                             [ngModelOptions]="{standalone: true}"></nz-slider>
@@ -1527,16 +1535,16 @@
               </div>
               <!--        <div style="margin-top: 10px" class="text-label"></div>-->
               <nz-row *ngIf="numberIpFloating != 0" style="display: flex;justify-content: space-between;">
-                <div style="margin-top: 10px" class="text-label">IP Floating:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberIpFloating }}GB</div>
+                <div style="margin-top: 10px" class="text-label">Số lượng IP Floating:</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberIpFloating }}</div>
               </nz-row>
               <nz-row *ngIf="numberIpPublic != 0" style="display: flex;justify-content: space-between;">
-                <div style="margin-top: 10px" class="text-label">IP Public:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberIpPublic }}GB</div>
+                <div style="margin-top: 10px" class="text-label">Số lượng IP Public:</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberIpPublic }}</div>
               </nz-row>
               <nz-row *ngIf="numberIpv6 != 0" style="display: flex;justify-content: space-between;">
-                <div style="margin-top: 10px" class="text-label">IPv6:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberIpv6 }}GB</div>
+                <div style="margin-top: 10px" class="text-label">Số lượng IPv6:</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberIpv6 }}</div>
               </nz-row>
               <nz-row *ngIf="numberSnapshothdd != 0" style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">Dung lượng Snapshot - HDD:</div>
@@ -1636,3 +1644,9 @@
     </nz-col>
   </nz-row>
 </form>
+
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>

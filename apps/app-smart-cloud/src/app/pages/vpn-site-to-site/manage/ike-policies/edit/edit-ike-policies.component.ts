@@ -16,6 +16,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../../libs/commo
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NAME_SPECIAL_REGEX } from 'src/app/shared/constants/constants';
 
 @Component({
   selector: 'one-portal-edit-ike-policies',
@@ -73,7 +74,7 @@ export class EditIkePoliciesComponent implements OnInit {
     name: FormControl<string>;
     lifeTimeValue: FormControl<number>;
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
+    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
     lifeTimeValue: [3600, [Validators.required, Validators.min(60)]]
   });
 
@@ -129,7 +130,7 @@ export class EditIkePoliciesComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -137,7 +138,7 @@ export class EditIkePoliciesComponent implements OnInit {
   }
 
   userChangeProject(){
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   getData(): any {
@@ -175,7 +176,7 @@ export class EditIkePoliciesComponent implements OnInit {
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.ike.policy-edit.success')
             );
-            this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
           },
           (error) => {
             this.isLoading = false

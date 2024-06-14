@@ -9,6 +9,9 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/instances']">{{
           'app.instances' | i18n
         }}</a>
@@ -44,7 +47,7 @@
 </page-header>
 
 <div>
-  <nz-row nzGutter="24">
+  <nz-row *ngIf="instancesModel" nzGutter="24">
     <nz-col nzSpan="16"
       ><nz-card
         style="border-radius: 8px"
@@ -225,63 +228,11 @@
         </div>
       </nz-card>
 
-      <form nz-form [nzLayout]="'vertical'">
-        <nz-card
-          style="border-radius: 8px"
-          [nzBordered]="false"
-          [nzLoading]="loading"
-          *ngIf="instancesModel"
-        >
-          <div style="margin-bottom: 20px">
-            <span class="text-card-header">{{
-              'app.extension.info' | i18n
-            }}</span>
-          </div>
-          <nz-row nzGutter="16">
-            <nz-col nzSpan="12">
-              <span class="text-label" style="color: #eb1414"
-                >{{ 'app.service.creation-date' | i18n }}:
-                {{
-                  instancesModel.createdDate | date : 'HH:mm:ss dd/MM/yyyy'
-                }}</span
-              >
-            </nz-col>
-            <nz-col nzSpan="12">
-              <span class="text-label" style="color: #eb1414"
-                >{{ 'app.service.expiration-date' | i18n }}:
-                {{ instancesModel.expiredDate | date : 'HH:mm:ss dd/MM/yyyy' }}
-              </span>
-            </nz-col>
-          </nz-row>
-          <nz-form-item style="margin-top: 20px">
-            <nz-form-label
-              >{{ 'app.months.for.extend' | i18n }} (<span class="text-red"
-                >*</span
-              >)
-            </nz-form-label>
-            <nz-form-control>
-              <nz-input-number
-                style="width: 100%; margin-left: -1px"
-                [nzMin]="1"
-                [nzMax]="100"
-                [nzStep]="1"
-                [ngModel]="numberMonth"
-                (keydown)="onKeyDown($event)"
-                (ngModelChange)="changeTime($event)"
-                [ngModelOptions]="{ standalone: true }"
-                nzSize="large"
-              ></nz-input-number>
-            </nz-form-control>
-          </nz-form-item>
-          <div
-            class="text-label"
-            style="display: flex; align-items: center; color: #eb1414"
-          >
-            {{ 'app.expected.expiry.date' | i18n }}:
-            {{ newExpiredDate | date : 'dd/MM/yyyy' }}
-          </div>
-        </nz-card>
-      </form>
+      <one-portal-service-time-extend
+        [createDate]="instancesModel?.createdDate"
+        [expiredDate]="instancesModel?.expiredDate"
+        (valueChanged)="onChangeTime($event)"
+      />
     </nz-col>
     <nz-col nzSpan="8">
       <nz-card class="card-border" style="border-radius: 8px">

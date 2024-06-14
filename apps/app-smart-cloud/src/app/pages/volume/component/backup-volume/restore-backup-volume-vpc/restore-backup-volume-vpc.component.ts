@@ -105,7 +105,6 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
               private cdr: ChangeDetectorRef,
               private configurationsService: ConfigurationsService,
               private instanceService: InstancesService,
-              private orderService: OrderService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
@@ -221,7 +220,7 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
   }
 
   getVolumeDetail(id) {
-    this.volumeService.getVolumeById(id).subscribe(data => {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
       this.volumeDetail = data;
     });
   }
@@ -270,36 +269,39 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
   //restore new
   volumeInit() {
     this.volumeRestoreNew.volumeBackupId = this.idBackupVolume;
-    this.volumeRestoreNew.volumeName = this.validateForm.get('formNew').get('volumeName').value;
+    // this.volumeRestoreNew.volumeName = this.validateForm.get('formNew').get('volumeName').value;
+    this.volumeRestoreNew.volumeSize = this.validateForm.get('formNew').get('storage').value
+    this.volumeRestoreNew.instanceToAttachId = this.volumeDetail?.attachedInstances[0].instanceId;
+    this.volumeRestoreNew.serviceName = this.validateForm.get('formNew').get('volumeName').value;
+    this.volumeRestoreNew.volumeSize = this.validateForm.get('formNew').get('storage').value;
+    this.volumeRestoreNew.instanceToAttachId = this.instanceSelected;
     this.volumeRestoreNew.customerId = this.tokenService.get()?.userId;
     this.volumeRestoreNew.userEmail = this.tokenService.get()?.email;
     this.volumeRestoreNew.actorEmail = this.tokenService.get()?.email;
     this.volumeRestoreNew.projectId = this.project;
-    this.volumeRestoreNew.vpcId = this.project;
     this.volumeRestoreNew.regionId = this.region;
-    this.volumeRestoreNew.serviceName = this.validateForm.get('formNew').get('volumeName').value;
-    this.volumeRestoreNew.serviceType = 2;
+    this.volumeRestoreNew.serviceType = 8;
     this.volumeRestoreNew.actionType = 0;
     this.volumeRestoreNew.serviceInstanceId = 0;
-    this.volumeRestoreNew.createDateInContract = null;
-    this.volumeRestoreNew.saleDept = null;
-    this.volumeRestoreNew.saleDeptCode = null;
-    this.volumeRestoreNew.contactPersonEmail = null;
-    this.volumeRestoreNew.contactPersonPhone = null;
-    this.volumeRestoreNew.contactPersonName = null;
-    this.volumeRestoreNew.am = null;
-    this.volumeRestoreNew.amManager = null;
+    //this.volumeRestoreNew.createDateInContract = null;
+    //this.volumeRestoreNew.saleDept = null;
+    //this.volumeRestoreNew.saleDeptCode = null;
+    //this.volumeRestoreNew.contactPersonEmail = null;
+    //this.volumeRestoreNew.contactPersonPhone = null;
+    //this.volumeRestoreNew.contactPersonName = null;
+    //this.volumeRestoreNew.am = null;
+    //this.volumeRestoreNew.amManager = null;
     this.volumeRestoreNew.note = 'restore backup volume';
     this.volumeRestoreNew.isTrial = false;
     this.volumeRestoreNew.offerId = 0;
-    this.volumeRestoreNew.couponCode = null;
-    this.volumeRestoreNew.dhsxkd_SubscriptionId = null;
-    this.volumeRestoreNew.dSubscriptionNumber = null;
-    this.volumeRestoreNew.dSubscriptionType = null;
-    this.volumeRestoreNew.oneSMEAddonId = null;
-    this.volumeRestoreNew.oneSME_SubscriptionId = null;
+    //this.volumeRestoreNew.couponCode = null;
+    //this.volumeRestoreNew.dhsxkd_SubscriptionId = null;
+    //this.volumeRestoreNew.dSubscriptionNumber = null;
+    //this.volumeRestoreNew.dSubscriptionType = null;
+    //this.volumeRestoreNew.oneSMEAddonId = null;
+    //this.volumeRestoreNew.oneSME_SubscriptionId = null;
     this.volumeRestoreNew.isSendMail = true;
-    this.volumeRestoreNew.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.BackupVolumeRestoreSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+    //this.volumeRestoreNew.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.BackupVolumeRestoreSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
   }
 
   doRestoreBackupVolumeNew() {

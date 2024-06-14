@@ -23,6 +23,7 @@ import { FileSystemDetail } from 'src/app/shared/models/file-system.model';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NAME_SNAPSHOT_REGEX } from 'src/app/shared/constants/constants';
 
 @Component({
   selector: 'one-portal-edit-file-system-snapshot',
@@ -49,7 +50,7 @@ export class EditFileSystemSnapshotComponent {
     name: FormControl<string>;
     description: FormControl<string>;
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^(?! *$)[a-zA-Z0-9-_ ]{1,255}$/)]],
+    name: ['', [Validators.required, Validators.pattern(NAME_SNAPSHOT_REGEX)]],
     description: [''],
   });
 

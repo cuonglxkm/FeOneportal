@@ -311,6 +311,7 @@ export class InstancesEditVpcComponent implements OnInit {
   }
 
   gpuTypeName: string = '';
+  disableUpdate: boolean = false;
   changeGpuType(id: number) {
     if (this.isConfigGpuAtInitial) {
       this.GPU = 0;
@@ -350,6 +351,18 @@ export class InstancesEditVpcComponent implements OnInit {
         } else {
           this.remainingGpu = gpuProject.gpuCount;
         }
+      }
+      if (this.remainingGpu < 0) {
+        this.notification.warning(
+          '',
+          this.i18n.fanyi('app.notify.amount.gpu.add', {
+            num: Math.abs(this.remainingGpu),
+          })
+        );
+        this.remainingGpu = 0;
+        this.disableUpdate = true;
+      } else {
+        this.disableUpdate = false;
       }
     } else {
       this.GPU = 0;
@@ -444,6 +457,7 @@ export class InstancesEditVpcComponent implements OnInit {
       );
       return;
     }
+    this.orderItem = [];
     this.instanceResizeInit();
     let specificationInstance = JSON.stringify(this.instanceResize);
     let orderItemInstanceResize = new OrderItem();
@@ -460,7 +474,12 @@ export class InstancesEditVpcComponent implements OnInit {
 
     this.orderService
       .validaterOrder(this.order)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (result) => {
           if (result.success) {

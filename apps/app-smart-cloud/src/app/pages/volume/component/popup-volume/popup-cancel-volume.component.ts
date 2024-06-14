@@ -33,14 +33,14 @@ export class PopupCancelVolumeComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.volumeSevice.getVolumeById(this.data).toPromise().then( response => {
-      if(response != null){
-        if(response.attachedInstances.length > 0){
-          response.attachedInstances.forEach(vm => {
-            this.options.push({label: vm.instanceName , value: vm.instanceId})
-          })
-        }
-      }
-    })
+    // this.volumeSevice.getVolumeById(this.data, this).toPromise().then( response => {
+    //   if(response != null){
+    //     if(response.attachedInstances.length > 0){
+    //       response.attachedInstances.forEach(vm => {
+    //         this.options.push({label: vm.instanceName , value: vm.instanceId})
+    //       })
+    //     }
+    //   }
+    // })
   }
 }

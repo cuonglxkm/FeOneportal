@@ -30,6 +30,7 @@ import { ProjectModel, RegionModel } from '../../../../../../libs/common-utils/s
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { TimeCommon } from 'src/app/shared/utils/common';
 import { Subject } from 'rxjs';
+import { NAME_REGEX } from 'src/app/shared/constants/constants';
 
 @Component({
   selector: 'one-portal-router-list',
@@ -61,7 +62,7 @@ export class RouterListComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
+        Validators.pattern(NAME_REGEX),
       ],
     ],
     network: [''],
@@ -74,7 +75,7 @@ export class RouterListComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_]{0,49}$/),
+        Validators.pattern(NAME_REGEX),
       ],
     ],
   });
@@ -320,11 +321,18 @@ export class RouterListComponent implements OnInit {
             this.getDataList(true);
           },
           error: (e) => {
-            this.notification.error(
-              e.statusText,
-              this.i18n.fanyi('router.nofitacation.remove.fail')
-            );
-            this.isLoadingDeleteRouter = false
+            if(e.error.detail.includes('Vui lòng không xóa Router vì')){
+              this.notification.error(
+                this.i18n.fanyi('app.status.fail'),
+                this.i18n.fanyi('router.nofitacation.remove.fail1')
+              );
+            } else{
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('router.nofitacation.remove.fail')
+              );
+              this.isLoadingDeleteRouter = false
+            }            
           },
         });
   }

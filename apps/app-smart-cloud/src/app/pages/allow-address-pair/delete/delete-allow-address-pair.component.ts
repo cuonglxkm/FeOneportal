@@ -11,10 +11,6 @@ export class DeleteAllowAddressPairComponent {
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
 
-  modalStyle = {
-    'height': '217px'
-  };
-
   handleCancel(): void {
     this.onCancel.emit();
   }

@@ -204,7 +204,6 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.projectId = regionAndProject.projectId;
     this.getConfigurations();
     this.getAllImageType();
-    this.initSnapshot();
     this.getAllIPPublic();
     this.getAllSecurityGroup();
     this.getListNetwork();
@@ -391,26 +390,38 @@ export class InstancesCreateVpcComponent implements OnInit {
   //#region  Snapshot
   isSnapshot: boolean = false;
   listSnapshot: SnapshotVolumeDto[] = [];
-  size: number;
+  sizeSnapshotVL: number;
   status: string;
 
   initSnapshot(): void {
+    this.selectedSnapshot = null;
     if (this.isSnapshot) {
       this.snapshotVLService
         .getSnapshotVolumes(9999, 1, this.region, this.projectId, '', '', '')
         .subscribe((data: any) => {
           this.listSnapshot = data.records.filter(
-            (e: any) => e.fromRootVolume == true
+            (e: any) =>
+              e.fromRootVolume == true &&
+              (e.resourceStatus.toUpperCase() == 'AVAILABLE' ||
+                e.resourceStatus.toUpperCase() == 'IN-USE')
           );
+          this.selectedSnapshot = this.listSnapshot[0].id;
+          this.sizeSnapshotVL = this.listSnapshot[0].sizeInGB;
+          this.changeSelectedSnapshot();
           console.log('list snapshot volume root', this.listSnapshot);
         });
     }
   }
 
-  onChangeSnapshot(event?: any) {
-    this.selectedSnapshot = event;
+  changeSelectedSnapshot() {
+    if (this.instanceCreate.volumeSize <= this.sizeSnapshotVL) {
+      this.instanceCreate.volumeSize =
+        this.sizeSnapshotVL < this.stepCapacity
+          ? this.stepCapacity
+          : this.sizeSnapshotVL;
+    }
+    this.cdr.detectChanges();
   }
-
   //#endregion
 
   //#region HDD hay SDD
@@ -484,11 +495,11 @@ export class InstancesCreateVpcComponent implements OnInit {
     )[0].offerName;
 
     let gpuProject: GpuProject = this.infoVPC.cloudProject.gpuProjects.filter(
-      (e) => (e.gpuOfferId == this.instanceCreate.gpuOfferId)
+      (e) => e.gpuOfferId == this.instanceCreate.gpuOfferId
     )[0];
     let gpuUsage: GpuUsage =
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
-        (e) => (e.gpuOfferId == this.instanceCreate.gpuOfferId)
+        (e) => e.gpuOfferId == this.instanceCreate.gpuOfferId
       )[0];
     if (gpuUsage != undefined && gpuUsage != null) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
@@ -505,11 +516,11 @@ export class InstancesCreateVpcComponent implements OnInit {
       (e) => e.id == id
     )[0].offerName;
     let gpuProject: GpuProject = this.infoVPC.cloudProject.gpuProjects.filter(
-      (e) => (e.gpuOfferId == id)
+      (e) => e.gpuOfferId == id
     )[0];
     let gpuUsage: GpuUsage =
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
-        (e) => (e.gpuOfferId == id)
+        (e) => e.gpuOfferId == id
       )[0];
     if (gpuUsage != undefined && gpuUsage != null) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
@@ -521,6 +532,12 @@ export class InstancesCreateVpcComponent implements OnInit {
   resetData() {
     this.instanceCreate.cpu = 0;
     this.instanceCreate.volumeSize = 0;
+    if (this.isSnapshot) {
+      this.instanceCreate.volumeSize =
+        this.sizeSnapshotVL < this.stepCapacity
+          ? this.stepCapacity
+          : this.sizeSnapshotVL;
+    }
     this.instanceCreate.ram = 0;
     this.instanceCreate.gpuCount = 0;
     this.instanceCreate.gpuOfferId = null;
@@ -562,9 +579,30 @@ export class InstancesCreateVpcComponent implements OnInit {
           this.instanceCreate.volumeSize =
             this.instanceCreate.volumeSize -
             (this.instanceCreate.volumeSize % this.stepCapacity);
-          this.checkValidConfig();
-          this.cdr.detectChanges();
+          if (this.isSnapshot) {
+            this.instanceCreate.volumeSize =
+              this.sizeSnapshotVL < this.stepCapacity
+                ? this.stepCapacity
+                : this.sizeSnapshotVL;
+          }
         }
+        if (
+          this.isSnapshot &&
+          this.instanceCreate.volumeSize < this.sizeSnapshotVL
+        ) {
+          this.notification.warning(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
+              num: this.sizeSnapshotVL,
+            })
+          );
+          this.instanceCreate.volumeSize =
+            this.sizeSnapshotVL < this.stepCapacity
+              ? this.stepCapacity
+              : this.sizeSnapshotVL;
+        }
+        this.checkValidConfig();
+        this.cdr.detectChanges();
       });
   }
   //#endregion
@@ -666,13 +704,6 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.cdr.detectChanges();
       });
   }
-  //#endregion
-
-  selectedElementFlavor: string = null;
-  selectElementInputFlavors(id: string) {
-    this.selectedElementFlavor = id;
-  }
-
   //#endregion
 
   //#region selectedPasswordOrSSHkey
@@ -818,7 +849,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   isVisibleCreate: boolean = false;
   showModalCreate() {
-    if (!this.isSnapshot && this.hdh == null) {
+    if (!this.isSnapshot && (this.hdh == null || this.hdh == 0)) {
       this.notification.error(
         '',
         this.i18n.fanyi('app.notify.choose.os.required')
@@ -837,86 +868,154 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.isVisibleCreate = false;
     this.isLoading = true;
     this.cdr.detectChanges();
-    this.dataService
-      .checkflavorforimage(
-        this.hdh,
-        this.instanceCreate.volumeSize,
-        this.instanceCreate.ram,
-        this.instanceCreate.cpu
-      )
-      .subscribe({
-        next: (data) => {
-          this.instanceInit();
+    this.instanceInit();
+    this.orderItem = [];
+    if (!this.isSnapshot) {
+      this.dataService
+        .checkflavorforimage(
+          this.hdh,
+          this.instanceCreate.volumeSize,
+          this.instanceCreate.ram,
+          this.instanceCreate.cpu
+        )
+        .subscribe({
+          next: (data) => {
+            let specificationInstance = JSON.stringify(this.instanceCreate);
+            let orderItemInstance = new OrderItem();
+            orderItemInstance.orderItemQuantity = 1;
+            orderItemInstance.specification = specificationInstance;
+            orderItemInstance.specificationType = 'instance_create';
+            this.orderItem.push(orderItemInstance);
+            console.log('order instance', orderItemInstance);
 
-          let specificationInstance = JSON.stringify(this.instanceCreate);
-          let orderItemInstance = new OrderItem();
-          orderItemInstance.orderItemQuantity = 1;
-          orderItemInstance.specification = specificationInstance;
-          orderItemInstance.specificationType = 'instance_create';
-          this.orderItem.push(orderItemInstance);
-          console.log('order instance', orderItemInstance);
+            this.order.customerId = this.tokenService.get()?.userId;
+            this.order.createdByUserId = this.tokenService.get()?.userId;
+            this.order.note = 'tạo vm';
+            this.order.orderItems = this.orderItem;
 
-          this.order.customerId = this.tokenService.get()?.userId;
-          this.order.createdByUserId = this.tokenService.get()?.userId;
-          this.order.note = 'tạo vm';
-          this.order.orderItems = this.orderItem;
+            this.orderService
+              .validaterOrder(this.order)
+              .pipe(
+                finalize(() => {
+                  this.isLoading = false;
+                  this.cdr.detectChanges();
+                })
+              )
+              .subscribe({
+                next: (result) => {
+                  if (result.success) {
+                    this.dataService.create(this.order).subscribe({
+                      next: (data: any) => {
+                        this.notification.success(
+                          '',
+                          this.i18n.fanyi(
+                            'app.notify.create.instances.success',
+                            {
+                              name: this.instanceCreate.serviceName,
+                            }
+                          )
+                        );
+                        this.router.navigate(['/app-smart-cloud/instances']);
+                      },
+                      error: (e) => {
+                        this.notification.error(
+                          e.statusText,
+                          this.i18n.fanyi('app.notify.create.instances.fail', {
+                            name: this.instanceCreate.serviceName,
+                          })
+                        );
+                      },
+                    });
+                  } else {
+                    this.isVisiblePopupError = true;
+                    this.errorList = result.data;
+                  }
+                },
+                error: (error) => {
+                  this.notification.error(
+                    this.i18n.fanyi('app.status.fail'),
+                    error.error.detail
+                  );
+                },
+              });
+          },
+          error: (e) => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
+            let numbers: number[] = [];
+            const regex = /\d+/g;
+            const matches = e.error.match(regex);
+            if (matches) {
+              numbers = matches.map((match) => parseInt(match));
+              this.notification.error(
+                '',
+                this.i18n.fanyi('app.notify.check.config.for.os', {
+                  nameHdh: this.nameImage,
+                  volume: numbers[0],
+                  ram: numbers[1],
+                  cpu: numbers[2],
+                })
+              );
+            }
+          },
+        });
+    } else {
+      let specificationInstance = JSON.stringify(this.instanceCreate);
+      let orderItemInstance = new OrderItem();
+      orderItemInstance.orderItemQuantity = 1;
+      orderItemInstance.specification = specificationInstance;
+      orderItemInstance.specificationType = 'instance_create';
+      this.orderItem.push(orderItemInstance);
+      console.log('order instance', orderItemInstance);
 
-          this.orderService
-            .validaterOrder(this.order)
-            .pipe(finalize(() => (this.isLoading = false)))
-            .subscribe({
-              next: (result) => {
-                if (result.success) {
-                  this.dataService.create(this.order).subscribe({
-                    next: (data: any) => {
-                      this.notification.success(
-                        '',
-                        this.i18n.fanyi(
-                          'app.notify.success.instances.order.create'
-                        )
-                      );
-                      this.router.navigate(['/app-smart-cloud/instances']);
-                    },
-                    error: (e) => {
-                      this.notification.error(
-                        e.statusText,
-                        this.i18n.fanyi(
-                          'app.notify.fail.instances.order.create'
-                        )
-                      );
-                    },
-                  });
-                } else {
-                  this.isVisiblePopupError = true;
-                  this.errorList = result.data;
-                }
-              },
-              error: (error) => {
-                this.notification.error(
-                  this.i18n.fanyi('app.status.fail'),
-                  error.error.detail
-                );
-              },
-            });
-        },
-        error: (e) => {
-          let numbers: number[] = [];
-          const regex = /\d+/g;
-          const matches = e.error.match(regex);
-          if (matches) {
-            numbers = matches.map((match) => parseInt(match));
+      this.order.customerId = this.tokenService.get()?.userId;
+      this.order.createdByUserId = this.tokenService.get()?.userId;
+      this.order.note = 'tạo vm';
+      this.order.orderItems = this.orderItem;
+
+      this.orderService
+        .validaterOrder(this.order)
+        .pipe(
+          finalize(() => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: (result) => {
+            if (result.success) {
+              this.dataService.create(this.order).subscribe({
+                next: (data: any) => {
+                  this.notification.success(
+                    '',
+                    this.i18n.fanyi('app.notify.create.instances.success', {
+                      name: this.instanceCreate.serviceName,
+                    })
+                  );
+                  this.router.navigate(['/app-smart-cloud/instances']);
+                },
+                error: (e) => {
+                  this.notification.error(
+                    e.statusText,
+                    this.i18n.fanyi('app.notify.create.instances.fail', {
+                      name: this.instanceCreate.serviceName,
+                    })
+                  );
+                },
+              });
+            } else {
+              this.isVisiblePopupError = true;
+              this.errorList = result.data;
+            }
+          },
+          error: (error) => {
             this.notification.error(
-              '',
-              this.i18n.fanyi('app.notify.check.config.for.os', {
-                nameHdh: this.nameImage,
-                volume: numbers[0],
-                ram: numbers[1],
-                cpu: numbers[2],
-              })
+              this.i18n.fanyi('app.status.fail'),
+              error.error.detail
             );
-          }
-        },
-      });
+          },
+        });
+    }
   }
 
   handleCancelCreate() {
