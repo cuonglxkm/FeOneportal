@@ -252,4 +252,30 @@ export class ListPaymentComponent implements OnInit{
   getOrderDetail(ordernumber: any) {
     this.router.navigate(['/app-smart-cloud/order/detail/' + ordernumber]);
   }
+
+  printInvoice(id: number) {
+    this.paymentService.exportInvoice(id).subscribe((data) => {
+      const element = document.createElement('div');
+      element.style.width = '268mm';
+      element.style.height = '371mm';
+      if (typeof data === 'string' && data.trim().length > 0) {
+        element.innerHTML = data;
+        
+        document.body.appendChild(element);
+        
+        html2canvas(element).then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+          pdf.autoPrint()
+          pdf.output('dataurlnewwindow')
+          document.body.removeChild(element);
+        });
+      } else {
+        console.log('error:', data);
+      }
+    }, (error) => {
+      console.log('error:', error);
+    });
+  }
 }

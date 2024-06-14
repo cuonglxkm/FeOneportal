@@ -1,0 +1,72 @@
+@import '@delon/theme/index';
+@import '../../../../../assets/color.less';
+
+.custom-div {
+  margin-top: 20px;
+  background-color: #ffffff;
+  padding-left: 1.5%;
+  padding-right: 1.5%;
+  padding-top: 1%;
+  padding-bottom: 1%;
+}
+
+.paidField {
+  font-size: @status-payment-fontsize;
+  padding: 0px 10px 0px 10px;
+  border-radius: 15px;
+  background-color: @paid-background-color;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.initField {
+  font-size: @status-payment-fontsize;
+  padding: 0px 10px 0px 10px;
+  border-radius: 15px;
+  background-color: #E58200;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.failedField{
+  font-size: @status-payment-fontsize;
+  padding: 0px 10px 0px 10px;
+  border-radius: 15px;
+  background-color: #E58200;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+.justify-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cell-content {
+  margin-bottom: 10px;
+}
+
+::ng-deep .ant-card-body-custom {
+  .ant-card-body {
+    padding: 5px !important;
+  }
+}
+
+.ant-card-meta {
+  margin: 0px 0 !important;
+}
+
+.price{
+  color: #0066B3;
+  font-size: 16px;
+  font-weight: 600;
+  display: block;
+  
+}

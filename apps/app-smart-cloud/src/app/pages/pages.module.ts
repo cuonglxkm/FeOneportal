@@ -248,6 +248,7 @@ import { RestoreBackupVmVpcComponent } from './backup-vm/restore-backup-vm-vpc/r
 import { RestoreBackupVolumeVpcComponent } from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
 import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.component';
 import { QRCodeModule } from 'angularx-qrcode';
+import { InvoiceDetailComponent } from './billing/payment/invoice-detail/invoice-detail.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -472,6 +473,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     RestoreBackupVolumeVpcComponent,
     SnapshotDetailComponent,
     SnapshotDetailComponent,
+    InvoiceDetailComponent
   ],
   imports: [
     CommonModule,
