@@ -160,6 +160,7 @@
   "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 20 characters, may contain _ (special characters: @, #, $, %, &, *, +, -, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
   "form.account.information": "Account Information",
   "form.account.update.information":"Update account information",
+  "form.account.update.invoice":"Update invoicing information",
   "form.account.surname": "Surname",
   "form.account.name": "Name",
   "form.account.phone": "Phone Number",
@@ -1238,6 +1239,8 @@
 
   "app.breadcrumb.order-detail": "Order Detail",
   "app.order-detail.order": "Order",
+  "app.order-detail.order.new": "Place an order",
+  "app.order-detail.Cancelled": "Canceled",
   "app.order-detail.customerName": "Customer Name",
   "app.order-detail.phone": "Phone number",
   "app.order-detail.address": "Address",
@@ -1256,6 +1259,8 @@
   "app.order-detail.vat": "Includes 10% VAT",
   "app.order-detail.pay": "Pay",
   "app.order-detail.cancelOrder": "Cancel order",
+  "app.order-detail.cancelOrder.success": "Cancel order successfully",
+  "app.order-detail.cancelOrder.fail": "Cancel order failed",
   "app.order-detail.back": "Back",
   "app.order-detail.repurchase": "Repurchase",
 
@@ -2849,6 +2854,7 @@
   "app.backup.package.delete.modal.alert.backupvl": "The Volume backups associated with this backup package will also be deleted.",
   "app.backup.package.delete.modal.alert.backup.schedule": "The automatic backup schedules created from this backup package will also be deleted.",
   "app.backup.package.edit.title": "Edit Backup Package Information",
+  "app.backup.package.intro.desc": "Unlimited backup solution with flexible scalability according to demand. Meets the needs for backing up virtual servers and block storage on the VNPT Cloud infrastructure.",
 
   "app.tooltip.backup.package.name": "The name of the customer's backup package. It should not contain special characters, spaces, or Vietnamese characters. Maximum 50 characters.",
   "app.tooltip.backup.package.storage": "The default minimum capacity is 1, with no maximum capacity limit.",

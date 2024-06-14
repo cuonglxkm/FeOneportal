@@ -281,11 +281,16 @@
             <div style="margin-top: 10px" class="text-label">{{ instance?.name }}</div>
             <div style="margin-top: 10px" class="text-label">{{ 'app.info.backup.vm.storage.flavor'|i18n }} - {{ instance?.storage }} GB</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div style="margin-top: 10px" class="text-value">{{ 'app.info.backup.vm.external.volume'|i18n }}</div>
+            <div style="margin-top: 10px" class="text-value" *ngIf="volumeAttachSelected.length > 0">{{ 'app.info.backup.vm.external.volume'|i18n }}</div>
             <div style="margin-top: 10px" class="text-label" *ngFor="let data of volumeAttachSelected">{{data?.name}} - {{data?.sizeInGB}} GB</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">{{ 'app.info.backup.vm.total.storage'|i18n }}</div>
-            <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</div>
+            <div style="margin-top: 10px" class="text-label">
+              <span *ngIf="volumeAttachSelected?.length <= 0">{{ instance?.storage }} GB</span>
+              <span *ngIf="volumeAttachSelected?.length > 0">
+                <span *ngFor="let data of volumeAttachSelected">{{ instance?.storage + data?.sizeInGB }} GB</span>
+              </span>
+            </div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">{{ 'app.backup.vm.storage.remaining'|i18n }}</div>
             <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</div>

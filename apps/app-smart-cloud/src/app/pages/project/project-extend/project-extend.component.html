@@ -142,17 +142,16 @@
         </nz-table>
       </nz-card> -->
       <nz-card class="text-label" nzTitle="" style="border-radius: 8px;" [nzLoading]="loading">
-        <div style="margin-bottom: 20px">
+        <one-portal-service-time-extend *ngIf="data"  [createDate]="data?.createDate"
+        [expiredDate]="data?.expireDate"  (valueChanged)="onChangeTime($event)"></one-portal-service-time-extend>
+        <!-- <div style="margin-bottom: 20px">
           <span class="text-card-header">{{'app.extension.info' | i18n}}</span>
         </div>
         <nz-row style="margin-bottom: 15px">
           <div nz-col nzSpan="12" style="color: red;">{{'app.service.start.date' | i18n}}:  {{ today | date : 'dd/MM/yyyy' }}</div>
           <div nz-col nzSpan="12" style="color: red;">Ngày hết hạn:  {{ expiredDate | date : 'dd/MM/yyyy' }}</div>
         </nz-row>
-        <!-- <nz-row style="margin-bottom: 15px">
-          <div nz-col nzSpan="7"></div>
-          <div nz-col nzSpan="17" style="font-weight: bold;"></div>
-        </nz-row> -->
+     
         <nz-form-item style="margin-bottom: 5px" class="mt-5">
           <nz-form-label>Số tháng cần gia hạn thêm (<span style="color: red;">*</span>)
           </nz-form-label>
@@ -167,7 +166,7 @@
           <div class="text-custom-time label-fontsize" style="color: red;">
             Ngày hết hạn dự kiến: {{ expiredDateOld   | date : 'dd/MM/yyyy' }}
           </div>
-        </nz-form-item>
+        </nz-form-item> -->
       </nz-card>
     </nz-col>
 
@@ -181,12 +180,23 @@
           </div>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-value">{{'app.service.cost' | i18n}} {{ this.form.controls['numOfMonth'].value || 0 }}
+              <span class="text-value">{{'app.service.cost' | i18n}} {{ timeSelected || 1 }}
                 {{'app.month' | i18n}}</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
-                {{ totalAmount || 0 }}
+                {{ totalAmount |formatPrice }}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">Chi phí VAT (10%)</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalVAT |formatPrice  }}
                 VND
               </span>
             </nz-col>
@@ -202,7 +212,7 @@
               <span class="text-note-italicized">({{'app.payment-detail.vat' | i18n}})</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment || 0 }} VND</span>
+              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment |formatPrice}} VND</span>
             </nz-col>
           </nz-row>
           <nz-row>
@@ -220,3 +230,7 @@
     
   </nz-row>
 </form>
+<one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />
