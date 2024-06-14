@@ -15,7 +15,7 @@ import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
 import { Order, OrderItem } from 'src/app/pages/instances/instances.model';
 import { InstancesService } from 'src/app/pages/instances/instances.service';
-import { finalize, filter } from 'rxjs';
+import { finalize } from 'rxjs';
 import { PaymentSummaryService } from '../../services/payment-summary.service';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -657,7 +657,7 @@ export class PaymentSummaryComponent implements OnInit {
     this.formCreatUserInvoice.customerId = this.tokenService.get()?.userId;
     console.log(this.formCreatUserInvoice);
 
-    this.invoiceService.create(this.formCreatUserInvoice).subscribe({
+    this.invoiceService.createInvoice(this.formCreatUserInvoice).subscribe({
       next: (data) => {
         this.isLoadingUpdateInfo = false;
         this.notification.success(

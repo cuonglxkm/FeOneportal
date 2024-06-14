@@ -13,6 +13,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 })
 export class StopScheduleComponent {
   @Input() id: number
+  @Input() nameScheduleBackup: string
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
 

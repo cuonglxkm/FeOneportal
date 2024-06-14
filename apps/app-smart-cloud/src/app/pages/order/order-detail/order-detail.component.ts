@@ -25,6 +25,7 @@ export class OrderDetailComponent {
   currentStep = 1;
   titleStepFour: string = this.i18n.fanyi("app.order.status.Installed");;
   serviceName: string
+  isVisibleConfirm: boolean = false;
   userModel$: Observable<UserModel>;
   userModel: UserModel
   constructor(
@@ -168,5 +169,13 @@ export class OrderDetailComponent {
 
   pay(){
     window.location.href = this.data.paymentUrl
+  }
+
+  handleCancelConfirm() {
+    this.isVisibleConfirm = false;
+  }
+
+  cancelOrder(){
+    this.isVisibleConfirm = true;
   }
 }
