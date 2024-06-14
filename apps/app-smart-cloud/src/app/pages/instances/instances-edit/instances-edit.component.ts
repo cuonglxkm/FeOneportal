@@ -375,10 +375,7 @@ export class InstancesEditComponent implements OnInit {
         this.checkPermission = true;
         this.instancesModel = data;
         this.instanceNameEdit = this.instancesModel.name;
-        if (
-          this.instancesModel.flavorId == 0 ||
-          this.instancesModel.flavorId == null
-        ) {
+        if (this.instancesModel.offerId == 0) {
           this.isConfigPackageAtInitial = false;
           this.isCustomconfig = true;
         }

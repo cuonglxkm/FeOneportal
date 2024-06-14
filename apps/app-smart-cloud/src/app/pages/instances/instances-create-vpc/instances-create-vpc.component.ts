@@ -391,9 +391,17 @@ export class InstancesCreateVpcComponent implements OnInit {
   isSnapshot: boolean = false;
   listSnapshot: SnapshotVolumeDto[] = [];
   sizeSnapshotVL: number;
-  status: string;
+  disableConfigGpu: boolean = false;
+  disableSSD: boolean = false;
+  nameSnapshot: string;
+  selectedIndextab: number;
 
   initSnapshot(): void {
+    this.disableConfigGpu = false;
+    this.selectedIndextab = 0;
+    this.disableHDD = false;
+    this.disableSSD = false;
+    this.onClickCustomConfig();
     this.selectedSnapshot = null;
     if (this.isSnapshot) {
       this.snapshotVLService
@@ -407,6 +415,20 @@ export class InstancesCreateVpcComponent implements OnInit {
           );
           this.selectedSnapshot = this.listSnapshot[0].id;
           this.sizeSnapshotVL = this.listSnapshot[0].sizeInGB;
+          this.nameSnapshot = this.listSnapshot[0].name;
+          if (this.listSnapshot[0].volumeType.toUpperCase() == 'SSD') {
+            this.disableConfigGpu = false;
+            this.activeBlockHDD = false;
+            this.activeBlockSSD = true;
+            this.disableHDD = true;
+            this.disableSSD = false;
+          } else {
+            this.disableConfigGpu = true;
+            this.activeBlockHDD = true;
+            this.activeBlockSSD = false;
+            this.disableHDD = false;
+            this.disableSSD = true;
+          }
           this.changeSelectedSnapshot();
           console.log('list snapshot volume root', this.listSnapshot);
         });
@@ -414,6 +436,26 @@ export class InstancesCreateVpcComponent implements OnInit {
   }
 
   changeSelectedSnapshot() {
+    this.selectedIndextab = 0;
+    this.onClickCustomConfig();
+    let selectedSnapshotModel = this.listSnapshot.filter(
+      (e) => e.id == this.selectedSnapshot
+    )[0];
+    this.sizeSnapshotVL = selectedSnapshotModel.sizeInGB;
+    this.nameSnapshot = selectedSnapshotModel.name;
+    if (selectedSnapshotModel.volumeType.toUpperCase() == 'SSD') {
+      this.disableConfigGpu = false;
+      this.activeBlockHDD = false;
+      this.activeBlockSSD = true;
+      this.disableHDD = true;
+      this.disableSSD = false;
+    } else {
+      this.disableConfigGpu = true;
+      this.activeBlockHDD = true;
+      this.activeBlockSSD = false;
+      this.disableHDD = false;
+      this.disableSSD = true;
+    }
     if (this.instanceCreate.volumeSize <= this.sizeSnapshotVL) {
       this.instanceCreate.volumeSize =
         this.sizeSnapshotVL < this.stepCapacity
@@ -439,6 +481,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     }
   }
   initSSD(): void {
+    if (!this.disableSSD) {
     this.activeBlockHDD = false;
     this.activeBlockSSD = true;
     this.remainingVolume =
@@ -446,6 +489,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.ssd;
     this.instanceCreate.volumeSize = 0;
     this.cdr.detectChanges();
+    }
   }
   //#endregion
 

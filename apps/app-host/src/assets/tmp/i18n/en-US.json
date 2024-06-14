@@ -169,8 +169,8 @@
   "form.account.address": "Address",
   "form.account.tooltip.info":"No more than 20 characters, no special characters",
   "form.account.tooltip.address":"Fill in the address including district - town and house number",
-  "form.account.validate.name":"The name cannot be empty or contain special characters!",
-  "form.account.validate.surname":"Last name cannot be blank or contain special characters!",
+  "form.account.validate.name":"First name cannot be empty and must not contain special characters!",
+  "form.account.validate.surname":"Last name cannot be empty and must not contain special characters!",
   "form.account.validate.phone":"Invalid phone number!",
   "form.account.validate.address":"Province/City",
 
