@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -8,15 +9,14 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NotificationService, UserModel } from '../../../../../../../../libs/common-utils/src';
-import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { environment } from '@env/environment';
-import { PaymentService } from 'src/app/shared/services/payment.service';
-import { PaymentModel } from 'src/app/shared/models/payment.model';
-import { Observable, pipe, shareReplay, tap } from 'rxjs';
-import { OrderService } from 'src/app/shared/services/order.service';
-import { OrderDTOSonch } from 'src/app/shared/models/order.model';
+import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas'
+import { Observable, shareReplay, tap } from 'rxjs';
+import { OrderDetailDTO } from 'src/app/shared/models/order.model';
+import { PaymentModel } from 'src/app/shared/models/payment.model';
+import { OrderService } from 'src/app/shared/services/order.service';
+import { PaymentService } from 'src/app/shared/services/payment.service';
 class ServiceInfo {
   name: string;
   price: number;
@@ -34,7 +34,7 @@ class ServiceInfo {
 export class PaymentDetailComponent implements OnInit {
     payment: PaymentModel = new PaymentModel();
     serviceInfo: ServiceInfo = new ServiceInfo();
-    data: OrderDTOSonch
+    data: OrderDetailDTO
     userModel$: Observable<UserModel>;
     id: number;
     userModel: UserModel

@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { OrderDTO, OrderDTOSonch } from '../models/order.model';
+import { OrderDTO, OrderDetailDTO } from '../models/order.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
@@ -203,15 +203,15 @@ export class OrderService extends BaseService {
     };
   }
 
-  getDetail(id: any): Observable<OrderDTOSonch> {
-    return this.http.get<OrderDTOSonch>(
+  getDetail(id: any): Observable<OrderDetailDTO> {
+    return this.http.get<OrderDetailDTO>(
       this.urlSnapshotVl + '/' + id,
       this.httpOptions
     );
   }
 
   getOrderBycode(code: any): Observable<any> {
-    return this.http.get<OrderDTOSonch>(
+    return this.http.get<OrderDetailDTO>(
       this.urlSnapshotVl + `/getbycode?code=${code}`,
       this.httpOptions
     );
