@@ -1092,8 +1092,16 @@
             {{ instanceCreate.serviceName }}
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">{{ nameImage }}</div>
+          <div *ngIf="!isSnapshot" class="text-value">
+            {{ 'app.instances.OS' | i18n }}
+          </div>
+          <div *ngIf="!isSnapshot" style="margin-top: 10px" class="text-label">
+            {{ nameImage }}
+          </div>
+          <div *ngIf="isSnapshot" class="text-value">Snapshot</div>
+          <div *ngIf="isSnapshot" style="margin-top: 10px" class="text-label">
+            {{ nameSnapshot }}
+          </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.text.package' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
