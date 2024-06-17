@@ -3190,7 +3190,7 @@
   "app.invoice.pop-up.update.address": "Địa chỉ chi tiết",
   "app.invoice.pop-up.update.address.alert": "Địa chỉ không được để trống",
   "app.invoice.pop-up.update.warning.title": "* Quý khách lưu ý:",
-  "app.invoice.pop-up.update.warning.des": "- Trước khi thực hiện xuất hóa đơn điện tử lần đầu, khách hàng hãy cập nhật thông tin hiển thị trên hóa đơn điện tử:",
+  "app.invoice.pop-up.update.warning.des": "- Trước khi thực hiện xuất hóa đơn điện tử lần đầu, khách hàng hãy cập nhật thông tin hiển thị trên hóa đơn điện tử",
   "app.invoice.pop-up.update.confirm.title": "Xác nhận lưu thông tin xuất hóa đơn",
   "app.invoice.pop-up.update.confirm.des": "Bạn có muốn lưu thông tin khách hàng cho lần xuất hóa đơn sau không?",
   "app.invoice.pop-up.update.confirm.des2": "Bạn hãy thực hiện nhấn <b>Xác nhận</b> để lưu thông tin",

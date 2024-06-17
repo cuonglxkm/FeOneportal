@@ -3288,7 +3288,7 @@
   "app.invoice.pop-up.update.address": "Detailed address",
   "app.invoice.pop-up.update.address.alert": "Address cannot be left blank",
   "app.invoice.pop-up.update.warning.title": "* Please note:",
-  "app.invoice.pop-up.update.warning.des": "- Before issuing an electronic invoice for the first time, customers should update the information displayed on the electronic invoice:",
+  "app.invoice.pop-up.update.warning.des": "- Before issuing an electronic invoice for the first time, customers should update the information displayed on the electronic invoice",
   "app.invoice.pop-up.update.confirm.title": "Confirm saving of invoice information",
   "app.invoice.pop-up.update.confirm.des": "Do you want to save customer information for future invoice issuance?",
   "app.invoice.pop-up.update.confirm.des2": "Please click <b>Confirm</b> to save the information",
