@@ -13,6 +13,7 @@ export class PaymentModel {
   statusTransitionHistory: StatusTransitionHistory[]
   invoiceIssuedId: number;
   eInvoiceCode: number;
+  eInvoiceCodePadded?: string
 }
 
 export class StatusTransitionHistory {

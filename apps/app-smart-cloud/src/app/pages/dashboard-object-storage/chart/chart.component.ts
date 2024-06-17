@@ -29,6 +29,8 @@ export class ChartComponent implements AfterViewInit, OnInit {
 
   @ViewChild('chartStorageDownload') chartStorageDownload!: ElementRef;
   @ViewChild('storageDownload') storageDownload!: ElementRef;
+  @ViewChild('fullscreenContainer', { static: false }) fullscreenContainer: ElementRef;
+  @ViewChild('fullscreenImage', { static: false }) fullscreenImage: ElementRef;
 
 
   createChartStorageUse() {
@@ -79,30 +81,68 @@ export class ChartComponent implements AfterViewInit, OnInit {
     line.render();
   }
 
-  viewFullscreen(type) {
+  viewFullscreen(type: string): void {
+    let element: ElementRef;
+
     switch (type) {
       case 'storage-use':
-        html2canvas(this.storageUse.nativeElement).then(canvas => {
-          this.viewFull(canvas.toDataURL());
-        });
+        element = this.storageUse;
         break;
       case 'number-object':
-        html2canvas(this.numberObject.nativeElement).then(canvas => {
-          this.viewFull(canvas.toDataURL());
-        });
+        element = this.numberObject;
         break;
       case 'storage-upload':
-        html2canvas(this.storageUpload.nativeElement).then(canvas => {
-          this.viewFull(canvas.toDataURL());
-        });
+        element = this.storageUpload;
         break;
       case 'storage-download':
-        html2canvas(this.storageDownload.nativeElement).then(canvas => {
-          this.viewFull(canvas.toDataURL());
-        });
+        element = this.storageDownload;
         break;
       default:
-        break;
+        return;
+    }
+
+    html2canvas(element.nativeElement).then(canvas => {
+      const imageDataUrl = canvas.toDataURL();
+      this.showFullscreenImage(imageDataUrl);
+    });
+  }
+
+  showFullscreenImage(imageDataUrl: string): void {
+    const fullscreenContainer = this.fullscreenContainer.nativeElement;
+    const fullscreenImage = this.fullscreenImage.nativeElement;
+
+    fullscreenImage.src = imageDataUrl;
+    fullscreenContainer.style.display = 'block';
+
+    if (fullscreenContainer.requestFullscreen) {
+      fullscreenContainer.requestFullscreen();
+    } else if (fullscreenContainer.mozRequestFullScreen) { // Firefox
+      fullscreenContainer.mozRequestFullScreen();
+    } else if (fullscreenContainer.webkitRequestFullscreen) { // Chrome, Safari and Opera
+      fullscreenContainer.webkitRequestFullscreen();
+    } else if (fullscreenContainer.msRequestFullscreen) { // IE/Edge
+      fullscreenContainer.msRequestFullscreen();
+    }
+  }
+
+  fullscreenChangeHandler(): void {
+    if (!document.fullscreenElement) {
+      this.exitFullscreen();
+    }
+  }
+
+  keydownHandler(event: KeyboardEvent): void {
+    if (event.key === 'Escape' && document.fullscreenElement) {
+      this.exitFullscreen();
+    }
+  }
+
+  exitFullscreen(): void {
+    const fullscreenContainer = this.fullscreenContainer.nativeElement;
+    fullscreenContainer.style.display = 'none';
+
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
     }
   }
 
@@ -114,11 +154,26 @@ export class ChartComponent implements AfterViewInit, OnInit {
     switch (type) {
       case 'storage-use':
         html2canvas(this.storageUse.nativeElement).then(canvas => {
-          this.print(canvas.toDataURL('image/png'));
+          const contentDataURL = canvas.toDataURL('image/png')
+          let pdf = new jsPDF('p', 'pt', [canvas.width, canvas.height]);
+          var pdfWidth = pdf.internal.pageSize.getWidth();
+          var pdfHeight = pdf.internal.pageSize.getHeight();
+          pdf.addImage(contentDataURL, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+          //  pdf.save('new-file.pdf');
+          window.open(pdf.output('bloburl'), '_blank');
         });
+        
         break;
       case 'number-object':
-
+        html2canvas(this.numberObject.nativeElement).then(canvas => {
+          const contentDataURL = canvas.toDataURL('image/png')
+          let pdf = new jsPDF('p', 'pt', [canvas.width, canvas.height]);
+          var pdfWidth = pdf.internal.pageSize.getWidth();
+          var pdfHeight = pdf.internal.pageSize.getHeight();
+          pdf.addImage(contentDataURL, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+          //  pdf.save('new-file.pdf');
+          window.open(pdf.output('bloburl'), '_blank');
+        });
         break;
       case 'storage-upload':
         break;
@@ -226,6 +281,13 @@ export class ChartComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit() {
+    document.addEventListener('fullscreenchange', this.fullscreenChangeHandler.bind(this));
+    document.addEventListener('keydown', this.keydownHandler.bind(this));
+  }
+
+  ngOnDestroy() {
+    document.removeEventListener('fullscreenchange', this.fullscreenChangeHandler.bind(this));
+    document.removeEventListener('keydown', this.keydownHandler.bind(this));
   }
 
   transform(timestamp: number): string {

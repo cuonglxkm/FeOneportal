@@ -946,6 +946,7 @@
   "app.file.system.create.from.snapshot": "Khởi tạo từ Snapshot",
   "app.file.system.capacity": "Dung lượng File System của quý khách",
   "app.file.system.capacity.vpc": "Tổng dung lượng File System là dung lượng quý khách đã mua khi khi khởi tạo dự án VPC",
+  "app.file.system.snapshot.capacity.vpc": "Tổng dung lượng File System Snapshot là dung lượng quý khách đã mua khi khi khởi tạo dự án VPC",
   "app.file.system.intro": "Lưu trữ dữ liệu theo cấu trúc phân cấp",
   "app.file.system.des": "File storage, hệ thống lưu trữ dữ liệu theo “cấu trúc phân cấp”. Dữ liệu sẽ được lưu trong các tập tin và thư mục, và được hiển thị cho cả hệ thống lưu trữ lẫn hệ thống truy xuất dưới cùng một định dạng.",
   "app.snapshot.file.system": "Snapshot của File System",
@@ -954,6 +955,7 @@
   "app.item.switch.file.system.snapshot": "-Chọn Snapshot-",
   "app.file.storage.snapshot.required.select": "Vui lòng chọn Snapshot File System",
   "app.file.system.total.size": "Tổng dung lượng File System",
+  "app.file.system.snapshot.total.size": "Tổng dung lượng Snapshot",
   "app.file.system.notification.require.create.success": "Yêu cầu tạo File System thành công.",
   "app.file.system.notification.require.create.fail": "Yêu cầu tạo File System thất bại.",
 

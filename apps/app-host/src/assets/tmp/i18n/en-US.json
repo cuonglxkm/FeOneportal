@@ -1041,6 +1041,7 @@
   "app.file.system.snapshot.name.tooltip": "File System Snapshot name are only allowed to use lowercase characters a-z, uppercase A-Z, numbers 0-9, hyphens (-) and underscores (_), can have spaces, minimum 1 character and maximum 255 characters.",
   "app.file.system.confirm.create": "Are you sure you want to create the File System?",
   "app.file.system.total.size": "Total File System Capacity",
+  "app.file.system.snapshot.total.size": "Total Snapshot Capacity",
 
   "app.file.system.snapshot.detail.name.tooltip": "Name of File System",
   "app.file.system.snapshot.detail.size.tooltip": "The capacity of Snapshot depends on the created File System",
@@ -1055,6 +1056,7 @@
   "app.file.system.create.from.snapshot": "Initialize from Snapshot",
   "app.file.system.capacity": "Your File System capacity",
   "app.file.system.capacity.vpc": "Total File System Capacity is the capacity you purchased when initializing the VPC project",
+  "app.file.system.snapshot.capacity.vpc": "Total File System Snapshot Capacity is the capacity you purchased when initializing the VPC project",
   "app.file.system.intro": "Data storage based on a hierarchical structure",
   "app.file.system.des": "File storage, a data storage system based on a hierarchical structure. Data is stored in files and directories, and is presented to both storage and retrieval systems in the same format.",
   "app.snapshot.file.system": "Snapshot of the File System",
