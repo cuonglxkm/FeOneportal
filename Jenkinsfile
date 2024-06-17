@@ -1,63 +1,100 @@
-#!/usr/bin/env groovy
-def agentLabel = "it-si-cloud-linux1"
+def image
+def imageTag
+def appName
+
 pipeline {
-    agent {
-        label agentLabel
-    }
+    
+    agent { label 'worker-6-agent||jenkins-oneportal' }
+
     environment {
-        PACKAGE_NAME = "oneportal-frontend_${env.GIT_BRANCH.replaceAll("/","_")}_${env.GIT_COMMIT.substring(0, 5)}"
+        registry = "registry.onsmartcloud.com"
+        registryCredential = "cloud-harbor-id"
+        k8sCred = "k8s-dev-cred"
+        ENV = "dev"
+        AUTOTEST_BRANCH = "autotest-"
+        AUTOTEST_AGENT = "window-agent"
     }
     stages {
-        stage('Show Build environment') {
-            steps {
-                sh 'env'
-                sh 'ip a'
-            }
-        }
 
-        stage('Build images') {
-            when {
-                branch "develop"
-            }
-            steps {
-                sh 'docker compose --parallel 2 build'
-            }
-        }
-
-        stage('Build images test') {
-            when {
-                branch "release"
-            }
-            steps {
-                sh 'docker compose -f compose-test.yml --parallel 2 build'
-            }
-        }
-
-        stage('Push images') {
-            when {
-                branch "develop"
-            }
-            steps {
-                sh 'docker compose push'
-            }
-        }
-
-        stage('Push images test') {
-            when {
-                branch "release"
-            }
-            steps {
-                sh 'docker compose -f compose-test.yml push'
-            }
-        }
-
-        stage('Redeploy k8s') {
+        stage("Initializing") {
             steps {
                 script {
-                    sh 'kubectl -n vnptcloud  rollout restart deployment/app-host-deployment'
-                    sh 'kubectl -n vnptcloud  rollout restart deployment/app-smartcloud-deployment'
+                    appName = env.BRANCH_NAME.tokenize("/").last()
+                    imageTag = "${registry}/idg/${appName}-${ENV}:${env.BUILD_NUMBER}"
+                    // AUTOTEST_BRANCH = "${AUTOTEST_BRANCH}${appName}"
                 }
             }
         }
+
+        stage("Build image") {
+            steps {
+                script {
+                    sh "docker build -t ${imageTag} -f apps/${appName}/Dockerfile ."
+                }
+            }
+        }
+
+        stage('Build and push images') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh "echo $DOCKER_PASSWORD | docker login ${registry} --username $DOCKER_USERNAME --password-stdin"
+                    script {
+                        sh "docker push ${imageTag}"
+                    }
+                }
+            }
+        }
+
+        stage("Cleaning up") {
+            steps {
+                sh "docker rmi -f ${imageTag}"
+            }
+        }
+
+        stage("Deploying to K8s") {
+            steps {
+                script {
+                    env.APP_NAME = appName
+                    env.IMAGE_TAG = imageTag
+                    withCredentials([file(credentialsId: k8sCred , variable: 'KUBECONFIG')]) {
+                        dir("apps/${appName}/deploy") {
+                            sh 'for f in *.yaml; do envsubst < $f | kubectl --insecure-skip-tls-verify apply -f - ; done '
+                        }
+                    }
+                }
+
+            }
+        }
+
+        // stage("Check autotest agent available") {
+        //     options {
+        //       timeout(time: 10, unit: 'SECONDS')   // timeout on this stage
+        //     }
+        //     agent { label AUTOTEST_AGENT }
+        //     steps {
+        //         script {
+        //             echo "switch agent succeccfully"
+        //         }    
+        //     }
+        // }
+        
+        // stage("Automation Testing") {
+        //     agent { label AUTOTEST_AGENT }
+        //     steps {
+        //         script {
+        //             bat """
+        //                 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+        //                 git fetch origin
+        //                 git checkout ${AUTOTEST_BRANCH}
+        //             """
+        //             def projectFile = "VNPT_OnePortal.prj"
+        //             bat """
+        //                 set workspace = %cd% 
+        //                 katalonc -noSplash -runMode=console -projectPath="%workspace%\\${projectFile}" -retry=0 -testSuitePath="Test Suites/VNPT_OnePortal_Mongo" -browserType="Chrome" -executionProfile="one_Portal" -apiKey="a49ac01e-c4ad-4ceb-9ce2-7a009dad4627" --config -proxy.auth.option=NO_PROXY -proxy.system.option=NO_PROXY -proxy.system.applyToDesiredCapabilities=true -webui.autoUpdateDrivers=true
+        //             """
+        //         }
+        //     }
+        // }
+
     }
 }

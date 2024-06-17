@@ -55,8 +55,8 @@
     "serve": {
       "executor": "@nx/angular:webpack-dev-server",
       "options": {
-        "port": 4208,
-        "publicHost": "http://localhost:4208"
+        "port": 4210,
+        "publicHost": "http://localhost:4210"
       },
       "configurations": {
         "production": {
@@ -86,7 +86,7 @@
       "defaultConfiguration": "production",
       "options": {
         "buildTarget": "app-ecr:build",
-        "port": 4208,
+        "port": 4210,
         "watch": false
       },
       "configurations": {
