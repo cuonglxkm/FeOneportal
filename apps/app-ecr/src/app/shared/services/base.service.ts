@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 // import {environment} from "@env/environment";
 import {HttpErrorResponse} from "@angular/common/http";
 import {throwError} from "rxjs";
-import { environment } from '@env/environment';
+import { environment } from 'apps/app-ecr/src/environments/environment';
 
 
 export abstract class BaseService {
