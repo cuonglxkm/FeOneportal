@@ -158,11 +158,18 @@
               {{ 'app.payment.status.paid' | i18n }}
             </td>
             <td
-              *ngIf="data.paymentLatestStatus != 'PAID'"
+              *ngIf="data.paymentLatestStatus === 'INIT'"
               class="not"
               nzBreakWord
             >
               {{ 'app.payment.status.unpaid' | i18n }}
+            </td>
+            <td
+              *ngIf="data.paymentLatestStatus === 'FAILED'"
+              class="not"
+              nzBreakWord
+            >
+              {{ 'app.payment.status.cancel' | i18n }}
             </td>
           </ng-container>
           <ng-container>

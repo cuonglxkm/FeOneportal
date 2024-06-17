@@ -110,6 +110,12 @@ export class OrderDetailComponent {
                 item.serviceNameLink = this.serviceName
               }
             })
+
+            if(data.statusCode == 0){
+              data.statusCode = 1
+            }else if(data.statusCode == 1){
+              data.statusCode = 6
+            }
             console.log(data);
             
           },

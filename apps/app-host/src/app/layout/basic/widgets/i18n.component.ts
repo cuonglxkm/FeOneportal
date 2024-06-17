@@ -47,6 +47,7 @@ export class HeaderI18nComponent {
   ) {}
 
   change(lang: string): void {
+    localStorage.setItem('lang',lang)
     const spinEl = this.doc.createElement('div');
     spinEl.setAttribute('class', `page-loading ant-spin ant-spin-lg ant-spin-spinning`);
     spinEl.innerHTML = `<span class="ant-spin-dot ant-spin-dot-spin"><i></i><i></i><i></i><i></i></span>`;

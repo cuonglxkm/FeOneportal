@@ -34,7 +34,7 @@ import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-ani
 import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.service';
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { getCurrentRegionAndProject } from '@shared';
+import { getCurrentRegionAndProject, getUniqueObjects } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
   FormSearchNetwork,
@@ -653,7 +653,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   //#region Chọn IP Public Chọn Security Group
   listIPPublic: IPPublicModel[] = [];
-  listSecurityGroup: SecurityGroupModel[] = [];
+  listSecurityGroup: any[] = [];
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
@@ -739,7 +739,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.projectId
       )
       .subscribe((data: any) => {
-        this.listSecurityGroup = data;
+        this.listSecurityGroup = getUniqueObjects(data, 'name');
         this.listSecurityGroup.forEach((e) => {
           if (e.name.toUpperCase() == 'DEFAULT') {
             this.selectedSecurityGroup.push(e.name);

@@ -13,7 +13,7 @@ import {
 } from '../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVmService } from '../../../shared/services/backup-vm.service';
-import { getCurrentRegionAndProject } from '@shared';
+import { getCurrentRegionAndProject, getUniqueObjects } from '@shared';
 import {
   BackupVm,
   RestoreFormCurrent,
@@ -112,7 +112,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   backupVmModel: BackupVm;
   backupPackage: PackageBackupModel;
   listExternalAttachVolume: VolumeBackup[] = [];
-  listSecurityGroupBackups: SecurityGroupBackup[] = [];
+  listSecurityGroupBackups: any[] = [];
 
   selectedOption: string = 'current';
 
@@ -364,7 +364,10 @@ export class RestoreBackupVmVpcComponent implements OnInit {
           this.listOfDataBlockStorage.push(tempBS);
         });
 
-        this.listSecurityGroupBackups = this.backupVmModel.securityGroupBackups;
+        this.listSecurityGroupBackups = getUniqueObjects(
+          this.backupVmModel.securityGroupBackups,
+          'sgName'
+        );
         this.listSecurityGroupBackups.forEach((e) => {
           if (e.sgName.toUpperCase() == 'DEFAULT') {
             this.selectedSecurityGroup.push(e.sgName);
@@ -597,7 +600,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   //#region Chọn IP Public Chọn Security Group
   listIPPublic: IPPublicModel[] = [];
-  listSecurityGroup: SecurityGroupModel[] = [];
+  listSecurityGroup: any[] = [];
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
@@ -675,7 +678,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         this.project
       )
       .subscribe((data: any) => {
-        this.listSecurityGroup = data;
+        this.listSecurityGroup = getUniqueObjects(data, 'name');
         this.listSecurityGroup.forEach((e) => {
           if (e.name.toUpperCase() == 'DEFAULT') {
             this.selectedSecurityGroup.push(e.name);

@@ -69,7 +69,7 @@ export class HeaderUserComponent {
   private readonly mh = inject(ModalHelper);
 
   openResetPass() {
-    this.mh.create(ModalResetPassComponent).subscribe({});
+    this.mh.create(ModalResetPassComponent, '', {size: 'md'}).subscribe({});
   }
 
   logout(): void {
@@ -91,7 +91,8 @@ export class HeaderUserComponent {
     localStorage.removeItem('user');
     localStorage.removeItem('_token');
     localStorage.removeItem('projects');
-
+    localStorage.removeItem('projectId');
+    localStorage.removeItem('app');
     window.location.href =
       environment['sso'].issuer +
       `/connect/logout?oi_au_id=${id_token}&post_logout_redirect_uri=${decodeURIComponent(

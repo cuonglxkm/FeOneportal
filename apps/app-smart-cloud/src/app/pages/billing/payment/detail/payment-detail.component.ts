@@ -3,8 +3,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -38,7 +40,7 @@ export class PaymentDetailComponent implements OnInit {
     userModel$: Observable<UserModel>;
     id: number;
     userModel: UserModel
-  orderNumber:string
+    orderNumber:string
   constructor(
     private service: PaymentService,
     private router: Router,
@@ -47,7 +49,7 @@ export class PaymentDetailComponent implements OnInit {
     private http: HttpClient,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private orderService: OrderService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
   ) {}
 
   ngOnInit(): void {
@@ -70,7 +72,8 @@ export class PaymentDetailComponent implements OnInit {
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.orderNumber = this.activatedRoute.snapshot.paramMap.get('orderNumber');
     this.getPaymentDetail();
-    this.getOrderDetail();
+    this.getOrderDetail(this.orderNumber);
+    console.log(this.data);
 
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
@@ -78,7 +81,7 @@ export class PaymentDetailComponent implements OnInit {
     this.notificationService.connection.on('UpdateStatePayment', (data) => {
       if(data && data["serviceId"] && Number(data["serviceId"]) == this.id){
         this.getPaymentDetail();
-        this.getOrderDetail();
+        this.getOrderDetail(this.orderNumber);
       }
     });
   }
@@ -89,10 +92,9 @@ export class PaymentDetailComponent implements OnInit {
     });
   }
 
-  getOrderDetail() {
-    this.orderService.getOrderBycode(this.orderNumber).subscribe((data: any) => {
-      this.data = data;
-      console.log("Huyen", this.data)
+  getOrderDetail(id: string) {
+    this.orderService.getOrderBycode(id).subscribe((data: any) => {
+      this.data = data;   
     });
   }
 
@@ -124,5 +126,30 @@ export class PaymentDetailComponent implements OnInit {
 
   payNow() {
     window.location.href = this.payment.paymentUrl
+  }
+
+  printInvoice(id: number) {
+    this.service.exportInvoice(id).subscribe((data) => {
+      const element = document.createElement('div');
+      element.style.width = '268mm';
+      element.style.height = '371mm';
+      if (typeof data === 'string' && data.trim().length > 0) {
+        element.innerHTML = data;
+        
+        document.body.appendChild(element);
+        
+        html2canvas(element).then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+          window.open(pdf.output('bloburl'), '_blank');
+          document.body.removeChild(element);
+        });
+      } else {
+        console.log('error:', data);
+      }
+    }, (error) => {
+      console.log('error:', error);
+    });
   }
 }
