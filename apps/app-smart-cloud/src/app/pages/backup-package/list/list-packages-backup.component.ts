@@ -158,14 +158,13 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     this.router.navigate(['/app-smart-cloud/backup/packages/resize/' + id]);
   }
 
-  serviceInPackage: ServiceInPackage = new ServiceInPackage();
-
   handleDeletedOk() {
-    this.getListPackageBackups(true);
+    setTimeout(() => {this.getListPackageBackups(true);}, 2000)
+
   }
 
   handleUpdateOk() {
-    this.getListPackageBackups(true);
+    setTimeout(() => {this.getListPackageBackups(false);}, 2000)
   }
 
   ngOnInit() {

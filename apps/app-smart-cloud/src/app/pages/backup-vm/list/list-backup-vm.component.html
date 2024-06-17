@@ -85,7 +85,6 @@
             <th nzBreakWord>{{ 'app.table.backup.vm.create.date'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.expire.date'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.status'|i18n }}</th>
-            <th nzBreakWord>{{ 'app.table.backup.vm.task.status'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.action'|i18n }}</th>
           </tr>
           </thead>
@@ -101,10 +100,10 @@
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
               <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
             </ng-container>
-            <td nzBreakWord>
-              <span *ngIf="data.serviceStatus === 'KHOITAO'">-</span>
-              <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>
-            </td>
+<!--            <td nzBreakWord>-->
+<!--              <span *ngIf="data.serviceStatus === 'KHOITAO'">-</span>-->
+<!--              <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>-->
+<!--            </td>-->
             <td nzBreakWord>
 <!--              <div [ngSwitch]="data.status">-->
                 <div *ngIf="data.status.includes('AVAILABLE')">
