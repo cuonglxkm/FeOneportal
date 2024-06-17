@@ -174,12 +174,14 @@
   "form.account.validate.surname":"Last name cannot be empty and must not contain special characters!",
   "form.account.validate.phone":"Invalid phone number!",
   "form.account.validate.address":"Province/City",
+  "form.account.validate.address.detail":"Detailed address can contain characters / - and spaces, but no special characters",
 
   "app.account.validation": "Please enter complete information!",
   "app.account.form.success": "Account updated successfully!",
   "app.account.form.fail": "Account update failed",
   "app.description.maxLength.255": "Allow a maximum of 255 characters input",
   "app.failData": "Retrieve data failed",
+  "app.notify.get.list.province": "Failed to retrieve the list of Provinces/Cities",
 
   "app.minute": "minutes",
   "app.hour": "hour",
@@ -2852,6 +2854,7 @@
   "app.backup.package.information": "Backup Package Information",
   "app.backup.package.name": "Backup Package name",
   "app.backup.package.storage": "Backup Package capacity (GB)",
+   "app.backup.size": "Backup size",
   "app.backup.package.storage.current": "Current Backup Package Capacity",
   "app.backup.package.storage.addition": "Additional Backup Package Capacity",
   "app.backup.package.storage.total": "Storage",
