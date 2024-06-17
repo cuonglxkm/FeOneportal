@@ -89,6 +89,10 @@
   "app.Month": "Tháng",
   "app.password": "Mật khẩu",
   "app.password.new": "Mật khẩu mới",
+  "app.enter.password.new": "Nhập mật khẩu mới",
+  "app.password.old": "Mật khẩu cũ",
+  "app.enter.password.old": "Nhập mật khẩu cũ",
+  "app.notify.reset.pass.success": "Đổi mật khẩu thành công",
   "app.password.confirm": "Xác nhận mật khẩu",
   "app.note": "Ghi chú",
   "app.here": "Tại đây",
@@ -317,6 +321,7 @@
 
   "app.breadcrumb.home": "Trang chủ",
   "app.breadcrumb.infrastructure.service": "Dịch vụ hạ tầng",
+  "app.breadscrumb.advanced.service": "Dịch vụ nâng cao",
   "app.breadcrumb.block.storage": "Block Storage",
 
   "validation.ip.address.cidr": "IP Address / CIDR không được để trống.",
@@ -1646,6 +1651,11 @@
   "tooltip.kakfa.topic.segment-ms": "Thời gian tối đa mà một segment (phần) của log có thể tồn tại trước khi tạo một segment mới",
   "tooltip.kakfa.topic.message-timestamp-difference": "Giới hạn thời gian tối đa giữa timestamps của tin nhắn producer và timestamps của tin nhắn khi ghi vào hệ thống",
   "tooltip.kakfa.topic.segment-index": "Kích thước tối đa cho một index file của một segment (theo byte)",
+
+  "k8s-prem.intro": "VNPT Advanced Kubernetes là dịch vụ container nâng cao cho Kubernetes (VAK) an toàn và đáng tin cậy được cung cấp qua cơ sở hạ tầng điện toán linh hoạt của Red Hat Openshift. VAK cho phép bạn triển khai ứng dụng chứa trong container mà không cần quản lý và duy trì các cụm Kubernetes từ đó giúp bạn tập trung vào phát triển thay vì quản lý cơ sở hạ tầng cơ bản.",
+  "k8s-prem.create": "Khởi tạo dịch vụ",
+  "k8s-prem.create.btn": "Tạo mới dịch vụ",
+  "k8s-prem.service-name": "Tên dịch vụ",
 
   "mongodb.init": "Khởi tạo dịch vụ",
   "mongodb.intro": "Dịch vụ DocumentDB for MongoDB cung cấp tính năng replication bảo đảm khả năng dự phòng và nâng cao tính khả dụng của mongoDB. Với nhiều bản sao chép trên nhiều database server khác nhau, replication nâng cao mức độ chịu lỗi chống lại việc mất dữ liệu trên single database.",

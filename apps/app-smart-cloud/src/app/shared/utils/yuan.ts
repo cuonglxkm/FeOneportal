@@ -24,3 +24,11 @@ export function getCurrentRegionAndProject() {
 
   return {regionId, projectId};
 }
+
+
+export function getUniqueObjects(array, key) {
+  return Object.values(array.reduce((acc, current) => {
+    acc[current[key]] = current;
+    return acc;
+  }, {}));
+}

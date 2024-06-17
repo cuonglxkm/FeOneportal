@@ -194,6 +194,10 @@
   "app.Month": "Month",
   "app.password": "Password",
   "app.password.new": "New password",
+  "app.enter.password.new": "Enter new password",
+  "app.password.old": "Old password",
+  "app.enter.password.old": "Enter old password",
+  "app.notify.reset.pass.success": "Successfully reset password",
   "app.password.confirm": "Confirm password",
   "app.note": "Note",
   "app.here": "Here",
@@ -431,6 +435,7 @@
 
   "app.breadcrumb.home": "Home",
   "app.breadcrumb.infrastructure.service": "Infrastructure service",
+  "app.breadscrumb.advanced.service": "Advanced service",
 
   "validation.ip.address.cidr": "IP Address / CIDR cannot be left blank.",
   "validation.ip.address.cidr.pattern": "IP Address / CIDR is not in the correct format. Please enter an IP address in the format x.x.x.x or a CIDR in the format x.x.0.0/16 or x.x.0.0/24.",
@@ -1752,6 +1757,11 @@
   "tooltip.kakfa.topic.segment-ms": "The maximum time a segment of the log can exist before creating a new segment",
   "tooltip.kakfa.topic.message-timestamp-difference": "The maximum time limit between the timestamps of producer messages and the timestamps of messages when written into the system",
   "tooltip.kakfa.topic.segment-index": "The maximum size for an index file of a segment (in bytes)",
+
+  "k8s-prem.intro": "VNPT's advanced container service for Kubernetes (VAK) integrates storage, networking, load balancing, and security capabilities. VAK allows you to deploy applications in high-performance and scalable containers while providing full lifecycle management for enterprise-grade containerized applications.",
+  "k8s-prem.create": "Service initialization",
+  "k8s-prem.create.btn": "Create service",
+  "k8s-prem.service-name": "Service name",
 
   "mongodb.init": "Service initialization",
   "mongodb.intro": "DocumentDB for MongoDB service provides replication features that ensure redundancy and enhance the availability of MongoDB. With multiple replicas across different database servers, replication improves fault tolerance against data loss on a single database.",
