@@ -161,6 +161,7 @@ import {
   RestoreBackupVolumeVpcComponent
 } from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
 import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.component';
+import { InvoiceDetailComponent } from './billing/payment/invoice-detail/invoice-detail.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
@@ -624,6 +625,10 @@ const routes: Routes = [
       permission: 'payment:Get'
     }
 
+  },
+  {
+    path: 'billing/invoice/:id',
+    component: InvoiceDetailComponent
   },
   {
     path: 'billing/payments/success',
