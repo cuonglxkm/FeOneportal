@@ -63,8 +63,8 @@
 
   "form.account.tooltip.info":"Không quá 20 ký tự, không chứa ký tự đặc biệt",
   "form.account.tooltip.address":"Điền địa chỉ bao gồm quận/huyện - thị xã và số nhà",
-  "form.account.validate.name":"Tên không được để trống và chứa kí tự đặc biệt!",
-  "form.account.validate.surname":"Họ không được để trống và chứa kí tự đặc biệt!",
+  "form.account.validate.name":"Tên không được để trống và không được chứa kí tự đặc biệt!",
+  "form.account.validate.surname":"Họ không được để trống và không được chứa ký tự đặc biệt!",
   "form.account.validate.phone":"Số điện thoại không hợp lệ!",
   "form.account.validate.address":"Tỉnh/Thành phố",
 
@@ -2754,6 +2754,7 @@
   "app.backup.package.delete.modal.alert.backup.schedule": "Các lịch backup tự động được tạo từ Gói backup này cũng sẽ bị xóa.",
   "app.backup.package.edit.title": "Chỉnh sửa thông tin gói Backup",
   "app.backup.package.resize": "điều chỉnh gói backup",
+  "app.backup.package.intro.desc": "Giải pháp sao lưu không giới hạn và mở rộng linh hoạt theo nhu cầu. Đáp ứng các nhu cầu sao lưu máy chủ ảo và block storage trên hạ tầng VNPT Cloud",
 
   "app.tooltip.backup.package.name": "Tên gói backup của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.",
   "app.tooltip.backup.package.storage": "Dung lượng của gói backup",

@@ -58,19 +58,19 @@ export class SecurityComponent implements OnInit {
 
     this.email = this.tokenService.get().email
     
-    this.service.twoFactorProviders().subscribe((data: any) => {
-      console.log(data);
+    this.service.getTwoFactorSetting().subscribe((data: any) => {
+      this.toggleSwitch = data.enableEmail;
+      this.toggleSwitchGoogleAuthenticator = data.enableAuthenticator;
+      this.isActiveGoogleAuthenticator = data.enableAuthenticator;
     });
   }
 
-  // clickSwitch(): void {
-  //   this.toggleSwitch = !this.toggleSwitch;
-  // }
-
   handleSubmit(): void {
     let formeEnable2FA = new FormEnable2FA();
+    formeEnable2FA.twofactorType = "Email";
     formeEnable2FA.code = this.form.controls.otp.value.toString();
-    this.service.enable2fa(formeEnable2FA).subscribe(data => {
+    formeEnable2FA.enable = this.toggleSwitch;
+    this.service.updateTwoFactorSetting(formeEnable2FA).subscribe(data => {
       if (data.success == true) {
         this.isVisibleUpdate = false
         this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.security.noti.sucess"));
@@ -92,14 +92,20 @@ export class SecurityComponent implements OnInit {
 
   handleChangeSwitch(event){
     this.toggleSwitch = event
-    this.isVisibleUpdate = true;
     console.log(this.toggleSwitch);
+    this.service.getOneTimePassword().subscribe((data: any) => {
+      console.log(data);
+      this.isVisibleUpdate = true;
+    }, error => {
+      this.toggleSwitch = !this.toggleSwitch;
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
+    });
   }
 
   handleChangeSwitchGoogleAuthenticator(event){
     this.toggleSwitchGoogleAuthenticator = event
     if (this.toggleSwitchGoogleAuthenticator == true) {
-      this.service.authenticatorKey().subscribe((data: any) => {
+      this.service.getTwoFactorSetting().subscribe((data: any) => {
         this.authenticatorKey = data.key;
         this.isVisibleUpdateGoogleAuthenticator = true;
       }, error => {
@@ -111,12 +117,8 @@ export class SecurityComponent implements OnInit {
     console.log(this.toggleSwitchGoogleAuthenticator);
   }  
 
-  handleUpdate(){
-    
-  }
-
   handleRecreateGoogleAuthen(){
-    this.service.authenticatorKey().subscribe((data: any) => {
+    this.service.getTwoFactorSetting().subscribe((data: any) => {
         this.authenticatorKey = data.key;
         this.isVisibleReCreateGoogleAuthenticator = true
         this.isVisibleUpdate = true;

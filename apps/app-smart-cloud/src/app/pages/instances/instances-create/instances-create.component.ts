@@ -139,6 +139,7 @@ export class InstancesCreateComponent implements OnInit {
   selectedSSHKeyName: string;
   selectedSnapshot: number;
   cardHeight: string = '160px';
+  selectedIndextab: number;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -433,9 +434,15 @@ export class InstancesCreateComponent implements OnInit {
   isSnapshot: boolean = false;
   listSnapshot: SnapshotVolumeDto[] = [];
   sizeSnapshotVL: number;
-  status: string;
+  disableConfigGpu: boolean = false;
+  disableSSD: boolean = false;
+  nameSnapshot: string;
 
   initSnapshot(): void {
+    this.selectedIndextab = 0;
+    this.disableHDD = false;
+    this.disableSSD = false;
+    this.onClickConfigPackage();
     this.selectedSnapshot = null;
     if (this.isSnapshot) {
       this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
@@ -451,6 +458,20 @@ export class InstancesCreateComponent implements OnInit {
           );
           this.selectedSnapshot = this.listSnapshot[0].id;
           this.sizeSnapshotVL = this.listSnapshot[0].sizeInGB;
+          this.nameSnapshot = this.listSnapshot[0].name;
+          if (this.listSnapshot[0].volumeType.toUpperCase() == 'SSD') {
+            this.disableConfigGpu = false;
+            this.activeBlockHDD = false;
+            this.activeBlockSSD = true;
+            this.disableHDD = true;
+            this.disableSSD = false;
+          } else {
+            this.disableConfigGpu = true;
+            this.activeBlockHDD = true;
+            this.activeBlockSSD = false;
+            this.disableHDD = false;
+            this.disableSSD = true;
+          }
           this.listOfferFlavors = [];
           this.initFlavors();
           this.activeBlockHDD = !this.activeBlockHDD;
@@ -464,6 +485,7 @@ export class InstancesCreateComponent implements OnInit {
           console.log('list snapshot volume root', this.listSnapshot);
         });
     } else {
+      this.disableConfigGpu = false;
       this.listOfferFlavors = [];
       this.initFlavors();
       this.resetConfigPackage();
@@ -471,9 +493,26 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   changeSelectedSnapshot() {
-    this.sizeSnapshotVL = this.listSnapshot.filter(
+    this.selectedIndextab = 0;
+    this.onClickConfigPackage();
+    let selectedSnapshotModel = this.listSnapshot.filter(
       (e) => e.id == this.selectedSnapshot
-    )[0].sizeInGB;
+    )[0];
+    this.sizeSnapshotVL = selectedSnapshotModel.sizeInGB;
+    this.nameSnapshot = selectedSnapshotModel.name;
+    if (selectedSnapshotModel.volumeType.toUpperCase() == 'SSD') {
+      this.disableConfigGpu = false;
+      this.activeBlockHDD = false;
+      this.activeBlockSSD = true;
+      this.disableHDD = true;
+      this.disableSSD = false;
+    } else {
+      this.disableConfigGpu = true;
+      this.activeBlockHDD = true;
+      this.activeBlockSSD = false;
+      this.disableHDD = false;
+      this.disableSSD = true;
+    }
     this.listOfferFlavors = [];
     this.initFlavors();
     this.activeBlockHDD = !this.activeBlockHDD;
@@ -487,33 +526,11 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   resetConfigPackage() {
-    if (this.isPreConfigPackage) {
-      this.offerFlavor = null;
-      this.selectedElementFlavor = null;
-      this.totalAmount = 0;
-      this.totalVAT = 0;
-      this.totalincludesVAT = 0;
-    } else if (
-      this.isCustomconfig &&
-      this.configCustom.capacity <= this.sizeSnapshotVL
-    ) {
-      this.configCustom.capacity =
-        this.sizeSnapshotVL < this.stepCapacity
-          ? this.stepCapacity
-          : this.sizeSnapshotVL;
-      this.getUnitPrice(1, 0, 0, 0, null);
-      this.getTotalAmount();
-    } else if (
-      this.isGpuConfig &&
-      this.configGPU.storage <= this.sizeSnapshotVL
-    ) {
-      this.configGPU.storage =
-        this.sizeSnapshotVL < this.stepCapacity
-          ? this.stepCapacity
-          : this.sizeSnapshotVL;
-      this.getUnitPrice(1, 0, 0, 0, null);
-      this.getTotalAmount();
-    }
+    this.offerFlavor = null;
+    this.selectedElementFlavor = null;
+    this.totalAmount = 0;
+    this.totalVAT = 0;
+    this.totalincludesVAT = 0;
   }
 
   //#endregion
@@ -530,9 +547,11 @@ export class InstancesCreateComponent implements OnInit {
     }
   }
   initSSD(): void {
-    this.activeBlockHDD = false;
-    this.activeBlockSSD = true;
-    this.resetConfig();
+    if (!this.disableSSD) {
+      this.activeBlockHDD = false;
+      this.activeBlockSSD = true;
+      this.resetConfig();
+    }
   }
 
   resetConfig() {
