@@ -224,7 +224,12 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           if (error?.error?.title == 'Validation errors') {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.validationErrors.Password[0]);
+            if (error.error.validationErrors.Password != null) {
+              this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.validationErrors.Password[0]);
+            } else if (error.error.validationErrors.Email != null) {
+              this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.validationErrors.Email[0]);
+            }
+
           } else {
             this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
           }
