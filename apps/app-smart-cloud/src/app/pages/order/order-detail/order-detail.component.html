@@ -147,9 +147,12 @@
             </h3>
           </nz-form-item>
           <nz-form-item>
-            <h3 [routerLink]="['/app-smart-cloud/billing/payments/detail/', data?.paymentId, '/', data?.orderCode]" style="font-weight: 600; font-size: 16px; color: #248fcc" [ngStyle]="data?.paymentCode !== '' && {cursor: 'pointer'}">
-              {{ data?.paymentCode === '' ? '-' : data?.paymentCode }}
-            </h3>
+            <h3 
+            [routerLink]="data?.paymentId && data?.orderCode && ['/app-smart-cloud/billing/payments/detail', data.paymentId, data.orderCode]" 
+            style="font-weight: 600; font-size: 16px; color: #248fcc" 
+            [ngStyle]="{'cursor': data?.paymentCode !== '' ? 'pointer' : 'default'}">
+            {{ data?.paymentCode === '' ? '-' : data?.paymentCode }}
+          </h3>
           </nz-form-item>
         </nz-col>
       </nz-row>

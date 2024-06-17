@@ -9,13 +9,13 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']">{{
+        {{
           'app.breadcrumb.infrastructure.service' | i18n
-        }}</a>
+        }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/file-system-snapshot/list']"
+        ><a [routerLink]="['/app-smart-cloud/file-system-snapshot']"
           >File System Snapshot</a
         ></nz-breadcrumb-item
       >
@@ -126,9 +126,9 @@
           <nz-col *ngIf="typeVpc === 1" nzSpan="12">
             <nz-row>
               <nz-col nzSpan="18">
-                <span class="text-label">{{'app.file.system.total.size'|i18n}}:</span>
+                <span class="text-label">{{'app.file.system.snapshot.total.size'|i18n}}:</span>
                 <img nz-popover
-                     [nzPopoverContent]="'app.file.system.capacity.vpc' | i18n"
+                     [nzPopoverContent]="'app.file.system.snapshot.capacity.vpc' | i18n"
                      nzPopoverPlacement="bottom" style="margin-left: 6px; margin-bottom: 3px;"
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-col>
