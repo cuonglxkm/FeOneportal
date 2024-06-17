@@ -2,9 +2,9 @@ import { HttpContext } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, Inject,
   OnDestroy,
-  OnInit,
+  OnInit
 } from '@angular/core';
 import {
   AbstractControl,
@@ -14,13 +14,16 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ALLOW_ANONYMOUS } from '@delon/auth';
-import { _HttpClient } from '@delon/theme';
+import { _HttpClient, ALAIN_I18N_TOKEN, SettingsService } from '@delon/theme';
 import { MatchControl } from '@delon/util/form';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { environment } from '@env/environment';
 import { AppValidator } from '../../../../../../../libs/common-utils/src';
+import { noAllWhitespace } from '../../user-profile/user-profile.component';
+import { I18NService } from '@core';
+import { DOCUMENT } from '@angular/common';
 
 export interface UserCreateDto {
   email: string;
@@ -49,8 +52,12 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     private router: Router,
     private http: _HttpClient,
     private cdr: ChangeDetectorRef,
-    private notification: NzNotificationService
-  ) {}
+    private notification: NzNotificationService,
+    private settings: SettingsService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    @Inject(DOCUMENT) private doc: any,
+  ) {
+  }
 
   panel = {
     active: false,
@@ -65,8 +72,20 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       password: ['', [Validators.required, AppValidator.validPassword]],
       confirm: ['', [Validators.required]],
       // mobilePrefix: ['+86'],
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
+      firstName: ['', {
+        validators: [
+          Validators.required,
+          AppValidator.cannotContainSpecialCharactor,
+          noAllWhitespace(),
+        ],
+      }],
+      lastName: ['', {
+        validators: [
+          Validators.required,
+          AppValidator.cannotContainSpecialCharactor,
+          noAllWhitespace(),
+        ],
+      }],
       mobile: ['', [Validators.required, AppValidator.validPhoneNumber]],
       province: ['', [Validators.required]],
       agreement: [true, [Validators.required]],
@@ -96,6 +115,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   interval$: NzSafeAny;
 
   ngOnInit(): void {
+    this.langRegister = localStorage.getItem('lang') == null ? this.i18n.defaultLang : localStorage.getItem('lang');
     this.form.controls.province.setValue('Hà Nội');
   }
 
@@ -152,6 +172,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   // #endregion
   passwordVisible = false;
   passwordVisible1 = false;
+  langRegister: any;
 
   submit(): void {
     console.log('submit register')
@@ -202,7 +223,11 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
           });
         },
         error: (error) => {
-          this.notification.error(error.error.validationErrors.Password[0], '');
+          if (error?.error?.title == 'Validation errors') {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.validationErrors.Password[0]);
+          } else {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
+          }
         },
       });
   }
@@ -211,5 +236,25 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     if (this.interval$) {
       clearInterval(this.interval$);
     }
+  }
+
+
+  changelang() {
+    localStorage.setItem('lang',this.langRegister)
+    // if (this.langRegister === 'Vietnam') {
+    //
+    // } else {
+    //   this.i18n.loadLangData('en-US').subscribe(res => {
+    //     this.i18n.use('en-US', res);
+    //     this.settings.setLayout('lang', 'en-US');
+    //     setTimeout(() => this.doc.location.reload());
+    //   });
+    // }
+
+    this.i18n.loadLangData(this.langRegister).subscribe(res => {
+      this.i18n.use(this.langRegister, res);
+      this.settings.setLayout('lang', this.langRegister);
+      setTimeout(() => this.doc.location.reload());
+    });
   }
 }
