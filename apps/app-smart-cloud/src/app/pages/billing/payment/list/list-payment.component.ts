@@ -268,8 +268,7 @@ export class ListPaymentComponent implements OnInit{
           const imgData = canvas.toDataURL('image/jpeg', 1.0);
           const pdf = new jsPDF('p', 'mm', 'a4');
           pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-          pdf.autoPrint()
-          pdf.output('dataurlnewwindow')
+          window.open(pdf.output('bloburl'), '_blank');
           document.body.removeChild(element);
         });
       } else {

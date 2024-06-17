@@ -33,7 +33,7 @@
         >
       </nz-col>
     </nz-row>
-    <nz-row style="padding-top: 50px">
+    <nz-row style="padding-top: 50px; padding-bottom: 20px">
       <div nz-col nzSpan="12">
         <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.customerName" | i18n}}:</span>
@@ -47,7 +47,7 @@
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.customerName" | i18n}}:</span>
           <span class="fw-600"> {{ (userModel$ | async)?.email === '' ? '-' : (userModel$ | async)?.email }}</span>
         </nz-row>
-        <nz-row style="height: 50px" class="label-fontsize">
+        <nz-row class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.address" | i18n}}:</span>
           <span class="fw-600">{{ (userModel$ | async)?.address === '' ? '-' :  (userModel$ | async)?.address}}</span>
         </nz-row>
@@ -63,11 +63,11 @@
         </nz-row>
         <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.orderCode" | i18n}}:</span>
-          <span class="fw-600" style="color: #248FCC;">{{ payment.orderNumber }}</span>
+          <span class="fw-600" style="color: #248FCC; cursor: pointer;" [routerLink]="['/app-smart-cloud/order/detail/', orderNumber]">{{ payment.orderNumber }}</span>
         </nz-row>
         <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.invoiceCode" | i18n}}:</span>
-          <span class="fw-600" style="color: #248FCC;">{{ payment.eInvoiceCode === null ? '-' : payment.eInvoiceCode  }}</span>
+          <span (click)="payment.eInvoiceCode !== null && printInvoice(payment.eInvoiceCode)" [ngStyle]="payment.eInvoiceCode === null ? {cursor: 'not-allowed'} : {cursor: 'pointer'}" class="fw-600" style="color: #248FCC;">{{ payment.eInvoiceCode === null ? '-' : payment.eInvoiceCode  }}</span>
         </nz-row>
       </div>
     </nz-row>
@@ -76,7 +76,7 @@
         nz-button
         [nzType]="'primary'"
         (click)="payNow()"
-        style="background-color: #E58200; border: none; outline: none; padding: 0 50px; display: flex; align-items: center; gap: 5px; margin:1rem 0rem;"
+        style="background-color: #E58200; border: none; outline: none; padding: 0 50px; display: flex; align-items: center; gap: 5px"
       >
         <img src="assets/imgs/wallet.svg" alt="" />
         <span>{{"app.payment.pay.now" |i18n}}</span>
@@ -107,7 +107,7 @@
       </thead>
       <tbody>
       
-        <tr *ngFor="let item of data.orderItems">
+        <tr *ngFor="let item of data?.orderItems">
         
           <td class="text-left">{{ item.serviceName }}</td>
           <td class="text-left">{{item.serviceType}}</td>
