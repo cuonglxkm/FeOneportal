@@ -1901,7 +1901,7 @@
   "mongodb.default.role.name": "Custom Role Name",
   "mongodb.default.role.name-pld": "Enter role name",
   "mongodb.role.name.validation-1": "Role name cannot be left blank.",
-  "mongodb.role.name.validation-2": "Role name can only contain: letters, numbers, '_', '-', and up to 256 characters.",
+  "mongodb.role.name.validation-2": "Custom role name must be made up of letters and numbers, include only 2 special characters ‘-“ “_” and must begin with a letter or number. Maximum 256 characters.",
   "mongodb.role.list": "Permission List",
   "mongodb.list.db-collection": "Database/Collection List",
   "mongodb.choose.role-action": "Select action/role",
