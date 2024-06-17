@@ -375,10 +375,7 @@ export class InstancesEditComponent implements OnInit {
         this.checkPermission = true;
         this.instancesModel = data;
         this.instanceNameEdit = this.instancesModel.name;
-        if (
-          this.instancesModel.flavorId == 0 ||
-          this.instancesModel.flavorId == null
-        ) {
+        if (this.instancesModel.offerId == 0) {
           this.isConfigPackageAtInitial = false;
           this.isCustomconfig = true;
         }
@@ -466,7 +463,7 @@ export class InstancesEditComponent implements OnInit {
     ram: number,
     cpu: number,
     gpu: number,
-    gpuTypeOfferId: number
+    gpuOfferId: number
   ) {
     let tempInstance: InstanceResize = new InstanceResize();
     tempInstance.currentFlavorId = this.instancesModel.flavorId;
@@ -477,7 +474,7 @@ export class InstancesEditComponent implements OnInit {
     tempInstance.newFlavorId = 0;
     tempInstance.serviceInstanceId = this.instancesModel.id;
     tempInstance.gpuCount = gpu + this.instancesModel.gpuCount;
-    tempInstance.newGpuOfferId = gpuTypeOfferId;
+    tempInstance.newGpuOfferId = gpuOfferId;
     if (this.configGPU.gpuOfferId) {
       tempInstance.gpuType = this.listGPUType.filter(
         (e) => e.id == this.configGPU.gpuOfferId
@@ -624,6 +621,7 @@ export class InstancesEditComponent implements OnInit {
   minCapacity: number;
   maxCapacity: number;
   stepCapacity: number;
+  surplus: number;
   getConfigurations() {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {
@@ -631,6 +629,8 @@ export class InstancesEditComponent implements OnInit {
         this.minCapacity = valueArray[0];
         this.stepCapacity = valueArray[1];
         this.maxCapacity = valueArray[2];
+        this.surplus = valueArray[2] % valueArray[1];
+        this.cdr.detectChanges();
       },
     });
   }
@@ -641,6 +641,10 @@ export class InstancesEditComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
+      if (res > this.maxCapacity) {
+        this.configCustom.capacity = this.maxCapacity - this.surplus;
+        this.cdr.detectChanges();
+      }
       if (this.configCustom.capacity % this.stepCapacity > 0) {
         this.notification.warning(
           '',
@@ -879,6 +883,7 @@ export class InstancesEditComponent implements OnInit {
       );
       return;
     }
+    this.orderItem = [];
     this.instanceResizeInit();
     let specificationInstance = JSON.stringify(this.instanceResize);
     let orderItemInstanceResize = new OrderItem();
@@ -892,12 +897,19 @@ export class InstancesEditComponent implements OnInit {
     this.order.customerId = this.userId;
     this.order.createdByUserId = this.userId;
     this.order.note = 'instance resize';
+    this.totalVAT = this.totalVAT;
+    this.totalincludesVAT = this.totalincludesVAT;
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 
     this.orderService
       .validaterOrder(this.order)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (result) => {
           if (result.success) {

@@ -51,6 +51,9 @@ export class FileSystemSnapshotService extends BaseService {
     if (formSearch.currentPage != undefined || formSearch.currentPage != null) {
       params = params.append('currentPage', formSearch.currentPage)
     }
+    if (formSearch.name != undefined || formSearch.name != null) {
+      params = params.append('name', formSearch.name)
+    }
 
     return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/sharesnapshot/paging', {
       headers: this.getHeaders(),
@@ -65,7 +68,7 @@ export class FileSystemSnapshotService extends BaseService {
 
   getFileSystemSnapshotById(id: number, projectId: number){
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions +
-      `/file-storage/sharesnapshot/${id}?projectId=${projectId}`).pipe(
+      `/file-storage/sharesnapshot/${id}?projectId=${projectId}`, {headers: this.getHeaders()}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -81,7 +84,7 @@ export class FileSystemSnapshotService extends BaseService {
 
   edit(formEdit: FormEditFileSystemSnapShot) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/sharesnapshot`,
-      Object.assign(formEdit)).pipe(
+      Object.assign(formEdit), {headers: this.getHeaders()}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -96,7 +99,7 @@ export class FileSystemSnapshotService extends BaseService {
   }
 
   deleteFileSystemSnapshot(formDelete: FormDeleteFileSystemSnapshot) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/sharesnapshot/${formDelete.id}?regionId=${formDelete.regionId}&customerId=${formDelete.customerId}`).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/sharesnapshot/${formDelete.id}?regionId=${formDelete.regionId}&customerId=${formDelete.customerId}`, {headers: this.getHeaders()}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

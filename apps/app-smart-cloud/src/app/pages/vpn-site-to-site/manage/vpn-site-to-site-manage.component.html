@@ -3,16 +3,16 @@
   <page-header
     [breadcrumb]="breadcrumb"
     [action]="action"
-    [title]="'Quản lý VPN site to site'"
+    [title]="'app.manage.site.to.site.title.infomation' | i18n"
     xmlns="http://www.w3.org/1999/html"
   >
     <ng-template #breadcrumb>
       <nz-breadcrumb [nzSeparator]="separatorTemplate">
         <nz-breadcrumb-item>
-          <a [routerLink]="['/']">Trang chủ</a>
+          <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
         </nz-breadcrumb-item>
-        <nz-breadcrumb-item> Dịch vụ hạ tầng </nz-breadcrumb-item>
-        <nz-breadcrumb-item> VPN site to site </nz-breadcrumb-item>
+        <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
+        <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']">VPN site to site</a></nz-breadcrumb-item>
       </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -72,15 +72,15 @@
           <img src="assets/imgs/dots.svg" alt="" />
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && projectObject.type == 0)">Điều chỉnh</li>
-              <li nz-menu-item (click)="modalDelete()" *ngIf="('VpnSiteToSites:Delete' | IsPermissionPipe)">Xóa</li>
+              <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && projectObject.type == 0)">{{'app.manage.site.to.site.Adjust' |i18n}}</li>
+              <li nz-menu-item (click)="modalDelete()" *ngIf="('VpnSiteToSites:Delete' | IsPermissionPipe)">{{'app.manage.site.to.site.delete' |i18n}}</li>
             </ul>
           </nz-dropdown-menu>
         </button>
       </div>
     </nz-row>
     <div style="margin-bottom: 15px" class="text-label label-fontsize">
-      Tên gói: <span class="text-bold">{{response?.offerName}}</span>
+      {{'app.manage.site.to.site.name.package' |i18n}}: <span class="text-bold">{{response?.offerName}}</span>
     </div>
     <div style="margin-bottom: 15px" class="text-label label-fontsize">
       Bandwidth: <span class="text-bold">{{response?.bandwidth}}</span>
@@ -92,10 +92,10 @@
         </a>
     </div>
     <div style="margin-bottom: 15px" class="text-label label-fontsize">
-      Ngày khởi tạo: <span class="text-bold">{{response?.createdDate | date: 'dd/MM/YYYY'}}</span>
+      {{'app.service.start.date' |i18n}}: <span class="text-bold">{{response?.createdDate | date: 'dd/MM/YYYY'}}</span>
     </div>
     <div style="margin-bottom: 15px" class="text-label label-fontsize">
-      Ngày hết hạn: <span class="text-bold">{{response?.expiredDate | date: 'dd/MM/YYYY'}}</span>
+      {{'app.service.expiration-date' |i18n}}: <span class="text-bold">{{response?.expiredDate | date: 'dd/MM/YYYY'}}</span>
     </div>
   </nz-card>
   <nz-card class="custom-tab" style="border-radius: 8px">
@@ -144,13 +144,15 @@ xmlns="http://www.w3.org/1999/html"
 >
 <ng-template #breadcrumb>
   <nz-breadcrumb [nzSeparator]="separatorTemplate">
-    <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
-    <nz-breadcrumb-item> Dịch vụ hạ tầng </nz-breadcrumb-item>
-    <nz-breadcrumb-item> VPN site to site </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
+    <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']">VPN site to site</a></nz-breadcrumb-item>
   </nz-breadcrumb>
-    <ng-template #separatorTemplate
-      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
-    </ng-template>
+<ng-template #separatorTemplate
+  ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+</ng-template>
 </ng-template>
 <ng-template #action>
   <div class="alain-custom-action text-right">
@@ -172,14 +174,14 @@ xmlns="http://www.w3.org/1999/html"
   </nz-row>
   <nz-row nzJustify="center" style="margin-top:15px;">
     <div class="text-title">
-      <h1>VPN site to site <br /> Cho phép các mạng tại các vị trí khác nhau giao tiếp với nhau</h1>
+      <h1>VPN site to site <br /> {{'app.manage.site.to.site.present.title' |i18n}}</h1>
     </div>
   </nz-row>
   <nz-row nzJustify="center" class="mb-6">
-    <div class="text-subtitle" style="text-align: center;">VPN site to site cung cấp một kênh kết nối an toàn giữ các vị trí vật lý hoặc mạng máy tính khác nhau. <br /> Cho phép các vị trí đia lý khác nhau truy cập vào tài nguyên nội bộ</div>
+    <div class="text-subtitle" style="text-align: center;">{{'app.manage.site.to.site.present.des1' |i18n}} <br /> {{'app.manage.site.to.site.present.des2' |i18n}}</div>
   </nz-row>
   <nz-row nzJustify="center" class="pb-15">
-    <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && projectObject.type == 0)" (click)="createVpn()">Tạo mới VPN site to site</button>
+    <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && projectObject.type == 0)" (click)="createVpn()">{{'app.manage.site.to.site.present.create' |i18n}}</button>
   </nz-row>
 </nz-card>
 </nz-content>
@@ -188,7 +190,7 @@ xmlns="http://www.w3.org/1999/html"
 
 <nz-modal
   [(nzVisible)]="isVisibleDelete"
-  nzTitle="Hủy VPN site to site"
+  [nzTitle]="'app.manage.site.to.site.delete.title' |i18n"
   (nzOnCancel)="handleCancelDelete()"
 >
   <ng-container *nzModalContent>
@@ -198,12 +200,10 @@ xmlns="http://www.w3.org/1999/html"
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateDescriptionGanVLAN>
-      <div>
-        Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và
-        <b>KHÔNG THỂ KHÔI PHỤC LẠI</b>.
+      <div [innerHTML]="'app.manage.site.to.site.delete.des' | i18n">
       </div>
     </ng-template>
-    <div class="confirm-content">Quý khách có chắc chắn muốn xóa VPN site to site không?</div>
+    <div class="confirm-content">{{'app.manage.site.to.site.delete.confirm' |i18n }}</div>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDelete()">
@@ -211,7 +211,7 @@ xmlns="http://www.w3.org/1999/html"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{'app.button.cancel' |i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkDelete()">
       <img
@@ -219,7 +219,7 @@ xmlns="http://www.w3.org/1999/html"
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Xác nhận
+      {{'app.button.confirm' |i18n }}
     </button>
   </div>
 </nz-modal>

@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'volume.title' | i18n" xmlns="http://www.w3.org/1999/html">
+             [title]="'Danh sách Volume'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
@@ -11,7 +11,7 @@
         {{ 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title' | i18n }}</a>
+        <a routerLink="/app-smart-cloud/volumes">Volume</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
@@ -28,7 +28,7 @@
     </div>
   </ng-template>
 </page-header>
-<nz-content *ngIf="typeVPC == 0">
+<nz-content *ngIf="typeVPC == 0 || typeVPC == 2">
   <nz-card>
     <ng-container [ngSwitch]="isBegin">
       <ng-container *ngSwitchCase="false">
@@ -121,7 +121,12 @@
             </td>
             <td nzBreakWord>
               <div
-                *ngIf="!(data.serviceStatus == 'CREATING' || data.serviceStatus == 'ERROR' || data.serviceStatus == 'ATTACHING' || data.serviceStatus == 'DELETING' || data.serviceStatus == 'ERROR_DELETING' || data.serviceStatus == 'RESIZING')">
+                *ngIf="!(data.status == 'CREATING' ||
+                data.status == 'ERROR' ||
+                data.status == 'ATTACHING' ||
+                data.status == 'DELETING' ||
+                data.status == 'ERROR_DELETING' ||
+                data.status == 'RESIZING')">
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
@@ -153,6 +158,7 @@
                     <li nz-menu-item
                         (click)="navigateToCreateScheduleBackup(data.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
                     </li>
+                    <li nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
                     <li nz-menu-item
                         (click)="navigateToCreateScheduleSnapshot()">{{ 'volume.menu.create.schedule.snapshot' | i18n }}
                     </li>
@@ -298,7 +304,12 @@
             </td>
             <td>
               <div
-                *ngIf="!(i.serviceStatus == 'CREATING' || i.serviceStatus == 'ERROR' || i.serviceStatus == 'ATTACHING' || i.serviceStatus == 'DELETING' || i.serviceStatus == 'ERROR_DELETING' || i.serviceStatus == 'RESIZING')">
+                *ngIf="!(i.status == 'CREATING' ||
+                i.status == 'ERROR' ||
+                i.status == 'ATTACHING' ||
+                i.status == 'DELETING' ||
+                i.status == 'ERROR_DELETING' ||
+                i.status == 'RESIZING')">
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="i.id"
@@ -331,6 +342,7 @@
                     <li nz-menu-item
                         (click)="navigateToCreateScheduleBackup(i.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
                     </li>
+                    <li nz-menu-item (click)="navigateToSnapshot(i.id)">{{ 'app.snapshot.create' | i18n }}</li>
                     <li nz-menu-item
                         (click)="navigateToCreateScheduleSnapshot()">{{ 'volume.menu.create.schedule.snapshot' | i18n }}
                     </li>

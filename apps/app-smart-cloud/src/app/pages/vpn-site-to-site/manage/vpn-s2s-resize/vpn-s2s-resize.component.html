@@ -1,20 +1,18 @@
 <page-header
-[breadcrumb]="breadcrumb" [title]="'Điều chỉnh VPN site to site'"
+[breadcrumb]="breadcrumb" [title]="'app.vpns2s-resize' | i18n"
 [action]="action"
 
 >
 <ng-template #breadcrumb>
   <nz-breadcrumb [nzSeparator]="separatorTemplate">
     <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+      <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
     </nz-breadcrumb-item>
+    <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
     <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Dịch vụ hạ tầng</a>
+        <a [routerLink]="['/app-smart-cloud/vpn-site-to-site']">VPN site to site</a>
     </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">VPN site to site</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>Điều chỉnh VPN site to site</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'app.vpns2s-resize' | i18n}}</nz-breadcrumb-item>
   </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -37,24 +35,24 @@
 <nz-row nzGutter="24" class="body-form">
     <nz-col nzSpan="16" class="left-content">
         <nz-card class="left-content-card">
-            <span class="text-card-header">Thông tin VPN site to site</span>
+            <span class="text-card-header">{{'app.information' | i18n}} VPN site to site</span>
 
             <nz-row nzGutter="16" class="pt-5">
               <nz-col nzSpan="12">
-                <span class="text-label">Tên gói: </span>
+                <span class="text-label">{{'app.manage.site.to.site.name.package' | i18n}}: </span>
                 <span class="text-value-detail">{{vpn?.offerName}}</span>
               </nz-col>
               <nz-col nzSpan="12">
-                <span class="text-label">Ngày hết hạn: </span>
+                <span class="text-label">{{'app.service.expiration-date' | i18n}}: </span>
                 <span class="text-value-detail">{{ vpn?.bandwidth }}</span>
               </nz-col>
             </nz-row>
 
             <div nz-row class="mb-md pt-5" style="margin-bottom: 0 !important;">
                 <div nz-col nzSpan="11">
-                <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
+                <nz-form-label nzRequired>{{'app.vpns2s-resize.duration' | i18n}}</nz-form-label>
                 <nz-form-item>
-                    <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+                    <nz-form-control nzDisableAutoTips>
                     <nz-input-number class="input-number-element"
                     [disabled]="true"
                     [(ngModel)]="numberMonth"
@@ -64,25 +62,20 @@
                         nzMax="100"
                         nzStep="1"
                         nzSize="large"/>
-                    <ng-template #dateErrorTpl let-control>
-                        <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
-                        <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
-                        <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
-                    </ng-template>
                     </nz-form-control>
                 </nz-form-item>
                 </div>
                 <div nz-col nzSpan="12" style="margin-left: 15px">
-                <p  style="margin-top: 39px;">Ngày cấp dịch vụ: {{dateString | date:'dd/MM/yyyy'}}</p>
+                <p  style="margin-top: 39px; font-size: 16px;">{{'app.vpns2s-resize.use-date' | i18n}}: {{dateString | date:'dd/MM/yyyy'}}</p>
                 </div>
             </div>
             <div nz-col class="title-pading-left">
-                <p class="red-text">Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}</p>
+                <p class="red-text">{{'app.service.expiration-date' | i18n}}: {{ expiredDate | date : 'dd/MM/yyyy' }}</p>
             </div>
         </nz-card>
         <nz-card class="left-content-card">
-            <span class="text-card-header">Thông tin điều chỉnh</span>
-            <div class="header-content">Giá thuê bao gói VPN theo tháng (Chưa VAT)</div>
+            <span class="text-card-header">{{'app.adjust.info' | i18n}}</span>
+            <div class="header-content">{{'app.vpns2s-extend.header' | i18n}}</div>
             <nz-table
                 #ajaxTable3
                 nzShowSizeChanger
@@ -93,9 +86,9 @@
             >
                 <thead>
                 <tr>
-                    <th nzLeft>Tên gói</th>
+                    <th nzLeft>{{'app.manage.site.to.site.name.package' | i18n}}</th>
                     <th>Bandwidth (MB/S)</th>
-                    <th>Giá (VND/tháng)</th>
+                    <th>{{'app.vpns2s-extend.price' | i18n}}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -119,7 +112,7 @@
         <nz-affix [nzOffsetTop]="72">
           <nz-card class="right-form">
             <div class="right-title">
-                  <span class="text-card-header">Chi phí ước tính</span>
+                  <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
             </div>
             <nz-row style="margin-bottom: 10px" nzGutter="16">
               <nz-col nzSpan="16">
@@ -152,8 +145,8 @@
             </nz-row>
             <nz-row class="right-form-content-total" nzGutter="16" >
               <nz-col nzSpan="16">
-                <span class="text-label">Tổng thanh toán</span><br />
-                <span class="text-note-italicized">(Đã bao gồm {{vatPer}}% VAT)</span>
+                <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
+                <span class="text-note-italicized">({{ 'app.include.vat' | i18n : {vat: vatPer} }})</span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
                 <span class="text-value vat-money" nzAlign="right">
@@ -173,7 +166,7 @@
                   (click)="extend()"
                 >
                   <span nz-icon nzType="wallet" nzTheme="outline"></span>
-                  Khởi tạo
+                  {{ 'app.button.create' | i18n }}
                 </button>
               </nz-col>
             </nz-row>

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PolicyService } from '../../services/policy.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'share-users-combobox',
@@ -12,7 +13,7 @@ export class ShareUsersComboboxComponent implements OnInit {
   @Output() userChanged = new EventEmitter();
   userSelected: any;
   listUser: any[] = [];
-  constructor(private policyService: PolicyService) {}
+  constructor(private policyService: PolicyService, private router: Router) {}
 
   ngOnInit() {
     const userString = localStorage.getItem('user');
@@ -70,7 +71,9 @@ export class ShareUsersComboboxComponent implements OnInit {
       .pipe()
       .subscribe((permission) => {
         localStorage.setItem('PermissionOPA', JSON.stringify(permission));
-        window.location.reload();
+        this.router.navigate(['/app-smart-cloud/dashboard',]).then(() => {
+          window.location.reload();
+        });
         this.valueChanged.emit(user);
       });
   }

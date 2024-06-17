@@ -1,22 +1,22 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Tạo mới VPN Service'"
+  [title]="'app.vpn.service-create' |i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}   
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']"
           >VPN site to site</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>Tạo mới VPN Service</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.vpn.service-create' |i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -40,7 +40,7 @@
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="17" class="gutter-row">
     <nz-card style="border-radius: 8px">
-      <h2 class="custom-title">Thông tin VPN Service</h2>
+      <h2 class="custom-title">{{'app.information' |i18n}} VPN Service</h2>
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="24" class="gutter-row">
@@ -48,12 +48,12 @@
               <nz-form-control [nzErrorTip]="nameErrorTpl">
                 <nz-form-label nzFor="name">
                   <div style="margin-top: 15px">
-                    <span>Name</span>
+                    <span>{{'form.account.name' |i18n}}</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                         'Tên của VPN Service, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
+                         'app.vpn.service-create.name.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -74,10 +74,10 @@
                 />
                 <ng-template #nameErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
-                    >Tên VPN Service không được để trống</ng-container
+                    >{{'app.vpn.service-create.name.alert1' |i18n}}</ng-container
                   >
                   <ng-container *ngIf="control.hasError('pattern')"
-                    >Tên VPN Service chỉ chứa các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự</ng-container
+                    >{{'app.vpn.service-create.name.tooltip' |i18n}}</ng-container
                   >
                 </ng-template>
               </nz-form-control>
@@ -93,7 +93,7 @@
                     <img
                       nz-popover
                       [nzPopoverContent]="
-                        'Router được tạo mặc định cho dịch vụ.'
+                        'app.vpn.service-create.router.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -120,8 +120,8 @@
             [nzMessage]="vpnServiceMessage"
           ></nz-alert>
           <ng-template #vpnServiceMessage>
-            <div class="text-label">Router sử dụng cho VPN, IP gateway VPN ở phía VNPT Cloud sẽ là Ip gataway của Router.</div>
-            <div class="text-label">Router được tạo tự động khi khách hàng mua dịch vụ VPN site-to-site và dành riêng cho dịch vụ này, không dùng Router default của VPC có thể xung đột lưu lương truyền tải khi tất các gói tin truyền qua internet đi qua chung 1 router</div>
+            <div class="text-label">{{'app.vpn.service-create.message.alert1' |i18n}}</div>
+            <div class="text-label">{{'app.vpn.service-create.message.alert2' |i18n}}</div>
           </ng-template>
         </div>
       </form>
@@ -129,10 +129,10 @@
   </div>
   <div nz-col [nzSpan]="7" class="gutter-row">
     <nz-card style="border-radius: 8px" class="card-border">
-      <h2 class="custom-title">Thông số cấu hình</h2>
+      <h2 class="custom-title">{{'app.config.parameters' |i18n}}</h2>
       <div style="overflow: auto; margin-bottom: 16px">
         <div style="margin-bottom: 12px">
-          <h3 class="custom-subtitle">Name</h3>
+          <h3 class="custom-subtitle">{{'form.account.name' |i18n}}</h3>
           <span class="text-break">{{ form.value.name }}</span>
         </div>
         <div style="margin-bottom: 12px">

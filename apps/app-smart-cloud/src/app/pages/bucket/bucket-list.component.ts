@@ -33,8 +33,9 @@ export class BucketListComponent implements OnInit {
   total: number;
   value: string = '';
   loading: boolean = true;
+  isLoadingDeleteOS: boolean = false;
   searchDelay = new Subject<boolean>();
-
+  user: any
   constructor(
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private bucketService: BucketService,
@@ -46,26 +47,28 @@ export class BucketListComponent implements OnInit {
     private message: NzMessageService,
     private loadingSrv: LoadingService
   ) {}
+  hasOS: boolean = undefined;
 
   ngOnInit(): void {
-    this.hasObjectStorage();
-    this.search();
-    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
-      this.search();
-    });
+      this.hasObjectStorageInfo()
+      this.hasObjectStorage();
+      this.searchDelay
+        .pipe(debounceTime(TimeCommon.timeOutSearch))
+        .subscribe(() => {
+          this.search();
+        });
   }
 
-  hasOS: boolean = undefined;
-  hasObjectStorage() {
-    this.hasOS = undefined;
+
+
+  hasObjectStorageInfo() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
-      .getObjectStorage()
+      .getUserInfo()
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
           if (data) {
-            this.objectStorage = data;
             this.hasOS = true;
             this.search();
           } else {
@@ -75,12 +78,49 @@ export class BucketListComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
+            e.error.detail,
+            this.i18n.fanyi('app.notification.object.storage.fail')
+          );
+        },
+      });
+  }
+  hasObjectStorage() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectSevice
+      .getObjectStorage()
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          this.user = data;
+          this.getUserById(this.user.id);
+        },
+        error: (e) => {
+          this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.bucket.getObject.fail')
           );
         },
       });
   }
+
+  private getUserById(id: number) {
+    this.bucketService
+      .getUserById(id)
+      .subscribe({
+        next: (data) => {
+          this.objectStorage = data;
+          console.log(this.objectStorage);
+        },
+        error: (e) => {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.getObject.fail')
+          );
+        },
+      });
+  }
+  
+
 
   search() {
     this.loading = true;
@@ -107,7 +147,7 @@ export class BucketListComponent implements OnInit {
       });
   }
 
-  searchBucket(search: string) {  
+  searchBucket(search: string) {
     this.value = search.trim();
     this.search();
   }
@@ -140,7 +180,7 @@ export class BucketListComponent implements OnInit {
   }
 
   deleteObjectStorage() {
-    
+    this.isVisibleDeleteOS = true
   }
 
   isVisibleDeleteBucket: boolean = false;
@@ -151,7 +191,8 @@ export class BucketListComponent implements OnInit {
     this.isVisibleDeleteBucket = true;
     this.codeVerify = '';
     this.bucketDeleteName = bucketName;
-    this.titleModalDeleteBucket = this.i18n.fanyi('app.bucket.delete.bucket') + ' ' + bucketName;
+    this.titleModalDeleteBucket =
+      this.i18n.fanyi('app.bucket.delete.bucket') + ' ' + bucketName;
   }
 
   handleCancelDeleteBucket() {
@@ -163,11 +204,17 @@ export class BucketListComponent implements OnInit {
       this.bucketService.deleteBucket(this.bucketDeleteName).subscribe({
         next: (data) => {
           if (data == 'Thao tác thành công') {
-            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.bucket.delete.bucket.success'));
+            this.notification.success(
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.bucket.delete.bucket.success')
+            );
             this.isVisibleDeleteBucket = false;
             this.search();
           } else {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.bucket.delete.bucket.fail'));
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.bucket.delete.bucket.fail')
+            );
           }
         },
         error: (error) => {
@@ -178,7 +225,10 @@ export class BucketListComponent implements OnInit {
         },
       });
     } else {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.bucket.delete.bucket.fail1'));
+      this.notification.error(
+        this.i18n.fanyi('app.status.fail'),
+        this.i18n.fanyi('app.bucket.delete.bucket.fail1')
+      );
     }
   }
 
@@ -192,21 +242,24 @@ export class BucketListComponent implements OnInit {
   }
 
   handleOkDeleteOS() {
-    this.isVisibleDeleteOS = false;
-    this.notification.success(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('router.nofitacation.remove.sucess'));
-
-    // this.dataService
-    //   .deleteRouter(this.cloudId, this.region, this.projectId)
-    //   .subscribe({
-    //     next: (data) => {
-    //       console.log(data);
-    //       this.notification.success('', 'Xóa Router thành công');
-    //       this.reloadTable();
-    //     },
-    //     error: (error) => {
-    //       console.log(error.error);
-    //       this.notification.error('', 'Xóa Router không thành công');
-    //     },
-    //   });
+    this.isLoadingDeleteOS = true;
+    this.bucketService
+      .deleteOS(this.user.id)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.notification.success('', 'Xóa Object Storage thành công');
+          this.isVisibleDeleteOS = false;
+          this.isLoadingDeleteOS = false;
+          this.hasObjectStorageInfo();
+          this.cdr.detectChanges()
+        },
+        error: (error) => {
+          console.log(error.error);
+          this.notification.error('', 'Xóa Object Storage không thành công');
+          this.isLoadingDeleteOS = false;
+          this.cdr.detectChanges()
+        },
+      });
   }
 }

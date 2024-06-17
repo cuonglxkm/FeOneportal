@@ -61,6 +61,20 @@ const routes: Routes = [
             (m) => m.RemoteEntryModule
           ),
       },
+      {
+        path: 'app-k8s-premium',
+        loadChildren: () =>
+          loadRemoteModule('app-k8s-premium', './Module').then(
+            (m) => m.RemoteEntryModule
+          ),
+      },
+      {
+        path: 'app-ecr',
+        loadChildren: () =>
+          loadRemoteModule('app-ecr', './Module').then(
+            (m) => m.RemoteEntryModule
+          ),
+      },
     ]
   },
   // Blak Layout 空白布局

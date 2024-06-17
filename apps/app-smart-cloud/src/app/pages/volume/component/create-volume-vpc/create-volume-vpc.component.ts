@@ -6,7 +6,7 @@ import { InstancesModel, VolumeCreate } from '../../../instances/instances.model
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { SnapshotVolumeService } from '../../../../shared/services/snapshot-volume.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
@@ -14,13 +14,11 @@ import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { CatalogService } from '../../../../shared/services/catalog.service';
-import {
-  ProjectModel,
-  RegionModel,
-} from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel, storageValidator } from '../../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -34,9 +32,9 @@ export class CreateVolumeVpcComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  isLoading: boolean = false
+  isLoading: boolean = false;
 
-  remaining: number
+  remaining: number;
 
   isLoadingAction = false;
 
@@ -100,7 +98,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   typeMultiple: boolean;
   typeEncrypt: boolean;
 
-  snapshotList: NzSelectOptionInterface[] = [];
+  snapshotList = [];
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -114,7 +112,8 @@ export class CreateVolumeVpcComponent implements OnInit {
     private notification: NzNotificationService,
     private projectService: ProjectService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    private configurationsService: ConfigurationsService
+    private configurationsService: ConfigurationsService,
+    private activatedRoute: ActivatedRoute
   ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
@@ -139,7 +138,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     const value = control.value;
     if (this.remaining < value) {
       return { notEnough: true };
-    } else if(this.remaining == 0) {
+    } else if (this.remaining == 0) {
       return { outOfStorage: true };
     } else {
       return null;
@@ -151,9 +150,9 @@ export class CreateVolumeVpcComponent implements OnInit {
   changeValueInput() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
-        if(res % this.stepStorage > 0) {
-          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', {number: this.stepStorage}))
-          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage))
+        if (res % this.stepStorage > 0) {
+          this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
+          this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
         }
       });
   }
@@ -167,7 +166,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.project = project.id;
 
 
-    this.getListSnapshot();
+    // this.getListSnapshot();
     this.getListInstance();
 
     this.getCatalogOffer('MultiAttachment');
@@ -180,26 +179,60 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volumes']);
   }
 
-  private getListSnapshot() {
+  getListSnapshot() {
     this.isLoadingAction = true;
-    this.snapshotList = [];
-    let userId = this.tokenService.get()?.userId;
-    this.snapshotvlService
-      .getSnapshotVolumes(
-        9999,
-        1,
-        this.region,
-        this.project,
-        '',
-        '',
-        ''
-      )
-      .subscribe((data) => {
-        data.records.forEach((snapshot) => {
-          this.snapshotList.push({ label: snapshot.name, value: snapshot.id });
-        });
-        this.isLoadingAction = false;
+    // this.snapshotList = [];
+    this.snapshotvlService.getSnapshotVolumes(9999, 1, this.region, this.project, '', '', '').subscribe(data => {
+      this.isLoadingAction = false
+      console.log('data vl snapshot', data.records)
+      data?.records.forEach(item => {
+        if ((['AVAILABLE', 'KHOITAO'].includes(item.resourceStatus) || ['AVAILABLE', 'KHOITAO'].includes(item.serviceStatus)) && !item.fromRootVolume) {
+          this.snapshotList?.push(item);
+        }
       });
+      if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
+        // console.log('here',this.activatedRoute.snapshot.paramMap.get('idSnapshot'))
+        const idSnapshot = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idSnapshot'));
+        console.log('list snapshot', this.snapshotList?.find(x => x.id == idSnapshot))
+        if (this.snapshotList?.find(x => x.id == idSnapshot)) {
+          // console.log('here 1:')
+          this.onSwitchSnapshot(true);
+          this.snapshotSelected = idSnapshot;
+          this.validateForm.controls.snapshot.setValue(this.snapshotSelected);
+          this.getDetailSnapshotVolume(idSnapshot);
+        }
+      }
+    });
+  }
+
+  getDetailVolume(idVolume) {
+    this.volumeService.getVolumeById(idVolume, this.project).subscribe(data => {
+      this.onChangeStatusEncrypt(data.isEncryption)
+      this.onChangeStatusMultiAttach(data.isMultiAttach)
+      console.log('instance', data?.attachedInstances[0].instanceId)
+      this.instanceSelectedChange(data?.attachedInstances[0].instanceId)
+      this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0].instanceId)
+    })
+  }
+
+  getDetailSnapshotVolume(id) {
+    this.snapshotvlService.getDetailSnapshotSchedule(id).subscribe(data => {
+      console.log('data', data);
+      this.snapshot = data
+      this.validateForm.controls.storage.setValue(data.sizeInGB)
+      // this.minStorage = data.sizeInGB
+      this.validateForm.controls.storage.setValidators([storageValidator(data.sizeInGB)]);
+      this.validateForm.controls.storage.updateValueAndValidity();
+      this.getDetailVolume(data.volumeId)
+      if(data.volumeType == 'hdd') {
+        this.selectedValueHDD = true
+        this.selectedValueSSD = false
+      }
+      if(data.volumeType == 'ssd') {
+        this.selectedValueSSD = true
+        this.selectedValueHDD = false
+      }
+    });
   }
 
   getCatalogOffer(type) {
@@ -248,11 +281,17 @@ export class CreateVolumeVpcComponent implements OnInit {
 
     console.log('Selected option changed ssd:', this.selectedValueSSD);
     if (this.selectedValueSSD) {
+
       this.volumeCreate.volumeType = 'ssd';
-      this.validateForm.controls.storage.reset();
-      this.validateForm.controls.storage.markAsDirty()
-      this.validateForm.controls.storage.updateValueAndValidity()
+
       this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
+
+      this.validateForm.controls.storage.reset();
+      this.validateForm.controls.storage.markAsDirty();
+      this.validateForm.controls.storage.updateValueAndValidity();
+
+
+
       if (this.validateForm.get('storage').value <= 40) {
         this.iops = 400;
       } else {
@@ -262,35 +301,37 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   }
 
-
   onChangeStatusHDD() {
     this.selectedValueHDD = true;
     this.selectedValueSSD = false;
     console.log('Selected option changed hdd:', this.selectedValueHDD);
     // this.iops = this.validateForm.get('storage').value * 10
     if (this.selectedValueHDD) {
+
       this.volumeCreate.volumeType = 'hdd';
-      this.validateForm.controls.storage.reset();
-      this.validateForm.controls.storage.markAsDirty()
-      this.validateForm.controls.storage.updateValueAndValidity()
 
       this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
+
+      this.validateForm.controls.storage.reset();
+      this.validateForm.controls.storage.markAsDirty();
+      this.validateForm.controls.storage.updateValueAndValidity();
+
       this.iops = 300;
     }
   }
 
   onChangeStatusEncrypt(value) {
     console.log('value change encrypt', value);
-    if(value == true) {
-      this.validateForm.controls.isEncryption.setValue(true)
-      this.validateForm.controls.isMultiAttach.setValue(false)
+    if (value == true) {
+      this.validateForm.controls.isEncryption.setValue(true);
+      this.validateForm.controls.isMultiAttach.setValue(false);
     }
   }
 
   onChangeStatusMultiAttach(value) {
-    if(value == true) {
-      this.validateForm.controls.isMultiAttach.setValue(true)
-      this.validateForm.controls.isEncryption.setValue(false)
+    if (value == true) {
+      this.validateForm.controls.isMultiAttach.setValue(true);
+      this.validateForm.controls.isEncryption.setValue(false);
     }
   }
 
@@ -303,12 +344,17 @@ export class CreateVolumeVpcComponent implements OnInit {
   getConfiguration() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueString = data.valueString;
-      this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
-      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
-      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
-    })
+      this.minStorage = Number.parseInt(this.valueString?.split('#')[0]);
+      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1]);
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2]);
+    });
   }
+
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
+    this.getListSnapshot()
     this.getConfiguration();
     if (this.selectedValueHDD) {
       this.iops = 300;
@@ -328,21 +374,20 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.volumeCreate.volumeSize = this.validateForm.controls.storage.value;
 
 
-
     this.projectService.getByProjectId(this.project).subscribe(data => {
       this.isLoading = false;
       this.sizeInCloudProject = data;
-      console.log(this.volumeCreate.volumeType)
-      if(this.volumeCreate.volumeType === 'hdd') {
+      console.log(this.volumeCreate.volumeType);
+      if (this.volumeCreate.volumeType === 'hdd') {
         this.remaining = this.sizeInCloudProject?.cloudProject?.quotaHddInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.hdd;
       }
-      if(this.volumeCreate.volumeType === 'ssd') {
+      if (this.volumeCreate.volumeType === 'ssd') {
         this.remaining = this.sizeInCloudProject?.cloudProject?.quotaSSDInGb - this.sizeInCloudProject?.cloudProjectResourceUsed?.ssd;
       }
 
 
-      this.validateForm.controls.storage.markAsDirty()
-      this.validateForm.controls.storage.updateValueAndValidity()
+      this.validateForm.controls.storage.markAsDirty();
+      this.validateForm.controls.storage.updateValueAndValidity();
 
 
     }, error => {
@@ -350,7 +395,7 @@ export class CreateVolumeVpcComponent implements OnInit {
       this.isLoading = false;
     });
 
-    this.getListInstance();
+    // this.getListInstance();
     this.changeValueInput();
   }
 
@@ -364,19 +409,27 @@ export class CreateVolumeVpcComponent implements OnInit {
     }
   }
 
-  onSwitchSnapshot() {
-    this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
+  onSwitchSnapshot(value) {
+    this.isInitSnapshot = value;
     console.log('snap shot', this.isInitSnapshot);
     if (this.isInitSnapshot) {
       this.validateForm.controls.snapshot.setValidators(Validators.required);
     } else {
       this.validateForm.controls.snapshot.clearValidators();
       this.validateForm.controls.snapshot.updateValueAndValidity();
+
+      this.validateForm.controls.storage.clearValidators();
+      this.validateForm.controls.storage.updateValueAndValidity();
     }
   }
 
   snapshotSelectedChange(value: number) {
+    console.log('init',this.isInitSnapshot)
     this.snapshotSelected = value;
+    console.log('snapshot selected: ', this.snapshotSelected);
+    if (this.snapshotSelected != undefined) {
+      this.getDetailSnapshotVolume(this.snapshotSelected)
+    }
   }
 
   instanceSelectedChange(value: any) {
@@ -504,5 +557,4 @@ export class CreateVolumeVpcComponent implements OnInit {
         });
     }
   }
-
 }

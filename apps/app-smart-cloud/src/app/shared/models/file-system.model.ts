@@ -68,7 +68,8 @@ export class OrderCreateFileSystem {
   displayName: string;
   displayDescription: string;
   shareType: string;
-  snapshotId: string;
+  snapshotId: number;
+  snapshotCloudId: string;
   isPublic: false;
   shareGroupId: string;
   metadata: string;
@@ -113,6 +114,8 @@ export class CreateFileSystemRequestModel {
   createdByUserId: number;
   note: string;
   couponCode: string;
+  totalPayment: number;
+  totalVAT: number;
   orderItems: [
     {
       orderItemQuantity: number;
@@ -143,6 +146,8 @@ export class ResizeFileSystemRequestModel {
   createdByUserId: number;
   note: string;
   couponCode: string;
+  totalPayment: number;
+  totalVAT: number;
   orderItems: [
     {
       orderItemQuantity: number

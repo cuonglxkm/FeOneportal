@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { SettingsService, User } from '@delon/theme';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'header-user',
@@ -40,12 +41,24 @@ export class HeaderUserComponent {
   }
 
   constructor(
+    private cookieService: CookieService,
     private settings: SettingsService,
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {}
 
   logout(): void {
+    console.log('logout k8s');
+    sessionStorage.clear();
+    this.cookieService.delete('TOKEN_USER', "/",".onsmartcloud.com",true,"None");
+    localStorage.removeItem('UserRootId');
+    localStorage.removeItem('ShareUsers');
+    localStorage.removeItem('PermissionOPA');
+    localStorage.removeItem('user');
+    localStorage.removeItem('_token');
+    localStorage.removeItem('projects');
+    localStorage.removeItem('projectId');
+    localStorage.removeItem('app');
     this.tokenService.clear();
     this.router.navigateByUrl(this.tokenService.login_url!);
   }

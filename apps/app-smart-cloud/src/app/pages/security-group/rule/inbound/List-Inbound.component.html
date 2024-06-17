@@ -58,7 +58,8 @@
             <td nzAlign="center" nzBreakWord>{{ data.portRange }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.remoteIpPrefix }}</td>
             <td nzAlign="center" nzBreakWord>
-              <one-portal-delete-inbound nz-tooltip
+              <div *ngIf="!(securityGroupName?.startsWith('shoot'))">
+                <one-portal-delete-inbound nz-tooltip
                                          nzTooltipTitle="{{ 'app.cluster.delete-inbound' | i18n }}"
                                          nzTooltipPlacement="bottom"
                                          [idInbound]="data.id"
@@ -66,6 +67,7 @@
                                          [region]="regionId"
                                          [project]="projectId"
                                          (onOk)="handleOkDeleteInbound()" />
+              </div>
             </td>
           </tr>
           </tbody>

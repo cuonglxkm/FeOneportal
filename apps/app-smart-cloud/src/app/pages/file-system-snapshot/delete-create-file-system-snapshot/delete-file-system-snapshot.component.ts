@@ -69,14 +69,14 @@ export class DeleteFileSystemSnapshotComponent{
           if(data) {
             this.isVisible = false
             this.isLoading =  false
-            this.notification.success(this.i18n.fanyi('app.status.success'), 'Xoá File System Snapshot thành công')
+            // this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.snapshot.delete.success'))
             this.validateForm.reset()
             this.onOk.emit(data)
           }
         }, error => {
           this.isVisible = false
           this.isLoading =  false
-          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Xoá File System Snapshot thất bại')
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.snapshot.delete.fail'))
         })
       }
     }

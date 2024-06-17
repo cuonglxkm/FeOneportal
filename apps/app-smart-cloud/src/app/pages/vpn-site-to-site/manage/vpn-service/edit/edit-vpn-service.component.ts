@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NAME_SPECIAL_REGEX } from 'src/app/shared/constants/constants';
 import { FormDeleteVpnService, FormEditVpnService } from 'src/app/shared/models/vpn-service';
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
 
@@ -26,13 +29,14 @@ export class EditVpnServiceComponent{
   validateForm: FormGroup<{
     name: FormControl<string>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/)]]
+    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]]
   });
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
-              private vpnServiceService: VpnServiceService
+              private vpnServiceService: VpnServiceService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
               ) {
   }
 
@@ -66,20 +70,15 @@ export class EditVpnServiceComponent{
           if(data) {
             this.isVisible = false
             this.isLoading =  false
-            this.notification.success('Thành công', 'Chỉnh sửa VPN Service thành công')
+            this.notification.success(this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.vpn-service-edit.success'))
             this.onOk.emit(data)
           }
         }, error => {
-          if(error.status === 500){
             this.isVisible = false
             this.isLoading =  false
-            this.notification.error('Thất bại', 'Không thể chỉnh sửa khi ở trạng thái PENDING_CREATE')
-          }else{
-            this.isVisible = false
-            this.isLoading =  false
-            this.notification.error('Thất bại', 'Chỉnh sửa VPN Service thất bại')
-          }
-
+            this.notification.error(this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.vpn-service-edit.fail'))
         })
 
     }

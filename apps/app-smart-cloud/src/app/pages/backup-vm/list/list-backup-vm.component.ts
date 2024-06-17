@@ -174,17 +174,6 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
     this.getListBackupVM(false)
   }
 
-
-
-  loadProjects() {
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      let project = data.find(project => project.id === +this.project);
-      if (project) {
-        this.typeVPC = project.type
-      }
-    });
-  }
-
   navigateToCreateBackup() {
     // this.dataService.setSelectedObjectId(id)
     if(this.typeVPC == 1) {
@@ -251,7 +240,11 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   }
 
   navigateToRestore(id: number) {
-    this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm/' + id])
+    if (this.typeVPC == 1) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm-vpc/' + id])
+    } else {
+      this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm/' + id])
+    }
   }
 
   selectedActionChange(value: any, data: BackupVm) {

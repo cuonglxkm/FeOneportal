@@ -35,7 +35,7 @@ import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.
 })
 export class InstancesExtendComponent implements OnInit {
   loading = true;
-  instancesModel: InstancesModel = new InstancesModel();
+  instancesModel: InstancesModel;
   listSecurityGroupModel: SecurityGroupModel[] = [];
   id: number;
   regionId: number;
@@ -110,7 +110,6 @@ export class InstancesExtendComponent implements OnInit {
         this.router.navigate(['/app-smart-cloud/instances']);
       },
     });
-    this.onChangeTime();
   }
 
   listIPPublicStr = '';
@@ -142,29 +141,9 @@ export class InstancesExtendComponent implements OnInit {
       });
   }
 
-  dataSubjectTime: Subject<any> = new Subject<any>();
-  changeTime(value: number) {
-    this.dataSubjectTime.next(value);
-  }
-  onChangeTime() {
-    this.dataSubjectTime
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        this.numberMonth = res;
-        if (res == 0) {
-          this.totalAmount = 0;
-          this.totalVAT = 0;
-          this.totalincludesVAT = 0;
-          this.newExpiredDate = '';
-        } else {
-          let expiredDate = new Date(this.instancesModel.expiredDate);
-          expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-          this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
-          this.getTotalAmount();
-        }
-      });
+  onChangeTime(value) {
+    this.numberMonth = value;
+    this.getTotalAmount();
   }
 
   instanceExtendInit() {
@@ -220,6 +199,7 @@ export class InstancesExtendComponent implements OnInit {
   handleOkExtend(): void {
     this.isLoading = true;
     this.cdr.detectChanges();
+    this.orderItem = [];
     this.instanceExtendInit();
     let specificationInstance = JSON.stringify(this.instanceExtend);
     let orderItemInstanceResize = new OrderItem();
@@ -233,12 +213,19 @@ export class InstancesExtendComponent implements OnInit {
     this.order.customerId = this.customerId;
     this.order.createdByUserId = this.customerId;
     this.order.note = 'instance extend';
+    this.totalVAT = this.totalVAT;
+    this.totalincludesVAT = this.totalincludesVAT;
     this.order.orderItems = this.orderItem;
     console.log('order instance resize', this.order);
 
     this.orderService
       .validaterOrder(this.order)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (result) => {
           if (result.success) {

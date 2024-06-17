@@ -1,15 +1,15 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Xem chi tiết Endpoint Group'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.endpoint.policy-detail' |i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}   
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">VPN site to
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']">VPN site to
           site</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Xem chi tiết </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.endpoint.policy-detail' |i18n}} </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -33,7 +33,7 @@
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="24" class="gutter-row">
     <nz-card style="border-radius: 8px;">
-      <h2 class="custom-title">Thông tin Endpoint Group</h2>
+      <h2 class="custom-title">{{'app.information' |i18n}} Endpoint Group</h2>
       <form nz-form [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12" class="gutter-row">
@@ -41,12 +41,12 @@
               <nz-form-control>
                 <nz-form-label nzFor="name">
                   <div>
-                    <span>Name</span>
+                    <span>{{'form.account.name' |i18n}}</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                       <img
                       nz-popover
                       [nzPopoverContent]="
-                        'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'
+                        'app.endpoint-create.name.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"
@@ -70,7 +70,7 @@
                       <img
                       nz-popover
                       [nzPopoverContent]="
-                        'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'
+                        'app.endpoint-create.type.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
                       style="margin-left: 5px"

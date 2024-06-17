@@ -5,7 +5,9 @@ import {
   NonNullableFormBuilder,
   Validators,
 } from '@angular/forms';
+import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormDeleteIpsecPolicy } from 'src/app/shared/models/ipsec-policy';
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
@@ -36,7 +38,8 @@ export class DeleteIpsecPoliciesComponent {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService,
     private fb: NonNullableFormBuilder,
-    private ipsecPolicyService: IpsecPolicyService
+    private ipsecPolicyService: IpsecPolicyService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   nameIpsecPolicyValidator(
@@ -77,8 +80,8 @@ export class DeleteIpsecPoliciesComponent {
               this.isVisible = false;
               this.isLoading = false;
               this.notification.success(
-                'Thành công',
-                'Xoá IPsec Policy thành công'
+                this.i18n.fanyi('app.status.success'),
+                this.i18n.fanyi('app.ipsec.policy-delete.success')
               );
               this.validateForm.reset();
               this.onOk.emit(data);
@@ -89,13 +92,14 @@ export class DeleteIpsecPoliciesComponent {
               this.isVisible = false;
               this.isLoading = false;
               this.notification.error(
-                'Thất bại',
-                'IPsec Policy đang được sử dụng'
+                this.i18n.fanyi('app.status.fail'),
+                this.i18n.fanyi('app.ipsec.policy-delete.fail2')
               );
             } else {
               this.isVisible = false;
               this.isLoading = false;
-              this.notification.error('Thất bại', 'Xoá IPsec Policy thất bại');
+              this.notification.error( this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.ipsec.policy-delete.fail'));
             }
           }
         );

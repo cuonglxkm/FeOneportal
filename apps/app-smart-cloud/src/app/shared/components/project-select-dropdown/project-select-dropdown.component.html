@@ -1,4 +1,17 @@
-<nz-select [nzDisabled]="isDetail" (ngModelChange)="projectChange($event)" [nzSuffixIcon]="'icon-project'" title="Dự án"
-           [(ngModel)]="selectedProject" name="project" [nzPlaceHolder]="'Dự án'" [nzShowSearch]="true">
-  <nz-option *ngFor="let i of listProject; let idx = index" [nzLabel]="i.projectName" [nzValue]="i"/>
+<nz-select
+  style="width: 150px"
+  [nzDisabled]="isDetail"
+  (ngModelChange)="projectChange($event)"
+  [nzSuffixIcon]="'icon-project'"
+  title="Dự án"
+  [(ngModel)]="selectedProject"
+  name="project"
+  [nzPlaceHolder]="'app.project' | i18n"
+  [nzShowSearch]="true"
+>
+  <nz-option
+    *ngFor="let i of listProject; let idx = index"
+    [nzLabel]="i.projectName"
+    [nzValue]="i"
+  />
 </nz-select>

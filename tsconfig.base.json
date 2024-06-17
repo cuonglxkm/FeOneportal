@@ -18,6 +18,10 @@
       "@_mock": ["./apps/app-host/_mock/index.ts"],
       "@one-portal/common-utils": ["libs/common-utils/src/index.ts"],
       "app-base/Module": ["apps/app-base/src/app/remote-entry/entry.module.ts"],
+      "app-ecr/Module": ["apps/app-ecr/src/app/remote-entry/entry.module.ts"],
+      "app-k8s-premium/Routes": [
+        "apps/app-k8s-premium/src/app/remote-entry/entry.routes.ts"
+      ],
       "app-kafka/Routes": [
         "./apps/app-kafka/src/app/remote-entry/entry.routes.ts"
       ],

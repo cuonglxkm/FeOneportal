@@ -13,7 +13,7 @@ export class OrderDTO{
   resultNote: any;
 }
 
-export class OrderDTOSonch{
+export class OrderDetailDTO{
   id: any;
   orderCode: any;
   customerId: any;
@@ -32,6 +32,8 @@ export class OrderDTOSonch{
   vat: PaymentInfoDTO;
   paymentMethod: any; //Thanh toán tr? tru?c
   orderItems: ItemDTO[];
+  paymentUrl: string;
+  paymentId: number;
 }
 
 export class ItemDTO{

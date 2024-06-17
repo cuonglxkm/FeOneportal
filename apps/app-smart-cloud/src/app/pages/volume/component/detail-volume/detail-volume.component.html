@@ -12,7 +12,7 @@
         {{ 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title.breadcrumb.list' | i18n }}</a>
+        <a routerLink="/app-smart-cloud/volumes">Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'volume.title.detail' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -28,7 +28,7 @@
     </div>
   </ng-template>
   <div *ngIf="!volumeInfo?.bootable">
-    <div *ngIf="typeVPC == 0" style="display: flex">
+    <div *ngIf="typeVPC == 0 || typeVPC == 2" style="display: flex">
       <div style="margin-right: 8px;" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus)">
         <div nz-col nzSpan="4">
           <button class="button-fee"
@@ -143,10 +143,10 @@
       </ng-template>
       <nz-descriptions [nzColumn]="2" *ngIf="typeVPC == 0">
         <nz-descriptions-item [nzTitle]="titleCreateDate">
-          <span class="text-label"><b>{{ volumeInfo?.creationDate | date:'hh:ss:mm dd/MM/yyyy' }}</b></span></nz-descriptions-item>
+          <span class="text-label"><b>{{ volumeInfo?.creationDate | date:'HH:mm:ss dd/MM/yyyy' }}</b></span></nz-descriptions-item>
         <nz-descriptions-item [nzTitle]="titleExpireDate" class="text-label">
         <span style="color: rgba(235, 20, 20, 0.85)"
-              class="text-label"><b>{{ volumeInfo?.expirationDate | date:'hh:ss:mm dd/MM/yyyy' }}</b></span>
+              class="text-label"><b>{{ volumeInfo?.expirationDate | date:'HH:mm:ss dd/MM/yyyy' }}</b></span>
         </nz-descriptions-item>
         <ng-template #titleCreateDate>
           <span class="text-label">{{ 'volume.table.title.create.date' | i18n }}:</span>

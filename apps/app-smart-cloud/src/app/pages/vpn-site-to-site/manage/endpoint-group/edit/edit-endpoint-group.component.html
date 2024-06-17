@@ -15,7 +15,7 @@
   (nzOnCancel)="handleCancel()"
 >
   <ng-template #modalTitle>
-    <h4><b>Chỉnh sửa thông tin Endpoint Group</b></h4>
+    <h4><b>{{'app.endpoint.policy-edit' |i18n}}</b></h4>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm">
@@ -26,7 +26,7 @@
           <img
             nz-popover
             [nzPopoverContent]="
-              'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
+              'app.endpoint-create.name.tooltip' |i18n
             "
             nzPopoverPlacement="bottom"
             style="margin-left: 5px"
@@ -49,13 +49,9 @@
             class="input-custom"
           />
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">{{
-              'validation.info.required' | i18n
-            }}</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{'app.endpoint-create.name.alert' |i18n}}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')"
-              >Tên của Endpoint chỉ chứa các ký tự chữ thường a-z, chữ hoa A-Z,
-              số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng
-              trắng, tối thiểu 1 ký tự và tối đa 50 ký tự</ng-container
+              >{{'app.endpoint-create.name.tooltip' |i18n}}</ng-container
             >
           </ng-template>
         </nz-form-control>
@@ -69,7 +65,7 @@
             <img
               nz-popover
               [nzPopoverContent]="
-                'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'
+                'app.endpoint-create.type.tooltip' |i18n
               "
               nzPopoverPlacement="bottom"
               style="margin-left: 5px"

@@ -9,13 +9,19 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/instances']">{{
           'app.instances' | i18n
         }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{
-        'app.instances.create' | i18n
-      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a
+          [routerLink]="['/app-smart-cloud/instances/instances-create-vpc']"
+          >{{ 'app.instances.create' | i18n }}</a
+        ></nz-breadcrumb-item
+      >
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -124,6 +130,7 @@
                 [nzPlaceHolder]="'-- ' + ('app.choose.snapshot' | i18n) + ' --'"
                 [nzShowSearch]="true"
                 [(ngModel)]="selectedSnapshot"
+                (ngModelChange)="changeSelectedSnapshot()"
                 [ngModelOptions]="{ standalone: true }"
                 nzSize="large"
               >
@@ -432,7 +439,7 @@
                         [nzMin]="0"
                         [nzMax]="remainingRAM"
                         [(ngModel)]="instanceCreate.ram"
-                        (ngModelChange)="checkValidConfig(); changeRam($event)"
+                        (ngModelChange)="checkValidConfig()"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                       <div
@@ -455,7 +462,7 @@
                         [nzMin]="0"
                         [nzMax]="remainingRAM"
                         [(ngModel)]="instanceCreate.ram"
-                        (ngModelChange)="checkValidConfig(); changeRam($event)"
+                        (ngModelChange)="checkValidConfig()"
                         (keydown)="onKeyDown($event)"
                         [ngModelOptions]="{ standalone: true }"
                         nzSize="large"
@@ -472,7 +479,7 @@
                         [nzMin]="0"
                         [nzMax]="remainingVCPU"
                         [(ngModel)]="instanceCreate.cpu"
-                        (ngModelChange)="checkValidConfig(); changeVCPU($event)"
+                        (ngModelChange)="checkValidConfig()"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                       <div
@@ -495,7 +502,7 @@
                         [nzMin]="0"
                         [nzMax]="remainingVCPU"
                         [(ngModel)]="instanceCreate.cpu"
-                        (ngModelChange)="checkValidConfig(); changeVCPU($event)"
+                        (ngModelChange)="checkValidConfig()"
                         (keydown)="onKeyDown($event)"
                         [ngModelOptions]="{ standalone: true }"
                         nzSize="large"
@@ -610,7 +617,7 @@
                         [nzMax]="remainingVolume"
                         [nzStep]="stepCapacity"
                         [(ngModel)]="instanceCreate.volumeSize"
-                        (ngModelChange)="checkValidConfig()"
+                        (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                       <div
@@ -634,7 +641,7 @@
                         [nzMax]="remainingVolume"
                         [nzStep]="stepCapacity"
                         [(ngModel)]="instanceCreate.volumeSize"
-                        (ngModelChange)="checkValidConfig()"
+                        (ngModelChange)="changeCapacity($event)"
                         (keydown)="onKeyDown($event)"
                         [ngModelOptions]="{ standalone: true }"
                         nzSize="large"
@@ -697,12 +704,13 @@
                     '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
                   "
                   [nzShowSearch]="true"
-                  [(ngModel)]="instanceCreate.gpuTypeOfferId"
+                  [(ngModel)]="instanceCreate.gpuOfferId"
+                  (ngModelChange)="changeGpuType($event)"
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 >
                   <nz-option
-                    *ngFor="let i of listGPUType"
+                    *ngFor="let i of purchasedListGPUType"
                     [nzLabel]="i.offerName"
                     [nzValue]="i.id"
                   />
@@ -1084,8 +1092,16 @@
             {{ instanceCreate.serviceName }}
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">{{ nameImage }}</div>
+          <div *ngIf="!isSnapshot" class="text-value">
+            {{ 'app.instances.OS' | i18n }}
+          </div>
+          <div *ngIf="!isSnapshot" style="margin-top: 10px" class="text-label">
+            {{ nameImage }}
+          </div>
+          <div *ngIf="isSnapshot" class="text-value">Snapshot</div>
+          <div *ngIf="isSnapshot" style="margin-top: 10px" class="text-label">
+            {{ nameSnapshot }}
+          </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.text.package' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
@@ -1113,26 +1129,12 @@
                 nzType="primary"
                 [nzLoading]="isLoading"
                 (click)="showModalCreate()"
-                [disabled]="
-                  form.invalid ||
-                  isExistName ||
-                  !isValid ||
-                  !isValidCapacity ||
-                  !isValidRam ||
-                  !isValidVCPU
-                "
+                [disabled]="form.invalid || isExistName || !isValid"
               >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
                 <span
                   [style.color]="
-                    form.invalid ||
-                    isExistName ||
-                    !isValid ||
-                    !isValidCapacity ||
-                    !isValidRam ||
-                    !isValidVCPU
-                      ? 'gray'
-                      : 'white'
+                    form.invalid || isExistName || !isValid ? 'gray' : 'white'
                   "
                   >{{ 'app.button.create' | i18n }}</span
                 >
@@ -1147,14 +1149,19 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleCreate"
-  nzTitle="Xác nhận khởi tạo máy ảo"
+  [nzTitle]="'app.instances.create.confirm' | i18n"
   (nzOnCancel)="handleCancelCreate()"
 >
   <div *nzModalContent>
-    Quý khách chắn chắn muốn thực hiện khởi tạo máy ảo không?<br />• Tên máy ảo:
-    {{ instanceCreate.serviceName }}<br />• Hệ điều hành: {{ nameImage }}<br />•
-    Gói cấu hình: {{ instanceCreate.cpu }} vCPU / {{ instanceCreate.ram }}GB RAM
-    / {{ instanceCreate.volumeSize }}GB {{ instanceCreate.vmType | uppercase }}
+    {{ 'app.alert.create.vpc.instance' | i18n }}<br />•
+    {{ 'app.instances.name' | i18n }}: {{ instanceCreate.serviceName }}<br />•
+    {{ 'app.instances.OS' | i18n }}: {{ nameImage }}<br />•
+    {{ 'app.configuration.package' | i18n }}: {{ instanceCreate.cpu }} vCPU /
+    {{ instanceCreate.ram }}GB RAM / {{ instanceCreate.volumeSize }}GB
+    {{ activeBlockHDD ? 'HDD' : 'SSD'
+    }}<span *ngIf="isGpuConfig">
+      / {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
+    </span>
   </div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelCreate()">

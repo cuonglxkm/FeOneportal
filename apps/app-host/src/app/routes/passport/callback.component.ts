@@ -22,7 +22,7 @@ import {
   CoreDataService,
   NotificationService,
 } from '../../../../../../libs/common-utils/src';
-import Cookies from 'js-cookie';
+import {CookieService} from 'ngx-cookie-service';
 export interface TokenResponse {
   [key: string]: NzSafeAny;
 
@@ -56,7 +56,8 @@ export class CallbackComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private menuService: MenuService,
     private notificationService: NotificationService,
-    private coreDataService: CoreDataService
+    private coreDataService: CoreDataService,
+    private cookieService: CookieService
   ) {}
 
   ngOnInit(): void {
@@ -89,6 +90,8 @@ export class CallbackComponent implements OnInit {
       })
       .pipe(
         switchMap((token) => {
+          console.log(token);
+          
           const accessToken = token.access_token || '';
           const decodedToken = helper.decodeToken(accessToken);
           let info = {
@@ -121,10 +124,10 @@ export class CallbackComponent implements OnInit {
       )
       .subscribe({
         next: (response) => {
-          console.log(response);
-
-          // Cookies.set('auth_token', response.token || '', { domain: 'localhost', path: '/', secure: true });
-
+          const url = window.location;  
+          if (url.hostname === 'oneportal-dev.onsmartcloud.com' || url.hostname === 'vnptcloud.onsmartcloud.com' || url.hostname === 'oneportal.onsmartcloud.com') {
+             this.cookieService.set('TOKEN_USER', response.token || '', response.exp, '/', '.onsmartcloud.com', true);
+          }
 
           this.settingsSrv.setUser({
             ...this.settingsSrv.user,

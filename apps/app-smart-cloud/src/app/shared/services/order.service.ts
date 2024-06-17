@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { OrderDTO, OrderDTOSonch } from '../models/order.model';
+import { OrderDTO, OrderDetailDTO } from '../models/order.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
@@ -19,7 +19,7 @@ export class OrderService extends BaseService {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
-      'User-Root-Id': this.tokenService.get()?.userId,
+      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
     }),
   };
 
@@ -60,7 +60,7 @@ export class OrderService extends BaseService {
       status
     );
     return this.http
-      .get<BaseResponse<OrderDTO[]>>(urlResult)
+      .get<BaseResponse<OrderDTO[]>>(urlResult, this.httpOptions)
       .pipe(
         catchError(
           this.handleError<BaseResponse<OrderDTO[]>>('get order-list error')
@@ -203,15 +203,15 @@ export class OrderService extends BaseService {
     };
   }
 
-  getDetail(id: any): Observable<OrderDTOSonch> {
-    return this.http.get<OrderDTOSonch>(
+  getDetail(id: any): Observable<OrderDetailDTO> {
+    return this.http.get<OrderDetailDTO>(
       this.urlSnapshotVl + '/' + id,
       this.httpOptions
     );
   }
 
   getOrderBycode(code: any): Observable<any> {
-    return this.http.get<OrderDTOSonch>(
+    return this.http.get<OrderDetailDTO>(
       this.urlSnapshotVl + `/getbycode?code=${code}`,
       this.httpOptions
     );
@@ -225,17 +225,24 @@ export class OrderService extends BaseService {
     );
   }
 
+  cancelOrder(id: number): Observable<any> {
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.orders + `/${id}/cancel`,
+      this.httpOptions
+    );
+  }
+
   getTotalAmount(data: any): Observable<any> {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + '/totalamount',
-      data
+      data, this.httpOptions
     );
   }
 
   validaterOrder(data: any): Observable<any> {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + '/validate',
-      data
+      data, this.httpOptions
     );
   }
 }

@@ -32,7 +32,7 @@ export class DetailEndpointGroupComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -40,7 +40,7 @@ export class DetailEndpointGroupComponent implements OnInit {
   }
 
   userChangeProject(){
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   getEndpointGroupById(id) {

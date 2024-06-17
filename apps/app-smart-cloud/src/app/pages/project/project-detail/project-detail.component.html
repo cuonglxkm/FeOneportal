@@ -2,7 +2,7 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">{{ 'project.note1' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">Quản lý VPC</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'project.note23' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
@@ -18,7 +18,7 @@
       <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt="" />
       <span class="button-text-primary">Gia hạn</span>
     </button>
-    <button *ngIf="data?.type == 'VPC'" nz-button nzType="primary" (click)="edit()" nzSize="large">
+    <button *ngIf="data?.type == 'VPC' && isAdjust" nz-button nzType="primary" (click)="edit()" nzSize="large">
       <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt="" />
       <span class="button-text-primary">Điều chỉnh</span>
     </button>
@@ -55,7 +55,7 @@
               <span class="label-fontsize">Gói Load Balancer SDN:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold ">{{data?.type == 'VPC' ? data?.loadbalancerOfferName: '-' }}</span>
+              <span class="label-fontsize font-bold ">{{data?.type == 'VPC' ? (data?.loadbalancerOfferName==null ? '-' : data?.loadbalancerOfferName) : '-' }}</span>
             </div>
           </div>
           <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -64,7 +64,7 @@
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               
-              <span class="label-fontsize font-bold">{{data?.type == 'VPC'  ? ( data?.createDate | date : 'dd/MM/YYYY') : '-' }}</span>
+              <span class="label-fontsize font-bold">{{data?.type == 'VPC'  ? ( data?.createDate | date : 'HH:mm:ss dd/MM/yyyy ') : '-' }}</span>
             </div>
           </div>
         </div>
@@ -84,7 +84,7 @@
               <span class="label-fontsize">Dải IP Kết nối Internet:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? data?.publicNetworkAddress :'-'}}</span>
+              <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? (data?.publicNetworkAddress=="" ? '-' : data?.publicNetworkAddress) :'-'}}</span>
             </div>
           </div>
           <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
@@ -92,7 +92,7 @@
               <span class="label-fontsize">Gói VPN Site to Site:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? data?.vpnSiteToSiteOfferName :'-'}}</span>
+              <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? (data?.vpnSiteToSiteOfferName==null ? '-' : data?.vpnSiteToSiteOfferName)  :'-'}}</span>
             </div>
           </div>
           <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -100,7 +100,7 @@
               <span class="label-fontsize">Ngày hết hạn:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold">{{data?.type == 'VPC'  ? ( data?.expireDate | date : 'dd/MM/YYYY') : '-'}}</span>
+              <span class="label-fontsize font-bold">{{data?.type == 'VPC'  ? ( data?.expireDate | date : ' HH:mm:ss dd/MM/yyyy ') : '-'}}</span>
             </div>
           </div>
         </div>
@@ -108,7 +108,7 @@
     </div>
     <div class="text-description">
       <label for="description" class="label-fontsize pb-3">Mô tả</label>
-      <textarea name="description" id="description" class="row-gray-bg" rows="3" readonly>{{data?.description}}</textarea>
+      <textarea name="description" id="description" class="row-gray-bg textbox-radius-lg" rows="3" readonly>{{data?.description}}</textarea>
     </div>
     
 

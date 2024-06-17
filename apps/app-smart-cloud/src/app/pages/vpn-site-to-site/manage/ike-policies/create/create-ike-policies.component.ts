@@ -7,6 +7,9 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NAME_SPECIAL_REGEX } from 'src/app/shared/constants/constants';
 
 @Component({
   selector: 'one-portal-create-ike-policies',
@@ -70,7 +73,7 @@ export class CreateIkePoliciesComponent implements OnInit{
     name: FormControl<string>
     description: FormControl<string>
   }> = this.fb.group({
-    name: [''],
+    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
     description: [''],
   });
 
@@ -89,7 +92,8 @@ export class CreateIkePoliciesComponent implements OnInit{
     private fb: NonNullableFormBuilder,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService,
-    private ikePolicyService: IkePolicyService
+    private ikePolicyService: IkePolicyService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
   getData(): any {
     this.ikePolicyModel.customerId =
@@ -112,16 +116,16 @@ export class CreateIkePoliciesComponent implements OnInit{
           (data) => {
             this.isLoading = false
             this.notification.success(
-              'Thành công',
-              'Tạo mới IKE Policy thành công'
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.ike.policy-create.success')
             );
-            this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
           },
           (error) => {
             this.isLoading = false
             this.notification.error(
-              'Thất bại',
-              'Tạo mới IKE Policy thất bại'
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.ike.policy-create.fail')
             );
             console.log(error);
           }
@@ -132,7 +136,7 @@ export class CreateIkePoliciesComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -140,6 +144,6 @@ export class CreateIkePoliciesComponent implements OnInit{
   }
 
   userChangeProject(){
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 }

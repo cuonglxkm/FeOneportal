@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileSystemDetail } from 'src/app/shared/models/file-system.model';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-file-system-snapshot-detail',
@@ -31,11 +33,12 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
               private router: Router,
               private fileSystemService: FileSystemService,
               private activatedRoute: ActivatedRoute,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService) {
   }
 
   onRegionChange(region: RegionModel) {
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list'])
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot'])
   }
 
   onProjectChange(project: ProjectModel) {
@@ -44,7 +47,7 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
   }
 
   userChangeProject(project: ProjectModel){
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list'])
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot'])
   }
 
   getFileSystemSnapshotById(id) {
@@ -55,9 +58,9 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
         this.fileSystemId = data.shareId;
         this.getFileSystemById(data.shareId);
       } else {
-        this.notification.error('', 'File System Snapshot không tồn tại!');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.storage.not.exist'));
         this.router.navigate([
-          '/app-smart-cloud/file-system-snapshot/list',
+          '/app-smart-cloud/file-system-snapshot',
         ]);
       }
       this.isLoading = false;

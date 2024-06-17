@@ -10,6 +10,7 @@ import { ModalHelper, SettingsService, User } from '@delon/theme';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@env/environment';
 import { ModalResetPassComponent } from './modal-resetpass.component';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'header-user',
@@ -25,7 +26,7 @@ import { ModalResetPassComponent } from './modal-resetpass.component';
     </div>
     <nz-dropdown-menu #userMenu="nzDropdownMenu">
       <div nz-menu class="width-md">
-      
+
         <div nz-menu-item routerLink="/profile">
           <img src="assets/imgs/account-icon.svg" alt="" />
           {{ 'menu.account.center' | i18n }}
@@ -60,6 +61,7 @@ export class HeaderUserComponent {
   constructor(
     private settings: SettingsService,
     private router: Router,
+    private cookieService: CookieService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private httpClient: HttpClient
   ) {}
@@ -67,11 +69,14 @@ export class HeaderUserComponent {
   private readonly mh = inject(ModalHelper);
 
   openResetPass() {
-    this.mh.create(ModalResetPassComponent).subscribe({});
+    this.mh.create(ModalResetPassComponent, '', {size: 'md'}).subscribe({});
   }
 
   logout(): void {
     let id_token = this.tokenService.get()!['id_token'];
+    console.log('logout host');
+    sessionStorage.clear();
+    this.cookieService.delete('TOKEN_USER', "/",".onsmartcloud.com",true,"None");
     this.tokenService.clear();
     // this.httpClient.get(environment['sso'].issuer
     //   + `/connect/logout?post_logout_redirect_uri=${decodeURIComponent(environment['sso'].logout_callback)}`/* + '/logout'*/)
@@ -80,10 +85,14 @@ export class HeaderUserComponent {
     //   }, error => {
     //     console.log(error)
     //   });
-
     localStorage.removeItem('UserRootId');
+    localStorage.removeItem('ShareUsers');
+    localStorage.removeItem('PermissionOPA');
+    localStorage.removeItem('user');
+    localStorage.removeItem('_token');
     localStorage.removeItem('projects');
-
+    localStorage.removeItem('projectId');
+    localStorage.removeItem('app');
     window.location.href =
       environment['sso'].issuer +
       `/connect/logout?oi_au_id=${id_token}&post_logout_redirect_uri=${decodeURIComponent(

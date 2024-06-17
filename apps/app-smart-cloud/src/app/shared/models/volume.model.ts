@@ -5,6 +5,8 @@ export class CreateVolumeRequestModel {
   createdByUserId: number;
   note: string;
   couponCode: string
+  totalPayment?: number;
+  totalVAT?: number;
   orderItems: [
     {
       orderItemQuantity: number;
@@ -28,6 +30,8 @@ export class EditSizeVolumeModel{
   customerId: number;
   createdByUserId: number;
   note: string;
+  totalPayment: number;
+  totalVAT: number;
   orderItems: [
     {
       orderItemQuantity: number;

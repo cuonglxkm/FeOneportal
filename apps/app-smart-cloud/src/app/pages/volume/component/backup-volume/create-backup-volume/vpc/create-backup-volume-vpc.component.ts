@@ -31,7 +31,6 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     backupInstanceOfferId: FormControl<number>;
     description: FormControl<string>;
     scheduleId: FormControl<number>;
-    backupPacketId: FormControl<number>;
     customerId: FormControl<number>
   }> = this.fb.group({
     volumeId: [0, [Validators.required]],
@@ -41,7 +40,6 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     backupInstanceOfferId: [0, [Validators.required]],
     description: ['', [Validators.maxLength(500)]],
     scheduleId: [0, [Validators.required, Validators.required]],
-    backupPacketId: [1, [Validators.required]],
     customerId: [0, [Validators.required]]
   });
 
@@ -96,7 +94,7 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
   }
 
   getDataByVolumeId(id) {
-    this.volumeService.getVolumeById(id).subscribe(data => {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
       this.volumeInfo = data
     })
   }
@@ -113,7 +111,6 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     let formCreateBackupVolume = new FormCreateBackupVolume()
     formCreateBackupVolume.volumeId = this.validateForm.controls.volumeId.value
     formCreateBackupVolume.description = this.validateForm.controls.description.value
-    formCreateBackupVolume.backupPackageId = this.validateForm.controls.backupPacketId.value
     formCreateBackupVolume.customerId = this.tokenService.get()?.userId
     formCreateBackupVolume.userEmail = this.tokenService.get()?.email
     formCreateBackupVolume.actorEmail = this.tokenService.get()?.email

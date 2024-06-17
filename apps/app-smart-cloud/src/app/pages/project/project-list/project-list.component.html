@@ -1,8 +1,8 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" title="{{ 'project.note1' | i18n }}">
+<page-header [breadcrumb]="breadcrumb" [action]="action" title="Quản lý VPC">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">{{ 'project.note1' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">Quản lý VPC</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
@@ -27,12 +27,12 @@
             </nz-select>
             <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
                             nzSize="large">
-              <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input
+              <input #searchBox (keyup.enter)="search(searchBox.value)"  [(ngModel)]="searchKey" (input)="search($event.target.value)" name="name" nz-input
                      placeholder="{{ 'app.users.search' | i18n}}" />
             </nz-input-group>
             <ng-template #suffixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n}}"
-                   (click)="search(searchBox.value)" />
+                   />
             </ng-template>
           </div>
         </div>
@@ -40,7 +40,7 @@
              [nzXXl]="12">
           <button nz-button nzType="primary" (click)="createProject()" nzSize="large">
             <img style="padding-right: 10px;" src="assets/imgs/add_white.svg" alt="" />
-            <span class="button-text-primary">Tạo mới dự án</span>
+            <span class="button-text-primary">Tạo mới VPC</span>
           </button>
         </div>
       </div>
@@ -72,8 +72,8 @@
           </td>
           <td *ngIf="item.type != 'VPC'">-</td>
           <td *ngIf="item.type != 'VPC'">-</td>
-          <td *ngIf="item.type == 'VPC'">{{ item.createDate | date : "dd/MM/YYYY" }}</td>
-          <td *ngIf="item.type == 'VPC'">{{ item.expireDate | date : "dd/MM/YYYY" }}</td>
+          <td *ngIf="item.type == 'VPC'">{{ item.createDate | date : "dd/MM/yyyy" }}</td>
+          <td *ngIf="item.type == 'VPC'">{{ item.expireDate | date : "dd/MM/yyyy" }}</td>
           <ng-container *ngIf="item.resourceStatus | ServiceStatusPipe as statusModel">
             <td [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
           </ng-container>
@@ -124,7 +124,7 @@
 </nz-card>
 
 <!--Xóa VPC-->
-<nz-modal [(nzVisible)]="isVisibleDeleteProject" nzTitle="{{ 'project.note21' | i18n }}" [nzStyle]="modalStyle">
+<nz-modal [(nzVisible)]="isVisibleDeleteProject" nzTitle="{{ 'project.note21' | i18n }}" [nzStyle]="modalStyle" (nzOnCancel)="handleCancel()">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
               [nzDescription]="alertOK"
@@ -147,7 +147,7 @@
 </nz-modal>
 
 <!--Xóa thường-->
-<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="{{ 'project.note22' | i18n }}" [nzStyle]="modalStyle">
+<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="{{ 'project.note22' | i18n }}" [nzStyle]="modalStyle" (nzOnCancel)="handleCancel()">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
               [nzDescription]="alertDeleteOK"
@@ -171,11 +171,11 @@
 
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
   <!--Chỉnh normal-->
-  <nz-modal [(nzVisible)]="isVisibleEditNormal" nzTitle="{{ 'project.note18' | i18n }}" [nzStyle]="modalStyle">
+  <nz-modal [(nzVisible)]="isVisibleEditNormal" nzTitle="{{ 'project.note18' | i18n }}" [nzStyle]="modalStyle"  (nzOnCancel)="handleCancel()">
     <ng-container *nzModalContent>
       <div class="text-label" style="margin-bottom: 10px">
         {{ 'project.note19' | i18n }}(<span class="text-red">*</span>)<img style="margin-left: 5px;" nz-tooltip="{{ 'project.note16' | i18n }}" src="assets/imgs/pajamas_question.svg" alt="" />
-        <input class="input-custom" nz-input placeholder="{{ 'project.note17' | i18n }}" style="width: 100%"
+        <input maxlength="50" class="input-custom" nz-input placeholder="{{ 'project.note17' | i18n }}" style="width: 100%"
                formControlName="name">
       </div>
       <div class="text-label mt-5">
@@ -188,7 +188,7 @@
       <button nz-button (click)="handleCancel()">
         <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{ 'app.button.cancel' | i18n }}
       </button>
-      <button nz-button nzType="primary" (click)="updateProject()" [disabled]="form.invalid">
+      <button nz-button nzType="primary" (click)="updateProject()" [disabled]="!form.controls['name'].value">
         <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{ 'app.button.confirm' | i18n }}
       </button>
     </div>

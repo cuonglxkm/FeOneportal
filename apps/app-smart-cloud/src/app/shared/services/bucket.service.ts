@@ -12,7 +12,7 @@ export class BucketService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'User-Root-Id': this.tokenService.get()?.userId,
+      'User-Root-Id': localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 ? Number(localStorage?.getItem('UserRootId')) : this.tokenService?.get()?.userId,
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
     }),
   };
@@ -38,8 +38,24 @@ export class BucketService extends BaseService {
     );
   }
 
+  getUserById(id: number): Observable<any> {
+    let url_ = `/object-storage/id?id=${id}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
   deleteBucket(bucketName: string) {
-    let url_ = `/object-storage/Bucket/Delete/?bucketName=${bucketName}`;
+    let url_ = `/object-storage/Bucket/Delete?bucketName=${bucketName}`;
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+    });
+  }
+
+  deleteOS(id: number) {
+    let url_ = `/object-storage/user/${id}`;
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
       headers: this.httpOptions.headers,
       responseType: 'text',
@@ -159,6 +175,20 @@ export class BucketService extends BaseService {
     );
   }
 
+  getListPagingBucketCORS(
+    bucketName: string,
+    pageNumber: number,
+    pageSize: number,
+    searchValue: string
+  ): Observable<any> {
+    let url_ = `/object-storage/BucketCORS/GetPaging?bucketName=${bucketName}&pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`;
+
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
   createBucketCORS(data: any) {
     let url_ = `/object-storage/PutBucketCORS`;
     return this.http.post(
@@ -213,8 +243,15 @@ export class BucketService extends BaseService {
     });
   }
 
-  getListBucketLifecycle(bucketName: string): Observable<any> {
-    let url_ = `/object-storage/ListBucketLifecycle?bucketName=${bucketName}`;
+
+  getListBucketLifecycle(
+    bucketName: string,
+    pageNumber: number,
+    pageSize: number,
+    searchValue: string
+  ): Observable<any> {
+    let url_ = `/object-storage/BucketLifeCycle/GetPaging?bucketName=${bucketName}&pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`;
+
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       this.httpOptions

@@ -1,21 +1,24 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { UserModel } from '../../../../../../../../libs/common-utils/src';
-import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
+import { NotificationService, UserModel } from '../../../../../../../../libs/common-utils/src';
 import { environment } from '@env/environment';
-import { PaymentService } from 'src/app/shared/services/payment.service';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { Observable, shareReplay, tap } from 'rxjs';
+import { OrderDetailDTO } from 'src/app/shared/models/order.model';
 import { PaymentModel } from 'src/app/shared/models/payment.model';
-import { Observable, pipe, shareReplay, tap } from 'rxjs';
 import { OrderService } from 'src/app/shared/services/order.service';
-import { OrderDTOSonch } from 'src/app/shared/models/order.model';
-
+import { PaymentService } from 'src/app/shared/services/payment.service';
 class ServiceInfo {
   name: string;
   price: number;
@@ -33,11 +36,11 @@ class ServiceInfo {
 export class PaymentDetailComponent implements OnInit {
     payment: PaymentModel = new PaymentModel();
     serviceInfo: ServiceInfo = new ServiceInfo();
-    data: OrderDTOSonch
+    data: OrderDetailDTO
     userModel$: Observable<UserModel>;
     id: number;
     userModel: UserModel
-  orderNumber:string
+    orderNumber:string
   constructor(
     private service: PaymentService,
     private router: Router,
@@ -46,6 +49,7 @@ export class PaymentDetailComponent implements OnInit {
     private http: HttpClient,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private orderService: OrderService,
+    private notificationService: NotificationService,
   ) {}
 
   ngOnInit(): void {
@@ -67,36 +71,88 @@ export class PaymentDetailComponent implements OnInit {
     );
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.orderNumber = this.activatedRoute.snapshot.paramMap.get('orderNumber');
-    
     this.getPaymentDetail();
-    this.getOrderDetail()
+    this.getOrderDetail(this.orderNumber);
+    console.log(this.data);
+
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+    this.notificationService.connection.on('UpdateStatePayment', (data) => {
+      if(data && data["serviceId"] && Number(data["serviceId"]) == this.id){
+        this.getPaymentDetail();
+        this.getOrderDetail(this.orderNumber);
+      }
+    });
   }
 
   getPaymentDetail() {
     this.service.getPaymentById(this.id).subscribe((data: any) => {
-      this.payment = data;
+      this.payment = {
+        ...data,
+        eInvoiceCodePadded: data.eInvoiceCode != null ? data.eInvoiceCode.toString().padStart(8, '0') : null
+      }
     });
   }
 
-  getOrderDetail() {
-    this.orderService.getOrderBycode(this.orderNumber).subscribe((data: any) => {
-      this.data = data;
-      console.log("Huyen", this.data)
+  getOrderDetail(id: string) {
+    this.orderService.getOrderBycode(id).subscribe((data: any) => {
+      this.data = data;   
     });
   }
 
   download(id: number) {
-    this.service.export(id).subscribe((data: Blob) => {
-      // const blob = new Blob([data], {type: 'application/docx' });
-      let downloadURL = window.URL.createObjectURL(data);
-      let link = document.createElement('a');
-      link.href = downloadURL;
-      link.download = 'invoice_' + id + '.docx';
-      link.click();
+    this.service.exportInvoice(id).subscribe((data) => {
+      const element = document.createElement('div');
+      element.style.width = '268mm';
+      element.style.height = '371mm';
+      if (typeof data === 'string' && data.trim().length > 0) {
+        element.innerHTML = data;
+        
+        document.body.appendChild(element);
+        
+        html2canvas(element).then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+          pdf.save(`invoice_${id}.pdf`);
+          
+          document.body.removeChild(element);
+        });
+      } else {
+        console.log('error:', data);
+      }
+    }, (error) => {
+      console.log('error:', error);
     });
   }
 
   payNow() {
     window.location.href = this.payment.paymentUrl
+  }
+
+  printInvoice(id: number) {
+    this.service.exportInvoice(id).subscribe((data) => {
+      const element = document.createElement('div');
+      element.style.width = '268mm';
+      element.style.height = '371mm';
+      if (typeof data === 'string' && data.trim().length > 0) {
+        element.innerHTML = data;
+        
+        document.body.appendChild(element);
+        
+        html2canvas(element).then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+          window.open(pdf.output('bloburl'), '_blank');
+          document.body.removeChild(element);
+        });
+      } else {
+        console.log('error:', data);
+      }
+    }, (error) => {
+      console.log('error:', error);
+    });
   }
 }

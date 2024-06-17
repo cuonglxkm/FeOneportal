@@ -54,7 +54,7 @@ export class AppValidator {
   }
 
   static validPhoneNumber(control: AbstractControl): ValidationErrors | null { //valid số điện thoại
-    var regexpSDT = new RegExp('^(01|03|05|07|08|09)+(\\d{8})$');
+    var regexpSDT = new RegExp('^(\\+?84|84|0[3-9])+(\\d{8})$');
     if (control && control.value != null && control.value != undefined && control.value.length > 0) {
       if (control.value != '' && regexpSDT.test(control.value) == false) {
         return { validPhoneNumber: true };
@@ -454,6 +454,18 @@ export function ipAddressValidatorRouter(subnetIP: string): ValidatorFn {
     return null;
   };
 
+}
+
+
+
+
+// Validator function để kiểm tra nếu storage nhỏ hơn sizeInGB
+export function storageValidator(sizeInGB: number): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
+    // Kiểm tra nếu storage nhỏ hơn sizeInGB
+    return value < sizeInGB ? { 'outOfStorageSnapshot': true } : null;
+  };
 }
 
 

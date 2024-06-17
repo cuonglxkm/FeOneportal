@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { SettingsService, User } from '@delon/theme';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'header-user',
@@ -12,7 +13,7 @@ import { SettingsService, User } from '@delon/theme';
     </div>
     <nz-dropdown-menu #userMenu="nzDropdownMenu">
       <div nz-menu class="width-sm">
-        
+
         <div nz-menu-item routerLink="/pro/account/center">
           <i nz-icon nzType="user" class="mr-sm"></i>
           {{ 'menu.account.center' | i18n }}
@@ -43,10 +44,22 @@ export class HeaderUserComponent {
   constructor(
     private settings: SettingsService,
     private router: Router,
+    private cookieService: CookieService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {}
 
   logout(): void {
+    console.log('logout dev');
+    sessionStorage.clear();
+    this.cookieService.delete('TOKEN_USER', "/",".onsmartcloud.com",true,"None");
+    localStorage.removeItem('UserRootId');
+    localStorage.removeItem('ShareUsers');
+    localStorage.removeItem('PermissionOPA');
+    localStorage.removeItem('user');
+    localStorage.removeItem('_token');
+    localStorage.removeItem('projects');
+    localStorage.removeItem('projectId');
+    localStorage.removeItem('app');
     this.tokenService.clear();
     this.router.navigateByUrl(this.tokenService.login_url!);
   }

@@ -11,7 +11,7 @@
         {{ 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title.breadcrumb.list' | i18n }}</a>
+        <a routerLink="/app-smart-cloud/volumes">Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/volume/create">{{ 'volume.button.create' | i18n }}</a>
@@ -70,8 +70,7 @@
           </nz-form-item>
           <nz-form-item>
             <div style="display: flex;">
-              <nz-switch formControlName="isSnapshot" (ngModelChange)="onSwitchSnapshot()" nzCheckedChildren="ON"
-                         nzUnCheckedChildren="OFF"></nz-switch>
+              <nz-switch formControlName="isSnapshot" [(ngModel)]="isInitSnapshot" (ngModelChange)="onSwitchSnapshot($event)" ></nz-switch>
               <span style="margin-left: 10px; margin-top: 1px;"
                     class="text-label">{{ 'volume.switch.snapshot'|i18n }}</span>
               <img style="margin-left: 10px"
@@ -97,8 +96,8 @@
                            [(ngModel)]="snapshotSelected"
                            (ngModelChange)="snapshotSelectedChange($event)"
                            style="width: 100%;">
-                  <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
-                             [nzValue]="item.value"></nz-option>
+                  <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.name + ' (' + item.sizeInGB +' GB)'"
+                             [nzValue]="item.id"></nz-option>
                 </nz-select>
                 <ng-template #snapshotErrorTpl let-control>
                   <ng-container
@@ -109,16 +108,6 @@
             </nz-form-item>
           </div>
           <nz-form-item>
-            <!--            <nz-form-label nzFor="volumeType">-->
-            <!--              <div class="label">-->
-            <!--                <span>{{'volume.action.type.volume.select'|i18n}}</span>-->
-            <!--                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)-->
-            <!--                <img nz-popover-->
-            <!--                     [nzPopoverContent]="'volume.tooltip.select.type.volume'| i18n"-->
-            <!--                     nzPopoverPlacement="bottom"-->
-            <!--                     src="assets/imgs/pajamas_question.svg" alt="" />-->
-            <!--              </div>-->
-            <!--            </nz-form-label>-->
             <nz-form-label nzFor="volumeType">
               <div class="label">
                 <span>{{ 'app.choose.volume.type'|i18n }}</span>
@@ -130,7 +119,7 @@
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
               <nz-radio-group formControlName="radio"
-                              [disabled]="isInitSnapshot">
+                              [nzDisabled]="isInitSnapshot">
                 <nz-row [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
                         style="margin-top: 10px">
                   <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
@@ -187,7 +176,7 @@
             <nz-table [nzTemplateMode]=true>
               <thead>
               <tr>
-                <th>{{ 'volume.table.title.storage'| i18n }} (GB)</th>
+                <th style="width: 500px;">{{ 'volume.table.title.storage'| i18n }} (GB)</th>
                 <th>{{ 'volume.table.title.iops'| i18n }}</th>
                 <th>{{ 'app.money.price' | i18n }} (VND)</th>
               </tr>
@@ -208,6 +197,7 @@
                       <ng-container
                         *ngIf="control.hasError('required') || control.hasError('pattern')">{{ 'volume.input.storage.required'|i18n }}
                       </ng-container>
+                      <ng-container *ngIf="control.hasError('outOfStorageSnapshot')">{{'app.file.system.not.enough.quota.snapshot'|i18n: {name: snapshot.sizeInGB + 'GB'} }}</ng-container>
                     </ng-template>
                   </nz-form-control>
                 </td>
@@ -215,7 +205,7 @@
                 <td nzAlign="right">
                   <label class="text-custom-price">{{ unitPrice * validateForm.controls.storage.value | number }}</label>
                   <br>
-                  <label class="text-custom-price">{{ unitPrice | number }}</label>
+                  <label class="text-custom-price" style="color: #2b2d3b33;">{{ unitPrice | number }}</label>
                 </td>
               </tr>
               </tbody>
@@ -225,6 +215,7 @@
             <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
               <label *ngIf="typeEncrypt == true"
                      nz-checkbox
+                     [nzDisabled]="isInitSnapshot"
                      formControlName="isEncryption" (nzCheckedChange)="onChangeStatusEncrypt($event)">
                 {{ 'volume.info.type.encrypt' |i18n }}
                 <img nz-popover
@@ -237,6 +228,7 @@
               <label *ngIf="typeMultiple == true"
                      nz-checkbox
                      style="margin-top: 10px;"
+                     [nzDisabled]="isInitSnapshot"
                      formControlName="isMultiAttach" (nzCheckedChange)="onChangeStatusMultiAttach($event)">
                 {{ 'volume.info.type.multiAttach' |i18n }}
                 <img nz-popover

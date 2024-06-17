@@ -15,17 +15,18 @@
       }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/file-system-snapshot/list']"
+        ><a [routerLink]="['/app-smart-cloud/file-system-snapshot']"
           >File System Snapshot</a
         >
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/file-system-snapshot/detail/' + fileSystemSnapshotId]"
+        >{{ 'app.file.system.snapshot.detail' | i18n }}</a
+        ></nz-breadcrumb-item>
       <nz-breadcrumb-item
-        [routerLink]="
-          '/app-smart-cloud/file-storage/file-system/' +
-          idFileSystem +
-          '/extend'
-        "
-        >Gia hạn File System Snapshot
+        >
+        <a [routerLink]="['/app-smart-cloud/file-system-snapshot/extend/' +
+          fileSystemSnapshotId]"
+        >Gia hạn File System Snapshot</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -270,3 +271,7 @@
     </nz-row>
   </form>
 </nz-content>
+<one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />

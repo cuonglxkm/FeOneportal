@@ -29,15 +29,15 @@
           >{{"app.payment.status.init" | i18n}}</span
         >
         <span class="failedField" *ngIf="payment.paymentLatestStatus == 'FAILED'"
-          >{{"app.payment.status.unpaid" | i18n}}</span
+          >{{"app.payment.status.cancel" | i18n}}</span
         >
       </nz-col>
     </nz-row>
-    <nz-row style="padding-top: 50px">
+    <nz-row style="padding-top: 50px; padding-bottom: 20px">
       <div nz-col nzSpan="12">
         <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.customerName" | i18n}}:</span>
-          <span class="fw-600">{{ (userModel$ | async)?.name === '' ? '-' : (userModel$ | async)?.name}}</span>
+          <span class="fw-600">{{ (userModel$ | async)?.fullName === '' ? '-' : (userModel$ | async)?.fullName}}</span>
         </nz-row>
         <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.phone" | i18n}}:</span>
@@ -47,9 +47,9 @@
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.customerName" | i18n}}:</span>
           <span class="fw-600"> {{ (userModel$ | async)?.email === '' ? '-' : (userModel$ | async)?.email }}</span>
         </nz-row>
-        <nz-row style="height: 50px" class="label-fontsize">
+        <nz-row class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.address" | i18n}}:</span>
-          <span class="fw-600">{{ (userModel$ | async)?.address === '' ? '-' :  (userModel$ | async)?.address}}</span>
+          <span class="fw-600" style="word-break: break-all">{{ (userModel$ | async)?.address === '' ? '-' :  (userModel$ | async)?.address}}</span>
         </nz-row>
       </div>
       <div nz-col nzSpan="12">
@@ -59,24 +59,24 @@
         </nz-row>
         <nz-row style="height: 50px"  class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.paymentMethod" | i18n}}:</span>
-          <span class="fw-600"> {{ payment.paymentLatestStatus }} </span>
+          <span class="fw-600"> {{ payment.paymentMethod }} </span>
         </nz-row>
         <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.orderCode" | i18n}}:</span>
-          <span class="fw-600" style="color: #248FCC;">{{ payment.orderNumber }}</span>
+          <span class="fw-600" style="color: #248FCC; cursor: pointer;" [routerLink]="['/app-smart-cloud/order/detail/', orderNumber]">{{ payment.orderNumber }}</span>
         </nz-row>
         <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.invoiceCode" | i18n}}:</span>
-          <span class="fw-600" style="color: #248FCC;">{{ payment.invoiceIssuedId === 0 ? '-' : payment.invoiceIssuedId  }}</span>
+          <span (click)="payment.eInvoiceCode !== null && printInvoice(payment.eInvoiceCode)" [ngStyle]="payment.eInvoiceCode !== null && {cursor: 'pointer'}" class="fw-600" style="color: #248FCC;">{{ payment.eInvoiceCode === null ? '-' : payment.eInvoiceCodePadded  }}</span>
         </nz-row>
       </div>
     </nz-row>
-    <div class="d-flex justify-content-center" *ngIf="payment.paymentLatestStatus == 'INIT' || payment.paymentLatestStatus == 'FAILED'">
+    <div class="d-flex justify-content-center" *ngIf="payment.paymentLatestStatus == 'INIT'">
       <button
         nz-button
         [nzType]="'primary'"
         (click)="payNow()"
-        style="background-color: #E58200; border: none; outline: none; padding: 0 50px; display: flex; align-items: center; gap: 5px; margin:1rem 0rem;"
+        style="background-color: #E58200; border: none; outline: none; padding: 0 50px; display: flex; align-items: center; gap: 5px"
       >
         <img src="assets/imgs/wallet.svg" alt="" />
         <span>{{"app.payment.pay.now" |i18n}}</span>
@@ -94,7 +94,7 @@
     >
       <span style="font-weight: 600; font-size: 20px;">{{"app.payment-detail.serviceInformation" | i18n}}</span> <br />
     </nz-row>
-    <nz-table [nzData]="data?.orderItems" nzHideOnSinglePage="true">
+    <nz-table [nzData]="data.orderItems" nzHideOnSinglePage="true">
       <thead>
         <tr>
           <th>{{"app.payment-detail.serviceName" | i18n}}</th>
@@ -107,8 +107,7 @@
       </thead>
       <tbody>
       
-        <tr *ngFor="let item of data.orderItems">
-        
+        <tr *ngFor="let item of data?.orderItems">   
           <td class="text-left">{{ item.serviceName }}</td>
           <td class="text-left">{{item.serviceType}}</td>
           <td class="text-right">{{ item.unitPrice.amount | number : '1.0-0' }}</td>
@@ -170,11 +169,9 @@
             </td>
           </tr>
         </nz-table>
-        <div *ngIf="payment.paymentLatestStatus == 'PAID'" style="margin-top: 20px;">
-          <button style="width: 100%; border: none" nz-button (click)="download(payment.invoiceIssuedId)"><one-portal-svg-icon [icon]="'icon_download_pdf'" class="icon-padding-right"></one-portal-svg-icon> {{"app.payment-detail.downloadPdf" | i18n}}</button>
-        </div>
-        <div *ngIf="payment.paymentLatestStatus == 'FAILED'" style="margin-top: 20px;">
-          <button style="width: 100%" nz-button><span nz-icon nzType="shop" nzTheme="outline"></span>Mua lại</button>
+        <div (click)="download(payment.eInvoiceCode)" *ngIf="payment.paymentLatestStatus == 'PAID'" style="margin-top: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center;">
+          <span style="border: none" nz-button><one-portal-svg-icon [icon]="'icon_download_pdf'" class="icon-padding-right"></one-portal-svg-icon> </span>
+          <span class="text-label" style="color: #0066B0">{{"app.payment-detail.downloadPdf" | i18n}}</span>
         </div>
         </div>
   </nz-card>

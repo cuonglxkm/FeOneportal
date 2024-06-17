@@ -1,9 +1,9 @@
 <div style="display: flex; flex-direction: column">
-  <span class="text-card-header mb-4">Danh sách Endpoint Group</span>
+  <span class="text-card-header mb-4">{{'app.list' |i18n}} Endpoint Group</span>
   <nz-row class="d-flex justify-content-between">
     <nz-col>
       <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 300px;">
-        <input name="name" [(ngModel)]="value" nz-input placeholder="Tìm kiếm theo tên"
+        <input name="name" [(ngModel)]="value" nz-input [placeholder]="'app.file.system.placeholder.search' |i18n"
         #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)" />
       </nz-input-group>
       <ng-template #prefixIconSearch>
@@ -14,7 +14,7 @@
       <button [routerLink]="['/app-smart-cloud/vpn-site-to-site/endpoint-group/create']" nz-button nzType="primary"
         nzSize="large">
         <i nz-icon nzType="plus"></i>
-        <span class="button-text-primary">Tạo mới Endpoint Group</span>
+        <span class="button-text-primary">{{'app.label.create' |i18n}} Endpoint Group</span>
       </button>
     </nz-col>
   </nz-row>
@@ -25,11 +25,11 @@
   [nzLoading]="isLoading">
   <thead>
     <tr>
-      <th>Name</th>
+      <th>{{'form.account.name' |i18n}}</th>
       <!-- <th>VPN Connection</th> -->
-      <th>Type</th>
+      <th>{{'app.bucket.detail.type' |i18n}}</th>
       <th>Enpoints</th>
-      <th nzAlign="center">Actions</th>
+      <th nzAlign="center">{{'app.action-history.operation' |i18n}}</th>
     </tr>
   </thead>
   <tbody>

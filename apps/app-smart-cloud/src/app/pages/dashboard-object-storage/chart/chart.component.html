@@ -4,7 +4,7 @@
           [nzDropdownMenu]="opMenuStorageUse"></span>
     <nz-dropdown-menu #opMenuStorageUse="nzDropdownMenu">
       <ul nz-menu>
-        <li nz-menu-item (click)="viewFullscreen('storage-use')">View in fullscreen</li>
+        <li nz-menu-item  (click)="viewFullscreen('storage-use')">View in fullscreen</li>
         <li nz-menu-item (click)="printChartStorageUse('storage-use')">Print chart</li>
         <li nz-menu-item (click)="downloadImage('storage-use', 'png')">Download PNG image</li>
         <li nz-menu-item (click)="downloadImage('storage-use', 'jpg')">Download JPG image</li>
@@ -12,6 +12,9 @@
         <li nz-menu-item (click)="downloadImage('storage-use', 'svg')">Download SVG vector image</li>
       </ul>
     </nz-dropdown-menu>
+    <div id="fullscreen-container" #fullscreenContainer style="display:none;">
+      <img id="fullscreen-image" #fullscreenImage>
+    </div>
     <div #storageUse>
       <div class="title">
         <span class="text-card-header">{{ 'app.storage.usage' | i18n }}</span> <br>

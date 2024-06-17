@@ -9,6 +9,9 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/instances']">{{
           'app.instances' | i18n
         }}</a>
@@ -111,9 +114,35 @@
                 <span class="text-label customSpan" style="width: 35%"
                   >{{ 'app.configuration.package' | i18n }}:</span
                 >
-                <span class="text-value-detail customSpan">{{
-                  instancesModel.flavorName | slice : 3
-                }}</span>
+                <span class="text-value-detail customSpan"
+                  ><a
+                    nz-popover
+                    [nzPopoverTitle]="instancesModel.flavorName | slice : 3"
+                    [nzPopoverContent]="contentConfigPackage"
+                    [nzPopoverTrigger]="'click'"
+                    >{{ instancesModel.flavorName | slice : 3 }}</a
+                  >
+                  <ng-template #contentConfigPackage>
+                    <nz-row style="width: 320px">
+                      <nz-col nzSpan="12"> CPU </nz-col>
+                      <nz-col class="text-right" nzSpan="12">
+                        {{ instancesModel.cpu }} vCPU
+                      </nz-col>
+                    </nz-row>
+                    <nz-row style="width: 320px; margin-top: 5px">
+                      <nz-col nzSpan="12"> RAM </nz-col>
+                      <nz-col class="text-right" nzSpan="12">
+                        {{ instancesModel.ram }} GB
+                      </nz-col>
+                    </nz-row>
+                    <nz-row style="width: 320px; margin-top: 5px">
+                      <nz-col nzSpan="12"> {{ 'app.capacity' | i18n }} </nz-col>
+                      <nz-col class="text-right" nzSpan="12">
+                        {{ instancesModel.storage }} GB
+                      </nz-col>
+                    </nz-row>
+                  </ng-template></span
+                >
               </nz-row>
             </nz-col>
             <nz-col nzSpan="12">
@@ -360,12 +389,12 @@
                     [tabIndex]="0"
                     style="cursor: pointer"
                     (click)="
-                      onInputFlavors(item.id);
-                      selectElementInputFlavors('flavor_' + item.id)
+                      selectElementInputFlavors('flavor_' + item.id);
+                      onInputFlavors(item.id)
                     "
                     (keyup.enter)="
-                      onInputFlavors(item.id);
-                      selectElementInputFlavors('flavor_' + item.id)
+                      selectElementInputFlavors('flavor_' + item.id);
+                      onInputFlavors(item.id)
                     "
                     [id]="'flavor_' + item.id"
                   >
@@ -445,7 +474,7 @@
                     <tr>
                       <th>{{ 'app.resource' | i18n }}</th>
                       <th>{{ 'app.amount' | i18n }}</th>
-                      <th>{{ 'app.money.price' | i18n }}</th>
+                      <th>{{ 'app.money.price' | i18n }} (VND)</th>
                     </tr>
                   </thead>
                   <tbody class="ant-table-tbody">
@@ -479,10 +508,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ volumeIntoMoney | number }} VND </label
+                          {{ volumeIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ volumeUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ volumeUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -515,10 +544,10 @@
 
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ ramIntoMoney | number }} VND </label
+                          {{ ramIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ ramUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ ramUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -550,10 +579,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ cpuIntoMoney | number }} VND </label
+                          {{ cpuIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ cpuUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ cpuUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -572,7 +601,7 @@
                     <tr>
                       <th>{{ 'app.resource' | i18n }}</th>
                       <th>{{ 'app.amount' | i18n }}</th>
-                      <th>{{ 'app.money.price' | i18n }}</th>
+                      <th>{{ 'app.money.price' | i18n }} (VND)</th>
                     </tr>
                   </thead>
                   <tbody class="ant-table-tbody">
@@ -603,10 +632,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ cpuIntoMoney | number }} VND </label
+                          {{ cpuIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ cpuUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ cpuUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -639,10 +668,10 @@
 
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ ramIntoMoney | number }} VND </label
+                          {{ ramIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ ramUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ ramUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -677,10 +706,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ volumeIntoMoney | number }} VND </label
+                          {{ volumeIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ volumeUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ volumeUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -713,10 +742,10 @@
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
-                          {{ gpuIntoMoney | number }} VND </label
+                          {{ gpuIntoMoney | number }} </label
                         ><br />
-                        <label class="text-custom-price">
-                          {{ gpuUnitPrice | number }} VND
+                        <label class="text-custom-unit-price">
+                          {{ gpuUnitPrice | number }}
                         </label>
                       </td>
                     </tr>
@@ -813,6 +842,19 @@
             {{ instanceResize.gpuType | uppercase }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">
+                {{ 'app.fee.resize' | i18n }}
+              </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalAmount | number }}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
               <span class="text-value">

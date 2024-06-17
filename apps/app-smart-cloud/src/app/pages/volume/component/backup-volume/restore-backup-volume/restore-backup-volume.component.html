@@ -6,7 +6,7 @@
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
       <nz-breadcrumb-item><a
-        [routerLink]="'/app-smart-cloud/backup-volume'">{{ 'app.breadcrumb.list.backup.volume'|i18n }}</a>
+        [routerLink]="'/app-smart-cloud/backup-volume'">Backup Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.list.backup.volume.restore'|i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -63,7 +63,7 @@
                   <nz-form-control>
                     <input *ngIf="typeVpc == 1" nz-input class="input-custom"
                            [value]="projectDetail?.cloudProject?.quotaBackupVolumeInGb" [disabled]="true" />
-                    <input *ngIf="typeVpc == 0" nz-input class="input-custom" [value]="backupPackageDetail?.sizeInGB"
+                    <input *ngIf="typeVpc == 0 || typeVpc == 2" nz-input class="input-custom" [value]="backupPackageDetail?.sizeInGB"
                            [disabled]="true" />
                   </nz-form-control>
                 </nz-form-item>
@@ -74,12 +74,15 @@
                     <span>{{ 'app.volume.type'|i18n }}</span>
                   </nz-form-label>
                   <nz-form-control>
-                    <input nz-input class="input-custom" [value]="backupVolume?.volumeName" [disabled]="true" />
+                    <input *ngIf="backupVolume?.typeName.includes('hdd')" nz-input class="input-custom"
+                           [value]="'volume.hdd'|i18n" [disabled]="true" />
+                    <input *ngIf="backupVolume?.typeName.includes('ssd')" nz-input class="input-custom"
+                           [value]="'volume.ssd'|i18n" [disabled]="true" />
                   </nz-form-control>
                 </nz-form-item>
               </nz-col>
             </nz-row>
-            <nz-form-item *ngIf="typeVpc == 0">
+            <nz-form-item *ngIf="typeVpc == 0 || typeVpc == 2">
               <nz-form-label>
                 <span style="color: #FF0000;">{{ 'app.service.expiration-date' | i18n }}
                   : {{ backupPackageDetail?.expirationDate | date: 'HH:mm:ss dd/MM/yyyy' }}</span>
@@ -96,14 +99,15 @@
                   (ngModelChange)="onSelectionChange()"
                   style="margin-top: 20px; display: grid">
                   <label nz-radio nzValue="current">{{ 'app.backup.vm.restore.current' | i18n }}</label>
-                  <label nz-radio nzValue="new" style="margin-top: 10px">{{ 'app.backup.vm.restore.new' | i18n }}</label>
+                  <label nz-radio nzValue="new"
+                         style="margin-top: 10px">{{ 'app.backup.vm.restore.new' | i18n }}</label>
                 </nz-radio-group>
               </nz-col>
               <nz-col nzSpan="12">
                 <div *ngIf="selectedOption == 'current'" formGroupName="formCurrent">
                   <nz-form-item>
                     <nz-form-label>
-                      <span>{{'app.backup.volume.restore.current.select.volume'|i18n}} (<span style="color: #EA3829;">*</span>)</span>
+                      <span>{{ 'app.backup.volume.restore.current.select.volume'|i18n }} (<span style="color: #EA3829;">*</span>)</span>
                       <img nz-popover
                            [nzPopoverContent]="''|i18n"
                            nzPopoverPlacement="bottom"
@@ -111,41 +115,235 @@
                     </nz-form-label>
                     <nz-form-control>
                       <nz-select nzSize="large"
-                                formControlName="volumeId">
+                                 formControlName="volumeId"
+                                 [nzShowSearch]="false"
+                                 nzAllowClear
+                                 [(ngModel)]="volumeSelected"
+                                 (ngModelChange)="volumeSelectedChange($event)">
                         <nz-option *ngFor="let data of listVolumes"
                                    [nzValue]="data.id"
-                                   [nzLabel]="data.name"></nz-option>
+                                   [nzLabel]="data.name + '(' + data.sizeInGB + ' GB)'"></nz-option>
                       </nz-select>
                     </nz-form-control>
                   </nz-form-item>
                 </div>
               </nz-col>
             </nz-row>
-
-
             <div *ngIf="selectedOption == 'new'" formGroupName="formNew">
-
+              <nz-row nzGutter="24" style="margin-top: 24px;">
+                <nz-col nzSpan="12">
+                  <nz-form-item>
+                    <nz-form-label>
+                      <span>{{ 'app.volume.name' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                      <input nz-input appAutofocus
+                             class="input-custom"
+                             formControlName="volumeName"
+                             [placeholder]="'volume.notification.input.name.delete' | i18n" [maxLength]="50" />
+                      <ng-template #nameErrorTpl let-control>
+                        <ng-container
+                          *ngIf="control.hasError('required')">{{ 'volume.notification.input.name.required' | i18n }}
+                        </ng-container>
+                        <ng-container
+                          *ngIf="control.hasError('pattern')">{{ 'volume.notification.input.name.pattern' | i18n }}
+                        </ng-container>
+                        <ng-container
+                          *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}
+                        </ng-container>
+                        <ng-container
+                          *ngIf="control.hasError('duplicateName')">{{ 'volume.notification.input.name.duplicateName' | i18n }}
+                        </ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+                <nz-col nzSpan="12">
+                  <nz-form-item>
+                    <nz-form-label>
+                      <span>{{ 'app.volume.type'|i18n }}</span>
+                      <img style="margin-left: 10px"
+                           nz-popover [nzPopoverContent]="'app.backup.volume.tooltip.type' | i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
+                    </nz-form-label>
+                    <nz-form-control>
+                      <input *ngIf="backupVolume?.typeName.includes('hdd')" nz-input class="input-custom"
+                             [value]="'volume.hdd'|i18n" [disabled]="true" />
+                      <input *ngIf="backupVolume?.typeName.includes('ssd')" nz-input class="input-custom"
+                             [value]="'volume.ssd'|i18n" [disabled]="true" />
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+              </nz-row>
+              <nz-row nzGutter="24">
+                <nz-col nzSpan="12">
+                  <nz-form-item>
+                    <nz-form-label>
+                      <span>{{ 'volume.storage.volume'|i18n }} (GB) (<span style="color: #EA3829;">*</span>)</span>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
+                      <nz-input-number formControlName="storage"
+                                       class="input-custom"
+                                       id="storage"
+                                       style="width: 100%; margin-left: 0;"
+                                       (ngModelChange)="changeValueStorage($event)"
+                                       [nzMin]="backupVolume?.size"
+                                       [nzStep]="stepStorage"
+                                       [nzMax]="maxStorage"></nz-input-number>
+                      <ng-template #storageErrorTpl let-control>
+                        <ng-container
+                          *ngIf="control.hasError('required') || control.hasError('pattern')">{{ 'volume.input.storage.required'|i18n }}
+                        </ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+                <nz-col nzSpan="12">
+                  <nz-form-item>
+                    <nz-form-label nzFor="instanceName">
+                      <div class="label">
+                        <span>{{ 'volume.modal.attach.title'|i18n }}</span>
+                        <img nz-popover [nzPopoverContent]="'volume.tooltip.select.instance' |i18n"
+                             nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                             src="assets/imgs/pajamas_question.svg" alt="" />
+                      </div>
+                    </nz-form-label>
+                    <nz-form-control>
+                      <nz-select nzSize="large"
+                                 formControlName="instanceId"
+                                 nzAllowClear
+                                 [nzPlaceHolder]="'app.ip.public.select.instance.dropdown'|i18n"
+                                 [nzShowSearch]="false"
+                                 [(ngModel)]="instanceSelected"
+                                 (ngModelChange)="instanceSelectedChange($event)"
+                                 style="width: 100%;">
+                        <nz-option *ngFor="let item of listInstances" [nzLabel]="item.name"
+                                   [nzValue]="item.id"></nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+              </nz-row>
+              <div>
+                <label class="text-label" nz-checkbox [nzChecked]="backupVolume?.isEncryption" nzDisabled style="font-size: 16px;">{{ 'volume.info.type.encrypt'|i18n }}</label>
+              </div>
+              <div style="margin-top: 15px;">
+                <label  class="text-label" nz-checkbox [nzChecked]="backupVolume?.isMultiAttach" nzDisabled style="font-size: 16px;">{{ 'volume.info.type.multiAttach'|i18n }}</label>
+              </div>
             </div>
           </nz-card>
+          <one-portal-service-usage-period *ngIf="selectedOption == 'new'" [nameService]="'backup.volume'"
+                                           (valueChanged)="onChangeTime($event)" />
         </nz-col>
         <nz-col nzSpan="8">
           <nz-affix [nzOffsetTop]="72">
             <nz-card class="border-card">
-              <div style="margin-bottom: 20px">
-                <span class="text-card-header">{{'app.config.parameters'|i18n}}</span>
-              </div>
               <div *ngIf="selectedOption == 'current'">
-                <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
-                <div style="margin-top: 10px" class="text-label"></div>
+                <div style="margin-bottom: 20px">
+                  <span class="text-card-header">{{ 'app.config.parameters'|i18n }}</span>
+                </div>
+                <div class="text-value">Volume</div>
+                <div style="margin-top: 10px" class="text-label">{{ volumeDetail?.name }}</div>
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 <div class="text-value">{{ 'app.volume.type' | i18n }}</div>
                 <div style="margin-top: 10px" class="text-label">
-                  <span>{{ 'volume.hdd' | i18n }}</span>
-                  <span>{{ 'volume.ssd' | i18n }}</span>
+                  <span *ngIf="volumeDetail?.volumeType == 'hdd'">{{ 'volume.hdd' | i18n }}</span>
+                  <span *ngIf="volumeDetail?.volumeType == 'ssd'">{{ 'volume.ssd' | i18n }}</span>
                 </div>
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 <div class="text-value">{{ 'volume.storage.volume' | i18n }}</div>
-                <div style="margin-top: 10px" class="text-label"></div>
+                <div style="margin-top: 10px" class="text-label">{{ volumeDetail?.sizeInGB }} GB</div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <nz-row>
+                  <nz-col style="width: 100%">
+                    <button style="width: 100%" nz-button nzSize="large" nzType="primary"
+                            [nzLoading]="isLoadingAction"
+                            [disabled]="!validateForm.get('formCurrent').valid"
+                            (click)="restoreCurrent()">
+                      <img src="assets/imgs/restore2.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                      <span
+                        [style.color]="validateForm.get('formCurrent').invalid ? 'gray' : 'white'">{{ 'app.restore' |i18n }}</span>
+                    </button>
+                  </nz-col>
+                </nz-row>
+              </div>
+              <div *ngIf="selectedOption == 'new'">
+                <div style="margin-bottom: 20px">
+                  <span class="text-card-header">{{ 'app.estimated.cost'|i18n }}</span>
+                </div>
+                <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
+                <div style="margin-top: 10px" class="text-label">
+                  {{ validateForm.get('formNew').get('volumeName').value }}
+                </div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <div class="text-value">{{ 'app.volume.type' | i18n }}</div>
+                <div style="margin-top: 10px" class="text-label">
+                  <span *ngIf="volumeDetail?.volumeType == 'hdd'">{{ 'volume.hdd' | i18n }}</span>
+                  <span *ngIf="volumeDetail?.volumeType == 'ssd'">{{ 'volume.ssd' | i18n }}</span>
+                </div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <div class="text-value">{{ 'volume.storage.volume' | i18n }}</div>
+<!--                <div style="margin-top: 10px" class="text-label">{{ volumeRestoreNew. }} GB</div>-->
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <nz-row style="margin-bottom: 10px" nzGutter="16">
+                  <nz-col nzSpan="16">
+                <span
+                  class="text-value">{{ 'app.cost.n.month'| i18n : { numberMonth: validateForm.get('formNew').get('time').value } }}</span>
+                  </nz-col>
+                  <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
+                    nzAlign="right">
+              0 VND
+            </span>
+                    <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
+                          nzAlign="right">
+              {{ orderItem?.orderItemPrices[0].totalAmount.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].totalAmount.currency }}
+            </span>
+                  </nz-col>
+                </nz-row>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <nz-row style="margin-bottom: 10px" nzGutter="16">
+                  <nz-col nzSpan="16">
+                    <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+                  </nz-col>
+                  <nz-col class="text-right" nzSpan="8">
+                    <span class="text-value" style="color: #0066b3" nzAlign="right"
+                          *ngIf="orderItem == null">0 VND</span>
+                    <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
+                  {{ orderItem?.totalVAT?.amount | number }} {{ orderItem?.totalVAT?.currency }}
+                </span>
+                  </nz-col>
+                </nz-row>
+                <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          " nzGutter="16">
+                  <nz-col nzSpan="16">
+                    <span class="text-label">{{ 'app.total.payment'|i18n }}</span><br />
+                    <span class="text-note-italicized">({{ 'app.include.vat'|i18n:{ "vat": "10" } }})</span>
+                  </nz-col>
+                  <nz-col class="text-right" nzSpan="8">
+                <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829"
+                      nzAlign="right">0 VND</span>
+                    <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+                  {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
+                </span>
+                  </nz-col>
+                </nz-row>
+                <nz-row>
+                  <nz-col style="width: 100%">
+                    <button style="width: 100%" nz-button nzSize="large" nzType="primary"
+                            [nzLoading]="isLoadingAction" (click)="navigateToPaymentSummary()"
+                            [disabled]="validateForm.get('formNew').invalid || (validateForm.get('formNew').get('storage').value == 0)">
+                      <img src="assets/imgs/restore2.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                      <span
+                        [style.color]="validateForm.get('formNew').invalid ? 'gray' : 'white'">{{ 'app.restore' |i18n }}</span>
+                    </button>
+                  </nz-col>
+                </nz-row>
               </div>
             </nz-card>
           </nz-affix>
@@ -153,4 +351,5 @@
       </nz-row>
     </form>
   </nz-content>
+
 </nz-spin>

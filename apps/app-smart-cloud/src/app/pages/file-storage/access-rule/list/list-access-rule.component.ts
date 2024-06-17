@@ -141,7 +141,7 @@ export class ListAccessRuleComponent implements OnInit, OnDestroy{
   }
 
   handleDeleteOk() {
-    setTimeout(() => {this.getListAccessRule(true)}, 1500)
+   setTimeout(() => {this.getListAccessRule(true)}, 500)
   }
 
   id: number
@@ -156,7 +156,7 @@ export class ListAccessRuleComponent implements OnInit, OnDestroy{
     console.log('id', this.idFileSystem)
     this.getFileSystemById()
     this.getListAccessRule(true);
-    
+
     this.notificationService.connection.on('UpdateStateAccessRule', (message) => {
       if (message) {
         switch (message.actionType) {
@@ -166,7 +166,7 @@ export class ListAccessRuleComponent implements OnInit, OnDestroy{
           case "DELETED":
             this.getListAccessRule(true);
           break;
-          
+
         }
       }
     });

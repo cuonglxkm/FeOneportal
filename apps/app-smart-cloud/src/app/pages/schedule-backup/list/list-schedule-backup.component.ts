@@ -10,8 +10,7 @@ import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../li
 import { getCurrentRegionAndProject } from '@shared';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { debounceTime, Subject } from 'rxjs';
-import { TimeCommon } from '../../../shared/utils/common';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-list-schedule-backup',
@@ -26,8 +25,8 @@ export class ListScheduleBackupComponent implements OnInit {
   value?: string = null;
 
   status = [
-    { label: this.i18n.fanyi("app.order.status.All"), value: 'all' },
-    { label: this.i18n.fanyi("app.activity"), value: 'ACTIVE' },
+    { label: this.i18n.fanyi("app.status.all"), value: 'all' },
+    { label: this.i18n.fanyi("service.status.active"), value: 'ACTIVE' },
     { label: this.i18n.fanyi("app.status.not.done"), value: 'DISABLED' },
     { label: this.i18n.fanyi("app.status.suspend"), value: 'PAUSED' }
   ];
@@ -69,7 +68,7 @@ export class ListScheduleBackupComponent implements OnInit {
 
   onChange(value: string) {
     console.log('abc', this.selectedValue);
-    if (value === 'all') {
+    if (value == 'all') {
       this.selectedValue = '';
     } else {
       this.selectedValue = value;
@@ -100,14 +99,18 @@ export class ListScheduleBackupComponent implements OnInit {
   getListScheduleBackup(isBegin) {
     this.isLoading = true;
     let formSearch = new FormSearchScheduleBackup();
-    formSearch.scheduleStatus = this.selectedValue
+    if(this.selectedValue == 'all') {
+      formSearch.scheduleStatus = null;
+    } else {
+      formSearch.scheduleStatus = this.selectedValue
+    }
     formSearch.scheduleName = this.value
     formSearch.projectId = this.project
     formSearch.regionId = this.region
     formSearch.pageIndex = this.pageIndex
     formSearch.pageSize = this.pageSize
 
-    debugger;
+
     this.backupScheduleService.search(formSearch).subscribe(data => {
       console.log(data);
       this.response = data;
@@ -123,10 +126,12 @@ export class ListScheduleBackupComponent implements OnInit {
   }
 
   navigateToEdit(serviceType: number, id: number) {
+    console.log('serviceType', serviceType)
+    console.log('id', serviceType)
     if (serviceType === 1) {
-      this.router.navigate(['/app-smart-cloud/schedule/backup/edit/vm', id]);
-    } else if (serviceType === 2) {
-      this.router.navigate(['/app-smart-cloud/schedule/backup/edit/volume', id]);
+      this.router.navigate(['/app-smart-cloud/schedule/backup/edit/vm/', id]);
+    } else {
+      this.router.navigate(['/app-smart-cloud/schedule/backup/edit/volume/', id]);
     }
   }
 
@@ -165,8 +170,9 @@ export class ListScheduleBackupComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
-      this.getListScheduleBackup(false);
-    });
+    this.selectedValue = 'all'
+    // this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
+    //   this.getListScheduleBackup(false);
+    // });
   }
 }

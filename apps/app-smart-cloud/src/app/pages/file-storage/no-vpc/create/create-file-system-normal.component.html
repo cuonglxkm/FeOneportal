@@ -7,7 +7,7 @@
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{ 'app.file.system.manage' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/create'">{{ 'app.file.system.create' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -145,6 +145,7 @@
                     <ng-template #storageErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
                       <ng-container *ngIf="control.hasError('pattern')">{{ 'app.file.system.error.pattern.storage' | i18n }}</ng-container>
+                      <ng-container *ngIf="control.hasError('outOfStorageSnapshot')">{{'app.file.system.not.enough.quota.snapshot'|i18n: {name: snapshot.sizeInGB + 'GB'} }}</ng-container>
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
@@ -181,12 +182,14 @@
                            nzSize="large"
                            [(ngModel)]="snapshotSelected"
                            [nzPlaceHolder]="'-Chọn Snapshot-'"
+                           (ngModelChange)="onSnapshotChangeSelected($event)"
                            [nzShowSearch]="false">
-                  <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
-                             [nzValue]="item.value"></nz-option>
+                  <nz-option *ngFor="let item of snapshotList"
+                             [nzLabel]="item.name + ' (' + item.size + ' GB)'"
+                             [nzValue]="item.id"></nz-option>
                 </nz-select>
                 <ng-template #snapshotError let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng chọn Snapshot File System</ng-container>
+                  <ng-container *ngIf="control.hasError('required')">{{'app.file.storage.snapshot.required.select'|i18n}}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>

@@ -6,7 +6,7 @@
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item><a
-        [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">{{ 'app.file.system.manage'|i18n }}</a>
+        [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a (click)="navigateToDetail()">{{ 'app.file.system.detail' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/file-storage/file-system/resize/{{ idFileSystem }}'">Điều
@@ -114,8 +114,8 @@
                         *ngIf="control.hasError('pattern')">{{ 'app.file.system.error.pattern.storage' | i18n }}
                       </ng-container>
                       <ng-container *ngIf="control.hasError('notEnough') || control.hasError('outOfStorage')">
-                        {{ 'app.alert.quota.vpc' | i18n }}<a
-                        [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a>{{ 'app.alert.quota.vpc.next' | i18n }}
+                        {{ 'app.alert.quota.vpc' | i18n }} <a
+                        [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a> {{ 'app.alert.quota.vpc.next' | i18n }}
                       </ng-container>
                     </ng-template>
                   </nz-form-control>
