@@ -137,7 +137,7 @@
           <td nzBreakWord>
             <ng-container *ngIf="data.eInvoiceCode !== null; else noLink">
               <a (click)="printInvoice(data.eInvoiceCode)">
-                {{ data.eInvoiceCode | number }}
+                {{ data.eInvoiceCodePadded }}
               </a>
             </ng-container>
             <ng-template #noLink>

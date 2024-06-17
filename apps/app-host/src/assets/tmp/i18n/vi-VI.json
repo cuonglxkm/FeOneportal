@@ -323,6 +323,7 @@
 
   "app.breadcrumb.home": "Trang chủ",
   "app.breadcrumb.infrastructure.service": "Dịch vụ hạ tầng",
+  "app.breadscrumb.advanced.service": "Dịch vụ nâng cao",
   "app.breadcrumb.block.storage": "Block Storage",
 
   "validation.ip.address.cidr": "IP Address / CIDR không được để trống.",
@@ -952,6 +953,7 @@
   "app.file.system.create.from.snapshot": "Khởi tạo từ Snapshot",
   "app.file.system.capacity": "Dung lượng File System của quý khách",
   "app.file.system.capacity.vpc": "Tổng dung lượng File System là dung lượng quý khách đã mua khi khi khởi tạo dự án VPC",
+  "app.file.system.snapshot.capacity.vpc": "Tổng dung lượng File System Snapshot là dung lượng quý khách đã mua khi khi khởi tạo dự án VPC",
   "app.file.system.intro": "Lưu trữ dữ liệu theo cấu trúc phân cấp",
   "app.file.system.des": "File storage, hệ thống lưu trữ dữ liệu theo “cấu trúc phân cấp”. Dữ liệu sẽ được lưu trong các tập tin và thư mục, và được hiển thị cho cả hệ thống lưu trữ lẫn hệ thống truy xuất dưới cùng một định dạng.",
   "app.snapshot.file.system": "Snapshot của File System",
@@ -960,6 +962,7 @@
   "app.item.switch.file.system.snapshot": "-Chọn Snapshot-",
   "app.file.storage.snapshot.required.select": "Vui lòng chọn Snapshot File System",
   "app.file.system.total.size": "Tổng dung lượng File System",
+  "app.file.system.snapshot.total.size": "Tổng dung lượng Snapshot",
   "app.file.system.notification.require.create.success": "Yêu cầu tạo File System thành công.",
   "app.file.system.notification.require.create.fail": "Yêu cầu tạo File System thất bại.",
 
@@ -1651,6 +1654,11 @@
   "tooltip.kakfa.topic.message-timestamp-difference": "Giới hạn thời gian tối đa giữa timestamps của tin nhắn producer và timestamps của tin nhắn khi ghi vào hệ thống",
   "tooltip.kakfa.topic.segment-index": "Kích thước tối đa cho một index file của một segment (theo byte)",
 
+  "k8s-prem.intro": "VNPT Advanced Kubernetes là dịch vụ container nâng cao cho Kubernetes (VAK) an toàn và đáng tin cậy được cung cấp qua cơ sở hạ tầng điện toán linh hoạt của Red Hat Openshift. VAK cho phép bạn triển khai ứng dụng chứa trong container mà không cần quản lý và duy trì các cụm Kubernetes từ đó giúp bạn tập trung vào phát triển thay vì quản lý cơ sở hạ tầng cơ bản.",
+  "k8s-prem.create": "Khởi tạo dịch vụ",
+  "k8s-prem.create.btn": "Tạo mới dịch vụ",
+  "k8s-prem.service-name": "Tên dịch vụ",
+
   "mongodb.init": "Khởi tạo dịch vụ",
   "mongodb.intro": "Dịch vụ DocumentDB for MongoDB cung cấp tính năng replication bảo đảm khả năng dự phòng và nâng cao tính khả dụng của mongoDB. Với nhiều bản sao chép trên nhiều database server khác nhau, replication nâng cao mức độ chịu lỗi chống lại việc mất dữ liệu trên single database.",
   "mongodb.list.text": "Danh sách dịch vụ MongoDB Replicaset",
@@ -1788,7 +1796,7 @@
   "mongodb.default.role.name": "Tên vai trò tuỳ chỉnh",
   "mongodb.default.role.name-pld": "Nhập tên vai trò",
   "mongodb.role.name.validation-1": "Tên quyền không được để trống.",
-  "mongodb.role.name.validation-2": "Tên quyền chỉ bao gồm: chữ, số, '_', '-' và tối đa 256 ký tự.",
+  "mongodb.role.name.validation-2": "Tên vai trò phải tạo thành từ chữ, số, chỉ bao gồm 2 ký tự đặc biệt ‘-“ “_” và phải bắt đầu bằng một chữ cái hoặc số. Tối đa 256 ký tự.",
   "mongodb.role.list": "Danh sách phân quyền",
   "mongodb.list.db-collection": "Danh sách database/collection",
   "mongodb.choose.role-action": "Chọn action/role",
@@ -3185,7 +3193,7 @@
   "app.invoice.pop-up.update.address": "Địa chỉ chi tiết",
   "app.invoice.pop-up.update.address.alert": "Địa chỉ không được để trống",
   "app.invoice.pop-up.update.warning.title": "* Quý khách lưu ý:",
-  "app.invoice.pop-up.update.warning.des": "- Trước khi thực hiện xuất hóa đơn điện tử lần đầu, khách hàng hãy cập nhật thông tin hiển thị trên hóa đơn điện tử:",
+  "app.invoice.pop-up.update.warning.des": "- Trước khi thực hiện xuất hóa đơn điện tử lần đầu, khách hàng hãy cập nhật thông tin hiển thị trên hóa đơn điện tử",
   "app.invoice.pop-up.update.confirm.title": "Xác nhận lưu thông tin xuất hóa đơn",
   "app.invoice.pop-up.update.confirm.des": "Bạn có muốn lưu thông tin khách hàng cho lần xuất hóa đơn sau không?",
   "app.invoice.pop-up.update.confirm.des2": "Bạn hãy thực hiện nhấn <b>Xác nhận</b> để lưu thông tin",

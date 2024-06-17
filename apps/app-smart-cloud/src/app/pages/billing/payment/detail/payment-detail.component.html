@@ -67,7 +67,7 @@
         </nz-row>
         <nz-row style="height: 50px" class="label-fontsize">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.invoiceCode" | i18n}}:</span>
-          <span (click)="payment.eInvoiceCode !== null && printInvoice(payment.eInvoiceCode)" [ngStyle]="payment.eInvoiceCode !== null && {cursor: 'pointer'}" class="fw-600" style="color: #248FCC;">{{ payment.eInvoiceCode === null ? '-' : payment.eInvoiceCode  }}</span>
+          <span (click)="payment.eInvoiceCode !== null && printInvoice(payment.eInvoiceCode)" [ngStyle]="payment.eInvoiceCode !== null && {cursor: 'pointer'}" class="fw-600" style="color: #248FCC;">{{ payment.eInvoiceCode === null ? '-' : payment.eInvoiceCodePadded  }}</span>
         </nz-row>
       </div>
     </nz-row>

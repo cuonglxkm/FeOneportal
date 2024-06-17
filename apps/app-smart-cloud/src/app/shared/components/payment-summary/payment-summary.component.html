@@ -300,11 +300,11 @@
                 {{ userModel.email === '' ? '-' : userModel.email }}</span
               >
             </nz-row>
-            <nz-row style="height: 50px">
+            <nz-row>
               <span class="fw-600 text-16" nz-col nzSpan="4"
                 >{{ 'app.payment-detail.address' | i18n }}:</span
               >
-              <span nz-col nzSpan="20" class="text-16">{{
+              <span nz-col nzSpan="20" class="text-16" style="word-break: break-all">{{
                 userModel.address === '' ? '-' : userModel.address
               }}</span>
             </nz-row>

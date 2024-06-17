@@ -437,6 +437,7 @@
 
   "app.breadcrumb.home": "Home",
   "app.breadcrumb.infrastructure.service": "Infrastructure service",
+  "app.breadscrumb.advanced.service": "Advanced service",
 
   "validation.ip.address.cidr": "IP Address / CIDR cannot be left blank.",
   "validation.ip.address.cidr.pattern": "IP Address / CIDR is not in the correct format. Please enter an IP address in the format x.x.x.x or a CIDR in the format x.x.0.0/16 or x.x.0.0/24.",
@@ -1047,6 +1048,7 @@
   "app.file.system.snapshot.name.tooltip": "File System Snapshot name are only allowed to use lowercase characters a-z, uppercase A-Z, numbers 0-9, hyphens (-) and underscores (_), can have spaces, minimum 1 character and maximum 255 characters.",
   "app.file.system.confirm.create": "Are you sure you want to create the File System?",
   "app.file.system.total.size": "Total File System Capacity",
+  "app.file.system.snapshot.total.size": "Total Snapshot Capacity",
 
   "app.file.system.snapshot.detail.name.tooltip": "Name of File System",
   "app.file.system.snapshot.detail.size.tooltip": "The capacity of Snapshot depends on the created File System",
@@ -1061,6 +1063,7 @@
   "app.file.system.create.from.snapshot": "Initialize from Snapshot",
   "app.file.system.capacity": "Your File System capacity",
   "app.file.system.capacity.vpc": "Total File System Capacity is the capacity you purchased when initializing the VPC project",
+  "app.file.system.snapshot.capacity.vpc": "Total File System Snapshot Capacity is the capacity you purchased when initializing the VPC project",
   "app.file.system.intro": "Data storage based on a hierarchical structure",
   "app.file.system.des": "File storage, a data storage system based on a hierarchical structure. Data is stored in files and directories, and is presented to both storage and retrieval systems in the same format.",
   "app.snapshot.file.system": "Snapshot of the File System",
@@ -1757,6 +1760,11 @@
   "tooltip.kakfa.topic.message-timestamp-difference": "The maximum time limit between the timestamps of producer messages and the timestamps of messages when written into the system",
   "tooltip.kakfa.topic.segment-index": "The maximum size for an index file of a segment (in bytes)",
 
+  "k8s-prem.intro": "VNPT's advanced container service for Kubernetes (VAK) integrates storage, networking, load balancing, and security capabilities. VAK allows you to deploy applications in high-performance and scalable containers while providing full lifecycle management for enterprise-grade containerized applications.",
+  "k8s-prem.create": "Service initialization",
+  "k8s-prem.create.btn": "Create service",
+  "k8s-prem.service-name": "Service name",
+
   "mongodb.init": "Service initialization",
   "mongodb.intro": "DocumentDB for MongoDB service provides replication features that ensure redundancy and enhance the availability of MongoDB. With multiple replicas across different database servers, replication improves fault tolerance against data loss on a single database.",
   "mongodb.list.text": "MongoDB Replicaset Service List",
@@ -1895,7 +1903,7 @@
   "mongodb.default.role.name": "Custom Role Name",
   "mongodb.default.role.name-pld": "Enter role name",
   "mongodb.role.name.validation-1": "Role name cannot be left blank.",
-  "mongodb.role.name.validation-2": "Role name can only contain: letters, numbers, '_', '-', and up to 256 characters.",
+  "mongodb.role.name.validation-2": "Custom role name must be made up of letters and numbers, include only 2 special characters ‘-“ “_” and must begin with a letter or number. Maximum 256 characters.",
   "mongodb.role.list": "Permission List",
   "mongodb.list.db-collection": "Database/Collection List",
   "mongodb.choose.role-action": "Select action/role",
@@ -3283,7 +3291,7 @@
   "app.invoice.pop-up.update.address": "Detailed address",
   "app.invoice.pop-up.update.address.alert": "Address cannot be left blank",
   "app.invoice.pop-up.update.warning.title": "* Please note:",
-  "app.invoice.pop-up.update.warning.des": "- Before issuing an electronic invoice for the first time, customers should update the information displayed on the electronic invoice:",
+  "app.invoice.pop-up.update.warning.des": "- Before issuing an electronic invoice for the first time, customers should update the information displayed on the electronic invoice",
   "app.invoice.pop-up.update.confirm.title": "Confirm saving of invoice information",
   "app.invoice.pop-up.update.confirm.des": "Do you want to save customer information for future invoice issuance?",
   "app.invoice.pop-up.update.confirm.des2": "Please click <b>Confirm</b> to save the information",

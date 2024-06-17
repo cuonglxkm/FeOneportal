@@ -88,7 +88,10 @@ export class PaymentDetailComponent implements OnInit {
 
   getPaymentDetail() {
     this.service.getPaymentById(this.id).subscribe((data: any) => {
-      this.payment = data;
+      this.payment = {
+        ...data,
+        eInvoiceCodePadded: data.eInvoiceCode != null ? data.eInvoiceCode.toString().padStart(8, '0') : null
+      }
     });
   }
 

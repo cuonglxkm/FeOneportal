@@ -33,6 +33,8 @@ spec:
               value: https://appmongodb.onsmartcloud.com
             - name: APP_K8S_PREMIUM_URL
               value: https://appk8spre.onsmartcloud.com
+            - name: APP_ECR_URL
+              value: https://appecr.onsmartcloud.com
             - name: BASE_URL
               value: https://api.onsmartcloud.com
             - name: ISSUER
