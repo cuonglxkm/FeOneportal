@@ -67,6 +67,7 @@
   "form.account.validate.surname":"Họ không được để trống và không được chứa ký tự đặc biệt!",
   "form.account.validate.phone":"Số điện thoại không hợp lệ!",
   "form.account.validate.address":"Tỉnh/Thành phố",
+  "form.account.validate.address.detail":"Địa chỉ chi tiết có thể chứa ký tự / - và khoảng trống, không chứa ký tự đặc biệt",
 
   "app.account.validation": "Vui lòng nhập đầy đủ thông tin",
   "app.account.form.success": "Cập nhật tài khoản thành công!",
@@ -75,6 +76,7 @@
   "app.description.maxLength": "Mô tả chỉ cho phép nhập tối đa 255 ký tự",
   "app.tooltip.time": "Thời gian khách hàng mua {{name}} để sử dụng, tính theo tháng",
   "app.failData": "Lấy dữ liệu thất bại",
+  "app.notify.get.list.province": "Lấy danh sách Tỉnh/Thành phố không thành công",
 
   "app.minute": "phút",
   "app.hour": "giờ",
@@ -2741,6 +2743,7 @@
   "app.backup.package.information": "Thông tin của gói Backup",
   "app.backup.package.name": "Tên gói Backup",
   "app.backup.package.storage": "Dung lượng gói backup (GB)",
+  "app.backup.size": "Dung lượng bản backup",
   "app.backup.package.storage.current": "Dung lượng gói Backup hiện tại",
   "app.backup.package.storage.addition": "Dung lượng gói Backup bổ sung",
   "app.backup.package.storage.total": "Dung lượng",

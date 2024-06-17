@@ -25,5 +25,13 @@ export class UserModel {
   companyName?: string;
   channelSaleId?: number;
   fullName?: string;
-  customerInvoice?: any
+  customerInvoice?: any;
+}
+
+export class ProvinceModel {
+  id: number;
+  code: string;
+  name: string;
+  areaId: number;
+  regionCode: number;
 }
