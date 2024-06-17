@@ -69,7 +69,7 @@ export class HeaderUserComponent {
   private readonly mh = inject(ModalHelper);
 
   openResetPass() {
-    this.mh.create(ModalResetPassComponent).subscribe({});
+    this.mh.create(ModalResetPassComponent, '', {size: 'md'}).subscribe({});
   }
 
   logout(): void {
