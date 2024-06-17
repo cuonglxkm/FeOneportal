@@ -285,7 +285,7 @@ export class ModalResetPassComponent implements OnInit {
             this.incorrectOldPassword = true;
           } else {
             this.isValidatorError = true;
-            this.messageError = e.error.validationErrors.NewPassword[0];
+            this.messageError = e.error.validationErrors.NewPassword.join(", ");
           }
         },
       });
