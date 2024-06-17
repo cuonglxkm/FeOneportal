@@ -295,13 +295,16 @@
   </nz-form-item>
 
   <nz-form-item style="margin-top: 30px; justify-content: center">
-    <a class="login" routerLink="/passport/login" style="color: #0066b0">
-      <span style="color: #555555">{{'app.register.3' | i18n}},</span>
-      {{ 'app.register.sign-in' | i18n }}
-    </a>
-
-
+<!--    <a class="login" routerLink="/passport/login" style="color: #0066b0">-->
+<!--      <span style="color: #555555">{{'app.register.3' | i18n}},</span>-->
+<!--      {{ 'app.register.sign-in' | i18n }}-->
+<!--    </a>-->
+    <div class="login">
+      {{'app.register.3' | i18n}},
+      <b><a href="/passport/login" style="color: #0066b0;text-decoration: underline;">{{ 'app.register.sign-in' | i18n }}</a></b>
+    </div>
   </nz-form-item>
+
 
   <ng-template #suffixTemplate>
     <img
