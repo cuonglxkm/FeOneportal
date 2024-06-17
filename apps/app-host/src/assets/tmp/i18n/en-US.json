@@ -1155,6 +1155,7 @@
   "app.payment.status.all": "All",
   "app.payment.status.paid": "Paid",
   "app.payment.status.unpaid": "Unpaid",
+  "app.payment.status.cancel": "Canceled",
   "app.payment.status.init": "Waiting",
   "app.payment.fromDate": "From date",
   "app.payment.toDate": "To date",

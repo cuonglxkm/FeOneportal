@@ -40,7 +40,7 @@ export class PaymentDetailComponent implements OnInit {
     userModel$: Observable<UserModel>;
     id: number;
     userModel: UserModel
-  orderNumber:string
+    orderNumber:string
   constructor(
     private service: PaymentService,
     private router: Router,
@@ -72,7 +72,8 @@ export class PaymentDetailComponent implements OnInit {
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.orderNumber = this.activatedRoute.snapshot.paramMap.get('orderNumber');
     this.getPaymentDetail();
-    this.getOrderDetail();
+    this.getOrderDetail(this.orderNumber);
+    console.log(this.data);
 
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
@@ -80,7 +81,7 @@ export class PaymentDetailComponent implements OnInit {
     this.notificationService.connection.on('UpdateStatePayment', (data) => {
       if(data && data["serviceId"] && Number(data["serviceId"]) == this.id){
         this.getPaymentDetail();
-        this.getOrderDetail();
+        this.getOrderDetail(this.orderNumber);
       }
     });
   }
@@ -91,10 +92,9 @@ export class PaymentDetailComponent implements OnInit {
     });
   }
 
-  getOrderDetail() {
-    this.orderService.getOrderBycode(this.orderNumber).subscribe((data: any) => {
-      this.data = data;
-      console.log("Huyen", this.data)
+  getOrderDetail(id: string) {
+    this.orderService.getOrderBycode(id).subscribe((data: any) => {
+      this.data = data;   
     });
   }
 

@@ -22,7 +22,7 @@
     </div>
   </ng-template>
 </page-header>
-<div *ngIf="!(data?.statusCode == 1 && data?.invoiceCode == null)" class="mb-8 order-step">
+<div *ngIf="!(data?.statusCode == 6 && data?.invoiceCode == null)" class="mb-8 order-step">
   <nz-steps [nzLabelPlacement]="vertical" [nzCurrent]="
       data?.statusCode === 4
         ? data?.statusCode
@@ -63,7 +63,7 @@
             {{ titleStepFour }}
           </span>
         </div>
-        <div class="d-flex gap-3" *ngIf="data?.statusCode == 1 && data?.invoiceCode == null">
+        <div class="d-flex gap-3" *ngIf="data?.statusCode == 6 && data?.invoiceCode == null">
           <h3 class="order-failed">
             <span style="color: #000">|</span>
             {{ 'app.order-detail.Cancelled' | i18n }}
@@ -112,7 +112,7 @@
             <h3 style="color: white">.</h3>
           </nz-form-item>
           <nz-form-item>
-            <h3 style="font-weight: 600; font-size: 16px">
+            <h3 style="font-weight: 600; font-size: 16px; word-break: break-all">
               {{ data?.address === '' ? '-' : data?.address }}
             </h3>
           </nz-form-item>
@@ -147,7 +147,7 @@
             </h3>
           </nz-form-item>
           <nz-form-item>
-            <h3 style="font-weight: 600; font-size: 16px; color: #248fcc">
+            <h3 [routerLink]="['/app-smart-cloud/billing/payments/detail/', data?.paymentId, '/', data?.orderCode]" style="font-weight: 600; font-size: 16px; color: #248fcc" [ngStyle]="data?.paymentCode !== '' && {cursor: 'pointer'}">
               {{ data?.paymentCode === '' ? '-' : data?.paymentCode }}
             </h3>
           </nz-form-item>
@@ -281,7 +281,7 @@
             <span nz-icon nzType="shop" nzTheme="outline"></span>
             {{ 'app.order-detail.repurchase' | i18n }}
           </button> -->
-          <button *ngIf="data?.statusCode < 1" (click)="pay()" nz-button nzType="primary" style="
+          <button *ngIf="data?.statusCode < 2" (click)="pay()" nz-button nzType="primary" style="
               width: 100%;
               display: flex;
               align-items: center;
@@ -291,19 +291,10 @@
             <img src="assets/imgs/wallet.svg" />
             {{ 'app.order-detail.pay' | i18n }}
           </button>
-          <button class="mt-3 ml-0" *ngIf="data?.statusCode < 1 && titleStepFour != 'Sự cố'" nz-button
+          <button class="mt-3 ml-0" *ngIf="data?.statusCode < 2 && titleStepFour != 'Sự cố'" nz-button
             style="width: 100%" (click)="cancelOrder()">
             <span nz-icon nzType="shop" nzTheme="outline"></span>
             {{ 'app.order-detail.cancelOrder' | i18n }}
-          </button>
-
-          <button class="mt-3" nz-button style="width: 100%; border: none" [routerLink]="'/app-smart-cloud/order'"
-            *ngIf="
-              (data?.statusCode != 4 && data?.statusCode < 2) ||
-              (data?.statusCode === 5 && titleStepFour != 'Sự cố')
-            ">
-            <span nz-icon nzType="left" nzTheme="outline"></span>
-            {{ 'app.order-detail.back' | i18n }}
           </button>
         </div>
       </div>
