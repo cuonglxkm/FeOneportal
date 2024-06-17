@@ -1677,7 +1677,7 @@
   "mongodb.default.role.name": "Tên vai trò tuỳ chỉnh",
   "mongodb.default.role.name-pld": "Nhập tên vai trò",
   "mongodb.role.name.validation-1": "Tên quyền không được để trống.",
-  "mongodb.role.name.validation-2": "Tên quyền chỉ bao gồm: chữ, số, '_', '-' và tối đa 256 ký tự.",
+  "mongodb.role.name.validation-2": "Tên vai trò phải tạo thành từ chữ, số, chỉ bao gồm 2 ký tự đặc biệt ‘-“ “_” và phải bắt đầu bằng một chữ cái hoặc số. Tối đa 256 ký tự.",
   "mongodb.role.list": "Danh sách phân quyền",
   "mongodb.list.db-collection": "Danh sách database/collection",
   "mongodb.choose.role-action": "Chọn action/role",
