@@ -453,6 +453,7 @@
   "app.delete.alow.address.pair": "Delete Allow Address Pair",
   "app.instances": "Instances",
   "app.ip-public": "Ip Public",
+  "app.snapshot-package": "Package snapshot",
   "app.ip-loating": "Ip Floating",
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",

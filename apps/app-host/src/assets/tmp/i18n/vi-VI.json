@@ -344,6 +344,7 @@
   "app.delete.alow.address.pair": "Xóa Allow Address Pair",
   "app.instances": "Máy ảo",
   "app.ip-public": "Ip Public",
+  "app.snapshot-package": "Package snapshot",
   "app.ip-loating": "Ip Floating",
   "app.load-balancer": "Load Balancer",
   "app.instances.list": "Danh sách máy ảo",

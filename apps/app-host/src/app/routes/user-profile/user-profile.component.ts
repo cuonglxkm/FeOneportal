@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -15,12 +15,14 @@ import {
   ProvinceModel,
   UserModel,
 } from '../../../../../../libs/common-utils/src';
-import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
+import { _HttpClient, ALAIN_I18N_TOKEN, SettingsService, User } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { environment } from '@env/environment';
 import { FormUpdateUserInvoice } from '../../../../../app-smart-cloud/src/app/shared/models/invoice';
 import { InvoiceService } from '../../../../../app-smart-cloud/src/app/shared/services/invoice.service';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-user-profile',
@@ -34,8 +36,15 @@ export class UserProfileComponent implements OnInit {
     public notification: NzNotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fb: NonNullableFormBuilder,
-    private invoiceService: InvoiceService
+    private invoiceService: InvoiceService,
+    private settings: SettingsService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
+
+  get user(): User {
+    return this.settings.user;
+  }
 
   ngOnInit(): void {
     this.loadUserProfile();
@@ -413,7 +422,9 @@ export class UserProfileComponent implements OnInit {
       );
   }
 
+  isLoadingProfile: boolean = false;
   updateProfile() {
+    this.isLoadingProfile = true;
     const baseUrl = environment['baseUrl'];
     let updatedUser = {
       id: this.userModel.id,
@@ -443,14 +454,20 @@ export class UserProfileComponent implements OnInit {
         context: new HttpContext().set(ALLOW_ANONYMOUS, true),
         headers: this.httpOptions.headers,
       })
+      .pipe(finalize(() => {
+        this.isLoadingProfile = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: (res) => {
           console.log(res);
-          this.loadUserProfile();
+          this.user.name = updatedUser.firstName;
+          this.settings.setUser(this.user);
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.account.form.success')
           );
+          setTimeout(() => window.location.reload(), 1000);
         },
         error: (error) => {
           console.log(error);
