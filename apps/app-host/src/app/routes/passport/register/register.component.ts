@@ -116,7 +116,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.langRegister = localStorage.getItem('lang') == null ? this.i18n.defaultLang : localStorage.getItem('lang');
-    this.form.controls.province.setValue('Hà Nội');
+    this.loadProvinces();
   }
 
   public addTokenLog(message: string, token: string | null) {
@@ -173,6 +173,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   passwordVisible = false;
   passwordVisible1 = false;
   langRegister: any;
+  provinces: any;
 
   submit(): void {
     console.log('submit register')
@@ -261,5 +262,23 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       this.settings.setLayout('lang', this.langRegister);
       setTimeout(() => this.doc.location.reload());
     });
+  }
+
+  private loadProvinces() {
+    fetch(environment.baseUrl + '/users/provinces').then(r => r.json()).then(j => {
+      this.provinces = j;
+      this.form.controls.province.setValue(j[0])
+      console.log(j)
+    });
+
+    // this.http.get<any>(environment.baseUrl + '/users/provinces').subscribe(
+    //   data => {
+    //     this.provinces = data
+    //     this.form.controls.province.setValue(data[0])
+    //   },
+    //   error => {
+    //     console.log(error)
+    //   }
+    // )
   }
 }

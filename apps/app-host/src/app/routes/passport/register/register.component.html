@@ -212,6 +212,7 @@
             [nzLabel]="'TP. Hồ Chí Minh'"
             [nzValue]="'TP. Hồ Chí Minh'"
           />
+          <nz-option *ngFor="let i of provinces" [nzLabel]="i.name" [nzValue]="i.name" />
         </nz-select>
       </nz-input-group>
       <ng-template #provinceErrorTip let-i>
