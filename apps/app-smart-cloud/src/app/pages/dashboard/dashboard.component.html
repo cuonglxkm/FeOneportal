@@ -188,7 +188,7 @@
               <td><a (click)="navigateToDetailPayment(data.id, data.paymentCode)">{{ data.paymentCode }}</a></td>
               <td>{{ data.serviceTypeName }}</td>
               <td nzAlign="right">{{ data.totalAmount | number }}</td>
-              <td nzAlign="center">{{ data.createdDate | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ data.createdDate | date: 'dd/MM/yyyy' }}</td>
               <td>
                 <span *ngIf="data.status === 'PAID'"
                       style="color: #008D47;">{{ 'app.dashboard.payment.and.cost.paid'|i18n }}</span>
@@ -228,8 +228,8 @@
       <tr *ngFor="let data of fixTableNearExpire.data">
         <td>{{ data.serviceName }}</td>
         <td>{{ data.serviceTypeName }}</td>
-        <td nzAlign="center">{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
-        <td nzAlign="center">{{ data.expireDate | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ data.expireDate | date: 'dd/MM/yyyy' }}</td>
         <td style="color: #EB1414;">{{ data.status }}</td>
         <td>
           <img style="padding-right: 10px; cursor: pointer;" src="assets/imgs/calendar-tick.svg"
