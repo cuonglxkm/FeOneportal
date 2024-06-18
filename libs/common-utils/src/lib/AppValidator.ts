@@ -3,7 +3,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@ang
 export class AppValidator {
   // @ts-ignore
   static checkContainSpecialCharactorExceptComma(obj) {
-    var regex = /[!`@#$%^&*~()_+=\[\]{};':"\\|.<>?]+/; // Trừ ký tự ,/-
+    var regex = /[!`@#$%^&*~()_+=\[\]{};,':"\\|.<>?]+/; // Trừ ký tự /-
     return regex.test(obj);
   }
 

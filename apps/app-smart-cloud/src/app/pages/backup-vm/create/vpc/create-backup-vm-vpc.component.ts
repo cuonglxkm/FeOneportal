@@ -47,6 +47,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
   listInstances: InstancesModel[] = [];
   isLoading: boolean = false;
   securityGroups: SecurityGroup[] = [];
+  securityGroupSelected = []
   volumeAttachments: VolumeAttachment[] = [];
   backupPackages: PackageBackupModel[] = [];
   backupPackageDetail: PackageBackupModel = new PackageBackupModel();
@@ -155,8 +156,20 @@ export class CreateBackupVmVpcComponent implements OnInit {
       this.instance = data;
       this.isLoading = false;
       this.instanceService.getAllSecurityGroupByInstance(this.instance.cloudId, this.instance.regionId, this.instance.customerId, this.instance.projectId).subscribe(data => {
-        this.securityGroups = data;
-        console.log('sg', this.securityGroups);
+        data.forEach(item => {
+          console.log('data sg', item.name === 'default')
+          if(item.name != 'default') {
+            this.securityGroups?.push(item)
+          } else {
+            this.securityGroupSelected?.push(item.id)
+          }
+        })
+        // this.securityGroups = data;
+        console.log('sg sag', this.securityGroups);
+        console.log('sg', this.securityGroupSelected);
+      }, error => {
+        this.isLoading = false
+        this.securityGroups = []
       });
       this.getVolumeInstanceAttachment(this.instance.id);
     });
@@ -174,15 +187,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
     console.log('selected', value);
     this.validateForm.controls.volumeToBackupIds.reset();
     this.validateForm.controls.securityGroupToBackupIds.reset();
-    this.instanceService.getInstanceById(value).subscribe(data => {
-      this.instance = data;
-      this.isLoading = false;
-      this.instanceService.getAllSecurityGroupByInstance(this.instance.cloudId, this.instance.regionId, this.instance.customerId, this.instance.projectId).subscribe(data => {
-        this.securityGroups = data;
-        console.log('sg', this.securityGroups);
-      });
-      this.getVolumeInstanceAttachment(this.instance.id);
-    });
+    this.getDataByInstanceId(value)
   }
 
   getBackupPackage() {
@@ -239,7 +244,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
       createBackupVmSpecification.instanceId = this.validateForm.controls.instanceId.value;
       createBackupVmSpecification.backupInstanceOfferId = 0; // dùng để tính giá về sau
       createBackupVmSpecification.volumeToBackupIds = this.validateForm.controls.volumeToBackupIds.value;
-      // createBackupVmSpecification.securityGroupToBackupIds = this.validateForm.controls.securityGroupToBackupIds.value;
+      createBackupVmSpecification.securityGroupToBackupIds = this.securityGroupSelected;
       createBackupVmSpecification.description = this.validateForm.controls.description.value;
       createBackupVmSpecification.backupPackageId = this.validateForm.controls.backupPacketId.value;
       createBackupVmSpecification.customerId = this.tokenService.get()?.userId;

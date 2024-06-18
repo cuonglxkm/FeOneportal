@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -12,14 +12,17 @@ import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import {
   AppValidator,
+  ProvinceModel,
   UserModel,
 } from '../../../../../../libs/common-utils/src';
-import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
+import { _HttpClient, ALAIN_I18N_TOKEN, SettingsService, User } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { environment } from '@env/environment';
 import { FormUpdateUserInvoice } from '../../../../../app-smart-cloud/src/app/shared/models/invoice';
 import { InvoiceService } from '../../../../../app-smart-cloud/src/app/shared/services/invoice.service';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-user-profile',
@@ -33,11 +36,19 @@ export class UserProfileComponent implements OnInit {
     public notification: NzNotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fb: NonNullableFormBuilder,
-    private invoiceService: InvoiceService
+    private invoiceService: InvoiceService,
+    private settings: SettingsService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
+
+  get user(): User {
+    return this.settings.user;
+  }
 
   ngOnInit(): void {
     this.loadUserProfile();
+    this.getProvinces();
   }
   tabSelect = 0
   customerGroup: any;
@@ -72,11 +83,9 @@ export class UserProfileComponent implements OnInit {
     contract_code: new FormControl({ value: '', disabled: true }),
     province: new FormControl('', { validators: [Validators.required] }),
     address: new FormControl('', {
-      // validators: [
-      //   Validators.required,
-      //   AppValidator.cannotContainSpecialCharactorExceptComma,
-      //   noAllWhitespace(),
-      // ],
+      validators: [
+        AppValidator.cannotContainSpecialCharactorExceptComma,
+      ],
     }),
     old_password: new FormControl('', { validators: [] }),
     new_password: new FormControl({ value: '', disabled: true }),
@@ -413,7 +422,9 @@ export class UserProfileComponent implements OnInit {
       );
   }
 
+  isLoadingProfile: boolean = false;
   updateProfile() {
+    this.isLoadingProfile = true;
     const baseUrl = environment['baseUrl'];
     let updatedUser = {
       id: this.userModel.id,
@@ -443,14 +454,20 @@ export class UserProfileComponent implements OnInit {
         context: new HttpContext().set(ALLOW_ANONYMOUS, true),
         headers: this.httpOptions.headers,
       })
+      .pipe(finalize(() => {
+        this.isLoadingProfile = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: (res) => {
           console.log(res);
-          this.loadUserProfile();
+          this.user.name = updatedUser.firstName;
+          this.settings.setUser(this.user);
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.account.form.success')
           );
+          setTimeout(() => window.location.reload(), 1000);
         },
         error: (error) => {
           console.log(error);
@@ -488,71 +505,26 @@ export class UserProfileComponent implements OnInit {
 
   onRetypePassChange(data: any) {}
 
-  provinceList: string[] = [
-    'Hà Nội',
-    'Thành phố Hồ Chí Minh',
-    'An Giang',
-    'Bà Rịa - Vũng Tàu',
-    'Bắc Giang',
-    'Bắc Kạn',
-    'Bạc Liêu',
-    'Bắc Ninh',
-    'Bến Tre',
-    'Bình Định',
-    'Bình Dương',
-    'Bình Phước',
-    'Bình Thuận',
-    'Cà Mau',
-    'Cao Bằng',
-    'Cần Thơ',
-    'Đà Nẵng',
-    'Đắk Lắk',
-    'Đắk Nông',
-    'Điện Biên',
-    'Đồng Nai',
-    'Đồng Tháp',
-    'Gia Lai',
-    'Hà Giang',
-    'Hà Nam',
-    'Hà Tĩnh',
-    'Hải Dương',
-    'Hải Phòng',
-    'Hậu Giang',
-    'Hòa Bình',
-    'Hưng Yên',
-    'Khánh Hòa',
-    'Kiên Giang',
-    'Kon Tum',
-    'Lai Châu',
-    'Lâm Đồng',
-    'Lạng Sơn',
-    'Lào Cai',
-    'Long An',
-    'Nam Định',
-    'Nghệ An',
-    'Ninh Bình',
-    'Ninh Thuận',
-    'Phú Thọ',
-    'Phú Yên',
-    'Quảng Bình',
-    'Quảng Nam',
-    'Quảng Ngãi',
-    'Quảng Ninh',
-    'Quảng Trị',
-    'Sóc Trăng',
-    'Sơn La',
-    'Tây Ninh',
-    'Thái Bình',
-    'Thái Nguyên',
-    'Thanh Hóa',
-    'Thừa Thiên Huế',
-    'Tiền Giang',
-    'Trà Vinh',
-    'Tuyên Quang',
-    'Vĩnh Long',
-    'Vĩnh Phúc',
-    'Yên Bái',
-  ];
+  provinceList: ProvinceModel[] = [];
+  getProvinces() {
+    const baseUrl = environment['baseUrl'];
+    this.http
+      .get<any>(`${baseUrl}/users/provinces`, {
+        headers: this.httpOptions.headers,
+      })
+      .subscribe({
+        next: (data) => {
+          this.provinceList = data;
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('app.notify.get.list.province')
+          );
+        }
+      });
+  }
+
 }
 
 export function noAllWhitespace(): ValidatorFn {

@@ -139,6 +139,7 @@ export class ProjectUpdateComponent implements OnInit {
   vpnsitetositeNameOld:string='';
   loadbalancerOfferNameOld:string='';
   gpuOld:any;
+  keySSDOld:boolean=false;
 
   ipOld:string='';
   ipNameOld:string='';
@@ -186,6 +187,7 @@ export class ProjectUpdateComponent implements OnInit {
     siteToSite: 0,
     siteToSiteUnit: 0
   };
+  newgpu:any
   checkPackage: boolean = true;
   activeBonusService = true;
   iconToggle: string;
@@ -264,11 +266,7 @@ export class ProjectUpdateComponent implements OnInit {
   private calculateReal() {
 
     this.refreshValue();
-    console.log("this.ipConnectInternet",this.ipConnectInternet)
-    console.log("ipOld", this.ipOld);
-    console.log("ipNameOld", this.ipNameOld)
-    console.log("floating old", this.ipFloatingOld)
-    console.log("IP floating", this.numberIpFloating)
+   
     let lstIp = this.ipConnectInternet?.split('--');
     let ip = '';
     let ipName = '';
@@ -319,7 +317,7 @@ export class ProjectUpdateComponent implements OnInit {
 
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
-        gpuQuotas: this.gpuQuotasGobal,
+        gpuQuotas: this.newgpu,
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
@@ -404,12 +402,18 @@ export class ProjectUpdateComponent implements OnInit {
               );             
               const checkOfferById = this.listOfferFlavors.find((offer:OfferItem)=>
                 offer.id === this.data?.offerId 
-              )             
+              )   
+              this.keySSDOld = checkOfferById?.characteristicValues.find((charName)=>charName.charName ==='VolumeType').charOptionValues?.[0]=='SSD'
+              console.log("object keySSDOld", this.keySSDOld)
+              console.log("checkOfferById", checkOfferById)          
               const charName = checkOfferById?.characteristicValues.find((typeName)=>typeName.charName==='VolumeType')
               const typeName = charName?.charOptionValues?.[0]
              this.listOfferByTypeName = this.listOfferFlavors.filter((e:OfferItem)=> 
               e.characteristicValues.find((charName)=>charName.charName==='VolumeType')?.charOptionValues?.[0]==typeName
+          
             )
+            this.checkFlavor()
+            console.log("object listOfferByTypeName", this.listOfferByTypeName)
 
               this.listOfferFlavors.forEach((e: OfferItem) => {
                 e.description = '0 CPU / 0 GB RAM / 0 GB HDD / 0 IP';
@@ -503,7 +507,7 @@ export class ProjectUpdateComponent implements OnInit {
         
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
-        gpuQuotas: this.gpuQuotasGobal,
+        gpuQuotas:  this.newgpu,
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
@@ -649,6 +653,7 @@ export class ProjectUpdateComponent implements OnInit {
           this.loadBalancerId = data?.offerIdLBSDN;
           
           this.gpuOld = data.gpuProjects;
+          console.log("gpuOld", this.gpuOld)
           this.snapshothddOld = data.quotaVolumeSnapshotHddInGb;
           this.snapshotssdOld = data.quotaVolumeSnapshotSsdInGb;
 
@@ -1028,39 +1033,47 @@ export class ProjectUpdateComponent implements OnInit {
       }
     );
   }
-  maxNumber: number[] = [8, 8];
+ 
+  // maxNumber: number[] = [8, 8];
   getValues(index:number, value:number): void {
-    if (index == 0) {
-      if (this.gpuQuotasGobal[0].GpuCount <= this.maxTotal) {
-        this.maxNumber[1] = this.maxTotal - this.gpuQuotasGobal[0].GpuCount;
-        if (this.gpuQuotasGobal[1].GpuCount > 0 && this.gpuQuotasGobal[1].GpuCount > this.maxNumber[1]) {
-          this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-          this.gpuQuotasGobal[1].GpuCount = this.maxNumber[1]
-        }
-      }
-    }
-    else {
-      if (this.gpuQuotasGobal[1].GpuCount <= this.maxTotal) {
-        this.maxNumber[0] = this.maxTotal - this.gpuQuotasGobal[1].GpuCount
-        if (this.gpuQuotasGobal[0].GpuCount > 0 && this.gpuQuotasGobal[0].GpuCount > this.maxNumber[0]) {
-          this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-          this.gpuQuotasGobal[0].GpuCount = this.maxNumber[0]
-        }
-      }
-    }
+    console.log("123", value)
+    console.log("gpuQuotasGobal 123", this.gpuQuotasGobal)
+    this.getValueNewgpu();
     this.calculate();
     
   }
-
-  getMaxValue(index: number): number {
-    if (this.gpuQuotasGobal[index].GpuCount < 8) {
-      return this.maxNumber[index];
-    }
+  checkFlavor(){
+const findKey= this.listOfferByTypeName.find((item:OfferItem)=>item.characteristicValues.find((charName)=>charName.charName ==='VolumeType').charOptionValues?.[0]=='SSD')
+  console.log("findKey",findKey)
+  
   }
+
+getValueNewgpu(){
+const dict2 = this.gpuQuotasGobal.reduce((acc, item) => {
+  acc[item.GpuOfferId] = item;
+  return acc;
+}, {});
+this.newgpu = this.gpuOld.map((item:any) => {
+  const gpuOfferId = item.gpuOfferId;
+  const array2Item = dict2[gpuOfferId];
+  const totalCountGpu = item.gpuCount + (array2Item ? array2Item.GpuCount : 0);
+
+  return {
+      GpuOfferId: gpuOfferId,
+      GpuType: item.gpuType,
+      GpuCount: totalCountGpu,
+      
+  };
+});
+
+console.log("newArray",this.newgpu);
+
+}
 
   trackById(index: number, item: any): any {
     return item.offerName;
   }
+ 
 
   initIP() {
     this.activeIP = true;

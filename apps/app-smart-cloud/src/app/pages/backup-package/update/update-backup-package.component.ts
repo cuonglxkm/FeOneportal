@@ -28,6 +28,7 @@ export class UpdateBackupPackageComponent implements AfterViewInit{
     description: FormControl<string>
   }> = this.fb.group({
     namePackage: [null as string, [Validators.required,
+      this.duplicateNameValidator.bind(this),
       Validators.pattern(/^[a-zA-Z0-9]*$/),
       Validators.maxLength(70)]],
     description: [null as string, [Validators.maxLength(255)]]

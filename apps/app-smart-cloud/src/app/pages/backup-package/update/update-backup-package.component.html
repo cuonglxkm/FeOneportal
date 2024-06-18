@@ -3,8 +3,8 @@
      (click)="showModal()"
      style="cursor: pointer;"
      [nzPopoverContent]="'app.text.edit' | i18n" />
-<nz-modal [(nzVisible)]="isVisible" nzTabScrollList="true"
-          (nzOnCancel)="handleCancel()" [nzAutofocus]="undefined">
+<nz-modal [(nzVisible)]="isVisible"
+          (nzOnCancel)="handleCancel()">
   <div *nzModalTitle>
     <span class="text-modal-title">{{ 'app.backup.package.edit.title'|i18n }}</span>
   </div>
@@ -63,7 +63,7 @@
       <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel'|i18n }}
     </button>
     <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleOk()"
-            [nzLoading]="isLoading" appAutofocus
+            [nzLoading]="isLoading"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm'|i18n }}
     </button>

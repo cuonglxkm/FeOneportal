@@ -178,6 +178,7 @@ export class ProjectCreateComponent implements OnInit {
 
   numbergpu: number[] = [];
   maxTotal: number = 8;
+  keySSD:boolean = true;
 
   isRequired: boolean = true;
 
@@ -454,6 +455,7 @@ export class ProjectCreateComponent implements OnInit {
     );
     this.selectedElementFlavor = 'flavor_' + event;
     console.log("objeselectedElementFlavorct", this.selectedElementFlavor)
+    this.checkFlavor()
     this.calculate(null);
   }
 
@@ -754,7 +756,7 @@ export class ProjectCreateComponent implements OnInit {
     this.activeVpnGpu = true;
     this.trashVpnGpu = true;
     this.getCatelogOffer();
-    // this.calculate(null);
+    this.calculate(null);
 
   }
   deleteVpnGpu() {
@@ -1014,44 +1016,6 @@ export class ProjectCreateComponent implements OnInit {
     return item.offerName;
   }
   maxNumber: number[] = [8, 8]
-  // getValues(index:number) {
-  //   const offerName = this.listTypeCatelogOffer[index]?.offerName;
-  //   this.GpuofferNames[index] = offerName; 
-  //   console.log("this.GpuofferNames[index]", this.GpuofferNames[index])
-  //   this.GpuType = this.GpuofferNames[index];
-  //   console.log("GpuType", this.GpuType)
-  //   const GpuId= this.listTypeCatelogOffer[index]?.id;
-  //   this.GpuId[index] = GpuId;
-
-  // console.log("this.GpuId[index]", this.GpuId[index])
-  // this.GpuOfferId = this.GpuId[index];
-  // console.log("GpuOfferId", this.GpuOfferId)
-
-  //   this.maxNumber=[8,8]
-  //   if(index==0){
-  //     if(this.numbergpu[0]<=this.maxTotal){
-  //       this.maxNumber[1] = this.maxTotal -this.numbergpu[0]
-  //       if(this.numbergpu[1]>0 && this.numbergpu[1]>this.maxNumber[1]){
-  //         this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-  //         this.numbergpu[1]= this.maxNumber[1]
-  //       }
-  //     }
-  //     this.GpuCount = this.numbergpu[index]
-  //     console.log("GpuCount", this.GpuCount)
-  //   }
-  //   else{
-  //     if(this.numbergpu[1]<=this.maxTotal){
-  //       this.maxNumber[0] = this.maxTotal -this.numbergpu[1]
-  //       if(this.numbergpu[0]>0 && this.numbergpu[0]>this.maxNumber[0]){
-  //         this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-  //         this.numbergpu[0]= this.maxNumber[0]
-  //       }
-  //     }
-  //     this.GpuCount = this.numbergpu[index]
-  //     console.log("GpuCount", this.GpuCount)
-  //   }
-  //   this.calculate(null);
-  // }
 
 
   getValues(index: number, value: number): void {
@@ -1060,24 +1024,24 @@ export class ProjectCreateComponent implements OnInit {
     console.log("value", value)
     console.log("gpuQuotasGobal 123", this.gpuQuotasGobal)
     // console.log(this.gpuQuotasGobal[index].GpuCount);
-    if (index == 0) {
-      if (this.gpuQuotasGobal[0].GpuCount <= this.maxTotal) {
-        this.maxNumber[1] = this.maxTotal - this.gpuQuotasGobal[0].GpuCount;
-        if (this.gpuQuotasGobal[1].GpuCount > 0 && this.gpuQuotasGobal[1].GpuCount > this.maxNumber[1]) {
-          this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-          this.gpuQuotasGobal[1].GpuCount = this.maxNumber[1]
-        }
-      }
-    }
-    else {
-      if (this.gpuQuotasGobal[1].GpuCount <= this.maxTotal) {
-        this.maxNumber[0] = this.maxTotal - this.gpuQuotasGobal[1].GpuCount
-        if (this.gpuQuotasGobal[0].GpuCount > 0 && this.gpuQuotasGobal[0].GpuCount > this.maxNumber[0]) {
-          this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-          this.gpuQuotasGobal[0].GpuCount = this.maxNumber[0]
-        }
-      }
-    }
+    // if (index == 0) {
+    //   if (this.gpuQuotasGobal[0].GpuCount <= this.maxTotal) {
+    //     this.maxNumber[1] = this.maxTotal - this.gpuQuotasGobal[0].GpuCount;
+    //     if (this.gpuQuotasGobal[1].GpuCount > 0 && this.gpuQuotasGobal[1].GpuCount > this.maxNumber[1]) {
+    //       this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+    //       this.gpuQuotasGobal[1].GpuCount = this.maxNumber[1]
+    //     }
+    //   }
+    // }
+    // else {
+    //   if (this.gpuQuotasGobal[1].GpuCount <= this.maxTotal) {
+    //     this.maxNumber[0] = this.maxTotal - this.gpuQuotasGobal[1].GpuCount
+    //     if (this.gpuQuotasGobal[0].GpuCount > 0 && this.gpuQuotasGobal[0].GpuCount > this.maxNumber[0]) {
+    //       this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
+    //       this.gpuQuotasGobal[0].GpuCount = this.maxNumber[0]
+    //     }
+    //   }
+    // }
     this.calculate(null)
   }
 
@@ -1108,5 +1072,10 @@ export class ProjectCreateComponent implements OnInit {
     else {
       this.isRequired = true;
     }
+  }
+  checkFlavor(){
+    this.keySSD= this.offerFlavor.characteristicValues.find((charName)=>charName.charName ==='VolumeType').charOptionValues?.[0]=='SSD'
+   console.log("keySSD", this.keySSD)
+  
   }
 }
