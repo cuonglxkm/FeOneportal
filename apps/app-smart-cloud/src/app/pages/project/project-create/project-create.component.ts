@@ -1086,7 +1086,6 @@ export class ProjectCreateComponent implements OnInit {
     this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
       this.productByRegion = res
       this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
-      console.log("getProductActivebyregion", catalog, this.catalogStatus);
 
     })
   }
