@@ -1170,36 +1170,7 @@
               </div>
               <div *ngIf="activeVpnGpu">
                 <div class="ant-table">
-                  <!-- <table *ngFor="let typeCatelog of listTypeCatelogOffer;let i = index;trackBy:trackById">
-                    <td style="width:60%">
-                      <nz-form-item>
-                        <nz-form-label class="custom-label">Số lượng GPU (Type - {{typeCatelog?.offerName}})</nz-form-label>
-                        <nz-form-control>
-                          <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzStep="1" [nzMax]="getMaxValue(i)" name="gpu"
-                          [(ngModel)]="numbergpu[i]"
-                            (ngModelChange)="getValues(i)"
-                            [ngModelOptions]="{ standalone: true }"
-                            nzSize="large"
-                            [nzDisabled]="isDisabled(i)"></nz-input-number>
-                        </nz-form-control>
-                      </nz-form-item>
-                    </td>
-                    <td style="width:40%">
-                      <nz-form-item>
-                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND) </nz-form-label>
-                        <nz-form-control>
-                          <div class="centered">
-                            <p class="text-custom-price" >
-                              0 
-                            </p>
-                            <p class="text-price-unit" >
-                             
-                            </p>
-                          </div>
-                        </nz-form-control>
-                      </nz-form-item>
-                    </td>
-                  </table> -->
+             
                   <table *ngFor="let typeCatelog of gpuQuotasGobal;let i = index;trackBy:trackById">
                     <td style="width:60%">
                       <nz-form-item>
@@ -1211,7 +1182,9 @@
                             (ngModelChange)="getValues(i,gpuQuotasGobal?.[i]?.GpuCount)"
                             [ngModelOptions]="{ standalone: true }" nzSize="large"
                             [nzDisabled]="isDisabled(i)"></nz-input-number>
+                            
                         </nz-form-control>
+                        <p class="red-color mt-2 lable-fontsize" *ngIf="( (selectIndexTab==0 && keySSD==false ||(selectIndexTab==0 && !offerFlavor)) || (selectIndexTab==1 && ssd==0)) && gpuQuotasGobal[i].GpuCount !=0" >Vui lòng mua kèm dung lượng SSD để đảm bảo sử dụng được dịch vụ máy ảo GPU</p>
                       </nz-form-item>
                     </td>
                     <td style="width:40%">
@@ -1221,10 +1194,10 @@
                         <nz-form-control>
                           <div class="centered">
                             <p class="text-custom-price">
-                              {{typeCatelog?.GpuPrice |formatPrice }}
+                              {{typeCatelog?.GpuPrice | number  }}
                             </p>
                             <p class="text-price-unit">
-                              {{typeCatelog?.GpuPriceUnit |formatPrice }}
+                              {{typeCatelog?.GpuPriceUnit |number }}
                             </p>
                           </div>
                         </nz-form-control>

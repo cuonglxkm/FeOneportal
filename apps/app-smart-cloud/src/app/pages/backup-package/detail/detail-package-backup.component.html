@@ -3,15 +3,15 @@
              [title]="'app.backup.package.breadcrumb.detail'|i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
-      <nz-breadcrumb-item [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.backup.package.breadcrumb.backup' | i18n }}
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup/packages'">
-        {{ 'app.backup.package.breadcrumb.management' | i18n }}
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/backup/packages">{{ 'app.backup.volume.backup.package'|i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item >
         {{ 'app.backup.package.breadcrumb.detail'|i18n }}
@@ -30,7 +30,7 @@
     </div>
 
   </ng-template>
-  <div style="display:flex;">
+  <div *ngIf="typeVPC != 1" style="display:flex;">
     <div style="margin-right: 15px;">
       <div nz-col nzSpan="4">
         <button nz-button nzType="primary"
@@ -52,50 +52,52 @@
     </div>
   </div>
 </page-header>
-<nz-content>
-  <nz-card>
-    <form nz-form nzLayout="vertical">
-      <span class="text-card-header">{{ 'app.backup.package.information'|i18n }}</span>
-      <nz-form-item>
-        <nz-form-label style="margin-top: 25px;">
-          <span>{{'app.backup.package.name'|i18n}}</span>
-        </nz-form-label>
-        <nz-form-control>
-          <input nz-input
-                 class="input-custom"
-                 [value]="packageBackupModel?.packageName"
-                 [disabled]="true" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>
-          <span>{{'app.backup.package.storage'|i18n}}</span>
-        </nz-form-label>
-        <nz-form-control>
-          <input nz-input
-                 class="input-custom"
-                 [value]="packageBackupModel?.sizeInGB"
-                 [disabled]="true" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>
-          <span>{{'app.backup.package.description'|i18n}}</span>
-        </nz-form-label>
-        <nz-form-control>
-          <nz-textarea-count [nzMaxCharacterCount]="255">
+<nz-spin [nzSpinning]="isLoading">
+  <nz-content>
+    <nz-card>
+      <form nz-form nzLayout="vertical">
+        <span class="text-card-header">{{ 'app.backup.package.information'|i18n }}</span>
+        <nz-form-item>
+          <nz-form-label style="margin-top: 25px;">
+            <span>{{'app.backup.package.name'|i18n}}</span>
+          </nz-form-label>
+          <nz-form-control>
+            <input nz-input
+                   class="input-custom"
+                   [value]="packageBackupModel?.packageName"
+                   [disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>
+            <span>{{'app.backup.package.storage'|i18n}}</span>
+          </nz-form-label>
+          <nz-form-control>
+            <input nz-input
+                   class="input-custom"
+                   [value]="packageBackupModel?.sizeInGB"
+                   [disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>
+            <span>{{'app.backup.package.description'|i18n}}</span>
+          </nz-form-label>
+          <nz-form-control>
+            <nz-textarea-count [nzMaxCharacterCount]="255">
             <textarea nz-input
                       class="input-custom"
                       [value]="packageBackupModel?.description"
                       [disabled]="true"></textarea>
-          </nz-textarea-count>
+            </nz-textarea-count>
 
-        </nz-form-control>
-      </nz-form-item>
-      <div style="display: grid;">
-        <span class="text-label">{{'app.backup.package.create.date'|i18n}}: {{ packageBackupModel?.creationDate | date: 'dd/MM/yyyy' }} </span>
-        <span class="text-label" style="color:#FC1010; margin-top: 15px;">{{'app.backup.package.expire.date'|i18n}}: {{ packageBackupModel?.expirationDate | date: 'dd/MM/yyyy' }} </span>
-      </div>
-    </form>
-  </nz-card>
-</nz-content>
+          </nz-form-control>
+        </nz-form-item>
+        <div style="display: grid;">
+          <span class="text-label">{{'app.backup.package.create.date'|i18n}}: {{ packageBackupModel?.creationDate | date: 'HH:mm:ss dd/MM/yyyy' }} </span>
+          <span class="text-label" style="color:#FC1010; margin-top: 15px;">{{'app.backup.package.expire.date'|i18n}}: {{ packageBackupModel?.expirationDate | date: 'HH:mm:ss dd/MM/yyyy' }} </span>
+        </div>
+      </form>
+    </nz-card>
+  </nz-content>
+</nz-spin>

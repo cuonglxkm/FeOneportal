@@ -45,6 +45,7 @@ export interface VolumeBackup {
   backupPackageId: number,
   status: string,
   typeName: string
+  volumeType: string
 }
 
 export interface SystemInfoBackup {

@@ -24,6 +24,8 @@ export class DetailPackageBackupComponent implements OnInit{
 
   typeVPC: number
 
+  isLoading: boolean = false
+
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -48,8 +50,10 @@ export class DetailPackageBackupComponent implements OnInit{
   }
 
   getDetailPackageBackup(id) {
+    this.isLoading = true
     this.packageBackupService.detail(id).subscribe(data => {
       console.log('data', data)
+      this.isLoading = false
       this.packageBackupModel = data
     })
   }

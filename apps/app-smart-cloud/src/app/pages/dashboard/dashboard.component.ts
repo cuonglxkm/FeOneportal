@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DashboardService } from '../../shared/services/dashboard.service';
 import {
-  ChartDataSubscription,
+  DataChart,
   PaymentCostUse,
   SubscriptionsDashboard,
   SubscriptionsNearExpire
@@ -17,7 +17,11 @@ import { Pie } from '@antv/g2plot';
   styleUrls: ['./dashboard.component.less']
 })
 export class DashboardComponent implements OnInit {
-  subscriptionsDashboard = new SubscriptionsDashboard();
+  subscriptionsDashboard: SubscriptionsDashboard[];
+  subscriptionDashboardService = new SubscriptionsDashboard();
+  subscriptionDashboardActive = new SubscriptionsDashboard();
+  subscriptionDashboardNearExpire = new SubscriptionsDashboard();
+  subscriptionDashboardExpire = new SubscriptionsDashboard();
 
   listSubscriptionsNearExpire: BaseResponse<SubscriptionsNearExpire[]>;
   listPaymentCostUse: BaseResponse<PaymentCostUse[]>;
@@ -25,67 +29,14 @@ export class DashboardComponent implements OnInit {
   pageSize: number = 5;
   pageIndex: number = 1;
 
-  isLoadingNearExpire: boolean = false;
-  isLoadingPaymentCost: boolean = false;
+  isLoading: boolean = false;
 
-  dashboardSubscription: ChartDataSubscription[] = [];
+  dataPaymentCost: DataChart[];
 
   @ViewChild('pieChart', { static: true }) private pieChart: ElementRef;
 
   constructor(private dashboardService: DashboardService,
               private router: Router) {
-  }
-
-  getSubscriptionsDashboard() {
-    this.dashboardService.getHeader().subscribe(data => {
-      console.log(data)
-    });
-    this.dashboardService.getSubscriptionsDashboard().subscribe(data => {
-      this.subscriptionsDashboard = data;
-      this.dashboardSubscription = data?.details;
-      const transformedArray = this.dashboardSubscription.map(item => ({
-        item: item.serviceTypeName,
-        count: item.dataCount
-      }));
-      console.log('data', transformedArray);
-
-      const dataChart = this.dashboardSubscription.map(item => ({
-        type: item.serviceTypeName,
-        value: item.dataCount
-      }));
-      const piePlot = new Pie(this.pieChart.nativeElement, {
-        appendPadding: 10,
-        data: dataChart,
-        angleField: 'value',
-        colorField: 'type',
-        radius: 0.8,
-        label: {
-          type: 'inner',
-          offset: '-10%',
-          content: '{percentage}'
-        },
-        interactions: [{ type: 'element-active' }],
-        theme: 'custom-theme'
-      });
-
-      piePlot.render();
-    });
-  }
-
-  getSubscriptionsNearExpire() {
-    this.isLoadingNearExpire = true;
-    this.dashboardService.getSubscriptionsNearExpire(this.pageSize, this.pageIndex).subscribe(data => {
-      this.listSubscriptionsNearExpire = data;
-      this.isLoadingNearExpire = false;
-    });
-  }
-
-  getPaymentCost() {
-    this.isLoadingPaymentCost = true;
-    this.dashboardService.paymentCostUse(this.pageSize, this.pageIndex).subscribe(data => {
-      this.listPaymentCostUse = data;
-      this.isLoadingPaymentCost = false;
-    });
   }
 
   onPageSizeNearExpireChange(value) {
@@ -108,6 +59,91 @@ export class DashboardComponent implements OnInit {
     this.getSubscriptionsNearExpire();
   }
 
+  getSubscriptionsDashboard() {
+    this.isLoading = true;
+    this.dashboardService.getHeader().subscribe(data => {
+      console.log(data);
+    });
+    this.dashboardService.getSubscriptionsDashboard().subscribe(data => {
+      this.isLoading = false;
+      this.subscriptionsDashboard = data;
+      this.subscriptionsDashboard.forEach(item => {
+        if (item.type == 'total') {
+          this.subscriptionDashboardService = item;
+        }
+        if (item.type == 'active') {
+          this.subscriptionDashboardActive = item;
+        }
+        if (item.type == 'near-expire') {
+          this.subscriptionDashboardNearExpire = item;
+        }
+        if (item.type == 'expire') {
+          this.subscriptionDashboardExpire = item;
+        }
+      });
+    });
+  }
+
+  getSubscriptionsNearExpire() {
+    this.isLoading = true;
+    this.dashboardService.getSubscriptionsNearExpire(this.pageSize, this.pageIndex).subscribe(data => {
+      this.listSubscriptionsNearExpire = data;
+      this.isLoading = false;
+    }, error => {
+      this.isLoading = false;
+    });
+  }
+
+  getPaymentCost() {
+    this.isLoading = true;
+    this.dashboardService.paymentCostUsePaging(this.pageSize, this.pageIndex).subscribe(data => {
+      this.listPaymentCostUse = data;
+      this.isLoading = false;
+    }, error => {
+      this.isLoading = false;
+      this.listPaymentCostUse = null;
+    });
+  }
+
+  getDataChart() {
+    this.isLoading = true;
+    this.dashboardService.paymentCostUseTotal().subscribe(data => {
+      this.isLoading = false;
+      this.dataPaymentCost = data;
+
+      const transformedArray = this.dataPaymentCost.map(item => ({
+        item: item.typeName,
+        count: item.totalAmount
+      }));
+      console.log('data', transformedArray);
+
+      const dataChart = this.dataPaymentCost.map(item => ({
+        type: item.typeName,
+        value: item.totalAmount
+      }));
+      const piePlot = new Pie(this.pieChart.nativeElement, {
+        appendPadding: 10,
+        data: dataChart,
+        angleField: 'value',
+        colorField: 'type',
+        radius: 0.8,
+        label: {
+          type: 'inner',
+          offset: '-10%',
+          content: '{percentage}'
+        },
+        interactions: [{ type: 'element-active' }],
+        theme: 'custom-theme'
+      });
+
+      piePlot.render();
+    }, error => {
+      this.isLoading = false;
+      this.dataPaymentCost = [];
+    });
+  }
+
+
   navigateToDetailPayment(id: number, paymentOrder: string) {
     this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + id + '/' + paymentOrder]);
   }
@@ -119,7 +155,7 @@ export class DashboardComponent implements OnInit {
         break;
       case 2:
         //VOLUME
-        this.router.navigate(['/app-smart-cloud/volumes/renew/', serviceInstanceId])
+        this.router.navigate(['/app-smart-cloud/volumes/renew/', serviceInstanceId]);
         break;
       case 3:
         //SNAPSHOT
@@ -155,11 +191,11 @@ export class DashboardComponent implements OnInit {
         //OBJECT STORAGE
         break;
       case 14:
-        this.router.navigate(['/app-smart-cloud/backup/packages/extend/', serviceInstanceId])
+        this.router.navigate(['/app-smart-cloud/backup/packages/extend/', serviceInstanceId]);
         //BACKUP_PACKET
         break;
       case 15:
-        this.router.navigate(['/app-smart-cloud/load-balancer/extend/normal/', serviceInstanceId])
+        this.router.navigate(['/app-smart-cloud/load-balancer/extend/normal/', serviceInstanceId]);
         //LOAD BALANCER SDN
         break;
       case 16:
@@ -169,7 +205,7 @@ export class DashboardComponent implements OnInit {
         //ROUTER
         break;
       case 18:
-        this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + serviceInstanceId + '/extend'])
+        this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + serviceInstanceId + '/extend']);
         //SHAREFILE_STORAGE
         break;
       case 19:
@@ -194,9 +230,11 @@ export class DashboardComponent implements OnInit {
         break;
     }
   }
+
   ngOnInit() {
     this.getSubscriptionsDashboard();
     this.getSubscriptionsNearExpire();
     this.getPaymentCost();
+    this.getDataChart();
   }
 }
