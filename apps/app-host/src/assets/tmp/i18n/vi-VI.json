@@ -2735,7 +2735,7 @@
   "app.backup.package.list": "Danh sách gói Backup",
   "app.backup.package.information": "Thông tin của gói Backup",
   "app.backup.package.name": "Tên gói Backup",
-  "app.backup.package.storage": "Dung lượng gói backup (GB)",
+  "app.backup.package.storage": "Dung lượng gói backup",
   "app.backup.package.storage.current": "Dung lượng gói Backup hiện tại",
   "app.backup.package.storage.addition": "Dung lượng gói Backup bổ sung",
   "app.backup.package.storage.total": "Dung lượng",
@@ -2831,7 +2831,9 @@
 
   "app.backup.vm.alert.create.remaining.storage": "còn lại",
   "app.backup.vm.alert.storage": "nhỏ hơn tổng dung lượng ổ hệ điều hành và dung lượng Volume gắn ngoài",
-  "app.backup.vm.alert.create": "Quý khách hãy điều chỉnh <b><i>{{name}}</i></b> để quá trình Backup VM không bị gián đoạn",
+  "app.backup.vm.alert.create": "Quý khách hãy điều chỉnh gói backup",
+  "app.backup.vm.alert.create2": "để quá trình Backup VM không bị gián đoạn",
+
   "app.backup.vm.alert.delete": "Bạn đang thực hiện xóa backup",
   "app.backup.vm.confirm.delete": "Đế thực hiện xoá backup {{name}}, vui lòng nhập tên backup để xác nhận.",
   "app.backup.vm.alert.storage.vpc": "Dung lượng backup nhỏ hơn dung lượng ổ hệ điều hành + tổng dung lượng volume gắn ngoài ({{storage}} GB). Quý khách hãy điều chỉnh dự án VPC để quá trình backup VM không bị gián đoạn.",

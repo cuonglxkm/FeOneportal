@@ -107,7 +107,7 @@
                                                     [backupPackage]="data"
                                                     (onOk)="handleUpdateOk()" />
                   <!---Điều chỉnh dung lượng------>
-                  <img src="assets/imgs/resize.svg" alt="" style="margin-left: 15px; cursor: pointer;"
+                  <img src="assets/imgs/resize.svg" alt="" style="margin-left: 5px;cursor: pointer;"
                        (click)="navigateToResize(data.id)"
                        nz-popover nzPopoverPlacement="bottom"
                        [nzPopoverContent]="'app.backup.package.breadcrumb.resize'|i18n" />
@@ -115,7 +115,16 @@
                   <one-portal-delete-backup-package [region]="region" [project]="project" [packageBackupModel]="data"
                                                     (onOk)="handleDeletedOk()" />
                 </div>
-                <div *ngIf="!['ACTIVE', 'AVAILABLE'].includes(data.status)">
+                <div *ngIf="!['ACTIVE', 'AVAILABLE'].includes(data.status) && data.status != 'ERROR'">
+                  <img src="assets/imgs/calendar-tick.svg" alt=""
+                       (click)="navigateToExtend(data.id)"
+                       nz-popover nzPopoverPlacement="bottom"
+                       [nzPopoverContent]="'app.dashboard.service.near.expire.extend'|i18n"/>
+                  <!---Xóa------>
+                  <one-portal-delete-backup-package [region]="region" [project]="project" [packageBackupModel]="data"
+                                                    (onOk)="handleDeletedOk()" />
+                </div>
+                <div *ngIf="data.status == 'ERROR'">
                   <!---Xóa------>
                   <one-portal-delete-backup-package [region]="region" [project]="project" [packageBackupModel]="data"
                                                     (onOk)="handleDeletedOk()" />

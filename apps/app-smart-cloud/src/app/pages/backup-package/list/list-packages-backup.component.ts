@@ -158,6 +158,10 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     this.router.navigate(['/app-smart-cloud/backup/packages/resize/' + id]);
   }
 
+  navigateToExtend(id) {
+    this.router.navigate(['/app-smart-cloud/backup/packages/extend/' + id])
+  }
+
   handleDeletedOk() {
     setTimeout(() => {this.getListPackageBackups(true);}, 2000)
 
