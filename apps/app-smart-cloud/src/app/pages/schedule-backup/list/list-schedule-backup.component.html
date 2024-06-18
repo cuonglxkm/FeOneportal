@@ -100,8 +100,8 @@
 <!--                  <br><span>{{data.warningMessage}}</span>-->
                 </td>
               </ng-container>
-              <td>{{ data.nextRuntime | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
-              <td>{{ data.createdAt | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
+              <td>{{ data.nextRuntime | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ data.createdAt | date: 'dd/MM/yyyy' }}</td>
               <td>
                   <div *ngIf="data.status === 'ACTIVE'">
                     <img nz-popover src="assets/imgs/edit-2.svg" alt=""

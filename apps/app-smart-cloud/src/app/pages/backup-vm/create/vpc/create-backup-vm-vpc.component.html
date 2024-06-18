@@ -186,6 +186,7 @@
                 <nz-form-control>
                   <nz-select formControlName="securityGroupToBackupIds"
                              nzSize="large"
+                             [(ngModel)]="securityGroupSelected"
                              [nzPlaceHolder]="'Security Group'"
                              [nzShowSearch]="false"
                              nzMode="multiple"

@@ -31,7 +31,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
 
   status = [
-    {label: this.i18n.fanyi('app.payment.status.all'), value: 'all'},
+    {label: this.i18n.fanyi('app.status.all'), value: 'all'},
     {label: this.i18n.fanyi('app.status.running'), value: 'AVAILABLE'},
     {label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED'}
   ]
