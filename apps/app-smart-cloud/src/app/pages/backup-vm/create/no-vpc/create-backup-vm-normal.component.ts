@@ -191,7 +191,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
 
   getBackupPackage() {
     this.isLoading = true;
-    this.backupPackageService.search(null, null, 9999, 1).subscribe(data => {
+    this.backupPackageService.search(null, null, this.project, this.region, 9999, 1).subscribe(data => {
       this.isLoading = false;
       data.records.forEach(item => {
         if(['ACTIVE', 'AVAILABLE'].includes(item.status)) {

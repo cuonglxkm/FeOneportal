@@ -102,7 +102,7 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
 
   getBackupPackage() {
     this.isLoadingBackupPackage = true;
-    this.backupPackageService.search(null, null, 9999, 1).subscribe(data => {
+    this.backupPackageService.search(null, null, this.project, this.region, 9999, 1).subscribe(data => {
       this.backupPackages = data.records;
       this.isLoadingBackupPackage = false;
       console.log('backup package', this.backupPackages);

@@ -2904,6 +2904,7 @@
   "app.backup.package.description.maxLength": "Allow maximum of 255 characters for input.",
   "app.backup.package.placeholder.search.name": "Search by name",
 
+  "app.backup.vm.breadcrumb": "Backup VM",
   "app.backup.vm.list": "List of Backup VMs",
   "app.backup.vm.detail": "Backup VM Details",
   "app.backup.vm.restore": "Restore Backup VM",
@@ -2936,6 +2937,7 @@
   "app.backup.vm.delete.title.modal": "Determine the deletion of Backup VM",
   "app.backup.vm.title.modal.update": "Edit Backup VM information",
   "app.backup.vm.name": "Backup VM name",
+  "app.backup.vm.bought": "The purchased backup capacity",
 
   "app.backup.vm.tooltip.name": "Enter a backup name with a maximum of 50 characters, consisting only of letters, numbers, and underscores.",
   "app.backup.vm.tooltip.vm": "Select the virtual machine to backup from the customer's virtual machine list within the specified region and project.",

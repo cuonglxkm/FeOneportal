@@ -67,7 +67,7 @@ export class UpdateBackupPackageComponent implements AfterViewInit{
   }
 
   getAllBackupPackage(){
-    this.backupPackageService.search(null, null, 9999, 1).subscribe(data => {
+    this.backupPackageService.search(null, null, this.project, this.region, 9999, 1).subscribe(data => {
       data.records.forEach((item) => {
         if (this.nameList.length > 0) {
           this.nameList.push(item.packageName);

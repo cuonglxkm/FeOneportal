@@ -5,7 +5,7 @@
       <nz-breadcrumb-item [routerLink]="['/']">{{ 'app.breadcrumb.home'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">{{'app.backup.vm.breadcrumb'|i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
       <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
