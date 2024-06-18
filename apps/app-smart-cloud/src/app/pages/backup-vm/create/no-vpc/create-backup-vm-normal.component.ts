@@ -44,6 +44,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
   isLoading: boolean = true;
 
   securityGroups: SecurityGroup[] = [];
+  securityGroupSelected = []
   volumeAttachments: VolumeAttachment[] = [];
   backupPackages: PackageBackupModel[] = [];
   backupPackageDetail: PackageBackupModel = new PackageBackupModel();
@@ -142,26 +143,42 @@ export class CreateBackupVmNormalComponent implements OnInit{
       this.volumeAttachments = data;
       this.isLoading = false;
       console.log('volume attach', this.volumeAttachments);
+    }, error =>  {
+      this.isLoading = false
+      this.volumeAttachments = []
     });
   }
 
   getDataByInstanceId(id) {
     this.instanceService.getInstanceById(id).subscribe(data => {
       this.instance = data;
-      this.isLoading = false;
-      this.instanceService.getAllSecurityGroupByInstance(this.instance.cloudId, this.instance.regionId, this.instance.customerId, this.instance.projectId).subscribe(data => {
-        this.securityGroups = data;
-        console.log('sg', this.securityGroups);
+      this.isLoading = true;
+      this.instanceService.getAllSecurityGroupByInstance(this.instance.cloudId, this.instance.regionId,
+        this.instance.customerId, this.instance.projectId).subscribe(data => {
+          this.securityGroups = data;
+        // this.securityGroups = data;
+        this.securityGroups.forEach(item => {
+          if(item.name.toUpperCase() === 'DEFAULT') {
+            this.securityGroupSelected?.push(item.id)
+          }
+        })
+        console.log('sg sag', this.securityGroups);
+        console.log('sg', this.securityGroupSelected);
+      }, error => {
+        this.isLoading = false
+        this.securityGroups = []
       });
       this.getVolumeInstanceAttachment(this.instance.id);
     });
   }
 
   getListInstances() {
+    this.isLoading = true
     this.instanceService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId).subscribe(data => {
-      console.log('dataa', data);
+      console.log('data', data);
+      this.isLoading = false
       this.listInstances = data.records;
-      console.log('dataa', this.instance);
+      console.log('data', this.instance);
     });
   }
 
@@ -169,24 +186,23 @@ export class CreateBackupVmNormalComponent implements OnInit{
     console.log('selected', value);
     this.validateForm.controls.volumeToBackupIds.reset();
     this.validateForm.controls.securityGroupToBackupIds.reset();
-    this.instanceService.getInstanceById(value).subscribe(data => {
-      this.instance = data;
-      this.isLoading = false;
-      this.instanceService.getAllSecurityGroupByInstance(this.instance.cloudId, this.instance.regionId, this.instance.customerId, this.instance.projectId).subscribe(data => {
-        this.securityGroups = data;
-        console.log('sg', this.securityGroups);
-      });
-      this.getVolumeInstanceAttachment(this.instance.id);
-    });
+    this.getDataByInstanceId(value)
   }
 
   getBackupPackage() {
     this.isLoading = true;
     this.backupPackageService.search(null, null, 9999, 1).subscribe(data => {
-      this.backupPackages = data.records;
       this.isLoading = false;
+      data.records.forEach(item => {
+        if(['ACTIVE', 'AVAILABLE'].includes(item.status)) {
+          this.backupPackages?.push(item)
+        }
+      })
       console.log('backup package', this.backupPackages);
       this.validateForm.controls.backupPacketId.setValue(this.backupPackages[0].id);
+    }, error => {
+      this.isLoading = false
+      this.backupPackages = []
     });
   }
 
@@ -234,7 +250,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
       createBackupVmSpecification.instanceId = this.validateForm.controls.instanceId.value;
       createBackupVmSpecification.backupInstanceOfferId = 0; // dùng để tính giá về sau
       createBackupVmSpecification.volumeToBackupIds = this.validateForm.controls.volumeToBackupIds.value;
-      createBackupVmSpecification.securityGroupToBackupIds = this.validateForm.controls.securityGroupToBackupIds.value;
+      createBackupVmSpecification.securityGroupToBackupIds = this.securityGroupSelected
       createBackupVmSpecification.description = this.validateForm.controls.description.value;
       createBackupVmSpecification.backupPackageId = this.validateForm.controls.backupPacketId.value;
       createBackupVmSpecification.customerId = this.tokenService.get()?.userId;

@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { catchError } from 'rxjs/internal/operators/catchError';
 import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { PaymentCostUse, SubscriptionsDashboard, SubscriptionsNearExpire } from '../models/dashboard.model';
+import { DataChart, PaymentCostUse, SubscriptionsDashboard, SubscriptionsNearExpire } from '../models/dashboard.model';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
@@ -27,7 +27,7 @@ export class DashboardService extends BaseService {
   }
 
   getSubscriptionsDashboard() {
-    return this.http.get<SubscriptionsDashboard>(this.baseUrl + this.ENDPOINT.subscriptions + '/dashboard', {
+    return this.http.get<SubscriptionsDashboard[]>(this.baseUrl + this.ENDPOINT.subscriptions + '/dashboard', {
       headers: this.httpOptions.headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
@@ -60,8 +60,25 @@ export class DashboardService extends BaseService {
       }));
   }
 
-  paymentCostUse(pageSize: number, pageIndex: number) {
-    return this.http.get<BaseResponse<PaymentCostUse[]>>(this.baseUrl + this.ENDPOINT.payments + `/cost-use?pageSize=${pageSize}&pageNumber=${pageIndex}`, {
+  paymentCostUsePaging(pageSize: number, pageIndex: number) {
+    return this.http.get<BaseResponse<PaymentCostUse[]>>(this.baseUrl + this.ENDPOINT.payments + `/cost-use/paging?pageSize=${pageSize}&pageNumber=${pageIndex}`, {
+      headers: this.httpOptions.headers
+    })
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
+  }
+
+  paymentCostUseTotal() {
+    return this.http.get<DataChart[]>(this.baseUrl + this.ENDPOINT.payments + `/cost-use/total`, {
       headers: this.httpOptions.headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
@@ -78,7 +95,7 @@ export class DashboardService extends BaseService {
   }
 
   getHeader() {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.subscriptions + `/header`, { headers: this.httpOptions.headers} )
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.subscriptions + `/header`, { headers: this.httpOptions.headers })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -89,6 +106,6 @@ export class DashboardService extends BaseService {
           console.error('Resource not found');
         }
         return throwError(error);
-    }));
+      }));
   }
 }
