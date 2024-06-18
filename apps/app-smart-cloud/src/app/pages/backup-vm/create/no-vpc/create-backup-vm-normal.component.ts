@@ -177,7 +177,9 @@ export class CreateBackupVmNormalComponent implements OnInit{
     this.instanceService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId).subscribe(data => {
       console.log('data', data);
       this.isLoading = false
+
       this.listInstances = data.records;
+      this.listInstances = this.listInstances.filter(item => item.taskState === 'ACTIVE')
       console.log('data', this.instance);
     });
   }

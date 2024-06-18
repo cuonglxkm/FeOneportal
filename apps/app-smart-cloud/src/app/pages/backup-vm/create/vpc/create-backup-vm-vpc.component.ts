@@ -181,7 +181,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
     this.instanceService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId).subscribe(data => {
       console.log('dataa', data);
       this.listInstances = data.records;
-      console.log('dataa', this.instance);
+      this.listInstances = this.listInstances.filter(item => item.taskState === 'ACTIVE')
     });
   }
 
