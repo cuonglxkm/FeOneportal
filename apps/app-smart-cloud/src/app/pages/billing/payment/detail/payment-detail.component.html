@@ -29,49 +29,49 @@
           >{{"app.payment.status.init" | i18n}}</span
         >
         <span class="failedField" *ngIf="payment.paymentLatestStatus == 'FAILED'"
-          >{{"app.payment.status.unpaid" | i18n}}</span
+          >{{"app.payment.status.cancel" | i18n}}</span
         >
       </nz-col>
     </nz-row>
-    <nz-row style="padding-top: 50px; padding-bottom: 20px">
+    <nz-row nzGutter="16" style="padding-top: 50px; padding-bottom: 20px">
       <div nz-col nzSpan="12">
-        <nz-row style="height: 50px" class="label-fontsize">
-          <span class="fw-400" style="width: 40%">{{"app.payment-detail.customerName" | i18n}}:</span>
-          <span class="fw-600">{{ (userModel$ | async)?.fullName === '' ? '-' : (userModel$ | async)?.fullName}}</span>
+        <nz-row class="label-fontsize mb-6">
+          <span nz-col nzSpan="8"  class="fw-400" style="width: 40%">{{"app.payment-detail.customerName" | i18n}}:</span>
+          <span nz-col nzSpan="16" class="fw-600">{{ (userModel$ | async)?.fullName === '' ? '-' : (userModel$ | async)?.fullName}}</span>
         </nz-row>
-        <nz-row style="height: 50px" class="label-fontsize">
-          <span class="fw-400" style="width: 40%">{{"app.payment-detail.phone" | i18n}}:</span>
-          <span class="fw-600">{{ (userModel$ | async)?.phoneNumber === '' ? '-' : (userModel$ | async)?.phoneNumber}}</span>
+        <nz-row class="label-fontsize mb-6">
+          <span nz-col nzSpan="8" class="fw-400" style="width: 40%">{{"app.payment-detail.phone" | i18n}}:</span>
+          <span nz-col nzSpan="16" class="fw-600">{{ (userModel$ | async)?.phoneNumber === '' ? '-' : (userModel$ | async)?.phoneNumber}}</span>
         </nz-row>
-        <nz-row style="height: 50px" class="label-fontsize">
-          <span class="fw-400" style="width: 40%">{{"app.payment-detail.customerName" | i18n}}:</span>
-          <span class="fw-600"> {{ (userModel$ | async)?.email === '' ? '-' : (userModel$ | async)?.email }}</span>
+        <nz-row class="label-fontsize mb-6">
+          <span nz-col nzSpan="8" class="fw-400" style="width: 40%">{{"app.payment-detail.customerName" | i18n}}:</span>
+          <span nz-col nzSpan="16" class="fw-600"> {{ (userModel$ | async)?.email === '' ? '-' : (userModel$ | async)?.email }}</span>
         </nz-row>
         <nz-row class="label-fontsize">
-          <span class="fw-400" style="width: 40%">{{"app.payment-detail.address" | i18n}}:</span>
-          <span class="fw-600">{{ (userModel$ | async)?.address === '' ? '-' :  (userModel$ | async)?.address}}</span>
+          <span nz-col nzSpan="8" class="fw-400" style="width: 40%">{{"app.payment-detail.address" | i18n}}:</span>
+          <span nz-col nzSpan="16" class="fw-600" style="word-break: break-all">{{ (userModel$ | async)?.address === '' ? '-' :  (userModel$ | async)?.address}}</span>
         </nz-row>
       </div>
       <div nz-col nzSpan="12">
-        <nz-row style="height: 50px" class="label-fontsize">
+        <nz-row class="label-fontsize mb-6">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.createDate" | i18n}}:</span>
           <span class="fw-600">{{ payment.createdDate | date : 'dd/MM/yyyy' }} </span>
         </nz-row>
-        <nz-row style="height: 50px"  class="label-fontsize">
+        <nz-row  class="label-fontsize mb-6">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.paymentMethod" | i18n}}:</span>
           <span class="fw-600"> {{ payment.paymentMethod }} </span>
         </nz-row>
-        <nz-row style="height: 50px" class="label-fontsize">
+        <nz-row class="label-fontsize mb-6">
           <span class="fw-400" style="width: 40%">{{"app.payment-detail.orderCode" | i18n}}:</span>
           <span class="fw-600" style="color: #248FCC; cursor: pointer;" [routerLink]="['/app-smart-cloud/order/detail/', orderNumber]">{{ payment.orderNumber }}</span>
         </nz-row>
-        <nz-row style="height: 50px" class="label-fontsize">
-          <span class="fw-400" style="width: 40%">{{"app.payment-detail.invoiceCode" | i18n}}:</span>
-          <span (click)="payment.eInvoiceCode !== null && printInvoice(payment.eInvoiceCode)" [ngStyle]="payment.eInvoiceCode === null ? {cursor: 'not-allowed'} : {cursor: 'pointer'}" class="fw-600" style="color: #248FCC;">{{ payment.eInvoiceCode === null ? '-' : payment.eInvoiceCode  }}</span>
+        <nz-row class="label-fontsize">
+          <span class="fw-400" style="width: 40%">{{"app.payment.invoiceNumber" | i18n}}:</span>
+          <span (click)="payment.eInvoiceCode !== null && printInvoice(payment.eInvoiceCode)" [ngStyle]="payment.eInvoiceCode !== null && {cursor: 'pointer'}" class="fw-600" style="color: #248FCC;">{{ payment.eInvoiceCode === null ? '-' : payment.eInvoiceCodePadded  }}</span>
         </nz-row>
       </div>
     </nz-row>
-    <div class="d-flex justify-content-center" *ngIf="payment.paymentLatestStatus == 'INIT' || payment.paymentLatestStatus == 'FAILED'">
+    <div class="d-flex justify-content-center" *ngIf="payment.paymentLatestStatus == 'INIT'">
       <button
         nz-button
         [nzType]="'primary'"
@@ -94,7 +94,7 @@
     >
       <span style="font-weight: 600; font-size: 20px;">{{"app.payment-detail.serviceInformation" | i18n}}</span> <br />
     </nz-row>
-    <nz-table [nzData]="data?.orderItems" nzHideOnSinglePage="true">
+    <nz-table [nzData]="data.orderItems" nzHideOnSinglePage="true">
       <thead>
         <tr>
           <th>{{"app.payment-detail.serviceName" | i18n}}</th>
@@ -107,8 +107,7 @@
       </thead>
       <tbody>
       
-        <tr *ngFor="let item of data?.orderItems">
-        
+        <tr *ngFor="let item of data?.orderItems">   
           <td class="text-left">{{ item.serviceName }}</td>
           <td class="text-left">{{item.serviceType}}</td>
           <td class="text-right">{{ item.unitPrice.amount | number : '1.0-0' }}</td>
@@ -173,9 +172,6 @@
         <div (click)="download(payment.eInvoiceCode)" *ngIf="payment.paymentLatestStatus == 'PAID'" style="margin-top: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center;">
           <span style="border: none" nz-button><one-portal-svg-icon [icon]="'icon_download_pdf'" class="icon-padding-right"></one-portal-svg-icon> </span>
           <span class="text-label" style="color: #0066B0">{{"app.payment-detail.downloadPdf" | i18n}}</span>
-        </div>
-        <div *ngIf="payment.paymentLatestStatus == 'FAILED'" style="margin-top: 20px;">
-          <button style="width: 100%" nz-button><span nz-icon nzType="shop" nzTheme="outline"></span>Mua lại</button>
         </div>
         </div>
   </nz-card>

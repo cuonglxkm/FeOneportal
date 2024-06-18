@@ -50,9 +50,8 @@ export class BucketListComponent implements OnInit {
   hasOS: boolean = undefined;
 
   ngOnInit(): void {
-    this.hasObjectStorageInfo()
+      this.hasObjectStorageInfo()
       this.hasObjectStorage();
-      this.search();
       this.searchDelay
         .pipe(debounceTime(TimeCommon.timeOutSearch))
         .subscribe(() => {

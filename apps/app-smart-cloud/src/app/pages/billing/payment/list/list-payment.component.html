@@ -137,7 +137,7 @@
           <td nzBreakWord>
             <ng-container *ngIf="data.eInvoiceCode !== null; else noLink">
               <a (click)="printInvoice(data.eInvoiceCode)">
-                {{ data.eInvoiceCode | number }}
+                {{ data.eInvoiceCodePadded }}
               </a>
             </ng-container>
             <ng-template #noLink>
@@ -158,11 +158,18 @@
               {{ 'app.payment.status.paid' | i18n }}
             </td>
             <td
-              *ngIf="data.paymentLatestStatus != 'PAID'"
+              *ngIf="data.paymentLatestStatus === 'INIT'"
               class="not"
               nzBreakWord
             >
               {{ 'app.payment.status.unpaid' | i18n }}
+            </td>
+            <td
+              *ngIf="data.paymentLatestStatus === 'FAILED'"
+              class="not"
+              nzBreakWord
+            >
+              {{ 'app.payment.status.cancel' | i18n }}
             </td>
           </ng-container>
           <ng-container>

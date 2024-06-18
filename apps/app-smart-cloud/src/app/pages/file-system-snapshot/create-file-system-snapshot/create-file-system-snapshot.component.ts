@@ -269,9 +269,11 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   getStorageBuyVpc() {
     this.isLoading = true
     this.projectService.getProjectVpc(this.project).subscribe(data => {
-      this.storageBuyVpc = data.cloudProject?.quotaShareInGb
-      this.storageUsed = data.cloudProjectResourceUsed?.quotaShareInGb
-      this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareInGb
+      console.log(data);
+      
+      this.storageBuyVpc = data.cloudProject?.quotaShareSnapshotInGb
+      this.storageUsed = data.cloudProjectResourceUsed?.quotaShareSnapshotInGb
+      this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareSnapshotInGb
       this.isLoading = false
     })
   }
