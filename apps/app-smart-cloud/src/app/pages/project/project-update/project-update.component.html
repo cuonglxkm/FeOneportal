@@ -780,7 +780,7 @@
                 (click)="deleteVpnGpu()"></one-portal-svg-icon>
             </div>
            
-            <p class="label-fontsize label-color" *ngFor="let gpu of gpuOld"> Số lượng GPU (Type-{{gpu.GpuType}}): {{gpu.GpuCount}}GB</p>
+            <p class="label-fontsize label-color" *ngFor="let gpu of gpuOld"> Số lượng GPU (Type-{{gpu?.gpuType}}): {{gpu?.gpuCount}}GB</p>
             <div *ngIf="!activeVpnGpu">
               <button class="h-btn" nz-button nzType="default" (click)="initVpnGpu()">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
@@ -804,6 +804,7 @@
                           nzSize="large"
                           ></nz-input-number>
                       </nz-form-control>
+                      <p class="red-color mt-2 lable-fontsize" *ngIf="(offerIdOld==0 && ssdOld==0 && ssd==0 || (offerIdOld!=0 && ssdOld==0 && ssd==0 && keySSDOld==false) ) && gpuQuotasGobal[i].GpuCount !=0" >Vui lòng mua kèm dung lượng SSD để đảm bảo sử dụng được dịch vụ máy ảo GPU</p>
                     </nz-form-item>
                   </td>
                   <td style="width:40%">
@@ -812,10 +813,10 @@
                       <nz-form-control>
                         <div class="centered">
                           <p class="text-custom-price" >
-                            {{typeCatelog?.GpuPrice  |formatPrice}}
+                            {{typeCatelog?.GpuPrice  |number}}
                           </p>
                           <p class="text-price-unit" >
-                            {{typeCatelog?.GpuPriceUnit  |formatPrice}}
+                            {{typeCatelog?.GpuPriceUnit  |number}}
                           </p>
                         </div>
                       </nz-form-control>
@@ -1084,7 +1085,7 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         </div>
         <!--        Dịch vụ bổ sung-->
-        <div *ngIf="siteToSiteId != data?.vpnSiteToSiteOfferId||numberSnapshotssd!=0||numberSnapshothdd!=0||numberLoadBalancer != 0 ||siteToSiteId|| numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0" class="text-value">{{
+        <div *ngIf="gpuQuotasGobal.length>0||siteToSiteId != data?.vpnSiteToSiteOfferId||numberSnapshotssd!=0||numberSnapshothdd!=0||numberLoadBalancer != 0 ||siteToSiteId|| numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0" class="text-value">{{
           'service.bonus' | i18n }}
         </div>
         <nz-row *ngIf="numberIpFloating != 0" style="display: flex;justify-content: space-between;">
@@ -1133,6 +1134,9 @@
           </div>
           <div *ngIf="gpu.GpuCount !=0" style="margin-top: 10px" class="text-label">{{ gpu.GpuCount }}</div>
         </nz-row>
+        <nz-divider
+                *ngIf="numberSnapshotssd!=0|| numberSnapshothdd!=0|| gpuQuotasGobal.length>0|| numberLoadBalancer != 0 ||loadBalancerId || numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0 || siteToSiteId"
+                style="margin: 10px 0" nzType="horizontal"></nz-divider>
        
        </div>
         <!-- <nz-row style="margin-bottom: 10px" nzGutter="16">
