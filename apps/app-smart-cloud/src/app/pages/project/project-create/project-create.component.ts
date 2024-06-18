@@ -188,6 +188,8 @@ export class ProjectCreateComponent implements OnInit {
   closePopupError() {
     this.isVisiblePopupError = false;
   }
+  catalogStatus: { [key: string]: boolean } = {};
+  catalogs: string[] = ['ip', 'ipv6','volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage','file-storage-snapshot', 'vpns2s','vm-gpu'];
 
   form = new FormGroup({
     name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(50)] }),
@@ -236,6 +238,9 @@ export class ProjectCreateComponent implements OnInit {
 
     this.iconToggle = "icon_circle_minus"
     this.numOfMonth = this.form.controls['numOfMonth'].value;
+    this.catalogs.forEach(catalog => {
+      this.getProductActivebyregion(catalog, this.regionId);
+    });
 
   }
   offervCpu: number;
@@ -374,11 +379,8 @@ export class ProjectCreateComponent implements OnInit {
       const valuestring: any = res.valueString;
       const parts = valuestring.split("#")
       this.minBlock = parseInt(parts[0]);
-      console.log("this.minBlock", this.minBlock)
-      this.stepBlock = parseInt(parts[1]);
-      console.log("this.stepBlock", this.stepBlock)
+      this.stepBlock = parseInt(parts[1]);    
       this.maxBlock = parseInt(parts[2]);
-      console.log("this.maxBlock", this.maxBlock)
     })
   }
   messageNotification: string;
@@ -1077,5 +1079,14 @@ export class ProjectCreateComponent implements OnInit {
     this.keySSD= this.offerFlavor.characteristicValues.find((charName)=>charName.charName ==='VolumeType').charOptionValues?.[0]=='SSD'
    console.log("keySSD", this.keySSD)
   
+  }
+  productByRegion:any
+  ipActive:boolean;
+  getProductActivebyregion(catalog:string, regionid:number){
+    this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
+      this.productByRegion = res
+      this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
+
+    })
   }
 }
