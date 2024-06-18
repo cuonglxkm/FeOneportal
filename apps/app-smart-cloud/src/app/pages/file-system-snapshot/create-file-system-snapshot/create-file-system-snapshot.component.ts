@@ -385,6 +385,8 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
+    console.log(project);
+    
   }
 
   userChangeProject(project: ProjectModel) {
