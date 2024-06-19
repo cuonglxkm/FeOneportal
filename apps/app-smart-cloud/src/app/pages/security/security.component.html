@@ -60,7 +60,7 @@
       <div class="d-flex mt-7 align-items-center gap-3 mb-4">
         <nz-switch
           [ngModel]="toggleSwitchGoogleAuthenticator"
-          (ngModelChange)="handleChangeSwitchGoogleAuthenticator($event)"
+          (ngModelChange)="handleChangeSwitchAuthenticator($event)"
         ></nz-switch>
         <span class="fa-text">{{ 'app.security.authentiactor' | i18n }}</span>
       </div>
@@ -110,20 +110,18 @@
   [nzFooter]="null"
 >
   <ng-container *nzModalContent>
-    <!-- <nz-alert
+    <nz-alert
         nzBanner
-        nzMessage="Vui lòng nhập mã xác thực 6 số đã được gửi tới email của bạn, khi xác nhận bật xác thực hai yếu tố, lần đăng nhập tiếp theo người dùng sẽ phải nhập mã OTP."
-        nzCloseable
-      ></nz-alert> -->
-    <nz-alert nzBanner [nzMessage]="authenticatorKey"> </nz-alert>
+        nzMessage="Vui lòng nhập mã xác thực 6 số đã được gửi tới email của bạn."
+      ></nz-alert>
     <form nz-form [formGroup]="form" class="mt-3">
       <nz-form-item>
         <nz-form-control>
-          <nz-form-label nzFor="name">
+          <!-- <nz-form-label nzFor="name">
             <div>
               <span>Nhập mã xác thực 6 số từ ứng dụng Authenticator </span>
             </div>
-          </nz-form-label>
+          </nz-form-label> -->
           <input
             nz-input
             type="number"
@@ -159,10 +157,67 @@
 
 <!-- Google Authenticator -->
 
+<!-- Email Authenticator -->
 <nz-modal
-  [(nzVisible)]="isVisibleUpdateGoogleAuthenticator"
+  [(nzVisible)]="isVisibleOTPForAuthenticator"
+  nzTitle="Xác nhận bật/tắt xác thực hai yếu tố qua ứng dụng Authenticator"
+  (nzOnCancel)="handleCancelOTPForAuthenticator()"
+  (nzOnOk)="handleSubmitOTPForAuthenticator()"
+  nzOkText="Xác nhận"
+  nzCancelText="Hủy bỏ"
+  [nzOkLoading]="isLoading"
+  [nzFooter]="null"
+>
+  <ng-container *nzModalContent>
+    <nz-alert
+        nzBanner
+        nzMessage="Vui lòng nhập mã xác thực 6 số đã được gửi tới email của bạn."
+      ></nz-alert>
+    <form nz-form [formGroup]="form" class="mt-3">
+      <nz-form-item>
+        <nz-form-control>
+          <!-- <nz-form-label nzFor="name">
+            <div>
+              <span>Nhập mã xác thực 6 số từ ứng dụng Authenticator </span>
+            </div>
+          </nz-form-label> -->
+          <input
+            nz-input
+            type="number"
+            required
+            placeholder="Nhập mã xác thực"
+            formControlName="otp"
+            class="input-custom"
+            style="width: 100%"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <div class="d-flex justify-content-end gap-3 mt-5">
+        <!-- <button
+            nz-button
+            nzType="default"
+            class="button-back"
+          >
+            Gửi lại mã
+          </button> -->
+        <button
+          nz-button
+          nzType="primary"
+          class="button-new"
+          (click)="handleSubmitOTPForAuthenticator()"
+        >
+          <span nz-icon nzType="check" nzTheme="outline"></span>
+          Xác nhận
+        </button>
+      </div>
+    </form>
+  </ng-container>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleAuthenticator"
   nzTitle="Thiết lập Google Authenticator"
-  (nzOnCancel)="handleCancelGoogleAuthenticator()"
+  (nzOnCancel)="handleCancelAuthenticator()"
 >
   <form nz-form [formGroup]="form" class="mt-3">
     <ng-container *nzModalContent>
@@ -201,71 +256,19 @@
       </nz-form-item>
     </ng-container>
     <div *nzModalFooter>
-      <button nz-button (click)="handleCancelGoogleAuthenticator()">
+      <button nz-button (click)="handleCancelAuthenticator()">
         <img
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/cancel.svg"
           alt=""
         />{{ 'app.button.cancel' | i18n }}
       </button>
-      <button class="btn-bg" nz-button nzType="primary" (click)="handleSubmitGoogleAuthenticator()">
+      <button class="btn-bg" nz-button nzType="primary" (click)="handleSubmitAuthenticator()">
         <img
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/confirm.svg"
           alt=""
         />{{ 'app.button.confirm' | i18n }}
-      </button>
-    </div>
-  </form>
-</nz-modal>
-
-<!-- Recreate Google Authenticator -->
-
-<nz-modal
-  [(nzVisible)]="isVisibleReCreateGoogleAuthenticator"
-  nzTitle="Tạo lại Mã Google Authenticator"
-  (nzOnCancel)="handleCancelRecreateGoogleAuthenticator()"
->
-  <form nz-form [formGroup]="form" class="mt-3">
-    <ng-container *nzModalContent>
-      <nz-alert
-        nzBanner
-        [nzMessage]="'OTP đã được gửi tới Email ' + email"
-      ></nz-alert>
-
-      <nz-form-item class="mt-5">
-        <nz-form-control>
-          <nz-form-label nzFor="name">
-            <div>
-              <span>Nhập mã xác thực 6 số </span>
-            </div>
-          </nz-form-label>
-          <input
-            nz-input
-            type="number"
-            required
-            placeholder="001200"
-            formControlName="otp"
-            class="input-custom"
-            style="width: 100%"
-          />
-        </nz-form-control>
-      </nz-form-item>
-    </ng-container>
-    <div *nzModalFooter>
-      <button nz-button (click)="handleCancelRecreateGoogleAuthenticator()">
-        <img
-          style="padding-right: 10px; margin-top: -4px"
-          src="assets/imgs/cancel.svg"
-          alt=""
-        />{{ 'app.button.cancel' | i18n }}
-      </button>
-      <button style="background-color: #0074CC;" nz-button nzType="primary" (click)="handleSubmitRecreateGoogleAuthenticator()">
-        <img
-          style="padding-right: 10px; margin-top: -4px"
-          src="assets/imgs/confirm.svg"
-          alt=""
-        />{{ 'app.button.continue' | i18n }}
       </button>
     </div>
   </form>
