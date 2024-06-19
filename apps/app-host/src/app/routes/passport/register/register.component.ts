@@ -189,7 +189,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     }
 
     const data: UserCreateDto = {
-      email: this.form.controls.mail.value,
+      email: this.form.controls.mail.value.toLowerCase(),
       password: this.form.controls.password.value,
       accountType: 1,
       firstName: this.form.controls.firstName.value,
