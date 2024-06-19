@@ -242,6 +242,7 @@ export class InstancesCreateComponent implements OnInit {
     this.getAllImageType();
     this.getAllSecurityGroup();
     this.getListNetwork();
+    this.getListOptionGpuValue();
 
     this.breakpointObserver
       .observe([
@@ -999,6 +1000,15 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   //#region Cấu hình GPU
+  listOptionGpuValue: number[] = [];
+  getListOptionGpuValue() {
+    this.configurationService
+      .getConfigurations('OPTIONGPUVALUE')
+      .subscribe(
+        (data) => (this.listOptionGpuValue = data.valueString.split(', ').map(Number))
+      );
+  }
+  
   listGPUType: OfferItem[] = [];
   getListGpuType() {
     this.dataService

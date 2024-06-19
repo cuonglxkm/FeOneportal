@@ -357,7 +357,7 @@
                 *ngIf="
                   instanceResize.gpuCount != 0 && instanceResize.gpuType != null
                 "
-                >, {{ instanceResize.gpuCount }} GPU (Nvidia
+                >, {{ configGPU.GPU }} GPU (Nvidia
                 {{ instanceResize.gpuType | uppercase }})</span
               >
             </span>
@@ -461,7 +461,7 @@
             </nz-tab>
             <nz-tab
               *ngIf="
-                !isConfigGpuAtInitial &&
+                !isCurrentConfigGpu &&
                 (instancesModel.gpuCount == null ||
                   instancesModel.gpuCount == 0)
               "
@@ -480,7 +480,7 @@
                   <tbody class="ant-table-tbody">
                     <tr>
                       <td style="width: 50%">
-                        <nz-form-label style="margin-left: -12px"
+                        <nz-form-label
                           >{{ 'app.capacity' | i18n }} (<span class="text-red"
                             >*</span
                           >) - GB</nz-form-label
@@ -517,7 +517,7 @@
                     </tr>
                     <tr>
                       <td>
-                        <nz-form-label style="margin-left: -12px"
+                        <nz-form-label
                           >RAM (<span class="text-red">*</span>) -
                           GB</nz-form-label
                         >
@@ -553,7 +553,7 @@
                     </tr>
                     <tr>
                       <td>
-                        <nz-form-label style="margin-left: -12px"
+                        <nz-form-label
                           >CPU (<span class="text-red">*</span>) -
                           vCPU</nz-form-label
                         >
@@ -607,7 +607,7 @@
                   <tbody class="ant-table-tbody">
                     <tr>
                       <td>
-                        <nz-form-label style="margin-left: -12px"
+                        <nz-form-label
                           >CPUs (<span class="text-red">*</span>)</nz-form-label
                         >
                         <nz-slider
@@ -641,7 +641,7 @@
                     </tr>
                     <tr>
                       <td>
-                        <nz-form-label style="margin-left: -12px"
+                        <nz-form-label
                           >RAM (<span class="text-red">*</span>) -
                           GB</nz-form-label
                         >
@@ -677,7 +677,7 @@
                     </tr>
                     <tr>
                       <td style="width: 50%">
-                        <nz-form-label style="margin-left: -12px"
+                        <nz-form-label
                           >{{ 'app.ssd.capacity' | i18n }} (<span
                             class="text-red"
                             >*</span
@@ -715,30 +715,45 @@
                     </tr>
                     <tr>
                       <td style="width: 50%">
-                        <nz-form-label style="margin-left: -12px"
-                          >{{ 'app.gpu.number' | i18n }} (<span class="text-red"
-                            >*</span
-                          >)</nz-form-label
-                        >
-                        <nz-slider
-                          [nzMin]="0"
-                          [nzMax]="8 - instancesModel.gpuCount"
-                          [(ngModel)]="configGPU.GPU"
-                          (ngModelChange)="changeGpu($event)"
-                          [ngModelOptions]="{ standalone: true }"
-                        ></nz-slider>
+                        <nz-form-label>{{
+                          'app.gpu.type' | i18n
+                        }}</nz-form-label>
+                        <nz-form-control>
+                          <nz-select
+                            [nzShowSearch]="true"
+                            [ngModelOptions]="{ standalone: true }"
+                            [(ngModel)]="configGPU.gpuOfferId"
+                            (ngModelChange)="changeGpuType()"
+                            nzSize="large"
+                            [nzDisabled]="isCurrentConfigGpu"
+                          >
+                            <nz-option
+                              *ngFor="let i of listGPUType"
+                              [nzLabel]="i.offerName"
+                              [nzValue]="i.id"
+                            />
+                          </nz-select>
+                        </nz-form-control>
                       </td>
                       <td>
-                        <nz-input-number
+                        <nz-select
+                          style="
+                            margin-left: 8px;
+                            margin-top: 32px;
+                            width: 90px;
+                          "
+                          [nzShowSearch]="true"
                           [(ngModel)]="configGPU.GPU"
-                          (keydown)="onKeyDown($event)"
-                          (ngModelChange)="changeGpu($event)"
+                          (ngModelChange)="changeGpu()"
                           [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="0"
-                          [nzMax]="8 - instancesModel.gpuCount"
-                          [nzStep]="1"
                           nzSize="large"
-                        ></nz-input-number>
+                        >
+                          <nz-option
+                            *ngFor="let i of listOptionGpuValue"
+                            [nzLabel]="i"
+                            [nzValue]="i"
+                          />
+                        </nz-select>
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
@@ -752,31 +767,6 @@
                   </tbody>
                 </table>
               </div>
-              <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
-                <nz-form-label
-                  >{{ 'app.choose.gpu.type' | i18n }} (<span class="text-red"
-                    >*</span
-                  >)</nz-form-label
-                >
-                <nz-form-control>
-                  <nz-select
-                    [nzPlaceHolder]="
-                      '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
-                    "
-                    [nzShowSearch]="true"
-                    [ngModelOptions]="{ standalone: true }"
-                    [(ngModel)]="configGPU.gpuOfferId"
-                    (ngModelChange)="changeGpuType()"
-                    nzSize="large"
-                  >
-                    <nz-option
-                      *ngFor="let i of listGPUType"
-                      [nzLabel]="i.offerName"
-                      [nzValue]="i.id"
-                    />
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
             </nz-tab>
           </nz-tabset>
           <div style="margin-top: 20px" class="text-label">
@@ -838,7 +828,7 @@
             style="margin-top: 10px"
             class="text-label"
           >
-            {{ instanceResize.gpuCount }} GPU (Nvidia
+            {{ configGPU.GPU }} GPU (Nvidia
             {{ instanceResize.gpuType | uppercase }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>

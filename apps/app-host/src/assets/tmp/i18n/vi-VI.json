@@ -510,6 +510,7 @@
   "app.choose.port": "Chọn Port",
   "app.choose.keypair": "Chọn Keypair",
   "app.choose.gpu.type": "Chọn loại GPU",
+  "app.gpu.type": "Loại GPU",
   "app.label.instance.password": "Mật khẩu truy cập máy ảo",
   "app.label.create": "Tạo mới",
   "app.use.lan.network": "Sử dụng mạng LAN",

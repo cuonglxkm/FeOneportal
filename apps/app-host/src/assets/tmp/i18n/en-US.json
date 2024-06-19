@@ -616,6 +616,7 @@
   "app.choose.vlan.instance": "Choose VLAN for Instance",
   "app.choose.port": "Choose Port",
   "app.choose.gpu.type": "Choose GPU type",
+  "app.gpu.type": "GPU type",
   "app.choose.keypair": "Choose Keypair",
   "app.label.instance.password": "Instance access password",
   "app.label.create": "Create new",
