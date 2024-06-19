@@ -85,6 +85,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
   }
 
   navigateToPaymentSummary() {
+    this.loadingCalculate = true;
     let request: SnapshotPackageRequestModel = new SnapshotPackageRequestModel();
     request.customerId = this.formCreateSnapshotPackage.customerId;
     request.createdByUserId = this.formCreateSnapshotPackage.customerId;
