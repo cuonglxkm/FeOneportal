@@ -330,7 +330,7 @@ export class UserProfileComponent implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.invoice.pop-up.update.success')
           );
-          this.getUser();
+          setTimeout(() => window.location.reload(), 1000);
         },
         error: (e) => {
           this.isLoadingUpdateInfo = false;
@@ -367,7 +367,7 @@ export class UserProfileComponent implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.invoice.pop-up.update.success')
           );
-          this.getUser();
+          setTimeout(() => window.location.reload(), 1000);
         },
         error: (e) => {
           this.isLoadingUpdateInfo = false;
