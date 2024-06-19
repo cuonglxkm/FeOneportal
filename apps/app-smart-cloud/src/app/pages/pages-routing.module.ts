@@ -162,6 +162,7 @@ import {
 } from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
 import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.component';
 import { InvoiceDetailComponent } from './billing/payment/invoice-detail/invoice-detail.component';
+import { CreateScheduleBackupVpcComponent } from './schedule-backup/create-vpc/create-schedule-backup-vpc.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
@@ -563,6 +564,15 @@ const routes: Routes = [
   {
     path: 'schedule/backup/create',
     component: CreateScheduleBackupComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create'
+    }
+
+  },
+  {
+    path: 'schedule/backup/create/vpc',
+    component: CreateScheduleBackupVpcComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'order:create'
