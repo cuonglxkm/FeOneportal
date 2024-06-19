@@ -50,7 +50,7 @@ export class ProjectUpdateComponent implements OnInit {
   data: VpcModel;
   regionId: any;
   loadingCalculate = false;
-  dateNow:any;
+  dateNow: any;
   today: any;
   expiredDate: any;
 
@@ -64,29 +64,29 @@ export class ProjectUpdateComponent implements OnInit {
   ssd = 0;
 
   ipConnectInternet = '';
-  ipNetworkAddress:string='';
-  ipNetworkId:string='';
+  ipNetworkAddress: string = '';
+  ipNetworkId: string = '';
   numberIpFloating: number = 0;
   numberIpPublic: number = 0;
   numberIpv6: number = 0;
 
-  numberSnapshothdd:number =0;
-  numberSnapshotssd:number =0;
+  numberSnapshothdd: number = 0;
+  numberSnapshotssd: number = 0;
 
   numberBackup: number = 0;
 
   numberLoadBalancer: number = 0;
-  loadBalancerId : number;
-  loadBalancerName:string;
+  loadBalancerId: number;
+  loadBalancerName: string;
 
   numberFileSystem: number = 0;
   numberFileScnapsshot: number = 0;
- 
+
 
   siteToSiteId: number;
-  sitetositeName:string;
+  sitetositeName: string;
 
-  gpuQuotasGobal: { GpuOfferId: number, GpuCount: number, GpuType: string, GpuPrice:number, GpuPriceUnit:number}[] = [];
+  gpuQuotasGobal: { GpuOfferId: number, GpuCount: number, GpuType: string, GpuPrice: number, GpuPriceUnit: number }[] = [];
   maxTotal: number = 8;
 
 
@@ -105,45 +105,45 @@ export class ProjectUpdateComponent implements OnInit {
   activeSiteToSite = false;
   trashVpnSiteToSite = false;
 
-  activeVpnGpu= false;
+  activeVpnGpu = false;
   trashVpnGpu = false;
 
-  activeSnapshot= false;
+  activeSnapshot = false;
   trashSnapshot = false;
 
-  offerIdOld:number=0;
+  offerIdOld: number = 0;
   vCPUOld = 0;
   ramOld = 0;
   hhdOld = 0;
   ssdOld = 0;
-  ipv6Old :number=0;
-  ipPublicOld:number =0;
+  ipv6Old: number = 0;
+  ipPublicOld: number = 0;
 
-  ipPublicTotal:number =0;
-  ipPublicAddOld:number=0;
-  ipPublicOffer:number=0;
+  ipPublicTotal: number = 0;
+  ipPublicAddOld: number = 0;
+  ipPublicOffer: number = 0;
 
-  ipNetworkAddressOld:string='';
+  ipNetworkAddressOld: string = '';
 
-  ipFloatingOld:number=0;
-  backupOld:number=0;
-  snapshothddOld:number=0;
-  snapshotssdOld:number=0;
+  ipFloatingOld: number = 0;
+  backupOld: number = 0;
+  snapshothddOld: number = 0;
+  snapshotssdOld: number = 0;
 
-  loadBalancerOld:number=0;
+  loadBalancerOld: number = 0;
 
 
-  fileSnapshotOld:number=0;
-  fileSystemOld:number=0;
-  vpnsitetositeIdOld:number=0;
-  vpnsitetositeNameOld:string='';
-  loadbalancerOfferNameOld:string='';
-  gpuOld:any;
-  keySSDOld:boolean=false;
+  fileSnapshotOld: number = 0;
+  fileSystemOld: number = 0;
+  vpnsitetositeIdOld: number = 0;
+  vpnsitetositeNameOld: string = '';
+  loadbalancerOfferNameOld: string = '';
+  gpuOld: any;
+  keySSDOld: boolean = false;
 
-  ipOld:string='';
-  ipNameOld:string='';
-  
+  ipOld: string = '';
+  ipNameOld: string = '';
+
 
 
   total: any;
@@ -155,7 +155,7 @@ export class ProjectUpdateComponent implements OnInit {
   listSiteToSite: OfferDetail[] = [];
   listIpConnectInternet: any[];
   private searchSubject = new Subject<string>();
-  selectIndexTab: number=0;
+  selectIndexTab: number = 0;
   price = {
     vcpu: 0,
     ram: 0,
@@ -173,10 +173,10 @@ export class ProjectUpdateComponent implements OnInit {
     IpV6Unit: 0,
     backup: 0,
     backupUnit: 0,
-    snapshothdd:0,
-    snapshothddUnit:0,
-    snapshotssd:0,
-    snapshotssdUnit:0,
+    snapshothdd: 0,
+    snapshothddUnit: 0,
+    snapshotssd: 0,
+    snapshotssdUnit: 0,
 
     loadBalancer: 0,
     loadBalancerUnit: 0,
@@ -187,7 +187,7 @@ export class ProjectUpdateComponent implements OnInit {
     siteToSite: 0,
     siteToSiteUnit: 0
   };
-  newgpu:any
+  newgpu: any
   checkPackage: boolean = true;
   activeBonusService = true;
   iconToggle: string;
@@ -197,9 +197,9 @@ export class ProjectUpdateComponent implements OnInit {
   maxBlock: number = 0;
 
 
-  listTypeCatelogOffer:any;
-  disableIpConnectInternet:boolean= true;
-  loadingIpConnectInternet:boolean = true;
+  listTypeCatelogOffer: any;
+  disableIpConnectInternet: boolean = true;
+  loadingIpConnectInternet: boolean = true;
 
   isLoading = false;
   isVisiblePopupError: boolean = false;
@@ -208,8 +208,10 @@ export class ProjectUpdateComponent implements OnInit {
     this.isVisiblePopupError = false;
   }
 
-  // numbergpu: number[] = [];
-  
+  productByRegion: any
+  catalogStatus: { [key: string]: boolean } = {};
+  catalogs: string[] = ['ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu'];
+
 
   form = new FormGroup({
     name: new FormControl({ value: 'loading data....', disabled: false }, { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),] }),
@@ -227,7 +229,7 @@ export class ProjectUpdateComponent implements OnInit {
   disisable = true;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-  @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private instancesService: InstancesService,
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -254,66 +256,68 @@ export class ProjectUpdateComponent implements OnInit {
     this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
       this.calculateReal();
     });
-    this.dateNow =new Date();
+    this.dateNow = new Date();
     this.calculate()
-    
-    // this.getOffer();
-   
+
+    this.catalogs.forEach(catalog => {
+      this.getProductActivebyregion(catalog, this.regionId);
+    });
+
   }
-  openIpSubnet(){
-   this.calculate()
+  openIpSubnet() {
+    this.calculate()
   }
   private calculateReal() {
 
     this.refreshValue();
-   
+
     let lstIp = this.ipConnectInternet?.split('--');
     let ip = '';
     let ipName = '';
     if (lstIp != null && lstIp != undefined) {
       ip = lstIp[0];
-      console.log("ip",ip)
+      console.log("ip", ip)
     }
 
     // let IPFloating = this.ipNetworkAddress !=null ? this.numberIpFloating + this.ipFloatingOld : this.ipFloatingOld;
-    this.numberIpFloating = this.ipConnectInternet !='' ? this.numberIpFloating :0
-    console.log("object ipFloating",this.numberIpFloating)
-  
+    this.numberIpFloating = this.ipConnectInternet != '' ? this.numberIpFloating : 0
+    console.log("object ipFloating", this.numberIpFloating)
 
-    if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 ||(this.vCPU != 0 && this.ram != 0) )) {
+
+    if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
       this.loadingCalculate = true;
-      if (lstIp != null && lstIp != undefined ) {
+      if (lstIp != null && lstIp != undefined) {
         ipName = lstIp[1];
         console.log("ipName", ipName)
       }
-      
+
       const requestBody =
       {
 
         newQuotavCpu: this.vCPU + this.vCPUOld,
         newQuotaRamInGb: this.ram + this.ramOld,
-        newQuotaHddInGb: this.hhd +this.hhdOld,
-        newQuotaSsdInGb: this.ssd +this.ssdOld,
-       
-        newPublicNetworkId:this.ipConnectInternet ? (ip ? ip: '') : this.ipOld, 
-        newPublicNetworkAddress:this.ipConnectInternet ? (( ipName!='' && ipName != undefined) ? ipName: '') : this.ipNameOld,
-        newQuotaIpPublicCount: this.data?.offerId   ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
+        newQuotaHddInGb: this.hhd + this.hhdOld,
+        newQuotaSsdInGb: this.ssd + this.ssdOld,
 
-      
-        newQuotaIpFloatingCount:this.numberIpFloating + this.ipFloatingOld,
-        newQuotaIpv6Count:this.numberIpv6 + this.ipv6Old,
+        newPublicNetworkId: this.ipConnectInternet ? (ip ? ip : '') : this.ipOld,
+        newPublicNetworkAddress: this.ipConnectInternet ? ((ipName != '' && ipName != undefined) ? ipName : '') : this.ipNameOld,
+        newQuotaIpPublicCount: this.data?.offerId ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
 
-        newQuotaVolumeSnapshotHddInGb: this.numberSnapshothdd +this.snapshothddOld,
+
+        newQuotaIpFloatingCount: this.numberIpFloating + this.ipFloatingOld,
+        newQuotaIpv6Count: this.numberIpv6 + this.ipv6Old,
+
+        newQuotaVolumeSnapshotHddInGb: this.numberSnapshothdd + this.snapshothddOld,
         newQuotaVolumeSnapshotSsdInGb: this.numberSnapshotssd + this.snapshotssdOld,
 
         newQuotaBackupVolumeInGb: this.numberBackup + this.backupOld,
 
-        newLoadBalancerOfferId:this.loadBalancerId,
-        newQuotaLoadBalancerSdnCount:this.numberLoadBalancer + this.loadBalancerOld,
-     
+        newLoadBalancerOfferId: this.loadBalancerId,
+        newQuotaLoadBalancerSdnCount: this.numberLoadBalancer + this.loadBalancerOld,
 
-        newQuotaShareInGb: this.numberFileSystem +this.fileSystemOld,
-        newQuotaShareSnapshotInGb:this.numberFileScnapsshot + this.fileSnapshotOld,
+
+        newQuotaShareInGb: this.numberFileSystem + this.fileSystemOld,
+        newQuotaShareSnapshotInGb: this.numberFileScnapsshot + this.fileSnapshotOld,
 
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
@@ -322,7 +326,7 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
         newQuotaRouterCount: this.numberRouter,
-       
+
 
         typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
         serviceType: 12,
@@ -351,7 +355,7 @@ export class ProjectUpdateComponent implements OnInit {
         }))
         .subscribe(
           data => {
-            console.log("totalmont",data )
+            console.log("totalmont", data)
             this.total = data;
             // this.totalAmount = this.total.data.totalAmount.amount;
             this.totalPayment = this.total.data.totalPayment.amount;
@@ -381,8 +385,8 @@ export class ProjectUpdateComponent implements OnInit {
     this.calculate();
   }
   // checkOfferById:OfferItem
-  offerType:string
-  listOfferByTypeName: OfferItem[]=[];
+  offerType: string
+  listOfferByTypeName: OfferItem[] = [];
   initFlavors(): void {
     this.instancesService.getDetailProductByUniqueName('vpcOnePortal')
       .subscribe(
@@ -397,23 +401,23 @@ export class ProjectUpdateComponent implements OnInit {
             }))
             .subscribe((data: any) => {
               this.listOfferFlavors = data.filter(
-                (e: OfferItem) => 
+                (e: OfferItem) =>
                   e.status.toUpperCase() == 'ACTIVE'
-              );             
-              const checkOfferById = this.listOfferFlavors.find((offer:OfferItem)=>
-                offer.id === this.data?.offerId 
-              )   
-              this.keySSDOld = checkOfferById?.characteristicValues.find((charName)=>charName.charName ==='VolumeType').charOptionValues?.[0]=='SSD'
+              );
+              const checkOfferById = this.listOfferFlavors.find((offer: OfferItem) =>
+                offer.id === this.data?.offerId
+              )
+              this.keySSDOld = checkOfferById?.characteristicValues.find((charName) => charName.charName === 'VolumeType').charOptionValues?.[0] == 'SSD'
               console.log("object keySSDOld", this.keySSDOld)
-              console.log("checkOfferById", checkOfferById)          
-              const charName = checkOfferById?.characteristicValues.find((typeName)=>typeName.charName==='VolumeType')
+              console.log("checkOfferById", checkOfferById)
+              const charName = checkOfferById?.characteristicValues.find((typeName) => typeName.charName === 'VolumeType')
               const typeName = charName?.charOptionValues?.[0]
-             this.listOfferByTypeName = this.listOfferFlavors.filter((e:OfferItem)=> 
-              e.characteristicValues.find((charName)=>charName.charName==='VolumeType')?.charOptionValues?.[0]==typeName
-          
-            )
-            this.checkFlavor()
-            console.log("object listOfferByTypeName", this.listOfferByTypeName)
+              this.listOfferByTypeName = this.listOfferFlavors.filter((e: OfferItem) =>
+                e.characteristicValues.find((charName) => charName.charName === 'VolumeType')?.charOptionValues?.[0] == typeName
+
+              )
+              this.checkFlavor()
+              console.log("object listOfferByTypeName", this.listOfferByTypeName)
 
               this.listOfferFlavors.forEach((e: OfferItem) => {
                 e.description = '0 CPU / 0 GB RAM / 0 GB HDD / 0 IP';
@@ -424,7 +428,7 @@ export class ProjectUpdateComponent implements OnInit {
                   if (ch.charName == 'RAM') {
                     e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + " GB RAM");
                   }
-                 
+
                   if (ch.charName == 'HHD') {
                     e.description = e.description.replace(/0 GB HHD/g, ch.charOptionValues[0] + " GB HHD");
                   }
@@ -456,8 +460,8 @@ export class ProjectUpdateComponent implements OnInit {
   }
 
   updateVpc() {
-    
-    console.log("this.ipConnectInternet update",this.ipConnectInternet)
+
+    console.log("this.ipConnectInternet update", this.ipConnectInternet)
     console.log("ipOld update", this.ipOld);
     console.log("ipNameOld update", this.ipNameOld)
     console.log("floating old update", this.ipFloatingOld)
@@ -467,17 +471,17 @@ export class ProjectUpdateComponent implements OnInit {
     let ipName = '';
     if (lstIp != null && lstIp != undefined) {
       ip = lstIp[0];
-      console.log("ip",ip)
+      console.log("ip", ip)
     }
 
     // let IPFloating = this.ipNetworkAddress !=null ? this.numberIpFloating + this.ipFloatingOld : this.ipFloatingOld;
-    this.numberIpFloating = this.ipConnectInternet !='' ? this.numberIpFloating :0
-    console.log("object ipFloating",this.numberIpFloating)
-  
+    this.numberIpFloating = this.ipConnectInternet != '' ? this.numberIpFloating : 0
+    console.log("object ipFloating", this.numberIpFloating)
 
-    if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 ||(this.vCPU != 0 && this.ram != 0) )) {
+
+    if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
       this.loadingCalculate = true;
-      if (lstIp != null && lstIp != undefined ) {
+      if (lstIp != null && lstIp != undefined) {
         ipName = lstIp[1];
         console.log("ipName", ipName)
       }
@@ -485,42 +489,42 @@ export class ProjectUpdateComponent implements OnInit {
       {
         newQuotavCpu: this.vCPU + this.vCPUOld,
         newQuotaRamInGb: this.ram + this.ramOld,
-        newQuotaHddInGb: this.hhd +this.hhdOld,
-        newQuotaSsdInGb: this.ssd +this.ssdOld,
+        newQuotaHddInGb: this.hhd + this.hhdOld,
+        newQuotaSsdInGb: this.ssd + this.ssdOld,
 
-        newPublicNetworkId:this.ipConnectInternet ? (ip ? ip: '') : this.ipOld, 
-        newPublicNetworkAddress:this.ipConnectInternet ? (( ipName!='' && ipName != undefined) ? ipName: '') : this.ipNameOld,
-        newQuotaIpPublicCount: this.data?.offerId   ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
-        newQuotaIpFloatingCount:this.numberIpFloating + this.ipFloatingOld,
-        newQuotaIpv6Count:this.numberIpv6 + this.ipv6Old,
+        newPublicNetworkId: this.ipConnectInternet ? (ip ? ip : '') : this.ipOld,
+        newPublicNetworkAddress: this.ipConnectInternet ? ((ipName != '' && ipName != undefined) ? ipName : '') : this.ipNameOld,
+        newQuotaIpPublicCount: this.data?.offerId ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
+        newQuotaIpFloatingCount: this.numberIpFloating + this.ipFloatingOld,
+        newQuotaIpv6Count: this.numberIpv6 + this.ipv6Old,
 
-        newQuotaVolumeSnapshotHddInGb: this.numberSnapshothdd +this.snapshothddOld,
+        newQuotaVolumeSnapshotHddInGb: this.numberSnapshothdd + this.snapshothddOld,
         newQuotaVolumeSnapshotSsdInGb: this.numberSnapshotssd + this.snapshotssdOld,
 
         newQuotaBackupVolumeInGb: this.numberBackup + this.backupOld,
 
-        newQuotaLoadBalancerSdnCount:this.numberLoadBalancer + this.loadBalancerOld,
-        newLoadBalancerOfferId:this.loadBalancerId,
+        newQuotaLoadBalancerSdnCount: this.numberLoadBalancer + this.loadBalancerOld,
+        newLoadBalancerOfferId: this.loadBalancerId,
 
-        newQuotaShareInGb: this.numberFileSystem +this.fileSystemOld,
-        newQuotaShareSnapshotInGb:this.numberFileScnapsshot + this.fileSnapshotOld,
-        
+        newQuotaShareInGb: this.numberFileSystem + this.fileSystemOld,
+        newQuotaShareSnapshotInGb: this.numberFileScnapsshot + this.fileSnapshotOld,
+
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
-        gpuQuotas:  this.newgpu,
+        gpuQuotas: this.newgpu,
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
         newQuotaRouterCount: this.numberRouter,
-       
-      
-        
+
+
+
 
         typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
         serviceType: 1,
         serviceInstanceId: this.data.id,
         customerId: this.tokenService.get()?.userId,
-        newOfferId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,  
+        newOfferId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
         // newOfferId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? this.data.offerId : this.offerFlavor.id) : 0,
         actionType: 12,
         regionId: this.regionId,
@@ -540,35 +544,35 @@ export class ProjectUpdateComponent implements OnInit {
           }
         ]
       }
-      
-        this.orderService
-          .validaterOrder(request)
-          .pipe(
-            finalize(() => {
-              this.isLoading = false;
-              this.cdr.detectChanges();
-            })
-          )
-          .subscribe({
-            next: (result) => {
-              if (result.success) {
-                  var returnPath: string = window.location.pathname;
-                  this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
-              } else {
-                this.isVisiblePopupError = true;
-                this.errorList = result.data;
-              }
-            },
-            error: (error) => {
-              this.notification.error(
-                this.i18n.fanyi('app.status.fail'),
-                error.error.detail
-              );
-            },
-          });
-        // var returnPath: string = window.location.pathname;
-        // this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
-      
+
+      this.orderService
+        .validaterOrder(request)
+        .pipe(
+          finalize(() => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: (result) => {
+            if (result.success) {
+              var returnPath: string = window.location.pathname;
+              this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+            } else {
+              this.isVisiblePopupError = true;
+              this.errorList = result.data;
+            }
+          },
+          error: (error) => {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              error.error.detail
+            );
+          },
+        });
+      // var returnPath: string = window.location.pathname;
+      // this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+
       // var returnPath: string = window.location.pathname;
       // this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
     }
@@ -584,9 +588,9 @@ export class ProjectUpdateComponent implements OnInit {
   loadListIpConnectInternet() {
     this.loadingIpConnectInternet = true;
     this.disableIpConnectInternet = true;
-    this.instancesService.getAllIPSubnet(this.regionId).pipe(finalize(()=>{
+    this.instancesService.getAllIPSubnet(this.regionId).pipe(finalize(() => {
       this.disableIpConnectInternet = false;
-        this.loadingIpConnectInternet = false;
+      this.loadingIpConnectInternet = false;
     }))
       .subscribe(
         data => {
@@ -623,26 +627,26 @@ export class ProjectUpdateComponent implements OnInit {
           this.form.controls['description'].setValue(data.description);
           this.today = this.data.createDate;
           this.expiredDate = this.data.expireDate;
-         
 
-          this.vCPUOld =  data.quotavCpu;
-          this.ramOld =  data.quotaRamInGb;
-          this.hhdOld =  data.quotaHddInGb;
-          this.ssdOld =  data.quotaSSDInGb;
 
-          this.ipConnectInternet =(data.publicNetworkId && data.publicNetworkAddress )? data.publicNetworkId + '--' + data.publicNetworkAddress : '';
-          
-          this.ipOld =  data.publicNetworkId;
+          this.vCPUOld = data.quotavCpu;
+          this.ramOld = data.quotaRamInGb;
+          this.hhdOld = data.quotaHddInGb;
+          this.ssdOld = data.quotaSSDInGb;
+
+          this.ipConnectInternet = (data.publicNetworkId && data.publicNetworkAddress) ? data.publicNetworkId + '--' + data.publicNetworkAddress : '';
+
+          this.ipOld = data.publicNetworkId;
           console.log("ipOld1", this.ipOld)
           this.ipNameOld = data.publicNetworkAddress;
           console.log("ipNameOld1", this.ipNameOld)
 
           this.ipv6Old = data.quotaIpv6Count;
           this.ipFloatingOld = data.quotaIpFloatingCount;
-          console.log(" this.ipFloatingOld 669",  this.ipFloatingOld)
+          console.log(" this.ipFloatingOld 669", this.ipFloatingOld)
 
           this.backupOld = data.quotaBackupVolumeInGb;
-         this.loadBalancerOld = data.quotaLoadBalancerSDNCount;
+          this.loadBalancerOld = data.quotaLoadBalancerSDNCount;
           this.fileSystemOld = data.quotaShareInGb;
           this.fileSnapshotOld = data.quotaShareSnapshotInGb;
 
@@ -651,7 +655,7 @@ export class ProjectUpdateComponent implements OnInit {
 
           this.loadbalancerOfferNameOld = data.loadbalancerOfferName;
           this.loadBalancerId = data?.offerIdLBSDN;
-          
+
           this.gpuOld = data.gpuProjects;
           console.log("gpuOld", this.gpuOld)
           this.snapshothddOld = data.quotaVolumeSnapshotHddInGb;
@@ -661,14 +665,14 @@ export class ProjectUpdateComponent implements OnInit {
           this.numberRouter = data.quotaRouterCount;
           this.numberSecurityGroup = data.quotaSecurityGroupCount;
 
-          this.ipPublicOffer = this.selectIndexTab==0 ? (data.offerDetail?.ipPublic) : 0;
-          this.ipPublicTotal= data.quotaIpPublicCount;
-          this.ipPublicAddOld = this.selectIndexTab==0?  (this.ipPublicTotal - this.ipPublicOffer): this.ipPublicTotal;
+          this.ipPublicOffer = this.selectIndexTab == 0 ? (data.offerDetail?.ipPublic) : 0;
+          this.ipPublicTotal = data.quotaIpPublicCount;
+          this.ipPublicAddOld = this.selectIndexTab == 0 ? (this.ipPublicTotal - this.ipPublicOffer) : this.ipPublicTotal;
           // this.ipPublicAddOld
           this.offerIdOld = data.offerId
 
-         
-          
+
+
         }
       )
   }
@@ -716,7 +720,7 @@ export class ProjectUpdateComponent implements OnInit {
   //     if (lstIp != null && lstIp != undefined) {
   //       ip = lstIp[0];
   //     }
-      
+
 
   //     let IPPublicNum = this.numberIpPublic;
   //     let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
@@ -758,7 +762,7 @@ export class ProjectUpdateComponent implements OnInit {
   //         publicNetworkId: ip,
   //         publicNetworkAddress: ipName,
   //         quotaIPv6Count: IPV6,
-        
+
 
   //         gpuQuotas: this.gpuQuotasGobal,
   //         quotaVolumeSnapshotInGb: this.numberSnapshothdd,
@@ -797,7 +801,7 @@ export class ProjectUpdateComponent implements OnInit {
   //             this.totalPayment = this.total.data.totalPayment.amount;
   //             this.totalVAT = this.total.data.totalVAT.amount;
   //             this.getPriceEachComponent(data.data);
-              
+
   //           }
   //         );
   //     } else {
@@ -807,7 +811,7 @@ export class ProjectUpdateComponent implements OnInit {
   // }
 
 
- 
+
 
   private getPriceEachComponent(data: any) {
     // let fileStorage = 0
@@ -860,28 +864,28 @@ export class ProjectUpdateComponent implements OnInit {
         this.price.hhd = item.totalAmount.amount;
         this.price.hhdPerUnit = item.unitPrice.amount;
       }
-      else if (item.typeName == 'Nvidia A30') {     
-        for(let gpu of this.gpuQuotasGobal){
-          if(gpu.GpuType =='Nvidia A30'){
+      else if (item.typeName == 'Nvidia A30') {
+        for (let gpu of this.gpuQuotasGobal) {
+          if (gpu.GpuType == 'Nvidia A30') {
             gpu.GpuPrice = item.totalAmount.amount;
             gpu.GpuPriceUnit = item.unitPrice.amount;
           }
         }
-            
+
       }
       else if (item.typeName == 'Nvidia A100') {
-        for(let gpu of this.gpuQuotasGobal){
-          if(gpu.GpuType =='Nvidia A100'){
+        for (let gpu of this.gpuQuotasGobal) {
+          if (gpu.GpuType == 'Nvidia A100') {
             gpu.GpuPrice = item.totalAmount.amount;
             gpu.GpuPriceUnit = item.unitPrice.amount;
           }
         }
       }
-      else if(item.typeName == 'snapshot-hdd'){
+      else if (item.typeName == 'snapshot-hdd') {
         this.price.snapshothdd = item.totalAmount.amount;
         this.price.snapshothddUnit = item.unitPrice.amount;
       }
-      else if(item.typeName == 'snapshot-ssd'){
+      else if (item.typeName == 'snapshot-ssd') {
         this.price.snapshotssd = item.totalAmount.amount;
         this.price.snapshotssdUnit = item.unitPrice.amount;
       }
@@ -919,15 +923,15 @@ export class ProjectUpdateComponent implements OnInit {
     this.price.IpV6 = 0;
     this.price.IpV6Unit = 0;
   }
-  
+
 
   checkConfigPackage(offerId: number) {
     if (offerId != 0) {
-        this.selectIndexTab=0
-        this.checkPackage = true
+      this.selectIndexTab = 0
+      this.checkPackage = true
     }
     else {
-      this.selectIndexTab=1
+      this.selectIndexTab = 1
       this.checkPackage = false
     }
   }
@@ -957,45 +961,45 @@ export class ProjectUpdateComponent implements OnInit {
   checkNumberInput(value: number, name: string): void {
     const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
     const numericValue = Number(value);
-    if(isNaN(numericValue) ){
+    if (isNaN(numericValue)) {
       this.notification.warning('', messageStepNotification);
       return;
     }
     let adjustedValue = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
     if (adjustedValue > this.maxBlock) {
-        adjustedValue = Math.floor(this.maxBlock / this.stepBlock) * this.stepBlock;
+      adjustedValue = Math.floor(this.maxBlock / this.stepBlock) * this.stepBlock;
     } else if (adjustedValue < this.minBlock) {
-        adjustedValue = this.minBlock;
+      adjustedValue = this.minBlock;
     }
     if (numericValue !== adjustedValue) {
-        this.notification.warning('', messageStepNotification);
+      this.notification.warning('', messageStepNotification);
     }
     switch (name) {
-        case "hhd":
-            this.hhd = adjustedValue;
-            break;
-        case "ssd":
-            this.ssd = adjustedValue;
-            break;
-        case "backup":
-            this.numberBackup = adjustedValue;
-            break;
-        case "fileSystem":
-            this.numberFileSystem = adjustedValue;
-            break;
-        case "fileSnapshot":
-            this.numberFileScnapsshot = adjustedValue;
-            break;
-        case "snapshothdd":
-            this.numberSnapshothdd = adjustedValue;
-            break;
-        case "snapshotssd":
-            this.numberSnapshotssd = adjustedValue;
-            break;
+      case "hhd":
+        this.hhd = adjustedValue;
+        break;
+      case "ssd":
+        this.ssd = adjustedValue;
+        break;
+      case "backup":
+        this.numberBackup = adjustedValue;
+        break;
+      case "fileSystem":
+        this.numberFileSystem = adjustedValue;
+        break;
+      case "fileSnapshot":
+        this.numberFileScnapsshot = adjustedValue;
+        break;
+      case "snapshothdd":
+        this.numberSnapshothdd = adjustedValue;
+        break;
+      case "snapshotssd":
+        this.numberSnapshotssd = adjustedValue;
+        break;
     }
     if (numericValue !== adjustedValue) {
       this[name] = adjustedValue;
-  }
+    }
     this.calculate();
   }
 
@@ -1023,57 +1027,59 @@ export class ProjectUpdateComponent implements OnInit {
     this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
       res => {
         this.listTypeCatelogOffer = res
-        this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item:any) => ({
+        this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => ({
           GpuOfferId: item.id,
           GpuCount: 0,
           GpuType: item.offerName,
-          GpuPrice:0,
-          GpuPriceUnit:item?.price?.fixedPrice?.amount
+          GpuPrice: 0,
+          GpuPriceUnit: item?.price?.fixedPrice?.amount
         }));
       }
     );
   }
- 
+
   // maxNumber: number[] = [8, 8];
-  getValues(index:number, value:number): void {
-    console.log("123", value)
-    console.log("gpuQuotasGobal 123", this.gpuQuotasGobal)
+  getValues(index: number, value: number): void {
+    // console.log("123", value)
+    // console.log("gpuQuotasGobal 123", this.gpuQuotasGobal)
     this.getValueNewgpu();
     this.calculate();
-    
+
   }
-  checkFlavor(){
-const findKey= this.listOfferByTypeName.find((item:OfferItem)=>item.characteristicValues.find((charName)=>charName.charName ==='VolumeType').charOptionValues?.[0]=='SSD')
-  console.log("findKey",findKey)
-  
+  checkFlavor() {
+    const findKey = this.listOfferByTypeName.find((item: OfferItem) => item.characteristicValues.find((charName) => charName.charName === 'VolumeType').charOptionValues?.[0] == 'SSD')
+    // console.log("findKey", findKey)
+
   }
 
-getValueNewgpu(){
-const dict2 = this.gpuQuotasGobal.reduce((acc, item) => {
-  acc[item.GpuOfferId] = item;
-  return acc;
-}, {});
-this.newgpu = this.gpuOld.map((item:any) => {
-  const gpuOfferId = item.gpuOfferId;
-  const array2Item = dict2[gpuOfferId];
-  const totalCountGpu = item.gpuCount + (array2Item ? array2Item.GpuCount : 0);
+  getValueNewgpu() {
+    const dict2 = this.gpuQuotasGobal.reduce((acc, item) => {
+      acc[item.GpuOfferId] = item;
+      return acc;
+    }, {});
+    this.newgpu = this.gpuOld.map((item: any) => {
+      const gpuOfferId = item.gpuOfferId;
+      const array2Item = dict2[gpuOfferId];
+      const totalCountGpu = item.gpuCount + (array2Item ? array2Item.GpuCount : 0);
+      return {
+        GpuOfferId: gpuOfferId,
+        GpuType: item.gpuType,
+        GpuCount: totalCountGpu,
+      };
+    });
+  }
+  getProductActivebyregion(catalog:string, regionid:number){
+    this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
+      this.productByRegion = res
+      this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
 
-  return {
-      GpuOfferId: gpuOfferId,
-      GpuType: item.gpuType,
-      GpuCount: totalCountGpu,
-      
-  };
-});
-
-console.log("newArray",this.newgpu);
-
-}
+    })
+  }
 
   trackById(index: number, item: any): any {
     return item.offerName;
   }
- 
+
 
   initIP() {
     this.activeIP = true;
@@ -1082,23 +1088,23 @@ console.log("newArray",this.newgpu);
     // if(this.ipNetworkAddress!=''){
     //   this.ipNetworkAddress =this.data?.publicNetworkAddress
     // }
-   
-   
+
+
   }
   deleteIP() {
     this.activeIP = false;
     this.trashIP = false;
     this.numberIpPublic = 0;
-    this.numberIpv6 =0;
-    this.numberIpFloating=0;
-   console.log("numberIpFloating delete", this.numberIpFloating)
-  
-   if(this.data.publicNetworkAddress !='' && this.data.publicNetworkId!=''){
-    this.ipConnectInternet =this.data.publicNetworkId + '--' + this.data.publicNetworkAddress;
-   }
-   else{
-    this.ipConnectInternet ='';
-   }
+    this.numberIpv6 = 0;
+    this.numberIpFloating = 0;
+    console.log("numberIpFloating delete", this.numberIpFloating)
+
+    if (this.data.publicNetworkAddress != '' && this.data.publicNetworkId != '') {
+      this.ipConnectInternet = this.data.publicNetworkId + '--' + this.data.publicNetworkAddress;
+    }
+    else {
+      this.ipConnectInternet = '';
+    }
     this.calculate()
   }
   initBackup() {
@@ -1121,8 +1127,8 @@ console.log("newArray",this.newgpu);
   deleteLoadBalancer() {
     this.activeLoadBalancer = false;
     this.trashLoadBalancer = false
-    this.numberLoadBalancer=0;
-    this.loadBalancerId =null;
+    this.numberLoadBalancer = 0;
+    this.loadBalancerId = null;
     this.calculate()
   }
 
@@ -1130,28 +1136,28 @@ console.log("newArray",this.newgpu);
     this.activeFileStorage = true;
     this.trashFileStorage = true;
   }
-  deleteFileStorage(){
+  deleteFileStorage() {
     this.activeFileStorage = false;
     this.trashFileStorage = false;
-    this.numberFileSystem=0;
-    this.numberFileScnapsshot=0;
+    this.numberFileSystem = 0;
+    this.numberFileScnapsshot = 0;
     this.calculate()
   }
   initVpnSiteToSite() {
     this.activeSiteToSite = true;
     this.trashVpnSiteToSite = true;
-    if( this.siteToSiteId==null){
+    if (this.siteToSiteId == null) {
       this.siteToSiteId = this.listSiteToSite[1].id;
       this.findNameSiteToSite(this.siteToSiteId)
     }
-    
-   
+
+
   }
-  deleteVpnSiteToSite(){
+  deleteVpnSiteToSite() {
     this.activeSiteToSite = false;
     this.trashVpnSiteToSite = false;
     this.siteToSiteId = this.data?.vpnSiteToSiteOfferId;
-    this.sitetositeName=this.data?.vpnSiteToSiteOfferName;
+    this.sitetositeName = this.data?.vpnSiteToSiteOfferName;
     this.calculate()
   }
   initVpnGpu() {
@@ -1163,15 +1169,15 @@ console.log("newArray",this.newgpu);
   deleteVpnGpu() {
     this.activeVpnGpu = false;
     this.trashVpnGpu = false;
-    this.gpuQuotasGobal =[ ]
+    this.gpuQuotasGobal = []
     this.calculate()
   }
-  initSnapshot(){
+  initSnapshot() {
     this.activeSnapshot = true;
     this.trashSnapshot = true;
   }
 
-  deleteSnapshot(){
+  deleteSnapshot() {
     this.activeSnapshot = false;
     this.trashSnapshot = false;
   }

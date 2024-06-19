@@ -188,6 +188,7 @@ export class ProjectCreateComponent implements OnInit {
   closePopupError() {
     this.isVisiblePopupError = false;
   }
+  productByRegion:any
   catalogStatus: { [key: string]: boolean } = {};
   catalogs: string[] = ['ip', 'ipv6','volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage','file-storage-snapshot', 'vpns2s','vm-gpu'];
 
@@ -1080,8 +1081,8 @@ export class ProjectCreateComponent implements OnInit {
    console.log("keySSD", this.keySSD)
   
   }
-  productByRegion:any
-  ipActive:boolean;
+
+
   getProductActivebyregion(catalog:string, regionid:number){
     this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
       this.productByRegion = res
