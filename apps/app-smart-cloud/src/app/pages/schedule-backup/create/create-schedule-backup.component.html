@@ -231,6 +231,7 @@
                       <nz-time-picker formControlName=times
                                       id="times"
                                       nzSize="large"
+                                      nzFormat="HH:mm"
                                       nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
                                       style="width: 100%; border-radius: 8px;"></nz-time-picker>
                       <ng-template #timeErrorTpl let-control>
@@ -272,6 +273,7 @@
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
                       <nz-time-picker formControlName=times
                                       nzSize="large"
+                                      nzFormat="HH:mm"
                                       nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
                                       style="width: 100%; border-radius: 8px;"></nz-time-picker>
                       <ng-template #timeErrorTpl let-control>
@@ -566,6 +568,7 @@
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
                       <nz-time-picker formControlName=times
                                       nzSize="large"
+                                      nzFormat="HH:mm"
                                       nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
                                       style="width: 100%; border-radius: 8px;"></nz-time-picker>
                       <ng-template #timeErrorTpl let-control>
@@ -587,6 +590,7 @@
                       <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
                         <nz-time-picker formControlName=times
                                         nzSize="large"
+                                        nzFormat="HH:mm"
                                         nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
                                         style="width: 100%; border-radius: 8px;"></nz-time-picker>
                         <ng-template #timeErrorTpl let-control>
@@ -687,6 +691,7 @@
                       <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
                         <nz-time-picker formControlName=times
                                         nzSize="large"
+                                        nzFormat="HH:mm"
                                         nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
                                         style="width: 100%; border-radius: 8px;"></nz-time-picker>
                         <ng-template #timeErrorTpl let-control>
@@ -857,7 +862,7 @@
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 <div class="text-value">{{ 'app.cluster.action-time' | i18n }}</div>
                 <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.get('formInstance')?.get('times')?.value | date: 'HH:mm:ss' }}
+                     class="text-label">{{ validateForm.get('formInstance')?.get('times')?.value | date: 'HH:mm' }}
                 </div>
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 <div *ngIf="modeSelected == 2">
@@ -944,7 +949,7 @@
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 <div class="text-value">{{ 'app.cluster.action-time' | i18n }}</div>
                 <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.get('formVolume')?.get('times')?.value | date: 'HH:mm:ss' }}
+                     class="text-label">{{ validateForm.get('formVolume')?.get('times')?.value | date: 'HH:mm' }}
                 </div>
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 <div *ngIf="modeSelected == 2">

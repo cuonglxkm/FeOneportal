@@ -147,6 +147,7 @@ export class InstancesComponent implements OnInit {
           switch (actionType) {
             case 'CREATING':
             case 'CREATED':
+              this.activeCreate = false;
               this.getDataList();
               break;
           }

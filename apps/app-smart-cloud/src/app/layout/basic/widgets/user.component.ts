@@ -57,9 +57,10 @@ export class HeaderUserComponent {
     localStorage.removeItem('PermissionOPA');
     localStorage.removeItem('user');
     localStorage.removeItem('_token');
+    localStorage.removeItem('regions');
     localStorage.removeItem('projects');
     localStorage.removeItem('projectId');
-    localStorage.removeItem('app');
+    localStorage.removeItem('regionId');
     this.tokenService.clear();
     this.router.navigateByUrl(this.tokenService.login_url!);
   }

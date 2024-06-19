@@ -177,7 +177,9 @@ export class CreateBackupVmNormalComponent implements OnInit{
     this.instanceService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId).subscribe(data => {
       console.log('data', data);
       this.isLoading = false
+
       this.listInstances = data.records;
+      this.listInstances = this.listInstances.filter(item => item.taskState === 'ACTIVE')
       console.log('data', this.instance);
     });
   }
@@ -191,7 +193,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
 
   getBackupPackage() {
     this.isLoading = true;
-    this.backupPackageService.search(null, null, 9999, 1).subscribe(data => {
+    this.backupPackageService.search(null, null, this.project, this.region, 9999, 1).subscribe(data => {
       this.isLoading = false;
       data.records.forEach(item => {
         if(['ACTIVE', 'AVAILABLE'].includes(item.status)) {
@@ -207,7 +209,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
   }
 
   onChangeBackupPackage(value) {
-    this.backupPackageService.detail(value).subscribe(data => {
+    this.backupPackageService.detail(value, this.project).subscribe(data => {
       this.backupPackageDetail = data;
     });
   }
