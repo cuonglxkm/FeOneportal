@@ -50,6 +50,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { SupportService } from 'src/app/shared/models/catalog.model';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -233,6 +234,7 @@ export class InstancesCreateComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getActiveServiceByRegion();
     this.getVolumeUnitMoney();
     this.getConfigurations();
     this.initIpSubnet();
@@ -289,6 +291,22 @@ export class InstancesCreateComponent implements OnInit {
     this.onChangeRamOfGpu();
     this.onChangeStorageOfGpu();
     this.onChangeGpu();
+  }
+  //Lấy các dịch vụ hỗ trợ theo region
+  isSupportEncryption: boolean = false;
+  isSupportMultiAttachment: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(['Encryption', 'MultiAttachment'], this.region)
+      .subscribe((data) => {
+        console.log("support service", data);
+        this.isSupportMultiAttachment = data.filter(
+          (e) => e.productName == 'MultiAttachment'
+        )[0].isActive;
+        this.isSupportEncryption = data.filter(
+          (e) => e.productName == 'Encryption'
+        )[0].isActive;
+      });
   }
 
   //Kiểm tra trùng tên máy ảo
@@ -1005,10 +1023,11 @@ export class InstancesCreateComponent implements OnInit {
     this.configurationService
       .getConfigurations('OPTIONGPUVALUE')
       .subscribe(
-        (data) => (this.listOptionGpuValue = data.valueString.split(', ').map(Number))
+        (data) =>
+          (this.listOptionGpuValue = data.valueString.split(', ').map(Number))
       );
   }
-  
+
   listGPUType: OfferItem[] = [];
   getListGpuType() {
     this.dataService
@@ -1421,7 +1440,6 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.ipPublic = this.ipPublicValue;
     this.instanceCreate.password = this.password;
     this.instanceCreate.snapshotId = this.selectedSnapshot;
-    this.instanceCreate.encryption = false;
     this.instanceCreate.isUseIPv6 = this.isUseIPv6;
     this.instanceCreate.addRam = 0;
     this.instanceCreate.addCpu = 0;
