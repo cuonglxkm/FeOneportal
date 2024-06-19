@@ -1159,6 +1159,7 @@
   "app.payment.title": "Payment list",
   "app.payment.payment": "Payment",
   "app.payment.status": "Status",
+  "app.payment.status.payment1": "Payment Status",
   "app.payment.status.payment": "Payment Status",
   "app.payment.status.invoice": "Invoice Status",
   "app.payment.invoiceNumber": "Invoice Number",

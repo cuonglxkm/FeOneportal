@@ -36,12 +36,27 @@
           <nz-select
             [(ngModel)]="selectedValue"
             (ngModelChange)="onChange($event)"
-            [nzPlaceHolder]="'app.payment.status' | i18n"
+            [nzPlaceHolder]="'app.payment.status.payment1' | i18n"
             style="width: 150px"
             class="input-select-custom"
           >
             <nz-option
               *ngFor="let item of status"
+              [nzValue]="item.value"
+              [nzLabel]="item.label"
+            ></nz-option>
+          </nz-select>
+        </div>
+        <div *nzSpaceItem>
+          <nz-select
+            [(ngModel)]="selectedValueInvoice"
+            (ngModelChange)="onChangeInvoice($event)"
+            [nzPlaceHolder]="'app.payment.status.invoice' | i18n"
+            style="width: 150px"
+            class="input-select-custom"
+          >
+            <nz-option
+              *ngFor="let item of statusInvoice"
               [nzValue]="item.value"
               [nzLabel]="item.label"
             ></nz-option>
