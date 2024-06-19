@@ -17,6 +17,9 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { LoadingService } from '@delon/abc/loading';
+import { debounceTime, finalize, Subject } from 'rxjs';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-list-payment',
@@ -35,6 +38,8 @@ export class ListPaymentComponent implements OnInit {
   pageIndex: number = 1;
 
   isLoading: boolean = false;
+
+  searchDelay = new Subject<boolean>();
 
   status = [
     { label: this.i18n.fanyi('app.payment.status.all'), value: 'all' },
@@ -69,7 +74,8 @@ export class ListPaymentComponent implements OnInit {
     private paymentService: PaymentService,
     private router: Router,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private loadingSrv: LoadingService
   ) {}
 
   regionChanged(region: RegionModel) {
@@ -90,6 +96,11 @@ export class ListPaymentComponent implements OnInit {
     this.getListInvoices();
   }
 
+  search(search: string) {  
+    this.value = search.toLowerCase().trim();
+    this.getListInvoices()
+  }
+
   onDateRangeChange(value: Date[]): void {
     if (value) {
       this.dateRange = value;
@@ -104,11 +115,6 @@ export class ListPaymentComponent implements OnInit {
     }
   }
 
-  onInputChange(value: string) {
-    this.value = value.toUpperCase();
-    console.log('input text: ', this.value);
-    this.getListInvoices();
-  }
 
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {
@@ -167,7 +173,7 @@ export class ListPaymentComponent implements OnInit {
     if (this.value === null || this.value === undefined) {
       this.formSearch.code = '';
     } else {
-      this.formSearch.code = this.value;
+      this.formSearch.code = this.value.toLowerCase();
     }
 
     if (this.selectedValue === 'all') {
@@ -269,12 +275,13 @@ export class ListPaymentComponent implements OnInit {
 
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId;
-    // this.getListInvoices()
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+      this.getListInvoices();
+    });
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
     }
     this.notificationService.connection.on('UpdateStatePayment', (data) => {
-      debugger;
       this.getListInvoices();
     });
   }
@@ -293,7 +300,8 @@ export class ListPaymentComponent implements OnInit {
   }
 
   printInvoice(id: number) {
-    this.paymentService.exportInvoice(id).subscribe(
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.paymentService.exportInvoice(id).pipe(finalize(() => this.loadingSrv.close())).subscribe(
       (data) => {
         const element = document.createElement('div');
         element.style.width = '268mm';
