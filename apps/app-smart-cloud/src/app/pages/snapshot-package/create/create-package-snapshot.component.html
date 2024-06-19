@@ -48,7 +48,7 @@
               <div style="margin-top: 15px">
                 <span>Tên gói Snapshot</span>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                <img style="margin-left: 10px" [nz-tooltip]="'Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z, 0-9, \'_\'). Độ dài dữ liệu đầu vào của bạn tối đa 50 ký tự.Không chứa (kí tự đặc biệt: @, #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc, hình tròn, hình vuông, hình chữ nhật...)'" src="assets/imgs/pajamas_question.svg" alt="" />
+                <img style="margin-left: 10px" [nz-tooltip]="'Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z, 0-9, \'_\'). Độ dài dữ liệu đầu vào của bạn tối đa 50 ký tự.Không chứa (ký tự đặc biệt: @, #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc, hình tròn, hình vuông, hình chữ nhật...)'" src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -134,7 +134,7 @@
               </textarea>
               <ng-template #descriptionErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('maxlength')"
-                >Cho phép nhập tối đa 255 kí tự
+                >Cho phép nhập tối đa 255 ký tự
                 </ng-container
                 >
               </ng-template>
