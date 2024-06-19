@@ -47,17 +47,17 @@
                      nz-input
                      placeholder="{{'app.placeholder.search' | i18n}}"
                      [(ngModel)]="value"
-                     (ngModelChange)="searchDelay.next(false)"
-                     (keydown.enter)="this.getListScheduleBackup(false)"/>
+                     (input)="changeInputChange($event)"
+                     (keydown.enter)="onEnter($event)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"/>
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
-            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
+            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate(typeVPC)">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
-              <span class="button-text-primary">{{'app.label.create' | i18n}}</span>
+              <span class="button-text-primary">{{'schedule.backup.create' | i18n}}</span>
             </button>
           </nz-col>
         </nz-row>
@@ -97,7 +97,7 @@
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
                 <td nzAlign="left">
                   <span [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</span>
-<!--                  <br><span>{{data.warningMessage}}</span>-->
+                  <br><span>{{data.warningMessage}}</span>
                 </td>
               </ng-container>
               <td>{{ data.nextRuntime | date: 'dd/MM/yyyy' }}</td>
@@ -173,7 +173,7 @@
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'"
-                  routerLink="/app-smart-cloud/schedule/backup/create" nzSize="large">
+                  (click)="navigateToCreate(typeVPC)" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             {{'app.button.create' | i18n}}
           </button>
