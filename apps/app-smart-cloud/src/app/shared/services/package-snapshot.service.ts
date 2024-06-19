@@ -69,9 +69,9 @@ export class PackageSnapshotService extends BaseService {
   //     {headers: this.getHeaders()})
   // }
 
-  detail(id: number) {
+  detail(id: number, projectId: any) {
     return this.http.get<PackageSnapshotModel>(this.baseUrl + this.ENDPOINT.provisions
-      + `/snapshots/packages/${id}`).pipe(
+      + `/snapshots/packages/${id}?projectId=` + projectId).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
