@@ -3044,6 +3044,7 @@
   "app.backup.volume.button.create": "Initialize Backup Volume",
 
   "app.status.not.done": "Interrupted",
+  "schedule.backup.create": "Create new backup schedule",
   "schedule.backup.label.each.day": "Daily",
   "schedule.backup.label.each.number.day": "By day",
   "schedule.backup.label.each.week": "Weekly",
@@ -3114,6 +3115,7 @@
   "schedule.backup.alert.delete": "Are you about to delete the backup schedule {{name}}? Please confirm before proceeding.",
   "schedule.backup.confirm.delete": "To delete the backup schedule {{name}}, please enter the name of the backup schedule to confirm.",
   "schedule.backup.confirm.input.name": "Please enter the correct backup name.",
+  "schedule.backup.placeholder.input.name": "Enter name schedule",
 
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
