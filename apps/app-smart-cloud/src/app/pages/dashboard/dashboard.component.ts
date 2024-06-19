@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { Pie } from '@antv/g2plot';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { PaymentService } from '../../shared/services/payment.service';
 
 
 @Component({
@@ -39,6 +40,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(private dashboardService: DashboardService,
               private router: Router,
+              private paymentService: PaymentService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -153,7 +155,9 @@ export class DashboardComponent implements OnInit {
 
 
   navigateToDetailPayment(id: number, paymentOrder: string) {
-    this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + id + '/' + paymentOrder]);
+    this.paymentService.getPaymentByPaymentNumber(paymentOrder).subscribe(data => {
+      this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + id + '/' + data.orderNumber]);
+    })
   }
 
   navigateToExtend(serviceInstanceId: number, serviceType: number) {

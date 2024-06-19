@@ -225,8 +225,8 @@
         </thead>
         <tbody>
         <tr *ngFor="let data of fixTableNearExpire.data">
+          <td>{{ data.serviceName }}</td>
           <td>{{ getServiceName(data.serviceType) }}</td>
-          <td>{{ data.serviceTypeName }}</td>
           <td>{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
           <td>{{ data.expireDate | date: 'dd/MM/yyyy' }}</td>
           <td style="color: #EB1414;">{{ data.status }}</td>
