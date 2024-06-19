@@ -13,7 +13,9 @@ export class PaymentModel {
   statusTransitionHistory: StatusTransitionHistory[]
   invoiceIssuedId: number;
   eInvoiceCode: number;
-  eInvoiceCodePadded?: string
+  eInvoiceCodePadded?: string;
+  checked?: boolean = false;
+  indeterminate?: boolean = false;
 }
 
 export class StatusTransitionHistory {
@@ -30,4 +32,5 @@ export class PaymentSearch {
   customerId: number
   pageSize: number
   currentPage: number
+  invoiceStatus: number
 }

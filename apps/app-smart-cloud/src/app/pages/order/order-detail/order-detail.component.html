@@ -69,7 +69,7 @@
             {{ 'app.order-detail.Cancelled' | i18n }}
           </h3>
           <h3 class="date-failed">
-            vào {{ data?.updatedDate | date : 'HH:mm dd/MM/yyyy' }}
+            vào {{ data?.updatedDate | date : 'HH:mm:ss dd/MM/yyyy' }}
           </h3>
         </div>
       </div>
@@ -157,70 +157,84 @@
         </nz-col>
       </nz-row>
       <!--  table-->
-      <nz-table [nzData]="data?.orderItems" nzHideOnSinglePage="true">
-        <thead>
-          <tr>
-            <th>{{ 'app.order-detail.serviceName' | i18n }}</th>
-            <th>{{"app.payment.service.type" |i18n}}</th>
-            <th>{{ 'app.order-detail.price' | i18n }}</th>
-            <th>{{ 'app.order-detail.remain' | i18n }}</th>
-            <th>{{ 'app.order-detail.quantity' | i18n }}</th>
-            <th>{{ 'app.order-detail.totalPrice' | i18n }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of data?.orderItems">
-            <ng-container *ngIf="data?.statusCode == 4">
-              <td [ngSwitch]="item.serviceNameLink">
-                <a *ngSwitchCase="'File Storage'" [routerLink]="[
-                    '/app-smart-cloud/file-storage/file-system/list'
-                  ]">{{ item?.serviceName }}</a>
-                <a *ngSwitchCase="'IP'" [routerLink]="['/app-smart-cloud/ip-public']">{{ item?.serviceName }}</a>
-                <a *ngSwitchCase="'VM'" [routerLink]="['/app-smart-cloud/instances']">{{ item?.serviceName }}</a>
-                <a *ngSwitchCase="'K8s'" [routerLink]="['/app-kubernetes']">{{
-                  item?.serviceName
-                  }}</a>
-                <a *ngSwitchCase="'Kafka'" [routerLink]="['/app-kafka']">{{
-                  item?.serviceName
-                  }}</a>
-                <a *ngSwitchCase="'VPNSiteToSites'" [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">{{
-                  item?.serviceName }}</a>
-                <a *ngSwitchCase="'Volume'" [routerLink]="['/app-smart-cloud/volumes']">{{ item?.serviceName }}</a>
-                <a *ngSwitchCase="'Loadbalancer SDN'" [routerLink]="['/app-smart-cloud/load-balancer/list']">{{
-                  item?.serviceName }}</a>
-                <a *ngSwitchCase="'Vpc'" [routerLink]="['/app-smart-cloud/vpc']">{{ item?.serviceName }}</a>
-                <a *ngSwitchCase="'Backup Packet'" [routerLink]="['/app-smart-cloud/backup/packages']">{{
-                  item?.serviceName }}</a>
-                <a *ngSwitchCase="'Snapshot package'" [routerLink]="['/app-smart-cloud/snapshot/packages']">{{
-                  item?.serviceName }}</a>
-                <a *ngSwitchCase="'Object Storage'" [routerLink]="['/app-smart-cloud/object-storage/bucket']">{{
-                  item?.serviceName }}</a>
-                <a *ngSwitchCase="'Mongodb'" [routerLink]="['/app-mongodb-replicaset']">{{ item?.serviceName }}</a>
-                <a *ngSwitchCase="'Backup volume'" [routerLink]="['/app-smart-cloud/backup-volume']">{{
-                  item?.serviceName }}</a>
-                <div *ngSwitchDefault>{{ item?.serviceName }}</div>
-              </td>
-            </ng-container>
-            <ng-container *ngIf="data?.statusCode != 4">
-              <td>
-                <div>{{ item?.serviceName }}</div>
-              </td>
-            </ng-container>
-            <td class="text-left">
-              {{ item?.serviceType }}
-            </td>
-            <td class="text-right">
-              {{ item?.unitPrice?.amount | number : '1.0-0' }}
-            </td>
-            <td class="text-right">{{ item?.duration }}</td>
-            <td class="text-right">{{ item?.quantity }}</td>
-            <td class="text-right">
-              {{ item?.totalAmount.amount | number : '1.0-0' }}
-            </td>
-          </tr>
-        </tbody>
-      </nz-table>
+      
     </nz-card>
+    
+  <nz-card style="border-radius: 8px">
+    <nz-row
+      style="
+        border-bottom: 1px solid #f2f2f2;
+        padding-left: 2%;
+        padding-bottom: 2%;
+        padding-left:0px;
+      "
+    >
+      <span style="font-weight: 600; font-size: 20px;">{{"app.payment-detail.serviceInformation" | i18n}}</span> <br />
+    </nz-row>
+    <nz-table [nzData]="data?.orderItems" nzHideOnSinglePage="true">
+      <thead>
+        <tr>
+          <th>{{ 'app.order-detail.serviceName' | i18n }}</th>
+          <th>{{"app.payment.service.type" |i18n}}</th>
+          <th>{{ 'app.order-detail.price' | i18n }}</th>
+          <th>{{ 'app.order-detail.remain' | i18n }}</th>
+          <th>{{ 'app.order-detail.quantity' | i18n }}</th>
+          <th>{{ 'app.order-detail.totalPrice' | i18n }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data?.orderItems">
+          <ng-container *ngIf="data?.statusCode == 4">
+            <td [ngSwitch]="item.serviceNameLink">
+              <a *ngSwitchCase="'File Storage'" [routerLink]="[
+                  '/app-smart-cloud/file-storage/file-system/list'
+                ]">{{ item?.serviceName }}</a>
+              <a *ngSwitchCase="'IP'" [routerLink]="['/app-smart-cloud/ip-public']">{{ item?.serviceName }}</a>
+              <a *ngSwitchCase="'VM'" [routerLink]="['/app-smart-cloud/instances']">{{ item?.serviceName }}</a>
+              <a *ngSwitchCase="'K8s'" [routerLink]="['/app-kubernetes']">{{
+                item?.serviceName
+                }}</a>
+              <a *ngSwitchCase="'Kafka'" [routerLink]="['/app-kafka']">{{
+                item?.serviceName
+                }}</a>
+              <a *ngSwitchCase="'VPNSiteToSites'" [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">{{
+                item?.serviceName }}</a>
+              <a *ngSwitchCase="'Volume'" [routerLink]="['/app-smart-cloud/volumes']">{{ item?.serviceName }}</a>
+              <a *ngSwitchCase="'Loadbalancer SDN'" [routerLink]="['/app-smart-cloud/load-balancer/list']">{{
+                item?.serviceName }}</a>
+              <a *ngSwitchCase="'Vpc'" [routerLink]="['/app-smart-cloud/vpc']">{{ item?.serviceName }}</a>
+              <a *ngSwitchCase="'Backup Packet'" [routerLink]="['/app-smart-cloud/backup/packages']">{{
+                item?.serviceName }}</a>
+              <a *ngSwitchCase="'Snapshot package'" [routerLink]="['/app-smart-cloud/snapshot/packages']">{{
+                item?.serviceName }}</a>
+              <a *ngSwitchCase="'Object Storage'" [routerLink]="['/app-smart-cloud/object-storage/bucket']">{{
+                item?.serviceName }}</a>
+              <a *ngSwitchCase="'Mongodb'" [routerLink]="['/app-mongodb-replicaset']">{{ item?.serviceName }}</a>
+              <a *ngSwitchCase="'Backup volume'" [routerLink]="['/app-smart-cloud/backup-volume']">{{
+                item?.serviceName }}</a>
+              <div *ngSwitchDefault>{{ item?.serviceName }}</div>
+            </td>
+          </ng-container>
+          <ng-container *ngIf="data?.statusCode != 4">
+            <td>
+              <div>{{ item?.serviceName }}</div>
+            </td>
+          </ng-container>
+          <td class="text-left">
+            {{ item?.serviceType }}
+          </td>
+          <td class="text-right">
+            {{ item?.unitPrice?.amount | number : '1.0-0' }}
+          </td>
+          <td class="text-right">{{ item?.duration }}</td>
+          <td class="text-right">{{ item?.quantity }}</td>
+          <td class="text-right">
+            {{ item?.totalAmount.amount | number : '1.0-0' }}
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
   </div>
   <div nz-col nzSpan="8">
     <nz-card style="border-radius: 8px; border-color: #b2deff">
@@ -284,7 +298,7 @@
             <span nz-icon nzType="shop" nzTheme="outline"></span>
             {{ 'app.order-detail.repurchase' | i18n }}
           </button> -->
-          <button *ngIf="data?.statusCode < 2" (click)="pay()" nz-button nzType="primary" style="
+          <button [disabled]="data?.paymentUrl === ''" *ngIf="data?.statusCode < 2" (click)="pay()" nz-button nzType="primary" style="
               width: 100%;
               display: flex;
               align-items: center;
