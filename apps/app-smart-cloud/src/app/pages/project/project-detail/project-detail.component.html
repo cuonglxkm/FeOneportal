@@ -140,7 +140,7 @@
     <span class="text-card-header">{{ 'project.note27' | i18n }}</span>
   </div>
   <nz-row *ngIf="data?.type == 'VPC'" style="margin-bottom: 30px;text-align: center">
-    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentBackup nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">CPU</h3></div>
+    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentCpu nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">CPU</h3></div>
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentRam nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">RAM (GB)</h3></div>
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentHHD nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">HDD (GB)</h3></div>
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentSSD nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">SSD (GB)</h3></div>
