@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import { OfferDetail, Product } from '../models/catalog.model';
 import { catchError } from 'rxjs/internal/operators/catchError';
-import { throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -70,5 +70,16 @@ export class CatalogService extends BaseService {
       }
       return throwError(error);
     }));
+  }
+
+  getActiveServiceByRegion(
+    serviceArray: string[],
+    regionid: number
+  ): Observable<any> {
+    let url_ =
+      this.baseUrl + this.ENDPOINT.catalogs + '/products/activebyregion?';
+    serviceArray.forEach((e) => (url_ = url_ + `catalogs=${e}&`));
+    url_ = url_ + `regionid=${regionid}`;
+    return this.http.get<any>(url_, this.httpOptions);
   }
 }

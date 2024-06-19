@@ -856,7 +856,14 @@
             </div>
           </nz-tab>
         </nz-tabset>
-        <br />
+        <label
+          *ngIf="isSupportEncryption"
+          style="margin-bottom: 16px; margin-top: 16px"
+          nz-checkbox
+          [(ngModel)]="instanceCreate.encryption"
+          [ngModelOptions]="{ standalone: true }"
+          >{{ 'volume.info.type.encrypt' | i18n }}
+        </label>
         <nz-row nzGutter="16">
           <nz-col nzLg="12" nzMd="12" nzSm="24">
             <nz-form-item
@@ -1275,8 +1282,10 @@
                     <th>{{ 'app.volume.name' | i18n }}</th>
                     <th>{{ 'app.capacity' | i18n }} (GB)</th>
                     <th>IOPS</th>
-                    <th>{{ 'app.encrypt' | i18n }}</th>
-                    <th>Multi Attach</th>
+                    <th *ngIf="isSupportEncryption">
+                      {{ 'app.encrypt' | i18n }}
+                    </th>
+                    <th *ngIf="isSupportMultiAttachment">Multi Attach</th>
                     <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
                   </tr>
                 </thead>
@@ -1338,6 +1347,7 @@
                     </td>
                     <td>
                       <label
+                        *ngIf="isSupportEncryption"
                         nz-checkbox
                         [(ngModel)]="data.encrypt"
                         (ngModelChange)="changeEncrypt($event, i)"
@@ -1347,6 +1357,7 @@
                     </td>
                     <td>
                       <label
+                        *ngIf="isSupportMultiAttachment"
                         nz-checkbox
                         [(ngModel)]="data.multiattach"
                         (ngModelChange)="changeMultiAttach($event, i)"
