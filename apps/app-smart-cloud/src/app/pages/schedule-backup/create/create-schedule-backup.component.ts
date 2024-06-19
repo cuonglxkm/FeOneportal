@@ -269,6 +269,7 @@ export class CreateScheduleBackupComponent implements OnInit {
             }
           });
           console.log('list instance', this.listInstanceNotUse);
+          this.listInstanceNotUse = this.listInstanceNotUse.filter(item => item.taskState === 'ACTIVE')
           this.instanceSelected = this.listInstanceNotUse[0]?.id;
           this.cdr.detectChanges();
         });
@@ -308,8 +309,8 @@ export class CreateScheduleBackupComponent implements OnInit {
             }
           });
         });
-        this.listVolumeNotUseUnique.push();
         console.log('list volume', this.listVolumeNotUseUnique);
+        this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter(item => item.serviceStatus === 'AVAILABLE')
         this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
         this.cdr.detectChanges();
       });
@@ -456,7 +457,7 @@ export class CreateScheduleBackupComponent implements OnInit {
   backupPackageDetail = new PackageBackupModel();
 
   getBackupPackageDetail(id) {
-    this.backupPackageService.detail(id).subscribe(data => {
+    this.backupPackageService.detail(id, this.project).subscribe(data => {
       this.backupPackageDetail = data;
     });
   }

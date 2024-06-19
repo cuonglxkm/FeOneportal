@@ -140,6 +140,7 @@ export class FormUpdate {
   packageId: number
   packageName: string
   description: string
+  regionId: number
 }
 
 export class ServiceInPackage {

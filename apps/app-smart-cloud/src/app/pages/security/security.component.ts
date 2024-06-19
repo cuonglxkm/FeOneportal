@@ -34,6 +34,12 @@ export class SecurityComponent implements OnInit {
     otp: ['', [Validators.required]],
   });
 
+  formAuthenticator: FormGroup<{
+    otpAuthenticator: FormControl<string>;
+  }> = this.fb.group({
+    otpAuthenticator: ['', [Validators.required]],
+  });
+
   constructor(
     private service: SecurityService,
     private notification: NzNotificationService,
@@ -106,46 +112,56 @@ export class SecurityComponent implements OnInit {
   // Authenticator
   handleChangeSwitchAuthenticator(event){
     this.toggleSwitchGoogleAuthenticator = event
-    if (this.toggleSwitchGoogleAuthenticator == true) {
-      this.service.getOTPForAuthenticator().subscribe((data: any) => {
-        this.isVisibleOTPForAuthenticator = true;
-      }, error => {
-        this.toggleSwitchGoogleAuthenticator = false;
-        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
-      });
-    }
-    
-    console.log(this.toggleSwitchGoogleAuthenticator);
+    this.service.getOTPForAuthenticator().subscribe((data: any) => {
+      this.isVisibleOTPForAuthenticator = true;
+    }, error => {
+      this.toggleSwitchGoogleAuthenticator = !this.toggleSwitchGoogleAuthenticator;
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
+    });
   }
 
   handleSubmitOTPForAuthenticator(){
     let formeEnable2FA = new FormEnable2FA();
     formeEnable2FA.twofactorType = "Email";
     formeEnable2FA.code = this.form.controls.otp.value.toString();
-    formeEnable2FA.enable = this.toggleSwitch;
+    formeEnable2FA.enable = this.toggleSwitchGoogleAuthenticator;
 
-    if (this.toggleSwitchGoogleAuthenticator == true) {
-      this.service.submitOTPForAuthenticator(formeEnable2FA).subscribe((data: any) => {
-        this.authenticatorKey = data.key;
-        this.isVisibleAuthenticator = true;
-      }, error => {
-        this.toggleSwitchGoogleAuthenticator = false;
-        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
-      });
-    }
+    this.service.submitOTPForAuthenticator(formeEnable2FA).subscribe((data: any) => {
+      if (data.success == true) {
+        if (formeEnable2FA.enable == true) {
+          debugger;
+          this.authenticatorKey = data.key;
+          this.isVisibleOTPForAuthenticator = false;
+          this.isVisibleAuthenticator = true;
+        }
+        else
+        {
+          this.isVisibleOTPForAuthenticator = false;
+          this.toggleSwitchGoogleAuthenticator = false;
+        }
+      }
+      else
+      {
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail"));
+      }
+    }, error => {
+      this.isVisibleOTPForAuthenticator = false;
+      this.toggleSwitchGoogleAuthenticator = !this.toggleSwitchGoogleAuthenticator;
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
+    });
     
     console.log(this.toggleSwitchGoogleAuthenticator);
   }
 
   handleCancelOTPForAuthenticator(){
     this.isVisibleOTPForAuthenticator = false;
-    this.toggleSwitchGoogleAuthenticator = !this.isActiveGoogleAuthenticator;
+    this.toggleSwitchGoogleAuthenticator = !this.toggleSwitchGoogleAuthenticator;
   }
 
   handleSubmitAuthenticator(event){
     let formeEnable2FA = new FormEnable2FA();
     formeEnable2FA.twofactorType = "Authenticator";
-    formeEnable2FA.code = this.form.controls.otp.value.toString();
+    formeEnable2FA.code = this.formAuthenticator.controls.otpAuthenticator.value.toString();
     formeEnable2FA.enable = this.toggleSwitchGoogleAuthenticator;
     this.service.updateTwoFactorSetting(formeEnable2FA).subscribe(data => {
       if (data.success == true) {
@@ -158,13 +174,14 @@ export class SecurityComponent implements OnInit {
       }
     }, error => {
       this.isVisibleAuthenticator = false;
-      this.toggleSwitchGoogleAuthenticator = !this.isActiveGoogleAuthenticator;
+      this.toggleSwitchGoogleAuthenticator = !this.toggleSwitchGoogleAuthenticator;
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"));
     })
   }
 
-  handleCancelAuthenticator(){
+  handleCancelAuthenticator() {
     this.isVisibleAuthenticator = false;
-    this.toggleSwitchGoogleAuthenticator = !this.isActiveGoogleAuthenticator;
+    this.isVisibleOTPForAuthenticator = false;
+    this.toggleSwitchGoogleAuthenticator = !this.toggleSwitchGoogleAuthenticator;
   }
 }

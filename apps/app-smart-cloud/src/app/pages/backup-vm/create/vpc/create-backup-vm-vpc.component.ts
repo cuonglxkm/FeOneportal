@@ -203,7 +203,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
   }
 
   onChangeBackupPackage(value) {
-    this.backupPackageService.detail(value).subscribe(data => {
+    this.backupPackageService.detail(value, this.project).subscribe(data => {
       this.backupPackageDetail = data;
     });
   }

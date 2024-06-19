@@ -1,6 +1,6 @@
 export class UserModel {
   id?: number;
-  userCode?: string;
+  customerCode?: string;
   birthday?: string;
   isLocked?: boolean;
   isDeleted?: boolean;

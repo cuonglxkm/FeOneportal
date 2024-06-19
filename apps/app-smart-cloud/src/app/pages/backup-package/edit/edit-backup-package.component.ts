@@ -103,7 +103,7 @@ export class EditBackupPackageComponent implements OnInit {
 
   getDetailPackageBackup(id) {
     this.isLoading = true;
-    this.packageBackupService.detail(id).subscribe(data => {
+    this.packageBackupService.detail(id, this.project).subscribe(data => {
       this.isLoading = false;
       console.log('data', data);
       this.packageBackupModel = data;

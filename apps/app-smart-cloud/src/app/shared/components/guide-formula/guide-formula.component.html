@@ -7,7 +7,9 @@
     <nz-col style="padding-left: 5px">
       <div>
         <span class="fraction">
-          <span class="numerator">{{'app.note.guide.formula.numerator' | i18n }}</span>
+          <span class="numerator">{{
+            'app.note.guide.formula.numerator' | i18n
+          }}</span>
           <span class="denominator">720 {{ 'app.hours' | i18n }}</span>
         </span>
       </div>
@@ -30,6 +32,12 @@
     </nz-col>
     <nz-col style="margin-top: 10px; padding-left: 10px" nzSpan="12">
       <span>x 382 {{ 'app.hours' | i18n }} = 191.000 VND</span>
-    </nz-col>
-  </nz-row>
+    </nz-col> </nz-row
+  ><br /><br />
+  <div class="custom-note">(*) {{ 'app.notes' | i18n }}:</div>
+  <div class="text-label">
+    ● 1 {{ 'app.month' | i18n }} = 30 {{ 'app.days' | i18n }} = 720
+    {{ 'app.hours' | i18n }}
+  </div>
+  <div class="text-label">● {{ 'app.note.guide.formula.next' | i18n }}</div>
 </nz-card>
