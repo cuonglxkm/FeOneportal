@@ -40,6 +40,9 @@ export class PaymentService extends BaseService {
     if (paymentSearch.currentPage != undefined || paymentSearch.currentPage != null) {
       params = params.append('currentPage', paymentSearch.currentPage)
     }
+    if (paymentSearch.invoiceStatus != undefined || paymentSearch.invoiceStatus != null) {
+      params = params.append('invoiceStatus', paymentSearch.invoiceStatus)
+    }
 
     return this.http.get<BaseResponse<PaymentModel[]>>(this.baseUrl + this.ENDPOINT.payments + '/Paging', {
       params: params }).pipe(catchError((error: HttpErrorResponse) => {

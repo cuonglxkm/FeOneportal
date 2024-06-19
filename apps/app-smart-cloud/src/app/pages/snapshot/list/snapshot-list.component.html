@@ -154,7 +154,7 @@
   <nz-modal [(nzVisible)]="isVisibleEdit" nzTitle="Chỉnh sửa Snapshot " [nzStyle]="modalStyle" (nzOnCancel)="handleCancel()">
     <ng-container *nzModalContent>
       <div class="text-label" style="margin-bottom: 10px">
-        Tên Snapshot (<span class="text-red">*</span>)<img style="margin-left: 5px;" nz-tooltip="Cho phép chứa ký tự số, chữ, dấu gạch dưới, tối đa 50 ký tự, không chứa ký tự đặc   biệt, không chứa dấu tiếng việt, không chứa dấu cách (kí tự đặc biệt: @,   #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc,   hình tròn, hình vuông, hình chữ nhật...)"
+        Tên Snapshot (<span class="text-red">*</span>)<img style="margin-left: 5px;" nz-tooltip="Cho phép chứa ký tự số, chữ, dấu gạch dưới, tối đa 50 ký tự, không chứa ký tự đặc   biệt, không chứa dấu tiếng việt, không chứa dấu cách (ký tự đặc biệt: @,   #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc,   hình tròn, hình vuông, hình chữ nhật...)"
                                                            src="assets/imgs/pajamas_question.svg" alt="" />
         <input class="input-custom" nz-input placeholder="{{ 'project.note17' | i18n }}" style="width: 100%"
                formControlName="name">

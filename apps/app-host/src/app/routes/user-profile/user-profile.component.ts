@@ -330,7 +330,7 @@ export class UserProfileComponent implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.invoice.pop-up.update.success')
           );
-          this.getUser();
+          setTimeout(() => window.location.reload(), 1000);
         },
         error: (e) => {
           this.isLoadingUpdateInfo = false;
@@ -367,7 +367,7 @@ export class UserProfileComponent implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.invoice.pop-up.update.success')
           );
-          this.getUser();
+          setTimeout(() => window.location.reload(), 1000);
         },
         error: (e) => {
           this.isLoadingUpdateInfo = false;
@@ -410,7 +410,7 @@ export class UserProfileComponent implements OnInit {
             surname: res.familyName,
             email: res.email,
             phone: res.phoneNumber,
-            customer_code: res.userCode,
+            customer_code: res.customerCode,
             contract_code: res.contractCode,
             province: res.province,
             address: res.address,
@@ -470,10 +470,9 @@ export class UserProfileComponent implements OnInit {
           setTimeout(() => window.location.reload(), 1000);
         },
         error: (error) => {
-          console.log(error);
           this.notification.error(
-            error.statusText,
-            this.i18n.fanyi('app.account.form.fail')
+            '',
+            error.error.message
           );
         },
       });
@@ -501,10 +500,7 @@ export class UserProfileComponent implements OnInit {
     ]);
     this.form.controls['confirm_password'].updateValueAndValidity();
   }
-  onNewPassChange(data: any) {}
-
-  onRetypePassChange(data: any) {}
-
+  
   provinceList: ProvinceModel[] = [];
   getProvinces() {
     const baseUrl = environment['baseUrl'];

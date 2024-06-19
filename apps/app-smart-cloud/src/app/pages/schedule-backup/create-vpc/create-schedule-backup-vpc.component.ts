@@ -1,39 +1,39 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { getCurrentRegionAndProject } from '@shared';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { BackupVmService } from '../../../shared/services/backup-vm.service';
+import { InstancesService } from '../../instances/instances.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ScheduleService } from '../../../shared/services/schedule.service';
+import { PackageBackupService } from '../../../shared/services/package-backup.service';
+import { BackupVolumeService } from '../../../shared/services/backup-volume.service';
+import { VolumeService } from '../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { BackupVmService } from '../../../shared/services/backup-vm.service';
+import { ProjectService } from '../../../shared/services/project.service';
+import { SizeInCloudProject } from '../../../shared/models/project.model';
 import { BackupPackage, BackupVm, BackupVMFormSearch, VolumeAttachment } from '../../../shared/models/backup-vm';
-import { InstancesService } from '../../instances/instances.service';
 import { InstancesModel } from '../../instances/instances.model';
-import { BackupSchedule, FormCreateSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
-import { ScheduleService } from '../../../shared/services/schedule.service';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { PackageBackupService } from '../../../shared/services/package-backup.service';
-import { PackageBackupModel } from '../../../shared/models/package-backup.model';
-import { BackupVolumeService } from '../../../shared/services/backup-volume.service';
+import { BackupSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
 import { VolumeDTO } from '../../../shared/dto/volume.dto';
 import { BackupVolume } from '../../volume/component/backup-volume/backup-volume.model';
-import { VolumeService } from '../../../shared/services/volume.service';
 
 @Component({
-  selector: 'one-portal-create-schedule-backup',
-  templateUrl: './create-schedule-backup.component.html',
-  styleUrls: ['./create-schedule-backup.component.less']
+  selector: 'one-portal-create-schedule-backup-vpc',
+  templateUrl: './create-schedule-backup-vpc.component.html',
+  styleUrls: ['./create-schedule-backup-vpc.component.less'],
 })
-export class CreateScheduleBackupComponent implements OnInit {
+export class CreateScheduleBackupVpcComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  isLoading: boolean = false;
-  isLoadingAction: boolean = false;
+  isLoading: boolean = false
 
-  selectedOption: string = 'instance';
+  nameList: string[] = []
 
   validateForm = new FormGroup({
     formInstance: new FormGroup({
@@ -54,10 +54,6 @@ export class CreateScheduleBackupComponent implements OnInit {
         validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]
       }),
       mode: new FormControl(null as number),
-      backupPackage: new FormControl(null as number, {
-        nonNullable: true,
-        validators: [Validators.required]
-      }),
       months: new FormControl(1, {
         validators: [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]
       }),
@@ -87,10 +83,7 @@ export class CreateScheduleBackupComponent implements OnInit {
         validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]
       }),
       mode: new FormControl(null as number),
-      backupPackage: new FormControl(null as number, {
-        nonNullable: true,
-        validators: [Validators.required]
-      }),
+
       months: new FormControl(1, {
         validators: [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]
       }),
@@ -105,37 +98,6 @@ export class CreateScheduleBackupComponent implements OnInit {
       daysOfWeekMultiple: new FormControl([] as string[])
     })
   });
-
-
-  id: number;
-
-  volumeId: number;
-  instanceId: number;
-
-  nameList: string[] = [];
-
-  volumeAttachments: VolumeAttachment[] = [];
-  instanceName: string;
-  listInstance: InstancesModel[] = [];
-  listBackupVM: BackupVm[];
-  listInstanceNotUse: InstancesModel[] = [];
-  instanceSelected: any;
-
-  modeSelected: any;
-
-  backupPackageList: BackupPackage[] = [];
-  backupPackageSelected: any;
-
-  numberOfWeekChangeSelected: any;
-  daySelected: any;
-
-  lstBackupSchedules: BackupSchedule[];
-
-  listVolume: VolumeDTO[] = [];
-  listVolumeNotUseUnique: VolumeDTO[] = [];
-  backupVolumeList: BackupVolume[];
-  volumeSelected: any;
-  volumeName: string;
 
   modes = [
     { label: this.i18n.fanyi('schedule.backup.label.each.day'), value: 1 },
@@ -160,6 +122,37 @@ export class CreateScheduleBackupComponent implements OnInit {
     { label: this.i18n.fanyi('schedule.backup.sunday'), value: 7 }
   ];
 
+  sizeInCloudProject: SizeInCloudProject = new SizeInCloudProject();
+
+  isLoadingAction: boolean = false;
+
+  selectedOption: string = 'instance';
+
+  id: number;
+
+  volumeId: number;
+  instanceId: number;
+
+  volumeAttachments: VolumeAttachment[] = [];
+  instanceName: string;
+  listInstance: InstancesModel[] = [];
+  listBackupVM: BackupVm[];
+  listInstanceNotUse: InstancesModel[] = [];
+  instanceSelected: any;
+
+  modeSelected: any;
+
+  numberOfWeekChangeSelected: any;
+  daySelected: any;
+
+  lstBackupSchedules: BackupSchedule[];
+
+  listVolume: VolumeDTO[] = [];
+  listVolumeNotUseUnique: VolumeDTO[] = [];
+  backupVolumeList: BackupVolume[];
+  volumeSelected: any;
+  volumeName: string;
+
   constructor(private fb: NonNullableFormBuilder,
               private location: Location,
               private router: Router,
@@ -170,13 +163,12 @@ export class CreateScheduleBackupComponent implements OnInit {
               private datepipe: DatePipe,
               private notification: NzNotificationService,
               private backupScheduleService: ScheduleService,
-              private backupPackageService: PackageBackupService,
+              private projectService: ProjectService,
               private backupVolumeService: BackupVolumeService,
               private volumeService: VolumeService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
-
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
@@ -204,7 +196,6 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   onSelectionChange(): void {
     console.log('Selected option:', this.selectedOption);
-    this.getBackupPackage();
     if (this.selectedOption === 'instance') {
       this.validateForm.get('formVolume').clearValidators();
       this.validateForm.get('formVolume').updateValueAndValidity();
@@ -317,12 +308,6 @@ export class CreateScheduleBackupComponent implements OnInit {
     });
   }
 
-  getVolumeById(id) {
-    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
-      this.volumeName = data.name;
-    });
-  }
-
   modeChange(value) {
     if (value != undefined) {
       console.log('mode change', value);
@@ -429,23 +414,6 @@ export class CreateScheduleBackupComponent implements OnInit {
     }
   }
 
-  getBackupPackage() {
-    this.isLoading = true;
-    this.backupVmService.getBackupPackages().subscribe(data => {
-      console.log('backup packages: ', data.records);
-      this.backupPackageList = data?.records;
-      this.isLoading = false;
-      this.backupPackageSelected = this.backupPackageList[0]?.id;
-    });
-  }
-
-  onChangeBackupPackage(value) {
-    this.backupPackageSelected = value;
-    if (this.backupPackageSelected != undefined) {
-      this.getBackupPackageDetail(this.backupPackageSelected);
-    }
-  }
-
   numberOfWeekChange(value: string) {
     this.numberOfWeekChangeSelected = value;
   }
@@ -454,85 +422,15 @@ export class CreateScheduleBackupComponent implements OnInit {
     this.daySelected = value;
   }
 
-  backupPackageDetail = new PackageBackupModel();
-
-  getBackupPackageDetail(id) {
-    this.backupPackageService.detail(id, this.project).subscribe(data => {
-      this.backupPackageDetail = data;
-    });
-  }
-
-  doCreateScheduleBackup() {
-
-    console.log('click', this.validateForm.get('formInstance').valid);
-
+  setInitialValues(): void {
     if (this.selectedOption == 'instance') {
-      this.isLoadingAction = true
-      let formCreateSchedule = new FormCreateSchedule();
-      formCreateSchedule.customerId = this.tokenService.get()?.userId;
-      formCreateSchedule.name = this.validateForm.get('formInstance').get('name').value;
-      formCreateSchedule.description = this.validateForm.get('formInstance').get('description').value;
-      formCreateSchedule.maxBackup = this.validateForm.get('formInstance').get('maxBackup').value;
-      formCreateSchedule.mode = this.modeSelected;
-      formCreateSchedule.serviceType = 1;
-      formCreateSchedule.instanceId = this.validateForm.get('formInstance').get('instanceId').value;
-      formCreateSchedule.listAttachedVolume = this.validateForm.get('formInstance').get('volumeToBackupIds').value;
-      formCreateSchedule.backupPacketId = this.validateForm.get('formInstance').get('backupPackage').value;
-      formCreateSchedule.runtime = this.datepipe.transform(this.validateForm.get('formInstance').get('times').value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
-      if (formCreateSchedule.mode === 3) {
-        formCreateSchedule.intervalWeek = this.validateForm.get('formInstance').get('numberOfWeek').value;
-        formCreateSchedule.dayOfWeek = this.validateForm.get('formInstance').get('daysOfWeek').value;
-      }
-      if (formCreateSchedule.mode === 2) {
-        formCreateSchedule.daysOfWeek = this.validateForm.get('formInstance').get('daysOfWeekMultiple').value;
-      }
-      if (formCreateSchedule.mode === 4) {
-        formCreateSchedule.intervalMonth = this.validateForm.get('formInstance').get('months').value;
-        formCreateSchedule.dayOfMonth = this.validateForm.get('formInstance').get('date').value;
-      }
-      this.backupScheduleService.create(formCreateSchedule).subscribe(data => {
-        this.isLoadingAction = false
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.notify.create.success'));
-        this.nameList = [];
-        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
-      }, error => {
-        this.isLoadingAction = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.notify.create.fail') + '. ' + error.error.detail);
-      });
+      this.validateForm.get('formInstance').get('months').setValue(1);
+      this.validateForm.get('formInstance').get('date').setValue(1);
     } else {
-      this.isLoadingAction = true
-      let formCreateSchedule1 = new FormCreateSchedule();
-      formCreateSchedule1.customerId = this.tokenService.get()?.userId;
-      formCreateSchedule1.name = this.validateForm.get('formVolume').get('name').value;
-      formCreateSchedule1.description = this.validateForm.get('formVolume').get('description').value;
-      formCreateSchedule1.maxBackup = this.validateForm.get('formVolume').get('maxBackup').value;
-      formCreateSchedule1.mode = this.modeSelected;
-      formCreateSchedule1.serviceType = 2;
-      formCreateSchedule1.volumeId = this.validateForm.get('formVolume').get('volumeId').value;
-      formCreateSchedule1.backupPacketId = this.validateForm.get('formVolume').get('backupPackage').value;
-      formCreateSchedule1.runtime = this.datepipe.transform(this.validateForm.get('formVolume').get('times').value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
-      if (formCreateSchedule1.mode === 3) {
-        formCreateSchedule1.intervalWeek = this.validateForm.get('formVolume').get('numberOfWeek').value;
-        formCreateSchedule1.dayOfWeek = this.validateForm.get('formVolume').get('daysOfWeek').value;
-      }
-      if (formCreateSchedule1.mode === 2) {
-        formCreateSchedule1.daysOfWeek = this.validateForm.get('formVolume').get('daysOfWeekMultiple').value;
-      }
-      if (formCreateSchedule1.mode === 4) {
-        formCreateSchedule1.intervalMonth = this.validateForm.get('formVolume').get('months').value;
-        formCreateSchedule1.dayOfMonth = this.validateForm.get('formVolume').get('date').value;
-      }
-      this.backupScheduleService.create(formCreateSchedule1).subscribe(data => {
-        this.isLoadingAction = false
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.volume.notify.create.success'));
-        this.nameList = [];
-        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
-      }, error => {
-        this.isLoadingAction = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.volume.notify.create.fail') + '. ' + error.error.detail);
-      });
+      this.validateForm.get('formVolume').get('months').setValue(1);
+      this.validateForm.get('formVolume').get('date').setValue(1);
     }
-
+    this.cdr.detectChanges();
   }
 
   getListScheduleBackup() {
@@ -548,33 +446,23 @@ export class CreateScheduleBackupComponent implements OnInit {
     });
   }
 
-  setInitialValues(): void {
-    if (this.selectedOption == 'instance') {
-      this.validateForm.get('formInstance').get('months').setValue(1);
-      this.validateForm.get('formInstance').get('date').setValue(1);
-    } else {
-      this.validateForm.get('formVolume').get('months').setValue(1);
-      this.validateForm.get('formVolume').get('date').setValue(1);
-    }
-    this.cdr.detectChanges();
-  }
-
-
-  ngOnInit(): void {
+  ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
 
-    this.modeSelected = 1;
+    this.projectService.getByProjectId(this.project).subscribe(data => {
+      this.isLoading = false;
+      this.sizeInCloudProject = data;
+    }, error => {
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+      this.isLoading = false;
+    });
 
     this.setInitialValues();
-
     this.getListInstances();
     this.getInstanceById();
-    this.getBackupPackage();
     this.getListScheduleBackup();
     this.getListVolume();
   }
-
-
 }

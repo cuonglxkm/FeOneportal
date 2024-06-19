@@ -26,12 +26,13 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
 
   </ng-template>
   <div *ngIf="typeVPC != 1" style="display:flex;">
-    <div style="margin-right: 15px;">
+    <div style="margin-right: 15px;" *ngIf="packageBackupModel?.status === 'AVAILABLE'">
       <div nz-col nzSpan="4">
         <button nz-button nzType="primary"
                 nzSize="default" style="cursor: pointer;" (click)="navigateToExtend()">
@@ -40,7 +41,7 @@
         </button>
       </div>
     </div>
-    <div>
+    <div *ngIf="packageBackupModel?.status === 'AVAILABLE'">
       <div nz-col nzSpan="4">
         <button nz-button nzType="primary"
                 nzSize="default" style="cursor: pointer;" (click)="navigateToResize()">

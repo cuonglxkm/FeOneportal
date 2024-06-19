@@ -127,7 +127,7 @@ export class DetailBackupVmComponent implements OnInit {
   }
 
   getBackupPackage(value) {
-    this.backupPackageService.detail(value).subscribe(data => {
+    this.backupPackageService.detail(value, this.project).subscribe(data => {
       this.backupPackageDetail = data;
     });
   }

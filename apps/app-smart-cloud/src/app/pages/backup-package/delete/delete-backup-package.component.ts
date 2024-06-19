@@ -45,7 +45,7 @@ export class DeleteBackupPackageComponent implements AfterViewInit{
     this.isLoading = true;
     if (this.value == this.packageBackupModel?.packageName) {
       this.isInput = false;
-      this.packageBackupService.delete(this.packageBackupModel?.id).subscribe(data => {
+      this.packageBackupService.delete(this.packageBackupModel?.id, this.region, this.project).subscribe(data => {
         this.isLoading = false;
         this.isVisible = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.delete.package.success'));

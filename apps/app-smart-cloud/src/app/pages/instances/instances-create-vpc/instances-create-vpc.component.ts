@@ -208,6 +208,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.getAllSecurityGroup();
     this.getListNetwork();
     this.getInfoVPC();
+    this.getListOptionGpuValue();
     this.breakpointObserver
       .observe([
         Breakpoints.XSmall,
@@ -482,18 +483,27 @@ export class InstancesCreateVpcComponent implements OnInit {
   }
   initSSD(): void {
     if (!this.disableSSD) {
-    this.activeBlockHDD = false;
-    this.activeBlockSSD = true;
-    this.remainingVolume =
-      this.infoVPC.cloudProject.quotaSSDInGb -
-      this.infoVPC.cloudProjectResourceUsed.ssd;
-    this.instanceCreate.volumeSize = 0;
-    this.cdr.detectChanges();
+      this.activeBlockHDD = false;
+      this.activeBlockSSD = true;
+      this.remainingVolume =
+        this.infoVPC.cloudProject.quotaSSDInGb -
+        this.infoVPC.cloudProjectResourceUsed.ssd;
+      this.instanceCreate.volumeSize = 0;
+      this.cdr.detectChanges();
     }
   }
   //#endregion
 
   //#region  cấu hình
+  listOptionGpuValue: number[] = [];
+  getListOptionGpuValue() {
+    this.configurationService
+      .getConfigurations('OPTIONGPUVALUE')
+      .subscribe(
+        (data) => (this.listOptionGpuValue = data.valueString.split(', ').map(Number))
+      );
+  }
+
   isCustomconfig = true;
   isGpuConfig = false;
   listGPUType: OfferItem[] = [];
@@ -550,6 +560,9 @@ export class InstancesCreateVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
+    this.listOptionGpuValue = this.listOptionGpuValue.filter(
+      (e) => e <= this.remainingGpu
+    );
     this.cdr.detectChanges();
   }
 
@@ -571,6 +584,9 @@ export class InstancesCreateVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
+    this.listOptionGpuValue = this.listOptionGpuValue.filter(
+      (e) => e <= this.remainingGpu
+    );
   }
 
   resetData() {

@@ -225,12 +225,21 @@ export class OrderService extends BaseService {
     );
   }
 
+  createNewPayment(id: number): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders + `/new-payment`,
+      id,
+      this.httpOptions
+    );
+  }
+
   cancelOrder(id: number): Observable<any> {
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.orders + `/${id}/cancel`,
       this.httpOptions
     );
   }
+  
 
   getTotalAmount(data: any): Observable<any> {
     return this.http.post<any>(
