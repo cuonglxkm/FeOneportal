@@ -6,6 +6,7 @@ export class OrderItemPrices {
   duration: number
   remainDays: any
   daysOfMonth: number
+  details: any
   createdDate: Date
   expiredDate: Date
   unitPricePerDay: {
