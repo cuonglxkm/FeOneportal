@@ -90,6 +90,7 @@ isAdjust:boolean= true;
       .subscribe(
       data => {
         this.dataTotal = data;
+        console.log("object dataTotal", this.dataTotal)
        
       }
     )
@@ -115,12 +116,12 @@ isAdjust:boolean= true;
       this.listOfData.push({name : this.i18n.fanyi('app.amount') + " Load Balancer",total: total.quotaLoadBalancerSDNCount,used: used.loadBalancerSdnCount,remain:(total.quotaLoadBalancerSDNCount - used.loadBalancerSdnCount)});
       this.listOfData.push({name : this.i18n.fanyi('app.capacity') + " File System (GB)",total: total.quotaShareInGb + " GB",used: used.quotaShareInGb + " GB",remain:(total.quotaShareInGb - used.quotaShareInGb) + " GB"});
       this.listOfData.push({name : this.i18n.fanyi('app.capacity') + " File System Snapshot (GB)",total:total.quotaShareSnapshotInGb + " GB",used:used.quotaShareSnapshotInGb + " GB",remain:(total.quotaShareSnapshotInGb - used.quotaShareSnapshotInGb) + " GB"});
-      this.percentCpu = (used.cpu/total.quotavCpu)*100;
-      this.percentRam = (used.ram/total.quotaRamInGb)*100;
-      this.percentHHD = (used.hdd/total.quotaHddInGb)*100;
-      this.percentSSD = (used.ssd/total.quotaSSDInGb)*100;
+      this.percentCpu =   (used.cpu/total.quotavCpu)*100;
+      this.percentRam = Math.floor(used.ram/total.quotaRamInGb)*100;
+      this.percentHHD = Math.floor(used.hdd/total.quotaHddInGb)*100;
+      this.percentSSD = Math.floor(used.ssd/total.quotaSSDInGb)*100;
       this.percentIPFloating = (used.ssd/total.quotaSSDInGb)*100;
-      this.percentBackup = (used.backup/total.quotaBackupVolumeInGb)*100;
+      this.percentBackup = Math.floor(used.backup/total.quotaBackupVolumeInGb)*100;
     } else {
       this.listOfData.push({name : "Networks",total: total.quotaNetworkCount,used:used.networkCount,remain:(total.quotaNetworkCount - used.networkCount)});
       this.listOfData.push({name : "Security Group",total: total.quotaSecurityGroupCount,used:used.securityGroupCount,remain:(total.quotaSecurityGroupCount - used.securityGroupCount)});

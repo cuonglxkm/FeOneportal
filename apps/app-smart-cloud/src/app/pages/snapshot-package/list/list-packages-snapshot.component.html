@@ -111,139 +111,39 @@
       <thead>
       <tr>
         <th nzLeft>Tên gói</th>
-        <th nzBreakWord>Dung lượng</th>
-        <th nzBreakWord>Dung lượng đã dùng</th>
-        <th nzBreakWord>Dung lượng còn lại</th>
-        <th nzBreakWord>Ngày hết hạn</th>
+        <th nzBreakWord>Dung lượng HDD (GB)</th>
+        <th nzBreakWord>Dung lượng SDD (GB)</th>
         <th nzBreakWord>Trạng thái</th>
+        <th nzBreakWord>Ngày khởi tạo</th>
+        <th nzBreakWord>Ngày hết hạn</th>
         <th nzBreakWord>Thao tác</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let data of fixedTable.data">
         <td><a [routerLink]="'/app-smart-cloud/Snapshot/packages/detail/'+ data.id">{{data.packageName}}</a></td>
-        <td>{{data.sizeInGB}} (GB)</td>
-        <td>{{data.usedSize}} (GB)</td>
-        <td>{{data.totalSize - data.usedSize}} (GB)</td>
+        <td>{{data.totalSizeHDD}}</td>
+        <td>{{data.totalSizeSSD}}</td>
+        <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+          <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">{{ statusModel.status }}</td>
+        </ng-container>
+        <td>{{data.creationDate | date:'dd/MM/yyyy'}}</td>
         <td>{{data.expirationDate | date:'dd/MM/yyyy'}}</td>
-        <td [ngSwitch]="data.status.trim()">
-          <span *ngSwitchCase="'AVAILABLE'" class="available">Đang hoạt động</span>
-          <span *ngSwitchCase="'CREATING'" class="available">Đang khởi tạo</span>
-          <span *ngSwitchCase="'SUSPENDED'" class="error">Tạm ngưng</span>
-          <span *ngSwitchCase="'DELETEING'" class="error">Đang xóa</span>
-        </td>
         <td>
           <div>
-            <!---Chỉnh sửa------>
-            <span style="color: #0066B3; margin-right: 10px; cursor: pointer"
-                  nz-tooltip
-                  nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom"
-                  nz-icon
-                  nzType="edit"
-                  nzTheme="outline"
-                  (click)="showUpdate(data)"></span>
-            <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin gói Snapshot" nzTabScrollList="true"
-                      (nzOnCancel)="handleUpdateCancel()" nzCentered>
-              <div *nzModalTitle>
-                <span class="text-modal-title">Chỉnh sửa thông tin gói Snapshot</span>
-              </div>
-              <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
-                <form nz-form [formGroup]="validateForm" nzLayout="vertical">
-                  <nz-form-item>
-                    <nz-form-label nzFor="name">
-                      <div style="margin-top: 15px;">
-                        <span>Tên gói Snapshot</span>
-                        (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                        <span nz-icon nzType="question-circle"
-                              nzTheme="outline"
-                              nz-popover
-                              [nzPopoverContent]="'Tên gói Snapshot của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.'"
-                              nzPopoverPlacement="bottom"></span>
-                      </div>
-                    </nz-form-label>
-                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                      <input nz-input
-                             formControlName="namePackage"
-                             class="input-custom"
-                             [placeholder]="'Nhập tên gói'" [maxLength]="70"/>
-                      <ng-template #nameErrorTpl let-control>
-                        <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Snapshot</ng-container>
-                        <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt</ng-container>
-                        <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
-                      </ng-template>
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label nzFor="description">
-                      <div class="label">
-                        <span>Mô tả</span>
-                      </div>
-                    </nz-form-label>
-                    <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-                    <textarea nz-input
-                              formControlName="description"
-                              id="description"
-                              [placeholder]="'Nhập mô tả'"
-                              [maxLength]="255"
-                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
-                      <ng-template #descriptionErrorTpl let-control>
-                        <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự
-                        </ng-container>
-                      </ng-template>
-                    </nz-form-control>
-                  </nz-form-item>
-                </form>
-              </div>
-              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                <button nz-button nzType="default" (click)="handleUpdateCancel()" class="button-cancel">
-                  <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
-                </button>
-                <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleUpdateOk()"
-                        [nzLoading]="isLoadingUpdate"
-                        class="button-ok">
-                  <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
-                </button>
-              </div>
-            </nz-modal>
-            <!---Điều chỉnh dung lượng------>
-            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;"
-                  nz-tooltip
-                  nzTooltipTitle="Điều chỉnh dung lượng" nzTooltipPlacement="bottom"
-                  nz-icon nzType="arrows-alt" nzTheme="outline" (click)="navigateToEdit(data.id)"> </span>
-            <!---Xóa------>
-            <span style="color: #0066B3; cursor: pointer;"
-                  nz-tooltip
-                  nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
-                  nz-icon nzType="delete" nzTheme="outline"
-                  (click)="showDelete(data)"></span>
-            <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xoá gói Snapshot" nzTabScrollList="true"
-                      (nzOnCancel)="handleDeleteCancel()" nzCentered>
-              <div *nzModalTitle>
-                <span class="text-modal-title">Xoá gói Snapshot</span>
-              </div>
-              <div *nzModalContent>
-                <nz-alert nzBanner
-                          [nzMessage]="'Bạn đang thực hiện xoá gói Snapshot ' + packageName"
-                          nzShowIcon
-                ></nz-alert>
-                <p class="text-p" style="margin-top: 10px">Đế thực hiện xoá gói Snapshot, vui lòng nhập tên gói để xác nhận.</p>
-                <input placeholder="Nhập tên gói snapshot" class="input-custom" nz-input [(ngModel)]="valueDelete" (ngModelChange)="onInputChangeDelete($event)" type="text" />
-                <nz-alert nzBanner style="margin-top: 15px;"
-                          [nzMessage]="'Các lịch Snapshot tự động được tạo từ Gói Snapshot này cũng sẽ bị xóa.'"
-                          nzShowIcon
-                ></nz-alert>
-              </div>
-              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                <button nz-button nzType="default" (click)="handleDeleteCancel()" class="button-cancel">
-                  <span nz-icon nzType="close" nzTheme="outline" style="color: #0066b0;"></span>Hủy
-                </button>
-                <button nz-button nzType="primary"
-                        (click)="handleDeletedOk()"
-                        [nzLoading]="isLoadingDelete"
-                        class="button-ok">
-                  <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận</button>
-              </div>
-            </nz-modal>
+<!--            &lt;!&ndash;-Chỉnh sửa&#45;&#45;&#45;&#45;&ndash;&gt;-->
+<!--            <span style="color: #0066B3; margin-right: 10px; cursor: pointer"-->
+<!--                  nz-tooltip-->
+<!--                  nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom"-->
+<!--                  nz-icon-->
+<!--                  nzType="edit"-->
+<!--                  nzTheme="outline"-->
+<!--                  ></span>-->
+            <img src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nzTooltipTitle="{{'app.text.edit' | i18n}}"
+                 style="cursor: pointer; width: 20px; height: 20px;" />
+            <img src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
+                 nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"
+                 (click)="showDelete(data)"/>
           </div>
         </td>
       </tr>
@@ -255,4 +155,97 @@
 <!--      </div>-->
 <!--    </ng-template>-->
   </nz-card>
+<!--  modal xoa-->
+  <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xoá gói Snapshot" nzTabScrollList="true"
+            (nzOnCancel)="handleDeleteCancel()" nzCentered>
+    <div *nzModalTitle>
+      <span class="text-modal-title">Xoá gói Snapshot</span>
+    </div>
+    <div *nzModalContent>
+      <nz-alert nzBanner
+                [nzMessage]="'Bạn đang thực hiện xoá gói Snapshot ' + packageName"
+                nzShowIcon
+      ></nz-alert>
+      <p class="text-p" style="margin-top: 10px">Đế thực hiện xoá gói Snapshot, vui lòng nhập tên gói để xác nhận.</p>
+      <input placeholder="Nhập tên gói snapshot" class="input-custom" nz-input [(ngModel)]="valueDelete" (ngModelChange)="onInputChangeDelete($event)" type="text" />
+      <nz-alert nzBanner style="margin-top: 15px;"
+                [nzMessage]="'Các lịch Snapshot tự động được tạo từ Gói Snapshot này cũng sẽ bị xóa.'"
+                nzShowIcon
+      ></nz-alert>
+    </div>
+    <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+      <button nz-button nzType="default" (click)="handleDeleteCancel()" class="button-cancel">
+        <span nz-icon nzType="close" nzTheme="outline" style="color: #0066b0;"></span>Hủy
+      </button>
+      <button nz-button nzType="primary"
+              (click)="handleDeletedOk()"
+              [nzLoading]="isLoadingDelete"
+              class="button-ok">
+        <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận</button>
+    </div>
+  </nz-modal>
+  <!--  modal Chinh sua-->
+  <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin gói Snapshot" nzTabScrollList="true"
+            (nzOnCancel)="handleUpdateCancel()" nzCentered>
+    <div *nzModalTitle>
+      <span class="text-modal-title">Chỉnh sửa thông tin gói Snapshot</span>
+    </div>
+    <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
+      <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+        <nz-form-item>
+          <nz-form-label nzFor="name">
+            <div style="margin-top: 15px;">
+              <span>Tên gói Snapshot</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+              <span nz-icon nzType="question-circle"
+                    nzTheme="outline"
+                    nz-popover
+                    [nzPopoverContent]="'Tên gói Snapshot của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.'"
+                    nzPopoverPlacement="bottom"></span>
+            </div>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+            <input nz-input
+                   formControlName="namePackage"
+                   class="input-custom"
+                   [placeholder]="'Nhập tên gói'" [maxLength]="70"/>
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Snapshot</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt</ng-container>
+              <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="description">
+            <div class="label">
+              <span>Mô tả</span>
+            </div>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+                    <textarea nz-input
+                              formControlName="description"
+                              id="description"
+                              [placeholder]="'Nhập mô tả'"
+                              [maxLength]="255"
+                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+            <ng-template #descriptionErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+    <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+      <button nz-button nzType="default" (click)="handleUpdateCancel()" class="button-cancel">
+        <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      </button>
+      <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleUpdateOk()"
+              [nzLoading]="isLoadingUpdate"
+              class="button-ok">
+        <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      </button>
+    </div>
+  </nz-modal>
 </nz-content>

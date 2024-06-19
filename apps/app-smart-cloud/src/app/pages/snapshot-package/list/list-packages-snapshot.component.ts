@@ -119,7 +119,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       .subscribe(data => {
       this.isLoading = false
       console.log(data);
-      
+
       this.response = data
 
     }, error => {
@@ -138,7 +138,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.valueDelete = value
   }
 
-  
+
 
   showDelete(data: PackageSnapshotModel) {
     this.isVisibleDelete = true
@@ -183,6 +183,10 @@ export class ListPackagesSnapshotComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
-    
+
+  }
+
+  showUpdate(data: PackageSnapshotModel) {
+    this.isVisibleUpdate = true;
   }
 }

@@ -46,6 +46,8 @@ export interface VolumeBackup {
   status: string,
   typeName: string
   volumeType: string
+  isEncryption: false
+  isMultiAttach: false
 }
 
 export interface SystemInfoBackup {

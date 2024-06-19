@@ -78,10 +78,6 @@ export class DetailBackupVmComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup-vm'])
   }
 
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/backup-vm'])
-  }
-
   convertString(str: string): string {
     const parts = str?.trim().split('\n');
     if (parts?.length === 1) {
@@ -145,7 +141,7 @@ export class DetailBackupVmComponent implements OnInit {
     this.project = regionAndProject.projectId
     console.log(selectedDetailBackupId);
     if (selectedDetailBackupId !== undefined || selectedDetailBackupId !== null || selectedDetailBackupId !== '') {
-      this.getInfoProjectVpc(parseInt(selectedDetailBackupId))
+      this.getInfoProjectVpc(this.project)
       this.getBackupVmById(parseInt(selectedDetailBackupId))
     }
   }

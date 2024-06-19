@@ -17,22 +17,22 @@
           </div>
         </nz-card>
         <ng-template #infoService>
-          <div *ngFor="let data of subscriptionDashboardService?.details"  style="width: 400px">
+          <div *ngFor="let data of subscriptionDashboardService?.details"  style="width: 300px">
             <nz-row *ngIf="data.serviceTypeName.toUpperCase() != 'Vpc'.toUpperCase()">
               <nz-col nzSpan="12">{{ data.serviceTypeName }}</nz-col>
-              <nz-col class="text-right" nzSpan="12">{{ data.dataCount }} {{ data.serviceTypeName }}</nz-col>
+              <nz-col class="text-right" nzSpan="12">{{ data.dataCount }}</nz-col>
             </nz-row>
             <nz-collapse nzGhost *ngIf="data.serviceTypeName.toUpperCase() == 'Vpc'.toUpperCase()">
               <nz-collapse-panel [nzHeader]="header" [nzActive]="false">
                 <ng-template #header>
                   <div style="display: flex; width: 100%;">
                     <div style="flex: 1;">{{ data.serviceTypeName }}</div>
-                    <div class="text-right" style="flex: 1;">{{ data.dataCount }} {{ data.serviceTypeName }}</div>
+                    <div class="text-right" style="flex: 1;">{{ data.dataCount }}</div>
                   </div>
                 </ng-template>
                 <nz-row *ngFor="let item of data.details">
                   <nz-col nzSpan="12">{{ item.serviceTypeName }}</nz-col>
-                  <nz-col class="text-right" nzSpan="12">{{ item.dataCount }} {{ item.serviceTypeName }}</nz-col>
+                  <nz-col class="text-right" nzSpan="12">{{ item.dataCount }}</nz-col>
                 </nz-row>
               </nz-collapse-panel>
             </nz-collapse>
@@ -55,22 +55,22 @@
           </div>
         </nz-card>
         <ng-template #active>
-          <div *ngFor="let data of subscriptionDashboardActive?.details"  style="width: 400px">
+          <div *ngFor="let data of subscriptionDashboardActive?.details"  style="width: 300px">
             <nz-row *ngIf="data.serviceTypeName.toUpperCase() != 'Vpc'.toUpperCase()">
               <nz-col nzSpan="12">{{ data.serviceTypeName }}</nz-col>
-              <nz-col class="text-right" nzSpan="12">{{ data.dataCount }} {{ data.serviceTypeName }}</nz-col>
+              <nz-col class="text-right" nzSpan="12">{{ data.dataCount }}</nz-col>
             </nz-row>
             <nz-collapse nzGhost *ngIf="data.serviceTypeName.toUpperCase() == 'Vpc'.toUpperCase()">
               <nz-collapse-panel [nzHeader]="header" [nzActive]="false">
                 <ng-template #header>
                   <div style="display: flex; width: 100%;">
                     <div style="flex: 1;">{{ data.serviceTypeName }}</div>
-                    <div class="text-right" style="flex: 1;">{{ data.dataCount }} {{ data.serviceTypeName }}</div>
+                    <div class="text-right" style="flex: 1;">{{ data.dataCount }}</div>
                   </div>
                 </ng-template>
                 <nz-row *ngFor="let item of data.details">
                   <nz-col nzSpan="12">{{ item.serviceTypeName }}</nz-col>
-                  <nz-col class="text-right" nzSpan="12">{{ item.dataCount }} {{ item.serviceTypeName }}</nz-col>
+                  <nz-col class="text-right" nzSpan="12">{{ item.dataCount }}</nz-col>
                 </nz-row>
               </nz-collapse-panel>
             </nz-collapse>
@@ -93,22 +93,22 @@
           </div>
         </nz-card>
         <ng-template #NearExpire>
-          <div *ngFor="let data of subscriptionDashboardNearExpire?.details"  style="width: 400px">
+          <div *ngFor="let data of subscriptionDashboardNearExpire?.details"  style="width: 300px">
             <nz-row *ngIf="data.serviceTypeName.toUpperCase() != 'Vpc'.toUpperCase()">
               <nz-col nzSpan="12">{{ data.serviceTypeName }}</nz-col>
-              <nz-col class="text-right" nzSpan="12">{{ data.dataCount }} {{ data.serviceTypeName }}</nz-col>
+              <nz-col class="text-right" nzSpan="12">{{ data.dataCount }}</nz-col>
             </nz-row>
             <nz-collapse nzGhost *ngIf="data.serviceTypeName.toUpperCase() == 'Vpc'.toUpperCase()">
               <nz-collapse-panel [nzHeader]="header" [nzActive]="false">
                 <ng-template #header>
                   <div style="display: flex; width: 100%;">
                     <div style="flex: 1;">{{ data.serviceTypeName }}</div>
-                    <div class="text-right" style="flex: 1;">{{ data.dataCount }} {{ data.serviceTypeName }}</div>
+                    <div class="text-right" style="flex: 1;">{{ data.dataCount }} </div>
                   </div>
                 </ng-template>
                 <nz-row *ngFor="let item of data.details">
                   <nz-col nzSpan="12">{{ item.serviceTypeName }}</nz-col>
-                  <nz-col class="text-right" nzSpan="12">{{ item.dataCount }} {{ item.serviceTypeName }}</nz-col>
+                  <nz-col class="text-right" nzSpan="12">{{ item.dataCount }}</nz-col>
                 </nz-row>
               </nz-collapse-panel>
             </nz-collapse>
@@ -131,22 +131,22 @@
           </div>
         </nz-card>
         <ng-template #expire>
-          <div *ngFor="let data of subscriptionDashboardExpire?.details"  style="width: 400px">
+          <div *ngFor="let data of subscriptionDashboardExpire?.details"  style="width: 300px">
             <nz-row *ngIf="data.serviceTypeName.toUpperCase() != 'Vpc'.toUpperCase()">
               <nz-col nzSpan="12">{{ data.serviceTypeName }}</nz-col>
-              <nz-col class="text-right" nzSpan="12">{{ data.dataCount }} {{ data.serviceTypeName }}</nz-col>
+              <nz-col class="text-right" nzSpan="12">{{ data.dataCount }}</nz-col>
             </nz-row>
             <nz-collapse nzGhost *ngIf="data.serviceTypeName.toUpperCase() == 'Vpc'.toUpperCase()">
               <nz-collapse-panel [nzHeader]="header" [nzActive]="false">
                 <ng-template #header>
                   <div style="display: flex; width: 100%;">
                     <div style="flex: 1;">{{ data.serviceTypeName }}</div>
-                    <div class="text-right" style="flex: 1;">{{ data.dataCount }} {{ data.serviceTypeName }}</div>
+                    <div class="text-right" style="flex: 1;">{{ data.dataCount }}</div>
                   </div>
                 </ng-template>
                 <nz-row *ngFor="let item of data.details">
                   <nz-col nzSpan="12">{{ item.serviceTypeName }}</nz-col>
-                  <nz-col class="text-right" nzSpan="12">{{ item.dataCount }} {{ item.serviceTypeName }}</nz-col>
+                  <nz-col class="text-right" nzSpan="12">{{ item.dataCount }}</nz-col>
                 </nz-row>
               </nz-collapse-panel>
             </nz-collapse>
