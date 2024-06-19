@@ -78,6 +78,7 @@
           nz-input
           [type]="passwordVisible ? 'text' : 'password'"
           formControlName="password"
+          [maxlength]="16"
           placeholder="{{'app.input.password' | i18n}}"
         />
       </nz-input-group>
@@ -100,6 +101,7 @@
           nz-input
           [type]="passwordVisible1 ? 'text' : 'password'"
           formControlName="confirm"
+          [maxlength]="16"
           placeholder="{{'app.register.pass.try' | i18n}}"
         />
       </nz-input-group>
