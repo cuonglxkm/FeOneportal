@@ -456,7 +456,7 @@ export class CreateScheduleBackupComponent implements OnInit {
   backupPackageDetail = new PackageBackupModel();
 
   getBackupPackageDetail(id) {
-    this.backupPackageService.detail(id).subscribe(data => {
+    this.backupPackageService.detail(id, this.project).subscribe(data => {
       this.backupPackageDetail = data;
     });
   }
