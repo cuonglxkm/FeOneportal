@@ -88,6 +88,7 @@ export class PaymentDetailComponent implements OnInit {
       if(data && data["serviceId"] && Number(data["serviceId"]) == this.id){
         this.getPaymentDetail();
         this.getOrderDetail(this.orderNumber);
+        this.cdr.detectChanges();
       }
     });
   }
