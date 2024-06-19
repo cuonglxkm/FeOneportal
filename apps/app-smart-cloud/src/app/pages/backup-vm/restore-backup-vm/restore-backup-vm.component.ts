@@ -509,7 +509,7 @@ export class RestoreBackupVmComponent implements OnInit {
   }
 
   getBackupPackage(value) {
-    this.backupPackageService.detail(value).subscribe((data) => {
+    this.backupPackageService.detail(value, this.project).subscribe((data) => {
       this.backupPackage = data;
     });
   }

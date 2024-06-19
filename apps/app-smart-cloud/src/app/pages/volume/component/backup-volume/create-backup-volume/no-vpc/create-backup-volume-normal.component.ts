@@ -56,7 +56,7 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
   backupPackageDetail: PackageBackupModel = new PackageBackupModel();
   backupPackages: PackageBackupModel[] = [];
   isLoadingBackupPackage: boolean = false
-  listVolumes: BaseResponse<VolumeDTO[]>
+  listVolumes:VolumeDTO[]
   isLoading: boolean = false
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -95,16 +95,20 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
   }
 
   onChangeBackupPackage(value) {
-    this.backupPackageService.detail(value).subscribe(data => {
+    this.backupPackageService.detail(value, this.project).subscribe(data => {
       this.backupPackageDetail = data;
     });
   }
 
   getBackupPackage() {
     this.isLoadingBackupPackage = true;
-    this.backupPackageService.search(null, null, 9999, 1).subscribe(data => {
-      this.backupPackages = data.records;
+    this.backupPackageService.search(null, null, this.project, this.region, 9999, 1).subscribe(data => {
       this.isLoadingBackupPackage = false;
+      data.records.forEach(item => {
+        if(['ACTIVE', 'AVAILABLE'].includes(item.status)) {
+          this.backupPackages?.push(item)
+        }
+      })
       console.log('backup package', this.backupPackages);
       this.validateForm.controls.backupPacketId.setValue(this.backupPackages[0].id);
     });
@@ -119,9 +123,15 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
   }
 
   getListVolumes() {
+    this.isLoading = true
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, '', '').subscribe(data => {
-      this.listVolumes = data;
+      this.isLoading = false
+      this.listVolumes = data.records;
+      this.listVolumes = this.listVolumes.filter(item => item.status === 'KHOITAO')
       this.validateForm.controls.volumeId.setValue(this.listVolumes[0]?.id)
+    }, error => {
+      this.isLoading = false
+      this.listVolumes = [];
     })
   }
 
