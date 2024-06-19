@@ -200,6 +200,7 @@ export class DashboardComponent implements OnInit {
         break;
       case 13:
         //OBJECT STORAGE
+        this.router.navigate(['/app-smart-cloud/object-storage/extend/'+serviceInstanceId])
         break;
       case 14:
         this.router.navigate(['/app-smart-cloud/backup/packages/extend/', serviceInstanceId]);
@@ -224,6 +225,7 @@ export class DashboardComponent implements OnInit {
         break;
       case 20:
         //VPN_SITE_TO_SITE
+        this.router.navigate(['/app-smart-cloud/vpn-site-to-site/extend/' + serviceInstanceId])
         break;
       case 21:
         //KAFKA
@@ -236,6 +238,7 @@ export class DashboardComponent implements OnInit {
         break;
       case 24:
         //FILE SYSTEM SNAPSHOT
+        this.router.navigate(['/app-smart-cloud/file-system-snapshot/extend/' + serviceInstanceId])
         break;
       case 100:
         //OTHER
