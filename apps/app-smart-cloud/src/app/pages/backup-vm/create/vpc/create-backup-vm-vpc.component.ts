@@ -54,6 +54,8 @@ export class CreateBackupVmVpcComponent implements OnInit {
   sizeOfOs: number;
   sizeOfVlAttach: number = 0;
 
+  totalStorageVolumeAttach: number = 0;
+
   validateForm: FormGroup<{
     instanceId: FormControl<number>;
     backupName: FormControl<string>;
@@ -179,7 +181,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
     this.instanceService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId).subscribe(data => {
       console.log('dataa', data);
       this.listInstances = data.records;
-      console.log('dataa', this.instance);
+      this.listInstances = this.listInstances.filter(item => item.taskState === 'ACTIVE')
     });
   }
 
@@ -192,7 +194,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
 
   getBackupPackage() {
     this.isLoading = true;
-    this.backupPackageService.search(null, null, 9999, 1).subscribe(data => {
+    this.backupPackageService.search(null, null, this.project, this.region,9999, 1).subscribe(data => {
       this.backupPackages = data.records;
       this.isLoading = false;
       console.log('backup package', this.backupPackages);
