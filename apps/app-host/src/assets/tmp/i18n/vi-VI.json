@@ -1198,7 +1198,7 @@
 
   "app.order.cancel.title": "Xác nhận Hủy đơn hàng",
   "app.order.cancel.des": "Quý khách có chắc chắn muốn <b>Hủy đơn hàng</b>?",
-  "app.order.cancel.des2": "Xác nhận Hủy đơn hàng",
+  "app.order.cancel.des2": "Vui lòng cân nhắc thật kỹ trước khi click nút Xác nhận.",
 
   "app.users.listUser": "Danh sách Users",
   "app.users.detail": "Chi tiết User",
