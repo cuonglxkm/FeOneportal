@@ -1143,6 +1143,7 @@
   "app.breadcrumb.order": "Đơn hàng",
   "app.order.title": "Danh sách đơn hàng",
   "app.order.status": "Trạng thái",
+  "app.order.status.order1": "Trạng thái ĐH",
   "app.order.search": "Tìm kiếm mã đơn hàng",
   "app.order.ordinalNumber": "STT",
   "app.order.ordercode": "Mã đơn hàng",
@@ -1161,6 +1162,7 @@
   "app.order.status.New": "Tạo mới",
   "app.order.status.InProcessing": "Đang cài đặt",
   "app.order.status.All": "Tất cả",
+  "app.order.status.AllStatus": "Tất cả trạng thái",
   "app.order.status.Success": "Thành công",
   "app.order.status.Trouble": "Sự cố",
   "app.order.status.Installed": "Đã cài đặt",
@@ -1198,7 +1200,7 @@
 
   "app.order.cancel.title": "Xác nhận Hủy đơn hàng",
   "app.order.cancel.des": "Quý khách có chắc chắn muốn <b>Hủy đơn hàng</b>?",
-  "app.order.cancel.des2": "Xác nhận Hủy đơn hàng",
+  "app.order.cancel.des2": "Vui lòng cân nhắc thật kỹ trước khi click nút Xác nhận.",
 
   "app.users.listUser": "Danh sách Users",
   "app.users.detail": "Chi tiết User",

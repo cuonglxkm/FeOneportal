@@ -23,8 +23,16 @@
       <nz-space [nzSize]="24">
         <div *nzSpaceItem>
           <nz-select class="input-select-custom" [(ngModel)]="searchStatus" style="width: 160px;"
-            (ngModelChange)="onChange($event)" [nzPlaceHolder]="'app.order.status' | i18n">
-            <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+            (ngModelChange)="onChange($event)" [nzPlaceHolder]="'app.order.status.order1' | i18n">
+            <nz-option *ngFor="let item of statusOrder" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+          </nz-select>
+        </div>
+      </nz-space>
+      <nz-space [nzSize]="24" style="margin-left: 10px;">
+        <div *nzSpaceItem>
+          <nz-select class="input-select-custom" [(ngModel)]="searchStatus" style="width: 180px;"
+            (ngModelChange)="onChange($event)" [nzPlaceHolder]="'app.order.status.installation' | i18n">
+            <nz-option *ngFor="let item of statusInstall" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
           </nz-select>
         </div>
       </nz-space>

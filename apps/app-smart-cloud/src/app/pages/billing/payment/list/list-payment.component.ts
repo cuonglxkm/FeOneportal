@@ -132,8 +132,8 @@ export class ListPaymentComponent implements OnInit {
       this.dateRange = value;
       this.fromDate = value[0];
       this.toDate = value[1];
-      this.fromDateFormatted = format(value[0], 'dd-MM-yyyy');
-      this.toDateFormatted = format(value[1], 'dd-MM-yyyy');
+      this.fromDateFormatted = format(value[0], 'yyyy-MM-dd');
+      this.toDateFormatted = format(value[1], 'yyyy-MM-dd');
       this.getListInvoices();
     } else {
       this.dateRange = null;
@@ -236,20 +236,6 @@ export class ListPaymentComponent implements OnInit {
     this.pageSize = 10;
     this.pageIndex = 1;
   }
-
-  disabledDate = (current: Date): boolean => {
-    const now = new Date();
-    // Nếu "from date" đã được chọn, tính 30 ngày từ "from date", ngược lại tính từ ngày hiện tại
-    const startDate = this.fromDate || now;
-    const thirtyDaysAgo = new Date(startDate);
-    thirtyDaysAgo.setDate(startDate.getDate() - 30);
-
-    const thirtyDaysLeft = new Date();
-    thirtyDaysLeft.setDate(startDate.getDate() + 30);
-
-    // Disable các ngày trước ngày tính từ "from date"
-    return current < thirtyDaysAgo || current > thirtyDaysLeft;
-  };
 
   downloadMany() {
     this.downloadList

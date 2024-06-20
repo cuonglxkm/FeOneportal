@@ -44,6 +44,7 @@ export class ItemDTO{
   totalAmount: PaymentInfoDTO;
   serviceDetail: any;
   serviceNameLink ?: string
+  serviceType?: string
 }
 
 export class PaymentInfoDTO{

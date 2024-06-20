@@ -11,7 +11,7 @@ import { getCurrentRegionAndProject } from "@shared";
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
-
+import { format } from 'date-fns';
 @Component({
   selector: 'one-portal-list-order',
   templateUrl: './order-list.component.html',
@@ -25,26 +25,26 @@ export class OrderListComponent implements OnInit {
   searchStatus?: number = null;
   searchName?: string;
 
-  // status = [
-  //   { label: this.i18n.fanyi("app.order.status.All"), value: null },
-  //   { label: this.i18n.fanyi("app.order.status.New"), value: 1 },
-  //   { label: this.i18n.fanyi("app.order.status.Paid"), value: 2 },
-  //   { label: this.i18n.fanyi("app.order.status.InProcessing"), value: 3 },
-  //   { label: this.i18n.fanyi("app.order.status.Completed"), value: 4 },
-  //   { label: this.i18n.fanyi("app.order.status.Cancelled"), value: 5 }
-  // ];
-  status = [
+  statusOrder = [
+    { label: this.i18n.fanyi("app.order.status.AllStatus"), value: '' },
     { label: this.i18n.fanyi("app.order.status.orderplaced"), value: 0 },
-    { label: this.i18n.fanyi("app.order.status.cancelled"), value: 1 },
     { label: this.i18n.fanyi("app.order.status.Paid"), value: 6 },
-    { label: this.i18n.fanyi("app.order.status.inprocessing"), value: 3 },
+    { label: this.i18n.fanyi("app.order.status.cancelled"), value: 1 },
+  
+  ];
+
+  statusInstall = [
+    { label: this.i18n.fanyi("app.order.status.AllStatus"), value: '' },
     { label: this.i18n.fanyi("app.order.status.installed"), value: 4 },
     { label: this.i18n.fanyi("app.order.status.error"), value: 5 },
+    { label: this.i18n.fanyi("app.order.status.inprocessing"), value: 3 },
   
   ];
   orderCode: string;
-  fromDate: Date;
-  toDate: Date;
+  fromDate: Date | null = null;
+  toDate: Date | null = null;
+  fromDateFormatted: string | null = null;
+  toDateFormatted: string | null = null;
 
   date: any;
   pageSize: number = 10;
@@ -57,22 +57,6 @@ export class OrderListComponent implements OnInit {
   value?: string;
   actionSelected: number;
   isVisibleError: boolean = false
-  onQueryParamsChange(params: NzTableQueryParams) {
-    const { pageSize, pageIndex } = params;
-    this.pageSize = pageSize;
-    this.currentPage = pageIndex;
-    this.searchSnapshotScheduleList();
-  }
-
-  refreshParams() {
-    this.pageSize = 10;
-    this.currentPage = 1;
-  }
-
-  searchSnapshotScheduleList() {
-    this.doGetSnapSchedules(this.pageSize, this.currentPage, this.orderCode,
-      null, null, null, null, null, null, this.fromDate, this.toDate, this.searchStatus);
-  }
 
   private doGetSnapSchedules(pageSize: number,
     pageNumber: number,
@@ -83,8 +67,8 @@ export class OrderListComponent implements OnInit {
     ticketCode: string,
     dSubscriptionNumber: string,
     dSubscriptionType: string,
-    fromDate: Date,
-    toDate: Date,
+    fromDate: string,
+    toDate: string,
     status: number) {
     this.isLoadingEntities = true;
     this.orderService.getOrders(pageSize, pageNumber, orderCode, saleDept, saleDeptCode, seller, ticketCode, dSubscriptionNumber, dSubscriptionType, fromDate, toDate, status).subscribe(
@@ -122,6 +106,8 @@ export class OrderListComponent implements OnInit {
   onChanggeDate(value: Date[]) {
     this.fromDate = value[0];
     this.toDate = value[1];
+    this.fromDateFormatted = format(value[0], 'yyyy-MM-dd');
+    this.toDateFormatted = format(value[1], 'yyyy-MM-dd');
     this.refreshParams()
     this.searchSnapshotScheduleList();
   }
@@ -133,10 +119,26 @@ export class OrderListComponent implements OnInit {
 
   onInputChange(value: string) {
     this.orderCode = value.toUpperCase();
-    console.log('input text: ', this.searchName);
     this.refreshParams()
     this.doGetSnapSchedules(this.pageSize, this.currentPage, this.orderCode,
-      null, null, null, null, null, null, this.fromDate, this.toDate, this.searchStatus);
+      null, null, null, null, null, null, this.fromDateFormatted, this.toDateFormatted, this.searchStatus);
+  }
+
+  onQueryParamsChange(params: NzTableQueryParams) {
+    const { pageSize, pageIndex } = params;
+    this.pageSize = pageSize;
+    this.currentPage = pageIndex;
+    this.searchSnapshotScheduleList();
+  }
+
+  refreshParams() {
+    this.pageSize = 10;
+    this.currentPage = 1;
+  }
+
+  searchSnapshotScheduleList() {
+    this.doGetSnapSchedules(this.pageSize, this.currentPage, this.orderCode,
+      null, null, null, null, null, null, this.fromDateFormatted, this.toDateFormatted, this.searchStatus);
   }
 
   navigateToCreate() {
