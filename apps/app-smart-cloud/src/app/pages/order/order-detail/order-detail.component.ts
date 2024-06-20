@@ -228,6 +228,7 @@ export class OrderDetailComponent {
 
   createNewPayment(id: number){
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.notification.info(this.i18n.fanyi("app.status.warning"), 'Đang tạo lại đường dẫn thanh toán, vui lòng đợi!');
     this.service.createNewPayment(id).pipe(
       finalize(() => {
         this.loadingSrv.close()
@@ -235,6 +236,7 @@ export class OrderDetailComponent {
     ).subscribe({
       next: (data) => {
         this.data.paymentUrl = data.data
+        this.notification.success(this.i18n.fanyi("app.status.success"), 'Tạo lại đường dẫn thanh toán thành công');
       },
       error: (e) => {
         
