@@ -109,14 +109,6 @@ export class OrderService extends BaseService {
       }
     }
 
-    if (pageSize !== undefined && pageSize != null) {
-      if (count == 0) {
-        urlResult += '?pageSize=' + pageSize;
-        count++;
-      } else {
-        urlResult += '&pageSize=' + pageSize;
-      }
-    }
     if (saleDept !== undefined && saleDept != null) {
       if (count == 0) {
         urlResult += '?saleDept=' + saleDept;

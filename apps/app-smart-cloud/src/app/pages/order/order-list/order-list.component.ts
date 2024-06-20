@@ -25,13 +25,19 @@ export class OrderListComponent implements OnInit {
   searchStatus?: number = null;
   searchName?: string;
 
-  status = [
+  statusOrder = [
+    { label: this.i18n.fanyi("app.order.status.AllStatus"), value: '' },
     { label: this.i18n.fanyi("app.order.status.orderplaced"), value: 0 },
-    { label: this.i18n.fanyi("app.order.status.cancelled"), value: 1 },
     { label: this.i18n.fanyi("app.order.status.Paid"), value: 6 },
-    { label: this.i18n.fanyi("app.order.status.inprocessing"), value: 3 },
+    { label: this.i18n.fanyi("app.order.status.cancelled"), value: 1 },
+  
+  ];
+
+  statusInstall = [
+    { label: this.i18n.fanyi("app.order.status.AllStatus"), value: '' },
     { label: this.i18n.fanyi("app.order.status.installed"), value: 4 },
     { label: this.i18n.fanyi("app.order.status.error"), value: 5 },
+    { label: this.i18n.fanyi("app.order.status.inprocessing"), value: 3 },
   
   ];
   orderCode: string;

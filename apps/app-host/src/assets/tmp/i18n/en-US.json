@@ -1247,6 +1247,8 @@
   "app.breadcrumb.order": "Order",
   "app.order.title": "Order List",
   "app.order.status": "Status",
+  "app.order.status.AllStatus": "All Status",
+  "app.order.status.order1": "Order status",
   "app.order.search": "Search by order code",
   "app.order.ordinalNumber": "Ordinal number",
   "app.order.ordercode": "Order code",
