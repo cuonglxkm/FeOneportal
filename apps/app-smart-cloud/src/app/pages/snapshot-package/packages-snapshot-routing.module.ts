@@ -4,6 +4,7 @@ import { ListPackagesSnapshotComponent } from "./list/list-packages-snapshot.com
 import { CreatePackageSnapshotComponent } from "./create/create-package-snapshot.component";
 import { DetailSnapshotComponent } from "./detail/detail-package-snapshot.component";
 import { ResizeSnapshotPackageComponent } from "./resize/resize-snapshot-package.component";
+import { ExtendPackageSnapshotComponent } from './extend/extend-package-snapshot.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'edit/:id',
     component: ResizeSnapshotPackageComponent
+  },
+  {
+    path: 'extend/:id',
+    component: ExtendPackageSnapshotComponent
   },
 ];
 
