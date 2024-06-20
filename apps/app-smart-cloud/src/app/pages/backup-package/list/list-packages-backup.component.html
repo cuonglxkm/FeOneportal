@@ -153,7 +153,7 @@
             </nz-row>
             <nz-row style="margin-top: 20px">
               <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">{{ 'app.backup.package.intro.desc' | i18n }}</span>
+                <span class="text-intro-desc">{{ 'app.backup.package.intro.vpc1' | i18n }} <a [routerLink]="'/app-smart-cloud/project/detail/' + project">{{ projectName }}</a> {{'app.backup.package.intro.vpc2'|i18n}}</span>
               </nz-col>
             </nz-row>
           </result>
@@ -161,7 +161,7 @@
       </nz-content>
     </ng-container>
     <ng-container *ngSwitchDefault>
-      <nz-card>
+      <nz-card *ngIf="typeVPC != 1">
         <result>
           <nz-row>
             <nz-col class="text-center" style="width: 100%">
@@ -186,6 +186,28 @@
           </button>
         </result>
       </nz-card>
+      <nz-content *ngIf="typeVPC == 1">
+        <nz-card>
+          <result>
+            <nz-row>
+              <nz-col class="text-center" style="width: 100%">
+                <img src="/assets/imgs/scheduleBackup.svg" alt="" />
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 20px">
+              <nz-col class="text-center" style="width: 100%">
+                  <span class="text-intro-title"
+                        style="color: #0066b3">{{ 'app.backup.volume.backup.package'|i18n }}</span>
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 20px">
+              <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">{{ 'app.backup.package.intro.vpc1' | i18n }} <a [routerLink]="'/app-smart-cloud/project/detail/' + project">{{ projectName }}</a> {{'app.backup.package.intro.vpc2'|i18n}}</span>
+              </nz-col>
+            </nz-row>
+          </result>
+        </nz-card>
+      </nz-content>
     </ng-container>
   </ng-container>
 </nz-spin>

@@ -2898,6 +2898,8 @@
   "app.backup.package.edit.title": "Edit Backup Package Information",
   "app.backup.package.intro.desc": "Unlimited backup solution with flexible scalability according to demand. Meets the needs for backing up virtual servers and block storage on the VNPT Cloud infrastructure.",
   "app.backup.package.not.found": "Backup package not found.",
+  "app.backup.package.intro.vpc1": "\"Custom VPC\" does not support backup packages. Please visit",
+  "app.backup.package.intro.vpc2": "to purchase backup storage to ensure the backup process is not interrupted.",
 
   "app.tooltip.backup.package.name": "The name of the customer's backup package. It should not contain special characters, spaces, or Vietnamese characters. Maximum 50 characters.",
   "app.tooltip.backup.package.storage": "The default minimum capacity is 1, with no maximum capacity limit.",
@@ -2978,7 +2980,7 @@
   "app.backup.vm.alert.create": "Please adjust the <b><i>{{name}}</i></b> setting to ensure uninterrupted VM backup process.",
   "app.backup.vm.alert.delete": "You are currently deleting the backup",
   "app.backup.vm.confirm.delete": "To proceed with deleting Backup {{name}}, please enter the Backup name for confirmation.",
-  "app.backup.vm.alert.storage.vpc": "The backup capacity is smaller than the sum of the operating system's capacity and the total capacity of the attached external volumes ({{storage}} GB). Please adjust the VPC project to ensure that the VM backup process is not interrupted.",
+  "app.backup.vm.alert.storage.vpc": "The backup capacity remaining is smaller than the sum of the operating system's capacity and the total capacity of the attached external volumes ({{storage}} GB). Please adjust the VPC project to ensure that the VM backup process is not interrupted.",
 
   "app.backup.vm.create.name.required": "Please enter the name for the Backup VM.",
   "app.backup.vm.create.name.duplicateName": "The Backup VM name already exists. Please enter a different name.",
@@ -3120,6 +3122,8 @@
   "schedule.backup.confirm.delete": "To delete the backup schedule {{name}}, please enter the name of the backup schedule to confirm.",
   "schedule.backup.confirm.input.name": "Please enter the correct backup name.",
   "schedule.backup.placeholder.input.name": "Enter name schedule",
+  "schedule.backup.alert.storage.vpc": "The remaining backup storage is less than the scheduled backup size ({{storage}} GB). Please adjust your project accordingly.",
+  "schedule.backup.alert.storage.vpc1":"to ensure the backup process is not interrupted.",
 
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
