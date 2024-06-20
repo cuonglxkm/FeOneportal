@@ -42,7 +42,11 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   packageName: string
   selected: any = ''
-
+  modalStyle = {
+    'padding': '20px',
+    'border-radius': '10px',
+    'width': '600px'
+  };
   validateForm: FormGroup<{
     namePackage: FormControl<string>
     description: FormControl<string>
@@ -61,6 +65,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
   isBegin: boolean = false;
+  isVisibleEdit = false;
 
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
