@@ -88,7 +88,6 @@ export class InstancesExtendComponent implements OnInit {
         this.loading = false;
         let expiredDate = new Date(this.instancesModel.expiredDate);
         expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-        this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
         this.getListIpPublic();
         this.getTotalAmount();
         this.service
@@ -180,6 +179,7 @@ export class InstancesExtendComponent implements OnInit {
     console.log('dataPayment extend', dataPayment);
     this.service.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
+      this.newExpiredDate = result.data.orderItemPrices[0].expiredDate;
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
       this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
       this.totalincludesVAT = Number.parseFloat(
