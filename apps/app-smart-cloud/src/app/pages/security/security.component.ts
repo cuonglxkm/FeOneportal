@@ -129,10 +129,11 @@ export class SecurityComponent implements OnInit {
     this.service.submitOTPForAuthenticator(formeEnable2FA).subscribe((data: any) => {
       if (data.success == true) {
         if (formeEnable2FA.enable == true) {
-          debugger;
-          this.authenticatorKey = data.key;
+          this.authenticatorKey = 'otpauth://totp/2FaOnePortal.com?secret=' + data.key + '&issuer=2FaOnePortal';
           this.isVisibleOTPForAuthenticator = false;
           this.isVisibleAuthenticator = true;
+          console.log(this.authenticatorKey);
+          
         }
         else
         {

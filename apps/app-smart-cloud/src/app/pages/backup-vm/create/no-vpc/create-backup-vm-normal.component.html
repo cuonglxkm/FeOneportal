@@ -95,8 +95,11 @@
                            src="assets/imgs/pajamas_question.svg" alt="" />
                     </nz-form-label>
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="instanceError">
-                      <nz-select (ngModelChange)="onSelectedInstance($event)" [nzLoading]="isLoading"
-                                 nzSize="large" formControlName="instanceId">
+                      <nz-select (ngModelChange)="onSelectedInstance($event)"
+                                 [nzLoading]="isLoadingInstance"
+                                 nzSize="large"
+                                 [(ngModel)]="instanceSelected"
+                                 formControlName="instanceId">
                         <nz-option *ngFor="let i of listInstances" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
                       </nz-select>
                       <ng-template #instanceError let-control>

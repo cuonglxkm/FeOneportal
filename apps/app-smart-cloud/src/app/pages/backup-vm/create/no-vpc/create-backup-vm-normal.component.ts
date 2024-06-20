@@ -50,6 +50,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
   backupPackageDetail: PackageBackupModel = new PackageBackupModel();
   sizeOfOs: number;
   sizeOfVlAttach: number = 0;
+  instanceSelected: number;
 
   validateForm: FormGroup<{
     instanceId: FormControl<number>;
@@ -172,23 +173,32 @@ export class CreateBackupVmNormalComponent implements OnInit{
     });
   }
 
+  isLoadingInstance: boolean = false
   getListInstances() {
-    this.isLoading = true
-    this.instanceService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId).subscribe(data => {
+    this.isLoadingInstance = true
+    this.instanceService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId)
+      .subscribe(data => {
       console.log('data', data);
-      this.isLoading = false
+      this.isLoadingInstance = false
 
       this.listInstances = data.records;
       this.listInstances = this.listInstances.filter(item => item.taskState === 'ACTIVE')
+      this.instanceSelected = this.listInstances[0].id
       console.log('data', this.instance);
-    });
+    }, error => {
+        this.isLoadingInstance = false
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
+      });
   }
 
   onSelectedInstance(value) {
     console.log('selected', value);
+    this.instanceSelected = value
     this.validateForm.controls.volumeToBackupIds.reset();
     this.validateForm.controls.securityGroupToBackupIds.reset();
-    this.getDataByInstanceId(value)
+    if(this.instanceSelected != undefined) {
+      this.getDataByInstanceId(this.instanceSelected)
+    }
   }
 
   getBackupPackage() {

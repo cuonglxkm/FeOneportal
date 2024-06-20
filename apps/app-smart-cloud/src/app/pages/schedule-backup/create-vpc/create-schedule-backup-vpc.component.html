@@ -180,7 +180,7 @@
                       <span class="text-label">{{'app.info.backup.vm.total.storage'|i18n}}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
-<!--                      <span class="text-label">{{ sizeInCloudProject.cloudProject. }} GB</span>-->
+                      <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb }} GB</span>
                     </nz-col>
                   </nz-row>
                   <nz-row nzGutter="24">
@@ -188,7 +188,7 @@
                       <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
-<!--                      <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>-->
+                      <span class="text-label">{{ sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
                     </nz-col>
                   </nz-row>
                   <nz-row nzGutter="24">
@@ -196,7 +196,7 @@
                       <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
-<!--                      <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>-->
+                      <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
                     </nz-col>
                   </nz-row>
                 </nz-col>
@@ -534,7 +534,7 @@
                       <span class="text-label">{{'app.info.backup.vm.total.storage'|i18n}}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
-<!--                      <span class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</span>-->
+                      <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb }} GB</span>
                     </nz-col>
                   </nz-row>
                   <nz-row nzGutter="24">
@@ -542,7 +542,7 @@
                       <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
-<!--                      <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>-->
+                      <span class="text-label">{{ sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
                     </nz-col>
                   </nz-row>
                   <nz-row nzGutter="24">
@@ -550,7 +550,7 @@
                       <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
-<!--                      <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>-->
+                      <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
                     </nz-col>
                   </nz-row>
                 </nz-col>
@@ -626,7 +626,7 @@
                         <span class="text-label">{{'app.info.backup.vm.total.storage'|i18n}}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
-<!--                        <span class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</span>-->
+                        <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb }} GB</span>
                       </nz-col>
                     </nz-row>
                     <nz-row nzGutter="24">
@@ -634,7 +634,7 @@
                         <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
-<!--                        <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>-->
+                        <span class="text-label">{{ sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
                       </nz-col>
                     </nz-row>
                     <nz-row nzGutter="24">
@@ -642,7 +642,7 @@
                         <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
-<!--                        <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>-->
+                        <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
                       </nz-col>
                     </nz-row>
                   </nz-col>
@@ -656,7 +656,7 @@
                         <span class="text-label">{{'app.info.backup.vm.total.storage'|i18n}}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
-<!--                        <span class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</span>-->
+                        <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb }} GB</span>
                       </nz-col>
                     </nz-row>
                     <nz-row nzGutter="24">
@@ -664,7 +664,7 @@
                         <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
-<!--                        <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>-->
+                        <span class="text-label">{{ sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
                       </nz-col>
                     </nz-row>
                     <nz-row nzGutter="24">
@@ -672,7 +672,7 @@
                         <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
-<!--                        <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>-->
+                        <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
                       </nz-col>
                     </nz-row>
                   </nz-col>

@@ -37,21 +37,21 @@ export class VpcModel {
   contractCode: string;
   loadBalancerPackageName: string;
   vpnSiteToSiteOfferName: string;
-  loadbalancerOfferName:string;
-  gpuProjects:any;
-  quotaVolumeSnapshotHddInGb:number;
-  quotaVolumeSnapshotSsdInGb:number;
-  offerDetail:{
-    vCpu:number,
-    ram:number,
-    hdd:number,
-    ssd:number,
-    ipPublic:number
+  loadbalancerOfferName: string;
+  gpuProjects: any;
+  quotaVolumeSnapshotHddInGb: number;
+  quotaVolumeSnapshotSsdInGb: number;
+  offerDetail: {
+    vCpu: number,
+    ram: number,
+    hdd: number,
+    ssd: number,
+    ipPublic: number
   }
 }
 
 export class TotalVpcResource {
-  cloudProject :VpcModel;
+  cloudProject: VpcModel;
   cloudProjectResourceUsed: {
     serviceType: number;
     cpu: number;
@@ -70,5 +70,67 @@ export class TotalVpcResource {
     quotaShareSnapshotInGb: number;
     ipFloatingCount: number;
     quotaShareInGb: number;
+    volumeSnapshotHddInGb:number;
+    volumeSnapshotSsdInGb:number;
+    gpuUsages:any;
   }
+}
+export class TotalUsedModel {
+  serviceType: number;
+  cpu: number;
+  ram: number;
+  hdd: number;
+  ssd: number;
+  backup: number;
+  securityGroupCount: number;
+  keypairCount: number;
+  volumeSnapshotCount: number;
+  ipPublicCount: number;
+  networkCount: number;
+  routerCount: number;
+  loadBalancerSdnCount: number;
+  ipv6Count: number;
+  quotaShareSnapshotInGb: number;
+  ipFloatingCount: number;
+  quotaShareInGb: number;
+  volumeSnapshotHddInGb:number;
+  volumeSnapshotSsdInGb:number;
+  gpuUsages:any;
+}
+export class TotalLimitModel {
+  // cloudId:VpcModel;
+  cloudIdentityId:number;
+  cloudProjectName:string;
+  description:string;
+  displayName:string;
+  gpuProjects:any;
+  id:number;
+  offerId:number;
+  offerIdLBSDN:any;
+  publicNetworkAddress:string;
+  publicNetworkId:string;
+  quotaBackupVolumeInGb:number;
+  quotaHddInGb:number;
+  quotaIpFloatingCount:number;
+  quotaIpPublicCount:number;
+  quotaIpv6Count:number;
+  quotaKeypairCount:number;
+  quotaLoadBalancerSDNCount:number;
+
+  quotaNetworkCount:number;
+  quotaRamInGb:number;
+  quotaRouterCount:number;
+  quotaSSDInGb:number;
+  quotaSecurityGroupCount:number;
+  quotaShareInGb:number;
+  quotaShareSnapshotInGb:number;
+  quotaVolumeSnapshotHddInGb:number;
+  quotaVolumeSnapshotSsdInGb:number;
+  quotavCpu:number;
+  regionId:number;
+  regionText:string;
+  resourceStatus:string;
+  type:string;
+  vpnSiteToSiteOfferId:number;
+  
 }

@@ -133,7 +133,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   }
 
   handleOkUpdate() {
-    setTimeout(() => {this.getListBackupVM(true)}, 1500)
+    setTimeout(() => {this.getListBackupVM(false)}, 1500)
   }
 
   getListBackupVM(isBegin) {

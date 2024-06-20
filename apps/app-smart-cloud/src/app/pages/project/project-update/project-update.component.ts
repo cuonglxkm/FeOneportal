@@ -211,7 +211,8 @@ export class ProjectUpdateComponent implements OnInit {
   productByRegion: any
   catalogStatus: { [key: string]: boolean } = {};
   catalogs: string[] = ['ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu'];
-
+  isShowAlertGpu: boolean;
+  keySSD: boolean;
 
   form = new FormGroup({
     name: new FormControl({ value: 'loading data....', disabled: false }, { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),] }),
@@ -242,7 +243,7 @@ export class ProjectUpdateComponent implements OnInit {
     //   this.calculateReal();
     // });
     this.inputChangeSubject.pipe(
-      debounceTime(800)
+      debounceTime(500)
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
   }
 
@@ -271,6 +272,24 @@ export class ProjectUpdateComponent implements OnInit {
 
     this.refreshValue();
 
+    // if( (this.data?.offerId && this.keySSDOld==false && this.ssd==0) || (this.data?.offerId && this.keySSD==false && this.ssd==0) || (this.data?.offerId==0 && this.ssdOld ==0 && this.ssd==0 ) ){
+    //   this.isShowAlertGpu = true
+
+    // }
+    // else{
+    //   this.isShowAlertGpu = false
+
+    // }
+    if (((this.offerIdOld == 0 && this.ssdOld == 0 && this.ssd == 0) || (this.offerIdOld != 0 && this.ssdOld == 0 && this.ssd == 0 && this.keySSDOld == false))) {
+      this.isShowAlertGpu = true
+      console.log("isShowAlertGpu 1", this.isShowAlertGpu)
+
+    }
+    else {
+      this.isShowAlertGpu = false
+      console.log("isShowAlertGpu 2", this.isShowAlertGpu)
+
+    }
     let lstIp = this.ipConnectInternet?.split('--');
     let ip = '';
     let ipName = '';
@@ -281,14 +300,14 @@ export class ProjectUpdateComponent implements OnInit {
 
     // let IPFloating = this.ipNetworkAddress !=null ? this.numberIpFloating + this.ipFloatingOld : this.ipFloatingOld;
     this.numberIpFloating = this.ipConnectInternet != '' ? this.numberIpFloating : 0
-    console.log("object ipFloating", this.numberIpFloating)
+
 
 
     if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
       this.loadingCalculate = true;
       if (lstIp != null && lstIp != undefined) {
         ipName = lstIp[1];
-        console.log("ipName", ipName)
+
       }
 
       const requestBody =
@@ -321,7 +340,7 @@ export class ProjectUpdateComponent implements OnInit {
 
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
-        gpuQuotas: this.newgpu,
+        gpuQuotas: this.data?.gpuProjects ? this.gpuQuotasGobal : this.newgpu,
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
@@ -382,6 +401,7 @@ export class ProjectUpdateComponent implements OnInit {
       (flavor) => flavor.id === event
     );
     this.selectedElementFlavor = 'flavor_' + event;
+    this.checkFlavor()
     this.calculate();
   }
   // checkOfferById:OfferItem
@@ -511,14 +531,11 @@ export class ProjectUpdateComponent implements OnInit {
 
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
-        gpuQuotas: this.newgpu,
+        gpuQuotas: this.data?.gpuProjects ? this.gpuQuotasGobal : this.newgpu,
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
         newQuotaRouterCount: this.numberRouter,
-
-
-
 
         typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
         serviceType: 1,
@@ -1024,6 +1041,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.calculate();
   }
   getCatelogOffer() {
+    this.isLoading = true;
     this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
       res => {
         this.listTypeCatelogOffer = res
@@ -1034,23 +1052,54 @@ export class ProjectUpdateComponent implements OnInit {
           GpuPrice: 0,
           GpuPriceUnit: item?.price?.fixedPrice?.amount
         }));
+        this.isLoading = false;
       }
     );
   }
 
   // maxNumber: number[] = [8, 8];
   getValues(index: number, value: number): void {
-    // console.log("123", value)
-    // console.log("gpuQuotasGobal 123", this.gpuQuotasGobal)
+    // if( ((this.data?.offerId!=0 && this.keySSDOld ==false && this.ssd==0) && (this.data?.offerId && this.keySSD==false && this.ssd==0)) && this.gpuQuotasGobal[index]?.GpuCount !=0 || (this.data?.offerId==0 && this.ssdOld ==0 && this.ssd==0 && this.gpuQuotasGobal[index]?.GpuCount !=0) ){
+    //   this.isShowAlertGpu = true
+    //   console.log("isShowAlertGpu 1", this.isShowAlertGpu)
+
+    // }
+    // else{
+    //   this.isShowAlertGpu = false
+    //   console.log("isShowAlertGpu 2", this.isShowAlertGpu)
+
+    // }
+    // if( this.data?.offerId!=0 && this.keySSDOld ==false && this.ssd==0 && this.gpuQuotasGobal[index]?.GpuCount !=0 || (this.data?.offerId==0 && this.ssdOld ==0 && this.ssd==0 && this.gpuQuotasGobal[index]?.GpuCount !=0) ){
+    //   this.isShowAlertGpu = true
+    //   console.log("isShowAlertGpu 1", this.isShowAlertGpu)
+
+    // }
+    // else{
+    //   this.isShowAlertGpu = false
+    //   console.log("isShowAlertGpu 2", this.isShowAlertGpu)
+
+    // }
+    if (((this.offerIdOld == 0 && this.ssdOld == 0 && this.ssd == 0) || (this.offerIdOld != 0 && this.ssdOld == 0 && this.ssd == 0 && this.keySSDOld == false)) && this.gpuQuotasGobal[index].GpuCount != 0) {
+      this.isShowAlertGpu = true
+      console.log("isShowAlertGpu 1", this.isShowAlertGpu)
+
+    }
+    else {
+      this.isShowAlertGpu = false
+      console.log("isShowAlertGpu 2", this.isShowAlertGpu)
+
+    }
+    console.log("object this.gpuQuotasGobal", this.gpuQuotasGobal)
+
     this.getValueNewgpu();
     this.calculate();
 
   }
-  checkFlavor() {
-    const findKey = this.listOfferByTypeName.find((item: OfferItem) => item.characteristicValues.find((charName) => charName.charName === 'VolumeType').charOptionValues?.[0] == 'SSD')
-    // console.log("findKey", findKey)
+  // checkFlavor() {
+  //   const findKey = this.listOfferByTypeName.find((item: OfferItem) => item.characteristicValues.find((charName) => charName.charName === 'VolumeType').charOptionValues?.[0] == 'SSD')
+  //   // console.log("findKey", findKey)
 
-  }
+  // }
 
   getValueNewgpu() {
     const dict2 = this.gpuQuotasGobal.reduce((acc, item) => {
@@ -1067,8 +1116,9 @@ export class ProjectUpdateComponent implements OnInit {
         GpuCount: totalCountGpu,
       };
     });
+    console.log("object this.newgpu", this.newgpu)
   }
-  getProductActivebyregion(catalog:string, regionid:number){
+  getProductActivebyregion(catalog: string, regionid: number) {
     this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
       this.productByRegion = res
       this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
@@ -1079,7 +1129,17 @@ export class ProjectUpdateComponent implements OnInit {
   trackById(index: number, item: any): any {
     return item.offerName;
   }
+  checkFlavor() {
+    this.keySSD = this.offerFlavor?.characteristicValues.find((charName) => charName.charName === 'VolumeType').charOptionValues?.[0] == 'SSD'
+    console.log("keySSD2", this.keySSD)
+    if (this.keySSD) {
+      this.isShowAlertGpu = false
+    }
+    else {
+      this.isShowAlertGpu = true
+    }
 
+  }
 
   initIP() {
     this.activeIP = true;
