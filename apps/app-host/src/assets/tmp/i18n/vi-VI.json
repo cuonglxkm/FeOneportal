@@ -2797,6 +2797,8 @@
   "app.backup.package.resize": "điều chỉnh gói backup",
   "app.backup.package.intro.desc": "Giải pháp sao lưu không giới hạn và mở rộng linh hoạt theo nhu cầu. Đáp ứng các nhu cầu sao lưu máy chủ ảo và block storage trên hạ tầng VNPT Cloud",
   "app.backup.package.not.found": "Gói backup không tồn tại",
+  "app.backup.package.intro.vpc1": "“VPC tùy biến” không hỗ trợ gói backup. Quý khách hãy truy cập",
+  "app.backup.package.intro.vpc2": "mua dung lượng backup để quá trình backup không bị gián đoán",
 
 
   "app.tooltip.backup.package.name": "Tên gói backup của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.",
@@ -2880,7 +2882,7 @@
 
   "app.backup.vm.alert.delete": "Bạn đang thực hiện xóa backup",
   "app.backup.vm.confirm.delete": "Đế thực hiện xoá backup {{name}}, vui lòng nhập tên backup để xác nhận.",
-  "app.backup.vm.alert.storage.vpc": "Dung lượng backup nhỏ hơn dung lượng ổ hệ điều hành + tổng dung lượng volume gắn ngoài ({{storage}} GB). Quý khách hãy điều chỉnh dự án VPC để quá trình backup VM không bị gián đoạn.",
+  "app.backup.vm.alert.storage.vpc": "Dung lượng backup còn lại nhỏ hơn dung lượng ổ hệ điều hành + tổng dung lượng volume gắn ngoài ({{storage}} GB). Quý khách hãy điều chỉnh dự án VPC để quá trình backup VM không bị gián đoạn.",
 
 
   "app.backup.vm.create.name.required": "Vui lòng nhập tên Backup VM",
@@ -3024,6 +3026,8 @@
   "schedule.backup.confirm.delete": "Đế thực hiện xoá lịch Backup {{name}}, vui lòng nhập tên lịch Backup để xác nhận.",
   "schedule.backup.confirm.input.name": "Vui lòng nhập đúng tên Backup",
   "schedule.backup.placeholder.input.name": "Nhập tên lịch",
+  "schedule.backup.alert.storage.vpc": "Dung lượng backup còn lại nhỏ hơn dung lượng lập lịch backup ({{storage}} GB). Quý khách hãy điều chỉnh dự án",
+  "schedule.backup.alert.storage.vpc1":"để quá trình backup không bị gián đoạn.",
 
 
   "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",

@@ -68,6 +68,8 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
 
+  projectName: string;
+
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -84,6 +86,7 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project?.type
+    this.projectName = project?.projectName
     this.getListPackageBackups(true);
   }
 
