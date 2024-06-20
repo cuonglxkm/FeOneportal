@@ -177,7 +177,7 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
       this.backupVolume = data;
       this.isLoading = false;
       if (this.backupVolume?.backupPackageId != null) {
-        this.backupPackageService.detail(this.backupVolume?.backupPackageId).subscribe(data => {
+        this.backupPackageService.detail(this.backupVolume?.backupPackageId, this.project).subscribe(data => {
           this.backupPackageDetail = data;
         });
       }

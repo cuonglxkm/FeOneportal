@@ -171,7 +171,7 @@
               },
               "children": [
                 {
-                  "text": "Backup VM",
+                  "text": "Backup máy ảo",
                   "icon": "anticon-dashboard",
                   "link": "/app-smart-cloud/backup-vm",
                   "action": "backup:List"

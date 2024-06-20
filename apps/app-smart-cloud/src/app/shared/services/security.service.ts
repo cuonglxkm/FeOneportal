@@ -56,7 +56,7 @@ export class SecurityService extends BaseService {
     }
 
     getOTPForAuthenticator() {
-      return this.http.get<any>(environment.issuer + "/account/mfa/authenticator", null)
+      return this.http.get<any>(environment.issuer + "/account/mfa/authenticator")
         .pipe(catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');

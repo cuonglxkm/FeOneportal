@@ -31,7 +31,7 @@
     ><span>{{ paymentCode }}</span>
     <span> - {{ 'app.payment-detail.totalAmount' | i18n }}: </span
     ><span>{{ payment.totalAmount | number : '1.0-0' }} VND</span> <br />
-    <span> {{ 'app.payment-detail.paymentMethod' | i18n }}: Online</span>
+    <span> {{ 'app.payment-detail.paymentMethod' | i18n }}: {{payment.paymentMethod}}</span>
   </div>
 </nz-card>
 

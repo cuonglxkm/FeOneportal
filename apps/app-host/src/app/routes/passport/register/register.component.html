@@ -78,6 +78,7 @@
           nz-input
           [type]="passwordVisible ? 'text' : 'password'"
           formControlName="password"
+          [maxlength]="16"
           placeholder="{{'app.input.password' | i18n}}"
         />
       </nz-input-group>
@@ -100,6 +101,7 @@
           nz-input
           [type]="passwordVisible1 ? 'text' : 'password'"
           formControlName="confirm"
+          [maxlength]="16"
           placeholder="{{'app.register.pass.try' | i18n}}"
         />
       </nz-input-group>
@@ -207,11 +209,6 @@
           nzPlaceHolder="{{'app.register.address.select' | i18n}}"
           formControlName="province"
         >
-          <nz-option [nzLabel]="'Hà Nội'" [nzValue]="'Hà Nội'" />
-          <nz-option
-            [nzLabel]="'TP. Hồ Chí Minh'"
-            [nzValue]="'TP. Hồ Chí Minh'"
-          />
           <nz-option *ngFor="let i of provinces" [nzLabel]="i.name" [nzValue]="i.name" />
         </nz-select>
       </nz-input-group>
@@ -264,7 +261,7 @@
     <re-captcha
       formControlName="recaptchaReactive"
       key="publicKey"
-      lang="en"
+      [lang]="'vi'"
       (resolved)="addTokenLog('Reactive form mode resolved', $event)"
     >
     </re-captcha>

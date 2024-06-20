@@ -54,7 +54,7 @@ export class AppValidator {
   }
 
   static validPhoneNumber(control: AbstractControl): ValidationErrors | null { //valid số điện thoại
-    var regexpSDT = new RegExp('^(\\+?84|84|0[3-9])+(\\d{8})$');
+    var regexpSDT = new RegExp('^(\\+?84[3-9]|84[3-9]|0[3-9])+(\\d{8})$');
     if (control && control.value != null && control.value != undefined && control.value.length > 0) {
       if (control.value != '' && regexpSDT.test(control.value) == false) {
         return { validPhoneNumber: true };
@@ -65,7 +65,7 @@ export class AppValidator {
 
   // @ts-ignore
   static validEmail(control: AbstractControl): ValidationErrors | null { //valid email
-    var regex = new RegExp('^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$');
+    var regex = new RegExp('^[A-Za-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$');
     // var regex = new RegExp(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)
     if (control && control.value != null && control.value != undefined && control.value.length > 0) {
       if (regex.test(control.value) == false) {

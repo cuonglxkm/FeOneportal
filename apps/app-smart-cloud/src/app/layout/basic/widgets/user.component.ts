@@ -51,7 +51,7 @@ export class HeaderUserComponent {
   logout(): void {
     console.log('logout dev');
     sessionStorage.clear();
-    this.cookieService.delete('TOKEN_USER', "/",".onsmartcloud.com",true,"None");
+    this.cookieService.deleteAll("/",".onsmartcloud.com",true,"None");
     localStorage.removeItem('UserRootId');
     localStorage.removeItem('ShareUsers');
     localStorage.removeItem('PermissionOPA');

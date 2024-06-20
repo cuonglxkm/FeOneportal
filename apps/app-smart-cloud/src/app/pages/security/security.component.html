@@ -219,7 +219,7 @@
   nzTitle="Thiết lập Google Authenticator"
   (nzOnCancel)="handleCancelAuthenticator()"
 >
-  <form nz-form [formGroup]="form" class="mt-3">
+  <form nz-form [formGroup]="formAuthenticator" class="mt-3">
     <ng-container *nzModalContent>
       <div>
         <span class="fa-text d-block"
@@ -234,13 +234,18 @@
           <qrcode [qrdata]="authenticatorKey" [width]="150" [height]="150" [errorCorrectionLevel]="'M'"></qrcode>
           <!-- <img width="150" height="150" src="assets/imgs/qr.png" alt="" /> -->
         </div>
+        <span class="fa-text d-block mt-1">Hoặc nhập mã sau:</span>
+        <nz-alert
+          nzBanner
+          [nzMessage]="authenticatorKey"
+      > </nz-alert>
       </div>
 
       <nz-form-item>
         <nz-form-control>
           <nz-form-label nzFor="name">
             <div>
-              <span>Nhập mã 6 chữ số Quý khách thấy trong ứng dụng.</span>
+              <span>Nhập mã 6 chữ số Quý khách thấy trong ứng dụng</span>
             </div>
           </nz-form-label>
           <input
@@ -248,7 +253,7 @@
             type="number"
             required
             placeholder="Nhập mã xác thực"
-            formControlName="otp"
+            formControlName="otpAuthenticator"
             class="input-custom"
             style="width: 100%"
           />

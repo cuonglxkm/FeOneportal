@@ -83,6 +83,7 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
+    this.typeVPC = project?.type
     this.getListPackageBackups(true);
   }
 
@@ -140,7 +141,7 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
   getListPackageBackups(isBegin) {
     this.isLoading = true;
 
-    this.packageBackupService.search(this.value, this.selectedValue, this.pageSize, this.pageIndex).subscribe(data => {
+    this.packageBackupService.search(this.value, this.selectedValue, this.project, this.region, this.pageSize, this.pageIndex).subscribe(data => {
       this.isLoading = false;
       this.response = data;
 

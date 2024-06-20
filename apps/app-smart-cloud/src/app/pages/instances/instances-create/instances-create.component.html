@@ -796,29 +796,51 @@
                   <tr>
                     <td style="width: 50%">
                       <nz-form-label style="margin-left: -12px"
-                        >{{ 'app.gpu.number' | i18n }} (<span class="text-red"
+                        >{{ 'app.choose.gpu.type' | i18n }} (<span
+                          class="text-red"
                           >*</span
                         >)</nz-form-label
                       >
-                      <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="8"
-                        [(ngModel)]="configGPU.GPU"
-                        (ngModelChange)="changeGpu($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                      ></nz-slider>
+                      <style>
+                        ::ng-deep nz-form-control {
+                          padding-left: 0px !important;
+                          padding-right: 0px !important;
+                        }
+                      </style>
+                      <nz-form-control>
+                        <nz-select
+                          [nzPlaceHolder]="
+                            '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
+                          "
+                          [nzShowSearch]="true"
+                          [(ngModel)]="configGPU.gpuOfferId"
+                          (ngModelChange)="changeGpuType()"
+                          [ngModelOptions]="{ standalone: true }"
+                          nzSize="large"
+                        >
+                          <nz-option
+                            *ngFor="let i of listGPUType"
+                            [nzLabel]="i.offerName"
+                            [nzValue]="i.id"
+                          />
+                        </nz-select>
+                      </nz-form-control>
                     </td>
                     <td>
-                      <nz-input-number
+                      <nz-select
+                        style="margin-left: 8px; margin-top: 32px; width: 90px"
+                        [nzShowSearch]="true"
                         [(ngModel)]="configGPU.GPU"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeGpu($event)"
+                        (ngModelChange)="changeGpu()"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="8"
-                        [nzStep]="1"
                         nzSize="large"
-                      ></nz-input-number>
+                      >
+                        <nz-option
+                          *ngFor="let i of listOptionGpuValue"
+                          [nzLabel]="i"
+                          [nzValue]="i"
+                        />
+                      </nz-select>
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
@@ -832,34 +854,16 @@
                 </tbody>
               </table>
             </div>
-            <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
-              <nz-form-label
-                >{{ 'app.choose.gpu.type' | i18n }} (<span class="text-red"
-                  >*</span
-                >)</nz-form-label
-              >
-              <nz-form-control>
-                <nz-select
-                  [nzPlaceHolder]="
-                    '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
-                  "
-                  [nzShowSearch]="true"
-                  [(ngModel)]="configGPU.gpuOfferId"
-                  (ngModelChange)="changeGpuType()"
-                  [ngModelOptions]="{ standalone: true }"
-                  nzSize="large"
-                >
-                  <nz-option
-                    *ngFor="let i of listGPUType"
-                    [nzLabel]="i.offerName"
-                    [nzValue]="i.id"
-                  />
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
           </nz-tab>
         </nz-tabset>
-        <br />
+        <label
+          *ngIf="isSupportEncryption"
+          style="margin-bottom: 16px; margin-top: 16px"
+          nz-checkbox
+          [(ngModel)]="instanceCreate.encryption"
+          [ngModelOptions]="{ standalone: true }"
+          >{{ 'volume.info.type.encrypt' | i18n }}
+        </label>
         <nz-row nzGutter="16">
           <nz-col nzLg="12" nzMd="12" nzSm="24">
             <nz-form-item
@@ -1278,8 +1282,10 @@
                     <th>{{ 'app.volume.name' | i18n }}</th>
                     <th>{{ 'app.capacity' | i18n }} (GB)</th>
                     <th>IOPS</th>
-                    <th>{{ 'app.encrypt' | i18n }}</th>
-                    <th>Multi Attach</th>
+                    <th *ngIf="isSupportEncryption">
+                      {{ 'app.encrypt' | i18n }}
+                    </th>
+                    <th *ngIf="isSupportMultiAttachment">Multi Attach</th>
                     <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
                   </tr>
                 </thead>
@@ -1341,6 +1347,7 @@
                     </td>
                     <td>
                       <label
+                        *ngIf="isSupportEncryption"
                         nz-checkbox
                         [(ngModel)]="data.encrypt"
                         (ngModelChange)="changeEncrypt($event, i)"
@@ -1350,6 +1357,7 @@
                     </td>
                     <td>
                       <label
+                        *ngIf="isSupportMultiAttachment"
                         nz-checkbox
                         [(ngModel)]="data.multiattach"
                         (ngModelChange)="changeMultiAttach($event, i)"

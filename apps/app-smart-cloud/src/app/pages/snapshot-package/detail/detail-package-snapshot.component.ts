@@ -48,7 +48,7 @@ export class DetailSnapshotComponent implements OnInit{
   }
 
   getDetailPackageBackup(id) {
-    this.packageBackupService.detail(id).subscribe(data => {
+    this.packageBackupService.detail(id, this.project).subscribe(data => {
       console.log('data', data)
       this.packageBackupModel = data
     })

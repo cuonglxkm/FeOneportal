@@ -76,7 +76,7 @@
                 </nz-col>
                 <nz-col nzSpan="8">
                   <span class="text-label"
-                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
+                        *ngIf="backupPackageDetail == undefined">0 GB</span>
                   <span class="text-label"
                         *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize }} GB</span>
                 </nz-col>
@@ -88,7 +88,7 @@
                 </nz-col>
                 <nz-col nzSpan="8">
                   <span class="text-label"
-                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
+                        *ngIf="backupPackageDetail == undefined">0 GB</span>
                   <span class="text-label"
                         *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.usedSize }} GB</span>
                 </nz-col>
@@ -100,7 +100,7 @@
                 </nz-col>
                 <nz-col nzSpan="8">
                   <span class="text-label"
-                        *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
+                        *ngIf="backupPackageDetail == undefined">0 GB</span>
                   <span class="text-label"
                         *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize - backupPackageDetail?.usedSize }} GB</span>
                 </nz-col>
@@ -120,7 +120,7 @@
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="volumeError">
                     <nz-select (ngModelChange)="onSelectedVolume($event)"
                                nzSize="large" formControlName="volumeId">
-                      <nz-option *ngFor="let i of listVolumes?.records" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
+                      <nz-option *ngFor="let i of listVolumes" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
                     </nz-select>
                     <ng-template #volumeError let-control>
                       <ng-container *ngIf="control.hasError('required')">{{'app.input.backup.volume.required.select'|i18n}}</ng-container>
@@ -154,16 +154,16 @@
                   </nz-textarea-count>
                 </nz-form-control>
               </nz-form-item>
-              <nz-form-item>
-                <nz-form-label>
-                  <span style="color: #FF0000">{{ 'app.service.expiration-date'|i18n }} </span>
-                  <img nz-popover
-                       [nzPopoverContent]="'app.backup.vm.tooltip.expire.date'|i18n"
-                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                       src="assets/imgs/pajamas_question.svg" alt="" />
-                  <span style="color: #FF0000; margin-left: 10px;">{{ backupPackageDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>
-                </nz-form-label>
-              </nz-form-item>
+<!--              <nz-form-item>-->
+<!--                <nz-form-label>-->
+<!--                  <span style="color: #FF0000">{{ 'app.service.expiration-date'|i18n }} </span>-->
+<!--                  <img nz-popover-->
+<!--                       [nzPopoverContent]="'app.backup.vm.tooltip.expire.date'|i18n"-->
+<!--                       nzPopoverPlacement="bottom" style="margin-left: 5px;"-->
+<!--                       src="assets/imgs/pajamas_question.svg" alt="" />-->
+<!--                  <span style="color: #FF0000; margin-left: 10px;">{{ backupPackageDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>-->
+<!--                </nz-form-label>-->
+<!--              </nz-form-item>-->
             </nz-col>
           </nz-row>
         </form>
