@@ -12,6 +12,8 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { format } from 'date-fns';
+import { debounceTime, Subject } from 'rxjs';
+import { TimeCommon } from 'src/app/shared/utils/common';
 @Component({
   selector: 'one-portal-list-order',
   templateUrl: './order-list.component.html',
@@ -24,6 +26,8 @@ export class OrderListComponent implements OnInit {
 
   searchStatus?: number = null;
   searchName?: string;
+  searchDelay = new Subject<boolean>();
+
 
   statusOrder = [
     { label: this.i18n.fanyi("app.order.status.AllStatus"), value: '' },
@@ -54,7 +58,7 @@ export class OrderListComponent implements OnInit {
   isLoadingEntities: boolean;
   customerID: number;
 
-  value?: string;
+  value?: string = '';
   actionSelected: number;
   isVisibleError: boolean = false
 
@@ -94,8 +98,20 @@ export class OrderListComponent implements OnInit {
 
   ngOnInit(): void {
     this.customerID = this.tokenService.get()?.userId;
+    this.searchSnapshotScheduleList()
+    this.searchDelay
+      .pipe(debounceTime(TimeCommon.timeOutSearch))
+      .subscribe(() => {
+        this.refreshParams()
+        this.searchSnapshotScheduleList();
+      });
   }
 
+  search(search: string) {
+    this.value = search.toUpperCase().trim();
+    this.refreshParams()
+    this.searchSnapshotScheduleList();
+  }
 
   onChange(value: number) {
     this.searchStatus = value;
@@ -117,12 +133,6 @@ export class OrderListComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/detail/' + id]);
   }
 
-  onInputChange(value: string) {
-    this.orderCode = value.toUpperCase();
-    this.refreshParams()
-    this.doGetSnapSchedules(this.pageSize, this.currentPage, this.orderCode,
-      null, null, null, null, null, null, this.fromDateFormatted, this.toDateFormatted, this.searchStatus);
-  }
 
   onQueryParamsChange(params: NzTableQueryParams) {
     const { pageSize, pageIndex } = params;
@@ -137,7 +147,7 @@ export class OrderListComponent implements OnInit {
   }
 
   searchSnapshotScheduleList() {
-    this.doGetSnapSchedules(this.pageSize, this.currentPage, this.orderCode,
+    this.doGetSnapSchedules(this.pageSize, this.currentPage, this.value.toUpperCase().trim(),
       null, null, null, null, null, null, this.fromDateFormatted, this.toDateFormatted, this.searchStatus);
   }
 
