@@ -2851,7 +2851,7 @@
   "app.dashboard.subscription.service.active": "Service Active",
   "app.dashboard.subscription.service.near.expire": "Service nearing expiration",
   "app.dashboard.subscription.service.expire": "Service expired",
-  "app.dashboard.payment.and.cost": "Cost and Usage",
+  "app.dashboard.payment.and.cost": "Cost Usage",
   "app.dashboard.payment.and.cost.payment.code": "Payment code",
   "app.dashboard.payment.and.cost.service": "Service",
   "app.dashboard.payment.and.cost.total.payment": "Total amount (VND)",
@@ -3131,7 +3131,7 @@
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
   "app.validate.order.fail": "Fail to validate order",
 
-
+  "app.search.name": "Search by service name.",
 
   "app.manage.site.to.site.title":"Manage VPN site to site",
   "app.manage.site.to.site.title.infomation":"Information of VPN site to site",
