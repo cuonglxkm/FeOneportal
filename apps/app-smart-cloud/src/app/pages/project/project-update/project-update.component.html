@@ -282,7 +282,7 @@
                   </nz-form-control>
               </form>
             </div>
-            <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" class="input-network mt-3">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" class="input-network mt-3">
               <form nz-form>
                   <nz-form-label class="label-fontsize text-label">{{ 'app.payment-detail.quantity' | i18n }} Security
                     Group</nz-form-label>
@@ -304,7 +304,7 @@
           </div>
         </div>
         <div *ngIf="activeBonusService">
-          <div class="bonus-services">
+          <div class="bonus-services" *ngIf="catalogStatus['ip'] || catalogStatus['ipv6']">
             <div class="title-bonus-services">
               <div><span class="text-card-header">IP</span></div>
               <one-portal-svg-icon *ngIf="trashIP" [icon]="'icon_trash'" class="icon-trash"
@@ -424,7 +424,7 @@
             <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="Mua bổ sung IP giúp thuận tiện hơn trong quá trình sử dụng các dịch vụ của VNPT Cloud"
               nzShowIcon></nz-alert>
           </div>
-          <div class="bonus-services" >
+          <div class="bonus-services" *ngIf="catalogStatus['volume-snapshot-hdd'] || catalogStatus['volume-snapshot-ssd']">
             <div class="title-bonus-services">
               <div><span class="text-card-header">Snapshot</span></div>
               <one-portal-svg-icon *ngIf="trashSnapshot" [icon]="'icon_trash'" class="icon-trash"
@@ -629,7 +629,7 @@
               nzShowIcon></nz-alert>
           </div>
 
-          <div class="bonus-services">
+          <div class="bonus-services" *ngIf="catalogStatus['file-storage']|| catalogStatus['file-storage-snapshot']">
             <div class="title-bonus-services">
               <div><span class="text-card-header">File Storage</span></div>
               <one-portal-svg-icon *ngIf="trashFileStorage" [icon]="'icon_trash'" class="icon-trash"
@@ -790,7 +790,7 @@
             </div>
             
             <div *ngIf="activeVpnGpu">
-              <div class="ant-table">
+              <div class="ant-table" [nzLoading]="isLoading">
                 <table *ngFor="let typeCatelog of gpuQuotasGobal;let i = index;trackBy:trackById">
                   <td style="width:60%">
                     <nz-form-item>
@@ -804,13 +804,13 @@
                           nzSize="large"
                           ></nz-input-number>
                       </nz-form-control>
-                      <p class="red-color mt-2 lable-fontsize" *ngIf="(offerIdOld==0 && ssdOld==0 && ssd==0 || (offerIdOld!=0 && ssdOld==0 && ssd==0 && keySSDOld==false) ) && gpuQuotasGobal[i].GpuCount !=0" >Vui lòng mua kèm dung lượng SSD để đảm bảo sử dụng được dịch vụ máy ảo GPU</p>
+                      <!-- <p class="red-color mt-2 lable-fontsize" *ngIf="(offerIdOld==0 && ssdOld==0 && ssd==0 || (offerIdOld!=0 && ssdOld==0 && ssd==0 && keySSDOld==false) ) && gpuQuotasGobal[i].GpuCount !=0" >Vui lòng mua kèm dung lượng SSD để đảm bảo sử dụng được dịch vụ máy ảo GPU</p> -->
                     </nz-form-item>
                   </td>
                   <td style="width:40%">
                     <nz-form-item>
                       <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND) </nz-form-label>
-                      <nz-form-control>
+                      <nz-form-control >
                         <div class="centered">
                           <p class="text-custom-price" >
                             {{typeCatelog?.GpuPrice  |number}}
@@ -823,6 +823,11 @@
                     </nz-form-item>
                   </td>
                 </table>
+                <div *ngIf="isShowAlertGpu">
+                  <nz-alert   id="alertTemplate" class="ant-alert-warning-custom-alertTemplate" nzType="warning"
+                  nzDescription="Vui lòng mua kèm dung lượng SSD để đảm bảo sử dụng được dịch vụ máy ảo GPU"
+                  nzShowIcon></nz-alert>
+                </div>
               </div>
             </div>
             <nz-alert class="ant-alert-warning-custom"  nzType="warning"

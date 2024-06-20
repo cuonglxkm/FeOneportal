@@ -139,13 +139,13 @@
   <div style="margin-bottom: 20px">
     <span class="text-card-header">{{ 'project.note27' | i18n }}</span>
   </div>
-  <nz-row *ngIf="data?.type == 'VPC'" style="margin-bottom: 30px;text-align: center">
-    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentCpu nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">CPU</h3></div>
-    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentRam nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">RAM (GB)</h3></div>
-    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentHHD nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">HDD (GB)</h3></div>
-    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentSSD nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">SSD (GB)</h3></div>
-    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentIPFloating nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">IP FLOATING</h3></div>
-    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentBackup nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">BACKUP (GB)</h3></div>
+  <nz-row *ngIf="data?.type == 'VPC'" style="margin-bottom: 30px;text-align: center" class="percent_vpc">
+    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentCpu nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">CPU</h3></div>
+    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentRam nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">RAM (GB)</h3></div>
+    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentHHD nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">HDD (GB)</h3></div>
+    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentSSD nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">SSD (GB)</h3></div>
+    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentIPFloating nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">IP FLOATING</h3></div>
+    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentBackup nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">BACKUP (GB)</h3></div>
   </nz-row>
   <nz-table [nzData]="listOfData" [nzLoading]="loading" [nzFrontPagination]="false">
     <thead>
@@ -157,12 +157,120 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of listOfData">
+    <!-- <tr *ngFor="let item of listOfData">
       <td>{{ item.name }}</td>
       <td>{{ item.total }}</td>
       <td>{{ item.used }}</td>
       <td>{{ item.remain }}</td>
+    </tr> -->
+    <tr>
+      <td>CPU(vCPU)</td>
+      <td>{{totalLimit?.quotavCpu}} vcpu</td>
+      <td>{{totalUsed?.cpu}} vcpu</td>
+      <td>{{totalLimit?.quotavCpu-totalUsed?.cpu}} vcpu</td>
     </tr>
+
+    <tr >
+      <td>RAM (GB)</td>
+      <td>{{totalLimit?.quotaRamInGb}} GB</td>
+      <td>{{totalUsed?.ram}} GB</td>
+      <td>{{totalLimit?.quotaRamInGb-totalUsed?.ram}} GB</td>
+    </tr>
+    <tr >
+      <td>HDD (GB)</td>
+      <td>{{totalLimit?.quotaHddInGb}} GB</td>
+      <td>{{totalUsed?.hdd}} GB</td>
+      <td>{{totalLimit?.quotaHddInGb-totalUsed?.hdd}} GB</td>
+    </tr>
+    <tr >
+      <td>SSD (GB)</td>
+      <td>{{totalLimit?.quotaSSDInGb}} GB</td>
+      <td>{{totalUsed?.ssd}} GB</td>
+      <td>{{totalLimit?.quotaSSDInGb-totalUsed?.ssd}} GB</td>
+    </tr>
+    <tr  *ngIf="catalogStatus['backup-volume']">
+      <td>Dung lượng Backup Volume/VN(GB)</td>
+      <td>{{totalLimit?.quotaBackupVolumeInGb}} GB</td>
+      <td>{{totalUsed?.backup}} GB</td>
+      <td>{{totalLimit?.quotaBackupVolumeInGb-totalUsed?.backup}} GB</td>
+    </tr>
+    <tr  *ngIf="catalogStatus['ip']">
+      <td>Số lượng IP Floating</td>
+      <td>{{totalLimit?.quotaIpFloatingCount}}</td>
+      <td>{{totalUsed?.ipFloatingCount}}</td>
+      <td>{{totalLimit?.quotaIpFloatingCount-totalUsed?.ipFloatingCount}}</td>
+    </tr>
+    <tr *ngIf="catalogStatus['ip']">
+      <td>Số lượng IP Public</td>
+      <td>{{totalLimit?.quotaIpPublicCount}}</td>
+      <td>{{totalUsed?.ipPublicCount}}</td>
+      <td>{{totalLimit?.quotaIpPublicCount-totalUsed?.ipPublicCount}}</td>
+    </tr>
+    <tr *ngIf="catalogStatus['ipv6']">
+      <td>Số lượng IPv6</td>
+      <td>{{totalLimit?.quotaIpv6Count}}</td>
+      <td>{{totalUsed?.ipv6Count}}</td>
+      <td>{{totalLimit?.quotaIpv6Count-totalUsed?.ipv6Count}}</td>
+    </tr>
+    <tr >
+      <td>Số lượng Network</td>
+      <td>{{totalLimit?.quotaNetworkCount}}</td>
+      <td>{{totalUsed?.networkCount}}</td>
+      <td>{{totalLimit?.quotaNetworkCount-totalUsed?.networkCount}}</td>
+    </tr>
+    <tr >
+      <td>Số lượng Security Group</td>
+      <td>{{totalLimit?.quotaSecurityGroupCount}}</td>
+      <td>{{totalUsed?.securityGroupCount}}</td>
+      <td>{{totalLimit?.quotaSecurityGroupCount-totalUsed?.securityGroupCount}}</td>
+    </tr>
+    <tr >
+      <td>Số lượng Router</td>
+      <td>{{totalLimit?.quotaRouterCount}}</td>
+      <td>{{totalUsed?.routerCount}}</td>
+      <td>{{totalLimit?.quotaRouterCount-totalUsed?.routerCount}}</td>
+    </tr>
+    <tr *ngIf="catalogStatus['loadbalancer-sdn']">
+      <td>Số lượng Load Balancer</td>
+      <td>{{totalLimit?.quotaLoadBalancerSDNCount}}</td>
+      <td>{{totalUsed?.loadBalancerSdnCount}}</td>
+      <td>{{totalLimit?.quotaLoadBalancerSDNCount-totalUsed?.loadBalancerSdnCount}}</td>
+    </tr>
+    <tr *ngIf="catalogStatus['file-storage']">
+      <td>Dung lượng File System (GB)</td>
+      <td>{{totalLimit?.quotaShareInGb}} GB</td>
+      <td>{{totalUsed?.quotaShareInGb}} GB</td>
+      <td>{{totalLimit?.quotaShareInGb-totalUsed?.quotaShareInGb}} GB</td>
+    </tr>
+    <tr *ngIf="catalogStatus['file-storage-snapshot']" >
+      <td>Dung lượng File System Snapshot (GB)</td>
+      <td>{{totalLimit?.quotaShareSnapshotInGb}} GB</td>
+      <td>{{totalUsed?.quotaShareSnapshotInGb}} GB</td>
+      <td>{{totalLimit?.quotaShareSnapshotInGb-totalUsed?.quotaShareSnapshotInGb}} GB</td>
+    </tr>
+
+    <tr *ngIf="catalogStatus['volume-snapshot-hdd']">
+      <td>Dung lượng Snapshot HDD (GB)</td>
+      <td>{{totalLimit?.quotaVolumeSnapshotHddInGb}} GB</td>
+      <td>{{totalUsed?.volumeSnapshotHddInGb}} GB</td>
+      <td>{{totalLimit?.quotaVolumeSnapshotHddInGb-totalUsed?.volumeSnapshotHddInGb}} GB</td>
+    </tr>
+    <tr *ngIf="catalogStatus['volume-snapshot-ssd']">
+      <td>Dung lượng Snapshot SSD (GB)</td>
+      <td>{{totalLimit?.quotaVolumeSnapshotSsdInGb}} GB</td>
+      <td>{{totalUsed?.volumeSnapshotSsdInGb}} GB</td>
+      <td>{{totalLimit?.quotaVolumeSnapshotSsdInGb-totalUsed?.volumeSnapshotSsdInGb}} GB</td>
+    </tr>
+
+      <tr *ngFor="let gpu of totalGpu" >
+        <td *ngIf="catalogStatus['vm-gpu']">Số lượng GPU (Type - {{gpu?.gpuType}})</td>
+        <td *ngIf="catalogStatus['vm-gpu']">{{gpu?.totalLimitGpu}}</td>
+        <td *ngIf="catalogStatus['vm-gpu']">{{gpu?.totalUsedGpu}}</td>
+        <td *ngIf="catalogStatus['vm-gpu']">{{gpu?.totalLimitGpu-gpu?.totalUsedGpu}}</td>
+      </tr>
+
+   
+    
     </tbody>
   </nz-table>
 </nz-card>

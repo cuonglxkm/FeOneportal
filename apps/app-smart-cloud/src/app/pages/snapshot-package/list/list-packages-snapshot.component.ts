@@ -54,12 +54,13 @@ export class ListPackagesSnapshotComponent implements OnInit {
   })
 
   valueDelete: string
-
+  projectType = 0;
   typeVPC: number
 
   isCheckBegin: boolean = false
 
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
+  isBegin: boolean = false;
 
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
@@ -75,13 +76,17 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   projectChange(project: ProjectModel) {
     this.project = project?.id
-    this.getListPackageSnapshot()
+    this.getListPackageSnapshot(true)
+    this.projectType = project?.type;
+    if (project?.type == 1) {
+      this.isBegin = true;
+    }
   }
 
 
   onInputChange(value: string) {
     this.value = value;
-    this.getListPackageSnapshot()
+    this.getListPackageSnapshot(false)
   }
 
   navigateToCreate() {
@@ -90,12 +95,12 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   onPageSizeChange(value) {
     this.pageSize = value
-    this.getListPackageSnapshot()
+    this.getListPackageSnapshot(false)
   }
 
   onPageIndexChange(value) {
     this.pageIndex = value
-    this.getListPackageSnapshot()
+    this.getListPackageSnapshot(false)
   }
 
   onChangeSelected(value) {
@@ -103,10 +108,10 @@ export class ListPackagesSnapshotComponent implements OnInit {
     if (this.selected === '') {
       this.selected = ''
     }
-    this.getListPackageSnapshot()
+    this.getListPackageSnapshot(false)
   }
 
-  getListPackageSnapshot() {
+  getListPackageSnapshot(checkBegin: boolean) {
     this.isLoading = true
     this.formSearchPackageSnapshot.projectId = this.project
     this.formSearchPackageSnapshot.regionId = this.region
@@ -119,9 +124,14 @@ export class ListPackagesSnapshotComponent implements OnInit {
       .subscribe(data => {
       this.isLoading = false
       console.log(data);
-
-      this.response = data
-
+      this.response = data;
+      if (checkBegin) {
+        if (data == undefined || data.records.length <= 0) {
+          this.isBegin = true;
+        } else {
+          this.isBegin = false;
+        }
+      }
     }, error => {
       this.isLoading = false
       this.response = null
@@ -155,7 +165,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
         this.isVisibleDelete = false
         this.notification.success('Thành công', 'Xóa gói snapshot thành công')
         this.valueDelete = ''
-        this.getListPackageSnapshot()
+        this.getListPackageSnapshot(true)
       }, error => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
