@@ -14,11 +14,15 @@ import { NotificationService, UserModel } from '../../../../../../../../libs/com
 import { environment } from '@env/environment';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Observable, shareReplay, tap } from 'rxjs';
+import { finalize, Observable, shareReplay, tap } from 'rxjs';
 import { OrderDetailDTO } from 'src/app/shared/models/order.model';
 import { PaymentModel } from 'src/app/shared/models/payment.model';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { PaymentService } from 'src/app/shared/services/payment.service';
+import { LoadingService } from '@delon/abc/loading';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 class ServiceInfo {
   name: string;
   price: number;
@@ -50,6 +54,9 @@ export class PaymentDetailComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private orderService: OrderService,
     private notificationService: NotificationService,
+    private loadingSrv: LoadingService,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +80,6 @@ export class PaymentDetailComponent implements OnInit {
     this.orderNumber = this.activatedRoute.snapshot.paramMap.get('orderNumber');
     this.getPaymentDetail();
     this.getOrderDetail(this.orderNumber);
-    console.log(this.data);
 
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
@@ -82,22 +88,37 @@ export class PaymentDetailComponent implements OnInit {
       if(data && data["serviceId"] && Number(data["serviceId"]) == this.id){
         this.getPaymentDetail();
         this.getOrderDetail(this.orderNumber);
+        this.cdr.detectChanges();
       }
     });
   }
 
   getPaymentDetail() {
-    this.service.getPaymentById(this.id).subscribe((data: any) => {
-      this.payment = {
-        ...data,
-        eInvoiceCodePadded: data.eInvoiceCode != null ? data.eInvoiceCode.toString().padStart(8, '0') : null
-      }
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.service.getPaymentById(this.id).pipe(finalize(() => this.loadingSrv.close())).subscribe({
+      next: (data) => {
+        this.payment = {
+          ...data,
+          eInvoiceCodePadded: data.eInvoiceCode != null ? data.eInvoiceCode.toString().padStart(8, '0') : null
+        }
+      },
+      error: (e) => {
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
+        this.router.navigate(['/app-smart-cloud/billing/payments']);
+      },
     });
   }
 
   getOrderDetail(id: string) {
-    this.orderService.getOrderBycode(id).subscribe((data: any) => {
-      this.data = data;   
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.orderService.getOrderBycode(id).pipe(finalize(() => this.loadingSrv.close())).subscribe({
+      next: (data) => {
+        this.data = data;   
+      },
+      error: (e) => {
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
+        this.router.navigate(['/app-smart-cloud/billing/payments']);
+      },
     });
   }
 

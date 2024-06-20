@@ -146,25 +146,25 @@ export class StartupService {
         // setting language data
         this.i18n.use(defaultLang, langData);
         console.log(appData.menu);
-        const menuDataPromise = this.loadMenu();
-        const menuDataObservable = from(menuDataPromise);
-        menuDataObservable
-          .pipe(
-            catchError((error) => {
-              console.error('Error loading menu data:', error);
-              return throwError(error);
-            })
-          )
-          .subscribe(
-            (data) => {
-              this.menuData = data;
-              console.log(this.menuData);
-              this.menuService.add(appData.menu);
-            },
-            (error) => {
-              console.error('Error loading menu data:', error);
-            }
-          );
+        // const menuDataPromise = this.loadMenu();
+        // const menuDataObservable = from(menuDataPromise);
+        // menuDataObservable
+        //   .pipe(
+        //     catchError((error) => {
+        //       console.error('Error loading menu data:', error);
+        //       return throwError(error);
+        //     })
+        //   )
+        //   .subscribe(
+        //     (data) => {
+        //       this.menuData = data;
+        //       console.log(this.menuData);
+        //     },
+        //     (error) => {
+          //       console.error('Error loading menu data:', error);
+          //     }
+          //   );
+        this.menuService.add(appData.menu);
         this.settingService.setApp({
           name: 'One Portal',
           description: 'One Portal',

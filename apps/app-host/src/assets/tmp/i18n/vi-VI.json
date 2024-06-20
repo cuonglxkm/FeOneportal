@@ -1075,6 +1075,7 @@
   "app.payment.title": "Danh sách thanh toán",
   "app.payment.payment": "Thanh toán",
   "app.payment.status": "Trạng thái",
+  "app.payment.status.payment1": "Trạng thái TT",
   "app.payment.status.payment": "Trạng thái thanh toán",
   "app.payment.status.invoice": "Trạng thái HĐ",
   "app.payment.status.all": "Tất cả",

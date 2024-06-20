@@ -7,10 +7,14 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { environment } from '@env/environment';
 import { getCurrentRegionAndProject } from "@shared";
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize, Observable, shareReplay, tap } from 'rxjs';
+import { debounceTime, finalize, Observable, shareReplay, tap } from 'rxjs';
 import { NotificationService, ProjectModel, RegionModel, UserModel } from '../../../../../../../libs/common-utils/src';
 import { OrderDetailDTO } from '../../../shared/models/order.model';
 import { OrderService } from '../../../shared/services/order.service';
+import { LoadingService } from '@delon/abc/loading';
+import { DataPayment, ItemPayment } from '../../instances/instances.model';
+import { InstancesService } from '../../instances/instances.service';
+import { OrderItem } from 'src/app/shared/models/price';
 
 @Component({
   selector: 'one-portal-order-detail',
@@ -29,6 +33,8 @@ export class OrderDetailComponent {
   isLoadingCancelOrder: boolean = false;
   userModel$: Observable<UserModel>;
   userModel: UserModel
+  orderItem: OrderItem = new OrderItem();
+  unitPrice = 0;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -38,7 +44,9 @@ export class OrderDetailComponent {
     private notificationService: NotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private http: HttpClient
+    private http: HttpClient,
+    private loadingSrv: LoadingService,
+    private instanceService: InstancesService
   ) {}
 
   ngOnInit() {
@@ -48,11 +56,27 @@ export class OrderDetailComponent {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getUser()
     const url = this.id.split('-');
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     if (url.length > 1) {
       this.service
         .getOrderBycode(this.id)
         .pipe(
           finalize(() => {
+            this.loadingSrv.close()
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            this.data = data;
+            if(this.data.paymentUrl === ''){
+              this.createNewPayment(this.id)
+            }
+            data?.orderItems?.forEach((item) => {
+              this.serviceName = item.serviceName.split('-')[0].trim()
+              if(this.serviceName.includes('Máy ảo')){
+                this.serviceName = 'VM'
+              }
+            });
             if (this.data.statusCode == 4) {
               this.titleStepFour = this.i18n.fanyi("app.order.status.Success");
             } else if (this.data.statusCode == 5) {
@@ -63,21 +87,13 @@ export class OrderDetailComponent {
               }
             } else {
               this.titleStepFour = this.i18n.fanyi("app.order.status.Installed");
-            }
-          })
-        )
-        .subscribe({
-          next: (data) => {
-            this.data = data;
-            data?.orderItems?.forEach((item) => {
-              this.serviceName = item.serviceName.split('-')[0].trim()
-              if(this.serviceName.includes('Máy ảo')){
-                this.serviceName = 'VM'
-              }
-            });       
+            }     
+            // this.getTotalAmount()
+            
           },
           error: (e) => {
             this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
+            this.router.navigate(['/app-smart-cloud/order']);
           },
         });
     } else {
@@ -86,22 +102,15 @@ export class OrderDetailComponent {
         .getDetail(idParse)
         .pipe(
           finalize(() => {
-            if (this.data.statusCode == 4) {
-              this.titleStepFour = this.i18n.fanyi("app.order.status.Success");
-            } else if (this.data.statusCode == 5) {
-              if (this.data.invoiceCode != '') {
-                this.titleStepFour = this.i18n.fanyi("app.order.status.Trouble");;
-              } else {
-                this.titleStepFour = '';
-              }
-            } else {
-              this.titleStepFour = this.i18n.fanyi("app.order.status.Installed");
-            }
+            this.loadingSrv.close()
           })
         )
         .subscribe({
           next: (data) => {
             this.data = data;
+            if(this.data.paymentUrl === ''){
+              this.createNewPayment(this.id)
+            }
             data?.orderItems?.forEach((item) => {
               this.serviceName = item.serviceName.split('-')[0].trim()
               if(this.serviceName.includes('Máy ảo')){
@@ -116,11 +125,23 @@ export class OrderDetailComponent {
             }else if(data.statusCode == 1){
               data.statusCode = 6
             }
-            console.log(data);
-            
+
+            if (this.data.statusCode == 4) {
+              this.titleStepFour = this.i18n.fanyi("app.order.status.Success");
+            } else if (this.data.statusCode == 5) {
+              if (this.data.invoiceCode != '') {
+                this.titleStepFour = this.i18n.fanyi("app.order.status.Trouble");;
+              } else {
+                this.titleStepFour = '';
+              }
+            } else {
+              this.titleStepFour = this.i18n.fanyi("app.order.status.Installed");
+            }
+            // this.getTotalAmount()
           },
           error: (e) => {
             this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
+            this.router.navigate(['/app-smart-cloud/order']);
           },
         });
     }
@@ -147,6 +168,7 @@ export class OrderDetailComponent {
   }
 
   getUser(){
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     let email = this.tokenService.get()?.email;
   const accessToken = this.tokenService.get()?.token;
 
@@ -160,7 +182,7 @@ export class OrderDetailComponent {
       this.userModel = user;
       console.log(this.userModel);
       
-    }),
+    }, finalize(() => this.loadingSrv.close())),
     shareReplay(1) 
   );
   }
@@ -193,7 +215,9 @@ export class OrderDetailComponent {
         this.isVisibleConfirm = false;
         this.isLoadingCancelOrder = false
         this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("app.order-detail.cancelOrder.success"));
-        this.router.navigate(['/app-smart-cloud/order'])
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000)
       },
       error: (e) => {
         this.isLoadingCancelOrder = false
@@ -201,4 +225,42 @@ export class OrderDetailComponent {
       },
     })
   }
+
+  createNewPayment(id: number){
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.notification.info(this.i18n.fanyi("app.status.warning"), 'Đang tạo lại đường dẫn thanh toán, vui lòng đợi!');
+    this.service.createNewPayment(id).pipe(
+      finalize(() => {
+        this.loadingSrv.close()
+      })
+    ).subscribe({
+      next: (data) => {
+        this.data.paymentUrl = data.data
+        this.notification.success(this.i18n.fanyi("app.status.success"), 'Tạo lại đường dẫn thanh toán thành công');
+      },
+      error: (e) => {
+        
+      },
+    })
+  }
+
+  // getTotalAmount() {
+  //   let itemPayment: ItemPayment = new ItemPayment();
+  //   itemPayment.orderItemQuantity = this.data.orderItems[0].quantity;
+  //   itemPayment.specificationString = this.data.orderItems[0].serviceDetail;
+  //   itemPayment.specificationType = 'vpnsitetosite_extend';
+  //   itemPayment.serviceDuration = this.data.orderItems[0].duration;
+  //   itemPayment.sortItem = 0;
+  //   let dataPayment: DataPayment = new DataPayment();
+  //   dataPayment.orderItems = [itemPayment];
+  //   dataPayment.projectId = this.projectId;
+  //   this.instanceService
+  //     .getTotalAmount(dataPayment)
+  //     .pipe(debounceTime(500))
+  //     .subscribe((result) => {
+  //       console.log('thanh tien file system', result.data);
+  //       this.orderItem = result.data;
+  //       this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
+  //     });
+  // }
 }

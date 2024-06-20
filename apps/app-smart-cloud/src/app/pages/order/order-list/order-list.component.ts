@@ -36,13 +36,10 @@ export class OrderListComponent implements OnInit {
   status = [
     { label: this.i18n.fanyi("app.order.status.orderplaced"), value: 0 },
     { label: this.i18n.fanyi("app.order.status.cancelled"), value: 1 },
-
+    { label: this.i18n.fanyi("app.order.status.Paid"), value: 6 },
     { label: this.i18n.fanyi("app.order.status.inprocessing"), value: 3 },
     { label: this.i18n.fanyi("app.order.status.installed"), value: 4 },
     { label: this.i18n.fanyi("app.order.status.error"), value: 5 },
-    // { label: this.i18n.fanyi("app.order.status.Paid"), value: [3,4,5] },
-    // { label: this.i18n.fanyi("app.order.status.Paid"), value: 3 },
-    // { label: this.i18n.fanyi("app.order.status.Paid"), value: 4 },
   
   ];
   orderCode: string;
@@ -68,7 +65,7 @@ export class OrderListComponent implements OnInit {
   }
 
   refreshParams() {
-    this.pageSize = 5;
+    this.pageSize = 10;
     this.currentPage = 1;
   }
 
@@ -107,8 +104,6 @@ export class OrderListComponent implements OnInit {
   constructor(private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private orderService: OrderService,
-    private modalService: NzModalService,
-    private snapshotVolumeService: SnapshotVolumeService,
     private notification: NzNotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
@@ -125,8 +120,6 @@ export class OrderListComponent implements OnInit {
   }
 
   onChanggeDate(value: Date[]) {
-    // console.log("From Date: "+value[0]);
-    // console.log("To Date: "+value[1]);
     this.fromDate = value[0];
     this.toDate = value[1];
     this.refreshParams()

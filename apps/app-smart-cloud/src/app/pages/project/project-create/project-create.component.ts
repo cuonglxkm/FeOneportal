@@ -176,8 +176,8 @@ export class ProjectCreateComponent implements OnInit {
   sitetositeName: string;
   listTypeCatelogOffer: any;
 
-  numbergpu: number[] = [];
-  maxTotal: number = 8;
+  // numbergpu: number[] = [];
+  // maxTotal: number = 8;
   keySSD:boolean = true;
 
   isRequired: boolean = true;
@@ -192,6 +192,7 @@ export class ProjectCreateComponent implements OnInit {
   catalogStatus: { [key: string]: boolean } = {};
   catalogs: string[] = ['ip', 'ipv6','volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage','file-storage-snapshot', 'vpns2s','vm-gpu'];
 
+  isShowAlertGpu:boolean;
   form = new FormGroup({
     name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(50)] }),
     description: new FormControl(''),
@@ -249,20 +250,20 @@ export class ProjectCreateComponent implements OnInit {
   calculateReal() {
     this.refreshValue();
     if (this.vpcType == '1') {
-      console.log("ipConnectInternet 123", this.ipConnectInternet)
-      console.log("ipConnectInternet 123", this.ipConnectInternet?.split('--'))
+      if((this.selectIndexTab==1 && this.ssd ==0) || (this.selectIndexTab==0 && this.keySSD==false ||(this.selectIndexTab==0 && !this.offerFlavor))){
+        this.isShowAlertGpu = true
+      }
+      else{
+        this.isShowAlertGpu = false
+      }
+
       let lstIp = this.ipConnectInternet?.split('--');
-      console.log("lstIp 123", lstIp)
       let ip = '';
       let ipName = '';
       if (lstIp != null && lstIp != undefined) {
         ip = lstIp[0];
       }
-      // let numOfMonth = this.form.controls['numOfMonth'].value;
-      // let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : 1;
-      // let IPFloating = this.selectIndexTab == 1 && this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
-      // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
-      // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
+     
 
       let IPPublicNum = this.numberIpPublic;
       let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
@@ -792,6 +793,7 @@ export class ProjectCreateComponent implements OnInit {
     this.totalPayment = 0;
     this.selectIndexTab = event.index;
     this.calculate(null);
+    this.isShowAlertGpu= true;
   }
 
   loadListIpConnectInternet() {
@@ -1026,6 +1028,14 @@ export class ProjectCreateComponent implements OnInit {
     console.log("index", index)
     console.log("value", value)
     console.log("gpuQuotasGobal 123", this.gpuQuotasGobal)
+    if(  (this.selectIndexTab==0 && this.keySSD==false ||(this.selectIndexTab==0 && !this.offerFlavor)) || (this.selectIndexTab==1 && this.ssd==0) && this.gpuQuotasGobal[index].GpuCount !=0){
+      this.isShowAlertGpu = true
+      console.log("isShowAlertGpu iuf", this.isShowAlertGpu)
+    }
+    else{
+      this.isShowAlertGpu = false
+      console.log("isShowAlertGpu else", this.isShowAlertGpu)
+    }
     // console.log(this.gpuQuotasGobal[index].GpuCount);
     // if (index == 0) {
     //   if (this.gpuQuotasGobal[0].GpuCount <= this.maxTotal) {
@@ -1048,16 +1058,16 @@ export class ProjectCreateComponent implements OnInit {
     this.calculate(null)
   }
 
-  getMaxValue(index: number): number {
-    if (this.gpuQuotasGobal[index].GpuCount < 8) {
-      return this.maxNumber[index];
-    }
-  }
+  // getMaxValue(index: number): number {
+  //   if (this.gpuQuotasGobal[index].GpuCount < 8) {
+  //     return this.maxNumber[index];
+  //   }
+  // }
 
-  isDisabled(index: number): boolean {
-    let total = this.numbergpu.reduce((sum, current) => sum + current, 0);
-    return total >= this.maxTotal && this.numbergpu[index] === 0;
-  }
+  // isDisabled(index: number): boolean {
+  //   let total = this.numbergpu.reduce((sum, current) => sum + current, 0);
+  //   return total >= this.maxTotal && this.numbergpu[index] === 0;
+  // }
   refreshQuota() {
     this.vCPU = 0;
     this.ram = 0;
@@ -1079,6 +1089,12 @@ export class ProjectCreateComponent implements OnInit {
   checkFlavor(){
     this.keySSD= this.offerFlavor.characteristicValues.find((charName)=>charName.charName ==='VolumeType').charOptionValues?.[0]=='SSD'
    console.log("keySSD", this.keySSD)
+   if(this.keySSD){
+    this.isShowAlertGpu = false
+   }
+   else{
+    this.isShowAlertGpu = true
+   }
   
   }
 
