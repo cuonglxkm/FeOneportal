@@ -41,8 +41,8 @@ export class OrderService extends BaseService {
     ticketCode: string,
     dSubscriptionNumber: string,
     dSubscriptionType: string,
-    fromDate: Date,
-    toDate: Date,
+    fromDate: string,
+    toDate: string,
     status: number
   ): Observable<BaseResponse<OrderDTO[]>> {
     let urlResult = this.getConditionSearcOrders(
@@ -78,8 +78,8 @@ export class OrderService extends BaseService {
     ticketCode: string,
     dSubscriptionNumber: string,
     dSubscriptionType: string,
-    fromDate: Date,
-    toDate: Date,
+    fromDate: string,
+    toDate: string,
     status: number
   ): string {
     let urlResult = this.urlSnapshotVl;
@@ -109,14 +109,6 @@ export class OrderService extends BaseService {
       }
     }
 
-    if (pageSize !== undefined && pageSize != null) {
-      if (count == 0) {
-        urlResult += '?pageSize=' + pageSize;
-        count++;
-      } else {
-        urlResult += '&pageSize=' + pageSize;
-      }
-    }
     if (saleDept !== undefined && saleDept != null) {
       if (count == 0) {
         urlResult += '?saleDept=' + saleDept;
@@ -167,18 +159,18 @@ export class OrderService extends BaseService {
     }
     if (fromDate !== undefined && fromDate != null) {
       if (count == 0) {
-        urlResult += '?fromDate=' + fromDate.toISOString();
+        urlResult += '?fromDate=' + fromDate;
         count++;
       } else {
-        urlResult += '&fromDate=' + fromDate.toISOString();
+        urlResult += '&fromDate=' + fromDate;
       }
     }
     if (toDate !== undefined && toDate != null) {
       if (count == 0) {
-        urlResult += '?toDate=' + toDate.toISOString();
+        urlResult += '?toDate=' + toDate;
         count++;
       } else {
-        urlResult += '&toDate=' + toDate.toISOString();
+        urlResult += '&toDate=' + toDate;
       }
     }
     if (status !== undefined && status != null) {
