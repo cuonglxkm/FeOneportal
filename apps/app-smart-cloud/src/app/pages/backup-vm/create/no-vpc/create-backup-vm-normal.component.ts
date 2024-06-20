@@ -151,6 +151,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
   }
 
   getDataByInstanceId(id) {
+    this.securityGroupSelected = [];
     this.instanceService.getInstanceById(id).subscribe(data => {
       this.instance = data;
       this.isLoading = true;

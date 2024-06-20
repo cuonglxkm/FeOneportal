@@ -102,7 +102,23 @@
                     >{{ instancesModel.flavorName | slice : 3 }}</a
                   >
                   <ng-template #contentConfigPackage>
-                    <nz-row style="width: 320px">
+                    <nz-row
+                      *ngIf="instancesModel.gpuType != null"
+                      style="width: 320px"
+                    >
+                      <nz-col nzSpan="12">
+                        GPU - {{ instancesModel.gpuType.toUpperCase() }}
+                      </nz-col>
+                      <nz-col class="text-right" nzSpan="12">
+                        {{ instancesModel.gpuCount }} GPU
+                      </nz-col>
+                    </nz-row>
+                    <nz-row
+                      [ngStyle]="{
+                        width: '320px',
+                        'margin-top': instancesModel.gpuType ? '5px' : '0px'
+                      }"
+                    >
                       <nz-col nzSpan="12"> CPU </nz-col>
                       <nz-col class="text-right" nzSpan="12">
                         {{ instancesModel.cpu }} vCPU
@@ -258,6 +274,7 @@
         [createDate]="instancesModel?.createdDate"
         [expiredDate]="instancesModel?.expiredDate"
         (valueChanged)="onChangeTime($event)"
+        [newExpiredDate]="newExpiredDate"
       />
     </nz-col>
     <nz-col nzSpan="8">
