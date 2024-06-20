@@ -862,6 +862,7 @@
           nz-checkbox
           [(ngModel)]="instanceCreate.encryption"
           [ngModelOptions]="{ standalone: true }"
+          [disabled]="isSnapshot"
           >{{ 'volume.info.type.encrypt' | i18n }}
         </label>
         <nz-row nzGutter="16">

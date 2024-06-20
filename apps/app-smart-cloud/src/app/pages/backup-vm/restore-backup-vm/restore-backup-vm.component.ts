@@ -19,7 +19,6 @@ import {
   BackupVm,
   RestoreFormCurrent,
   RestoreInstanceBackup,
-  SecurityGroupBackup,
   VolumeBackup,
 } from '../../../shared/models/backup-vm';
 import { PackageBackupModel } from '../../../shared/models/package-backup.model';
@@ -30,13 +29,11 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import {
   DataPayment,
-  InstanceCreate,
   IPPublicModel,
   ItemPayment,
   OfferItem,
   Order,
   OrderItem,
-  SecurityGroupModel,
   SHHKeyModel,
   VolumeCreate,
 } from '../../instances/instances.model';
@@ -49,7 +46,6 @@ import {
 } from '../../../shared/models/vlan.model';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { debounceTime, finalize, Subject } from 'rxjs';
-import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
@@ -182,7 +178,7 @@ export class RestoreBackupVmComponent implements OnInit {
 
   updateActivePoint(): void {
     // Gọi hàm reloadCarousel khi cần reload
-    if (this.reloadCarousel) {
+    if (this.reloadCarousel && this.selectedOption == 'new') {
       this.reloadCarousel = false;
       setTimeout(() => {
         this.myCarouselFlavor.reset();
@@ -437,14 +433,14 @@ export class RestoreBackupVmComponent implements OnInit {
           this.listOfDataBlockStorage.push(tempBS);
         });
 
-        this.listSecurityGroupBackups = getUniqueObjects(
-          this.backupVmModel.securityGroupBackups,
-          'sgName'
-        );
+        if (this.backupVmModel.securityGroupBackups != null) {
+          this.listSecurityGroupBackups = getUniqueObjects(
+            this.backupVmModel.securityGroupBackups,
+            'sgName'
+          );
+        }
         this.listSecurityGroupBackups.forEach((e) => {
-          if (e.sgName.toUpperCase() == 'DEFAULT') {
-            this.selectedSecurityGroup.push(e.sgName);
-          }
+          this.selectedSecurityGroup.push(e.sgName);
         });
 
         this.getBackupPackage(this.backupVmModel?.backupPacketId);
@@ -467,21 +463,6 @@ export class RestoreBackupVmComponent implements OnInit {
       // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
       event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
     }
-  }
-
-  onSelectionChange(): void {
-    console.log('Selected option:', this.selectedOption);
-    this.selectedSecurityGroup = [];
-    if (this.selectedOption === 'current') {
-      this.listSecurityGroupBackups.forEach((e) => {
-        if (e.sgName.toUpperCase() == 'DEFAULT') {
-          this.selectedSecurityGroup.push(e.sgName);
-        }
-      });
-    } else if (this.selectedOption === 'new') {
-      this.getAllSecurityGroup();
-    }
-    this.cdr.detectChanges();
   }
 
   submitFormCurrent() {
@@ -589,24 +570,6 @@ export class RestoreBackupVmComponent implements OnInit {
           },
         });
     }
-  }
-
-  getAllSecurityGroup() {
-    this.dataService
-      .getAllSecurityGroup(
-        this.region,
-        this.tokenService.get()?.userId,
-        this.project
-      )
-      .subscribe((data: any) => {
-        this.listSecurityGroup = getUniqueObjects(data, 'name');
-        this.listSecurityGroup.forEach((e) => {
-          if (e.name.toUpperCase() == 'DEFAULT') {
-            this.selectedSecurityGroup.push(e.name);
-          }
-        });
-        this.cdr.detectChanges();
-      });
   }
   //#endregion
 
