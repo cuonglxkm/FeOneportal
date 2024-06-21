@@ -31,6 +31,7 @@
     </div>
   </ng-template>
 </page-header>
+<nz-spin [nzSpinning]="isLoadingTotalAmount">
 <div
   *ngIf="!(data?.statusCode == 6 && data?.invoiceCode == null)"
   class="mb-8 order-step"
@@ -321,7 +322,6 @@
     </nz-card>
   </div>
   <div nz-col nzSpan="8">
-    <nz-spin [nzSpinning]="isLoadingTotalAmount">
     <nz-card style="border-radius: 8px; border-color: #b2deff">
       <div style="margin-bottom: 20px">
         <span class="text-card-header">{{
@@ -432,10 +432,9 @@
         </div>
       </div>
     </nz-card>
-  </nz-spin>
   </div>
 </div>
-
+</nz-spin>
 <!-- Cancel Order Confirm -->
 
 <nz-modal

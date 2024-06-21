@@ -38,13 +38,14 @@ class ServiceInfo {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaymentDetailComponent implements OnInit {
-    payment: PaymentModel = new PaymentModel();
+    payment: PaymentModel = null;
     serviceInfo: ServiceInfo = new ServiceInfo();
-    data: OrderDetailDTO
+    data: OrderDetailDTO = null
     userModel$: Observable<UserModel>;
     id: number;
     userModel: UserModel
     orderNumber:string
+    isLoading: boolean = false
   constructor(
     private service: PaymentService,
     private router: Router,
@@ -60,26 +61,14 @@ export class PaymentDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let email = this.tokenService.get()?.email;
-    const accessToken = this.tokenService.get()?.token;
-
-    let baseUrl = environment['baseUrl'];
-    this.userModel$ = this.http.get<UserModel>(`${baseUrl}/users/${email}`, {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer ' + accessToken,
-      }),
-    }).pipe(
-      tap(user => {
-        this.userModel = user;
-        console.log(this.userModel);
-        
-      }),
-      shareReplay(1) 
-    );
+    this.getUser()
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.orderNumber = this.activatedRoute.snapshot.paramMap.get('orderNumber');
     this.getPaymentDetail();
     this.getOrderDetail(this.orderNumber);
+    console.log(this.payment);
+    console.log(this.data);
+    
 
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
@@ -93,14 +82,34 @@ export class PaymentDetailComponent implements OnInit {
     });
   }
 
+  getUser(){
+    let email = this.tokenService.get()?.email;
+    const accessToken = this.tokenService.get()?.token;
+    let baseUrl = environment['baseUrl'];
+    this.userModel$ = this.http.get<UserModel>(`${baseUrl}/users/${email}`, {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + accessToken,
+      }),
+    }).pipe(
+      tap(user => {
+        this.userModel = user;
+        console.log(this.userModel);
+        
+      }),
+      shareReplay(1) 
+    );
+  }
+
   getPaymentDetail() {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-    this.service.getPaymentById(this.id).pipe(finalize(() => this.loadingSrv.close())).subscribe({
+    this.isLoading = true
+    this.service.getPaymentById(this.id).subscribe({
       next: (data) => {
         this.payment = {
           ...data,
           eInvoiceCodePadded: data.eInvoiceCode != null ? data.eInvoiceCode.toString().padStart(8, '0') : null
         }
+        this.cdr.detectChanges()
+        this.isLoading = false
       },
       error: (e) => {
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
@@ -110,10 +119,10 @@ export class PaymentDetailComponent implements OnInit {
   }
 
   getOrderDetail(id: string) {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-    this.orderService.getOrderBycode(id).pipe(finalize(() => this.loadingSrv.close())).subscribe({
+    this.orderService.getOrderBycode(id).subscribe({
       next: (data) => {
         this.data = data;   
+        this.cdr.detectChanges()
       },
       error: (e) => {
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
