@@ -96,20 +96,16 @@ export class OrderDetailComponent {
 
   getOrderDetail(){
     const url = this.id.split('-');
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.isLoadingTotalAmount = true
     if (url.length > 1) {
       this.service
         .getOrderBycode(this.id)
-        .pipe(
-          finalize(() => {
-            this.loadingSrv.close()
-          })
-        )
         .subscribe({
           next: (data) => {
             this.data = data;
             if(this.data.paymentUrl === '' && this.data.statusCode == 0){
               this.getTotalAmount()
+              this.isLoadingTotalAmount = false
             }
             data?.orderItems?.forEach((item) => {
               this.serviceName = item.serviceName.split('-')[0].trim()
@@ -126,7 +122,7 @@ export class OrderDetailComponent {
 
             this.setTitleStepFour()
 
-
+            this.isLoadingTotalAmount = false
           },
           error: (e) => {
             this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
@@ -137,16 +133,12 @@ export class OrderDetailComponent {
       const idParse = parseInt(this.id);
       this.service
         .getDetail(idParse)
-        .pipe(
-          finalize(() => {
-            this.loadingSrv.close()
-          })
-        )
         .subscribe({
           next: (data) => {
             this.data = data;
             if(this.data.paymentUrl === '' && this.data.statusCode == 0){
               this.getTotalAmount()
+              this.isLoadingTotalAmount = false
             }
             data?.orderItems?.forEach((item) => {
               this.serviceName = item.serviceName.split('-')[0].trim()
@@ -164,6 +156,7 @@ export class OrderDetailComponent {
             }
 
             this.setTitleStepFour()
+            this.isLoadingTotalAmount = false
           },
           error: (e) => {
             this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
@@ -174,7 +167,6 @@ export class OrderDetailComponent {
   }
 
   getUser(){
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     let email = this.tokenService.get()?.email;
   const accessToken = this.tokenService.get()?.token;
 
@@ -188,7 +180,7 @@ export class OrderDetailComponent {
       this.userModel = user;
       console.log(this.userModel);
 
-    }, finalize(() => this.loadingSrv.close())),
+    }),
     shareReplay(1)
   );
   }
@@ -363,17 +355,13 @@ export class OrderDetailComponent {
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = specificationObj.ProjectId === null ? 0 : specificationObj.ProjectId;
-    this.isLoadingTotalAmount = true
-    this.instanceService.getTotalAmount(dataPayment).pipe(
-      finalize(() => {
-        this.isLoadingTotalAmount = false
-      })
-    ).subscribe((result) => {
+
+    this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
       this.orderItem = result.data;
       if (!this.orderItem || !this.orderItem.orderItemPrices || !this.orderItem.orderItemPrices[0]) {
         return;
       }
-
+      
       console.log(this.orderItem?.totalPayment?.amount);
       this.unitPrice = this.orderItem.orderItemPrices[0]?.unitPrice?.amount;
     }, (error) => {
