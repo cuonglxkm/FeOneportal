@@ -16,7 +16,6 @@ import {
   IPSubnetModel,
   ImageTypesModel,
   SHHKeyModel,
-  SecurityGroupModel,
   VolumeCreate,
   Order,
   OrderItem,
@@ -50,7 +49,6 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
-import { SupportService } from 'src/app/shared/models/catalog.model';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -295,9 +293,10 @@ export class InstancesCreateComponent implements OnInit {
   //Lấy các dịch vụ hỗ trợ theo region
   isSupportEncryption: boolean = false;
   isSupportMultiAttachment: boolean = false;
+  isSupportIpv6: boolean = false;
   getActiveServiceByRegion() {
     this.catalogService
-      .getActiveServiceByRegion(['Encryption', 'MultiAttachment'], this.region)
+      .getActiveServiceByRegion(['Encryption', 'MultiAttachment', 'ipv6'], this.region)
       .subscribe((data) => {
         console.log("support service", data);
         this.isSupportMultiAttachment = data.filter(
@@ -305,6 +304,9 @@ export class InstancesCreateComponent implements OnInit {
         )[0].isActive;
         this.isSupportEncryption = data.filter(
           (e) => e.productName == 'Encryption'
+        )[0].isActive;
+        this.isSupportIpv6 = data.filter(
+          (e) => e.productName == 'ipv6'
         )[0].isActive;
       });
   }

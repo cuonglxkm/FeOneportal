@@ -86,6 +86,8 @@ export class BackupVMFormSearch {
 
 export class RestoreFormCurrent {
   instanceBackupId: number
+  securityGroups: string[]
+  volumeBackupIds: number[]
 }
 
 export class VolumeAttachment {
@@ -213,35 +215,33 @@ export class RestoreInstanceBackup {
   gpuTypeOfferId: any
   privateNetId: any
   privatePortId: any
-  customerId: number
-  userEmail: any
-  actorEmail: any
   projectId: any
-  vpcId: any
-  regionId: number
-  serviceName: any
+  customerId: number
   serviceType: number
-  actionType: number
   serviceInstanceId: number
   createDate: string
   expireDate: string
-  createDateInContract: any
   saleDept: any
   saleDeptCode: any
   contactPersonEmail: any
   contactPersonPhone: any
   contactPersonName: any
+  note: any
+  createDateInContract: any
   am: any
   amManager: any
-  note: any
   isTrial: boolean
   offerId: number
   couponCode: any
   dhsxkd_SubscriptionId: any
   dSubscriptionNumber: any
   dSubscriptionType: any
-  oneSMEAddonId: any
   oneSME_SubscriptionId: any
-  isSendMail: boolean
+  oneSMEAddonId: any
+  userEmail: any
+  actorEmail: any
+  actionType: number
+  regionId: number
+  serviceName: any
   typeName: string
 }
