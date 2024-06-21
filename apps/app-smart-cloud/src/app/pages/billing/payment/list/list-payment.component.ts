@@ -128,16 +128,19 @@ export class ListPaymentComponent implements OnInit {
   }
 
   onDateRangeChange(value: Date[]): void {
-    if (value) {
+    if (value && value.length === 2) {
       this.dateRange = value;
       this.fromDate = value[0];
       this.toDate = value[1];
       this.fromDateFormatted = format(value[0], 'yyyy-MM-dd');
       this.toDateFormatted = format(value[1], 'yyyy-MM-dd');
-      this.getListInvoices();
+      this.getListInvoices()
     } else {
-      this.dateRange = null;
-      this.getListInvoices();
+      this.fromDate = null;
+      this.toDate = null;
+      this.fromDateFormatted = null;
+      this.toDateFormatted = null;
+      this.getListInvoices()
     }
   }
 

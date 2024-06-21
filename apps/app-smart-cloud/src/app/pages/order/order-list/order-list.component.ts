@@ -120,10 +120,18 @@ export class OrderListComponent implements OnInit {
   }
 
   onChanggeDate(value: Date[]) {
-    this.fromDate = value[0];
-    this.toDate = value[1];
-    this.fromDateFormatted = format(value[0], 'yyyy-MM-dd');
-    this.toDateFormatted = format(value[1], 'yyyy-MM-dd');
+    if (value && value.length === 2) {
+      this.fromDate = value[0];
+      this.toDate = value[1];
+      this.fromDateFormatted = format(this.fromDate, 'yyyy-MM-dd');
+      this.toDateFormatted = format(this.toDate, 'yyyy-MM-dd');
+    } else {
+      this.fromDate = null;
+      this.toDate = null;
+      this.fromDateFormatted = null;
+      this.toDateFormatted = null;
+    }
+    
     this.refreshParams()
     this.searchSnapshotScheduleList();
   }
