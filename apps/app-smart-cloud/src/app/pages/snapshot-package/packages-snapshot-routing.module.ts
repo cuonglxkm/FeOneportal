@@ -16,7 +16,7 @@ const routes: Routes = [
     component: CreatePackageSnapshotComponent,
   },
   {
-    path: ':id',
+    path: 'detail/:id',
     component: DetailSnapshotComponent,
   },
   {

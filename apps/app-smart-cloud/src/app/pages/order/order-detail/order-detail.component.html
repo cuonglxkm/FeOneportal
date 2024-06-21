@@ -16,7 +16,7 @@
         }}</a></nz-breadcrumb-item
       >
       <nz-breadcrumb-item>
-        <a>{{ 'app.breadcrumb.order-detail' | i18n }}</a></nz-breadcrumb-item
+        {{ 'app.breadcrumb.order-detail' | i18n }}</nz-breadcrumb-item
       >
     </nz-breadcrumb>
     <ng-template #iconTemplate
@@ -31,6 +31,7 @@
     </div>
   </ng-template>
 </page-header>
+<nz-spin [nzSpinning]="isLoadingTotalAmount">
 <div
   *ngIf="!(data?.statusCode == 6 && data?.invoiceCode == null)"
   class="mb-8 order-step"
@@ -391,7 +392,7 @@
               "
             >
               {{
-                 data?.paymentUrl === '' && data.statusCode === 1 ? (orderItem?.totalPayment?.amount | number)  :  (data?.amount?.amount | number)
+                 data?.paymentUrl === '' && data.statusCode === 1 ? (orderItem?.totalPayment?.amount | number)  :  (data?.totalAmount?.amount | number)
               }}
               VND
             </td>
@@ -433,7 +434,7 @@
     </nz-card>
   </div>
 </div>
-
+</nz-spin>
 <!-- Cancel Order Confirm -->
 
 <nz-modal
