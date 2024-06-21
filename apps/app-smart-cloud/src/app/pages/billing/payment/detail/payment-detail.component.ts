@@ -86,9 +86,9 @@ export class PaymentDetailComponent implements OnInit {
     }
     this.notificationService.connection.on('UpdateStatePayment', (data) => {
       if(data && data["serviceId"] && Number(data["serviceId"]) == this.id){
-        this.getPaymentDetail();
-        this.getOrderDetail(this.orderNumber);
-        this.cdr.detectChanges();
+        setTimeout(() => {
+          window.location.reload()
+        },500)
       }
     });
   }
