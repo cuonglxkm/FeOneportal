@@ -36,6 +36,7 @@ export class OrderDetailComponent {
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
   specType: string
+  isLoadingTotalAmount: boolean = false
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -362,10 +363,10 @@ export class OrderDetailComponent {
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = specificationObj.ProjectId === null ? 0 : specificationObj.ProjectId;
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.isLoadingTotalAmount = true
     this.instanceService.getTotalAmount(dataPayment).pipe(
       finalize(() => {
-        this.loadingSrv.close()
+        this.isLoadingTotalAmount = false
       })
     ).subscribe((result) => {
       this.orderItem = result.data;
@@ -375,6 +376,8 @@ export class OrderDetailComponent {
 
       console.log(this.orderItem?.totalPayment?.amount);
       this.unitPrice = this.orderItem.orderItemPrices[0]?.unitPrice?.amount;
+    }, (error) => {
+      this.notification.error(this.i18n.fanyi("app.status.fail"), 'Lấy tiền thất bại');
     });
   }
 }

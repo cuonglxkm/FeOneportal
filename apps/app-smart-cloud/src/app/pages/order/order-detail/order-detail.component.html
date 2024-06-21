@@ -16,7 +16,7 @@
         }}</a></nz-breadcrumb-item
       >
       <nz-breadcrumb-item>
-        <a>{{ 'app.breadcrumb.order-detail' | i18n }}</a></nz-breadcrumb-item
+        {{ 'app.breadcrumb.order-detail' | i18n }}</nz-breadcrumb-item
       >
     </nz-breadcrumb>
     <ng-template #iconTemplate
@@ -321,6 +321,7 @@
     </nz-card>
   </div>
   <div nz-col nzSpan="8">
+    <nz-spin [nzSpinning]="isLoadingTotalAmount">
     <nz-card style="border-radius: 8px; border-color: #b2deff">
       <div style="margin-bottom: 20px">
         <span class="text-card-header">{{
@@ -431,6 +432,7 @@
         </div>
       </div>
     </nz-card>
+  </nz-spin>
   </div>
 </div>
 
