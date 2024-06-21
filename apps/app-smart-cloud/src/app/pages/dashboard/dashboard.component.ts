@@ -81,9 +81,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getSubscriptionsDashboard() {
     this.isLoading = true;
-    this.dashboardService.getHeader().subscribe(data => {
-      console.log(data);
-    });
     this.dashboardService.getSubscriptionsDashboard().subscribe(data => {
       this.isLoading = false;
       this.subscriptionsDashboard = data;
