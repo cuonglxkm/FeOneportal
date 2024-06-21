@@ -2820,6 +2820,8 @@
   "app.notification.extend.fail": "Gia hạn gói backup thất bại. {{error}}",
   "app.notification.update.package.backup.success": "Chỉnh sửa gói backup thành công",
   "app.notification.update.package.backup.error": "Chỉnh sửa gói backup thất bại. {{error}}",
+  "app.notification.restore.current.vm.success": "Khôi phục vào máy ảo hiện tại thành công",
+  "app.notification.restore.current.vm.fail": "Khôi phục vào máy ảo hiện tại thất bại",
 
   "app.backup.package.name.required": "Vui lòng nhập tên gói Backup",
   "app.backup.package.name.pattern": "Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt",
@@ -2857,6 +2859,7 @@
   "app.backup.vm.restore.current": "Restore vào máy ảo hiện tại",
   "app.backup.vm.restore.new": "Restore vào máy ảo mới",
   "app.backup.config.vm.new": "Cấu hình máy ảo mới",
+  "app.backup.config.vm.attach": "Cấu hình Volume gắn ngoài",
   "app.backup.vm.button.create" : "Khởi tạo Backup VM",
   "app.backup.vm.title": "Backup VM - Sao lưu, bảo mật",
   "app.backup.vm.bought": "Dung lượng backup đã mua",

@@ -223,7 +223,26 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.getListNetwork();
     this.onChangeCapacity();
     this.getAllSSHKey();
+    this.getListOptionGpuValue();
+    this.getActiveServiceByRegion();
     this.cdr.detectChanges();
+  }
+
+  //Lấy các dịch vụ hỗ trợ theo region
+  isSupportEncryption: boolean = false;
+  isSupportMultiAttachment: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(['Encryption', 'MultiAttachment'], this.region)
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isSupportMultiAttachment = data.filter(
+          (e) => e.productName == 'MultiAttachment'
+        )[0].isActive;
+        this.isSupportEncryption = data.filter(
+          (e) => e.productName == 'Encryption'
+        )[0].isActive;
+      });
   }
 
   //Kiểm tra trùng tên máy ảo
@@ -441,6 +460,16 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   }
 
   //#region  cấu hình
+  listOptionGpuValue: number[] = [];
+  getListOptionGpuValue() {
+    this.configurationService
+      .getConfigurations('OPTIONGPUVALUE')
+      .subscribe(
+        (data) =>
+          (this.listOptionGpuValue = data.valueString.split(', ').map(Number))
+      );
+  }
+
   activeBlockHDD: boolean = true;
   activeBlockSSD: boolean = false;
   isCustomconfig = true;
@@ -496,6 +525,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
+    this.listOptionGpuValue = this.listOptionGpuValue.filter(
+      (e) => e <= this.remainingGpu
+    );
     this.cdr.detectChanges();
   }
 
@@ -517,6 +549,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
+    this.listOptionGpuValue = this.listOptionGpuValue.filter(
+      (e) => e <= this.remainingGpu
+    );
   }
 
   resetData() {
@@ -775,7 +810,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     }
     this.restoreInstanceBackup.ipPublic = this.ipPublicValue;
     this.restoreInstanceBackup.password = this.password;
-    this.restoreInstanceBackup.encryption = false;
     this.restoreInstanceBackup.projectId = this.project;
     this.restoreInstanceBackup.oneSMEAddonId = null;
     this.restoreInstanceBackup.serviceType = 1;
