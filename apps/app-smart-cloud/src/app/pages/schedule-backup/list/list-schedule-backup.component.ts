@@ -52,6 +52,8 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
 
+  projectName: string;
+
   constructor(private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private backupScheduleService: ScheduleService) {
@@ -66,6 +68,7 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project?.type;
+    this.projectName = project?.projectName
     this.getListScheduleBackup(true);
     this.getCapacityBackup();
 

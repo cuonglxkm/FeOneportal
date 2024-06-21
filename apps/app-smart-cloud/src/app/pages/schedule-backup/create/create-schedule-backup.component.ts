@@ -137,6 +137,13 @@ export class CreateScheduleBackupComponent implements OnInit {
   volumeSelected: any;
   volumeName: string;
 
+  sizeOfVlAttach: number = 0;
+  volumeAttachSelected: VolumeDTO[] = [];
+
+  instance: InstancesModel;
+
+  projectName: string;
+
   modes = [
     { label: this.i18n.fanyi('schedule.backup.label.each.day'), value: 1 },
     { label: this.i18n.fanyi('schedule.backup.label.each.number.day'), value: 2 },
@@ -190,6 +197,7 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project.id;
+    this.projectName = project?.projectName
   }
 
   duplicateNameValidator(control) {
@@ -225,30 +233,52 @@ export class CreateScheduleBackupComponent implements OnInit {
       this.instanceSelected = value;
       const find = this.listInstanceNotUse?.find(x => x.id === this.instanceSelected);
       this.instanceName = find?.name;
-      this.getVolumeInstanceAttachment(value);
+      this.getDataInstanceById(this.instanceSelected);
+    }
+  }
+  onSelectedVolume(value) {
+    console.log('value', value);
+    this.sizeOfVlAttach = 0;
+    this.volumeAttachSelected = [];
+    if (value.length >= 1) {
+      value.forEach(item => {
+        this.volumeService.getVolumeById(item, this.project).subscribe(data => {
+          this.volumeAttachSelected?.push(data);
+          this.sizeOfVlAttach += data?.sizeInGB;
+        });
+      });
+    } else {
+      this.volumeAttachSelected = [];
+      this.sizeOfVlAttach = 0;
     }
   }
 
+  sizeOfVolume: number = 0;
   selectVolumeChange(value) {
     console.log('value volume selected', value);
     if (value != undefined) {
       this.volumeSelected = value;
       const find = this.listVolumeNotUseUnique?.find(x => x.id === this.volumeSelected);
       this.volumeName = find?.name;
+      this.sizeOfVolume += find?.sizeInGB
     }
   }
 
+  isLoadingAttach: boolean = false
   getVolumeInstanceAttachment(id: number) {
-    this.isLoading = true;
+    this.isLoadingAttach = true;
     this.backupVmService.getVolumeInstanceAttachment(id).subscribe(data => {
-      this.isLoading = false;
+      this.isLoadingAttach = false;
       this.volumeAttachments = data;
+    }, error => {
+      this.isLoadingAttach = false;
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
     });
   }
 
-
+  isLoadingInstance: boolean = false
   getListInstances() {
-    this.isLoading = true;
+    this.isLoadingInstance = true;
     let customerId = this.tokenService.get()?.userId;
     let formSearchBackup = new BackupVMFormSearch();
     formSearchBackup.pageSize = 10000000;
@@ -256,7 +286,7 @@ export class CreateScheduleBackupComponent implements OnInit {
     formSearchBackup.customerId = customerId;
     this.instanceService.search(1, 9999, this.region, this.project, '', '', true, customerId)
       .subscribe(data => {
-        this.isLoading = false;
+        this.isLoadingInstance = false;
         this.listInstance = data?.records.filter(value => (value?.taskState == 'ACTIVE'));
 
         this.backupVmService.search(formSearchBackup).subscribe(data2 => {
@@ -274,16 +304,19 @@ export class CreateScheduleBackupComponent implements OnInit {
           this.cdr.detectChanges();
         });
 
+      }, error => {
+        this.isLoadingInstance = false
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
       });
   }
 
-  getInstanceById() {
-    if (this.instanceId != undefined) {
-      this.validateForm.get('formInstance').get('instanceId').setValue(this.instanceId);
-      this.instanceService.getInstanceById(this.instanceId).subscribe(data => {
-        this.instanceName = data.name;
-      });
-    }
+  getDataInstanceById(id) {
+    console.log('here')
+    this.instanceService.getInstanceById(id).subscribe(data => {
+      this.instance = data;
+      this.isLoading = false;
+      this.getVolumeInstanceAttachment(this.instance.id);
+    });
   }
 
   getListVolume() {
@@ -557,6 +590,14 @@ export class CreateScheduleBackupComponent implements OnInit {
       this.validateForm.get('formVolume').get('date').setValue(1);
     }
     this.cdr.detectChanges();
+  }
+  getInstanceById() {
+    if (this.instanceId != undefined) {
+      this.validateForm.get('formInstance').get('instanceId').setValue(this.instanceId);
+      this.instanceService.getInstanceById(this.instanceId).subscribe(data => {
+        this.instanceName = data.name;
+      });
+    }
   }
 
 

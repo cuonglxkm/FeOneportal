@@ -3029,7 +3029,9 @@
   "schedule.backup.confirm.input.name": "Vui lòng nhập đúng tên Backup",
   "schedule.backup.placeholder.input.name": "Nhập tên lịch",
   "schedule.backup.alert.storage.vpc": "Dung lượng backup còn lại nhỏ hơn dung lượng lập lịch backup ({{storage}} GB). Quý khách hãy điều chỉnh dự án",
+  "schedule.backup.alert.storage.normal": "Dung lượng backup còn lại nhỏ hơn dung lượng lập lịch backup ({{storage}} GB). Quý khách hãy điều chỉnh gói backup",
   "schedule.backup.alert.storage.vpc1":"để quá trình backup không bị gián đoạn.",
+  "schedule.backup.alert.storage.normal1":"để quá trình backup không bị gián đoạn.",
 
 
   "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",

@@ -18,7 +18,7 @@ import { ProjectService } from '../../../shared/services/project.service';
 import { SizeInCloudProject } from '../../../shared/models/project.model';
 import { BackupPackage, BackupVm, BackupVMFormSearch, VolumeAttachment } from '../../../shared/models/backup-vm';
 import { InstancesModel } from '../../instances/instances.model';
-import { BackupSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
+import { BackupSchedule, FormCreateSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
 import { VolumeDTO } from '../../../shared/dto/volume.dto';
 import { BackupVolume } from '../../volume/component/backup-volume/backup-volume.model';
 
@@ -152,6 +152,12 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
   backupVolumeList: BackupVolume[];
   volumeSelected: any;
   volumeName: string;
+  instance: any;
+
+  volumeAttachSelected: VolumeDTO[] = [];
+  sizeOfVlAttach: number = 0;
+
+  projectName: string
 
   constructor(private fb: NonNullableFormBuilder,
               private location: Location,
@@ -182,6 +188,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
 
   projectChanged(project: ProjectModel) {
     this.project = project.id;
+    this.projectName = project?.projectName
   }
 
   duplicateNameValidator(control) {
@@ -216,16 +223,35 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
       this.instanceSelected = value;
       const find = this.listInstanceNotUse?.find(x => x.id === this.instanceSelected);
       this.instanceName = find?.name;
-      this.getVolumeInstanceAttachment(value);
+      this.getDataFromInstanceId(value);
     }
   }
 
+  sizeOfVolume: number = 0;
   selectVolumeChange(value) {
     console.log('value volume selected', value);
     if (value != undefined) {
       this.volumeSelected = value;
       const find = this.listVolumeNotUseUnique?.find(x => x.id === this.volumeSelected);
       this.volumeName = find?.name;
+      this.sizeOfVolume += find?.sizeInGB
+    }
+  }
+
+  onSelectedVolume(value) {
+    console.log('value', value);
+    this.sizeOfVlAttach = 0;
+    this.volumeAttachSelected = [];
+    if (value.length >= 1) {
+      value.forEach(item => {
+        this.volumeService.getVolumeById(item, this.project).subscribe(data => {
+          this.volumeAttachSelected?.push(data);
+          this.sizeOfVlAttach += data?.sizeInGB;
+        });
+      });
+    } else {
+      this.volumeAttachSelected = [];
+      this.sizeOfVlAttach = 0;
     }
   }
 
@@ -237,9 +263,18 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
     });
   }
 
+  getDataFromInstanceId(id) {
+    this.instanceService.getInstanceById(id).subscribe(data => {
+      this.instance = data;
+      this.isLoading = false;
+      this.getVolumeInstanceAttachment(this.instance.id);
+    });
+  }
 
+
+  isLoadingInstance: boolean = false
   getListInstances() {
-    this.isLoading = true;
+    this.isLoadingInstance = true;
     let customerId = this.tokenService.get()?.userId;
     let formSearchBackup = new BackupVMFormSearch();
     formSearchBackup.pageSize = 10000000;
@@ -265,6 +300,9 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
           this.cdr.detectChanges();
         });
 
+      }, error => {
+        this.isLoadingInstance = false
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
       });
   }
 
@@ -446,10 +484,85 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
     });
   }
 
+  doCreateScheduleBackup() {
+
+    console.log('click', this.validateForm.get('formInstance').valid);
+
+    if (this.selectedOption == 'instance') {
+      this.isLoadingAction = true
+      let formCreateSchedule = new FormCreateSchedule();
+      formCreateSchedule.customerId = this.tokenService.get()?.userId;
+      formCreateSchedule.name = this.validateForm.get('formInstance').get('name').value;
+      formCreateSchedule.description = this.validateForm.get('formInstance').get('description').value;
+      formCreateSchedule.maxBackup = this.validateForm.get('formInstance').get('maxBackup').value;
+      formCreateSchedule.mode = this.modeSelected;
+      formCreateSchedule.serviceType = 1;
+      formCreateSchedule.instanceId = this.validateForm.get('formInstance').get('instanceId').value;
+      formCreateSchedule.listAttachedVolume = this.validateForm.get('formInstance').get('volumeToBackupIds').value;
+      // formCreateSchedule.backupPacketId = this.validateForm.get('formInstance').get('backupPackage').value;
+      formCreateSchedule.runtime = this.datepipe.transform(this.validateForm.get('formInstance').get('times').value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
+      if (formCreateSchedule.mode === 3) {
+        formCreateSchedule.intervalWeek = this.validateForm.get('formInstance').get('numberOfWeek').value;
+        formCreateSchedule.dayOfWeek = this.validateForm.get('formInstance').get('daysOfWeek').value;
+      }
+      if (formCreateSchedule.mode === 2) {
+        formCreateSchedule.daysOfWeek = this.validateForm.get('formInstance').get('daysOfWeekMultiple').value;
+      }
+      if (formCreateSchedule.mode === 4) {
+        formCreateSchedule.intervalMonth = this.validateForm.get('formInstance').get('months').value;
+        formCreateSchedule.dayOfMonth = this.validateForm.get('formInstance').get('date').value;
+      }
+      this.backupScheduleService.create(formCreateSchedule).subscribe(data => {
+        this.isLoadingAction = false
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.notify.create.success'));
+        this.nameList = [];
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
+      }, error => {
+        this.isLoadingAction = false
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.notify.create.fail') + '. ' + error.error.detail);
+      });
+    } else {
+      this.isLoadingAction = true
+      let formCreateSchedule1 = new FormCreateSchedule();
+      formCreateSchedule1.customerId = this.tokenService.get()?.userId;
+      formCreateSchedule1.name = this.validateForm.get('formVolume').get('name').value;
+      formCreateSchedule1.description = this.validateForm.get('formVolume').get('description').value;
+      formCreateSchedule1.maxBackup = this.validateForm.get('formVolume').get('maxBackup').value;
+      formCreateSchedule1.mode = this.modeSelected;
+      formCreateSchedule1.serviceType = 2;
+      formCreateSchedule1.volumeId = this.validateForm.get('formVolume').get('volumeId').value;
+      // formCreateSchedule1.backupPacketId = this.validateForm.get('formVolume').get('backupPackage').value;
+      formCreateSchedule1.runtime = this.datepipe.transform(this.validateForm.get('formVolume').get('times').value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
+      if (formCreateSchedule1.mode === 3) {
+        formCreateSchedule1.intervalWeek = this.validateForm.get('formVolume').get('numberOfWeek').value;
+        formCreateSchedule1.dayOfWeek = this.validateForm.get('formVolume').get('daysOfWeek').value;
+      }
+      if (formCreateSchedule1.mode === 2) {
+        formCreateSchedule1.daysOfWeek = this.validateForm.get('formVolume').get('daysOfWeekMultiple').value;
+      }
+      if (formCreateSchedule1.mode === 4) {
+        formCreateSchedule1.intervalMonth = this.validateForm.get('formVolume').get('months').value;
+        formCreateSchedule1.dayOfMonth = this.validateForm.get('formVolume').get('date').value;
+      }
+      this.backupScheduleService.create(formCreateSchedule1).subscribe(data => {
+        this.isLoadingAction = false
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.volume.notify.create.success'));
+        this.nameList = [];
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
+      }, error => {
+        this.isLoadingAction = false
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.volume.notify.create.fail') + '. ' + error.error.detail);
+      });
+    }
+
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
+    this.modeSelected = 1;
 
     this.projectService.getByProjectId(this.project).subscribe(data => {
       this.isLoading = false;
