@@ -19,7 +19,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { debounceTime, finalize, Subject } from 'rxjs';
+import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -88,7 +88,6 @@ export class InstancesExtendComponent implements OnInit {
         this.loading = false;
         let expiredDate = new Date(this.instancesModel.expiredDate);
         expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-        this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
         this.getListIpPublic();
         this.getTotalAmount();
         this.service
@@ -180,6 +179,7 @@ export class InstancesExtendComponent implements OnInit {
     console.log('dataPayment extend', dataPayment);
     this.service.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
+      this.newExpiredDate = result.data.orderItemPrices[0].expiredDate;
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
       this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
       this.totalincludesVAT = Number.parseFloat(
