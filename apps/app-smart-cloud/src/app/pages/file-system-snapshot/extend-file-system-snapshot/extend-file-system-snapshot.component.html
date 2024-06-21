@@ -131,7 +131,9 @@
         <one-portal-service-time-extend *ngIf="fileSystemSnapshotDetail"
                                           [createDate]="fileSystemSnapshotDetail?.createTime"
                                           [expiredDate]="fileSystemSnapshotDetail?.expireDate"
-                                          (valueChanged)="onChangeTime($event)" />
+                                          (valueChanged)="onChangeTime($event)" 
+                                          [newExpiredDate]="this.orderItem.orderItemPrices[0].expiredDate"
+                                          />
       </nz-col>
       <nz-col nzSpan="8">
         <nz-affix [nzOffsetTop]="72">

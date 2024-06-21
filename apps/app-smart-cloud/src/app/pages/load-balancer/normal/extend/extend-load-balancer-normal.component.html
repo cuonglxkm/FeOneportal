@@ -65,8 +65,9 @@
             </nz-form-control>
           </nz-form-item>
         </nz-card>
-          <one-portal-service-time-extend *ngIf="loadBalancer != undefined" [createDate]="loadBalancer.createDate"
+          <one-portal-service-time-extend *ngIf="loadBalancer != undefined && this.orderItem?.orderItemPrices != undefined" [createDate]="loadBalancer.createDate"
                                           [expiredDate]="loadBalancer.expiredDate"
+                                          [newExpiredDate]="this.orderItem.orderItemPrices[0].expiredDate"
                                           (valueChanged)="onChangeTime($event)"/>
       </form>
     </nz-col>

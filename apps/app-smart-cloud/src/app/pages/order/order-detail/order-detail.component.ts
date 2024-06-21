@@ -27,7 +27,7 @@ export class OrderDetailComponent {
   projectId: any;
   data: OrderDetailDTO;
   currentStep = 1;
-  titleStepFour: string = this.i18n.fanyi("app.order.status.Installed");;
+  titleStepFour: string = this.i18n.fanyi("app.order.status.Installed");
   serviceName: string
   isVisibleConfirm: boolean = false;
   isLoadingCancelOrder: boolean = false;
@@ -36,6 +36,7 @@ export class OrderDetailComponent {
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
   specType: string
+  isLoadingTotalAmount: boolean = false
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -123,9 +124,9 @@ export class OrderDetailComponent {
               data.statusCode = 6
             }
 
-            this.setTitleStepFour() 
-            
-            
+            this.setTitleStepFour()
+
+
           },
           error: (e) => {
             this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
@@ -162,7 +163,7 @@ export class OrderDetailComponent {
               data.statusCode = 6
             }
 
-            this.setTitleStepFour() 
+            this.setTitleStepFour()
           },
           error: (e) => {
             this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.failData"));
@@ -186,9 +187,9 @@ export class OrderDetailComponent {
     tap(user => {
       this.userModel = user;
       console.log(this.userModel);
-      
+
     }, finalize(() => this.loadingSrv.close())),
-    shareReplay(1) 
+    shareReplay(1)
   );
   }
 
@@ -201,11 +202,11 @@ export class OrderDetailComponent {
     this.router.navigate(['/app-smart-cloud/order'])
   }
 
-  pay(){ 
+  pay(){
     if (this.data.paymentUrl == '') {
       this.createNewPayment(this.id);
-      
-      
+
+
     } else {
       window.location.href = this.data.paymentUrl;
     }
@@ -248,7 +249,7 @@ export class OrderDetailComponent {
         window.location.href = data.data
       },
       error: (e) => {
-        
+
       },
     })
   }
@@ -256,7 +257,7 @@ export class OrderDetailComponent {
   getSpecType(){
     let serviceName = this.data.orderItems[0].serviceName.split('-')[0].trim()
     console.log(serviceName);
-    
+
     if(serviceName === 'Backup vm' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'instancebackup_create'
     }else if(serviceName === 'Backup vm' && this.data.orderItems[0].serviceType === 'Khôi phục'){
@@ -362,19 +363,21 @@ export class OrderDetailComponent {
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = specificationObj.ProjectId === null ? 0 : specificationObj.ProjectId;
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.isLoadingTotalAmount = true
     this.instanceService.getTotalAmount(dataPayment).pipe(
       finalize(() => {
-        this.loadingSrv.close()
+        this.isLoadingTotalAmount = false
       })
     ).subscribe((result) => {
       this.orderItem = result.data;
       if (!this.orderItem || !this.orderItem.orderItemPrices || !this.orderItem.orderItemPrices[0]) {
         return;
       }
-      
+
       console.log(this.orderItem?.totalPayment?.amount);
       this.unitPrice = this.orderItem.orderItemPrices[0]?.unitPrice?.amount;
+    }, (error) => {
+      this.notification.error(this.i18n.fanyi("app.status.fail"), 'Lấy tiền thất bại');
     });
   }
 }

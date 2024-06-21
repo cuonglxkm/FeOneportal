@@ -87,7 +87,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
         ],
       }],
       mobile: ['', [Validators.required, AppValidator.validPhoneNumber]],
-      province: ['', [Validators.required]],
+      province: ['Hà Nội', [Validators.required]],
       agreement: [true, [Validators.required]],
       recaptchaReactive: ['', [Validators.required]],
     },

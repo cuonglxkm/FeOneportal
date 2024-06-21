@@ -41,7 +41,8 @@
       <div style="width: 300px; margin-left: 10px;">
         <nz-input-group class="input-custom textbox-radius-lg" style="width: 380px" nzSearch
           [nzPrefix]="prefixIconSearch">
-          <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+          <input [(ngModel)]="value"
+          #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)" type="text" nz-input
             [placeholder]="'app.order.search' | i18n" />
         </nz-input-group>
         <ng-template #prefixIconSearch>
