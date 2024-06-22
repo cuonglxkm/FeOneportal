@@ -65,11 +65,11 @@ export class DetailSnapshotComponent implements OnInit{
   }
 
   navigateToExtend() {
-    this.router.navigate(['/app-smart-cloud/backup/packages/extend/' + this.idPackageBackup])
+    this.router.navigate(['/app-smart-cloud/snapshot/packages/extend/' + this.idPackageBackup])
   }
 
   navigateToEdit() {
-    this.router.navigate(['/app-smart-cloud/backup/packages/edit/' + this.idPackageBackup])
+    this.router.navigate(['/app-smart-cloud/snapshot/packages/edit/' + this.idPackageBackup])
   }
 
   loadProjects() {
