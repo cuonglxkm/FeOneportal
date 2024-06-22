@@ -43,6 +43,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
 
+  pageSizes = [5, 10, 20, 50];
+
   @ViewChild('pieChart', { static: true }) private pieChart: ElementRef;
 
   constructor(private dashboardService: DashboardService,
@@ -79,9 +81,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getSubscriptionsDashboard() {
     this.isLoading = true;
-    this.dashboardService.getHeader().subscribe(data => {
-      console.log(data);
-    });
     this.dashboardService.getSubscriptionsDashboard().subscribe(data => {
       this.isLoading = false;
       this.subscriptionsDashboard = data;
@@ -193,7 +192,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   navigateToDetailPayment(id: number, paymentOrder: string) {
+    this.isLoading = true
     this.paymentService.getPaymentByPaymentNumber(paymentOrder).subscribe(data => {
+      this.isLoading = false
       this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + id + '/' + data.orderNumber]);
     })
   }

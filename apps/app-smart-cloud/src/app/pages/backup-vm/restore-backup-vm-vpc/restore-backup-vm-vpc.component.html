@@ -467,18 +467,35 @@
                       <tr>
                         <td style="width: 50%">
                           <nz-form-label style="margin-left: -12px"
-                            >{{ 'app.gpu.number' | i18n }} (<span
+                            >{{ 'app.choose.gpu.type' | i18n }} (<span
                               class="text-red"
                               >*</span
                             >)</nz-form-label
                           >
-                          <nz-slider
-                            [nzMin]="0"
-                            [nzMax]="remainingGpu"
-                            [(ngModel)]="restoreInstanceBackup.gpuCount"
-                            (ngModelChange)="checkValidConfig()"
-                            [ngModelOptions]="{ standalone: true }"
-                          ></nz-slider>
+                          <style>
+                            ::ng-deep nz-form-control {
+                              padding-left: 0px !important;
+                              padding-right: 0px !important;
+                            }
+                          </style>
+                          <nz-form-control>
+                            <nz-select
+                              [nzPlaceHolder]="
+                                '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
+                              "
+                              [nzShowSearch]="true"
+                              [(ngModel)]="restoreInstanceBackup.gpuTypeOfferId"
+                              (ngModelChange)="changeGpuType($event)"
+                              [ngModelOptions]="{ standalone: true }"
+                              nzSize="large"
+                            >
+                              <nz-option
+                                *ngFor="let i of purchasedListGPUType"
+                                [nzLabel]="i.offerName"
+                                [nzValue]="i.id"
+                              />
+                            </nz-select>
+                          </nz-form-control>
                           <div
                             *ngIf="remainingGpu == 0"
                             style="font-size: 14px; color: #ff4d4f"
@@ -495,48 +512,39 @@
                           </div>
                         </td>
                         <td>
-                          <nz-input-number
-                            [nzMin]="0"
-                            [nzMax]="remainingGpu"
-                            [(ngModel)]="restoreInstanceBackup.gpuCount"
-                            (ngModelChange)="checkValidConfig()"
-                            (keydown)="onKeyDown($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                            nzSize="large"
-                          ></nz-input-number>
+                          <nz-form-label></nz-form-label>
+                          <nz-form-control
+                            ><nz-select
+                              style="margin-left: 8px; width: 90px"
+                              [nzShowSearch]="true"
+                              [(ngModel)]="restoreInstanceBackup.gpuCount"
+                              (ngModelChange)="checkValidConfig()"
+                              [ngModelOptions]="{ standalone: true }"
+                              nzSize="large"
+                            >
+                              <nz-option
+                                *ngFor="let i of listOptionGpuValue"
+                                [nzLabel]="i"
+                                [nzValue]="i"
+                              /> </nz-select
+                          ></nz-form-control>
                         </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-                <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
-                  <nz-form-label
-                    >{{ 'app.choose.gpu.type' | i18n }} (<span class="text-red"
-                      >*</span
-                    >)</nz-form-label
-                  >
-                  <nz-form-control>
-                    <nz-select
-                      [nzPlaceHolder]="
-                        '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
-                      "
-                      [nzShowSearch]="true"
-                      [(ngModel)]="restoreInstanceBackup.gpuTypeOfferId"
-                      [ngModelOptions]="{ standalone: true }"
-                      nzSize="large"
-                    >
-                      <nz-option
-                        *ngFor="let i of purchasedListGPUType"
-                        [nzLabel]="i.offerName"
-                        [nzValue]="i.id"
-                      />
-                    </nz-select>
-                  </nz-form-control>
-                </nz-form-item>
               </nz-tab>
             </nz-tabset>
-            <br />
-            <nz-row nzGutter="16">
+            <label
+              *ngIf="isSupportEncryption"
+              style="margin-top: 20px"
+              nz-checkbox
+              [(ngModel)]="restoreInstanceBackup.encryption"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="isSnapshot"
+              >{{ 'volume.info.type.encrypt' | i18n }}
+            </label>
+            <nz-row style="margin-top: 20px" nzGutter="16">
               <nz-col nzLg="12" nzMd="12" nzSm="24">
                 <nz-form-item>
                   <nz-form-label>
@@ -941,7 +949,7 @@
         </nz-row>
         <div class="text-center" style="margin-bottom: 20px">
           <span class="text-header-attach-volume"
-            >Cấu hình volume gắn ngoài
+            >{{ 'app.backup.config.vm.attach' | i18n }}
           </span>
         </div>
         <div>
@@ -952,6 +960,10 @@
                   <th>{{ 'app.volume.name' | i18n }}</th>
                   <th>{{ 'app.volume.type' | i18n }}</th>
                   <th>{{ 'app.capacity' | i18n }} (GB)</th>
+                  <th *ngIf="isSupportEncryption">
+                    {{ 'app.encrypt' | i18n }}
+                  </th>
+                  <th *ngIf="isSupportMultiAttachment">Multi Attach</th>
                 </tr>
               </thead>
               <tbody class="ant-table-tbody">
@@ -985,6 +997,24 @@
                       [(ngModel)]="data.capacity"
                       [disabled]="true"
                     />
+                  </td>
+                  <td nzAlign="center">
+                    <label
+                      *ngIf="isSupportEncryption"
+                      nz-checkbox
+                      [ngModel]="data.isEncryption"
+                      [ngModelOptions]="{ standalone: true }"
+                      [disabled]="true"
+                    ></label>
+                  </td>
+                  <td nzAlign="center">
+                    <label
+                      *ngIf="isSupportMultiAttachment"
+                      nz-checkbox
+                      [ngModel]="data.isMultiAttach"
+                      [ngModelOptions]="{ standalone: true }"
+                      [disabled]="true"
+                    ></label>
                   </td>
                 </tr>
               </tbody>

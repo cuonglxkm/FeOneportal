@@ -2891,6 +2891,7 @@
   "app.backup.package.expire.date": "Expiration date",
   "app.backup.package.delete.modal.title": "Delete Backup Package",
   "app.backup.config.vm.new": "Configure new virtual machine",
+  "app.backup.config.vm.attach": "External Volume Configuration",
   "app.backup.package.delete.alert": "You are currently deleting the Backup Package {{name}}",
   "app.backup.package.delete.content.title": "To delete the Backup package {{name}}, please enter the package name to confirm.",
   "app.backup.package.delete.modal.alert.backupvm": "The Virtual Machine backups associated with this backup package will also be deleted.",
@@ -2922,6 +2923,8 @@
   "app.notification.extend.fail": "Backup package extend fail. {{error}}",
   "app.notification.update.package.backup.success": "Successfully edited backup package.",
   "app.notification.update.package.backup.error": "Failed to edit backup package. {{error}}",
+  "app.notification.restore.current.vm.success": "Successfully restored to the current instance",
+  "app.notification.restore.current.vm.fail": "Failed to restore to the current instance",
 
   "app.backup.package.name.required": "Please enter the name of the Backup Package.",
   "app.backup.package.name.pattern": "Exclude special characters, spaces, and Vietnamese characters.",

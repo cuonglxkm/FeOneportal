@@ -30,8 +30,8 @@ export class ListPaymentComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  selectedValue?: string = null;
-  selectedValueInvoice?: number;
+  selectedValue?: string = '';
+  selectedValueInvoice?: number = 0;
   value?: string;
 
   customerId: number;

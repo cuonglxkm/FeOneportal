@@ -93,19 +93,4 @@ export class DashboardService extends BaseService {
         return throwError(error);
       }));
   }
-
-  getHeader() {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.subscriptions + `/header`, { headers: this.httpOptions.headers })
-      .pipe(catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          console.error('login');
-          // Redirect to login page or show unauthorized message
-          this.router.navigate(['/passport/login']);
-        } else if (error.status === 404) {
-          // Handle 404 Not Found error
-          console.error('Resource not found');
-        }
-        return throwError(error);
-      }));
-  }
 }

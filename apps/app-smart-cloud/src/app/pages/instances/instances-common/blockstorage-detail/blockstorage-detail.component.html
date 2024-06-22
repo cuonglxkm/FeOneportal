@@ -14,6 +14,12 @@
           <th>{{ 'app.volume.name' | i18n }}</th>
           <th>{{ 'app.capacity' | i18n }} (GB)</th>
           <th>IOPS</th>
+          <th *ngIf="isSupportEncryption">
+            {{ 'app.encrypt' | i18n }}
+          </th>
+          <th *ngIf="isSupportMultiAttachment">
+            Multi Attach
+          </th>
           <th>{{ 'app.volume.status' | i18n }}</th>
           <th>{{ 'app.disk.type' | i18n }}</th>
         </tr>
@@ -39,6 +45,24 @@
           </td>
           <td nzAlign="right">
             {{ data.iops }}
+          </td>
+          <td nzAlign="center">
+            <label
+              *ngIf="isSupportEncryption"
+              nz-checkbox
+              [ngModel]="data.isEncryption"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="true"
+            ></label>
+          </td>
+          <td nzAlign="center">
+            <label
+              *ngIf="isSupportMultiAttachment"
+              nz-checkbox
+              [ngModel]="data.isMultiAttach"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="true"
+            ></label>
           </td>
           <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">
             {{ 'app.status.running' | i18n }}

@@ -696,20 +696,22 @@
                       </div>
                     </td>
                     <td>
-                      <nz-select
-                        style="margin-left: 8px; margin-top: 32px; width: 90px"
-                        [nzShowSearch]="true"
-                        [(ngModel)]="instanceCreate.gpuCount"
-                        (ngModelChange)="checkValidConfig()"
-                        [ngModelOptions]="{ standalone: true }"
-                        nzSize="large"
-                      >
-                        <nz-option
-                          *ngFor="let i of listOptionGpuValue"
-                          [nzLabel]="i"
-                          [nzValue]="i"
-                        />
-                      </nz-select>
+                      <nz-form-label></nz-form-label>
+                      <nz-form-control
+                        ><nz-select
+                          style="margin-left: 8px; width: 90px"
+                          [nzShowSearch]="true"
+                          [(ngModel)]="instanceCreate.gpuCount"
+                          (ngModelChange)="checkValidConfig()"
+                          [ngModelOptions]="{ standalone: true }"
+                          nzSize="large"
+                        >
+                          <nz-option
+                            *ngFor="let i of listOptionGpuValue"
+                            [nzLabel]="i"
+                            [nzValue]="i"
+                          /> </nz-select
+                      ></nz-form-control>
                     </td>
                   </tr>
                 </tbody>
@@ -717,17 +719,16 @@
             </div>
           </nz-tab>
         </nz-tabset>
-        <nz-row style="margin-top: 20px; margin-bottom: 20px">
-          <div>
-            <label
-              nz-checkbox
-              [(ngModel)]="instanceCreate.encryption"
-              [ngModelOptions]="{ standalone: true }"
-              >{{ 'volume.info.type.encrypt' | i18n }}</label
-            >
-          </div>
-        </nz-row>
-        <nz-row nzGutter="16">
+        <label
+          *ngIf="isSupportEncryption"
+          style="margin-top: 20px"
+          nz-checkbox
+          [(ngModel)]="instanceCreate.encryption"
+          [ngModelOptions]="{ standalone: true }"
+          [disabled]="isSnapshot"
+          >{{ 'volume.info.type.encrypt' | i18n }}
+        </label>
+        <nz-row style="margin-top: 20px" nzGutter="16">
           <nz-col nzLg="12" nzMd="12" nzSm="24">
             <nz-form-item
               ><nz-form-label

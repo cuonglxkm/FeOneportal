@@ -24,7 +24,7 @@ export class OrderListComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  searchStatus?: number = null;
+  searchStatus?: number | string = '';
   searchName?: string;
   searchDelay = new Subject<boolean>();
 
@@ -73,7 +73,7 @@ export class OrderListComponent implements OnInit {
     dSubscriptionType: string,
     fromDate: string,
     toDate: string,
-    status: number) {
+    status: any) {
     this.isLoadingEntities = true;
     this.orderService.getOrders(pageSize, pageNumber, orderCode, saleDept, saleDeptCode, seller, ticketCode, dSubscriptionNumber, dSubscriptionType, fromDate, toDate, status).subscribe(
       data => {
