@@ -121,6 +121,7 @@ export class ProjectListComponent implements OnInit {
       .pipe(finalize(() => this.loading = false))
       .subscribe(baseResponse => {
         this.listOfData = baseResponse.records;
+        console.log(" this.listOfData", this.listOfData)
         this.total = baseResponse.totalCount;
         if (isCheckBegin) {
           this.isBegin = this.listOfData === null || this.listOfData.length < 1 ? true : false;

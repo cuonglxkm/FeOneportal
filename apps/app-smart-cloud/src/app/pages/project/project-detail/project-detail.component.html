@@ -18,7 +18,7 @@
       <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt="" />
       <span class="button-text-primary">Gia hạn</span>
     </button>
-    <button *ngIf="data?.type == 'VPC' && isAdjust" nz-button nzType="primary" (click)="edit()" nzSize="large">
+    <button *ngIf="data?.type == 'VPC' && isAdjust && data?.serviceStatus == 'KHOITAO'" nz-button nzType="primary" (click)="edit()" nzSize="large">
       <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt="" />
       <span class="button-text-primary">Điều chỉnh</span>
     </button>
