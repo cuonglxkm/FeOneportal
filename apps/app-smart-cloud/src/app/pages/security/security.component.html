@@ -16,6 +16,9 @@
       }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
@@ -103,10 +106,6 @@
   [(nzVisible)]="isVisibleUpdate"
   nzTitle="Xác nhận bật/tắt xác thực hai yếu tố qua Email"
   (nzOnCancel)="handleCancel()"
-  (nzOnOk)="handleSubmit()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy bỏ"
-  [nzOkLoading]="isLoading"
   [nzFooter]="null"
 >
   <ng-container *nzModalContent>
@@ -144,11 +143,17 @@
         <button
           nz-button
           nzType="primary"
-          class="button-new"
           (click)="handleSubmit()"
+          [nzLoading]="isLoadingUpdate"
+          [disabled]="form.invalid"
         >
-          <span nz-icon nzType="check" nzTheme="outline"></span>
-          Xác nhận
+          <img
+            *ngIf="isLoadingUpdate === false"
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/confirm.svg"
+            alt=""
+          />
+          {{ 'app.button.confirm' | i18n }}
         </button>
       </div>
     </form>
@@ -162,10 +167,6 @@
   [(nzVisible)]="isVisibleOTPForAuthenticator"
   nzTitle="Xác nhận bật/tắt xác thực hai yếu tố qua ứng dụng Authenticator"
   (nzOnCancel)="handleCancelOTPForAuthenticator()"
-  (nzOnOk)="handleSubmitOTPForAuthenticator()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy bỏ"
-  [nzOkLoading]="isLoading"
   [nzFooter]="null"
 >
   <ng-container *nzModalContent>
@@ -203,11 +204,17 @@
         <button
           nz-button
           nzType="primary"
-          class="button-new"
           (click)="handleSubmitOTPForAuthenticator()"
+          [nzLoading]="isLoadingOTPForAuthenticator"
+          [disabled]="form.invalid"
         >
-          <span nz-icon nzType="check" nzTheme="outline"></span>
-          Xác nhận
+          <img
+            *ngIf="isLoadingOTPForAuthenticator === false"
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/confirm.svg"
+            alt=""
+          />
+          {{ 'app.button.confirm' | i18n }}
         </button>
       </div>
     </form>
@@ -275,6 +282,22 @@
           alt=""
         />{{ 'app.button.confirm' | i18n }}
       </button>
+
+      <button
+      nz-button
+      nzType="primary"
+      (click)="handleSubmitAuthenticator()"
+      [nzLoading]="isLoadingOTPForAuthenticator"
+      [disabled]="form.invalid"
+    >
+      <img
+        *ngIf="isLoadingOTPForAuthenticator === false"
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />
+      {{ 'app.button.confirm' | i18n }}
+    </button>
     </div>
   </form>
 </nz-modal>

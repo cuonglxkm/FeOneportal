@@ -67,6 +67,7 @@ export class OrderDetailComponent {
       if (data.statusCode) {
         this.data.statusCode = data.statusCode;
         this.cdr.detectChanges();
+        console.log(this.data.statusCode);
       }
     });
 
