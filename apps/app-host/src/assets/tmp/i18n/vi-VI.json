@@ -22,7 +22,7 @@
   "validation.password.twice": "Mật khẩu nhập lại không khớp",
   "app.register.agreement": "Tôi đồng ý với các điều khoản",
   "app.register.sign-in": "ĐĂNG NHẬP!",
-  "validation.phone-number.wrong-format": "Số điện thoại sai định dạng",
+  "validation.phone-number.wrong-format": "Số điện thoại chưa đúng định dạng, xin vui lòng thử lại",
   "app.register-result.msg": "Tài khoản đã đăng ký thành công, vui lòng truy cập email để kích hoạt tài khoản.",
   "app.register-result.back-home": "Trở về trang chủ",
   "validation.firstName.required": "Vui lòng nhập tên",
