@@ -8,10 +8,16 @@
         Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages">Snapshot</a>
+        Block Storage
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Điều chỉnh dung lượng gói Snapshot
+        <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/snapshot/packages/detail/{{idSnapshotPackage}}">Thông tin gói Snapshot</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/snapshot/packages/edit/{{idSnapshotPackage}}">Điều chỉnh dung lượng gói Snapshot</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate

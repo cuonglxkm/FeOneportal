@@ -124,15 +124,7 @@
             <td>{{data.expirationDate | date:'dd/MM/yyyy'}}</td>
             <td>
               <div>
-                <!--            &lt;!&ndash;-Chỉnh sửa&#45;&#45;&#45;&#45;&ndash;&gt;-->
-                <!--            <span style="color: #0066B3; margin-right: 10px; cursor: pointer"-->
-                <!--                  nz-tooltip-->
-                <!--                  nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom"-->
-                <!--                  nz-icon-->
-                <!--                  nzType="edit"-->
-                <!--                  nzTheme="outline"-->
-                <!--                  ></span>-->
-                <img src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nzTooltipTitle="{{'app.text.edit' | i18n}}"
+                <img src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nz-tooltip nzTooltipTitle="{{'app.text.edit' | i18n}}"
                      style="cursor: pointer; width: 20px; height: 20px;" />
                 <img src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
                      nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"
@@ -185,7 +177,7 @@
                 nzShowIcon
       ></nz-alert>
       <p class="text-p" style="margin-top: 10px">Đế thực hiện xoá gói Snapshot, vui lòng nhập tên gói để xác nhận.</p>
-      <input placeholder="Nhập tên gói snapshot" class="input-custom" nz-input [(ngModel)]="valueDelete" (ngModelChange)="onInputChangeDelete($event)" type="text" />
+      <input placeholder="{{dataAction.packageName}}" class="input-custom" nz-input [(ngModel)]="valueDelete" (ngModelChange)="onInputChangeDelete($event)" type="text" />
       <nz-alert nzBanner style="margin-top: 15px;"
                 [nzMessage]="'Các lịch Snapshot tự động được tạo từ Gói Snapshot này cũng sẽ bị xóa.'"
                 nzShowIcon
@@ -198,6 +190,7 @@
       <button nz-button nzType="primary"
               (click)="handleDeletedOk()"
               [nzLoading]="isLoadingDelete"
+              [disabled]="valueDelete != this.dataAction.packageName"
               class="button-ok">
         <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận</button>
     </div>
@@ -215,22 +208,18 @@
             <div style="margin-top: 15px;">
               <span>Tên gói Snapshot</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-              <span nz-icon nzType="question-circle"
-                    nzTheme="outline"
-                    nz-popover
-                    [nzPopoverContent]="'Tên gói Snapshot của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.'"
-                    nzPopoverPlacement="bottom"></span>
+              <img style="margin-left: 3px" [nz-tooltip]="'Tên gói Snapshot của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.'" src="assets/imgs/pajamas_question.svg" alt="" />
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input nz-input
                    formControlName="namePackage"
                    class="input-custom"
-                   [placeholder]="'Nhập tên gói'" [maxLength]="70"/>
+                   [placeholder]="'Nhập tên gói'" [maxLength]="50"/>
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Snapshot</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt</ng-container>
-              <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
+              <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -259,34 +248,11 @@
       <button nz-button nzType="default" (click)="handleUpdateCancel()" class="button-cancel">
         <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
       </button>
-      <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleUpdateOk()"
-              [nzLoading]="isLoadingUpdate"
-              class="button-ok">
+      <button nz-button nzType="primary" [disabled]="!validateForm.valid ||
+      (this.validateForm.controls['description'].value==this.dataAction.description && this.validateForm.controls['namePackage'].value==this.dataAction.packageName)"
+              (click)="handleUpdateOk()" [nzLoading]="isLoadingUpdate" class="button-ok">
         <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
       </button>
     </div>
   </nz-modal>
-
-<!--  <nz-modal [(nzVisible)]="isVisibleEdit" nzTitle="{{ 'project.note18' | i18n }}" [nzStyle]="modalStyle"  (nzOnCancel)="handleCancel()">-->
-<!--    <ng-container *nzModalContent>-->
-<!--      <div class="text-label" style="margin-bottom: 10px">-->
-<!--        {{ 'project.note19' | i18n }}(<span class="text-red">*</span>)<img style="margin-left: 5px;" nz-tooltip="{{ 'project.note16' | i18n }}" src="assets/imgs/pajamas_question.svg" alt="" />-->
-<!--        <input maxlength="50" class="input-custom" nz-input placeholder="{{ 'project.note17' | i18n }}" style="width: 100%"-->
-<!--               formControlName="name">-->
-<!--      </div>-->
-<!--      <div class="text-label mt-5">-->
-<!--        {{ 'volume.table.title.description' | i18n }}-->
-<!--        <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="{{ 'volume.tooltip.input.description' | i18n }}" style="width: 100%"-->
-<!--                  formControlName="description"></textarea>-->
-<!--      </div>-->
-<!--    </ng-container>-->
-<!--    <div *nzModalFooter>-->
-<!--      <button nz-button (click)="handleCancel()">-->
-<!--        <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{ 'app.button.cancel' | i18n }}-->
-<!--      </button>-->
-<!--      <button nz-button nzType="primary" (click)="updateProject()" [disabled]="!form.controls['name'].value">-->
-<!--        <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{ 'app.button.confirm' | i18n }}-->
-<!--      </button>-->
-<!--    </div>-->
-<!--  </nz-modal>-->
 </nz-content>

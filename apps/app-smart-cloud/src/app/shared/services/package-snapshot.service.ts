@@ -111,24 +111,10 @@ export class PackageSnapshotService extends BaseService {
       }))
   }
 
-  update(form: FormUpdate) {
+  update(description: any,newPackageName: any, id: any ,regionId: any, form: any) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${form.packageId}`, Object.assign(form)).pipe(
+      + `/snapshots/packages/${id}?newPackageName=${newPackageName}&description=${description}&regionId=${regionId}`, Object.assign(form)).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          console.error('login');
-        } else if (error.status === 404) {
-          // Handle 404 Not Found error
-          console.error('Resource not found');
-        }
-        return throwError(error);
-      }))
-  }
-
-  getServiceInPackage(id: number) {
-    console.log('url', this.baseUrl + this.ENDPOINT.provisions + '/backups/packages/' +id +'/services')
-    return this.http.get<ServiceInPackage>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages/${id}/services`)
-      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {

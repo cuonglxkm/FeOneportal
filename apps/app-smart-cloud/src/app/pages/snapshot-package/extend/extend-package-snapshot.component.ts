@@ -45,7 +45,6 @@ export class ExtendPackageSnapshotComponent implements OnInit{
   numOfMonth: any = 1;
 
   constructor(private router: Router,
-              private packageBackupService: PackageBackupService,
               private packageSnapshotService: PackageSnapshotService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -70,7 +69,12 @@ export class ExtendPackageSnapshotComponent implements OnInit{
   }
 
   getDetailPackageSnapshot(id) {
-    this.packageSnapshotService.detail(id, this.project).subscribe(data => {
+    this.loadingCalculate = true;
+    this.packageSnapshotService.detail(id, this.project)
+      .pipe(finalize(() => {
+        this.loadingCalculate = false
+      }))
+      .subscribe(data => {
       console.log('data', data);
       this.packageSnapshotModel = data;
       this.validateForm.controls['description'].setValue(data.description);
@@ -196,9 +200,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
     if (this.project && this.region) {
       this.loadProjects();
     }
-    if (this.idSnapshotPackage) {
-      this.getDetailPackageSnapshot(this.idSnapshotPackage);
-    }
+    this.getDetailPackageSnapshot(this.route.snapshot.paramMap.get('id'));
   }
 
   checkPossiblePress($event: KeyboardEvent) {

@@ -14,7 +14,10 @@
         <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages/extend/{{idSnapshotPackage}}">Điều chỉnh dung lượng gói Snapshot</a>
+        <a routerLink="/app-smart-cloud/snapshot/packages/detail/{{idSnapshotPackage}}">Thông tin gói Snapshot</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/snapshot/packages/extend/{{idSnapshotPackage}}">Gia hạn gói Snapshot</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -33,7 +36,7 @@
     <div nz-row nzJustify="space-between">
       <nz-row>
         <nz-col>
-          <div>Điều chỉnh dung lượng gói Snapshot</div>
+          <div>Gia hạn gói Snapshot</div>
         </nz-col>
       </nz-row>
     </div>
@@ -168,7 +171,7 @@
                         [nzLoading]="loadingCalculate">
                   <span nz-icon nzType="wallet" nzTheme="outline"></span>
                   <span
-                    [style.color]="loadingCalculate? 'gray' : 'white'">{{ 'app.button.resize' | i18n }}</span>
+                    [style.color]="loadingCalculate? 'gray' : 'white'">{{ 'app.extend' | i18n }}</span>
                 </button>
               </nz-col>
             </nz-row>
