@@ -2631,6 +2631,7 @@
   "project.default": "Default VPC",
   "project.note6": "Customers can create either a regular project or a VPC project - providing a comprehensive package of compute, storage, and network infrastructure that allows customers to set up virtualized data centers on VNPT Cloud.",
   "project.note7": "or learn more about project management",
+  "project.note8":"here",
   "project.note9": "Initialize VPC",
   "project.note10": "To delete a project, please enter the project name for confirmation.",
   "project.note11": "You are performing project deletion {{name}}. This action cannot be undone",
