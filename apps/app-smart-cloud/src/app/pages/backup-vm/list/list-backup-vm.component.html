@@ -122,7 +122,7 @@
                                                [idBackupVm]="data.id"
                                                [backupName]="data.name"
                                                [backupVmInfo]="data"
-                                               (onOk)="handleOkDelete()" />
+                                               (onOk)="handleOkUpdate()" />
                 </div>
                 <div *ngIf="data.status.includes('SUSPENDED')">
                   <one-portal-delete-backup-vm [region]="region"

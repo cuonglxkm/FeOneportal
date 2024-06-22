@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DashboardService } from '../../shared/services/dashboard.service';
 import {
   DataChart,
@@ -12,6 +12,7 @@ import { Pie } from '@antv/g2plot';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { PaymentService } from '../../shared/services/payment.service';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 
 @Component({
@@ -19,7 +20,7 @@ import { PaymentService } from '../../shared/services/payment.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.less']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   subscriptionsDashboard: SubscriptionsDashboard[];
   subscriptionDashboardService = new SubscriptionsDashboard();
   subscriptionDashboardActive = new SubscriptionsDashboard();
@@ -36,12 +37,26 @@ export class DashboardComponent implements OnInit {
 
   dataPaymentCost: DataChart[];
 
+  value: string;
+
+  dataSubjectInputSearch: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
+
+  pageSizes = [5, 10, 20, 50];
+
   @ViewChild('pieChart', { static: true }) private pieChart: ElementRef;
 
   constructor(private dashboardService: DashboardService,
               private router: Router,
               private paymentService: PaymentService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+  }
+
+  ngOnDestroy() {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   onPageSizeNearExpireChange(value) {
@@ -66,9 +81,6 @@ export class DashboardComponent implements OnInit {
 
   getSubscriptionsDashboard() {
     this.isLoading = true;
-    this.dashboardService.getHeader().subscribe(data => {
-      console.log(data);
-    });
     this.dashboardService.getSubscriptionsDashboard().subscribe(data => {
       this.isLoading = false;
       this.subscriptionsDashboard = data;
@@ -87,6 +99,31 @@ export class DashboardComponent implements OnInit {
         }
       });
     });
+  }
+
+  changeInputChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.enterPressed = false;
+    this.dataSubjectInputSearch.next(value);
+  }
+
+  onChangeInputChange() {
+    this.searchSubscription = this.dataSubjectInputSearch.pipe(
+      debounceTime(700)
+    ).subscribe(res => {
+      if (!this.enterPressed) {
+        this.value = res.trim();
+        this.getSubscriptionsNearExpire();
+      }
+    });
+  }
+
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value.trim();
+    this.getSubscriptionsNearExpire();
   }
 
   getSubscriptionsNearExpire() {
@@ -130,7 +167,7 @@ export class DashboardComponent implements OnInit {
         label: {
           type: 'inner',
           offset: '-10%',
-          content: '{percentage}'
+          content: ''
         },
         interactions: [{ type: 'element-active' }],
         theme: 'custom-theme',
@@ -140,7 +177,7 @@ export class DashboardComponent implements OnInit {
             const percentage = ((data.value / total) * 100).toFixed(2);
             return {
               name: data.type,
-              value: `${new Intl.NumberFormat('de-DE').format(data.value)} (${percentage}%)`
+              value: `${new Intl.NumberFormat('de-DE').format(data.value)} VND`
             };
           }
         }
@@ -155,7 +192,9 @@ export class DashboardComponent implements OnInit {
 
 
   navigateToDetailPayment(id: number, paymentOrder: string) {
+    this.isLoading = true
     this.paymentService.getPaymentByPaymentNumber(paymentOrder).subscribe(data => {
+      this.isLoading = false
       this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + id + '/' + data.orderNumber]);
     })
   }
@@ -335,9 +374,12 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getSubscriptionsDashboard();
-    this.getSubscriptionsNearExpire();
-    this.getPaymentCost();
-    this.getDataChart();
+    setTimeout(() => {
+      this.getSubscriptionsDashboard();
+      this.getSubscriptionsNearExpire();
+      this.getPaymentCost();
+      this.getDataChart();
+    }, 1500)
+    this.onChangeInputChange();
   }
 }

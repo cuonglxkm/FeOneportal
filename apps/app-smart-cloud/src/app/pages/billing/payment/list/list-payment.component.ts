@@ -20,7 +20,7 @@ import html2canvas from 'html2canvas';
 import { LoadingService } from '@delon/abc/loading';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { TimeCommon } from 'src/app/shared/utils/common';
-
+import { format } from 'date-fns';
 @Component({
   selector: 'one-portal-list-payment',
   templateUrl: './list-payment.component.html',
@@ -74,7 +74,8 @@ export class ListPaymentComponent implements OnInit {
   dateRange: Date[] | null = null;
   fromDate: Date | null = null;
   toDate: Date | null = null;
-
+  fromDateFormatted: string | null = null;
+  toDateFormatted: string | null = null;
   formSearch: PaymentSearch = new PaymentSearch();
 
   constructor(
@@ -86,6 +87,22 @@ export class ListPaymentComponent implements OnInit {
     private loadingSrv: LoadingService
   ) {}
 
+  ngOnInit(): void {
+    this.customerId = this.tokenService.get()?.userId;
+    this.searchDelay
+      .pipe(debounceTime(TimeCommon.timeOutSearch))
+      .subscribe(() => {
+        this.refreshParams()
+        this.getListInvoices();
+      });
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+    this.notificationService.connection.on('UpdateStatePayment', (data) => {
+      this.getListInvoices();
+    });
+  }
+
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
@@ -95,13 +112,13 @@ export class ListPaymentComponent implements OnInit {
   }
 
   onChange(value: string) {
-    console.log('abc', this.selectedValue);
     this.selectedValue = value;
     this.getListInvoices();
   }
 
   search(search: string) {
     this.value = search.toUpperCase().trim();
+    this.refreshParams()
     this.getListInvoices();
   }
 
@@ -111,16 +128,19 @@ export class ListPaymentComponent implements OnInit {
   }
 
   onDateRangeChange(value: Date[]): void {
-    if (value) {
+    if (value && value.length === 2) {
       this.dateRange = value;
       this.fromDate = value[0];
       this.toDate = value[1];
-      this.getListInvoices();
+      this.fromDateFormatted = format(value[0], 'yyyy-MM-dd');
+      this.toDateFormatted = format(value[1], 'yyyy-MM-dd');
+      this.getListInvoices()
     } else {
-      this.dateRange = null;
-      // this.fromDate = value[0]
-      // this.toDate = value[1]
-      this.getListInvoices();
+      this.fromDate = null;
+      this.toDate = null;
+      this.fromDateFormatted = null;
+      this.toDateFormatted = null;
+      this.getListInvoices()
     }
   }
 
@@ -177,8 +197,8 @@ export class ListPaymentComponent implements OnInit {
     }
     this.formSearch.status = this.selectedValue;
     if (this.dateRange?.length > 0) {
-      this.formSearch.fromDate = this.dateRange[0].toLocaleString();
-      this.formSearch.toDate = this.dateRange[1].toLocaleString();
+      this.formSearch.fromDate = this.fromDateFormatted;
+      this.formSearch.toDate = this.toDateFormatted;
     } else {
       this.formSearch.fromDate = '';
       this.formSearch.toDate = '';
@@ -214,24 +234,11 @@ export class ListPaymentComponent implements OnInit {
     return n < 8 ? '0' + n : n;
   }
 
-  onPageIndexChange(pageIndex: number): void {
-    this.pageIndex = pageIndex;
-    this.getListInvoices();
+
+  refreshParams() {
+    this.pageSize = 10;
+    this.pageIndex = 1;
   }
-
-  disabledDate = (current: Date): boolean => {
-    const now = new Date();
-    // Nếu "from date" đã được chọn, tính 30 ngày từ "from date", ngược lại tính từ ngày hiện tại
-    const startDate = this.fromDate || now;
-    const thirtyDaysAgo = new Date(startDate);
-    thirtyDaysAgo.setDate(startDate.getDate() - 30);
-
-    const thirtyDaysLeft = new Date();
-    thirtyDaysLeft.setDate(startDate.getDate() + 30);
-
-    // Disable các ngày trước ngày tính từ "from date"
-    return current < thirtyDaysAgo || current > thirtyDaysLeft;
-  };
 
   downloadMany() {
     this.downloadList
@@ -270,20 +277,6 @@ export class ListPaymentComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
-    this.customerId = this.tokenService.get()?.userId;
-    this.searchDelay
-      .pipe(debounceTime(TimeCommon.timeOutSearch))
-      .subscribe(() => {
-        this.getListInvoices();
-      });
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
-    this.notificationService.connection.on('UpdateStatePayment', (data) => {
-      this.getListInvoices();
-    });
-  }
 
   getPaymentDetail(data: any) {
     this.router.navigate([

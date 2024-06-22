@@ -113,7 +113,9 @@
     <one-portal-service-time-extend *ngIf="vpn"
                                           [createDate]="vpn?.createdDate"
                                           [expiredDate]="vpn?.expiredDate"
-                                          (valueChanged)="onChangeTime($event)" />
+                                          (valueChanged)="onChangeTime($event)" 
+                                          [newExpiredDate]="newExpiredDate"
+                                          />
   </nz-col>
   <nz-col nzSpan="8">
     <nz-affix nzOffsetTop="72">

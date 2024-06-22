@@ -75,7 +75,8 @@
           <one-portal-service-time-extend *ngIf="packageBackupModel"
                                           [createDate]="packageBackupModel?.creationDate"
                                           [expiredDate]="packageBackupModel?.expirationDate"
-                                          (valueChanged)="onChangeTime($event)" />
+                                          (valueChanged)="onChangeTime($event)"
+                                          [newExpiredDate]="orderItem"/>
           <!--          <nz-card style="bottom: 8px;">-->
           <!--            <span class="text-card-header">{{'app.extension.info'|i18n}}</span>-->
           <!--            <nz-row nzGutter="24" style="margin-top: 25px;">-->

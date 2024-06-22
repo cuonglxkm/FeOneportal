@@ -9,8 +9,10 @@ import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angul
 import {getCurrentRegionAndProject} from "@shared";
 import { FormSearchPackageSnapshot, PackageSnapshotModel } from 'src/app/shared/models/package-snapshot.model';
 import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
-import { debounceTime } from 'rxjs';
+import { debounceTime, finalize } from 'rxjs';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 
 @Component({
@@ -42,27 +44,33 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   packageName: string
   selected: any = ''
-
+  modalStyle = {
+    'padding': '20px',
+    'border-radius': '10px',
+    'width': '600px'
+  };
   validateForm: FormGroup<{
     namePackage: FormControl<string>
     description: FormControl<string>
   }> = this.fb.group({
-    namePackage: [null as string, [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9]*$/),
-      Validators.maxLength(70)]],
-    description: [null as string, [Validators.maxLength(255)]]
+    namePackage: [null as string, [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/), Validators.maxLength(50)]],
+    description: ['', [Validators.maxLength(255)]]
   })
 
   valueDelete: string
-
+  projectType = 0;
   typeVPC: number
 
   isCheckBegin: boolean = false
 
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
+  isBegin: boolean = false;
+  isVisibleEdit = false;
+  dataAction: any;
 
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
@@ -75,13 +83,17 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   projectChange(project: ProjectModel) {
     this.project = project?.id
-    this.getListPackageSnapshot()
+    this.getListPackageSnapshot(true)
+    this.projectType = project?.type;
+    if (project?.type == 1) {
+      this.isBegin = true;
+    }
   }
 
 
   onInputChange(value: string) {
     this.value = value;
-    this.getListPackageSnapshot()
+    this.getListPackageSnapshot(false)
   }
 
   navigateToCreate() {
@@ -90,12 +102,12 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   onPageSizeChange(value) {
     this.pageSize = value
-    this.getListPackageSnapshot()
+    this.getListPackageSnapshot(false)
   }
 
   onPageIndexChange(value) {
     this.pageIndex = value
-    this.getListPackageSnapshot()
+    this.getListPackageSnapshot(false)
   }
 
   onChangeSelected(value) {
@@ -103,10 +115,10 @@ export class ListPackagesSnapshotComponent implements OnInit {
     if (this.selected === '') {
       this.selected = ''
     }
-    this.getListPackageSnapshot()
+    this.getListPackageSnapshot(false)
   }
 
-  getListPackageSnapshot() {
+  getListPackageSnapshot(checkBegin: boolean) {
     this.isLoading = true
     this.formSearchPackageSnapshot.projectId = this.project
     this.formSearchPackageSnapshot.regionId = this.region
@@ -119,9 +131,14 @@ export class ListPackagesSnapshotComponent implements OnInit {
       .subscribe(data => {
       this.isLoading = false
       console.log(data);
-
-      this.response = data
-
+      this.response = data;
+      if (checkBegin) {
+        if (data == undefined || data.records.length <= 0) {
+          this.isBegin = true;
+        } else {
+          this.isBegin = false;
+        }
+      }
     }, error => {
       this.isLoading = false
       this.response = null
@@ -142,20 +159,19 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   showDelete(data: PackageSnapshotModel) {
     this.isVisibleDelete = true
-    this.snapshotId = data.id
-    this.packageName = data.packageName
+    this.dataAction = data;
+    this.packageName = data.packageName;
   }
 
   handleDeletedOk() {
     this.isLoadingDelete = true
-
     if (this.valueDelete === this.packageName) {
       this.packageSnapshotService.delete(this.snapshotId).subscribe(data => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
         this.notification.success('Thành công', 'Xóa gói snapshot thành công')
         this.valueDelete = ''
-        this.getListPackageSnapshot()
+        this.getListPackageSnapshot(true)
       }, error => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
@@ -187,6 +203,33 @@ export class ListPackagesSnapshotComponent implements OnInit {
   }
 
   showUpdate(data: PackageSnapshotModel) {
+    this.dataAction = data;
+    this.validateForm.controls['namePackage'].setValue(data.packageName);
+    this.validateForm.controls['description'].setValue(data.description);
     this.isVisibleUpdate = true;
+  }
+
+  handleUpdateOk() {
+    this.isLoadingUpdate = true;
+    let data = {
+      newPackageName: this.validateForm.controls['namePackage'].value,
+      id: this.dataAction.id,
+      description: this.validateForm.controls['description'].value,
+      regionId: this.region,
+    }
+    this.packageSnapshotService.update(this.validateForm.controls['description'].value, this.validateForm.controls['namePackage'].value, this.dataAction.id, this.region, null)
+      .pipe(finalize(() => {
+        this.handleUpdateCancel();
+        this.isLoadingUpdate = false;
+      }))
+      .subscribe(
+        data => {
+          this.notification.success(this.i18n.fanyi('app.status.success'),'Cập nhật gói snapshot thành công')
+          this.getListPackageSnapshot(true);
+        },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'),'Cập nhật gói snapshot thất bại')
+        }
+      )
   }
 }

@@ -147,7 +147,7 @@
   "validation.password.strength.short": "Strength: too short",
   "validation.confirm-password.required": "Please confirm your password!",
   "validation.phone-number.required": "Please enter your phone number",
-  "validation.phone-number.wrong-format": "Malformed phone number!",
+  "validation.phone-number.wrong-format": "The phone number is not in the correct format, please try again",
   "validation.verification-code.required": "Please enter the verification code!",
   "validation.title.required": "Please enter a title",
   "validation.date.required": "Please select the start and end date",
@@ -1247,6 +1247,8 @@
   "app.breadcrumb.order": "Order",
   "app.order.title": "Order List",
   "app.order.status": "Status",
+  "app.order.status.AllStatus": "All Status",
+  "app.order.status.order1": "Order status",
   "app.order.search": "Search by order code",
   "app.order.ordinalNumber": "Ordinal number",
   "app.order.ordercode": "Order code",
@@ -2850,7 +2852,7 @@
   "app.dashboard.subscription.service.active": "Service Active",
   "app.dashboard.subscription.service.near.expire": "Service nearing expiration",
   "app.dashboard.subscription.service.expire": "Service expired",
-  "app.dashboard.payment.and.cost": "Cost and Usage",
+  "app.dashboard.payment.and.cost": "Cost Usage",
   "app.dashboard.payment.and.cost.payment.code": "Payment code",
   "app.dashboard.payment.and.cost.service": "Service",
   "app.dashboard.payment.and.cost.total.payment": "Total amount (VND)",
@@ -2890,6 +2892,7 @@
   "app.backup.package.expire.date": "Expiration date",
   "app.backup.package.delete.modal.title": "Delete Backup Package",
   "app.backup.config.vm.new": "Configure new virtual machine",
+  "app.backup.config.vm.attach": "External Volume Configuration",
   "app.backup.package.delete.alert": "You are currently deleting the Backup Package {{name}}",
   "app.backup.package.delete.content.title": "To delete the Backup package {{name}}, please enter the package name to confirm.",
   "app.backup.package.delete.modal.alert.backupvm": "The Virtual Machine backups associated with this backup package will also be deleted.",
@@ -2899,6 +2902,8 @@
   "app.backup.package.edit.title": "Edit Backup Package Information",
   "app.backup.package.intro.desc": "Unlimited backup solution with flexible scalability according to demand. Meets the needs for backing up virtual servers and block storage on the VNPT Cloud infrastructure.",
   "app.backup.package.not.found": "Backup package not found.",
+  "app.backup.package.intro.vpc1": "\"Custom VPC\" does not support backup packages. Please visit",
+  "app.backup.package.intro.vpc2": "to purchase backup storage to ensure the backup process is not interrupted.",
 
   "app.tooltip.backup.package.name": "The name of the customer's backup package. It should not contain special characters, spaces, or Vietnamese characters. Maximum 50 characters.",
   "app.tooltip.backup.package.storage": "The default minimum capacity is 1, with no maximum capacity limit.",
@@ -2919,6 +2924,8 @@
   "app.notification.extend.fail": "Backup package extend fail. {{error}}",
   "app.notification.update.package.backup.success": "Successfully edited backup package.",
   "app.notification.update.package.backup.error": "Failed to edit backup package. {{error}}",
+  "app.notification.restore.current.vm.success": "Successfully restored to the current instance",
+  "app.notification.restore.current.vm.fail": "Failed to restore to the current instance",
 
   "app.backup.package.name.required": "Please enter the name of the Backup Package.",
   "app.backup.package.name.pattern": "Exclude special characters, spaces, and Vietnamese characters.",
@@ -2979,7 +2986,7 @@
   "app.backup.vm.alert.create": "Please adjust the <b><i>{{name}}</i></b> setting to ensure uninterrupted VM backup process.",
   "app.backup.vm.alert.delete": "You are currently deleting the backup",
   "app.backup.vm.confirm.delete": "To proceed with deleting Backup {{name}}, please enter the Backup name for confirmation.",
-  "app.backup.vm.alert.storage.vpc": "The backup capacity is smaller than the sum of the operating system's capacity and the total capacity of the attached external volumes ({{storage}} GB). Please adjust the VPC project to ensure that the VM backup process is not interrupted.",
+  "app.backup.vm.alert.storage.vpc": "The backup capacity remaining is smaller than the sum of the operating system's capacity and the total capacity of the attached external volumes ({{storage}} GB). Please adjust the VPC project to ensure that the VM backup process is not interrupted.",
 
   "app.backup.vm.create.name.required": "Please enter the name for the Backup VM.",
   "app.backup.vm.create.name.duplicateName": "The Backup VM name already exists. Please enter a different name.",
@@ -3121,12 +3128,14 @@
   "schedule.backup.confirm.delete": "To delete the backup schedule {{name}}, please enter the name of the backup schedule to confirm.",
   "schedule.backup.confirm.input.name": "Please enter the correct backup name.",
   "schedule.backup.placeholder.input.name": "Enter name schedule",
+  "schedule.backup.alert.storage.vpc": "The remaining backup storage is less than the scheduled backup size ({{storage}} GB). Please adjust your project accordingly.",
+  "schedule.backup.alert.storage.vpc1":"to ensure the backup process is not interrupted.",
 
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
   "app.validate.order.fail": "Fail to validate order",
 
-
+  "app.search.name": "Search by service name.",
 
   "app.manage.site.to.site.title":"Manage VPN site to site",
   "app.manage.site.to.site.title.infomation":"Information of VPN site to site",

@@ -1,6 +1,4 @@
-<page-header [breadcrumb]="breadcrumb"
-             [action]="action"
-             [title]="title">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [extra]="extra" [title]="title" [content]="content">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
@@ -8,10 +6,13 @@
         Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
+        Block Storage
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Thông tin gói Snapshot
+        <a routerLink="/app-smart-cloud/snapshot/packages/detail/{{idPackageBackup}}">Thông tin gói Snapshot</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -25,95 +26,107 @@
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
-
   </ng-template>
   <ng-template #title>
     <div nz-row nzJustify="space-between">
       <nz-row>
-<!--        <nz-col>-->
-<!--          <span nz-icon-->
-<!--                nzType="arrow-left"-->
-<!--                nzTheme="outline"-->
-<!--                [routerLink]="'/app-smart-cloud/Snapshot/packages'"-->
-<!--                style="margin-right: 10px;"></span>-->
-<!--        </nz-col>-->
         <nz-col>
           <div>Chi tiết gói Snapshot</div>
         </nz-col>
       </nz-row>
       </div>
-      <div style="display:flex;">
-        <div style="margin-right: 15px;">
-          <div nz-col nzSpan="4">
-            <button nz-button nzTooltipTitle="Gia hạn" nzTooltipPlacement="bottom" nz-tooltip class="btn-extend"
-                    nzSize="default" style="cursor: pointer;" (click)="navigateToExtend()">
-              <span nz-icon nzType="clock-circle" nzTheme="outline"></span>
-              Gia hạn
-            </button>
-          </div>
-        </div>
-        <div>
-          <div nz-col nzSpan="4">
-            <button nz-button nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom" nz-tooltip class="btn-edit"
-                    nzSize="default" style="cursor: pointer;" (click)="navigateToEdit()">
-              <span nz-icon nzType="edit" nzTheme="outline"></span>
-              Điều chỉnh
-            </button>
-          </div>
-        </div>
-      </div>
+  </ng-template>
+  <ng-template #content>
+    <h3 style="display: none;">.</h3>
+  </ng-template>
+  <ng-template #extra>
+    <button nz-button nzType="primary" (click)="navigateToExtend()" nzSize="large">
+      <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt="" />
+      <span class="button-text-primary">Gia hạn</span>
+    </button>
+    <button nz-button nzType="primary" (click)="navigateToEdit()" nzSize="large">
+      <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt="" />
+      <span class="button-text-primary">Điều chỉnh</span>
+    </button>
   </ng-template>
 </page-header>
 <nz-content>
-  <nz-card [nzTitle]="'Thông tin của gói Snapshot'">
-    <form nz-form nzLayout="vertical">
+  <form nz-form nzLayout="vertical">
+    <nz-card>
+      <div class="text-card-header">Thông tin của gói Snapshot</div>
+      <div class="customRow" style="margin-top: 15px;">
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Tên gói Snapshot:</span>
+              <span class="text-value-detail customSpan">{{packageSnapshotModel.packageName}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Trạng thái:</span>
+              <ng-container *ngIf="packageSnapshotModel.status | ServiceStatusPipe as statusModel">
+                <span nzBreakWord  [ngStyle]="{ color: statusModel.color }" class="text-value-detail customSpan">{{statusModel.status}}</span>
+                <!--                <td >{{  }}</td>-->
+              </ng-container>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Ngày khởi tạo:</span>
+              <span class="text-value-detail customSpan">{{packageSnapshotModel?.creationDate | date: 'dd/MM/yyyy'}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Ngày hết hạn:</span>
+              <span class="text-value-detail customSpan">{{packageSnapshotModel?.expirationDate | date: 'dd/MM/yyyy'}}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+      </div>
+
       <nz-form-item>
         <nz-form-label>
-          <div>
-            <span>Tên gói Snapshot</span>
-          </div>
+          <span>{{ 'app.service.description' | i18n }}</span>
         </nz-form-label>
-        <nz-form-control>
-          <input class="input-custom" nz-input [value]="packageBackupModel.packageName" [disabled]="true"/>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+              <textarea nz-input class="input-custom" formControlName="description" [maxLength]="255"
+                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+          <ng-template #descriptionErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>
-          <div>
-            <span>Dung lượng gói Snapshot</span>
-          </div>
-        </nz-form-label>
-        <nz-form-control>
-          <input class="input-custom" nz-input [value]="packageBackupModel.sizeInGB" [disabled]="true"/>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>
-          <div class="label">
-            <span>Mô tả</span>
-          </div>
-        </nz-form-label>
-        <nz-form-control>
-          <textarea nz-input rows="4" *ngIf="packageBackupModel.description != undefined" [value]="packageBackupModel.description" [disabled]="true">
-          </textarea>
-          <textarea nz-input *ngIf="packageBackupModel.description == undefined" [disabled]="true">
-          </textarea>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>
-          <div>
-            <span>Ngày khởi tạo:</span> {{packageBackupModel.creationDate | date: 'dd/MM/yyyy'}}
-          </div>
-        </nz-form-label>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>
-          <div style="color:#FC1010;">
-            <span>Ngày hết hạn:</span> {{packageBackupModel.expirationDate | date: 'dd/MM/yyyy'}}
-          </div>
-        </nz-form-label>
-      </nz-form-item>
-    </form>
-  </nz-card>
+    </nz-card>
+    <nz-card>
+      <div class="text-card-header" style="margin-bottom: 10px">Thông tin tài nguyên</div>
+      <nz-table nzData="null" nzHideOnSinglePage='true'>
+        <thead>
+        <tr>
+          <th>Tên tài nguyên</th>
+          <th>Tổng hạn mức</th>
+          <th>Đã dùng</th>
+          <th>Còn lại</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>Dung lượng HDD (GB)</td>
+          <td class="text-right">{{ packageSnapshotModel.totalSizeHDD }}</td>
+          <td class="text-right">{{ packageSnapshotModel.usedSizeHDD }}</td>
+          <td class="text-right">{{ packageSnapshotModel.availableSizeHDD }}</td>
+        </tr>
+        <tr>
+          <td>Dung lượng SSD (GB)</td>
+          <td class="text-right">{{ packageSnapshotModel.totalSizeSSD }}</td>
+          <td class="text-right">{{ packageSnapshotModel.usedSizeSSD }}</td>
+          <td class="text-right">{{ packageSnapshotModel.availableSizeSSD }}</td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </form>
 </nz-content>

@@ -1,34 +1,30 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PackageBackupService } from '../../../shared/services/package-backup.service';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import {
-  BackupPackageRequestModel,
-  PackageBackupModel
-} from '../../../shared/models/package-backup.model';
-import { OrderItem } from '../../../shared/models/price';
-import { DataPayment, ItemPayment } from '../../instances/instances.model';
-import { InstancesService } from '../../instances/instances.service';
-import { getCurrentRegionAndProject } from '@shared';
+import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
+import { PackageBackupModel } from '../../../shared/models/package-backup.model';
 import {
   FormUpdateSnapshotPackageModel,
   PackageSnapshotModel,
   SnapshotPackageRequestModel
-} from 'src/app/shared/models/package-snapshot.model';
-import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
-import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
-import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
-import { ProjectService } from 'src/app/shared/services/project.service';
+} from '../../../shared/models/package-snapshot.model';
 import { debounceTime, finalize, Subject } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PackageBackupService } from '../../../shared/services/package-backup.service';
+import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { InstancesService } from '../../instances/instances.service';
+import { ProjectService } from '../../../shared/services/project.service';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { OrderItem } from '../../../shared/models/price';
+import { DataPayment, ItemPayment } from '../../instances/instances.model';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
-  selector: 'one-portal-resize-snapshot-package',
-  templateUrl: './resize-snapshot-package.component.html',
-  styleUrls: ['./resize-snapshot-package.component.less']
+  selector: 'one-portal-extend-package-snapshot',
+  templateUrl: './extend-package-snapshot.component.html',
+  styleUrls: ['./extend-package-snapshot.component.less'],
 })
-export class ResizeSnapshotPackageComponent implements OnInit {
+export class ExtendPackageSnapshotComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -42,20 +38,13 @@ export class ResizeSnapshotPackageComponent implements OnInit {
 
   isLoading: boolean = false;
   packageBackupModel: PackageBackupModel = new PackageBackupModel();
-  packageSnapshotModel: PackageSnapshotModel = new PackageSnapshotModel();
+  packageSnapshotModel: PackageSnapshotModel = undefined;
 
-  isVisibleEdit: boolean = false;
-  isLoadingEdit: boolean = false;
 
-  storage: number;
-
-  resizeDate: Date;
   loadingCalculate = false;
-  private searchSubject = new Subject<string>();
-  private readonly debounceTimeMs = 500;
+  numOfMonth: any = 1;
 
   constructor(private router: Router,
-              private packageBackupService: PackageBackupService,
               private packageSnapshotService: PackageSnapshotService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -63,13 +52,6 @@ export class ResizeSnapshotPackageComponent implements OnInit {
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
               private projectService: ProjectService) {
-    // this.validateForm.get('storage').valueChanges.subscribe(data => {
-    //   this.getTotalAmount()
-    // })
-
-    this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
-      this.getTotalAmount();
-    });
   }
 
   regionChanged(region: RegionModel) {
@@ -90,33 +72,14 @@ export class ResizeSnapshotPackageComponent implements OnInit {
     this.loadingCalculate = true;
     this.packageSnapshotService.detail(id, this.project)
       .pipe(finalize(() => {
-        this.loadingCalculate = false;
+        this.loadingCalculate = false
       }))
       .subscribe(data => {
       console.log('data', data);
       this.packageSnapshotModel = data;
-      this.storage = this.packageSnapshotModel.sizeInGB;
       this.validateForm.controls['description'].setValue(data.description);
-      this.numberHDD = data.totalSizeHDD;
-      this.numberSSD = data.totalSizeSSD;
       this.getTotalAmount();
     });
-  }
-
-  changeValueInput() {
-
-  }
-
-  showModalEdit() {
-    this.isVisibleEdit = true;
-  }
-
-  handleOk() {
-    this.isVisibleEdit = false;
-  }
-
-  handleCancel() {
-    this.isVisibleEdit = false;
   }
 
   reset() {
@@ -128,27 +91,27 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   unitPrice = 0;
 
   getTotalAmount() {
-    if (this.numberSSDBonus + this.numberHDDBonus != 0) {
+    if (this.numOfMonth != 0) {
       this.loadingCalculate = true;
+      let newExpDate = new Date(this.packageSnapshotModel.expirationDate)
+      newExpDate.setDate(newExpDate.getDate() + this.numOfMonth*30)
       let data = {
-        sizeSsdInGB: this.numberSSD + this.numberSSDBonus,
-        sizeHddInGB: this.numberHDD + this.numberHDDBonus,
-        newOfferId: 0,
+        newExpireDate: newExpDate,
         serviceType: 22,
-        actionType: 4,
+        actionType: 3,
         serviceInstanceId: this.idSnapshotPackage,
         regionId: this.region,
         serviceName: null,
         projectId: this.project,
-        typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageResizeSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
+        typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageExtendSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
         userEmail: null,
         actorEmail: null
       };
       let itemPayment: ItemPayment = new ItemPayment();
       itemPayment.orderItemQuantity = 1;
       itemPayment.specificationString = JSON.stringify(data);
-      itemPayment.specificationType = 'snapshotpackage_resize';
-      itemPayment.sortItem = 0;
+      itemPayment.specificationType = 'snapshotpackage_extend';
+      itemPayment.serviceDuration = this.numOfMonth;
       let dataPayment: DataPayment = new DataPayment();
       dataPayment.orderItems = [itemPayment];
       dataPayment.projectId = this.project;
@@ -183,43 +146,38 @@ export class ResizeSnapshotPackageComponent implements OnInit {
 
   navigateToPaymentSummary() {
     this.getTotalAmount();
+    let newExpDate = new Date(this.packageSnapshotModel.expirationDate)
+    newExpDate.setDate(newExpDate.getDate() + this.numOfMonth*30)
     let data = {
-      sizeSsdInGB: this.numberSSD + this.numberSSDBonus,
-      sizeHddInGB: this.numberHDD + this.numberHDDBonus,
-      newOfferId: 0,
+      newExpireDate: newExpDate,
       serviceType: 22,
-      actionType: 4,
+      actionType: 3,
       serviceInstanceId: this.idSnapshotPackage,
       regionId: this.region,
       serviceName: null,
       projectId: this.project,
-      typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageResizeSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
+      typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageExtendSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
       userEmail: null,
       actorEmail: null
     };
-      let request: SnapshotPackageRequestModel = new SnapshotPackageRequestModel();
-      request.customerId = this.formUpdateSnapshotPackageModel.customerId;
-      request.createdByUserId = this.formUpdateSnapshotPackageModel.customerId;
-      request.note = 'resize snapshot package';
-      request.orderItems = [
-        {
-          orderItemQuantity: 1,
-          specification: JSON.stringify(data),
-          specificationType: 'snapshotpackage_resize',
-          price: 0,
-          serviceDuration: 0
-        }
-      ];
-      var returnPath: string = `/app-smart-cloud/snapshot/packages/edit/${this.idSnapshotPackage}`;
-      console.log('request', request);
-      this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    let request: SnapshotPackageRequestModel = new SnapshotPackageRequestModel();
+    request.customerId = this.formUpdateSnapshotPackageModel.customerId;
+    request.createdByUserId = this.formUpdateSnapshotPackageModel.customerId;
+    request.note = 'resize snapshot package';
+    request.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(data),
+        specificationType: 'snapshotpackage_extend',
+        price: this.totalAmount,
+        serviceDuration: this.numOfMonth
+      }
+    ];
+    var returnPath: string = `/app-smart-cloud/snapshot/packages/extend/${this.idSnapshotPackage}`;
+    console.log('request', request);
+    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
   }
 
-  typeVPC: number;
-  numberHDD = 0;
-  numberSSD = 0;
-  numberHDDBonus = 0;
-  numberSSDBonus = 0;
   totalAmount: number;
   totalPayment: number;
   totalVat: number;
@@ -229,9 +187,6 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   loadProjects() {
     this.projectService.getByRegion(this.region).subscribe(data => {
       let project = data.find(project => project.id === +this.project);
-      if (project) {
-        this.typeVPC = project.type;
-      }
     });
   }
 
@@ -245,11 +200,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
     if (this.project && this.region) {
       this.loadProjects();
     }
-    if (this.idSnapshotPackage) {
-      this.getDetailPackageSnapshot(this.idSnapshotPackage);
-
-      this.resizeDate = new Date();
-    }
+    this.getDetailPackageSnapshot(this.route.snapshot.paramMap.get('id'));
   }
 
   checkPossiblePress($event: KeyboardEvent) {
@@ -259,7 +210,8 @@ export class ResizeSnapshotPackageComponent implements OnInit {
     }
   }
 
-  changeQuota() {
-    this.searchSubject.next('');
+  onChangeTime($event: any) {
+    this.numOfMonth = $event;
+    this.getTotalAmount();
   }
 }

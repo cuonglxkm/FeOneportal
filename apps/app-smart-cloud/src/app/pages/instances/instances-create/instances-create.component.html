@@ -858,13 +858,14 @@
         </nz-tabset>
         <label
           *ngIf="isSupportEncryption"
-          style="margin-bottom: 16px; margin-top: 16px"
+          style="margin-top: 20px"
           nz-checkbox
           [(ngModel)]="instanceCreate.encryption"
           [ngModelOptions]="{ standalone: true }"
+          [disabled]="isSnapshot"
           >{{ 'volume.info.type.encrypt' | i18n }}
         </label>
-        <nz-row nzGutter="16">
+        <nz-row style="margin-top: 20px" nzGutter="16">
           <nz-col nzLg="12" nzMd="12" nzSm="24">
             <nz-form-item
               ><nz-form-label

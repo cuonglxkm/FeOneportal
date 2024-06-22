@@ -8,6 +8,8 @@ import {PackageBackupModel} from "../../../shared/models/package-backup.model";
 import {getCurrentRegionAndProject} from "@shared";
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { PackageSnapshotModel } from '../../../shared/models/package-snapshot.model';
+import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
 
 @Component({
   selector: 'one-portal-detail-package-snapshot',
@@ -19,7 +21,7 @@ export class DetailSnapshotComponent implements OnInit{
   project = JSON.parse(localStorage.getItem('projectId'));
 
   packageBackupModel: PackageBackupModel = new PackageBackupModel()
-
+  packageSnapshotModel: PackageSnapshotModel = new PackageSnapshotModel();
   idPackageBackup: number
 
   typeVPC: number
@@ -27,6 +29,7 @@ export class DetailSnapshotComponent implements OnInit{
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private packageSnapshotService: PackageSnapshotService,
               private notification: NzNotificationService,
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
@@ -54,12 +57,19 @@ export class DetailSnapshotComponent implements OnInit{
     })
   }
 
+  getDetailPackageSnapshot(id) {
+    this.packageSnapshotService.detail(id, this.project).subscribe(data => {
+      console.log('data', data);
+      this.packageSnapshotModel = data;
+    });
+  }
+
   navigateToExtend() {
-    this.router.navigate(['/app-smart-cloud/backup/packages/extend/' + this.idPackageBackup])
+    this.router.navigate(['/app-smart-cloud/snapshot/packages/extend/' + this.idPackageBackup])
   }
 
   navigateToEdit() {
-    this.router.navigate(['/app-smart-cloud/backup/packages/edit/' + this.idPackageBackup])
+    this.router.navigate(['/app-smart-cloud/snapshot/packages/edit/' + this.idPackageBackup])
   }
 
   loadProjects() {
@@ -71,15 +81,16 @@ export class DetailSnapshotComponent implements OnInit{
     });
   }
   ngOnInit() {
-    const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+    this.idPackageBackup = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     const { regionId, projectId } = getCurrentRegionAndProject();
     this.region = regionId;
     this.project = projectId;
     if (this.project && this.region) {
       this.loadProjects();
     }
-    if (id) {
-      this.getDetailPackageBackup(id);
+    if (this.idPackageBackup) {
+      this.getDetailPackageBackup(this.idPackageBackup);
+      this.getDetailPackageSnapshot(this.idPackageBackup);
     }
   }
 }

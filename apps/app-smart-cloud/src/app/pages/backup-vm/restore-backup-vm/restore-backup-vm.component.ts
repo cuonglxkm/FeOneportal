@@ -19,7 +19,6 @@ import {
   BackupVm,
   RestoreFormCurrent,
   RestoreInstanceBackup,
-  SecurityGroupBackup,
   VolumeBackup,
 } from '../../../shared/models/backup-vm';
 import { PackageBackupModel } from '../../../shared/models/package-backup.model';
@@ -30,13 +29,11 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import {
   DataPayment,
-  InstanceCreate,
   IPPublicModel,
   ItemPayment,
   OfferItem,
   Order,
   OrderItem,
-  SecurityGroupModel,
   SHHKeyModel,
   VolumeCreate,
 } from '../../instances/instances.model';
@@ -49,7 +46,6 @@ import {
 } from '../../../shared/models/vlan.model';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { debounceTime, finalize, Subject } from 'rxjs';
-import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
@@ -182,7 +178,7 @@ export class RestoreBackupVmComponent implements OnInit {
 
   updateActivePoint(): void {
     // Gọi hàm reloadCarousel khi cần reload
-    if (this.reloadCarousel) {
+    if (this.reloadCarousel && this.selectedOption == 'new') {
       this.reloadCarousel = false;
       setTimeout(() => {
         this.myCarouselFlavor.reset();
@@ -198,6 +194,8 @@ export class RestoreBackupVmComponent implements OnInit {
     this.idBackup = Number.parseInt(
       this.activatedRoute.snapshot.paramMap.get('id')
     );
+    this.getActiveServiceByRegion();
+    this.getListOptionGpuValue();
     this.getConfigurations();
     this.getVolumeUnitMoney();
     this.getListGpuType();
@@ -206,9 +204,30 @@ export class RestoreBackupVmComponent implements OnInit {
     this.onChangeCapacity();
     this.onChangeRam();
     this.onChangeVCPU();
+    this.onChangeCpuOfGpu();
+    this.onChangeRamOfGpu();
+    this.onChangeStorageOfGpu();
+    this.onChangeGpu();
     this.getAllSSHKey();
     this.checkExistName();
     this.cdr.detectChanges();
+  }
+
+  //Lấy các dịch vụ hỗ trợ theo region
+  isSupportEncryption: boolean = false;
+  isSupportMultiAttachment: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(['Encryption', 'MultiAttachment'], this.region)
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isSupportMultiAttachment = data.filter(
+          (e) => e.productName == 'MultiAttachment'
+        )[0].isActive;
+        this.isSupportEncryption = data.filter(
+          (e) => e.productName == 'Encryption'
+        )[0].isActive;
+      });
   }
 
   //Kiểm tra trùng tên máy ảo
@@ -292,7 +311,6 @@ export class RestoreBackupVmComponent implements OnInit {
     }
     this.restoreInstanceBackup.ipPublic = this.ipPublicValue;
     this.restoreInstanceBackup.password = this.password;
-    this.restoreInstanceBackup.encryption = false;
     if (this.isCustomconfig) {
       this.restoreInstanceBackup.offerId = 0;
       this.restoreInstanceBackup.offerFlavorId = 0;
@@ -389,67 +407,59 @@ export class RestoreBackupVmComponent implements OnInit {
 
   listIDAttachVolume: number[] = [];
   getDetailBackupById(id) {
-    this.backupService
-      .detail(id)
-      .pipe(
-        finalize(() => {
-          this.loadingSrv.close();
-        })
-      )
-      .subscribe((data) => {
-        this.backupVmModel = data;
-        if (
-          this.backupVmModel?.volumeBackups
-            .filter((e) => e.isBootable == true)[0]
-            .typeName.toUpperCase()
-            .includes('HDD')
-        ) {
-          this.activeBlockHDD = true;
-          this.activeBlockSSD = false;
+    this.backupService.detail(id).subscribe((data) => {
+      this.backupVmModel = data;
+      if (
+        this.backupVmModel?.volumeBackups
+          .filter((e) => e.isBootable == true)[0]
+          .typeName.toUpperCase()
+          .includes('HDD')
+      ) {
+        this.activeBlockHDD = true;
+        this.activeBlockSSD = false;
+      } else {
+        this.activeBlockHDD = false;
+        this.activeBlockSSD = true;
+      }
+      this.initFlavors();
+
+      this.listExternalAttachVolume = this.backupVmModel?.volumeBackups.filter(
+        (e) => e.isBootable == false
+      );
+
+      this.listExternalAttachVolume.forEach((e) => {
+        this.listIDAttachVolume.push(e.id);
+        let tempBS = new BlockStorage();
+        tempBS.id = e.id;
+        tempBS.name = e.name;
+        tempBS.capacity = e.size;
+        if (e.typeName.toUpperCase().includes('HDD')) {
+          tempBS.type = 'HDD';
+          tempBS.price = e.size * this.unitPriceVolumeHDD;
+          tempBS.VAT = e.size * this.unitVATVolumeHDD;
+          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
         } else {
-          this.activeBlockHDD = false;
-          this.activeBlockSSD = true;
+          tempBS.type = 'SSD';
+          tempBS.price = e.size * this.unitPriceVolumeSSD;
+          tempBS.VAT = e.size * this.unitVATVolumeSSD;
+          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
         }
-        this.initFlavors();
+        this.listOfDataBlockStorage.push(tempBS);
+      });
 
-        this.listExternalAttachVolume =
-          this.backupVmModel?.volumeBackups.filter(
-            (e) => e.isBootable == false
-          );
-
-        this.listExternalAttachVolume.forEach((e) => {
-          this.listIDAttachVolume.push(e.id);
-          let tempBS = new BlockStorage();
-          tempBS.id = e.id;
-          tempBS.name = e.name;
-          tempBS.capacity = e.size;
-          if (e.typeName.toUpperCase().includes('HDD')) {
-            tempBS.type = 'HDD';
-            tempBS.price = e.size * this.unitPriceVolumeHDD;
-            tempBS.VAT = e.size * this.unitVATVolumeHDD;
-            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
-          } else {
-            tempBS.type = 'SSD';
-            tempBS.price = e.size * this.unitPriceVolumeSSD;
-            tempBS.VAT = e.size * this.unitVATVolumeSSD;
-            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
-          }
-          this.listOfDataBlockStorage.push(tempBS);
-        });
-
+      if (this.backupVmModel.securityGroupBackups != null) {
         this.listSecurityGroupBackups = getUniqueObjects(
           this.backupVmModel.securityGroupBackups,
           'sgName'
         );
-        this.listSecurityGroupBackups.forEach((e) => {
-          if (e.sgName.toUpperCase() == 'DEFAULT') {
-            this.selectedSecurityGroup.push(e.sgName);
-          }
-        });
-
-        this.getBackupPackage(this.backupVmModel?.backupPacketId);
-        this.cdr.detectChanges();
+      }
+      this.listSecurityGroupBackups.forEach((e) => {
+        this.selectedSecurityGroup.push(e.sgName);
       });
+
+      this.getBackupPackage(this.backupVmModel?.backupPacketId);
+      this.cdr.detectChanges();
+    });
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -469,49 +479,44 @@ export class RestoreBackupVmComponent implements OnInit {
     }
   }
 
-  onSelectionChange(): void {
-    console.log('Selected option:', this.selectedOption);
-    this.selectedSecurityGroup = [];
-    if (this.selectedOption === 'current') {
-      this.listSecurityGroupBackups.forEach((e) => {
-        if (e.sgName.toUpperCase() == 'DEFAULT') {
-          this.selectedSecurityGroup.push(e.sgName);
-        }
-      });
-    } else if (this.selectedOption === 'new') {
-      this.getAllSecurityGroup();
-    }
-    this.cdr.detectChanges();
-  }
-
   submitFormCurrent() {
     this.isLoadingCurrent = true;
     console.log('current', 'confirm click');
     let formRestoreCurrent = new RestoreFormCurrent();
     formRestoreCurrent.instanceBackupId = this.backupVmModel?.id;
-    this.backupService.restoreCurrentBackupVm(formRestoreCurrent).subscribe(
-      (data) => {
+    formRestoreCurrent.securityGroups = this.selectedSecurityGroup;
+    formRestoreCurrent.volumeBackupIds = this.listIDAttachVolume;
+    this.backupService.restoreCurrentBackupVm(formRestoreCurrent).subscribe({
+      next: (data) => {
         this.isLoadingCurrent = false;
         this.notification.success(
           this.i18n.fanyi('app.status.success'),
-          'Khôi phục vào máy ảo hiện tại thành công'
+          this.i18n.fanyi('app.notification.restore.current.vm.success')
         );
         this.router.navigate(['/app-smart-cloud/backup-vm']);
       },
-      (error) => {
+      error: (error) => {
         this.isLoadingCurrent = false;
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
-          'Khôi phục vào máy ảo hiện tại thất bại' + error.error.detail
+          this.i18n.fanyi('app.notification.restore.current.vm.fail')
         );
-      }
-    );
+      },
+    });
   }
 
   getBackupPackage(value) {
-    this.backupPackageService.detail(value, this.project).subscribe((data) => {
-      this.backupPackage = data;
-    });
+    this.backupPackageService
+      .detail(value, this.project)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe((data) => {
+        this.backupPackage = data;
+        this.cdr.detectChanges();
+      });
   }
 
   //#region Chọn IP Public Chọn Security Group
@@ -589,24 +594,6 @@ export class RestoreBackupVmComponent implements OnInit {
           },
         });
     }
-  }
-
-  getAllSecurityGroup() {
-    this.dataService
-      .getAllSecurityGroup(
-        this.region,
-        this.tokenService.get()?.userId,
-        this.project
-      )
-      .subscribe((data: any) => {
-        this.listSecurityGroup = getUniqueObjects(data, 'name');
-        this.listSecurityGroup.forEach((e) => {
-          if (e.name.toUpperCase() == 'DEFAULT') {
-            this.selectedSecurityGroup.push(e.name);
-          }
-        });
-        this.cdr.detectChanges();
-      });
   }
   //#endregion
 
@@ -873,6 +860,16 @@ export class RestoreBackupVmComponent implements OnInit {
   //#endregion
 
   //#region Cấu hình GPU
+  listOptionGpuValue: number[] = [];
+  getListOptionGpuValue() {
+    this.configurationService
+      .getConfigurations('OPTIONGPUVALUE')
+      .subscribe(
+        (data) =>
+          (this.listOptionGpuValue = data.valueString.split(', ').map(Number))
+      );
+  }
+
   listGPUType: OfferItem[] = [];
   getListGpuType() {
     this.dataService

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ACLService } from '@delon/acl';
@@ -10,7 +10,7 @@ import {
 } from '@delon/theme';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { NzIconService } from 'ng-zorro-antd/icon';
-import { Observable, zip, catchError, map, of, from, throwError } from 'rxjs';
+import { Observable, zip, catchError, map } from 'rxjs';
 import { environment } from '@env/environment';
 
 import { ICONS } from '../../../style-icons';
@@ -146,25 +146,25 @@ export class StartupService {
         // setting language data
         this.i18n.use(defaultLang, langData);
         console.log(appData.menu);
-        const menuDataPromise = this.loadMenu();
-        const menuDataObservable = from(menuDataPromise);
-        menuDataObservable
-          .pipe(
-            catchError((error) => {
-              console.error('Error loading menu data:', error);
-              return throwError(error);
-            })
-          )
-          .subscribe(
-            (data) => {
-              this.menuData = data;
-              console.log(this.menuData);
-              this.menuService.add(appData.menu);
-            },
-            (error) => {
-              console.error('Error loading menu data:', error);
-            }
-          );
+        // const menuDataPromise = this.loadMenu();
+        // const menuDataObservable = from(menuDataPromise);
+        // menuDataObservable
+        //   .pipe(
+        //     catchError((error) => {
+        //       console.error('Error loading menu data:', error);
+        //       return throwError(error);
+        //     })
+        //   )
+        //   .subscribe(
+        //     (data) => {
+        //       this.menuData = data;
+        //       console.log(this.menuData);
+        //     },
+        //     (error) => {
+          //       console.error('Error loading menu data:', error);
+          //     }
+          //   );
+        this.menuService.add(appData.menu);
         this.settingService.setApp({
           name: 'One Portal',
           description: 'One Portal',
