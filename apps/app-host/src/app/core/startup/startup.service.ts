@@ -155,6 +155,7 @@ export class StartupService {
           .pipe(
             catchError((error) => {
               console.error('Error loading menu data:', error);
+              this.menuService.add(appData.menu);
               return throwError(error);
             })
           )
