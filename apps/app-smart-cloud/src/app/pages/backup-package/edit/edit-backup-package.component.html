@@ -39,50 +39,74 @@
         <nz-col nzSpan="16">
           <nz-card style="border-radius: 8px;" *ngIf="packageBackupModel">
             <span class="text-card-header">{{ 'app.backup.package.information'|i18n }}</span>
-            <nz-form-item>
-              <nz-form-label nzFor="name">
-                <div style="margin-top: 15px;">
-                  <span>{{ 'app.backup.package.name' |i18n }} (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
-                  <img nz-popover
-                       [nzPopoverContent]="'app.tooltip.backup.package.name'|i18n"
-                       nzPopoverPlacement="bottom"
-                       src="assets/imgs/pajamas_question.svg" alt="" />
-                </div>
-              </nz-form-label>
-              <nz-form-control>
-                <input nz-input
-                       [value]="packageBackupModel?.packageName"
-                       disabled="true" />
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label nzFor="name">
-                <div style="margin-top: 15px;">
-                  <span>{{ 'app.backup.package.storage.current'|i18n }}</span>
-                  <!--                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)-->
-                </div>
-              </nz-form-label>
-              <nz-form-control>
-                <input nz-input
-                       [value]="packageBackupModel?.sizeInGB"
-                       disabled="true" />
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label nzFor="description">
-                <div class="label">
-                  <span>{{ 'app.backup.package.description'|i18n }}</span>
-                </div>
-              </nz-form-label>
-              <nz-form-control>
-                <textarea nz-input
-                          [value]="packageBackupModel?.description"
-                          disabled="true"></textarea>
-              </nz-form-control>
-            </nz-form-item>
-            <one-portal-time-used-resize [nameService]="'app.backup-package'|i18n"
-                                         [expireDate]="packageBackupModel?.expirationDate"
-                                         [createDate]="packageBackupModel?.creationDate" />
+            <div class="customRow" style="margin-top: 25px;">
+              <nz-row>
+                <nz-col nzSpan="12">
+                  <nz-row style="padding: 12px 0 12px 0">
+                    <span class="text-label customSpan"
+                          style="width: 35%">{{ 'app.backup.package.name'|i18n }}</span>
+                    <span class="text-value-detail customSpan">{{ packageBackupModel?.packageName }}</span>
+                  </nz-row>
+                </nz-col>
+                <nz-col nzSpan="12">
+                  <nz-row style="padding: 12px 0 12px 0">
+                    <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage'|i18n }}</span>
+                    <span class="text-value-detail">{{ packageBackupModel?.sizeInGB }} GB</span>
+                  </nz-row>
+                </nz-col>
+              </nz-row>
+              <nz-row style="background-color: #e2e2e9">
+                <nz-col nzSpan="12">
+                  <nz-row style="padding: 12px 0 12px 0">
+                      <span class="text-label customSpan"
+                            style="width: 35%">{{ 'app.backup.package.create.date'|i18n }}</span>
+                    <span
+                      class="text-value-detail customSpan">{{ packageBackupModel?.creationDate | date: 'HH:mm:ss dd/MM/yyyy' }} </span>
+                  </nz-row>
+                </nz-col>
+                <nz-col nzSpan="12">
+                  <nz-row style="padding: 12px 0 12px 0">
+                    <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.used' | i18n }}</span>
+                    <span class="text-value-detail">{{ packageBackupModel?.usedSize }} GB</span>
+                  </nz-row>
+                </nz-col>
+              </nz-row>
+              <nz-row>
+                <nz-col nzSpan="12">
+                  <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label"
+                    style="width: 35%; margin-left: 2%; color: #EA3829;">{{ 'app.backup.package.expire.date'|i18n }}</span>
+                    <span class="text-value-detail"
+                          style="margin-left: 2%; color: #EA3829;">{{ packageBackupModel?.expirationDate | date: 'HH:mm:ss dd/MM/yyyy' }}</span>
+                  </nz-row>
+                </nz-col>
+                <nz-col nzSpan="12">
+                  <nz-row style="padding: 12px 0 12px 0">
+                    <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
+                    <span class="text-value-detail">{{ packageBackupModel?.availableSize }} GB</span>
+                  </nz-row>
+                </nz-col>
+              </nz-row>
+              <nz-row>
+                <nz-col nzSpan="12">
+                  <nz-row style="padding: 12px 0 12px 0">
+                    <span class="text-label customSpan"
+                          style="width: 35%">{{ 'app.service.used'|i18n }}</span>
+                    <span class="text-value-detail customSpan">{{ getFormattedDateDifference(packageBackupModel?.expirationDate, packageBackupModel?.creationDate) }}</span>
+                  </nz-row>
+                </nz-col>
+              </nz-row>
+            </div>
+            <div style="margin-top: 15px;">
+              <nz-descriptions>
+                <nz-descriptions-item [nzTitle]="titleDescription">
+                  <span class="text-label">{{ packageBackupModel?.description }}</span>
+                </nz-descriptions-item>
+              </nz-descriptions>
+            </div>
+            <ng-template #titleDescription>
+              <span class="text-label">{{ 'app.backup.package.description'|i18n }}:</span>
+            </ng-template>
           </nz-card>
           <nz-card style="border-radius: 8px;" *ngIf="packageBackupModel">
             <span class="text-card-header">{{ 'app.adjust.info'|i18n }}</span>

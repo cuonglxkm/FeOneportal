@@ -11,8 +11,8 @@ export class PackageBackupModel {
   status: string
   errorLog: string
   customerId: number
-  creationDate: Date
-  expirationDate: Date
+  creationDate: string
+  expirationDate: string
   totalSize: number
   usedSize: number
   description: string
