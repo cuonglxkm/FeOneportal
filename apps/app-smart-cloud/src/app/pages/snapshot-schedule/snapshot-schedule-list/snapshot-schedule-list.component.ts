@@ -272,7 +272,9 @@ export class SnapshotScheduleListComponent implements OnInit {
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create',  {
+      snapshotTypeCreate: 2
+    }]);
   }
 
   onRegionChange(region: RegionModel) {
