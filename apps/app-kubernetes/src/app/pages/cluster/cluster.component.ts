@@ -893,6 +893,7 @@ export class ClusterComponent implements OnInit {
     }
   }
 
+  signature: string;
   validateClusterInfo = () => {
     this.validateForm();
 
@@ -925,6 +926,7 @@ export class ClusterComponent implements OnInit {
     // this.onSubmitOrder(cluster);
 
     const data: CreateClusterReqDto = new CreateClusterReqDto(cluster);
+    data.Specification = JSON.stringify(cluster);
     // console.log({data: data});
     // console.log({cluster: cluster});
     this.isSubmitting = true;
@@ -932,6 +934,7 @@ export class ClusterComponent implements OnInit {
     .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
+        this.signature = r.data;
         this.onSubmitOrder(cluster);
       } else {
         this.isSubmitting = false;
@@ -954,6 +957,7 @@ export class ClusterComponent implements OnInit {
     orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
     orderItem.specification = JSON.stringify(cluster);
     orderItem.serviceDuration = this.usageTime;
+    orderItem.signature = this.signature;
 
     data.orderItems = [...data.orderItems, orderItem];
 
