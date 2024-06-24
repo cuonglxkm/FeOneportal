@@ -141,9 +141,10 @@
           nz-button
           nzType="default"
           class="button-back"
+          [disabled]="isDisableButtonEmail"
           (click)="handleRequestNewOTP()"
         >
-          Gửi lại mã
+        {{ isDisableButtonEmail ? 'Gửi lại mã (' + countdown + 's)' : 'Gửi lại mã' }}
         </button>
         <button
           nz-button
@@ -202,9 +203,10 @@
           nz-button
           nzType="default"
           class="button-back"
+          [disabled]="isDisableButtonGgAuthen"
           (click)="handleRequestNewOTPForAuthenticator()"
         >
-          Gửi lại mã
+        {{ isDisableButtonGgAuthen ? 'Gửi lại mã (' + countdownGgAuthen + 's)' : 'Gửi lại mã' }}
         </button>
         <button
           nz-button
