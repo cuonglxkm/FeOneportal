@@ -386,4 +386,18 @@ export class VlanService extends BaseService {
       return throwError(error);
     }))
   }
+
+  checkDeleteNetwork(networkId) {
+    return this.http.get<boolean>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/checkdeletenetwork?networkId=${networkId}`, {
+      headers: this.getHeaders()
+    }).pipe(catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        console.error('login');
+      } else if (error.status === 404) {
+        // Handle 404 Not Found error
+        console.error('Resource not found');
+      }
+      return throwError(error);
+    }))
+  }
 }

@@ -43,8 +43,8 @@ export class DashboardService extends BaseService {
       }));
   }
 
-  getSubscriptionsNearExpire(pageSize: number, pageIndex: number) {
-    return this.http.get<BaseResponse<SubscriptionsNearExpire[]>>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}`, {
+  getSubscriptionsNearExpire(pageSize: number, pageIndex: number, searchValue: string) {
+    return this.http.get<BaseResponse<SubscriptionsNearExpire[]>>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}&searchValue=${searchValue}`, {
       headers: this.httpOptions.headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
