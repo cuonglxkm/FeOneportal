@@ -145,7 +145,7 @@ export class FormUpdate {
 }
 
 export class ServiceInPackage {
-  instanceBackups: BackupVm[]
-  volumeBackups: VolumeDTO[]
+  instanceBackups: any
+  volumeBackups: any
   backupSchedules: BackupSchedule[]
 }
