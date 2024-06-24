@@ -236,6 +236,7 @@ export class ProjectExtendComponent implements OnInit{
           this.totalAmount = this.total.data.totalAmount.amount;
           this.totalVAT = this.total.data.totalVAT.amount;
           this.totalPayment = this.total.data.totalPayment.amount;
+          
         }
       );
   }

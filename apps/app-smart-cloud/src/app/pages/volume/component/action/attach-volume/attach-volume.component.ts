@@ -48,6 +48,7 @@ export class AttachVolumeComponent implements AfterViewInit{
     }
 
   onChange(value) {
+    console.log('value selected instance', value)
     this.instanceSelected = value
     this.isSelected = false
   }

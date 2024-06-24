@@ -30,8 +30,8 @@ export class ListPaymentComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  selectedValue?: string = null;
-  selectedValueInvoice?: number;
+  selectedValue?: string = '';
+  selectedValueInvoice?: number = 0;
   value?: string;
 
   customerId: number;
@@ -127,22 +127,6 @@ export class ListPaymentComponent implements OnInit {
     this.getListInvoices();
   }
 
-  onDateRangeChange(value: Date[]): void {
-    if (value && value.length === 2) {
-      this.dateRange = value;
-      this.fromDate = value[0];
-      this.toDate = value[1];
-      this.fromDateFormatted = format(value[0], 'yyyy-MM-dd');
-      this.toDateFormatted = format(value[1], 'yyyy-MM-dd');
-      this.getListInvoices()
-    } else {
-      this.fromDate = null;
-      this.toDate = null;
-      this.fromDateFormatted = null;
-      this.toDateFormatted = null;
-      this.getListInvoices()
-    }
-  }
 
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {

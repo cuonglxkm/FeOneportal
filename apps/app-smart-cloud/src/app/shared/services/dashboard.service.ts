@@ -43,8 +43,8 @@ export class DashboardService extends BaseService {
       }));
   }
 
-  getSubscriptionsNearExpire(pageSize: number, pageIndex: number) {
-    return this.http.get<BaseResponse<SubscriptionsNearExpire[]>>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}`, {
+  getSubscriptionsNearExpire(pageSize: number, pageIndex: number, searchValue: string) {
+    return this.http.get<BaseResponse<SubscriptionsNearExpire[]>>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}&searchValue=${searchValue}`, {
       headers: this.httpOptions.headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
@@ -81,21 +81,6 @@ export class DashboardService extends BaseService {
     return this.http.get<DataChart[]>(this.baseUrl + this.ENDPOINT.payments + `/cost-use/total`, {
       headers: this.httpOptions.headers
     })
-      .pipe(catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          console.error('login');
-          // Redirect to login page or show unauthorized message
-          this.router.navigate(['/passport/login']);
-        } else if (error.status === 404) {
-          // Handle 404 Not Found error
-          console.error('Resource not found');
-        }
-        return throwError(error);
-      }));
-  }
-
-  getHeader() {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.subscriptions + `/header`, { headers: this.httpOptions.headers })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
