@@ -44,6 +44,7 @@ export class DashboardService extends BaseService {
   }
 
   getSubscriptionsNearExpire(pageSize: number, pageIndex: number, searchValue: string) {
+    if(searchValue == undefined) searchValue == ''
     return this.http.get<BaseResponse<SubscriptionsNearExpire[]>>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}&searchValue=${searchValue}`, {
       headers: this.httpOptions.headers
     })
