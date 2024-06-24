@@ -217,7 +217,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       description: this.validateForm.controls['description'].value,
       regionId: this.region,
     }
-    this.packageSnapshotService.update(this.validateForm.controls['description'].value, this.validateForm.controls['namePackage'].value, this.dataAction.id, this.region, null)
+    this.packageSnapshotService.update(this.validateForm.controls['description'].value, this.validateForm.controls['namePackage'].value, this.dataAction.id, this.region, data)
       .pipe(finalize(() => {
         this.handleUpdateCancel();
         this.isLoadingUpdate = false;
