@@ -86,7 +86,7 @@
             <td>{{ data.protocol }}</td>
             <td nzAlign="right">{{ data.size }}</td>
             <td>
-              <div *ngIf="(['Không tìm thấy tài nguyên', 'ERROR'].includes(data.taskState))">
+              <div *ngIf="(['Không tìm thấy tài nguyên', 'error'].includes(data.taskState))">
                 <one-portal-delete-file-system [region]="region"
                                                [project]="project"
                                                [fileSystemId]="data.id"
