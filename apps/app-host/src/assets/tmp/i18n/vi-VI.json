@@ -366,8 +366,7 @@
   "app.snapshot-package1": "Gói snapshot",
   "app.mongo": "MongoDB",
   "app.other": "Khác",
-
-
+  "app.change.info": "Thông tin thay đổi",
 
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
@@ -381,7 +380,7 @@
   "app.instances.name": "Tên máy ảo",
   "app.instances.from.snapshot": "Tạo từ Snapshot",
   "app.instances.OS": "Hệ điều hành",
-  "app.instances.OS.change": "Thay đổ hệ điều hành",
+  "app.instances.OS.change": "Thay đổi hệ điều hành máy ảo",
   "app.current.instances.OS": "Hệ điều hành hiện tại",
   "app.choose.new.instances.OS": "Lựa chọn hệ điều hành mới",
   "app.instances.OS.des": "- Dữ liệu nằm trong volume cài đặt hệ điều hành cũ (dung lượng {{num}} GB) sẽ bị xóa và không thể khôi phục lại.",

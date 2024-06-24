@@ -54,9 +54,12 @@ export class AppValidator {
   }
 
   static validPhoneNumber(control: AbstractControl): ValidationErrors | null { //valid số điện thoại
-    var regexpSDT = new RegExp('^(\\+?84[3-9]|84[3-9]|0[3-9])+(\\d{8})$');
+    const vietnamPhoneRegex = /^(03|05|07|08|09)\d{8}$/; // Đầu số 0x + 8 số
+    const internationalPhoneRegex = /^84\d{9}$/;
     if (control && control.value != null && control.value != undefined && control.value.length > 0) {
-      if (control.value != '' && regexpSDT.test(control.value) == false) {
+      if (vietnamPhoneRegex.test(control.value) || internationalPhoneRegex.test(control.value)) {
+        return null;
+      } else {
         return { validPhoneNumber: true };
       }
     }
