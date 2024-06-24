@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Inject, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../shared/services/volume.service';
@@ -18,6 +18,10 @@ import { FormSearchPackageSnapshot } from 'src/app/shared/models/package-snapsho
 import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
 import { DatePipe } from '@angular/common';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { finalize } from 'rxjs';
+import { LoadingService } from '@delon/abc/loading';
+import { InstancesService } from '../../instances/instances.service';
+import { checkPossiblePressNumber } from '../../../shared/utils/common';
 
 @Component({
   selector: 'one-portal-create-schedule-snapshot',
@@ -27,24 +31,26 @@ import { RegionModel, ProjectModel } from '../../../../../../../libs/common-util
 export class SnapshotScheduleCreateComponent implements OnInit {
   region: number;
   project: number;
-
+  @Input() snapshotTypeCreate: any = 2; // VM:1 Volume:0 none:2
   isLoading: boolean;
-  showWarningName: boolean;
-  contentShowWarningName: string;
   volumeId: number;
   volumeList: NzSelectOptionInterface[] = [];
   userId: number;
-  scheduleStartTime: string;
   dateStart: string;
   descSchedule: string = '';
   snapshotMode: string = 'Theo tuần';
-  numberOfweek: string = '1 tuần'
+  mode: string = 'Hằng ngày'
   numberArchivedCopies = 1;
   selectedValueRadio = 'normal';
   snapshotPackageList: NzSelectOptionInterface[] = []
   time: Date = new Date();
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
 
+  //new
+  snapShotArray = [
+    { label: 'Snapshot Volume', value: 0 },
+    { label: 'Snapshot máy ảo', value: 1 }
+  ];
 
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
   validateForm: FormGroup<{
@@ -56,13 +62,11 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   form: FormGroup<{
     name: FormControl<string>;
     volume: FormControl<number>;
-    selectedDate: FormControl<string>;
     snapshotPackage: FormControl<number>;
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)]],
-    volume: [null as number, [Validators.required]],
-    selectedDate: ['', [Validators.required]],
-    snapshotPackage: [null as number, [Validators.required]],
+    volume: [null as number, []],
+    snapshotPackage: [null as number, []],
   });
 
   dateList: NzSelectOptionInterface[] = [
@@ -81,7 +85,10 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     this.userId = this.tokenService.get()?.userId;
-    this.doGetListSnapshotPackage()
+    this.doGetListSnapshotPackage();
+    this.loadSnapshotPackage();
+    this.loadVolumeList();
+    this.loadVmList();
   }
 
   getDayLabel(selectedValue: string): any {
@@ -125,7 +132,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     this.packageSnapshotService.getPackageSnapshot(this.formSearchPackageSnapshot)
       .subscribe(data => {
         console.log(data);
-        
+
         data.records.forEach(data => {
           this.snapshotPackageList.push({label: data.packageName, value: data.id});
         })
@@ -135,27 +142,11 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     })
   }
 
-  onChangeStatus(){
-    console.log('Selected option changed:', this.selectedValueRadio)
-    this.form.controls.volume.clearValidators();
-    this.form.controls.volume.markAsPristine();
-    this.form.controls.volume.reset();
-
-    this.form.controls.snapshotPackage.clearValidators();
-    this.form.controls.snapshotPackage.markAsPristine();
-    this.form.controls.snapshotPackage.reset();
-
-    if(this.selectedValueRadio === 'package'){
-      this.form.controls.snapshotPackage.setValidators([
-        Validators.required,
-      ]);
-      this.form.controls.snapshotPackage.markAsDirty();
-      this.form.controls.snapshotPackage.reset();
-    }
-  }
-
   constructor(
     private router: Router,
+    private loadingSrv: LoadingService,
+    private activatedRoute: ActivatedRoute,
+    private instancesService: InstancesService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private fb: NonNullableFormBuilder,
     private snapshotService: SnapshotVolumeService,
@@ -168,6 +159,18 @@ export class SnapshotScheduleCreateComponent implements OnInit {
 
 
   request = new CreateScheduleSnapshotDTO();
+  projectType: number;
+  snapshotPackageLoading: boolean ;
+  selectedSnapshotPackage: any;
+  snapshotPackageArray: any;
+  selectedSnapshotType = 0; // 0 vlome 1 vm
+  volumeLoading: boolean | string;
+  selectedVolume: any;
+  vmLoading: boolean | string;
+  selectedVM: any;
+  volumeArray: any;
+  vmArray: any;
+  numOfVersion = 1;
   create() {
     const modal: NzModalRef = this.modalService.create({
       nzTitle: 'Xác nhận tạo lịch Snapshot',
@@ -228,13 +231,6 @@ export class SnapshotScheduleCreateComponent implements OnInit {
       ],
     });
   }
-
-  checkSpecialSnapshotName(str: string): boolean {
-    //check ký tự đặc biệt
-    const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-    return specialCharacters.test(str);
-  }
-
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
   }
@@ -242,5 +238,95 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
     this.doGetListVolume();
+    this.projectType = project?.type;
   }
+
+  onUserChange(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list'])
+  }
+
+  private loadSnapshotPackage() {
+    this.formSearchPackageSnapshot.projectId = this.project;
+    this.formSearchPackageSnapshot.regionId = this.region;
+    this.formSearchPackageSnapshot.packageName = '';
+    this.formSearchPackageSnapshot.pageSize = 9999999;
+    this.formSearchPackageSnapshot.currentPage = 1;
+    this.formSearchPackageSnapshot.status = '';
+    this.packageSnapshotService.getPackageSnapshot(this.formSearchPackageSnapshot)
+      .pipe(finalize(() => {
+        this.snapshotPackageLoading = false;
+      }))
+      .subscribe(
+        data => {
+          this.snapshotPackageArray = data.records;
+        }
+      );
+  }
+
+  changePackageSnapshot() {
+
+  }
+
+  changeTypeSnaphot() {
+    this.selectedVolume = undefined;
+    this.selectedVM = undefined;
+  }
+
+  changeVmVolume() {
+
+  }
+
+  private loadVolumeList() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, 'KHOITAO', '')
+      .pipe(finalize(() => {
+        this.volumeLoading = false;
+      }))
+      .subscribe(
+        data => {
+          this.volumeArray = data?.records.filter(item => {
+            return ['AVAILABLE', 'IN-USE'].includes(item?.serviceStatus);
+          });
+          // if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined) {
+          //   // this.selectedSnapshotType = 0;
+          //   console.log('volume array', this.volumeArray);
+          //   this.selectedVolume = this.volumeArray?.filter(e => e.id == this.idVolume)[0];
+          //   console.log('selected volume', this.selectedVolume);
+          // } else {
+          //   this.selectedVolume = null;
+          //   // this.selectedSnapshotType = 1;
+          // }
+          // this.volumeArray = data.records;
+        }
+      );
+  }
+
+  private loadVmList() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.instancesService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId)
+      .pipe(finalize(() => {
+        this.loadingSrv.close();
+        this.vmLoading = false;
+      }))
+      .subscribe(
+        data => {
+          const rs1 = data.records.filter(item => {
+            return item.taskState === 'ACTIVE';
+          });
+          this.vmArray = rs1;
+          // if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
+          //   // this.selectedSnapshotType = 1;
+          //   this.selectedVM = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId')))[0];
+          // } else {
+          //   this.selectedVM = null;
+          //   // this.selectedSnapshotType = 0;
+          // }
+        }
+      );
+  }
+
+  // checkPossiblePress($event: KeyboardEvent) {
+  //
+  // }
+  protected readonly checkPossiblePress = checkPossiblePressNumber;
 }

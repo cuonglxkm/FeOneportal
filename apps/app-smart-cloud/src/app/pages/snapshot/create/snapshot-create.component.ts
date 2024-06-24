@@ -54,7 +54,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   projectType = 0;
   @Input() snapshotTypeCreate: any = 0; // VM:1 Volume:0 none:0
   loadingCreate: boolean;
-  disableByQuota = true;
+  disableByQuota = false;
 
   quotaType: any;
   quotaHDDTotal: any;
@@ -98,16 +98,16 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.projectType = project?.type;
-    if(project?.type == 1) {
+    if (project?.type == 1) {
       this.vpcService.getTotalResouce(project?.id).subscribe(
         data => {
           let total = data.cloudProject;
           let used = data.cloudProjectResourceUsed;
           this.quotaHDDUsed = used.hdd;
-          this.quotaHDDTotal =total.quotaHddInGb;
+          this.quotaHDDTotal = total.quotaHddInGb;
           this.quotaSSDUsed = used.ssd;
           this.quotaSSDTotal = total.quotaSSDInGb;
-        })
+        });
     }
   }
 
@@ -254,7 +254,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
   private checkDisableByQuota() {
     this.disableByQuota = false;
-    if (this.quotaType != undefined && !this.checkNullQuota() && this.validateForm.controls['quota'].value != '0GB') {
+    if (this.quotaType != undefined && this.quotaSSDTotal!=undefined && this.quotaSSDUsed!=undefined && this.quotaHDDTotal!=undefined && this.quotaHDDUsed!=undefined
+      && this.validateForm.controls['quota'].value != '0GB') {
       if (this.quotaType == 'ssd') {
         this.quotaTotal = this.quotaSSDTotal;
         this.quotaUsed = this.quotaSSDUsed;
@@ -270,16 +271,28 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   }
 
   changePackageSnapshot() {
-    // TODO get quota
     if (this.projectType != 1 && this.selectedSnapshotPackage != undefined) {
-      this.checkDisable();
+      // TODO get quota
+      this.packageSnapshotService.detail(this.selectedSnapshotPackage.id, this.project)
+        .pipe(finalize(() => {
+          this.checkDisable();
+        }))
+        .subscribe(data => {
+          this.quotaHDDTotal = data.totalSizeHDD;
+          this.quotaHDDUsed = data.usedSizeHDD;
+          this.quotaSSDTotal = data.totalSizeSSD;
+          this.quotaSSDUsed = data.usedSizeSSD;
+        });
+    }
+    if (this.selectedSnapshotPackage == undefined) {
+      this.disableByQuota = false;
     }
   }
 
   changeVmVolume() {
     // get type
     if ((this.selectedVolume != undefined || this.selectedVM != undefined)) {
-      if (this.selectedSnapshotType == 0) {
+      if (this.selectedSnapshotType == 0 || this.snapshotTypeCreate==0) {
         this.quotaType = this.selectedVolume.volumeType;
       } else {
         this.vlService.getVolumeById(this.selectedVM.volumeRootId, this.project).subscribe(
@@ -290,9 +303,14 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       }
       this.checkDisable();
     }
+
+    if (((this.snapshotTypeCreate==0 || this.selectedSnapshotType==0) && this.selectedVolume == undefined) ||
+      ((this.snapshotTypeCreate==1 || this.selectedSnapshotType==1) && this.selectedVM == undefined)) {
+      this.disableByQuota = false;
+    }
   }
 
   private checkNullQuota() {
-    return this.quotaSSDUsed != undefined || this.quotaHDDUsed != undefined || this.quotaSSDTotal != undefined || this.quotaSSDTotal != undefined;
+    return this.quotaSSDUsed != undefined && this.quotaHDDUsed == undefined && this.quotaSSDTotal == undefined && this.quotaHDDTotal == undefined;
   }
 }
