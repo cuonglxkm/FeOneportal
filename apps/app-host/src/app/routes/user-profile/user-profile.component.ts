@@ -15,7 +15,12 @@ import {
   ProvinceModel,
   UserModel,
 } from '../../../../../../libs/common-utils/src';
-import { _HttpClient, ALAIN_I18N_TOKEN, SettingsService, User } from '@delon/theme';
+import {
+  _HttpClient,
+  ALAIN_I18N_TOKEN,
+  SettingsService,
+  User,
+} from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { environment } from '@env/environment';
@@ -50,7 +55,7 @@ export class UserProfileComponent implements OnInit {
     this.loadUserProfile();
     this.getProvinces();
   }
-  tabSelect = 0
+  tabSelect = 0;
   customerGroup: any;
   customerGroups: any;
   customerType: any;
@@ -65,14 +70,12 @@ export class UserProfileComponent implements OnInit {
       validators: [
         Validators.required,
         AppValidator.cannotContainSpecialCharactor,
-        noAllWhitespace(),
       ],
     }),
     surname: new FormControl('', {
       validators: [
         Validators.required,
         AppValidator.cannotContainSpecialCharactor,
-        noAllWhitespace(),
       ],
     }),
     email: new FormControl({ value: '', disabled: true }),
@@ -83,9 +86,7 @@ export class UserProfileComponent implements OnInit {
     contract_code: new FormControl({ value: '', disabled: true }),
     province: new FormControl('', { validators: [Validators.required] }),
     address: new FormControl('', {
-      validators: [
-        AppValidator.cannotContainSpecialCharactorExceptComma,
-      ],
+      validators: [AppValidator.cannotContainSpecialCharactorExceptComma],
     }),
     old_password: new FormControl('', { validators: [] }),
     new_password: new FormControl({ value: '', disabled: true }),
@@ -122,14 +123,13 @@ export class UserProfileComponent implements OnInit {
     address: ['', Validators.required],
   });
 
-  selectedIndexChange(event){ 
-    this.tabSelect = event
+  selectedIndexChange(event) {
+    this.tabSelect = event;
 
-    if(this.tabSelect === 1 && this.isTabInvoice){
-      this.getUser()
-      this.isTabInvoice = false
+    if (this.tabSelect === 1 && this.isTabInvoice) {
+      this.getUser();
+      this.isTabInvoice = false;
     }
-    
   }
   submitForm(): void {
     console.log('submitForm');
@@ -322,7 +322,7 @@ export class UserProfileComponent implements OnInit {
       this.formHandleUserInvoice.customerTypeId = this.customerType;
       this.formHandleUserInvoice.customerId = this.tokenService.get()?.userId;
       console.log(this.formHandleUserInvoice);
-  
+
       this.invoiceService.createInvoice(this.formHandleUserInvoice).subscribe({
         next: (data) => {
           this.isLoadingUpdateInfo = false;
@@ -340,7 +340,7 @@ export class UserProfileComponent implements OnInit {
           );
         },
       });
-    }else if(this.userModel && this.userModel.customerInvoice !== null){
+    } else if (this.userModel && this.userModel.customerInvoice !== null) {
       this.isLoadingUpdateInfo = true;
       this.formHandleUserInvoice.companyName =
         this.formCustomerInvoice.controls.nameCompany.value;
@@ -359,7 +359,7 @@ export class UserProfileComponent implements OnInit {
       this.formHandleUserInvoice.customerId = this.tokenService.get()?.userId;
       this.formHandleUserInvoice.id = this.userModel.customerInvoice.id;
       console.log(this.formHandleUserInvoice);
-  
+
       this.invoiceService.updateInvoice(this.formHandleUserInvoice).subscribe({
         next: (data) => {
           this.isLoadingUpdateInfo = false;
@@ -454,10 +454,12 @@ export class UserProfileComponent implements OnInit {
         context: new HttpContext().set(ALLOW_ANONYMOUS, true),
         headers: this.httpOptions.headers,
       })
-      .pipe(finalize(() => {
-        this.isLoadingProfile = false;
-        this.cdr.detectChanges();
-      }))
+      .pipe(
+        finalize(() => {
+          this.isLoadingProfile = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (res) => {
           console.log(res);
@@ -470,10 +472,7 @@ export class UserProfileComponent implements OnInit {
           setTimeout(() => window.location.reload(), 1000);
         },
         error: (error) => {
-          this.notification.error(
-            '',
-            error.error.message
-          );
+          this.notification.error('', error.error.message);
         },
       });
   }
@@ -500,7 +499,7 @@ export class UserProfileComponent implements OnInit {
     ]);
     this.form.controls['confirm_password'].updateValueAndValidity();
   }
-  
+
   provinceList: ProvinceModel[] = [];
   getProvinces() {
     const baseUrl = environment['baseUrl'];
@@ -517,10 +516,21 @@ export class UserProfileComponent implements OnInit {
             e.statusText,
             this.i18n.fanyi('app.notify.get.list.province')
           );
-        }
+        },
       });
   }
 
+  onSernameBlur() {
+    this.form.controls['surname'].setValue(
+      this.form.controls['surname'].value!.trimStart()
+    );
+  }
+
+  onNameBlur() {
+    this.form.controls['name'].setValue(
+      this.form.controls['name'].value!.trimStart()
+    );
+  }
 }
 
 export function noAllWhitespace(): ValidatorFn {

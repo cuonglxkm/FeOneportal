@@ -32,6 +32,16 @@ export class SecurityComponent implements OnInit {
   authenticatorQrData: string = ''
   isActiveGoogleAuthenticator: boolean = false
   isRecreateAuthenticator: boolean = false
+  timeCountDown: number = 10;
+  countdown: number = this.timeCountDown;
+  isDisableButtonEmail: boolean = false;
+  countdownInterval: any;
+
+  timeCountDownGgAuthen: number = 10;
+  countdownGgAuthen: number = this.timeCountDownGgAuthen;
+  isDisableButtonGgAuthen: boolean = false;
+  countdownIntervalGgAuthen: any;
+
 
   form: FormGroup<{
     otp: FormControl<string>;
@@ -90,12 +100,25 @@ export class SecurityComponent implements OnInit {
   }
 
   handleRequestNewOTP() {
+    this.isDisableButtonEmail = true;
+    this.countdown = this.timeCountDown;
+    this.startCountdown();
     this.service.getOneTimePassword().subscribe((data: any) => {
       this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("Thao tác thành công"));
     }, error => {
       this.toggleSwitch = !this.toggleSwitch;
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
-    });
+    });   
+  }
+
+  startCountdown() {
+    this.countdownInterval = setInterval(() => {
+      this.countdown--;
+      if (this.countdown <= 0) {
+        this.isDisableButtonEmail = false;
+        clearInterval(this.countdownInterval);
+      }
+    }, 1000);
   }
 
   handleSubmit(): void {
@@ -140,13 +163,27 @@ export class SecurityComponent implements OnInit {
     });
   }
 
+  startCountdownGgAuthen() {
+    this.countdownIntervalGgAuthen = setInterval(() => {
+      this.countdownGgAuthen--;
+      if (this.countdownGgAuthen <= 0) {
+        this.isDisableButtonGgAuthen = false;
+        clearInterval(this.countdownIntervalGgAuthen);
+      }
+    }, 1000);
+  }
+
   handleRequestNewOTPForAuthenticator(event){
+    this.isDisableButtonGgAuthen = true;
+    this.countdownGgAuthen = this.timeCountDownGgAuthen;
+    this.startCountdownGgAuthen();
     this.service.getOTPForAuthenticator().subscribe((data: any) => {
       this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("Thao tác thành công"));
     }, error => {
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
     });
   }
+
 
   handleSubmitOTPForAuthenticator(){
     let formeEnable2FA = new FormEnable2FA();
