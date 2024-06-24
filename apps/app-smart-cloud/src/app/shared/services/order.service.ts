@@ -43,7 +43,11 @@ export class OrderService extends BaseService {
     dSubscriptionType: string,
     fromDate: string,
     toDate: string,
-    status: number
+    status: number,
+    status1: number,
+    status2: number,
+    status3: number,
+
   ): Observable<BaseResponse<OrderDTO[]>> {
     let urlResult = this.getConditionSearcOrders(
       pageSize,
@@ -57,7 +61,10 @@ export class OrderService extends BaseService {
       dSubscriptionType,
       fromDate,
       toDate,
-      status
+      status,
+      status1,
+      status2,
+      status3,
     );
     return this.http
       .get<BaseResponse<OrderDTO[]>>(urlResult, this.httpOptions)
@@ -80,7 +87,10 @@ export class OrderService extends BaseService {
     dSubscriptionType: string,
     fromDate: string,
     toDate: string,
-    status: number
+    status: number,
+    status1: number,
+    status2: number,
+    status3: number,
   ): string {
     let urlResult = this.urlSnapshotVl;
     let count = 0;
@@ -179,6 +189,30 @@ export class OrderService extends BaseService {
         count++;
       } else {
         urlResult += '&status=' + status;
+      }
+    }
+    if (status1 !== undefined && status1 != null) {
+      if (count == 0) {
+        urlResult += '?status=' + status1;
+        count++;
+      } else {
+        urlResult += '&status=' + status1;
+      }
+    }
+    if (status2 !== undefined && status2 != null) {
+      if (count == 0) {
+        urlResult += '?status=' + status2;
+        count++;
+      } else {
+        urlResult += '&status=' + status2;
+      }
+    }
+    if (status3 !== undefined && status3 != null) {
+      if (count == 0) {
+        urlResult += '?status=' + status3;
+        count++;
+      } else {
+        urlResult += '&status=' + status3;
       }
     }
     return urlResult;
