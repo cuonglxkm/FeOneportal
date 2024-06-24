@@ -22,7 +22,7 @@
     <nz-row nzAlign="middle">
       <nz-space [nzSize]="24">
         <div *nzSpaceItem>
-          <nz-select class="input-select-custom" [(ngModel)]="searchStatus" style="width: 160px;"
+          <nz-select class="input-select-custom" [(ngModel)]="searchStatusOrder" style="width: 160px;"
             (ngModelChange)="onChange($event)" [nzPlaceHolder]="'app.order.status.order1' | i18n">
             <nz-option *ngFor="let item of statusOrder" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
           </nz-select>
@@ -31,7 +31,7 @@
       <nz-space [nzSize]="24" style="margin-left: 10px;">
         <div *nzSpaceItem>
           <nz-select class="input-select-custom" [(ngModel)]="searchStatus" style="width: 180px;"
-            (ngModelChange)="onChange($event)" [nzPlaceHolder]="'app.order.status.installation' | i18n">
+            (ngModelChange)="onChangeStatusInstall($event)" [nzPlaceHolder]="'app.order.status.installation' | i18n">
             <nz-option *ngFor="let item of statusInstall" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
           </nz-select>
         </div>
