@@ -3,6 +3,7 @@
      [nzPopoverContent]="'app.delete' | i18n"
      nzPopoverPlacement="bottom" (click)="showModal()" />
 <nz-modal [(nzVisible)]="isVisible" nzTabScrollList="true"
+          [nzWidth]="1000"
           (nzOnCancel)="handleCancel()">
   <div *nzModalTitle>
     <span class="text-modal-title">{{ 'app.backup.package.delete.modal.title'|i18n }}</span>
@@ -34,7 +35,7 @@
       <thead>
       <tr>
         <th>{{ 'app.backup.package.delete.modal.backup.name'|i18n }}</th>
-        <th>{{ 'app.capacity'|i18n }}</th>
+        <th>{{ 'app.capacity'|i18n }} (GB)</th>
       </tr>
       </thead>
       <tbody>
@@ -54,13 +55,13 @@
       <thead>
       <tr>
         <th>{{ 'app.backup.package.delete.modal.backup.name'|i18n }}</th>
-        <th>{{ 'app.capacity'|i18n }}</th>
+        <th>{{ 'app.capacity'|i18n }} (GB)</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let data of tableVolumeBackup.data">
         <td>{{ data.name }}</td>
-        <td>{{ data.sizeInGB }}</td>
+        <td>{{ data.size }}</td>
       </tr>
       </tbody>
     </nz-table>

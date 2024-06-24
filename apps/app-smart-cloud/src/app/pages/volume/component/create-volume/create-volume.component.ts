@@ -160,9 +160,24 @@ export class CreateVolumeComponent implements OnInit {
           } else {
             this.typeSnapshot = false
           }
+
+          if(['MultiAttachment'].includes(item.productName)) {
+            this.typeMultiple = true
+          } else {
+            this.typeMultiple = false
+          }
+
+          if(['Encryption'].includes(item.productName)) {
+            this.typeEncrypt = true
+          } else {
+            this.typeEncrypt = false
+          }
         })
       }, error => {
         this.isLoading = false
+        this.typeEncrypt = false
+        this.typeMultiple = false
+        this.typeSnapshot = false
         this.serviceActiveByRegion = []
       });
   }
