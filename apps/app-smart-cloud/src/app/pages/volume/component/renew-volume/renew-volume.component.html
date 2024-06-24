@@ -166,7 +166,7 @@
                                           [createDate]="volumeInfo?.creationDate"
                                           [expiredDate]="volumeInfo?.expirationDate"
                                           (valueChanged)="onChangeTime($event)"
-                                          [newExpiredDate]="this.orderItem.orderItemPrices[0].expiredDate"/>
+                                          [newExpiredDate]="this.orderItem.orderItemPrices[0]?.expiredDate"/>
         </nz-col>
         <nz-col nzSpan="8">
           <nz-affix [nzOffsetTop]="72">
