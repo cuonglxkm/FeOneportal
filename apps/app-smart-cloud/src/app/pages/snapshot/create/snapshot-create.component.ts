@@ -145,7 +145,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   }
 
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot();
-  disableCreate = false;
+  disableCreate = true;
   quota: string = '1GB';
 
   private loadSnapshotPackage() {
@@ -222,8 +222,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   checkDisable() {
     this.disableCreate = false;
     if ((this.selectedSnapshotPackage == undefined && this.projectType != 1) ||
-      (this.selectedSnapshotType == 0 && this.selectedVolume == undefined) ||
-      (this.selectedSnapshotType == 1 && this.selectedVM == undefined)) {
+      ((this.selectedSnapshotType == 0 || this.snapshotTypeCreate==0) && this.selectedVolume == undefined) ||
+      ((this.selectedSnapshotType == 1 || this.snapshotTypeCreate==1) && this.selectedVM == undefined)) {
       this.disableCreate = true;
     }
 
@@ -286,6 +286,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     }
     if (this.selectedSnapshotPackage == undefined) {
       this.disableByQuota = false;
+      this.disableCreate = true;
     }
   }
 
@@ -307,6 +308,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     if (((this.snapshotTypeCreate==0 || this.selectedSnapshotType==0) && this.selectedVolume == undefined) ||
       ((this.snapshotTypeCreate==1 || this.selectedSnapshotType==1) && this.selectedVM == undefined)) {
       this.disableByQuota = false;
+      this.disableCreate = true;
     }
   }
 
