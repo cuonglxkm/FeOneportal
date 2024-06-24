@@ -16,6 +16,7 @@ export class PackageBackupModel {
   totalSize: number
   usedSize: number
   description: string
+  availableSize: number
 }
 
 export class FormUpdatePackage {
