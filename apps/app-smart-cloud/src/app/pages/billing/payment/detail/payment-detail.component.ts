@@ -46,6 +46,7 @@ export class PaymentDetailComponent implements OnInit {
     userModel: UserModel
     orderNumber:string
     isLoading: boolean = false
+    isPrint: boolean = false
   constructor(
     private service: PaymentService,
     private router: Router,
@@ -66,8 +67,6 @@ export class PaymentDetailComponent implements OnInit {
     this.orderNumber = this.activatedRoute.snapshot.paramMap.get('orderNumber');
     this.getPaymentDetail();
     this.getOrderDetail(this.orderNumber);
-    console.log(this.payment);
-    console.log(this.data);
     
 
     if (this.notificationService.connection == undefined) {
@@ -132,7 +131,10 @@ export class PaymentDetailComponent implements OnInit {
   }
 
   download(id: number) {
-    this.service.exportInvoice(id).subscribe((data) => {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.service.exportInvoice(id)
+    .pipe(finalize(() => this.loadingSrv.close()))
+    .subscribe((data) => {
       const element = document.createElement('div');
       element.style.width = '268mm';
       element.style.height = '371mm';
@@ -162,7 +164,8 @@ export class PaymentDetailComponent implements OnInit {
   }
 
   printInvoice(id: number) {
-    this.service.exportInvoice(id).subscribe((data) => {
+    this.service.exportInvoice(id)
+    .subscribe((data) => {
       const element = document.createElement('div');
       element.style.width = '268mm';
       element.style.height = '371mm';
@@ -182,7 +185,7 @@ export class PaymentDetailComponent implements OnInit {
         console.log('error:', data);
       }
     }, (error) => {
-      console.log('error:', error);
+      console.log('error:', error)
     });
   }
 }

@@ -107,8 +107,10 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   }
 
   navigateToCreateFileSystem(typeVpc) {
+    this.isLoading = true
     this.fileSystemService.checkRouter(this.region, this.project).subscribe({
       next: (data) => {
+        this.isLoading = false
         //in vpc
         if (typeVpc == 1) {
           this.router.navigate([
@@ -121,6 +123,7 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
+        this.isLoading = false
         if (error.error.detail.includes('Vui lòng kiểm tra Router')) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),

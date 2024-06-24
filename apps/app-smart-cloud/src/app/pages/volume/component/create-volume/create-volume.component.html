@@ -68,7 +68,7 @@
               </ng-template>
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item>
+          <nz-form-item *ngIf="typeSnapshot">
             <div style="display: flex;">
               <nz-switch formControlName="isSnapshot" [(ngModel)]="isInitSnapshot" (ngModelChange)="onSwitchSnapshot($event)" ></nz-switch>
               <span style="margin-left: 10px; margin-top: 1px;"

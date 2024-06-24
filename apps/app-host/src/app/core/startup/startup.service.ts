@@ -10,7 +10,7 @@ import {
 } from '@delon/theme';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { NzIconService } from 'ng-zorro-antd/icon';
-import { Observable, zip, catchError, map } from 'rxjs';
+import { Observable, zip, catchError, map, throwError, from } from 'rxjs';
 import { environment } from '@env/environment';
 
 import { ICONS } from '../../../style-icons';
@@ -98,6 +98,7 @@ export class StartupService {
             },
             link: item.attributes.link_level1,
             group: item.attributes.menu_level2.length > 0,
+            action: item.attributes.action_level1,
             children: item.attributes.menu_level2.length > 0 ? item.attributes.menu_level2.map((subItem: any) => ({
               text: subItem.name_level2,
               icon: subItem.icon_level2 !== null && subItem.icon_level2.includes('anticon') ? subItem.icon_level2 :{
@@ -106,6 +107,7 @@ export class StartupService {
               },
               link: subItem.link_level2,
               group: subItem.menu_level3.length && subItem.menu_level3.length > 0 ? true : false,
+              action: subItem.action_level2,
               children: subItem.menu_level3.length && subItem.menu_level3.length > 0 ? subItem.menu_level3.map((subSubItem: any) => ({
                 text: subSubItem.name_level3,
               icon: subSubItem.icon_level3 !== null && subSubItem.icon_level3.includes('anticon') ? subSubItem.icon_level3 :{
@@ -113,6 +115,7 @@ export class StartupService {
                 type:  subSubItem.icon_level3 === null ? '' : 'svg'
               },
               link: subSubItem.link_level3,
+              action: subSubItem.action_level3,
               })): []
             })) : []
           })),
@@ -145,26 +148,27 @@ export class StartupService {
       map(([langData, appData]: [Record<string, string>, NzSafeAny]) => {
         // setting language data
         this.i18n.use(defaultLang, langData);
-        console.log(appData.menu);
-        // const menuDataPromise = this.loadMenu();
-        // const menuDataObservable = from(menuDataPromise);
-        // menuDataObservable
-        //   .pipe(
-        //     catchError((error) => {
-        //       console.error('Error loading menu data:', error);
-        //       return throwError(error);
-        //     })
-        //   )
-        //   .subscribe(
-        //     (data) => {
-        //       this.menuData = data;
-        //       console.log(this.menuData);
-        //     },
-        //     (error) => {
-          //       console.error('Error loading menu data:', error);
-          //     }
-          //   );
-        this.menuService.add(appData.menu);
+        // console.log(appData.menu);
+        const menuDataPromise = this.loadMenu();
+        const menuDataObservable = from(menuDataPromise);
+        menuDataObservable
+          .pipe(
+            catchError((error) => {
+              console.error('Error loading menu data:', error);
+              this.menuService.add(appData.menu);
+              return throwError(error);
+            })
+          )
+          .subscribe(
+            (data) => {
+              this.menuData = data;
+              console.log(this.menuData);
+              this.menuService.add(this.menuData.menu);
+            },
+            (error) => {
+                console.error('Error loading menu data:', error);
+              }
+            );
         this.settingService.setApp({
           name: 'One Portal',
           description: 'One Portal',
