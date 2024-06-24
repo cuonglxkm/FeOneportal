@@ -1,65 +1,57 @@
-#!/usr/bin/env groovy
-def agentLabel = "it-si-cloud-linux1"
+def image
+def imageTag
+def appName
+
 pipeline {
-    agent {
-        label agentLabel
-    }
+
+    agent { label 'worker-6-agent||jenkins-oneportal' }
+
     environment {
-        PACKAGE_NAME = "oneportal-frontend_${env.GIT_BRANCH.replaceAll("/","_")}_${env.GIT_COMMIT.substring(0, 5)}"
+        registry = "registry.onsmartcloud.com"
+        registryCredential = "cloud-harbor-id"
+        k8sCred = "k8s-dev-cred"
+        ENV = "dev"
+        AUTOTEST_BRANCH = "autotest-"
+        AUTOTEST_AGENT = "window-agent"
+        sonarTokenCredential = "idg-sonar-token"
+        projectSonarPrefix = "IT.SI.IDG.ONEPORTAL.FRONTEND."
+        projectKeyPrefix = "oneportal-frontend-"
     }
     stages {
-        stage('Show Build environment') {
-            steps {
-                sh 'env'
-                sh 'ip a'
-            }
-        }
 
-        stage('Build images') {
-            when {
-                branch "develop"
-            }
-            steps {
-                sh 'docker compose --parallel 2 build'
-            }
-        }
-
-        stage('Build images test') {
-            when {
-                branch "release"
-            }
-            steps {
-                sh 'docker compose -f compose-test.yml --parallel 2 build'
-            }
-        }
-
-        stage('Push images') {
-            when {
-                branch "develop"
-            }
-            steps {
-                sh 'docker compose push'
-            }
-        }
-
-        stage('Push images test') {
-            when {
-                branch "release"
-            }
-            steps {
-                sh 'docker compose -f compose-test.yml push'
-            }
-        }
-
-        stage('Redeploy k8s') {
+        stage("Initializing") {
             steps {
                 script {
-                    sh 'kubectl -n vnptcloud  rollout restart deployment/app-host-deployment'
-                    sh 'kubectl -n vnptcloud  rollout restart deployment/app-smartcloud-deployment'
+                    appName = env.BRANCH_NAME.tokenize("/").last()
+                    imageTag = "${registry}/idg/${appName}-${ENV}:${env.BUILD_NUMBER}"
+                    AUTOTEST_BRANCH = "${AUTOTEST_BRANCH}${appName}"
                 }
             }
         }
-<<<<<<< HEAD
+
+        stage("SonarQube analysis") {
+            steps {
+                withSonarQubeEnv(installationName :'SI.GP6', credentialsId: sonarTokenCredential ){
+                    script {
+                        def projectKey = "${projectKeyPrefix}${appName}".toLowerCase()
+                        def projectName = "${projectSonarPrefix}${appName}".toUpperCase()
+                        sh "/opt/sonar-scanner/bin/sonar-scanner \
+                            -Dsonar.projectKey=$projectKey \
+                            -Dsonar.projectName=$projectName \
+                            -Dsonar.sources=apps/${appName}/src  \
+                            -Dsonar.exclusions=apps/${appName}/**/*.less,apps/${appName}/**/*.css "
+                    }
+                }
+            }
+        }
+
+        // stage("SonarQube Gatekeeper") {
+        //     steps {
+        //       timeout(time: 1, unit: 'MINUTES') {
+        //         waitForQualityGate abortPipeline: true
+        //       }
+        //     }
+        // }
 
         stage("Build image") {
             steps {
@@ -101,7 +93,5 @@ pipeline {
             }
         }
 
-=======
->>>>>>> origin/develop
     }
 }
