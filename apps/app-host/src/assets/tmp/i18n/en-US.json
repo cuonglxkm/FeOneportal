@@ -472,7 +472,7 @@
   "app.snapshot-package1": "Package snapshot",
   "app.mongo": "MongoDB",
   "app.other": "Other",
-
+  "app.change.info": "Change information",
 
 
   "app.instances.list": "Instance list",
@@ -487,7 +487,7 @@
   "app.instances.name": "Instance name",
   "app.instances.from.snapshot": "Create from Snapshot",
   "app.instances.OS": "Operating system",
-  "app.instances.OS.change": "Change operating system",
+  "app.instances.OS.change": "Change the instance operating system",
   "app.current.instances.OS": "Current operating system",
   "app.choose.new.instances.OS": "Choose new operating system",
   "app.instances.OS.des": "- Data in the old operating system installation volume ({{num}} GB) will be deleted and cannot be recovered.",
