@@ -53,8 +53,8 @@ export class AppValidator {
     return null;
   }
 
-  static validPhoneNumber(control: AbstractControl): ValidationErrors | null { //valid số điện thoại
-    var regexpSDT = new RegExp('^(\\+?84[3-9]|84[3-9]|0[3-9])+(\\d{8})$');
+  static validPhoneNumber(control: AbstractControl): ValidationErrors | null { //valid số điện thoại ^(\+?84[3|5|7|8|9]|84[3|5|7|8|9]|0[3|5|7|8|9])+(\d{8})$
+    var regexpSDT = new RegExp('^(84[3|5|7|8|9]|0[3|5|7|8|9])+(\\d{8})$');
     if (control && control.value != null && control.value != undefined && control.value.length > 0) {
       if (control.value != '' && regexpSDT.test(control.value) == false) {
         return { validPhoneNumber: true };

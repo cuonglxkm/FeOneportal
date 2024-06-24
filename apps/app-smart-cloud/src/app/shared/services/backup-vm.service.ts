@@ -106,19 +106,9 @@ export class BackupVmService extends BaseService {
     }
 
     restoreCurrentBackupVm(form: RestoreFormCurrent) {
-        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/restore`, Object.assign(form), {
+        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/restore`, form, {
             headers: this.getHeaders()
-        }).pipe(
-          catchError((error: HttpErrorResponse) => {
-            if (error.status === 401) {
-              console.error('login');
-            } else if (error.status === 404) {
-              // Handle 404 Not Found error
-              console.error('Resource not found');
-            }
-            return throwError(error);
-          }))
-
+        });
     }
 
     getVolumeInstanceAttachment(id: number) {

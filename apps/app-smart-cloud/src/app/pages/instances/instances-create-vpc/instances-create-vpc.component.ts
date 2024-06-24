@@ -47,6 +47,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -163,6 +164,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     private dataService: InstancesService,
     private snapshotVLService: SnapshotVolumeService,
     private vlanService: VlanService,
+    private catalogService: CatalogService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -202,6 +204,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getActiveServiceByRegion();
     this.getConfigurations();
     this.getAllImageType();
     this.getAllIPPublic();
@@ -245,6 +248,22 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.checkExistName();
     this.onChangeCapacity();
     this.cdr.detectChanges();
+  }
+
+  //Lấy các dịch vụ hỗ trợ theo region
+  isSupportEncryption: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(
+        ['Encryption', 'MultiAttachment', 'ipv6'],
+        this.region
+      )
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isSupportEncryption = data.filter(
+          (e) => e.productName == 'Encryption'
+        )[0].isActive;
+      });
   }
 
   //Kiểm tra trùng tên máy ảo
@@ -500,7 +519,8 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.configurationService
       .getConfigurations('OPTIONGPUVALUE')
       .subscribe(
-        (data) => (this.listOptionGpuValue = data.valueString.split(', ').map(Number))
+        (data) =>
+          (this.listOptionGpuValue = data.valueString.split(', ').map(Number))
       );
   }
 

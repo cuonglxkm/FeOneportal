@@ -221,9 +221,9 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     this.formCreate.actionType = ServiceActionType.CREATE;
     this.formCreate.serviceInstanceId = 0;
     this.formCreate.createDate =
-      this.typeVpc === 0 ? this.dateString : new Date();
+      this.typeVpc === 0 || this.typeVpc === 2 ? this.dateString : new Date();
     this.formCreate.expireDate =
-      this.typeVpc === 0 ? this.expiredDate : new Date();
+      this.typeVpc === 0 || this.typeVpc === 2 ? this.expiredDate : new Date();
     this.formCreate.createDateInContract = null;
     this.formCreate.saleDept = null;
     this.formCreate.saleDeptCode = null;
@@ -289,11 +289,11 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.formCreate),
         specificationType: 'sharesnapshot_create',
-        price: this.typeVpc === 0 ? this.orderItem?.totalAmount.amount : 0,
-        serviceDuration: this.typeVpc === 0 ? this.form.controls.time.value : 1,
+        price: this.typeVpc === 0 || this.typeVpc === 2 ? this.orderItem?.totalAmount.amount : 0,
+        serviceDuration: this.typeVpc === 0 || this.typeVpc === 2 ? this.form.controls.time.value : 1,
       },
     ];
-    if (this.typeVpc === 0) {
+    if (this.typeVpc === 0 || this.typeVpc === 2) {
       this.orderService.validaterOrder(request).subscribe({
         next: (data) => {
           if (data.success) {

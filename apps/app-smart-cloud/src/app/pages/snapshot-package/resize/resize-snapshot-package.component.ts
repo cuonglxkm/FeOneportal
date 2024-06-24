@@ -87,7 +87,12 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   }
 
   getDetailPackageSnapshot(id) {
-    this.packageSnapshotService.detail(id, this.project).subscribe(data => {
+    this.loadingCalculate = true;
+    this.packageSnapshotService.detail(id, this.project)
+      .pipe(finalize(() => {
+        this.loadingCalculate = false;
+      }))
+      .subscribe(data => {
       console.log('data', data);
       this.packageSnapshotModel = data;
       this.storage = this.packageSnapshotModel.sizeInGB;
