@@ -1,5 +1,5 @@
 <page-header class="class" [title]="'Trang chủ'" xmlns="http://www.w3.org/1999/html"
-             breadcrumb="none"></page-header>
+             breadcrumb="unset"></page-header>
 <nz-spin [nzSpinning]="isLoading">
   <nz-content>
     <nz-row [nzGutter]="6" style="padding-top: 24px;">
@@ -227,6 +227,7 @@
       <nz-table #fixTableNearExpire
                 nzShowSizeChanger
                 style="margin-top: 25px;"
+                [nzLoading]="loadingNearExpire"
                 [nzData]="listSubscriptionsNearExpire?.records"
                 [nzFrontPagination]="false"
                 [nzTotal]="listSubscriptionsNearExpire?.totalCount"

@@ -6,14 +6,14 @@ import {
   SubscriptionsDashboard,
   SubscriptionsNearExpire
 } from '../../shared/models/dashboard.model';
-import { BaseResponse } from '../../../../../../libs/common-utils/src';
+import { BaseResponse, NotificationService } from '../../../../../../libs/common-utils/src';
 import { Router } from '@angular/router';
 import { Pie } from '@antv/g2plot';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { PaymentService } from '../../shared/services/payment.service';
 import { debounceTime, Subject, Subscription } from 'rxjs';
-
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-dashboard',
@@ -50,6 +50,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(private dashboardService: DashboardService,
               private router: Router,
               private paymentService: PaymentService,
+              private notification: NzNotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -129,13 +130,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.getSubscriptionsNearExpire();
   }
 
+  loadingNearExpire: boolean = false
+
   getSubscriptionsNearExpire() {
-    this.isLoading = true;
-    this.dashboardService.getSubscriptionsNearExpire(this.pageSize, this.pageIndex).subscribe(data => {
+    this.loadingNearExpire = true;
+    this.dashboardService.getSubscriptionsNearExpire(this.pageSize, this.pageIndex, this.value).subscribe(data => {
       this.listSubscriptionsNearExpire = data;
-      this.isLoading = false;
+      this.loadingNearExpire = false;
     }, error => {
-      this.isLoading = false;
+      this.loadingNearExpire = false;
+      // this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
     });
   }
 
@@ -147,6 +151,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }, error => {
       this.isLoading = false;
       this.listPaymentCostUse = null;
+      // this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
     });
   }
 
@@ -190,6 +195,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }, error => {
       this.isLoading = false;
       this.dataPaymentCost = [];
+      // this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
     });
   }
 
