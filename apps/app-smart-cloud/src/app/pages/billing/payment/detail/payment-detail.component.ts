@@ -164,7 +164,9 @@ export class PaymentDetailComponent implements OnInit {
   }
 
   printInvoice(id: number) {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.service.exportInvoice(id)
+    .pipe(finalize(() => this.loadingSrv.close()))
     .subscribe((data) => {
       const element = document.createElement('div');
       element.style.width = '268mm';

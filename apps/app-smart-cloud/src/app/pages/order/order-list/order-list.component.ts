@@ -24,21 +24,22 @@ export class OrderListComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  searchStatus?: number | string = '';
+  searchStatus?: any;
+  searchStatusOrder?: any;
   searchName?: string;
   searchDelay = new Subject<boolean>();
 
 
   statusOrder = [
-    { label: this.i18n.fanyi("app.order.status.AllStatus"), value: '' },
+    { label: this.i18n.fanyi("app.order.status.AllStatus"), value: null },
     { label: this.i18n.fanyi("app.order.status.orderplaced"), value: 0 },
-    { label: this.i18n.fanyi("app.order.status.Paid"), value: 6 },
+    { label: this.i18n.fanyi("app.order.status.Paid"), value: 2 },
     { label: this.i18n.fanyi("app.order.status.cancelled"), value: 1 },
   
   ];
 
   statusInstall = [
-    { label: this.i18n.fanyi("app.order.status.AllStatus"), value: '' },
+    { label: this.i18n.fanyi("app.order.status.AllStatus"), value: null },
     { label: this.i18n.fanyi("app.order.status.installed"), value: 4 },
     { label: this.i18n.fanyi("app.order.status.error"), value: 5 },
     { label: this.i18n.fanyi("app.order.status.inprocessing"), value: 3 },
@@ -73,9 +74,11 @@ export class OrderListComponent implements OnInit {
     dSubscriptionType: string,
     fromDate: string,
     toDate: string,
-    status: any) {
+    status: any,
+    status1: any,
+    status2: any, status3: any) {
     this.isLoadingEntities = true;
-    this.orderService.getOrders(pageSize, pageNumber, orderCode, saleDept, saleDeptCode, seller, ticketCode, dSubscriptionNumber, dSubscriptionType, fromDate, toDate, status).subscribe(
+    this.orderService.getOrders(pageSize, pageNumber, orderCode, saleDept, saleDeptCode, seller, ticketCode, dSubscriptionNumber, dSubscriptionType, fromDate, toDate, status, status1, status2, status3).subscribe(
       data => {
         this.totalData = data.totalCount;
         this.listOfData = data.records;
@@ -114,9 +117,37 @@ export class OrderListComponent implements OnInit {
   }
 
   onChange(value: number) {
-    this.searchStatus = value;
-    this.refreshParams()
-    this.searchSnapshotScheduleList();
+    if(value === 2){
+      this.searchStatusOrder = value;
+      this.searchStatus.push(3,4,5);
+
+      console.log(this.searchStatus);
+  } else {
+      this.searchStatusOrder = value;
+      this.searchStatus = null;
+  }
+  this.refreshParams();
+  this.searchSnapshotScheduleList();
+  }
+
+  onChangeStatusInstall(value: number){
+    console.log(value);
+    
+    if(value == 4 || value == 5 || value == 3 || value == null){
+      this.searchStatus = value;
+      this.searchStatusOrder = 2
+      this.refreshParams()
+      this.searchSnapshotScheduleList();
+    }else{
+      this.searchStatus = value;
+      this.searchStatusOrder = null;
+      this.refreshParams()
+      this.searchSnapshotScheduleList();
+    }
+
+    console.log(this.searchStatus);
+    console.log(this.searchStatusOrder);
+    
   }
 
   onChanggeDate(value: Date[]) {
@@ -156,7 +187,7 @@ export class OrderListComponent implements OnInit {
 
   searchSnapshotScheduleList() {
     this.doGetSnapSchedules(this.pageSize, this.currentPage, this.value.toUpperCase().trim(),
-      null, null, null, null, null, null, this.fromDateFormatted, this.toDateFormatted, this.searchStatus);
+      null, null, null, null, null, null, this.fromDateFormatted, this.toDateFormatted, this.searchStatusOrder === null || this.searchStatusOrder === 2 ? this.searchStatus : this.searchStatusOrder, null, null, null);
   }
 
   navigateToCreate() {
