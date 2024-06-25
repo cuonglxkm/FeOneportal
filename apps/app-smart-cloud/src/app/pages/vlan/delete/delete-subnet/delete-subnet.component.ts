@@ -82,7 +82,7 @@ export class DeleteSubnetComponent implements AfterViewInit {
       }, error =>  {
         this.isVisibleDeleteSubnet = false;
         this.isLoadingDeleteSubnet = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'),  error.error.detail);
+        this.notification.error(this.i18n.fanyi('app.status.fail'),  error.error.title);
       })
 
 
