@@ -2890,6 +2890,7 @@
   "app.backup.vm.alert.storage.vpc": "Dung lượng backup còn lại nhỏ hơn dung lượng ổ hệ điều hành + tổng dung lượng volume gắn ngoài ({{storage}} GB). Quý khách hãy điều chỉnh dự án VPC để quá trình backup VM không bị gián đoạn.",
 
 
+  "app.backup.vm.create.placeholder": "Nhập tên Backup VM",
   "app.backup.vm.create.name.required": "Vui lòng nhập tên Backup VM",
   "app.backup.vm.create.name.duplicateName": "Tên Backup VM đã tồn tại, vui lòng nhập tên khác",
   "app.backup.vm.create.name.pattern": "Tên Backup VM chỉ gồm ký tự chữ cái, số và dấu _, vui lòng nhập tên khác",

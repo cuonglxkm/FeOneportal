@@ -42,6 +42,7 @@
                     <input nz-input class="input-custom"
                            appAutofocus
                            formControlName="backupName"
+                           [placeholder]="'app.backup.vm.create.placeholder'|i18n"
                            [maxlength]="50" />
                     <ng-template #nameBackupError let-control>
                       <ng-container *ngIf="control.hasError('required')">{{'app.backup.vm.create.name.required'|i18n}}</ng-container>
@@ -98,6 +99,7 @@
                       <nz-select (ngModelChange)="onSelectedInstance($event)"
                                  [nzLoading]="isLoadingInstance"
                                  nzSize="large"
+                                 [nzPlaceHolder]="'volume.modal.attach.title'|i18n"
                                  [(ngModel)]="instanceSelected"
                                  formControlName="instanceId">
                         <nz-option *ngFor="let i of listInstances" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
@@ -134,6 +136,7 @@
                     <nz-textarea-count [nzMaxCharacterCount]="255">
                     <textarea nz-input class="input-custom" [maxlength]="255"
                               [nzAutosize]="{ minRows: 3, maxRows: 5 }"
+                              [placeholder]="'app.input.des'|i18n"
                               formControlName="description"></textarea>
                     </nz-textarea-count>
                   </nz-form-control>
@@ -164,7 +167,7 @@
                   <nz-col nzSpan="12">
                     <span class="text-label">{{'app.backup.package.storage'|i18n}} (GB)</span>
                   </nz-col>
-                  <nz-col nzSpan="6">
+                  <nz-col nzSpan="6" style="text-align: end;">
                   <span class="text-label"
                         *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
                     <span class="text-label"
@@ -176,7 +179,7 @@
                   <nz-col nzSpan="12">
                     <span class="text-label">{{'app.backup.package.storage.used'|i18n}} (GB)</span>
                   </nz-col>
-                  <nz-col nzSpan="6">
+                  <nz-col nzSpan="6" style="text-align: end;">
                   <span class="text-label"
                         *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
                     <span class="text-label"
@@ -188,7 +191,7 @@
                   <nz-col nzSpan="12">
                     <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}} (GB)</span>
                   </nz-col>
-                  <nz-col nzSpan="6">
+                  <nz-col nzSpan="6" style="text-align: end;">
                   <span class="text-label"
                         *ngIf="backupPackageDetail == undefined || backupPackageDetail == null">0 GB</span>
                     <span class="text-label"

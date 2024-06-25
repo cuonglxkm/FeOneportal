@@ -402,7 +402,7 @@ export class VlanService extends BaseService {
   }
 
   checkDeleteSubnet(subnetId) {
-    return this.http.get<boolean>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/checkdeletenetwork?subnetId=${subnetId}`, {
+    return this.http.get<boolean>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/checkdeletesubnet?subnetId=${subnetId}`, {
       headers: this.getHeaders()
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {

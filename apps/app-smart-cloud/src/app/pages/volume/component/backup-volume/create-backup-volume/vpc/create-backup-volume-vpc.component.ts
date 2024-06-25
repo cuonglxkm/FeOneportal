@@ -45,7 +45,7 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
 
   volumeIdParam: any;
   listName: string[] = []
-  listVolumes: BaseResponse<VolumeDTO[]>
+  listVolumes: VolumeDTO[]
   isLoading: boolean = false
   volumeInfo: VolumeDTO = new VolumeDTO()
 
@@ -86,10 +86,17 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     }
   }
 
+  isLoadingVolume: boolean = false
   getListVolumes() {
+    this.isLoadingVolume = true
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, '', '').subscribe(data => {
-      this.listVolumes = data;
+      this.isLoadingVolume = false
+      this.listVolumes = data.records;
+      this.listVolumes = this.listVolumes.filter(item => item.status === 'KHOITAO')
       this.validateForm.controls.volumeId.setValue(this.listVolumes[0]?.id)
+    }, error => {
+      this.isLoadingVolume = false
+      this.notification.error(error.status, this.i18n.fanyi('app.failData'))
     })
   }
 

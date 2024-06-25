@@ -9,6 +9,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { TimeCommon } from '../../../shared/utils/common';
+import { size } from 'lodash';
 
 @Component({
   selector: 'one-portal-list-schedule-snapshot',
@@ -82,7 +83,8 @@ export class SnapshotScheduleListComponent implements OnInit {
         regionId,
         projectId,
         name,
-        volumeName
+        volumeName,
+        ''
       )
       .subscribe({
         next: (next) => {
@@ -361,4 +363,6 @@ export class SnapshotScheduleListComponent implements OnInit {
         }
       });
   }
+
+  protected readonly size = size;
 }
