@@ -356,8 +356,12 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
         this.isLoading = false
         this.serviceActiveByRegion = data;
         this.serviceActiveByRegion.forEach(item => {
-          this.typeMultiple = ['MultiAttachment'].includes(item.productName);
-          this.typeEncrypt = ['Encryption'].includes(item.productName);
+          if(['MultiAttachment'].includes(item.productName)){
+            this.typeMultiple = item.isActive
+          }
+          if(['Encryption'].includes(item.productName)){
+            this.typeEncrypt = item.isActive
+          }
         })
       }, error => {
         this.isLoading = false
