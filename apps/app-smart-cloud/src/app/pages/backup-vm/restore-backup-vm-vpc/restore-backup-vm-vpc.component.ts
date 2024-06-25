@@ -110,7 +110,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   restoreInstanceBackup: RestoreInstanceBackup = new RestoreInstanceBackup();
 
   backupVmModel: BackupVm;
-  backupPackage: PackageBackupModel;
+  backupSize: number = 0;
   listExternalAttachVolume: VolumeBackup[] = [];
   listSecurityGroupBackups: any[] = [];
 
@@ -342,6 +342,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   listIDAttachVolume: number[] = [];
   getDetailBackupById(id) {
+    this.backupSize = 0;
     this.backupService
       .detail(id)
       .pipe(
@@ -351,6 +352,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
+        this.backupVmModel.volumeBackups.forEach((e) => {
+          this.backupSize += e.size;
+        });
         if (
           this.backupVmModel?.volumeBackups
             .filter((e) => e.isBootable == true)[0]
@@ -392,7 +396,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
             this.selectedSecurityGroup.push(e.sgName);
           }
         });
-        this.getBackupPackage(this.backupVmModel?.backupPacketId);
         this.cdr.detectChanges();
       });
   }
@@ -451,12 +454,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         );
       }
     );
-  }
-
-  getBackupPackage(value) {
-    this.backupPackageService.detail(value, this.project).subscribe((data) => {
-      this.backupPackage = data;
-    });
   }
 
   //#region  cấu hình
@@ -556,7 +553,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   resetData() {
     this.restoreInstanceBackup.cpu = 0;
-    this.restoreInstanceBackup.volumeSize = 0;
+    this.restoreInstanceBackup.volumeSize =
+      this.backupSize < this.stepCapacity ? this.stepCapacity : this.backupSize;
+
     this.restoreInstanceBackup.ram = 0;
     this.restoreInstanceBackup.gpuCount = 0;
     this.restoreInstanceBackup.gpuTypeOfferId = null;
@@ -597,9 +596,27 @@ export class RestoreBackupVmVpcComponent implements OnInit {
           this.restoreInstanceBackup.volumeSize =
             this.restoreInstanceBackup.volumeSize -
             (this.restoreInstanceBackup.volumeSize % this.stepCapacity);
-          this.checkValidConfig();
-          this.cdr.detectChanges();
+          if (this.restoreInstanceBackup.volumeSize < this.stepCapacity) {
+            this.restoreInstanceBackup.volumeSize =
+              this.backupSize < this.stepCapacity
+                ? this.stepCapacity
+                : this.backupSize;
+          }
         }
+        if (this.restoreInstanceBackup.volumeSize < this.backupSize) {
+          this.notification.warning(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
+              num: this.backupSize,
+            })
+          );
+          this.restoreInstanceBackup.volumeSize =
+            this.backupSize < this.stepCapacity
+              ? this.stepCapacity
+              : this.backupSize;
+        }
+        this.checkValidConfig();
+        this.cdr.detectChanges();
       });
   }
 
