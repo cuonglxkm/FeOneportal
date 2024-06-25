@@ -856,7 +856,6 @@ export class InstancesCreateComponent implements OnInit {
     tempInstance.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
     tempInstance.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
     tempInstance.offerId = 0;
-    tempInstance.flavorId = 0;
     tempInstance.volumeSize = volumeSize;
     tempInstance.ram = ram;
     tempInstance.cpu = cpu;
@@ -991,7 +990,7 @@ export class InstancesCreateComponent implements OnInit {
         this.configCustom.capacity =
           this.configCustom.capacity -
           (this.configCustom.capacity % this.stepCapacity);
-        if (this.isSnapshot) {
+        if (this.isSnapshot && this.configCustom.capacity < this.stepCapacity) {
           this.configCustom.capacity =
             this.sizeSnapshotVL < this.stepCapacity
               ? this.stepCapacity
@@ -1100,7 +1099,7 @@ export class InstancesCreateComponent implements OnInit {
           this.configGPU.storage =
             this.configGPU.storage -
             (this.configGPU.storage % this.stepCapacity);
-          if (this.isSnapshot) {
+          if (this.isSnapshot && this.configGPU.storage < this.stepCapacity) {
             this.configGPU.storage =
               this.sizeSnapshotVL < this.stepCapacity
                 ? this.stepCapacity
@@ -1452,13 +1451,11 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.customerUsingMss = null;
     if (this.isCustomconfig) {
       this.instanceCreate.offerId = 0;
-      this.instanceCreate.flavorId = 0;
       this.instanceCreate.ram = this.configCustom.ram;
       this.instanceCreate.cpu = this.configCustom.vCPU;
       this.instanceCreate.volumeSize = this.configCustom.capacity;
     } else if (this.isGpuConfig) {
       this.instanceCreate.offerId = 0;
-      this.instanceCreate.flavorId = 0;
       this.instanceCreate.ram = this.configGPU.ram;
       this.instanceCreate.cpu = this.configGPU.CPU;
       this.instanceCreate.volumeSize = this.configGPU.storage;
@@ -1472,9 +1469,6 @@ export class InstancesCreateComponent implements OnInit {
     } else {
       this.instanceCreate.offerId = this.offerFlavor.id;
       this.offerFlavor.characteristicValues.forEach((e) => {
-        if (e.charOptionValues[0] == 'Id') {
-          this.instanceCreate.flavorId = Number.parseInt(e.charOptionValues[1]);
-        }
         if (e.charOptionValues[0] == 'RAM') {
           this.instanceCreate.ram = Number.parseInt(e.charOptionValues[1]);
         }

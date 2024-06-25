@@ -654,7 +654,10 @@ export class InstancesCreateVpcComponent implements OnInit {
           this.instanceCreate.volumeSize =
             this.instanceCreate.volumeSize -
             (this.instanceCreate.volumeSize % this.stepCapacity);
-          if (this.isSnapshot) {
+          if (
+            this.isSnapshot &&
+            this.instanceCreate.volumeSize < this.stepCapacity
+          ) {
             this.instanceCreate.volumeSize =
               this.sizeSnapshotVL < this.stepCapacity
                 ? this.stepCapacity

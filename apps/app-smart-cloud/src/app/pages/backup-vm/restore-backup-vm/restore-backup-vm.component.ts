@@ -95,7 +95,7 @@ export class RestoreBackupVmComponent implements OnInit {
   ipPublicValue: number = 0;
 
   backupVmModel: BackupVm;
-  backupPackage: PackageBackupModel;
+  backupSize: number = 0;
   listExternalAttachVolume: VolumeBackup[] = [];
   listSecurityGroupBackups: any[] = [];
 
@@ -313,13 +313,11 @@ export class RestoreBackupVmComponent implements OnInit {
     this.restoreInstanceBackup.password = this.password;
     if (this.isCustomconfig) {
       this.restoreInstanceBackup.offerId = 0;
-      this.restoreInstanceBackup.offerFlavorId = 0;
       this.restoreInstanceBackup.ram = this.configCustom.ram;
       this.restoreInstanceBackup.cpu = this.configCustom.vCPU;
       this.restoreInstanceBackup.volumeSize = this.configCustom.capacity;
     } else if (this.isGpuConfig) {
       this.restoreInstanceBackup.offerId = 0;
-      this.restoreInstanceBackup.offerFlavorId = 0;
       this.restoreInstanceBackup.ram = this.configGPU.ram;
       this.restoreInstanceBackup.cpu = this.configGPU.CPU;
       this.restoreInstanceBackup.volumeSize = this.configGPU.storage;
@@ -328,11 +326,6 @@ export class RestoreBackupVmComponent implements OnInit {
     } else {
       this.restoreInstanceBackup.offerId = this.offerFlavor.id;
       this.offerFlavor.characteristicValues.forEach((e) => {
-        if (e.charOptionValues[0] == 'Id') {
-          this.restoreInstanceBackup.offerFlavorId = Number.parseInt(
-            e.charOptionValues[1]
-          );
-        }
         if (e.charOptionValues[0] == 'RAM') {
           this.restoreInstanceBackup.ram = Number.parseInt(
             e.charOptionValues[1]
@@ -407,59 +400,69 @@ export class RestoreBackupVmComponent implements OnInit {
 
   listIDAttachVolume: number[] = [];
   getDetailBackupById(id) {
-    this.backupService.detail(id).subscribe((data) => {
-      this.backupVmModel = data;
-      if (
-        this.backupVmModel?.volumeBackups
-          .filter((e) => e.isBootable == true)[0]
-          .typeName.toUpperCase()
-          .includes('HDD')
-      ) {
-        this.activeBlockHDD = true;
-        this.activeBlockSSD = false;
-      } else {
-        this.activeBlockHDD = false;
-        this.activeBlockSSD = true;
-      }
-      this.initFlavors();
-
-      this.listExternalAttachVolume = this.backupVmModel?.volumeBackups.filter(
-        (e) => e.isBootable == false
-      );
-
-      this.listExternalAttachVolume.forEach((e) => {
-        this.listIDAttachVolume.push(e.id);
-        let tempBS = new BlockStorage();
-        tempBS.id = e.id;
-        tempBS.name = e.name;
-        tempBS.capacity = e.size;
-        if (e.typeName.toUpperCase().includes('HDD')) {
-          tempBS.type = 'HDD';
-          tempBS.price = e.size * this.unitPriceVolumeHDD;
-          tempBS.VAT = e.size * this.unitVATVolumeHDD;
-          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
+    this.backupSize = 0;
+    this.backupService
+      .detail(id)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe((data) => {
+        this.backupVmModel = data;
+        this.backupVmModel.volumeBackups.forEach((e) => {
+          this.backupSize += e.size;
+        });
+        if (
+          this.backupVmModel?.volumeBackups
+            .filter((e) => e.isBootable == true)[0]
+            .typeName.toUpperCase()
+            .includes('HDD')
+        ) {
+          this.activeBlockHDD = true;
+          this.activeBlockSSD = false;
         } else {
-          tempBS.type = 'SSD';
-          tempBS.price = e.size * this.unitPriceVolumeSSD;
-          tempBS.VAT = e.size * this.unitVATVolumeSSD;
-          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
+          this.activeBlockHDD = false;
+          this.activeBlockSSD = true;
         }
-        this.listOfDataBlockStorage.push(tempBS);
-      });
+        this.initFlavors();
 
-      if (this.backupVmModel.securityGroupBackups != null) {
-        this.listSecurityGroupBackups = getUniqueObjects(
-          this.backupVmModel.securityGroupBackups,
-          'sgName'
-        );
-      }
-      this.listSecurityGroupBackups.forEach((e) => {
-        this.selectedSecurityGroup.push(e.sgName);
-      });
+        this.listExternalAttachVolume =
+          this.backupVmModel?.volumeBackups.filter(
+            (e) => e.isBootable == false
+          );
 
-      this.getBackupPackage(this.backupVmModel?.backupPacketId);
-      this.cdr.detectChanges();
-    });
+        this.listExternalAttachVolume.forEach((e) => {
+          this.listIDAttachVolume.push(e.id);
+          let tempBS = new BlockStorage();
+          tempBS.id = e.id;
+          tempBS.name = e.name;
+          tempBS.capacity = e.size;
+          if (e.typeName.toUpperCase().includes('HDD')) {
+            tempBS.type = 'HDD';
+            tempBS.price = e.size * this.unitPriceVolumeHDD;
+            tempBS.VAT = e.size * this.unitVATVolumeHDD;
+            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
+          } else {
+            tempBS.type = 'SSD';
+            tempBS.price = e.size * this.unitPriceVolumeSSD;
+            tempBS.VAT = e.size * this.unitVATVolumeSSD;
+            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
+          }
+          this.listOfDataBlockStorage.push(tempBS);
+        });
+
+        if (this.backupVmModel.securityGroupBackups != null) {
+          this.listSecurityGroupBackups = getUniqueObjects(
+            this.backupVmModel.securityGroupBackups,
+            'sgName'
+          );
+        }
+        this.listSecurityGroupBackups.forEach((e) => {
+          this.selectedSecurityGroup.push(e.sgName);
+        });
+        this.cdr.detectChanges();
+      });
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -503,20 +506,6 @@ export class RestoreBackupVmComponent implements OnInit {
         );
       },
     });
-  }
-
-  getBackupPackage(value) {
-    this.backupPackageService
-      .detail(value, this.project)
-      .pipe(
-        finalize(() => {
-          this.loadingSrv.close();
-        })
-      )
-      .subscribe((data) => {
-        this.backupPackage = data;
-        this.cdr.detectChanges();
-      });
   }
 
   //#region Chọn IP Public Chọn Security Group
@@ -630,6 +619,17 @@ export class RestoreBackupVmComponent implements OnInit {
     this.selectedElementFlavor = null;
     this.configGPU = new ConfigGPU();
     this.configCustom = new ConfigCustom();
+    if (this.isCustomconfig) {
+      this.configCustom.capacity =
+        this.backupSize < this.stepCapacity
+          ? this.stepCapacity
+          : this.backupSize;
+    } else if (this.isGpuConfig) {
+      this.configGPU.storage =
+        this.backupSize < this.stepCapacity
+          ? this.stepCapacity
+          : this.backupSize;
+    }
     this.volumeUnitPrice = 0;
     this.volumeIntoMoney = 0;
     this.ramUnitPrice = 0;
@@ -644,6 +644,15 @@ export class RestoreBackupVmComponent implements OnInit {
     this.restoreInstanceBackup.ram = 0;
     this.restoreInstanceBackup.cpu = 0;
     this.restoreInstanceBackup.volumeSize = 0;
+    if (this.isCustomconfig) {
+      this.restoreInstanceBackup.volumeSize = this.configCustom.capacity;
+      this.getUnitPrice(1, 0, 0, 0, null);
+      this.getTotalAmount();
+    } else if (this.isGpuConfig) {
+      this.restoreInstanceBackup.volumeSize = this.configGPU.storage;
+      this.getUnitPrice(1, 0, 0, 0, null);
+      this.getTotalAmount();
+    }
     this.restoreInstanceBackup.gpuCount = 0;
   }
 
@@ -688,6 +697,9 @@ export class RestoreBackupVmComponent implements OnInit {
             }
           });
         });
+        this.listOfferFlavors = this.listOfferFlavors.filter(
+          (e) => Number.parseInt(e.description.split(' ')[7]) >= this.backupSize
+        );
         this.listOfferFlavors = this.listOfferFlavors.sort(
           (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
         );
@@ -726,7 +738,6 @@ export class RestoreBackupVmComponent implements OnInit {
     let tempInstance: RestoreInstanceBackup = new RestoreInstanceBackup();
     tempInstance.instanceBackupId = this.backupVmModel?.id;
     tempInstance.offerId = 0;
-    tempInstance.offerFlavorId = 0;
     tempInstance.volumeSize = volumeSize;
     tempInstance.ram = ram;
     tempInstance.cpu = cpu;
@@ -852,6 +863,25 @@ export class RestoreBackupVmComponent implements OnInit {
         this.configCustom.capacity =
           this.configCustom.capacity -
           (this.configCustom.capacity % this.stepCapacity);
+        if (this.configCustom.capacity < this.stepCapacity) {
+          this.configCustom.capacity =
+            this.backupSize < this.stepCapacity
+              ? this.stepCapacity
+              : this.backupSize;
+        }
+      }
+      if (this.configCustom.capacity < this.backupSize) {
+        this.notification.warning(
+          '',
+          this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
+            num: this.backupSize,
+          })
+        );
+        this.configCustom.capacity =
+          this.backupSize < this.stepCapacity
+            ? this.stepCapacity
+            : this.backupSize;
+        this.cdr.detectChanges();
       }
       this.getUnitPrice(1, 0, 0, 0, null);
       this.getTotalAmount();
@@ -922,6 +952,39 @@ export class RestoreBackupVmComponent implements OnInit {
         debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
+        if (this.configGPU.storage > this.maxCapacity) {
+          this.configGPU.storage = this.maxCapacity - this.surplus;
+          this.cdr.detectChanges();
+        }
+        if (this.configGPU.storage % this.stepCapacity > 0) {
+          this.notification.warning(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity', {
+              number: this.stepCapacity,
+            })
+          );
+          this.configGPU.storage =
+            this.configGPU.storage -
+            (this.configGPU.storage % this.stepCapacity);
+          if (this.configGPU.storage < this.stepCapacity) {
+            this.configGPU.storage =
+              this.backupSize < this.stepCapacity
+                ? this.stepCapacity
+                : this.backupSize;
+          }
+        }
+        if (this.configGPU.storage < this.backupSize) {
+          this.notification.warning(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
+              num: this.backupSize,
+            })
+          );
+          this.configGPU.storage =
+            this.backupSize < this.stepCapacity
+              ? this.stepCapacity
+              : this.backupSize;
+        }
         this.getUnitPrice(1, 0, 0, 0, null);
         this.getTotalAmount();
       });
