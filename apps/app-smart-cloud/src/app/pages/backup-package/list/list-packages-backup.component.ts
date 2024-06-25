@@ -4,7 +4,12 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { PackageBackupModel, ServiceInPackage } from '../../../shared/models/package-backup.model';
-import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import {
+  BaseResponse,
+  NotificationService,
+  ProjectModel,
+  RegionModel
+} from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectService } from 'src/app/shared/services/project.service';
@@ -76,6 +81,7 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
               private projectService: ProjectService,
+              private notificationService: NotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -182,6 +188,38 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     this.project = regionAndProject.projectId;
     this.selectedValue = this.options[0].value;
     this.onChangeInputChange();
+    if (!this.region && !this.project) {
+      this.router.navigate(['/exception/500']);
+    }
+
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+    this.notificationService.connection.on('UpdateStateBackupPackage', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case 'CREATED':
+            this.getListPackageBackups(true);
+            break;
+          //case "CREATED":
+          // let volumeId = message.serviceId;
+          // var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+          // if (foundIndex > -1) {
+          //   var record = this.response.records[foundIndex];
+          //   record.serviceStatus = message.data?.serviceStatus;
+          //   record.createDate = message.data?.creationDate;
+          //   record.expirationDate = message.data?.expirationDate;
+          //   this.response.records[foundIndex] = record;
+          //   this.cdr.detectChanges();
+          // }
+          // else
+          // {
+          // this.getListVolume(true);
+          //}
+          //break;
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {

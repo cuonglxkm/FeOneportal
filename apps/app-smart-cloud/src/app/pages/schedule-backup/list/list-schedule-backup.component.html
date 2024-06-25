@@ -2,14 +2,16 @@
              title="{{'schedule.backup.title.list' | i18n}}">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
-      <nz-breadcrumb-item>{{'app.breadcrumb.home' | i18n}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        {{'app.breadcrumb.infrastructure.service' | i18n}}
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
-      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+      <ng-template #iconTemplate>
+        <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+      </ng-template>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/schedule/backup/list">{{'schedule.backup.title.job' | i18n}}</a>
+        <a routerLink="/app-smart-cloud/schedule/backup/list">{{ 'schedule.backup.title.job' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -51,13 +53,13 @@
                      (keydown.enter)="onEnter($event)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"/>
+              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" />
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
             <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate(typeVPC)">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
-              <span class="button-text-primary">{{'schedule.backup.create' | i18n}}</span>
+              <span class="button-text-primary">{{ 'schedule.backup.create' | i18n }}</span>
             </button>
           </nz-col>
         </nz-row>
@@ -75,14 +77,14 @@
                     (nzPageIndexChange)="onPageIndexChange($event)">
             <thead>
             <tr>
-              <th>{{'app.name' | i18n}}</th>
-              <th>{{'schedule.backup.model.backup' | i18n}}</th>
-<!--              <th nzBreakWord>{{'app.backup.volume.backup.package' | i18n}}</th>-->
-              <th>{{'app.maximum.number.of.record' | i18n}}</th>
-              <th>{{'app.order.status' | i18n}}</th>
-              <th>{{'schedule.backup.next.step' | i18n}}</th>
-              <th>{{'app.payment.createDate' | i18n}}</th>
-              <th>{{'app.action-history.operation' | i18n}}</th>
+              <th>{{ 'app.name' | i18n }}</th>
+              <th>{{ 'schedule.backup.model.backup' | i18n }}</th>
+              <!--              <th nzBreakWord>{{'app.backup.volume.backup.package' | i18n}}</th>-->
+              <th>{{ 'app.maximum.number.of.record' | i18n }}</th>
+              <th>{{ 'app.order.status' | i18n }}</th>
+              <th>{{ 'schedule.backup.next.step' | i18n }}</th>
+              <th>{{ 'app.payment.createDate' | i18n }}</th>
+              <th>{{ 'app.action-history.operation' | i18n }}</th>
             </tr>
             </thead>
             <tbody>
@@ -92,41 +94,54 @@
                 <span *ngIf="data.serviceType === 1">VM - {{ data.serviceName }}</span>
                 <span *ngIf="data.serviceType === 2">Volume - {{ data.serviceName }}</span>
               </td>
-<!--              <td nzBreakWord>{{ data.backupPackageName }}</td>-->
+              <!--              <td nzBreakWord>{{ data.backupPackageName }}</td>-->
               <td nzAlign="right">{{ data.maxBackup }}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-                <td nzAlign="left">
-                  <span [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</span>
-                  <br><span>{{data.warningMessage}}</span>
+                <td *ngIf="!!data.warningMessage">
+                  <span [ngStyle]="{color: statusModel.color}">
+                    <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+                         nzTooltipTitle="{{ data.warningMessage }}"
+                         nzTooltipPlacement="bottom"
+                         nz-tooltip>
+                    {{ statusModel.status }}
+                  </span>
+                </td>
+                <td *ngIf="data.warningMessage == null || data.warningMessage === ''">
+                  <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
                 </td>
               </ng-container>
-              <td>{{ data.nextRuntime | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ data.nextRuntime | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
               <td>{{ data.createdAt | date: 'dd/MM/yyyy' }}</td>
               <td>
-                  <div *ngIf="data.status === 'ACTIVE'">
-                    <img nz-popover src="assets/imgs/edit-2.svg" alt=""
-                         nzPopoverPlacement="bottom"
-                         (click)="navigateToEdit(data.serviceType, data.id)"
-                         style="cursor: pointer; margin-left: 5px; margin-top: 2px;"
-                         [nzPopoverContent]="'app.text.edit' | i18n" />
-                    <one-portal-stop-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handlePausedOk()"/>
-                    <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
-                  </div>
-                  <div *ngIf="data.status === 'DISABLED'">
-                    <one-portal-restore-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleRestoredOk()"/>
-                    <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
-                  </div>
-                  <div *ngIf="data.status === 'PAUSED'">
-                    <one-portal-replay-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handlePlaydOk()"/>
-                    <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handleDeletedOk()"/>
-                  </div>
+                <div *ngIf="data.status === 'ACTIVE'">
+                  <img nz-popover src="assets/imgs/edit-2.svg" alt=""
+                       nzPopoverPlacement="bottom"
+                       (click)="navigateToEdit(data.serviceType, data.id)"
+                       style="cursor: pointer; margin-left: 5px; margin-top: 2px;"
+                       [nzPopoverContent]="'app.text.edit' | i18n" />
+                  <one-portal-stop-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handlePausedOk()" />
+                  <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name"
+                                              (onOk)="handleDeletedOk()" />
+                </div>
+                <div *ngIf="data.status === 'DISABLED'">
+                  <one-portal-restore-schedule [id]="data.id" [nameScheduleBackup]="data.name"
+                                               (onOk)="handleRestoredOk()" />
+                  <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name"
+                                              (onOk)="handleDeletedOk()" />
+                </div>
+                <div *ngIf="data.status === 'PAUSED'">
+                  <one-portal-replay-schedule [id]="data.id" [nameScheduleBackup]="data.name"
+                                              (onOk)="handlePlaydOk()" />
+                  <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name"
+                                              (onOk)="handleDeletedOk()" />
+                </div>
               </td>
             </tr>
             </tbody>
           </nz-table>
         </div>
         <div style="margin-top: 30px;">
-          <span class="text-card-header">{{'schedule.backup.label.backup.cap.info' | i18n}}</span>
+          <span class="text-card-header">{{ 'schedule.backup.label.backup.cap.info' | i18n }}</span>
           <nz-table #tableScheduleCapacityBackup
                     [nzData]="responseCapacityBackup"
                     nzShowSizeChanger
@@ -134,17 +149,17 @@
                     [nzLoading]="loadingCapacity" style="margin-top: 15px;">
             <thead>
             <tr>
-              <th>{{'app.backup.package.name' | i18n}}</th>
-              <th>{{'app.service.expiration-date' | i18n}}</th>
-              <th>{{'app.capacity' | i18n}} (GB)</th>
-              <th>{{'volume.used' | i18n}} (GB)</th>
-              <th>{{'volume.remaining' | i18n}} (GB)</th>
+              <th>{{ 'app.backup.package.name' | i18n }}</th>
+              <th>{{ 'app.service.expiration-date' | i18n }}</th>
+              <th>{{ 'app.capacity' | i18n }} (GB)</th>
+              <th>{{ 'volume.used' | i18n }} (GB)</th>
+              <th>{{ 'volume.remaining' | i18n }} (GB)</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let i of tableScheduleCapacityBackup.data">
               <td>{{ i.packageName }}</td>
-              <td>{{ i.expirationDate | date: 'HH:mm:ss dd/MM/yyyy' }}</td>
+              <td>{{ i.expirationDate | date: 'dd/MM/yyyy' }}</td>
               <td nzAlign="right">{{ i.totalCapacity }}</td>
               <td nzAlign="right">{{ i.usedCapacity }}</td>
               <td nzAlign="right">{{ i.remainingCapacity }}</td>
@@ -165,18 +180,18 @@
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-title" style="color: #0066b3">{{'schedule.backup.note1' | i18n}}</span>
+              <span class="text-intro-title" style="color: #0066b3">{{ 'schedule.backup.note1' | i18n }}</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">{{'schedule.backup.note2' | i18n}}</span>
+              <span class="text-intro-desc">{{ 'schedule.backup.note2' | i18n }}</span>
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'"
                   (click)="navigateToCreate(typeVPC)" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            {{'app.button.create' | i18n}}
+            {{ 'app.button.create' | i18n }}
           </button>
         </result>
       </nz-card>

@@ -64,10 +64,7 @@ export class SnapshotVolumeService extends BaseService {
   createSnapshotSchedule(request: CreateScheduleSnapshotDTO): Observable<any> {
     let urlResult = this.urlSnapshotVl + '/schedule';
     return this.http
-      .post(urlResult, request, this.httpOptions)
-      .pipe(
-        catchError(this.handleError<any>('Create Snapshot schedule error.'))
-      );
+      .post(urlResult, request, this.httpOptions);
   }
 
   getDetailSnapshotSchedule(id): Observable<any> {

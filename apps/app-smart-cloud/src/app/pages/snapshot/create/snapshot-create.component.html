@@ -30,7 +30,7 @@
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
           <span class="text-card-header">Thông tin Snapshot Volume</span>
-          <nz-alert  nzBanner *ngIf="disableByQuota == true"
+          <nz-alert  nzBanner *ngIf="disableCreate == false"
                      style="margin-bottom: 10px;margin-top: 15px"
                      [nzMessage]="nzMessage"
                      nzShowIcon></nz-alert>
@@ -317,9 +317,9 @@
             <nz-row>
               <nz-col style="width: 100%">
                 <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()" [nzLoading]="loadingCreate"
-                        [disabled]="validateForm.invalid || disableCreate || loadingCreate">
+                        [disabled]="validateForm.invalid || disableCreate || loadingCreate || disableByQuota">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                  <span [style.color]="validateForm.invalid || disableCreate || loadingCreate? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+                  <span [style.color]="validateForm.invalid || disableCreate || loadingCreate || disableByQuota? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
                 </button>
               </nz-col>
             </nz-row>

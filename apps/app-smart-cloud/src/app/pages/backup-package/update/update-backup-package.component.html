@@ -4,6 +4,7 @@
      style="cursor: pointer;"
      [nzPopoverContent]="'app.text.edit' | i18n" />
 <nz-modal [(nzVisible)]="isVisible"
+
           (nzOnCancel)="handleCancel()">
   <div *nzModalTitle>
     <span class="text-modal-title">{{ 'app.backup.package.edit.title'|i18n }}</span>
@@ -33,6 +34,7 @@
             <ng-container *ngIf="control.hasError('required')">{{ 'app.backup.package.name.required'|i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">{{ 'app.backup.package.name.pattern'|i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">{{ 'app.backup.package.name.maxLength'|i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">{{'app.backup.package.name.duplicate'|i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
