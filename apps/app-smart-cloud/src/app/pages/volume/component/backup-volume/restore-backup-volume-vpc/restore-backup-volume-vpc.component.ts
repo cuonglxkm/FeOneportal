@@ -7,7 +7,7 @@ import {
   FormRestoreNewBackupVolume
 } from '../backup-volume.model';
 import { PackageBackupModel } from '../../../../../shared/models/package-backup.model';
-import { FormControl, FormGroup, FormRecord, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { VolumeDTO } from '../../../../../shared/dto/volume.dto';
 import { InstancesModel } from '../../../../instances/instances.model';
 import { OrderItem } from '../../../../../shared/models/price';
@@ -20,13 +20,11 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../../../shared/services/volume.service';
 import { ConfigurationsService } from '../../../../../shared/services/configurations.service';
 import { InstancesService } from '../../../../instances/instances.service';
-import { OrderService } from '../../../../../shared/services/order.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
-import { CreateVolumeRequestModel } from '../../../../../shared/models/volume.model';
 
 @Component({
   selector: 'one-portal-restore-backup-volume-vpc',
@@ -270,7 +268,7 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
   volumeInit() {
     this.volumeRestoreNew.volumeBackupId = this.idBackupVolume;
     // this.volumeRestoreNew.volumeName = this.validateForm.get('formNew').get('volumeName').value;
-    this.volumeRestoreNew.volumeSize = this.validateForm.get('formNew').get('storage').value
+    this.volumeRestoreNew.volumeSize = this.validateForm.get('formNew').get('storage').value;
     this.volumeRestoreNew.instanceToAttachId = this.volumeDetail?.attachedInstances[0].instanceId;
     this.volumeRestoreNew.serviceName = this.validateForm.get('formNew').get('volumeName').value;
     this.volumeRestoreNew.volumeSize = this.validateForm.get('formNew').get('storage').value;
