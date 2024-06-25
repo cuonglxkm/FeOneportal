@@ -192,6 +192,7 @@ export class StartupService {
               this.checkPermissionAction(this.menuService['data']);
             });
         }
+       
 
         // if (checkData) {
         //   let json = {
