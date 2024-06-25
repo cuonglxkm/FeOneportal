@@ -213,7 +213,7 @@
           </nz-form-item>
           <nz-form-item style="margin-bottom: 0;">
             <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
-              <label *ngIf="typeEncrypt == true"
+              <label *ngIf="typeEncrypt"
                      nz-checkbox
                      [nzDisabled]="isInitSnapshot"
                      formControlName="isEncryption" (nzCheckedChange)="onChangeStatusEncrypt($event)">
@@ -225,7 +225,7 @@
               </label>
             </nz-form-control>
             <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
-              <label *ngIf="typeMultiple == true"
+              <label *ngIf="typeMultiple"
                      nz-checkbox
                      style="margin-top: 10px;"
                      [nzDisabled]="isInitSnapshot"

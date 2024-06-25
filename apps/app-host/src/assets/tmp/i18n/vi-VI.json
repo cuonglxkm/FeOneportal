@@ -2195,7 +2195,7 @@
   "validation.service.name-required": "Tên dịch vụ không được để trống",
   "validation.service.name-not-correct": "Tên dịch vụ nhập chưa đúng",
   "validation.service.name-length": "Tên dịch vụ trong khoảng từ 5-50 ký tự",
-  "validation.service.name-pattern": "Tên dịch vụ chỉ bao gồm các chữ thường, chữ hoa, số và các ký tự _-",
+  "validation.service.name-pattern": "Tên dịch vụ chỉ bao gồm các chữ thường, chữ hoa, số và các ký tự “-” “_”",
   "validation.service.version-required": "Phiên bản không được để trống",
   "validation.kafka.broker-required": "Số lượng Broker không được để trống",
   "validation.kafka-required-1": "Giá trị",
@@ -2745,6 +2745,8 @@
 
   "app.backup.volume.restore.current.select.volume": "Chọn Volume restore",
   "app.backup.volume.note.restore.new": "Khôi phục backup volume",
+  "app.backup.volume.current": "Khôi phục vào Volume hiện tại",
+  "app.backup.volume.new": "Khôi phục vào Volume mới",
 
   "app.dashboard.subscription.service": "Dịch vụ",
   "app.dashboard.subscription.service.active": "Đang hoạt động",

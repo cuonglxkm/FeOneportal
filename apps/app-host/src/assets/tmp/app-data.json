@@ -353,20 +353,35 @@
           "children": [
             {
               "text": "Kubernetes",
-              "link": "/app-kubernetes"
+              "link": "/app-kubernetes",
+              "icon": {
+                "type": "svg",
+                "value": "<svg width=\"22\" height=\"23\" viewBox=\"0 0 22 23\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.95803 5.36925L9.11642 1V5.42698L5.17772 7.77133C4.8748 7.95163 4.68919 8.27811 4.68919 8.63063V14.5993C4.68919 14.9845 4.91043 15.3355 5.25798 15.5016L10.5387 18.0254C10.8284 18.1638 11.167 18.1548 11.4488 18.001L16.5 15.2458L20.0842 17.3654C20.2193 17.4453 20.214 17.6424 20.0749 17.7149L11.8964 21.9786C11.3327 22.2724 10.663 22.2808 10.0922 22.0013L2.12037 18.0973C1.43468 17.7615 1 17.0646 1 16.3011V7.07638C1 6.37927 1.36299 5.73244 1.95803 5.36925Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><path d=\"M12.7002 5.42691V1.21069L19.6865 5.1712C20.313 5.52636 20.7002 6.19091 20.7002 6.91108V14.2458L17.2002 12.2458V8.3555C17.2002 7.98111 16.9911 7.63808 16.6583 7.46658L12.7002 5.42691Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><path d=\"M9.5 8.74585V11.4887M9.5 14.2316V11.4887M12.7 8.74585L11.1 10.1173L9.5 11.4887M9.5 11.4887L12.7 14.2316\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+              }
             },
             {
               "text": "Kafka",
-              "link": "/app-kafka"
+              "link": "/app-kafka",
+              "icon": {
+                "type": "svg",
+                "value": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M19.0523 13.5341C19.6428 13.5382 20.2266 13.4088 20.7601 13.1556C21.2936 12.9024 21.763 12.532 22.1333 12.072C22.5036 11.612 22.7653 11.0743 22.8987 10.499C23.0321 9.92379 23.0338 9.32582 22.9037 8.7498C22.7737 8.17377 22.5152 7.63457 22.1475 7.17243C21.7799 6.71029 21.3126 6.33717 20.7806 6.08091C20.2486 5.82464 19.6656 5.69187 19.075 5.69248C18.4845 5.6931 17.9017 5.8271 17.3703 6.08448C17.0747 4.55341 16.2196 3.18727 14.9716 2.25242C13.7235 1.31758 12.1721 0.881033 10.6197 1.0279C9.06729 1.17477 7.62523 1.89452 6.57466 3.04683C5.52409 4.19914 4.94033 5.70141 4.93718 7.26074V7.36464C4.50528 7.25065 4.05402 7.23021 3.61359 7.30471C3.17316 7.3792 2.75372 7.5469 2.38334 7.79659C2.01296 8.04628 1.70017 8.3722 1.46592 8.75253C1.23167 9.13287 1.08136 9.55885 1.02504 10.002C0.968712 10.4451 1.00768 10.8951 1.13934 11.322C1.27099 11.7488 1.49229 12.1426 1.78843 12.477C2.08457 12.8114 2.44872 13.0787 2.85651 13.261C3.2643 13.4433 3.70632 13.5365 4.153 13.5341H4.93718\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M11.9951 7.56445V12.0165\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M9.25 9.91697L11.9946 6.78027L14.7392 9.91697\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M6.69922 15.2551C6.69922 14.7028 7.14693 14.2551 7.69922 14.2551H16.1549C16.7072 14.2551 17.1549 14.7028 17.1549 15.2551V18.4374H6.69922V15.2551Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M6.69922 15.2551C6.69922 14.7028 7.14693 14.2551 7.69922 14.2551H16.1549C16.7072 14.2551 17.1549 14.7028 17.1549 15.2551V21.6196C17.1549 22.1719 16.7072 22.6196 16.1549 22.6196H7.69922C7.14693 22.6196 6.69922 22.1719 6.69922 21.6196V15.2551Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><line x1=\"8.76758\" y1=\"16.3691\" x2=\"9.85871\" y2=\"16.3691\" stroke=\"currentColor\" stroke-linecap=\"round\"/><line x1=\"8.76758\" y1=\"20.6558\" x2=\"9.85871\" y2=\"20.6558\" stroke=\"currentColor\" stroke-linecap=\"round\"/><line x1=\"11.3818\" y1=\"16.3691\" x2=\"11.9502\" y2=\"16.3691\" stroke=\"currentColor\" stroke-linecap=\"round\"/><line x1=\"11.3818\" y1=\"20.6558\" x2=\"11.9502\" y2=\"20.6558\" stroke=\"currentColor\" stroke-linecap=\"round\"/></svg>"
+              }
             },
             {
               "text": "MongoDB Replicaset",
-              "link": "/app-mongodb-replicaset"
+              "link": "/app-mongodb-replicaset",
+              "icon": {
+                "type": "svg",
+                "value": "<svg width=\"23\" height=\"20\" viewBox=\"0 0 23 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7.89919 6.06583C11.7095 6.06583 14.7984 4.9318 14.7984 3.53291C14.7984 2.13402 11.7095 1 7.89919 1C4.08887 1 1 2.13402 1 3.53291C1 4.9318 4.08887 6.06583 7.89919 6.06583Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-miterlimit=\"10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M1 9.37769C1 10.6416 3.79082 11.6662 7.23349 11.6662C7.53522 11.6662 7.83644 11.6578 8.1314 11.6421\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-miterlimit=\"10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M6.74506 17.4734C3.51618 17.262 1 16.225 1 14.9788V3.53271\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-miterlimit=\"10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M14.7979 3.53271C14.7979 3.53271 14.7979 7.04172 14.7979 8\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-miterlimit=\"10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M14.4263 8.04186C7.03347 8.81314 6.48225 15.4333 7.13074 18.647C19.5815 20.5752 21.7219 10.7735 21.2357 5.63159C21.0736 6.27433 19.4847 7.65622 14.4263 8.04186Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-miterlimit=\"10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+              }
             },
             {
               "text": "Elastic Container Registry",
-              "icon": "anticon-profile",
-              "link": "/app-ecr"
+              "link": "/app-ecr",
+              "icon": {
+                "type": "svg",
+                "value": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M19.0523 13.5341C19.6428 13.5382 20.2266 13.4088 20.7601 13.1556C21.2936 12.9024 21.763 12.532 22.1333 12.072C22.5036 11.612 22.7653 11.0743 22.8987 10.499C23.0321 9.92379 23.0338 9.32582 22.9037 8.7498C22.7737 8.17377 22.5152 7.63457 22.1475 7.17243C21.7799 6.71029 21.3126 6.33717 20.7806 6.08091C20.2486 5.82464 19.6656 5.69187 19.075 5.69248C18.4845 5.6931 17.9017 5.8271 17.3703 6.08448C17.0747 4.55341 16.2196 3.18727 14.9716 2.25242C13.7235 1.31758 12.1721 0.881033 10.6197 1.0279C9.06729 1.17477 7.62523 1.89452 6.57466 3.04683C5.52409 4.19914 4.94033 5.70141 4.93718 7.26074V7.36464C4.50528 7.25065 4.05402 7.23021 3.61359 7.30471C3.17316 7.3792 2.75372 7.5469 2.38334 7.79659C2.01296 8.04628 1.70017 8.3722 1.46592 8.75253C1.23167 9.13287 1.08136 9.55885 1.02504 10.002C0.968712 10.4451 1.00768 10.8951 1.13934 11.322C1.27099 11.7488 1.49229 12.1426 1.78843 12.477C2.08457 12.8114 2.44872 13.0787 2.85651 13.261C3.2643 13.4433 3.70632 13.5365 4.153 13.5341H4.93718\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M11.9951 7.56445V12.0165\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M9.25 9.91697L11.9946 6.78027L14.7392 9.91697\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M6.69922 15.2551C6.69922 14.7028 7.14693 14.2551 7.69922 14.2551H16.1549C16.7072 14.2551 17.1549 14.7028 17.1549 15.2551V18.4374H6.69922V15.2551Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M6.69922 15.2551C6.69922 14.7028 7.14693 14.2551 7.69922 14.2551H16.1549C16.7072 14.2551 17.1549 14.7028 17.1549 15.2551V21.6196C17.1549 22.1719 16.7072 22.6196 16.1549 22.6196H7.69922C7.14693 22.6196 6.69922 22.1719 6.69922 21.6196V15.2551Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><line x1=\"8.76758\" y1=\"16.3691\" x2=\"9.85871\" y2=\"16.3691\" stroke=\"currentColor\" stroke-linecap=\"round\"/><line x1=\"8.76758\" y1=\"20.6558\" x2=\"9.85871\" y2=\"20.6558\" stroke=\"currentColor\" stroke-linecap=\"round\"/><line x1=\"11.3818\" y1=\"16.3691\" x2=\"11.9502\" y2=\"16.3691\" stroke=\"currentColor\" stroke-linecap=\"round\"/><line x1=\"11.3818\" y1=\"20.6558\" x2=\"11.9502\" y2=\"20.6558\" stroke=\"currentColor\" stroke-linecap=\"round\"/></svg>"
+              }
             }
           ]
         },
@@ -379,7 +394,11 @@
           "children": [
             {
               "text": "Kubernetes Advanced",
-              "link": "/app-k8s-premium"
+              "link": "/app-k8s-premium",
+              "icon": {
+                "type": "svg",
+                "value": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M13.9666 3.07466C13.9666 4.22038 11.1802 5.14917 7.74308 5.14917C4.30592 5.14917 1.51953 4.22038 1.51953 3.07466C1.51953 1.92894 4.30592 1.00014 7.74308 1.00014C11.1802 1.00014 13.9666 1.92894 13.9666 3.07466Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-miterlimit=\"10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M7.74308 10.3308C4.30592 10.3308 1.51953 9.40202 1.51953 8.2563\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-miterlimit=\"10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M1.51953 3.07445V13.1718C1.51953 14.3175 4.30592 15.2463 7.74308 15.2463M13.9666 3.07445V5.96445\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-miterlimit=\"10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M22.4793 10.2075C22.4793 11.3532 19.6929 12.282 16.2558 12.282C12.8186 12.282 10.0322 11.3532 10.0322 10.2075C10.0322 9.06175 12.8186 8.13295 16.2558 8.13295C19.6929 8.13295 22.4793 9.06175 22.4793 10.2075Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-miterlimit=\"10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M22.4793 15.3894C22.4793 16.5351 19.6929 17.4639 16.2558 17.4639C12.8186 17.4639 10.0322 16.5351 10.0322 15.3894\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-miterlimit=\"10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M10.0322 10.2073V20.3046C10.0322 21.4504 12.8186 22.3792 16.2558 22.3792C19.6929 22.3792 22.4793 21.4504 22.4793 20.3046V10.2073\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-miterlimit=\"10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+              }
             }
           ]
         },
