@@ -15,7 +15,6 @@ import {
   IPPublicModel,
   ImageTypesModel,
   SHHKeyModel,
-  SecurityGroupModel,
   Order,
   OrderItem,
   OfferItem,
@@ -49,9 +48,6 @@ import { ConfigurationsService } from 'src/app/shared/services/configurations.se
 import { OrderService } from 'src/app/shared/services/order.service';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 
-interface InstancesForm {
-  name: FormControl<string>;
-}
 @Component({
   selector: 'one-portal-instances-create-vpc',
   templateUrl: './instances-create-vpc.component.html',
@@ -67,7 +63,6 @@ export class InstancesCreateVpcComponent implements OnInit {
     'assets/logo.svg',
   ];
 
-  public carouselTileItems$: Observable<number[]>;
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
@@ -659,7 +654,10 @@ export class InstancesCreateVpcComponent implements OnInit {
           this.instanceCreate.volumeSize =
             this.instanceCreate.volumeSize -
             (this.instanceCreate.volumeSize % this.stepCapacity);
-          if (this.isSnapshot) {
+          if (
+            this.isSnapshot &&
+            this.instanceCreate.volumeSize < this.stepCapacity
+          ) {
             this.instanceCreate.volumeSize =
               this.sizeSnapshotVL < this.stepCapacity
                 ? this.stepCapacity

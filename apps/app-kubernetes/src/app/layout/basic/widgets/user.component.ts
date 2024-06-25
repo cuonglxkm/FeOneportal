@@ -57,9 +57,7 @@ export class HeaderUserComponent {
     localStorage.removeItem('user');
     localStorage.removeItem('_token');
     localStorage.removeItem('projects');
-    localStorage.removeItem('regions');
     localStorage.removeItem('projectId');
-    localStorage.removeItem('regionId');
     this.tokenService.clear();
     this.router.navigateByUrl(this.tokenService.login_url!);
   }

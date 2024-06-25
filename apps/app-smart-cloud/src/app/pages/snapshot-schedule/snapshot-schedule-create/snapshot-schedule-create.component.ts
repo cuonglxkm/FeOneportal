@@ -22,6 +22,8 @@ import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { InstancesService } from '../../instances/instances.service';
 import { checkPossiblePressNumber } from '../../../shared/utils/common';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-create-schedule-snapshot',
@@ -154,6 +156,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     private modalService: NzModalService,
     private notification: NzNotificationService,
     private packageSnapshotService: PackageSnapshotService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private datepipe: DatePipe
   ) {}
 
@@ -186,42 +189,39 @@ export class SnapshotScheduleCreateComponent implements OnInit {
           type: 'primary',
           onClick: () => {
             this.isLoading = true;
-            this.request.dayOfWeek = this.dateStart;
-            this.request.daysOfWeek = [];
+            // this.request.dayOfWeek = this.dateStart;
+            // this.request.daysOfWeek = [];
             this.request.description = this.descSchedule;
-            this.request.intervalWeek = 1; // fix cứng số tuần  = 1;
-            this.request.mode = 3; //fix cứng chế độ = theo tuần ;
-            this.request.dates = 0;
-            this.request.duration = 0;
-            this.request.volumeId = this.form.controls.volume.value === null ? 0 : this.form.controls.volume.value;
+            // this.request.intervalWeek = 1; // fix cứng số tuần  = 1;
+            this.request.mode = 1; //fix cứng chế độ = theo tuần ;
+            // this.request.dates = 0;
+            // this.request.duration = 0;
+            // this.request.volumeId = ((this.selectedSnapshotType==0 && this.snapshotTypeCreate==2) || this.snapshotTypeCreate==0) ?  : '';
             this.request.runtime = this.datepipe.transform(
               this.time,
               'yyyy-MM-ddTHH:mm:ss',
               'vi-VI'
             );
-            this.request.intervalMonth = 0;
-            this.request.maxBaxup = 1; // fix cứng số bản
-            this.request.snapshotPacketId = this.form.controls.snapshotPackage.value === null ? 0 : this.form.controls.snapshotPackage.value;
+            // this.request.intervalMonth = 0;
+            // this.request.maxBaxup = 1; // fix cứng số bản
+            this.request.snapshotPacketId = this.projectType == 1 ? '' :this.selectedSnapshotPackage.id;
+            this.request.serviceInstanceId = ((this.selectedSnapshotType==1 && this.snapshotTypeCreate==2) || this.snapshotTypeCreate==1) ? this.selectedVM.id : this.selectedVolume.id;
+            this.request.maxSnapshot = this.numOfVersion
+            this.request.snapshotType = ((this.selectedSnapshotType==1 && this.snapshotTypeCreate==2) || this.snapshotTypeCreate==1) ? 1 : 0;
             this.request.customerId = this.userId;
             this.request.projectId = this.project;
             this.request.regionId = this.region;
-            console.log(this.request);
             this.snapshotService.createSnapshotSchedule(this.request).subscribe(
-              (data) => {
-                if (data != null) {
+              data => {
                   console.log(data);
                   this.isLoading = false;
                   this.notification.success('Success', 'Tạo lịch thành công');
                   this.router.navigate([
                     '/app-smart-cloud/schedule/snapshot/list',
                   ]);
-                } else {
-                  this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
-                  this.isLoading = false;
-                }
               },
-              (e) => {
-                this.notification.error(e.statusText, 'Tạo lịch thất bại');
+              error => {
+                this.notification.error(this.i18n.fanyi("app.status.fail"), 'Tạo lịch thất bại',error.error.message);
                 this.isLoading = false;
               }
             );

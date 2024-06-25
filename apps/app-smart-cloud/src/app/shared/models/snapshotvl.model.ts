@@ -60,6 +60,9 @@ export class CreateScheduleSnapshotDTO {
   customerId: number;
   projectId: number;
   regionId: number;
+  serviceInstanceId: any;
+  maxSnapshot: number;
+  snapshotType: any;
 }
 
 export class EditSnapshotVolume {

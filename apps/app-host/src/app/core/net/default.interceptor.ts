@@ -9,7 +9,7 @@ import {
   HttpRequest,
   HttpResponseBase
 } from '@angular/common/http';
-import {Injectable, Injector} from '@angular/core';
+import { Inject, Injectable, Injector } from '@angular/core';
 import {Router} from '@angular/router';
 import {ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService, SocialService} from '@delon/auth';
 import {ALAIN_I18N_TOKEN, IGNORE_BASE_URL, _HttpClient, CUSTOM_ERROR, RAW_BODY, SettingsService} from '@delon/theme';
@@ -19,6 +19,7 @@ import {BehaviorSubject, Observable, of, throwError, catchError, filter, mergeMa
 import {CallbackComponent, TokenResponse} from "../../routes/passport/callback.component";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {UserModel} from "../../../../../../libs/common-utils/src";
+import { CookieService } from 'ngx-cookie-service';
 
 const CODEMESSAGE: { [key: number]: string } = {
   200: 'Máy chủ trả về thành công dữ liệu được yêu cầu. ',
@@ -49,7 +50,11 @@ export class DefaultInterceptor implements HttpInterceptor {
   private refreshToken$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 // @ts-ignore
   url = environment.sso.issuer
-  constructor(private injector: Injector,private httpClient: HttpClient,private settingsSrv: SettingsService,) {
+  constructor(private injector: Injector,
+              private httpClient: HttpClient,
+              private settingsSrv: SettingsService,
+              private cookieService: CookieService,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
     if (this.refreshTokenType === 'auth-refresh') {
       // this.buildAuthRefresh();
     }
@@ -99,7 +104,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         context: new HttpContext().set(ALLOW_ANONYMOUS, true)
       });
       console.log(result);
-      
+
     return result;
   }
 
@@ -203,7 +208,17 @@ export class DefaultInterceptor implements HttpInterceptor {
   private toLogin(): void {
     // this.notification.error(`Hết phiên đăng nhập`, ``);
     this.goTo(this.tokenSrv.login_url!);
+    sessionStorage.clear();
+    this.cookieService.deleteAll( "/",".onsmartcloud.com",true,"None");
+    this.tokenService.clear();
 
+    localStorage.removeItem('UserRootId');
+    localStorage.removeItem('ShareUsers');
+    localStorage.removeItem('PermissionOPA');
+    localStorage.removeItem('user');
+    localStorage.removeItem('_token');
+    localStorage.removeItem('projects');
+    localStorage.removeItem('projectId');
   }
 
   private getAdditionalHeaders(headers?: HttpHeaders): { [name: string]: string } {
