@@ -85,16 +85,7 @@ export class PackageSnapshotService extends BaseService {
 
   delete(id: number) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions
-      + `/snapshots/packages/${id}`).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          console.error('login');
-        } else if (error.status === 404) {
-          // Handle 404 Not Found error
-          console.error('Resource not found');
-        }
-        return throwError(error);
-      }))
+      + `/snapshots/packages/${id}`);
   }
 
   createOrder(request: BackupPackageRequestModel) {
