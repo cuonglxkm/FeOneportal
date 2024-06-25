@@ -42,6 +42,7 @@
                     <input nz-input class="input-custom"
                            appAutofocus
                            formControlName="backupName"
+                           [placeholder]="'app.backup.vm.placeholder.input'|i18n"
                            [maxlength]="50"/>
                     <ng-template #nameBackupError let-control>
                       <ng-container *ngIf="control.hasError('required')">{{'app.backup.volume.validator.name.required'|i18n}}</ng-container>
@@ -50,39 +51,36 @@
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>
-                    <span>{{'app.info.backup.vm.total.storage'|i18n}} (<span style="color: #FF0000;">*</span>)</span>
-                    <img nz-popover
-                         [nzPopoverContent]="'app.backup.vm.tooltip.backup.package'|i18n"
-                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                         src="assets/imgs/pajamas_question.svg" alt="" />
-                  </nz-form-label>
-                  <nz-form-control nzDisableAutoTips>
-                    <nz-input-group [nzAddOnAfter]="'GB'" style="width: 100%;">
-                      <input nz-input class="input-custom" [value]="projectDetail?.cloudProject.quotaBackupVolumeInGb" [disabled]="true" />
-                    </nz-input-group>
-                  </nz-form-control>
-                </nz-form-item>
-                <nz-row nzGutter="18">
-                  <nz-col nzSpan="10">
-                    <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
+                <nz-row nzGutter="24">
+                  <nz-col nzSpan="16">
+                    <span class="text-label">{{ 'app.backup.vm.bought'|i18n }}</span>
                   </nz-col>
-                  <nz-col nzSpan="8">
-                  <span class="text-label"
-                        *ngIf="projectDetail == undefined || projectDetail == null">0 GB</span>
+                  <nz-col nzSpan="8" style="text-align: end;">
+                    <span class="text-label" *ngIf="projectDetail == undefined">0 GB</span>
                     <span class="text-label"
-                          *ngIf="projectDetail != undefined">{{ projectDetail?.cloudProjectResourceUsed?.backup }} GB</span>
+                          *ngIf="projectDetail != undefined">{{ projectDetail?.cloudProject.quotaBackupVolumeInGb }}
+                      GB</span>
                   </nz-col>
                 </nz-row>
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <nz-row nzGutter="18">
-                  <nz-col nzSpan="10">
-                    <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
+                <nz-row nzGutter="24">
+                  <nz-col nzSpan="16">
+                    <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
                   </nz-col>
-                  <nz-col nzSpan="8">
-                  <span class="text-label"
-                        *ngIf="projectDetail == undefined || projectDetail == null">0 GB</span>
+                  <nz-col nzSpan="8" style="text-align: end;">
+                    <span class="text-label" *ngIf="projectDetail == undefined">0 GB</span>
+                    <span class="text-label"
+                          *ngIf="projectDetail != undefined">{{ projectDetail?.cloudProjectResourceUsed?.backup }}
+                      GB</span>
+                  </nz-col>
+                </nz-row>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <nz-row nzGutter="24">
+                  <nz-col nzSpan="16">
+                    <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
+                  </nz-col>
+                  <nz-col nzSpan="8" style="text-align: end;">
+                    <span class="text-label" *ngIf="projectDetail == undefined">0 GB</span>
                     <span class="text-label"
                           *ngIf="projectDetail != undefined">{{ projectDetail?.cloudProject?.quotaBackupVolumeInGb - projectDetail?.cloudProjectResourceUsed?.backup }}
                       GB</span>
@@ -102,8 +100,11 @@
                     </nz-form-label>
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="volumeError">
                       <nz-select (ngModelChange)="onSelectedVolume($event)"
-                                 nzSize="large" formControlName="volumeId">
-                        <nz-option *ngFor="let i of listVolumes?.records" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
+                                 nzSize="large"
+                                 [nzPlaceHolder]="'schedule.backup.volume.select'|i18n"
+                                 [nzLoading]="isLoadingVolume"
+                                 formControlName="volumeId">
+                        <nz-option *ngFor="let i of listVolumes" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
                       </nz-select>
                       <ng-template #volumeError let-control>
                         <ng-container *ngIf="control.hasError('required')">{{'app.input.backup.volume.required.select'|i18n}}</ng-container>
@@ -131,21 +132,13 @@
                   </nz-form-label>
                   <nz-form-control>
                     <nz-textarea-count [nzMaxCharacterCount]="255">
-                    <textarea nz-input class="input-custom" [maxlength]="255"
+                    <textarea nz-input class="input-custom"
+                              [maxlength]="255"
                               [nzAutosize]="{ minRows: 3, maxRows: 5 }"
+                              [placeholder]="'app.input.des'|i18n"
                               formControlName="description"></textarea>
                     </nz-textarea-count>
                   </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>
-                    <span style="color: #FF0000">{{ 'app.service.expiration-date'|i18n }} </span>
-                    <img nz-popover
-                         [nzPopoverContent]="'app.backup.vm.tooltip.expire.date'|i18n"
-                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                         src="assets/imgs/pajamas_question.svg" alt="" />
-                    <span style="color: #FF0000; margin-left: 10px;">{{ projectDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>
-                  </nz-form-label>
                 </nz-form-item>
               </nz-col>
             </nz-row>
@@ -165,7 +158,10 @@
                     <div style="margin-top: 10px" class="text-label">{{ projectDetail?.cloudProject.quotaBackupVolumeInGb }} GB</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">{{ 'app.input.backup.volume.select.volume'|i18n }}</div>
-            <div style="margin-top: 10px" class="text-label">{{ volumeInfo?.name }}</div>
+            <div style="margin-top: 10px" class="text-label">
+              <span *ngIf="volumeInfo?.volumeType == 'hdd'">{{ volumeInfo?.name }} ({{ 'volume.hdd' | i18n }}) {{ volumeInfo?.sizeInGB }}GB</span>
+              <span *ngIf="volumeInfo?.volumeType == 'ssd'">{{ volumeInfo?.name }} ({{ 'volume.ssd' | i18n }}) {{ volumeInfo?.sizeInGB }}GB</span>
+            </div>
             <!--        <div style="margin-top: 10px" class="text-label">{{ 'app.info.backup.vm.storage.flavor'|i18n }} - {{ instance?.storage }} GB</div>-->
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <nz-row>

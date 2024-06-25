@@ -108,6 +108,9 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
         if(['ACTIVE', 'AVAILABLE'].includes(item.status)) {
           this.backupPackages?.push(item)
         }
+      }, error => {
+        this.isLoadingBackupPackage = false;
+        this.notification.error(error.status, this.i18n.fanyi('app.failData'))
       })
       console.log('backup package', this.backupPackages);
       this.validateForm.controls.backupPacketId.setValue(this.backupPackages[0].id);
@@ -122,16 +125,17 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
     })
   }
 
+  isLoadingVolume: boolean = false
   getListVolumes() {
-    this.isLoading = true
+    this.isLoadingVolume = true
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, '', '').subscribe(data => {
-      this.isLoading = false
+      this.isLoadingVolume = false
       this.listVolumes = data.records;
       this.listVolumes = this.listVolumes.filter(item => item.status === 'KHOITAO')
       this.validateForm.controls.volumeId.setValue(this.listVolumes[0]?.id)
     }, error => {
-      this.isLoading = false
-      this.listVolumes = [];
+      this.isLoadingVolume = false
+      this.notification.error(error.status, this.i18n.fanyi('app.failData'))
     })
   }
 
