@@ -25,6 +25,8 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (initComplete)="onRegionInitComplete()"
+        [isAdvance]="false"
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="region"
